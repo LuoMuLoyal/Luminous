@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-13
+updated: 2026-08-15
 ---
 
 # Active UI — Record
 
-Last updated: 2026-08-13 (时间线 badge 桌面溢出修复)
+Last updated: 2026-08-15 (全仓库审查修复)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -276,3 +276,9 @@ Last updated: 2026-08-13 (时间线 badge 桌面溢出修复)
 
 - `LucentDailyRecordRepository._refreshInBackground` 内联 `Duration(seconds: 30)` 改为复用 `backgroundRefreshThrottle`（`lib/core/database/cache_constants.dart`）。
 - 新增按日期维度的连续后台刷新失败计数器；连续失败 3 次后将日志级别从 warning 提升为 error，成功时清空计数器，避免过期缓存长期静默。
+
+## 2026-08-15 全仓库审查修复（Record 模块）
+
+### 详情页分析轮询退避与防重入
+
+- `record/presentation/pages/detail.dart` 的餐食分析轮询从 `Timer.periodic`（固定 5s、fire-and-forget）改为链式单次 `Timer`：每轮 `invalidate` 后 `await` provider future 覆盖整个请求周期（防重入锁，请求超过间隔不再堆积并发），成功回到基础 5s 间隔、失败按指数退避至 30s 上限；`dispose` 时取消链，分析完成由 build 驱动照常停轮。

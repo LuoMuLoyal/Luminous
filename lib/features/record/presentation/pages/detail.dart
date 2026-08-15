@@ -117,6 +117,17 @@ class _RecordDetailBody extends ConsumerStatefulWidget {
 class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
   Timer? _analysisPoller;
 
+  /// Guards against overlapping polls: when a refresh takes longer than the
+  /// current interval, the next tick is skipped instead of stacking requests.
+  bool _isPolling = false;
+
+  /// Current poll interval. Starts at [_initialPollInterval] and backs off
+  /// exponentially on failure up to [_maxPollInterval].
+  Duration _pollInterval = _initialPollInterval;
+
+  static const _initialPollInterval = Duration(seconds: 5);
+  static const _maxPollInterval = Duration(seconds: 30);
+
   @override
   void dispose() {
     _analysisPoller?.cancel();
@@ -126,15 +137,41 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
   /// Start/stop the analysis poller based on the current meal analysis status.
   void _syncAnalysisPoller(bool isAnalyzing) {
     if (isAnalyzing && _analysisPoller == null) {
-      _analysisPoller = Timer.periodic(const Duration(seconds: 5), (_) {
-        if (mounted) {
-          ref.invalidate(dailyRecordDetailProvider(widget.record.id));
-        }
-      });
+      _pollInterval = _initialPollInterval;
+      _scheduleNextPoll();
     } else if (!isAnalyzing && _analysisPoller != null) {
       _analysisPoller!.cancel();
       _analysisPoller = null;
     }
+  }
+
+  /// Schedules the next poll as a chained single-shot [Timer] instead of
+  /// `Timer.periodic`, so each round can apply backoff and skip while a
+  /// previous request is still in flight.
+  void _scheduleNextPoll() {
+    _analysisPoller?.cancel();
+    _analysisPoller = Timer(_pollInterval, () async {
+      if (!mounted || _isPolling) return;
+      _isPolling = true;
+      try {
+        // Invalidate + read triggers a fresh load; awaiting its future lets
+        // the lock cover the whole request instead of just the tick.
+        ref.invalidate(dailyRecordDetailProvider(widget.record.id));
+        await ref.read(dailyRecordDetailProvider(widget.record.id).future);
+        // Successful refresh: reset to the base interval (analysis is
+        // presumably still running while this poller is active).
+        _pollInterval = _initialPollInterval;
+      } catch (_) {
+        // Transient failure: back off so a degraded backend is not
+        // hammered at the base rate.
+        final doubled = Duration(seconds: _pollInterval.inSeconds * 2);
+        _pollInterval = doubled > _maxPollInterval ? _maxPollInterval : doubled;
+      } finally {
+        _isPolling = false;
+      }
+      if (!mounted) return;
+      _scheduleNextPoll();
+    });
   }
 
   @override
