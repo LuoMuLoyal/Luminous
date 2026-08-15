@@ -125,8 +125,11 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
     for (final date in dates) {
       try {
+        // Bounded pagination: `_maxDedupPages` caps the loop even if the
+        // backend reports a bogus `total`, and an empty page breaks early
+        // instead of spinning on repeated fetches.
         var page = 1;
-        while (true) {
+        while (page <= _maxDedupPages) {
           final result = await dailyRecordRepo.fetchRecords(
             date,
             page: page,
@@ -137,7 +140,9 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
             final fingerprint = _fingerprintForRecord(record, source);
             if (fingerprint != null) fingerprints.add(fingerprint);
           }
-          if (page * _dedupPageSize >= result.total) break;
+          if (result.items.isEmpty || page * _dedupPageSize >= result.total) {
+            break;
+          }
           page++;
         }
       } catch (e) {
@@ -265,6 +270,11 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
   /// Page size used when fetching existing records for deduplication.
   static const _dedupPageSize = 500;
+
+  /// Maximum pages fetched per date during dedup (500 × 100 = 50k records).
+  /// Guards against a backend `total` regression that would otherwise keep
+  /// the `while` loop alive forever.
+  static const _maxDedupPages = 100;
 
   static const _allSupportedTypes = <HealthMetricType>{
     HealthMetricType.heartRate,
