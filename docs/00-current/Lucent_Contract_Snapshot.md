@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-15
 ---
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
+Last updated: 2026-08-15 (Sparse Record Semantics observed metric contract)
 
 ## 基础
 
@@ -82,3 +82,5 @@ Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
 - **产品事件**：`POST /api/v1/user/product-events`（批量 1..50，白名单属性，clientEventId 幂等）。客户端 `LucentClient.productEvents` getter 用共享 Dio 直接构造 `ProductEventsApi`（生成端 `LucentApi` 尚无 getter，等下次全量客户端再生成补齐）。
 - **产品事件漏斗（Task 9/10 合同同步）**：`GET /api/v1/user/product-events/funnel`（admin-only）新增 `FunnelResponseDto`/`FunnelDailyCountsDto`/`FunnelOptionalCountsDto`/`FunnelTotalsDto`/`FunnelWindowDto`；bootstrap `_productEventsModels` 已补全这 5 个模型，生成客户端含 `productEventsControllerGetFunnelV1` 方法（客户端不消费，仅合同完整性）。
 - **就诊摘要公开分享信封**：`GET /user/reports/clinic-summary/shared/{token}` 与 preview/share 同型信封缺陷（生成 `ReportsApi` 按裸 DTO 反序列化会抛），Task 10 起走 `LucentApiPaths.clinicSummaryShared(token)` + raw Dio（`skipAuthorization: true`）解信封，与 preview 同一模式；四个 section 键合同已改可选，未选键反序列化为 null，占位补齐已删除。
+
+- **响应 DTO 信封契约修复(2026-08-15)**:`NotificationListResponseDto`、`UnreadCountResponseDto`、`ClinicSummaryResponseDto`(新增)、`ClinicSummaryShareResponseDto`、`FunnelResponseDto`、`SecurityPinElevationResponseDto` 全部补全 `data` 嵌套层,与全局 `{code,message,data}` 信封一致。此前 6 个 DTO 为扁平结构,前端解析运行时响应必失败并触发 Riverpod 自动重试。已重新 `export:openapi` 并重新生成客户端;bootstrap 脚本新增 `Notifications`/`UserSettings` 过滤生成组。

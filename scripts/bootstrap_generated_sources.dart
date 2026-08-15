@@ -451,6 +451,8 @@ const _reviewModels = [
   'ClinicSummaryMedicineDto',
   'ClinicSummaryDto',
   'ClinicSummaryRequestDto',
+  'ClinicSummaryResponseDto',
+  'ClinicSummaryShareDataDto',
   'ClinicSummaryShareScopeDto',
   'ClinicSummaryShareResponseDto',
   'ClinicSummaryShareListItemDto',
@@ -469,10 +471,36 @@ const _productEventsModels = [
   // endpoint, but filtered generation still deserializes every schema listed
   // in deserialize.dart — omitting them breaks the generated package.
   'FunnelDailyCountsDto',
+  'FunnelDataDto',
   'FunnelOptionalCountsDto',
   'FunnelTotalsDto',
   'FunnelWindowDto',
   'FunnelResponseDto',
+];
+
+const _notificationsModels = [
+  'CreateNotificationDto',
+  'NotificationDetailDto',
+  'NotificationDetailResponseDto',
+  'NotificationListDataDto',
+  'NotificationListItemDto',
+  'NotificationListResponseDto',
+  'UnreadCountDataDto',
+  'UnreadCountResponseDto',
+  'UserNotificationType',
+];
+
+const _userSettingsModels = [
+  'ChangeSecurityPinDto',
+  'DisableSecurityPinDto',
+  'EnableSecurityPinDto',
+  'SecurityPinElevationDataDto',
+  'SecurityPinElevationResponseDto',
+  'SecurityPinSettingsDto',
+  'UpdateUserSettingsDto',
+  'UserSettingsDataDto',
+  'UserSettingsResponseDto',
+  'VerifySecurityPinDto',
 ];
 
 /// 过滤生成无法产出的内联响应模型（openapi-generator 7.x 的 `models=` 只接受
@@ -496,5 +524,15 @@ const _filteredClients = <({String apis, String apiFile, List<String> models})>[
     apis: 'ProductEvents',
     apiFile: 'product_events_api.dart',
     models: _productEventsModels,
+  ),
+  (
+    apis: 'Notifications',
+    apiFile: 'notifications_api.dart',
+    models: _notificationsModels,
+  ),
+  (
+    apis: 'UserSettings',
+    apiFile: 'user_settings_api.dart',
+    models: _userSettingsModels,
   ),
 ];

@@ -3,11 +3,11 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/clinic_summary_share_data_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'clinic_summary_share_response_dto.g.dart';
+part 'clinic_summary_response_dto.g.dart';
 
 @CopyWith()
 @JsonSerializable(
@@ -16,9 +16,9 @@ part 'clinic_summary_share_response_dto.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class ClinicSummaryShareResponseDto {
-  /// Returns a new [ClinicSummaryShareResponseDto] instance.
-  ClinicSummaryShareResponseDto({
+class ClinicSummaryResponseDto {
+  /// Returns a new [ClinicSummaryResponseDto] instance.
+  ClinicSummaryResponseDto({
     required this.code,
 
     required this.message,
@@ -35,12 +35,12 @@ class ClinicSummaryShareResponseDto {
   final String message;
 
   @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final ClinicSummaryShareDataDto data;
+  final ClinicSummaryDto data;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ClinicSummaryShareResponseDto &&
+      other is ClinicSummaryResponseDto &&
           other.code == code &&
           other.message == message &&
           other.data == data;
@@ -48,10 +48,10 @@ class ClinicSummaryShareResponseDto {
   @override
   int get hashCode => code.hashCode + message.hashCode + data.hashCode;
 
-  factory ClinicSummaryShareResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$ClinicSummaryShareResponseDtoFromJson(json);
+  factory ClinicSummaryResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$ClinicSummaryResponseDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ClinicSummaryShareResponseDtoToJson(this);
+  Map<String, dynamic> toJson() => _$ClinicSummaryResponseDtoToJson(this);
 
   @override
   String toString() {

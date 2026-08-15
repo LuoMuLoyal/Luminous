@@ -20,10 +20,15 @@ class UpdateUserSettingsDto {
   /// Returns a new [UpdateUserSettingsDto] instance.
   UpdateUserSettingsDto({
     this.aiSummariesEnabled,
+
     this.dataSharingConsent,
+
     this.assistantEnabled,
+
     this.assistantMemoryEnabled,
+
     this.waterTargetCount,
+
     this.assistantContext,
   });
 

@@ -9,8 +9,8 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/clinic_summary_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_request_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_list_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
 import 'package:lucent_api/src/model/event_review_list_response_dto.dart';
@@ -826,9 +826,10 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ClinicSummaryDto] as data
+  /// Returns a [Future] containing a [Response] with a [ClinicSummaryResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ClinicSummaryDto>> reportsControllerGetSharedClinicSummaryV1({
+  Future<Response<ClinicSummaryResponseDto>>
+  reportsControllerGetSharedClinicSummaryV1({
     required String token,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -859,15 +860,15 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ClinicSummaryDto? _responseData;
+    ClinicSummaryResponseDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<ClinicSummaryDto, ClinicSummaryDto>(
+          : deserialize<ClinicSummaryResponseDto, ClinicSummaryResponseDto>(
               rawData,
-              'ClinicSummaryDto',
+              'ClinicSummaryResponseDto',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -880,7 +881,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ClinicSummaryDto>(
+    return Response<ClinicSummaryResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -1057,9 +1058,10 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ClinicSummaryDto] as data
+  /// Returns a [Future] containing a [Response] with a [ClinicSummaryResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ClinicSummaryDto>> reportsControllerPreviewClinicSummaryV1({
+  Future<Response<ClinicSummaryResponseDto>>
+  reportsControllerPreviewClinicSummaryV1({
     required ClinicSummaryRequestDto clinicSummaryRequestDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1099,15 +1101,15 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ClinicSummaryDto? _responseData;
+    ClinicSummaryResponseDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<ClinicSummaryDto, ClinicSummaryDto>(
+          : deserialize<ClinicSummaryResponseDto, ClinicSummaryResponseDto>(
               rawData,
-              'ClinicSummaryDto',
+              'ClinicSummaryResponseDto',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -1120,7 +1122,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ClinicSummaryDto>(
+    return Response<ClinicSummaryResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

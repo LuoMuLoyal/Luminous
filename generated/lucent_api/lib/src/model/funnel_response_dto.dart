@@ -3,10 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/funnel_window_dto.dart';
-import 'package:lucent_api/src/model/funnel_daily_counts_dto.dart';
-import 'package:lucent_api/src/model/funnel_optional_counts_dto.dart';
-import 'package:lucent_api/src/model/funnel_totals_dto.dart';
+import 'package:lucent_api/src/model/funnel_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -22,42 +19,34 @@ part 'funnel_response_dto.g.dart';
 class FunnelResponseDto {
   /// Returns a new [FunnelResponseDto] instance.
   FunnelResponseDto({
-    required this.daily,
+    required this.code,
 
-    required this.optional,
+    required this.message,
 
-    required this.totals,
-
-    required this.window,
+    required this.data,
   });
 
-  /// Per-UTC-day core funnel counts, ascending by date; empty when detailsSuppressed is true.
-  @JsonKey(name: r'daily', required: true, includeIfNull: false)
-  final List<FunnelDailyCountsDto> daily;
+  /// Result code.
+  @JsonKey(name: r'code', required: true, includeIfNull: false)
+  final num code;
 
-  /// Window totals of the optional visit-summary events.
-  @JsonKey(name: r'optional', required: true, includeIfNull: false)
-  final FunnelOptionalCountsDto optional;
+  /// Message.
+  @JsonKey(name: r'message', required: true, includeIfNull: false)
+  final String message;
 
-  /// Window totals of the core funnel (same breakdown as daily).
-  @JsonKey(name: r'totals', required: true, includeIfNull: false)
-  final FunnelTotalsDto totals;
-
-  @JsonKey(name: r'window', required: true, includeIfNull: false)
-  final FunnelWindowDto window;
+  @JsonKey(name: r'data', required: true, includeIfNull: false)
+  final FunnelDataDto data;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is FunnelResponseDto &&
-          other.daily == daily &&
-          other.optional == optional &&
-          other.totals == totals &&
-          other.window == window;
+          other.code == code &&
+          other.message == message &&
+          other.data == data;
 
   @override
-  int get hashCode =>
-      daily.hashCode + optional.hashCode + totals.hashCode + window.hashCode;
+  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
 
   factory FunnelResponseDto.fromJson(Map<String, dynamic> json) =>
       _$FunnelResponseDtoFromJson(json);

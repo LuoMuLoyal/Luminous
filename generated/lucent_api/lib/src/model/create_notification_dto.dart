@@ -20,9 +20,13 @@ class CreateNotificationDto {
   /// Returns a new [CreateNotificationDto] instance.
   CreateNotificationDto({
     required this.type,
+
     required this.title,
+
     required this.content,
+
     this.action,
+
     this.actionPayload,
   });
 

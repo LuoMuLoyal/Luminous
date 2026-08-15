@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/notification_list_item_dto.dart';
+import 'package:lucent_api/src/model/notification_list_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -20,9 +20,10 @@ class NotificationListResponseDto {
   /// Returns a new [NotificationListResponseDto] instance.
   NotificationListResponseDto({
     required this.code,
+
     required this.message,
-    required this.items,
-    required this.total,
+
+    required this.data,
   });
 
   /// Result code.
@@ -33,12 +34,8 @@ class NotificationListResponseDto {
   @JsonKey(name: r'message', required: true, includeIfNull: false)
   final String message;
 
-  @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<NotificationListItemDto> items;
-
-  /// Total count of notifications for the user.
-  @JsonKey(name: r'total', required: true, includeIfNull: false)
-  final num total;
+  @JsonKey(name: r'data', required: true, includeIfNull: false)
+  final NotificationListDataDto data;
 
   @override
   bool operator ==(Object other) =>
@@ -46,12 +43,10 @@ class NotificationListResponseDto {
       other is NotificationListResponseDto &&
           other.code == code &&
           other.message == message &&
-          other.items == items &&
-          other.total == total;
+          other.data == data;
 
   @override
-  int get hashCode =>
-      code.hashCode + message.hashCode + items.hashCode + total.hashCode;
+  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
 
   factory NotificationListResponseDto.fromJson(Map<String, dynamic> json) =>
       _$NotificationListResponseDtoFromJson(json);

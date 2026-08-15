@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_api/src/model/unread_count_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,8 +20,10 @@ class UnreadCountResponseDto {
   /// Returns a new [UnreadCountResponseDto] instance.
   UnreadCountResponseDto({
     required this.code,
+
     required this.message,
-    required this.count,
+
+    required this.data,
   });
 
   /// Result code.
@@ -31,9 +34,8 @@ class UnreadCountResponseDto {
   @JsonKey(name: r'message', required: true, includeIfNull: false)
   final String message;
 
-  /// Number of unread notifications.
-  @JsonKey(name: r'count', required: true, includeIfNull: false)
-  final num count;
+  @JsonKey(name: r'data', required: true, includeIfNull: false)
+  final UnreadCountDataDto data;
 
   @override
   bool operator ==(Object other) =>
@@ -41,10 +43,10 @@ class UnreadCountResponseDto {
       other is UnreadCountResponseDto &&
           other.code == code &&
           other.message == message &&
-          other.count == count;
+          other.data == data;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + count.hashCode;
+  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
 
   factory UnreadCountResponseDto.fromJson(Map<String, dynamic> json) =>
       _$UnreadCountResponseDtoFromJson(json);
