@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/map_utils.dart';
@@ -102,7 +103,16 @@ class AuthInterceptor extends Interceptor {
       await _sessionStore.clear();
       final onSessionExpired = _onSessionExpired;
       if (onSessionExpired != null) {
-        await onSessionExpired();
+        // A throwing UI callback must not swallow the original error — log
+        // it and fall through so `handler.next` still resolves the request.
+        try {
+          await onSessionExpired();
+        } catch (e, st) {
+          appTalker.error(
+            'AuthInterceptor: onSessionExpired callback failed: $e',
+            st,
+          );
+        }
       }
     }
 
@@ -203,7 +213,19 @@ class AuthInterceptor extends Interceptor {
 
       await _sessionStore.write(envelope.data!);
       return envelope.data;
-    } on DioException {
+    } on DioException catch (e) {
+      // Log refresh failures (endpoint + status) instead of swallowing them,
+      // so production issues are diagnosable. Token values are never logged.
+      appTalker.error(
+        'AuthInterceptor: token refresh failed: '
+        'status=${e.response?.statusCode} endpoint=${e.requestOptions.uri} '
+        'error=${e.message}',
+      );
+      return null;
+    } catch (e, st) {
+      // e.g. session store write failures — still degrade to null rather
+      // than letting the original request hang.
+      appTalker.error('AuthInterceptor: token refresh failed: $e', st);
       return null;
     }
   }

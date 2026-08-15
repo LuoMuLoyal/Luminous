@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-13
+updated: 2026-08-15
 ---
 
 # Data Layer
@@ -43,6 +43,9 @@ Widget
 - `lib/core/network/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
   optional reconnect and capped exponential backoff (1s, 2s, 4s, ... clamped to 60s) so raising
   `maxReconnects` later cannot produce unbounded delays.
+- `lib/core/network/interceptors/auth_interceptor.dart`: guards the `onSessionExpired`
+  callback (a throwing callback is logged and the original error still resolves) and logs
+  token-refresh failures with endpoint/status before degrading to a session clear.
 
 ### Generated API Client
 
