@@ -28,7 +28,7 @@ class LucentScanRepository implements ScanRepository {
       page: 1,
       pageSize: 20,
     );
-    return response.data!.data.items
+    return requireData(response.data, operation: 'search').data.items
         .map(
           (item) => ScanSearchResult(
             id: item.id,

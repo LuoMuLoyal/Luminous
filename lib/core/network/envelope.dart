@@ -66,6 +66,25 @@ class LucentEnvelope<T> {
   }
 }
 
+/// Extracts a non-null payload from a generated-client response envelope.
+///
+/// [EnvelopeInterceptor] already rejects empty response bodies and
+/// business-failure envelopes, so [data] (the `response.data` envelope) is
+/// normally non-null; this guard keeps the failure path descriptive instead
+/// of a bare `!` null-check crash. [operation] names the API call so the
+/// error carries request context.
+///
+/// ```dart
+/// final settings = _mapSettings(requireData(response.data, operation: 'getSettings').data);
+/// ```
+T requireData<T>(T? data, {String? operation}) {
+  if (data == null) {
+    final context = operation == null ? '' : '（$operation）';
+    throw StateError('API 返回空响应体$context');
+  }
+  return data;
+}
+
 /// Throws [LucentApiException] when [code] is non-zero (business failure).
 ///
 /// Use this at call sites that work with generated API client response DTOs

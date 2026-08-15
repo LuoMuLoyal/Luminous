@@ -1,5 +1,6 @@
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/features/support/domain/entities/support_resource.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -24,13 +25,16 @@ class LucentSupportRepository implements SupportRepository {
     final response = await api.supportResourcesControllerGetResourcesV1(
       scope: scope,
     );
-    return response.data!.data.items.map(_mapResource).toList();
+    return requireData(
+      response.data,
+      operation: 'getResources',
+    ).data.items.map(_mapResource).toList();
   }
 
   @override
   Future<AppInfo?> getAppInfo() async {
     final response = await api.supportResourcesControllerGetAppInfoV1();
-    final d = response.data!.data;
+    final d = requireData(response.data, operation: 'getAppInfo').data;
     return AppInfo(
       minClientVersion: d.minClientVersion,
       latestVersion: d.latestVersion,

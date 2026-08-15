@@ -3,6 +3,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 
 class DataExportRequestInFlightState {
@@ -176,7 +177,10 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
       final response = await api.dataExportControllerCreateRequestV1(
         createDataExportRequestDto: input.toDto(),
       );
-      final data = response.data!.data;
+      final data = requireData(
+        response.data,
+        operation: 'createDataExportRequest',
+      ).data;
       state = AsyncData(data);
       return data;
     } finally {
@@ -194,7 +198,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
   Future<DataExportRequestDataDto?> _fetchLatest() async {
     final api = ref.read(lucentClientProvider).dataExport;
     final response = await api.dataExportControllerGetLatestRequestV1();
-    return response.data!.data;
+    return requireData(response.data, operation: 'fetchLatestDataExport').data;
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,7 +23,9 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
   @override
   Future<UserSettings> getSettings() async {
     final response = await api.userSettingsControllerGetSettingsV1();
-    return _mapSettings(response.data!.data);
+    return _mapSettings(
+      requireData(response.data, operation: 'getSettings').data,
+    );
   }
 
   @override
@@ -49,7 +52,9 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
         ),
       ),
     );
-    return _mapSettings(response.data!.data);
+    return _mapSettings(
+      requireData(response.data, operation: 'updateSettings').data,
+    );
   }
 
   @override
@@ -57,7 +62,9 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
     final response = await api.userSettingsControllerEnableSecurityPinV1(
       enableSecurityPinDto: EnableSecurityPinDto(pin: pin),
     );
-    return _mapSettings(response.data!.data);
+    return _mapSettings(
+      requireData(response.data, operation: 'enableSecurityPin').data,
+    );
   }
 
   @override
@@ -68,7 +75,9 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
         newPin: newPin,
       ),
     );
-    return _mapSettings(response.data!.data);
+    return _mapSettings(
+      requireData(response.data, operation: 'changeSecurityPin').data,
+    );
   }
 
   @override
@@ -76,7 +85,9 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
     final response = await api.userSettingsControllerDisableSecurityPinV1(
       disableSecurityPinDto: DisableSecurityPinDto(pin: pin),
     );
-    return _mapSettings(response.data!.data);
+    return _mapSettings(
+      requireData(response.data, operation: 'disableSecurityPin').data,
+    );
   }
 
   UserSettings _mapSettings(UserSettingsDataDto dto) {

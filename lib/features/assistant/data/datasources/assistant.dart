@@ -1,6 +1,7 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/sse.dart';
 
@@ -38,18 +39,21 @@ class AssistantRemoteDataSource {
 
   Future<lucent.AssistantCapabilitiesDataDto> getCapabilities() async {
     final response = await api.assistantControllerGetCapabilitiesV1();
-    return response.data!.data;
+    return requireData(response.data, operation: 'getCapabilities').data;
   }
 
   Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
     final response = await api.assistantControllerGetLatestConversationV1();
-    return response.data?.data;
+    return requireData(response.data, operation: 'getLatestConversation').data;
   }
 
   Future<List<lucent.AssistantConversationSummaryDto>>
   listRecentConversations() async {
     final response = await api.assistantControllerListRecentConversationsV1();
-    return response.data!.data;
+    return requireData(
+      response.data,
+      operation: 'listRecentConversations',
+    ).data;
   }
 
   Future<lucent.AssistantConversationDataDto> openConversation(
@@ -58,7 +62,12 @@ class AssistantRemoteDataSource {
     final response = await api.assistantControllerOpenConversationV1(
       conversationId: conversationId,
     );
-    return response.data!.data!;
+    // The DTO's `data` field is nullable; guard both layers so a
+    // payload-less success response is reported instead of a `!` crash.
+    return requireData(
+      requireData(response.data, operation: 'openConversation').data,
+      operation: 'openConversation',
+    );
   }
 
   Future<bool> clearLatestConversation() async {

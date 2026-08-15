@@ -2,6 +2,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 
@@ -20,7 +21,7 @@ class HealthContextRemoteDataSource {
   Future<HealthContextDataDto> fetchHealthContext() async {
     final response = await _api
         .userHealthContextControllerGetUserHealthContextV1();
-    return response.data!.data;
+    return requireData(response.data, operation: 'fetchHealthContext').data;
   }
 
   /// Calls PATCH /api/v1/user/health-context/profile and returns the parsed DTO.

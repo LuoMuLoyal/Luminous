@@ -48,7 +48,7 @@ class ReportAiSummaryRemoteDataSource {
         endDate: endDate,
       ),
     );
-    return response.data!.data;
+    return requireData(response.data, operation: 'generateSummary').data;
   }
 
   Stream<ReportAiRemoteEvent> generateStream(

@@ -1,4 +1,5 @@
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/domain/repositories/review.dart';
 
@@ -26,14 +27,14 @@ class ReviewRemoteDataSource {
       cursor: cursor,
       limit: limit,
     );
-    return response.data!.data;
+    return requireData(response.data, operation: 'fetchHistory').data;
   }
 
   Future<lucent.EventReviewDataDto> fetchReview(String eventId) async {
     final response = await api.reportsControllerGetEventReviewV1(
       eventId: eventId,
     );
-    return response.data!.data;
+    return requireData(response.data, operation: 'fetchReview').data;
   }
 
   /// [ReviewEventStatus.unknown] 是契约外的防御值，不能发给后端。

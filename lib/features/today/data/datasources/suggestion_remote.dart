@@ -1,4 +1,5 @@
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/suggestion.dart';
 
@@ -26,7 +27,9 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       date: date,
       excludeIds: excludeIds,
     );
-    return _mapBundle(response.data!.data);
+    return _mapBundle(
+      requireData(response.data, operation: 'fetchSuggestions').data,
+    );
   }
 
   // ── Feedback ───────────────────────────────────────────────────────────
@@ -43,7 +46,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
         feedback: _mapFeedbackToDto(feedback),
       ),
     );
-    final data = response.data!.data;
+    final data = requireData(response.data, operation: 'submitFeedback').data;
     return TodaySuggestionFeedbackResult(
       suggestionId: data.suggestionId,
       feedback: _mapFeedbackFromString(data.feedback.value),
@@ -66,7 +69,10 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       id: id,
       acceptLanguage: language,
     );
-    final data = response.data!.data;
+    final data = requireData(
+      response.data,
+      operation: 'explainSuggestion',
+    ).data;
     return TodaySuggestionExplanation(
       suggestionId: data.suggestionId,
       reason: data.reason,
@@ -96,7 +102,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       type: type,
       limit: limit,
     );
-    final data = response.data!.data;
+    final data = requireData(response.data, operation: 'fetchHistory').data;
     return TodaySuggestionHistory(
       items: data.items.map(_mapHistoryItem).toList(growable: false),
       total: data.total.toInt(),

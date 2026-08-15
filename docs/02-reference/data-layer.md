@@ -43,6 +43,11 @@ Widget
 - `lib/core/network/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
   optional reconnect and capped exponential backoff (1s, 2s, 4s, ... clamped to 60s) so raising
   `maxReconnects` later cannot produce unbounded delays.
+- `lib/core/network/envelope.dart`: `LucentEnvelope` + `requireData<T>(data, {operation})` —
+  unwrapping convention for generated-client responses. `EnvelopeInterceptor` already rejects
+  empty bodies and business-failure envelopes; call sites use `requireData(response.data,
+  operation: 'apiName').data` instead of `response.data!.data` so a payload-less success response
+  surfaces as a descriptive `StateError` (with the API name) rather than a bare `!` crash.
 - `lib/core/network/interceptors/auth_interceptor.dart`: guards the `onSessionExpired`
   callback (a throwing callback is logged and the original error still resolves) and logs
   token-refresh failures with endpoint/status before degrading to a session clear.

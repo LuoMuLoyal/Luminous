@@ -33,7 +33,7 @@ class DailyRecordRemoteDataSource {
       page: page,
       pageSize: pageSize,
     );
-    final dto = response.data!.data;
+    final dto = requireData(response.data, operation: 'fetchRecords').data;
     return DailyRecordListData(
       items: dto.items.map(_toItem).toList(growable: false),
       total: dto.total,
@@ -42,7 +42,7 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
     final response = await api.dailyRecordsControllerSummaryV1(date: date);
-    final dto = response.data!.data;
+    final dto = requireData(response.data, operation: 'fetchSummary').data;
     return DailyRecordSummaryData(
       summaries: dto.summaries
           .mapIndexed(
@@ -58,7 +58,7 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordItem> get(String id) async {
     final response = await api.dailyRecordsControllerGetV1(id: id);
-    return _toItem(response.data!.data);
+    return _toItem(requireData(response.data, operation: 'get').data);
   }
 
   Future<DailyRecordAttachmentInput> uploadImage(
@@ -71,7 +71,10 @@ class DailyRecordRemoteDataSource {
         fileName: input.fileName,
       ),
     );
-    final upload = presignResponse.data!.data;
+    final upload = requireData(
+      presignResponse.data,
+      operation: 'uploadImage',
+    ).data;
     final headers = _coerceToStringMap(upload.headers);
 
     await dio.put<Object>(
@@ -111,7 +114,10 @@ class DailyRecordRemoteDataSource {
         occurredAt: occurredAt,
       ),
     );
-    final dto = response.data!.data;
+    final dto = requireData(
+      response.data,
+      operation: 'generateCandidates',
+    ).data;
     return DailyRecordCandidateResult(
       locale: dto.locale,
       generatedAt: dto.generatedAt,

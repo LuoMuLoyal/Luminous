@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
 class ReportRemoteDataSource {
@@ -21,6 +22,6 @@ class ReportRemoteDataSource {
           : null,
       endDate: query.isCustom ? _dateOnlyFormat.format(query.endDate!) : null,
     );
-    return response.data!.data;
+    return requireData(response.data, operation: 'fetchDashboard').data;
   }
 }
