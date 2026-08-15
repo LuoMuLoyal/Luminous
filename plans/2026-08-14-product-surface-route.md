@@ -3,7 +3,8 @@
 Created: 2026-08-14
 Updated: 2026-08-15
 
-> 状态:方向已确认(2026-08-15 技术选型调研论证),未执行。背景源于产品定位讨论:项目从大学竞赛产物转向正式产品。
+> 状态:方向提案待决策(ADR-0012),未执行。背景源于产品定位讨论:项目从大学竞赛产物转向正式产品。
+> 权威决策:`docs/02-reference/adr/0012-desktop-independent-web-product-route.md`(proposed);仅在 ADR 通过后转为执行计划。
 > 相关讨论草稿见 `plans/adr-015-luminous-desktop-deprecation-and-monorepo-evolution.md`(临时草稿,非正式 ADR,2026-08-14 讨论记录);
 > 配套后端计划见 `Lucent/plans/2026-08-14-saas-modules-and-node-monorepo.md`。
 > 本文档为方向性计划;具体执行细节在执行前按任务拆分子计划。
@@ -16,7 +17,7 @@ Updated: 2026-08-15
 3. Web 端承担两个形态:移动 web(Flutter,鸿蒙过渡)与桌面 web(SaaS 工作台,Next.js),
    由各自技术栈维护,不做「电脑浏览器跑 Flutter Web」的尴尬形态。
 
-## 二、核心决策(2026-08-15 修订)
+## 二、候选方案(2026-08-15 修订,待 ADR-0012 决策)
 
 - **Flutter 只做手机 App + 移动 web**:Android/iOS 与 Flutter Web(手机浏览器,鸿蒙过渡)继续维护;
   **Flutter Desktop 与 Flutter Web(PC)冻结**(`git tag desktop-final-frozen` / `web-pc-final-frozen`),
@@ -25,7 +26,7 @@ Updated: 2026-08-15
   技术选型依据:桌面端核心能力是复杂数据表/筛选/趋势图表,web 生态(TanStack Table/AG Grid + ECharts)
   对此碾压 Flutter;WebView 性能顾虑经调研澄清(WebView2=Chromium,瓶颈在数据层工程,不在引擎);
   升级路径不对称(web→Tauri 加壳 UI 零重写,Flutter→web 全量重写)。
-- 手机端是**唯一核心产品表面**:今日 / 记录 / 用药 / 回顾 / 我的 五个 Tab 的产品方向不变。
+- 手机端是**当前核心产品表面**:当前发布结构仍为今日 / 记录 / 用药 / 回顾 / 我的;长期 Tab 结构由 ADR-0012 另行决策。
 - 工作台定位一句话:**手机负责「记」,电脑负责「看和分析」**——历史趋势大屏、就诊资料整理、
   报告生成与预览、批量导入、健康事件深度复盘。
 - 路由边界:Flutter Web 检测屏幕宽度 > 768px 时跳转 SaaS 登录页,手机浏览器 → Flutter Web,

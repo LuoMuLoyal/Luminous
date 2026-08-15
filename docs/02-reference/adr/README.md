@@ -43,10 +43,10 @@ What did we decide to do?
 
 ## Options Considered
 
-| Option | Pros | Cons |
-|--------|------|------|
-| Option A | ... | ... |
-| Option B | ... | ... |
+| Option   | Pros | Cons |
+| -------- | ---- | ---- |
+| Option A | ...  | ...  |
+| Option B | ...  | ...  |
 
 ## Consequences
 
@@ -97,5 +97,9 @@ What becomes easier or harder as a result of this decision?
   - Date: 2026-07-10
 - [0011](0011-event-led-sparse-record-product-loop.md)
   - Title: 事件期优先且允许稀疏记录的产品闭环
-  - Status: accepted
+  - Status: superseded（2026-08-15 被长期健康伙伴方向取代）
   - Date: 2026-08-07
+- [0012](0012-desktop-independent-web-product-route.md)
+  - Title: 桌面端采用独立 Web 产品路线
+  - Status: proposed
+  - Date: 2026-08-15

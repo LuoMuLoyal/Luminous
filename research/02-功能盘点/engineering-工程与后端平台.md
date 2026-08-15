@@ -1,6 +1,6 @@
 # 工程与后端平台 功能盘点与审计
 
-> 范围：`Lucent/src/admin/`、`Lucent/src/mail/`、`Lucent/src/modules/files/`、`Lucent/src/llm-runtime/`、`Lucent/src/common/queue/`、`Lucent/src/common/metrics/`、`Lucent/src/modules/product-events/`、`Lucent/src/modules/testing-support/`、`Lucent/deploy/`；参考 `Lucent/plans/`（2026-08-14-saas-modules-and-node-monorepo、2026-07-24-worker-separation-and-cron-repeatable、2026-08-02-rnacos-runtime-config-tuning）、`Luminous/plans/`（2026-08-14-flutter-3.47-upgrade-plan、2026-08-14-product-surface-route、adr-015）、`Lucent/docs/00-current/TODO.md`、`Lucent/docs/01-reference/architecture.md`。客户端证据取自 `Luminous/lib/core/analytics/` 与 record 特性上传链路。
+> 范围：`Lucent/src/admin/`、`Lucent/src/mail/`、`Lucent/src/modules/files/`、`Lucent/src/llm-runtime/`、`Lucent/src/common/queue/`、`Lucent/src/common/metrics/`、`Lucent/src/modules/product-events/`、`Lucent/src/modules/testing-support/`、`Lucent/deploy/`；参考 `Lucent/plans/`（2026-08-14-saas-modules-and-node-monorepo、2026-07-24-worker-separation-and-cron-repeatable、2026-08-02-rnacos-runtime-config-tuning）、`Luminous/plans/`（2026-08-14-flutter-3.47-upgrade-plan、2026-08-14-product-surface-route）、`Lucent/docs/00-current/TODO.md`、`Lucent/docs/01-reference/architecture.md`。客户端证据取自 `Luminous/lib/core/analytics/` 与 record 特性上传链路。
 >
 > 评估基准：`Luminous/docs/01-product/Product_Vision.md` —— 手机端是当前首发与验证表面，最小伙伴闭环由低负担输入、个人上下文、Today、纵向洞察、上下文 AI 与反馈学习共同组成；桌面/Web 方向待研究。平台/工程能力按"它对 C 端真实用户的支撑作用"与"投入是否与单产品 0.1.0 前阶段匹配"两条线审判。
 
@@ -162,7 +162,7 @@
 - 改造方案：把"升级策略"固化成惯例——stable 发布后不立即跟，等第一个 patch（本次被 flutter/flutter#191095 阻塞恰好验证了该策略）；暂缓清单（drift/flutter_local_notifications 等 breaking 依赖）维持独立排期，不混入 SDK 升级。
 - 优先级：P2
 
-### F-16 桌面 SaaS 差异化路线（Luminous/plans/2026-08-14-product-surface-route.md + adr-015）
+### F-16 桌面 SaaS 差异化路线（待决策提案：ADR-0013；候选执行计划：plans/2026-08-14-product-surface-route.md；依据：docs/01-product/）
 
 - 现状（按计划与最新产品决定评估）：手机端继续承担当前首发；未来 Web 初步考虑 Next.js，桌面初步考虑 Tauri 2 承载同一大屏体验，定位假设是"手机负责低负担记录，电脑负责查看和理解手机端难以看清的纵向信息"。这不是最终技术决策。
 - 实际作用：Web 图表/表格生态与 Tauri 2 复用前端代码具有工程吸引力，但目标场景（趋势大屏、就诊资料整理、批量导入）尚无一手用户证据，不能写成已验证需求。它服务第二产品表面，对最小伙伴闭环的首轮验证不是前置条件。
