@@ -54,6 +54,25 @@ class NotificationSettingsController
   static const _reminderAdvanceMinutesKey =
       PrefKeys.settingsNotificationsReminderAdvanceMinutes;
 
+  /// Every preference key cleared by [reset]. Kept in one list so adding a
+  /// new setting cannot be forgotten in the reset path.
+  static const _resetKeys = <String>[
+    PrefKeys.settingsNotificationsMedicationReminders,
+    PrefKeys.settingsNotificationsHealthAlerts,
+    PrefKeys.settingsNotificationsWeeklySummary,
+    PrefKeys.settingsNotificationsWaterReminders,
+    PrefKeys.settingsNotificationsSleepReminders,
+    PrefKeys.settingsNotificationsSleepReminderEnabled,
+    PrefKeys.settingsNotificationsSleepBedtime,
+    PrefKeys.settingsNotificationsSleepWakeTime,
+    PrefKeys.settingsNotificationsDndEnabled,
+    PrefKeys.settingsNotificationsDndStartTime,
+    PrefKeys.settingsNotificationsDndEndTime,
+    PrefKeys.settingsNotificationsSoundEnabled,
+    PrefKeys.settingsNotificationsVibrationEnabled,
+    PrefKeys.settingsNotificationsReminderAdvanceMinutes,
+  ];
+
   @override
   Future<NotificationSettingsState> build() async {
     final preferences = await SharedPreferences.getInstance();
@@ -318,20 +337,9 @@ class NotificationSettingsController
         dndEndTime: null,
       ),
       update: (preferences) async {
-        await preferences.remove(_medicationKey);
-        await preferences.remove(_healthAlertsKey);
-        await preferences.remove(_weeklySummaryKey);
-        await preferences.remove(_waterRemindersKey);
-        await preferences.remove(_sleepRemindersKey);
-        await preferences.remove(_sleepReminderEnabledKey);
-        await preferences.remove(_sleepBedtimeKey);
-        await preferences.remove(_sleepWakeTimeKey);
-        await preferences.remove(_dndEnabledKey);
-        await preferences.remove(_dndStartTimeKey);
-        await preferences.remove(_dndEndTimeKey);
-        await preferences.remove(_soundEnabledKey);
-        await preferences.remove(_vibrationEnabledKey);
-        await preferences.remove(_reminderAdvanceMinutesKey);
+        for (final key in _resetKeys) {
+          await preferences.remove(key);
+        }
       },
     );
   }
