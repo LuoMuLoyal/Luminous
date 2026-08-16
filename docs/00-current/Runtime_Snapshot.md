@@ -110,7 +110,7 @@ Last updated: 2026-08-16 (本地通知回执与推送回退能力上报)
 - GoRouter 全局 `redirect` 守卫：未认证用户可以访问主 tab 预览页（`/`、`/record`、`/medicine`、`/report`、`/mine`）以及 `/settings`、`/assistant`、`/legal`、`/report/clinic-summary`；其他受保护路由才重定向到 `/login`。已认证用户访问 `/login`、`/register`、`/forgot-password` 时会被送回首页。
 - 受保护 provider 在认证恢复或确认登出时不调用 Lucent。
 - 受保护入口点击在当前页弹出登录提示（`AuthRequiredDialogGate` 带 returnTo）。
-- JPush alias 生命周期跟随认证状态：已授权时复用现有通知权限状态调用 APNs authority，未授权不额外弹窗但仍绑定 alias；登出时删除 alias。Android AppKey 通过 Gradle 参数/环境变量注入，Dart 侧通过 `--dart-define=JPUSH_APP_KEY` 注入；iOS Debug/Profile 使用 APNs development，Release 使用 production entitlement。
+- JPush alias 生命周期跟随认证状态：已授权时复用现有通知权限状态调用 APNs authority，未授权不额外弹窗但仍绑定 alias；登出时删除 alias。Android AppKey 通过 Gradle 参数/环境变量注入（`android/app/build.gradle.kts` 读 `-PJPUSH_APP_KEY` 或环境变量，经 manifest placeholders 填 `JPUSH_APPKEY`/`JPUSH_CHANNEL` meta-data），Dart 侧通过 `--dart-define=JPUSH_APP_KEY` 注入；Android 发布构建须同时提供两者（iOS 仅需 Dart define），缺省时 JPush 全链路静默禁用。iOS Debug/Profile 使用 APNs development，Release 使用 production entitlement。
 - 提醒调度能力经 `PUT /api/v1/user/reminder-deliveries/local-capability` 上报（`active`/`unavailable`/`disabled`，服务端缓存 TTL 14 天，未登录不上报）；本地回执经 `POST /api/v1/user/reminder-deliveries/receipts` 幂等写入。后台仅在本地不可达/未确认时发 JPush，站内信只保留记录。
 
 ## 类型安全路由

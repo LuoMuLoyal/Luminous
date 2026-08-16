@@ -44,6 +44,11 @@ Mobile WeChat SDK builds need:
 - iOS native URL Scheme build setting: copy `ios/Flutter/Wechat.example.xcconfig` to `ios/Flutter/Wechat.xcconfig` and set the same `WECHAT_MOBILE_APP_ID`
 - Matching Android signature/package and iOS URL Scheme/Universal Link setup in the WeChat Open Platform console and native projects. iOS Universal Link still requires real Associated Domains configuration in the Apple developer account and release signing setup.
 
+Mobile JPush builds need:
+
+- Dart define `--dart-define=JPUSH_APP_KEY=<appkey>` for Android/iOS builds (read via `String.fromEnvironment` in `lib/core/push/jpush_gateway.dart`); without it JPush stays silently disabled.
+- Android native side additionally needs the gradle property `-PJPUSH_APP_KEY=<appkey>` (or `JPUSH_APP_KEY` environment variable) so `android/app/build.gradle.kts` can fill the `JPUSH_APPKEY` / `JPUSH_CHANNEL` manifest placeholders. Never write a real AppKey into the repo — inject at build time.
+
 ## Commands
 
 ```bash
