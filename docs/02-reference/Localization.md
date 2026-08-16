@@ -332,3 +332,14 @@ flutter test
   替换旧的「近期按时服药占比 / On-time doses over recent period」。
 - 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-16 Medicine dose check-in undo (F-3)
+
+- Added `medicineDoseUndoAction`（zh: 撤销 / en: Undo）与 `medicineDoseUndoneToast`
+  （zh: 已撤销本次打卡 / en: Dose check-in undone）to `lib/l10n/src/medicine_zh.arb` /
+  `medicine_en.arb`。
+- Home page dose check-in success toast now carries a「撤销 / Undo」action
+  (`Toast.showWithAction`)；undo 反向 `mark(status: planned)` 成功后 toast 显示
+  `medicineDoseUndoneToast`。
+- 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。

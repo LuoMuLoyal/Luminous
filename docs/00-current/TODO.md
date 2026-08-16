@@ -61,6 +61,12 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ## 审查暂缓项
 
+- F-3 打卡撤销审查 P2 清单（2026-08-16 任务 5 审查，P2-1~P2-4，不阻塞）
+  - P2-1 `lib/features/medicine/presentation/pages/page.dart` `_undoDose` 首行缺 `if (!context.mounted) return;`（1.8s toast 存活期间页面销毁时概率极低的空安全风险）。验收：与 `_markDose` 一致在函数入口先做 mounted 守卫。
+  - P2-2 `core/feedback/toast.dart` 同消息去重分支不更新 action 回调（连续打卡两槽位时第二次撤销指向第一槽位闭包；已文档化、反向 planned 幂等）。验收：可接受或为 Toast 增加重放时替换 action 能力。
+  - P2-3 en 文案 `medicineDoseUndoneToast`（"Dose check-in undone"）缺句末句点，与相邻 "Dose log saved." 风格不一致。验收：补句点（zh/en 分片同步 merge + gen-l10n）。
+  - P2-4 测试注记：撤销用例未断言槽位视觉回 pending（fixture 恒 pending）；emit→刷新链路已在代码级核实。验收：可选补一条断言。
+
 - F-14 药品详情页审查 P2 清单（2026-08-16 任务 2 审查，P2-1~P2-6）
   - P2-1 routing.md 缺新路由：`docs/02-reference/routing.md` 路由树「/medicine/search…」行、File Structure 注释行、Public Preview 节未登记 `/medicine/detail/:source/:id`（doc-map app-shell 规则 docs_any_of 持续告警，pre-commit 不阻断）
   - P2-2 详情路由公开性：`lib/app/router.dart` 未把 `/medicine/detail` 加入 `_publicRoutePrefixes`；待 scan-search 接线「查看说明书」时决定公开（对齐后端 @Public）或保持 auth 门控，并同步 routing.md

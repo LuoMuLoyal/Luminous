@@ -271,6 +271,8 @@
   "medicineDoseActionSkipped": "Skipped",
   "medicineDoseActionSavedToast": "Dose log saved.",
   "medicineDoseActionFailedToast": "Dose log was not saved.",
+  "medicineDoseUndoAction": "Undo",
+  "medicineDoseUndoneToast": "Dose check-in undone",
   "medicineDoseNotSet": "Dose not set",
   "medicineScheduleNotSet": "Reminder not set",
   "medicineReminderNewTitle": "New reminder",

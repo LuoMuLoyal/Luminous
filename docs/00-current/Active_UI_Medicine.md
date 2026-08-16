@@ -25,6 +25,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - slot-aware 打卡链路："已服用 / 跳过"调用 Lucent `POST /user/medicine-dose-logs/mark`。
 - Record 页快速用药入口复用同一 dose log 链路：当前药箱决定可记录药品，今日提醒计划决定附近 pending slot 默认选择，成功后发射 `DataChangeTopic.doseLogs` 让 Medicine 主页刷新。
 - 快速用药撤销使用 dose log 真实回滚：无旧 log 时删除刚创建的 dose log；已有 log 时恢复旧 status。
+- 主页打卡成功 Toast 带「撤销」action，反向 `mark(status: planned)` 幂等恢复原状态。
 - 同一种药存在多个 reminder slot 时，每次只确认当前 pending 槽位，不再按药品整天聚合覆盖。
 - Hero 的"今日剂次 / 依从率 / 下一剂"按 slot 统计：依从率分母 = 已到期槽位（taken / skipped / overdue 三类）、分子 = taken（skipped 计入分母不计分子）、未到期槽位不计入分母、无到期槽位显示 `--`；下一剂 = 下一**未到期** pending 槽位；`metricDosesToday` 为 F-17 标注死字段，继续填“今日计划槽位总数”。
 - Lucent 的稀疏服药合同已保持 reminder slot 独立：`planned` 消费为“待确认”，`skipped` 与“超时未确认”不混成漏服；无 reminder 的临时记录不进入依从率分母。Flutter observed metric 字段待后续合同同步阶段接入（P2 后端仍待做）；前端 P1 已在 mapper 层按到期三态口径对齐。

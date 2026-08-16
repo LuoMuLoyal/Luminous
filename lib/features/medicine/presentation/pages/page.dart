@@ -14,6 +14,7 @@ import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
+import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
@@ -216,10 +217,46 @@ Future<void> _markDose(
         );
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
     if (context.mounted) {
-      unawaited(Toast.show(context, l10n.medicineDoseActionSavedToast));
+      unawaited(
+        Toast.showWithAction(
+          context,
+          l10n.medicineDoseActionSavedToast,
+          l10n.medicineDoseUndoAction,
+          () => unawaited(_undoDose(context, ref, request, dateStr)),
+        ),
+      );
     }
   } catch (error) {
     ref.read(talkerProvider).error('_markDose: failed: $error');
+    if (context.mounted) {
+      unawaited(Toast.show(context, l10n.medicineDoseActionFailedToast));
+    }
+  }
+}
+
+Future<void> _undoDose(
+  BuildContext context,
+  WidgetRef ref,
+  MedicineDoseMarkRequest request,
+  String dateStr,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  try {
+    await ref
+        .read(cachedDoseLogDataSourceProvider)
+        .mark(
+          currentMedicineId: request.currentMedicineId,
+          reminderId: request.reminderId,
+          scheduledTime: request.scheduledTime,
+          status: DoseLogStatus.planned.name,
+          date: dateStr,
+        );
+    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
+    if (context.mounted) {
+      unawaited(Toast.show(context, l10n.medicineDoseUndoneToast));
+    }
+  } catch (error) {
+    ref.read(talkerProvider).error('_undoDose: failed: $error');
     if (context.mounted) {
       unawaited(Toast.show(context, l10n.medicineDoseActionFailedToast));
     }

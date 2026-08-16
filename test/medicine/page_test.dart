@@ -1,15 +1,21 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/core/design/spacing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
@@ -855,6 +861,117 @@ void main() {
       expect(find.byType(SignInHintBanner), findsNothing);
     },
   );
+
+  testWidgets('home dose check-in marks taken and shows undo action', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    final fake = await _pumpDoseMarkPage(tester, db: db);
+
+    final button = find.byKey(const Key('medicine-plan-dose-action-taken'));
+    await tester.scrollUntilVisible(
+      button,
+      240,
+      scrollable: _medicineMobileScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(button);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(fake.markCalls, hasLength(1));
+    expect(fake.markCalls.single.currentMedicineId, 'med-1');
+    expect(fake.markCalls.single.reminderId, 'rem-1');
+    expect(fake.markCalls.single.scheduledTime, '08:00');
+    expect(fake.markCalls.single.status, 'taken');
+    expect(find.text(l10n.medicineDoseActionSavedToast), findsOneWidget);
+    expect(find.text(l10n.medicineDoseUndoAction), findsOneWidget);
+
+    // Drain the toast auto-dismiss timer.
+    await tester.pump(const Duration(milliseconds: 1800));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('home dose check-in undo reverts to planned', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    final fake = await _pumpDoseMarkPage(tester, db: db);
+
+    final button = find.byKey(const Key('medicine-plan-dose-action-taken'));
+    await tester.scrollUntilVisible(
+      button,
+      240,
+      scrollable: _medicineMobileScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(button);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text(l10n.medicineDoseUndoAction), findsOneWidget);
+    await tester.tap(find.text(l10n.medicineDoseUndoAction));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(fake.markCalls, hasLength(2));
+    expect(fake.markCalls[1].currentMedicineId, 'med-1');
+    expect(fake.markCalls[1].reminderId, 'rem-1');
+    expect(fake.markCalls[1].scheduledTime, '08:00');
+    expect(fake.markCalls[1].status, 'planned');
+    expect(find.text(l10n.medicineDoseUndoneToast), findsOneWidget);
+
+    // Drain the toast auto-dismiss timer.
+    await tester.pump(const Duration(milliseconds: 1800));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('home dose check-in mark failure shows failed toast', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    final fake = await _pumpDoseMarkPage(tester, db: db);
+    fake.markShouldFail = true;
+
+    final button = find.byKey(const Key('medicine-plan-dose-action-taken'));
+    await tester.scrollUntilVisible(
+      button,
+      240,
+      scrollable: _medicineMobileScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(button);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text(l10n.medicineDoseActionFailedToast), findsOneWidget);
+
+    // Drain the toast auto-dismiss timer.
+    await tester.pump(const Duration(milliseconds: 1800));
+    await tester.pumpAndSettle();
+  });
 }
 
 class _EmptyPreviewWorkspaceRepository implements MedicineWorkspaceRepository {
@@ -1137,6 +1254,130 @@ const _riskResult = MedicineRiskCheckResult(
     ),
   ],
 );
+
+// 单药单槽 08:00 pending（reminderId/scheduledTime 齐全），用于验证主页打卡
+// mark 参数传递与撤销反向 mark(planned)。
+const _singlePendingSlotWorkspace = MedicineWorkspace(
+  hero: MedicineHero(
+    metricDosesToday: '1',
+    metricAdherence: '--',
+    metricNextDose: '08:00',
+  ),
+  quickActions: <MedicineQuickAction>[],
+  plan: MedicinePlanSurface(
+    items: <MedicinePlanItem>[
+      MedicinePlanItem(
+        color: SemanticColor.primary,
+        nameKey: MedicineCopyKey.genericName,
+        dosageKey: MedicineCopyKey.genericDosage,
+        scheduleKey: MedicineCopyKey.genericSchedule,
+        rawName: 'Metformin',
+        rawDosage: '500 mg',
+        rawSchedule: 'Once daily',
+        slots: <MedicineDoseSlot>[
+          MedicineDoseSlot(
+            reminderId: 'rem-1',
+            scheduledTime: '08:00',
+            rawTime: '08:00',
+            statusKey: MedicineCopyKey.doseStatusPending,
+            status: MedicineDoseStatus.pending,
+          ),
+        ],
+        stateKey: MedicineCopyKey.doseStatusPending,
+        stateColor: SemanticColor.primary,
+        todayStatus: MedicineDoseStatus.pending,
+        currentMedicineId: 'med-1',
+      ),
+    ],
+  ),
+  alerts: <MedicineAlert>[],
+  promisePoints: <MedicinePromisePoint>[],
+);
+
+Future<_FakeCachedDoseLogDataSource> _pumpDoseMarkPage(
+  WidgetTester tester, {
+  required AppDatabase db,
+}) async {
+  final fake = _FakeCachedDoseLogDataSource(db: db);
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+        notificationUnreadCountProvider.overrideWith((ref) async => 0),
+        medicineWorkspaceRepositoryProvider.overrideWithValue(
+          const _StaticMedicineWorkspaceRepository(_singlePendingSlotWorkspace),
+        ),
+        cachedDoseLogDataSourceProvider.overrideWith((ref) => fake),
+      ],
+      child: const TestForuiApp(showToaster: true, home: MedicinePage()),
+    ),
+  );
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 400));
+  return fake;
+}
+
+class _FakeCachedDoseLogDataSource extends CachedDoseLogDataSource {
+  _FakeCachedDoseLogDataSource({required AppDatabase db})
+    : super(
+        remote: DoseLogRemoteDataSource(
+          api: MedicineDoseLogsApi(Dio()),
+          dio: Dio(),
+        ),
+        dao: db.medicineDoseLogDao,
+      );
+
+  final markCalls = <_MarkCall>[];
+  bool markShouldFail = false;
+
+  @override
+  Future<DoseLogItem> mark({
+    required String currentMedicineId,
+    required String status,
+    required String date,
+    String? reminderId,
+    String? scheduledTime,
+  }) async {
+    markCalls.add(
+      _MarkCall(
+        currentMedicineId: currentMedicineId,
+        status: status,
+        date: date,
+        reminderId: reminderId,
+        scheduledTime: scheduledTime,
+      ),
+    );
+    if (markShouldFail) {
+      throw Exception('mark failed');
+    }
+    return DoseLogItem(
+      id: 'marked-${markCalls.length}',
+      currentMedicineId: currentMedicineId,
+      reminderId: reminderId,
+      status: DoseLogStatus.taken,
+      scheduledFor: date,
+      scheduledTime: scheduledTime,
+      createdAt: '2026-07-10T00:00:00.000Z',
+      updatedAt: '2026-07-10T00:00:00.000Z',
+    );
+  }
+}
+
+class _MarkCall {
+  const _MarkCall({
+    required this.currentMedicineId,
+    required this.status,
+    required this.date,
+    this.reminderId,
+    this.scheduledTime,
+  });
+
+  final String currentMedicineId;
+  final String status;
+  final String date;
+  final String? reminderId;
+  final String? scheduledTime;
+}
 
 Finder _medicineMobileScrollable() {
   return find

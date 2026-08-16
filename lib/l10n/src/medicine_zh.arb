@@ -278,6 +278,8 @@
   "medicineDoseActionSkipped": "跳过",
   "medicineDoseActionSavedToast": "用药打卡已保存",
   "medicineDoseActionFailedToast": "用药打卡未保存",
+  "medicineDoseUndoAction": "撤销",
+  "medicineDoseUndoneToast": "已撤销本次打卡",
   "medicineDoseNotSet": "剂量未设置",
   "medicineScheduleNotSet": "提醒未设置",
   "medicineReminderNewTitle": "新建提醒",
