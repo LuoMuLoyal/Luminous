@@ -149,7 +149,10 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       ),
       quickActions: _defaultQuickActions(),
       plan: MedicinePlanSurface(items: planItems),
+      // TODO(archive): 历史占位字段，不再接入主路径——告警由 medicineAlertsFromRiskCheck
+      // 从 riskCheckRecords 派生；无渲染消费方，保留为兼容，避免误用。
       alerts: const [],
+      // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
       promisePoints: _defaultPromisePoints(),
       riskCheckRecords: riskRecords,
     );
@@ -205,6 +208,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     ),
   ];
 
+  // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
   static List<MedicinePromisePoint> _defaultPromisePoints() => const [
     MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointBoundary),
     MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointSpecialGroup),

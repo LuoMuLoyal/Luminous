@@ -50,18 +50,6 @@ Created: 2026-08-16
 
 ## 三、改造项(按优先级分组)
 
-### 3.1 P0（0.1.0 前）
-
-**F-13 用药安全摘要卡告警聚合(并入 F-17 `alerts` 恒空问题,不重复立项)**
-
-- 现状:`mobile_safety.dart` 消费 `workspace.riskCheckRecords.bestRecord` 渲染风险等级/三项指标/告警芯片,但告警数据源
-  `workspace.alerts` 恒为 `const []`(`lucent_workspace.dart:152`),告警芯片永远不展示。
-- 方案:告警改由风险检查记录实时聚合——复用已有派生函数 `medicineAlertsFromRiskCheck` 从 `riskCheckRecords` 取数,
-  告警芯片并入风险等级/指标同卡呈现;删除对 `alerts` 恒空字段的依赖。
-- 涉及:`lib/features/medicine/presentation/widgets/mobile_safety.dart`、`lib/features/medicine/data/repositories/lucent_workspace.dart`。
-- 前后端分工:纯前端改造,后端无改动。
-- 依赖:无。
-
 ### 3.2 P1（0.1.0 前）
 
 **F-14 移动端药品详情/说明书页(新建;本节为 scan-search 计划"识别结果卡/查看说明书"的落点)**
@@ -125,16 +113,6 @@ Created: 2026-08-16
 - 现状:`_mapFindingType` 把未知 finding 类型兜底映射到 `specialGroup`(特殊人群),语义误导。
 - 方案:unknown 兜底改为隐藏该条而非误标类别。纯前端。
 
-**F-16 / F-17 / F-18 死代码归档标注(动作仅为:保留代码与注释 + 标注不接入主路径，无实质改造，0.1.0 前)**
-
-- F-16 safety tips:后端 `GET /medicines/safety-tips` + 客户端 `SafetyTipsRemoteDataSource` / `medicineSafetyTipListProvider`
-  无 UI 消费方——接口与 provider 代码及注释保留,标注 TODO;未来若做"随机安全贴士"应在药品详情页内以审核内容卡片重做。
-- F-17 workspace 死字段:`promisePoints`(含 4 个 `promisePoint*` MedicineCopyKey 及 l10n 键)、`hero.metricDosesToday`
-  保留并标注 TODO,避免误用;`alerts` 恒空问题已并入 F-13(见 3.1),此处不再清理。
-- F-18 `DoseLogStatus.missed`:前后端枚举保留为历史兼容,标注"不接入主路径;漏服状态由 `overdueUnconfirmed` 派生,
-  未来若落漏服标记应在后端 collector 侧产出";`log_panels.dart` 的 missed 分支一并标注。
-- 动作轻量,可与 P0 项顺手一起完成。
-
 **F-19 处方导入入口改造（0.1.0 前；处方 OCR 为 0.1.0 后）**
 
 - 现状:快捷操作/扫码页"处方导入"入口点击仅 Toast 提示延后(诚实占位,`Mock_Or_Deferred` 有明确标记)。
@@ -156,7 +134,6 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. P0:F-13 告警聚合改造（0.1.0 前，顺手完成 F-16/17/18 归档标注）。
 2. P1:F-14 详情页（0.1.0 前，解锁 scan-search 断链修复）→ F-5 前端口径统一 → F-8 提醒文案 i18n。
 3. P2:F-3、F-11、F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
 

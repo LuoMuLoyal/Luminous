@@ -511,6 +511,101 @@ void main() {
     },
   );
 
+  testWidgets('Medicine safety summary renders derived alert chips', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            _StaticMedicineWorkspaceRepository(_alertsWorkspace),
+          ),
+        ],
+        child: const TestForuiApp(home: MedicinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final safetySection = find.byKey(const Key('medicine-safety-summary'));
+    await tester.scrollUntilVisible(
+      safetySection,
+      240,
+      scrollable: _medicineMobileScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(
+      find.descendant(
+        of: safetySection,
+        matching: find.text(l10n.medicineRiskCheckFindingTitleInteraction),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: safetySection,
+        matching: find.text(l10n.medicineRiskCheckFindingTitleAllergy),
+      ),
+      findsOneWidget,
+    );
+    // 2 findings + 1 coverage = 3 条告警，仅前 2 条为芯片，溢出显示 +1。
+    expect(
+      find.descendant(of: safetySection, matching: find.text('+1')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Medicine safety summary shows empty card without risk record', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const _StaticMedicineWorkspaceRepository(_completedWorkspace),
+          ),
+        ],
+        child: const TestForuiApp(home: MedicinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final safetySection = find.byKey(const Key('medicine-safety-summary'));
+    await tester.scrollUntilVisible(
+      safetySection,
+      240,
+      scrollable: _medicineMobileScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text(l10n.medicineSafetyPanelEmptyTitle), findsOneWidget);
+    expect(find.text(l10n.medicineRiskCheckAllClearAlertTitle), findsNothing);
+  });
+
   testWidgets('Medicine error state shows MedicineErrorView with retry', (
     tester,
   ) async {
@@ -858,6 +953,79 @@ final _coverageGapWorkspace = MedicineWorkspace(
       ),
       riskScore: 0,
       riskLevel: MedicineRiskLevel.safe,
+      stale: false,
+      createdAt: DateTime(2026, 7, 27, 10, 0),
+      updatedAt: DateTime(2026, 7, 27, 10, 0),
+    ),
+  ),
+);
+
+// 2 findings (interaction high + allergy medium) + 1 coverage issue →
+// medicineAlertsFromRiskCheck 派生 3 条告警，用于验证主页安全卡告警芯片。
+final _alertsWorkspace = MedicineWorkspace(
+  hero: const MedicineHero(
+    metricDosesToday: '1',
+    metricAdherence: '--',
+    metricNextDose: '--',
+  ),
+  quickActions: <MedicineQuickAction>[],
+  plan: const MedicinePlanSurface(
+    items: <MedicinePlanItem>[
+      MedicinePlanItem(
+        color: SemanticColor.primary,
+        nameKey: MedicineCopyKey.genericName,
+        dosageKey: MedicineCopyKey.genericDosage,
+        scheduleKey: MedicineCopyKey.genericSchedule,
+        rawName: 'Metformin',
+        rawDosage: '0.5 g',
+        rawSchedule: 'Once daily',
+        slots: <MedicineDoseSlot>[
+          MedicineDoseSlot(
+            rawTime: '08:00',
+            statusKey: MedicineCopyKey.doseStatusPending,
+            status: MedicineDoseStatus.pending,
+          ),
+        ],
+        stateKey: MedicineCopyKey.doseStatusPending,
+        stateColor: SemanticColor.primary,
+        todayStatus: MedicineDoseStatus.pending,
+        currentMedicineId: 'med-1',
+      ),
+    ],
+  ),
+  alerts: <MedicineAlert>[],
+  promisePoints: <MedicinePromisePoint>[],
+  riskCheckRecords: MedicineRiskCheckRecords(
+    staticRecord: MedicineRiskCheckRecord(
+      checkType: MedicineRiskCheckType.static_,
+      result: const MedicineRiskCheckResult(
+        currentMedicineCount: 2,
+        checkedMedicineCount: 2,
+        findings: <MedicineRiskFinding>[
+          MedicineRiskFinding(
+            type: MedicineRiskFindingType.interaction,
+            severity: MedicineRiskSeverity.high,
+            context: MedicineRiskFindingContext.none,
+            primaryMedicineName: '布洛芬',
+            secondaryMedicineName: '华法林',
+          ),
+          MedicineRiskFinding(
+            type: MedicineRiskFindingType.allergy,
+            severity: MedicineRiskSeverity.medium,
+            context: MedicineRiskFindingContext.none,
+            primaryMedicineName: '阿莫西林',
+            relatedLabel: '青霉素',
+          ),
+        ],
+        coverageIssues: <MedicineRiskCoverageIssue>[
+          MedicineRiskCoverageIssue(
+            medicineName: '手动录入药品',
+            reason: MedicineRiskCoverageReason.manualEntry,
+          ),
+        ],
+      ),
+      riskScore: 30,
+      riskLevel: MedicineRiskLevel.risk,
       stale: false,
       createdAt: DateTime(2026, 7, 27, 10, 0),
       updatedAt: DateTime(2026, 7, 27, 10, 0),

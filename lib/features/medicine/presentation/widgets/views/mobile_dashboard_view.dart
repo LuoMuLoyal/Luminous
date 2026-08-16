@@ -42,10 +42,12 @@ class MedicineMobileDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final nextDose = _nextDoseFor(workspace);
+    // 告警由风险检查记录实时派生；bestRecord 为 null 时传可空结果，
+    // medicineAlertsFromRiskCheck 对 null 已返回 const []，避免用空结果伪造
+    // 「全部通过」告警（未知不得映射为 0）。
     final alerts = medicineAlertsFromRiskCheck(
       l10n,
-      workspace.riskCheckRecords?.bestRecord?.result ??
-          const MedicineRiskCheckResult(),
+      workspace.riskCheckRecords?.bestRecord?.result,
     );
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;

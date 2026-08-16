@@ -61,6 +61,12 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ## 审查暂缓项
 
+- medicine 改造计划文件目标行与执行顺序编号清理（2026-08-16 任务 1 审查 P2-1/P2-2）
+  - 来源任务：`plans/2026-08-16-medicine-remediation-plan.md` 任务 1（F-13 + F-16/17/18 归档标注）审查
+  - 位置：同计划文件「一、目标与范围」目标 #3 行与「五、本计划内执行顺序」条目编号
+  - 问题：目标 #3（F-13）已完成但目标行未删；执行顺序删除第 1 条后编号从「2.」起编
+  - 验收：该计划全部任务完成、按 AGENTS.md 删除整个计划文件时自然消除；若计划文件仍保留，则改写目标 #3/#4 并将执行顺序重排为连续编号
+
 - 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/presentation/pages/detail.dart`（853 行）、`record/presentation/widgets/sections/quick_entry_panel.dart`（565 行）、`record/presentation/pages/edit.dart`（511 行）、`report/presentation/pages/page.dart`（438 行）、`settings/presentation/pages/page.dart`（184 行）
 - 剩余约 80 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 

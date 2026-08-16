@@ -247,18 +247,21 @@ class _TodayLogRow extends StatelessWidget {
     final color = switch (log.status) {
       DoseLogStatus.taken => SemanticColor.success,
       DoseLogStatus.skipped => SemanticColor.neutral,
+      // missed 为防御性分支，主路径不产生该状态。
       DoseLogStatus.missed => SemanticColor.destructive,
       DoseLogStatus.planned => SemanticColor.warning,
     };
     final icon = switch (log.status) {
       DoseLogStatus.taken => SemanticIcons.statusSuccess,
       DoseLogStatus.skipped => SemanticIcons.statusUnavailable,
+      // missed 为防御性分支，主路径不产生该状态。
       DoseLogStatus.missed => SemanticIcons.notificationFailed,
       DoseLogStatus.planned => SemanticIcons.doseSlot,
     };
     final label = switch (log.status) {
       DoseLogStatus.taken => l10n.medicineDoseStatusTaken,
       DoseLogStatus.skipped => l10n.medicineDoseStatusSkipped,
+      // missed 为防御性分支，主路径不产生该状态。
       DoseLogStatus.missed => l10n.medicineReminderMissedStatus,
       DoseLogStatus.planned => l10n.medicineRecordScheduledStatus,
     };

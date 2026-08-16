@@ -54,6 +54,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 空状态为盾牌图标 + "暂无风险数据" 文案，整体可点击跳转。
 - 红旗组件（`risk_red_flag.dart`）重构为 `RiskRedFlagItem` + `RiskRedFlagSection`，移除 Container 嵌套，改为左侧 4px destructive 色条 + `DecoratedBox(destructive.subtle)` 单容器。
 - 红旗升级使用显式线下就医操作文案：`severeAllergy` → 立即拨打急救电话；`informationGap` → 尽快线下核实。
+- 告警芯片由 `medicineAlertsFromRiskCheck` 从 `riskCheckRecords` 派生（bestRecord 为 null 时不伪造告警）；`workspace.alerts` / `promisePoints` / `metricDosesToday` 为标注 TODO 的历史占位字段，safety tips 链路为标注 TODO 的死代码，`DoseLogStatus.missed` 为标注不接入主路径的历史兼容值。
 
 ## 风险检查边界
 

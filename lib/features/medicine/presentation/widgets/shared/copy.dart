@@ -70,6 +70,7 @@ String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
       l10n.medicineAlertSpecialGroupSafetyDetail,
     MedicineCopyKey.alertSpecialGroupSafetyStatus =>
       l10n.medicineAlertSpecialGroupSafetyStatus,
+    // promisePoint* 文案无 UI 消费方（死字段保留）。
     MedicineCopyKey.promisePointBoundary => l10n.medicinePromisePointBoundary,
     MedicineCopyKey.promisePointSpecialGroup =>
       l10n.medicinePromisePointSpecialGroup,

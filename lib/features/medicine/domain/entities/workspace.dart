@@ -11,7 +11,10 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
     required MedicineHero hero,
     required List<MedicineQuickAction> quickActions,
     required MedicinePlanSurface plan,
+    // TODO(archive): 历史占位字段，不再接入主路径——告警由 medicineAlertsFromRiskCheck
+    // 从 riskCheckRecords 派生；无渲染消费方，保留为兼容，避免误用。
     required List<MedicineAlert> alerts,
+    // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
     required List<MedicinePromisePoint> promisePoints,
     MedicineRiskCheckRecords? riskCheckRecords,
   }) = _MedicineWorkspace;
@@ -40,6 +43,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
 @freezed
 abstract class MedicineHero with _$MedicineHero {
   const factory MedicineHero({
+    // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
     required String metricDosesToday,
     required String metricAdherence,
     required String metricNextDose,
@@ -116,6 +120,7 @@ abstract class MedicineAlert with _$MedicineAlert {
   }) = _MedicineAlert;
 }
 
+// TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
 @freezed
 abstract class MedicinePromisePoint with _$MedicinePromisePoint {
   const factory MedicinePromisePoint({required MedicineCopyKey copyKey}) =
@@ -164,6 +169,7 @@ enum MedicineCopyKey {
   alertSpecialGroupSafetyBody,
   alertSpecialGroupSafetyDetail,
   alertSpecialGroupSafetyStatus,
+  // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
   promisePointBoundary,
   promisePointSpecialGroup,
   promisePointPrivacy,
