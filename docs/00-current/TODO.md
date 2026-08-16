@@ -78,7 +78,6 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 ## F-3 扫码出口审查 P2（2026-08-16，非阻塞）
 
 - 扫码结果 sheet 打开后状态冻结（`scan/presentation/pages/barcode_scanner.dart` `_ScanResultSheet` 为 StatelessWidget，`boxItem` 打开时捕获）：加入成功后仍显示「加入药箱」且可重复点击（可能重复建档，服务端幂等性未知）；快照未加载完成时打开会把已加入误显示为未加入。验收：sheet 内改为 watch `healthContextSnapshotProvider` 实时翻「已加入」态，或成功后本地置标志禁用/关闭。
-- `plans/2026-08-16-scan-search-remediation-plan.md` F-6/F-1 等节及「以本文为准」的闭环描述仍引用 `search/presentation/pages/page.dart` 旧行号（闭环已迁至 `search/presentation/widgets/shared/add_to_box.dart`）。验收：阶段 C 清理计划文件时同步更新引用。
 - `test/scan/barcode_scanner_page_test.dart` 的 `List overrides = const []` 未类型化。验收：改为 `List<Override>`。
 
 ## 审查暂缓项

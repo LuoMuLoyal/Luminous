@@ -53,7 +53,7 @@ YYYY-MM-DD-short-task-name.md
 2. [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md)
    — 用药:本批任务全部完成(详情页/i18n/口径 P1/P2 收尾);剩余 F-5 P2 后端统计对象(0.1.0 前)与 F-2 停用/归档(0.1.0 后)
 3. [`2026-08-16-scan-search-remediation-plan.md`](2026-08-16-scan-search-remediation-plan.md)
-   — 扫码/搜索:P0 识别出口断链修复、建档闭环
+   — 扫码/搜索:本批任务全部完成(识别出口接建档闭环、预检即时化、去假置信度、候选去重合并);剩余 F-2 条码等值匹配(0.1.0 后)
 4. [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md)
    — 今日建议:AI 摘要卡接线、建议反馈与升级通知执行器
 5. [`2026-08-16-assistant-remediation-plan.md`](2026-08-16-assistant-remediation-plan.md)

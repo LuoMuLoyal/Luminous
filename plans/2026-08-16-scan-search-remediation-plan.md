@@ -10,7 +10,7 @@ Created: 2026-08-16
 
 范围:`Luminous/lib/features/scan/`、`Luminous/lib/features/search/`;后端对照 `Lucent/src/modules/medicines/`、`Lucent/src/modules/files/`。
 
-核心问题:三种识别方式(条码/端侧 OCR/云端 AI)的识别层全部真实,但出口整体断链——都把药品库产品 id 当药箱记录 id 跳「提醒详情」,必然落「药品不存在」错误页。本计划的主线是把识别出口接到 F-9 已验证的建档闭环上,并修掉假置信度、预检话术失真等配套问题。识别层本身(相机、OCR 引擎、LLM 链路、双源搜索)不重做。
+已实施完毕（2026-08-16，见 `docs/03-logs/migration-log/2026-08-16.md`）：识别出口断链修复、假置信度移除、预检即时化与候选去重合并。剩余 F-2 移入 0.1.0 后 TODO（见 `docs/00-current/TODO.md`）。识别层本身(相机、OCR 引擎、LLM 链路、双源搜索)未重做。
 
 ## 二、保留不动(清单)
 
@@ -19,16 +19,6 @@ Created: 2026-08-16
 - 后端 `recognize/async` + `recognize/status/:jobId` 队列端点:无消费方但保留为未来能力,不删除、不留双轨；接入另建任务评估。
 
 ## 三、改造项(按优先级分组)
-
-### P0（0.1.0 前）
-
-#### F-9 加入药箱闭环(本计划拥有并写全;预检即时化)
-
-- 现状(已验证的闭环,F-3/F-4/F-6 的统一落点):搜索结果卡「加入药箱」(`search/presentation/widgets/shared/results.dart:106-109`)→ 未登录弹登录引导(`search/presentation/pages/page.dart:68-80`)→ 拉最近一次风险检查记录,有 findings/coverageIssues 时弹「添加前风险检查」确认框(`page.dart:96-110`,弹窗 `search/presentation/widgets/shared/medicine_add_precheck_dialog.dart`)→ `createCurrentMedicine`(`page.dart:112`)→ 发 DataChangeBus → Toast 带「去设置提醒」动作直达 `/medicine/reminders/new?medicineId=<药箱记录id>`(`page.dart:117-131`);已加入的按 `source:sourceRefId` 判重显示「已加入」禁用态(`page.dart:35-41`)。
-- 失真点:弹窗标题「添加前风险检查」(`lib/l10n/src/medicine_zh.arb:466`),但内容来自添加**之前**对现有药箱跑的最新一次检查,新加的药不在检查范围内——数据是真的,范围声明是假的。
-- 改造方案(以逐功能分析为准,话术修改只是保底):**首选**——预检不消费历史检查记录,改为就「现有药箱 + 待加药品」即时调后端 `POST /medicines/risk-check`(端点已存在)跑一次静态检查再展示;**保底**(即时检查入参形态不支持时)——弹窗标题/描述改为「当前药箱已知的检查提示」并明确新药品未纳入本次检查(unknown 不冒充已检查)。
-- 前后端分工:前端改预检触发逻辑与弹窗文案;后端确认/扩展 `risk-check` 支持含未建档药品的入参形态。
-- 依赖:后端扩展 `POST /medicines/risk-check`，支持可信药品库候选 `source/id` 预检。
 
 ### P1
 
@@ -43,12 +33,12 @@ Created: 2026-08-16
 
 - **移动端药品详情页**(F-3/F-6「查看说明书」次按钮的落点,后端 `getDetail` 已返回适应症/用法用量/禁忌/不良反应/相互作用等完整字段):已完成(medicine 计划 F-14,路由 `/medicine/detail/:source/:id`,现状见 `docs/00-current/Active_UI_Medicine.md`「药品详情页」节),本文不重复展开。
 - **桌面/Web 形态挂起**(F-11 后续):Flutter Desktop 与 PC Flutter Web 不再扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动。
-- **本计划拥有并写全**:F-9 建档闭环(`createCurrentMedicine(source, sourceRefId, displayName)` + 风险预检弹窗 + `source:sourceRefId` 判重 + Toast「去设置提醒」直达 `/medicine/reminders/new`)与 F-3/F-6 断链机理(`id` vs `sourceRefId` 两个 id 空间)——后续计划如需引用识别出口闭环,以本文为准。
+- **本计划拥有并写全(已实施完毕)**:F-9 建档闭环(`createCurrentMedicine(source, sourceRefId, displayName)` + 风险预检弹窗 + `source:sourceRefId` 判重 + Toast「去设置提醒」直达 `/medicine/reminders/new?medicineId=<药箱记录id>`)与 F-3/F-6 断链机理(`id` vs `sourceRefId` 两个 id 空间)。闭环现统一位于 `Luminous/lib/features/search/presentation/widgets/shared/add_to_box.dart` 的 `addMedicineToBoxWithPrecheck`(搜索页、扫码结果 sheet、识别弹窗三处共用);后续计划如需引用识别出口闭环,以该实现为准。
 - **后端依赖**(Lucent,本期只读确认、可能小改):`POST /medicines/risk-check` 入参形态、`recognizeMedicine` 返回字段、条码等值匹配与批量 query、分类聚合字段;如涉及 API 契约变更,走 `pnpm export:openapi` + `dart run scripts/bootstrap_generated_sources.dart` 流程。
 
 ## 五、本计划内执行顺序
 
-1. F-9 预检即时化（0.1.0 前）：客户端仅提交可信药品库 `source/id`，服务端复取标准成分/规格后与当前药箱比较；失败只提示加入后可查看风险检查，不作安全判断。
+1. F-9 已完成（2026-08-16，见迁移日志）。
 2. F-3、F-1、F-6 已完成（2026-08-16，见迁移日志）。
 3. F-4、F-5、F-10 已完成（2026-08-16，见迁移日志）。
 4. F-7、F-11、F-12 已完成（2026-08-16，见迁移日志）；F-2 纯数字等值匹配移入 0.1.0 后 TODO（见 TODO.md）。
