@@ -128,7 +128,8 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    return Response<void>(
+    // 运行时类型与生成客户端一致(Response<Object>),允许仓库读取响应体。
+    return Response<Object>(
       data: null,
       requestOptions: RequestOptions(path: ''),
       statusCode: 200,
@@ -269,6 +270,48 @@ class _ErrorUnreadCountApi extends FakeNotificationsApi {
   }
 }
 
+/// markAllAsRead 返回非 0 业务码(业务失败)。
+class _ErrorMarkAllAsReadApi extends FakeNotificationsApi {
+  @override
+  Future<Response<UnreadCountResponseDto>>
+  notificationsControllerMarkAllAsReadV1({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    return _response(
+      UnreadCountResponseDto(
+        code: 500001,
+        message: 'Server error',
+        data: UnreadCountDataDto(count: 0),
+      ),
+    );
+  }
+}
+
+/// delete 返回带非 0 业务码的信封响应体(业务失败)。
+class _ErrorDeleteApi extends FakeNotificationsApi {
+  @override
+  Future<Response<void>> notificationsControllerRemoveV1({
+    required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    return Response<Object>(
+      data: <String, dynamic>{'code': 500001, 'message': 'Server error'},
+      requestOptions: RequestOptions(path: ''),
+      statusCode: 200,
+    );
+  }
+}
+
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
 NotificationListItemDto _item({
@@ -314,14 +357,22 @@ void main() {
     });
 
     test(
-      'getUnreadCount throws LucentApiException when API returns non-zero code',
+      'getUnreadCount degrades to 0 when API returns non-zero code',
       () async {
         final errorApi = _ErrorUnreadCountApi();
         final repo = LucentNotificationRepository(api: errorApi);
 
-        expect(repo.getUnreadCount(), throwsA(isA<LucentApiException>()));
+        // 未读数属后台轮询展示:业务失败降级返回 0,不向 UI 抛异常。
+        expect(await repo.getUnreadCount(), equals(0));
       },
     );
+
+    test('getUnreadCount degrades to 0 on network error', () async {
+      final api = FakeNotificationsApi()..shouldThrow = true;
+      final repo = LucentNotificationRepository(api: api);
+
+      expect(await repo.getUnreadCount(), equals(0));
+    });
   });
 
   group('notificationDetailProvider', () {
@@ -461,6 +512,26 @@ void main() {
           .read(notificationListControllerProvider)
           .requireValue;
       expect(result.items, hasLength(1));
+    });
+  });
+
+  group('LucentNotificationRepository 信封校验', () {
+    test('markAllAsRead surfaces non-zero business code', () async {
+      final repo = LucentNotificationRepository(api: _ErrorMarkAllAsReadApi());
+
+      expect(repo.markAllAsRead(), throwsA(isA<LucentApiException>()));
+    });
+
+    test('delete surfaces non-zero business code in envelope body', () async {
+      final repo = LucentNotificationRepository(api: _ErrorDeleteApi());
+
+      expect(repo.delete('1'), throwsA(isA<LucentApiException>()));
+    });
+
+    test('delete succeeds on empty 204-style body (no envelope)', () async {
+      final repo = LucentNotificationRepository(api: FakeNotificationsApi());
+
+      await repo.delete('1');
     });
   });
 }
