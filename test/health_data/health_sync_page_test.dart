@@ -68,6 +68,7 @@ void main() {
     expect(find.text(l10n(tester).healthSyncMetricHeartRate), findsOneWidget);
     expect(find.text(l10n(tester).healthSyncMetricSteps), findsOneWidget);
     expect(find.text(l10n(tester).healthSyncMetricSleep), findsOneWidget);
+    expect(find.text(l10n(tester).healthSyncMetricHeight), findsOneWidget);
     expect(
       find.text(l10n(tester).healthSyncAutoSyncNotConfigured),
       findsOneWidget,
@@ -114,6 +115,69 @@ void main() {
     expect(find.textContaining('health data unavailable'), findsOneWidget);
     // Fetch button returns after failure
     expect(find.text(l10n(tester).healthSyncFetchButton), findsOneWidget);
+  });
+
+  testWidgets('preview renders localized metric titles', (tester) async {
+    repo.fetchResult = [
+      HealthMetric(
+        type: HealthMetricType.heartRate,
+        value: 72,
+        unit: 'bpm',
+        recordedAt: DateTime(2026, 7, 12, 8, 30),
+      ),
+      HealthMetric(
+        type: HealthMetricType.bloodPressure,
+        value: 120,
+        secondaryValue: 80,
+        unit: 'mmHg',
+        recordedAt: DateTime(2026, 7, 12, 8, 30),
+      ),
+      HealthMetric(
+        type: HealthMetricType.sleep,
+        value: 450,
+        unit: 'min',
+        recordedAt: DateTime(2026, 7, 12, 8, 30),
+        sleepDuration: const Duration(hours: 7, minutes: 30),
+      ),
+      HealthMetric(
+        type: HealthMetricType.height,
+        value: 172.5,
+        unit: 'cm',
+        recordedAt: DateTime(2026, 7, 12, 8, 30),
+      ),
+      HealthMetric(
+        type: HealthMetricType.water,
+        value: 250,
+        unit: 'ml',
+        recordedAt: DateTime(2026, 7, 12, 8, 30),
+      ),
+    ];
+    await pumpPage(tester);
+
+    await tapVisible(tester, find.text(l10n(tester).healthSyncFetchButton));
+
+    expect(
+      find.text(l10n(tester).healthSyncMetricTitleHeartRate('72', 'bpm')),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        l10n(tester).healthSyncMetricTitleBloodPressure('120', '80', 'mmHg'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text(l10n(tester).healthSyncMetricTitleSleep('7h 30m')),
+      findsOneWidget,
+    );
+    expect(
+      find.text(l10n(tester).healthSyncMetricTitleHeight('172.5', 'cm')),
+      findsOneWidget,
+    );
+    expect(
+      find.text(l10n(tester).healthSyncMetricTitleWater('250.00', 'ml')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('shows failed row in sync result when failures exist', (

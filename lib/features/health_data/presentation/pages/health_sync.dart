@@ -165,6 +165,7 @@ class _MetricTypeSection extends StatelessWidget {
       HealthMetricType.flightsClimbed,
       HealthMetricType.exerciseTime,
       HealthMetricType.sleep,
+      HealthMetricType.height,
       HealthMetricType.water,
     ];
 
@@ -359,7 +360,7 @@ class _MetricsPreviewSection extends StatelessWidget {
           divider: FItemDivider.full,
           children: metrics.take(20).map((metric) {
             return FTile(
-              title: Text(_metricTitle(metric)),
+              title: Text(_metricTitle(l10n, metric)),
               subtitle: Text(_metricSubtitle(metric)),
             );
           }).toList(),
@@ -378,35 +379,69 @@ class _MetricsPreviewSection extends StatelessWidget {
     );
   }
 
-  String _metricTitle(HealthMetric metric) {
+  String _metricTitle(AppLocalizations l10n, HealthMetric metric) {
+    final sleepDurationText = _sleepDurationText(metric.sleepDuration);
     return switch (metric.type) {
-      HealthMetricType.heartRate =>
-        '心率 ${metric.value.toStringAsFixed(0)} ${metric.unit}',
-      HealthMetricType.bloodPressure =>
-        '血压 ${metric.value.toStringAsFixed(0)}/${metric.secondaryValue?.toStringAsFixed(0) ?? "--"} ${metric.unit}',
-      HealthMetricType.bloodOxygen =>
-        '血氧 ${metric.value.toStringAsFixed(1)}${metric.unit}',
-      HealthMetricType.bloodGlucose =>
-        '血糖 ${metric.value.toStringAsFixed(1)} ${metric.unit}',
+      HealthMetricType.heartRate => l10n.healthSyncMetricTitleHeartRate(
+        metric.value.toStringAsFixed(0),
+        metric.unit,
+      ),
+      HealthMetricType.bloodPressure => l10n.healthSyncMetricTitleBloodPressure(
+        metric.value.toStringAsFixed(0),
+        metric.secondaryValue?.toStringAsFixed(0) ?? '--',
+        metric.unit,
+      ),
+      HealthMetricType.bloodOxygen => l10n.healthSyncMetricTitleBloodOxygen(
+        metric.value.toStringAsFixed(1),
+        metric.unit,
+      ),
+      HealthMetricType.bloodGlucose => l10n.healthSyncMetricTitleBloodGlucose(
+        metric.value.toStringAsFixed(1),
+        metric.unit,
+      ),
       HealthMetricType.bodyTemperature =>
-        '体温 ${metric.value.toStringAsFixed(1)}${metric.unit}',
-      HealthMetricType.weight =>
-        '体重 ${metric.value.toStringAsFixed(1)} ${metric.unit}',
+        l10n.healthSyncMetricTitleBodyTemperature(
+          metric.value.toStringAsFixed(1),
+          metric.unit,
+        ),
+      HealthMetricType.weight => l10n.healthSyncMetricTitleWeight(
+        metric.value.toStringAsFixed(1),
+        metric.unit,
+      ),
       HealthMetricType.respiratoryRate =>
-        '呼吸 ${metric.value.toStringAsFixed(0)} ${metric.unit}',
-      HealthMetricType.steps =>
-        '步数 ${metric.value.toStringAsFixed(0)} ${metric.unit}',
+        l10n.healthSyncMetricTitleRespiratoryRate(
+          metric.value.toStringAsFixed(0),
+          metric.unit,
+        ),
+      HealthMetricType.steps => l10n.healthSyncMetricTitleSteps(
+        metric.value.toStringAsFixed(0),
+        metric.unit,
+      ),
       HealthMetricType.flightsClimbed =>
-        '爬楼 ${metric.value.toStringAsFixed(0)} ${metric.unit}',
-      HealthMetricType.exerciseTime =>
-        '运动 ${metric.value.toStringAsFixed(0)} ${metric.unit}',
-      HealthMetricType.sleep =>
-        '睡眠 ${metric.sleepDuration?.inHours ?? 0}h ${(metric.sleepDuration?.inMinutes ?? 0) % 60}m',
-      HealthMetricType.water =>
-        '饮水 ${metric.value.toStringAsFixed(2)} ${metric.unit}',
-      HealthMetricType.height =>
-        '身高 ${metric.value.toStringAsFixed(1)} ${metric.unit}',
+        l10n.healthSyncMetricTitleFlightsClimbed(
+          metric.value.toStringAsFixed(0),
+          metric.unit,
+        ),
+      HealthMetricType.exerciseTime => l10n.healthSyncMetricTitleExerciseTime(
+        metric.value.toStringAsFixed(0),
+        metric.unit,
+      ),
+      HealthMetricType.sleep => l10n.healthSyncMetricTitleSleep(
+        sleepDurationText,
+      ),
+      HealthMetricType.water => l10n.healthSyncMetricTitleWater(
+        metric.value.toStringAsFixed(2),
+        metric.unit,
+      ),
+      HealthMetricType.height => l10n.healthSyncMetricTitleHeight(
+        metric.value.toStringAsFixed(1),
+        metric.unit,
+      ),
     };
+  }
+
+  String _sleepDurationText(Duration? duration) {
+    return '${duration?.inHours ?? 0}h ${(duration?.inMinutes ?? 0) % 60}m';
   }
 
   String _metricSubtitle(HealthMetric metric) {

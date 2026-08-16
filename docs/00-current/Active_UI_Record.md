@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-15
+updated: 2026-08-16
 ---
 
 # Active UI — Record
 
-Last updated: 2026-08-15 (全仓库审查修复)
+Last updated: 2026-08-16 (健康同步指标标题本地化与身高类型统一)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -16,6 +16,7 @@ Last updated: 2026-08-15 (全仓库审查修复)
 - 睡眠标准记录使用 `sleepType`、`startedAt`、`endedAt`、`durationMinutes`（可选质量）；`nightSleep` 与 `nap` 同日均保留。快速录入产生的 start/wake facts 只是合并前的临时事实，取消合并时不删除它们。
 - 健康平台导入把饮水规范为 `ml`，保留来源、平台 external ID 和睡眠 episode 起止时间；external ID 优先去重，缺失时使用 kind/source/start/end/value/unit 稳定指纹，因此同日多条睡眠或饮水不会互相覆盖。
 - 自动同步能力明确区分 `unsupported`、`notConfigured` 和 `available`。当前没有后台 executor，前台导入仍可用，但自动同步开关保持关闭；平台不可用或未配置时不显示为通用可用能力。
+- 健康同步导入页（`HealthSyncPage`）可选择的数据类型包含身高（`HealthMetricType.height`，走 HealthKit/Health Connect 的 HEIGHT，单位 cm），与导入链路一致；预览区指标标题由 `healthSyncMetricTitle*` l10n 键渲染，不再硬编码中文。
 
 ## 支持的记录类型
 

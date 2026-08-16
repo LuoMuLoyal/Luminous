@@ -58,6 +58,97 @@
   "healthSyncMetricSleep": "Sleep",
   "healthSyncMetricWater": "Water",
   "healthSyncMetricHeight": "Height",
+  "healthSyncMetricTitleHeartRate": "Heart Rate {value} {unit}",
+  "@healthSyncMetricTitleHeartRate": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleBloodPressure": "Blood Pressure {systolic}/{diastolic} {unit}",
+  "@healthSyncMetricTitleBloodPressure": {
+    "placeholders": {
+      "systolic": {},
+      "diastolic": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleBloodOxygen": "Blood Oxygen {value}{unit}",
+  "@healthSyncMetricTitleBloodOxygen": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleBloodGlucose": "Blood Glucose {value} {unit}",
+  "@healthSyncMetricTitleBloodGlucose": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleBodyTemperature": "Body Temperature {value}{unit}",
+  "@healthSyncMetricTitleBodyTemperature": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleWeight": "Weight {value} {unit}",
+  "@healthSyncMetricTitleWeight": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleRespiratoryRate": "Respiratory Rate {value} {unit}",
+  "@healthSyncMetricTitleRespiratoryRate": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleSteps": "Steps {value} {unit}",
+  "@healthSyncMetricTitleSteps": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleFlightsClimbed": "Flights Climbed {value} {unit}",
+  "@healthSyncMetricTitleFlightsClimbed": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleExerciseTime": "Exercise Time {value} {unit}",
+  "@healthSyncMetricTitleExerciseTime": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleSleep": "Sleep {durationText}",
+  "@healthSyncMetricTitleSleep": {
+    "placeholders": {
+      "durationText": {}
+    }
+  },
+  "healthSyncMetricTitleWater": "Water {value} {unit}",
+  "@healthSyncMetricTitleWater": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleHeight": "Height {value} {unit}",
+  "@healthSyncMetricTitleHeight": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
   "mineHealthSyncTitle": "Import from Health App",
   "mineHealthSyncSubtitle": "Sync Apple Health / Health Connect data"
 }

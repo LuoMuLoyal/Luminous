@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-13
+updated: 2026-08-16
 ---
 
 # Flutter Localization
 
-Last updated: 2026-08-13 (Review Experience Task 6 review fixes: window template, direction-unknown key)
+Last updated: 2026-08-16 (health_sync preview metric titles localized)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -71,6 +71,11 @@ Persisted preference keys:
   `healthSyncAutoSyncNotConfigured`, `healthSyncAutoSyncUnsupported`) is owned by the Health Sync
   ARB fragments; the import page and Settings use these keys to distinguish unsupported platforms
   from the unconfigured background executor.
+- Health Sync metric labels and preview titles are owned by the Health Sync ARB fragments: the
+  `healthSyncMetric*` keys render the metric type buttons, and the `healthSyncMetricTitle*`
+  template keys (with value/unit placeholder args) compose the preview tile titles. The import
+  page no longer hardcodes Chinese metric titles; sleep duration h/m formatting stays in Dart and
+  only the formatted text is passed to the `healthSyncMetricTitleSleep` placeholder.
 - Sparse Record Semantics Task 9 does not add or rename user-visible strings. The existing Record
   keys cover quick-entry water, medication, and sleep flows; the existing Health Sync keys cover
   platform import and auto-sync boundaries. Canonical ml, observed/unknown, coverage, source, dose

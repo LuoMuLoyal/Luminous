@@ -58,6 +58,97 @@
   "healthSyncMetricSleep": "睡眠",
   "healthSyncMetricWater": "饮水量",
   "healthSyncMetricHeight": "身高",
+  "healthSyncMetricTitleHeartRate": "心率 {value} {unit}",
+  "@healthSyncMetricTitleHeartRate": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleBloodPressure": "血压 {systolic}/{diastolic} {unit}",
+  "@healthSyncMetricTitleBloodPressure": {
+    "placeholders": {
+      "systolic": {},
+      "diastolic": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleBloodOxygen": "血氧 {value}{unit}",
+  "@healthSyncMetricTitleBloodOxygen": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleBloodGlucose": "血糖 {value} {unit}",
+  "@healthSyncMetricTitleBloodGlucose": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleBodyTemperature": "体温 {value}{unit}",
+  "@healthSyncMetricTitleBodyTemperature": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleWeight": "体重 {value} {unit}",
+  "@healthSyncMetricTitleWeight": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleRespiratoryRate": "呼吸 {value} {unit}",
+  "@healthSyncMetricTitleRespiratoryRate": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleSteps": "步数 {value} {unit}",
+  "@healthSyncMetricTitleSteps": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleFlightsClimbed": "爬楼 {value} {unit}",
+  "@healthSyncMetricTitleFlightsClimbed": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleExerciseTime": "运动 {value} {unit}",
+  "@healthSyncMetricTitleExerciseTime": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleSleep": "睡眠 {durationText}",
+  "@healthSyncMetricTitleSleep": {
+    "placeholders": {
+      "durationText": {}
+    }
+  },
+  "healthSyncMetricTitleWater": "饮水 {value} {unit}",
+  "@healthSyncMetricTitleWater": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "healthSyncMetricTitleHeight": "身高 {value} {unit}",
+  "@healthSyncMetricTitleHeight": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
   "mineHealthSyncTitle": "从健康 App 导入",
   "mineHealthSyncSubtitle": "同步 Apple 健康 / Health Connect 数据"
 }
