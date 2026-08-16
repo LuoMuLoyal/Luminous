@@ -35,7 +35,7 @@ hides the bottom navigation bar and desktop sidebar:
 GoRoute (top-level, no shell)
 ├── /record/create, /record/:id, /record/:id/edit
 ├── /record/quick-entry-settings, /record/quick-entry-settings/reorder
-├── /medicine/search, /medicine/risk-check, /medicine/reminders/*
+├── /medicine/search, /medicine/detail/:source/:id, /medicine/risk-check, /medicine/reminders/*
 ├── /settings, /settings/*
 ├── /assistant
 ├── /notifications, /notifications/:id
@@ -59,7 +59,7 @@ lib/app/
     ├── router_auth.dart                # /login ×3 + /forgot-password + /register
     ├── router_account.dart             # /account ×3
     ├── router_record.dart              # /record/create + /record/:id + /record/:id/edit
-    ├── router_medicine.dart            # /medicine/search + risk-check + reminders ×3
+    ├── router_medicine.dart            # /medicine/search + detail + risk-check + reminders ×3
     ├── router_mine.dart                # /mine/profile + allergy ×2 + condition ×2 + medicine ×2
     ├── router_notifications.dart       # /notifications + /notifications/:id
     ├── router_assistant.dart           # /assistant
@@ -107,6 +107,10 @@ The following routes are accessible without signing in so the app can be opened 
 - `/report/legacy` — legacy dashboard 兼容页（2026-08-13 Review Task 8）：从回顾页 More sheet 的
   「历史报告」入口 push 进入，沿用 `/report` 的公开预览语义（未登录显示 preview + 登录引导，
   不重定向到 /login）。
+- `/medicine/detail/:source/:id` — 药品详情页（2026-08-16 F-14）。当前**非公开**路由：未登录深链会被 redirect
+  guard 重定向到 `/login`，实际入口为 Reminder 详情药品卡（该页本身已 auth 门控）。后端 `GET /medicines/:id?source=`
+  为 `@Public`、页面仅对「加入药箱」做 auth 门控；待 scan-search 计划接线「查看说明书」时，需决定是否把该前缀
+  加入 `_publicRoutePrefixes`（对齐后端 @Public 与页面设计）或保持受保护并在入口做 auth 门控，届时同步本段。
 
 All other routes require an authenticated session. The redirect guard sends unauthenticated users to `/login` only when they reach a non-public, non-auth route, and it redirects authenticated users away from `/login`, `/register`, `/forgot-password`.
 

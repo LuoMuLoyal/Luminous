@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/widgets/common/skeleton.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -42,6 +45,13 @@ const _drugbankDetail = MedicineDetail(
       description: 'May increase bleeding risk.',
     ),
   ],
+);
+
+const _emptyCnDetail = MedicineDetail(
+  id: 'cn_empty',
+  source: 'cn',
+  name: '空药品',
+  kind: 'cnProduct',
 );
 
 void main() {
@@ -135,6 +145,64 @@ void main() {
     expect(button.onPress, isNull);
   });
 
+  testWidgets(
+    'shows add-to-box action when matching medicine is soft-deleted',
+    (tester) async {
+      await _pumpDetailPage(
+        tester,
+        source: 'cn',
+        id: 'cn_1',
+        detail: _cnDetail,
+        snapshot: _snapshotWithMedicine(
+          sourceRefId: 'cn_1',
+          source: 'cn',
+          isCurrent: false,
+        ),
+      );
+
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsOneWidget);
+      expect(find.text(l10n.medicineSearchAlreadyAddedLabel), findsNothing);
+    },
+  );
+
+  testWidgets('shows skeleton while detail is loading', (tester) async {
+    final completer = Completer<MedicineDetail>();
+    await _pumpDetailPage(
+      tester,
+      source: 'cn',
+      id: 'cn_1',
+      detailFuture: completer.future,
+      settle: false,
+    );
+
+    expect(find.byType(InlineSkeletonSection), findsOneWidget);
+    expect(find.byType(InlineSkeletonBlock), findsNWidgets(4));
+
+    completer.complete(_cnDetail);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('shows unknown-source view for unsupported source', (
+    tester,
+  ) async {
+    await _pumpDetailPage(tester, source: 'foo', id: 'cn_1', detail: _cnDetail);
+
+    expect(find.text(l10n.medicineDetailUnknownSourceTitle), findsOneWidget);
+  });
+
+  testWidgets('shows no-content view when all detail fields are empty', (
+    tester,
+  ) async {
+    await _pumpDetailPage(
+      tester,
+      source: 'cn',
+      id: 'cn_empty',
+      detail: _emptyCnDetail,
+    );
+
+    expect(find.text(l10n.medicineDetailNoContentTitle), findsOneWidget);
+  });
+
   testWidgets('add to drugbox writes current medicine and shows toast', (
     tester,
   ) async {
@@ -179,14 +247,20 @@ Future<void> _pumpDetailPage(
   HealthContextSnapshot? snapshot,
   List overrides = const [],
   bool showToaster = false,
+  Future<MedicineDetail>? detailFuture,
+  bool settle = true,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        medicineDetailProvider(source, id).overrideWith((ref) async {
-          if (error != null) throw error;
-          return detail!;
-        }),
+        medicineDetailProvider(source, id).overrideWith(
+          (ref) =>
+              detailFuture ??
+              () async {
+                if (error != null) throw error;
+                return detail!;
+              }(),
+        ),
         healthContextSnapshotProvider.overrideWith(
           (ref) async => snapshot ?? _emptySnapshot,
         ),
@@ -198,7 +272,11 @@ Future<void> _pumpDetailPage(
       ),
     ),
   );
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump();
+  }
 }
 
 class _FakeHealthContextRepository implements HealthContextRepository {
@@ -269,6 +347,7 @@ HealthContextSnapshot _snapshotWithMedicine({
   required String? sourceRefId,
   required String source,
   String displayName = '布洛芬片',
+  bool isCurrent = true,
 }) {
   return HealthContextSnapshot(
     summary: _emptySnapshot.summary,
@@ -286,7 +365,7 @@ HealthContextSnapshot _snapshotWithMedicine({
         route: null,
         startedAt: null,
         endedAt: null,
-        isCurrent: true,
+        isCurrent: isCurrent,
         note: null,
         createdAt: '2026-08-16T00:00:00.000Z',
         updatedAt: '2026-08-16T00:00:00.000Z',

@@ -103,7 +103,7 @@ class _MedicineDetailContent extends ConsumerWidget {
     final snapshotAsync = ref.watch(healthContextSnapshotProvider);
     final isAdded = snapshotAsync.maybeWhen(
       data: (snapshot) => snapshot.currentMedicines.any(
-        (m) => m.sourceRefId == detail.id && m.source == source,
+        (m) => m.isCurrent && m.sourceRefId == detail.id && m.source == source,
       ),
       orElse: () => false,
     );
