@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -99,7 +101,7 @@ void main() {
 
   Future<void> pumpPage(
     WidgetTester tester, {
-    List overrides = const [],
+    List<Override> overrides = const [],
   }) async {
     final router = buildRouter();
     addTearDown(router.dispose);
@@ -390,6 +392,63 @@ void main() {
 
       // Must carry the drugbox record id, not the medicine DB product id.
       expect(find.text('medicine-reminders:box-med-1'), findsOneWidget);
+    });
+
+    testWidgets('sheet flips to the added state after a successful add '
+        '(live dedup, no reopen)', (tester) async {
+      // F-3 P2-1: the sheet derives the added state live from the snapshot
+      // provider. After the shared loop creates the medicine and emits on
+      // the DataChangeBus, the snapshot re-fetch must flip the sheet into
+      // the「已加入」state — the add button disappears, so it cannot be tapped
+      // again to duplicate the record.
+      final fakeRepo = FakeHealthContextRepository()
+        ..reflectCreatedMedicine = true;
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+      );
+      await pumpPage(
+        tester,
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+          medicineRiskCheckRepositoryProvider.overrideWithValue(
+            FakeMedicineRiskCheckRepository(clearRiskCheckResult),
+          ),
+          // Mirror the production provider: re-fetch from the repository when
+          // the cross-feature data change bus bumps these topics (the shared
+          // add-to-box loop emits `currentMedicines` after a successful add).
+          healthContextSnapshotProvider.overrideWith((ref) {
+            ref.watch(
+              dataChangeVersionProvider(DataChangeTopic.currentMedicines),
+            );
+            ref.watch(dataChangeVersionProvider(DataChangeTopic.healthContext));
+            return ref
+                .read(healthContextRepositoryProvider)
+                .fetchHealthContext();
+          }),
+        ],
+      );
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Not added yet: the primary action adds to the box.
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsOneWidget);
+
+      await tester.tap(find.text(l10n.medicineSearchAddToBoxAction));
+      await tester.pump();
+      await flushAsync(tester);
+
+      // Without reopening the sheet, the live snapshot watch flipped the
+      // primary action into the disabled added state + reminder detail.
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsNothing);
+      expect(find.text(l10n.medicineSearchAlreadyAddedLabel), findsOneWidget);
+      expect(find.text(l10n.scanViewReminderAction), findsOneWidget);
+      expect(find.text(l10n.medicineSearchAddedToBoxToast), findsOneWidget);
+
+      // Drain the toast auto-dismiss timer.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
     });
 
     testWidgets('multiple results show candidate picker sheet', (tester) async {

@@ -39,11 +39,6 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   bool _permissionDenied = false;
   bool _torchOn = false;
 
-  /// Latest box contents keyed by `source:sourceRefId` (drugbox record id as
-  /// value), refreshed in [build] from [healthContextSnapshotProvider]. Used
-  /// to render the "already added" state of the scan result sheet.
-  Map<String, CurrentMedicineItem> _boxByKey = const {};
-
   @override
   void initState() {
     super.initState();
@@ -125,7 +120,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
       }
 
       if (items.length == 1) {
-        _showScanResultSheet(items.first, boxByKey: _boxByKey);
+        _showScanResultSheet(items.first);
       } else {
         _showCandidatePicker(items);
       }
@@ -202,7 +197,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                     return FTappable(
                       onPress: () {
                         Navigator.pop(ctx);
-                        _showScanResultSheet(item, boxByKey: _boxByKey);
+                        _showScanResultSheet(item);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -238,16 +233,15 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   /// candidate picked from [showCandidatePicker]).
   ///
   /// The scanned id is a medicine DB product id (`cn` source), not a drugbox
-  /// record id. Not yet in the box → primary「加入药箱」(shared F-9 loop) +
-  /// secondary「查看说明书」; already in the box (by `source:sourceRefId` in
-  /// [boxByKey]) →「已添加」state + primary「查看提醒详情」carrying the box
-  /// record id + secondary「查看说明书」.
-  void _showScanResultSheet(
-    ScanSearchResult item, {
-    required Map<String, CurrentMedicineItem> boxByKey,
-  }) {
+  /// record id. The sheet derives the「已加入」state live from
+  /// [healthContextSnapshotProvider] (key `cn:<产品id>` → `source:sourceRefId`):
+  /// not in the box → primary「加入药箱」(shared F-9 loop) + secondary
+  /// 「查看说明书」; already in the box →「已添加」state + primary
+  /// 「查看提醒详情」carrying the box record id + secondary「查看说明书」.
+  /// After a successful add the DataChangeBus snapshot refresh flips the
+  /// sheet to the added state without reopening (F-3 P2-1).
+  void _showScanResultSheet(ScanSearchResult item) {
     final l10n = AppLocalizations.of(context)!;
-    final boxItem = boxByKey['cn:${item.id}'];
 
     unawaited(
       showFSheet(
@@ -258,7 +252,6 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
         builder: (ctx) => SafeArea(
           child: _ScanResultSheet(
             item: item,
-            boxItem: boxItem,
             l10n: l10n,
             onAddToBox: () => unawaited(
               addMedicineToBoxWithPrecheck(
@@ -275,16 +268,14 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                 MedicineDetailRoute(source: 'cn', id: item.id).push(context),
               );
             },
-            onViewReminder: boxItem == null
-                ? null
-                : () {
-                    Navigator.pop(ctx);
-                    unawaited(
-                      MedicineReminderDetailRoute(
-                        medicineId: boxItem.id,
-                      ).push(context),
-                    );
-                  },
+            onOpenReminder: (boxItem) {
+              Navigator.pop(ctx);
+              unawaited(
+                MedicineReminderDetailRoute(
+                  medicineId: boxItem.id,
+                ).push(context),
+              );
+            },
           ),
         ),
       ),
@@ -299,19 +290,6 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-
-    // Refresh the box lookup map used by the scan result sheet. loading /
-    // error states fall back to an empty map (sheet then shows the default
-    // "not added" exit).
-    final snapshotAsync = ref.watch(healthContextSnapshotProvider);
-    _boxByKey = snapshotAsync.maybeWhen(
-      data: (snapshot) => {
-        for (final medicine in snapshot.currentMedicines)
-          if (medicine.isCurrent && medicine.sourceRefId != null)
-            '${medicine.source}:${medicine.sourceRefId}': medicine,
-      },
-      orElse: () => const <String, CurrentMedicineItem>{},
-    );
 
     if (_permissionDenied) {
       return PageScaffold(
@@ -459,31 +437,54 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
 
 /// Bottom sheet content for a scanned medicine result (F-3).
 ///
-/// [boxItem] non-null means the medicine is already in the drugbox (matched
-/// by `source:sourceRefId`): the sheet then shows the「已添加」state and the
-/// primary action opens the reminder detail for the box record id.
-class _ScanResultSheet extends StatelessWidget {
+/// The「已加入」state is derived **live** from [healthContextSnapshotProvider]
+/// (matched by the `source:sourceRefId` key `cn:<产品id>`), not captured at
+/// sheet open (F-3 P2-1): after a successful add the shared F-9 loop emits on
+/// the DataChangeBus, the snapshot refreshes and this sheet rebuilds into the
+/// added state — the add button cannot be tapped again to duplicate the
+/// record. Loading / error states fall back to an empty map (default "not
+/// added" exit); once the snapshot resolves the state is correct.
+class _ScanResultSheet extends ConsumerStatefulWidget {
   const _ScanResultSheet({
     required this.item,
-    required this.boxItem,
     required this.l10n,
     required this.onAddToBox,
     required this.onViewInstructions,
-    this.onViewReminder,
+    required this.onOpenReminder,
   });
 
   final ScanSearchResult item;
-  final CurrentMedicineItem? boxItem;
   final AppLocalizations l10n;
   final VoidCallback onAddToBox;
   final VoidCallback onViewInstructions;
-  final VoidCallback? onViewReminder;
+
+  /// Called with the matched drugbox record when the user opens the reminder
+  /// detail from the added state (the sheet pops itself first).
+  final ValueChanged<CurrentMedicineItem> onOpenReminder;
+
+  @override
+  ConsumerState<_ScanResultSheet> createState() => _ScanResultSheetState();
+}
+
+class _ScanResultSheetState extends ConsumerState<_ScanResultSheet> {
+  /// Current drugbox lookup by `source:sourceRefId` (drugbox record id as
+  /// value), watched so the added state always reflects the latest snapshot.
+  Map<String, CurrentMedicineItem> get _boxByKey => ref
+      .watch(healthContextSnapshotProvider)
+      .maybeWhen(
+        data: (snapshot) => {
+          for (final medicine in snapshot.currentMedicines)
+            if (medicine.isCurrent && medicine.sourceRefId != null)
+              '${medicine.source}:${medicine.sourceRefId}': medicine,
+        },
+        orElse: () => const <String, CurrentMedicineItem>{},
+      );
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
-    final alreadyAdded = boxItem != null;
+    final boxItem = _boxByKey['cn:${widget.item.id}'];
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -494,7 +495,7 @@ class _ScanResultSheet extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  l10n.scanBarcodeResultTitle,
+                  widget.l10n.scanBarcodeResultTitle,
                   style: typography.body.lg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -521,11 +522,11 @@ class _ScanResultSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(item.name, style: typography.body.lg),
-              if (item.subtitle != null) ...[
+              Text(widget.item.name, style: typography.body.lg),
+              if (widget.item.subtitle != null) ...[
                 const SizedBox(height: Spacing.level2),
                 Text(
-                  item.subtitle!,
+                  widget.item.subtitle!,
                   style: typography.body.sm.copyWith(
                     color: colors.mutedForeground,
                   ),
@@ -545,7 +546,7 @@ class _ScanResultSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (alreadyAdded) ...[
+              if (boxItem != null) ...[
                 // Reuses the search tile "already added" visual pattern
                 // (disabled outline button + check icon).
                 FButton(
@@ -560,26 +561,26 @@ class _ScanResultSheet extends StatelessWidget {
                         color: colors.primary,
                       ),
                       const SizedBox(width: Spacing.level2),
-                      Text(l10n.medicineSearchAlreadyAddedLabel),
+                      Text(widget.l10n.medicineSearchAlreadyAddedLabel),
                     ],
                   ),
                 ),
                 const SizedBox(height: Spacing.level3),
                 FButton(
-                  onPress: onViewReminder,
-                  child: Text(l10n.scanViewReminderAction),
+                  onPress: () => widget.onOpenReminder(boxItem),
+                  child: Text(widget.l10n.scanViewReminderAction),
                 ),
               ] else ...[
                 FButton(
-                  onPress: onAddToBox,
-                  child: Text(l10n.medicineSearchAddToBoxAction),
+                  onPress: widget.onAddToBox,
+                  child: Text(widget.l10n.medicineSearchAddToBoxAction),
                 ),
               ],
               const SizedBox(height: Spacing.level3),
               FButton(
                 variant: FButtonVariant.secondary,
-                onPress: onViewInstructions,
-                child: Text(l10n.scanViewInstructionsAction),
+                onPress: widget.onViewInstructions,
+                child: Text(widget.l10n.scanViewInstructionsAction),
               ),
             ],
           ),

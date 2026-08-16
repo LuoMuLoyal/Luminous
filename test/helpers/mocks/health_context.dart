@@ -54,8 +54,37 @@ class FakeHealthContextRepository implements HealthContextRepository {
   bool reflectCreatedMedicine = false;
 
   @override
-  Future<HealthContextSnapshot> fetchHealthContext() async =>
-      testHealthSnapshot();
+  Future<HealthContextSnapshot> fetchHealthContext() async {
+    // Mirror [createCurrentMedicine]: when the fake reflects created
+    // medicines, fetches return a snapshot containing them — so snapshot
+    // provider refreshes (e.g. the DataChangeBus re-fetch after an add) flip
+    // scan/search surfaces into the「已加入」state in tests.
+    final created = createdCurrentMedicine;
+    if (reflectCreatedMedicine && created != null) {
+      return testHealthSnapshot(
+        currentMedicines: [_createdMedicineItem(created)],
+      );
+    }
+    return testHealthSnapshot();
+  }
+
+  CurrentMedicineItem _createdMedicineItem(CurrentMedicineWriteInput input) {
+    return CurrentMedicineItem(
+      id: 'created-medicine-1',
+      source: input.source.name,
+      sourceRefId: input.sourceRefId,
+      displayName: input.displayName,
+      strengthText: null,
+      doseText: null,
+      route: null,
+      startedAt: null,
+      endedAt: null,
+      isCurrent: true,
+      note: null,
+      createdAt: '2026-08-16T00:00:00.000Z',
+      updatedAt: '2026-08-16T00:00:00.000Z',
+    );
+  }
 
   @override
   Future<HealthContextSnapshot> updateProfile(
@@ -103,23 +132,7 @@ class FakeHealthContextRepository implements HealthContextRepository {
     createdCurrentMedicine = input;
     if (reflectCreatedMedicine) {
       return testHealthSnapshot(
-        currentMedicines: [
-          CurrentMedicineItem(
-            id: 'created-medicine-1',
-            source: input.source.name,
-            sourceRefId: input.sourceRefId,
-            displayName: input.displayName,
-            strengthText: null,
-            doseText: null,
-            route: null,
-            startedAt: null,
-            endedAt: null,
-            isCurrent: true,
-            note: null,
-            createdAt: '2026-08-16T00:00:00.000Z',
-            updatedAt: '2026-08-16T00:00:00.000Z',
-          ),
-        ],
+        currentMedicines: [_createdMedicineItem(input)],
       );
     }
     return testHealthSnapshot();
