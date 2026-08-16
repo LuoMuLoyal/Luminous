@@ -265,6 +265,8 @@ import 'package:lucent_api/src/model/update_health_context_profile_dto.dart';
 import 'package:lucent_api/src/model/update_medicine_reminder_dto.dart';
 import 'package:lucent_api/src/model/update_user_settings_dto.dart';
 import 'package:lucent_api/src/model/upsert_health_event_check_in_dto.dart';
+import 'package:lucent_api/src/model/upsert_medicine_reminder_group_dto.dart';
+import 'package:lucent_api/src/model/upsert_reminder_slot_dto.dart';
 import 'package:lucent_api/src/model/user_allergy_item_dto.dart';
 import 'package:lucent_api/src/model/user_brief_dto.dart';
 import 'package:lucent_api/src/model/user_condition_item_dto.dart';
@@ -1274,6 +1276,14 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'UpsertHealthEventCheckInDto':
       return UpsertHealthEventCheckInDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'UpsertMedicineReminderGroupDto':
+      return UpsertMedicineReminderGroupDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'UpsertReminderSlotDto':
+      return UpsertReminderSlotDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'UserAllergyItemDto':
       return UserAllergyItemDto.fromJson(value as Map<String, dynamic>)

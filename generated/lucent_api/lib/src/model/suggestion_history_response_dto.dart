@@ -20,7 +20,9 @@ class SuggestionHistoryResponseDto {
   /// Returns a new [SuggestionHistoryResponseDto] instance.
   SuggestionHistoryResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

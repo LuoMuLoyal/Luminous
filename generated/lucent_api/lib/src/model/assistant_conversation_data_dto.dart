@@ -20,11 +20,17 @@ class AssistantConversationDataDto {
   /// Returns a new [AssistantConversationDataDto] instance.
   AssistantConversationDataDto({
     required this.id,
+
     required this.title,
+
     required this.status,
+
     required this.messages,
+
     required this.lastMessageAt,
+
     required this.createdAt,
+
     required this.updatedAt,
   });
 

@@ -19,7 +19,9 @@ class HealthSummaryDto {
   /// Returns a new [HealthSummaryDto] instance.
   HealthSummaryDto({
     required this.total,
+
     required this.passed,
+
     required this.failed,
   });
 

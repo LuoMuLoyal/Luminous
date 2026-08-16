@@ -323,6 +323,8 @@ export 'package:lucent_api/src/model/update_health_context_profile_dto.dart';
 export 'package:lucent_api/src/model/update_medicine_reminder_dto.dart';
 export 'package:lucent_api/src/model/update_user_settings_dto.dart';
 export 'package:lucent_api/src/model/upsert_health_event_check_in_dto.dart';
+export 'package:lucent_api/src/model/upsert_medicine_reminder_group_dto.dart';
+export 'package:lucent_api/src/model/upsert_reminder_slot_dto.dart';
 export 'package:lucent_api/src/model/user_allergy_item_dto.dart';
 export 'package:lucent_api/src/model/user_allergy_kind.dart';
 export 'package:lucent_api/src/model/user_allergy_severity.dart';

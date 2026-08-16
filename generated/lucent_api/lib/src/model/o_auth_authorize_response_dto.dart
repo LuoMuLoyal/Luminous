@@ -20,7 +20,9 @@ class OAuthAuthorizeResponseDto {
   /// Returns a new [OAuthAuthorizeResponseDto] instance.
   OAuthAuthorizeResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

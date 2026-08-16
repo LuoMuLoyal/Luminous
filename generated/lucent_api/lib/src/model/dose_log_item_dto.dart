@@ -20,16 +20,27 @@ class DoseLogItemDto {
   /// Returns a new [DoseLogItemDto] instance.
   DoseLogItemDto({
     required this.id,
+
     this.healthEventId,
+
     this.currentMedicineId,
+
     this.reminderId,
+
     required this.status,
+
     required this.scheduledFor,
+
     this.scheduledTime,
+
     this.doseText,
+
     this.note,
+
     this.source_,
+
     required this.createdAt,
+
     required this.updatedAt,
   });
 

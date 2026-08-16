@@ -19,7 +19,9 @@ class LegalDocumentListItemDto {
   /// Returns a new [LegalDocumentListItemDto] instance.
   LegalDocumentListItemDto({
     required this.docType,
+
     required this.title,
+
     required this.updatedAt,
   });
 

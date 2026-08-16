@@ -87,12 +87,37 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
   Future<List<MedicineReminderItem>> upsertGroup(
     MedicineReminderGroupUpsertInput input,
   ) async {
-    final response = await dio.request<Object>(
-      LucentApiPaths.medicineRemindersGroup,
-      data: input.toJson(),
-      options: Options(method: 'PUT', contentType: Headers.jsonContentType),
+    // 消费再生契约的生成 API 方法（PUT /api/v1/user/medicine-reminders/group），
+    // 请求/响应均走生成 DTO（UpsertMedicineReminderGroupDto /
+    // MedicineReminderListResponseDto），与 openapi.json 对齐。
+    final response = await api.medicineRemindersControllerUpsertGroupV1(
+      upsertMedicineReminderGroupDto: UpsertMedicineReminderGroupDto(
+        currentMedicineId: input.currentMedicineId,
+        label: _nonEmptyOrNull(input.label),
+        daysOfWeek: input.daysOfWeek,
+        startDate: _nonEmptyOrNull(input.startDate),
+        endDate: _nonEmptyOrNull(input.endDate),
+        isActive: input.isActive,
+        note: _nonEmptyOrNull(input.note),
+        slots: input.slots
+            .map(
+              (slot) => UpsertReminderSlotDto(
+                id: slot.id,
+                scheduledHour: slot.scheduledHour,
+                scheduledMinute: slot.scheduledMinute,
+              ),
+            )
+            .toList(growable: false),
+      ),
     );
-    return _responseItems(response.data).map(_fromJson).toList(growable: false);
+    final envelope = response.data;
+    if (envelope == null) {
+      throw const LucentApiException(
+        message: '用药提醒组响应体为空',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
+    return envelope.data.items.map(_fromDto).toList(growable: false);
   }
 
   @override
@@ -139,6 +164,25 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
       note: _optionalString(json['note']),
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
+    );
+  }
+
+  MedicineReminderItem _fromDto(MedicineReminderItemDto dto) {
+    return MedicineReminderItem(
+      id: dto.id,
+      currentMedicineId: dto.currentMedicineId,
+      label: dto.label,
+      scheduledHour: dto.scheduledHour.toInt(),
+      scheduledMinute: dto.scheduledMinute.toInt(),
+      daysOfWeek: dto.daysOfWeek
+          ?.map((day) => day.toInt())
+          .toList(growable: false),
+      startDate: dto.startDate,
+      endDate: dto.endDate,
+      isActive: dto.isActive,
+      note: dto.note,
+      createdAt: dto.createdAt,
+      updatedAt: dto.updatedAt,
     );
   }
 
@@ -198,5 +242,10 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
   String? _optionalString(Object? value) {
     final text = value?.toString().trim();
     return text == null || text.isEmpty ? null : text;
+  }
+
+  String? _nonEmptyOrNull(String? value) {
+    if (value == null || value.isEmpty) return null;
+    return value;
   }
 }

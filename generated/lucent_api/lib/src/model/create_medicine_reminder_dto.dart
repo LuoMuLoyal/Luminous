@@ -19,13 +19,21 @@ class CreateMedicineReminderDto {
   /// Returns a new [CreateMedicineReminderDto] instance.
   CreateMedicineReminderDto({
     this.currentMedicineId,
+
     this.label,
+
     required this.scheduledHour,
+
     required this.scheduledMinute,
+
     this.daysOfWeek,
+
     this.startDate,
+
     this.endDate,
+
     this.isActive = true,
+
     this.note,
   });
 

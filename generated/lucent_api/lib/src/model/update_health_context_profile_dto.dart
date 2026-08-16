@@ -21,15 +21,25 @@ class UpdateHealthContextProfileDto {
   /// Returns a new [UpdateHealthContextProfileDto] instance.
   UpdateHealthContextProfileDto({
     this.locale,
+
     this.timezone,
+
     this.unitSystem,
+
     this.birthDate,
+
     this.sexAtBirth,
+
     this.heightCm,
+
     this.bloodType,
+
     this.weightKg,
+
     this.emergencyContactName,
+
     this.emergencyContactPhone,
+
     this.onboardingCompleted,
   });
 

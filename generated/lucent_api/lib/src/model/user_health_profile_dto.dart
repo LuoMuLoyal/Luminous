@@ -22,15 +22,25 @@ class UserHealthProfileDto {
   /// Returns a new [UserHealthProfileDto] instance.
   UserHealthProfileDto({
     required this.birthDate,
+
     this.sexAtBirth,
+
     required this.heightCm,
+
     required this.weightKg,
+
     required this.bloodType,
+
     required this.locale,
+
     required this.timezone,
+
     this.unitSystem,
+
     required this.onboardingCompletedAt,
+
     required this.emergencyContact,
+
     required this.extras,
   });
 

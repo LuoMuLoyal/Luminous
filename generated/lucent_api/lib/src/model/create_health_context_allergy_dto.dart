@@ -21,10 +21,15 @@ class CreateHealthContextAllergyDto {
   /// Returns a new [CreateHealthContextAllergyDto] instance.
   CreateHealthContextAllergyDto({
     required this.kind,
+
     required this.label,
+
     this.reaction,
+
     this.severity,
+
     this.note,
+
     this.recordedAt,
   });
 

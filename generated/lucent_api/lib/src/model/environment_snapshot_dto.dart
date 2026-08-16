@@ -25,12 +25,19 @@ class EnvironmentSnapshotDto {
   /// Returns a new [EnvironmentSnapshotDto] instance.
   EnvironmentSnapshotDto({
     required this.dataSource,
+
     required this.updatedAt,
+
     required this.regionHint,
+
     required this.pollen,
+
     required this.uv,
+
     required this.airQuality,
+
     required this.temperature,
+
     required this.humidity,
   });
 

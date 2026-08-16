@@ -19,19 +19,33 @@ class SuggestionHistoryItemDto {
   /// Returns a new [SuggestionHistoryItemDto] instance.
   SuggestionHistoryItemDto({
     required this.id,
+
     required this.date,
+
     required this.type,
+
     required this.title,
+
     required this.reason,
+
     required this.ruleId,
+
     required this.ruleVersion,
+
     required this.triggerType,
+
     required this.lifecycleState,
+
     required this.confidence,
+
     this.subtype,
+
     this.feedback,
+
     this.feedbackAt,
+
     required this.generatedAt,
+
     this.expiredAt,
   });
 

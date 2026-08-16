@@ -19,9 +19,13 @@ class SuggestionExplanationDataDto {
   /// Returns a new [SuggestionExplanationDataDto] instance.
   SuggestionExplanationDataDto({
     required this.suggestionId,
+
     required this.reason,
+
     required this.boundary,
+
     required this.aiGenerated,
+
     this.locale,
   });
 

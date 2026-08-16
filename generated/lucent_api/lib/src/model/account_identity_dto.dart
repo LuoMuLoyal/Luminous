@@ -19,9 +19,13 @@ class AccountIdentityDto {
   /// Returns a new [AccountIdentityDto] instance.
   AccountIdentityDto({
     required this.id,
+
     required this.provider,
+
     required this.email,
+
     required this.emailVerifiedAt,
+
     required this.linkedAt,
   });
 

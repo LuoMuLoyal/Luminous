@@ -19,10 +19,15 @@ class UserBriefDto {
   /// Returns a new [UserBriefDto] instance.
   UserBriefDto({
     required this.id,
+
     required this.email,
+
     required this.nickname,
+
     required this.emailVerified,
+
     required this.emailVerifiedAt,
+
     required this.createdAt,
   });
 

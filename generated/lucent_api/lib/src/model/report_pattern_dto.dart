@@ -19,9 +19,13 @@ class ReportPatternDto {
   /// Returns a new [ReportPatternDto] instance.
   ReportPatternDto({
     required this.kind,
+
     required this.title,
+
     required this.status,
+
     required this.body,
+
     required this.sparkline,
   });
 

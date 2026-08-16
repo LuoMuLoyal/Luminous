@@ -20,14 +20,23 @@ class UpdateCurrentMedicineDto {
   /// Returns a new [UpdateCurrentMedicineDto] instance.
   UpdateCurrentMedicineDto({
     this.source_,
+
     this.sourceRefId,
+
     this.displayName,
+
     this.strengthText,
+
     this.doseText,
+
     this.route,
+
     this.startedAt,
+
     this.endedAt,
+
     this.note,
+
     this.isCurrent,
   });
 

@@ -23,15 +23,25 @@ class DataExportRequestDataDto {
   /// Returns a new [DataExportRequestDataDto] instance.
   DataExportRequestDataDto({
     required this.id,
+
     required this.kind,
+
     required this.format,
+
     required this.range,
+
     required this.status,
+
     required this.requestedAt,
+
     this.completedAt,
+
     this.downloadUrl,
+
     this.fileName,
+
     this.fileSizeBytes,
+
     this.errorMessage,
   });
 

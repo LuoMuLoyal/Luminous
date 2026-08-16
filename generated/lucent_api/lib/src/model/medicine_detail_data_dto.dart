@@ -20,9 +20,13 @@ class MedicineDetailDataDto {
   /// Returns a new [MedicineDetailDataDto] instance.
   MedicineDetailDataDto({
     required this.id,
+
     required this.source_,
+
     required this.name,
+
     required this.subtitle,
+
     required this.detail,
   });
 

@@ -20,14 +20,23 @@ class AccountDto {
   /// Returns a new [AccountDto] instance.
   AccountDto({
     required this.id,
+
     required this.email,
+
     required this.nickname,
+
     required this.avatar,
+
     required this.emailVerifiedAt,
+
     required this.hasPassword,
+
     required this.lastLoginAt,
+
     required this.linkedIdentities,
+
     required this.createdAt,
+
     required this.updatedAt,
   });
 

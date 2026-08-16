@@ -20,8 +20,11 @@ class SuggestionHistoryDataDto {
   /// Returns a new [SuggestionHistoryDataDto] instance.
   SuggestionHistoryDataDto({
     required this.items,
+
     required this.total,
+
     required this.startDate,
+
     required this.endDate,
   });
 

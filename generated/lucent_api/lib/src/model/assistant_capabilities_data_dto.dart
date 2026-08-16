@@ -21,17 +21,29 @@ class AssistantCapabilitiesDataDto {
   /// Returns a new [AssistantCapabilitiesDataDto] instance.
   AssistantCapabilitiesDataDto({
     required this.phase,
+
     required this.assistantEnabled,
+
     required this.assistantMemoryEnabled,
+
     required this.assistantContext,
+
     required this.chatModelConfigured,
+
     required this.interactiveChatReady,
+
     required this.langGraphReady,
+
     required this.streamingSupported,
+
     required this.streamingTransport,
+
     required this.markdownRenderingRecommended,
+
     required this.ragEnabled,
+
     required this.tools,
+
     required this.updatedAt,
   });
 

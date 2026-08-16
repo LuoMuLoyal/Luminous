@@ -20,7 +20,9 @@ class AppInfoResponseDto {
   /// Returns a new [AppInfoResponseDto] instance.
   AppInfoResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

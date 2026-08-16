@@ -22,47 +22,89 @@ class MedicineDetailDataDtoDetail {
   /// Returns a new [MedicineDetailDataDtoDetail] instance.
   MedicineDetailDataDtoDetail({
     required this.kind,
+
     this.drugType,
+
     this.state,
+
     this.description,
+
     this.indication,
+
     this.mechanismOfAction,
+
     this.pharmacodynamics,
+
     this.toxicity,
+
     this.metabolism,
+
     this.absorption,
+
     this.halfLife,
+
     this.proteinBinding,
+
     this.routeOfElimination,
+
     this.volumeOfDistribution,
+
     this.clearance,
+
     required this.groups,
+
     required this.categories,
+
     required this.atcCodes,
+
     required this.synonyms,
+
     required this.foodInteractions,
+
     this.drugInteractions,
+
     this.externalIdentifiers,
+
     this.externalLinks,
+
     this.approvalNumber,
+
     this.manufacturer,
+
     this.packageSpec,
+
     this.brandName,
+
     this.ingredients,
+
     this.properties,
+
     this.indications,
+
     this.dosage,
+
     this.adverseReactions,
+
     this.contraindications,
+
     this.precautions,
+
     this.pharmacologyToxicology,
+
     this.pharmacokinetics,
+
     this.overdose,
+
     this.storage,
+
     this.validityPeriod,
+
     this.barcode,
+
     this.nationalDrugCode,
+
     this.sourceUrl,
+
     this.imageUrl,
   });
 

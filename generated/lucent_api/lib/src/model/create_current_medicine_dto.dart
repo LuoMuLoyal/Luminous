@@ -20,13 +20,21 @@ class CreateCurrentMedicineDto {
   /// Returns a new [CreateCurrentMedicineDto] instance.
   CreateCurrentMedicineDto({
     required this.source_,
+
     this.sourceRefId,
+
     required this.displayName,
+
     this.strengthText,
+
     this.doseText,
+
     this.route,
+
     this.startedAt,
+
     this.endedAt,
+
     this.note,
   });
 

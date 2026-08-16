@@ -20,7 +20,9 @@ class AccountEmailResponseDto {
   /// Returns a new [AccountEmailResponseDto] instance.
   AccountEmailResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

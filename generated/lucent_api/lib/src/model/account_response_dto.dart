@@ -20,7 +20,9 @@ class AccountResponseDto {
   /// Returns a new [AccountResponseDto] instance.
   AccountResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

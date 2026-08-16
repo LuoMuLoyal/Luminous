@@ -20,7 +20,9 @@ class AssistantConfirmResultResponseDto {
   /// Returns a new [AssistantConfirmResultResponseDto] instance.
   AssistantConfirmResultResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

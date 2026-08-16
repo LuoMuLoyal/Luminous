@@ -19,7 +19,9 @@ class HealthEventCoverageDto {
   /// Returns a new [HealthEventCoverageDto] instance.
   HealthEventCoverageDto({
     required this.checkInCount,
+
     this.firstCheckInDate,
+
     this.lastCheckInDate,
   });
 
@@ -29,11 +31,11 @@ class HealthEventCoverageDto {
 
   /// First check-in calendar date, or null when none exists.
   @JsonKey(name: r'firstCheckInDate', required: false, includeIfNull: false)
-  final Object? firstCheckInDate;
+  final String? firstCheckInDate;
 
   /// Last check-in calendar date, or null when none exists.
   @JsonKey(name: r'lastCheckInDate', required: false, includeIfNull: false)
-  final Object? lastCheckInDate;
+  final String? lastCheckInDate;
 
   @override
   bool operator ==(Object other) =>

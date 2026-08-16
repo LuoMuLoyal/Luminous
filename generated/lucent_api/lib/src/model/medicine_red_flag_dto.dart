@@ -19,7 +19,9 @@ class MedicineRedFlagDto {
   /// Returns a new [MedicineRedFlagDto] instance.
   MedicineRedFlagDto({
     required this.rule,
+
     required this.primaryMedicineName,
+
     this.relatedLabel,
   });
 

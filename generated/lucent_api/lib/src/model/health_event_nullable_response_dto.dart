@@ -20,7 +20,9 @@ class HealthEventNullableResponseDto {
   /// Returns a new [HealthEventNullableResponseDto] instance.
   HealthEventNullableResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

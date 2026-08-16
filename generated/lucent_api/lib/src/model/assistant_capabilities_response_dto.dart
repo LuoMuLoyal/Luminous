@@ -20,7 +20,9 @@ class AssistantCapabilitiesResponseDto {
   /// Returns a new [AssistantCapabilitiesResponseDto] instance.
   AssistantCapabilitiesResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

@@ -21,14 +21,23 @@ class SupportResourceDto {
   /// Returns a new [SupportResourceDto] instance.
   SupportResourceDto({
     required this.id,
+
     required this.scope,
+
     required this.title,
+
     this.titleKey,
+
     this.subtitle,
+
     this.subtitleKey,
+
     this.icon,
+
     this.actionUrl,
+
     this.actionType,
+
     required this.available,
   });
 

@@ -20,7 +20,9 @@ class EnvironmentSnapshotResponseDto {
   /// Returns a new [EnvironmentSnapshotResponseDto] instance.
   EnvironmentSnapshotResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

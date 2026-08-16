@@ -19,10 +19,15 @@ class HealthAppInfoDto {
   /// Returns a new [HealthAppInfoDto] instance.
   HealthAppInfoDto({
     required this.name,
+
     required this.env,
+
     required this.pid,
+
     required this.uptimeSeconds,
+
     required this.memoryRssBytes,
+
     required this.memoryHeapUsedBytes,
   });
 

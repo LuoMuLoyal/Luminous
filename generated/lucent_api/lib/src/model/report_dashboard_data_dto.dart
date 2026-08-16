@@ -24,14 +24,23 @@ class ReportDashboardDataDto {
   /// Returns a new [ReportDashboardDataDto] instance.
   ReportDashboardDataDto({
     required this.range,
+
     required this.startDate,
+
     required this.endDate,
+
     required this.generatedAt,
+
     required this.score,
+
     required this.metrics,
+
     required this.trends,
+
     required this.findings,
+
     required this.patterns,
+
     required this.aiSummaryEnabled,
   });
 

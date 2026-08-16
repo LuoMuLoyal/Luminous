@@ -20,7 +20,9 @@ class MedicineSafetyTipListResponseDto {
   /// Returns a new [MedicineSafetyTipListResponseDto] instance.
   MedicineSafetyTipListResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

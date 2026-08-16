@@ -19,16 +19,27 @@ class MedicineReminderItemDto {
   /// Returns a new [MedicineReminderItemDto] instance.
   MedicineReminderItemDto({
     required this.id,
+
     this.currentMedicineId,
+
     this.label,
+
     required this.scheduledHour,
+
     required this.scheduledMinute,
+
     this.daysOfWeek,
+
     this.startDate,
+
     this.endDate,
+
     required this.isActive,
+
     this.note,
+
     required this.createdAt,
+
     required this.updatedAt,
   });
 

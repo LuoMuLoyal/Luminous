@@ -19,8 +19,11 @@ class UpdateAssistantContextSettingsDto {
   /// Returns a new [UpdateAssistantContextSettingsDto] instance.
   UpdateAssistantContextSettingsDto({
     this.healthProfile,
+
     this.dailyRecords,
+
     this.sleepRecords,
+
     this.currentMedicines,
   });
 

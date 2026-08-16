@@ -20,6 +20,7 @@ class TodaySuggestionControllerExplainSuggestionAsyncV1202Response {
   /// Returns a new [TodaySuggestionControllerExplainSuggestionAsyncV1202Response] instance.
   TodaySuggestionControllerExplainSuggestionAsyncV1202Response({
     this.code,
+
     this.data,
   });
 

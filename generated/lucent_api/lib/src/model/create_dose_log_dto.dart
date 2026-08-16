@@ -20,12 +20,19 @@ class CreateDoseLogDto {
   /// Returns a new [CreateDoseLogDto] instance.
   CreateDoseLogDto({
     this.currentMedicineId,
+
     this.reminderId,
+
     this.healthEventId,
+
     required this.status,
+
     required this.scheduledFor,
+
     this.scheduledTime,
+
     this.doseText,
+
     this.note,
   });
 

@@ -20,10 +20,15 @@ class HealthEventCheckInResponseDto {
   /// Returns a new [HealthEventCheckInResponseDto] instance.
   HealthEventCheckInResponseDto({
     required this.id,
+
     required this.eventId,
+
     required this.date,
+
     required this.outcome,
+
     required this.createdAt,
+
     required this.updatedAt,
   });
 

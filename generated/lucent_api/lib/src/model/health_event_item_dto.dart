@@ -5,6 +5,7 @@
 // ignore_for_file: unused_element
 import 'package:lucent_api/src/model/health_event_outcome.dart';
 import 'package:lucent_api/src/model/health_event_status.dart';
+import 'package:lucent_api/src/model/health_event_kind.dart';
 import 'package:lucent_api/src/model/health_event_check_in_response_dto.dart';
 import 'package:lucent_api/src/model/health_event_coverage_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
@@ -22,17 +23,36 @@ part 'health_event_item_dto.g.dart';
 class HealthEventItemDto {
   /// Returns a new [HealthEventItemDto] instance.
   HealthEventItemDto({
+    required this.kind,
+
     required this.id,
+
     required this.title,
+
     required this.status,
+
     required this.startedAt,
+
     required this.endedAt,
+
     required this.outcome,
+
     required this.reasonRecordId,
+
     required this.currentMedicineIds,
+
     required this.checkIn,
+
     required this.coverage,
   });
+
+  @JsonKey(
+    name: r'kind',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue: HealthEventKind.unknownDefaultOpenApi,
+  )
+  final HealthEventKind kind;
 
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
@@ -54,7 +74,7 @@ class HealthEventItemDto {
 
   /// End time in ISO 8601 format, or null while active.
   @JsonKey(name: r'endedAt', required: true, includeIfNull: true)
-  final Object? endedAt;
+  final String? endedAt;
 
   @JsonKey(
     name: r'outcome',
@@ -65,7 +85,7 @@ class HealthEventItemDto {
   final HealthEventOutcome? outcome;
 
   @JsonKey(name: r'reasonRecordId', required: true, includeIfNull: true)
-  final Object? reasonRecordId;
+  final String? reasonRecordId;
 
   @JsonKey(name: r'currentMedicineIds', required: true, includeIfNull: false)
   final List<String> currentMedicineIds;
@@ -80,6 +100,7 @@ class HealthEventItemDto {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is HealthEventItemDto &&
+          other.kind == kind &&
           other.id == id &&
           other.title == title &&
           other.status == status &&
@@ -93,6 +114,7 @@ class HealthEventItemDto {
 
   @override
   int get hashCode =>
+      kind.hashCode +
       id.hashCode +
       title.hashCode +
       status.hashCode +

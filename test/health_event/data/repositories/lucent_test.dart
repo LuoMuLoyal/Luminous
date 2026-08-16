@@ -175,14 +175,6 @@ void main() {
     );
   });
 
-  test('rejects malformed nullable string fields', () async {
-    when(
-      () => healthEventsApi.healthEventsControllerActiveV1(),
-    ).thenAnswer((_) async => _activeResponse(_eventDto(endedAt: 42)));
-
-    await expectLater(repository.fetchActive(), throwsA(isA<StateError>()));
-  });
-
   test('propagates create, check-in, and end failures', () async {
     final error = StateError('request failed');
     when(
@@ -264,8 +256,9 @@ Response<api.HealthEventListResponseDto> _listResponse(
   );
 }
 
-api.HealthEventItemDto _eventDto({Object? endedAt, Object? reasonRecordId}) {
+api.HealthEventItemDto _eventDto({String? endedAt, String? reasonRecordId}) {
   return api.HealthEventItemDto(
+    kind: api.HealthEventKind.symptom,
     id: 'event-1',
     title: 'Cold observation',
     status: api.HealthEventStatus.active,

@@ -19,12 +19,19 @@ class DailyRecordImageUploadDto {
   /// Returns a new [DailyRecordImageUploadDto] instance.
   DailyRecordImageUploadDto({
     required this.provider,
+
     required this.bucket,
+
     required this.objectKey,
+
     required this.uploadUrl,
+
     required this.headers,
+
     required this.publicUrl,
+
     required this.expiresAt,
+
     required this.maxSizeBytes,
   });
 

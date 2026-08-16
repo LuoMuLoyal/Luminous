@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_api/src/model/health_event_kind.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,10 +19,24 @@ part 'create_health_event_dto.g.dart';
 class CreateHealthEventDto {
   /// Returns a new [CreateHealthEventDto] instance.
   CreateHealthEventDto({
+    this.kind = HealthEventKind.symptom,
+
     required this.title,
+
     this.reasonRecordId,
+
     this.currentMedicineIds,
   });
+
+  /// Persisted semantic kind used for check-in routing.
+  @JsonKey(
+    defaultValue: HealthEventKind.symptom,
+    name: r'kind',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue: HealthEventKind.unknownDefaultOpenApi,
+  )
+  final HealthEventKind? kind;
 
   /// Short user-defined event title.
   @JsonKey(name: r'title', required: true, includeIfNull: false)
@@ -39,12 +54,14 @@ class CreateHealthEventDto {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is CreateHealthEventDto &&
+          other.kind == kind &&
           other.title == title &&
           other.reasonRecordId == reasonRecordId &&
           other.currentMedicineIds == currentMedicineIds;
 
   @override
   int get hashCode =>
+      kind.hashCode +
       title.hashCode +
       (reasonRecordId == null ? 0 : reasonRecordId.hashCode) +
       currentMedicineIds.hashCode;

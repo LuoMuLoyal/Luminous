@@ -20,7 +20,9 @@ class DataExportLatestResponseDto {
   /// Returns a new [DataExportLatestResponseDto] instance.
   DataExportLatestResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

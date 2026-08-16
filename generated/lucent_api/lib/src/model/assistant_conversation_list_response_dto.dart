@@ -20,7 +20,9 @@ class AssistantConversationListResponseDto {
   /// Returns a new [AssistantConversationListResponseDto] instance.
   AssistantConversationListResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

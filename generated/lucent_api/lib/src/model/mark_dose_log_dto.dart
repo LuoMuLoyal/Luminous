@@ -20,12 +20,19 @@ class MarkDoseLogDto {
   /// Returns a new [MarkDoseLogDto] instance.
   MarkDoseLogDto({
     this.currentMedicineId,
+
     this.reminderId,
+
     this.healthEventId,
+
     required this.status,
+
     required this.scheduledFor,
+
     this.scheduledTime,
+
     this.doseText,
+
     this.note,
   });
 

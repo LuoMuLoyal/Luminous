@@ -21,24 +21,43 @@ class DailyRecordItemDto {
   /// Returns a new [DailyRecordItemDto] instance.
   DailyRecordItemDto({
     required this.id,
+
     required this.kind,
+
     this.healthEventId,
+
     required this.occurredAt,
+
     this.occurredTime,
+
     this.title,
+
     this.value,
+
     this.unit,
+
     this.note,
+
     this.source_,
+
     this.payload,
+
     this.mealAnalysisStatus,
+
     this.mealAnalysisCoverage,
+
     this.mealAnalysisUpdatedAt,
+
     this.mealAnalysisFailureReason,
+
     this.mealShortDescription,
+
     this.mealTopFoods,
+
     required this.attachments,
+
     required this.createdAt,
+
     required this.updatedAt,
   });
 

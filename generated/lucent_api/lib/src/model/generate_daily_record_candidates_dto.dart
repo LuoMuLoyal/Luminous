@@ -19,7 +19,9 @@ class GenerateDailyRecordCandidatesDto {
   /// Returns a new [GenerateDailyRecordCandidatesDto] instance.
   GenerateDailyRecordCandidatesDto({
     required this.text,
+
     required this.occurredAt,
+
     this.timezone,
   });
 

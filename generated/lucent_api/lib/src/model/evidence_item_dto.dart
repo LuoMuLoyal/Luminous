@@ -19,9 +19,13 @@ class EvidenceItemDto {
   /// Returns a new [EvidenceItemDto] instance.
   EvidenceItemDto({
     required this.kind,
+
     required this.label,
+
     required this.value,
+
     this.recordId,
+
     this.medicineId,
   });
 

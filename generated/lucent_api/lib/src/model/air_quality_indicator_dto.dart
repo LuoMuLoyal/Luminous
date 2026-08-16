@@ -20,7 +20,9 @@ class AirQualityIndicatorDto {
   /// Returns a new [AirQualityIndicatorDto] instance.
   AirQualityIndicatorDto({
     required this.aqi,
+
     required this.level,
+
     required this.primaryPollutant,
   });
 

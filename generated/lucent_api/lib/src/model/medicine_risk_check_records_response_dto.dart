@@ -20,7 +20,9 @@ class MedicineRiskCheckRecordsResponseDto {
   /// Returns a new [MedicineRiskCheckRecordsResponseDto] instance.
   MedicineRiskCheckRecordsResponseDto({
     required this.code,
+
     required this.message,
+
     required this.data,
   });
 

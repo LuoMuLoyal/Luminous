@@ -20,16 +20,27 @@ class DailyRecordAttachmentDto {
   /// Returns a new [DailyRecordAttachmentDto] instance.
   DailyRecordAttachmentDto({
     required this.id,
+
     required this.kind,
+
     required this.objectKey,
+
     this.bucket,
+
     this.provider,
+
     this.fileName,
+
     this.contentType,
+
     this.sizeBytes,
+
     this.width,
+
     this.height,
+
     this.publicUrl,
+
     required this.createdAt,
   });
 

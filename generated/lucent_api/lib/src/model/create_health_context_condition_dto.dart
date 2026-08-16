@@ -20,8 +20,11 @@ class CreateHealthContextConditionDto {
   /// Returns a new [CreateHealthContextConditionDto] instance.
   CreateHealthContextConditionDto({
     required this.label,
+
     this.status,
+
     this.diagnosedAt,
+
     this.note,
   });
 

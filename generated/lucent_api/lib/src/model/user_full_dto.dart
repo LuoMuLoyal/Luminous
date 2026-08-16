@@ -19,12 +19,19 @@ class UserFullDto {
   /// Returns a new [UserFullDto] instance.
   UserFullDto({
     required this.id,
+
     required this.email,
+
     required this.nickname,
+
     required this.avatar,
+
     required this.emailVerified,
+
     required this.emailVerifiedAt,
+
     required this.createdAt,
+
     required this.updatedAt,
   });
 

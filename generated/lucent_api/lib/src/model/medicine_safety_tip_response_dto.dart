@@ -19,7 +19,9 @@ class MedicineSafetyTipResponseDto {
   /// Returns a new [MedicineSafetyTipResponseDto] instance.
   MedicineSafetyTipResponseDto({
     required this.id,
+
     required this.text,
+
     required this.category,
   });
 

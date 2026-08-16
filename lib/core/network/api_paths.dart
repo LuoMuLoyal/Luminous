@@ -60,11 +60,6 @@ abstract final class LucentApiPaths {
   static String medicineReminder(String id) =>
       '/api/v1/user/medicine-reminders/$id';
 
-  /// `PUT /api/v1/user/medicine-reminders/group` — raw whole-group upsert
-  /// (single transaction: update by id, create without id, soft-delete
-  /// slots missing from the group).
-  static const medicineRemindersGroup = '/api/v1/user/medicine-reminders/group';
-
   /// `GET /api/v1/user/reminder-deliveries` — raw GET for deliveries.
   static const reminderDeliveries = '/api/v1/user/reminder-deliveries';
 

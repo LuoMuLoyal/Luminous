@@ -19,6 +19,7 @@ class MedicineRiskCoverageIssueDto {
   /// Returns a new [MedicineRiskCoverageIssueDto] instance.
   MedicineRiskCoverageIssueDto({
     required this.medicineName,
+
     required this.reason,
   });
 

@@ -21,14 +21,23 @@ class UpdateDailyRecordDto {
   /// Returns a new [UpdateDailyRecordDto] instance.
   UpdateDailyRecordDto({
     this.kind,
+
     this.occurredAt,
+
     this.occurredTime,
+
     this.title,
+
     this.value,
+
     this.unit,
+
     this.note,
+
     this.payload,
+
     this.healthEventId,
+
     this.attachments,
   });
 
@@ -64,7 +73,7 @@ class UpdateDailyRecordDto {
   @JsonKey(name: r'note', required: false, includeIfNull: false)
   final String? note;
 
-  /// Structured payload for kind-specific data. Use null to clear.
+  /// Structured payload for kind-specific data. Sleep accepts sleepType (nightSleep|nap), startedAt, endedAt, durationMinutes and optional quality; legacy startAt/endAt remain readable. endedAt must be later than startedAt.
   @JsonKey(name: r'payload', required: false, includeIfNull: false)
   final Map<String, Object>? payload;
 

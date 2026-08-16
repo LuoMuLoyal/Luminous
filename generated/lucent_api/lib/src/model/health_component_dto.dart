@@ -20,10 +20,15 @@ class HealthComponentDto {
   /// Returns a new [HealthComponentDto] instance.
   HealthComponentDto({
     required this.name,
+
     required this.status,
+
     required this.critical,
+
     required this.durationMs,
+
     required this.error,
+
     required this.details,
   });
 

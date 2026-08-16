@@ -20,12 +20,19 @@ class DailyRecordCandidateItemDto {
   /// Returns a new [DailyRecordCandidateItemDto] instance.
   DailyRecordCandidateItemDto({
     required this.kind,
+
     required this.occurredAt,
+
     this.title,
+
     this.value,
+
     this.unit,
+
     this.note,
+
     this.payload,
+
     required this.rationale,
   });
 
