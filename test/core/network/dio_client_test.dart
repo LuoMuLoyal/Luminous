@@ -333,43 +333,95 @@ void main() {
       expect(adapter.callCount, equals(1));
     });
 
-    // ── No refresh for 401 without tokenExpired code ──
+    // ── 401 without tokenExpired code → refresh attempted, then cleared ──
 
-    test('clears session on 401 with non-token-expired code', () async {
-      final store = _MemorySessionStore();
-      await store.write(
-        const LucentSessionTokens(
-          accessToken: 'bad-token',
-          refreshToken: 'valid-refresh-token',
-        ),
-      );
+    test(
+      'attempts refresh then clears session when 401 refresh is rejected',
+      () async {
+        final store = _MemorySessionStore();
+        await store.write(
+          const LucentSessionTokens(
+            accessToken: 'bad-token',
+            refreshToken: 'valid-refresh-token',
+          ),
+        );
 
-      bool sessionExpiredCalled = false;
-      final adapter = _CaptureAdapter(responseData: _unauthorizedBody);
-      adapter.statusCode = 401;
-      adapter.statusMessage = 'Unauthorized';
+        bool sessionExpiredCalled = false;
+        final adapter = _CaptureAdapter(responseData: _unauthorizedBody);
+        adapter.statusCode = 401;
+        adapter.statusMessage = 'Unauthorized';
 
-      final client = LucentDioClient(
-        baseUrl: 'http://localhost:3000',
-        sessionStore: store,
-        onSessionExpired: () async {
-          sessionExpiredCalled = true;
-        },
-        httpClientAdapter: adapter,
-      );
+        final client = LucentDioClient(
+          baseUrl: 'http://localhost:3000',
+          sessionStore: store,
+          onSessionExpired: () async {
+            sessionExpiredCalled = true;
+          },
+          httpClientAdapter: adapter,
+        );
 
-      try {
-        await client.dio.get('/api/v1/test');
-      } on DioException {
-        // Expected
-      }
+        try {
+          await client.dio.get('/api/v1/test');
+        } on DioException {
+          // Expected after the refresh request is also rejected with 401.
+        }
 
-      // No refresh attempted, but session is cleared and callback invoked
-      expect(adapter.callCount, equals(1));
-      final storedTokens = await store.read();
-      expect(storedTokens, isNull);
-      expect(sessionExpiredCalled, isTrue);
-    });
+        // New semantics (auth-refresh refactor): a 401 with a non-token-
+        // expired code is still a refresh candidate, so the refresh endpoint
+        // is attempted once. Since the refresh is also rejected with 401,
+        // the session is then cleared and the callback invoked.
+        expect(adapter.callCount, equals(2));
+        final storedTokens = await store.read();
+        expect(storedTokens, isNull);
+        expect(sessionExpiredCalled, isTrue);
+      },
+    );
+
+    test(
+      'does not refresh for non-refreshable auth codes and clears session',
+      () async {
+        final store = _MemorySessionStore();
+        await store.write(
+          const LucentSessionTokens(
+            accessToken: 'bad-token',
+            refreshToken: 'valid-refresh-token',
+          ),
+        );
+
+        bool sessionExpiredCalled = false;
+        final adapter = _CaptureAdapter(
+          responseData: <String, dynamic>{
+            'code': 401003, // LucentResultCode.refreshTokenInvalid
+            'message': 'refresh token invalid',
+            'data': null,
+          },
+        );
+        adapter.statusCode = 401;
+        adapter.statusMessage = 'Unauthorized';
+
+        final client = LucentDioClient(
+          baseUrl: 'http://localhost:3000',
+          sessionStore: store,
+          onSessionExpired: () async {
+            sessionExpiredCalled = true;
+          },
+          httpClientAdapter: adapter,
+        );
+
+        try {
+          await client.dio.get('/api/v1/test');
+        } on DioException {
+          // Expected
+        }
+
+        // refreshTokenInvalid is a non-refreshable auth code: no refresh
+        // request is made, the session is cleared and the callback invoked.
+        expect(adapter.callCount, equals(1));
+        final storedTokens = await store.read();
+        expect(storedTokens, isNull);
+        expect(sessionExpiredCalled, isTrue);
+      },
+    );
 
     // ── No refresh when no refresh token stored ──
 
