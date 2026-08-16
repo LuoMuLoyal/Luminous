@@ -7,6 +7,7 @@ import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/presentation/providers/recent_searches.dart';
 
 part 'medicine_search.freezed.dart';
 
@@ -91,6 +92,15 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
                   .fetchDetail(results.first.id, results.first.source)
             : null,
       );
+
+      // F-12: record a successful non-empty query as a recent search. The
+      // notifier absorbs persistence failures, so this never fails the search.
+      final trimmedQuery = state.query.trim();
+      if (trimmedQuery.isNotEmpty) {
+        await ref
+            .read(recentSearchesProvider.notifier)
+            .addKeyword(trimmedQuery);
+      }
     } catch (e) {
       ref
           .read(talkerProvider)

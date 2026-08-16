@@ -20,6 +20,11 @@ enum MedicineSearchCategoryType {
 // Photo recognition and barcode scan are live on mobile devices.
 enum MedicineSearchActionType { photo, barcode, keyword, switchSource }
 
+/// 旧搜索 dashboard 遗骸（F-12 最近搜索接入后无消费方），保留但**不接入主路径**。
+///
+/// `recentKeywords` 已由 `RecentSearchesLocalPreferences` /
+/// `recentSearchesProvider` 取代——页面空查询直接渲染持久化的最近搜索关键词，
+/// 本实体仅供历史参考，不得作为新代码的输入形态。
 @freezed
 abstract class MedicineSearchDashboard with _$MedicineSearchDashboard {
   const MedicineSearchDashboard._();
@@ -49,6 +54,10 @@ abstract class MedicineSearchQuickAction with _$MedicineSearchQuickAction {
   }) = _MedicineSearchQuickAction;
 }
 
+/// 分类快捷实体，保留但**不接入主路径**（F-12）。
+///
+/// 后端药品库无聚合分类字段，分类数据源未接通——调用处保持
+/// `Categories(categories: const [])` 隐藏分支；待后端提供分类数据源后再接线。
 @freezed
 abstract class MedicineSearchCategory with _$MedicineSearchCategory {
   const factory MedicineSearchCategory({

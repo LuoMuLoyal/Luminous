@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
+import 'package:luminous/features/search/presentation/providers/recent_searches.dart';
 import 'package:luminous/features/search/presentation/widgets/sections/categories.dart';
 import 'package:luminous/features/search/presentation/widgets/sections/desktop_tabs.dart';
 import 'package:luminous/features/search/presentation/widgets/sections/input.dart';
@@ -33,7 +35,7 @@ final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
       ]
     : <MedicineSearchQuickAction>[];
 
-class MedicineSearchView extends StatelessWidget {
+class MedicineSearchView extends ConsumerWidget {
   const MedicineSearchView({
     super.key,
     required this.state,
@@ -54,12 +56,16 @@ class MedicineSearchView extends StatelessWidget {
   final Set<String> addedMedicineIds;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
+    // F-12: persisted recent search keywords (latest first), rendered on the
+    // empty-query state so previously searched keywords are one tap away.
+    final recentKeywords =
+        ref.watch(recentSearchesProvider).asData?.value ?? const <String>[];
     return DecoratedBox(
       decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
@@ -74,6 +80,9 @@ class MedicineSearchView extends StatelessWidget {
                 ? _DesktopSearchLayout(
                     state: state,
                     l10n: l10n,
+                    recentKeywords: recentKeywords,
+                    onClearRecentSearches: () =>
+                        ref.read(recentSearchesProvider.notifier).clearAll(),
                     onQueryChanged: onQueryChanged,
                     onSourceSwitched: onSourceSwitched,
                     onResultSelected: onResultSelected,
@@ -84,6 +93,9 @@ class MedicineSearchView extends StatelessWidget {
                 : _MobileSearchLayout(
                     state: state,
                     l10n: l10n,
+                    recentKeywords: recentKeywords,
+                    onClearRecentSearches: () =>
+                        ref.read(recentSearchesProvider.notifier).clearAll(),
                     onQueryChanged: onQueryChanged,
                     onSourceSwitched: onSourceSwitched,
                     onResultSelected: onResultSelected,
@@ -152,6 +164,8 @@ class _MobileSearchLayout extends StatelessWidget {
   const _MobileSearchLayout({
     required this.state,
     required this.l10n,
+    required this.recentKeywords,
+    required this.onClearRecentSearches,
     required this.onQueryChanged,
     required this.onSourceSwitched,
     required this.onResultSelected,
@@ -162,6 +176,8 @@ class _MobileSearchLayout extends StatelessWidget {
 
   final MedicineSearchState state;
   final AppLocalizations l10n;
+  final List<String> recentKeywords;
+  final VoidCallback onClearRecentSearches;
   final ValueChanged<String> onQueryChanged;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
@@ -201,11 +217,13 @@ class _MobileSearchLayout extends StatelessWidget {
         const SizedBox(height: Spacing.level5),
         if (state.query.trim().isEmpty) ...[
           RecentSearches(
-            keywords: const <String>[],
+            keywords: recentKeywords,
             l10n: l10n,
             onKeywordSelected: onQueryChanged,
+            onClear: onClearRecentSearches,
           ),
           QuickActions(actions: _scanQuickActions, l10n: l10n),
+          // F-12：分类数据源未接通（后端无聚合分类字段），保持隐藏。
           Categories(
             categories: const <MedicineSearchCategory>[],
             l10n: l10n,
@@ -257,6 +275,8 @@ class _DesktopSearchLayout extends StatelessWidget {
   const _DesktopSearchLayout({
     required this.state,
     required this.l10n,
+    required this.recentKeywords,
+    required this.onClearRecentSearches,
     required this.onQueryChanged,
     required this.onSourceSwitched,
     required this.onResultSelected,
@@ -267,6 +287,8 @@ class _DesktopSearchLayout extends StatelessWidget {
 
   final MedicineSearchState state;
   final AppLocalizations l10n;
+  final List<String> recentKeywords;
+  final VoidCallback onClearRecentSearches;
   final ValueChanged<String> onQueryChanged;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
@@ -291,6 +313,8 @@ class _DesktopSearchLayout extends StatelessWidget {
           child: _DesktopSearchPanel(
             state: state,
             l10n: l10n,
+            recentKeywords: recentKeywords,
+            onClearRecentSearches: onClearRecentSearches,
             onQueryChanged: onQueryChanged,
             onSourceSwitched: onSourceSwitched,
             onResultSelected: onResultSelected,
@@ -312,6 +336,8 @@ class _DesktopSearchPanel extends StatelessWidget {
   const _DesktopSearchPanel({
     required this.state,
     required this.l10n,
+    required this.recentKeywords,
+    required this.onClearRecentSearches,
     required this.onQueryChanged,
     required this.onSourceSwitched,
     required this.onResultSelected,
@@ -321,6 +347,8 @@ class _DesktopSearchPanel extends StatelessWidget {
 
   final MedicineSearchState state;
   final AppLocalizations l10n;
+  final List<String> recentKeywords;
+  final VoidCallback onClearRecentSearches;
   final ValueChanged<String> onQueryChanged;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
@@ -358,11 +386,17 @@ class _DesktopSearchPanel extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.level5),
             if (state.query.trim().isEmpty) ...[
-              RecentSearches(keywords: const <String>[], l10n: l10n),
+              RecentSearches(
+                keywords: recentKeywords,
+                l10n: l10n,
+                onKeywordSelected: onQueryChanged,
+                onClear: onClearRecentSearches,
+              ),
               QuickActions(
                 actions: const <MedicineSearchQuickAction>[],
                 l10n: l10n,
               ),
+              // F-12：分类数据源未接通（后端无聚合分类字段），保持隐藏。
               Categories(
                 categories: const <MedicineSearchCategory>[],
                 l10n: l10n,

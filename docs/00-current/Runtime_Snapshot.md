@@ -86,6 +86,7 @@ Last updated: 2026-08-16 (本地通知回执与推送回退能力上报)
 - `DataChangeBus`（keepAlive Notifier）解耦跨 feature invalidation——`DataChangeTopic` 定义 5 个领域事件，消费方 watch `dataChangeVersionProvider(topic)`。
 - `PrefKeys`（`core/config/pref_keys.dart`）集中管理 SharedPreferences key。Record quick-entry
   偏好包括动态排序、自定义顺序、收起状态、频率计数、饮水默认量（预设或自定义 ml）、饮水角标模式和睡眠进行中标记。
+- 搜索页最近搜索关键词本地持久化（`medicine.search.recentKeywords`，`RecentSearchesLocalPreferences` + `recentSearchesProvider`）：搜索成功写入、去重最新在前上限 10 条，空查询时渲染，可点关键词再搜或「清空」。
 - Record quick-entry panel 从 `RecordDashboardView` 接收当天 `RecordDaySummary` 与 `RecordTimelineEntry`
   列表，用于本地渲染饮水角标（累计量/次数/隐藏）和睡眠进行中角标；该显示层不新增后端状态字段。
 - `dailyRecordDetailProvider(recordId)` 为 keepAlive FutureProvider；`dailyRecordListForDateProvider(date)`（手写 `FutureProvider.family`）按本地日期拉当天记录，供详情页相邻导航与饮水聚合。

@@ -6,6 +6,8 @@ import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
+import 'package:luminous/features/search/presentation/providers/recent_searches.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Fake implementation of [MedicineSearchRepository] for testing
 /// [MedicineSearchNotifier] state transitions.
@@ -80,6 +82,9 @@ void main() {
   late ProviderContainer container;
 
   setUp(() {
+    // The search notifier writes successful queries into the persisted recent
+    // searches provider, which is backed by SharedPreferences.
+    SharedPreferences.setMockInitialValues({});
     repo = _FakeSearchRepository();
     container = ProviderContainer(
       overrides: [medicineSearchRepositoryProvider.overrideWithValue(repo)],
@@ -362,6 +367,79 @@ void main() {
       expect(state.isSearching, isFalse);
       expect(state.selectedResultId, isNull);
       expect(state.detailPreview, isNull);
+    });
+  });
+
+  // ── recent searches (F-12) ────────────────────────────────────
+  group('recent searches', () {
+    test('records the trimmed keyword after a successful search', () async {
+      repo.searchResults = [_result('m1')];
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('  aspirin  ');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      final keywords = container.read(recentSearchesProvider).asData?.value;
+      expect(keywords, ['aspirin']);
+    });
+
+    test('records the keyword even when results are empty', () async {
+      repo.searchResults = [];
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('nonexistent');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      final keywords = container.read(recentSearchesProvider).asData?.value;
+      expect(keywords, ['nonexistent']);
+    });
+
+    test('does not record the keyword when the search fails', () async {
+      repo.searchError = Exception('Network error');
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      final keywords = container.read(recentSearchesProvider).asData?.value;
+      expect(keywords ?? const <String>[], isEmpty);
+    });
+
+    test('does not record whitespace-only queries', () async {
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('   ');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      final keywords = container.read(recentSearchesProvider).asData?.value;
+      expect(keywords ?? const <String>[], isEmpty);
+    });
+
+    test('re-searching a keyword moves it to the front', () async {
+      repo.searchResults = [_result('m1')];
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
+      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.updateQuery('bayer');
+      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.updateQuery('aspirin');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      final keywords = container.read(recentSearchesProvider).asData?.value;
+      expect(keywords, ['aspirin', 'bayer']);
+    });
+
+    test('clears all keywords via the notifier', () async {
+      repo.searchResults = [_result('m1')];
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      await container.read(recentSearchesProvider.notifier).clearAll();
+
+      final keywords = container.read(recentSearchesProvider).asData?.value;
+      expect(keywords, isEmpty);
     });
   });
 }

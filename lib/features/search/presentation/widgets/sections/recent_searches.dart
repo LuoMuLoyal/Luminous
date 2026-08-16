@@ -9,11 +9,16 @@ class RecentSearches extends StatelessWidget {
     required this.keywords,
     required this.l10n,
     this.onKeywordSelected,
+    this.onClear,
   });
 
   final List<String> keywords;
   final AppLocalizations l10n;
   final ValueChanged<String>? onKeywordSelected;
+
+  /// Clears all recent search keywords. The section collapses back to
+  /// `SizedBox.shrink` once the keyword list is empty.
+  final VoidCallback? onClear;
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +40,17 @@ class RecentSearches extends StatelessWidget {
                   .copyWith(fontWeight: FontWeight.w700),
             ),
             const Spacer(),
-            Text(
-              l10n.medicineSearchClearAction,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(color: colors.primary, fontWeight: FontWeight.w700),
+            FTappable(
+              onPress: onClear,
+              child: Text(
+                l10n.medicineSearchClearAction,
+                style: TypographyToken.level4
+                    .body(context)
+                    .copyWith(
+                      color: colors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
             ),
           ],
         ),

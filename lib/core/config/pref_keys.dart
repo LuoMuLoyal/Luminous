@@ -49,6 +49,7 @@ abstract final class PrefKeys {
   static const medicineReminderSound = 'medicine.reminder.sound';
   static const medicineReminderScheduledNotificationIds =
       'medicine.reminder.scheduledNotificationIds';
+  static const medicineSearchRecentKeywords = 'medicine.search.recentKeywords';
 
   // ── Record ─────────────────────────────────────────────────────────────
 

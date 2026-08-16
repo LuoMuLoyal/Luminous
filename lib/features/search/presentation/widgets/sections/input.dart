@@ -19,11 +19,18 @@ class SearchInput extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final controller = useTextEditingController(text: query);
+    // Guards the controller→onChanged echo while [query] is synced back into
+    // the controller. External query changes (e.g. tapping a recent search
+    // keyword) otherwise fire onChange during build, and the resulting
+    // provider update trips Riverpod's "modify while building" assertion.
+    final syncing = useRef(false);
     final colors = context.theme.colors;
 
     useEffect(() {
       if (query != controller.text) {
+        syncing.value = true;
         controller.text = query;
+        syncing.value = false;
       }
       return null;
     }, [query]);
@@ -31,7 +38,11 @@ class SearchInput extends HookWidget {
     return FTextField(
       control: FTextFieldControl.managed(
         controller: controller,
-        onChange: (value) => onChanged(value.text),
+        onChange: (value) {
+          if (!syncing.value) {
+            onChanged(value.text);
+          }
+        },
       ),
       hint: l10n.medicineSearchFieldHint,
       textInputAction: TextInputAction.search,

@@ -22,6 +22,7 @@ import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/widgets/views/view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
 
@@ -391,6 +392,9 @@ Future<void> _pumpSearchApp(
       const _MockMedicineSearchRepository(),
   List overrides = const [],
 }) async {
+  // The page watches the persisted recent-searches provider, which is backed
+  // by SharedPreferences.
+  SharedPreferences.setMockInitialValues({});
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
