@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: how-to
-updated: 2026-08-10
+updated: 2026-08-16
 ---
 
 # How-To: 再生 Lucent API 客户端
@@ -25,13 +25,25 @@ pnpm export:openapi
 
 ```bash
 cd Luminous
-openapi-generator-cli generate \
-  -i ../Lucent/docs/openapi.json \
-  -g dart-dio \
-  -o generated/lucent_api \
-  -c openapi_gen_config.json
 dart run scripts/bootstrap_generated_sources.dart
 ```
+
+bootstrap 内部按三个阶段完成全量再生，无需再手工调用 openapi-generator-cli：
+
+1. **全量生成**（临时目录）：一次生成全部 apis/models/supporting 文件，把完整 `lib/` 树
+   归一化拷贝进 `generated/lucent_api`——覆盖过滤客户端清单外的客户端（如 `MedicineRemindersApi`）。
+2. **过滤生成**：对 `_filteredClients` 清单逐客户端再生并覆盖（过滤生成只产出命名 schema 模型）。
+3. **支撑文件**：再生 `lucent_api.dart` / `deserialize.dart` 并补齐内联响应模型，然后
+   `dart pub get` + `build_runner`（生成 `.g.dart`）+ `dart format`。
+
+脚本内置两类归一化/防护（how-to 层面无需关心）：
+
+- dart-dio 对「枚举数组」字段会输出非法的
+  `unknownEnumValue: List<SomeDtoSourcesEnum>.unknownDefaultOpenApi` 行，全部拷贝路径经
+  `_normalizeGeneratedDart` 剥离（规则同步维护于本脚本内）。
+- 生成关闭 `modelDocs/apiDocs/modelTests/apiTests`：模型测试模板使用 null-aware 元素语法，
+  会重写跟踪中的既有测试并破坏解析；生成器模板文件（`pubspec.yaml` / `.gitignore` 等）
+  不拷贝，仓库跟踪的 SDK 约束（与根 pubspec 一致的 Dart 3.12）保持不变。
 
 此脚本会：
 1. 使用 `@openapitools/openapi-generator-cli` 的 `dart-dio` 读取 `../Lucent/docs/openapi.json`，生成客户端和 JSON-serializable 模型

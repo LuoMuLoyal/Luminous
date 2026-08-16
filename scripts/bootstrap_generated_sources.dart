@@ -98,11 +98,30 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
   final supportingOutput = await Directory.systemTemp.createTemp(
     'luminous-openapi-supporting-',
   );
+  final fullOutput = await Directory.systemTemp.createTemp(
+    'luminous-openapi-full-',
+  );
 
   try {
-    // openapi-generator-cli 7.x 的 --global-property 只接受单值 apis，
-    // 因此每个过滤客户端（TodayAnalysis、Reports 等）各跑一次生成再合并
-    // 拷贝。新增 API 面只需在 _filteredClients 里加一条配置。
+    // 阶段 1（全量）:一次生成全部 apis/models/supporting 到临时目录，把
+    // 完整 lib 树（含 _filteredClients 未覆盖的客户端，如
+    // MedicineRemindersApi）归一化拷贝进 generated/lucent_api。
+    // 与过滤再生相同：关闭 docs/tests 生成（模型测试模板使用 null-aware
+    // 元素语法，会重写跟踪中的既有测试并破坏构建），且 pubspec.yaml 等
+    // 模板文件不拷贝（保留仓库跟踪的 SDK 约束）。
+    await _generateFullApiClient(
+      context,
+      openApiFile: openApiFile,
+      generatorConfig: generatorConfig,
+      outputDirectory: fullOutput,
+    );
+    _copyGeneratedLibTree(fullOutput, generatedClientRoot);
+
+    // 阶段 2（过滤）:openapi-generator-cli 7.x 的 --global-property 只接受
+    // 单值 apis，因此每个过滤客户端（TodayAnalysis、Reports 等）各跑一次
+    // 生成再合并拷贝，覆盖阶段 1 的对应文件（过滤生成只产出命名 schema
+    // 模型，不会生成内联响应模型）。新增 API 面只需在 _filteredClients
+    // 里加一条配置。
     for (final client in _filteredClients) {
       final output = await Directory.systemTemp.createTemp(
         'luminous-openapi-${client.apis.toLowerCase()}-',
@@ -159,6 +178,7 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
       await output.delete(recursive: true);
     }
     await supportingOutput.delete(recursive: true);
+    await fullOutput.delete(recursive: true);
   }
 
   await runLoggedCommand(
@@ -218,6 +238,62 @@ Future<void> _generateFilteredApiClient(
     stepName: 'openapi-generator (filtered $apis client)',
   );
   stdout.writeln('');
+}
+
+/// Runs one full dart-dio generation (all apis + models + supporting files)
+/// with docs/tests disabled. The raw output is copied into the tracked client
+/// by [_copyGeneratedLibTree], which applies the same normalization as the
+/// filtered copies. Model tests stay disabled: the current generator's test
+/// templates use null-aware element syntax that would rewrite the tracked
+/// test snapshot and break parsing under the repo's pinned SDK.
+Future<void> _generateFullApiClient(
+  ToolContext context, {
+  required File openApiFile,
+  required File generatorConfig,
+  required Directory outputDirectory,
+}) async {
+  await runLoggedCommand(
+    'openapi-generator-cli',
+    [
+      'generate',
+      '-i',
+      openApiFile.path,
+      '-g',
+      'dart-dio',
+      '-o',
+      outputDirectory.path,
+      '-c',
+      generatorConfig.path,
+      '--global-property=modelDocs=false,apiDocs=false,modelTests=false,apiTests=false',
+    ],
+    workingDirectory: context.repoRoot,
+    stepName: 'openapi-generator (full client)',
+  );
+  stdout.writeln('');
+}
+
+/// Copies every non-generated Dart file under the full regen output's `lib/`
+/// into the tracked client, applying [_normalizeGeneratedDart]. Generator
+/// template files outside `lib/` (pubspec.yaml, .gitignore, README, ...) are
+/// deliberately not copied so the tracked SDK constraint and ignore rules are
+/// preserved.
+void _copyGeneratedLibTree(Directory sourceRoot, Directory targetRoot) {
+  final sourceLib = Directory('${sourceRoot.path}${Platform.pathSeparator}lib');
+  if (!sourceLib.existsSync()) {
+    throw StateError('OpenAPI generator did not produce lib sources.');
+  }
+
+  for (final entity in sourceLib.listSync(recursive: true)) {
+    if (entity is! File ||
+        !entity.path.endsWith('.dart') ||
+        entity.path.endsWith('.g.dart')) {
+      continue;
+    }
+    final relative = entity.path
+        .substring(sourceLib.path.length + 1)
+        .replaceAll(Platform.pathSeparator, '/');
+    _copyGeneratedFile(sourceRoot, targetRoot, 'lib/$relative');
+  }
 }
 
 Future<void> _generateSupportingFiles(
