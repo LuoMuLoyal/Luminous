@@ -61,7 +61,7 @@ class MedicineReminderSlotUpsertInput {
 /// Write input for upserting a whole medicine reminder group in a single
 /// transaction. Slots carrying an [id] are updated, slots without one are
 /// created, and existing group slots missing from [slots] are soft-deleted
-/// server-side. Only non-null group-level fields are serialized.
+/// server-side. Only non-null, non-empty group-level fields are serialized.
 class MedicineReminderGroupUpsertInput {
   const MedicineReminderGroupUpsertInput({
     required this.currentMedicineId,
@@ -88,8 +88,8 @@ class MedicineReminderGroupUpsertInput {
       'currentMedicineId': currentMedicineId,
       if (label != null) 'label': label,
       if (daysOfWeek != null) 'daysOfWeek': daysOfWeek,
-      if (startDate != null) 'startDate': startDate,
-      if (endDate != null) 'endDate': endDate,
+      if (startDate != null && startDate!.isNotEmpty) 'startDate': startDate,
+      if (endDate != null && endDate!.isNotEmpty) 'endDate': endDate,
       if (isActive != null) 'isActive': isActive,
       if (note != null) 'note': note,
       'slots': slots.map((slot) => slot.toJson()).toList(growable: false),

@@ -39,6 +39,11 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ## 延后（有明确原因）
 
+- 药箱项「停用/归档」语义（F-2，0.1.0 后）
+  - 现状：药箱项只能软删除，短期事件结束后「停药」会丢可见性
+  - 方案：增加停用/归档状态，保留历史不出现在当前用药；涉及 health-context API 与药箱 UI
+  - 依据：用药改造计划 3.3 节 F-2 与 2026-08-16 决策记录「处方 OCR、药箱停用/归档语义增强均为 0.1.0 后事项」；0.1.0 后按既有 P0→P1→P2 与全局依赖顺序恢复
+
 - AI 会话重命名与删除
   - 当前客户端只支持新建、加载和切换会话；等待后端提供会话标题更新与删除 API 后再实现
 
@@ -61,23 +66,15 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ## 审查暂缓项
 
-- F-6 前端整组保存审查 P2（2026-08-16 任务 8 审查，越界既有项，不阻塞）
-  - `lib/features/medicine/presentation/pages/reminder/edit.dart` `formatDateInput(null)` 返回 `''` 会被序列化为 `'startDate': ''`，后端 `@IsDateString()` 400——既有代码、F-6 未引入；UI 创建时 startDate 恒默认今天，难触达。验收：formatDateInput 对 null 返回 null 或序列化时过滤空串。
+- F-14 药品详情页审查 P2-2（2026-08-16 任务 2 审查遗留，待 scan-search 计划决策）
+  - 位置：`lib/app/router.dart` `_publicRoutePrefixes` / `_publicRootRoutes`
+  - 问题：`/medicine/detail` 未登记为公开路由（后端 `GET /medicines/:id?source=` 为 @Public、页面仅对「加入药箱」做 auth 门控），未登录深链会 redirect 到 `/login`；当前唯一入口（Reminder 详情卡）已 auth 门控，不破坏现有流程
+  - 验收：scan-search 计划接线「查看说明书」时决定公开（加入 `_publicRoutePrefixes`）或保持受保护并在入口做 auth 门控，并同步 `docs/02-reference/routing.md` Public Preview 段
 
-- F-3 打卡撤销审查 P2 清单（2026-08-16 任务 5 审查，P2-1~P2-4，不阻塞）
-  - P2-1 `lib/features/medicine/presentation/pages/page.dart` `_undoDose` 首行缺 `if (!context.mounted) return;`（1.8s toast 存活期间页面销毁时概率极低的空安全风险）。验收：与 `_markDose` 一致在函数入口先做 mounted 守卫。
-  - P2-2 `core/feedback/toast.dart` 同消息去重分支不更新 action 回调（连续打卡两槽位时第二次撤销指向第一槽位闭包；已文档化、反向 planned 幂等）。验收：可接受或为 Toast 增加重放时替换 action 能力。
-  - P2-3 en 文案 `medicineDoseUndoneToast`（"Dose check-in undone"）缺句末句点，与相邻 "Dose log saved." 风格不一致。验收：补句点（zh/en 分片同步 merge + gen-l10n）。
-  - P2-4 测试注记：撤销用例未断言槽位视觉回 pending（fixture 恒 pending）；emit→刷新链路已在代码级核实。验收：可选补一条断言。
-
-- F-14 药品详情页审查 P2 清单（2026-08-16 任务 2 审查，P2-1~P2-6）
-  - P2-1 routing.md 缺新路由：`docs/02-reference/routing.md` 路由树「/medicine/search…」行、File Structure 注释行、Public Preview 节未登记 `/medicine/detail/:source/:id`（doc-map app-shell 规则 docs_any_of 持续告警，pre-commit 不阻断）
-  - P2-2 详情路由公开性：`lib/app/router.dart` 未把 `/medicine/detail` 加入 `_publicRoutePrefixes`；待 scan-search 接线「查看说明书」时决定公开（对齐后端 @Public）或保持 auth 门控，并同步 routing.md
-  - P2-3 已加入判定缺 isCurrent 过滤：`lib/features/medicine/presentation/pages/medicine_detail.dart` `isAdded` 未过滤软删药，与 search 页口径不一致
-  - P2-4 新文件名带 `medicine_` 前缀（5 个新文件）：AGENTS 命名规则判断项，可接受（业务词「药品详情」）或改 `drug_detail` 类词
-  - P2-5 页面测试缺 3 用例：loading 骨架屏 / unknown source 错误态 / 全空字段空态（`test/medicine/medicine_detail_page_test.dart`）
-  - P2-6 nits：`state_views.dart` barrel import（既有实践）；`MedicineDetail` 的 barcode/nationalDrugCode/sourceUrl 等字段映射后未消费（无害冗余）；datasource 空守卫语义已确认无问题
-  - 验收：Phase C 按「实现—审查—修复—提交」处理或明确接受（P2-1/P2-3/P2-5 建议修复，P2-2 待 scan-search 决策，P2-4/P2-6 可接受）
+- F-3 打卡撤销审查 P2-2（2026-08-16 任务 5 审查遗留）
+  - 位置：`core/feedback/toast.dart` 同消息去重分支
+  - 问题：1.8s 内连续打卡两槽位时第二次撤销 action 仍是第一槽位闭包（已文档化、反向 planned 幂等）
+  - 验收：可接受或为 Toast 增加重放时替换 action 能力
 
 - 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/presentation/pages/detail.dart`（853 行）、`record/presentation/widgets/sections/quick_entry_panel.dart`（565 行）、`record/presentation/pages/edit.dart`（511 行）、`report/presentation/pages/page.dart`（438 行）、`settings/presentation/pages/page.dart`（184 行）
 - 剩余约 80 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理

@@ -240,6 +240,7 @@ Future<void> _undoDose(
   MedicineDoseMarkRequest request,
   String dateStr,
 ) async {
+  if (!context.mounted) return;
   final l10n = AppLocalizations.of(context)!;
   try {
     await ref

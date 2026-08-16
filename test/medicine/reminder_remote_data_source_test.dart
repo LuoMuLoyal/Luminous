@@ -261,6 +261,37 @@ void main() {
       expect(items[2].scheduledMinute, 15);
     });
 
+    test(
+      'upsertGroup omits empty-string startDate/endDate from PUT body',
+      () async {
+        await dataSource.upsertGroup(
+          const MedicineReminderGroupUpsertInput(
+            currentMedicineId: 'med-1',
+            label: '阿托伐他汀钙片',
+            daysOfWeek: null,
+            startDate: '',
+            endDate: '',
+            isActive: true,
+            note: null,
+            slots: [
+              MedicineReminderSlotUpsertInput(
+                id: 'reminder-1',
+                scheduledHour: 8,
+                scheduledMinute: 0,
+              ),
+            ],
+          ),
+        );
+
+        final request = adapter.requestAt(
+          'PUT',
+          '/api/v1/user/medicine-reminders/group',
+        );
+        expect(request.body!.containsKey('startDate'), isFalse);
+        expect(request.body!.containsKey('endDate'), isFalse);
+      },
+    );
+
     test('reportLocalReceipt posts the idempotent receipt payload', () async {
       await dataSource.reportLocalReceipt(
         reminderId: 'reminder-1',
