@@ -441,5 +441,37 @@ void main() {
       final keywords = container.read(recentSearchesProvider).asData?.value;
       expect(keywords, isEmpty);
     });
+
+    test('a write while the initial load is in flight survives the load '
+        'completion (F-12 P2-2)', () async {
+      // Race guard: `addKeyword` must wait for the initial `build()` load to
+      // settle before writing. Otherwise the load's completion (riverpod
+      // `handleFuture`) could overwrite the just-persisted write with the
+      // stale pre-write read value.
+      //
+      // Determinism note: the true interleaving (the stale load landing
+      // *after* the write) cannot be reproduced with the in-memory mock
+      // store — the load and the write await the same memoized
+      // `getInstance()` future and mock reads are synchronous, so the
+      // load's stale value always settles before the write's state set.
+      // What this test pins instead is the required outcome: a write issued
+      // while the initial load is genuinely pending (it has not resolved by
+      // the time `addKeyword` runs) ends with the written value in state,
+      // and it exercises the guard path (`_settleInitialLoad` awaiting the
+      // in-flight load). It would break if the guard deadlocked or dropped
+      // the write.
+      final notifier = container.read(recentSearchesProvider.notifier);
+      // Premise: the initial load is still pending here — `getInstance()`
+      // has not resolved, so `build()`'s load future is genuinely in flight
+      // when the write below runs (pinning this keeps the guard path
+      // exercised even if the mock store's timing changes).
+      expect(container.read(recentSearchesProvider).isLoading, isTrue);
+      await notifier.addKeyword('布洛芬');
+
+      await Future<void>.delayed(Duration.zero);
+
+      final keywords = container.read(recentSearchesProvider).asData?.value;
+      expect(keywords, ['布洛芬']);
+    });
   });
 }

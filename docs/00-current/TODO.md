@@ -64,10 +64,6 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - `intl.DateFormat` 替代 ISO 字符串
   - `padLeft` 是线协议格式，DateFormat 不适用
 
-## F-12 最近搜索审查 P2（2026-08-16，非阻塞）
-
-- `recent_searches.dart` provider 首次 `load()` 未完成时 `addKeyword` 写入，riverpod `handleFuture` 完成后会覆盖为陈旧读取值（实际不可达：页面打开即 load、写入在 400ms 防抖后）。验收（可选加固）：`addKeyword`/`clearAll` 开头 await 初始 load 或加 `_loaded` 标志。
-
 ## 审查暂缓项
 
 - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。
