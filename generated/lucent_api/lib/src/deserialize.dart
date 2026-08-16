@@ -133,6 +133,9 @@ import 'package:lucent_api/src/model/legal_document_detail_response_dto.dart';
 import 'package:lucent_api/src/model/legal_document_list_data_dto.dart';
 import 'package:lucent_api/src/model/legal_document_list_item_dto.dart';
 import 'package:lucent_api/src/model/legal_document_list_response_dto.dart';
+import 'package:lucent_api/src/model/local_capability_data_dto.dart';
+import 'package:lucent_api/src/model/local_capability_response_dto.dart';
+import 'package:lucent_api/src/model/local_capability_state_dto.dart';
 import 'package:lucent_api/src/model/login_data_dto.dart';
 import 'package:lucent_api/src/model/login_dto.dart';
 import 'package:lucent_api/src/model/login_response_dto.dart';
@@ -181,6 +184,9 @@ import 'package:lucent_api/src/model/register_response_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_item_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_data_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_response_dto.dart';
+import 'package:lucent_api/src/model/reminder_delivery_receipt_data_dto.dart';
+import 'package:lucent_api/src/model/reminder_delivery_receipt_dto.dart';
+import 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_data_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_score_dto.dart';
@@ -784,6 +790,15 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'LocalCapabilityDataDto':
+      return LocalCapabilityDataDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'LocalCapabilityResponseDto':
+      return LocalCapabilityResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'LocalCapabilityStateDto':
+      return LocalCapabilityStateDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'LoginDataDto':
       return LoginDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'LoginDto':
@@ -943,6 +958,19 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ReminderDeliveryListResponseDto':
       return ReminderDeliveryListResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReminderDeliveryReceiptDataDto':
+      return ReminderDeliveryReceiptDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReminderDeliveryReceiptDto':
+      return ReminderDeliveryReceiptDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ReminderDeliveryReceiptResponseDto':
+      return ReminderDeliveryReceiptResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

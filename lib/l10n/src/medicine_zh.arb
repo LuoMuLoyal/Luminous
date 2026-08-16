@@ -344,6 +344,7 @@
   "medicineReminderDeliveryLogsTitle": "提醒投递历史",
   "medicineReminderNoDeliveryLogs": "暂无提醒投递记录",
   "medicineReminderDeliveryChannelLocal": "本机通知",
+  "medicineReminderDeliveryChannelInApp": "应用内通知",
   "medicineReminderDeliveryChannelPush": "推送通知",
   "medicineReminderDeliveryChannelEmail": "邮件",
   "medicineReminderDeliveryChannelSms": "短信",

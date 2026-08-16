@@ -19,6 +19,7 @@ import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/core/widgets/common/desktop_window_chrome.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder_delivery_reporter.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -80,6 +81,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       medicineReminderNotificationSyncProvider,
       (_, _) {},
     );
+    ref.watch(medicineReminderDeliveryReporterProvider);
     ref.watch(pushCoordinatorProvider);
 
     final themePreference = ref

@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-15
+updated: 2026-08-16
 ---
 
 # Luminous Next Plan
 
-Last updated: 2026-08-15
+Last updated: 2026-08-16
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
 产品优先级以 [[01-product/Product_Vision]] 和仓库根目录 `CONTEXT.md` 为准；ADR-0011 与历史 brainstorm 只用于追溯已经完成的事件闭环。
@@ -56,9 +56,8 @@ Last updated: 2026-08-15
 - 未完成用户任务与技术路线调研前，启动桌面/Web 产品化或承诺与手机端功能对等
 - 皮肤识别或报告照片导入
 - medicine-side OCR/barcode/photo/prescription 识别 UI 或合同
-- 真实 FCM/APNs push 投递
+- 真实 FCM/APNs 厂商直推（JPush 条件回退已实现：本地通知优先，能力上报后仅本地不可达/未确认时后台 JPush）
 - 真实 SMS 投递
-- 后端提醒投递 worker
 - 未明确批准的付费或需要资质的外部服务
 - 目标 Today/Mine job 明确前的 environment 前端连线
 

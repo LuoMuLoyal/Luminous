@@ -19,13 +19,21 @@ class ReminderDeliveryItemDto {
   /// Returns a new [ReminderDeliveryItemDto] instance.
   ReminderDeliveryItemDto({
     required this.id,
+
     this.reminderId,
+
     this.deviceId,
+
     required this.channel,
+
     required this.status,
+
     required this.scheduledFor,
+
     this.deliveredAt,
+
     this.errorMessage,
+
     required this.createdAt,
   });
 

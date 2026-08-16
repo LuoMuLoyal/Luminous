@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:luminous/core/auth/session_provider.dart';
@@ -6,6 +7,7 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
@@ -27,7 +29,10 @@ class MedicineReminderNotificationCoordinator {
   final MedicineReminderNotificationPlanner planner;
   final MedicineReminderLocalPreferences preferences;
 
-  Future<void> resync({
+  /// Reschedules local notifications for the given reminders and returns
+  /// `true` only when the gateway initialized and every scheduled
+  /// notification was accepted by the platform.
+  Future<bool> resync({
     required List<MedicineReminderItem> reminders,
     required bool remindersEnabled,
     required MedicineReminderSoundPreference sound,
@@ -43,7 +48,7 @@ class MedicineReminderNotificationCoordinator {
     bool soundEnabled = true,
   }) async {
     if (!await gateway.ensureInitialized()) {
-      return;
+      return false;
     }
 
     final previousIds = await preferences.readScheduledNotificationIds();
@@ -58,7 +63,7 @@ class MedicineReminderNotificationCoordinator {
 
     if (!remindersEnabled) {
       await preferences.writeScheduledNotificationIds(const <String>[]);
-      return;
+      return true;
     }
 
     final planned = planner.plan(
@@ -77,8 +82,9 @@ class MedicineReminderNotificationCoordinator {
       soundEnabled: soundEnabled,
     );
 
+    var allScheduled = true;
     for (final notification in planned) {
-      await gateway.schedule(
+      final scheduled = await gateway.schedule(
         id: notification.id,
         title: notification.title,
         body: notification.body,
@@ -89,11 +95,15 @@ class MedicineReminderNotificationCoordinator {
         channelDescription: texts.channelDescription,
         payload: notification.payload,
       );
+      if (!scheduled) {
+        allScheduled = false;
+      }
     }
 
     await preferences.writeScheduledNotificationIds(
       planned.map((item) => item.id.toString()).toList(growable: false),
     );
+    return allScheduled;
   }
 }
 
@@ -141,6 +151,7 @@ Future<void> medicineReminderNotificationSync(Ref ref) async {
   final now = ref.watch(medicineReminderNotificationNowProvider)();
 
   if (!auth.canAccessProtectedData) {
+    // 未登录:清空本地调度,不上报能力。
     await coordinator.resync(
       reminders: const <MedicineReminderItem>[],
       remindersEnabled: false,
@@ -162,6 +173,7 @@ Future<void> medicineReminderNotificationSync(Ref ref) async {
       texts: texts,
       now: now,
     );
+    _reportLocalCapability(ref, 'disabled');
     return;
   }
 
@@ -172,7 +184,7 @@ Future<void> medicineReminderNotificationSync(Ref ref) async {
 
   try {
     final reminders = await ref.watch(medicineReminderListProvider.future);
-    await coordinator.resync(
+    final allScheduled = await coordinator.resync(
       reminders: reminders,
       remindersEnabled: true,
       sound: sound,
@@ -187,12 +199,32 @@ Future<void> medicineReminderNotificationSync(Ref ref) async {
       enableVibration: settings.notificationVibrationEnabled,
       soundEnabled: settings.notificationSoundEnabled,
     );
+    _reportLocalCapability(ref, allScheduled ? 'active' : 'unavailable');
   } catch (e) {
     ref
         .read(talkerProvider)
         .error('MedicineReminderNotificationCoordinator: resync failed: $e');
+    _reportLocalCapability(ref, 'unavailable');
+  }
+}
+
+/// Reports the client's local scheduling capability to the server
+/// (fire-and-forget). Never reports when the user is not signed in.
+void _reportLocalCapability(Ref ref, String state) {
+  final auth = ref.read(authSessionProvider);
+  if (!auth.canAccessProtectedData) {
     return;
   }
+  final repository = ref.read(reminderRepositoryProvider);
+  unawaited(() async {
+    try {
+      await repository.reportLocalCapability(state);
+    } catch (e) {
+      ref
+          .read(talkerProvider)
+          .error('reportLocalCapability($state) failed: $e');
+    }
+  }());
 }
 
 MedicineReminderNotificationTexts _notificationTexts(Ref ref) {

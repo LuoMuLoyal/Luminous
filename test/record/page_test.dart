@@ -2704,6 +2704,16 @@ class _FakeReminderRepository implements ReminderRepository {
   Future<List<MedicineReminderItem>> fetchAll() async => _reminders;
 
   @override
+  Future<void> reportLocalReceipt({
+    required String reminderId,
+    required String scheduledDate,
+    required String scheduledTime,
+  }) async {}
+
+  @override
+  Future<void> reportLocalCapability(String state) async {}
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 

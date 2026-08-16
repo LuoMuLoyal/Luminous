@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/domain/services/reminder_notification_payload.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 
 void main() {
@@ -45,8 +46,14 @@ void main() {
     );
 
     expect(planned, hasLength(13));
-    expect(planned.where((item) => item.payload == 'morning'), hasLength(6));
-    expect(planned.where((item) => item.payload == 'evening'), hasLength(7));
+    expect(
+      planned.where((item) => _payloadReminderId(item) == 'morning'),
+      hasLength(6),
+    );
+    expect(
+      planned.where((item) => _payloadReminderId(item) == 'evening'),
+      hasLength(7),
+    );
     expect(planned.first.scheduledAt, DateTime(2026, 6, 10, 21, 30));
   });
 
@@ -244,7 +251,7 @@ void main() {
     );
 
     expect(planned, hasLength(1));
-    expect(planned.single.payload, 'morning');
+    expect(_payloadReminderId(planned.single), 'morning');
   });
 
   test('DND same-day window filters notifications', () {
@@ -268,7 +275,7 @@ void main() {
     );
 
     expect(planned, hasLength(1));
-    expect(planned.single.payload, 'kept');
+    expect(_payloadReminderId(planned.single), 'kept');
   });
 
   test('soundEnabled false overrides non-silent sound preference', () {
@@ -330,7 +337,89 @@ void main() {
     expect(planned.single.playSound, isTrue);
     expect(planned.single.enableVibration, isFalse);
   });
+
+  test('payload encodes logical date and time for the delivery receipt', () {
+    const planner = MedicineReminderNotificationPlanner(horizonDays: 1);
+
+    final planned = planner.plan(
+      reminders: <MedicineReminderItem>[
+        _reminder(id: 'payload-reminder', hour: 21, minute: 30),
+      ],
+      remindersEnabled: true,
+      sound: MedicineReminderSoundPreference.defaultTone,
+      texts: texts,
+      now: now,
+    );
+
+    final payload = ReminderNotificationPayload.tryParse(
+      planned.single.payload,
+    );
+    expect(payload, isNotNull);
+    expect(payload!.reminderId, 'payload-reminder');
+    expect(payload.date, '2026-06-10');
+    expect(payload.time, '21:30');
+  });
+
+  test(
+    'payload keeps logical time when advanceMinutes shifts the fire time',
+    () {
+      const planner = MedicineReminderNotificationPlanner(horizonDays: 1);
+
+      final planned = planner.plan(
+        reminders: <MedicineReminderItem>[
+          _reminder(id: 'advance-payload', hour: 10, minute: 30),
+        ],
+        remindersEnabled: true,
+        sound: MedicineReminderSoundPreference.defaultTone,
+        texts: texts,
+        now: now,
+        advanceMinutes: 15,
+      );
+
+      expect(planned.single.scheduledAt, DateTime(2026, 6, 10, 10, 15));
+      final payload = ReminderNotificationPayload.tryParse(
+        planned.single.payload,
+      );
+      expect(payload, isNotNull);
+      // The payload must carry the reminder's logical due moment, not the
+      // advanced fire time.
+      expect(payload!.date, '2026-06-10');
+      expect(payload.time, '10:30');
+    },
+  );
+
+  test('payloads across the horizon carry each day logical date', () {
+    const planner = MedicineReminderNotificationPlanner();
+
+    // 21:05 is after `now` (09:00), so all seven horizon days are planned.
+    final planned = planner.plan(
+      reminders: <MedicineReminderItem>[
+        _reminder(id: 'daily', hour: 21, minute: 5),
+      ],
+      remindersEnabled: true,
+      sound: MedicineReminderSoundPreference.defaultTone,
+      texts: texts,
+      now: now,
+    );
+
+    expect(planned, hasLength(7));
+    final dates = planned
+        .map((item) => ReminderNotificationPayload.tryParse(item.payload)?.date)
+        .toList();
+    expect(dates, <String?>[
+      '2026-06-10',
+      '2026-06-11',
+      '2026-06-12',
+      '2026-06-13',
+      '2026-06-14',
+      '2026-06-15',
+      '2026-06-16',
+    ]);
+  });
 }
+
+String? _payloadReminderId(PlannedNotification item) =>
+    ReminderNotificationPayload.tryParse(item.payload)?.reminderId;
 
 MedicineReminderItem _reminder({
   required String id,

@@ -337,6 +337,7 @@
   "medicineReminderFrequencyDailyClearedWeekdays": "Weekday selection cleared when switching to daily frequency",
   "medicineReminderNoDeliveryLogs": "No reminder delivery records yet",
   "medicineReminderDeliveryChannelLocal": "Local notification",
+  "medicineReminderDeliveryChannelInApp": "In-app",
   "medicineReminderDeliveryChannelPush": "Push notification",
   "medicineReminderDeliveryChannelEmail": "Email",
   "medicineReminderDeliveryChannelSms": "SMS",

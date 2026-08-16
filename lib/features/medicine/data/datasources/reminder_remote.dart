@@ -78,6 +78,34 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     );
   }
 
+  @override
+  Future<void> reportLocalReceipt({
+    required String reminderId,
+    required String scheduledDate,
+    required String scheduledTime,
+  }) async {
+    final response = await dio.request<Object>(
+      LucentApiPaths.reminderDeliveryReceipts,
+      data: <String, Object?>{
+        'reminderId': reminderId,
+        'scheduledDate': scheduledDate,
+        'scheduledTime': scheduledTime,
+      },
+      options: Options(method: 'POST', contentType: Headers.jsonContentType),
+    );
+    _responseData(response.data);
+  }
+
+  @override
+  Future<void> reportLocalCapability(String state) async {
+    final response = await dio.request<Object>(
+      LucentApiPaths.reminderDeliveryLocalCapability,
+      data: <String, Object?>{'state': state},
+      options: Options(method: 'PUT', contentType: Headers.jsonContentType),
+    );
+    _responseData(response.data);
+  }
+
   MedicineReminderItem _fromJson(Map<String, dynamic> json) {
     return MedicineReminderItem(
       id: json['id'] as String,

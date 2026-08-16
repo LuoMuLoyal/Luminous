@@ -29,4 +29,19 @@ abstract interface class ReminderRepository {
 
   /// Deletes a reminder.
   Future<void> delete(String id);
+
+  /// Reports that a local notification for the reminder was delivered
+  /// (idempotent on the server: the same `reminderId|date|time` key writes a
+  /// `channel='local'`, `status='delivered'` audit row at most once).
+  Future<void> reportLocalReceipt({
+    required String reminderId,
+    required String scheduledDate,
+    required String scheduledTime,
+  });
+
+  /// Reports the client's local scheduling capability so the server only
+  /// falls back to JPush when local delivery is unconfirmed or unavailable.
+  ///
+  /// [state] is one of `active` / `unavailable` / `disabled`.
+  Future<void> reportLocalCapability(String state);
 }

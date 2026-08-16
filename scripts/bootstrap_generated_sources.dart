@@ -503,6 +503,18 @@ const _userSettingsModels = [
   'VerifySecurityPinDto',
 ];
 
+const _reminderDeliveriesModels = [
+  'ReminderDeliveryItemDto',
+  'ReminderDeliveryListDataDto',
+  'ReminderDeliveryListResponseDto',
+  'ReminderDeliveryReceiptDto',
+  'ReminderDeliveryReceiptDataDto',
+  'ReminderDeliveryReceiptResponseDto',
+  'LocalCapabilityStateDto',
+  'LocalCapabilityDataDto',
+  'LocalCapabilityResponseDto',
+];
+
 /// 过滤生成无法产出的内联响应模型（openapi-generator 7.x 的 `models=` 只接受
 /// 命名 schema，内联 schema 由生成器自动命名并输出 snake_case 文件名）。
 /// 从 supporting 全量输出复制。
@@ -534,5 +546,10 @@ const _filteredClients = <({String apis, String apiFile, List<String> models})>[
     apis: 'UserSettings',
     apiFile: 'user_settings_api.dart',
     models: _userSettingsModels,
+  ),
+  (
+    apis: 'ReminderDeliveries',
+    apiFile: 'reminder_deliveries_api.dart',
+    models: _reminderDeliveriesModels,
   ),
 ];

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
+import 'package:luminous/core/network/api.dart' show LucentApiException;
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 
 void main() {
@@ -198,6 +199,44 @@ void main() {
       );
       expect(request.body, isNull);
     });
+
+    test('reportLocalReceipt posts the idempotent receipt payload', () async {
+      await dataSource.reportLocalReceipt(
+        reminderId: 'reminder-1',
+        scheduledDate: '2026-06-10',
+        scheduledTime: '21:30',
+      );
+
+      final request = adapter.requestAt(
+        'POST',
+        '/api/v1/user/reminder-deliveries/receipts',
+      );
+      expect(request.body, containsPair('reminderId', 'reminder-1'));
+      expect(request.body, containsPair('scheduledDate', '2026-06-10'));
+      expect(request.body, containsPair('scheduledTime', '21:30'));
+    });
+
+    test('reportLocalCapability puts the capability state', () async {
+      await dataSource.reportLocalCapability('active');
+
+      final request = adapter.requestAt(
+        'PUT',
+        '/api/v1/user/reminder-deliveries/local-capability',
+      );
+      expect(request.body, containsPair('state', 'active'));
+    });
+
+    test('reportLocalReceipt throws when the envelope is empty', () async {
+      adapter.failWithEmptyBody = true;
+      await expectLater(
+        dataSource.reportLocalReceipt(
+          reminderId: 'reminder-1',
+          scheduledDate: '2026-06-10',
+          scheduledTime: '21:30',
+        ),
+        throwsA(isA<LucentApiException>()),
+      );
+    });
   });
 }
 
@@ -205,6 +244,7 @@ class _FakeReminderAdapter implements HttpClientAdapter {
   final requests = <_CapturedReminderRequest>[];
   List<Map<String, Object?>> items = const <Map<String, Object?>>[];
   List<Map<String, Object?>> deliveryItems = const <Map<String, Object?>>[];
+  bool failWithEmptyBody = false;
 
   _CapturedReminderRequest requestAt(String method, String path) {
     return requests.singleWhere(
@@ -227,11 +267,54 @@ class _FakeReminderAdapter implements HttpClientAdapter {
       ),
     );
 
+    if (failWithEmptyBody) {
+      return ResponseBody.fromString(
+        '',
+        200,
+        headers: const <String, List<String>>{
+          Headers.contentTypeHeader: <String>['application/json'],
+        },
+      );
+    }
+
     if (options.method == 'DELETE') {
       return ResponseBody.fromString('', 204);
     }
 
     final body = requests.last.body;
+    if (options.path == '/api/v1/user/reminder-deliveries/receipts') {
+      return ResponseBody.fromString(
+        jsonEncode(<String, Object?>{
+          'code': 0,
+          'message': '',
+          'data': <String, Object?>{
+            'item': <String, Object?>{
+              'id': 'receipt-1',
+              'reminderId': body?['reminderId'],
+              'channel': 'local',
+              'status': 'delivered',
+            },
+          },
+        }),
+        200,
+        headers: const <String, List<String>>{
+          Headers.contentTypeHeader: <String>['application/json'],
+        },
+      );
+    }
+    if (options.path == '/api/v1/user/reminder-deliveries/local-capability') {
+      return ResponseBody.fromString(
+        jsonEncode(<String, Object?>{
+          'code': 0,
+          'message': '',
+          'data': <String, Object?>{'state': body?['state']},
+        }),
+        200,
+        headers: const <String, List<String>>{
+          Headers.contentTypeHeader: <String>['application/json'],
+        },
+      );
+    }
     if (options.method == 'POST' || options.method == 'PATCH') {
       return ResponseBody.fromString(
         jsonEncode(<String, Object?>{

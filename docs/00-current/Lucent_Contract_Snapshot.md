@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-15
+updated: 2026-08-16
 ---
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-15 (Sparse Record Semantics observed metric contract)
+Last updated: 2026-08-16 (提醒投递回执与本地调度能力上报)
 
 ## 基础
 
@@ -30,6 +30,7 @@ Last updated: 2026-08-15 (Sparse Record Semantics observed metric contract)
 - **Proactive Suggestion Runtime Task 4**：`TodaySuggestionsDataDto` 新增并强制要求 `materializationStatus`（`empty`/`pending`/`ready`/`stale`/`failed`）、`sourceVersion`、可空 `computedAt` 和可空 `retryAfterSeconds`。Luminous 已从 Lucent OpenAPI 合同重新生成该 DTO 及其 `.g.dart`；Today 现有 domain mapper 暂不消费这些状态字段，待 Task 8 接入状态机。
 - **Proactive Suggestion Runtime Task 7**：Today Analysis REST 合同现在返回显式 envelope DTO，GET/refresh/generate/async 的 `computedAt`、`retryAfterSeconds`、版本与物化状态字段均有明确 schema；生成 client 已包含 `TodayAnalysisApi` 的 GET/refresh 方法及对应模型。Today domain/UI 状态映射仍留给 Task 8。
 - **Sparse Record Semantics Task 6/7**：Report metric、Today suggestion item 和 Today Analysis data 通过 OpenAPI 暴露同构 `observedMetric`：`value`（必返、可空）、`state`、`coverage`、`sources`、`observedCount`、`expectedCount`（必返、可空）、`windowStart`、`windowEnd`。Report 的旧 `value`/`unit`/`status`/`delta`/`direction`/`sparkline` 仅作 deprecated 兼容投影；generated client 与 Today/Report domain mapper 已同步，旧 scalar 仍作为兼容 fallback。
+- **提醒投递三通道**：新增 `POST /api/v1/user/reminder-deliveries/receipts`（幂等回写 `channel='local'`、`status='delivered'` 审计行，body 为 `reminderId` + `scheduledDate`(YYYY-MM-DD) + `scheduledTime`(HH:mm)，服务端按用户 profile 时区换算 UTC 截断分钟为 `scheduledFor`）与 `PUT /api/v1/user/reminder-deliveries/local-capability`（上报 `active`/`unavailable`/`disabled`，服务端缓存 TTL 14 天，调度器仅在 unconfirmed/unavailable 时发 JPush）。生成客户端新增 `ReminderDeliveriesApi` 及对应 DTO 模型；Luminous 消费侧走 raw Dio + `LucentApiPaths` 常量。
 
 ## Luminous 已使用的后端领域
 

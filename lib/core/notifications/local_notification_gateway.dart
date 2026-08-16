@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +12,11 @@ part 'local_notification_gateway.g.dart';
 
 class LocalNotificationGateway {
   LocalNotificationGateway({FlutterLocalNotificationsPlugin? plugin})
-    : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+    : _plugin = plugin ?? FlutterLocalNotificationsPlugin() {
+    _tapController = StreamController<NotificationResponse>.broadcast(
+      onListen: _flushPendingTapEvents,
+    );
+  }
 
   static const _soundingChannelId = 'medicine_reminders';
   static const _silentChannelId = 'medicine_reminders_silent';
@@ -20,36 +26,70 @@ class LocalNotificationGateway {
   bool _available = false;
   bool _timeZonesInitialized = false;
 
-  Future<bool> ensureInitialized() async {
+  /// The in-flight initialization future. Concurrent callers awaiting
+  /// [ensureInitialized] share it instead of racing on `_available` while
+  /// the first attempt is still running (which would misreport the gateway
+  /// as unavailable).
+  Future<bool>? _initializing;
+
+  late final StreamController<NotificationResponse> _tapController;
+  final List<NotificationResponse> _pendingTapEvents = <NotificationResponse>[];
+  NotificationAppLaunchDetails? _launchDetails;
+  bool _launchDetailsEmitted = false;
+
+  /// Tap events (user selects a notification or a notification action),
+  /// including the response that launched the app from a cold start.
+  ///
+  /// The launch-details response is buffered and replayed to the first
+  /// listener, mirroring `JpushGateway`'s pending-open-events pattern.
+  Stream<NotificationResponse> get tapEvents => _tapController.stream;
+
+  Future<bool> ensureInitialized() {
     if (_initialized) {
-      return _available;
+      return Future<bool>.value(_available);
     }
+    return _initializing ??= _initialize();
+  }
 
-    _initialized = true;
-    if (kIsWeb || !_supportsLocalSchedulingOnThisPlatform) {
-      _available = false;
-      return false;
-    }
-
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const darwin = DarwinInitializationSettings();
-    const settings = InitializationSettings(
-      android: android,
-      iOS: darwin,
-      macOS: darwin,
-    );
-
+  Future<bool> _initialize() async {
     try {
-      await _plugin.initialize(settings);
-      _ensureTimeZonesInitialized();
-      _available = _hasPlatformPluginBinding;
-      return _available;
-    } on MissingPluginException {
-      _available = false;
-      return false;
-    } on PlatformException {
-      _available = false;
-      return false;
+      if (kIsWeb || !_supportsLocalSchedulingOnThisPlatform) {
+        return false;
+      }
+
+      const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const darwin = DarwinInitializationSettings();
+      const settings = InitializationSettings(
+        android: android,
+        iOS: darwin,
+        macOS: darwin,
+      );
+
+      try {
+        await _plugin.initialize(
+          settings,
+          onDidReceiveNotificationResponse: _handleTapResponse,
+        );
+        _ensureTimeZonesInitialized();
+        _available = _hasPlatformPluginBinding;
+        await _readLaunchDetails();
+        return _available;
+      } on MissingPluginException {
+        return false;
+      } on PlatformException {
+        return false;
+      } on Error catch (error) {
+        if (!_isLateInitializationError(error)) {
+          rethrow;
+        }
+        // The plugin platform binding was never registered (e.g. tests or an
+        // exotic embedder); treat the gateway as unavailable instead of
+        // crashing the app bootstrap.
+        return false;
+      }
+    } finally {
+      _initialized = true;
+      _initializing = null;
     }
   }
 
@@ -64,10 +104,19 @@ class LocalNotificationGateway {
       return;
     } on PlatformException {
       return;
+    } on Error catch (error) {
+      if (_isLateInitializationError(error)) {
+        return;
+      }
+      rethrow;
     }
   }
 
-  Future<void> schedule({
+  /// Schedules a local notification, returning `true` only when the platform
+  /// actually accepted the schedule. Any failure (unsupported platform,
+  /// missing plugin binding, or a platform error) returns `false` so callers
+  /// can report local scheduling as unavailable.
+  Future<bool> schedule({
     required int id,
     required String title,
     required String body,
@@ -79,7 +128,7 @@ class LocalNotificationGateway {
     bool enableVibration = true,
   }) async {
     if (!await ensureInitialized() || !scheduledAt.isAfter(clock.now())) {
-      return;
+      return false;
     }
 
     final scheduledDate = tz.TZDateTime.from(scheduledAt, tz.UTC);
@@ -102,8 +151,9 @@ class LocalNotificationGateway {
         androidScheduleMode: preferredMode,
         payload: payload,
       );
+      return true;
     } on MissingPluginException {
-      return;
+      return false;
     } on PlatformException {
       if (preferredMode == AndroidScheduleMode.exactAllowWhileIdle &&
           defaultTargetPlatform == TargetPlatform.android) {
@@ -117,13 +167,111 @@ class LocalNotificationGateway {
             androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
             payload: payload,
           );
+          return true;
         } on MissingPluginException {
-          return;
+          return false;
         } on PlatformException {
-          return;
+          return false;
+        } on Error catch (error) {
+          if (_isLateInitializationError(error)) {
+            return false;
+          }
+          rethrow;
         }
       }
+      return false;
+    } on Error catch (error) {
+      if (_isLateInitializationError(error)) {
+        return false;
+      }
+      rethrow;
     }
+  }
+
+  /// Returns the notifications currently shown by the OS that have not been
+  /// dismissed. Failures (unsupported platform, missing plugin binding) yield
+  /// an empty list.
+  Future<List<ActiveNotification>> getActiveNotifications() async {
+    if (!await ensureInitialized()) {
+      return const <ActiveNotification>[];
+    }
+
+    try {
+      return await _plugin.getActiveNotifications();
+    } on MissingPluginException {
+      return const <ActiveNotification>[];
+    } on PlatformException {
+      return const <ActiveNotification>[];
+    } on UnimplementedError {
+      return const <ActiveNotification>[];
+    } on Error catch (error) {
+      if (_isLateInitializationError(error)) {
+        return const <ActiveNotification>[];
+      }
+      rethrow;
+    }
+  }
+
+  void _handleTapResponse(NotificationResponse response) {
+    _emitTapEvent(response);
+  }
+
+  void _emitTapEvent(NotificationResponse response) {
+    if (_tapController.hasListener) {
+      _tapController.add(response);
+      return;
+    }
+    _pendingTapEvents.add(response);
+  }
+
+  void _flushPendingTapEvents() {
+    if (_pendingTapEvents.isNotEmpty) {
+      final pending = List<NotificationResponse>.of(_pendingTapEvents);
+      _pendingTapEvents.clear();
+      for (final event in pending) {
+        _tapController.add(event);
+      }
+    }
+    if (_launchDetailsEmitted) {
+      return;
+    }
+    _launchDetailsEmitted = true;
+    final response = _launchDetails?.notificationResponse;
+    if (_launchDetails?.didNotificationLaunchApp == true && response != null) {
+      _tapController.add(response);
+    }
+  }
+
+  Future<void> _readLaunchDetails() async {
+    try {
+      _launchDetails = await _plugin.getNotificationAppLaunchDetails();
+    } on MissingPluginException {
+      _launchDetailsEmitted = true;
+      return;
+    } on PlatformException {
+      _launchDetailsEmitted = true;
+      return;
+    } on Error catch (error) {
+      if (!_isLateInitializationError(error)) {
+        rethrow;
+      }
+      _launchDetailsEmitted = true;
+      return;
+    }
+    final response = _launchDetails?.notificationResponse;
+    if (_launchDetails?.didNotificationLaunchApp != true || response == null) {
+      // Nothing to replay; mark consumed so the flush never emits.
+      _launchDetailsEmitted = true;
+      return;
+    }
+    if (_tapController.hasListener) {
+      // A listener is already subscribed: deliver immediately.
+      _launchDetailsEmitted = true;
+      _tapController.add(response);
+      return;
+    }
+    // No listener yet: leave [_launchDetailsEmitted] false so the first
+    // listener's flush replays the response from [_launchDetails].
   }
 
   bool get _supportsLocalSchedulingOnThisPlatform {
@@ -154,15 +302,15 @@ class LocalNotificationGateway {
       return AndroidScheduleMode.exactAllowWhileIdle;
     }
 
-    final android = _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    if (android == null) {
-      return AndroidScheduleMode.inexactAllowWhileIdle;
-    }
-
     try {
+      final android = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      if (android == null) {
+        return AndroidScheduleMode.inexactAllowWhileIdle;
+      }
+
       final canScheduleExact =
           await android.canScheduleExactNotifications() ?? false;
       return canScheduleExact
@@ -172,7 +320,22 @@ class LocalNotificationGateway {
       return AndroidScheduleMode.inexactAllowWhileIdle;
     } on PlatformException {
       return AndroidScheduleMode.inexactAllowWhileIdle;
+    } on Error catch (error) {
+      if (_isLateInitializationError(error)) {
+        return AndroidScheduleMode.inexactAllowWhileIdle;
+      }
+      rethrow;
     }
+  }
+
+  /// Dart 3.12 surfaces late-initialization failures only as the internal
+  /// `LateError` (there is no public `LateInitializationError` type), so the
+  /// error is recognized by message. This turns an unregistered platform
+  /// plugin binding (e.g. in tests or an exotic embedder) into a graceful
+  /// "unavailable" result instead of an unhandled async error, without
+  /// swallowing unrelated programming errors.
+  bool _isLateInitializationError(Error error) {
+    return error.toString().startsWith('LateInitializationError');
   }
 
   NotificationDetails _buildNotificationDetails({

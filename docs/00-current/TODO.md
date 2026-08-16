@@ -88,6 +88,5 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - 固定 red-flag 规则、审核过的 offline-care 升级文案、help-resource 完整性
 - Agent-assisted support discovery 或 map-backed nearby-care lookup
 - 当前边界之外更深的药品安全规则覆盖与更清晰的 unsupported / low-confidence wording
-- Worker-written reminder delivery history（本地/push/SMS 渠道）
 - Environment-driven Today 或 Mine 建议
 - 真实药品条码/OCR/拍照/处方识别流程

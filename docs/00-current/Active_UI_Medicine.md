@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-16
 ---
 
 # Active UI — Medicine
 
-Last updated: 2026-08-11 (Sparse Record Semantics medication slots)
+Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 
 ## 页面结构
 
@@ -87,7 +87,7 @@ Last updated: 2026-08-11 (Sparse Record Semantics medication slots)
 - 本地声音偏好。
 - 按提醒计划同步的本地通知调度。
 - SMS 不可用状态。
-- 只读提醒投递历史展示。
+- 含本地回执的投递历史展示：本地通知展示后客户端幂等回写 `local/delivered` 行，本地不可达时后端按 JPush 结果写 `push` 行，UI 同时展示 `in_app`/`local`/`push` 通道标签（`deliveryChannelLabel`）。
 - 桌面端提醒 new/detail/edit 路由使用 `sidePanelPage`（右侧滑入面板），移动端使用 `slidePage`（全屏）。
 - 通知权限 `permanentlyDenied` 状态时自动调用 `openAppSettings()` 跳转系统设置。
 - 提醒详情页中间信息列表使用 `FTileGroup` 分组（`FItemDivider.full`），消除独立 `FTile` 造成的行间距；顶部药品图标衬底改为圆角矩形（`RadiusTokens.level2`）。

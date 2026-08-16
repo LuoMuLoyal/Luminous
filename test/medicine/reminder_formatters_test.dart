@@ -5,6 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 MedicineReminderItem _r({String id = '1', int h = 9, int m = 0}) {
   return MedicineReminderItem(
@@ -70,6 +71,27 @@ void main() {
     });
     test('returns empty on parse failure', () {
       expect(dateTimeTimeLabel('not-a-date', const Locale('zh')), '');
+    });
+  });
+
+  group('deliveryChannelLabel', () {
+    test('in_app maps to the localized channel label', () {
+      final zh = lookupAppLocalizations(const Locale('zh'));
+      final en = lookupAppLocalizations(const Locale('en'));
+
+      expect(deliveryChannelLabel(zh, 'in_app'), '应用内通知');
+      expect(deliveryChannelLabel(en, 'in_app'), 'In-app');
+    });
+
+    test('known channels keep their localized labels', () {
+      final zh = lookupAppLocalizations(const Locale('zh'));
+      expect(deliveryChannelLabel(zh, 'local'), '本机通知');
+      expect(deliveryChannelLabel(zh, 'push'), '推送通知');
+    });
+
+    test('unknown channel falls back to the raw value', () {
+      final zh = lookupAppLocalizations(const Locale('zh'));
+      expect(deliveryChannelLabel(zh, 'unknown-channel'), 'unknown-channel');
     });
   });
 

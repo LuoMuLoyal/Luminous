@@ -25,7 +25,6 @@ void main() {
     channelName: 'Medication reminders',
     channelDescription: 'On-device reminders for your medication schedule.',
   );
-  final now = DateTime(2026, 6, 10, 9);
 
   test(
     'coordinator cancels old ids schedules new ones and persists them',
@@ -291,6 +290,155 @@ void main() {
       );
     },
   );
+
+  test(
+    'sync provider reports active capability when every schedule succeeds',
+    () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final gateway = _FakeLocalNotificationGateway();
+      final reminderSource = _FakeReminderSource([
+        _reminder(id: 'reminder-1', hour: 10),
+      ]);
+      final container = _syncContainer(gateway, reminderSource);
+      addTearDown(container.dispose);
+
+      await container.read(localeControllerProvider.future);
+      await container.read(notificationSettingsControllerProvider.future);
+      await container.read(medicineReminderSoundProvider.future);
+      final syncSub = _keepSyncProviderAlive(container);
+      addTearDown(syncSub.close);
+      await container.read(medicineReminderNotificationSyncProvider.future);
+
+      expect(reminderSource.reportedCapabilities, <String>['active']);
+    },
+  );
+
+  test('sync provider reports unavailable when some schedules fail', () async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final gateway = _FakeLocalNotificationGateway();
+    // The planner allocates FNV-hashed ids, so failing literal ids would
+    // never match; fail every schedule instead.
+    gateway.failAllSchedules = true;
+    final reminderSource = _FakeReminderSource([
+      _reminder(id: 'reminder-1', hour: 10),
+    ]);
+    final container = _syncContainer(gateway, reminderSource);
+    addTearDown(container.dispose);
+
+    await container.read(localeControllerProvider.future);
+    await container.read(notificationSettingsControllerProvider.future);
+    await container.read(medicineReminderSoundProvider.future);
+    final syncSub = _keepSyncProviderAlive(container);
+    addTearDown(syncSub.close);
+    await container.read(medicineReminderNotificationSyncProvider.future);
+
+    expect(gateway.scheduledCalls, isNotEmpty);
+    expect(reminderSource.reportedCapabilities, <String>['unavailable']);
+  });
+
+  test(
+    'sync provider reports unavailable when gateway is not available',
+    () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final gateway = _FakeLocalNotificationGateway(available: false);
+      final reminderSource = _FakeReminderSource([
+        _reminder(id: 'reminder-1', hour: 10),
+      ]);
+      final container = _syncContainer(gateway, reminderSource);
+      addTearDown(container.dispose);
+
+      await container.read(localeControllerProvider.future);
+      await container.read(notificationSettingsControllerProvider.future);
+      await container.read(medicineReminderSoundProvider.future);
+      final syncSub = _keepSyncProviderAlive(container);
+      addTearDown(syncSub.close);
+      await container.read(medicineReminderNotificationSyncProvider.future);
+
+      expect(reminderSource.reportedCapabilities, <String>['unavailable']);
+    },
+  );
+
+  test(
+    'sync provider reports disabled when medication reminders are turned off',
+    () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final gateway = _FakeLocalNotificationGateway();
+      final reminderSource = _FakeReminderSource([
+        _reminder(id: 'reminder-1', hour: 10),
+      ]);
+      final container = _syncContainer(gateway, reminderSource);
+      addTearDown(container.dispose);
+
+      await container.read(localeControllerProvider.future);
+      await container.read(notificationSettingsControllerProvider.future);
+      await container.read(medicineReminderSoundProvider.future);
+      final syncSub = _keepSyncProviderAlive(container);
+      addTearDown(syncSub.close);
+
+      await container
+          .read(notificationSettingsControllerProvider.notifier)
+          .setMedicationReminders(false);
+      await container.read(medicineReminderNotificationSyncProvider.future);
+
+      expect(reminderSource.reportedCapabilities, <String>['disabled']);
+    },
+  );
+
+  test('sync provider never reports capability when signed out', () async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final gateway = _FakeLocalNotificationGateway();
+    final reminderSource = _FakeReminderSource([
+      _reminder(id: 'reminder-1', hour: 10),
+    ]);
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+        localeControllerProvider.overrideWith(() => _StaticLocaleController()),
+        localNotificationGatewayProvider.overrideWithValue(gateway),
+        medicineReminderNotificationNowProvider.overrideWithValue(() => now),
+        medicineReminderRemoteDataSourceProvider.overrideWithValue(
+          reminderSource,
+        ),
+        notificationPermissionServiceProvider.overrideWithValue(
+          _FakeNotificationPermissionService(
+            state: NotificationPermissionState.granted,
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await container.read(localeControllerProvider.future);
+    await container.read(notificationSettingsControllerProvider.future);
+    await container.read(medicineReminderSoundProvider.future);
+    final syncSub = _keepSyncProviderAlive(container);
+    addTearDown(syncSub.close);
+    await container.read(medicineReminderNotificationSyncProvider.future);
+
+    expect(reminderSource.reportedCapabilities, isEmpty);
+  });
+}
+
+ProviderContainer _syncContainer(
+  _FakeLocalNotificationGateway gateway,
+  _FakeReminderSource reminderSource,
+) {
+  return ProviderContainer(
+    overrides: [
+      authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+      localeControllerProvider.overrideWith(() => _StaticLocaleController()),
+      localNotificationGatewayProvider.overrideWithValue(gateway),
+      medicineReminderNotificationNowProvider.overrideWithValue(() => now),
+      medicineReminderRemoteDataSourceProvider.overrideWithValue(
+        reminderSource,
+      ),
+      notificationPermissionServiceProvider.overrideWithValue(
+        _FakeNotificationPermissionService(
+          state: NotificationPermissionState.granted,
+        ),
+      ),
+    ],
+  );
 }
 
 ProviderSubscription<AsyncValue<void>> _keepSyncProviderAlive(
@@ -303,12 +451,16 @@ ProviderSubscription<AsyncValue<void>> _keepSyncProviderAlive(
   );
 }
 
+final DateTime now = DateTime(2026, 6, 10, 9);
+
 class _FakeLocalNotificationGateway extends LocalNotificationGateway {
   _FakeLocalNotificationGateway({this.available = true});
 
   final bool available;
   final cancelledIds = <int>[];
   final scheduledCalls = <_ScheduledCall>[];
+  final failingScheduleIds = <int>{};
+  bool failAllSchedules = false;
 
   @override
   Future<bool> ensureInitialized() async => available;
@@ -319,7 +471,7 @@ class _FakeLocalNotificationGateway extends LocalNotificationGateway {
   }
 
   @override
-  Future<void> schedule({
+  Future<bool> schedule({
     required int id,
     required String title,
     required String body,
@@ -343,6 +495,7 @@ class _FakeLocalNotificationGateway extends LocalNotificationGateway {
         enableVibration: enableVibration,
       ),
     );
+    return !failAllSchedules && !failingScheduleIds.contains(id);
   }
 }
 
@@ -378,6 +531,8 @@ class _FakeReminderSource extends MedicineReminderRemoteDataSource {
 
   List<MedicineReminderItem> items;
   bool throwOnFetch = false;
+  final reportedCapabilities = <String>[];
+  final reportedReceipts = <_ReportedReceipt>[];
 
   @override
   Future<List<MedicineReminderItem>> fetchAll() async {
@@ -386,6 +541,38 @@ class _FakeReminderSource extends MedicineReminderRemoteDataSource {
     }
     return items;
   }
+
+  @override
+  Future<void> reportLocalCapability(String state) async {
+    reportedCapabilities.add(state);
+  }
+
+  @override
+  Future<void> reportLocalReceipt({
+    required String reminderId,
+    required String scheduledDate,
+    required String scheduledTime,
+  }) async {
+    reportedReceipts.add(
+      _ReportedReceipt(
+        reminderId: reminderId,
+        date: scheduledDate,
+        time: scheduledTime,
+      ),
+    );
+  }
+}
+
+class _ReportedReceipt {
+  const _ReportedReceipt({
+    required this.reminderId,
+    required this.date,
+    required this.time,
+  });
+
+  final String reminderId;
+  final String date;
+  final String time;
 }
 
 class _FakeNotificationPermissionService extends NotificationPermissionService {
@@ -420,6 +607,14 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
       ),
     );
   }
+
+  @override
+  Future<void> restore() async {}
+}
+
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() => const AuthSessionState();
 
   @override
   Future<void> restore() async {}

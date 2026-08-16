@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-03
+updated: 2026-08-16
 ---
 
 # Mock or Deferred
 
-Last updated: 2026-08-03
+Last updated: 2026-08-16
 
 ## 扫码（barcode / box scan）测试与平台桥接
 
@@ -56,7 +56,7 @@ Mock repositories 已从生产代码中完全移除，仅存在于 `test/helpers
 
 ## 延后但保留的代码
 
-- Worker 填充的提醒投递历史；UI 可读 audit 行，但本地/push/SMS worker 尚未写入。
+- 提醒投递历史已三通道落库：调度器每分钟写 `in_app` 行；本地通知展示后客户端按 `reminderId|date|time` 幂等回写 `local/delivered` 行；本地不可达/未确认时后端按 JPush 结果写 `push` 行（失败含 errorMessage）。SMS 通道仍无。
 - 轻量心情记录连线。
 - Today 或 Mine 的环境上下文连线。
 - 处方导入/OCR 处方识别仍延后，底层枚举保留但仅 Toast 提示。

@@ -91,6 +91,7 @@ String soundPreferenceLabel(
 
 String deliveryChannelLabel(AppLocalizations l10n, String value) {
   return switch (value) {
+    'in_app' => l10n.medicineReminderDeliveryChannelInApp,
     'local' => l10n.medicineReminderDeliveryChannelLocal,
     'push' => l10n.medicineReminderDeliveryChannelPush,
     'email' => l10n.medicineReminderDeliveryChannelEmail,

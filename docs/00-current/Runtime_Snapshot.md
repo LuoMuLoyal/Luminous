@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-16
 ---
 
 # Luminous Runtime Snapshot
 
-Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
+Last updated: 2026-08-16 (本地通知回执与推送回退能力上报)
 
 ## 技术栈
 
@@ -91,6 +91,7 @@ Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
 - `dailyRecordDetailProvider(recordId)` 为 keepAlive FutureProvider；`dailyRecordListForDateProvider(date)`（手写 `FutureProvider.family`）按本地日期拉当天记录，供详情页相邻导航与饮水聚合。
 - `recordEditControllerProvider`（`presentation/providers/record_edit_controller.dart`）承载编辑页表单状态与 load/save/isDirty；页面为纯表单渲染并负责未保存离开提醒（`PopScope` + 自定义 `AppBackButton`）。
 - JPush 推送由 `core/push/jpush_gateway.dart`、`message_handler.dart`、`lifecycle.dart` 分层：`main()` 在 `runApp()` 前初始化 SDK，根组件持续 watch `pushCoordinatorProvider` 保持事件订阅；认证 restore 完成后通过 `PushCoordinator` 处理冷启动点击、通知未读数失效和用户 UUID alias 绑定/解绑。JPush 未配置或运行在非移动平台时静默禁用。
+- 提醒投递三通道：本地通知优先——resync 全部调度成功且已授权时上报 `active` 本地调度能力，关闭/未授权上报 `disabled`，初始化失败或任一条调度失败上报 `unavailable`；服务端仅在能力未确认/`unavailable` 时后台回退 JPush。本地通知展示后，`MedicineReminderDeliveryReporter` 订阅 `LocalNotificationGateway.tapEvents`（含冷启动 launch details 补发）并补扫系统活动通知，按 `reminderId|date|time` 幂等回写 `channel='local'`、`status='delivered'` 审计行（会话内存去重）。
 
 ## 本地持久化
 
@@ -110,6 +111,7 @@ Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
 - 受保护 provider 在认证恢复或确认登出时不调用 Lucent。
 - 受保护入口点击在当前页弹出登录提示（`AuthRequiredDialogGate` 带 returnTo）。
 - JPush alias 生命周期跟随认证状态：已授权时复用现有通知权限状态调用 APNs authority，未授权不额外弹窗但仍绑定 alias；登出时删除 alias。Android AppKey 通过 Gradle 参数/环境变量注入，Dart 侧通过 `--dart-define=JPUSH_APP_KEY` 注入；iOS Debug/Profile 使用 APNs development，Release 使用 production entitlement。
+- 提醒调度能力经 `PUT /api/v1/user/reminder-deliveries/local-capability` 上报（`active`/`unavailable`/`disabled`，服务端缓存 TTL 14 天，未登录不上报）；本地回执经 `POST /api/v1/user/reminder-deliveries/receipts` 幂等写入。后台仅在本地不可达/未确认时发 JPush，站内信只保留记录。
 
 ## 类型安全路由
 

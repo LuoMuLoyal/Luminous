@@ -4,6 +4,7 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/utils/string_utils.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/domain/services/reminder_notification_payload.dart';
 
 @immutable
 class MedicineReminderNotificationTexts {
@@ -109,13 +110,16 @@ class MedicineReminderNotificationPlanner {
           continue;
         }
 
-        var scheduledAt = DateTime(
+        // The logical scheduled moment — used for the delivery payload so the
+        // server records the reminder's due time, not the advanced fire time.
+        final logicalMoment = DateTime(
           date.year,
           date.month,
           date.day,
           reminder.scheduledHour,
           reminder.scheduledMinute,
         );
+        var scheduledAt = logicalMoment;
 
         // Apply advance reminder offset.
         if (advanceMinutes > 0) {
@@ -148,7 +152,14 @@ class MedicineReminderNotificationPlanner {
               scheduledAt: scheduledAt,
               playSound: playSound,
               enableVibration: enableVibration && playSound,
-              payload: reminder.id,
+              payload: ReminderNotificationPayload(
+                reminderId: reminder.id,
+                date: _dateKey(date),
+                time: _timeKey(
+                  reminder.scheduledHour,
+                  reminder.scheduledMinute,
+                ),
+              ).encode(),
             ),
           );
         } on StateError catch (e) {
@@ -249,5 +260,18 @@ class MedicineReminderNotificationPlanner {
     final hour = value.hour.toString().padLeft(2, '0');
     final minute = value.minute.toString().padLeft(2, '0');
     return '$year-$month-${day}T$hour:$minute';
+  }
+
+  String _dateKey(DateTime value) {
+    final year = value.year.toString().padLeft(4, '0');
+    final month = value.month.toString().padLeft(2, '0');
+    final day = value.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  String _timeKey(int hour, int minute) {
+    final hh = hour.toString().padLeft(2, '0');
+    final mm = minute.toString().padLeft(2, '0');
+    return '$hh:$mm';
   }
 }

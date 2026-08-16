@@ -63,6 +63,16 @@ abstract final class LucentApiPaths {
   /// `GET /api/v1/user/reminder-deliveries` — raw GET for deliveries.
   static const reminderDeliveries = '/api/v1/user/reminder-deliveries';
 
+  /// `POST /api/v1/user/reminder-deliveries/receipts` — records a local
+  /// notification delivery receipt (idempotent).
+  static const reminderDeliveryReceipts =
+      '/api/v1/user/reminder-deliveries/receipts';
+
+  /// `PUT /api/v1/user/reminder-deliveries/local-capability` — reports the
+  /// client local scheduling capability (`active`/`unavailable`/`disabled`).
+  static const reminderDeliveryLocalCapability =
+      '/api/v1/user/reminder-deliveries/local-capability';
+
   /// `POST /api/v1/user/medicine-dose-logs/mark` — raw mark with custom JSON.
   static const medicineDoseLogsMark = '/api/v1/user/medicine-dose-logs/mark';
 
