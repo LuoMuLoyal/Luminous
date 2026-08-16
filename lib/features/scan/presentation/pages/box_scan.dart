@@ -14,6 +14,7 @@ import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
+import 'package:luminous/features/scan/domain/services/candidate_merger.dart';
 import 'package:luminous/features/scan/domain/services/medicine_ocr_extractor.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
@@ -256,8 +257,10 @@ Future<List<MedicineMatchResult>> _processPhoto(
   if (method == MedicineScanMethod.ocr) {
     final ocrEngine = container.read(paddleOcrProvider);
     final ocrBlocks = await ocrEngine.recognize(photo.path);
-    final candidates = const MedicineOcrExtractor().extractCandidates(
-      ocrBlocks,
+    // 候选先按规范化 query 去重（同一批准文号/药名可能从多个文本块重复
+    // 提取），减少重复搜索；搜库结果再按稳定药品 id 合并（F-4）。
+    final candidates = dedupeCandidates(
+      const MedicineOcrExtractor().extractCandidates(ocrBlocks),
     );
 
     final results = <MedicineMatchResult>[];
@@ -275,7 +278,9 @@ Future<List<MedicineMatchResult>> _processPhoto(
       }
     }
 
-    return results;
+    // 不同候选 query 可能搜到同一药品，按稳定药品 id 合并（id 缺失按名称
+    // 兜底），弹窗不再出现重复候选。
+    return mergeSearchResults(results);
   } else {
     final rawBytes = await File(photo.path).readAsBytes();
     final bytes = await ImageCompressor.compressForAiRecognition(rawBytes);

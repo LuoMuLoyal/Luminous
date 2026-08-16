@@ -244,6 +244,103 @@ void main() {
       expect(find.text('阿莫西林胶囊'), findsWidgets);
       verify(() => mockRepo.search('阿莫西林胶囊')).called(1);
     });
+
+    testWidgets(
+      'dedupes repeated candidate queries before searching (one search call)',
+      (tester) async {
+        // Two OCR blocks with the same drug name: the extractor yields two
+        // candidates with the same query, dedupeCandidates collapses them, so
+        // the DB is searched once (F-4).
+        when(() => mockOcr.recognize(any())).thenAnswer(
+          (_) async => [
+            const OcrTextBlock(
+              text: '阿莫西林胶囊',
+              confidence: 0.95,
+              boundingBox: Rect.fromLTRB(0, 0, 200, 80),
+              points: [
+                Offset(0, 0),
+                Offset(200, 0),
+                Offset(200, 80),
+                Offset(0, 80),
+              ],
+            ),
+            const OcrTextBlock(
+              text: '阿莫西林胶囊',
+              confidence: 0.9,
+              boundingBox: Rect.fromLTRB(0, 200, 200, 280),
+              points: [
+                Offset(0, 200),
+                Offset(200, 200),
+                Offset(200, 280),
+                Offset(0, 280),
+              ],
+            ),
+          ],
+        );
+        when(() => mockRepo.search('阿莫西林胶囊')).thenAnswer(
+          (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        );
+
+        await openMethodPicker(tester);
+        await tester.tap(find.text(l10n.scanMethodOcrTitle));
+        await flushAsync(tester, 12);
+
+        expect(find.text('阿莫西林胶囊'), findsWidgets);
+        verify(() => mockRepo.search('阿莫西林胶囊')).called(1);
+      },
+    );
+
+    testWidgets(
+      'merges search results with the same medicine id into one dialog entry',
+      (tester) async {
+        // Two different candidate queries both resolve to the same medicine id
+        // (with different display names): mergeSearchResults keeps only the
+        // higher-confidence one, so the dialog shows a single entry (F-4).
+        when(() => mockOcr.recognize(any())).thenAnswer(
+          (_) async => [
+            const OcrTextBlock(
+              text: '阿莫西林胶囊',
+              confidence: 0.95,
+              boundingBox: Rect.fromLTRB(0, 0, 200, 80),
+              points: [
+                Offset(0, 0),
+                Offset(200, 0),
+                Offset(200, 80),
+                Offset(0, 80),
+              ],
+            ),
+            const OcrTextBlock(
+              text: '阿莫西林颗粒',
+              confidence: 0.9,
+              boundingBox: Rect.fromLTRB(0, 200, 150, 260),
+              points: [
+                Offset(0, 200),
+                Offset(150, 200),
+                Offset(150, 260),
+                Offset(0, 260),
+              ],
+            ),
+          ],
+        );
+        when(() => mockRepo.search('阿莫西林胶囊')).thenAnswer(
+          (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        );
+        when(() => mockRepo.search('阿莫西林颗粒')).thenAnswer(
+          (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林颗粒')],
+        );
+
+        await openMethodPicker(tester);
+        await tester.tap(find.text(l10n.scanMethodOcrTitle));
+        await flushAsync(tester, 12);
+
+        // Merged by id: the higher-confidence name is kept, the other name is
+        // gone, and no candidate list (single entry) is rendered.
+        expect(find.text('阿莫西林胶囊'), findsOneWidget);
+        expect(find.text('阿莫西林颗粒'), findsNothing);
+        verify(() => mockRepo.search('阿莫西林胶囊')).called(1);
+        verify(() => mockRepo.search('阿莫西林颗粒')).called(1);
+      },
+    );
   });
 
   group('showMedicineBoxScanSheet - AI flow', () {
