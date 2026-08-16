@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
@@ -253,14 +254,12 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
           child: _ScanResultSheet(
             item: item,
             l10n: l10n,
-            onAddToBox: () => unawaited(
-              addMedicineToBoxWithPrecheck(
-                context,
-                ref: ref,
-                source: 'cn',
-                sourceRefId: item.id,
-                displayName: item.name,
-              ),
+            onAddToBox: () => addMedicineToBoxWithPrecheck(
+              context,
+              ref: ref,
+              source: 'cn',
+              sourceRefId: item.id,
+              displayName: item.name,
             ),
             onViewInstructions: () {
               Navigator.pop(ctx);
@@ -455,7 +454,7 @@ class _ScanResultSheet extends ConsumerStatefulWidget {
 
   final ScanSearchResult item;
   final AppLocalizations l10n;
-  final VoidCallback onAddToBox;
+  final Future<void> Function() onAddToBox;
   final VoidCallback onViewInstructions;
 
   /// Called with the matched drugbox record when the user opens the reminder
@@ -467,24 +466,50 @@ class _ScanResultSheet extends ConsumerStatefulWidget {
 }
 
 class _ScanResultSheetState extends ConsumerState<_ScanResultSheet> {
-  /// Current drugbox lookup by `source:sourceRefId` (drugbox record id as
-  /// value), watched so the added state always reflects the latest snapshot.
-  Map<String, CurrentMedicineItem> get _boxByKey => ref
-      .watch(healthContextSnapshotProvider)
-      .maybeWhen(
-        data: (snapshot) => {
-          for (final medicine in snapshot.currentMedicines)
-            if (medicine.isCurrent && medicine.sourceRefId != null)
-              '${medicine.source}:${medicine.sourceRefId}': medicine,
-        },
-        orElse: () => const <String, CurrentMedicineItem>{},
-      );
+  /// True while「加入药箱」is in flight. The button stays disabled from the
+  /// tap until the awaited flow returns (and longer: while the snapshot is
+  /// re-fetching, see the loading guard in [build]), so the sheet can never
+  /// re-add a medicine that was just added (P2 复审 P2-1/P2-4).
+  bool _addingBox = false;
+
+  /// Drugbox lookup by `source:sourceRefId` (drugbox record id as value),
+  /// derived from the live snapshot watched in [build].
+  Map<String, CurrentMedicineItem> _boxByKeyFrom(
+    AsyncValue<HealthContextSnapshot> snapshotAsync,
+  ) => snapshotAsync.maybeWhen(
+    data: (snapshot) => {
+      for (final medicine in snapshot.currentMedicines)
+        if (medicine.isCurrent && medicine.sourceRefId != null)
+          '${medicine.source}:${medicine.sourceRefId}': medicine,
+    },
+    orElse: () => const <String, CurrentMedicineItem>{},
+  );
+
+  Future<void> _handleAddToBox() async {
+    setState(() => _addingBox = true);
+    try {
+      await widget.onAddToBox();
+    } finally {
+      if (mounted) setState(() => _addingBox = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
-    final boxItem = _boxByKey['cn:${widget.item.id}'];
+    // While the snapshot is (re)fetching, `boxByKey` is empty; the loading
+    // guard below keeps the add button disabled so the sheet cannot offer a
+    // duplicate add for a medicine that was just added.
+    final snapshotAsync = ref.watch(healthContextSnapshotProvider);
+    final boxByKey = _boxByKeyFrom(snapshotAsync);
+    // The loading guard applies to signed-in users only: signed-out
+    // snapshots stay in a loading-with-error state (AuthRequiredException),
+    // where the add button must stay tappable to reach the login prompt.
+    final authSession = ref.watch(authSessionProvider);
+    final snapshotLoading =
+        snapshotAsync.isLoading && authSession.canAccessProtectedData;
+    final boxItem = boxByKey['cn:${widget.item.id}'];
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -572,7 +597,13 @@ class _ScanResultSheetState extends ConsumerState<_ScanResultSheet> {
                 ),
               ] else ...[
                 FButton(
-                  onPress: widget.onAddToBox,
+                  // Disabled while an add is in flight and while the snapshot
+                  // is (re)fetching (P2 复审 P2-1/P2-4) — a rapid second tap
+                  // cannot duplicate the record, and a just-added medicine is
+                  // not re-addable in the refresh window.
+                  onPress: _addingBox || snapshotLoading
+                      ? null
+                      : _handleAddToBox,
                   child: Text(widget.l10n.medicineSearchAddToBoxAction),
                 ),
               ],

@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -71,19 +72,21 @@ class _MedicineRecognizeDialogState
     return unique;
   }
 
-  /// Current drugbox lookup by `source:sourceRefId` (F-3 dedup key). Loading /
-  /// error states fall back to an empty map (dialog then shows the default
-  /// "not added" exit).
-  Map<String, CurrentMedicineItem> get _boxByKey => ref
-      .watch(healthContextSnapshotProvider)
-      .maybeWhen(
-        data: (snapshot) => {
-          for (final medicine in snapshot.currentMedicines)
-            if (medicine.isCurrent && medicine.sourceRefId != null)
-              '${medicine.source}:${medicine.sourceRefId}': medicine,
-        },
-        orElse: () => const <String, CurrentMedicineItem>{},
-      );
+  /// Drugbox lookup by `source:sourceRefId` (F-3 dedup key), derived from the
+  /// live snapshot watched in [build]. Loading / error states fall back to an
+  /// empty map; the loading flag additionally disables the add button so a
+  /// just-added medicine is not mistaken for "not added" during the snapshot
+  /// (re)fetch window (P2 复审 P2-1/P2-4).
+  Map<String, CurrentMedicineItem> _boxByKeyFrom(
+    AsyncValue<HealthContextSnapshot> snapshotAsync,
+  ) => snapshotAsync.maybeWhen(
+    data: (snapshot) => {
+      for (final medicine in snapshot.currentMedicines)
+        if (medicine.isCurrent && medicine.sourceRefId != null)
+          '${medicine.source}:${medicine.sourceRefId}': medicine,
+    },
+    orElse: () => const <String, CurrentMedicineItem>{},
+  );
 
   Future<void> _addToBox(MedicineMatchResult res, String sourceRefId) async {
     if (_addingBox) return; // defensive: the button is disabled while in flight
@@ -99,6 +102,8 @@ class _MedicineRecognizeDialogState
     } finally {
       // Re-enable even on failure; on success the live snapshot watch flips
       // the dialog into the「已加入」state, which replaces this button anyway.
+      // The snapshot re-fetch window right after success stays covered by the
+      // loading guard on the button (P2 复审 P2-1).
       if (mounted) setState(() => _addingBox = false);
     }
   }
@@ -115,10 +120,20 @@ class _MedicineRecognizeDialogState
 
     // The entry the user acts on: the candidate picked from the list, or the
     // top result. Its `cn:<产品id>` presence in the drugbox decides the
-    // added state.
+    // added state. While the snapshot is (re)fetching, `boxByKey` is empty
+    // but the add button stays disabled (see button below), so a just-added
+    // medicine cannot be re-added during the refresh window.
+    final snapshotAsync = ref.watch(healthContextSnapshotProvider);
+    final boxByKey = _boxByKeyFrom(snapshotAsync);
+    // The loading guard applies to signed-in users only: signed-out
+    // snapshots stay in a loading-with-error state (AuthRequiredException),
+    // where the add button must stay tappable to reach the login prompt.
+    final authSession = ref.watch(authSessionProvider);
+    final snapshotLoading =
+        snapshotAsync.isLoading && authSession.canAccessProtectedData;
     final res = _selectedIndex != null ? sorted[_selectedIndex!] : top;
     final resId = res?.id;
-    final boxItem = resId == null ? null : _boxByKey['cn:$resId'];
+    final boxItem = resId == null ? null : boxByKey['cn:$resId'];
     final alreadyAdded = boxItem != null;
 
     return Column(
@@ -359,9 +374,11 @@ class _MedicineRecognizeDialogState
               )
             else
               FButton(
-                // Disabled while an add is in flight (F-6 P2-2) so a rapid
-                // second tap cannot duplicate the record.
-                onPress: res.id == null || _addingBox
+                // Disabled while an add is in flight (F-6 P2-2) and while the
+                // snapshot is (re)fetching (P2 复审 P2-1/P2-4) — a rapid second
+                // tap cannot duplicate the record, and a just-added medicine
+                // is not re-addable in the refresh window.
+                onPress: res.id == null || _addingBox || snapshotLoading
                     ? null
                     : () => unawaited(_addToBox(res, res.id!)),
                 child: Text(l10n.medicineSearchAddToBoxAction),
