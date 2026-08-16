@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -220,10 +219,21 @@ void main() {
     testWidgets('torch button toggles the torch', (tester) async {
       await pumpPage(tester);
 
-      await tester.tap(find.byIcon(SemanticIcons.safetyAllergy));
+      // Off state shows the flashlight-off icon.
+      expect(find.byIcon(FLucideIcons.flashlightOff), findsOneWidget);
+
+      await tester.tap(find.byIcon(FLucideIcons.flashlightOff));
       await tester.pump(const Duration(milliseconds: 150));
 
       expect(fakeScanner.toggleTorchCalls, 1);
+      expect(find.byIcon(FLucideIcons.flashlight), findsOneWidget);
+
+      // Toggling again returns to the off state.
+      await tester.tap(find.byIcon(FLucideIcons.flashlight));
+      await tester.pump(const Duration(milliseconds: 150));
+
+      expect(fakeScanner.toggleTorchCalls, 2);
+      expect(find.byIcon(FLucideIcons.flashlightOff), findsOneWidget);
     });
 
     testWidgets('manual search button navigates to search page', (
