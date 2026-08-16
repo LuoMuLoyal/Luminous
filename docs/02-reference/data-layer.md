@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-15
+updated: 2026-08-16
 ---
 
 # Data Layer
@@ -48,9 +48,14 @@ Widget
   empty bodies and business-failure envelopes; call sites use `requireData(response.data,
   operation: 'apiName').data` instead of `response.data!.data` so a payload-less success response
   surfaces as a descriptive `StateError` (with the API name) rather than a bare `!` crash.
-- `lib/core/network/interceptors/auth_interceptor.dart`: guards the `onSessionExpired`
-  callback (a throwing callback is logged and the original error still resolves) and logs
-  token-refresh failures with endpoint/status before degrading to a session clear.
+- `lib/core/network/interceptors/auth_interceptor.dart`: token injection + 401 refresh + retry +
+  session clear. Refresh outcomes are typed (`_RefreshOutcome`): the refresh token being rejected
+  (401/403 or `refreshTokenInvalid`/`tokenExpired` business code) is an auth failure that clears
+  the session and notifies the auth layer, while network/timeout/5xx/empty-body failures are
+  transient and keep the session — a network blip no longer force-log-out the user. 401s are
+  refresh candidates unless the business code is explicitly non-refreshable
+  (`refreshTokenInvalid`/`loginRateLimited`/`wrongPassword`). The `onSessionExpired` callback is
+  guarded (a throwing callback is logged and the original error still resolves).
 
 ### Generated API Client
 
