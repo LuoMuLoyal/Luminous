@@ -481,8 +481,6 @@
   "medicineSearchNoResultSwitch": "切换数据源",
   "medicineSearchErrorTitle": "搜索页暂时没有加载出来",
   "medicineSearchErrorDescription": "请检查网络连接后重试。",
-  "medicineSearchPreviewClinical": "临床提示",
-  "medicineSearchPreviewSafety": "安全确认",
   "medicineSearchPreviewEmpty": "选择一个药品查看详情",
   "medicineSearchSourceRefCn": "批准文号：{id}",
   "@medicineSearchSourceRefCn": {

@@ -72,6 +72,11 @@ abstract class MedicineSearchResult with _$MedicineSearchResult {
   }) = _MedicineSearchResult;
 }
 
+/// 桌面端旧预览面板（F-11 去造假）遗留的数据形态，保留但**不接入主路径**。
+///
+/// `conditions` 来自后端单行「规格 / 厂商」subtitle 的 `\n` 拆分、`checklist`
+/// 恒为空数组——并非真实临床/安全内容，仅为历史参考。移动端不得复用本实体
+/// 展示临床信息；真实内容走药品详情页（`/medicine/detail/:source/:id`）。
 @freezed
 abstract class MedicineSearchSafetyPreview with _$MedicineSearchSafetyPreview {
   const factory MedicineSearchSafetyPreview({

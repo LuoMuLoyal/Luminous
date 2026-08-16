@@ -37,6 +37,12 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
     return response.data.items.map(mapper.dtoToResult).toList();
   }
 
+  /// 桌面端旧预览面板遗留的详情拉取（F-11 去造假后保留但**不接入主路径**）。
+  ///
+  /// 映射逻辑原样保留仅作参考：subtitle 按 `\n` 拆分充当 `conditions`、
+  /// `checklist` 恒为空、异常吞掉返回 null（失败与无数据不可区分）——这些
+  /// 都不是真实临床/安全内容，移动端不得复制该造假模式；真实内容走
+  /// `medicine_detail` 链路与药品详情页。
   @override
   Future<MedicineSearchSafetyPreview?> fetchDetail(
     String id,

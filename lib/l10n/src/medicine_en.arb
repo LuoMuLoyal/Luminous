@@ -474,8 +474,6 @@
   "medicineSearchNoResultSwitch": "Switch source",
   "medicineSearchErrorTitle": "Search did not load this time",
   "medicineSearchErrorDescription": "Please check your network and try again.",
-  "medicineSearchPreviewClinical": "Clinical Notes",
-  "medicineSearchPreviewSafety": "Safety Checklist",
   "medicineSearchPreviewEmpty": "Select a medicine to view details",
   "medicineSearchSourceRefCn": "Approval No. {id}",
   "@medicineSearchSourceRefCn": {

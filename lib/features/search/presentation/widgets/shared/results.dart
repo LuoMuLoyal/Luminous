@@ -164,6 +164,13 @@ class _TagPill extends StatelessWidget {
   }
 }
 
+/// 桌面端搜索右侧预览面板（桌面冻结能力，F-11）。
+///
+/// 旧实现把后端单行「规格 / 厂商」subtitle 按 `\n` split 后渲染在「临床提示」
+/// 标题下，并以恒空 checklist 暗示存在「安全确认」区块——包装信息伪装成临床
+/// 提示。F-11 已移除该造假映射与恒空清单暗示：本面板仅展示所选药品标题与
+/// 空态。本面板**不接入主路径**，避免造假模式被复制到移动端；移动端真实
+/// 临床/安全内容走药品详情页（`/medicine/detail/:source/:id`）。
 class PreviewPanel extends StatelessWidget {
   const PreviewPanel({super.key, required this.state, required this.l10n});
 
@@ -195,73 +202,6 @@ class PreviewPanel extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: Spacing.level4),
-                if (preview.conditions.isNotEmpty) ...[
-                  Text(
-                    l10n.medicineSearchPreviewClinical,
-                    style: typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: Spacing.level3),
-                  ...preview.conditions.map(
-                    (c) => Padding(
-                      padding: const EdgeInsets.only(bottom: Spacing.level1),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(top: 6),
-                            child: Icon(
-                              SemanticIcons.statusPending,
-                              size: IconSizeTokens.level1,
-                            ),
-                          ),
-                          const SizedBox(width: Spacing.level3),
-                          Expanded(
-                            child: Text(
-                              c,
-                              style: typography.body.md.copyWith(
-                                color: colors.mutedForeground,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: Spacing.level4),
-                if (preview.checklist.isNotEmpty) ...[
-                  Text(
-                    l10n.medicineSearchPreviewSafety,
-                    style: typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: Spacing.level3),
-                  ...preview.checklist.map(
-                    (item) => Padding(
-                      padding: const EdgeInsets.only(bottom: Spacing.level1),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            SemanticIcons.reportAdherence,
-                            size: 16,
-                            color: colors.primary,
-                          ),
-                          const SizedBox(width: Spacing.level3),
-                          Expanded(
-                            child: Text(item, style: typography.body.md),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
               ],
               if (preview == null)
                 Padding(

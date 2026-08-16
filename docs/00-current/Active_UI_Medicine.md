@@ -74,7 +74,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 ## 药品搜索与扫描
 
 - 搜索结果的「加入药箱」即时预检：提交待加药品 source/id（`runPrecheck` → `POST /medicines/risk-check`，type=static + candidate，服务端就当前药箱+待加药品即时检查、不落库），发现 findings/coverageIssues 时弹「添加前风险检查」确认框；预检失败不阻塞添加，提示「加入后可在风险检查中查看」。
-- 来源审核安全预览。
+- 桌面预览面板去造假（F-11）：`PreviewPanel` 不再把后端「规格 / 厂商」subtitle 当「临床提示」展示、不再渲染恒空「安全确认」清单——仅展示所选药品标题与结构化空态；`MedicineSearchSafetyPreview`/`fetchDetail` 标注不接入主路径，移动端真实临床/安全内容走药品详情页。
 - 过敏安全检查。
 - 药品拍照识别（药盒 AI 识别）和条码扫描已在移动端暴露。
 - 扫码/拍照入口上浮（F-10）：Medicine 页快捷操作区（`mobile_quick_operations.dart`）在「搜索药品」之后新增「扫描条形码」（`SemanticIcons.actionScan`，`context.push(Routes.scanBarcode)`）与「拍照识别药品」（`SemanticIcons.actionCamera`，`showMedicineBoxScanSheet` 弹 OCR/AI 方法选择 sheet，AI 路径登录门控沿用 F-5）两项，与「搜索药品」并列；搜索页空状态 QuickActions 保留不动。文案复用 `medicineQuickActionBarcodeTitle/Subtitle` 与 `medicineQuickActionCameraTitle/Subtitle` 键（medicine 分片，zh/en）。
