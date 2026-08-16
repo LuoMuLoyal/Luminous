@@ -24,11 +24,11 @@ Created: 2026-08-16
 
 #### F-3 扫码后「查看详情」跳转(断链修复,本模块最严重问题)
 
-- 现状:单结果直接 `MedicineReminderDetailRoute(medicineId: item.id).push(context)`(`scan/presentation/pages/barcode_scanner.dart:119-126`),候选 sheet 选择后同样跳转(`barcode_scanner.dart:197-205`);跳转必然失败,用户必见「药品不存在」错误页。
+- 现状:单结果/候选选择/识别弹窗原跳提醒详情（断链）已改为跳药品详情页。
 - 断链机理(两个 id 空间):`item.id` 是公共药品库 `cnMedicineProduct` 的记录 id(`Lucent/src/modules/medicines/adapters/cn.service.ts:118`);而 `MedicineReminderDetailPage` 用它在**用户药箱记录**里按 `CurrentMedicineItem.id` 查找(`medicine/presentation/providers/reminders.dart:140-145`,找不到即 `throw StateError('Medicine not found.')`)。药箱记录 id 是 `POST /user/health-context/current-medicines` 建档时服务端生成的(`health_context/data/datasources/snapshot.dart:96-105`),实体上分别是 `id` 与 `sourceRefId`(`health_context/domain/entities/snapshot.dart:77-92`)——即使用户已把该药加入药箱,id 也对不上。现有 widget 测试用桩路由断言「跳转到 detail-page」(`test/scan/barcode_scanner_page_test.dart:178-190`),测的是路由 push 本身,恰好掩盖了断链,需一并改写。
 - 改造方案:扫码命中的不是「提醒详情」,而是「一个还没进药箱的药品」。识别结果出口改为:
   - 主按钮「加入药箱」:调 `createCurrentMedicine(source: cn, sourceRefId: item.id, displayName)`,走 F-9 同一风险预检弹窗,成功 Toast 带「去设置提醒」动作;
-  - 次按钮「查看说明书」:落点为移动端药品详情页(已完成,路由 `/medicine/detail/:source/:id`,现状见 `docs/00-current/Active_UI_Medicine.md`「药品详情页」节),本文不展开;
+  - 次按钮「查看说明书」:落点为移动端药品详情页(已完成,路由 `/medicine/detail/:source/:id`,现状见 `docs/00-current/Active_UI_Medicine.md`「药品详情页」节),本文不展开;已接线（2026-08-16）：扫码/识别出口现直达药品详情页；剩余『加入药箱』主按钮与判重闭环待 F-9 完成后实施;
   - 已加入药箱的(按 `source:sourceRefId` 判重,复用搜索页 `search/presentation/pages/page.dart:35-41` 的逻辑)才允许跳提醒详情,且必须传**药箱记录 id** 而非产品 id。
 - 前后端分工:纯前端改动,后端无改动。
 - 依赖:F-9 闭环(本计划内)、移动端药品详情页(已完成,medicine 计划 F-14)。

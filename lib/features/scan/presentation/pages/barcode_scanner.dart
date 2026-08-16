@@ -118,9 +118,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
 
       if (items.length == 1) {
         final item = items.first;
-        unawaited(
-          MedicineReminderDetailRoute(medicineId: item.id).push(context),
-        );
+        unawaited(MedicineDetailRoute(source: 'cn', id: item.id).push(context));
       } else {
         _showCandidatePicker(items);
       }
@@ -198,8 +196,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                       onPress: () {
                         Navigator.pop(ctx);
                         unawaited(
-                          MedicineReminderDetailRoute(
-                            medicineId: item.id,
+                          MedicineDetailRoute(
+                            source: 'cn',
+                            id: item.id,
                           ).push(context),
                         );
                       },

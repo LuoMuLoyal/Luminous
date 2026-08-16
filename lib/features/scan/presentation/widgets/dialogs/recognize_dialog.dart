@@ -263,8 +263,9 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       if (id != null) {
                         Navigator.of(context).pop();
                         unawaited(
-                          MedicineReminderDetailRoute(
-                            medicineId: id,
+                          MedicineDetailRoute(
+                            source: 'cn',
+                            id: id,
                           ).push(context),
                         );
                       }

@@ -123,6 +123,7 @@ class Routes {
 /// (e.g. shared clinic summaries, legal documents).
 const _publicRoutePrefixes = <String>[
   '/legal',
+  '/medicine/detail',
   '/report/clinic-summary',
   // Legacy dashboard 兼容页沿用 `/report` 的公开预览语义（未登录显示
   // preview 内容 + 登录引导，不重定向到 /login）。

@@ -90,6 +90,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 分区渲染用 `FAccordion` + `FAccordionItem`，首分区（CN 适应症 / DrugBank 描述）`initiallyExpanded: true`；空/null 字段分区整体不渲染；整页无可展示分区显示「暂无说明书内容」空态。
 - 加入药箱：`CurrentMedicineWriteInput` + `createCurrentMedicine` + `DataChangeTopic.currentMedicines`，与 search 页一致但**不做风险预检**（预检归 scan-search 计划）；已添加态显示禁用 outline「已添加」。
 - Reminder 详情药品卡：`sourceRefId` 非空且 `source ∈ {cn, drugbank}` 时包 `FTappable` 跳详情页，否则保持原样。
+- 扫码/识别结果「确认，查看详情」落地为本详情页；`/medicine/detail` 为公开路由（未登录可浏览说明书，「加入药箱」未登录走 `showAuthRequiredDialog`）。
 
 ## 提醒
 

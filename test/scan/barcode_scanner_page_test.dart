@@ -58,9 +58,15 @@ void main() {
               const Scaffold(body: Center(child: Text('search-page'))),
         ),
         GoRoute(
-          path: '/medicine/reminders/:medicineId',
-          builder: (_, _) =>
-              const Scaffold(body: Center(child: Text('detail-page'))),
+          path: '/medicine/detail/:source/:id',
+          builder: (_, state) => Scaffold(
+            body: Center(
+              child: Text(
+                'medicine-detail:${state.pathParameters['source']}:'
+                '${state.pathParameters['id']}',
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -184,7 +190,7 @@ void main() {
       await emitBarcode(tester, '6901234567890');
       await tester.pump(const Duration(milliseconds: 400));
 
-      expect(find.text('detail-page'), findsOneWidget);
+      expect(find.text('medicine-detail:cn:med-1'), findsOneWidget);
       verify(() => mockRepo.search('6901234567890')).called(1);
       expect(fakeScanner.stopCalls, 1);
     });
@@ -204,6 +210,29 @@ void main() {
       expect(find.text(l10n.scanCandidateSheetTitle), findsOneWidget);
       expect(find.text('药品甲'), findsOneWidget);
       expect(find.text('药品乙'), findsOneWidget);
+    });
+
+    testWidgets('candidate selection navigates to medicine detail', (
+      tester,
+    ) async {
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) async => const [
+          ScanSearchResult(id: 'med-1', name: '药品甲'),
+          ScanSearchResult(id: 'med-2', name: '药品乙'),
+        ],
+      );
+      await pumpPage(tester);
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text(l10n.scanCandidateSheetTitle), findsOneWidget);
+
+      await tester.tap(find.text('药品乙'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('medicine-detail:cn:med-2'), findsOneWidget);
     });
 
     testWidgets('empty result shows toast and resumes scanning', (
