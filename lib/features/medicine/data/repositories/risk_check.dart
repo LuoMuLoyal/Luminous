@@ -26,6 +26,17 @@ class LucentMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
   Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) {
     return remoteDataSource.runCheck(type);
   }
+
+  @override
+  Future<MedicineRiskCheckResult> runPrecheck({
+    required String source,
+    required String sourceRefId,
+  }) {
+    return remoteDataSource.runPrecheck(
+      source: source,
+      sourceRefId: sourceRefId,
+    );
+  }
 }
 
 @riverpod

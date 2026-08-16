@@ -457,6 +457,19 @@ class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
   }
 
   @override
+  Future<MedicineRiskCheckResult> runPrecheck({
+    required String source,
+    required String sourceRefId,
+  }) async {
+    return const MedicineRiskCheckResult(
+      currentMedicineCount: 0,
+      checkedMedicineCount: 0,
+      findings: [],
+      coverageIssues: [],
+    );
+  }
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 

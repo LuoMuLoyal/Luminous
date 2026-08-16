@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -17,7 +18,7 @@ part 'run_risk_check_dto.g.dart';
 )
 class RunRiskCheckDto {
   /// Returns a new [RunRiskCheckDto] instance.
-  RunRiskCheckDto({required this.type});
+  RunRiskCheckDto({required this.type, this.candidate});
 
   /// Type of risk check to run
   @JsonKey(
@@ -28,12 +29,19 @@ class RunRiskCheckDto {
   )
   final RunRiskCheckDtoTypeEnum type;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is RunRiskCheckDto && other.type == type;
+  /// 加药前预检的可信药品库候选；仅 type=static 时允许；预检不落库
+  @JsonKey(name: r'candidate', required: false, includeIfNull: false)
+  final RiskCheckCandidateDto? candidate;
 
   @override
-  int get hashCode => type.hashCode;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RunRiskCheckDto &&
+          other.type == type &&
+          other.candidate == candidate;
+
+  @override
+  int get hashCode => type.hashCode + candidate.hashCode;
 
   factory RunRiskCheckDto.fromJson(Map<String, dynamic> json) =>
       _$RunRiskCheckDtoFromJson(json);

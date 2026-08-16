@@ -106,7 +106,7 @@ void main() {
         authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         healthContextRepositoryProvider.overrideWithValue(fakeRepo),
         medicineRiskCheckRepositoryProvider.overrideWithValue(
-          const _FakeMedicineRiskCheckRepository(_clearRiskCheckResult),
+          _FakeMedicineRiskCheckRepository(_clearRiskCheckResult),
         ),
         medicineWorkspaceProvider.overrideWith((ref) async {
           ref.watch(
@@ -194,7 +194,7 @@ void main() {
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
           healthContextRepositoryProvider.overrideWithValue(fakeHealthRepo),
           medicineRiskCheckRepositoryProvider.overrideWithValue(
-            const _FakeMedicineRiskCheckRepository(_clearRiskCheckResult),
+            _FakeMedicineRiskCheckRepository(_clearRiskCheckResult),
           ),
         ],
       );
@@ -226,30 +226,29 @@ void main() {
     tester,
   ) async {
     final fakeRepo = _FakeHealthContextRepository();
+    final riskCheckRepo = _FakeMedicineRiskCheckRepository(
+      const MedicineRiskCheckResult(
+        currentMedicineCount: 1,
+        checkedMedicineCount: 1,
+        findings: [
+          MedicineRiskFinding(
+            type: MedicineRiskFindingType.interaction,
+            severity: MedicineRiskSeverity.high,
+            context: MedicineRiskFindingContext.none,
+            primaryMedicineName: '[DEMO] 布洛芬片',
+            secondaryMedicineName: '正在服用药物',
+          ),
+        ],
+        coverageIssues: [],
+      ),
+    );
 
     await _pumpSearchApp(
       tester,
       overrides: [
         authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         healthContextRepositoryProvider.overrideWithValue(fakeRepo),
-        medicineRiskCheckRepositoryProvider.overrideWithValue(
-          const _FakeMedicineRiskCheckRepository(
-            MedicineRiskCheckResult(
-              currentMedicineCount: 1,
-              checkedMedicineCount: 1,
-              findings: [
-                MedicineRiskFinding(
-                  type: MedicineRiskFindingType.interaction,
-                  severity: MedicineRiskSeverity.high,
-                  context: MedicineRiskFindingContext.none,
-                  primaryMedicineName: '[DEMO] 布洛芬片',
-                  secondaryMedicineName: '正在服用药物',
-                ),
-              ],
-              coverageIssues: [],
-            ),
-          ),
-        ),
+        medicineRiskCheckRepositoryProvider.overrideWithValue(riskCheckRepo),
       ],
     );
 
@@ -257,6 +256,11 @@ void main() {
     await tester.tap(find.text('加入药箱').first);
     await tester.pumpAndSettle();
 
+    // The pre-check runs against the candidate medicine about to be added.
+    expect(riskCheckRepo.lastPrecheck, (
+      source: 'cn',
+      sourceRefId: '__mock_cn_ibuprofen__',
+    ));
     expect(find.text('添加前风险检查'), findsOneWidget);
     expect(fakeRepo.createdCurrentMedicine, isNull);
 
@@ -271,22 +275,21 @@ void main() {
     tester,
   ) async {
     final fakeRepo = _FakeHealthContextRepository();
+    final riskCheckRepo = _FakeMedicineRiskCheckRepository(
+      const MedicineRiskCheckResult(
+        currentMedicineCount: 1,
+        checkedMedicineCount: 1,
+        findings: [],
+        coverageIssues: [],
+      ),
+    );
 
     await _pumpSearchApp(
       tester,
       overrides: [
         authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         healthContextRepositoryProvider.overrideWithValue(fakeRepo),
-        medicineRiskCheckRepositoryProvider.overrideWithValue(
-          const _FakeMedicineRiskCheckRepository(
-            MedicineRiskCheckResult(
-              currentMedicineCount: 1,
-              checkedMedicineCount: 1,
-              findings: [],
-              coverageIssues: [],
-            ),
-          ),
-        ),
+        medicineRiskCheckRepositoryProvider.overrideWithValue(riskCheckRepo),
       ],
     );
 
@@ -295,8 +298,52 @@ void main() {
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
 
+    expect(riskCheckRepo.lastPrecheck, isNotNull);
     expect(find.text('添加前风险检查'), findsNothing);
     expect(fakeRepo.createdCurrentMedicine, isNotNull);
+  });
+
+  testWidgets('add to current medicines continues without precheck dialog when '
+      'precheck fails', (tester) async {
+    final fakeRepo = _FakeHealthContextRepository();
+    final createGate = Completer<void>();
+    fakeRepo.createGate = createGate;
+    fakeRepo.reflectCreatedMedicine = true;
+
+    await _pumpSearchApp(
+      tester,
+      overrides: [
+        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+        healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+        medicineRiskCheckRepositoryProvider.overrideWithValue(
+          _FakeMedicineRiskCheckRepository(
+            _clearRiskCheckResult,
+            failPrecheck: true,
+          ),
+        ),
+      ],
+    );
+
+    await _searchForIbuprofen(tester);
+    await tester.tap(find.text('加入药箱').first);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Pre-check failure must not block adding: no precheck dialog, but an
+    // honest "review it later" toast while the add is still pending.
+    expect(find.text('添加前风险检查'), findsNothing);
+    expect(find.text('暂无法即时检查该药品，加入后可在风险检查中查看'), findsOneWidget);
+    expect(fakeRepo.createdCurrentMedicine, isNull);
+
+    // Let the add finish: success toast replaces the unavailable hint.
+    createGate.complete();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(fakeRepo.createdCurrentMedicine, isNotNull);
+    expect(find.text('已加入药箱'), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 2));
   });
 
   testWidgets('search shows loading skeleton while results load', (
@@ -363,19 +410,23 @@ GoRouter _searchRouter({bool watchWorkspace = false}) {
     routes: [
       GoRoute(
         path: '/medicine/search',
-        builder: (context, state) => watchWorkspace
-            ? Stack(
-                children: [
-                  const SearchPage(),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      ref.watch(medicineWorkspaceProvider);
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ],
-              )
-            : const SearchPage(),
+        builder: (context, state) => FToaster(
+          // Toasts (precheck unavailable / added-to-box) need an FToaster
+          // above the page, mirroring the production bootstrap.
+          child: watchWorkspace
+              ? Stack(
+                  children: [
+                    const SearchPage(),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        ref.watch(medicineWorkspaceProvider);
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ],
+                )
+              : const SearchPage(),
+        ),
       ),
       GoRoute(
         path: '/login',
@@ -404,6 +455,14 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
 
 class _FakeHealthContextRepository implements HealthContextRepository {
   CurrentMedicineWriteInput? createdCurrentMedicine;
+
+  /// When set, [createCurrentMedicine] suspends until the completer completes.
+  /// Lets tests observe pre-create UI (e.g. the precheck-unavailable toast).
+  Completer<void>? createGate;
+
+  /// When true, [createCurrentMedicine] returns a snapshot that contains the
+  /// newly created medicine, so the page's success toast can render.
+  bool reflectCreatedMedicine = false;
 
   @override
   Future<HealthContextSnapshot> fetchHealthContext() async => _snapshot;
@@ -445,7 +504,32 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   Future<HealthContextSnapshot> createCurrentMedicine(
     CurrentMedicineWriteInput input,
   ) async {
+    final gate = createGate;
+    if (gate != null) {
+      await gate.future;
+    }
     createdCurrentMedicine = input;
+    if (reflectCreatedMedicine) {
+      return _snapshot.copyWith(
+        currentMedicines: [
+          CurrentMedicineItem(
+            id: 'created-medicine-1',
+            source: input.source.name,
+            sourceRefId: input.sourceRefId,
+            displayName: input.displayName,
+            strengthText: null,
+            doseText: null,
+            route: null,
+            startedAt: null,
+            endedAt: null,
+            isCurrent: true,
+            note: null,
+            createdAt: '2026-08-16T00:00:00.000Z',
+            updatedAt: '2026-08-16T00:00:00.000Z',
+          ),
+        ],
+      );
+    }
     return _snapshot;
   }
 
@@ -572,9 +656,27 @@ class _ErrorSearchRepository implements MedicineSearchRepository {
 }
 
 class _FakeMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
-  const _FakeMedicineRiskCheckRepository(this.result);
+  _FakeMedicineRiskCheckRepository(this.result, {this.failPrecheck = false});
 
   final MedicineRiskCheckResult result;
+
+  /// When true, [runPrecheck] throws — simulating an unavailable pre-check.
+  final bool failPrecheck;
+
+  /// Records the most recent [runPrecheck] invocation arguments.
+  ({String source, String sourceRefId})? lastPrecheck;
+
+  @override
+  Future<MedicineRiskCheckResult> runPrecheck({
+    required String source,
+    required String sourceRefId,
+  }) async {
+    lastPrecheck = (source: source, sourceRefId: sourceRefId);
+    if (failPrecheck) {
+      throw Exception('precheck unavailable');
+    }
+    return result;
+  }
 
   @override
   Future<MedicineRiskCheckRecords> getRecords() async =>

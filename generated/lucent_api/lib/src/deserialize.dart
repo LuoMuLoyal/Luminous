@@ -201,6 +201,7 @@ import 'package:lucent_api/src/model/report_trend_dto.dart';
 import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response.dart';
 import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response_data.dart';
 import 'package:lucent_api/src/model/reset_password_dto.dart';
+import 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
 import 'package:lucent_api/src/model/security_pin_elevation_data_dto.dart';
 import 'package:lucent_api/src/model/security_pin_elevation_response_dto.dart';
@@ -1021,6 +1022,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ResetPasswordDto':
       return ResetPasswordDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'RiskCheckCandidateDto':
+      return RiskCheckCandidateDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'RunRiskCheckDto':
       return RunRiskCheckDto.fromJson(value as Map<String, dynamic>)

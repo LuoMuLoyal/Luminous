@@ -185,6 +185,107 @@ void main() {
     });
   });
 
+  group('MedicineRiskCheckRemoteDataSource — runPrecheck', () {
+    test(
+      'posts static precheck with candidate source/id and maps result',
+      () async {
+        when(
+          () => api.medicinesControllerRunRiskCheckV1(
+            runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          ),
+        ).thenAnswer(
+          (_) async => _envelope(
+            MedicineRiskCheckRecordResponseDto(
+              code: 0,
+              message: 'ok',
+              data: _record(),
+            ),
+          ),
+        );
+
+        final result = await dataSource.runPrecheck(
+          source: 'cn',
+          sourceRefId: '__mock_cn_ibuprofen__',
+        );
+
+        final captured =
+            verify(
+                  () => api.medicinesControllerRunRiskCheckV1(
+                    runRiskCheckDto: captureAny(named: 'runRiskCheckDto'),
+                  ),
+                ).captured.single
+                as RunRiskCheckDto;
+        expect(captured.type, RunRiskCheckDtoTypeEnum.static_);
+        expect(captured.candidate, isNotNull);
+        expect(
+          captured.candidate!.source_,
+          RiskCheckCandidateDtoSource_Enum.cn,
+        );
+        expect(captured.candidate!.id, '__mock_cn_ibuprofen__');
+        expect(result.currentMedicineCount, 2);
+        expect(result.checkedMedicineCount, 2);
+        expect(result.findings, isEmpty);
+      },
+    );
+
+    test('maps drugbank candidate source', () async {
+      when(
+        () => api.medicinesControllerRunRiskCheckV1(
+          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+        ),
+      ).thenAnswer(
+        (_) async => _envelope(
+          MedicineRiskCheckRecordResponseDto(
+            code: 0,
+            message: 'ok',
+            data: _record(),
+          ),
+        ),
+      );
+
+      await dataSource.runPrecheck(source: 'drugbank', sourceRefId: 'DB01050');
+
+      final captured =
+          verify(
+                () => api.medicinesControllerRunRiskCheckV1(
+                  runRiskCheckDto: captureAny(named: 'runRiskCheckDto'),
+                ),
+              ).captured.single
+              as RunRiskCheckDto;
+      expect(
+        captured.candidate!.source_,
+        RiskCheckCandidateDtoSource_Enum.drugbank,
+      );
+      expect(captured.candidate!.id, 'DB01050');
+    });
+
+    test('throws empty response error when precheck result is null', () async {
+      when(
+        () => api.medicinesControllerRunRiskCheckV1(
+          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+        ),
+      ).thenAnswer(
+        (_) async => Response<MedicineRiskCheckRecordResponseDto>(
+          data: null,
+          requestOptions: RequestOptions(path: '/'),
+        ),
+      );
+
+      await expectLater(
+        dataSource.runPrecheck(source: 'cn', sourceRefId: 'id-1'),
+        throwsA(
+          isA<LucentApiException>()
+              .having(
+                (e) => e.networkErrorCode,
+                'networkErrorCode',
+                NetworkErrorCode.emptyResponse,
+              )
+              .having((e) => e.message, 'message', contains('响应体为空')),
+        ),
+      );
+    });
+  });
+
   group('LucentMedicineRiskCheckRepository', () {
     test('getRecords delegates to the data source', () async {
       when(() => api.medicinesControllerGetRiskCheckV1()).thenAnswer(
@@ -219,6 +320,28 @@ void main() {
       final record = await repository.runCheck(MedicineRiskCheckType.static_);
       expect(record.riskScore, 0);
       expect(record.stale, isFalse);
+    });
+
+    test('runPrecheck delegates to the data source', () async {
+      when(
+        () => api.medicinesControllerRunRiskCheckV1(
+          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+        ),
+      ).thenAnswer(
+        (_) async => _envelope(
+          MedicineRiskCheckRecordResponseDto(
+            code: 0,
+            message: 'ok',
+            data: _record(),
+          ),
+        ),
+      );
+
+      final result = await repository.runPrecheck(
+        source: 'drugbank',
+        sourceRefId: 'DB01050',
+      );
+      expect(result.checkedMedicineCount, 2);
     });
   });
 }

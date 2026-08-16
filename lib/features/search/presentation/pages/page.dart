@@ -93,11 +93,30 @@ class SearchPage extends ConsumerWidget {
     );
 
     try {
-      final riskRecords = await riskCheckRepository.getRecords();
-      final previewResult =
-          riskRecords.bestRecord?.result ?? const MedicineRiskCheckResult();
+      // Instant pre-check of the current box + the candidate medicine. The
+      // server runs it on the fly without persisting a record, so the scope
+      // now genuinely includes the medicine about to be added.
+      MedicineRiskCheckResult? previewResult;
+      try {
+        previewResult = await riskCheckRepository.runPrecheck(
+          source: medicineSource.name,
+          sourceRefId: result.id,
+        );
+      } catch (e) {
+        // Pre-check failure must not block adding: be honest that the check
+        // could not be run now and continue without a safety judgement.
+        ref
+            .read(talkerProvider)
+            .error('SearchPage._addToCurrentMedicines: precheck failed: $e');
+        if (context.mounted) {
+          unawaited(
+            Toast.show(context, l10n.medicineSearchPrecheckUnavailableToast),
+          );
+        }
+      }
 
       if (context.mounted &&
+          previewResult != null &&
           (previewResult.findings.isNotEmpty ||
               previewResult.coverageIssues.isNotEmpty)) {
         final confirmed = await showMedicineAddPrecheckDialog(

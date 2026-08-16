@@ -654,6 +654,19 @@ class E2eMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
       updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
     );
   }
+
+  @override
+  Future<MedicineRiskCheckResult> runPrecheck({
+    required String source,
+    required String sourceRefId,
+  }) async {
+    return const MedicineRiskCheckResult(
+      currentMedicineCount: 0,
+      checkedMedicineCount: 0,
+      findings: [],
+      coverageIssues: [],
+    );
+  }
 }
 
 class E2eHealthContextRepository implements HealthContextRepository {

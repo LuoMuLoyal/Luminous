@@ -354,3 +354,14 @@ flutter test
   搜索/扫码「加入药箱」覆盖，不再显示处方导入占位入口。
 - 经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`
   （生成文件为 gitignore 产物）。
+
+## 2026-08-16 Search add pre-check unavailable toast (F-9)
+
+- Added `medicineSearchPrecheckUnavailableToast`（zh: 暂无法即时检查该药品，加入后可在风险检查中查看 /
+  en: Could not pre-check this medicine right now; you can review it in risk check after adding it.）to
+  `lib/l10n/src/medicine_zh.arb` / `medicine_en.arb`。
+- Search page「加入药箱」即时预检失败时展示该 toast（不阻塞添加，也不输出安全判断），随后仍走
+  带「去设提醒」action 的成功 toast；既有 `medicineSearchPrecheck*` 文案（标题「添加前风险检查」等）
+  保持不变——预检范围现在真实包含待加药品，语义成立。
+- 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。

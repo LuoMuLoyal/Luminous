@@ -21,6 +21,14 @@ class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
     runCount++;
     return runResult;
   }
+
+  @override
+  Future<MedicineRiskCheckResult> runPrecheck({
+    required String source,
+    required String sourceRefId,
+  }) async {
+    return const MedicineRiskCheckResult();
+  }
 }
 
 MedicineRiskCheckRecord _record(

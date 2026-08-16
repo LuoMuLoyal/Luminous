@@ -87,6 +87,22 @@ class MedicineRiskCheckMapper {
     );
   }
 
+  /// Builds the static precheck request DTO for a candidate medicine from a
+  /// trusted drug-library source ('cn' / 'drugbank'). The server checks the
+  /// current box plus this candidate without persisting a record.
+  RunRiskCheckDto precheckToDto({
+    required String source,
+    required String sourceRefId,
+  }) {
+    return RunRiskCheckDto(
+      type: RunRiskCheckDtoTypeEnum.static_,
+      candidate: RiskCheckCandidateDto(
+        source_: _mapCandidateSource(source),
+        id: sourceRefId,
+      ),
+    );
+  }
+
   // ─── Enum mappers ────────────────────────────────────────────────────────
 
   MedicineRiskLevel _mapRiskLevel(
@@ -127,6 +143,16 @@ class MedicineRiskCheckMapper {
         MedicineRiskCheckType.static_,
       MedicineRiskCheckRecordDtoCheckTypeEnum.llm => MedicineRiskCheckType.llm,
       _ => MedicineRiskCheckType.static_,
+    };
+  }
+
+  RiskCheckCandidateDtoSource_Enum _mapCandidateSource(String source) {
+    return switch (source) {
+      'cn' => RiskCheckCandidateDtoSource_Enum.cn,
+      'drugbank' => RiskCheckCandidateDtoSource_Enum.drugbank,
+      // Unknown sources are rejected by the server; the precheck failure path
+      // is non-blocking by design.
+      _ => RiskCheckCandidateDtoSource_Enum.unknownDefaultOpenApi,
     };
   }
 

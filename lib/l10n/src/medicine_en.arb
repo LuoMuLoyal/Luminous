@@ -460,6 +460,7 @@
   "medicineSearchPrecheckDescription": "Risk findings or missing coverage were found. You can still continue and add the medicine.",
   "medicineSearchPrecheckConfirmAction": "Add anyway",
   "medicineSearchPrecheckFailedToast": "Risk check failed",
+  "medicineSearchPrecheckUnavailableToast": "Could not pre-check this medicine right now; you can review it in risk check after adding it.",
   "medicineSearchPrecheckScopeTitle": "Check Scope",
   "medicineSearchPrecheckScopeAllergy": "Allergy cross-check",
   "medicineSearchPrecheckScopeInteraction": "Current medicine interactions",

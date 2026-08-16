@@ -45,4 +45,27 @@ class MedicineRiskCheckRemoteDataSource {
     }
     return mapper.recordDtoToDomain(resp.data);
   }
+
+  /// POST — runs an immediate static pre-check for a candidate medicine from
+  /// a trusted drug-library source ([source] is 'cn' / 'drugbank',
+  /// [sourceRefId] the candidate id). The server checks the current box plus
+  /// the candidate on the fly without persisting a record, so the record's
+  /// [MedicineRiskCheckResult] is returned directly as the preview.
+  Future<MedicineRiskCheckResult> runPrecheck({
+    required String source,
+    required String sourceRefId,
+  }) async {
+    final dto = mapper.precheckToDto(source: source, sourceRefId: sourceRefId);
+    final response = await api.medicinesControllerRunRiskCheckV1(
+      runRiskCheckDto: dto,
+    );
+    final resp = response.data;
+    if (resp == null) {
+      throw const LucentApiException(
+        message: '风险检查预检结果响应体为空',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
+    return mapper.recordDtoToDomain(resp.data).result;
+  }
 }

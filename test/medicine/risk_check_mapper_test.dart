@@ -383,6 +383,40 @@ void main() {
     });
   });
 
+  group('precheckToDto', () {
+    test('builds static request with cn candidate', () {
+      final dto = mapper.precheckToDto(
+        source: 'cn',
+        sourceRefId: '__mock_cn_ibuprofen__',
+      );
+
+      expect(dto.type, RunRiskCheckDtoTypeEnum.static_);
+      expect(dto.candidate, isNotNull);
+      expect(dto.candidate!.source_, RiskCheckCandidateDtoSource_Enum.cn);
+      expect(dto.candidate!.id, '__mock_cn_ibuprofen__');
+    });
+
+    test('maps drugbank candidate source', () {
+      final dto = mapper.precheckToDto(
+        source: 'drugbank',
+        sourceRefId: 'DB01050',
+      );
+
+      expect(dto.type, RunRiskCheckDtoTypeEnum.static_);
+      expect(dto.candidate!.source_, RiskCheckCandidateDtoSource_Enum.drugbank);
+      expect(dto.candidate!.id, 'DB01050');
+    });
+
+    test('falls back to unknown source enum for unsupported sources', () {
+      final dto = mapper.precheckToDto(source: 'other', sourceRefId: 'x');
+
+      expect(
+        dto.candidate!.source_,
+        RiskCheckCandidateDtoSource_Enum.unknownDefaultOpenApi,
+      );
+    });
+  });
+
   group('full result mapping', () {
     test('maps finding, coverage and red flag lists', () {
       final result = mapper.responseDtoToDomain(

@@ -255,6 +255,7 @@ export 'package:lucent_api/src/model/report_trend_dto.dart';
 export 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response.dart';
 export 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response_data.dart';
 export 'package:lucent_api/src/model/reset_password_dto.dart';
+export 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 export 'package:lucent_api/src/model/run_risk_check_dto.dart';
 export 'package:lucent_api/src/model/security_pin_elevation_data_dto.dart';
 export 'package:lucent_api/src/model/security_pin_elevation_response_dto.dart';
