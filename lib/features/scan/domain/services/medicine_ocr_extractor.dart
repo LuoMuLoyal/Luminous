@@ -11,17 +11,18 @@ import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 class MedicineOcrExtractor {
   const MedicineOcrExtractor();
 
-  /// Common OCR confusion pairs — the key is the OCR-misread character,
-  /// the value is the correct character it should map back to.
-  static const _ocrConfusion = {
+  /// OCR 误读 → 正确字符的**单向**纠正映射。
+  ///
+  /// key 是 OCR 可能读错的字符,value 是它应纠正成的字符;key 不会出现在
+  /// value 中,因此重复应用是幂等的(0 → O → O,不会 O → 0 再翻转回来)。
+  /// 禁止把它当成可逆双向映射反向使用——例如"还原 OCR 原文"需要另建
+  /// correctToOcr 映射,而不是对同一文本再次应用本映射。
+  static const _ocrToCorrect = {
     '淮': '准',
     '宇': '字',
     '0': 'O',
-    'O': '0',
     '8': 'B',
-    'B': '8',
     'l': '1',
-    '1': 'l',
     '|': '1',
     '己': '已',
   };
@@ -73,7 +74,7 @@ class MedicineOcrExtractor {
     }
     final buffer = StringBuffer();
     for (final ch in normalized.split('')) {
-      buffer.write(_ocrConfusion[ch] ?? ch);
+      buffer.write(_ocrToCorrect[ch] ?? ch);
     }
     return buffer.toString();
   }

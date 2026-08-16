@@ -45,6 +45,16 @@ void main() {
         expect(result.first.query, contains('准'));
       });
 
+      test('OCR confusion is one-way: 0/O and 1/l never flip back', () {
+        final blocks = [_block(text: '国药准字H0l234567')];
+        final result = extractor.extractCandidates(blocks);
+        expect(result, hasLength(1));
+        expect(result.first.matchType, MedicineMatchType.approvalNumber);
+        // 0 → O、l → 1 单向纠正,查询结果保留纠正后的形式,
+        // 不会因映射可逆而翻回 OCR 误读的原文。
+        expect(result.first.query, '国药准字HO1234567');
+      });
+
       test('approval number with spaces is normalised', () {
         final blocks = [_block(text: '国药准字 H12345678')];
         final result = extractor.extractCandidates(blocks);

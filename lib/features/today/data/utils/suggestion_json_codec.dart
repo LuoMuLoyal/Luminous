@@ -62,7 +62,13 @@ class TodaySuggestionJsonCodec {
   static Map<String, dynamic>? _asMap(Object? value) {
     if (value is Map<String, dynamic>) return value;
     if (value is Map) {
-      return value.map((key, dynamic val) => MapEntry(key.toString(), val));
+      // JSON 标准只允许 String key。非 String key(如旧版本缓存迁移遗留的
+      // int key)说明缓存结构异常,返回 null 让调用方走降级清缓存;不再
+      // toString() 静默转换,以免掩盖 schema 问题导致"数据在却取不到"。
+      if (!value.keys.every((key) => key is String)) {
+        return null;
+      }
+      return value.map((key, dynamic val) => MapEntry(key as String, val));
     }
     return null;
   }

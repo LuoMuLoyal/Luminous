@@ -287,6 +287,34 @@ void main() {
     expect(planned.single.enableVibration, isFalse);
   });
 
+  test(
+    'id probe exhaustion returns allocated notifications instead of throwing',
+    () {
+      final planner = MedicineReminderNotificationPlanner(
+        horizonDays: 1,
+        hashValue: (_) => 42,
+      );
+      // 全部提醒落在同一时刻 → 全部撞同一个 hash,第 1002 条起线性探测
+      // 超过上限;plan() 应跳过并记录日志,而不是向上抛 StateError。
+      final reminders = List<MedicineReminderItem>.generate(
+        1005,
+        (index) => _reminder(id: 'r$index', hour: 10, minute: 0),
+        growable: false,
+      );
+
+      final planned = planner.plan(
+        reminders: reminders,
+        remindersEnabled: true,
+        sound: MedicineReminderSoundPreference.defaultTone,
+        texts: texts,
+        now: now,
+      );
+
+      expect(planned, isNotEmpty);
+      expect(planned.length, lessThanOrEqualTo(60));
+    },
+  );
+
   test('enableVibration false disables vibration while keeping sound', () {
     const planner = MedicineReminderNotificationPlanner(horizonDays: 1);
 

@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
@@ -108,7 +109,16 @@ class AssistantPage extends HookConsumerWidget {
           await Toast.show(ctx, l.assistantProposalConfirmedToast);
         case Failure(:final error):
           if (!ctx.mounted) return;
-          await Toast.show(ctx, error.message);
+          // 用统一错误文案 helper 提取用户可见消息:message 为空或非预期
+          // 类型时落到本地化兜底,不直接展示原始 message。
+          await Toast.show(
+            ctx,
+            userMessageFromError(
+              error,
+              fallback: l.assistantProposalFailedState,
+              l10n: l,
+            ),
+          );
       }
     }
 

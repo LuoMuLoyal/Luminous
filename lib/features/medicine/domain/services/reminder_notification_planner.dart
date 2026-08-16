@@ -1,5 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/utils/string_utils.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
@@ -137,22 +138,25 @@ class MedicineReminderNotificationPlanner {
           continue;
         }
 
-        final notificationId = _allocateNotificationId(
-          reminder.id,
-          scheduledAt,
-          usedIds,
-        );
-        planned.add(
-          PlannedNotification(
-            id: notificationId,
-            title: normalizeNullableText(reminder.label) ?? texts.defaultTitle,
-            body: normalizeNullableText(reminder.note) ?? texts.defaultBody,
-            scheduledAt: scheduledAt,
-            playSound: playSound,
-            enableVibration: enableVibration && playSound,
-            payload: reminder.id,
-          ),
-        );
+        try {
+          planned.add(
+            PlannedNotification(
+              id: _allocateNotificationId(reminder.id, scheduledAt, usedIds),
+              title:
+                  normalizeNullableText(reminder.label) ?? texts.defaultTitle,
+              body: normalizeNullableText(reminder.note) ?? texts.defaultBody,
+              scheduledAt: scheduledAt,
+              playSound: playSound,
+              enableVibration: enableVibration && playSound,
+              payload: reminder.id,
+            ),
+          );
+        } on StateError catch (e) {
+          // 通知 ID 线性探测耗尽(极端饱和输入):跳过该条提醒并记录日志,
+          // 返回已分配的通知,保证上层调度不会因单条异常而整体崩溃。
+          appTalker.error('MedicineReminderNotificationPlanner: $e');
+          continue;
+        }
       }
     }
 
