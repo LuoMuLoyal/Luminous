@@ -37,6 +37,66 @@ class MedicineReminderWriteInput {
   }
 }
 
+/// Write input for a single slot inside a whole-group reminder upsert.
+class MedicineReminderSlotUpsertInput {
+  const MedicineReminderSlotUpsertInput({
+    this.id,
+    required this.scheduledHour,
+    required this.scheduledMinute,
+  });
+
+  final String? id;
+  final int scheduledHour;
+  final int scheduledMinute;
+
+  Map<String, Object?> toJson() {
+    return <String, Object?>{
+      if (id != null) 'id': id,
+      'scheduledHour': scheduledHour,
+      'scheduledMinute': scheduledMinute,
+    };
+  }
+}
+
+/// Write input for upserting a whole medicine reminder group in a single
+/// transaction. Slots carrying an [id] are updated, slots without one are
+/// created, and existing group slots missing from [slots] are soft-deleted
+/// server-side. Only non-null group-level fields are serialized.
+class MedicineReminderGroupUpsertInput {
+  const MedicineReminderGroupUpsertInput({
+    required this.currentMedicineId,
+    this.label,
+    this.daysOfWeek,
+    this.startDate,
+    this.endDate,
+    this.isActive,
+    this.note,
+    required this.slots,
+  });
+
+  final String currentMedicineId;
+  final String? label;
+  final List<int>? daysOfWeek;
+  final String? startDate;
+  final String? endDate;
+  final bool? isActive;
+  final String? note;
+  final List<MedicineReminderSlotUpsertInput> slots;
+
+  Map<String, Object?> toJson() {
+    return <String, Object?>{
+      'currentMedicineId': currentMedicineId,
+      if (label != null) 'label': label,
+      if (daysOfWeek != null) 'daysOfWeek': daysOfWeek,
+      if (startDate != null) 'startDate': startDate,
+      if (endDate != null) 'endDate': endDate,
+      if (isActive != null) 'isActive': isActive,
+      if (note != null) 'note': note,
+      'slots': slots.map((slot) => slot.toJson()).toList(growable: false),
+    };
+  }
+}
+
 /// A single medicine reminder item.
 class MedicineReminderItem {
   const MedicineReminderItem({

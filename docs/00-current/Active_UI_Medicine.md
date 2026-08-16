@@ -94,6 +94,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 ## 提醒
 
 - Lucent schedule-only 提醒详情/创建/编辑/删除 UI。
+- 编辑/启停保存走整组 upsert（`PUT /api/v1/user/medicine-reminders/group`，单事务），组内缺失槽服务端软删，不再逐槽半保存。
 - 可选起止日期窗口使用 Forui `FCalendar.grid`。
 - 本地声音偏好。
 - 按提醒计划同步的本地通知调度。

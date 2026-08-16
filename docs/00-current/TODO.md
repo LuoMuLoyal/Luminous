@@ -61,6 +61,9 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ## 审查暂缓项
 
+- F-6 前端整组保存审查 P2（2026-08-16 任务 8 审查，越界既有项，不阻塞）
+  - `lib/features/medicine/presentation/pages/reminder/edit.dart` `formatDateInput(null)` 返回 `''` 会被序列化为 `'startDate': ''`，后端 `@IsDateString()` 400——既有代码、F-6 未引入；UI 创建时 startDate 恒默认今天，难触达。验收：formatDateInput 对 null 返回 null 或序列化时过滤空串。
+
 - F-3 打卡撤销审查 P2 清单（2026-08-16 任务 5 审查，P2-1~P2-4，不阻塞）
   - P2-1 `lib/features/medicine/presentation/pages/page.dart` `_undoDose` 首行缺 `if (!context.mounted) return;`（1.8s toast 存活期间页面销毁时概率极低的空安全风险）。验收：与 `_markDose` 一致在函数入口先做 mounted 守卫。
   - P2-2 `core/feedback/toast.dart` 同消息去重分支不更新 action 回调（连续打卡两槽位时第二次撤销指向第一槽位闭包；已文档化、反向 planned 幂等）。验收：可接受或为 Toast 增加重放时替换 action 能力。

@@ -2714,6 +2714,13 @@ class _FakeReminderRepository implements ReminderRepository {
   Future<void> reportLocalCapability(String state) async {}
 
   @override
+  Future<List<MedicineReminderItem>> upsertGroup(
+    MedicineReminderGroupUpsertInput input,
+  ) async {
+    return _reminders;
+  }
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 

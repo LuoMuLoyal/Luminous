@@ -200,6 +200,67 @@ void main() {
       expect(request.body, isNull);
     });
 
+    test('upsertGroup PUTs the whole group and maps response items', () async {
+      final items = await dataSource.upsertGroup(
+        const MedicineReminderGroupUpsertInput(
+          currentMedicineId: 'med-1',
+          label: '阿托伐他汀钙片',
+          daysOfWeek: [1, 2, 3],
+          startDate: '2026-06-10',
+          endDate: null,
+          isActive: true,
+          note: '饭后服用',
+          slots: [
+            MedicineReminderSlotUpsertInput(
+              id: 'reminder-1',
+              scheduledHour: 8,
+              scheduledMinute: 0,
+            ),
+            MedicineReminderSlotUpsertInput(
+              id: 'reminder-2',
+              scheduledHour: 20,
+              scheduledMinute: 0,
+            ),
+            MedicineReminderSlotUpsertInput(
+              id: null,
+              scheduledHour: 21,
+              scheduledMinute: 15,
+            ),
+          ],
+        ),
+      );
+
+      final request = adapter.requestAt(
+        'PUT',
+        '/api/v1/user/medicine-reminders/group',
+      );
+      expect(request.body, containsPair('currentMedicineId', 'med-1'));
+      expect(request.body, containsPair('label', '阿托伐他汀钙片'));
+      expect(request.body, containsPair('daysOfWeek', [1, 2, 3]));
+      expect(request.body, containsPair('startDate', '2026-06-10'));
+      expect(request.body!.containsKey('endDate'), isFalse);
+      expect(request.body, containsPair('isActive', true));
+      expect(request.body, containsPair('note', '饭后服用'));
+
+      final slots = request.body!['slots'] as List;
+      expect(slots, hasLength(3));
+      expect(slots[0], containsPair('id', 'reminder-1'));
+      expect(slots[0], containsPair('scheduledHour', 8));
+      expect(slots[0], containsPair('scheduledMinute', 0));
+      expect(slots[1], containsPair('id', 'reminder-2'));
+      expect((slots[2] as Map).containsKey('id'), isFalse);
+      expect(slots[2], containsPair('scheduledHour', 21));
+      expect(slots[2], containsPair('scheduledMinute', 15));
+
+      expect(items, hasLength(3));
+      expect(items[0].id, 'reminder-1');
+      expect(items[0].scheduledHour, 8);
+      expect(items[1].id, 'reminder-2');
+      expect(items[2].id, 'reminder-new-2');
+      expect(items[2].scheduledHour, 21);
+      expect(items[2].scheduledMinute, 15);
+    });
+
     test('reportLocalReceipt posts the idempotent receipt payload', () async {
       await dataSource.reportLocalReceipt(
         reminderId: 'reminder-1',
@@ -308,6 +369,45 @@ class _FakeReminderAdapter implements HttpClientAdapter {
           'code': 0,
           'message': '',
           'data': <String, Object?>{'state': body?['state']},
+        }),
+        200,
+        headers: const <String, List<String>>{
+          Headers.contentTypeHeader: <String>['application/json'],
+        },
+      );
+    }
+    if (options.path == '/api/v1/user/medicine-reminders/group') {
+      final slots = body?['slots'];
+      final groupItems = <Map<String, Object?>>[];
+      if (slots is List) {
+        for (var index = 0; index < slots.length; index += 1) {
+          final slot = slots[index];
+          final slotMap = slot is Map
+              ? slot.map((key, value) => MapEntry('$key', value))
+              : <String, Object?>{};
+          groupItems.add(<String, Object?>{
+            'id': slotMap['id'] ?? 'reminder-new-$index',
+            'currentMedicineId': body?['currentMedicineId'],
+            'label': body?['label'],
+            'scheduledHour': slotMap['scheduledHour'],
+            'scheduledMinute': slotMap['scheduledMinute'],
+            'daysOfWeek': body?.containsKey('daysOfWeek') == true
+                ? body!['daysOfWeek']
+                : null,
+            'startDate': body?['startDate'],
+            'endDate': body?['endDate'],
+            'isActive': body?['isActive'] ?? true,
+            'note': body?['note'],
+            'createdAt': '2026-06-08T07:00:00.000Z',
+            'updatedAt': '2026-06-09T07:00:00.000Z',
+          });
+        }
+      }
+      return ResponseBody.fromString(
+        jsonEncode(<String, Object?>{
+          'code': 0,
+          'message': '',
+          'data': <String, Object?>{'items': groupItems},
         }),
         200,
         headers: const <String, List<String>>{

@@ -228,7 +228,7 @@ void main() {
   });
 
   test(
-    'Medicine reminder form syncs times through update/create/delete',
+    'Medicine reminder form saves whole group through single upsert',
     () async {
       final dataSource = _FakeReminderDataSource([
         _reminder(id: 'reminder-1', hour: 8, minute: 0),
@@ -264,16 +264,32 @@ void main() {
           );
 
       expect(saved, isTrue);
-      expect(dataSource.updatedIds, ['reminder-1', 'reminder-2']);
-      expect(dataSource.createdInputs, hasLength(1));
+      expect(dataSource.upsertGroupInputs, hasLength(1));
+
+      final input = dataSource.upsertGroupInputs.single;
+      expect(input.currentMedicineId, 'med-1');
+      expect(input.label, '阿托伐他汀钙片');
+      expect(input.daysOfWeek, isNull);
+      expect(input.startDate, '2026-06-10');
+      expect(input.endDate, isNull);
+      expect(input.isActive, isTrue);
+      expect(input.note, '饭后服用');
+
+      expect(input.slots, hasLength(3));
+      expect(input.slots[0].id, 'reminder-1');
+      expect(input.slots[0].scheduledHour, 7);
+      expect(input.slots[0].scheduledMinute, 30);
+      expect(input.slots[1].id, 'reminder-2');
+      expect(input.slots[1].scheduledHour, 12);
+      expect(input.slots[1].scheduledMinute, 0);
+      expect(input.slots[2].id, isNull);
+      expect(input.slots[2].scheduledHour, 21);
+      expect(input.slots[2].scheduledMinute, 15);
+
+      // The whole group is submitted once; no per-slot update/create/delete.
+      expect(dataSource.updatedIds, isEmpty);
+      expect(dataSource.createdInputs, isEmpty);
       expect(dataSource.deletedIds, isEmpty);
-      expect(dataSource.updatedInputs.first.scheduledHour, 7);
-      expect(dataSource.updatedInputs.first.scheduledMinute, 30);
-      expect(dataSource.updatedInputs.first.daysOfWeek, isNull);
-      expect(dataSource.updatedInputs.first.startDate, '2026-06-10');
-      expect(dataSource.updatedInputs.first.endDate, isNull);
-      expect(dataSource.createdInputs.single.scheduledHour, 21);
-      expect(dataSource.createdInputs.single.scheduledMinute, 15);
     },
   );
 }
@@ -351,6 +367,7 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
   final updatedIds = <String>[];
   final updatedInputs = <MedicineReminderWriteInput>[];
   final deletedIds = <String>[];
+  final upsertGroupInputs = <MedicineReminderGroupUpsertInput>[];
 
   @override
   Future<List<MedicineReminderItem>> fetchActive() async => items;
@@ -402,6 +419,14 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
   @override
   Future<void> delete(String id) async {
     deletedIds.add(id);
+  }
+
+  @override
+  Future<List<MedicineReminderItem>> upsertGroup(
+    MedicineReminderGroupUpsertInput input,
+  ) async {
+    upsertGroupInputs.add(input);
+    return items;
   }
 }
 

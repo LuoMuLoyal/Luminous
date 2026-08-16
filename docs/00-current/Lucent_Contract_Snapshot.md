@@ -7,7 +7,7 @@ updated: 2026-08-16
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-16 (提醒投递回执与本地调度能力上报)
+Last updated: 2026-08-16 (提醒组整组 upsert)
 
 ## 基础
 
@@ -31,6 +31,7 @@ Last updated: 2026-08-16 (提醒投递回执与本地调度能力上报)
 - **Proactive Suggestion Runtime Task 7**：Today Analysis REST 合同现在返回显式 envelope DTO，GET/refresh/generate/async 的 `computedAt`、`retryAfterSeconds`、版本与物化状态字段均有明确 schema；生成 client 已包含 `TodayAnalysisApi` 的 GET/refresh 方法及对应模型。Today domain/UI 状态映射仍留给 Task 8。
 - **Sparse Record Semantics Task 6/7**：Report metric、Today suggestion item 和 Today Analysis data 通过 OpenAPI 暴露同构 `observedMetric`：`value`（必返、可空）、`state`、`coverage`、`sources`、`observedCount`、`expectedCount`（必返、可空）、`windowStart`、`windowEnd`。Report 的旧 `value`/`unit`/`status`/`delta`/`direction`/`sparkline` 仅作 deprecated 兼容投影；generated client 与 Today/Report domain mapper 已同步，旧 scalar 仍作为兼容 fallback。
 - **提醒投递三通道**：新增 `POST /api/v1/user/reminder-deliveries/receipts`（幂等回写 `channel='local'`、`status='delivered'` 审计行，body 为 `reminderId` + `scheduledDate`(YYYY-MM-DD) + `scheduledTime`(HH:mm)，服务端按用户 profile 时区换算 UTC 截断分钟为 `scheduledFor`）与 `PUT /api/v1/user/reminder-deliveries/local-capability`（上报 `active`/`unavailable`/`disabled`，服务端缓存 TTL 14 天，调度器仅在 unconfirmed/unavailable 时发 JPush）。生成客户端新增 `ReminderDeliveriesApi` 及对应 DTO 模型；Luminous 消费侧走 raw Dio + `LucentApiPaths` 常量。
+- **提醒组整组保存**：新增 `PUT /api/v1/user/medicine-reminders/group`（body 为组级 `currentMedicineId` + 可空 `label`/`daysOfWeek`/`startDate`/`endDate`/`isActive`/`note` + `slots:[{id?, scheduledHour, scheduledMinute}]`，`slots` 至少 1 项）。整组替换语义：带 id 更新（须属当前用户同组）、无 id 新建、组内缺失行服务端软删；单事务提交后发一次 `REMINDER_CHANGED {userId}`；响应 `{items}`。Luminous 消费侧走 raw Dio + `LucentApiPaths.medicineRemindersGroup`（生成客户端暂未再生该端点方法，待后续契约同步任务统一再生）。
 
 ## Luminous 已使用的后端领域
 

@@ -200,29 +200,27 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
           return left.minute.compareTo(right.minute);
         });
 
-      for (var index = 0; index < times.length; index += 1) {
-        final time = times[index];
-        final writeInput = MedicineReminderWriteInput(
+      final slots = <MedicineReminderSlotUpsertInput>[
+        for (var index = 0; index < times.length; index += 1)
+          MedicineReminderSlotUpsertInput(
+            id: index < existing.length ? existing[index].id : null,
+            scheduledHour: times[index].hour,
+            scheduledMinute: times[index].minute,
+          ),
+      ];
+
+      await dataSource.upsertGroup(
+        MedicineReminderGroupUpsertInput(
           currentMedicineId: input.currentMedicineId,
           label: input.label,
-          scheduledHour: time.hour,
-          scheduledMinute: time.minute,
           daysOfWeek: input.daysOfWeek,
           startDate: input.startDate,
           endDate: input.endDate,
           isActive: input.isActive,
           note: input.note,
-        );
-        if (index < existing.length) {
-          await dataSource.update(existing[index].id, writeInput);
-        } else {
-          await dataSource.create(writeInput);
-        }
-      }
-
-      for (var index = times.length; index < existing.length; index += 1) {
-        await dataSource.delete(existing[index].id);
-      }
+          slots: slots,
+        ),
+      );
 
       _invalidateReminderSurfaces();
       state = const MedicineReminderFormState(saved: true);

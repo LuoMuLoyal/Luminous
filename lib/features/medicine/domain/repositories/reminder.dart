@@ -30,6 +30,15 @@ abstract interface class ReminderRepository {
   /// Deletes a reminder.
   Future<void> delete(String id);
 
+  /// Upserts a whole medicine reminder group in a single transaction.
+  ///
+  /// Slots carrying an [MedicineReminderSlotUpsertInput.id] are updated,
+  /// slots without one are created, and existing group slots missing from the
+  /// input are soft-deleted server-side. Returns the resulting group items.
+  Future<List<MedicineReminderItem>> upsertGroup(
+    MedicineReminderGroupUpsertInput input,
+  );
+
   /// Reports that a local notification for the reminder was delivered
   /// (idempotent on the server: the same `reminderId|date|time` key writes a
   /// `channel='local'`, `status='delivered'` audit row at most once).

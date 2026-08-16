@@ -6,7 +6,12 @@ import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 
 export 'package:luminous/features/medicine/domain/entities/reminder.dart'
-    show MedicineReminderItem, MedicineReminderWriteInput, ReminderDeliveryItem;
+    show
+        MedicineReminderItem,
+        MedicineReminderWriteInput,
+        MedicineReminderGroupUpsertInput,
+        MedicineReminderSlotUpsertInput,
+        ReminderDeliveryItem;
 
 class MedicineReminderRemoteDataSource implements ReminderRepository {
   MedicineReminderRemoteDataSource({required this.api, required this.dio});
@@ -76,6 +81,18 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
       LucentApiPaths.medicineReminder(id),
       options: Options(method: 'DELETE'),
     );
+  }
+
+  @override
+  Future<List<MedicineReminderItem>> upsertGroup(
+    MedicineReminderGroupUpsertInput input,
+  ) async {
+    final response = await dio.request<Object>(
+      LucentApiPaths.medicineRemindersGroup,
+      data: input.toJson(),
+      options: Options(method: 'PUT', contentType: Headers.jsonContentType),
+    );
+    return _responseItems(response.data).map(_fromJson).toList(growable: false);
   }
 
   @override
