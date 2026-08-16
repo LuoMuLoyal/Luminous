@@ -12,10 +12,9 @@ Created: 2026-08-16
 - 范围:`lib/features/medicine/`(presentation/data/domain 全层)+ `lib/features/mine/presentation/pages/current_medicine_edit.dart`;
   后端 `Lucent/src/modules/medicine-reminders/`、`medicine-dose-logs/`、`medicines/`(含 `risk/` 子目录)。
 - 用药域全链路(档案 currentMedicines → 提醒 → 调度 → 打卡 dose log → 依从 → 风险 → Today 建议)已是真实闭环,
-  本计划不返工,目标三件事:
+  本计划不返工,目标两件事:
   1. 依从性口径统一 P2:后端当日 slot 统计对象(F-5,前端 P1 mapper 已完成);
-  2. 后端提醒文案 i18n(F-8);
-  3. 收尾 P2 小问题(F-3 打卡撤销、F-11 unknown 兜底、F-19 入口改造、F-6 提醒组整组保存)。
+  2. 收尾 P2 小问题(F-3 打卡撤销、F-11 unknown 兜底、F-19 入口改造、F-6 提醒组整组保存)。
 - 边界:扫码/搜索与"加入药箱"链路见 scan-search 计划;本地通知网关公共底座见
   platform-notification-crosscutting 计划保留项(F-2),JPush 密钥与投递落库已由该计划完成(投递三通道见 Lucent ADR-0013;JPush 密钥部署见 Lucent deploy 配置与部署文档);Today 建议卡/漏服规则见 today 计划;队列/Cron 底座见
   engineering-backend 计划。本计划只覆盖用药模块专属功能点,交叉处引用对应计划。
@@ -49,9 +48,9 @@ Created: 2026-08-16
 
 ## 三、改造项(按优先级分组)
 
-### 3.2 P1（0.1.0 前）
+### 3.3 P2
 
-**F-5 依从性口径统一(ObservedMetric 稀疏语义合同;本节为 today/record/report 计划的口径权威来源)**
+**F-5 依从性口径统一 P2 后端统计对象(ObservedMetric 稀疏语义合同;本节为 today/record/report 计划的口径权威来源)**
 
 - 统一口径(四方共用;P1 已落地于前端 mapper):分母 = **已到期槽位**(已确认/已跳过/已超时三类),分子 = 已确认槽位;**未确认 ≠ 漏服**,
   漏服语义由 `overdueUnconfirmed` 派生,不落库为 `missed`;未到期槽位不计入分母;无覆盖/无到期槽位显示 `--`。
@@ -64,15 +63,6 @@ Created: 2026-08-16
 - 前后端分工:P1 前端先行(已完成);P2 后端补统计接口后前端切换数据源。
 - 依赖:后端 Active_Product_Loop 已收口该合同；P2 在 0.1.0 前完成。
 
-**F-8 提醒文案 i18n**
-
-- 现状:后端 `dispatchSingle` 内提醒文案("该吃药了:{label}")硬编码中文,未走 i18n,英文用户收到中文通知。
-- 方案:通知标题/正文按用户语言偏好取文案;涉及 `medicine-reminders/services/scheduler.service.ts` 文案抽取。
-- 前后端分工:纯后端。
-- 依赖:无。
-
-### 3.3 P2
-
 **F-3 主页打卡撤销（0.1.0 前）**
 
 - 现状:`_markDose` 直接 `mark()` 无二次确认,误触后主页无撤销入口(Record 页快速用药已有撤销)。
@@ -83,11 +73,6 @@ Created: 2026-08-16
 - 现状:同一药品多时间槽为 N 行独立记录,`saveGroup` 逐个 PATCH,弱网下可能部分成功(半保存),失败整体返回 false 但不回滚。
 - 方案:后端提供整组 upsert 接口替代逐槽 PATCH;涉及 `Lucent/src/modules/medicine-reminders/` 与客户端编辑页保存链路。
 - 分工:后端加接口,前端切换到整组提交。
-
-**F-9 提醒投递历史补渠道(引用，不展开，0.1.0 前)**
-
-- 现状:`ReminderDeliveryLogPanel` 只读展示投递审计,但只有 in_app 渠道有真实记录,本地通知与 JPush 无投递记录。
-- 方案:已完成(2026-08-16),方案与实现见 `Lucent/docs/01-reference/adr/0013-reminder-delivery-three-channel.md`(ADR-0013);本地通知展示后以稳定通知实例 ID 幂等回写 `local/delivered`,列表按渠道如实区分。
 
 **F-11 risk-check 客户端 unknown 枚举兜底去误导（0.1.0 前）**
 
@@ -115,8 +100,7 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. P1:F-8 提醒文案 i18n。
-2. P2:F-3、F-11、F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
+1. P2:F-3、F-11、F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
 
 ## 六、已决边界与延期项
 
