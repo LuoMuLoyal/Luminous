@@ -127,5 +127,51 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Test message'), findsNothing);
     });
+
+    testWidgets('same-message replay replaces the action callback', (
+      tester,
+    ) async {
+      var cb1Calls = 0;
+      var cb2Calls = 0;
+      await tester.pumpWidget(
+        _toastShell(
+          Builder(
+            builder: (context) {
+              return ElevatedButton(
+                onPressed: () async {
+                  await Toast.showWithAction(
+                    context,
+                    '撤销消息',
+                    '撤销',
+                    () => cb1Calls++,
+                  );
+                  await Toast.showWithAction(
+                    context,
+                    '撤销消息',
+                    '撤销',
+                    () => cb2Calls++,
+                  );
+                },
+                child: const Text('Show'),
+              );
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Show'));
+      await tester.pump();
+      // Let the entrance animation complete (mirrors the existing test to avoid
+      // dismissing mid-entrance).
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // 同消息重放后点「撤销」应触发最新回调 cb2，而非首次触发的 cb1。
+      await tester.tap(find.text('撤销'));
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(cb2Calls, 1);
+      expect(cb1Calls, 0);
+    });
   });
 }

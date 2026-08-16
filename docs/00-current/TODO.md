@@ -66,15 +66,9 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ## 审查暂缓项
 
-- F-14 药品详情页审查 P2-2（2026-08-16 任务 2 审查遗留，待 scan-search 计划决策）
-  - 位置：`lib/app/router.dart` `_publicRoutePrefixes` / `_publicRootRoutes`
-  - 问题：`/medicine/detail` 未登记为公开路由（后端 `GET /medicines/:id?source=` 为 @Public、页面仅对「加入药箱」做 auth 门控），未登录深链会 redirect 到 `/login`；当前唯一入口（Reminder 详情卡）已 auth 门控，不破坏现有流程
-  - 验收：scan-search 计划接线「查看说明书」时决定公开（加入 `_publicRoutePrefixes`）或保持受保护并在入口做 auth 门控，并同步 `docs/02-reference/routing.md` Public Preview 段
-
-- F-3 打卡撤销审查 P2-2（2026-08-16 任务 5 审查遗留）
-  - 位置：`core/feedback/toast.dart` 同消息去重分支
-  - 问题：1.8s 内连续打卡两槽位时第二次撤销 action 仍是第一槽位闭包（已文档化、反向 planned 幂等）
-  - 验收：可接受或为 Toast 增加重放时替换 action 能力
+- scan-search 接线复审 P2（2026-08-16，非阻塞）
+  - 计划文件 `plans/2026-08-16-scan-search-remediation-plan.md` F-3「断链机理」段末句「需一并改写」已陈旧（测试已改写）。验收：scan-search 计划正式实施时顺带清理该句。
+  - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。
 
 - 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/presentation/pages/detail.dart`（853 行）、`record/presentation/widgets/sections/quick_entry_panel.dart`（565 行）、`record/presentation/pages/edit.dart`（511 行）、`report/presentation/pages/page.dart`（438 行）、`settings/presentation/pages/page.dart`（184 行）
 - 剩余约 80 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理

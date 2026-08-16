@@ -11,6 +11,7 @@ class Toast {
   static FToasterEntry? _currentEntry;
   static Timer? _currentTimer;
   static String? _currentMessage;
+  static _ActionConfig? _currentAction;
 
   static Future<bool?> show(BuildContext context, String message) async {
     return _showInternal(context, message, null);
@@ -37,6 +38,11 @@ class Toast {
   ) async {
     // 如果当前正在显示同一条消息，直接按最后一次触发重新计时，避免排队。
     if (_currentMessage == message && _currentEntry?.showing == true) {
+      // 同消息重放只替换 action 引用：按钮按下时读取的是最新回调，因此连续
+      // 触发同消息时第二次 action 指向最新闭包。已渲染的 label 在 label 变化时
+      // 不会重绘（当前用例撤销标签恒定，仅回调需最新）；如需标签热更新需重建
+      // toast（TODO）。
+      _currentAction = action;
       _currentTimer?.cancel();
       _currentTimer = Timer(const Duration(milliseconds: 1800), () {
         if (_currentMessage == message) {
@@ -49,6 +55,7 @@ class Toast {
     _removeCurrentToast();
 
     _currentMessage = message;
+    _currentAction = action;
     _currentTimer = Timer(const Duration(milliseconds: 1800), () {
       if (_currentMessage == message) {
         _removeCurrentToast();
@@ -61,15 +68,17 @@ class Toast {
         alignment: FToastAlignment.topCenter,
         duration: null,
         title: Text(message),
-        suffixBuilder: action != null
+        suffixBuilder: _currentAction != null
             ? (context, entry) => FButton(
                 variant: FButtonVariant.ghost,
                 size: .sm,
                 onPress: () {
                   entry.dismiss();
-                  action.callback();
+                  _currentAction?.callback();
                 },
-                child: Text(action.label),
+                // label 在展示时捕获（每 entry 稳定），避免旧 toast 重建时读取
+                // 已置空的 `_currentAction` 触发空解引用；仅回调按按下时读取最新值。
+                child: Text(action!.label),
               )
             : (context, entry) => FButton.icon(
                 variant: FButtonVariant.ghost,
@@ -98,6 +107,7 @@ class Toast {
     _currentEntry?.dismiss();
     _currentEntry = null;
     _currentMessage = null;
+    _currentAction = null;
   }
 
   static void _reset() {
@@ -105,6 +115,7 @@ class Toast {
     _currentTimer = null;
     _currentEntry = null;
     _currentMessage = null;
+    _currentAction = null;
   }
 }
 
