@@ -17,8 +17,8 @@ Created: 2026-08-16
   2. 依从性口径统一,前后端对齐 ObservedMetric 稀疏语义合同(F-5);
   3. 修复主页安全摘要卡告警恒空问题(F-13);
   4. 收尾 P2 小问题、归档少量死代码。
-- 边界:扫码/搜索与"加入药箱"链路见 scan-search 计划;本地通知网关公共底座、JPush、投递落库见
-  platform-notification-crosscutting 计划;Today 建议卡/漏服规则见 today 计划;队列/Cron 底座见
+- 边界:扫码/搜索与"加入药箱"链路见 scan-search 计划;本地通知网关公共底座见
+  platform-notification-crosscutting 计划保留项(F-2),JPush 密钥与投递落库已由该计划完成(投递三通道见 Lucent ADR-0013;JPush 密钥部署见 Lucent deploy 配置与部署文档);Today 建议卡/漏服规则见 today 计划;队列/Cron 底座见
   engineering-backend 计划。本计划只覆盖用药模块专属功能点,交叉处引用对应计划。
 
 ## 二、保留不动(清单)
@@ -118,8 +118,7 @@ Created: 2026-08-16
 **F-9 提醒投递历史补渠道(引用，不展开，0.1.0 前)**
 
 - 现状:`ReminderDeliveryLogPanel` 只读展示投递审计,但只有 in_app 渠道有真实记录,本地通知与 JPush 无投递记录。
-- 方案:见 [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)
-  的投递落库一节,本文不重复展开;本地通知展示后以稳定通知实例 ID 幂等回写 `local/delivered`，列表按渠道如实区分。
+- 方案:已完成(2026-08-16),方案与实现见 `Lucent/docs/01-reference/adr/0013-reminder-delivery-three-channel.md`(ADR-0013);本地通知展示后以稳定通知实例 ID 幂等回写 `local/delivered`,列表按渠道如实区分。
 
 **F-11 risk-check 客户端 unknown 枚举兜底去误导（0.1.0 前）**
 
@@ -148,7 +147,7 @@ Created: 2026-08-16
 
 ## 四、跨计划引用与依赖
 
-- **引用(他计划拥有)**:F-9 投递落库 → [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md);
+- **引用(他计划拥有)**:F-9 投递落库(已完成,方案与实现见 Lucent ADR-0013);
   队列/Cron 底座(BullMQ Repeatable Job)→ engineering-backend 计划;Today 漏服卡/建议重算细节 → today 计划。
 - **被引用(本计划拥有)**:scan-search 计划引用本文 F-14 详情页作为识别结果卡/查看说明书落点;today/record/report 计划
   引用本文 F-5 的 ObservedMetric 稀疏语义口径;mine-settings 计划引用本文 F-7 的 LocalNotificationGateway 机制(睡眠提醒)。
@@ -159,7 +158,7 @@ Created: 2026-08-16
 
 1. P0:F-13 告警聚合改造（0.1.0 前，顺手完成 F-16/17/18 归档标注）。
 2. P1:F-14 详情页（0.1.0 前，解锁 scan-search 断链修复）→ F-5 前端口径统一 → F-8 提醒文案 i18n。
-3. P2:F-3、F-11、F-19 入口改造、F-6 与 F-9（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
+3. P2:F-3、F-11、F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
 
 ## 六、已决边界与延期项
 
