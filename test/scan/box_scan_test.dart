@@ -222,6 +222,43 @@ void main() {
       },
     );
 
+    testWidgets(
+      'use-AI from the OCR-unavailable dialog goes straight to the camera',
+      (tester) async {
+        when(
+          () => mockOcr.ensureInitialized(),
+        ).thenThrow(StateError('ABI incompatible'));
+        // Cancel the picker so the test stops before the AI branch of
+        // _processPhoto (real file I/O, excluded from widget tests).
+        fakePicker.imagePath = null;
+
+        await openMethodPicker(
+          tester,
+          overrides: [
+            // The AI path is auth-gated (F-5): a signed-in session passes
+            // the gate so the fallback reaches the picker directly (F-7).
+            authSessionProvider.overrideWith(
+              () => SignedInAuthSessionNotifier(),
+            ),
+          ],
+        );
+        await tester.tap(find.text(l10n.scanMethodOcrTitle));
+        await flushAsync(tester);
+
+        expect(find.text(l10n.scanOcrUnavailableTitle), findsOneWidget);
+
+        await tester.tap(find.text(l10n.scanOcrUnavailableUseAi));
+        await flushAsync(tester);
+
+        // Straight to the camera: no method picker re-selection, the picker
+        // is invoked exactly once, and no dialog residue (F-7).
+        expect(fakePicker.pickCalls, 1);
+        expect(find.text(l10n.scanMethodPickerTitle), findsNothing);
+        expect(find.text(l10n.scanOcrUnavailableTitle), findsNothing);
+        expect(find.text(l10n.scanResultTitle), findsNothing);
+      },
+    );
+
     testWidgets('matches OCR text and shows results dialog', (tester) async {
       when(() => mockOcr.recognize(any())).thenAnswer(
         (_) async => const [

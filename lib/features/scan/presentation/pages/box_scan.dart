@@ -56,6 +56,17 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   );
 
   if (method == null || !context.mounted) return;
+  await _startPhotoScan(context, method);
+}
+
+/// Launches the camera for [method], processes the photo, and shows the result
+/// dialog. Shared by the method picker and the OCR-unavailable fallback (F-7),
+/// which jumps straight to AI recognition instead of re-selecting a method.
+Future<void> _startPhotoScan(
+  BuildContext context,
+  MedicineScanMethod method,
+) async {
+  final l10n = AppLocalizations.of(context)!;
 
   // Auth gate: the AI recognition path (compress → COS presigned upload →
   // POST /api/v1/medicines/recognize) requires login, unlike the public OCR
@@ -131,7 +142,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
       ),
     );
   } catch (e) {
-    appTalker.error('showMedicineBoxScanSheet: failed: $e');
+    appTalker.error('_startPhotoScan: failed: $e');
     if (context.mounted) {
       _dismissOverlay(context);
       if (context.mounted) {
@@ -141,7 +152,8 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   }
 }
 
-/// Shows a dialog when OCR is unavailable, offering to switch to AI recognition.
+/// Shows a dialog when OCR is unavailable, offering to switch directly to AI
+/// recognition (which skips the method picker, F-7).
 Future<void> _showOcrUnavailableDialog(
   BuildContext context,
   AppLocalizations l10n,
@@ -175,7 +187,11 @@ Future<void> _showOcrUnavailableDialog(
             FButton(
               onPress: () {
                 Navigator.of(dialogContext).pop();
-                unawaited(showMedicineBoxScanSheet(context));
+                // Jump straight to the AI camera flow (F-7) instead of
+                // re-showing the method picker; the F-5 auth gate lives
+                // inside _startPhotoScan, so signed-out users still get the
+                // login prompt before the camera opens.
+                unawaited(_startPhotoScan(context, MedicineScanMethod.ai));
               },
               child: Text(l10n.scanOcrUnavailableUseAi),
             ),
