@@ -141,146 +141,161 @@ class _ReminderDetailBody extends ConsumerWidget {
     final hasNote = data.reminders.any(
       (item) => (item.note ?? '').trim().isNotEmpty,
     );
+    final canOpenDetail =
+        data.medicine.sourceRefId != null &&
+        (data.medicine.source == 'cn' || data.medicine.source == 'drugbank');
+
+    final Widget medicineCard = FCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(Spacing.level4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.medicine.displayName,
+                        style: TypographyToken.level5
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w800),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: Spacing.level1),
+                      Text(
+                        medicineDoseText(l10n, data.medicine),
+                        style: TypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: Spacing.level3),
+                FBadge.raw(
+                  builder: (context, style) {
+                    final pillColor = isActive
+                        ? SemanticColor.primary
+                        : SemanticColor.neutral;
+                    final foreground = pillColor.solid(context);
+                    return DecoratedBox(
+                      decoration: ShapeDecoration(
+                        color: pillColor.muted(context),
+                        shape: RoundedSuperellipseBorder(
+                          borderRadius: BorderRadius.circular(
+                            RadiusTokens.level2,
+                          ),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Spacing.level2,
+                          vertical: Spacing.level1,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              isActive
+                                  ? l10n.medicineReminderEnabledStatus
+                                  : l10n.medicineReminderDisabledStatus,
+                              style: TypographyToken.level3
+                                  .body(context)
+                                  .copyWith(
+                                    color: foreground,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0,
+                                  ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          const AppDivider(),
+          // Active/inactive toggle — allows switching without entering edit page.
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.level4,
+              vertical: Spacing.level3,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  SemanticIcons.dosePower,
+                  color: isActive
+                      ? SemanticColor.primary.solid(context)
+                      : colors.mutedForeground,
+                  size: Spacing.level5,
+                ),
+                const SizedBox(width: Spacing.level4),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.medicineReminderToggleActiveLabel,
+                        style: context.theme.typography.body.sm.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.level1),
+                      Text(
+                        isActive
+                            ? l10n.medicineReminderEnabledStatus
+                            : l10n.medicineReminderDisabledStatus,
+                        style: context.theme.typography.body.sm.copyWith(
+                          color: colors.mutedForeground,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                FSwitch(
+                  value: isActive,
+                  onChange: (value) => _toggleReminderActive(
+                    ref,
+                    context,
+                    l10n,
+                    reminders,
+                    value,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    final Widget topCard = canOpenDetail
+        ? FTappable(
+            onPress: () => MedicineDetailRoute(
+              source: data.medicine.source,
+              id: data.medicine.sourceRefId!,
+            ).push(context),
+            child: medicineCard,
+          )
+        : medicineCard;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          FCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              data.medicine.displayName,
-                              style: TypographyToken.level5
-                                  .body(context)
-                                  .copyWith(fontWeight: FontWeight.w800),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: Spacing.level1),
-                            Text(
-                              medicineDoseText(l10n, data.medicine),
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: Spacing.level3),
-                      FBadge.raw(
-                        builder: (context, style) {
-                          final pillColor = isActive
-                              ? SemanticColor.primary
-                              : SemanticColor.neutral;
-                          final foreground = pillColor.solid(context);
-                          return DecoratedBox(
-                            decoration: ShapeDecoration(
-                              color: pillColor.muted(context),
-                              shape: RoundedSuperellipseBorder(
-                                borderRadius: BorderRadius.circular(
-                                  RadiusTokens.level2,
-                                ),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: Spacing.level2,
-                                vertical: Spacing.level1,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    isActive
-                                        ? l10n.medicineReminderEnabledStatus
-                                        : l10n.medicineReminderDisabledStatus,
-                                    style: TypographyToken.level3
-                                        .body(context)
-                                        .copyWith(
-                                          color: foreground,
-                                          fontWeight: FontWeight.w700,
-                                          letterSpacing: 0,
-                                        ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const AppDivider(),
-                // Active/inactive toggle — allows switching without entering edit page.
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level4,
-                    vertical: Spacing.level3,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        SemanticIcons.dosePower,
-                        color: isActive
-                            ? SemanticColor.primary.solid(context)
-                            : colors.mutedForeground,
-                        size: Spacing.level5,
-                      ),
-                      const SizedBox(width: Spacing.level4),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10n.medicineReminderToggleActiveLabel,
-                              style: context.theme.typography.body.sm.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: Spacing.level1),
-                            Text(
-                              isActive
-                                  ? l10n.medicineReminderEnabledStatus
-                                  : l10n.medicineReminderDisabledStatus,
-                              style: context.theme.typography.body.sm.copyWith(
-                                color: colors.mutedForeground,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      FSwitch(
-                        value: isActive,
-                        onChange: (value) => _toggleReminderActive(
-                          ref,
-                          context,
-                          l10n,
-                          reminders,
-                          value,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          topCard,
           const SizedBox(height: Spacing.level4),
           ReminderDetailInfoTiles(
             l10n: l10n,

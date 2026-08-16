@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/presentation/pages/medicine_detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/edit.dart';
 import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
@@ -16,6 +17,22 @@ class MedicineSearchRoute extends GoRouteData with $MedicineSearchRoute {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return slidePage(key: state.pageKey, child: const SearchPage());
+  }
+}
+
+@TypedGoRoute<MedicineDetailRoute>(path: '/medicine/detail/:source/:id')
+class MedicineDetailRoute extends GoRouteData with $MedicineDetailRoute {
+  const MedicineDetailRoute({required this.source, required this.id});
+
+  final String source;
+  final String id;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return slidePage(
+      key: state.pageKey,
+      child: MedicineDetailPage(source: source, id: id),
+    );
   }
 }
 

@@ -12,11 +12,10 @@ Created: 2026-08-16
 - 范围:`lib/features/medicine/`(presentation/data/domain 全层)+ `lib/features/mine/presentation/pages/current_medicine_edit.dart`;
   后端 `Lucent/src/modules/medicine-reminders/`、`medicine-dose-logs/`、`medicines/`(含 `risk/` 子目录)。
 - 用药域全链路(档案 currentMedicines → 提醒 → 调度 → 打卡 dose log → 依从 → 风险 → Today 建议)已是真实闭环,
-  本计划不返工,目标四件事:
-  1. 把已有药品数据资产变成用户看得见的页面——新建移动端药品详情/说明书页(F-14,当前最大产品缺口);
-  2. 依从性口径统一,前后端对齐 ObservedMetric 稀疏语义合同(F-5);
-  3. 修复主页安全摘要卡告警恒空问题(F-13);
-  4. 收尾 P2 小问题、归档少量死代码。
+  本计划不返工,目标三件事:
+  1. 依从性口径统一,前后端对齐 ObservedMetric 稀疏语义合同(F-5);
+  2. 后端提醒文案 i18n(F-8);
+  3. 收尾 P2 小问题(F-3 打卡撤销、F-11 unknown 兜底、F-19 入口改造、F-6 提醒组整组保存)。
 - 边界:扫码/搜索与"加入药箱"链路见 scan-search 计划;本地通知网关公共底座见
   platform-notification-crosscutting 计划保留项(F-2),JPush 密钥与投递落库已由该计划完成(投递三通道见 Lucent ADR-0013;JPush 密钥部署见 Lucent deploy 配置与部署文档);Today 建议卡/漏服规则见 today 计划;队列/Cron 底座见
   engineering-backend 计划。本计划只覆盖用药模块专属功能点,交叉处引用对应计划。
@@ -51,21 +50,6 @@ Created: 2026-08-16
 ## 三、改造项(按优先级分组)
 
 ### 3.2 P1（0.1.0 前）
-
-**F-14 移动端药品详情/说明书页(新建;本节为 scan-search 计划"识别结果卡/查看说明书"的落点)**
-
-- 现状:客户端没有任何移动端药品详情页;搜索/扫码结果在移动端无 tap 跳转;`/medicine/reminders/:medicineId` 详情页
-  只显示药品名+剂量文本;后端 cn/drugbank 详情(indications/ingredients/contraindications/precautions/adverseReactions 等)
-  全部存在且已被风险检查使用,但 C 端无出口(`DrugbankMedicineDetailDto.drugInteractions` 曾因无消费方出过类型崩溃 bug)。
-- 方案:
-  1. 新建移动端药品详情页,数据复用现有 `GET /medicines/:id?source=`(含 30min 缓存),数据契约已齐,工作主要在 UI;
-  2. 页面内容:说明书字段分区展示(适应症/成分/禁忌/注意事项/不良反应/储存等)+ "加入药箱"按钮 + 风险相关字段入口;
-  3. 跳转接入:与 Reminder 详情页的药品卡合并跳转;P2 把扫码结果"查看详情"从死链改为真跳转(修复 scan-search F-3 断链);
-  4. 桌面预览面板不扩展 Flutter 产品面；桌面高级能力冻结。
-- 涉及:`lib/features/medicine/presentation/pages/`(新建详情页)、`lib/features/search/`(结果卡 tap 接线)、
-  GoRouter 路由注册;后端无需改动。
-- 前后端分工:纯前端。
-- 依赖:无后端依赖;scan-search 计划的断链修复依赖本页先落地。
 
 **F-5 依从性口径统一(ObservedMetric 稀疏语义合同;本节为 today/record/report 计划的口径权威来源)**
 
@@ -127,15 +111,15 @@ Created: 2026-08-16
 
 - **引用(他计划拥有)**:F-9 投递落库(已完成,方案与实现见 Lucent ADR-0013);
   队列/Cron 底座(BullMQ Repeatable Job)→ engineering-backend 计划;Today 漏服卡/建议重算细节 → today 计划。
-- **被引用(本计划拥有)**:scan-search 计划引用本文 F-14 详情页作为识别结果卡/查看说明书落点;today/record/report 计划
+- **被引用(本计划拥有)**:scan-search 计划引用本文的移动端药品详情页(已完成,路由 `/medicine/detail/:source/:id`,现状见 Active_UI_Medicine)作为识别结果卡/查看说明书落点;today/record/report 计划
   引用本文 F-5 的 ObservedMetric 稀疏语义口径;mine-settings 计划引用本文 F-7 的 LocalNotificationGateway 机制(睡眠提醒)。
-- **桌面/Web 形态挂起项**(F-14 桌面预览面板处置等)不扩展 Flutter 产品面；独立 Next.js + Tauri MVP 于 0.1.0 后启动，本文不展开。
-- 依赖关系:scan-search 的扫码结果"查看详情"真跳转依赖本计划 F-14 详情页先落地;F-5 P2 后端统计对象依赖合同同步阶段拍板。
+- **桌面/Web 形态挂起项**(桌面预览面板处置等)不扩展 Flutter 产品面；独立 Next.js + Tauri MVP 于 0.1.0 后启动，本文不展开。
+- 依赖关系:scan-search 的扫码结果"查看详情"真跳转依赖移动端药品详情页(已落地);F-5 P2 后端统计对象依赖合同同步阶段拍板。
 
 ## 五、本计划内执行顺序
 
-2. P1:F-14 详情页（0.1.0 前，解锁 scan-search 断链修复）→ F-5 前端口径统一 → F-8 提醒文案 i18n。
-3. P2:F-3、F-11、F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
+1. P1:F-5 前端口径统一 → F-8 提醒文案 i18n。
+2. P2:F-3、F-11、F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
 
 ## 六、已决边界与延期项
 

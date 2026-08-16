@@ -88,6 +88,7 @@ class Routes {
   static const recordQuickEntryReorder = '/record/quick-entry-settings/reorder';
 
   static const medicineSearch = '/medicine/search';
+  static const medicineDetail = '/medicine/detail';
   static const medicineRiskCheck = '/medicine/risk-check';
   static const medicineRemindersNew = '/medicine/reminders/new';
 

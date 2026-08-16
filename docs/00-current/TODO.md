@@ -61,11 +61,14 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ## 审查暂缓项
 
-- medicine 改造计划文件目标行与执行顺序编号清理（2026-08-16 任务 1 审查 P2-1/P2-2）
-  - 来源任务：`plans/2026-08-16-medicine-remediation-plan.md` 任务 1（F-13 + F-16/17/18 归档标注）审查
-  - 位置：同计划文件「一、目标与范围」目标 #3 行与「五、本计划内执行顺序」条目编号
-  - 问题：目标 #3（F-13）已完成但目标行未删；执行顺序删除第 1 条后编号从「2.」起编
-  - 验收：该计划全部任务完成、按 AGENTS.md 删除整个计划文件时自然消除；若计划文件仍保留，则改写目标 #3/#4 并将执行顺序重排为连续编号
+- F-14 药品详情页审查 P2 清单（2026-08-16 任务 2 审查，P2-1~P2-6）
+  - P2-1 routing.md 缺新路由：`docs/02-reference/routing.md` 路由树「/medicine/search…」行、File Structure 注释行、Public Preview 节未登记 `/medicine/detail/:source/:id`（doc-map app-shell 规则 docs_any_of 持续告警，pre-commit 不阻断）
+  - P2-2 详情路由公开性：`lib/app/router.dart` 未把 `/medicine/detail` 加入 `_publicRoutePrefixes`；待 scan-search 接线「查看说明书」时决定公开（对齐后端 @Public）或保持 auth 门控，并同步 routing.md
+  - P2-3 已加入判定缺 isCurrent 过滤：`lib/features/medicine/presentation/pages/medicine_detail.dart` `isAdded` 未过滤软删药，与 search 页口径不一致
+  - P2-4 新文件名带 `medicine_` 前缀（5 个新文件）：AGENTS 命名规则判断项，可接受（业务词「药品详情」）或改 `drug_detail` 类词
+  - P2-5 页面测试缺 3 用例：loading 骨架屏 / unknown source 错误态 / 全空字段空态（`test/medicine/medicine_detail_page_test.dart`）
+  - P2-6 nits：`state_views.dart` barrel import（既有实践）；`MedicineDetail` 的 barcode/nationalDrugCode/sourceUrl 等字段映射后未消费（无害冗余）；datasource 空守卫语义已确认无问题
+  - 验收：Phase C 按「实现—审查—修复—提交」处理或明确接受（P2-1/P2-3/P2-5 建议修复，P2-2 待 scan-search 决策，P2-4/P2-6 可接受）
 
 - 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/presentation/pages/detail.dart`（853 行）、`record/presentation/widgets/sections/quick_entry_panel.dart`（565 行）、`record/presentation/pages/edit.dart`（511 行）、`report/presentation/pages/page.dart`（438 行）、`settings/presentation/pages/page.dart`（184 行）
 - 剩余约 80 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理

@@ -51,7 +51,7 @@ YYYY-MM-DD-short-task-name.md
 1. [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)
    — 横切基建:F-7 高德天气 API 真实化与 F-6 health_sync 自动同步执行器(均 0.1.0 后);投递三通道落库、JPush 密钥已完成
 2. [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md)
-   — 用药:药品详情页、依从性 ObservedMetric 口径统一、LocalNotificationGateway
+   — 用药:药品详情页已完成;依从性 ObservedMetric 口径统一、提醒文案 i18n、P2 收尾进行中
 3. [`2026-08-16-scan-search-remediation-plan.md`](2026-08-16-scan-search-remediation-plan.md)
    — 扫码/搜索:P0 识别出口断链修复、建档闭环
 4. [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md)

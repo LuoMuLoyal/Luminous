@@ -28,10 +28,10 @@ Created: 2026-08-16
 - 断链机理(两个 id 空间):`item.id` 是公共药品库 `cnMedicineProduct` 的记录 id(`Lucent/src/modules/medicines/adapters/cn.service.ts:118`);而 `MedicineReminderDetailPage` 用它在**用户药箱记录**里按 `CurrentMedicineItem.id` 查找(`medicine/presentation/providers/reminders.dart:140-145`,找不到即 `throw StateError('Medicine not found.')`)。药箱记录 id 是 `POST /user/health-context/current-medicines` 建档时服务端生成的(`health_context/data/datasources/snapshot.dart:96-105`),实体上分别是 `id` 与 `sourceRefId`(`health_context/domain/entities/snapshot.dart:77-92`)——即使用户已把该药加入药箱,id 也对不上。现有 widget 测试用桩路由断言「跳转到 detail-page」(`test/scan/barcode_scanner_page_test.dart:178-190`),测的是路由 push 本身,恰好掩盖了断链,需一并改写。
 - 改造方案:扫码命中的不是「提醒详情」,而是「一个还没进药箱的药品」。识别结果出口改为:
   - 主按钮「加入药箱」:调 `createCurrentMedicine(source: cn, sourceRefId: item.id, displayName)`,走 F-9 同一风险预检弹窗,成功 Toast 带「去设置提醒」动作;
-  - 次按钮「查看说明书」:落点为移动端药品详情页,见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-14 一节,本文不展开;
+  - 次按钮「查看说明书」:落点为移动端药品详情页(已完成,路由 `/medicine/detail/:source/:id`,现状见 `docs/00-current/Active_UI_Medicine.md`「药品详情页」节),本文不展开;
   - 已加入药箱的(按 `source:sourceRefId` 判重,复用搜索页 `search/presentation/pages/page.dart:35-41` 的逻辑)才允许跳提醒详情,且必须传**药箱记录 id** 而非产品 id。
 - 前后端分工:纯前端改动,后端无改动。
-- 依赖:F-9 闭环(本计划内)、移动端药品详情页(medicine 计划 F-14)。
+- 依赖:F-9 闭环(本计划内)、移动端药品详情页(已完成,medicine 计划 F-14)。
 
 #### F-6 识别结果确认弹窗(假置信度 + 断链按钮)
 
@@ -113,7 +113,7 @@ Created: 2026-08-16
 
 ## 四、跨计划引用与依赖
 
-- **移动端药品详情页**(F-3/F-6「查看说明书」次按钮的落点,后端 `getDetail` 已返回适应症/用法用量/禁忌/不良反应/相互作用等完整字段):方案见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-14 一节,本文不重复展开。
+- **移动端药品详情页**(F-3/F-6「查看说明书」次按钮的落点,后端 `getDetail` 已返回适应症/用法用量/禁忌/不良反应/相互作用等完整字段):已完成(medicine 计划 F-14,路由 `/medicine/detail/:source/:id`,现状见 `docs/00-current/Active_UI_Medicine.md`「药品详情页」节),本文不重复展开。
 - **桌面/Web 形态挂起**(F-11 后续):Flutter Desktop 与 PC Flutter Web 不再扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动。
 - **本计划拥有并写全**:F-9 建档闭环(`createCurrentMedicine(source, sourceRefId, displayName)` + 风险预检弹窗 + `source:sourceRefId` 判重 + Toast「去设置提醒」直达 `/medicine/reminders/new`)与 F-3/F-6 断链机理(`id` vs `sourceRefId` 两个 id 空间)——后续计划如需引用识别出口闭环,以本文为准。
 - **后端依赖**(Lucent,本期只读确认、可能小改):`POST /medicines/risk-check` 入参形态、`recognizeMedicine` 返回字段、条码等值匹配与批量 query、分类聚合字段;如涉及 API 契约变更,走 `pnpm export:openapi` + `dart run scripts/bootstrap_generated_sources.dart` 流程。

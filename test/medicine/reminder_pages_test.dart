@@ -16,8 +16,11 @@ import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
+import 'package:luminous/features/medicine/presentation/pages/medicine_detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/edit.dart';
+import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -146,6 +149,60 @@ void main() {
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });
 
+  testWidgets('medicine card opens detail page when source is cn', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _testApp(
+        child: const MedicineReminderDetailPage(currentMedicineId: 'med-1'),
+        reminderDataSource: _FakeReminderDataSource([]),
+        doseLogDataSource: _FakeDoseLogDataSource([]),
+        snapshot: _cnMedicineSnapshot,
+        overrides: [
+          medicineDetailProvider('cn', 'cn_1').overrideWith(
+            (ref) async => const MedicineDetail(
+              id: 'cn_1',
+              source: 'cn',
+              name: '阿托伐他汀钙片',
+              kind: 'cnProduct',
+            ),
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('阿托伐他汀钙片'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(MedicineDetailPage), findsOneWidget);
+  });
+
+  testWidgets('medicine card does not navigate when sourceRefId is null', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _testApp(
+        child: const MedicineReminderDetailPage(currentMedicineId: 'med-1'),
+        reminderDataSource: _FakeReminderDataSource([]),
+        doseLogDataSource: _FakeDoseLogDataSource([]),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('阿托伐他汀钙片'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(MedicineDetailPage), findsNothing);
+    expect(find.byType(MedicineReminderDetailPage), findsOneWidget);
+  });
+
   testWidgets('Medicine reminder create page prompts to select medicine', (
     tester,
   ) async {
@@ -254,6 +311,13 @@ Widget _testApp({
       routerConfig: GoRouter(
         routes: [
           GoRoute(path: '/', builder: (context, state) => child),
+          GoRoute(
+            path: '/medicine/detail/:source/:id',
+            builder: (context, state) => MedicineDetailPage(
+              source: state.pathParameters['source']!,
+              id: state.pathParameters['id']!,
+            ),
+          ),
           GoRoute(
             path: '/medicine/reminders/new',
             builder: (context, state) => const MedicineReminderEditPage(),
@@ -439,6 +503,15 @@ const _snapshot = HealthContextSnapshot(
       note: null,
       createdAt: '2026-06-08T07:00:00.000Z',
       updatedAt: '2026-06-09T07:00:00.000Z',
+    ),
+  ],
+);
+
+final _cnMedicineSnapshot = _snapshot.copyWith(
+  currentMedicines: [
+    _snapshot.currentMedicines.first.copyWith(
+      source: 'cn',
+      sourceRefId: 'cn_1',
     ),
   ],
 );

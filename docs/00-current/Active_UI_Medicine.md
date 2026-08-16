@@ -81,6 +81,14 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 扫码结果对话框和处理遮罩统一使用 `showAppDialog(barrierDismissible: false)` 调用，不再直接使用底层 `showFDialog`；`MedicineRecognizeDialog` 移除 `FDialog` 包装层和 `animation` 参数，由 `DialogShell` 统一管理对话框框架。
 - OCR 入口 ABI 预检（2026-07-30）：用户选择 OCR 方式后、打开相机前调用 `PaddleOcrEngine.ensureInitialized()` 预检 native 库可用性。init 失败（非 arm64 设备、模型损坏等）时显示 `_showOcrUnavailableDialog`，提供关闭和"使用 AI 识别"两个操作，避免用户拍照后才发现 OCR 不可用。
 
+## 药品详情页
+
+- 路由 `/medicine/detail/:source/:id`（typed `MedicineDetailRoute`，全屏 `slidePage`；桌面复用同一页面布局，不新增桌面专属 UI，也不启用窄侧栏 sidePanel）。
+- 数据来源：`GET /api/v1/medicines/{id}?source=`（`@Public`，后端 30min 缓存；客户端不缓存）。生成客户端 `medicinesControllerGetDetailV1` 返回 `MedicineDetailResponseDto`，`MedicineDetailMapper` 映射为 `MedicineDetail`（空串 trim 转 null）。
+- 分区渲染用 `FAccordion` + `FAccordionItem`，首分区（CN 适应症 / DrugBank 描述）`initiallyExpanded: true`；空/null 字段分区整体不渲染；整页无可展示分区显示「暂无说明书内容」空态。
+- 加入药箱：`CurrentMedicineWriteInput` + `createCurrentMedicine` + `DataChangeTopic.currentMedicines`，与 search 页一致但**不做风险预检**（预检归 scan-search 计划）；已添加态显示禁用 outline「已添加」。
+- Reminder 详情药品卡：`sourceRefId` 非空且 `source ∈ {cn, drugbank}` 时包 `FTappable` 跳详情页，否则保持原样。
+
 ## 提醒
 
 - Lucent schedule-only 提醒详情/创建/编辑/删除 UI。

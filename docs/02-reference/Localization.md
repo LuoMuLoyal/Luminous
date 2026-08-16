@@ -315,3 +315,12 @@ flutter test
   真实通道展示位（`in_app` 之前落入 `_ => value` 原样显示英文）。
 - 所有权在 medicine 分片；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进
   `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-16 Medicine detail page (F-14) labels
+
+- Added `medicineDetail*` keys to `lib/l10n/src/medicine_zh.arb` / `medicine_en.arb`：
+  页面标题、加载失败标题/描述、未知数据源、无说明书内容空态、CN 头部元信息四标签
+  （批准文号/生产企业/规格/商品名）、CN 说明书十二个分区标题、DrugBank 二十个分区标题，
+  以及「查看我的用药风险检查」风险入口。
+- 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
