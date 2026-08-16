@@ -78,6 +78,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 过敏安全检查。
 - 药品拍照识别（药盒 AI 识别）和条码扫描已在移动端暴露。
 - 条码扫码出口（F-3）：单结果与候选选择不再直接跳药品详情，改为弹「扫码结果」底部 sheet（`_showScanResultSheet`）——未加入药箱（按 `cn:<产品id>` 判重）主按钮「加入药箱」（复用 F-9 共享闭环：auth 门控 → 即时预检 → 确认框 → `createCurrentMedicine` → Toast 带「去设置提醒」）+ 次按钮「查看说明书」（药品详情页）；已加入显示「已添加」禁用态 + 主按钮「查看提醒详情」（跳提醒详情并携带**药箱记录 id**，不是产品 id）+ 次按钮「查看说明书」。共享闭环抽至 `search/presentation/widgets/shared/add_to_box.dart`，搜索页与扫码 sheet 共用。
+- 拍照识别结果弹窗（F-6）：不展示置信度百分比（AI 路径不再构造假置信度，`MedicineMatchResult.confidence` 可空、仅用于候选排序），top 卡片按识别方法显示核对提示——AI 用 `scanResultVerifyHintAi`（需核对药品名、批准文号和规格），OCR 用 `scanResultVerifyHintOcr`（核对药品名与批准文号）；候选列表行只显示匹配方式。top 结果与候选列表同口径（按名去重 + 置信度降序取首位）。出口与扫码 sheet 同构：未加入（按 `cn:<产品id>` 判重）主按钮「加入药箱」（复用共享闭环）+ 次按钮「查看说明书」；已加入显示「已加入」禁用态 + 主按钮「查看提醒详情」（跳提醒详情并携带**药箱记录 id**）+ 次按钮「查看说明书」；关闭/重新拍照保留，按钮区 `Wrap` 自动换行。识别方法经共享枚举 `MedicineScanMethod` 传入（`box_scan.dart` 与弹窗共用，不再字符串判断）。
 - 处方导入 dead 占位已删除，「手动添加」意图由快捷操作区「添加药品」入口 + 搜索/扫码「加入药箱」覆盖，OCR 处方识别延后（未来能力不排期）。
 - 扫码页全部硬编码中文已迁入 l10n 键。
 - `MedicineMatchType.name` 英文枚举直出改为 `_matchTypeLabel` + l10n 映射。
@@ -91,7 +92,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 分区渲染用 `FAccordion` + `FAccordionItem`，首分区（CN 适应症 / DrugBank 描述）`initiallyExpanded: true`；空/null 字段分区整体不渲染；整页无可展示分区显示「暂无说明书内容」空态。
 - 加入药箱：`CurrentMedicineWriteInput` + `createCurrentMedicine` + `DataChangeTopic.currentMedicines`，与 search 页链路一致但本入口**不做即时预检**（预检仅在搜索页「加入药箱」）；已添加态显示禁用 outline「已添加」。
 - Reminder 详情药品卡：`sourceRefId` 非空且 `source ∈ {cn, drugbank}` 时包 `FTappable` 跳详情页，否则保持原样。
-- 识别结果（药盒 OCR/AI）「确认，查看详情」落地为本详情页；`/medicine/detail` 为公开路由（未登录可浏览说明书，「加入药箱」未登录走 `showAuthRequiredDialog`）。条码扫码出口改走「扫码结果」sheet，见「药品搜索与扫描」节。
+- 识别结果（药盒 OCR/AI）「查看说明书」次按钮落地为本详情页；主按钮「加入药箱」复用共享闭环（判重 + 已加入态 + 「查看提醒详情」），见「药品搜索与扫描」节；`/medicine/detail` 为公开路由（未登录可浏览说明书，「加入药箱」未登录走 `showAuthRequiredDialog`）。条码扫码出口改走「扫码结果」sheet，见「药品搜索与扫描」节。
 
 ## 提醒
 
@@ -193,7 +194,6 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - **告警行装饰 chevron 移除**：`mobile_safety.dart` 的 `_SafetyAlertRow` 移除尾部装饰性 `chevronRight`，整行已是 `FTappable`，chevron 与上方"查看"按钮目标重复。
 - **短信不可用行降权**：`rows.dart` 的 `UnavailableMethodRow` 整体包裹 `Opacity(0.5)`，标题从 `FontWeight.w700` 改为 `mutedForeground` 色，视觉上明确表达"不可用"语义。
 - **频率切换清空星期提示**：`reminder_edit.dart` 切换为每日频率时若有已选星期，显示 `medicineReminderFrequencyDailyClearedWeekdays` toast 提示。
-- **扫码置信度解释**：`recognize_dialog.dart` 的置信度文本包裹 `FTooltip`，长按显示 `scanResultConfidenceExplanation` 解释文案。
 - **扫码结果头图占位**：`recognize_dialog.dart` 的 `Image.file` 新增 `errorBuilder`，图片加载失败时显示 `imageOff` 图标占位。
 - **扫码线框尺寸常量化**：`barcode_scanner.dart` 的 280×120 硬编码提取为 `_scanFrameWidth` / `_scanFrameHeight` 文件级常量。
 - **指标 chip 联动**：`MedicineRiskMetricChip` 新增 `onTap` 参数，有对应列表段时点击用 `Scrollable.ensureVisible` 滚动到 findings/coverage 段。`_RiskCheckSectionCard` 构造函数加 `super.key` 接受 `GlobalKey`。

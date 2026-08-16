@@ -38,6 +38,13 @@ class OcrTextBlock {
 /// How a medicine match was found.
 enum MedicineMatchType { approvalNumber, nameFuzzy }
 
+/// Recognition method used for a photo scan.
+///
+/// Shared by the scan flow ([box_scan] picker) and the recognition result
+/// dialog so the dialog can show method-specific copy without string
+/// matching.
+enum MedicineScanMethod { ocr, ai }
+
 /// A candidate extracted from OCR text, to be searched against the medicine DB.
 class MedicineMatchCandidate {
   const MedicineMatchCandidate({
@@ -57,13 +64,19 @@ class MedicineMatchResult {
     required this.name,
     this.approvalNumber,
     this.id,
-    required this.confidence,
+    this.confidence,
     required this.matchType,
   });
 
   final String name;
   final String? approvalNumber;
   final String? id;
-  final double confidence;
+
+  /// Candidate ordering score from the recognition path (OCR reports the
+  /// engine's real score). Used only to sort the candidate list (null sorts
+  /// as 0) — never displayed as a percentage. The AI recognition path has no
+  /// score from the backend, so it stays null instead of fabricating one.
+  final double? confidence;
+
   final MedicineMatchType matchType;
 }

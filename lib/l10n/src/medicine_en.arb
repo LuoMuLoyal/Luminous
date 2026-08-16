@@ -526,7 +526,6 @@
   "scanNoResultTitle": "Could not identify medicine information",
   "scanRetakeAction": "Retake photo",
   "scanCloseAction": "Close",
-  "scanConfirmDetailAction": "Confirm, view details",
   "scanMethodPickerTitle": "Choose recognition method",
   "scanBarcodeNotFoundToast": "No medicine found for this barcode",
   "scanRecognitionFailedToast": "Recognition failed. Please try again.",
@@ -549,15 +548,8 @@
   },
   "scanResultMedicineLabel": "Medicine",
   "scanResultApprovalNumberLabel": "Approval No.",
-  "scanResultConfidenceLabel": "Confidence: {percent}%",
-  "@scanResultConfidenceLabel": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "scanResultConfidenceExplanation": "Confidence indicates how closely the recognition result matches the database. For reference only — verify against the medicine packaging before confirming.",
+  "scanResultVerifyHintAi": "AI recognition result. Verify the medicine name, approval number, and specification.",
+  "scanResultVerifyHintOcr": "Local OCR recognition result. Verify the medicine name and approval number.",
   "scanResultOtherMatches": "Select other matches ({count})",
   "@scanResultOtherMatches": {
     "placeholders": {

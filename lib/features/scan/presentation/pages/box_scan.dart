@@ -19,13 +19,11 @@ import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart'
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-enum _ScanMethod { ocr, ai }
-
 /// Shows a bottom sheet for medicine box recognition method selection,
 /// then launches the camera, processes the photo, and shows the result dialog.
 Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   final l10n = AppLocalizations.of(context)!;
-  final method = await showAppDialog<_ScanMethod>(
+  final method = await showAppDialog<MedicineScanMethod>(
     context: context,
     scrollable: false,
     builder: (dialogContext) => Column(
@@ -41,14 +39,14 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
           icon: SemanticIcons.actionCamera,
           title: l10n.scanMethodOcrTitle,
           subtitle: l10n.scanMethodOcrSubtitle,
-          onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ocr),
+          onTap: () => Navigator.of(dialogContext).pop(MedicineScanMethod.ocr),
         ),
         const SizedBox(height: Spacing.level3),
         _MethodTile(
           icon: SemanticIcons.aiEntry,
           title: l10n.scanMethodAiTitle,
           subtitle: l10n.scanMethodAiSubtitle,
-          onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ai),
+          onTap: () => Navigator.of(dialogContext).pop(MedicineScanMethod.ai),
         ),
       ],
     ),
@@ -59,7 +57,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   // Pre-check: verify the OCR engine can initialise before opening the camera.
   // This catches ABI incompatibility (non-arm64 devices) and model-loading
   // failures early, instead of letting the user take a photo first.
-  if (method == _ScanMethod.ocr) {
+  if (method == MedicineScanMethod.ocr) {
     final container = ProviderScope.containerOf(context);
     final ocrEngine = container.read(paddleOcrProvider);
     try {
@@ -96,7 +94,8 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
         scrollable: false,
         builder: (dialogContext) => MedicineRecognizeDialog(
           imagePath: photo.path,
-          methodLabel: method == _ScanMethod.ocr
+          method: method,
+          methodLabel: method == MedicineScanMethod.ocr
               ? l10n.scanMethodOcrLabel
               : l10n.scanMethodAiLabel,
           results: results,
@@ -220,7 +219,7 @@ Future<void> _showScanFailureDialog(
   );
 }
 
-void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
+void _showProcessingOverlay(BuildContext context, MedicineScanMethod method) {
   final l10n = AppLocalizations.of(context)!;
   unawaited(
     showAppDialog<void>(
@@ -235,7 +234,7 @@ void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
             const FCircularProgress(),
             const SizedBox(height: Spacing.level4),
             Text(
-              method == _ScanMethod.ocr
+              method == MedicineScanMethod.ocr
                   ? l10n.scanProcessingOcr
                   : l10n.scanProcessingAi,
             ),
@@ -249,12 +248,12 @@ void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
 Future<List<MedicineMatchResult>> _processPhoto(
   BuildContext context,
   XFile photo,
-  _ScanMethod method,
+  MedicineScanMethod method,
 ) async {
   final container = ProviderScope.containerOf(context);
   final repo = container.read(scanRepositoryProvider);
 
-  if (method == _ScanMethod.ocr) {
+  if (method == MedicineScanMethod.ocr) {
     final ocrEngine = container.read(paddleOcrProvider);
     final ocrBlocks = await ocrEngine.recognize(photo.path);
     final candidates = const MedicineOcrExtractor().extractCandidates(
@@ -295,10 +294,11 @@ Future<List<MedicineMatchResult>> _processPhoto(
     final items = await repo.search(query);
 
     return items.map((item) {
+      // The AI recognition path has no real confidence score from the
+      // backend; leaving it null instead of fabricating one (F-6).
       return MedicineMatchResult(
         name: item.name,
         id: item.id,
-        confidence: 0.9,
         matchType: MedicineMatchType.nameFuzzy,
       );
     }).toList();

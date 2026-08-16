@@ -375,3 +375,19 @@ flutter test
   保持不变——预检范围现在真实包含待加药品，语义成立。
 - 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-16 F-6 识别结果弹窗 scan 键（去假置信度）
+
+- Added `scanResultVerifyHintAi`（zh: AI 识别结果，需核对药品名、批准文号和规格。 / en: AI
+  recognition result. Verify the medicine name, approval number, and specification.）and
+  `scanResultVerifyHintOcr`（zh: 本地 OCR 识别结果，请核对药品名与批准文号。 / en: Local OCR
+  recognition result. Verify the medicine name and approval number.）to
+  `lib/l10n/src/medicine_zh.arb` / `medicine_en.arb`。
+- Deleted `scanResultConfidenceLabel`（含 `@scanResultConfidenceLabel` 占位符块）、
+  `scanResultConfidenceExplanation`、`scanConfirmDetailAction`（zh/en 各一份，medicine 分片）——
+  AI 识别路径不再构造假置信度，弹窗不再展示置信度百分比与解释、按钮改为「加入药箱」。
+- `MedicineRecognizeDialog` 使用 `scanResultVerifyHint*`（top 卡片核对提示，按识别方法区分）、
+  `medicineSearchAddToBoxAction` / `medicineSearchAlreadyAddedLabel`（主按钮与已加入态，复用搜索
+  页键）、`scanViewReminderAction` / `scanViewInstructionsAction`（F-3 已加，本次复用）。
+- 所有权在 medicine 分片（`scan*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。

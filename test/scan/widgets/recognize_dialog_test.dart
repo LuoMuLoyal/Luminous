@@ -1,12 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../auth/test_helpers.dart';
+import '../../helpers/mocks/health_context.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
@@ -93,25 +103,125 @@ void main() {
     File(tempImagePath).deleteSync();
   });
 
+  /// Stub snapshot with a single current medicine (cn source) in the box.
+  HealthContextSnapshot boxSnapshotWith(CurrentMedicineItem item) {
+    return testHealthSnapshot(currentMedicines: [item]);
+  }
+
+  CurrentMedicineItem boxItem({
+    String id = 'box-med-1',
+    String sourceRefId = 'med-1',
+    String displayName = 'Test',
+  }) {
+    return CurrentMedicineItem(
+      id: id,
+      source: 'cn',
+      sourceRefId: sourceRefId,
+      displayName: displayName,
+      strengthText: null,
+      doseText: null,
+      route: null,
+      startedAt: null,
+      endedAt: null,
+      isCurrent: true,
+      note: null,
+      createdAt: '2026-08-16T00:00:00.000Z',
+      updatedAt: '2026-08-16T00:00:00.000Z',
+    );
+  }
+
   Future<void> pumpDialog(
     WidgetTester tester, {
     required List<MedicineMatchResult> results,
+    MedicineScanMethod method = MedicineScanMethod.ocr,
+    String methodLabel = 'OCR',
     VoidCallback? onRetake,
+    List overrides = const [],
   }) async {
-    await tester.pumpWidget(
-      TestForuiApp(
-        home: Scaffold(
-          body: MedicineRecognizeDialog(
-            imagePath: tempImagePath,
-            methodLabel: 'OCR',
-            results: results,
-            onRetake: onRetake ?? () {},
+    // The dialog is pushed as its own route (sub-route of '/' so the stack
+    // has a page beneath it) so pop-then-push exits (查看说明书 /
+    // 查看提醒详情) behave like production. The FToaster wraps the dialog so
+    // the shared add-to-box loop's success toast can render.
+    final router = GoRouter(
+      initialLocation: '/dialog',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, __) => const Scaffold(body: Center(child: Text('home'))),
+          routes: [
+            GoRoute(
+              path: 'dialog',
+              builder: (_, __) => FToaster(
+                child: Scaffold(
+                  body: MedicineRecognizeDialog(
+                    imagePath: tempImagePath,
+                    method: method,
+                    methodLabel: methodLabel,
+                    results: results,
+                    onRetake: onRetake ?? () {},
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: '/medicine/detail/:source/:id',
+          builder: (_, state) => Scaffold(
+            body: Center(
+              child: Text(
+                'medicine-detail:${state.pathParameters['source']}:'
+                '${state.pathParameters['id']}',
+              ),
+            ),
           ),
         ),
+        GoRoute(
+          path: '/medicine/reminders/:medicineId',
+          builder: (_, state) => Scaffold(
+            body: Center(
+              child: Text(
+                'medicine-reminders:${state.pathParameters['medicineId']}',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    // No default snapshot override: with the unoverridden auth session the
+    // snapshot stays pending (authGuarded), so the dialog's box lookup falls
+    // back to an empty map. Tests that need a populated drugbox pass their
+    // own `healthContextSnapshotProvider` override.
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [...overrides],
+        child: TestForuiRouterApp(routerConfig: router),
       ),
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
+  }
+
+  /// Bounded pumps through async provider resolution and toast rendering.
+  Future<void> flushAsync(WidgetTester tester, [int times = 6]) async {
+    for (var i = 0; i < times; i++) {
+      await tester.pump(const Duration(milliseconds: 25));
+    }
+  }
+
+  MedicineMatchResult result({
+    required String name,
+    double? confidence,
+    MedicineMatchType matchType = MedicineMatchType.nameFuzzy,
+    String? id,
+  }) {
+    return MedicineMatchResult(
+      name: name,
+      confidence: confidence,
+      matchType: matchType,
+      id: id,
+    );
   }
 
   group('MedicineRecognizeDialog', () {
@@ -133,7 +243,7 @@ void main() {
       await pumpDialog(
         tester,
         results: [
-          const MedicineMatchResult(
+          result(
             name: '阿莫西林胶囊',
             confidence: 0.95,
             matchType: MedicineMatchType.approvalNumber,
@@ -162,20 +272,34 @@ void main() {
       expect(find.text('国药准字H12345678'), findsOneWidget);
     });
 
-    testWidgets('renders confidence percentage', (tester) async {
+    testWidgets('AI method renders verify hint and no confidence percentage', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpDialog(
         tester,
-        results: [
-          const MedicineMatchResult(
-            name: 'Test',
-            confidence: 0.85,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-1',
-          ),
-        ],
+        method: MedicineScanMethod.ai,
+        methodLabel: 'AI',
+        // AI results carry no confidence — and no percentage must be shown.
+        results: [result(name: 'Test', id: 'med-1')],
       );
 
-      expect(find.textContaining('85%'), findsOneWidget);
+      expect(find.text(l10n.scanResultVerifyHintAi), findsOneWidget);
+      expect(find.text(l10n.scanResultVerifyHintOcr), findsNothing);
+      expect(find.textContaining('%'), findsNothing);
+    });
+
+    testWidgets('OCR method renders OCR verify hint', (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpDialog(
+        tester,
+        method: MedicineScanMethod.ocr,
+        results: [result(name: 'Test', confidence: 0.85, id: 'med-1')],
+      );
+
+      expect(find.text(l10n.scanResultVerifyHintOcr), findsOneWidget);
+      expect(find.text(l10n.scanResultVerifyHintAi), findsNothing);
+      expect(find.textContaining('%'), findsNothing);
     });
 
     testWidgets('renders retake button', (tester) async {
@@ -185,21 +309,37 @@ void main() {
       expect(find.text(l10n.scanRetakeAction), findsOneWidget);
     });
 
-    testWidgets('renders confirm button', (tester) async {
+    testWidgets('renders add-to-box and view-instructions buttons', (
+      tester,
+    ) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpDialog(
         tester,
+        results: [result(name: 'Test', confidence: 0.9, id: 'med-1')],
+      );
+
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsOneWidget);
+      expect(find.text(l10n.scanViewInstructionsAction), findsOneWidget);
+    });
+
+    testWidgets('top result follows the sorted ordering', (tester) async {
+      await pumpDialog(
+        tester,
         results: [
-          const MedicineMatchResult(
-            name: 'Test',
-            confidence: 0.9,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-1',
+          result(name: 'LowConfidence', confidence: 0.5, id: 'med-low'),
+          result(
+            name: 'HighConfidence',
+            confidence: 0.95,
+            matchType: MedicineMatchType.approvalNumber,
+            id: 'med-high',
           ),
         ],
       );
 
-      expect(find.text(l10n.scanConfirmDetailAction), findsOneWidget);
+      // The top card shows the sorted-first entry; the lower-ranked entry is
+      // only inside the (collapsed) candidate list.
+      expect(find.text('HighConfidence'), findsWidgets);
+      expect(find.text('LowConfidence'), findsNothing);
     });
 
     testWidgets('shows candidate list expander when multiple results', (
@@ -208,18 +348,8 @@ void main() {
       await pumpDialog(
         tester,
         results: [
-          const MedicineMatchResult(
-            name: '药品A',
-            confidence: 0.9,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-1',
-          ),
-          const MedicineMatchResult(
-            name: '药品B',
-            confidence: 0.8,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-2',
-          ),
+          result(name: '药品A', confidence: 0.9, id: 'med-1'),
+          result(name: '药品B', confidence: 0.8, id: 'med-2'),
         ],
       );
 
@@ -231,14 +361,7 @@ void main() {
     ) async {
       await pumpDialog(
         tester,
-        results: [
-          const MedicineMatchResult(
-            name: '药品A',
-            confidence: 0.9,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-1',
-          ),
-        ],
+        results: [result(name: '药品A', confidence: 0.9, id: 'med-1')],
       );
 
       expect(find.textContaining('从列表选择其他匹配'), findsNothing);
@@ -252,18 +375,8 @@ void main() {
       await pumpDialog(
         tester,
         results: [
-          const MedicineMatchResult(
-            name: '药品A',
-            confidence: 0.9,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-1',
-          ),
-          const MedicineMatchResult(
-            name: '药品B',
-            confidence: 0.8,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-2',
-          ),
+          result(name: '药品A', confidence: 0.9, id: 'med-1'),
+          result(name: '药品B', confidence: 0.8, id: 'med-2'),
         ],
       );
 
@@ -290,13 +403,8 @@ void main() {
       await pumpDialog(
         tester,
         results: [
-          const MedicineMatchResult(
-            name: 'LowConfidence',
-            confidence: 0.5,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-low',
-          ),
-          const MedicineMatchResult(
+          result(name: 'LowConfidence', confidence: 0.5, id: 'med-low'),
+          result(
             name: 'HighConfidence',
             confidence: 0.95,
             matchType: MedicineMatchType.approvalNumber,
@@ -320,18 +428,13 @@ void main() {
       await pumpDialog(
         tester,
         results: [
-          const MedicineMatchResult(
+          result(
             name: 'SameDrug',
             confidence: 0.9,
             matchType: MedicineMatchType.approvalNumber,
             id: 'med-1',
           ),
-          const MedicineMatchResult(
-            name: 'SameDrug',
-            confidence: 0.8,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-2',
-          ),
+          result(name: 'SameDrug', confidence: 0.8, id: 'med-2'),
         ],
       );
 
@@ -340,19 +443,122 @@ void main() {
     });
 
     testWidgets('renders source label', (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpDialog(
         tester,
-        results: [
-          const MedicineMatchResult(
-            name: 'Test',
-            confidence: 0.9,
-            matchType: MedicineMatchType.nameFuzzy,
-            id: 'med-1',
-          ),
-        ],
+        results: [result(name: 'Test', confidence: 0.9, id: 'med-1')],
       );
 
-      expect(find.textContaining('OCR'), findsOneWidget);
+      expect(find.text(l10n.scanResultSourceLabel('OCR')), findsOneWidget);
+    });
+
+    testWidgets('add to box writes cn medicine through the shared loop', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      final fakeRepo = FakeHealthContextRepository()
+        ..reflectCreatedMedicine = true;
+      await pumpDialog(
+        tester,
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+          medicineRiskCheckRepositoryProvider.overrideWithValue(
+            FakeMedicineRiskCheckRepository(clearRiskCheckResult),
+          ),
+        ],
+        results: [result(name: 'Test', confidence: 0.9, id: 'med-1')],
+      );
+
+      await tester.tap(find.text(l10n.medicineSearchAddToBoxAction));
+      await flushAsync(tester);
+
+      final input = fakeRepo.createdCurrentMedicine;
+      expect(input, isNotNull);
+      expect(input!.source, HealthMedicineSource.cn);
+      expect(input.sourceRefId, 'med-1');
+      expect(input.displayName, 'Test');
+
+      // The dialog stays open so the success toast is visible on top.
+      expect(find.text(l10n.medicineSearchAddedToBoxToast), findsOneWidget);
+
+      // Drain the toast auto-dismiss timer.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
+    });
+
+    testWidgets('add to box shows auth dialog when signed out', (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpDialog(
+        tester,
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
+        ],
+        results: [result(name: 'Test', confidence: 0.9, id: 'med-1')],
+      );
+
+      await tester.tap(find.text(l10n.medicineSearchAddToBoxAction));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 150));
+
+      expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+
+      // Cancel keeps the user on the dialog.
+      await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsOneWidget);
+    });
+
+    testWidgets('already added result shows added state and opens reminder '
+        'detail with the box record id', (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpDialog(
+        tester,
+        overrides: [
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => boxSnapshotWith(boxItem()),
+          ),
+        ],
+        results: [result(name: 'Test', confidence: 0.9, id: 'med-1')],
+      );
+
+      // Added state: no "add to box", but the already-added badge plus the
+      // reminder detail action.
+      expect(find.text(l10n.medicineSearchAlreadyAddedLabel), findsOneWidget);
+      expect(find.text(l10n.scanViewReminderAction), findsOneWidget);
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsNothing);
+
+      await tester.tap(find.text(l10n.scanViewReminderAction));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Must carry the drugbox record id, not the medicine DB product id.
+      expect(find.text('medicine-reminders:box-med-1'), findsOneWidget);
+    });
+
+    testWidgets('view instructions opens medicine detail', (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpDialog(
+        tester,
+        results: [result(name: 'Test', confidence: 0.9, id: 'med-1')],
+      );
+
+      await tester.tap(find.text(l10n.scanViewInstructionsAction));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('medicine-detail:cn:med-1'), findsOneWidget);
     });
   });
+}
+
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(isAuthenticated: false, isLoading: false);
+  }
 }

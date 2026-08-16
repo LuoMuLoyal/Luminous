@@ -64,6 +64,12 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - `intl.DateFormat` 替代 ISO 字符串
   - `padLeft` 是线协议格式，DateFormat 不适用
 
+## F-6 识别弹窗审查 P2（2026-08-16，非阻塞）
+
+- `recognize_dialog.dart` `_sortedResults` 用 Dart 非稳定 `List.sort`：AI 路径 confidence 全为 null 时同分候选的 top 顺序未定义（top 与候选列表仍互相一致）。验收：改用 `package:collection` 稳定 `mergeSort` 或加索引/名称平局决胜，并注释口径。
+- 识别弹窗「加入药箱」`unawaited(_addToBox(...))` 在途期间按钮未禁用，快速连点可能触发两次 `createCurrentMedicine`（与搜索页/扫码 sheet 的 F-9 共享闭环行为一致，属既有边界）。验收：共享闭环增加 in-flight 态或按钮禁用。
+- `test/scan/widgets/recognize_dialog_test.dart` `pumpDialog` 的 `List overrides = const []` 未类型化。验收：改为 `List<Override>`（与 F-3 审查 P2 同款）。
+
 ## F-3 扫码出口审查 P2（2026-08-16，非阻塞）
 
 - 扫码结果 sheet 打开后状态冻结（`scan/presentation/pages/barcode_scanner.dart` `_ScanResultSheet` 为 StatelessWidget，`boxItem` 打开时捕获）：加入成功后仍显示「加入药箱」且可重复点击（可能重复建档，服务端幂等性未知）；快照未加载完成时打开会把已加入误显示为未加入。验收：sheet 内改为 watch `healthContextSnapshotProvider` 实时翻「已加入」态，或成功后本地置标志禁用/关闭。

@@ -22,16 +22,6 @@ Created: 2026-08-16
 
 ### P0（0.1.0 前）
 
-#### F-6 识别结果确认弹窗(假置信度 + 断链按钮)
-
-- 现状:`MedicineRecognizeDialog`(`scan/presentation/widgets/dialogs/recognize_dialog.dart:11`)UI 完整,但 AI 路径硬编码 `confidence: 0.9`(`scan/presentation/pages/box_scan.dart:301`),向用户展示「置信度: 90%」并配解释文案(`lib/l10n/src/medicine_zh.arb:558-566`);「确认,查看详情」按钮同 F-3 断链(`recognize_dialog.dart:256-271`);top 结果取 `widget.results.first`(`recognize_dialog.dart:36-37`)而非排序后首位。
-- 改造方案:
-  - 删除硬编码「置信度 90%」;置信度字段改为后端识别接口返回的真实分数,接口不返回则改为可解释的来源标签(本地 OCR / 云端 AI / 条码),同步改 `medicine_zh.arb`/`medicine_en.arb` 文案(走 l10n fragment → `dart scripts/arb_tools.dart merge` → `flutter gen-l10n` 流程);
-  - 「确认」主按钮改为「加入药箱」,复用 F-3 改造后的出口(含判重与「查看说明书」次按钮);
-  - top 结果改为按排序口径取首位,与候选列表一致。
-- 前后端分工:前端为主；当前不展示分数字段，统一展示真实识别来源与核对提示。
-- 依赖:同 F-3。
-
 #### F-9 加入药箱闭环(本计划拥有并写全;预检即时化)
 
 - 现状(已验证的闭环,F-3/F-4/F-6 的统一落点):搜索结果卡「加入药箱」(`search/presentation/widgets/shared/results.dart:106-109`)→ 未登录弹登录引导(`search/presentation/pages/page.dart:68-80`)→ 拉最近一次风险检查记录,有 findings/coverageIssues 时弹「添加前风险检查」确认框(`page.dart:96-110`,弹窗 `search/presentation/widgets/shared/medicine_add_precheck_dialog.dart`)→ `createCurrentMedicine`(`page.dart:112`)→ 发 DataChangeBus → Toast 带「去设置提醒」动作直达 `/medicine/reminders/new?medicineId=<药箱记录id>`(`page.dart:117-131`);已加入的按 `source:sourceRefId` 判重显示「已加入」禁用态(`page.dart:35-41`)。
@@ -103,7 +93,7 @@ Created: 2026-08-16
 ## 五、本计划内执行顺序
 
 1. F-9 预检即时化（0.1.0 前）：客户端仅提交可信药品库 `source/id`，服务端复取标准成分/规格后与当前药箱比较；失败只提示加入后可查看风险检查，不作安全判断。
-2. F-3、F-1 已完成（2026-08-16，见迁移日志）；F-6（0.1.0 前）闭合识别出口。
+2. F-3、F-1、F-6 已完成（2026-08-16，见迁移日志）。
 3. F-4、F-5、F-10（均 0.1.0 前）。
 4. F-7、F-11、F-12（均 0.1.0 前）；F-2 纯数字等值匹配移入 0.1.0 后 TODO。
 
