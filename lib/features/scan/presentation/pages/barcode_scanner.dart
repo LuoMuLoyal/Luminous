@@ -11,9 +11,12 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/add_to_box.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -35,6 +38,11 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   bool _isSearching = false;
   bool _permissionDenied = false;
   bool _torchOn = false;
+
+  /// Latest box contents keyed by `source:sourceRefId` (drugbox record id as
+  /// value), refreshed in [build] from [healthContextSnapshotProvider]. Used
+  /// to render the "already added" state of the scan result sheet.
+  Map<String, CurrentMedicineItem> _boxByKey = const {};
 
   @override
   void initState() {
@@ -117,8 +125,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
       }
 
       if (items.length == 1) {
-        final item = items.first;
-        unawaited(MedicineDetailRoute(source: 'cn', id: item.id).push(context));
+        _showScanResultSheet(items.first, boxByKey: _boxByKey);
       } else {
         _showCandidatePicker(items);
       }
@@ -195,12 +202,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                     return FTappable(
                       onPress: () {
                         Navigator.pop(ctx);
-                        unawaited(
-                          MedicineDetailRoute(
-                            source: 'cn',
-                            id: item.id,
-                          ).push(context),
-                        );
+                        _showScanResultSheet(item, boxByKey: _boxByKey);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -232,6 +234,63 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
     );
   }
 
+  /// Shows the scan result sheet for a barcode hit (single result or a
+  /// candidate picked from [showCandidatePicker]).
+  ///
+  /// The scanned id is a medicine DB product id (`cn` source), not a drugbox
+  /// record id. Not yet in the box → primary「加入药箱」(shared F-9 loop) +
+  /// secondary「查看说明书」; already in the box (by `source:sourceRefId` in
+  /// [boxByKey]) →「已添加」state + primary「查看提醒详情」carrying the box
+  /// record id + secondary「查看说明书」.
+  void _showScanResultSheet(
+    ScanSearchResult item, {
+    required Map<String, CurrentMedicineItem> boxByKey,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+    final boxItem = boxByKey['cn:${item.id}'];
+
+    unawaited(
+      showFSheet(
+        context: context,
+        side: FLayout.btt,
+        useSafeArea: true,
+        mainAxisMaxRatio: null,
+        builder: (ctx) => SafeArea(
+          child: _ScanResultSheet(
+            item: item,
+            boxItem: boxItem,
+            l10n: l10n,
+            onAddToBox: () => unawaited(
+              addMedicineToBoxWithPrecheck(
+                context,
+                ref: ref,
+                source: 'cn',
+                sourceRefId: item.id,
+                displayName: item.name,
+              ),
+            ),
+            onViewInstructions: () {
+              Navigator.pop(ctx);
+              unawaited(
+                MedicineDetailRoute(source: 'cn', id: item.id).push(context),
+              );
+            },
+            onViewReminder: boxItem == null
+                ? null
+                : () {
+                    Navigator.pop(ctx);
+                    unawaited(
+                      MedicineReminderDetailRoute(
+                        medicineId: boxItem.id,
+                      ).push(context),
+                    );
+                  },
+          ),
+        ),
+      ),
+    );
+  }
+
   void _goToManualSearch() {
     unawaited(context.push(Routes.medicineSearch));
   }
@@ -240,6 +299,19 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+
+    // Refresh the box lookup map used by the scan result sheet. loading /
+    // error states fall back to an empty map (sheet then shows the default
+    // "not added" exit).
+    final snapshotAsync = ref.watch(healthContextSnapshotProvider);
+    _boxByKey = snapshotAsync.maybeWhen(
+      data: (snapshot) => {
+        for (final medicine in snapshot.currentMedicines)
+          if (medicine.isCurrent && medicine.sourceRefId != null)
+            '${medicine.source}:${medicine.sourceRefId}': medicine,
+      },
+      orElse: () => const <String, CurrentMedicineItem>{},
+    );
 
     if (_permissionDenied) {
       return PageScaffold(
@@ -383,6 +455,138 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                 ),
               ],
             ),
+    );
+  }
+}
+
+/// Bottom sheet content for a scanned medicine result (F-3).
+///
+/// [boxItem] non-null means the medicine is already in the drugbox (matched
+/// by `source:sourceRefId`): the sheet then shows the「已添加」state and the
+/// primary action opens the reminder detail for the box record id.
+class _ScanResultSheet extends StatelessWidget {
+  const _ScanResultSheet({
+    required this.item,
+    required this.boxItem,
+    required this.l10n,
+    required this.onAddToBox,
+    required this.onViewInstructions,
+    this.onViewReminder,
+  });
+
+  final ScanSearchResult item;
+  final CurrentMedicineItem? boxItem;
+  final AppLocalizations l10n;
+  final VoidCallback onAddToBox;
+  final VoidCallback onViewInstructions;
+  final VoidCallback? onViewReminder;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+    final alreadyAdded = boxItem != null;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(Spacing.level4),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.scanBarcodeResultTitle,
+                  style: typography.body.lg.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              FButton.icon(
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.sm,
+                onPress: () => Navigator.pop(context),
+                child: const Icon(
+                  SemanticIcons.actionClose,
+                  size: IconSizeTokens.level3,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const AppDivider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.level5,
+            vertical: Spacing.level4,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(item.name, style: typography.body.lg),
+              if (item.subtitle != null) ...[
+                const SizedBox(height: Spacing.level2),
+                Text(
+                  item.subtitle!,
+                  style: typography.body.sm.copyWith(
+                    color: colors.mutedForeground,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const AppDivider(),
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+            Spacing.level5,
+            Spacing.level4,
+            Spacing.level5,
+            MediaQuery.paddingOf(context).bottom + Spacing.level4,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (alreadyAdded) ...[
+                // Reuses the search tile "already added" visual pattern
+                // (disabled outline button + check icon).
+                FButton(
+                  onPress: null,
+                  variant: FButtonVariant.outline,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        SemanticIcons.statusDone,
+                        size: Spacing.level4,
+                        color: colors.primary,
+                      ),
+                      const SizedBox(width: Spacing.level2),
+                      Text(l10n.medicineSearchAlreadyAddedLabel),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: Spacing.level3),
+                FButton(
+                  onPress: onViewReminder,
+                  child: Text(l10n.scanViewReminderAction),
+                ),
+              ] else ...[
+                FButton(
+                  onPress: onAddToBox,
+                  child: Text(l10n.medicineSearchAddToBoxAction),
+                ),
+              ],
+              const SizedBox(height: Spacing.level3),
+              FButton(
+                variant: FButtonVariant.secondary,
+                onPress: onViewInstructions,
+                child: Text(l10n.scanViewInstructionsAction),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

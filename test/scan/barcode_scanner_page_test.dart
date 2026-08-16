@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/presentation/pages/barcode_scanner.dart';
@@ -11,6 +17,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
+import '../auth/test_helpers.dart';
+import '../helpers/mocks/health_context.dart';
 import '../helpers/mocks/scan.dart';
 import '../helpers/test_forui_app.dart';
 
@@ -50,7 +58,9 @@ void main() {
       routes: [
         GoRoute(
           path: '/scan/barcode',
-          builder: (_, _) => const BarcodeScannerPage(),
+          // Toasts (added-to-box / precheck unavailable) need an FToaster
+          // above the page, mirroring the production bootstrap.
+          builder: (_, _) => const FToaster(child: BarcodeScannerPage()),
         ),
         GoRoute(
           path: '/medicine/search',
@@ -68,16 +78,38 @@ void main() {
             ),
           ),
         ),
+        GoRoute(
+          path: '/medicine/reminders/:medicineId',
+          builder: (_, state) => Scaffold(
+            body: Center(
+              child: Text(
+                'medicine-reminders:${state.pathParameters['medicineId']}',
+              ),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '/login',
+          builder: (_, state) => Scaffold(
+            body: Text("login-page:${state.uri.queryParameters['return-to']}"),
+          ),
+        ),
       ],
     );
   }
 
-  Future<void> pumpPage(WidgetTester tester) async {
+  Future<void> pumpPage(
+    WidgetTester tester, {
+    List overrides = const [],
+  }) async {
     final router = buildRouter();
     addTearDown(router.dispose);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [scanRepositoryProvider.overrideWithValue(mockRepo)],
+        overrides: [
+          scanRepositoryProvider.overrideWithValue(mockRepo),
+          ...overrides,
+        ],
         child: TestForuiRouterApp(routerConfig: router),
       ),
     );
@@ -101,6 +133,33 @@ void main() {
       ),
     );
     await flushAsync(tester);
+  }
+
+  /// Stub snapshot with a single current medicine (cn source) in the box.
+  HealthContextSnapshot boxSnapshotWith(CurrentMedicineItem item) {
+    return testHealthSnapshot(currentMedicines: [item]);
+  }
+
+  CurrentMedicineItem boxItem({
+    String id = 'box-med-1',
+    String sourceRefId = 'med-1',
+    String displayName = '阿莫西林胶囊',
+  }) {
+    return CurrentMedicineItem(
+      id: id,
+      source: 'cn',
+      sourceRefId: sourceRefId,
+      displayName: displayName,
+      strengthText: null,
+      doseText: null,
+      route: null,
+      startedAt: null,
+      endedAt: null,
+      isCurrent: true,
+      note: null,
+      createdAt: '2026-08-16T00:00:00.000Z',
+      updatedAt: '2026-08-16T00:00:00.000Z',
+    );
   }
 
   group('BarcodeScannerPage - permission', () {
@@ -181,7 +240,8 @@ void main() {
   });
 
   group('BarcodeScannerPage - detection', () {
-    testWidgets('single result navigates to medicine detail', (tester) async {
+    testWidgets('single result shows the scan result sheet instead of '
+        'navigating directly', (tester) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
         (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
       );
@@ -190,9 +250,136 @@ void main() {
       await emitBarcode(tester, '6901234567890');
       await tester.pump(const Duration(milliseconds: 400));
 
-      expect(find.text('medicine-detail:cn:med-1'), findsOneWidget);
+      // The result sheet replaces the direct medicine-detail jump.
+      expect(find.text(l10n.scanBarcodeResultTitle), findsOneWidget);
+      expect(find.text('阿莫西林胶囊'), findsOneWidget);
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsOneWidget);
+      expect(find.text(l10n.scanViewInstructionsAction), findsOneWidget);
+      expect(find.textContaining('medicine-detail:'), findsNothing);
       verify(() => mockRepo.search('6901234567890')).called(1);
       expect(fakeScanner.stopCalls, 1);
+    });
+
+    testWidgets('single result view instructions opens medicine detail', (
+      tester,
+    ) async {
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+      );
+      await pumpPage(tester);
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 400));
+
+      await tester.tap(find.text(l10n.scanViewInstructionsAction));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('medicine-detail:cn:med-1'), findsOneWidget);
+    });
+
+    testWidgets('single result add to box shows auth dialog when signed out', (
+      tester,
+    ) async {
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+      );
+      await pumpPage(
+        tester,
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
+        ],
+      );
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 400));
+
+      await tester.tap(find.text(l10n.medicineSearchAddToBoxAction));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 150));
+
+      expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+
+      // Cancel keeps the user on the scan page with the sheet still open.
+      await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
+      expect(find.byType(MobileScanner), findsOneWidget);
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsOneWidget);
+    });
+
+    testWidgets('single result add to box writes cn medicine through the '
+        'shared loop', (tester) async {
+      final fakeRepo = FakeHealthContextRepository()
+        ..reflectCreatedMedicine = true;
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+      );
+      await pumpPage(
+        tester,
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+          medicineRiskCheckRepositoryProvider.overrideWithValue(
+            FakeMedicineRiskCheckRepository(clearRiskCheckResult),
+          ),
+        ],
+      );
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 400));
+
+      await tester.tap(find.text(l10n.medicineSearchAddToBoxAction));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final input = fakeRepo.createdCurrentMedicine;
+      expect(input, isNotNull);
+      expect(input!.source, HealthMedicineSource.cn);
+      expect(input.sourceRefId, 'med-1');
+      expect(input.displayName, '阿莫西林胶囊');
+
+      // The sheet stays open so the success toast is visible on top.
+      expect(find.text(l10n.scanBarcodeResultTitle), findsOneWidget);
+      expect(find.text(l10n.medicineSearchAddedToBoxToast), findsOneWidget);
+
+      // Drain the toast auto-dismiss timer.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
+    });
+
+    testWidgets('already added result shows added state and opens reminder '
+        'detail with the box record id', (tester) async {
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+      );
+      await pumpPage(
+        tester,
+        overrides: [
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => boxSnapshotWith(boxItem()),
+          ),
+        ],
+      );
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Added state: no "add to box", but the already-added badge plus the
+      // reminder detail action.
+      expect(find.text(l10n.medicineSearchAlreadyAddedLabel), findsOneWidget);
+      expect(find.text(l10n.scanViewReminderAction), findsOneWidget);
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsNothing);
+
+      await tester.tap(find.text(l10n.scanViewReminderAction));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Must carry the drugbox record id, not the medicine DB product id.
+      expect(find.text('medicine-reminders:box-med-1'), findsOneWidget);
     });
 
     testWidgets('multiple results show candidate picker sheet', (tester) async {
@@ -212,9 +399,8 @@ void main() {
       expect(find.text('药品乙'), findsOneWidget);
     });
 
-    testWidgets('candidate selection navigates to medicine detail', (
-      tester,
-    ) async {
+    testWidgets('candidate selection opens the result sheet and can view '
+        'instructions', (tester) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
         (_) async => const [
           ScanSearchResult(id: 'med-1', name: '药品甲'),
@@ -229,6 +415,16 @@ void main() {
       expect(find.text(l10n.scanCandidateSheetTitle), findsOneWidget);
 
       await tester.tap(find.text('药品乙'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // The picker is replaced by the result sheet for the picked candidate.
+      expect(find.text(l10n.scanCandidateSheetTitle), findsNothing);
+      expect(find.text(l10n.scanBarcodeResultTitle), findsOneWidget);
+      expect(find.text('药品乙'), findsOneWidget);
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsOneWidget);
+
+      await tester.tap(find.text(l10n.scanViewInstructionsAction));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
@@ -249,6 +445,10 @@ void main() {
       // Scanning resumed -> guide hint visible again and camera restarted.
       expect(find.text(l10n.scanGuideHint), findsOneWidget);
       expect(fakeScanner.startCalls, 2);
+
+      // Drain the not-found toast auto-dismiss timer.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
     });
 
     testWidgets('search error shows toast and resumes scanning', (
@@ -264,6 +464,10 @@ void main() {
 
       expect(find.text(l10n.scanGuideHint), findsOneWidget);
       expect(fakeScanner.startCalls, 2);
+
+      // Drain the failed-toast auto-dismiss timer.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
     });
 
     testWidgets('barcode without raw value is ignored', (tester) async {
@@ -274,4 +478,11 @@ void main() {
       verifyNever(() => mockRepo.search('6901234567890'));
     });
   });
+}
+
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(isAuthenticated: false, isLoading: false);
+  }
 }

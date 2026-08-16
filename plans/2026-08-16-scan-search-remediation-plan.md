@@ -22,17 +22,6 @@ Created: 2026-08-16
 
 ### P0（0.1.0 前）
 
-#### F-3 扫码后「查看详情」跳转(断链修复,本模块最严重问题)
-
-- 现状:单结果/候选选择/识别弹窗原跳提醒详情（断链）已改为跳药品详情页。
-- 断链机理(两个 id 空间):`item.id` 是公共药品库 `cnMedicineProduct` 的记录 id(`Lucent/src/modules/medicines/adapters/cn.service.ts:118`);而 `MedicineReminderDetailPage` 用它在**用户药箱记录**里按 `CurrentMedicineItem.id` 查找(`medicine/presentation/providers/reminders.dart:140-145`,找不到即 `throw StateError('Medicine not found.')`)。药箱记录 id 是 `POST /user/health-context/current-medicines` 建档时服务端生成的(`health_context/data/datasources/snapshot.dart:96-105`),实体上分别是 `id` 与 `sourceRefId`(`health_context/domain/entities/snapshot.dart:77-92`)——即使用户已把该药加入药箱,id 也对不上。现有 widget 测试用桩路由断言「跳转到 detail-page」(`test/scan/barcode_scanner_page_test.dart:178-190`),测的是路由 push 本身,恰好掩盖了断链,需一并改写。
-- 改造方案:扫码命中的不是「提醒详情」,而是「一个还没进药箱的药品」。识别结果出口改为:
-  - 主按钮「加入药箱」:调 `createCurrentMedicine(source: cn, sourceRefId: item.id, displayName)`,走 F-9 同一风险预检弹窗,成功 Toast 带「去设置提醒」动作;
-  - 次按钮「查看说明书」:落点为移动端药品详情页(已完成,路由 `/medicine/detail/:source/:id`,现状见 `docs/00-current/Active_UI_Medicine.md`「药品详情页」节),本文不展开;已接线（2026-08-16）：扫码/识别出口现直达药品详情页；剩余『加入药箱』主按钮与判重闭环待 F-9 完成后实施;
-  - 已加入药箱的(按 `source:sourceRefId` 判重,复用搜索页 `search/presentation/pages/page.dart:35-41` 的逻辑)才允许跳提醒详情,且必须传**药箱记录 id** 而非产品 id。
-- 前后端分工:纯前端改动,后端无改动。
-- 依赖:F-9 闭环(本计划内)、移动端药品详情页(已完成,medicine 计划 F-14)。
-
 #### F-6 识别结果确认弹窗(假置信度 + 断链按钮)
 
 - 现状:`MedicineRecognizeDialog`(`scan/presentation/widgets/dialogs/recognize_dialog.dart:11`)UI 完整,但 AI 路径硬编码 `confidence: 0.9`(`scan/presentation/pages/box_scan.dart:301`),向用户展示「置信度: 90%」并配解释文案(`lib/l10n/src/medicine_zh.arb:558-566`);「确认,查看详情」按钮同 F-3 断链(`recognize_dialog.dart:256-271`);top 结果取 `widget.results.first`(`recognize_dialog.dart:36-37`)而非排序后首位。
@@ -121,7 +110,7 @@ Created: 2026-08-16
 ## 五、本计划内执行顺序
 
 1. F-9 预检即时化（0.1.0 前）：客户端仅提交可信药品库 `source/id`，服务端复取标准成分/规格后与当前药箱比较；失败只提示加入后可查看风险检查，不作安全判断。
-2. F-3、F-1、F-6（均 0.1.0 前）依次闭合扫码与识别出口。
+2. F-3 已完成（2026-08-16，见迁移日志）；F-1、F-6（均 0.1.0 前）依次闭合扫码与识别出口。
 3. F-4、F-5、F-10（均 0.1.0 前）。
 4. F-7、F-11、F-12（均 0.1.0 前）；F-2 纯数字等值匹配移入 0.1.0 后 TODO。
 

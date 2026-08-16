@@ -77,6 +77,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 来源审核安全预览。
 - 过敏安全检查。
 - 药品拍照识别（药盒 AI 识别）和条码扫描已在移动端暴露。
+- 条码扫码出口（F-3）：单结果与候选选择不再直接跳药品详情，改为弹「扫码结果」底部 sheet（`_showScanResultSheet`）——未加入药箱（按 `cn:<产品id>` 判重）主按钮「加入药箱」（复用 F-9 共享闭环：auth 门控 → 即时预检 → 确认框 → `createCurrentMedicine` → Toast 带「去设置提醒」）+ 次按钮「查看说明书」（药品详情页）；已加入显示「已添加」禁用态 + 主按钮「查看提醒详情」（跳提醒详情并携带**药箱记录 id**，不是产品 id）+ 次按钮「查看说明书」。共享闭环抽至 `search/presentation/widgets/shared/add_to_box.dart`，搜索页与扫码 sheet 共用。
 - 处方导入 dead 占位已删除，「手动添加」意图由快捷操作区「添加药品」入口 + 搜索/扫码「加入药箱」覆盖，OCR 处方识别延后（未来能力不排期）。
 - 扫码页全部硬编码中文已迁入 l10n 键。
 - `MedicineMatchType.name` 英文枚举直出改为 `_matchTypeLabel` + l10n 映射。
@@ -90,7 +91,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 分区渲染用 `FAccordion` + `FAccordionItem`，首分区（CN 适应症 / DrugBank 描述）`initiallyExpanded: true`；空/null 字段分区整体不渲染；整页无可展示分区显示「暂无说明书内容」空态。
 - 加入药箱：`CurrentMedicineWriteInput` + `createCurrentMedicine` + `DataChangeTopic.currentMedicines`，与 search 页链路一致但本入口**不做即时预检**（预检仅在搜索页「加入药箱」）；已添加态显示禁用 outline「已添加」。
 - Reminder 详情药品卡：`sourceRefId` 非空且 `source ∈ {cn, drugbank}` 时包 `FTappable` 跳详情页，否则保持原样。
-- 扫码/识别结果「确认，查看详情」落地为本详情页；`/medicine/detail` 为公开路由（未登录可浏览说明书，「加入药箱」未登录走 `showAuthRequiredDialog`）。
+- 识别结果（药盒 OCR/AI）「确认，查看详情」落地为本详情页；`/medicine/detail` 为公开路由（未登录可浏览说明书，「加入药箱」未登录走 `showAuthRequiredDialog`）。条码扫码出口改走「扫码结果」sheet，见「药品搜索与扫描」节。
 
 ## 提醒
 

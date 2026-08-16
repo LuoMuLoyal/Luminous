@@ -355,6 +355,16 @@ flutter test
 - 经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`
   （生成文件为 gitignore 产物）。
 
+## 2026-08-16 F-3 扫码结果出口 scan 键
+
+- Added `scanBarcodeResultTitle`（zh: 扫码结果 / en: Scan result）、`scanViewInstructionsAction`
+  （zh: 查看说明书 / en: View instructions）、`scanViewReminderAction`（zh: 查看提醒详情 /
+  en: View reminder details）to `lib/l10n/src/medicine_zh.arb` / `medicine_en.arb`。
+- 扫码结果 sheet（`barcode_scanner.dart`）使用这三键：主/次按钮（加入药箱复用
+  `medicineSearchAddToBoxAction`、「已添加」复用 `medicineSearchAlreadyAddedLabel`）。
+- 所有权在 medicine 分片（`scan*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
 ## 2026-08-16 Search add pre-check unavailable toast (F-9)
 
 - Added `medicineSearchPrecheckUnavailableToast`（zh: 暂无法即时检查该药品，加入后可在风险检查中查看 /

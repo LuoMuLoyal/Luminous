@@ -1,23 +1,10 @@
-import 'dart:async';
-
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/user_message.dart';
-import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
-import 'package:luminous/features/search/presentation/widgets/shared/medicine_add_precheck_dialog.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/add_to_box.dart';
 import 'package:luminous/features/search/presentation/widgets/views/view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -54,117 +41,27 @@ class SearchPage extends ConsumerWidget {
         onRetry: () =>
             ref.read(medicineSearchNotifierProvider.notifier).retry(),
         onAddToCurrentMedicines: (result) =>
-            _addToCurrentMedicines(ref, context, l10n, result),
+            _addToCurrentMedicines(ref, context, result),
       ),
     );
   }
 
+  /// Thin delegation to the shared add-to-box loop
+  /// ([addMedicineToBoxWithPrecheck]); the full F-9 flow lives in
+  /// `widgets/shared/add_to_box.dart`, shared with the barcode scan exit.
   Future<void> _addToCurrentMedicines(
     WidgetRef ref,
     BuildContext context,
-    AppLocalizations l10n,
     MedicineSearchResult result,
   ) async {
-    final authSession = ref.read(authSessionProvider);
-    if (!authSession.canAccessProtectedData) {
-      if (authSession.isLoading) {
-        return;
-      }
-      if (context.mounted) {
-        await showAuthRequiredDialog(
-          context,
-          onLogin: () => context.push(loginRouteForCurrentLocation(context)),
-        );
-      }
-      return;
-    }
-
-    final repository = ref.read(healthContextRepositoryProvider);
-    final riskCheckRepository = ref.read(medicineRiskCheckRepositoryProvider);
-
-    final medicineSource = result.source == MedicineSearchSource.drugbank
-        ? HealthMedicineSource.drugbank
-        : HealthMedicineSource.cn;
-
-    final input = CurrentMedicineWriteInput(
-      source: medicineSource,
+    await addMedicineToBoxWithPrecheck(
+      context,
+      ref: ref,
+      source: result.source == MedicineSearchSource.drugbank
+          ? 'drugbank'
+          : 'cn',
       sourceRefId: result.id,
       displayName: result.name,
     );
-
-    try {
-      // Instant pre-check of the current box + the candidate medicine. The
-      // server runs it on the fly without persisting a record, so the scope
-      // now genuinely includes the medicine about to be added.
-      MedicineRiskCheckResult? previewResult;
-      try {
-        previewResult = await riskCheckRepository.runPrecheck(
-          source: medicineSource.name,
-          sourceRefId: result.id,
-        );
-      } catch (e) {
-        // Pre-check failure must not block adding: be honest that the check
-        // could not be run now and continue without a safety judgement.
-        ref
-            .read(talkerProvider)
-            .error('SearchPage._addToCurrentMedicines: precheck failed: $e');
-        if (context.mounted) {
-          unawaited(
-            Toast.show(context, l10n.medicineSearchPrecheckUnavailableToast),
-          );
-        }
-      }
-
-      if (context.mounted &&
-          previewResult != null &&
-          (previewResult.findings.isNotEmpty ||
-              previewResult.coverageIssues.isNotEmpty)) {
-        final confirmed = await showMedicineAddPrecheckDialog(
-          context,
-          result: previewResult,
-        );
-        if (confirmed != true) {
-          return;
-        }
-      }
-
-      final updatedSnapshot = await repository.createCurrentMedicine(input);
-      ref
-          .read(dataChangeBusProvider.notifier)
-          .emit(DataChangeTopic.currentMedicines);
-
-      if (context.mounted) {
-        final newMedicine = updatedSnapshot.currentMedicines.firstWhereOrNull(
-          (m) => m.sourceRefId == result.id && m.source == medicineSource.name,
-        );
-        if (newMedicine == null) return;
-        unawaited(
-          Toast.showWithAction(
-            context,
-            l10n.medicineSearchAddedToBoxToast,
-            l10n.medicineSearchGoToReminderAction,
-            () => context.push(
-              '/medicine/reminders/new?medicineId=${newMedicine.id}',
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      ref
-          .read(talkerProvider)
-          .error('SearchPage._addToCurrentMedicines: failed: $e');
-      if (context.mounted) {
-        unawaited(
-          Toast.show(
-            context,
-            userMessageFromError(
-              e,
-              fallback: l10n.medicineSearchPrecheckFailedToast,
-              l10n: l10n,
-            ),
-          ),
-        );
-      }
-    }
   }
 }
