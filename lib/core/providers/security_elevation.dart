@@ -1,7 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/security_elevation_token_holder.dart';
 
 /// State of the security elevation flow.
@@ -61,18 +65,39 @@ class SecurityElevationController extends Notifier<SecurityElevationState> {
       final response = await api.userSettingsControllerVerifySecurityPinV1(
         verifySecurityPinDto: VerifySecurityPinDto(pin: pin),
       );
-      final dto = response.data!;
+      final dto = requireData(response.data, operation: 'verifySecurityPin');
+      // 业务码非 0(如 PIN 错误)在线上由 EnvelopeInterceptor 转为
+      // DioException;此处显式校验兜底,避免拦截器未生效时把失败响应当成
+      // 成功并错误地签发提升令牌。
+      ensureEnvelopeSuccess(code: dto.code, message: dto.message);
       final data = dto.data;
-      final elevationToken = data.elevationToken;
       final expiresAtStr = data.expiresAt;
-      final expiresAt =
-          DateTime.tryParse(expiresAtStr) ??
-          DateTime.now().add(const Duration(minutes: 15));
+      final expiresAt = DateTime.tryParse(expiresAtStr);
+      if (expiresAt == null) {
+        // 服务端过期时间无法解析:视为验证失败,拒绝设置提升令牌。绝不使用
+        // 客户端时间兜底延长有效期——否则服务端异常或被篡改的响应会人为
+        // 延长安全提升状态。
+        appTalker.warning(
+          'SecurityElevation: verify 返回非法 expiresAt($expiresAtStr),'
+          '拒绝设置提升令牌',
+        );
+        return false;
+      }
 
-      _holder.set(elevationToken, expiresAt);
+      _holder.set(data.elevationToken, expiresAt);
       state = SecurityElevationVerified(expiresAt: expiresAt);
       return true;
-    } on Object {
+    } on DioException {
+      // 可预期失败:业务码非 0(EnvelopeInterceptor 已转为 DioException)
+      // 与网络/HTTP 层错误,均属正常用户可见失败,直接返回 false。
+      return false;
+    } on LucentApiException {
+      // 业务码非 0 且 EnvelopeInterceptor 未生效的调用路径(如测试直连)。
+      return false;
+    } catch (e, st) {
+      // 意外异常(TypeError、空响应、解析错误等):记录日志与堆栈后返回
+      // false,避免生产环境"验证莫名失败"却无迹可查。
+      appTalker.error('SecurityElevation: verify 意外异常: $e', st);
       return false;
     }
   }

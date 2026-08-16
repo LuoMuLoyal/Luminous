@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-15
+updated: 2026-08-16
 ---
 
 # State Management (Riverpod)
@@ -290,8 +290,10 @@ See [ADR-0001: Riverpod State Management](adr/0001-riverpod-state-management.md)
 
 ---
 
-### Security Elevation(2026-08-15)
+### Security Elevation(2026-08-16)
 
-`SecurityElevationController.verify` 由 raw Dio 手动解包改为调用生成客户端
-`userSettingsControllerVerifySecurityPinV1`(响应 DTO 信封契约修复后生成客户端可直接解析);
-失败路径保持 `on Object` 吞错返回 false 的既有语义。
+`SecurityElevationController.verify` 调用生成客户端
+`userSettingsControllerVerifySecurityPinV1`(响应 DTO 信封契约修复后生成客户端可直接解析)。
+失败路径区分可预期失败与意外异常:业务码非 0(EnvelopeInterceptor 转为 DioException)与
+网络/HTTP 错误直接返回 false;`expiresAt` 解析失败拒绝设置提升令牌并记警告日志;意外异常
+(TypeError、空响应、解析错误等)经 `appTalker.error` 记录错误与堆栈后返回 false。
