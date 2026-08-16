@@ -77,12 +77,7 @@
 - 真伪判定：真实现。
 - 结论：保留。注意桌面路径服务于已冻结的桌面端，属"保留代码"范畴，不影响移动端主路径。
 
-#### A3. QQ / 微博 / Google OAuth（#8）——真实现，投入价值存疑
-
-- 现状：登录页 `OAuthButtonRow` 渲染 5 个三方按钮（微信/QQ/微博/Google/Apple），QQ/微博/Google 均为"创建 authorize URL → 浏览器授权 → 粘贴 callback"模式；后端 5 家 provider 全部实现并有单测。
-- 实际作用：链路真实可跑。
-- 真伪判定：真实现。
-- 结论：保留但建议收敛（见"投入错配判断"）。QQ/微博在国内合规环境需逐个申请开放平台资质并维护；Google 在中国大陆手机首发中的可用性与价值需单独验证。当前建议仅默认开放微信 + Apple，其余走 feature flag 保留代码；桌面/Web 路线确定后再评估账户体系。
+- 
 
 #### A4. 登出（#10）——真实现，保留
 
@@ -94,14 +89,14 @@
 - 现状：后端 `session.controller.ts` 提供 `GET /auth/sessions`、`DELETE /auth/sessions/:sessionId`，已生成进客户端 `auth_api.dart`，但全客户端无任何 UI/调用方（grep 确认零消费）。
 - 实际作用：用户无法查看/撤销登录设备，接口闲置。
 - 真伪判定：真实现（后端侧），客户端未接线。
-- 结论：改造。P2 优先级：在"账号与安全"页新增会话管理入口（列出活跃会话 + 远程撤销），或从 OpenAPI 剔除该接口。
+- 结论：改造。P2 优先级：在"账号与安全"页新增会话管理入口（列出活跃会话 + 远程撤销）
 
 #### A6. 修改邮箱 / 修改密码 / 解绑三方（#12）——部分实现，存在 PIN 缺口（P1）
 
 - 现状：客户端三个操作分别调 `POST /account/email`、`POST /account/password`、`DELETE /account/identities/:identityId`；后端在**类级挂 `SecurityElevationGuard`**、在这三个 handler 上标 `@RequireSecurityElevation()`，要求请求头带 `x-security-elevation: Bearer <token>`（PIN 校验成功后签发、15 分钟有效）。
 - 实际作用：`showSecurityElevationDialog` 目前只被**数据导出**（`data_export.dart`、`export_actions.dart`）调用；改密码/改邮箱/解绑身份三条路径**从不触发 PIN 对话框**，elevation token holder 为空时请求直接 403（`elevation_token_invalid`），用户只会看到通用失败 toast。
 - 真伪判定：部分实现——后端守卫真实生效，但客户端 PIN 门禁缺接线，**启用 PIN 的用户无法改密/改邮箱/解绑身份**。
-- 结论：改造（P1）。在 `AuthAccountNotifier.changePassword / changeEmail / unlinkIdentity` 入口统一接入 `showSecurityElevationDialog`（已持有有效 token 时自动跳过），与导出流程复用同一组件；失败 toast 需给出"先验证安全 PIN"的引导文案。
+- 结论：改造（P1）。在 `AuthAccountNotifier.changePassword / changeEmail / unlinkIdentity` 入口统一接入 `showSecurityElevationDialog`（已持有有效 token 时自动跳过），与导出流程复用同一组件；失败 toast 需给出"请验证安全 PIN"的引导文案。
 
 #### A7. 注销账号（#13）——真实现，保留
 
@@ -128,7 +123,7 @@
   - 健康提醒（healthAlerts）：细化成 4 条具体规则，由 today-suggestion 规则引擎物化后升级通知，每天最多 1 条——R1 睡眠恶化（有记录且连续 3 晚入睡晚于个人基线）、R2 症状加重（事件期内连续 2 次 check-in 为"加重"或新记录症状）、R3 饮水缺口（连续 2 天已记录进水量低于基线 50%）、R4 档案缺口（新增药物进药箱但过敏史未填写）；无记录不触发；反馈复用建议卡"不适用/太频繁/不再提醒"。
   - 每周摘要（weeklySummary）：改造为"每周纵向洞察通知"——后端周洞察生成后经站内信/本地通知推送，开关控制该推送（原"泛化周报"概念退出，开关服务于新的周洞察推送）。
   - 饮水提醒（waterReminders）：纳入 R3（已记录进水量低于基线时触发，每天最多 1 条），执行器为"建议升级通知"。
-  - 睡眠提醒（sleepReminderEnabled + 时段）：先不管——保留开关与时段设置，暂不接执行器、不排期；若后续做，复用 `reminder_notification_coordinator` + `local_notification_gateway` 按设定时段触发。
+  - 睡眠提醒（sleepReminderEnabled + 时段）：先不管——保留开关与时段设置，复用 `reminder_notification_coordinator` + `local_notification_gateway` 按设定时段触发。
 
 #### B2. 通知权限卡片（#15）——真实现，保留
 
@@ -151,8 +146,8 @@
 - 实际作用：导出真实生成（就诊报告 PDF：hospital/monthly/print 三形态），报告页导出共用同一链路。
 - 真伪判定：真实现。
 - 结论：保留，作为次级出口（移入"更多"，用户主动寻找时可达；测量 surface=more）。两处体验改造：
-  - **P2**：导出被 PIN 门禁硬性阻塞——未启用 PIN 的用户点击导出只弹"安全 PIN 未启用"toast 后无声失败，应引导去启用 PIN（或后端放宽为可配置）。
-  - **P2**：导出内容与 FAQ 文案不符——后端注释明示"不导出原始用户数据"（是报告 PDF），FAQ 却写"导出你的健康数据"，且后端 TODO B4 承认缺数据可移植性导出（GDPR/PIPL）。要么改文案，要么补真正的数据导出（见"投入错配判断"）。
+  - **P2**：导出被 PIN 门禁硬性阻塞——未启用 PIN 的用户点击导出只弹"安全 PIN 未启用"toast 后无声失败，应引导去启用 PIN。
+  - **P2**：导出内容与 FAQ 文案不符——后端注释明示"不导出原始用户数据"（是报告 PDF），FAQ 却写"导出你的健康数据"，且后端 TODO B4 承认缺数据可移植性导出（GDPR/PIPL）。改文案
 
 #### B6. 数据存储设置（#24–#26）——混合：1 真 2 假
 
@@ -233,27 +228,15 @@
 - 真伪判定：真实现（客户端弃用）。
 - 结论：改造（P2）。保留后端 `support-resources` 接口作为未来运营入口：本地 FAQ 内容上收为该接口的可运营内容源（静态配置 → 可运营），前端帮助页改回消费后端内容；或至少保留接口与静态常量不作删除，避免未来站内帮助中心重建成本。
 
+(关于E3和E4的统一回复:目前客户端的FAQ内容仅通过Luminous/assets下的静态md文档分割得到,不由后端提供,仅消费前端自有静态资源,非动态实现.删除该后端接口)
+
 ---
 
 ## 三、后端投入错配判断
 
 1. **会话管理 API（`GET/DELETE /auth/sessions`）**：后端完整实现（含单测），客户端生成客户端已含方法但无任何 UI 与调用。属"后端先行、C 端未接"的悬空投入。建议：P2 补客户端"登录设备管理"（安全卖点与 PIN 定位一致），或移除接口。
-2. **五家 OAuth provider（微信/QQ/微博/Google/Apple）**：全部真实实现。面向中国大陆手机首发，QQ/微博/Google 的真实使用率尚无本项目证据，且每家都需开放平台资质维护与合规成本；桌面 OAuth loopback 的未来价值取决于待研究的大屏产品。建议默认开放微信 + Apple，其余保留代码并用 feature flag 门控，不能把“预期低”写成已验证事实。
-3. **support-resources 静态列表接口**：帮助页自包含化后接口无客户端消费（E4）。改造为可运营内容源——本地 FAQ 内容上收到后端 `support-resources`（静态配置 → 可运营），前端帮助页改回消费后端内容；或保留后端接口作为未来运营入口。
 4. **数据导出 ≠ 数据可移植性**：`DataExportService` 注释明示"不导出原始用户数据"，导出物是就诊报告 PDF；后端 TODO（B4）自认缺失"匿名化数据导出 → 数据可移植性 JSON 导出"（GDPR/PIPL）。而客户端 FAQ 宣称"导出你的健康数据"。这是"名义功能与真实能力"的错配：要么落实真正的数据导出（P1，合规刚需），要么改 FAQ 文案（P2 兜底）。
 5. **健康平台自动同步**：后端执行器未配置、开关禁用——已在 `platform-通知与横切能力.md` 审计，本组仅引用：设置页自动同步开关在未配置执行器前保持禁用是正确做法，无额外投入错配。
 
 ---
 
-## 四、模块级结论（价值判断与整体改造建议）
-
-**整体判断：本组模块是全线中完成度最高、真实度最高的部分。** 登录/注册/验证码/微信登录/注销/安全 PIN/法律文档/资料与健康档案/导出申请均为端到端真实现，无一"点击代替保存"或"静态冒充动态"。以 Product_Vision 视角（手机端当前首发、跨时间上下文需用户控制、隐私克制、主动建议闭环）衡量，绝大部分投入方向正确。
-
-需要动手的问题集中在三处，共 **1 个 P1 缺陷 + 3 个 P1 假开关组 + 1 组死代码**：
-
-1. **P1 缺陷——PIN elevation 接线缺口**：启用安全 PIN 后，客户端改密码/改邮箱/解绑三方身份因缺 `x-security-elevation` 头被后端 403 拦截，且无 PIN 引导。三条路径接入 `showSecurityElevationDialog` 即可闭环（组件已存在）。
-2. **P1 假开关组（6 个）**：通知页健康提醒/每周摘要/饮水提醒/睡眠提醒 + 数据存储页图片质量/仅 Wi-Fi 同步。全部只有本地开关、无执行器。用药类四开关（药/声/振/免打扰+提前）已真实生效；其余按产品决策（2026-08-15）统一接执行器：健康提醒/饮水提醒改造为"建议升级通知"（healthAlerts 细化 R1–R4 规则，由 today-suggestion 规则引擎物化后升级，每天最多 1 条；饮水纳入 R3），每周摘要改造为"每周纵向洞察通知"（开关控制周洞察推送），图片质量接入图片压缩链路（`ImageCompressor` 按"标准/省流"消费）、仅 Wi-Fi 同步加 SyncWorker connectivity 判断；睡眠提醒先不管——保留开关与时段设置，暂不接执行器、不排期。
-3. **P1 合规文案错配**：FAQ"导出你的健康数据"与真实能力（报告 PDF）不符；后端亦自认缺数据可移植性导出。落实 JSON 全量导出或修正文案，二者必选其一。
-4. **P2 清理**：客户端 `features/support` 数据层改造为可运营内容源（本地 FAQ 上收，保留 appInfoProvider）、后端 support-resources 接口保留为未来运营入口、收敛 QQ/微博/Google OAuth、为会话管理 API 补 UI 或下线、导出未启 PIN 的引导、ICP 备案信息。
-
-**总体建议**：保留并打磨（改造集中在"假开关接执行器 + 补一条 PIN 接线 + 修正导出文案/能力"），不需要任何推倒重来；后端侧闲置接口按新口径改造为可运营内容源或保留、收敛 OAuth 即可显著降低维护面。

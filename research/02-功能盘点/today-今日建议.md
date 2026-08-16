@@ -37,7 +37,7 @@
 - 实际作用：这是产品主张的核心产物，且是真闭环：写入事件 → `RecomputeTriggerListener` 触发 → worker 重算（采集信号→7 条规则→抑制→仲裁→文案→持久化）→ 前端只读 GET 展示。证据不是 AI 联想，而是规则从真实信号构造，例如漏服规则的证据为"计划时间 + 今日状态 unconfirmed"（`Lucent/src/modules/today-suggestion/services/rules/medication/missed-dose.service.ts:94-106`），饮水不足的证据为"当前 ml / 目标 ml / 连续记录天数"且要求 observed 且 coverage sufficient（`rules/lifestyle/water-shortfall.service.ts:55-66,98-114`）。
 - 实现真实性：真实现。规则全部有阈值、baseline 门控和证据字段；GET 只读物化结果不触发计算（`services/suggestion.service.ts:44-99`）；无候选时仲裁返回 `primary: null`（`services/arbitration/arbiter.service.ts:28-30`），前端显示真实空态"今日暂无建议"。文案在 LLM 不可用时回退到人工审校模板并带边界句（`constants/copy-fallback.ts:18-64`，如"此提醒基于您的用药计划，不能替代医生或药师建议"）。
 - 结论：保留。
-- 仍需修的小问题：漏服卡的 secondaryActions 里 `skip_dose` 路由 `/medicine?action=skip`（`missed-dose.service.ts:113-120`）在 Luminous 没有任何消费方（grep 无处理），且前端主卡只渲染 `primaryAction`（`suggestion_primary_card.dart:102-110`），属死数据，按改造接成真实跳过动作（保留代码与入口，接线或标注不排期），不做删除。
+- 仍需修的小问题：漏服卡的 secondaryActions 里 `skip_dose` 路由 `/medicine?action=skip`（`missed-dose.service.ts:113-120`）在 Luminous 没有任何消费方（grep 无处理），且前端主卡只渲染 `primaryAction`（`suggestion_primary_card.dart:102-110`），属死数据，按改造接成真实跳过动作
 - 优先级：P0。
 
 ### F-2 建议反馈（已采纳/稍后/不适用/不再看到）

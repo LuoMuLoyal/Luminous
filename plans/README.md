@@ -38,6 +38,36 @@ YYYY-MM-DD-short-task-name.md
 - [`2026-08-01-ai-chat-redesign-plan.md`](2026-08-01-ai-chat-redesign-plan.md)
 - [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)
 
+### 功能盘点改造计划(2026-08-16,共 10 份)
+
+来源:`research/02-功能盘点/` 十份调研文档(已审阅;内容以各文档「逐功能分析」为准改写,
+速览表/结尾汇总仅作参考)。跨功能域共用的内容只在顺序靠前的计划里写全,靠后的计划只做引用;
+桌面/Web 形态挂起项统一引用 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)(ADR-0012 待决策)。
+各计划末尾的「不确定点」一节汇集了该域全部待决策项。
+
+全局执行顺序(靠前先执行;跨计划引用均指向顺序在前的文档):
+
+1. [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)
+   — 横切基建:高德天气 API、提醒投递三通道落库、JPush 密钥、health_sync 自动同步
+2. [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md)
+   — 用药:药品详情页、依从性 ObservedMetric 口径统一、LocalNotificationGateway
+3. [`2026-08-16-scan-search-remediation-plan.md`](2026-08-16-scan-search-remediation-plan.md)
+   — 扫码/搜索:P0 识别出口断链修复、建档闭环
+4. [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md)
+   — 今日建议:AI 摘要卡接线、建议反馈与升级通知执行器
+5. [`2026-08-16-assistant-remediation-plan.md`](2026-08-16-assistant-remediation-plan.md)
+   — AI 助手:P0 三大信任缺口(免责呈现、来源展示、信任分层)
+6. [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md)
+   — 记录:vital 时间序列基建、饮水目标契约、摘要网格接线
+7. [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md)
+   — 健康事件与档案:详情接线、事件升级通知、档案字段治理
+8. [`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)
+   — 报告:纵向洞察生成器、legacy 打包改造(0.1.0 发布后首个版本窗口)
+9. [`2026-08-16-mine-settings-remediation-plan.md`](2026-08-16-mine-settings-remediation-plan.md)
+   — 个人中心与设置:PIN elevation 接线、假开关治理、support 接口清理
+10. [`2026-08-16-engineering-backend-plan.md`](2026-08-16-engineering-backend-plan.md)
+    — 工程与后端平台:基座保留、计划态投入暂缓及触发条件
+
 The event-led product-loop program (`2026-08-07-product-loop-program.md`) and its
 execution plan (`2026-08-07-visit-summary-and-product-measurement.md`) were
 completed on 2026-08-14 and deleted (实施完毕文件已删).

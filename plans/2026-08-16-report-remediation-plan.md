@@ -1,0 +1,112 @@
+# 报告模块(report)改造计划
+
+Created: 2026-08-16
+
+> 来源: `Luminous/research/02-功能盘点/report-报告模块.md`(已审阅;内容以逐功能分析为准改写,速览表/结尾汇总仅作参考)。
+> 执行顺序: 本批共 10 份改造计划,全局顺序见 [`README.md`](README.md);本计划为第 8 位。
+
+## 一、目标与范围
+
+范围:Luminous `lib/features/report/`(客户端)+ Lucent `src/modules/reports/`、`src/modules/data-export/`、`src/modules/health-events/`(后端)。
+
+目标:
+
+- 修复两处「界面承诺与真实行为不一致」:回顾历史无翻页 UI(#5)、就诊摘要字段级隐私三开关无实际门控(#8)。
+- 将 legacy dashboard 的 AI 周报生成链路改造为「周/月纵向洞察生成器」(#14,按逐功能分析取 P1):只输出有来源和覆盖率的模式与低风险动作,证据不足弃权,不生成泛化长文。
+- legacy 残留(#19-#22)打包改造为纵向洞察口径,排在 0.1.0 发布后首个版本窗口;不删除功能与代码。
+
+## 二、保留不动(清单)
+
+- #1 事件回顾主视图(`review_view.dart`,事件头部 + 四段,专题视图定位)。
+- #2 回顾四段 unknown 语义(reasonCode 本地化,显式 `unknown` 枚举成员)。
+- #3 无事件状态处理(「开始健康观察」入口 + 历史,不生成周报)。
+- #4 事件交互闭环(复用 health_event sheet,DataChangeBus 自动刷新)。
+- #6 回顾呈现测量(`review_opened`,session 去重,服务端 product-events)。
+- #7 就诊摘要 preview 脱敏(`maskName`/`calculateAge`/仅诊断年份,`applySelectedFields` 单一过滤出口);入口移入「更多」属已完成定位调整。
+- #9 可撤销分享(7 天 TTL,token 仅哈希,原子撤销)。
+- #10 分享管理列表(创建/到期/访问次数/撤销态)。
+- #11 公开分享页 + 公开 PDF(免认证,过期/撤销 404)。
+- #12 就诊摘要占位数据问题(`_fillMissingSections`)——已修复,维持「未选 = 字段不存在」契约,禁止默认值补齐。
+- #13 就诊摘要测量(previewed/exported 客户端边界 + 服务端 share 事件)。
+- #15 AI 周报无事件/数据不足防护——已修复(主路径无入口 + legacy readiness 门控);P2 双保险建议见下。
+- #16 AI 摘要用户开关(`aiSummariesEnabled` 前后端双拒绝)。
+- #17 月度/打印 PDF 导出(PIN security elevation + BullMQ 队列 + COS + 五态反馈)。
+- #18 导出成功 ≠ 医生查看/获益口径——已修复(文案与测量均已收敛)。
+
+## 三、改造项(按优先级分组)
+
+### P0
+
+无。
+
+### P1
+
+**R-1 回顾历史列表翻页(#5)**
+
+- 现状:`review_history.dart` 只渲染 `reviewHistoryProvider` 返回的第一页(limit 20),repository 与后端 cursor 分页合同(`startedAt|id` 复合 cursor、格式校验、has-more 探测)均已实现,但 presentation 层未消费 `nextCursor`,超过 20 条的事件历史永久不可达。
+- 方案:`review_history.dart` 增加「加载更多」按钮(或滚动触底加载),调用 repository `fetchHistory(status, cursor: nextCursor)`,追加渲染并防重入;「全部」与 active/ended 筛选下均可用。冲突裁决:取 P1,不采用「P2 可延后」后门。
+- 分工:纯客户端,后端无需改动。
+
+**R-2 就诊摘要字段级隐私门控诚实化(#8)**
+
+- 现状:预览弹窗 `_FieldSelectionPanel` 六项开关中只有三项(event_overview/symptom_changes/medication_slots)真正门控内容;`summary-view.ts` 的 `CLINIC_SUMMARY_SHARE_FIELD_SECTIONS` 将 water/sleep/notes 映射为空数组——饮水/睡眠在 `findings`/`coverage` 中不受开关控制,notes 在 `ClinicSummaryDto` 中根本不存在。UI 承诺与真实行为不一致。
+- 方案(推荐 a,待决策见第六节):六开关缩减为三个有效开关(事件概况/症状变化/用药槽位),移除饮水/睡眠/备注开关;备选 b 为保留开关但在 l10n 注明「饮水/睡眠/备注不包含在摘要中」。同时保证 UI 开关状态与服务端 `selectedFields` 回显一致(回显的是 section keys 而非六字段)。改造须在 `applySelectedFields` 单一过滤出口层生效,preview/PDF/share 三路径共用。
+- 分工:客户端裁剪 `_FieldSelectionPanel` 开关与文案(`lib/l10n/src/` 片段文件,禁止直改 `app_*.arb`);服务端若选方案 b 无需改动,选方案 a 仅需同步注释。不推荐把饮水/睡眠/备注做成真实 section(工作量大,与次级出口定位不符)。
+
+**R-3 周/月纵向洞察生成器(#14,按逐功能分析取 P1)**
+
+- 现状:`POST /reports/summary/generate/stream`(SSE)由 `BaseLlmSummaryService` 编排(setting 开关 → dashboard facts → LLM JSON schema → safety policy → 持久化,模板 fallback),链路真实但输出为泛化总结;仅 legacy 页可达。客户端 `ai_summary_remote.dart` 非流式 `generate()` 为零调用死代码。
+- 方案:
+  - 保留 SSE + BullMQ + LLM 基础设施,换新 prompt 与输入口径:输出固定为时间范围、覆盖率、有来源的已观察模式(最多一个)与低风险行动(最多一个),允许用户反馈;数据不足直接弃权,不生成泛化长文。
+  - 客户端删除非流式 `generate()` 死代码。
+  - 生成器装配到 Review 的日/周/月视图(与 R-5 legacy 视图改造联动);事件回顾作为专题嵌入,不再统领全部周/月内容。
+- 依赖:vital 趋势数据源见 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md) 的 vital 基建一节;ObservedMetric/覆盖率口径见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节;本文不重复展开。
+- 分工:服务端换 prompt/schema/输入口径;客户端删死代码 + 装配视图。
+
+### P2(legacy 打包,排在 0.1.0 发布后首个版本窗口)
+
+**R-4 legacy 改造包(#19-#22 打包)**
+
+- 现状:`/report/legacy` 兼容页(`legacy_dashboard_compat.dart` + `dashboard_view.dart` + legacy sections)承载旧周报视图;后端 `buildScore` 硬编码权重评分(insufficient_data 18 分高于 needs_attention 15 分,明显怪异);legacy scalar 序列存在 unknown→0 投影(服务端 `context.service.ts`)与 unknown→flat/general(客户端 mapper);建议历史仅 legacy 页消费。
+- 方案(打包执行,不删除功能与代码):
+  - #19:`legacy_dashboard_compat.dart` 等重新装配为 Review 日/周/月纵向洞察视图(聚合计算逻辑保留,`top_bar.dart` 范围切换改为日/周/月切换);路由 `/report/legacy` 与 domain 侧 `dashboard.dart` 实体/mapper 视装配进度迁移。
+  - #20:移除后端 `buildScore` 及 dashboard DTO 的 score 总分输出,代之以「洞察对象」(覆盖率 + 单维趋势方向 + 值得关注的模式,不合成总分);桌面/Web 大屏趋势比较挂起,统一见 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)(ADR-0012 待决策),不展开。
+  - #21:legacy 图表改按 `observedMetric` 口径输出:unknown 天不绘点、只绘已记录数据,图表旁标注「有记录 N 天 / 范围 M 天」覆盖率;废除 unknown→0(服务端)与 unknown→flat/general(客户端)两处口径。observedMetric 口径定义引用 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节。
+  - #22:建议历史从 legacy 页移入 Review「建议历史」详情视图,数据源 `/today/suggestions/history`,保留 title|reason|type 去重取最高生命周期状态与详情面板。
+  - 同包清理:后端零消费端点(`summary/generate` 非流式、`summary/generate/async` + `status`、`clinic-summary/export/async` + `status`)下线或降级为不暴露;旧 Redis `createShareLink` 缓存桥清理。先做客户端死代码清理与数据契约拆分,再评估后端裁剪,避免先砍后端影响导出(#17 PDF 依赖 dashboard 聚合)。
+- 依赖:data-export PDF 数据源替代方案须先行确认(见第六节);vital 数据源引用 record 计划 vital 基建一节。
+
+**R-5 服务端 409 双保险(#15 附注)**
+
+- 现状:#15 已修复(主路径无入口 + legacy readiness 门控 + prompt 约束),但后端 `summary/generate*` 端点无服务端「数据不足拒绝」守卫,直接调 API 仍可对空数据生成。
+- 方案:服务端对全 insufficient 请求返回 409/空结果,作为客户端 gate 之外的双保险;随 R-3/R-4 改造落地,非必做项(见第六节)。
+
+**R-6 文档漂移更新(#17 附注)**
+
+- 现状:`Mock_Or_Deferred.md`「clinic share link 无应用内链接管理,只能重新生成」已过时(分享管理已上线);`Active_UI_Report.md` 对 legacy scalar 的描述与 `context.service.ts` 实际 unknown→0 投影不一致。
+- 方案:更新两处文档;legacy scalar 口径描述随 R-4 的 #21 改造完成后自然失效。
+
+## 四、跨计划引用与依赖
+
+- 本计划拥有并写全:report 域全部改造项(R-1~R-6)、legacy 打包改造的执行节奏与后端裁剪顺序。
+- 引用 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md):vital 趋势数据源基建(R-3/R-4 的纵向洞察输入依赖)。
+- 引用 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md):F-5 一节的 ObservedMetric/覆盖率口径定义(R-3、R-4 之 #21 共用)。
+- 引用 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md):#20 桌面/Web 大屏趋势比较挂起项(ADR-0012 待决策)。
+- 横切条目(Dashboard 聚合耦合、`applySelectedFields` 单一出口、DataChangeBus、PIN elevation、product events、信封解包、`aiSummariesEnabled`、BullMQ)已在 R-2/R-3/R-4 各自展开,无跨计划归属冲突。
+
+## 五、本计划内执行顺序
+
+1. R-1 历史翻页(P1,纯客户端,可独立先行)。
+2. R-2 隐私门控诚实化(P1,待方案 a/b 决策后执行)。
+3. R-3 纵向洞察生成器(P1,依赖 record 计划 vital 基建与 medicine 计划 F-5 口径就绪)。
+4. (0.1.0 发布后首个版本窗口)R-4 legacy 打包:先确认 data-export PDF 数据源替代方案 → 客户端死代码清理与数据契约拆分 → 视图重装配(#19/#21/#22)→ 移除 buildScore(#20)→ 评估后端裁剪。
+5. R-5 服务端 409 双保险、R-6 文档更新,随 R-3/R-4 附带完成。
+
+## 六、不确定点(待决策)
+
+- 医院 PDF 是否含综合评分:需核对 `report-pdf/pdf.service.ts`,决定 #20 移除 buildScore 时 PDF 是否随之改版。
+- data-export PDF 数据源替代方案未确定:`ReportDashboard` domain 是否保留取决于 data-export 是否迁移到 event-review/observedMetric 口径,R-4 迁移前必须确认。
+- R-5 服务端「数据不足拒绝」守卫(409/空结果)目前只是建议,未定为必做。
+- R-2 方案 a(缩减为三开关)与方案 b(保留六开关 + l10n 注明)最终形态未定,推荐 a。
+- 后端裁剪范围:建议「先做客户端死代码清理与数据契约拆分,再评估后端裁剪」,具体裁剪清单未列。
+- 桌面/Web 大屏趋势比较无时间表,统一挂 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md) 的 ADR-0012 决策。

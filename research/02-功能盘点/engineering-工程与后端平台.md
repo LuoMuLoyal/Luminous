@@ -4,27 +4,6 @@
 >
 > 评估基准：`Luminous/docs/01-product/Product_Vision.md` —— 手机端是当前首发与验证表面，最小伙伴闭环由低负担输入、个人上下文、Today、纵向洞察、上下文 AI 与反馈学习共同组成；桌面/Web 方向待研究。平台/工程能力按"它对 C 端真实用户的支撑作用"与"投入是否与单产品 0.1.0 前阶段匹配"两条线审判。
 
-## 功能点总览
-
-| 功能点 | 一句话作用 | 真伪 | 结论 | 优先级 |
-|---|---|---|---|---|
-| F-1 BullMQ 队列底座 | 9 条异步队列承载 LLM/PDF 任务，Redis 不可用时同步降级 | 真实现 | 保留 | P0 |
-| F-2 Cron Repeatable Jobs | 提醒派发（1min）、建议生命周期（5min）、数据保留（daily）走 Redis 持久化调度 | 真实现 | 保留 | P0 |
-| F-3 LLM Runtime | 6 角色模型工厂，未配置角色显式 503 而非静默产出 | 真实现 | 保留 | P0 |
-| F-4 邮件服务 | 邮箱验证码等事务邮件，SMTP/队列/失败同步兜底 | 真实现 | 保留 | P1 |
-| F-5 文件上传 | 腾讯云 COS 预签名 PUT，支撑餐食图片与记录附件 | 真实现 | 保留 | P1 |
-| F-6 可观测性栈 | Prometheus 指标 + Grafana + Alertmanager + OTel 追踪 | 真实现 | 保留（精简） | P1 |
-| F-7 产品事件埋点 | 客户端采集 + 离线补发 + 服务端权威事件，幂等去重 | 真实现 | 保留 | P1 |
-| F-8 管理员漏斗 API | 事件领域路径的日聚合计数，小样本抑制 | 部分实现 | 改造 | P2 |
-| F-9 AdminJS 管理台 | /admin 自动暴露全部 Prisma 模型，单凭据登录 | 真实现 | 改造 | P1 |
-| F-10 testing-support | E2E 夹具端点，仅 NODE_ENV=test 注册 + 共享密钥 | 真实现 | 保留 | P2 |
-| F-11 Worker 进程分离 | WORKER_MODE 同镜像拆 api/worker 进程，资源隔离 | 真实现 | 暂缓启用（不排期、代码保留） | P2 |
-| F-12 rnacos 动态配置 | 餐食/队列/缓存参数不重启热调 | 真实现 | 暂缓（不排期、代码保留） | P2 |
-| F-13 SaaS 模块（OAuth/dashboard/subscription） | 桌面工作台前置：web 微信扫码登录 + 聚合 API | 真实现 | 暂缓（不排期、代码保留） | P2 |
-| F-14 Node monorepo 合并 | api+saas+website+docs 单仓同 CI、跨仓原子提交 | 真实现 | 暂缓（不排期、代码保留） | P2 |
-| F-15 Flutter 3.47 升级 | SDK/AGP9/依赖跟进，清升级债 | 真实现 | 保留（跟次版本） | P2 |
-| F-16 桌面 SaaS 差异化路线 | 桌面工作台独立 Next.js 客户端，"手机记、电脑看" | 真实现 | 保留方向、暂缓执行 | P1 |
-
 ## 逐功能分析
 
 ### F-1 BullMQ 队列底座（`src/common/queue/`）
@@ -78,7 +57,7 @@
 - 实际作用：LLM 成本与队列积压是这款产品最真实的两类运营风险（token 费用、建议卡生成失败），这两类指标直接对着它们——这部分价值真实。Grafana 看板/Alertmanager/OTel 则主要服务运维者自身。
 - 实现真实性：真实现。`metrics.service.ts:63-345`。两处文档漂移：`architecture.md:370-373` 说存在 `metrics.middleware.ts` 文件，实际中间件内联在 `setup-app.ts`。
 - 结论：保留（精简）。
-- 改造方案：保留 MetricsService 与 /metrics 端点不动；Grafana 看板与 Alertmanager 规则在 0.1.0 前按"最低可跑"维护，不再新增面板；OTel 保持 `OTEL_ENABLED` 默认关闭。原则：先有的栈继续跑，新的可观测性投入一律等真实流量出现。
+- 改造方案：保留 MetricsService 与 /metrics 端点不动；Grafana 看板与 Alertmanager 规则在 0.1.0 前按"最低可跑"维护,OTel 保持 `OTEL_ENABLED` 默认关闭。原则：先有的栈继续跑
 - 优先级：P1
 
 ### F-7 产品事件埋点（`src/modules/product-events/` + `Luminous/lib/core/analytics/`）
@@ -88,24 +67,6 @@
 - 实现真实性：真实现。客户端 `product_event_service.dart:135-182`，服务端 `events.service.ts:84-176`；服务端发射器被 health-events、reports/clinic-summary、today-suggestion 五个真实业务点调用。补记是完整链路（离线→重放→幂等去重），不是"点击即成功"的假象。
 - 结论：保留。
 - 改造方案：无。注意它的价值兑现依赖 F-8 有人看。
-- 优先级：P1
-
-### F-8 管理员漏斗 API（`product-events` 的 `GET /funnel`）
-
-- 现状：AdminGuard（JWT 邮箱常量时间匹配 `ADMIN_EMAIL`）保护；SQL 按 UTC 日聚合五级漏斗 + 就诊摘要 optional 计数；核心样本 <10 时抑制逐日明细（`funnel.service.ts:22`、`194-208`）；枚举完备性由测试锁定，新事件未映射会测试失败而非静默掉数。
-- 实际作用：把 F-7 的原始事件变成“事件领域路径是否发生”的读数。小样本抑制是“证据不足明确弃权”在分析侧的教科书式实现。但**没有消费界面**：代码库内无任何 dashboard 调用它（Luminous、Luminous-website 均无引用），读数只能靠 curl/Swagger 手动拉；它也不能回答长期伙伴价值是否成立。
-- 实现真实性：部分实现——聚合逻辑本身真实且严谨，但"管理员漏斗"作为一个功能缺最后一公里：数据产得出、没人看得上。
-- 结论：改造。
-- 改造方案：不做独立看板。最低成本兑现方式二选一：(a) 写一个 10 行脚本/Grafana 既有栈加一个 Stat 面板，每周人工看一眼；(b) 在 0.1.0 验收清单里固定为"漏斗五个数的截图"。核心循环验证完之前，不为它建任何 UI 工程。
-- 优先级：P2
-
-### F-9 AdminJS 管理台（`src/admin/`）
-
-- 现状：`main.ts:29` 无条件注册 `/admin`；从 Prisma DMMF 自动发现**全部**模型，默认隐藏关系字段与 passwordHash 等敏感列（`resource-config.service.ts:41-48`），其余字段全部可见；仅 User/MedicineSafetyTip/LegalDocument 等少数模型有手工 override；登录是单组 env 邮箱+密码+cookie（`auth-router.service.ts:36-39`），生产环境强制要求这三项配置（`environment.validation.ts:454-456`）。
-- 实际作用：真实价值在两处——MedicineSafetyTip 与 LegalDocument 的 readOnly:false 编辑入口（内容运营：药品安全提示、法务文档无需发版即可改），以及排障时查用户数据。后者对 0 运维团队是实用兜底。
-- 实现真实性：真实现，但暴露面过激：`UserDailyRecord` 的 `note`/`payload`/`value` 等健康内容字段全部在 admin 明文可见（`admin.constants.ts:129-150`），而系统其它部分（漏斗、埋点、审计日志）都在刻意回避健康内容——AdminJS 成了隐私姿态的一个旁路。且除两个显式 readOnly 的模型外，所有模型默认可写，单凭据一旦泄露即可改库。
-- 结论：改造。
-- 改造方案：三条，都不需要推倒 AdminJS——(1) 全局默认 `readOnly: true`，只对 MedicineSafetyTip/LegalDocument 两个内容模型开写；(2) `DEFAULT_SENSITIVE_FIELDS` 加入 `note`、`payload`、`value`、`extras`、`contentZh`（用户记录类模型的内容列），让健康内容默认不进管理台；(3)  admin 凭据纳入运维保密管理并记录何时用过（审计日志模块已存在，接一条即可）。改完后它作为"内容运营 + 只读排障"工具是合格的。
 - 优先级：P1
 
 ### F-10 testing-support（`src/modules/testing-support/`）
@@ -170,13 +131,3 @@
 - 结论：保留方向、暂缓执行。
 - 改造方案：保留方向但暂缓执行；不建 apps/saas 空壳，不重写现有 Flutter 桌面。先研究用户是否真的只为大屏纵向阅读打开桌面/Web，再验证认证、离线、隐私、同步和分发约束；Next.js + Tauri 2 只有在产品任务成立后才进入技术选型决策。
 - 优先级：P1（方向决策本身），执行 P2
-
-## 模块级结论
-
-**底座是真的，而且克制。** 本次审计覆盖的代码模块没有系统性落入占位填充或“请求成功当业务成果”的模式；相反出现了多个反假实现的正面样本——LLM 角色未配置显式 503、漏斗小样本抑制弃权、队列降级路径明示、埋点离线补发幂等。队列/cron/LLM runtime 三件是 P0 承重墙，直接支撑 Today、纵向洞察、上下文 AI、用药提醒与后续反馈学习。
-
-**真正的问题是投入时序错配，不是造假。** 运维与规模化能力（全套可观测性栈、worker 分离、rnacos、monorepo、SaaS 模块）的建设/规划明显跑在产品验证前面：0.1.0 前单机单环境，唯一生死命题是核心循环是否成立，而能回答这个命题的漏斗（F-8）反而缺最后一公里没人看。资源的边际价值排序应该是：漏斗被实际消费 > 餐食识别离线评测集 > 一切规模化工程。
-
-**两个需要修补的口子**：AdminJS 的健康内容明文暴露与默认可写（F-9，与全系统隐私姿态矛盾的旁路）；architecture.md 两处与实际代码漂移（队列数量、metrics 中间件位置）。
-
-**一句话**：保留全部已建成的低成本底座，暂缓所有"为规模化做准备"的新投入，把省下的工程时间花在看漏斗数字上。
