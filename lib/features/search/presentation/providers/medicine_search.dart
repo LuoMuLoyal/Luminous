@@ -70,11 +70,15 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
   }
 
   Future<void> _doSearch() async {
+    // Capture the query before awaiting so the recent-search record matches
+    // what was actually searched, even if the user keeps typing mid-flight
+    // (F-12 review P2-1).
+    final searchedQuery = state.query.trim();
     state = state.copyWith(isSearching: true, errorMessage: null);
     try {
       final results = await ref
           .watch(medicineSearchRepositoryProvider)
-          .search(query: state.query.trim(), source: state.source)
+          .search(query: searchedQuery, source: state.source)
           .timeout(
             const Duration(seconds: 5),
             onTimeout: () =>
@@ -95,11 +99,10 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
 
       // F-12: record a successful non-empty query as a recent search. The
       // notifier absorbs persistence failures, so this never fails the search.
-      final trimmedQuery = state.query.trim();
-      if (trimmedQuery.isNotEmpty) {
+      if (searchedQuery.isNotEmpty) {
         await ref
             .read(recentSearchesProvider.notifier)
-            .addKeyword(trimmedQuery);
+            .addKeyword(searchedQuery);
       }
     } catch (e) {
       ref

@@ -66,7 +66,6 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ## F-12 最近搜索审查 P2（2026-08-16，非阻塞）
 
-- `medicine_search.dart` `_doSearch` 在 `await search(...)` 之后才取 `state.query.trim()` 记录最近搜索——请求进行中用户继续输入会记录「未被搜索过」的关键词（UI 与存储不一致）。验收：`_doSearch` 开头捕获局部 query 变量，search 与记录共用。
 - `recent_searches.dart` provider 首次 `load()` 未完成时 `addKeyword` 写入，riverpod `handleFuture` 完成后会覆盖为陈旧读取值（实际不可达：页面打开即 load、写入在 400ms 防抖后）。验收（可选加固）：`addKeyword`/`clearAll` 开头 await 初始 load 或加 `_loaded` 标志。
 
 ## F-6 识别弹窗审查 P2（2026-08-16，非阻塞）
