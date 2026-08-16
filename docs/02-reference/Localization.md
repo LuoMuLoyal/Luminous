@@ -324,3 +324,11 @@ flutter test
   以及「查看我的用药风险检查」风险入口。
 - 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-16 Medicine adherence detail copy (F-5 P1)
+
+- Changed `medicineAdherenceDetail` in `lib/l10n/src/medicine_zh.arb` / `medicine_en.arb` to the
+  due-doses semantics：zh「今日已到期剂次中已确认占比」/ en「Share of today's due doses confirmed」，
+  替换旧的「近期按时服药占比 / On-time doses over recent period」。
+- 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。

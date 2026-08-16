@@ -98,6 +98,9 @@ abstract class MedicineDoseSlot with _$MedicineDoseSlot {
     String? rawTime,
     required MedicineCopyKey statusKey,
     required MedicineDoseStatus status,
+    // F-5 P1: status 仍为 pending 的槽，若已过其 HH:mm 时刻则 isOverdue 为 true
+    // （「已超时未确认」），不新增 MedicineDoseStatus 枚举值；overdue 槽仍可补卡。
+    @Default(false) bool isOverdue,
   }) = _MedicineDoseSlot;
 }
 

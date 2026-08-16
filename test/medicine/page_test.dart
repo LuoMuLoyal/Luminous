@@ -211,6 +211,52 @@ void main() {
     expect(find.text(l10n.medicineDoseStatusSkipped), findsAtLeastNWidgets(1));
   });
 
+  testWidgets(
+    'Medicine all-overdue pending slot shows no-pending-dose empty state',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            notificationUnreadCountProvider.overrideWith((ref) async => 0),
+            medicineWorkspaceRepositoryProvider.overrideWithValue(
+              const _StaticMedicineWorkspaceRepository(_allOverdueWorkspace),
+            ),
+          ],
+          child: const TestForuiApp(home: MedicinePage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      final strip = find.byKey(const Key('medicine-next-reminder'));
+      expect(strip, findsOneWidget);
+      expect(
+        find.descendant(
+          of: strip,
+          matching: find.text(l10n.medicineNoPendingDose),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: strip,
+          matching: find.text(l10n.medicineScheduleNotSet),
+        ),
+        findsNothing,
+      );
+    },
+  );
+
   testWidgets('Medicine risk-check quick action navigates when signed in', (
     tester,
   ) async {
@@ -895,6 +941,45 @@ const _completedWorkspace = MedicineWorkspace(
         stateKey: MedicineCopyKey.doseStatusSkipped,
         stateColor: SemanticColor.primary,
         todayStatus: MedicineDoseStatus.skipped,
+        currentMedicineId: 'med-1',
+      ),
+    ],
+  ),
+  alerts: <MedicineAlert>[],
+  promisePoints: <MedicinePromisePoint>[],
+);
+
+// 单药单槽 08:00 已过时刻未确认 → slot pending + isOverdue、todayStatus pending；
+// 用于验证 _nextDoseFor 不再把「槽位全 overdue」的药误判为下一剂。
+const _allOverdueWorkspace = MedicineWorkspace(
+  hero: MedicineHero(
+    metricDosesToday: '1',
+    metricAdherence: '0%',
+    metricNextDose: '--',
+  ),
+  quickActions: <MedicineQuickAction>[],
+  plan: MedicinePlanSurface(
+    items: <MedicinePlanItem>[
+      MedicinePlanItem(
+        color: SemanticColor.primary,
+        nameKey: MedicineCopyKey.genericName,
+        dosageKey: MedicineCopyKey.genericDosage,
+        scheduleKey: MedicineCopyKey.genericSchedule,
+        rawName: 'Metformin',
+        rawDosage: '500 mg',
+        rawSchedule: 'Once daily',
+        slots: <MedicineDoseSlot>[
+          MedicineDoseSlot(
+            rawTime: '08:00',
+            scheduledTime: '08:00',
+            statusKey: MedicineCopyKey.doseStatusPending,
+            status: MedicineDoseStatus.pending,
+            isOverdue: true,
+          ),
+        ],
+        stateKey: MedicineCopyKey.doseStatusPending,
+        stateColor: SemanticColor.warning,
+        todayStatus: MedicineDoseStatus.pending,
         currentMedicineId: 'med-1',
       ),
     ],

@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart'
@@ -16,19 +17,18 @@ void main() {
   test(
     'Lucent medicine workspace maps current medicines from health context',
     () async {
-      final repository = LucentMedicineWorkspaceRepository(
-        healthRepo: _FakeHealthContextRepository(),
-        doseLogDs: _FakeDoseLogDataSource(),
-        reminderDs: _FakeReminderDataSource([
-          _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
-        ]),
-        riskCheckRepository: _FakeRiskCheckRepository(),
+      final repository = _repository(
+        reminders: [_reminder(id: 'reminder-1', currentMedicineId: 'med-1')],
       );
 
-      final workspace = await repository.fetchWorkspace();
+      // 06:00 早于 07:45 槽，槽位未到期（not overdue）。
+      final workspace = await withClock(
+        Clock.fixed(DateTime(2026, 6, 4, 6, 0)),
+        () async => repository.fetchWorkspace(),
+      );
 
       expect(workspace.hero.metricDosesToday, '1');
-      expect(workspace.hero.metricAdherence, '0%');
+      expect(workspace.hero.metricAdherence, '--');
       expect(workspace.hero.metricNextDose, '07:45');
       expect(workspace.plan.items, hasLength(1));
       expect(workspace.plan.items[0].rawName, 'Example medicine A');
@@ -39,6 +39,7 @@ void main() {
       expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.pending);
       expect(workspace.plan.items[0].slots, hasLength(1));
       expect(workspace.plan.items[0].slots.single.rawTime, '07:45');
+      expect(workspace.plan.items[0].slots.single.isOverdue, isFalse);
       expect(
         workspace.plan.items[0].stateKey,
         MedicineCopyKey.doseStatusPending,
@@ -47,83 +48,18 @@ void main() {
   );
 
   test(
-    'Lucent medicine workspace maps skipped dose logs as completed state',
+    'keeps later reminder slots pending after an earlier slot is marked',
     () async {
-      final repository = LucentMedicineWorkspaceRepository(
-        healthRepo: _FakeHealthContextRepository(),
-        doseLogDs: _FakeDoseLogDataSource([
-          const DoseLogItem(
+      final repository = _repository(
+        logs: [
+          _doseLog(
             id: 'dose-1',
-            currentMedicineId: 'med-1',
             reminderId: 'reminder-1',
-            status: DoseLogStatus.skipped,
-            scheduledFor: '2026-06-04',
             scheduledTime: '07:45',
-            createdAt: '2026-06-04T08:00:00.000Z',
-            updatedAt: '2026-06-04T08:00:00.000Z',
-          ),
-        ]),
-        reminderDs: _FakeReminderDataSource([
-          _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
-        ]),
-        riskCheckRepository: _FakeRiskCheckRepository(),
-      );
-
-      final workspace = await repository.fetchWorkspace();
-
-      expect(workspace.hero.metricAdherence, '100%');
-      expect(workspace.hero.metricNextDose, '--');
-      expect(
-        workspace.plan.items[0].stateKey,
-        MedicineCopyKey.doseStatusSkipped,
-      );
-      expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.skipped);
-      expect(
-        workspace.plan.items[0].slots.single.status,
-        MedicineDoseStatus.skipped,
-      );
-    },
-  );
-
-  test(
-    'Lucent medicine workspace leaves reminder slots empty when unset',
-    () async {
-      final repository = LucentMedicineWorkspaceRepository(
-        healthRepo: _FakeHealthContextRepository(),
-        doseLogDs: _FakeDoseLogDataSource(),
-        reminderDs: _FakeReminderDataSource(),
-        riskCheckRepository: _FakeRiskCheckRepository(),
-      );
-
-      final workspace = await repository.fetchWorkspace();
-
-      expect(workspace.hero.metricNextDose, '--');
-      expect(workspace.plan.items.single.slots, isEmpty);
-      expect(
-        workspace.plan.items.single.todayStatus,
-        MedicineDoseStatus.pending,
-      );
-    },
-  );
-
-  test(
-    'Lucent medicine workspace keeps later reminder slots pending after an earlier slot is marked',
-    () async {
-      final repository = LucentMedicineWorkspaceRepository(
-        healthRepo: _FakeHealthContextRepository(),
-        doseLogDs: _FakeDoseLogDataSource([
-          const DoseLogItem(
-            id: 'dose-1',
-            currentMedicineId: 'med-1',
-            reminderId: 'reminder-1',
             status: DoseLogStatus.taken,
-            scheduledFor: '2026-06-04',
-            scheduledTime: '07:45',
-            createdAt: '2026-06-04T08:00:00.000Z',
-            updatedAt: '2026-06-04T08:00:00.000Z',
           ),
-        ]),
-        reminderDs: _FakeReminderDataSource([
+        ],
+        reminders: [
           _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
           _reminder(
             id: 'reminder-2',
@@ -131,14 +67,17 @@ void main() {
             scheduledHour: 19,
             scheduledMinute: 0,
           ),
-        ]),
-        riskCheckRepository: _FakeRiskCheckRepository(),
+        ],
       );
 
-      final workspace = await repository.fetchWorkspace();
+      // 10:00：07:45 已到期（taken），19:00 未到期。
+      final workspace = await withClock(
+        Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
+        () async => repository.fetchWorkspace(),
+      );
 
       expect(workspace.hero.metricDosesToday, '2');
-      expect(workspace.hero.metricAdherence, '50%');
+      expect(workspace.hero.metricAdherence, '100%');
       expect(workspace.hero.metricNextDose, '19:00');
       expect(workspace.plan.items, hasLength(1));
       expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.pending);
@@ -150,13 +89,267 @@ void main() {
       expect(workspace.plan.items[0].slots[0].reminderId, 'reminder-1');
       expect(workspace.plan.items[0].slots[0].scheduledTime, '07:45');
       expect(workspace.plan.items[0].slots[0].status, MedicineDoseStatus.taken);
+      expect(workspace.plan.items[0].slots[0].isOverdue, isFalse);
       expect(workspace.plan.items[0].slots[1].reminderId, 'reminder-2');
       expect(workspace.plan.items[0].slots[1].scheduledTime, '19:00');
       expect(
         workspace.plan.items[0].slots[1].status,
         MedicineDoseStatus.pending,
       );
+      expect(workspace.plan.items[0].slots[1].isOverdue, isFalse);
     },
+  );
+
+  test(
+    'due taken slot counts 100% and next dose skips future pending slot',
+    () async {
+      final repository = _repository(
+        logs: [
+          _doseLog(
+            id: 'dose-1',
+            reminderId: 'reminder-1',
+            scheduledTime: '07:45',
+            status: DoseLogStatus.taken,
+          ),
+        ],
+        reminders: [
+          _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
+          _reminder(
+            id: 'reminder-2',
+            currentMedicineId: 'med-1',
+            scheduledHour: 12,
+            scheduledMinute: 0,
+          ),
+          _reminder(
+            id: 'reminder-3',
+            currentMedicineId: 'med-1',
+            scheduledHour: 19,
+            scheduledMinute: 0,
+          ),
+        ],
+      );
+
+      final workspace = await withClock(
+        Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
+        () async => repository.fetchWorkspace(),
+      );
+
+      // 分母只有 07:45（已到期 taken），12:00/19:00 未到期不计入分母。
+      expect(workspace.hero.metricAdherence, '100%');
+      expect(workspace.hero.metricNextDose, '12:00');
+      expect(workspace.hero.metricDosesToday, '3');
+    },
+  );
+
+  test(
+    'all-future slots yield -- adherence and earliest pending next dose',
+    () async {
+      final repository = _repository(
+        reminders: [
+          _reminder(
+            id: 'reminder-1',
+            currentMedicineId: 'med-1',
+            scheduledHour: 12,
+            scheduledMinute: 0,
+          ),
+          _reminder(
+            id: 'reminder-2',
+            currentMedicineId: 'med-1',
+            scheduledHour: 19,
+            scheduledMinute: 0,
+          ),
+        ],
+      );
+
+      final workspace = await withClock(
+        Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
+        () async => repository.fetchWorkspace(),
+      );
+
+      expect(workspace.hero.metricAdherence, '--');
+      expect(workspace.hero.metricNextDose, '12:00');
+      expect(workspace.hero.metricDosesToday, '2');
+    },
+  );
+
+  test(
+    'unconfirmed past-due slot is overdue and not counted as confirmed',
+    () async {
+      final repository = _repository(
+        logs: [
+          _doseLog(
+            id: 'dose-1',
+            reminderId: 'reminder-1',
+            scheduledTime: '07:45',
+            status: DoseLogStatus.taken,
+          ),
+        ],
+        reminders: [
+          _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
+          _reminder(
+            id: 'reminder-2',
+            currentMedicineId: 'med-1',
+            scheduledHour: 19,
+            scheduledMinute: 0,
+          ),
+        ],
+      );
+
+      // 20:00：07:45 taken（已到期），19:00 未确认且已过时刻 → overdue。
+      final workspace = await withClock(
+        Clock.fixed(DateTime(2026, 6, 4, 20, 0)),
+        () async => repository.fetchWorkspace(),
+      );
+
+      expect(workspace.hero.metricAdherence, '50%');
+      expect(workspace.hero.metricNextDose, '--');
+      final slot19 = workspace.plan.items.single.slots[1];
+      expect(slot19.scheduledTime, '19:00');
+      expect(slot19.status, MedicineDoseStatus.pending);
+      expect(slot19.isOverdue, isTrue);
+    },
+  );
+
+  test(
+    'single overdue pending slot yields -- next dose and 0% adherence',
+    () async {
+      final repository = _repository(
+        reminders: [
+          _reminder(
+            id: 'reminder-1',
+            currentMedicineId: 'med-1',
+            scheduledHour: 8,
+            scheduledMinute: 0,
+          ),
+        ],
+      );
+
+      // 10:00：08:00 槽未确认且已过时刻 → overdue，todayStatus 仍 pending。
+      final workspace = await withClock(
+        Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
+        () async => repository.fetchWorkspace(),
+      );
+
+      expect(workspace.hero.metricNextDose, '--');
+      expect(workspace.hero.metricAdherence, '0%');
+      expect(
+        workspace.plan.items.single.todayStatus,
+        MedicineDoseStatus.pending,
+      );
+      expect(
+        workspace.plan.items.single.slots.single.status,
+        MedicineDoseStatus.pending,
+      );
+      expect(workspace.plan.items.single.slots.single.isOverdue, isTrue);
+    },
+  );
+
+  test('skipped due slot counts in denominator but not numerator', () async {
+    final repository = _repository(
+      logs: [
+        _doseLog(
+          id: 'dose-1',
+          reminderId: 'reminder-1',
+          scheduledTime: '07:45',
+          status: DoseLogStatus.skipped,
+        ),
+      ],
+      reminders: [_reminder(id: 'reminder-1', currentMedicineId: 'med-1')],
+    );
+
+    final workspace = await withClock(
+      Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
+      () async => repository.fetchWorkspace(),
+    );
+
+    expect(workspace.hero.metricAdherence, '0%');
+    expect(workspace.hero.metricNextDose, '--');
+    expect(workspace.plan.items[0].stateKey, MedicineCopyKey.doseStatusSkipped);
+    expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.skipped);
+    expect(
+      workspace.plan.items[0].slots.single.status,
+      MedicineDoseStatus.skipped,
+    );
+    expect(workspace.plan.items[0].slots.single.isOverdue, isFalse);
+  });
+
+  test(
+    'medicine without reminder slots contributes nothing to adherence',
+    () async {
+      final repository = _repository();
+
+      final workspace = await withClock(
+        Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
+        () async => repository.fetchWorkspace(),
+      );
+
+      expect(workspace.hero.metricDosesToday, '0');
+      expect(workspace.hero.metricAdherence, '--');
+      expect(workspace.hero.metricNextDose, '--');
+      expect(workspace.plan.items.single.slots, isEmpty);
+      expect(
+        workspace.plan.items.single.todayStatus,
+        MedicineDoseStatus.pending,
+      );
+    },
+  );
+
+  test(
+    '_isSlotDue boundary: equal minute is overdue, one minute before is not',
+    () async {
+      Future<MedicineWorkspace> fetchAt(DateTime now) async {
+        final repository = _repository(
+          reminders: [
+            _reminder(
+              id: 'reminder-1',
+              currentMedicineId: 'med-1',
+              scheduledHour: 10,
+              scheduledMinute: 0,
+            ),
+          ],
+        );
+        return withClock(
+          Clock.fixed(now),
+          () async => repository.fetchWorkspace(),
+        );
+      }
+
+      final atMinute = await fetchAt(DateTime(2026, 6, 4, 10, 0));
+      final beforeMinute = await fetchAt(DateTime(2026, 6, 4, 9, 59));
+
+      expect(atMinute.plan.items.single.slots.single.isOverdue, isTrue);
+      expect(beforeMinute.plan.items.single.slots.single.isOverdue, isFalse);
+    },
+  );
+}
+
+LucentMedicineWorkspaceRepository _repository({
+  List<DoseLogItem> logs = const [],
+  List<MedicineReminderItem> reminders = const [],
+}) {
+  return LucentMedicineWorkspaceRepository(
+    healthRepo: _FakeHealthContextRepository(),
+    doseLogDs: _FakeDoseLogDataSource(logs),
+    reminderDs: _FakeReminderDataSource(reminders),
+    riskCheckRepository: _FakeRiskCheckRepository(),
+  );
+}
+
+DoseLogItem _doseLog({
+  required String id,
+  required String reminderId,
+  required String scheduledTime,
+  required DoseLogStatus status,
+}) {
+  return DoseLogItem(
+    id: id,
+    currentMedicineId: 'med-1',
+    reminderId: reminderId,
+    status: status,
+    scheduledFor: '2026-06-04',
+    scheduledTime: scheduledTime,
+    createdAt: '2026-06-04T08:00:00.000Z',
+    updatedAt: '2026-06-04T08:00:00.000Z',
   );
 }
 

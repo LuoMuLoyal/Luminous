@@ -25,7 +25,7 @@
     }
   },
   "medicineDoseDueStatus": "待服用",
-  "medicineAdherenceDetail": "近期按时服药占比",
+  "medicineAdherenceDetail": "今日已到期剂次中已确认占比",
   "medicineNoMedicineTitle": "暂无药品",
   "medicineNoMedicineBody": "先添加药品后显示提醒",
   "medicineSafetyEngineTitle": "安全检查预览",

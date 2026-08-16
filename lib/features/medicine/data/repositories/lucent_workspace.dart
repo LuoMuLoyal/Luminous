@@ -93,23 +93,24 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
           remindersByMedicine[m.id] ?? const <MedicineReminderItem>[];
       final fallbackStatus = doseStatusByMedicine[m.id];
       final slots = reminders
-          .map(
-            (reminder) => MedicineDoseSlot(
+          .map((reminder) {
+            final status = _slotStatusForReminder(
+              reminder: reminder,
+              doseStatusBySlot: doseStatusBySlot,
+            );
+            return MedicineDoseSlot(
               reminderId: reminder.id,
               scheduledTime: reminder.timeLabel,
               rawTime: reminder.timeLabel,
-              statusKey: _slotStateKey(
-                _slotStatusForReminder(
-                  reminder: reminder,
-                  doseStatusBySlot: doseStatusBySlot,
-                ),
-              ),
-              status: _slotStatusForReminder(
-                reminder: reminder,
-                doseStatusBySlot: doseStatusBySlot,
-              ),
-            ),
-          )
+              statusKey: _slotStateKey(status),
+              status: status,
+              // F-5 P1: 「已到期」= 当前墙钟 >= 槽位 HH:mm；不做 30 分钟宽限。
+              // 宽限只影响后端漏服分类，不影响「到期」分母。未确认但未到期不判 overdue。
+              isOverdue:
+                  status == MedicineDoseStatus.pending &&
+                  _isSlotDue(today, reminder),
+            );
+          })
           .toList(growable: false);
       final todayStatus = slots.isEmpty
           ? _medicineStatusFromDoseLog(fallbackStatus)
@@ -132,19 +133,31 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       );
     }).toList();
 
+    // F-5 P1 统一口径：分母 = 已到期槽位（taken + skipped + overdue），
+    // 分子 = taken（skipped 计入分母不计分子）；未到期槽位不计入分母。
+    // metricDosesToday 为 F-17 已标注死字段，继续填「今日计划槽位总数」。
     final totalDoseCount = planItems.fold<int>(
       0,
-      (sum, item) => sum + _plannedDoseCount(item),
+      (sum, item) => sum + item.slots.length,
     );
-    final completedCount = planItems.fold<int>(
+    final dueTakenCount = planItems.fold<int>(
       0,
-      (sum, item) => sum + _completedDoseCount(item),
+      (sum, item) => sum + _dueTakenCount(item),
     );
+    final dueSkippedCount = planItems.fold<int>(
+      0,
+      (sum, item) => sum + _dueSkippedCount(item),
+    );
+    final dueOverdueCount = planItems.fold<int>(
+      0,
+      (sum, item) => sum + _dueOverdueCount(item),
+    );
+    final dueTotalCount = dueTakenCount + dueSkippedCount + dueOverdueCount;
 
     return MedicineWorkspace(
       hero: MedicineHero(
         metricDosesToday: '$totalDoseCount',
-        metricAdherence: _formatAdherence(completedCount, totalDoseCount),
+        metricAdherence: _formatAdherence(dueTakenCount, dueTotalCount),
         metricNextDose: _nextPendingSlotTime(planItems) ?? '--',
       ),
       quickActions: _defaultQuickActions(),
@@ -158,15 +171,18 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     );
   }
 
-  static String _formatAdherence(int completedCount, int totalCount) {
-    if (totalCount == 0) return '--';
-    return '${((completedCount / totalCount) * 100).round()}%';
+  /// F-5 P1：分子 = taken、分母 = 已到期槽位（taken + skipped + overdue）；
+  /// 分母为 0 显示 '--'。
+  static String _formatAdherence(int takenCount, int dueTotalCount) {
+    if (dueTotalCount == 0) return '--';
+    return '${((takenCount / dueTotalCount) * 100).round()}%';
   }
 
+  /// 下一「未到期」pending 槽；已过时刻的 pending 槽（isOverdue）不算下一剂。
   static String? _nextPendingSlotTime(List<MedicinePlanItem> items) {
     for (final item in items) {
       for (final slot in item.slots) {
-        if (slot.status == MedicineDoseStatus.pending) {
+        if (slot.status == MedicineDoseStatus.pending && !slot.isOverdue) {
           return slot.rawTime;
         }
       }
@@ -285,18 +301,31 @@ SemanticColor _stateColor(MedicineDoseStatus status) {
   };
 }
 
-int _plannedDoseCount(MedicinePlanItem item) {
-  if (item.slots.isNotEmpty) {
-    return item.slots.length;
-  }
-  return 1;
+/// F-5 P1：「已到期」判定 = 当前墙钟 >= 槽位 HH:mm。时区沿用 `clock.now()`
+/// 设备本地墙钟（与既有 `dateStr`、`reminder.matchesDate(today)` 一致）；
+/// profile timezone 对齐留给 F-5 P2 后端统计对象。
+bool _isSlotDue(DateTime now, MedicineReminderItem reminder) =>
+    now.hour > reminder.scheduledHour ||
+    (now.hour == reminder.scheduledHour &&
+        now.minute >= reminder.scheduledMinute);
+
+int _dueTakenCount(MedicinePlanItem item) {
+  return item.slots
+      .where((slot) => slot.status == MedicineDoseStatus.taken)
+      .length;
 }
 
-int _completedDoseCount(MedicinePlanItem item) {
-  if (item.slots.isNotEmpty) {
-    return item.slots
-        .where((slot) => slot.status != MedicineDoseStatus.pending)
-        .length;
-  }
-  return item.todayStatus == MedicineDoseStatus.pending ? 0 : 1;
+int _dueSkippedCount(MedicinePlanItem item) {
+  return item.slots
+      .where((slot) => slot.status == MedicineDoseStatus.skipped)
+      .length;
+}
+
+/// 无槽位药不计入分母（slots 为空时自然为 0）。
+int _dueOverdueCount(MedicinePlanItem item) {
+  return item.slots
+      .where(
+        (slot) => slot.isOverdue && slot.status == MedicineDoseStatus.pending,
+      )
+      .length;
 }

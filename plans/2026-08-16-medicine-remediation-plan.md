@@ -13,7 +13,7 @@ Created: 2026-08-16
   后端 `Lucent/src/modules/medicine-reminders/`、`medicine-dose-logs/`、`medicines/`(含 `risk/` 子目录)。
 - 用药域全链路(档案 currentMedicines → 提醒 → 调度 → 打卡 dose log → 依从 → 风险 → Today 建议)已是真实闭环,
   本计划不返工,目标三件事:
-  1. 依从性口径统一,前后端对齐 ObservedMetric 稀疏语义合同(F-5);
+  1. 依从性口径统一 P2:后端当日 slot 统计对象(F-5,前端 P1 mapper 已完成);
   2. 后端提醒文案 i18n(F-8);
   3. 收尾 P2 小问题(F-3 打卡撤销、F-11 unknown 兜底、F-19 入口改造、F-6 提醒组整组保存)。
 - 边界:扫码/搜索与"加入药箱"链路见 scan-search 计划;本地通知网关公共底座见
@@ -53,19 +53,16 @@ Created: 2026-08-16
 
 **F-5 依从性口径统一(ObservedMetric 稀疏语义合同;本节为 today/record/report 计划的口径权威来源)**
 
-- 现状:`_DrugBoxReminderStrip` 的"今日剂次/依从率/下一剂"由 `lucent_workspace.dart:135-171` 客户端自行计算:
-  分母=今日全部提醒槽位数(含未来时段,无槽位记 1),分子=已确认(taken/skipped)槽位数。与后端稀疏语义合同
-  (`planned→unconfirmed / taken / skipped / overdueUnconfirmed`)脱节,上午看会显示"依从率 33%",与
-  Report/Today 的"1/3 已确认、1 超时未确认"口径打架。
-- 统一口径(四方共用):分母 = **已到期槽位**(已确认/已跳过/已超时三类),分子 = 已确认槽位;**未确认 ≠ 漏服**,
+- 统一口径(四方共用;P1 已落地于前端 mapper):分母 = **已到期槽位**(已确认/已跳过/已超时三类),分子 = 已确认槽位;**未确认 ≠ 漏服**,
   漏服语义由 `overdueUnconfirmed` 派生,不落库为 `missed`;未到期槽位不计入分母;无覆盖/无到期槽位显示 `--`。
-- 方案:
-  1. P1(本计划):前端 mapper 层按上述三态统计改造,`mobile_drugbox.dart` 展示口径随之修正;
-  2. P2(后端):在 dose-logs 或 workspace 接口暴露当日 slot 统计对象，采用 `ObservedMetric` 合同，消除两端口径漂移。
-- 涉及:`lib/features/medicine/data/repositories/lucent_workspace.dart`、`lib/features/medicine/presentation/widgets/mobile_drugbox.dart`;
-  后端 `medicine-dose-logs/`(P2 统计对象)。
-- 前后端分工:P1 前端先行;P2 后端补统计接口后前端切换数据源。
-- 依赖:后端 Active_Product_Loop 已收口该合同；Flutter 侧在 0.1.0 前接入。
+- P1 已完成(前端 mapper,2026-08-16):`lucent_workspace.dart` 按到期三态统计(`isOverdue` 布尔建模、`_isSlotDue` 判定、分子=taken、
+  无槽位药不计入分母、删除「无槽位记 1」),`mobile_shared.dart` 下一剂跳过 overdue 槽;时区沿用设备墙钟、不做 30 分钟宽限
+  (宽限只影响后端漏服分类,不影响「到期」分母)。
+- 剩余(P2,后端):在 dose-logs 或 workspace 接口暴露当日 slot 统计对象，采用 `ObservedMetric` 合同，消除两端口径漂移——
+  注意后端 today collector 现按 `taken / expectedCount(全部计划槽位)` 计算(与已到期分母不一致,需一并对齐),时区对齐 profile timezone。
+- 涉及:后端 `medicine-dose-logs/`(或 workspace 接口);前端届时切换数据源。
+- 前后端分工:P1 前端先行(已完成);P2 后端补统计接口后前端切换数据源。
+- 依赖:后端 Active_Product_Loop 已收口该合同；P2 在 0.1.0 前完成。
 
 **F-8 提醒文案 i18n**
 
@@ -118,7 +115,7 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. P1:F-5 前端口径统一 → F-8 提醒文案 i18n。
+1. P1:F-8 提醒文案 i18n。
 2. P2:F-3、F-11、F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
 
 ## 六、已决边界与延期项

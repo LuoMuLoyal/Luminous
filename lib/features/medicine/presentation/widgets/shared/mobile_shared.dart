@@ -86,13 +86,16 @@ class _QuickOperation {
 _NextDose? _nextDoseFor(MedicineWorkspace workspace) {
   for (final item in workspace.plan.items) {
     for (final slot in item.slots) {
-      if (slot.status == MedicineDoseStatus.pending) {
+      if (slot.status == MedicineDoseStatus.pending && !slot.isOverdue) {
         return _NextDose(item: item, slot: slot);
       }
     }
   }
   for (final item in workspace.plan.items) {
-    if (item.todayStatus == MedicineDoseStatus.pending) {
+    // 回退仅针对无提醒槽位的药（slots 为空时 todayStatus 由 dose log 派生）；
+    // 槽位全 overdue 的药（status 仍 pending、isOverdue true）不再误判为「下一剂」，
+    // 避免药箱条显示「未设置时间」而非「无待服用剂次」空态。
+    if (item.slots.isEmpty && item.todayStatus == MedicineDoseStatus.pending) {
       return _NextDose(item: item);
     }
   }
