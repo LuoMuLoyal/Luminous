@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -136,7 +138,7 @@ void main() {
     MedicineScanMethod method = MedicineScanMethod.ocr,
     String methodLabel = 'OCR',
     VoidCallback? onRetake,
-    List overrides = const [],
+    List<Override> overrides = const [],
   }) async {
     // The dialog is pushed as its own route (sub-route of '/' so the stack
     // has a page beneath it) so pop-then-push exits (查看说明书 /
@@ -342,6 +344,50 @@ void main() {
       expect(find.text('LowConfidence'), findsNothing);
     });
 
+    testWidgets('equal-confidence candidates keep their input order '
+        '(stable sort, F-6 P2-1)', (tester) async {
+      // The AI path carries no confidence (all null → equal). The stable
+      // sort must preserve the input order, so the top result equals the
+      // first candidate-list entry — never an arbitrary reordering.
+      tester.view.physicalSize = const Size(800, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await pumpDialog(
+        tester,
+        results: [
+          result(name: 'First', id: 'med-first'),
+          result(name: 'Second', id: 'med-second'),
+        ],
+      );
+
+      // Top card shows the input-first entry; the second is only in the
+      // (collapsed) candidate list.
+      expect(find.text('First'), findsWidgets);
+      expect(find.text('Second'), findsNothing);
+
+      // Expanding the list confirms First still precedes Second (input
+      // order kept by the stable sort).
+      await tester.tap(find.textContaining('从列表选择其他匹配'));
+      await tester.pumpAndSettle();
+
+      final list = find.byType(ListView);
+      final firstInList = find.descendant(
+        of: list,
+        matching: find.text('First'),
+      );
+      final secondInList = find.descendant(
+        of: list,
+        matching: find.text('Second'),
+      );
+      expect(firstInList, findsOneWidget);
+      expect(secondInList, findsOneWidget);
+      expect(
+        tester.getTopLeft(firstInList).dy,
+        lessThan(tester.getTopLeft(secondInList).dy),
+      );
+    });
+
     testWidgets('shows candidate list expander when multiple results', (
       tester,
     ) async {
@@ -481,6 +527,55 @@ void main() {
 
       // The dialog stays open so the success toast is visible on top.
       expect(find.text(l10n.medicineSearchAddedToBoxToast), findsOneWidget);
+
+      // Drain the toast auto-dismiss timer.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
+    });
+
+    testWidgets('add to box button is disabled while an add is in flight '
+        '(F-6 P2-2)', (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      final fakeRepo = FakeHealthContextRepository()
+        ..reflectCreatedMedicine = true;
+      final gate = Completer<void>();
+      fakeRepo.createGate = gate;
+      await pumpDialog(
+        tester,
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+          medicineRiskCheckRepositoryProvider.overrideWithValue(
+            FakeMedicineRiskCheckRepository(clearRiskCheckResult),
+          ),
+        ],
+        results: [result(name: 'Test', confidence: 0.9, id: 'med-1')],
+      );
+
+      await tester.tap(find.text(l10n.medicineSearchAddToBoxAction));
+      await tester.pump();
+
+      // While the create is held by the gate, the primary button must be
+      // disabled so a rapid second tap cannot duplicate the record.
+      final addButton = tester.widget<FButton>(
+        find.ancestor(
+          of: find.text(l10n.medicineSearchAddToBoxAction),
+          matching: find.byType(FButton),
+        ),
+      );
+      expect(addButton.onPress, isNull);
+      expect(fakeRepo.createdCurrentMedicine, isNull);
+
+      // Release the gate: the add completes and the live snapshot watch
+      // flips the dialog into the「已加入」state (button replaced by the
+      // reminder-detail action).
+      gate.complete();
+      await flushAsync(tester);
+
+      expect(fakeRepo.createdCurrentMedicine, isNotNull);
+      expect(find.text(l10n.medicineSearchAddToBoxAction), findsNothing);
+      expect(find.text(l10n.medicineSearchAlreadyAddedLabel), findsOneWidget);
+      expect(find.text(l10n.scanViewReminderAction), findsOneWidget);
 
       // Drain the toast auto-dismiss timer.
       await tester.pump(const Duration(seconds: 2));

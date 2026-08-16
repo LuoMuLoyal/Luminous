@@ -46,14 +46,29 @@ class _MedicineRecognizeDialogState
   bool _showCandidateList = false;
   int? _selectedIndex;
 
+  /// True while「加入药箱」is in flight — the primary button is disabled so a
+  /// rapid second tap cannot trigger a duplicate `createCurrentMedicine`
+  /// (F-6 P2-2).
+  bool _addingBox = false;
+
   /// Top result follows the same ordering as the candidate list: deduplicated
-  /// by name, then sorted by confidence (null sorts as 0).
+  /// by name, then sorted by confidence descending (null sorts as 0).
   MedicineMatchResult? get _topResult => _sortedResults.firstOrNull;
 
+  /// Candidate list: deduplicated by name (first occurrence wins), then
+  /// sorted by confidence descending with null treated as 0. The sort is
+  /// **stable** (`package:collection` `mergeSort` — Dart's `List.sort` is
+  /// not): equal scores keep their input order, so an AI path whose
+  /// candidates all carry null confidence has a defined, input-ordered top
+  /// result that always matches the first candidate list entry (F-6 P2-1).
   List<MedicineMatchResult> get _sortedResults {
     final seen = <String>{};
-    return widget.results.where((r) => seen.add(r.name)).toList()
-      ..sort((a, b) => (b.confidence ?? 0).compareTo(a.confidence ?? 0));
+    final unique = widget.results.where((r) => seen.add(r.name)).toList();
+    mergeSort(
+      unique,
+      compare: (a, b) => (b.confidence ?? 0).compareTo(a.confidence ?? 0),
+    );
+    return unique;
   }
 
   /// Current drugbox lookup by `source:sourceRefId` (F-3 dedup key). Loading /
@@ -70,14 +85,22 @@ class _MedicineRecognizeDialogState
         orElse: () => const <String, CurrentMedicineItem>{},
       );
 
-  Future<void> _addToBox(MedicineMatchResult res, String sourceRefId) {
-    return addMedicineToBoxWithPrecheck(
-      context,
-      ref: ref,
-      source: 'cn',
-      sourceRefId: sourceRefId,
-      displayName: res.name,
-    );
+  Future<void> _addToBox(MedicineMatchResult res, String sourceRefId) async {
+    if (_addingBox) return; // defensive: the button is disabled while in flight
+    setState(() => _addingBox = true);
+    try {
+      await addMedicineToBoxWithPrecheck(
+        context,
+        ref: ref,
+        source: 'cn',
+        sourceRefId: sourceRefId,
+        displayName: res.name,
+      );
+    } finally {
+      // Re-enable even on failure; on success the live snapshot watch flips
+      // the dialog into the「已加入」state, which replaces this button anyway.
+      if (mounted) setState(() => _addingBox = false);
+    }
   }
 
   @override
@@ -336,7 +359,9 @@ class _MedicineRecognizeDialogState
               )
             else
               FButton(
-                onPress: res.id == null
+                // Disabled while an add is in flight (F-6 P2-2) so a rapid
+                // second tap cannot duplicate the record.
+                onPress: res.id == null || _addingBox
                     ? null
                     : () => unawaited(_addToBox(res, res.id!)),
                 child: Text(l10n.medicineSearchAddToBoxAction),

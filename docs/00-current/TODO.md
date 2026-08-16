@@ -68,12 +68,6 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 - `recent_searches.dart` provider 首次 `load()` 未完成时 `addKeyword` 写入，riverpod `handleFuture` 完成后会覆盖为陈旧读取值（实际不可达：页面打开即 load、写入在 400ms 防抖后）。验收（可选加固）：`addKeyword`/`clearAll` 开头 await 初始 load 或加 `_loaded` 标志。
 
-## F-6 识别弹窗审查 P2（2026-08-16，非阻塞）
-
-- `recognize_dialog.dart` `_sortedResults` 用 Dart 非稳定 `List.sort`：AI 路径 confidence 全为 null 时同分候选的 top 顺序未定义（top 与候选列表仍互相一致）。验收：改用 `package:collection` 稳定 `mergeSort` 或加索引/名称平局决胜，并注释口径。
-- 识别弹窗「加入药箱」`unawaited(_addToBox(...))` 在途期间按钮未禁用，快速连点可能触发两次 `createCurrentMedicine`（与搜索页/扫码 sheet 的 F-9 共享闭环行为一致，属既有边界）。验收：共享闭环增加 in-flight 态或按钮禁用。
-- `test/scan/widgets/recognize_dialog_test.dart` `pumpDialog` 的 `List overrides = const []` 未类型化。验收：改为 `List<Override>`（与 F-3 审查 P2 同款）。
-
 ## 审查暂缓项
 
 - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。
