@@ -449,17 +449,16 @@ void main() {
       // `handleFuture`) could overwrite the just-persisted write with the
       // stale pre-write read value.
       //
-      // Determinism note: the true interleaving (the stale load landing
-      // *after* the write) cannot be reproduced with the in-memory mock
-      // store — the load and the write await the same memoized
-      // `getInstance()` future and mock reads are synchronous, so the
-      // load's stale value always settles before the write's state set.
-      // What this test pins instead is the required outcome: a write issued
-      // while the initial load is genuinely pending (it has not resolved by
-      // the time `addKeyword` runs) ends with the written value in state,
-      // and it exercises the guard path (`_settleInitialLoad` awaiting the
-      // in-flight load). It would break if the guard deadlocked or dropped
-      // the write.
+      // Determinism note: with the in-memory mock store, the load's read
+      // happens-before the write's read because both await the same memoized
+      // `getInstance()` future, but the load's completion (riverpod
+      // `handleFuture` → state set) is scheduled *after* the write's
+      // continuation — so without the guard this test actually fails: the
+      // stale pre-write value lands in state last and overwrites the written
+      // keyword. The guard (`_settleInitialLoad` awaiting the in-flight
+      // load before writing) is what makes the write survive; this test pins
+      // that outcome and would break if the guard deadlocked or dropped the
+      // write.
       final notifier = container.read(recentSearchesProvider.notifier);
       // Premise: the initial load is still pending here — `getInstance()`
       // has not resolved, so `build()`'s load future is genuinely in flight

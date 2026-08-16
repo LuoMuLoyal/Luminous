@@ -142,8 +142,9 @@ void main() {
   }) async {
     // The dialog is pushed as its own route (sub-route of '/' so the stack
     // has a page beneath it) so pop-then-push exits (查看说明书 /
-    // 查看提醒详情) behave like production. The FToaster wraps the dialog so
-    // the shared add-to-box loop's success toast can render.
+    // 查看提醒详情) behave like production. The FToaster sits above the
+    // navigator (showToaster), mirroring production, so a success toast whose
+    // action outlives the dialog survives the dialog being closed.
     final router = GoRouter(
       initialLocation: '/dialog',
       routes: [
@@ -153,15 +154,13 @@ void main() {
           routes: [
             GoRoute(
               path: 'dialog',
-              builder: (_, __) => FToaster(
-                child: Scaffold(
-                  body: MedicineRecognizeDialog(
-                    imagePath: tempImagePath,
-                    method: method,
-                    methodLabel: methodLabel,
-                    results: results,
-                    onRetake: onRetake ?? () {},
-                  ),
+              builder: (_, __) => Scaffold(
+                body: MedicineRecognizeDialog(
+                  imagePath: tempImagePath,
+                  method: method,
+                  methodLabel: methodLabel,
+                  results: results,
+                  onRetake: onRetake ?? () {},
                 ),
               ),
             ),
@@ -198,7 +197,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [...overrides],
-        child: TestForuiRouterApp(routerConfig: router),
+        child: TestForuiRouterApp(routerConfig: router, showToaster: true),
       ),
     );
     await tester.pump();
@@ -348,44 +347,47 @@ void main() {
         '(stable sort, F-6 P2-1)', (tester) async {
       // The AI path carries no confidence (all null → equal). The stable
       // sort must preserve the input order, so the top result equals the
-      // first candidate-list entry — never an arbitrary reordering.
+      // first candidate-list entry — never an arbitrary reordering. Three
+      // equal entries all fit in the dialog's 200px list viewport, so the
+      // full order is assertable without scrolling.
       tester.view.physicalSize = const Size(800, 1200);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
 
+      const names = ['First', 'Second', 'Third'];
       await pumpDialog(
         tester,
         results: [
-          result(name: 'First', id: 'med-first'),
-          result(name: 'Second', id: 'med-second'),
+          for (var i = 0; i < names.length; i++)
+            result(name: names[i], id: 'med-$i'),
         ],
       );
 
-      // Top card shows the input-first entry; the second is only in the
+      // Top card shows the input-first entry; the others are only in the
       // (collapsed) candidate list.
       expect(find.text('First'), findsWidgets);
       expect(find.text('Second'), findsNothing);
+      expect(find.text('Third'), findsNothing);
 
-      // Expanding the list confirms First still precedes Second (input
-      // order kept by the stable sort).
+      // Expanding the list confirms the full input order is kept by the
+      // stable sort, with First still on top (matching the top card).
       await tester.tap(find.textContaining('从列表选择其他匹配'));
       await tester.pumpAndSettle();
 
       final list = find.byType(ListView);
-      final firstInList = find.descendant(
-        of: list,
-        matching: find.text('First'),
-      );
-      final secondInList = find.descendant(
-        of: list,
-        matching: find.text('Second'),
-      );
-      expect(firstInList, findsOneWidget);
-      expect(secondInList, findsOneWidget);
-      expect(
-        tester.getTopLeft(firstInList).dy,
-        lessThan(tester.getTopLeft(secondInList).dy),
-      );
+      final positions = <String, double>{};
+      for (final name in names) {
+        positions[name] = tester
+            .getTopLeft(find.descendant(of: list, matching: find.text(name)))
+            .dy;
+      }
+      for (var i = 1; i < names.length; i++) {
+        expect(
+          positions[names[i - 1]]!,
+          lessThan(positions[names[i]]!),
+          reason: '${names[i - 1]} must precede ${names[i]} in the list',
+        );
+      }
     });
 
     testWidgets('shows candidate list expander when multiple results', (
