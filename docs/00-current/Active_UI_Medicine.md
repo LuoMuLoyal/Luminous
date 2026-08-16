@@ -80,6 +80,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 条码扫码出口（F-3）：单结果与候选选择不再直接跳药品详情，改为弹「扫码结果」底部 sheet（`_showScanResultSheet`）——未加入药箱（按 `cn:<产品id>` 判重）主按钮「加入药箱」（复用 F-9 共享闭环：auth 门控 → 即时预检 → 确认框 → `createCurrentMedicine` → Toast 带「去设置提醒」）+ 次按钮「查看说明书」（药品详情页）；已加入显示「已添加」禁用态 + 主按钮「查看提醒详情」（跳提醒详情并携带**药箱记录 id**，不是产品 id）+ 次按钮「查看说明书」。共享闭环抽至 `search/presentation/widgets/shared/add_to_box.dart`，搜索页与扫码 sheet 共用。
 - 拍照识别结果弹窗（F-6）：不展示置信度百分比（AI 路径不再构造假置信度，`MedicineMatchResult.confidence` 可空、仅用于候选排序），top 卡片按识别方法显示核对提示——AI 用 `scanResultVerifyHintAi`（需核对药品名、批准文号和规格），OCR 用 `scanResultVerifyHintOcr`（核对药品名与批准文号）；候选列表行只显示匹配方式。top 结果与候选列表同口径（按名去重 + 置信度降序取首位）。出口与扫码 sheet 同构：未加入（按 `cn:<产品id>` 判重）主按钮「加入药箱」（复用共享闭环）+ 次按钮「查看说明书」；已加入显示「已加入」禁用态 + 主按钮「查看提醒详情」（跳提醒详情并携带**药箱记录 id**）+ 次按钮「查看说明书」；关闭/重新拍照保留，按钮区 `Wrap` 自动换行。识别方法经共享枚举 `MedicineScanMethod` 传入（`box_scan.dart` 与弹窗共用，不再字符串判断）。
 - 拍照识别候选搜索优化（F-4）：OCR 候选先按规范化 query（trim + 小写）去重再串行搜库——同一批准文号/药名从多个文本块重复提取时只搜一次（搜索次数 = 去重后候选数）；搜库结果再按稳定药品 id 合并（`id` 缺失时按名称兜底），不同候选 query 搜到同一药品只保留一条（`confidence ?? 0` 最高者），弹窗不再出现重复候选；不新增后端批量 query。
+- 拍照识别登录门控（F-5）：AI 识别路径（压缩→COS 预签名直传→`POST /api/v1/medicines/recognize`）要求登录，选择「AI 智能识别」后先做登录门控——未登录弹登录引导（`showAuthRequiredDialog`，登录后返回可重试），不再在上传处 401 落进通用「识别失败」对话框；OCR 路径（公开搜索）不门控。后端 `recognize/async` 队列端点保留、客户端不接入。
 - 处方导入 dead 占位已删除，「手动添加」意图由快捷操作区「添加药品」入口 + 搜索/扫码「加入药箱」覆盖，OCR 处方识别延后（未来能力不排期）。
 - 扫码页全部硬编码中文已迁入 l10n 键。
 - `MedicineMatchType.name` 英文枚举直出改为 `_matchTypeLabel` + l10n 映射。

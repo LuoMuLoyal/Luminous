@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
@@ -13,6 +14,7 @@ import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../auth/test_helpers.dart';
 import '../helpers/mocks/scan.dart';
 import '../helpers/test_forui_app.dart';
 
@@ -152,7 +154,10 @@ void main() {
     );
   }
 
-  Future<void> pumpHarness(WidgetTester tester) async {
+  Future<void> pumpHarness(
+    WidgetTester tester, {
+    List overrides = const [],
+  }) async {
     final router = buildRouter();
     addTearDown(router.dispose);
     await tester.pumpWidget(
@@ -163,6 +168,7 @@ void main() {
           // — the flow is driven by a mock so widget tests never touch the
           // plugin.
           paddleOcrProvider.overrideWithValue(mockOcr),
+          ...overrides,
         ],
         child: TestForuiRouterApp(routerConfig: router),
       ),
@@ -178,8 +184,11 @@ void main() {
     }
   }
 
-  Future<void> openMethodPicker(WidgetTester tester) async {
-    await pumpHarness(tester);
+  Future<void> openMethodPicker(
+    WidgetTester tester, {
+    List overrides = const [],
+  }) async {
+    await pumpHarness(tester, overrides: overrides);
     await tester.tap(find.text('open-scan'));
     await flushAsync(tester);
   }
@@ -352,7 +361,14 @@ void main() {
     testWidgets('cancelled photo pick leaves no dialog behind', (tester) async {
       fakePicker.imagePath = null;
 
-      await openMethodPicker(tester);
+      await openMethodPicker(
+        tester,
+        overrides: [
+          // The AI path is auth-gated (F-5): a signed-in session passes the
+          // gate so the test reaches the picker.
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+        ],
+      );
       await tester.tap(find.text(l10n.scanMethodAiTitle));
       await flushAsync(tester);
 
@@ -360,5 +376,43 @@ void main() {
       expect(find.text(l10n.scanResultTitle), findsNothing);
       expect(find.text(l10n.scanMethodPickerTitle), findsNothing);
     });
+
+    testWidgets('signed-out AI selection shows auth dialog and stops', (
+      tester,
+    ) async {
+      // The AI recognition path requires login (F-5): a signed-out session
+      // must be intercepted before the camera opens, so the picker is never
+      // reached and no scan result/failure dialog appears.
+      await openMethodPicker(
+        tester,
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
+        ],
+      );
+
+      await tester.tap(find.text(l10n.scanMethodAiTitle));
+      await flushAsync(tester);
+
+      expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+      expect(fakePicker.pickCalls, 0);
+      expect(find.text(l10n.scanResultTitle), findsNothing);
+      expect(find.text(l10n.scanRecognitionFailedToast), findsNothing);
+
+      // Closing the dialog does not continue into the picker flow.
+      await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+      await flushAsync(tester);
+
+      expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
+      expect(fakePicker.pickCalls, 0);
+    });
   });
+}
+
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(isAuthenticated: false, isLoading: false);
+  }
 }

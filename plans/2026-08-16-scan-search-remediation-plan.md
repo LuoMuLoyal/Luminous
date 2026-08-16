@@ -32,13 +32,6 @@ Created: 2026-08-16
 
 ### P1
 
-#### F-5 药盒 AI 识别(登录门控，0.1.0 前)
-
-- 现状:压缩→COS 预签名直传→`POST /api/v1/medicines/recognize` LLM 视觉识别,链路每一环真实;但 `recognize` 端点要求登录而扫码搜索是 `@Public()`,未登录用户走 AI 路径会在上传处 401,落进通用「识别失败」对话框而非登录引导(`box_scan.dart:111-119`)。
-- 改造方案:进 AI 路径前加登录门控,复用 `pushAuthRequiredRoute`(F-9 已有未登录引导模式可参照),未登录走登录引导;后端 `recognize/async` 队列端点保留，客户端接入另建任务评估，不删除。
-- 前后端分工:纯前端门控;后端无改动。
-- 依赖:无。
-
 #### F-2 扫码结果匹配(条码精确命中，0.1.0 后 TODO)
 
 - 现状:`LucentScanRepository.search`(`scan/data/repositories/scan.dart:24-40`)把条码原始值当 query 搜库,后端 `CnMedicinesService.buildWhere` 确实查 `barcode` 字段(`Lucent/src/modules/medicines/adapters/cn.service.ts:107`),匹配语义正确;但 `contains` 模糊匹配可能带出子串相同的其他条码(如 69 码前缀截断)。
@@ -87,7 +80,7 @@ Created: 2026-08-16
 
 1. F-9 预检即时化（0.1.0 前）：客户端仅提交可信药品库 `source/id`，服务端复取标准成分/规格后与当前药箱比较；失败只提示加入后可查看风险检查，不作安全判断。
 2. F-3、F-1、F-6 已完成（2026-08-16，见迁移日志）。
-3. F-4 已完成（2026-08-16，见迁移日志）；F-5、F-10（均 0.1.0 前）。
+3. F-4、F-5 已完成（2026-08-16，见迁移日志）；F-10（0.1.0 前）。
 4. F-7、F-11、F-12（均 0.1.0 前）；F-2 纯数字等值匹配移入 0.1.0 后 TODO。
 
 ## 六、已决边界与延期项

@@ -8,10 +8,12 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/candidate_merger.dart';
@@ -54,6 +56,26 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   );
 
   if (method == null || !context.mounted) return;
+
+  // Auth gate: the AI recognition path (compress → COS presigned upload →
+  // POST /api/v1/medicines/recognize) requires login, unlike the public OCR
+  // search path. Signed-out users get the login prompt here instead of
+  // falling into the generic recognition-failure dialog at the upload step
+  // (F-5). The OCR branch below is deliberately not gated.
+  if (method == MedicineScanMethod.ai) {
+    final container = ProviderScope.containerOf(context);
+    final authSession = container.read(authSessionProvider);
+    if (!authSession.canAccessProtectedData) {
+      if (authSession.isLoading) return;
+      if (context.mounted) {
+        await showAuthRequiredDialog(
+          context,
+          onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+        );
+      }
+      return;
+    }
+  }
 
   // Pre-check: verify the OCR engine can initialise before opening the camera.
   // This catches ABI incompatibility (non-arm64 devices) and model-loading
