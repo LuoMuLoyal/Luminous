@@ -137,9 +137,6 @@ enum MedicineCopyKey {
   quickActionBarcodeSubtitle,
   quickActionSearchTitle,
   quickActionSearchSubtitle,
-  // Prescription import remains deferred pending OCR/contract work.
-  quickActionPrescriptionTitle,
-  quickActionPrescriptionSubtitle,
   genericName,
   genericDosage,
   genericSchedule,

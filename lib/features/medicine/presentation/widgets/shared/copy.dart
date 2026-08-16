@@ -18,10 +18,6 @@ String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
       l10n.medicineQuickActionSearchTitle,
     MedicineCopyKey.quickActionSearchSubtitle =>
       l10n.medicineQuickActionSearchSubtitle,
-    MedicineCopyKey.quickActionPrescriptionTitle =>
-      l10n.medicineQuickActionPrescriptionTitle,
-    MedicineCopyKey.quickActionPrescriptionSubtitle =>
-      l10n.medicineQuickActionPrescriptionSubtitle,
     MedicineCopyKey.genericName => l10n.medicineGenericName,
     MedicineCopyKey.genericDosage => l10n.medicineGenericDosage,
     MedicineCopyKey.genericSchedule => l10n.medicineGenericSchedule,

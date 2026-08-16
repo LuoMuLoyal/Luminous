@@ -77,7 +77,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 来源审核安全预览。
 - 过敏安全检查。
 - 药品拍照识别（药盒 AI 识别）和条码扫描已在移动端暴露。
-- 处方导入/OCR 处方识别仍延后（底层枚举保留但仅 Toast 提示）。
+- 处方导入 dead 占位已删除，「手动添加」意图由快捷操作区「添加药品」入口 + 搜索/扫码「加入药箱」覆盖，OCR 处方识别延后（未来能力不排期）。
 - 扫码页全部硬编码中文已迁入 l10n 键。
 - `MedicineMatchType.name` 英文枚举直出改为 `_matchTypeLabel` + l10n 映射。
 - 扫码结果对话框和处理遮罩统一使用 `showAppDialog(barrierDismissible: false)` 调用，不再直接使用底层 `showFDialog`；`MedicineRecognizeDialog` 移除 `FDialog` 包装层和 `animation` 参数，由 `DialogShell` 统一管理对话框框架。

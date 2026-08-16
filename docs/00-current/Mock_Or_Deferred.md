@@ -59,7 +59,7 @@ Mock repositories 已从生产代码中完全移除，仅存在于 `test/helpers
 - 提醒投递历史已三通道落库：调度器每分钟写 `in_app` 行；本地通知展示后客户端按 `reminderId|date|time` 幂等回写 `local/delivered` 行；本地不可达/未确认时后端按 JPush 结果写 `push` 行（失败含 errorMessage）。SMS 通道仍无。
 - 轻量心情记录连线。
 - Today 或 Mine 的环境上下文连线。
-- 处方导入/OCR 处方识别仍延后，底层枚举保留但仅 Toast 提示。
+- 处方 OCR 识别保留为未来能力、不排期；「手动添加药物」意图由快捷操作区「添加药品」入口 + 搜索/扫码「加入药箱」覆盖，不再显示处方导入占位入口（原占位 dead data 已删除）。
 
 ## 延后代码标记
 

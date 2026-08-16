@@ -31,12 +31,6 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
       accent: SemanticColor.primary,
     ),
-    const MedicineQuickAction(
-      icon: SemanticIcons.doseLog,
-      titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
-      subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
-      accent: SemanticColor.primary,
-    ),
   ];
 
   static final previewWorkspace = MedicineWorkspace(

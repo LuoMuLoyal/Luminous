@@ -202,7 +202,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   ];
 
   // Camera recognition and barcode scan are live on mobile devices.
-  // Prescription import remains deferred pending OCR/contract work.
+  // 处方导入入口已删除；OCR 处方识别为未来能力不排期（F-19）。
   static final _mobileScanQuickActions = <MedicineQuickAction>[
     const MedicineQuickAction(
       icon: SemanticIcons.actionCamera,
@@ -214,12 +214,6 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       icon: SemanticIcons.actionScan,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: SemanticColor.primary,
-    ),
-    const MedicineQuickAction(
-      icon: SemanticIcons.doseLog,
-      titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
-      subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
       accent: SemanticColor.primary,
     ),
   ];

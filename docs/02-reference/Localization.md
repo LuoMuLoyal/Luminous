@@ -343,3 +343,14 @@ flutter test
   `medicineDoseUndoneToast`。
 - 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-16 F-19 处方导入占位清理（删除 medicineQuickActionPrescription* 3 键）
+
+- 删除 `medicineQuickActionPrescriptionTitle` / `medicineQuickActionPrescriptionSubtitle` /
+  `medicineQuickActionPrescriptionToast` 共 3 键（zh/en 各一份，medicine 分片）。
+- 对应删除 `MedicineCopyKey.quickActionPrescriptionTitle` / `quickActionPrescriptionSubtitle`
+  枚举值与 `medicineCopy` 映射分支、`_mobileScanQuickActions` 死数据条目（生产仓库与测试 mock）。
+- 处方 OCR 识别保留为未来能力、不排期；「手动添加药物」意图由快捷操作区「添加药品」入口 +
+  搜索/扫码「加入药箱」覆盖，不再显示处方导入占位入口。
+- 经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`
+  （生成文件为 gitignore 产物）。
