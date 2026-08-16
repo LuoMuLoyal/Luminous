@@ -16,7 +16,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 1. 当前用药盒
 2. 今日服用计划
 3. 用药安全摘要
-4. 用药操作
+4. 用药操作（快捷操作区 `medicine-action-hub`：添加药品 / 搜索药品 / 扫码 / 拍照 / 提醒 / 安全检查；扫码与拍照入口自搜索页上浮，见「药品搜索与扫描」节）
 
 未登录时保留 preview workspace + 顶部轻量登录提示，不再误入"添加你的第一个药品"空药盒 CTA。
 
@@ -77,6 +77,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 来源审核安全预览。
 - 过敏安全检查。
 - 药品拍照识别（药盒 AI 识别）和条码扫描已在移动端暴露。
+- 扫码/拍照入口上浮（F-10）：Medicine 页快捷操作区（`mobile_quick_operations.dart`）在「搜索药品」之后新增「扫描条形码」（`SemanticIcons.actionScan`，`context.push(Routes.scanBarcode)`）与「拍照识别药品」（`SemanticIcons.actionCamera`，`showMedicineBoxScanSheet` 弹 OCR/AI 方法选择 sheet，AI 路径登录门控沿用 F-5）两项，与「搜索药品」并列；搜索页空状态 QuickActions 保留不动。文案复用 `medicineQuickActionBarcodeTitle/Subtitle` 与 `medicineQuickActionCameraTitle/Subtitle` 键（medicine 分片，zh/en）。
 - 条码扫码出口（F-3）：单结果与候选选择不再直接跳药品详情，改为弹「扫码结果」底部 sheet（`_showScanResultSheet`）——未加入药箱（按 `cn:<产品id>` 判重）主按钮「加入药箱」（复用 F-9 共享闭环：auth 门控 → 即时预检 → 确认框 → `createCurrentMedicine` → Toast 带「去设置提醒」）+ 次按钮「查看说明书」（药品详情页）；已加入显示「已添加」禁用态 + 主按钮「查看提醒详情」（跳提醒详情并携带**药箱记录 id**，不是产品 id）+ 次按钮「查看说明书」。共享闭环抽至 `search/presentation/widgets/shared/add_to_box.dart`，搜索页与扫码 sheet 共用。
 - 拍照识别结果弹窗（F-6）：不展示置信度百分比（AI 路径不再构造假置信度，`MedicineMatchResult.confidence` 可空、仅用于候选排序），top 卡片按识别方法显示核对提示——AI 用 `scanResultVerifyHintAi`（需核对药品名、批准文号和规格），OCR 用 `scanResultVerifyHintOcr`（核对药品名与批准文号）；候选列表行只显示匹配方式。top 结果与候选列表同口径（按名去重 + 置信度降序取首位）。出口与扫码 sheet 同构：未加入（按 `cn:<产品id>` 判重）主按钮「加入药箱」（复用共享闭环）+ 次按钮「查看说明书」；已加入显示「已加入」禁用态 + 主按钮「查看提醒详情」（跳提醒详情并携带**药箱记录 id**）+ 次按钮「查看说明书」；关闭/重新拍照保留，按钮区 `Wrap` 自动换行。识别方法经共享枚举 `MedicineScanMethod` 传入（`box_scan.dart` 与弹窗共用，不再字符串判断）。
 - 拍照识别候选搜索优化（F-4）：OCR 候选先按规范化 query（trim + 小写）去重再串行搜库——同一批准文号/药名从多个文本块重复提取时只搜一次（搜索次数 = 去重后候选数）；搜库结果再按稳定药品 id 合并（`id` 缺失时按名称兜底），不同候选 query 搜到同一药品只保留一条（`confidence ?? 0` 最高者），弹窗不再出现重复候选；不新增后端批量 query。

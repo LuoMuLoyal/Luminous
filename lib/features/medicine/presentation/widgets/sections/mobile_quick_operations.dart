@@ -27,6 +27,20 @@ class _QuickOperationSection extends StatelessWidget {
         onTap: () => context.push(Routes.medicineSearch),
       ),
       _QuickOperation(
+        icon: SemanticIcons.actionScan,
+        color: SemanticColor.primary,
+        title: l10n.medicineQuickActionBarcodeTitle,
+        subtitle: l10n.medicineQuickActionBarcodeSubtitle,
+        onTap: () => context.push(Routes.scanBarcode),
+      ),
+      _QuickOperation(
+        icon: SemanticIcons.actionCamera,
+        color: SemanticColor.primary,
+        title: l10n.medicineQuickActionCameraTitle,
+        subtitle: l10n.medicineQuickActionCameraSubtitle,
+        onTap: () => unawaited(showMedicineBoxScanSheet(context)),
+      ),
+      _QuickOperation(
         icon: SemanticIcons.notificationBell,
         color: SemanticColor.primary,
         title: l10n.medicineReminderQuickTitle,

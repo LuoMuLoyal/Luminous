@@ -391,3 +391,15 @@ flutter test
   页键）、`scanViewReminderAction` / `scanViewInstructionsAction`（F-3 已加，本次复用）。
 - 所有权在 medicine 分片（`scan*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-16 F-10 扫码/拍照入口上浮（复用既有 quick action 键，未新增）
+
+- Medicine 页快捷操作区新增「扫描条形码」与「拍照识别药品」两项，复用既有
+  `medicineQuickActionBarcodeTitle` / `medicineQuickActionBarcodeSubtitle` /
+  `medicineQuickActionCameraTitle` / `medicineQuickActionCameraSubtitle` 四键
+  （zh/en 各一份，medicine 分片，`lib/l10n/src/medicine_zh.arb` / `medicine_en.arb`），
+  未新增 l10n 键。
+- 所有权在 medicine 分片（`medicine*` 前缀）；这些键原由 barcode_scanner 页头与
+  `MedicineCopyKey.quickAction*` 映射（lucent_workspace 桌面快捷动作数据）消费，
+  现增加 Medicine 主页快捷操作区一个消费方。经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。

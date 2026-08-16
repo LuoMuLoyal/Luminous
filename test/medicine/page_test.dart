@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/design/semantic_color.dart';
@@ -422,6 +423,157 @@ void main() {
     expect(find.text('Metformin'), findsAtLeastNWidgets(1));
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
     expect(find.byKey(const Key('medicine-action-hub')), findsOneWidget);
+  });
+
+  testWidgets('Medicine quick operations show scan and photo entries', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
+        child: const TestForuiApp(home: MedicinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final hub = find.byKey(const Key('medicine-action-hub'));
+    await tester.scrollUntilVisible(
+      hub,
+      240,
+      scrollable: _medicineMobileScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text(l10n.medicineQuickActionBarcodeTitle), findsOneWidget);
+    expect(find.text(l10n.medicineQuickActionBarcodeSubtitle), findsOneWidget);
+    expect(find.text(l10n.medicineQuickActionCameraTitle), findsOneWidget);
+    expect(find.text(l10n.medicineQuickActionCameraSubtitle), findsOneWidget);
+  });
+
+  testWidgets('Medicine scan quick action pushes the barcode scanner', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
+        child: TestForuiRouterApp(
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => const MedicinePage(),
+              ),
+              GoRoute(
+                path: Routes.scanBarcode,
+                builder: (context, state) => const Scaffold(
+                  body: Center(child: Text('barcode-stub-page')),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final barcodeRow = find.text(l10n.medicineQuickActionBarcodeTitle);
+    await tester.scrollUntilVisible(
+      barcodeRow,
+      240,
+      scrollable: _medicineMobileScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(barcodeRow);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('barcode-stub-page'), findsOneWidget);
+  });
+
+  testWidgets('Medicine photo quick action opens the method picker sheet', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
+        child: TestForuiRouterApp(
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => const MedicinePage(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final cameraRow = find.text(l10n.medicineQuickActionCameraTitle);
+    await tester.scrollUntilVisible(
+      cameraRow,
+      240,
+      scrollable: _medicineMobileScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(cameraRow);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text(l10n.scanMethodPickerTitle), findsOneWidget);
+    expect(find.text(l10n.scanMethodOcrTitle), findsOneWidget);
+    expect(find.text(l10n.scanMethodAiTitle), findsOneWidget);
   });
 
   testWidgets('Medicine uncovered safety summary uses readable icon color', (

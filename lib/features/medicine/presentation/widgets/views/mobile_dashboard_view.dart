@@ -14,6 +14,7 @@ import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
+import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 part '../sections/mobile_drugbox.dart';
