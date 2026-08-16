@@ -9,6 +9,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -650,6 +651,83 @@ void main() {
 
       expect(find.text('medicine-detail:cn:med-1'), findsOneWidget);
     });
+
+    testWidgets(
+      'tapping the set-reminder toast action after closing the dialog does '
+      'not push through a deactivated context',
+      (tester) async {
+        // Regression: the shared add-to-box loop's success toast carries a
+        // "set reminder" action bound to the dialog context. If the dialog is
+        // closed while the toast is still showing, tapping the action used to
+        // push through the deactivated context — registering an Inherited
+        // dependency on a dying element, which trips
+        // `debugDeactivated`'s `_dependents.isEmpty` assertion.
+        final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+        final fakeRepo = FakeHealthContextRepository()
+          ..reflectCreatedMedicine = true;
+        await pumpDialog(
+          tester,
+          results: [
+            const MedicineMatchResult(
+              name: 'Test',
+              confidence: null,
+              matchType: MedicineMatchType.nameFuzzy,
+              id: 'med-1',
+            ),
+          ],
+          overrides: [
+            authSessionProvider.overrideWith(
+              () => SignedInAuthSessionNotifier(),
+            ),
+            healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+            medicineRiskCheckRepositoryProvider.overrideWithValue(
+              FakeMedicineRiskCheckRepository(clearRiskCheckResult),
+            ),
+            // Mirror the production provider: re-fetch from the repository when
+            // the data change bus bumps these topics (the shared loop emits
+            // `currentMedicines` after a successful add).
+            healthContextSnapshotProvider.overrideWith((ref) {
+              ref.watch(
+                dataChangeVersionProvider(DataChangeTopic.currentMedicines),
+              );
+              ref.watch(
+                dataChangeVersionProvider(DataChangeTopic.healthContext),
+              );
+              return ref
+                  .read(healthContextRepositoryProvider)
+                  .fetchHealthContext();
+            }),
+          ],
+        );
+
+        // Add to box → success toast with the set-reminder action.
+        await tester.tap(find.text(l10n.medicineSearchAddToBoxAction));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+        expect(
+          find.text(l10n.medicineSearchGoToReminderAction),
+          findsOneWidget,
+        );
+
+        // Close the dialog while the toast is still visible.
+        await tester.tap(find.text(l10n.scanCloseAction));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.text(l10n.medicineSearchAddToBoxAction), findsNothing);
+
+        // Tap the toast action: the dialog context is deactivated by now. The
+        // mounted guard in the shared loop must swallow the tap instead of
+        // pushing (any FlutterError here fails the test).
+        await tester.tap(find.text(l10n.medicineSearchGoToReminderAction));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+
+        // Let the toast's auto-dismiss timer elapse so the test ends with no
+        // pending timers.
+        await tester.pump(const Duration(seconds: 2));
+        await tester.pump(const Duration(milliseconds: 400));
+      },
+    );
   });
 }
 

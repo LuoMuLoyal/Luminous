@@ -44,7 +44,16 @@ Future<void> addMedicineToBoxWithPrecheck(
     if (context.mounted) {
       await showAuthRequiredDialog(
         context,
-        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+        // The login action runs on a later user tap: the calling surface
+        // (e.g. the recognition dialog) may already be closed by then, so
+        // guard the push with a fresh mounted check — pushing through a
+        // deactivated context registers an Inherited dependency on a dying
+        // element and trips `debugDeactivated`'s `_dependents.isEmpty`
+        // assertion.
+        onLogin: () {
+          if (!context.mounted) return;
+          unawaited(context.push(loginRouteForCurrentLocation(context)));
+        },
       );
     }
     return;
@@ -115,9 +124,18 @@ Future<void> addMedicineToBoxWithPrecheck(
           l10n.medicineSearchAddedToBoxToast,
           l10n.medicineSearchGoToReminderAction,
           // Typed route (F-14) — avoids the string query concatenation bug.
-          () => MedicineRemindersNewRoute(
-            medicineId: newMedicine.id,
-          ).push(context),
+          // The action fires on a later user tap; the calling surface (e.g.
+          // the recognition dialog) may have been closed in between, so a
+          // deactivated context must not be pushed through (same
+          // `_dependents.isEmpty` assertion as the login action above).
+          () {
+            if (!context.mounted) return;
+            unawaited(
+              MedicineRemindersNewRoute(
+                medicineId: newMedicine.id,
+              ).push(context),
+            );
+          },
         ),
       );
     }

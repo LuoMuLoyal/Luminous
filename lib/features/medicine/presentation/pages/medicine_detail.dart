@@ -304,9 +304,17 @@ class _MedicineDetailContent extends ConsumerWidget {
             context,
             l10n.medicineSearchAddedToBoxToast,
             l10n.medicineSearchGoToReminderAction,
-            () => MedicineRemindersNewRoute(
-              medicineId: newMedicine.id,
-            ).push(context),
+            // The toast action fires on a later user tap; the page may have
+            // been popped in between, so guard the push (deactivated context
+            // would trip the `_dependents.isEmpty` assertion).
+            () {
+              if (!context.mounted) return;
+              unawaited(
+                MedicineRemindersNewRoute(
+                  medicineId: newMedicine.id,
+                ).push(context),
+              );
+            },
           ),
         );
       }

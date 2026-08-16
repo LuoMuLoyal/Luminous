@@ -75,11 +75,19 @@ class TestForuiRouterApp extends StatelessWidget {
     super.key,
     this.themeMode = ThemeMode.light,
     this.locale = const Locale('zh'),
+    this.showToaster = false,
     required this.routerConfig,
   });
 
   final ThemeMode themeMode;
   final Locale locale;
+
+  /// Wraps the app in an [FToaster] above the navigator (mirroring
+  /// production), so toast timers survive route pops. Needed by flows that
+  /// show toasts whose action outlives the current route (e.g. the
+  /// add-to-box success toast after the recognition dialog is closed).
+  final bool showToaster;
+
   final RouterConfig<Object> routerConfig;
 
   @override
@@ -94,7 +102,9 @@ class TestForuiRouterApp extends StatelessWidget {
         data: Theme.of(context).brightness == Brightness.dark
             ? _foruiDark
             : _foruiLight,
-        child: child ?? const SizedBox.shrink(),
+        child: showToaster
+            ? FToaster(child: child ?? const SizedBox.shrink())
+            : child ?? const SizedBox.shrink(),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,

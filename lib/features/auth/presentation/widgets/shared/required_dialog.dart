@@ -31,7 +31,13 @@ Future<void> pushAuthRequiredRoute(BuildContext context, String route) async {
   // after login. The user can then retry navigating to the target route.
   await showAuthRequiredDialog(
     context,
-    onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+    // The login action fires on a later user tap; guard the push in case the
+    // calling surface was closed in between (a deactivated context pushed
+    // through trips the `_dependents.isEmpty` assertion).
+    onLogin: () {
+      if (!context.mounted) return;
+      unawaited(context.push(loginRouteForCurrentLocation(context)));
+    },
   );
 }
 

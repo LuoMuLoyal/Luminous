@@ -222,7 +222,13 @@ Future<void> _markDose(
           context,
           l10n.medicineDoseActionSavedToast,
           l10n.medicineDoseUndoAction,
-          () => unawaited(_undoDose(context, ref, request, dateStr)),
+          // The undo action fires on a later user tap; the page may have
+          // been popped in between, so guard before using the context
+          // (deactivated context trips the `_dependents.isEmpty` assertion).
+          () {
+            if (!context.mounted) return;
+            unawaited(_undoDose(context, ref, request, dateStr));
+          },
         ),
       );
     }
