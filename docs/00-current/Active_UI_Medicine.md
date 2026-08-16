@@ -65,6 +65,7 @@ Last updated: 2026-08-16 (含本地回执的提醒投递历史)
 - 前端 `MedicineRiskCheckMapper` 将生成 DTO 映射到 domain entity。
 - `MedicineRiskCheckResult` 包含 `overallRiskLevel`（safe/caution/risk/danger）、`overallRiskScore`（0-100）、`findings`、`coverageIssues`、`redFlags`、`overallRecommendation`（LLM only）。
 - `MedicineRiskFinding` 新增 `recommendation` 字段（LLM only）和 `longTermUse` / `schedulingConflict` 类型。`copy.dart` 中 `longTermUse` 和 `schedulingConflict` 的 title/body 映射已从 fallback 改为专用 l10n 键。
+- `MedicineRiskCheckMapper` 对 unknown finding 类型返回 null 并过滤该条（不再误标 specialGroup）。
 - 风险检查页面（`risk_check.dart`）重构为 `FTabs(expands: true)` 双 tab 布局："系统检查" tab 展示静态检查记录，"AI 分析" tab 展示 LLM 检查记录。每个 tab 内 `CheckTabContent` 组件渲染：风险评分英雄区（`RiskScoreRing` CustomPaint 环形进度条 + 等级标签 + 描述文案）、红旗区、指标网格、发现列表（折叠/展开）、覆盖缺口列表、安全状态卡片。LLM tab 额外处理空状态 CTA、过期横幅、总体建议卡片和不可用状态。
 - 组件类名统一重命名：`MedicineRiskFindingTile` → `RiskFindingItem`（移除 FCard，改为左侧色条布局，显示 LLM recommendation）；`MedicineRiskCoverageIssueTile` → `RiskCoverageItem`；`MedicineRiskMetricChip` → `RiskMetricCell`（移除 FCard，改为 Expanded + 右边框网格单元格）；`MedicineRiskRedFlagBanner` → `RiskRedFlagItem` / `RiskRedFlagSection`。
 - `copy.dart` 新增辅助函数：`medicineRiskLevelLabel`、`medicineRiskLevelColor`、`medicineRiskLevelDescription`、`medicineRiskCheckFormatTime`。

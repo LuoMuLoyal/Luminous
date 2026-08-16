@@ -143,6 +143,31 @@ void main() {
       );
       expect(result.overallRiskLevel, MedicineRiskLevel.safe);
     });
+
+    test('drops unknown finding types from findings list', () {
+      final result = mapper.responseDtoToDomain(
+        _response(
+          findings: [
+            MedicineRiskFindingDto(
+              type: MedicineRiskFindingDtoTypeEnum.interaction,
+              severity: MedicineRiskFindingDtoSeverityEnum.high,
+              context: MedicineRiskFindingDtoContextEnum.none,
+              primaryMedicineName: '合法药',
+            ),
+            MedicineRiskFindingDto(
+              type: MedicineRiskFindingDtoTypeEnum.unknownDefaultOpenApi,
+              severity: MedicineRiskFindingDtoSeverityEnum.medium,
+              context: MedicineRiskFindingDtoContextEnum.alcohol,
+              primaryMedicineName: '未知药',
+            ),
+          ],
+        ),
+      );
+
+      expect(result.findingCount, 1);
+      expect(result.hasFindings, isTrue);
+      expect(result.findings.single.primaryMedicineName, '合法药');
+    });
   });
 
   group('findingDtoToDomain', () {
@@ -187,11 +212,11 @@ void main() {
             primaryMedicineName: '阿莫西林',
           ),
         );
-        expect(finding.type, expected, reason: 'for $dtoEnum');
+        expect(finding!.type, expected, reason: 'for $dtoEnum');
       }
     });
 
-    test('maps unknown finding type to specialGroup', () {
+    test('findingDtoToDomain returns null for unknown finding type', () {
       final finding = mapper.findingDtoToDomain(
         MedicineRiskFindingDto(
           type: MedicineRiskFindingDtoTypeEnum.unknownDefaultOpenApi,
@@ -205,14 +230,7 @@ void main() {
         ),
       );
 
-      expect(finding.type, MedicineRiskFindingType.specialGroup);
-      expect(finding.severity, MedicineRiskSeverity.medium);
-      expect(finding.context, MedicineRiskFindingContext.alcohol);
-      expect(finding.primaryMedicineName, '药A');
-      expect(finding.secondaryMedicineName, '药B');
-      expect(finding.relatedLabel, '酒精');
-      expect(finding.evidence, '证据');
-      expect(finding.recommendation, '建议');
+      expect(finding, isNull);
     });
 
     test('maps all severities', () {
@@ -225,7 +243,7 @@ void main() {
                 context: MedicineRiskFindingDtoContextEnum.none,
                 primaryMedicineName: '药',
               ),
-            )
+            )!
             .severity,
         MedicineRiskSeverity.high,
       );
@@ -238,7 +256,7 @@ void main() {
                 context: MedicineRiskFindingDtoContextEnum.none,
                 primaryMedicineName: '药',
               ),
-            )
+            )!
             .severity,
         MedicineRiskSeverity.medium,
       );
@@ -251,7 +269,7 @@ void main() {
                 context: MedicineRiskFindingDtoContextEnum.none,
                 primaryMedicineName: '药',
               ),
-            )
+            )!
             .severity,
         MedicineRiskSeverity.info,
       );
@@ -265,7 +283,7 @@ void main() {
                 context: MedicineRiskFindingDtoContextEnum.none,
                 primaryMedicineName: '药',
               ),
-            )
+            )!
             .severity,
         MedicineRiskSeverity.info,
       );
@@ -294,7 +312,7 @@ void main() {
             primaryMedicineName: '药',
           ),
         );
-        expect(finding.context, expected, reason: 'for $dtoEnum');
+        expect(finding!.context, expected, reason: 'for $dtoEnum');
       }
     });
   });

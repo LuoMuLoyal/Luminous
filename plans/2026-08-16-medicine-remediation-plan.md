@@ -14,7 +14,7 @@ Created: 2026-08-16
 - 用药域全链路(档案 currentMedicines → 提醒 → 调度 → 打卡 dose log → 依从 → 风险 → Today 建议)已是真实闭环,
   本计划不返工,目标两件事:
   1. 依从性口径统一 P2:后端当日 slot 统计对象(F-5,前端 P1 mapper 已完成);
-  2. 收尾 P2 小问题(F-11 unknown 兜底、F-19 入口改造、F-6 提醒组整组保存)。
+  2. 收尾 P2 小问题(F-19 入口改造、F-6 提醒组整组保存)。
 - 边界:扫码/搜索与"加入药箱"链路见 scan-search 计划;本地通知网关公共底座见
   platform-notification-crosscutting 计划保留项(F-2),JPush 密钥与投递落库已由该计划完成(投递三通道见 Lucent ADR-0013;JPush 密钥部署见 Lucent deploy 配置与部署文档);Today 建议卡/漏服规则见 today 计划;队列/Cron 底座见
   engineering-backend 计划。本计划只覆盖用药模块专属功能点,交叉处引用对应计划。
@@ -69,11 +69,6 @@ Created: 2026-08-16
 - 方案:后端提供整组 upsert 接口替代逐槽 PATCH;涉及 `Lucent/src/modules/medicine-reminders/` 与客户端编辑页保存链路。
 - 分工:后端加接口,前端切换到整组提交。
 
-**F-11 risk-check 客户端 unknown 枚举兜底去误导（0.1.0 前）**
-
-- 现状:`_mapFindingType` 把未知 finding 类型兜底映射到 `specialGroup`(特殊人群),语义误导。
-- 方案:unknown 兜底改为隐藏该条而非误标类别。纯前端。
-
 **F-19 处方导入入口改造（0.1.0 前；处方 OCR 为 0.1.0 后）**
 
 - 现状:快捷操作/扫码页"处方导入"入口点击仅 Toast 提示延后(诚实占位,`Mock_Or_Deferred` 有明确标记)。
@@ -95,7 +90,7 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. P2:F-11、F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
+1. P2:F-19 入口改造、F-6（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
 
 ## 六、已决边界与延期项
 

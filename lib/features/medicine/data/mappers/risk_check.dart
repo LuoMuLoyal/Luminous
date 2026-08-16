@@ -34,16 +34,23 @@ class MedicineRiskCheckMapper {
       overallRiskScore: dto.overallRiskScore.toInt(),
       currentMedicineCount: dto.currentMedicineCount.toInt(),
       checkedMedicineCount: dto.checkedMedicineCount.toInt(),
-      findings: dto.findings.map(findingDtoToDomain).toList(),
+      findings: dto.findings
+          .map(findingDtoToDomain)
+          .whereType<MedicineRiskFinding>()
+          .toList(),
       coverageIssues: dto.coverageIssues.map(coverageIssueDtoToDomain).toList(),
       redFlags: dto.redFlags.map(redFlagDtoToDomain).toList(),
       overallRecommendation: dto.overallRecommendation,
     );
   }
 
-  MedicineRiskFinding findingDtoToDomain(MedicineRiskFindingDto dto) {
+  MedicineRiskFinding? findingDtoToDomain(MedicineRiskFindingDto dto) {
+    final type = _mapFindingType(dto.type);
+    if (type == null) {
+      return null;
+    }
     return MedicineRiskFinding(
-      type: _mapFindingType(dto.type),
+      type: type,
       severity: _mapSeverity(dto.severity),
       context: _mapFindingContext(dto.context),
       primaryMedicineName: dto.primaryMedicineName,
@@ -123,7 +130,9 @@ class MedicineRiskCheckMapper {
     };
   }
 
-  MedicineRiskFindingType _mapFindingType(MedicineRiskFindingDtoTypeEnum type) {
+  MedicineRiskFindingType? _mapFindingType(
+    MedicineRiskFindingDtoTypeEnum type,
+  ) {
     return switch (type) {
       MedicineRiskFindingDtoTypeEnum.interaction =>
         MedicineRiskFindingType.interaction,
@@ -138,7 +147,7 @@ class MedicineRiskCheckMapper {
         MedicineRiskFindingType.schedulingConflict,
       MedicineRiskFindingDtoTypeEnum.specialGroup =>
         MedicineRiskFindingType.specialGroup,
-      _ => MedicineRiskFindingType.specialGroup,
+      _ => null,
     };
   }
 
