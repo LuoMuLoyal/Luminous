@@ -2,6 +2,8 @@
 
 Created: 2026-08-16
 
+> 已决事项见 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md)，其优先于本文件旧「不确定点」表述。
+
 > 来源: `research/02-功能盘点/medicine-用药管理.md`(已审阅;内容以逐功能分析为准改写,速览表/结尾汇总仅作参考)。
 > 执行顺序: 本批共 10 份改造计划,全局顺序见 [`README.md`](README.md);本计划为第 2 位。
 
@@ -44,12 +46,11 @@ Created: 2026-08-16
   `LocalNotificationGateway` 逐条调度;`bootstrap.dart` 启动时与设置变更时触发 resync。
 - 受控项:设置页提醒总开关、系统通知权限、声音偏好、提前提醒分钟数、DND 时段、振动开关。
 - 数据来自真实提醒列表(平台审计 platform-capabilities F-2 已确认网关为真实现)。
-- 注意:本地通知与后端 in-app 投递是**两条独立链路**,同一提醒在线时可能"本地通知 + 站内信 + JPush"三路齐发,
-  分工待产品决策(见"六、不确定点")。复用本机制的模块(如睡眠提醒)应沿用同一协调器/计划器模式与 resync 触发点。
+- 通知分工已定:同一事件最多一次打扰；前台仅应用内提示，后台本地通知优先，失败或不可达才 JPush，站内信仅保留记录、不再额外弹出。复用本机制的模块(如睡眠提醒)应沿用同一协调器/计划器模式与 resync 触发点。
 
 ## 三、改造项(按优先级分组)
 
-### 3.1 P0
+### 3.1 P0（0.1.0 前）
 
 **F-13 用药安全摘要卡告警聚合(并入 F-17 `alerts` 恒空问题,不重复立项)**
 
@@ -61,7 +62,7 @@ Created: 2026-08-16
 - 前后端分工:纯前端改造,后端无改动。
 - 依赖:无。
 
-### 3.2 P1
+### 3.2 P1（0.1.0 前）
 
 **F-14 移动端药品详情/说明书页(新建;本节为 scan-search 计划"识别结果卡/查看说明书"的落点)**
 
@@ -72,7 +73,7 @@ Created: 2026-08-16
   1. 新建移动端药品详情页,数据复用现有 `GET /medicines/:id?source=`(含 30min 缓存),数据契约已齐,工作主要在 UI;
   2. 页面内容:说明书字段分区展示(适应症/成分/禁忌/注意事项/不良反应/储存等)+ "加入药箱"按钮 + 风险相关字段入口;
   3. 跳转接入:与 Reminder 详情页的药品卡合并跳转;P2 把扫码结果"查看详情"从死链改为真跳转(修复 scan-search F-3 断链);
-  4. 桌面预览面板改造/归档或复用同一页面数据——处置未定,见"六、不确定点"。
+  4. 桌面预览面板不扩展 Flutter 产品面；桌面高级能力冻结。
 - 涉及:`lib/features/medicine/presentation/pages/`(新建详情页)、`lib/features/search/`(结果卡 tap 接线)、
   GoRouter 路由注册;后端无需改动。
 - 前后端分工:纯前端。
@@ -88,12 +89,11 @@ Created: 2026-08-16
   漏服语义由 `overdueUnconfirmed` 派生,不落库为 `missed`;未到期槽位不计入分母;无覆盖/无到期槽位显示 `--`。
 - 方案:
   1. P1(本计划):前端 mapper 层按上述三态统计改造,`mobile_drugbox.dart` 展示口径随之修正;
-  2. P2(后端):在 dose-logs 或 workspace 接口暴露当日 slot 统计对象,消除两端口径漂移——接 `ObservedMetric`
-     还是与 Today collector 槽位统计一致,二选一未定,见"六、不确定点"。
+  2. P2(后端):在 dose-logs 或 workspace 接口暴露当日 slot 统计对象，采用 `ObservedMetric` 合同，消除两端口径漂移。
 - 涉及:`lib/features/medicine/data/repositories/lucent_workspace.dart`、`lib/features/medicine/presentation/widgets/mobile_drugbox.dart`;
   后端 `medicine-dose-logs/`(P2 统计对象)。
 - 前后端分工:P1 前端先行;P2 后端补统计接口后前端切换数据源。
-- 依赖:后端 Active_Product_Loop 已收口该合同;Flutter 侧接入时点依赖合同同步阶段(见"六、不确定点")。
+- 依赖:后端 Active_Product_Loop 已收口该合同；Flutter 侧在 0.1.0 前接入。
 
 **F-8 提醒文案 i18n**
 
@@ -104,29 +104,29 @@ Created: 2026-08-16
 
 ### 3.3 P2
 
-**F-3 主页打卡撤销**
+**F-3 主页打卡撤销（0.1.0 前）**
 
 - 现状:`_markDose` 直接 `mark()` 无二次确认,误触后主页无撤销入口(Record 页快速用药已有撤销)。
 - 方案:打卡成功 Toast 加"撤销"action,反向调用 mark 恢复原状态。纯前端,涉及 `mobile_records.dart`。
 
-**F-6 提醒组保存半失败回滚**
+**F-6 提醒组保存半失败回滚（0.1.0 前）**
 
 - 现状:同一药品多时间槽为 N 行独立记录,`saveGroup` 逐个 PATCH,弱网下可能部分成功(半保存),失败整体返回 false 但不回滚。
 - 方案:后端提供整组 upsert 接口替代逐槽 PATCH;涉及 `Lucent/src/modules/medicine-reminders/` 与客户端编辑页保存链路。
 - 分工:后端加接口,前端切换到整组提交。
 
-**F-9 提醒投递历史补渠道(引用,不展开)**
+**F-9 提醒投递历史补渠道(引用，不展开，0.1.0 前)**
 
 - 现状:`ReminderDeliveryLogPanel` 只读展示投递审计,但只有 in_app 渠道有真实记录,本地通知与 JPush 无投递记录。
 - 方案:见 [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)
-  的投递落库一节,本文不重复展开;补全后列表按渠道如实区分即可。两个候选实现(本地 delivery 记录 / 回写接口)未定,见"六、不确定点"。
+  的投递落库一节,本文不重复展开;本地通知展示后以稳定通知实例 ID 幂等回写 `local/delivered`，列表按渠道如实区分。
 
-**F-11 risk-check 客户端 unknown 枚举兜底去误导**
+**F-11 risk-check 客户端 unknown 枚举兜底去误导（0.1.0 前）**
 
 - 现状:`_mapFindingType` 把未知 finding 类型兜底映射到 `specialGroup`(特殊人群),语义误导。
 - 方案:unknown 兜底改为隐藏该条而非误标类别。纯前端。
 
-**F-16 / F-17 / F-18 死代码归档标注(动作仅为:保留代码与注释 + 标注不接入主路径,无实质改造)**
+**F-16 / F-17 / F-18 死代码归档标注(动作仅为:保留代码与注释 + 标注不接入主路径，无实质改造，0.1.0 前)**
 
 - F-16 safety tips:后端 `GET /medicines/safety-tips` + 客户端 `SafetyTipsRemoteDataSource` / `medicineSafetyTipListProvider`
   无 UI 消费方——接口与 provider 代码及注释保留,标注 TODO;未来若做"随机安全贴士"应在药品详情页内以审核内容卡片重做。
@@ -136,12 +136,12 @@ Created: 2026-08-16
   未来若落漏服标记应在后端 collector 侧产出";`log_panels.dart` 的 missed 分支一并标注。
 - 动作轻量,可与 P0 项顺手一起完成。
 
-**F-19 处方导入入口改造**
+**F-19 处方导入入口改造（0.1.0 前；处方 OCR 为 0.1.0 后）**
 
 - 现状:快捷操作/扫码页"处方导入"入口点击仅 Toast 提示延后(诚实占位,`Mock_Or_Deferred` 有明确标记)。
 - 方案:入口改造为"手动添加药物"(扫码/搜索加入药箱已覆盖该意图),入口明示延后;OCR 处方识别保留为未来能力,不排期。
 
-**F-2 药箱项"停用/归档"语义(可选)**
+**F-2 药箱项"停用/归档"语义(可选，0.1.0 后)**
 
 - 现状:药箱项只能软删除,短期事件结束后"停药"会丢可见性。
 - 方案:增加停用/归档状态,保留历史不出现在当前用药。涉及 health-context API 与药箱 UI。
@@ -152,30 +152,17 @@ Created: 2026-08-16
   队列/Cron 底座(BullMQ Repeatable Job)→ engineering-backend 计划;Today 漏服卡/建议重算细节 → today 计划。
 - **被引用(本计划拥有)**:scan-search 计划引用本文 F-14 详情页作为识别结果卡/查看说明书落点;today/record/report 计划
   引用本文 F-5 的 ObservedMetric 稀疏语义口径;mine-settings 计划引用本文 F-7 的 LocalNotificationGateway 机制(睡眠提醒)。
-- **桌面/Web 形态挂起项**(F-14 桌面预览面板处置等)统一引用 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)
-  (ADR-0012 待决策),本文不展开。
+- **桌面/Web 形态挂起项**(F-14 桌面预览面板处置等)不扩展 Flutter 产品面；独立 Next.js + Tauri MVP 于 0.1.0 后启动，本文不展开。
 - 依赖关系:scan-search 的扫码结果"查看详情"真跳转依赖本计划 F-14 详情页先落地;F-5 P2 后端统计对象依赖合同同步阶段拍板。
 
 ## 五、本计划内执行顺序
 
-1. P0:F-13 告警聚合改造(顺手完成 F-16/17/18 归档标注)。
-2. P1:F-14 详情页(解锁 scan-search 断链修复)→ F-5 前端口径统一 → F-8 提醒文案 i18n。
-3. P2:F-3 打卡撤销、F-11 unknown 兜底、F-19 入口改造(纯前端,可并行)→ F-6 整组 upsert、F-2 停用语义(需后端配合)→
-   F-9 随 platform-notification-crosscutting 的投递落库落地后接线。
+1. P0:F-13 告警聚合改造（0.1.0 前，顺手完成 F-16/17/18 归档标注）。
+2. P1:F-14 详情页（0.1.0 前，解锁 scan-search 断链修复）→ F-5 前端口径统一 → F-8 提醒文案 i18n。
+3. P2:F-3、F-11、F-19 入口改造、F-6 与 F-9（均 0.1.0 前）→ F-2 停用/归档语义（0.1.0 后）。
 
-## 六、不确定点(待决策)
+## 六、已决边界与延期项
 
-- **F-8 提醒双/三通道分工**:本地通知 vs 后端 in-app/JPush 三路齐发的分工("以本地通知为主、站内信为辅")是 P1 产品决策,
-  悬而未决,未拍板。
-- **F-5 后端侧合同接入**:Active_UI_Medicine 明示"Flutter observed metric 字段待后续合同同步阶段接入",接入时点依赖外部
-  合同同步阶段,无时间/负责人;P2 后端槽位统计对象"接 `ObservedMetric` 还是与 Today collector 一致"二选一未定。
-- **F-9 投递历史补全方案**:"本地 delivery 记录"还是"回写接口"二选一未定(随 platform-notification-crosscutting 计划定夺)。
-- **F-10 CN 相互作用数据扩展**:canonical 成分映射与 CN 相互作用数据扩展依赖"未来人工审校批次",外部依赖、无排期。
-- **F-12 重启丢 timer**:进程内 `setTimeout` debounce 在 API 重启后丢失(stale 已标、检查不跑,下次事件才补),P2 接受现状,
-  未给修复方案。
-- **F-14 桌面预览面板处置**:"改造/归档"还是"复用同一页面数据"未定(挂起至 ADR-0012,见
-  [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md))。
-- **F-19 OCR 处方识别**:保留为未来能力,明确不排期。
-- **F-20 SMS/邮件供应商接线**:低优先级、不排期投入,通道保持灰显。
-- **提醒调度索引优化**:`userMedicineReminder` 加 `(isActive, deletedAt, scheduledHour, scheduledMinute)` 索引或改预计算
-  调度表为 P3,仅"未来用户量上来"才做,当前每分钟游标扫描(batch 500)量级可接受。
+- `ObservedMetric` 由 Lucent 权威计算，须区分 `observed`、`unknown`、`degraded`、来源和覆盖率；未知不得映射为 0。客户端展示与后端合同均在 0.1.0 前完成。
+- 本地通知展示以稳定通知实例 ID 幂等回写 `local/delivered`；JPush 只作本地失败/不可达回退。
+- 处方 OCR、药箱停用/归档语义增强均为 0.1.0 后事项；SMS/邮件供应商仍保持灰显。新增医疗判断、外部供应商、用户数据结构或部署成本时，另建任务计划并重新 grill。

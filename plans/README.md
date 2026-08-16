@@ -45,6 +45,8 @@ YYYY-MM-DD-short-task-name.md
 桌面/Web 形态挂起项统一引用 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)(ADR-0012 待决策)。
 各计划末尾的「不确定点」一节汇集了该域全部待决策项。
 
+已确定事项以 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md) 为准；它优先于各计划中尚未清理的旧「不确定点」表述。
+
 全局执行顺序(靠前先执行;跨计划引用均指向顺序在前的文档):
 
 1. [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)

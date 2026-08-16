@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-14
+updated: 2026-08-16
 ---
 
 # Luminous TODO
 
-Last updated: 2026-08-14
+Last updated: 2026-08-16
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -23,7 +23,19 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 ### 平台与验证
 
-- 手机端继续承担当前首发与用户验证；桌面/Web 保留现有代码和未来方向，但在完成“大屏纵向健康阅读”用户任务及 Next.js + Tauri 2 候选路线调研前不启动产品化，也不承诺功能对等
+- 手机端继续承担当前首发与用户验证；0.1.0 后启动独立 Next.js + Tauri 桌面工作台 MVP，不承诺与手机端功能对等
+
+- 原始健康数据可移植性导出
+  - 当前仅能导出就诊报告 PDF；原始 JSON/CSV 导出另行立项，不能继续用 PDF 宣称数据可移植性
+
+- 产品事件漏斗的受保护运营报表
+  - 现有聚合 API 暂无消费面；0.1.0 后先做周报或简表，不建设实时 Admin Dashboard
+
+- 纯数字药品查询的精确匹配
+  - 当前前后端均不追加不可靠的数字特判；待有可验证的条码/批准文号语义后再立项
+
+- 微博与 Google OAuth 图标
+  - 修复登录页两者的图标显示问题
 
 ## 延后（有明确原因）
 
