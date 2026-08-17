@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (F-1 skip_dose error toast key added)
+Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -419,3 +419,12 @@ flutter test
 - `suggestion_primary_card.dart` 的 `_skipDose` catch 分支改用该键，避免复用反馈失败的 `todaySuggestionFeedbackError`。
 - 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-17 F-10 健康观察关联选项加载失败重试提示
+
+- 新增 `todayHealthEventOptionsLoadFailed`（zh: 加载失败，可重试 / en: Failed to load options, please try again）到 `lib/l10n/src/today_zh.arb` / `today_en.arb`。
+- 新增 `todayHealthEventOptionsRetryAction`（zh: 重试 / en: Retry）到 `lib/l10n/src/today_zh.arb` / `today_en.arb`；`StartEventSheet` 重试按钮改用该独立键，不再复用 `todaySuggestionAiExplainRetry`。
+- `StartEventSheet` 在当前用药或触发症状选项预读失败时，于对应选项区显示错误文案与 ghost `xs`“重试”按钮。
+- 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+- 顶部 `Last updated` 已同步记录本次新增。

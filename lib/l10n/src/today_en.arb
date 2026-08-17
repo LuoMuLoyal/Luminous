@@ -20,6 +20,8 @@
   "todayHealthEventTitleHint": "For example: Cold observation",
   "todayHealthEventCurrentMedicineLabel": "Link current medicines (optional)",
   "todayHealthEventReasonRecordLabel": "Link a trigger symptom (optional)",
+  "todayHealthEventOptionsLoadFailed": "Failed to load options, please try again",
+  "todayHealthEventOptionsRetryAction": "Retry",
   "todayHealthEventCheckInTitle": "Today's result",
   "todayHealthEventCheckInSubtitle": "Record one result for how things changed today.",
   "todayHealthEventCheckInAction": "Confirm today's result",

@@ -20,6 +20,8 @@
   "todayHealthEventTitleHint": "例如：感冒观察",
   "todayHealthEventCurrentMedicineLabel": "关联当前用药（可选）",
   "todayHealthEventReasonRecordLabel": "关联触发症状（可选）",
+  "todayHealthEventOptionsLoadFailed": "加载失败，可重试",
+  "todayHealthEventOptionsRetryAction": "重试",
   "todayHealthEventCheckInTitle": "今天的结果",
   "todayHealthEventCheckInSubtitle": "用一个结果记录今天的变化。",
   "todayHealthEventCheckInAction": "确认今天结果",

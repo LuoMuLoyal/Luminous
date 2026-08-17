@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// Receives the values confirmed by [StartEventSheet].
 ///
@@ -43,6 +44,9 @@ class StartEventSheet extends StatefulWidget {
     this.currentMedicineOptions = const [],
     this.reasonRecordLabel,
     this.currentMedicineLabel,
+    this.currentMedicineOptionsLoadFailed = false,
+    this.reasonRecordOptionsLoadFailed = false,
+    this.onRetryLoadOptions,
   });
 
   final String heading;
@@ -69,6 +73,17 @@ class StartEventSheet extends StatefulWidget {
 
   final String? reasonRecordLabel;
   final String? currentMedicineLabel;
+
+  /// Whether loading [currentMedicineOptions] failed and a retry should be
+  /// offered.
+  final bool currentMedicineOptionsLoadFailed;
+
+  /// Whether loading [reasonRecordOptions] failed and a retry should be
+  /// offered.
+  final bool reasonRecordOptionsLoadFailed;
+
+  /// Called when the user taps the retry button in either options section.
+  final VoidCallback? onRetryLoadOptions;
 
   @override
   State<StartEventSheet> createState() => _StartEventSheetState();
@@ -132,12 +147,18 @@ class _StartEventSheetState extends State<StartEventSheet> {
               hint: widget.hint,
               enabled: !_isSubmitting,
             ),
-            if (widget.currentMedicineOptions.isNotEmpty) ...[
+            if (widget.currentMedicineOptions.isNotEmpty ||
+                widget.currentMedicineOptionsLoadFailed) ...[
               const SizedBox(height: Spacing.level4),
               _AssociationOptions(
                 label: widget.currentMedicineLabel ?? '',
                 options: widget.currentMedicineOptions,
                 selectedIds: _selectedMedicineIds,
+                loadFailed: widget.currentMedicineOptionsLoadFailed,
+                onRetry: widget.onRetryLoadOptions,
+                retryKey: const Key(
+                  'health-event-options-retry-current-medicine',
+                ),
                 onToggle: (id) => setState(() {
                   if (!_selectedMedicineIds.add(id)) {
                     _selectedMedicineIds.remove(id);
@@ -145,7 +166,8 @@ class _StartEventSheetState extends State<StartEventSheet> {
                 }),
               ),
             ],
-            if (widget.reasonRecordOptions.isNotEmpty) ...[
+            if (widget.reasonRecordOptions.isNotEmpty ||
+                widget.reasonRecordOptionsLoadFailed) ...[
               const SizedBox(height: Spacing.level4),
               _AssociationOptions(
                 label: widget.reasonRecordLabel ?? '',
@@ -153,6 +175,9 @@ class _StartEventSheetState extends State<StartEventSheet> {
                 selectedIds: {
                   if (_selectedReasonRecordId != null) _selectedReasonRecordId!,
                 },
+                loadFailed: widget.reasonRecordOptionsLoadFailed,
+                onRetry: widget.onRetryLoadOptions,
+                retryKey: const Key('health-event-options-retry-reason-record'),
                 onToggle: (id) => setState(() {
                   _selectedReasonRecordId = _selectedReasonRecordId == id
                       ? null
@@ -251,35 +276,68 @@ class _AssociationOptions extends StatelessWidget {
     required this.options,
     required this.selectedIds,
     required this.onToggle,
+    this.loadFailed = false,
+    this.onRetry,
+    this.retryKey,
   });
 
   final String label;
   final List<HealthEventAssociationOption> options;
   final Set<String> selectedIds;
   final ValueChanged<String> onToggle;
+  final bool loadFailed;
+  final VoidCallback? onRetry;
+  final Key? retryKey;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: TypographyToken.level3.body(context)),
-        const SizedBox(height: Spacing.level2),
-        Wrap(
-          spacing: Spacing.level2,
-          runSpacing: Spacing.level2,
-          children: [
-            for (final option in options)
-              FButton(
-                key: Key('health-event-association-${option.id}'),
-                variant: selectedIds.contains(option.id)
-                    ? FButtonVariant.primary
-                    : FButtonVariant.outline,
-                onPress: () => onToggle(option.id),
-                child: Text(option.label),
+        if (loadFailed) ...[
+          const SizedBox(height: Spacing.level2),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.todayHealthEventOptionsLoadFailed,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.destructive),
+                ),
               ),
-          ],
-        ),
+              FButton(
+                key: retryKey,
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.xs,
+                onPress: onRetry,
+                child: Text(l10n.todayHealthEventOptionsRetryAction),
+              ),
+            ],
+          ),
+        ],
+        if (options.isNotEmpty) ...[
+          const SizedBox(height: Spacing.level2),
+          Wrap(
+            spacing: Spacing.level2,
+            runSpacing: Spacing.level2,
+            children: [
+              for (final option in options)
+                FButton(
+                  key: Key('health-event-association-${option.id}'),
+                  variant: selectedIds.contains(option.id)
+                      ? FButtonVariant.primary
+                      : FButtonVariant.outline,
+                  onPress: () => onToggle(option.id),
+                  child: Text(option.label),
+                ),
+            ],
+          ),
+        ],
       ],
     );
   }

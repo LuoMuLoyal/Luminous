@@ -250,73 +250,87 @@ class _HealthEventSection extends ConsumerWidget {
     WidgetRef ref,
     AppLocalizations l10n,
   ) async {
-    final currentMedicineOptions = await _readCurrentMedicineOptions(ref);
-    final reasonRecordOptions = await _readReasonRecordOptions(ref);
+    var currentMedicineResult = await _readCurrentMedicineOptions(ref);
+    var reasonRecordResult = await _readReasonRecordOptions(ref);
     if (!context.mounted) return;
     var saved = false;
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
       scrollable: false,
-      builder: (dialogContext) => StartEventSheet(
-        heading: l10n.todayHealthEventStartTitle,
-        shortTitleLabel: l10n.todayHealthEventTitleLabel,
-        hint: l10n.todayHealthEventTitleHint,
-        currentMedicineLabel: l10n.todayHealthEventCurrentMedicineLabel,
-        currentMedicineOptions: currentMedicineOptions,
-        reasonRecordLabel: l10n.todayHealthEventReasonRecordLabel,
-        reasonRecordOptions: reasonRecordOptions,
-        cancelLabel: l10n.todayHealthEventCancelAction,
-        submitLabel: l10n.todayHealthEventStartAction,
-        submittingLabel: l10n.todayHealthEventSaveAction,
-        requiredMessage: l10n.todayHealthEventTitleRequired,
-        submitErrorLabel: l10n.todayHealthEventSaveFailed,
-        onSubmit:
-            ({
-              required shortTitle,
-              reasonRecordId,
-              required currentMedicineIds,
-            }) async {
-              await ref
-                  .read(activeHealthEventProvider.notifier)
-                  .create(
-                    title: shortTitle,
-                    reasonRecordId: reasonRecordId,
-                    currentMedicineIds: currentMedicineIds,
-                  );
-              saved = true;
-              if (dialogContext.mounted) Navigator.of(dialogContext).pop();
-            },
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setSheetState) => StartEventSheet(
+          heading: l10n.todayHealthEventStartTitle,
+          shortTitleLabel: l10n.todayHealthEventTitleLabel,
+          hint: l10n.todayHealthEventTitleHint,
+          currentMedicineLabel: l10n.todayHealthEventCurrentMedicineLabel,
+          currentMedicineOptions: currentMedicineResult.options,
+          reasonRecordLabel: l10n.todayHealthEventReasonRecordLabel,
+          reasonRecordOptions: reasonRecordResult.options,
+          currentMedicineOptionsLoadFailed: currentMedicineResult.hasError,
+          reasonRecordOptionsLoadFailed: reasonRecordResult.hasError,
+          onRetryLoadOptions: () async {
+            final newMedicineResult = await _readCurrentMedicineOptions(ref);
+            final newReasonRecordResult = await _readReasonRecordOptions(ref);
+            if (!context.mounted) return;
+            setSheetState(() {
+              currentMedicineResult = newMedicineResult;
+              reasonRecordResult = newReasonRecordResult;
+            });
+          },
+          cancelLabel: l10n.todayHealthEventCancelAction,
+          submitLabel: l10n.todayHealthEventStartAction,
+          submittingLabel: l10n.todayHealthEventSaveAction,
+          requiredMessage: l10n.todayHealthEventTitleRequired,
+          submitErrorLabel: l10n.todayHealthEventSaveFailed,
+          onSubmit:
+              ({
+                required shortTitle,
+                reasonRecordId,
+                required currentMedicineIds,
+              }) async {
+                await ref
+                    .read(activeHealthEventProvider.notifier)
+                    .create(
+                      title: shortTitle,
+                      reasonRecordId: reasonRecordId,
+                      currentMedicineIds: currentMedicineIds,
+                    );
+                saved = true;
+                if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+              },
+        ),
       ),
     );
     if (!saved || !context.mounted) return;
     await onRefresh();
   }
 
-  Future<List<HealthEventAssociationOption>> _readCurrentMedicineOptions(
-    WidgetRef ref,
-  ) async {
+  Future<({List<HealthEventAssociationOption> options, bool hasError})>
+  _readCurrentMedicineOptions(WidgetRef ref) async {
     try {
       final snapshot = await ref
           .read(healthContextSnapshotProvider.future)
           .timeout(const Duration(seconds: 2));
-      return snapshot.currentMedicines
-          .where((medicine) => medicine.isCurrent)
-          .map(
-            (medicine) => HealthEventAssociationOption(
-              id: medicine.id,
-              label: medicine.displayName,
-            ),
-          )
-          .toList(growable: false);
+      return (
+        options: snapshot.currentMedicines
+            .where((medicine) => medicine.isCurrent)
+            .map(
+              (medicine) => HealthEventAssociationOption(
+                id: medicine.id,
+                label: medicine.displayName,
+              ),
+            )
+            .toList(growable: false),
+        hasError: false,
+      );
     } catch (_) {
-      return const [];
+      return (options: const <HealthEventAssociationOption>[], hasError: true);
     }
   }
 
-  Future<List<HealthEventAssociationOption>> _readReasonRecordOptions(
-    WidgetRef ref,
-  ) async {
+  Future<({List<HealthEventAssociationOption> options, bool hasError})>
+  _readReasonRecordOptions(WidgetRef ref) async {
     try {
       final userTimezone = await readUserTimezone(ref);
       final today = DateTime.parse(
@@ -325,25 +339,28 @@ class _HealthEventSection extends ConsumerWidget {
       final records = await ref
           .read(dailyRecordListForDateProvider(today).future)
           .timeout(const Duration(seconds: 2));
-      return records.items
-          .where((record) => record.kind == DailyRecordKind.symptom)
-          .map((record) {
-            final label = [record.title, record.value, record.note]
-                .map((value) => value?.trim())
-                .whereType<String>()
-                .firstWhere((value) => value.isNotEmpty, orElse: () => '');
-            return (record: record, label: label);
-          })
-          .where((item) => item.label.isNotEmpty)
-          .map(
-            (item) => HealthEventAssociationOption(
-              id: item.record.id,
-              label: item.label,
-            ),
-          )
-          .toList(growable: false);
+      return (
+        options: records.items
+            .where((record) => record.kind == DailyRecordKind.symptom)
+            .map((record) {
+              final label = [record.title, record.value, record.note]
+                  .map((value) => value?.trim())
+                  .whereType<String>()
+                  .firstWhere((value) => value.isNotEmpty, orElse: () => '');
+              return (record: record, label: label);
+            })
+            .where((item) => item.label.isNotEmpty)
+            .map(
+              (item) => HealthEventAssociationOption(
+                id: item.record.id,
+                label: item.label,
+              ),
+            )
+            .toList(growable: false),
+        hasError: false,
+      );
     } catch (_) {
-      return const [];
+      return (options: const <HealthEventAssociationOption>[], hasError: true);
     }
   }
 

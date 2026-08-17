@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark)
+Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure)
 
 ## 页面结构
 
@@ -82,6 +82,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - 三个确认弹窗由父层提供 repository action；请求失败时弹窗保留输入并显示可重试错误，取消不发请求。
 - 写入成功后刷新 active event、Today dashboard 和 suggestion 数据；桌面端暂不接入新入口。
 - check-in 日期按用户 profile 时区计算；缺失或无效时使用后端约定的 `Asia/Shanghai` 默认值。时区读取与 `yyyy-MM-dd` 日期键逻辑提取为共享工具 `lib/core/utils/local_date.dart`（`readUserTimezone` / `localDateKey`），today 与 report 的 check-in / 关联选项预读共用。
+- 开始观察弹窗预读当前用药与今日症状记录时设 2 秒超时；任一预读失败不再静默返回空列表，而是在对应选项区显示 `todayHealthEventOptionsLoadFailed`（“加载失败，可重试”）与 ghost `xs` 重试按钮，点击后重新预读并更新弹窗状态。成功路径下选项区保持原样。
 
 ## 数据层
 

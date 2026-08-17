@@ -16,6 +16,9 @@ void main() {
     List<String> currentMedicineIds = const [],
     List<HealthEventAssociationOption> reasonRecordOptions = const [],
     List<HealthEventAssociationOption> currentMedicineOptions = const [],
+    bool currentMedicineOptionsLoadFailed = false,
+    bool reasonRecordOptionsLoadFailed = false,
+    VoidCallback? onRetryLoadOptions,
   }) {
     return TestForuiApp(
       home: Scaffold(
@@ -33,6 +36,9 @@ void main() {
           currentMedicineOptions: currentMedicineOptions,
           reasonRecordLabel: '触发症状',
           currentMedicineLabel: '当前用药',
+          currentMedicineOptionsLoadFailed: currentMedicineOptionsLoadFailed,
+          reasonRecordOptionsLoadFailed: reasonRecordOptionsLoadFailed,
+          onRetryLoadOptions: onRetryLoadOptions,
           onSubmit: onSubmit,
         ),
       ),
@@ -168,5 +174,132 @@ void main() {
       findsOneWidget,
     );
     expect(find.byType(TextField), findsOneWidget);
+  });
+
+  testWidgets(
+    'shows load-failed hint and retry button for current medicine options',
+    (tester) async {
+      var retryCount = 0;
+      await tester.pumpWidget(
+        buildApp(
+          currentMedicineOptionsLoadFailed: true,
+          onRetryLoadOptions: () => retryCount++,
+          onSubmit:
+              ({
+                required shortTitle,
+                reasonRecordId,
+                required currentMedicineIds,
+              }) async {},
+        ),
+      );
+
+      expect(find.text('加载失败，可重试'), findsOneWidget);
+      expect(
+        find.byKey(const Key('health-event-options-retry-current-medicine')),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('health-event-options-retry-current-medicine')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(retryCount, 1);
+    },
+  );
+
+  testWidgets(
+    'shows load-failed hint and retry button for reason record options',
+    (tester) async {
+      var retryCount = 0;
+      await tester.pumpWidget(
+        buildApp(
+          reasonRecordOptionsLoadFailed: true,
+          onRetryLoadOptions: () => retryCount++,
+          onSubmit:
+              ({
+                required shortTitle,
+                reasonRecordId,
+                required currentMedicineIds,
+              }) async {},
+        ),
+      );
+
+      expect(find.text('加载失败，可重试'), findsOneWidget);
+      expect(find.text('重试'), findsOneWidget);
+      expect(
+        find.byKey(const Key('health-event-options-retry-reason-record')),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('health-event-options-retry-reason-record')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(retryCount, 1);
+    },
+  );
+
+  testWidgets('updates reason record option chips after retry', (tester) async {
+    var reasonRecordOptions = <HealthEventAssociationOption>[];
+    var reasonRecordLoadFailed = true;
+    late void Function(void Function()) setOptionsState;
+
+    await tester.pumpWidget(
+      TestForuiApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (context, setState) {
+              setOptionsState = setState;
+              return StartEventSheet(
+                heading: '开始健康观察',
+                shortTitleLabel: '简短标题',
+                cancelLabel: '取消',
+                submitLabel: '开始',
+                submittingLabel: '提交中',
+                requiredMessage: '请输入标题',
+                submitErrorLabel: '提交失败，请重试',
+                reasonRecordLabel: '触发症状',
+                currentMedicineLabel: '当前用药',
+                reasonRecordOptions: reasonRecordOptions,
+                reasonRecordOptionsLoadFailed: reasonRecordLoadFailed,
+                onRetryLoadOptions: () => setOptionsState(() {
+                  reasonRecordLoadFailed = false;
+                  reasonRecordOptions = const [
+                    HealthEventAssociationOption(
+                      id: 'record-retry',
+                      label: 'retry symptom',
+                    ),
+                  ];
+                }),
+                onSubmit:
+                    ({
+                      required shortTitle,
+                      reasonRecordId,
+                      required currentMedicineIds,
+                    }) async {},
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(const Key('health-event-options-retry-reason-record')),
+      findsOneWidget,
+    );
+
+    await tester.tap(
+      find.byKey(const Key('health-event-options-retry-reason-record')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('health-event-association-record-retry')),
+      findsOneWidget,
+    );
+    expect(find.text('retry symptom'), findsOneWidget);
   });
 }
