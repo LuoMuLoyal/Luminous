@@ -25,6 +25,9 @@ abstract class MedicineSearchState with _$MedicineSearchState {
   }) = _MedicineSearchState;
 }
 
+/// Debounce delay for search input before firing the network request.
+const _searchDebounceDuration = Duration(milliseconds: 400);
+
 /// Notifier that manages medicine search state interactively.
 class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
   Timer? _debounceTimer;
@@ -39,7 +42,7 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
     state = state.copyWith(query: query, errorMessage: null);
     _debounceTimer?.cancel();
     if (query.trim().isNotEmpty) {
-      _debounceTimer = Timer(const Duration(milliseconds: 400), _doSearch);
+      _debounceTimer = Timer(_searchDebounceDuration, _doSearch);
     } else {
       state = state.copyWith(results: const [], errorMessage: null);
     }
