@@ -19,8 +19,10 @@ part 'suggestion.g.dart';
 ///
 /// Cache-first: on build, returns cached bundle immediately (if available),
 /// then fetches fresh data from the network in the background.
-/// After [submitFeedback] or [dismiss], the provider re-fetches and updates
-/// the cache.
+/// After [dismiss] or [refresh], the provider shows a loading state and
+/// re-fetches. [submitFeedback] keeps the current card visible (the feedback
+/// row supplies its own local loading indicator) and refreshes silently in the
+/// background after a successful submission.
 ///
 /// Returns `null` when the user is not authenticated (signed-out / preview).
 final todaySuggestionProvider =
@@ -231,7 +233,17 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
     );
   }
 
-  /// Submit user feedback for a suggestion card, then refresh.
+  /// Submit user feedback for a suggestion card, then refresh silently.
+  ///
+  /// The provider state is *not* set to loading, so the existing card remains
+  /// visible while the caller (e.g. [SuggestionFeedbackRow]) shows its own
+  /// local loading indicator. After a successful submission the provider fetches
+  /// a new bundle in the background and replaces the state. If that fetch fails,
+  /// the error is only logged and the existing state is preserved, because the
+  /// feedback has already been applied and the UI has already shown "submitted".
+  ///
+  /// If [submitFeedback] itself fails, the exception is rethrown so the UI can
+  /// display a failure toast and avoid marking the feedback as submitted.
   Future<void> submitFeedback({
     required String suggestionId,
     required TodaySuggestionFeedback feedback,
@@ -243,8 +255,14 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
       _dismissedIds.add(suggestionId);
     }
 
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(_fetch);
+    try {
+      final bundle = await _fetch();
+      if (!_disposed) state = AsyncData(bundle);
+    } catch (error, stackTrace) {
+      ref
+          .read(talkerProvider)
+          .warning('Suggestion feedback refresh failed: $error', stackTrace);
+    }
   }
 
   /// Dismiss a card locally (no API call) and re-fetch without it.

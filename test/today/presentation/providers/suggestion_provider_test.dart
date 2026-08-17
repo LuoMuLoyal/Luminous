@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -222,9 +224,129 @@ void main() {
       expect(state.value!.primary?.id, 's2');
     });
 
-    test('submitFeedback with suppress adds id to excluded list', () async {
+    test(
+      'submitFeedback keeps old bundle while submission is in flight',
+      () async {
+        final bundle1 = _bundle(primaryId: 's1');
+        final bundle2 = _bundle(primaryId: 's2');
+        final submitCompleter = Completer<TodaySuggestionFeedbackResult>();
+
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => bundle1);
+        when(
+          () => mockDataSource.submitFeedback(
+            id: any(named: 'id'),
+            feedback: any(named: 'feedback'),
+          ),
+        ).thenAnswer((_) => submitCompleter.future);
+        stubDaoSuccess();
+
+        final c = buildContainer();
+        await c.read(todaySuggestionProvider.future);
+
+        // Next fetch after feedback returns bundle2.
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => bundle2);
+
+        final submitFuture = c
+            .read(todaySuggestionProvider.notifier)
+            .submitFeedback(
+              suggestionId: 's1',
+              feedback: TodaySuggestionFeedback.suppress,
+            );
+
+        // Yield so the async method reaches ds.submitFeedback.
+        await Future<void>.delayed(Duration.zero);
+        expect(c.read(todaySuggestionProvider).isLoading, isFalse);
+        expect(c.read(todaySuggestionProvider).value!.primary!.id, 's1');
+
+        submitCompleter.complete(
+          const TodaySuggestionFeedbackResult(
+            suggestionId: 's1',
+            feedback: TodaySuggestionFeedback.suppress,
+            appliedEffect: TodaySuggestionFeedbackEffect.suppressedType,
+          ),
+        );
+        await submitFuture;
+
+        // After submission the provider silently refreshes and replaces state.
+        expect(c.read(todaySuggestionProvider).isLoading, isFalse);
+        expect(c.read(todaySuggestionProvider).value!.primary!.id, 's2');
+
+        verify(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: ['s1'],
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'submitFeedback silently refreshes and replaces state on success',
+      () async {
+        final bundle1 = _bundle(primaryId: 's1');
+        final bundle2 = _bundle(primaryId: 's2');
+
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => bundle1);
+        when(
+          () => mockDataSource.submitFeedback(
+            id: any(named: 'id'),
+            feedback: any(named: 'feedback'),
+          ),
+        ).thenAnswer(
+          (_) async => const TodaySuggestionFeedbackResult(
+            suggestionId: 's1',
+            feedback: TodaySuggestionFeedback.accepted,
+            appliedEffect: TodaySuggestionFeedbackEffect.noted,
+          ),
+        );
+        stubDaoSuccess();
+
+        final c = buildContainer();
+        await c.read(todaySuggestionProvider.future);
+
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => bundle2);
+
+        await c
+            .read(todaySuggestionProvider.notifier)
+            .submitFeedback(
+              suggestionId: 's1',
+              feedback: TodaySuggestionFeedback.accepted,
+            );
+
+        final state = c.read(todaySuggestionProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.hasValue, isTrue);
+        expect(state.value!.primary!.id, 's2');
+      },
+    );
+
+    test('submitFeedback keeps old bundle when the refresh fails', () async {
       final bundle1 = _bundle(primaryId: 's1');
-      final bundle2 = _bundle(primaryId: 's2');
 
       when(
         () => mockDataSource.fetchSuggestions(
@@ -241,8 +363,8 @@ void main() {
       ).thenAnswer(
         (_) async => const TodaySuggestionFeedbackResult(
           suggestionId: 's1',
-          feedback: TodaySuggestionFeedback.suppress,
-          appliedEffect: TodaySuggestionFeedbackEffect.suppressedType,
+          feedback: TodaySuggestionFeedback.accepted,
+          appliedEffect: TodaySuggestionFeedbackEffect.noted,
         ),
       );
       stubDaoSuccess();
@@ -250,26 +372,66 @@ void main() {
       final c = buildContainer();
       await c.read(todaySuggestionProvider.future);
 
-      // Next fetch should exclude 's1'
       when(
         () => mockDataSource.fetchSuggestions(
           language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle2);
+      ).thenThrow(Exception('Network error'));
 
       await c
           .read(todaySuggestionProvider.notifier)
           .submitFeedback(
             suggestionId: 's1',
-            feedback: TodaySuggestionFeedback.suppress,
+            feedback: TodaySuggestionFeedback.accepted,
           );
 
       final state = c.read(todaySuggestionProvider);
+      expect(state.isLoading, isFalse);
       expect(state.hasValue, isTrue);
-      expect(state.value!.primary?.id, 's2');
+      expect(state.value!.primary!.id, 's1');
     });
+
+    test(
+      'submitFeedback throws when submission fails and keeps old bundle',
+      () async {
+        final bundle1 = _bundle(primaryId: 's1');
+
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => bundle1);
+        when(
+          () => mockDataSource.submitFeedback(
+            id: any(named: 'id'),
+            feedback: any(named: 'feedback'),
+          ),
+        ).thenThrow(Exception('Submit failed'));
+        stubDaoSuccess();
+
+        final c = buildContainer();
+        await c.read(todaySuggestionProvider.future);
+
+        await expectLater(
+          () => c
+              .read(todaySuggestionProvider.notifier)
+              .submitFeedback(
+                suggestionId: 's1',
+                feedback: TodaySuggestionFeedback.accepted,
+              ),
+          throwsA(isA<Exception>()),
+        );
+
+        final state = c.read(todaySuggestionProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.hasValue, isTrue);
+        expect(state.value!.primary!.id, 's1');
+      },
+    );
 
     test('refresh re-fetches suggestions', () async {
       final bundle1 = _bundle(primaryId: 's1');

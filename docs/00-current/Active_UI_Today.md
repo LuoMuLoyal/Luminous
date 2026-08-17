@@ -23,8 +23,10 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - 用药类建议使用 `TodayCardTone.urgent`（destructive 边框 + 淡红底色），饮水类使用 `SemanticColor.primary`。
 - 主卡图标使用 `gradient: true`，用药红色渐变、饮水蓝色渐变。
 - 首屏只保留图标+标题+原因+进度条+主按钮，证据和边界收入 `FCollapsible` 折叠区。
-- 原因下方渲染后端 `secondaryActions`（ghost `xs` 按钮）。其中 `skip_dose` 解析 route query 后调用 `DoseLogRepository.mark(status: 'skipped')`，成功后经 `DataChangeBus.doseLogs` 刷新建议；失败仅 toast `todaySuggestionFeedbackError`，不切换反馈行状态。
+- 原因下方渲染后端 `secondaryActions`（ghost `xs` 按钮）。其中 `skip_dose` 解析 route query 后调用 `DoseLogRepository.mark(status: 'skipped')`，成功后经 `DataChangeBus.doseLogs` 刷新建议；失败仅 toast `todaySuggestionSkipDoseError`，不切换反馈行状态。
 - 底部 `已采纳 / 稍后处理 / 不适用 / 不再看到` 四个 ghost 按钮，根据后端 `feedbackOptions` 动态渲染，接入 `POST /today/suggestions/:id/feedback`。
+  - 反馈提交期间保持旧卡内容可见，仅按钮自身进入本地 loading 状态；提交成功后按钮切换为只读「已反馈」指示器，同时 provider 在后台静默拉取新物化结果并替换卡片内容。
+  - 若提交请求本身失败，显示失败 toast，不切换「已反馈」状态；若提交成功但后台刷新失败，仅记录日志，不替换当前卡片，不抛异常给 UI。
 - 证据折叠区内「AI 解释」按钮，按需加载 `POST /today/suggestions/:id/explain`（重试上限 3 次）。
 - 证据区结构化逐条展示（`_EvidenceList` + `_EvidenceItemRow`），`subtype == 'water'` 显示 `FDeterminateProgress` 饮水进度条。
 - `lifecycleState == fading` 时 `Opacity(0.6)` 视觉降级。
