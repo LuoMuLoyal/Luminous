@@ -240,13 +240,21 @@ void main() {
       expect(items[0].badge, isNull);
     });
 
-    test('second item is record with usePush=true', () async {
+    test('second item is one-tap water quick-entry', () async {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
-      final items = buildQuickActionItems(l10n, dashboard);
-      expect(items[1].icon, SemanticIcons.actionEditCard);
-      expect(items[1].usePush, isTrue);
-      expect(items[1].route, contains(Routes.recordCreate));
+      var tapped = false;
+      final items = buildQuickActionItems(
+        l10n,
+        dashboard,
+        onWaterQuickEntry: () => tapped = true,
+      );
+      expect(items[1].icon, SemanticIcons.recordWater);
+      expect(items[1].title, l10n.todayDrinkWaterAction);
+      expect(items[1].subtitle, l10n.todayQuickActionWaterSubtitle);
+      expect(items[1].onTap, isNotNull);
+      items[1].onTap!();
+      expect(tapped, isTrue);
     });
 
     test('third item is explain', () async {

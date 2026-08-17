@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
+import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/quick_entry/mood_flow.dart';
-import 'package:luminous/features/record/presentation/quick_entry/water_flow.dart';
-import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
 
 void main() {
   group('MoodQuickEntryFlow', () {

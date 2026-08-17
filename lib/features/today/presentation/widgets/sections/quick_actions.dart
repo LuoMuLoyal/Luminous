@@ -1,22 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/today/application/usecases/quick_entry_water.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class TodayQuickActionsSection extends StatelessWidget {
+class TodayQuickActionsSection extends ConsumerWidget {
   const TodayQuickActionsSection({super.key, required this.dashboard});
 
   final TodayDashboard dashboard;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final actions = buildQuickActionItems(l10n, dashboard);
+    final actions = buildQuickActionItems(
+      l10n,
+      dashboard,
+      onWaterQuickEntry: () => executeTodayWaterQuickEntry(context, ref),
+    );
     // First 2 are primary, rest are secondary.
     final primaryActions = actions.take(2).toList();
     final secondaryActions = actions.skip(2).toList();
@@ -41,9 +49,7 @@ class TodayQuickActionsSection extends StatelessWidget {
                         )
                       : null,
                   suffix: const Icon(SemanticIcons.actionNext),
-                  onPress: () => action.usePush
-                      ? context.push(action.route)
-                      : context.go(action.route),
+                  onPress: () => _handleAction(context, ref, action),
                 ),
             ],
           ),
@@ -63,9 +69,7 @@ class TodayQuickActionsSection extends StatelessWidget {
                     title: Text(action.title),
                     subtitle: Text(action.subtitle),
                     suffix: const Icon(SemanticIcons.actionNext),
-                    onPress: () => action.usePush
-                        ? context.push(action.route)
-                        : context.go(action.route),
+                    onPress: () => _handleAction(context, ref, action),
                   ),
               ],
             ),
@@ -73,5 +77,21 @@ class TodayQuickActionsSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _handleAction(
+    BuildContext context,
+    WidgetRef ref,
+    TodayQuickActionItem action,
+  ) {
+    if (action.onTap != null) {
+      action.onTap!();
+      return;
+    }
+    if (action.usePush) {
+      unawaited(context.push(action.route));
+    } else {
+      context.go(action.route);
+    }
   }
 }

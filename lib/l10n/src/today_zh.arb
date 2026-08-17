@@ -331,8 +331,7 @@
       }
     }
   },
-  "todayQuickActionRecordTitle": "快速记录",
-  "todayQuickActionRecordSubtitle": "饮水 / 睡眠 / 症状",
+  "todayQuickActionWaterSubtitle": "记录一杯水",
   "todayQuickActionExplainTitle": "用药安全",
   "todayQuickActionExplainSubtitle": "风险解释与覆盖范围",
   "todayQuickActionReminderTitle": "提醒设置",

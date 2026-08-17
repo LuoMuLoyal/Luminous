@@ -58,6 +58,7 @@ class TodayQuickActionItem {
     required this.route,
     this.usePush = false,
     this.badge,
+    this.onTap,
   });
 
   final IconData icon;
@@ -66,6 +67,10 @@ class TodayQuickActionItem {
   final String route;
   final bool usePush;
   final String? badge;
+
+  /// Optional custom tap handler. When non-null it is invoked instead of
+  /// navigating to [route]; this is used by the one-tap water quick-entry.
+  final VoidCallback? onTap;
 }
 
 String greetingSubtitle(AppLocalizations l10n, TodayDashboard dashboard) {
@@ -306,7 +311,7 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
   );
 }
 
-/// Build quick action items. The first two items (confirm + record) are
+/// Build quick action items. The first two items (confirm + water) are
 /// "primary" actions that show status-aware subtitles. The remaining items
 /// are "secondary" and should be displayed under a "more" toggle.
 ///
@@ -316,10 +321,14 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
 ///   the user lands on the tab's home screen.
 /// - Actions targeting a sub-page (e.g. record create) use `usePush: true`
 ///   → `context.push`, preserving the back stack so the user can return.
+///
+/// [onWaterQuickEntry] is invoked by the one-tap water action instead of
+/// navigating to the record create route.
 List<TodayQuickActionItem> buildQuickActionItems(
   AppLocalizations l10n,
-  TodayDashboard dashboard,
-) {
+  TodayDashboard dashboard, {
+  VoidCallback? onWaterQuickEntry,
+}) {
   final hasPending = dashboard.medication.pendingCount > 0;
   final confirmSubtitle = hasPending
       ? l10n.todayQuickActionConfirmPendingSubtitle(
@@ -339,11 +348,12 @@ List<TodayQuickActionItem> buildQuickActionItems(
       badge: confirmBadge,
     ),
     TodayQuickActionItem(
-      icon: SemanticIcons.actionEditCard,
-      title: l10n.todayQuickActionRecordTitle,
-      subtitle: l10n.todayQuickActionRecordSubtitle,
+      icon: SemanticIcons.recordWater,
+      title: l10n.todayDrinkWaterAction,
+      subtitle: l10n.todayQuickActionWaterSubtitle,
       route: '${Routes.recordCreate}?kind=water',
       usePush: true,
+      onTap: onWaterQuickEntry,
     ),
     TodayQuickActionItem(
       icon: SemanticIcons.safetyCaution,

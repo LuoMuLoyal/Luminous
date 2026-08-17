@@ -331,8 +331,7 @@
       }
     }
   },
-  "todayQuickActionRecordTitle": "Quick log",
-  "todayQuickActionRecordSubtitle": "Water / Sleep / Symptom",
+  "todayQuickActionWaterSubtitle": "Log a glass of water",
   "todayQuickActionExplainTitle": "Medicine safety",
   "todayQuickActionExplainSubtitle": "Risk explanation and coverage",
   "todayQuickActionReminderTitle": "Reminders",

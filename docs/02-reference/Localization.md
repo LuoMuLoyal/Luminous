@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added)
+Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -130,7 +130,8 @@ Persisted preference keys:
 - Record root-page CTA strings such as timeline continuation actions (`查看全部记录` / `收起`) are
   owned by the Record ARB entries.
 - Today root-page action-panel copy such as primary-suggestion titles, evidence/boundary labels,
-  observation wording, and quick-action labels is owned by the Today ARB entries.
+  observation wording, and quick-action labels is owned by the Today ARB entries. The one-tap water
+  quick-action subtitle uses `todayQuickActionWaterSubtitle`.
 - Today health-event copy such as the start entry, short-title form, daily check-in, end flow,
   fixed outcome labels, validation, and retry errors is owned by the Today ARB entries.
 - Today root page no longer owns a standalone "no records yet" banner; keep the active surface

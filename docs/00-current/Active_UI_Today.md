@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure)
+Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry)
 
 ## 页面结构
 
@@ -61,8 +61,9 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 
 ## 轻动作区
 
-- `FTileGroup` 分组入口：`确认用药 / 快速记录 / 用药安全 / 提醒设置 / 健康档案`。
+- `FTileGroup` 分组入口：`确认用药 / 去喝水 / 用药安全 / 提醒设置 / 健康档案`。
 - 确认用药副标题根据 `pendingCount` 动态生成。
+- 第二个入口「去喝水」是一键饮水快捷动作：点击后直接调用 `executeTodayWaterQuickEntry`，使用 `WaterQuickEntryFlow` 创建一条饮水记录、发射 `DataChangeTopic.dailyRecords`，并显示"已快速记录 + 撤销"toast；撤销时通过 `QuickEntryUndoService` 删除记录。
 - 快捷操作路由已修复：药品解读 → `/medicine/risk-check`，用药提醒 → `/medicine/reminders/new`（push）。
 
 ## 空态与提示
@@ -168,3 +169,9 @@ Last updated: 2026-08-01
 
 - 主建议卡进入可见区域时上报 `suggestion_impression`（surface=today，suggestionRuleCode=卡片 ruleId），按 session + 规则码去重；视口外/非活动 tab 不上报，build/rebuild 不重复计数。实现位于 `suggestion_primary_card.dart` 的 `_SuggestionImpressionTracker`。
 - 复审微调：曝光检测的滚动挂载改用 `Scrollable.maybeOf` 防御式取值（无行为变化）。
+
+
+## 2026-08-17 Today 轻动作区第二入口改为一键饮水
+
+- 第二个快捷操作由"快速记录"改为一键饮水，点击后直接创建饮水记录并刷新相关 dashboard，不再跳转表单页。
+- `WaterQuickEntryFlow` 与 `QuickEntryUndoService` 从 record presentation 层迁移到 `lib/features/record/application/usecases/`，Today 通过 `executeTodayWaterQuickEntry` 复用，避免跨 feature 直接依赖 record presentation。

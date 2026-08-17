@@ -293,3 +293,10 @@ Last updated: 2026-08-17 (Toast action mounted 守卫全量补齐与 recent_sear
 
 - record 模块 6 处 `Toast.showWithAction` action 回调（`quick_entry_executor.dart`、`fast_entry_dialog.dart`、`quick_entry_sleep.dart`、`quick_entry_medication.dart` × 3）均新增 `if (!context.mounted) return;` 守卫，与 scan/auth 模块已修复的模式一致，防止用户关闭调用面后点击延迟 action 触发 `debugDeactivated` 断言崩溃。
 - `recent_searches.dart` `_settleInitialLoad` 空 catch 块补齐 `talker.warning` 日志（08-16 遗留 🔴）；`_pendingLoad` 在初始 load 完成后通过 `whenComplete` 置空，生命周期更精确。
+
+
+## 2026-08-17 快速记录 use-case 层迁移（F-12）
+
+- `WaterQuickEntryFlow` 从 `lib/features/record/presentation/quick_entry/water_flow.dart` 迁移到 `lib/features/record/application/usecases/water_quick_entry.dart`，公共 API 保持不变。
+- `QuickEntryUndoService` 从 `lib/features/record/presentation/services/quick_entry_undo.dart` 迁移到 `lib/features/record/application/usecases/quick_entry_undo.dart`。
+- 迁移后 record presentation 与 today application 均从 record application 层引用这两个 use case，符合跨 feature 导入规则（不直接依赖 record presentation）。

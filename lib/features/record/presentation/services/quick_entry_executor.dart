@@ -6,12 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
+import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
-import 'package:luminous/features/record/presentation/quick_entry/water_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
-import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
