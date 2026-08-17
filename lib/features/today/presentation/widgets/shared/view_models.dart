@@ -280,6 +280,21 @@ TodayAiSummaryCardContent buildAiCardContent({
   }
 
   final analysis = aiState.analysis;
+  final materializationStatus = aiState.materializationStatus;
+
+  if (materializationStatus == TodayAiAnalysisMaterializationStatus.empty) {
+    return TodayAiSummaryCardContent(
+      bullets: [
+        TodayAiSummaryItem(
+          icon: SemanticIcons.aiEntry,
+          color: SemanticColor.primary,
+          text: l10n.todayAnalysisEmptyTitle,
+        ),
+      ],
+      footer: l10n.todayAnalysisEmptyBody,
+    );
+  }
+
   if (analysis != null) {
     return TodayAiSummaryCardContent(
       summary: analysis.summary,

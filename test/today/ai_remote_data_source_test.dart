@@ -5,9 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
-import 'package:mocktail/mocktail.dart';
-
-class _MockTodayAnalysisApi extends Mock implements lucent.TodayAnalysisApi {}
 
 /// SSE adapter that returns a stream of events.
 class _SseAdapter implements HttpClientAdapter {
@@ -74,138 +71,112 @@ class _JsonAdapter implements HttpClientAdapter {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValue(lucent.GenerateTodayAnalysisDto());
-  });
-
-  test('unwraps the analysis from the generate response envelope', () async {
-    final analysis = lucent.TodayAnalysisDataDto(
-      date: '2026-07-11',
-      generatedAt: '2026-07-11T08:00:00.000Z',
-      summary: '今日状态良好',
-      bullets: [],
-      actionLabel: '保持现状',
-      action: 'navigate_to_record',
-      confidenceNote: '基于最近7天数据',
-    );
-    final api = _MockTodayAnalysisApi();
-    when(
-      () => api.todayAnalysisControllerGenerateV1(
-        generateTodayAnalysisDto: any(named: 'generateTodayAnalysisDto'),
-      ),
-    ).thenAnswer(
-      (_) async => Response<lucent.TodayAnalysisGenerateResponseDto>(
-        data: lucent.TodayAnalysisGenerateResponseDto(
-          code: 0,
-          message: 'ok',
-          data: lucent.TodayAnalysisGenerateResponseDtoData(
-            date: analysis.date,
-            generatedAt: analysis.generatedAt,
-            sourceVersion: 1,
-            summary: '',
-            bullets: [],
-            actionLabel: '',
-            action: '',
-            confidenceNote: '',
-            analysis: analysis,
-            status: lucent.TodayAnalysisGenerateResponseDtoDataStatusEnum.ready,
-            computedVersion: 1,
-            computedAt: analysis.generatedAt,
-            retryAfterSeconds: null,
-          ),
-        ),
-        requestOptions: RequestOptions(path: '/today-analysis/generate'),
-      ),
-    );
-
-    final dataSource = TodayAiRemoteDataSource(
-      api: api,
-      dio: Dio(BaseOptions(baseUrl: 'http://localhost')),
-    );
-
-    final result = await dataSource.generate(date: analysis.date);
-
-    expect(result, same(analysis));
-  });
-
-  group('TodayAiRemoteDataSource — generate', () {
+  group('TodayAiRemoteDataSource — refresh', () {
     late Dio dio;
-    late lucent.TodayAnalysisApi api;
 
     setUp(() {
       dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
-      api = lucent.TodayAnalysisApi(dio);
     });
 
-    test('returns parsed DTO on success', () async {
-      final adapter = _JsonAdapter(
-        responseBody: {
-          'date': '2026-07-11',
-          'generatedAt': '2026-07-11T08:00:00.000Z',
-          'sourceVersion': 1,
-          'summary': '',
-          'bullets': [],
-          'actionLabel': '',
-          'action': '',
-          'confidenceNote': '',
-          'analysis': {
-            'date': '2026-07-11',
-            'generatedAt': '2026-07-11T08:00:00.000Z',
-            'summary': '今日状态良好',
-            'bullets': [],
-            'actionLabel': '保持现状',
-            'action': 'navigate_to_record',
-            'confidenceNote': '基于最近7天数据',
-          },
-          'status': 'ready',
-          'computedVersion': 1,
-          'computedAt': '2026-07-11T08:00:00.000Z',
-          'retryAfterSeconds': null,
-        },
+    Map<String, dynamic> analysisBody() => {
+      'date': '2026-07-11',
+      'generatedAt': '2026-07-11T08:00:00.000Z',
+      'summary': '今日状态良好',
+      'bullets': [],
+      'actionLabel': '保持现状',
+      'action': 'navigate_to_record',
+      'confidenceNote': '基于最近7天数据',
+      'aiGenerated': true,
+    };
+
+    Map<String, dynamic> dataBody({
+      required String status,
+      Map<String, dynamic>? analysis,
+      String? jobId,
+    }) => {
+      'status': status,
+      'analysis': analysis,
+      if (jobId != null) 'jobId': jobId,
+      'sourceVersion': 1,
+      'computedVersion': 1,
+      'computedAt': '2026-07-11T08:00:00.000Z',
+      'retryAfterSeconds': null,
+    };
+
+    test('parses empty status', () async {
+      dio.httpClientAdapter = _JsonAdapter(
+        responseBody: dataBody(status: 'empty'),
       );
-      dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(api: api, dio: dio);
-      final result = await ds.generate(date: '2026-07-11');
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+      final result = await ds.refresh();
 
-      expect(result.date, '2026-07-11');
-      expect(result.summary, '今日状态良好');
-      expect(result.actionLabel, '保持现状');
+      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.empty);
+      expect(result.analysis, isNull);
     });
 
-    test('passes date parameter to API', () async {
-      final adapter = _JsonAdapter(
-        responseBody: {
-          'date': '2026-07-11',
-          'generatedAt': '2026-07-11T08:00:00.000Z',
-          'sourceVersion': 1,
-          'summary': '',
-          'bullets': [],
-          'actionLabel': '',
-          'action': '',
-          'confidenceNote': '',
-          'analysis': {
-            'date': '2026-07-11',
-            'generatedAt': '2026-07-11T08:00:00.000Z',
-            'summary': 'ok',
-            'bullets': [],
-            'actionLabel': '',
-            'action': '',
-            'confidenceNote': '',
-          },
-          'status': 'ready',
-          'computedVersion': 1,
-          'computedAt': '2026-07-11T08:00:00.000Z',
-          'retryAfterSeconds': null,
-        },
+    test('parses ready status with analysis', () async {
+      dio.httpClientAdapter = _JsonAdapter(
+        responseBody: dataBody(status: 'ready', analysis: analysisBody()),
       );
-      dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(api: api, dio: dio);
-      await ds.generate(date: '2026-07-11');
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+      final result = await ds.refresh();
 
-      // The adapter recorded the request
-      expect(adapter, isNotNull);
+      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.ready);
+      expect(result.analysis, isNotNull);
+      expect(result.analysis!.summary, '今日状态良好');
+    });
+
+    test('parses pending status', () async {
+      dio.httpClientAdapter = _JsonAdapter(
+        responseBody: dataBody(status: 'pending', jobId: 'job-1'),
+      );
+
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+      final result = await ds.refresh();
+
+      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.pending);
+      expect(result.analysis, isNull);
+    });
+
+    test('parses stale status', () async {
+      dio.httpClientAdapter = _JsonAdapter(
+        responseBody: dataBody(status: 'stale', analysis: analysisBody()),
+      );
+
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+      final result = await ds.refresh();
+
+      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.stale);
+      expect(result.analysis, isNotNull);
+    });
+
+    test('parses failed status', () async {
+      dio.httpClientAdapter = _JsonAdapter(
+        responseBody: dataBody(status: 'failed'),
+      );
+
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+      final result = await ds.refresh();
+
+      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.failed);
+      expect(result.analysis, isNull);
     });
   });
 
@@ -247,6 +218,7 @@ void main() {
             'actionLabel': '多喝水',
             'action': 'navigate_to_record',
             'confidenceNote': 'confidence',
+            'aiGenerated': true,
           },
         ),
         (event: 'done', data: {}),
@@ -402,6 +374,7 @@ void main() {
             'actionLabel': '',
             'action': '',
             'confidenceNote': '',
+            'aiGenerated': true,
           },
         ),
         (event: 'done', data: {}),

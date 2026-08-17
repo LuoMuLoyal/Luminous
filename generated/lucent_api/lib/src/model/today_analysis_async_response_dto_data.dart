@@ -4,8 +4,8 @@
 
 // ignore_for_file: unused_element
 import 'package:lucent_api/src/model/today_analysis_async_status_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_async_result_data_dto_result.dart';
 import 'package:lucent_api/src/model/today_analysis_async_result_data_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_async_job_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -33,7 +33,7 @@ class TodayAnalysisAsyncResponseDtoData {
   final String jobId;
 
   @JsonKey(name: r'result', required: true, includeIfNull: false)
-  final TodayAnalysisDataDto result;
+  final TodayAnalysisAsyncResultDataDtoResult result;
 
   @JsonKey(
     name: r'status',

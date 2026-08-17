@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
@@ -25,6 +26,19 @@ class LucentTodayAiRepository implements TodayAiRepository {
   LucentTodayAiRepository({required this.dataSource});
 
   final TodayAiRemoteDataSource dataSource;
+  static final _dateFormat = DateFormat('yyyy-MM-dd');
+
+  @override
+  Future<TodayAiAnalysis> read(DateTime date) async {
+    final dto = await dataSource.read(date: _formatDate(date));
+    return _mapReadDataDto(dto);
+  }
+
+  @override
+  Future<TodayAiAnalysis> refresh(DateTime date) async {
+    final dto = await dataSource.refresh(date: _formatDate(date));
+    return _mapReadDataDto(dto);
+  }
 
   @override
   Future<TodayAiAnalysis> generate({String? date}) async {
@@ -48,14 +62,53 @@ class LucentTodayAiRepository implements TodayAiRepository {
     }
   }
 
-  TodayAiAnalysis _mapAnalysis(lucent.TodayAnalysisDataDto dto) {
+  TodayAiAnalysis _mapReadDataDto(lucent.TodayAnalysisReadDataDto dto) {
+    final analysis = dto.analysis;
+    final status = _mapMaterializationStatus(dto.status);
+    final sourceVersion = dto.sourceVersion.toInt();
+    final computedVersion = dto.computedVersion.toInt();
+    if (analysis == null) {
+      return TodayAiAnalysis(
+        date: _formatDate(DateTime.now()),
+        generatedAt: parseDateTimeOrEpoch(dto.computedAt),
+        summary: '',
+        bullets: const [],
+        actionLabel: '',
+        confidenceNote: '',
+        materializationStatus: status,
+        aiGenerated: false,
+        sourceVersion: sourceVersion,
+        computedVersion: computedVersion,
+      );
+    }
+    return _mapAnalysis(
+      analysis,
+      materializationStatus: status,
+      computedAt: parseDateTimeOrNull(dto.computedAt),
+      sourceVersion: sourceVersion,
+      computedVersion: computedVersion,
+    );
+  }
+
+  TodayAiAnalysis _mapAnalysis(
+    lucent.TodayAnalysisDataDto dto, {
+    TodayAiAnalysisMaterializationStatus materializationStatus =
+        TodayAiAnalysisMaterializationStatus.ready,
+    DateTime? computedAt,
+    int sourceVersion = 0,
+    int computedVersion = 0,
+  }) {
     return TodayAiAnalysis(
       date: dto.date,
-      generatedAt: parseDateTimeOrEpoch(dto.generatedAt),
+      generatedAt: computedAt ?? parseDateTimeOrEpoch(dto.generatedAt),
       summary: dto.summary,
       bullets: dto.bullets.map(_mapBullet).toList(growable: false),
       actionLabel: dto.actionLabel,
       confidenceNote: dto.confidenceNote,
+      materializationStatus: materializationStatus,
+      aiGenerated: dto.aiGenerated,
+      sourceVersion: sourceVersion,
+      computedVersion: computedVersion,
     );
   }
 
@@ -70,4 +123,25 @@ class LucentTodayAiRepository implements TodayAiRepository {
       text: dto.text,
     );
   }
+
+  TodayAiAnalysisMaterializationStatus _mapMaterializationStatus(
+    lucent.TodayAnalysisReadDataDtoStatusEnum status,
+  ) {
+    return switch (status) {
+      lucent.TodayAnalysisReadDataDtoStatusEnum.empty =>
+        TodayAiAnalysisMaterializationStatus.empty,
+      lucent.TodayAnalysisReadDataDtoStatusEnum.pending =>
+        TodayAiAnalysisMaterializationStatus.pending,
+      lucent.TodayAnalysisReadDataDtoStatusEnum.ready =>
+        TodayAiAnalysisMaterializationStatus.ready,
+      lucent.TodayAnalysisReadDataDtoStatusEnum.stale =>
+        TodayAiAnalysisMaterializationStatus.stale,
+      lucent.TodayAnalysisReadDataDtoStatusEnum.failed =>
+        TodayAiAnalysisMaterializationStatus.failed,
+      lucent.TodayAnalysisReadDataDtoStatusEnum.unknownDefaultOpenApi =>
+        TodayAiAnalysisMaterializationStatus.empty,
+    };
+  }
+
+  String _formatDate(DateTime date) => _dateFormat.format(date.toLocal());
 }

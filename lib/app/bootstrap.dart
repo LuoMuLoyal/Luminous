@@ -11,9 +11,11 @@ import 'package:luminous/core/accessibility/settings.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/cache_cleanup.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/push/lifecycle.dart';
+import 'package:luminous/core/push/message_handler.dart';
 import 'package:luminous/core/shortcuts/shortcuts.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
@@ -83,6 +85,13 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     );
     ref.watch(medicineReminderDeliveryReporterProvider);
     ref.watch(pushCoordinatorProvider);
+    ref.watch(localNotificationRouterProvider);
+    ref.listen<AsyncValue<Map<String, dynamic>>>(
+      aiTodaySummaryPushEventsProvider,
+      (previous, next) {
+        next.whenData((event) => _showAiTodaySummaryToast(context, event));
+      },
+    );
 
     final themePreference = ref
         .watch(themeControllerProvider)
@@ -173,6 +182,33 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     } catch (error) {
       ref.read(talkerProvider).error('Push alias sync failed: $error');
     }
+  }
+
+  void _showAiTodaySummaryToast(
+    BuildContext context,
+    Map<String, dynamic> event,
+  ) {
+    final title =
+        event['title']?.toString() ?? event['alert']?.toString() ?? '';
+    final body =
+        event['content']?.toString() ??
+        event['body']?.toString() ??
+        event['message']?.toString() ??
+        '';
+    final message = <String>[title, body].where((s) => s.isNotEmpty).join('\n');
+    if (message.isEmpty) return;
+
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+
+    unawaited(
+      Toast.showWithAction(
+        context,
+        message,
+        l10n.todayViewDetailsAction,
+        () => ref.read(appRouterProvider).go(Routes.home),
+      ),
+    );
   }
 
   Future<void> _restoreLocaleFromProfile() async {

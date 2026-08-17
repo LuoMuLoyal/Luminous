@@ -46,6 +46,16 @@ class FakeTodayAiRepository implements TodayAiRepository {
   final Completer<TodayAiAnalysis> _completer = Completer<TodayAiAnalysis>();
 
   @override
+  Future<TodayAiAnalysis> read(DateTime date) {
+    return _completer.future;
+  }
+
+  @override
+  Future<TodayAiAnalysis> refresh(DateTime date) {
+    return _completer.future;
+  }
+
+  @override
   Future<TodayAiAnalysis> generate({String? date}) {
     return _completer.future;
   }

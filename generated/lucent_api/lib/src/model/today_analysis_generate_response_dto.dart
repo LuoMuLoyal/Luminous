@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/today_analysis_generate_response_dto_data.dart';
+import 'package:lucent_api/src/model/today_analysis_async_result_data_dto_result.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -33,7 +33,7 @@ class TodayAnalysisGenerateResponseDto {
   final String message;
 
   @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final TodayAnalysisGenerateResponseDtoData data;
+  final TodayAnalysisAsyncResultDataDtoResult data;
 
   @override
   bool operator ==(Object other) =>

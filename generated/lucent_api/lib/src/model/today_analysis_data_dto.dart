@@ -36,6 +36,8 @@ class TodayAnalysisDataDto {
 
     required this.confidenceNote,
 
+    required this.aiGenerated,
+
     this.metrics,
   });
 
@@ -63,6 +65,9 @@ class TodayAnalysisDataDto {
   @JsonKey(name: r'confidenceNote', required: true, includeIfNull: false)
   final String confidenceNote;
 
+  @JsonKey(name: r'aiGenerated', required: true, includeIfNull: false)
+  final bool aiGenerated;
+
   @JsonKey(name: r'metrics', required: false, includeIfNull: false)
   final List<TodayAnalysisMetricDto>? metrics;
 
@@ -78,6 +83,7 @@ class TodayAnalysisDataDto {
           other.actionLabel == actionLabel &&
           other.action == action &&
           other.confidenceNote == confidenceNote &&
+          other.aiGenerated == aiGenerated &&
           other.metrics == metrics;
 
   @override
@@ -90,6 +96,7 @@ class TodayAnalysisDataDto {
       actionLabel.hashCode +
       action.hashCode +
       confidenceNote.hashCode +
+      aiGenerated.hashCode +
       metrics.hashCode;
 
   factory TodayAnalysisDataDto.fromJson(Map<String, dynamic> json) =>

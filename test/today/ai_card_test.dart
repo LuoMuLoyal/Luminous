@@ -8,6 +8,7 @@ import 'package:luminous/features/settings/presentation/providers/user_settings.
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/repositories/ai.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -19,7 +20,7 @@ import 'test_helpers.dart';
 
 void main() {
   testWidgets(
-    'Today summary shows preview hint and hides generate action when signed out',
+    'Today summary shows preview hint and hides refresh action when signed out',
     (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
@@ -44,7 +45,7 @@ void main() {
 
       expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
       expect(
-        find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
+        find.widgetWithText(FButton, l10n.todayAnalysisRefreshAction),
         findsNothing,
       );
     },
@@ -87,11 +88,199 @@ void main() {
     },
   );
 
-  testWidgets('Today summary renders generated summary after manual action', (
+  testWidgets('Today summary renders empty analysis state', (tester) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          todayAiRepositoryProvider.overrideWithValue(
+            _StaticTodayAiRepository(
+              TodayAiAnalysis(
+                date: '2026-06-12',
+                generatedAt: generatedAt,
+                summary: '',
+                bullets: [],
+                actionLabel: '',
+                confidenceNote: '',
+                materializationStatus:
+                    TodayAiAnalysisMaterializationStatus.empty,
+                aiGenerated: false,
+              ),
+            ),
+          ),
+          todaySuggestionProvider.overrideWith(
+            EmptyTodaySuggestionNotifier.new,
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 500));
+    await _scrollToSummaryCard(tester);
+
+    expect(find.text(l10n.todayAnalysisEmptyTitle), findsOneWidget);
+    expect(find.text(l10n.todayAnalysisEmptyBody), findsOneWidget);
+    expect(
+      find.widgetWithText(FButton, l10n.todayAnalysisRefreshAction),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Today summary renders refresh button and rule-based label', (
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final repository = FakeTodayAiRepository();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          todayAiRepositoryProvider.overrideWithValue(
+            _StaticTodayAiRepository(
+              TodayAiAnalysis(
+                date: '2026-06-12',
+                generatedAt: generatedAt,
+                summary: '今天的节奏基本稳定。',
+                bullets: [],
+                actionLabel: '',
+                confidenceNote: '基于规则生成。',
+                materializationStatus:
+                    TodayAiAnalysisMaterializationStatus.ready,
+                aiGenerated: false,
+              ),
+            ),
+          ),
+          todaySuggestionProvider.overrideWith(
+            EmptyTodaySuggestionNotifier.new,
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 500));
+    await _scrollToSummaryCard(tester);
+
+    expect(find.text('今天的节奏基本稳定。'), findsOneWidget);
+    expect(find.text(l10n.todayAnalysisRuleBasedLabel), findsOneWidget);
+    expect(
+      find.widgetWithText(FButton, l10n.todayAnalysisRefreshAction),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Today summary shows materialization notice for pending state', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          todayAiRepositoryProvider.overrideWithValue(
+            _StaticTodayAiRepository(
+              TodayAiAnalysis(
+                date: '2026-06-12',
+                generatedAt: generatedAt,
+                summary: 'Original summary.',
+                bullets: [],
+                actionLabel: '',
+                confidenceNote: '',
+                materializationStatus:
+                    TodayAiAnalysisMaterializationStatus.pending,
+                aiGenerated: true,
+              ),
+            ),
+          ),
+          todaySuggestionProvider.overrideWith(
+            EmptyTodaySuggestionNotifier.new,
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 500));
+    await _scrollToSummaryCard(tester);
+
+    expect(find.text('Original summary.'), findsOneWidget);
+    expect(find.text(l10n.todayAnalysisPendingHint), findsOneWidget);
+  });
+
+  testWidgets('Today summary shows materialization notice for failed state', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          todayAiRepositoryProvider.overrideWithValue(
+            _StaticTodayAiRepository(
+              TodayAiAnalysis(
+                date: '2026-06-12',
+                generatedAt: generatedAt,
+                summary: 'Original summary.',
+                bullets: [],
+                actionLabel: '',
+                confidenceNote: '',
+                materializationStatus:
+                    TodayAiAnalysisMaterializationStatus.failed,
+                aiGenerated: true,
+              ),
+            ),
+          ),
+          todaySuggestionProvider.overrideWith(
+            EmptyTodaySuggestionNotifier.new,
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 500));
+    await _scrollToSummaryCard(tester);
+
+    expect(find.text('Original summary.'), findsOneWidget);
+    expect(find.text(l10n.todayAnalysisFailedHint), findsOneWidget);
+  });
+
+  testWidgets('Today summary triggers refresh on button tap', (tester) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final repository = _TappableTodayAiRepository();
 
     await tester.pumpWidget(
       ProviderScope(
@@ -116,13 +305,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     await _scrollToSummaryCard(tester);
 
-    final generateButton = find.widgetWithText(
+    final refreshButton = find.widgetWithText(
       FButton,
-      l10n.todayAiSummaryGenerateAction,
+      l10n.todayAnalysisRefreshAction,
       skipOffstage: false,
     );
     await tester.scrollUntilVisible(
-      generateButton,
+      refreshButton,
       220,
       scrollable: find
           .descendant(
@@ -135,48 +324,14 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 200));
 
-    await tester.tap(generateButton);
+    expect(repository.refreshCount, 0);
+    await tester.tap(refreshButton);
     await tester.pump(const Duration(milliseconds: 500));
-
-    expect(
-      find.widgetWithText(FButton, l10n.todayAiSummaryGeneratingAction),
-      findsOneWidget,
-    );
-
-    repository.complete(
-      TodayAiAnalysis(
-        date: '2026-06-12',
-        generatedAt: generatedAt,
-        summary: '今天的节奏基本稳定，先把剩余饮水和待确认用药处理掉。',
-        bullets: const [
-          TodayAiAnalysisBullet(
-            kind: TodayAiAnalysisBulletKind.medication,
-            text: '还有 1 项今日用药待确认，先核对是否已经服用。',
-          ),
-          TodayAiAnalysisBullet(
-            kind: TodayAiAnalysisBulletKind.hydration,
-            text: '饮水距离目标还差 2 次，下午和晚间各补一次。',
-          ),
-        ],
-        actionLabel: '查看今日记录',
-        confidenceNote: '仅基于今日已记录数据生成，不构成诊断或治疗建议。',
-      ),
-    );
-
-    await tester.pump(const Duration(milliseconds: 500));
-
-    expect(find.text('今天的节奏基本稳定，先把剩余饮水和待确认用药处理掉。'), findsOneWidget);
-    await _expandAiBullets(tester, l10n);
-    expect(find.text('还有 1 项今日用药待确认，先核对是否已经服用。'), findsOneWidget);
-    expect(find.text('饮水距离目标还差 2 次，下午和晚间各补一次。'), findsOneWidget);
-    expect(find.text('仅基于今日已记录数据生成，不构成诊断或治疗建议。'), findsOneWidget);
+    expect(repository.refreshCount, 1);
   });
 }
 
 Future<void> _scrollToSummaryCard(WidgetTester tester) async {
-  // ShellDeferredContent defers content to the next frame; after the content
-  // is built, async providers (todayDashboardProvider) start and need one
-  // more frame for their data to propagate to the widget tree.
   await tester.pump();
   await tester.scrollUntilVisible(
     find.byKey(const Key('today-summary-card')),
@@ -193,10 +348,6 @@ Future<void> _scrollToSummaryCard(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 200));
 }
 
-/// Taps the AI bullets expand button so bullet text becomes visible.
-///
-/// The [TodaySummarySection] collapses AI bullets by default; tests that
-/// assert on bullet text must expand first.
 Future<void> _expandAiBullets(
   WidgetTester tester,
   AppLocalizations l10n,
@@ -216,4 +367,55 @@ Future<void> _expandAiBullets(
   );
   await tester.tap(expandButton);
   await tester.pump(const Duration(milliseconds: 300));
+}
+
+class _StaticTodayAiRepository implements TodayAiRepository {
+  _StaticTodayAiRepository(this.analysis);
+
+  final TodayAiAnalysis analysis;
+
+  @override
+  Future<TodayAiAnalysis> read(DateTime date) async => analysis;
+
+  @override
+  Future<TodayAiAnalysis> refresh(DateTime date) async => analysis;
+
+  @override
+  Future<TodayAiAnalysis> generate({String? date}) async => analysis;
+
+  @override
+  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
+    yield TodayAiGenerationResultEvent(analysis);
+  }
+}
+
+class _TappableTodayAiRepository implements TodayAiRepository {
+  int refreshCount = 0;
+
+  @override
+  Future<TodayAiAnalysis> read(DateTime date) async => TodayAiAnalysis(
+    date: '2026-06-12',
+    generatedAt: generatedAt,
+    summary: 'Summary.',
+    bullets: const [],
+    actionLabel: '',
+    confidenceNote: '',
+    materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
+    aiGenerated: true,
+  );
+
+  @override
+  Future<TodayAiAnalysis> refresh(DateTime date) async {
+    refreshCount++;
+    return read(date);
+  }
+
+  @override
+  Future<TodayAiAnalysis> generate({String? date}) async =>
+      read(DateTime.now());
+
+  @override
+  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
+    yield TodayAiGenerationResultEvent(await read(DateTime.now()));
+  }
 }

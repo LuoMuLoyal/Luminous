@@ -39,6 +39,8 @@ class TodayAnalysisStreamResultDtoData {
 
     required this.confidenceNote,
 
+    required this.aiGenerated,
+
     this.metrics,
 
     required this.message,
@@ -72,6 +74,9 @@ class TodayAnalysisStreamResultDtoData {
   @JsonKey(name: r'confidenceNote', required: true, includeIfNull: false)
   final String confidenceNote;
 
+  @JsonKey(name: r'aiGenerated', required: true, includeIfNull: false)
+  final bool aiGenerated;
+
   @JsonKey(name: r'metrics', required: false, includeIfNull: false)
   final List<TodayAnalysisMetricDto>? metrics;
 
@@ -96,6 +101,7 @@ class TodayAnalysisStreamResultDtoData {
           other.actionLabel == actionLabel &&
           other.action == action &&
           other.confidenceNote == confidenceNote &&
+          other.aiGenerated == aiGenerated &&
           other.metrics == metrics &&
           other.message == message &&
           other.code == code &&
@@ -111,6 +117,7 @@ class TodayAnalysisStreamResultDtoData {
       actionLabel.hashCode +
       action.hashCode +
       confidenceNote.hashCode +
+      aiGenerated.hashCode +
       metrics.hashCode +
       message.hashCode +
       code.hashCode +

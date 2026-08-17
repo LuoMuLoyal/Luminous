@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-17
 ---
 
 # Routing (GoRouter)
 
-Last updated: 2026-08-16
+Last updated: 2026-08-17
 
 本文件是 [[architecture]] 拆分后的子文档。
 
@@ -121,6 +121,10 @@ click events invalidate the notification unread-count provider before navigation
 keeps `pushCoordinatorProvider` alive, and `bootstrap.dart` starts cold-start event handling only
 after the auth session restore has completed so the protected notification route is evaluated with
 the final session state.
+
+`extras.action = ai_today_summary` routes to `/` (Today dashboard / home). Foreground receive events
+of this type are emitted through `foregroundPushEventStream`; `bootstrap.dart` listens and shows a
+tappable `Toast.showWithAction`. Tapping the toast navigates to `/`.
 
 ### Record Quick-Entry Settings
 

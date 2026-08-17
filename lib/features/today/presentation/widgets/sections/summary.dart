@@ -73,22 +73,22 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
             ),
           )
         : null;
-    final aiState = ref.watch(todayAiAnalysisControllerProvider);
+    final aiAsync = ref.watch(todayAiAnalysisControllerProvider);
+    final aiState = aiAsync.asData?.value;
+    final isRefreshing = aiAsync.isLoading;
     final content = buildAiCardContent(
       l10n: l10n,
       dashboard: widget.dashboard,
       canAccessProtectedData: canAccessProtectedData,
       aiSummariesEnabled: aiSummariesEnabled,
-      aiState: aiState,
+      aiState: aiState ?? const TodayAiAnalysisCardState.idle(),
     );
     final metrics = buildOverviewItems(l10n, widget.dashboard);
     final isPreview = !canAccessProtectedData;
-    final actionLabel = aiState.isLoading
-        ? l10n.todayAiSummaryGeneratingAction
-        : aiSummariesEnabled == false || aiState.isDisabled
-        ? l10n.todayAiSummaryOpenSettingsAction
-        : l10n.todayAiSummaryGenerateAction;
+    final actionLabel = _actionLabel(l10n, aiSummariesEnabled, aiState);
     final hasAiContent = content.summary != null || content.bullets.isNotEmpty;
+    final showNotice = _showMaterializationNotice(aiState);
+    final showRuleBasedLabel = aiState?.analysis?.aiGenerated == false;
 
     return TodaySection(
       title: l10n.todayHealthSummaryCardTitle,
@@ -138,6 +138,13 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                       ),
                 ),
               ],
+              if (showRuleBasedLabel) ...[
+                const SizedBox(height: Spacing.level2),
+                FBadge(
+                  variant: FBadgeVariant.outline,
+                  child: Text(l10n.todayAnalysisRuleBasedLabel),
+                ),
+              ],
               // --- Expand/collapse bullets + action button in one row ---
               if (hasAiContent) ...[
                 const SizedBox(height: Spacing.level2),
@@ -152,12 +159,13 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                     const Spacer(),
                     if (!isPreview)
                       FButton(
-                        onPress: aiState.isLoading
+                        onPress: isRefreshing
                             ? null
                             : () => _handleSummaryAction(
                                 context,
                                 ref,
                                 aiSummariesEnabled,
+                                aiState,
                               ),
                         variant: FButtonVariant.ghost,
                         size: FButtonSizeVariant.xs,
@@ -171,12 +179,13 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 Align(
                   alignment: Alignment.centerRight,
                   child: FButton(
-                    onPress: aiState.isLoading
+                    onPress: isRefreshing
                         ? null
                         : () => _handleSummaryAction(
                             context,
                             ref,
                             aiSummariesEnabled,
+                            aiState,
                           ),
                     variant: FButtonVariant.ghost,
                     size: FButtonSizeVariant.xs,
@@ -211,6 +220,22 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                   ],
                 ),
               ),
+              if (showNotice)
+                _AnalysisMaterializationNotice(
+                  status: aiState!.materializationStatus!,
+                  computedAt: aiState.computedAt,
+                  l10n: l10n,
+                  onRetry:
+                      aiState.materializationStatus ==
+                          TodayAiAnalysisMaterializationStatus.failed
+                      ? () => _handleSummaryAction(
+                          context,
+                          ref,
+                          aiSummariesEnabled,
+                          aiState,
+                        )
+                      : null,
+                ),
             ],
           ),
         ),
@@ -218,30 +243,108 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
     );
   }
 
+  String _actionLabel(
+    AppLocalizations l10n,
+    bool? aiSummariesEnabled,
+    TodayAiAnalysisCardState? aiState,
+  ) {
+    if (aiSummariesEnabled == false || aiState?.isDisabled == true) {
+      return l10n.todayAiSummaryOpenSettingsAction;
+    }
+    if (aiState?.status == TodayAiAnalysisCardStatus.error) {
+      return l10n.todayRetryAction;
+    }
+    return l10n.todayAnalysisRefreshAction;
+  }
+
+  bool _showMaterializationNotice(TodayAiAnalysisCardState? aiState) {
+    if (aiState == null) return false;
+    if (aiState.status != TodayAiAnalysisCardStatus.success) return false;
+    return switch (aiState.materializationStatus) {
+      TodayAiAnalysisMaterializationStatus.pending ||
+      TodayAiAnalysisMaterializationStatus.stale ||
+      TodayAiAnalysisMaterializationStatus.failed => true,
+      _ => false,
+    };
+  }
+
   Future<void> _handleSummaryAction(
     BuildContext context,
     WidgetRef ref,
     bool? aiSummariesEnabled,
+    TodayAiAnalysisCardState? aiState,
   ) async {
     if (aiSummariesEnabled == false) {
       unawaited(context.push(Routes.settings));
       return;
     }
 
-    final result = await ref
-        .read(todayAiAnalysisControllerProvider.notifier)
-        .generate();
+    await ref.read(todayAiAnalysisControllerProvider.notifier).refresh();
 
-    if (!context.mounted) {
-      return;
-    }
+    if (!context.mounted) return;
 
-    final errorMessage = result.errorMessage;
-    if (result.status == TodayAiAnalysisCardStatus.error &&
-        errorMessage != null &&
-        errorMessage.isNotEmpty) {
-      await Toast.show(context, errorMessage);
+    final error = ref.read(todayAiAnalysisControllerProvider).error;
+    if (error != null) {
+      final apiError = error.toString();
+      await Toast.show(context, apiError);
     }
+  }
+}
+
+class _AnalysisMaterializationNotice extends StatelessWidget {
+  const _AnalysisMaterializationNotice({
+    required this.status,
+    required this.l10n,
+    this.computedAt,
+    this.onRetry,
+  });
+
+  final TodayAiAnalysisMaterializationStatus status;
+  final DateTime? computedAt;
+  final AppLocalizations l10n;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final message = switch (status) {
+      TodayAiAnalysisMaterializationStatus.pending =>
+        l10n.todayAnalysisPendingHint,
+      TodayAiAnalysisMaterializationStatus.stale => l10n.todayAnalysisStaleHint,
+      TodayAiAnalysisMaterializationStatus.failed =>
+        l10n.todayAnalysisFailedHint,
+      _ => null,
+    };
+
+    if (message == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: Spacing.level2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TypographyToken.level2
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
+          ),
+          if (status == TodayAiAnalysisMaterializationStatus.failed &&
+              onRetry != null) ...[
+            const SizedBox(width: Spacing.level2),
+            FButton(
+              onPress: onRetry,
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.xs,
+              child: Text(l10n.todayRetryAction),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 

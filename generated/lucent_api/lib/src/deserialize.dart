@@ -230,11 +230,11 @@ import 'package:lucent_api/src/model/today_analysis_async_job_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_async_response_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_async_response_dto_data.dart';
 import 'package:lucent_api/src/model/today_analysis_async_result_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_async_result_data_dto_result.dart';
 import 'package:lucent_api/src/model/today_analysis_async_status_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_generate_response_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_generate_response_dto_data.dart';
 import 'package:lucent_api/src/model/today_analysis_metric_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_observed_metric_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_read_data_dto.dart';
@@ -1135,6 +1135,11 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'TodayAnalysisAsyncResultDataDtoResult':
+      return TodayAnalysisAsyncResultDataDtoResult.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'TodayAnalysisAsyncStatusDataDto':
       return TodayAnalysisAsyncStatusDataDto.fromJson(
             value as Map<String, dynamic>,
@@ -1148,11 +1153,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'TodayAnalysisGenerateResponseDto':
       return TodayAnalysisGenerateResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'TodayAnalysisGenerateResponseDtoData':
-      return TodayAnalysisGenerateResponseDtoData.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

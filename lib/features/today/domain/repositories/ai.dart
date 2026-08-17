@@ -17,6 +17,16 @@ class TodayAiGenerationResultEvent extends TodayAiGenerationEvent {
 }
 
 abstract interface class TodayAiRepository {
+  /// Reads the latest persisted analysis for [date].
+  Future<TodayAiAnalysis> read(DateTime date);
+
+  /// Requests a bounded refresh for [date] and returns the current persisted
+  /// analysis state (which may still be pending).
+  Future<TodayAiAnalysis> refresh(DateTime date);
+
+  /// Legacy synchronous generation (still used by the stream path).
   Future<TodayAiAnalysis> generate({String? date});
+
+  /// Legacy stream generation (still used by the stream path).
   Stream<TodayAiGenerationEvent> generateStream({String? date});
 }

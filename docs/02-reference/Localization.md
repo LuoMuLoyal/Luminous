@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added)
+Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -435,4 +435,16 @@ flutter test
 - `StartEventSheet` 在当前用药或触发症状选项预读失败时，于对应选项区显示错误文案与 ghost `xs`“重试”按钮。
 - 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+- 顶部 `Last updated` 已同步记录本次新增。
+
+
+## 2026-08-17 F-6 + F-7 Today AI 摘要物化状态文案
+
+- 新增以下键到 `lib/l10n/src/today_zh.arb` / `today_en.arb`：
+  - `todayAnalysisEmptyTitle` / `todayAnalysisEmptyBody`：`empty` 物化状态下的空态标题与说明。
+  - `todayAnalysisPendingHint`：服务端正在物化时的提示。
+  - `todayAnalysisStaleHint`：物化结果已过期、正在重新物化时的提示。
+  - `todayAnalysisFailedHint`：物化失败时的提示。
+  - `todayAnalysisRefreshAction`：物化提示条与空态的刷新操作文案。
+- 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。

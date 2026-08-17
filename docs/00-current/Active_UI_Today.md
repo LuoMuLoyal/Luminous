@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error)
+Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast)
 
 ## 页面结构
 
@@ -39,6 +39,11 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 
 ## 今日摘要
 
+- AI 摘要接入服务端物化读模型：`todayAiAnalysisControllerProvider` 通过 `GET /today/analysis` 读取 `empty/pending/ready/stale/failed` 五种物化状态，不直接调用生成接口。
+  - `ready`：展示 `analysis` 内容，标签显示「AI 生成摘要」。
+  - `empty`：显示真实空态（`todayAnalysisEmptyTitle` / `todayAnalysisEmptyBody`）并提供刷新按钮。
+  - `pending/stale/failed`：保留上一次可用的 analysis 内容，同时在卡片顶部显示物化提示条（`todayAnalysisPendingHint` / `todayAnalysisStaleHint` / `todayAnalysisFailedHint`），允许用户点击刷新重新物化。
+  - provider 监听 `DataChangeBus` 相关 topic 并以 300ms debounce 重新读取；应用 resume 时比较 `sourceVersion`，变化才刷新。
 - 概览指标改成更轻的横排 compact 样式，减少首屏垂直占用。
 - 指标不再使用摘要卡内的背景盒子，避免卡片套卡片；层级只由外层容器、图标和文字区分。
 - AI 叙述保持轻量，默认只展示短总结和折叠入口。
@@ -97,7 +102,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - Today 移动骨架包含健康观察区块，顺序与加载完成后的移动页面一致；桌面骨架保持原双栏结构。
 - `activeHealthEventProvider` 读取当前用户事件并提供经过认证守卫的 create/check-in/end action；空响应/404 映射为空态，其他请求错误保留为可重试错误。
 - Lucent Task 6 已将建议采集口径收敛到 reminder slot：服务端按用户时区返回 `planned/taken/skipped/unconfirmed/overdueUnconfirmed`，同一药品的多个提醒槽位独立；Luminous 代码暂不改动，Task 8 负责把这些状态接入 Today domain/UI。
-- Lucent Task 7 已将 Today Analysis 改为服务端事件驱动的物化读模型：GET 只读取 `empty/pending/ready/stale/failed` 状态，写入相关事实后由服务端限次生成；Luminous generated client 已同步 GET、refresh 及相关响应模型，Task 8 负责把状态映射到 Today domain/UI。
+- Lucent Task 7 已将 Today Analysis 改为服务端事件驱动的物化读模型：GET 只读取 `empty/pending/ready/stale/failed` 状态，写入相关事实后由服务端限次生成；Luminous generated client 已同步 GET、refresh 及相关响应模型，domain 新增 `TodayAiAnalysisMaterializationStatus` 与 `TodayAiAnalysisCardState` 映射五种状态。由于生成的 `TodayAnalysisRefreshResponseDtoData` 把 oneOf 分支合并为所有字段 required 的扁平 DTO，refresh 走 raw Dio + 按 `status`/`analysis` 手工归一化，避免反序列化异常。
 - Today AI data source 已按 generate API envelope 解包 `analysis`，并保留 direct analysis data 的类型安全映射；generated DTO 未被改写。
 - Today suggestion GET 已切换为只读物化结果：domain 映射 `ready / stale / pending / failed / empty`，旧缓存缺失状态元数据时按 `ready` 兼容。
 - `pending / stale / failed` 会保留可用的旧建议内容；`failed` 提供重试，`empty` 保持真实空态；缺少 `computedAt` 的 stale 结果仍显示更新中提示。

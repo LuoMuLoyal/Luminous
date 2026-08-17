@@ -245,6 +245,13 @@
   "todayAiSummaryErrorHint": "这次生成没有成功，可以再试一次。",
   "todayAiSummaryDisabledHint": "AI 总结已在设置中关闭，开启后才会生成。",
   "todayAiSummarySignedOutHint": "登录后才会基于你的今日记录生成 AI 总结。",
+  "todayAnalysisRuleBasedLabel": "基于规则的摘要",
+  "todayAnalysisRefreshAction": "刷新",
+  "todayAnalysisEmptyTitle": "暂无分析",
+  "todayAnalysisEmptyBody": "记录用药、饮水或睡眠后，会在这里生成今日分析。",
+  "todayAnalysisPendingHint": "分析生成中…",
+  "todayAnalysisStaleHint": "分析结果较旧，下拉刷新",
+  "todayAnalysisFailedHint": "分析生成失败，点击重试",
   "todayAiSummaryMedicationPending": "还有 {count} 条用药需要确认，先不要自行调整剂量",
   "@todayAiSummaryMedicationPending": {
     "placeholders": {

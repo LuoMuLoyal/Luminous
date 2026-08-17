@@ -12,6 +12,8 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
 
   List<TodayAiRemoteEvent> streamEvents = [];
   Object? streamError;
+  lucent.TodayAnalysisReadDataDto? readResult;
+  lucent.TodayAnalysisReadDataDto? refreshResult;
 
   @override
   final lucent.TodayAnalysisApi api = lucent.TodayAnalysisApi(
@@ -22,8 +24,19 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   final Dio dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
 
   @override
-  Future<lucent.TodayAnalysisDataDto> generate({String? date}) async {
-    throw UnimplementedError();
+  Future<lucent.TodayAnalysisReadDataDto> read({String? date}) async {
+    if (readResult == null) {
+      throw StateError('read() not stubbed');
+    }
+    return readResult!;
+  }
+
+  @override
+  Future<lucent.TodayAnalysisReadDataDto> refresh({String? date}) async {
+    if (refreshResult == null) {
+      throw StateError('refresh() not stubbed');
+    }
+    return refreshResult!;
   }
 
   @override
@@ -42,6 +55,7 @@ lucent.TodayAnalysisDataDto _buildDto({
   String summary = '今日健康状况良好',
   String actionLabel = '多喝水',
   String confidenceNote = '基于最近7天数据',
+  bool aiGenerated = true,
   List<lucent.TodayAnalysisBulletDto>? bullets,
 }) {
   return lucent.TodayAnalysisDataDto(
@@ -52,6 +66,23 @@ lucent.TodayAnalysisDataDto _buildDto({
     actionLabel: actionLabel,
     action: 'navigate_to_record',
     confidenceNote: confidenceNote,
+    aiGenerated: aiGenerated,
+  );
+}
+
+lucent.TodayAnalysisReadDataDto _buildReadDto({
+  lucent.TodayAnalysisReadDataDtoStatusEnum status =
+      lucent.TodayAnalysisReadDataDtoStatusEnum.ready,
+  lucent.TodayAnalysisDataDto? analysis,
+  String? computedAt = '2026-07-10T08:00:00.000Z',
+}) {
+  return lucent.TodayAnalysisReadDataDto(
+    status: status,
+    analysis: analysis,
+    sourceVersion: 1,
+    computedVersion: 1,
+    computedAt: computedAt,
+    retryAfterSeconds: null,
   );
 }
 
@@ -75,7 +106,131 @@ void main() {
       repo = LucentTodayAiRepository(dataSource: dataSource);
     });
 
-    // ─── generateStream ──────────────────────────────────────────────
+    // ─── read ──────────────────────────────────────────────────────────
+    group('read', () {
+      test('maps ready read DTO to TodayAiAnalysis', () async {
+        dataSource.readResult = _buildReadDto(
+          analysis: _buildDto(
+            date: '2026-07-11',
+            summary: '今日健康提醒',
+            actionLabel: '按时服药',
+            confidenceNote: '高置信度',
+            aiGenerated: true,
+            bullets: [_bullet(kind: 'medication', text: '记得服用阿司匹林')],
+          ),
+        );
+
+        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+
+        expect(analysis.date, '2026-07-11');
+        expect(analysis.summary, '今日健康提醒');
+        expect(
+          analysis.materializationStatus,
+          TodayAiAnalysisMaterializationStatus.ready,
+        );
+        expect(analysis.aiGenerated, isTrue);
+      });
+
+      test('maps empty read DTO to empty analysis', () async {
+        dataSource.readResult = _buildReadDto(
+          status: lucent.TodayAnalysisReadDataDtoStatusEnum.empty,
+          analysis: null,
+        );
+
+        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+
+        expect(
+          analysis.materializationStatus,
+          TodayAiAnalysisMaterializationStatus.empty,
+        );
+        expect(analysis.summary, '');
+      });
+
+      test('maps pending read DTO preserving computedAt', () async {
+        dataSource.readResult = _buildReadDto(
+          status: lucent.TodayAnalysisReadDataDtoStatusEnum.pending,
+          analysis: null,
+          computedAt: '2026-07-10T08:00:00.000Z',
+        );
+
+        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+
+        expect(
+          analysis.materializationStatus,
+          TodayAiAnalysisMaterializationStatus.pending,
+        );
+        expect(
+          analysis.generatedAt,
+          DateTime.parse('2026-07-10T08:00:00.000Z'),
+        );
+      });
+
+      test('maps stale read DTO', () async {
+        dataSource.readResult = _buildReadDto(
+          status: lucent.TodayAnalysisReadDataDtoStatusEnum.stale,
+          analysis: _buildDto(aiGenerated: false),
+        );
+
+        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+
+        expect(
+          analysis.materializationStatus,
+          TodayAiAnalysisMaterializationStatus.stale,
+        );
+        expect(analysis.aiGenerated, isFalse);
+      });
+
+      test('maps failed read DTO', () async {
+        dataSource.readResult = _buildReadDto(
+          status: lucent.TodayAnalysisReadDataDtoStatusEnum.failed,
+          analysis: null,
+        );
+
+        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+
+        expect(
+          analysis.materializationStatus,
+          TodayAiAnalysisMaterializationStatus.failed,
+        );
+      });
+    });
+
+    // ─── refresh ───────────────────────────────────────────────────────
+    group('refresh', () {
+      test('maps ready refresh response to TodayAiAnalysis', () async {
+        dataSource.refreshResult = _buildReadDto(
+          analysis: _buildDto(
+            date: '2026-07-11',
+            summary: '刷新后的摘要',
+            aiGenerated: true,
+          ),
+        );
+
+        final analysis = await repo.refresh(DateTime.utc(2026, 7, 11));
+
+        expect(analysis.summary, '刷新后的摘要');
+        expect(
+          analysis.materializationStatus,
+          TodayAiAnalysisMaterializationStatus.ready,
+        );
+      });
+
+      test('maps pending refresh response to pending analysis', () async {
+        dataSource.refreshResult = _buildReadDto(
+          status: lucent.TodayAnalysisReadDataDtoStatusEnum.pending,
+          analysis: null,
+        );
+
+        final analysis = await repo.refresh(DateTime.utc(2026, 7, 11));
+
+        expect(
+          analysis.materializationStatus,
+          TodayAiAnalysisMaterializationStatus.pending,
+        );
+      });
+    });
+
+    // ─── generateStream ────────────────────────────────────────────────
     group('generateStream', () {
       test('emits summary event from remote summary event', () async {
         dataSource.streamEvents = [
@@ -97,6 +252,7 @@ void main() {
           summary: '今日健康提醒',
           actionLabel: '按时服药',
           confidenceNote: '高置信度',
+          aiGenerated: true,
           bullets: [
             _bullet(kind: 'medication', text: '记得服用阿司匹林'),
             _bullet(kind: 'hydration', text: '饮水量不足'),
@@ -218,7 +374,7 @@ void main() {
       });
     });
 
-    // ─── generate ────────────────────────────────────────────────────
+    // ─── generate ──────────────────────────────────────────────────────
     group('generate', () {
       test('returns analysis from stream result event', () async {
         final dto = _buildDto(date: '2026-07-10', summary: '健康日报');

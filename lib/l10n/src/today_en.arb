@@ -245,6 +245,13 @@
   "todayAiSummaryErrorHint": "This generation did not complete. Try again.",
   "todayAiSummaryDisabledHint": "AI summaries are turned off in settings. Enable them before generating.",
   "todayAiSummarySignedOutHint": "Sign in to generate an AI summary from today's records.",
+  "todayAnalysisRuleBasedLabel": "Rule-based summary",
+  "todayAnalysisRefreshAction": "Refresh",
+  "todayAnalysisEmptyTitle": "No analysis yet",
+  "todayAnalysisEmptyBody": "After logging medication, water, or sleep, your daily analysis will appear here.",
+  "todayAnalysisPendingHint": "Analysis is being generated…",
+  "todayAnalysisStaleHint": "Analysis result is stale, pull to refresh",
+  "todayAnalysisFailedHint": "Analysis generation failed, tap to retry",
   "todayAiSummaryMedicationPending": "{count} medication items still need confirmation. Do not adjust doses casually",
   "@todayAiSummaryMedicationPending": {
     "placeholders": {
