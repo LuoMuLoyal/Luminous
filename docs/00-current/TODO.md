@@ -47,10 +47,6 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - AI 消息 Markdown 模板升级
   - 当前只使用基础 `MarkdownBody` 样式；后续统一设计标题、列表、代码块、引用、表格和链接的视觉模板
 
-- AI 消息操作按钮完善
-  - 复制已可用（Clipboard + toast）；重新生成/重新发送仍是上下文菜单占位（`message_bubble.dart` 的 `onPress: null`），
-    需后端 controller 支持后接线（Lucent assistant 尚无 regenerate/resend 接口）
-
 - forui 0.25.0 toast dismiss 的 dispose-during-notifyListeners 风险
   - 现象：`FToasterEntry.dismiss()` 在 toast 入场动画完成前触发时，forui 非无障碍分支直接 `reverse()`，
     同步走到 dismissed 状态后在通知期间 `dispose()`（无障碍分支用 microtask 规避了同样问题）
