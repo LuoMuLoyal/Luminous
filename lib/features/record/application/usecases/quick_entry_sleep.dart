@@ -472,7 +472,12 @@ Future<void> handleSleepQuickAction(
         context,
         l10n.recordQuickSleepStartedToast,
         l10n.recordQuickUndoAction,
+        // The undo action fires on a later user tap; the calling page
+        // may have been popped in between, so guard before using the
+        // context (deactivated context trips the
+        // `_dependents.isEmpty` assertion).
         () {
+          if (!context.mounted) return;
           unawaited(undoDailyRecordQuickAction(context, ref, action));
         },
       );

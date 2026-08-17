@@ -95,7 +95,12 @@ class QuickEntryExecutor {
       buildContext,
       l10n.recordQuickSavedToast,
       l10n.recordQuickUndoAction,
+      // The undo action fires on a later user tap; the calling surface
+      // (e.g. the quick-entry flow) may have been closed in between, so
+      // guard before using the context (deactivated context trips the
+      // `_dependents.isEmpty` assertion).
       () {
+        if (!buildContext.mounted) return;
         unawaited(_undo(buildContext, action));
       },
     );

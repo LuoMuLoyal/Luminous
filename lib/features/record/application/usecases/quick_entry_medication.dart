@@ -189,7 +189,16 @@ Future<void> showMedicationSelectionDialog(
                                   context,
                                   l10n.recordQuickMedicationTemporaryToast,
                                   l10n.recordQuickUndoAction,
-                                  () => unawaited(onUndo(batchUndo)),
+                                  // The undo action fires on a later user
+                                  // tap; the dialog may have been
+                                  // dismissed in between, so guard before
+                                  // using the context (deactivated context
+                                  // trips the `_dependents.isEmpty`
+                                  // assertion).
+                                  () {
+                                    if (!context.mounted) return;
+                                    unawaited(onUndo(batchUndo));
+                                  },
                                 ),
                               );
                             }
@@ -306,7 +315,12 @@ Future<void> handleMedicationQuickAction(
         context,
         l10n.recordQuickSavedToast,
         l10n.recordQuickUndoAction,
+        // The undo action fires on a later user tap; the calling page
+        // may have been popped in between, so guard before using the
+        // context (deactivated context trips the
+        // `_dependents.isEmpty` assertion).
         () {
+          if (!context.mounted) return;
           unawaited(
             undoMedicationQuickAction(context, ref, action, occurredAt),
           );
@@ -322,7 +336,12 @@ Future<void> handleMedicationQuickAction(
         context,
         l10n.recordQuickMedicationTemporaryToast,
         l10n.recordQuickUndoAction,
+        // The undo action fires on a later user tap; the calling page
+        // may have been popped in between, so guard before using the
+        // context (deactivated context trips the
+        // `_dependents.isEmpty` assertion).
         () {
+          if (!context.mounted) return;
           unawaited(
             undoMedicationQuickAction(context, ref, action, occurredAt),
           );

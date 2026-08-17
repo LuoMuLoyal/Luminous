@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-17
 ---
 
 # Active UI — Record
 
-Last updated: 2026-08-16 (健康同步指标标题本地化与身高类型统一)
+Last updated: 2026-08-17 (Toast action mounted 守卫全量补齐与 recent_searches 日志/生命周期修复)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -288,3 +288,8 @@ Last updated: 2026-08-16 (健康同步指标标题本地化与身高类型统一
 
 - `nlp.dart` generate 失败时：无候选可回退才进入 `error` 态并展示错误横幅；保留旧候选时回到 `reviewing` 且清空 `errorMessage`，消除"审查中 + 错误提示"并存的困惑状态。
 - 并行保存失败时 `RecordNlpSaveOutcome.partial.message` 汇总全部失败原因（去重、换行拼接），不再只暴露最后一个错误。
+
+## 2026-08-17 Toast action mounted 守卫全量补齐
+
+- record 模块 6 处 `Toast.showWithAction` action 回调（`quick_entry_executor.dart`、`fast_entry_dialog.dart`、`quick_entry_sleep.dart`、`quick_entry_medication.dart` × 3）均新增 `if (!context.mounted) return;` 守卫，与 scan/auth 模块已修复的模式一致，防止用户关闭调用面后点击延迟 action 触发 `debugDeactivated` 断言崩溃。
+- `recent_searches.dart` `_settleInitialLoad` 空 catch 块补齐 `talker.warning` 日志（08-16 遗留 🔴）；`_pendingLoad` 在初始 load 完成后通过 `whenComplete` 置空，生命周期更精确。

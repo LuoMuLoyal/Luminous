@@ -280,7 +280,12 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
             context,
             l10n.recordQuickSavedToast,
             l10n.recordQuickUndoAction,
+            // The undo action fires on a later user tap; the dialog may
+            // have been dismissed in between, so guard before using the
+            // context (deactivated context trips the
+            // `_dependents.isEmpty` assertion).
             () {
+              if (!context.mounted) return;
               unawaited(_undoCreatedRecord(item.id));
             },
           ),
