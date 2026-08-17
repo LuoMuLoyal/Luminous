@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/search/data/datasources/recent_searches.dart';
@@ -23,6 +25,11 @@ class RecentSearchesNotifier extends AsyncNotifier<List<String>> {
   Future<List<String>> build() {
     final load = const RecentSearchesLocalPreferences().load();
     _pendingLoad = load;
+    unawaited(
+      load.whenComplete(() {
+        if (_pendingLoad == load) _pendingLoad = null;
+      }),
+    );
     return load;
   }
 
@@ -35,8 +42,15 @@ class RecentSearchesNotifier extends AsyncNotifier<List<String>> {
     if (pending == null) return;
     try {
       await pending;
-    } catch (_) {
-      // Initial read failed: nothing in flight to overwrite the write with.
+    } catch (e, st) {
+      // Initial read failed: nothing in flight to overwrite the write with,
+      // but log for diagnosability (disk corruption, permission issues,
+      // data format incompatibility, etc.).
+      ref
+          .read(talkerProvider)
+          .warning(
+            'RecentSearchesNotifier: initial load failed, proceeding with write: $e\n$st',
+          );
     }
   }
 
