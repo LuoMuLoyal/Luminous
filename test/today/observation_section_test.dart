@@ -92,6 +92,35 @@ const _observationBundle = TodaySuggestionBundle(
       ruleVersion: '1.0.0',
       triggerType: TodaySuggestionTriggerType.timer,
       lifecycleState: TodaySuggestionLifecycleState.active,
+      feedbackOptions: [TodaySuggestionFeedback.suppress],
+    ),
+  ],
+);
+
+/// A suggestion bundle with an observation card that has no feedback options.
+const _observationBundleNoFeedback = TodaySuggestionBundle(
+  generatedAt: '2026-07-09T10:00:00.000Z',
+  observations: [
+    TodaySuggestionCard(
+      id: 'sug_obs_002',
+      type: TodaySuggestionType.coverage,
+      cardTone: TodaySuggestionCardTone.neutral,
+      icon: 'info',
+      title: '睡眠数据不足，暂无法生成睡眠趋势建议',
+      reason: '需要至少 3 天连续睡眠记录才能建立基线。',
+      evidence: [],
+      boundary: '记录越多，建议越精准。',
+      primaryAction: TodaySuggestionAction(
+        actionId: 'go_record_sleep',
+        label: '记录睡眠',
+        route: '/record/create?kind=sleep',
+        authRequired: true,
+      ),
+      confidence: TodaySuggestionConfidence.high,
+      ruleId: 'coverage_explanation',
+      ruleVersion: '1.0.0',
+      triggerType: TodaySuggestionTriggerType.timer,
+      lifecycleState: TodaySuggestionLifecycleState.active,
     ),
   ],
 );
@@ -263,6 +292,74 @@ void main() {
       // The observation card has confidence.high, which maps to the review tag
       expect(find.text(l10n.todayObservationReviewTag), findsOneWidget);
     });
+
+    testWidgets('renders suppress feedback button for observation cards', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        buildApp(
+          notifierFactory: _ObservationBundleNotifier.new,
+          dashboard: _hasSleepDashboard,
+        ),
+      );
+      await settle(tester);
+
+      expect(find.text(l10n.todaySuggestionSuppressAction), findsOneWidget);
+    });
+
+    testWidgets('does not render feedback button when options are absent', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        buildApp(
+          notifierFactory: _ObservationBundleNoFeedbackNotifier.new,
+          dashboard: _hasSleepDashboard,
+        ),
+      );
+      await settle(tester);
+
+      expect(find.text(l10n.todaySuggestionSuppressAction), findsNothing);
+    });
+
+    testWidgets('does not render feedback button for fallback observations', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        buildApp(
+          notifierFactory: _EmptyObservationsNotifier.new,
+          dashboard: _noSleepDashboard,
+        ),
+      );
+      await settle(tester);
+
+      expect(find.text(l10n.todaySuggestionSuppressAction), findsNothing);
+    });
+
+    testWidgets('enters submitted state after tapping suppress', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        buildApp(
+          notifierFactory: _FeedbackEnabledObservationNotifier.new,
+          dashboard: _hasSleepDashboard,
+        ),
+      );
+      await settle(tester);
+
+      await tester.tap(find.text(l10n.todaySuggestionSuppressAction));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(l10n.todaySuggestionFeedbackSubmitted), findsOneWidget);
+    });
   });
 }
 
@@ -273,9 +370,27 @@ class _ObservationBundleNotifier extends TodaySuggestionNotifier {
   Future<TodaySuggestionBundle?> build() async => _observationBundle;
 }
 
+class _ObservationBundleNoFeedbackNotifier extends TodaySuggestionNotifier {
+  @override
+  Future<TodaySuggestionBundle?> build() async => _observationBundleNoFeedback;
+}
+
 class _EmptyObservationsNotifier extends TodaySuggestionNotifier {
   @override
   Future<TodaySuggestionBundle?> build() async => _emptyObservationsBundle;
+}
+
+class _FeedbackEnabledObservationNotifier extends TodaySuggestionNotifier {
+  @override
+  Future<TodaySuggestionBundle?> build() async => _observationBundle;
+
+  @override
+  Future<void> submitFeedback({
+    required String suggestionId,
+    required TodaySuggestionFeedback feedback,
+  }) async {
+    // no-op success for testing feedback UI transitions
+  }
 }
 
 class _ErrorSuggestionNotifier extends TodaySuggestionNotifier {

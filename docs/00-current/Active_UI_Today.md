@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast)
+Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry)
 
 ## 页面结构
 
@@ -63,6 +63,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - 置信度 tag 从后端 `confidence` 映射：`high → 去看看`、`medium → 值得留意`、`low → 仅供参考`。标签用 `FBadge` 呈现，high→`primary`、medium→`secondary`、low→`outline` 视觉分级。
 - fallback 睡眠缺失提示保留，与后端观察项合并展示。
 - section subtitle `以下内容仅供参考，不构成待办`。
+- 后端观察项卡片若携带 `feedbackOptions` 且包含 `suppress`，则在 tile 内渲染精简版「不再看到」ghost 按钮；点击后调用 `todaySuggestionProvider.submitFeedback(suppress)`，成功后切换为只读「已反馈」指示器，失败时显示 `todaySuggestionFeedbackError` toast 且不切换状态。fallback 观察项不显示反馈入口。
 
 ## 轻动作区
 
