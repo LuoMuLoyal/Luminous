@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-17
 ---
 
 # Active UI — Medicine
 
-Last updated: 2026-08-16 (F-12 最近搜索本地持久化、分类快捷标注)
+Last updated: 2026-08-17 (删除 MedicineSearchDashboard 废弃实体)
 
 ## 页面结构
 
@@ -74,7 +74,7 @@ Last updated: 2026-08-16 (F-12 最近搜索本地持久化、分类快捷标注)
 ## 药品搜索与扫描
 
 - 搜索结果的「加入药箱」即时预检：提交待加药品 source/id（`runPrecheck` → `POST /medicines/risk-check`，type=static + candidate，服务端就当前药箱+待加药品即时检查、不落库），发现 findings/coverageIssues 时弹「添加前风险检查」确认框；预检失败不阻塞添加，提示「加入后可在风险检查中查看」。
-- 最近搜索本地持久化（F-12）：搜索成功且查询非空时，trim 后的关键词写入 SharedPreferences（`RecentSearchesLocalPreferences` + `recentSearchesProvider`，去重、最新在前、上限 10 条）；空查询时移动端与桌面两处渲染「最近搜索」区（点关键词直接搜索、点「清空」清空 UI 与存储），无记录时整区隐藏。分类快捷（`Categories`）数据源未接通（后端药品库无聚合分类字段）保持隐藏（调用处注释 F-12）；`MedicineSearchDashboard` / `MedicineSearchCategory` 实体与 `medicineSearchCategory*` l10n 键保留并标注**不接入主路径**。
+- 最近搜索本地持久化（F-12）：搜索成功且查询非空时，trim 后的关键词写入 SharedPreferences（`RecentSearchesLocalPreferences` + `recentSearchesProvider`，去重、最新在前、上限 10 条）；空查询时移动端与桌面两处渲染「最近搜索」区（点关键词直接搜索、点「清空」清空 UI 与存储），无记录时整区隐藏。分类快捷（`Categories`）数据源未接通（后端药品库无聚合分类字段）保持隐藏（调用处注释 F-12）；`MedicineSearchCategory` 实体与 `medicineSearchCategory*` l10n 键保留并标注**不接入主路径**。`MedicineSearchDashboard` 废弃实体已删除（2026-08-17）。
 - 桌面预览面板去造假（F-11）：`PreviewPanel` 不再把后端「规格 / 厂商」subtitle 当「临床提示」展示、不再渲染恒空「安全确认」清单——仅展示所选药品标题与结构化空态；`MedicineSearchSafetyPreview`/`fetchDetail` 标注不接入主路径，移动端真实临床/安全内容走药品详情页。
 - 过敏安全检查。
 - 药品拍照识别（药盒 AI 识别）和条码扫描已在移动端暴露。

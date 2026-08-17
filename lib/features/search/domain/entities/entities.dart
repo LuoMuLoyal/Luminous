@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/design/semantic_color.dart';
@@ -19,31 +18,6 @@ enum MedicineSearchCategoryType {
 
 // Photo recognition and barcode scan are live on mobile devices.
 enum MedicineSearchActionType { photo, barcode, keyword, switchSource }
-
-/// 旧搜索 dashboard 遗骸（F-12 最近搜索接入后无消费方），保留但**不接入主路径**。
-///
-/// `recentKeywords` 已由 `RecentSearchesLocalPreferences` /
-/// `recentSearchesProvider` 取代——页面空查询直接渲染持久化的最近搜索关键词，
-/// 本实体仅供历史参考，不得作为新代码的输入形态。
-@freezed
-abstract class MedicineSearchDashboard with _$MedicineSearchDashboard {
-  const MedicineSearchDashboard._();
-
-  const factory MedicineSearchDashboard({
-    required String query,
-    required MedicineSearchSource selectedSource,
-    required List<String> recentKeywords,
-    required List<MedicineSearchQuickAction> quickActions,
-    required List<MedicineSearchCategory> categories,
-    required List<MedicineSearchResult> results,
-    required String selectedResultId,
-    required MedicineSearchSafetyPreview safetyPreview,
-  }) = _MedicineSearchDashboard;
-
-  MedicineSearchResult? get selectedResult {
-    return results.firstWhereOrNull((result) => result.id == selectedResultId);
-  }
-}
 
 @freezed
 abstract class MedicineSearchQuickAction with _$MedicineSearchQuickAction {
