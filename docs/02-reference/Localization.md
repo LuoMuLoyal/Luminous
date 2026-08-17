@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (F-7 assistant source strip added 14 `assistantSource*` keys to the assistant fragment; removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added)
+Last updated: 2026-08-17 (F-7 assistant source strip added 14 `assistantSource*` keys to the assistant fragment; removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added; F-13+F-15 added 7 assistant disclaimer / trust-tier keys — `assistantDisclaimerText`, `assistantSourceBadgeLeaflet` / `assistantSourceBadgeDrugbank` / `assistantSourceBadgeMedicalQa`, `assistantSourceLowTrustHint`, `assistantDisclaimerShowAction` / `assistantDisclaimerCollapseAction` — to the assistant fragment)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -469,7 +469,15 @@ flutter test
 - 所有权在 assistant 分片（`assistant*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。
 
-## 2026-08-17 F-9 下午动态问候语饮水口径修正
+## 2026-08-17 F-13 + F-15 AI 回答免责与来源级信任分层键
+
+- 新增 7 个 `assistant*` 键到 `lib/l10n/src/assistant_zh.arb` / `assistant_en.arb`：
+  - `assistantDisclaimerText`（zh: AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。/ en: AI responses are for health reference only…）：助手消息免责条与欢迎面板免责区的固定免责文案。
+  - `assistantSourceBadgeLeaflet`（说明书 / Leaflet）、`assistantSourceBadgeDrugbank`（DrugBank / DrugBank）、`assistantSourceBadgeMedicalQa`（医疗问答 / Medical Q&A）：来源条折叠行知识工具信任层级徽标。
+  - `assistantSourceLowTrustHint`（低可信教育参考 / Low-trust educational reference）：medicalQa 工具出现时折叠行下方的固定低可信提示。
+  - `assistantDisclaimerShowAction`（展开免责说明 / View disclaimer）与 `assistantDisclaimerCollapseAction`（收起免责说明 / Collapse disclaimer）：欢迎面板免责区展开/收起语义标签。
+- 所有权在 assistant 分片（`assistant*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+- 顶部 `Last updated` 已同步记录本次新增。
 
 - 修改 `lib/l10n/src/today_zh.arb` / `today_en.arb` 中的 `todayGreetingAfternoonWaterShort`：占位符由 `count`（次）改为 `gap`（int，ml），中文文案改为「下午好，饮水还差 {gap} ml」，英文文案改为 "Good afternoon, {gap} ml of water to go"。
 - 新增 `todayGreetingAfternoonWaterUnknown`（zh: 下午好，今天还没记饮水 / en: Good afternoon, no water logged today）。

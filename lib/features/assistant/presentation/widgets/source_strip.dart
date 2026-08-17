@@ -37,7 +37,6 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
 
     final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
-    final toolTexts = widget.usedTools.map(_toolDisplayName);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,13 +61,15 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                   ),
                   const SizedBox(width: Spacing.level2),
                   Expanded(
-                    child: Text(
-                      '${l10n.assistantUsedToolsLabel}: ${toolTexts.join(' · ')}',
+                    child: Text.rich(
+                      TextSpan(
+                        style: TypographyToken.level2
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
+                        children: _collapsedRowSpans(context, l10n),
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TypographyToken.level2
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
                     ),
                   ),
                   const SizedBox(width: Spacing.level2),
@@ -84,6 +85,28 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
             ),
           ),
         ),
+        if (_hasMedicalQaTool) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: Spacing.level2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(width: 14),
+                const SizedBox(width: Spacing.level2),
+                Expanded(
+                  child: Text(
+                    l10n.assistantSourceLowTrustHint,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TypographyToken.level2
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         if (_expanded)
           for (final tool in widget.usedTools)
             Padding(
@@ -96,6 +119,42 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
             ),
       ],
     );
+  }
+
+  bool get _hasMedicalQaTool => widget.usedTools.any(
+    (tool) =>
+        knowledgeSourceTypeOf(tool) == AssistantKnowledgeSourceType.medicalQa,
+  );
+
+  /// Inline spans for the collapsed row: localized tool names separated by
+  /// ` · `, each knowledge tool followed by its trust-tier badge.
+  List<InlineSpan> _collapsedRowSpans(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) {
+    final spans = <InlineSpan>[
+      TextSpan(text: '${l10n.assistantUsedToolsLabel}: '),
+    ];
+    for (var i = 0; i < widget.usedTools.length; i++) {
+      final tool = widget.usedTools[i];
+      if (i > 0) {
+        spans.add(const TextSpan(text: ' · '));
+      }
+      spans.add(TextSpan(text: _toolDisplayName(tool)));
+      final tier = knowledgeSourceTypeOf(tool);
+      if (tier != null) {
+        spans.add(
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Padding(
+              padding: const EdgeInsets.only(left: Spacing.level1),
+              child: _SourceTierBadge(type: tier),
+            ),
+          ),
+        );
+      }
+    }
+    return spans;
   }
 
   String _toolDisplayName(String tool) {
@@ -268,5 +327,64 @@ class _ToolDetailCard extends StatelessWidget {
       locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm',
       locale,
     ).format(parsed.toLocal());
+  }
+}
+
+/// Small rounded badge labeling a knowledge tool's trust tier, rendered next
+/// to the tool name in the collapsed source strip row.
+///
+/// Tone by tier:
+/// - leaflet (primary): highest trust — package-insert facts, so the brand
+///   color reads as the trustworthy default.
+/// - drugbank (neutral secondary): scientific grounding, informational.
+/// - medicalQa (destructive): open corpus, low-trust educational reference —
+///   the alert tone reminds users not to treat QA material as conclusions.
+class _SourceTierBadge extends StatelessWidget {
+  const _SourceTierBadge({required this.type});
+
+  final AssistantKnowledgeSourceType type;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final l10n = AppLocalizations.of(context)!;
+
+    final (label, background, foreground) = switch (type) {
+      AssistantKnowledgeSourceType.leaflet => (
+        l10n.assistantSourceBadgeLeaflet,
+        SemanticColor.primary.subtle(context),
+        SemanticColor.primary.solid(context),
+      ),
+      AssistantKnowledgeSourceType.drugbank => (
+        l10n.assistantSourceBadgeDrugbank,
+        colors.secondary,
+        colors.mutedForeground,
+      ),
+      AssistantKnowledgeSourceType.medicalQa => (
+        l10n.assistantSourceBadgeMedicalQa,
+        SemanticColor.destructive.subtle(context),
+        SemanticColor.destructive.solid(context),
+      ),
+    };
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        border: Border.all(color: colors.border),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level2,
+          vertical: 1,
+        ),
+        child: Text(
+          label,
+          style: TypographyToken.level1
+              .body(context)
+              .copyWith(color: foreground, height: 1.2),
+        ),
+      ),
+    );
   }
 }

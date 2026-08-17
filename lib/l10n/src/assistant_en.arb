@@ -119,5 +119,12 @@
   "assistantSourceConfidenceHigh": "High",
   "assistantSourceConfidenceMedium": "Medium",
   "assistantSourceConfidenceLow": "Low",
-  "assistantSourceNoDetailsNote": "Tool details are unavailable for this message"
+  "assistantSourceNoDetailsNote": "Tool details are unavailable for this message",
+  "assistantDisclaimerText": "AI responses are for health reference only and do not constitute medical diagnosis or medication advice. Consult a doctor or pharmacist before changing your medications.",
+  "assistantSourceBadgeLeaflet": "Leaflet",
+  "assistantSourceBadgeDrugbank": "DrugBank",
+  "assistantSourceBadgeMedicalQa": "Medical Q&A",
+  "assistantSourceLowTrustHint": "Low-trust educational reference",
+  "assistantDisclaimerShowAction": "View disclaimer",
+  "assistantDisclaimerCollapseAction": "Collapse disclaimer"
 }

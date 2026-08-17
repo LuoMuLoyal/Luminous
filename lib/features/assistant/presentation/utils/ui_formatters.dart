@@ -134,3 +134,19 @@ String conversationTimestampLabel(
   final local = value.toLocal();
   return intl.DateFormat.MMMd(locale).add_Hm().format(local);
 }
+
+/// Trust tier of a knowledge-retrieval tool, used for source badges and the
+/// low-trust hint on the source strip.
+enum AssistantKnowledgeSourceType { leaflet, drugbank, medicalQa }
+
+/// Maps a tool id to its knowledge source tier, or null for non-knowledge
+/// tools (record/sleep/profile reads, proposals, etc.).
+AssistantKnowledgeSourceType? knowledgeSourceTypeOf(String toolId) {
+  return switch (toolId) {
+    'search_medicine_leaflets' => AssistantKnowledgeSourceType.leaflet,
+    'resolve_drugbank_entity' ||
+    'search_drugbank_passages' => AssistantKnowledgeSourceType.drugbank,
+    'search_medical_qa_corpus' => AssistantKnowledgeSourceType.medicalQa,
+    _ => null,
+  };
+}

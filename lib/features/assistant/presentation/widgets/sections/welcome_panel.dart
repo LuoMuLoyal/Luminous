@@ -5,10 +5,30 @@ import 'package:luminous/features/assistant/presentation/widgets/sections/input_
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Empty-state welcome content for a new assistant conversation.
-class AssistantWelcomePanel extends StatelessWidget {
-  const AssistantWelcomePanel({super.key, required this.onStarterPrompt});
+class AssistantWelcomePanel extends StatefulWidget {
+  const AssistantWelcomePanel({
+    super.key,
+    required this.onStarterPrompt,
+    this.showDisclaimerExpanded = true,
+  });
 
   final ValueChanged<String> onStarterPrompt;
+
+  /// Initial expansion state of the health disclaimer at the panel bottom.
+  final bool showDisclaimerExpanded;
+
+  @override
+  State<AssistantWelcomePanel> createState() => _AssistantWelcomePanelState();
+}
+
+class _AssistantWelcomePanelState extends State<AssistantWelcomePanel> {
+  late bool _disclaimerExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _disclaimerExpanded = widget.showDisclaimerExpanded;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +80,78 @@ class AssistantWelcomePanel extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: AssistantInputStarterPrompts(
-                  onSelected: onStarterPrompt,
+                  onSelected: widget.onStarterPrompt,
                 ),
+              ),
+              const SizedBox(height: Spacing.level5),
+              _WelcomeDisclaimerSection(
+                expanded: _disclaimerExpanded,
+                onToggle: () =>
+                    setState(() => _disclaimerExpanded = !_disclaimerExpanded),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Collapsible health disclaimer row at the bottom of the welcome panel.
+///
+/// Collapsed it shows a single muted line plus a chevron; expanded it shows
+/// the full disclaimer text over multiple lines.
+class _WelcomeDisclaimerSection extends StatelessWidget {
+  const _WelcomeDisclaimerSection({
+    required this.expanded,
+    required this.onToggle,
+  });
+
+  final bool expanded;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Semantics(
+      button: true,
+      label: expanded
+          ? l10n.assistantDisclaimerCollapseAction
+          : l10n.assistantDisclaimerShowAction,
+      child: GestureDetector(
+        key: const Key('assistant-welcome-disclaimer'),
+        behavior: HitTestBehavior.opaque,
+        onTap: onToggle,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                SemanticIcons.statusInfo,
+                size: 14,
+                color: colors.mutedForeground,
+              ),
+              const SizedBox(width: Spacing.level2),
+              Expanded(
+                child: Text(
+                  l10n.assistantDisclaimerText,
+                  maxLines: expanded ? null : 1,
+                  overflow: expanded ? null : TextOverflow.ellipsis,
+                  style: TypographyToken.level2
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ),
+              const SizedBox(width: Spacing.level2),
+              Icon(
+                expanded
+                    ? SemanticIcons.actionCollapse
+                    : SemanticIcons.actionExpand,
+                size: 14,
+                color: colors.mutedForeground,
               ),
             ],
           ),

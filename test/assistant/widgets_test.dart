@@ -6,6 +6,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
+import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/welcome_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
@@ -18,6 +19,8 @@ Widget _shell(Widget child) {
   return TestForuiApp(home: Scaffold(body: child));
 }
 
+const _disclaimerText = 'AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。';
+
 void main() {
   group('AssistantToolChip', () {
     testWidgets('renders label', (tester) async {
@@ -25,6 +28,22 @@ void main() {
         _shell(const AssistantToolChip(label: 'Today Records')),
       );
       expect(find.text('Today Records'), findsOneWidget);
+    });
+  });
+
+  group('AssistantDisclaimerBar', () {
+    testWidgets('renders nothing for empty text', (tester) async {
+      await tester.pumpWidget(_shell(const AssistantDisclaimerBar(text: '')));
+      expect(find.byType(AssistantDisclaimerBar), findsOneWidget);
+      expect(find.text(''), findsNothing);
+    });
+
+    testWidgets('renders single-line disclaimer text', (tester) async {
+      await tester.pumpWidget(
+        _shell(const AssistantDisclaimerBar(text: _disclaimerText)),
+      );
+      final text = tester.widget<Text>(find.text(_disclaimerText));
+      expect(text.maxLines, 1);
     });
   });
 
@@ -62,6 +81,58 @@ void main() {
       await tester.tap(find.text('总结我今天的记录'));
       await tester.pump(const Duration(milliseconds: 200));
       expect(selectedPrompt, '总结我今天的记录');
+    });
+
+    testWidgets('shows full disclaimer when showDisclaimerExpanded is true', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          AssistantWelcomePanel(
+            onStarterPrompt: (_) {},
+            showDisclaimerExpanded: true,
+          ),
+        ),
+      );
+
+      final text = tester.widget<Text>(find.text(_disclaimerText));
+      expect(text.maxLines, isNull);
+      expect(find.byIcon(SemanticIcons.actionCollapse), findsOneWidget);
+    });
+
+    testWidgets('collapses the disclaimer on tap', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          AssistantWelcomePanel(
+            onStarterPrompt: (_) {},
+            showDisclaimerExpanded: true,
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-welcome-disclaimer')));
+      await tester.pump();
+
+      final text = tester.widget<Text>(find.text(_disclaimerText));
+      expect(text.maxLines, 1);
+      expect(find.byIcon(SemanticIcons.actionExpand), findsOneWidget);
+    });
+
+    testWidgets('starts collapsed when showDisclaimerExpanded is false', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          AssistantWelcomePanel(
+            onStarterPrompt: (_) {},
+            showDisclaimerExpanded: false,
+          ),
+        ),
+      );
+
+      final text = tester.widget<Text>(find.text(_disclaimerText));
+      expect(text.maxLines, 1);
+      expect(find.byIcon(SemanticIcons.actionExpand), findsOneWidget);
     });
   });
 
@@ -161,6 +232,83 @@ void main() {
 
       expect(find.byType(AssistantSourceStrip), findsNothing);
     });
+
+    testWidgets(
+      'renders fixed disclaimer for assistant message without tools',
+      (tester) async {
+        await tester.pumpWidget(
+          _shell(
+            const AssistantMessageBubble(
+              messageId: 'msg-disclaimer',
+              role: AssistantMessageRole.assistant,
+              content: 'Reply',
+              usedTools: <String>[],
+            ),
+          ),
+        );
+
+        expect(find.byType(AssistantDisclaimerBar), findsOneWidget);
+        expect(find.text(_disclaimerText), findsOneWidget);
+      },
+    );
+
+    testWidgets('prefers tool disclaimer over the fixed text', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-disclaimer-tool',
+            role: AssistantMessageRole.assistant,
+            content: 'Reply',
+            usedTools: <String>['search_medical_qa_corpus'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'search_medical_qa_corpus',
+                disclaimer: '仅供参考，不构成诊疗建议。',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(find.text('仅供参考，不构成诊疗建议。'), findsOneWidget);
+      expect(find.text(_disclaimerText), findsNothing);
+    });
+
+    testWidgets('does not render disclaimer for user messages', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-user-disclaimer',
+            role: AssistantMessageRole.user,
+            content: 'User message',
+            usedTools: <String>[],
+          ),
+        ),
+      );
+
+      expect(find.byType(AssistantDisclaimerBar), findsNothing);
+    });
+
+    testWidgets('does not render disclaimer while streaming', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-streaming-disclaimer',
+            role: AssistantMessageRole.assistant,
+            content: 'Streaming',
+            usedTools: <String>[],
+            isStreaming: true,
+          ),
+        ),
+      );
+
+      expect(find.byType(AssistantDisclaimerBar), findsNothing);
+
+      // Dispose the streaming bubble so the typing-indicator animation's
+      // pending timer is cancelled before the test ends.
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpAndSettle();
+    });
   });
 
   group('AssistantSourceStrip', () {
@@ -191,10 +339,9 @@ void main() {
         ),
       );
 
-      expect(
-        find.textContaining('参考来源: 中文说明书检索 · DrugBank 实体定位'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('参考来源:'), findsOneWidget);
+      expect(find.textContaining('中文说明书检索'), findsOneWidget);
+      expect(find.textContaining('DrugBank 实体定位'), findsOneWidget);
       expect(find.byKey(const Key('assistant-source-tool-')), findsNothing);
     });
 
@@ -265,6 +412,58 @@ void main() {
       await tester.pump();
 
       expect(find.text('该消息的工具详情暂不可用'), findsOneWidget);
+    });
+
+    testWidgets('shows badges for the three knowledge tiers', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>[
+              'search_medicine_leaflets',
+              'resolve_drugbank_entity',
+              'search_medical_qa_corpus',
+            ],
+            toolDetails: <AssistantToolDetail>[],
+          ),
+        ),
+      );
+
+      expect(find.text('说明书'), findsOneWidget);
+      expect(find.text('DrugBank'), findsOneWidget);
+      expect(find.text('医疗问答'), findsOneWidget);
+    });
+
+    testWidgets('shows low-trust hint in collapsed state for medical QA tool', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['search_medical_qa_corpus'],
+            toolDetails: <AssistantToolDetail>[],
+          ),
+        ),
+      );
+
+      expect(find.text('低可信教育参考'), findsOneWidget);
+    });
+
+    testWidgets('shows no badges or hint for non-knowledge tools', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['get_user_profile'],
+            toolDetails: <AssistantToolDetail>[],
+          ),
+        ),
+      );
+
+      expect(find.text('说明书'), findsNothing);
+      expect(find.text('DrugBank'), findsNothing);
+      expect(find.text('医疗问答'), findsNothing);
+      expect(find.text('低可信教育参考'), findsNothing);
     });
   });
 

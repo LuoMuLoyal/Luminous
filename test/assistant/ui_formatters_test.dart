@@ -89,4 +89,34 @@ void main() {
       }
     });
   });
+
+  group('knowledgeSourceTypeOf', () {
+    test('leaflet tool → leaflet tier', () {
+      expect(
+        knowledgeSourceTypeOf('search_medicine_leaflets'),
+        AssistantKnowledgeSourceType.leaflet,
+      );
+    });
+    test('drugbank tools → drugbank tier', () {
+      expect(
+        knowledgeSourceTypeOf('resolve_drugbank_entity'),
+        AssistantKnowledgeSourceType.drugbank,
+      );
+      expect(
+        knowledgeSourceTypeOf('search_drugbank_passages'),
+        AssistantKnowledgeSourceType.drugbank,
+      );
+    });
+    test('medical QA tool → medicalQa tier', () {
+      expect(
+        knowledgeSourceTypeOf('search_medical_qa_corpus'),
+        AssistantKnowledgeSourceType.medicalQa,
+      );
+    });
+    test('non-knowledge tools → null', () {
+      expect(knowledgeSourceTypeOf('get_user_profile'), isNull);
+      expect(knowledgeSourceTypeOf('propose_create_daily_record'), isNull);
+      expect(knowledgeSourceTypeOf('unknown_tool'), isNull);
+    });
+  });
 }

@@ -119,5 +119,12 @@
   "assistantSourceConfidenceHigh": "高",
   "assistantSourceConfidenceMedium": "中",
   "assistantSourceConfidenceLow": "低",
-  "assistantSourceNoDetailsNote": "该消息的工具详情暂不可用"
+  "assistantSourceNoDetailsNote": "该消息的工具详情暂不可用",
+  "assistantDisclaimerText": "AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。",
+  "assistantSourceBadgeLeaflet": "说明书",
+  "assistantSourceBadgeDrugbank": "DrugBank",
+  "assistantSourceBadgeMedicalQa": "医疗问答",
+  "assistantSourceLowTrustHint": "低可信教育参考",
+  "assistantDisclaimerShowAction": "展开免责说明",
+  "assistantDisclaimerCollapseAction": "收起免责说明"
 }

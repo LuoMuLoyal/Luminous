@@ -87,7 +87,16 @@ class AssistantConversationSurface extends ConsumerWidget {
         ],
         Expanded(
           child: showStarterPrompts && capabilities.canSendMessages
-              ? AssistantWelcomePanel(onStarterPrompt: onStarterPrompt)
+              ? AssistantWelcomePanel(
+                  onStarterPrompt: onStarterPrompt,
+                  showDisclaimerExpanded: ref
+                      .watch(
+                        assistantControllerProvider.select(
+                          (s) => s.recentConversations,
+                        ),
+                      )
+                      .isEmpty,
+                )
               : AssistantConversationMessageList(
                   capabilities: capabilities,
                   scrollController: scrollController,

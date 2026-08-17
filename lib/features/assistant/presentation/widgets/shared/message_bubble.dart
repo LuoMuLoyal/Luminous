@@ -9,6 +9,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -139,6 +140,10 @@ class AssistantMessageBubble extends StatelessWidget {
                       toolDetails: toolDetails,
                     ),
                   ],
+                  if (!isStreaming && !isUser) ...[
+                    const SizedBox(height: Spacing.level2),
+                    AssistantDisclaimerBar(text: _disclaimerText(l10n)),
+                  ],
                 ],
               ),
             ),
@@ -146,6 +151,18 @@ class AssistantMessageBubble extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// First non-empty per-tool disclaimer, falling back to the fixed
+  /// health-reference disclaimer for every assistant reply.
+  String _disclaimerText(AppLocalizations l10n) {
+    for (final detail in toolDetails) {
+      final disclaimer = detail.disclaimer;
+      if (disclaimer != null && disclaimer.isNotEmpty) {
+        return disclaimer;
+      }
+    }
+    return l10n.assistantDisclaimerText;
   }
 
   String _formatTimestamp(BuildContext context, DateTime dateTime) {
