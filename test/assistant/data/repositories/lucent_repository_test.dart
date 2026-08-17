@@ -374,6 +374,7 @@ void main() {
       expect(conv.messages[1].role, AssistantMessageRole.assistant);
       expect(conv.messages[1].content, 'It is a statin.');
       expect(conv.messages[1].usedTools, ['get_current_medicines']);
+      expect(conv.messages[1].toolDetails, isEmpty);
       expect(conv.lastMessageAt, DateTime.parse('2026-07-01T10:30:00Z'));
     });
 
@@ -550,6 +551,100 @@ void main() {
       expect(result.message.usedTools, ['tool_a']);
       expect(result.message.createdAt, fixedTime);
       expect(result.message.proposedActions, isEmpty);
+      expect(result.message.toolDetails, isEmpty);
+    });
+
+    test('maps toolDetails into the assistant message', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'done',
+              usedTools: const ['search_medicine_leaflets'],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: const [],
+              toolDetails: [
+                {
+                  'name': 'search_medicine_leaflets',
+                  'label': '布洛芬缓释胶囊',
+                  'coverage': {'status': 'complete', 'reason': null},
+                  'confidence': {'level': 'high', 'reason': '向量检索命中'},
+                  'ambiguities': ['候选A', '候选B'],
+                  'source': {
+                    'tool': 'search_medicine_leaflets',
+                    'generatedAt': '2026-08-17T00:00:00.000Z',
+                    'tables': ['cn_medicine_leaflets'],
+                  },
+                  'disclaimer': '仅供参考',
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'go',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      final detail = result.message.toolDetails.single;
+
+      expect(detail.name, 'search_medicine_leaflets');
+      expect(detail.label, '布洛芬缓释胶囊');
+      expect(detail.coverageStatus, 'complete');
+      expect(detail.coverageReason, isNull);
+      expect(detail.confidenceLevel, 'high');
+      expect(detail.confidenceReason, '向量检索命中');
+      expect(detail.ambiguities, ['候选A', '候选B']);
+      expect(detail.sourceTool, 'search_medicine_leaflets');
+      expect(detail.sourceGeneratedAt, '2026-08-17T00:00:00.000Z');
+      expect(detail.sourceTables, ['cn_medicine_leaflets']);
+      expect(detail.disclaimer, '仅供参考');
+    });
+
+    test('maps missing optional toolDetail fields to null/empty', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'done',
+              usedTools: const ['get_user_profile'],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: const [],
+              toolDetails: [
+                {'name': 'get_user_profile'},
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'go',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      final detail = result.message.toolDetails.single;
+
+      expect(detail.name, 'get_user_profile');
+      expect(detail.label, isNull);
+      expect(detail.coverageStatus, isNull);
+      expect(detail.confidenceLevel, isNull);
+      expect(detail.ambiguities, isEmpty);
+      expect(detail.sourceTool, isNull);
+      expect(detail.sourceTables, isEmpty);
+      expect(detail.disclaimer, isNull);
     });
 
     test('maps create_daily_record proposed action', () async {

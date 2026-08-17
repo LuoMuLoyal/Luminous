@@ -107,6 +107,9 @@ class LucentAssistantRepository implements AssistantRepository {
               content: event.content,
               usedTools: event.usedTools,
               createdAt: event.generatedAt,
+              toolDetails: event.toolDetails
+                  .map(_mapToolDetail)
+                  .toList(growable: false),
               proposedActions: event.proposedActions
                   .map(_mapProposedActionFromJson)
                   .whereType<AssistantProposedAction>()
@@ -203,6 +206,36 @@ class LucentAssistantRepository implements AssistantRepository {
       content: dto.content,
       createdAt: _parseDateTime(dto.createdAt) ?? clock.now(),
       usedTools: dto.usedTools,
+      // Persisted conversations predate the SSE toolDetails field and never
+      // carry it; history messages have no source strip details.
+      toolDetails: const <AssistantToolDetail>[],
+    );
+  }
+
+  AssistantToolDetail _mapToolDetail(Map<String, dynamic> json) {
+    final coverage = _mapStringKeyedMap(json['coverage']);
+    final confidence = _mapStringKeyedMap(json['confidence']);
+    final source = _mapStringKeyedMap(json['source']);
+    return AssistantToolDetail(
+      name: json['name']?.toString() ?? '',
+      label: json['label']?.toString(),
+      coverageStatus: coverage?['status']?.toString(),
+      coverageReason: coverage?['reason']?.toString(),
+      confidenceLevel: confidence?['level']?.toString(),
+      confidenceReason: confidence?['reason']?.toString(),
+      ambiguities: switch (json['ambiguities']) {
+        final List<Object?> items =>
+          items.map((item) => item.toString()).toList(growable: false),
+        _ => const <String>[],
+      },
+      sourceTool: source?['tool']?.toString(),
+      sourceGeneratedAt: source?['generatedAt']?.toString(),
+      sourceTables: switch (source?['tables']) {
+        final List<Object?> items =>
+          items.map((item) => item.toString()).toList(growable: false),
+        _ => const <String>[],
+      },
+      disclaimer: json['disclaimer']?.toString(),
     );
   }
 

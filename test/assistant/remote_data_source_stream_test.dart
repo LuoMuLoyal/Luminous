@@ -156,6 +156,75 @@ void main() {
       expect(result.proposedActions[0]['type'], 'create_daily_record');
     });
 
+    test('parses toolDetails from result event', () async {
+      final sseText = [
+        _sseEvent('result', {
+          'usedTools': ['search_medicine_leaflets'],
+          'toolDetails': [
+            {
+              'name': 'search_medicine_leaflets',
+              'label': '布洛芬缓释胶囊',
+              'coverage': {'status': 'complete', 'reason': null},
+              'confidence': {'level': 'high', 'reason': '向量检索命中'},
+              'ambiguities': ['候选A'],
+              'source': {
+                'tool': 'search_medicine_leaflets',
+                'generatedAt': '2026-08-17T00:00:00.000Z',
+                'tables': ['cn_medicine_leaflets'],
+              },
+              'disclaimer': '仅供参考',
+            },
+          ],
+        }),
+        _sseEvent('done', null),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds.streamMessages(messages: const []).toList();
+
+      expect(events, hasLength(1));
+      final result = events[0] as AssistantRemoteResultEvent;
+      expect(result.toolDetails, hasLength(1));
+      final detail = result.toolDetails[0];
+      expect(detail['name'], 'search_medicine_leaflets');
+      expect(detail['label'], '布洛芬缓释胶囊');
+      expect((detail['coverage'] as Map)['status'], 'complete');
+      expect((detail['confidence'] as Map)['level'], 'high');
+      expect((detail['source'] as Map)['tables'], ['cn_medicine_leaflets']);
+      expect(detail['disclaimer'], '仅供参考');
+    });
+
+    test('toolDetails is empty when result omits the field', () async {
+      final sseText = [
+        _sseEvent('result', {
+          'usedTools': ['search_medicine_leaflets'],
+        }),
+        _sseEvent('done', null),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds.streamMessages(messages: const []).toList();
+
+      final result = events[0] as AssistantRemoteResultEvent;
+      expect(result.toolDetails, isEmpty);
+    });
+
+    test('toolDetails is empty for non-list payload', () async {
+      final sseText = [
+        _sseEvent('result', {'toolDetails': 'not-a-list'}),
+        _sseEvent('done', null),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds.streamMessages(messages: const []).toList();
+
+      final result = events[0] as AssistantRemoteResultEvent;
+      expect(result.toolDetails, isEmpty);
+    });
+
     test('throws LucentApiException on error event', () async {
       final sseText = [
         _sseEvent('error', {

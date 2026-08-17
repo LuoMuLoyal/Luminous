@@ -22,6 +22,7 @@ class AssistantRemoteResultEvent extends AssistantRemoteEvent {
     required this.usedTools,
     required this.generatedAt,
     required this.proposedActions,
+    this.toolDetails = const <Map<String, dynamic>>[],
   });
 
   final String conversationId;
@@ -29,6 +30,9 @@ class AssistantRemoteResultEvent extends AssistantRemoteEvent {
   final List<String> usedTools;
   final DateTime generatedAt;
   final List<Map<String, dynamic>> proposedActions;
+
+  /// Raw per-tool result envelopes; mapped to domain models by the repository.
+  final List<Map<String, dynamic>> toolDetails;
 }
 
 class AssistantRemoteDataSource {
@@ -132,6 +136,7 @@ class AssistantRemoteDataSource {
             generatedAt:
                 DateTime.tryParse(generatedAtText ?? '') ?? clock.now(),
             proposedActions: _readMapList(data['proposedActions']),
+            toolDetails: _readMapList(data['toolDetails']),
           );
         case 'error':
           throw mapSseStreamError(event.data);

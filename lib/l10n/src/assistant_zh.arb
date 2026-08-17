@@ -105,5 +105,19 @@
   "assistantStarterPromptTodaySummary": "总结我今天的记录",
   "assistantStarterPromptSleep": "我最近睡眠怎么样",
   "assistantStarterPromptMedicines": "我当前在吃什么药",
-  "assistantStarterPromptWhatToWatch": "帮我看看要注意什么"
+  "assistantStarterPromptWhatToWatch": "帮我看看要注意什么",
+  "assistantSourceExpandAction": "查看详情",
+  "assistantSourceCollapseAction": "收起",
+  "assistantSourceCoverageLabel": "覆盖",
+  "assistantSourceConfidenceLabel": "置信",
+  "assistantSourceAmbiguitiesLabel": "不确定项",
+  "assistantSourceSourceLabel": "来源",
+  "assistantSourceGeneratedAtLabel": "生成时间",
+  "assistantSourceCoverageComplete": "完整",
+  "assistantSourceCoveragePartial": "部分",
+  "assistantSourceCoverageEmpty": "无数据",
+  "assistantSourceConfidenceHigh": "高",
+  "assistantSourceConfidenceMedium": "中",
+  "assistantSourceConfidenceLow": "低",
+  "assistantSourceNoDetailsNote": "该消息的工具详情暂不可用"
 }

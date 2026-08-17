@@ -10,6 +10,7 @@ import 'package:luminous/features/assistant/presentation/widgets/sections/welcom
 import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/message_bubble.dart';
+import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
 
 import '../helpers/test_forui_app.dart';
 
@@ -114,6 +115,156 @@ void main() {
       );
       expect(find.text('Assistant reply'), findsOneWidget);
       expect(find.byType(FContextMenu), findsOneWidget);
+    });
+
+    testWidgets('renders source strip for assistant messages with tools', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-source',
+            role: AssistantMessageRole.assistant,
+            content: 'Reply with sources',
+            usedTools: <String>['search_medicine_leaflets'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'search_medicine_leaflets',
+                coverageStatus: 'complete',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(find.byType(AssistantSourceStrip), findsOneWidget);
+      expect(find.textContaining('参考来源:'), findsOneWidget);
+      expect(find.textContaining('中文说明书检索'), findsOneWidget);
+    });
+
+    testWidgets('does not render source strip for user messages', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-user-source',
+            role: AssistantMessageRole.user,
+            content: 'User message',
+            usedTools: <String>['search_medicine_leaflets'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(name: 'search_medicine_leaflets'),
+            ],
+          ),
+        ),
+      );
+
+      expect(find.byType(AssistantSourceStrip), findsNothing);
+    });
+  });
+
+  group('AssistantSourceStrip', () {
+    testWidgets('renders nothing when usedTools is empty', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>[],
+            toolDetails: <AssistantToolDetail>[],
+          ),
+        ),
+      );
+
+      expect(find.byKey(const Key('assistant-source-strip')), findsNothing);
+      expect(find.textContaining('参考来源:'), findsNothing);
+    });
+
+    testWidgets('collapsed state lists localized tool names', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>[
+              'search_medicine_leaflets',
+              'resolve_drugbank_entity',
+            ],
+            toolDetails: <AssistantToolDetail>[],
+          ),
+        ),
+      );
+
+      expect(
+        find.textContaining('参考来源: 中文说明书检索 · DrugBank 实体定位'),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('assistant-source-tool-')), findsNothing);
+    });
+
+    testWidgets('appends label to tool name when present', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['search_medicine_leaflets'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'search_medicine_leaflets',
+                label: '布洛芬缓释胶囊',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(find.textContaining('参考来源: 中文说明书检索(布洛芬缓释胶囊)'), findsOneWidget);
+    });
+
+    testWidgets('expands to show envelope fields', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['search_medicine_leaflets'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'search_medicine_leaflets',
+                label: '布洛芬缓释胶囊',
+                coverageStatus: 'complete',
+                coverageReason: null,
+                confidenceLevel: 'high',
+                confidenceReason: '向量检索命中',
+                ambiguities: <String>['候选A', '候选B'],
+                sourceTool: 'search_medicine_leaflets',
+                sourceGeneratedAt: '2026-08-17T10:00:00.000Z',
+                sourceTables: <String>['cn_medicine_leaflets'],
+                disclaimer: '仅供参考，不构成诊疗建议。',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-source-strip')));
+      await tester.pump();
+
+      expect(find.textContaining('覆盖: 完整'), findsOneWidget);
+      expect(find.textContaining('置信: 高 向量检索命中'), findsOneWidget);
+      expect(find.textContaining('不确定项: 候选A, 候选B'), findsOneWidget);
+      expect(find.textContaining('来源: cn_medicine_leaflets'), findsOneWidget);
+      expect(find.textContaining('生成时间: '), findsOneWidget);
+      expect(find.text('仅供参考，不构成诊疗建议。'), findsOneWidget);
+    });
+
+    testWidgets('shows placeholder when tool has no details', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['get_user_profile'],
+            toolDetails: <AssistantToolDetail>[],
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-source-strip')));
+      await tester.pump();
+
+      expect(find.text('该消息的工具详情暂不可用'), findsOneWidget);
     });
   });
 

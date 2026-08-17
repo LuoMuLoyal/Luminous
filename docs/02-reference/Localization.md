@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added)
+Last updated: 2026-08-17 (F-7 assistant source strip added 14 `assistantSource*` keys to the assistant fragment; removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -455,6 +455,18 @@ flutter test
 - 新增 `todaySuggestionRuleBasedLabel`（zh: 基于规则 / en: Rule-based）到 `lib/l10n/src/today_zh.arb` / `today_en.arb`。
 - `SuggestionAiExplainButton` 在 `aiGenerated == false` 时直接展示后端返回的 fallback 解释内容，并用该键替换原有的「AI」标签，不再自动重试。
 - 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+- 顶部 `Last updated` 已同步记录本次新增。
+
+## 2026-08-17 F-7 来源条组件键
+
+- 新增 14 个 `assistantSource*` 键到 `lib/l10n/src/assistant_zh.arb` / `assistant_en.arb`：
+  - `assistantSourceExpandAction`（查看详情 / View details）与 `assistantSourceCollapseAction`（收起 / Collapse）：来源条折叠行展开/收起动作语义标签。
+  - `assistantSourceCoverageLabel`（覆盖 / Coverage）、`assistantSourceConfidenceLabel`（置信 / Confidence）、`assistantSourceAmbiguitiesLabel`（不确定项 / Ambiguities）、`assistantSourceSourceLabel`（来源 / Source）、`assistantSourceGeneratedAtLabel`（生成时间 / Generated at）：展开卡内容行标签。
+  - `assistantSourceCoverageComplete`（完整 / Complete）、`assistantSourceCoveragePartial`（部分 / Partial）、`assistantSourceCoverageEmpty`（无数据 / No data）：覆盖状态三态本地化。
+  - `assistantSourceConfidenceHigh`（高 / High）、`assistantSourceConfidenceMedium`（中 / Medium）、`assistantSourceConfidenceLow`（低 / Low）：置信三档本地化。
+  - `assistantSourceNoDetailsNote`（该消息的工具详情暂不可用 / Tool details are unavailable for this message）：该工具无 toolDetails 条目时的占位文案。
+- 来源条折叠行标题复用既有 `assistantUsedToolsLabel`（参考来源 / Sources used），未新增键。
+- 所有权在 assistant 分片（`assistant*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。
 
 ## 2026-08-17 F-9 下午动态问候语饮水口径修正

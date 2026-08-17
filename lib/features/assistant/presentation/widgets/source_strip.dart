@@ -1,0 +1,272 @@
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+/// Collapsible source strip shown under assistant messages that used tools.
+///
+/// The collapsed row lists the tools referenced by the reply; expanding it
+/// reveals the per-tool result envelope (coverage / confidence / ambiguities /
+/// source tables / disclaimer) delivered by the SSE result event's optional
+/// `toolDetails` field.
+class AssistantSourceStrip extends StatefulWidget {
+  const AssistantSourceStrip({
+    super.key,
+    required this.usedTools,
+    required this.toolDetails,
+  });
+
+  final List<String> usedTools;
+  final List<AssistantToolDetail> toolDetails;
+
+  @override
+  State<AssistantSourceStrip> createState() => _AssistantSourceStripState();
+}
+
+class _AssistantSourceStripState extends State<AssistantSourceStrip> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.usedTools.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final colors = context.theme.colors;
+    final l10n = AppLocalizations.of(context)!;
+    final toolTexts = widget.usedTools.map(_toolDisplayName);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          button: true,
+          label: _expanded
+              ? l10n.assistantSourceCollapseAction
+              : l10n.assistantSourceExpandAction,
+          child: GestureDetector(
+            key: const Key('assistant-source-strip'),
+            behavior: HitTestBehavior.opaque,
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+              child: Row(
+                children: [
+                  Icon(
+                    SemanticIcons.statusInfo,
+                    size: 14,
+                    color: colors.mutedForeground,
+                  ),
+                  const SizedBox(width: Spacing.level2),
+                  Expanded(
+                    child: Text(
+                      '${l10n.assistantUsedToolsLabel}: ${toolTexts.join(' · ')}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TypographyToken.level2
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.level2),
+                  Icon(
+                    _expanded
+                        ? SemanticIcons.actionCollapse
+                        : SemanticIcons.actionExpand,
+                    size: 14,
+                    color: colors.mutedForeground,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        if (_expanded)
+          for (final tool in widget.usedTools)
+            Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              child: _ToolDetailCard(
+                tool: tool,
+                label: _labelFor(tool),
+                detail: _detailFor(tool),
+              ),
+            ),
+      ],
+    );
+  }
+
+  String _toolDisplayName(String tool) {
+    final label = _labelFor(tool);
+    final localized = localizeToolName(tool, context);
+    return label == null ? localized : '$localized($label)';
+  }
+
+  String? _labelFor(String tool) {
+    for (final detail in widget.toolDetails) {
+      if (detail.name == tool &&
+          detail.label != null &&
+          detail.label!.isNotEmpty) {
+        return detail.label;
+      }
+    }
+    return null;
+  }
+
+  AssistantToolDetail? _detailFor(String tool) {
+    for (final detail in widget.toolDetails) {
+      if (detail.name == tool) {
+        return detail;
+      }
+    }
+    return null;
+  }
+}
+
+/// Read-only per-tool envelope card inside the expanded source strip.
+class _ToolDetailCard extends StatelessWidget {
+  const _ToolDetailCard({
+    required this.tool,
+    required this.label,
+    required this.detail,
+  });
+
+  final String tool;
+  final String? label;
+  final AssistantToolDetail? detail;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+    final l10n = AppLocalizations.of(context)!;
+    final localized = localizeToolName(tool, context);
+    final title = label == null ? localized : '$localized($label)';
+
+    final rows = <String>[];
+    if (detail != null) {
+      final coverageStatus = _coverageStatusText(l10n, detail!.coverageStatus);
+      if (coverageStatus != null) {
+        final reason = detail!.coverageReason;
+        rows.add(
+          '${l10n.assistantSourceCoverageLabel}: $coverageStatus'
+          '${reason != null && reason.isNotEmpty ? ' $reason' : ''}',
+        );
+      }
+      final confidenceLevel = _confidenceLevelText(
+        l10n,
+        detail!.confidenceLevel,
+      );
+      if (confidenceLevel != null) {
+        final reason = detail!.confidenceReason;
+        rows.add(
+          '${l10n.assistantSourceConfidenceLabel}: $confidenceLevel'
+          '${reason != null && reason.isNotEmpty ? ' $reason' : ''}',
+        );
+      }
+      if (detail!.ambiguities.isNotEmpty) {
+        rows.add(
+          '${l10n.assistantSourceAmbiguitiesLabel}: '
+          '${detail!.ambiguities.join(', ')}',
+        );
+      }
+      if (detail!.sourceTables.isNotEmpty) {
+        rows.add(
+          '${l10n.assistantSourceSourceLabel}: '
+          '${detail!.sourceTables.join(', ')}',
+        );
+      }
+      final generatedAt = detail!.sourceGeneratedAt;
+      if (generatedAt != null && generatedAt.isNotEmpty) {
+        rows.add(
+          '${l10n.assistantSourceGeneratedAtLabel}: '
+          '${_formatGeneratedAt(context, generatedAt)}',
+        );
+      }
+    }
+
+    return DecoratedBox(
+      key: Key('assistant-source-tool-$tool'),
+      decoration: BoxDecoration(
+        color: colors.secondary,
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level3),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: Spacing.level1),
+            if (detail == null)
+              Text(
+                l10n.assistantSourceNoDetailsNote,
+                style: typography.body.sm.copyWith(
+                  color: colors.mutedForeground,
+                ),
+              )
+            else ...[
+              for (final row in rows)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Spacing.level1),
+                  child: Text(
+                    row,
+                    style: typography.body.sm.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                  ),
+                ),
+              if (detail!.disclaimer != null && detail!.disclaimer!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.level1),
+                  child: Text(
+                    detail!.disclaimer!,
+                    style: typography.body.xs.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                  ),
+                ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  String? _coverageStatusText(AppLocalizations l10n, String? status) {
+    return switch (status) {
+      'complete' => l10n.assistantSourceCoverageComplete,
+      'partial' => l10n.assistantSourceCoveragePartial,
+      'empty' => l10n.assistantSourceCoverageEmpty,
+      null => null,
+      _ => status,
+    };
+  }
+
+  String? _confidenceLevelText(AppLocalizations l10n, String? level) {
+    return switch (level) {
+      'high' => l10n.assistantSourceConfidenceHigh,
+      'medium' => l10n.assistantSourceConfidenceMedium,
+      'low' => l10n.assistantSourceConfidenceLow,
+      null => null,
+      _ => level,
+    };
+  }
+
+  String _formatGeneratedAt(BuildContext context, String raw) {
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) {
+      return raw;
+    }
+    final locale = Localizations.localeOf(context).toString();
+    return intl.DateFormat(
+      locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm',
+      locale,
+    ).format(parsed.toLocal());
+  }
+}

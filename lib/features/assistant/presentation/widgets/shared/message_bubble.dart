@@ -10,6 +10,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
+import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantMessageBubble extends StatelessWidget {
@@ -19,6 +20,7 @@ class AssistantMessageBubble extends StatelessWidget {
     required this.role,
     required this.content,
     required this.usedTools,
+    this.toolDetails = const <AssistantToolDetail>[],
     this.proposedActions = const <AssistantProposedAction>[],
     this.isStreaming = false,
     this.createdAt,
@@ -30,6 +32,7 @@ class AssistantMessageBubble extends StatelessWidget {
   final AssistantMessageRole role;
   final String content;
   final List<String> usedTools;
+  final List<AssistantToolDetail> toolDetails;
   final List<AssistantProposedAction> proposedActions;
   final bool isStreaming;
   final DateTime? createdAt;
@@ -127,6 +130,13 @@ class AssistantMessageBubble extends StatelessWidget {
                       style: TypographyToken.level2
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
+                    ),
+                  ],
+                  if (!isStreaming && !isUser && usedTools.isNotEmpty) ...[
+                    const SizedBox(height: Spacing.level2),
+                    AssistantSourceStrip(
+                      usedTools: usedTools,
+                      toolDetails: toolDetails,
                     ),
                   ],
                 ],

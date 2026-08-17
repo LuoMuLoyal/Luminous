@@ -105,5 +105,19 @@
   "assistantStarterPromptTodaySummary": "Summarize my records today",
   "assistantStarterPromptSleep": "How has my sleep been lately",
   "assistantStarterPromptMedicines": "What medicines am I taking",
-  "assistantStarterPromptWhatToWatch": "What should I watch out for"
+  "assistantStarterPromptWhatToWatch": "What should I watch out for",
+  "assistantSourceExpandAction": "View details",
+  "assistantSourceCollapseAction": "Collapse",
+  "assistantSourceCoverageLabel": "Coverage",
+  "assistantSourceConfidenceLabel": "Confidence",
+  "assistantSourceAmbiguitiesLabel": "Ambiguities",
+  "assistantSourceSourceLabel": "Source",
+  "assistantSourceGeneratedAtLabel": "Generated at",
+  "assistantSourceCoverageComplete": "Complete",
+  "assistantSourceCoveragePartial": "Partial",
+  "assistantSourceCoverageEmpty": "No data",
+  "assistantSourceConfidenceHigh": "High",
+  "assistantSourceConfidenceMedium": "Medium",
+  "assistantSourceConfidenceLow": "Low",
+  "assistantSourceNoDetailsNote": "Tool details are unavailable for this message"
 }

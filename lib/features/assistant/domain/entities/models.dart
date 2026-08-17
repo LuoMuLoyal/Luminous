@@ -285,12 +285,30 @@ abstract class AssistantProposedAction with _$AssistantProposedAction {
 }
 
 @freezed
+abstract class AssistantToolDetail with _$AssistantToolDetail {
+  const factory AssistantToolDetail({
+    required String name,
+    String? label,
+    String? coverageStatus,
+    String? coverageReason,
+    String? confidenceLevel,
+    String? confidenceReason,
+    @Default(<String>[]) List<String> ambiguities,
+    String? sourceTool,
+    String? sourceGeneratedAt,
+    @Default(<String>[]) List<String> sourceTables,
+    String? disclaimer,
+  }) = _AssistantToolDetail;
+}
+
+@freezed
 abstract class AssistantMessage with _$AssistantMessage {
   const factory AssistantMessage({
     required AssistantMessageRole role,
     required String content,
     required DateTime createdAt,
     @Default(<String>[]) List<String> usedTools,
+    @Default(<AssistantToolDetail>[]) List<AssistantToolDetail> toolDetails,
     @Default(<AssistantProposedAction>[])
     List<AssistantProposedAction> proposedActions,
   }) = _AssistantMessage;
