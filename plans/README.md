@@ -37,6 +37,10 @@ YYYY-MM-DD-short-task-name.md
 - [`2026-07-29-native-bridging-roadmap.md`](2026-07-29-native-bridging-roadmap.md)
 - [`2026-08-01-ai-chat-redesign-plan.md`](2026-08-01-ai-chat-redesign-plan.md)
 - [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)
+- [`2026-08-17-flowui-migration-plan.md`](2026-08-17-flowui-migration-plan.md)
+  — Assistant 页面 FlowUI 迁移：用 flow_ui 替换约 80% 手写聊天 UI 组件，不涉及后端
+- [`2026-08-17-error-handling-reform-plan.md`](2026-08-17-error-handling-reform-plan.md)
+  — 错误处理重构：以 fpdart 的 Either/TaskEither 显式化 repository 的可恢复失败边界
 
 ### 功能盘点改造计划(2026-08-16,共 10 份)
 
