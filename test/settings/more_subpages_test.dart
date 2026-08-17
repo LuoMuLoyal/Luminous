@@ -20,11 +20,20 @@ import '../helpers/test_forui_app.dart';
 // -- Stub controllers --------------------------------------------------
 
 class _StubSettingsController extends UserSettingsController {
-  _StubSettingsController(this.data);
+  _StubSettingsController(this.data, {this.onSetContext});
   final UserSettings data;
+
+  /// Optional override for the context-toggle patch; lets tests simulate a
+  /// successful or failing PATCH without touching the repository layer.
+  final Future<void> Function(AssistantContextPatch patch)? onSetContext;
 
   @override
   Future<UserSettings> build() async => data;
+
+  @override
+  Future<void> setAssistantContext(AssistantContextPatch patch) async {
+    await onSetContext?.call(patch);
+  }
 }
 
 class _StubExportController extends DataExportController {
@@ -80,8 +89,9 @@ void main() {
   Future<void> pumpPageWithSettings(
     WidgetTester tester,
     Widget page,
-    UserSettings settings,
-  ) async {
+    UserSettings settings, {
+    bool showToaster = false,
+  }) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -89,7 +99,28 @@ void main() {
             () => _StubSettingsController(settings),
           ),
         ],
-        child: TestForuiApp(home: page),
+        child: TestForuiApp(home: page, showToaster: showToaster),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+  }
+
+  /// Pumps the AI settings page with a context-toggle override, so tests can
+  /// drive the next-turn toast. The toaster is enabled for toast assertions.
+  Future<void> pumpAiPageWithContextOverride(
+    WidgetTester tester,
+    UserSettings settings,
+    Future<void> Function(AssistantContextPatch patch) onSetContext,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          userSettingsControllerProvider.overrideWith(
+            () => _StubSettingsController(settings, onSetContext: onSetContext),
+          ),
+        ],
+        child: const TestForuiApp(home: AiSettingsPage(), showToaster: true),
       ),
     );
     await tester.pump();
@@ -359,6 +390,73 @@ void main() {
       );
 
       expect(find.byType(FSwitch), findsNWidgets(7));
+    });
+
+    testWidgets('renders AI privacy section with usage notes', (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpPageWithSettings(
+        tester,
+        const AiSettingsPage(),
+        _buildSettings(),
+      );
+
+      expect(find.text(l10n.settingsAiPrivacySectionTitle), findsOneWidget);
+      expect(find.text(l10n.settingsAiPrivacyMemoryNote), findsOneWidget);
+      expect(find.text(l10n.settingsAiPrivacyContextNote), findsOneWidget);
+      expect(find.text(l10n.settingsAiPrivacyHistoricalNote), findsOneWidget);
+    });
+
+    testWidgets('context toggle shows next-turn toast on success', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpAiPageWithContextOverride(
+        tester,
+        _buildSettings(),
+        (_) async {},
+      );
+
+      // First context tile (Health Profile) switch.
+      final switchFinder = find.byType(FSwitch).at(3);
+      await tester.ensureVisible(switchFinder);
+      await tester.pumpAndSettle();
+      await tester.tap(switchFinder);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.text(l10n.settingsAiContextChangeNextTurnToast),
+        findsOneWidget,
+      );
+
+      // Drain the toast timer so later tests start with clean Toast state.
+      await tester.pump(const Duration(seconds: 2));
+    });
+
+    testWidgets('context toggle shows no success toast on failure', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpAiPageWithContextOverride(
+        tester,
+        _buildSettings(),
+        (_) async => throw Exception('patch failed'),
+      );
+
+      final switchFinder = find.byType(FSwitch).at(3);
+      await tester.ensureVisible(switchFinder);
+      await tester.pumpAndSettle();
+      await tester.tap(switchFinder);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.text(l10n.settingsAiContextChangeNextTurnToast),
+        findsNothing,
+      );
+
+      // Drain the failure toast timer too.
+      await tester.pump(const Duration(seconds: 2));
     });
   });
 

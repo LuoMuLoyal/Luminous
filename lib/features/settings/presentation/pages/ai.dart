@@ -177,11 +177,44 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     ),
                   ],
                 ),
+                const SizedBox(height: Spacing.level5),
+                SettingsSectionLabel(label: l10n.settingsAiPrivacySectionTitle),
+                const SizedBox(height: Spacing.level3),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.level2,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _privacyNote(context, l10n.settingsAiPrivacyMemoryNote),
+                      const SizedBox(height: Spacing.level2),
+                      _privacyNote(context, l10n.settingsAiPrivacyContextNote),
+                      const SizedBox(height: Spacing.level2),
+                      _privacyNote(
+                        context,
+                        l10n.settingsAiPrivacyHistoricalNote,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  /// A muted small-text line inside the AI privacy section. Describes what
+  /// data (memory points / selected context sources) is sent to the AI and
+  /// that turning a switch off never deletes historical data.
+  Widget _privacyNote(BuildContext context, String text) {
+    return Text(
+      text,
+      style: TypographyToken.level3
+          .body(context)
+          .copyWith(color: context.theme.colors.mutedForeground),
     );
   }
 
@@ -272,7 +305,12 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     );
   }
 
-  Future<void> _guardedApply({
+  /// Applies a settings patch via [runGuarded], returning `true` when the
+  /// patch succeeded and `false` when it was skipped (auth required, another
+  /// patch in flight) or failed (failure toast already shown here). Callers
+  /// that need to react to success (e.g. the context-toggle next-turn toast)
+  /// branch on the returned value; generic toggles ignore it.
+  Future<bool> _guardedApply({
     required BuildContext context,
     required AppLocalizations l10n,
     required bool signedIn,
@@ -280,9 +318,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
   }) async {
     if (!signedIn) {
       unawaited(pushAuthRequiredRoute(context, Routes.settingsAi));
-      return;
+      return false;
     }
-    if (_isPatching) return;
+    if (_isPatching) return false;
     setState(() => _isPatching = true);
     try {
       final result = await runGuarded<void>(
@@ -291,12 +329,14 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
         action: apply,
       );
       if (result case Failure(:final error)) {
-        if (!context.mounted) return;
+        if (!context.mounted) return false;
         await Toast.show(
           context,
           error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
         );
+        return false;
       }
+      return true;
     } finally {
       if (mounted) {
         setState(() => _isPatching = false);
@@ -348,7 +388,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
         currentMedicines: !ctx.currentMedicines,
       ),
     };
-    await _guardedApply(
+    final applied = await _guardedApply(
       context: context,
       l10n: l10n,
       signedIn: signedIn,
@@ -356,6 +396,12 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
           .read(userSettingsControllerProvider.notifier)
           .setAssistantContext(patch),
     );
+    // The change only takes effect from the next conversation; historical
+    // messages keep their already-injected context. Only surface this on
+    // success — on failure `_guardedApply` already showed the error toast.
+    if (applied && context.mounted) {
+      await Toast.show(context, l10n.settingsAiContextChangeNextTurnToast);
+    }
   }
 }
 

@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-13
+updated: 2026-08-17
 ---
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-13（同步失败详情不再暴露原始错误；诊断信息折叠面板与一键复制）
+Last updated: 2026-08-17（AI 设置页：上下文开关切换 toast「下次对话生效」+ 新增「AI 隐私」说明小节）
 
 ## Mine 根页结构
 
@@ -86,6 +86,7 @@ Last updated: 2026-08-13（同步失败详情不再暴露原始错误；诊断�
 - **帮助页状态组件统一**：从手写 `_EmptyState` 迁移至 `AppStateMessageView`（带图标+色调），加载态使用 `AppInlineSkeleton` 骨架屏。
 - **语言页当前语言显示**："跟随系统"行显示当前生效语言（"当前：{language}"）。
 - **AI 设置开关写入时序修复**（2026-07-19 P1-2）：`AiSettingsPage` 改为 `ConsumerStatefulWidget`，新增本地 `_isPatching` 状态——任一 PATCH 进行中时所有开关禁用，避免快速连点用 stale 快照翻转两次。所有开关 `onPress` 点击瞬间通过 `ref.read(...).value` 读最新值再翻转，`onChange` 直接用 `FSwitch` 回传值；四个上下文开关的 `AssistantContextPatch` 也在点击时基于最新 state 构造。写入统一走 `runGuarded` + `AppToast.show`，失败显示 `error.message` 或 `settingsSyncFailed` 兜底。
+- **AI 设置上下文开关 toast + AI 隐私说明**（T8，2026-08-17）：`_guardedApply` 返回 `Future<bool>`（成功 true / 失败 false，失败仍走原错误 toast）；四个上下文开关（健康档案/日常记录/睡眠记录/当前用药）切换成功 toast「上下文开关将在下次对话生效」（`settingsAiContextChangeNextTurnToast`），通用开关（AI 总结/助手/记忆）不提示；上下文开关组下方新增「AI 隐私」小节（`SettingsSectionLabel` + 三行小字），说明记忆提炼要点用于后续对话、勾选来源在对话时提供给 AI、关闭开关不删除历史数据仅停止后续使用。
 - **免打扰/睡眠提醒默认值一致性修复**（2026-07-19 P1-2）：`NotificationSettingsController.build()` 不再为四个时间字段兜底默认值，null 即"从未设置"；`setSleepReminderEnabled(true)`/`setDndEnabled(true)` 在时间为 null 时持久化语义默认值；`reset()` 显式将四个时间字段置 null。
 
 ## 主题
