@@ -122,6 +122,39 @@ class AssistantPage extends HookConsumerWidget {
       }
     }
 
+    Future<void> handleRegenerateProposal(
+      BuildContext ctx, {
+      required String messageId,
+      required String proposalId,
+    }) async {
+      final l = AppLocalizations.of(ctx)!;
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.handleRegenerateProposal',
+        action: () => ref
+            .read(assistantControllerProvider.notifier)
+            .regenerateExpiredProposal(
+              messageId: messageId,
+              proposalId: proposalId,
+            ),
+      );
+      switch (result) {
+        case Success():
+          // 重新生成已进入流式回复,新的回复即为成功反馈,不再额外 toast。
+          return;
+        case Failure(:final error):
+          if (!ctx.mounted) return;
+          await Toast.show(
+            ctx,
+            userMessageFromError(
+              error,
+              fallback: l.assistantProposalFailedState,
+              l10n: l,
+            ),
+          );
+      }
+    }
+
     // Watch only the drawer-relevant fields so streaming chunks (messages /
     // streamingDraft) do not rebuild the sheet contents on every event.
     final drawerState = ref.watch(
@@ -170,6 +203,15 @@ class AssistantPage extends HookConsumerWidget {
                   messageId: messageId,
                   proposalId: proposalId,
                 ),
+          );
+        },
+        onRegenerateProposal: ({required messageId, required proposalId}) {
+          unawaited(
+            handleRegenerateProposal(
+              context,
+              messageId: messageId,
+              proposalId: proposalId,
+            ),
           );
         },
         onStartNewConversation: handleStartNewConversation,

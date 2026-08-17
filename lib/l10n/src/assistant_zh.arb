@@ -94,6 +94,7 @@
   "assistantProposalExpiresAtLabel": "过期时间",
   "assistantProposalConstraintsLabel": "确认前约束",
   "assistantProposalExpiredHint": "这条建议已经过期，请重新生成后再确认。",
+  "assistantProposalRegenerateAction": "重新生成",
   "assistantControlsDrawerTitle": "助手设置",
   "assistantInputDisabledHint": "AI 对话已关闭，输入暂不可用。点击右上角设置开启后再试。",
   "assistantSendShortcutHint": "Ctrl/⌘ + Enter 发送",

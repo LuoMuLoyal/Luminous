@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: explanation
-updated: 2026-08-15
+updated: 2026-08-17
 ---
 
 # Product AI Design
@@ -49,6 +49,7 @@ AI 的核心差异化不是模型本身，而是经用户授权的个人健康�
 - Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
 - `AssistantClearResultResponseDto` 等具名响应 DTO 在生成客户端中为强类型，`clearLatestConversation()` 直接访问 `response.data.cleared` 而非手动解析 `Map`。
 - OpenAPI 合同修复后，`nullable: true` 的 DTO 字段已全部补充显式 `type`，生成客户端不再出现 `dynamic` 字段。
+- **提案确认（HITL）写入边界（F-11/F-16）**: 固定提案卡的确认写入口径已从「客户端 `ProposalExecutionOrchestrator` 本地写入」迁移为「服务端原子写入」——`POST /confirm` 对 `approved` 提案直接从 LangGraph 线程状态读取 payload 执行 create/update/delete daily_record 与 update_user_settings，全部成功后才 resume 线程；客户端确认成功后仅 emit `DataChangeBus`（`dailyRecords` / `userSettings`）刷新各 dashboard，不再持有真实写入逻辑。过期提案卡提供「重新生成」按钮，复用产生该提案的用户消息重走流式管线。
 - **ADR-0009 缓存策略对 AI 数据的影响**:
   - **建议卡（Today Suggestions）**: 建议卡数据接入 cache-first 模式。网络成功后持久化到本地 Drift 缓存，网络失败时使用缓存兜底（stale-while-error）。这意味着用户在离线状态下仍能看到上一次获取的建议卡内容，但建议的时效性受限于缓存快照时间。AI 解释（`POST /today/suggestions/:id/explain`）不缓存，始终走网络按需加载。
   - **AI 摘要（Today Analysis）**: AI 摘要增量流（`/api/v1/user/today-analysis/generate/stream`）不缓存，每次生成都是实时 AI 调用。

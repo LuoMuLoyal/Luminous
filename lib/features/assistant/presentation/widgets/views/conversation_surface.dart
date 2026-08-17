@@ -24,6 +24,7 @@ class AssistantConversationSurface extends ConsumerWidget {
     this.onRetry,
     required this.onConfirmProposal,
     required this.onDismissProposal,
+    this.onRegenerateProposal,
     this.showStarterPrompts = false,
   });
 
@@ -41,6 +42,8 @@ class AssistantConversationSurface extends ConsumerWidget {
   onConfirmProposal;
   final void Function({required String messageId, required String proposalId})
   onDismissProposal;
+  final void Function({required String messageId, required String proposalId})?
+  onRegenerateProposal;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -102,6 +105,7 @@ class AssistantConversationSurface extends ConsumerWidget {
                   scrollController: scrollController,
                   onConfirmProposal: onConfirmProposal,
                   onDismissProposal: onDismissProposal,
+                  onRegenerateProposal: onRegenerateProposal,
                 ),
         ),
         if (sendError != null) ...[

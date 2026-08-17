@@ -8,7 +8,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/features/assistant/application/orchestrators/proposal_flow.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -392,6 +392,16 @@ class AssistantController extends Notifier<AssistantState> {
       return;
     }
 
+    // The real write is applied server-side by the confirm endpoint (F-11):
+    // approved proposals are executed atomically from the thread state before
+    // the graph thread is resumed. A persisted conversation is therefore
+    // required — without one the graph never suspends and there is no pending
+    // proposal to confirm.
+    final conversationId = state.conversationId;
+    if (conversationId == null || conversationId.isEmpty) {
+      throw StateError('无法确认提案：当前没有持久化会话，不存在可确认的挂起提案。');
+    }
+
     _updateProposalState(
       messageId: messageId,
       proposalId: proposalId,
@@ -400,27 +410,23 @@ class AssistantController extends Notifier<AssistantState> {
     );
 
     try {
-      // The actual write is always applied by the client. In a persisted
-      // conversation the backend additionally resumes the suspended graph
-      // thread with an `approved` decision and returns the confirmation reply.
-      await ProposalExecutionOrchestrator(ref: ref).execute(proposal);
-      final conversationId = state.conversationId;
-      if (conversationId != null && conversationId.isNotEmpty) {
-        final finalContent = await ref
-            .read(assistantRepositoryProvider)
-            .confirmProposals(
-              conversationId: conversationId,
-              proposalIds: <String>[proposal.id],
-              decision: 'approved',
-            );
-        _appendFinalContent(finalContent);
-      }
+      final finalContent = await ref
+          .read(assistantRepositoryProvider)
+          .confirmProposals(
+            conversationId: conversationId,
+            proposalIds: <String>[proposal.id],
+            decision: 'approved',
+          );
+      _appendFinalContent(finalContent);
       _updateProposalState(
         messageId: messageId,
         proposalId: proposalId,
         executionState: AssistantProposalExecutionState.confirmed,
         executionError: null,
       );
+      ref
+          .read(dataChangeBusProvider.notifier)
+          .emit(_dataChangeTopicFor(proposal.type));
       await loadRecentConversations();
     } catch (error) {
       ref
@@ -435,6 +441,59 @@ class AssistantController extends Notifier<AssistantState> {
       );
       rethrow;
     }
+  }
+
+  /// Maps a confirmed proposal type to the cross-feature data invalidation
+  /// topic so dashboards refresh after the server-side write (F-11).
+  String _dataChangeTopicFor(AssistantProposedActionType type) {
+    return switch (type) {
+      AssistantProposedActionType.createDailyRecord ||
+      AssistantProposedActionType.updateDailyRecord ||
+      AssistantProposedActionType.deleteDailyRecord =>
+        DataChangeTopic.dailyRecords,
+      AssistantProposedActionType.updateUserSettings =>
+        DataChangeTopic.userSettings,
+    };
+  }
+
+  /// Re-triggers the streaming pipeline with the user message that originally
+  /// produced an expired proposal, so the assistant generates a fresh one.
+  ///
+  /// Finds the last `user` message preceding the assistant message that
+  /// carries the proposal. When a send is already in flight the call is a
+  /// no-op (the incoming reply would race with the running stream).
+  Future<void> regenerateExpiredProposal({
+    required String messageId,
+    required String proposalId,
+  }) async {
+    if (state.isSending || state.isLoadingConversation) {
+      return;
+    }
+
+    final userMessage = _precedingUserMessage(messageId);
+    if (userMessage == null) {
+      throw StateError('找不到产生该提案的消息');
+    }
+
+    await _sendMessageInternal(userMessage.content, appendUserMessage: false);
+  }
+
+  /// Returns the last `user` message before the assistant message with the
+  /// given id, or null when there is none.
+  AssistantMessage? _precedingUserMessage(String messageId) {
+    final index = state.messages.indexWhere(
+      (message) => _messageIdOf(message) == messageId,
+    );
+    if (index < 0) {
+      return null;
+    }
+    for (var i = index - 1; i >= 0; i--) {
+      final message = state.messages[i];
+      if (message.role == AssistantMessageRole.user) {
+        return message;
+      }
+    }
+    return null;
   }
 
   Future<void> dismissProposedAction({

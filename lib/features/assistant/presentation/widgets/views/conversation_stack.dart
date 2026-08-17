@@ -23,6 +23,7 @@ class AssistantConversationStack extends ConsumerWidget {
     this.onRetry,
     required this.onConfirmProposal,
     required this.onDismissProposal,
+    this.onRegenerateProposal,
   });
 
   final TextEditingController inputController;
@@ -40,6 +41,8 @@ class AssistantConversationStack extends ConsumerWidget {
   onConfirmProposal;
   final void Function({required String messageId, required String proposalId})
   onDismissProposal;
+  final void Function({required String messageId, required String proposalId})?
+  onRegenerateProposal;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,6 +67,7 @@ class AssistantConversationStack extends ConsumerWidget {
               : onRetry,
           onConfirmProposal: onConfirmProposal,
           onDismissProposal: onDismissProposal,
+          onRegenerateProposal: onRegenerateProposal,
         ),
         if (!isNearBottom.value)
           Positioned(

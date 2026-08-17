@@ -19,6 +19,7 @@ class AssistantConversationMessageList extends ConsumerWidget {
     required this.scrollController,
     required this.onConfirmProposal,
     required this.onDismissProposal,
+    this.onRegenerateProposal,
   });
 
   final AssistantCapabilities capabilities;
@@ -30,6 +31,8 @@ class AssistantConversationMessageList extends ConsumerWidget {
   onConfirmProposal;
   final void Function({required String messageId, required String proposalId})
   onDismissProposal;
+  final void Function({required String messageId, required String proposalId})?
+  onRegenerateProposal;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,6 +96,7 @@ class AssistantConversationMessageList extends ConsumerWidget {
           createdAt: message.createdAt,
           onConfirmProposal: onConfirmProposal,
           onDismissProposal: onDismissProposal,
+          onRegenerateProposal: onRegenerateProposal,
         );
       },
       separatorBuilder: (_, __) => const SizedBox(height: Spacing.level4),

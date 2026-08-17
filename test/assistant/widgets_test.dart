@@ -11,6 +11,7 @@ import 'package:luminous/features/assistant/presentation/widgets/sections/welcom
 import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/message_bubble.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
 
 import '../helpers/test_forui_app.dart';
@@ -308,6 +309,108 @@ void main() {
       // pending timer is cancelled before the test ends.
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pumpAndSettle();
+    });
+  });
+
+  group('AssistantProposalCard', () {
+    AssistantProposedAction proposal({
+      required String id,
+      required DateTime? expiresAt,
+    }) {
+      return AssistantProposedAction(
+        id: id,
+        type: AssistantProposedActionType.createDailyRecord,
+        title: '保存这条记录',
+        summary: '准备保存一条 water 记录。',
+        reason: null,
+        previewFields: const <AssistantProposalPreviewField>[],
+        target: const AssistantProposalTarget(
+          kind: 'daily_record_draft',
+          label: 'water',
+        ),
+        constraints: const <String>[],
+        expiresAt: expiresAt,
+        payloadVersion: 1,
+        payload: const AssistantCreateDailyRecordProposalPayload(
+          draft: AssistantCreateDailyRecordDraft(
+            kind: 'water',
+            occurredAt: '2026-06-18',
+            title: null,
+            value: '300',
+            unit: 'ml',
+            note: null,
+            payload: null,
+          ),
+        ),
+      );
+    }
+
+    testWidgets(
+      'expired proposal shows a regenerate button that forwards ids',
+      (tester) async {
+        final expired = proposal(
+          id: 'proposal-expired',
+          expiresAt: DateTime.now().subtract(const Duration(minutes: 1)),
+        );
+        String? capturedMessageId;
+        String? capturedProposalId;
+
+        await tester.pumpWidget(
+          _shell(
+            AssistantProposalCard(
+              messageId: 'msg-1',
+              proposal: expired,
+              onConfirmProposal: null,
+              onDismissProposal: null,
+              onRegenerateProposal:
+                  ({required messageId, required proposalId}) {
+                    capturedMessageId = messageId;
+                    capturedProposalId = proposalId;
+                  },
+            ),
+          ),
+        );
+
+        final button = find.byKey(
+          const Key('assistant-proposal-regenerate-proposal-expired'),
+        );
+        expect(button, findsOneWidget);
+        expect(find.text('重新生成'), findsOneWidget);
+
+        await tester.tap(button);
+        await tester.pump(const Duration(milliseconds: 200));
+
+        expect(capturedMessageId, 'msg-1');
+        expect(capturedProposalId, 'proposal-expired');
+      },
+    );
+
+    testWidgets('non-expired proposal does not show a regenerate button', (
+      tester,
+    ) async {
+      final active = proposal(
+        id: 'proposal-active',
+        expiresAt: DateTime.now().add(const Duration(minutes: 15)),
+      );
+
+      await tester.pumpWidget(
+        _shell(
+          AssistantProposalCard(
+            messageId: 'msg-2',
+            proposal: active,
+            onConfirmProposal: null,
+            onDismissProposal: null,
+            onRegenerateProposal:
+                ({required messageId, required proposalId}) {},
+          ),
+        ),
+      );
+
+      expect(
+        find.byKey(const Key('assistant-proposal-regenerate-proposal-active')),
+        findsNothing,
+      );
+      expect(find.text('重新生成'), findsNothing);
     });
   });
 

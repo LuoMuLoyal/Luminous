@@ -30,6 +30,7 @@ class AssistantPageBody extends ConsumerWidget {
     required this.onRetry,
     required this.onConfirmProposal,
     required this.onDismissProposal,
+    this.onRegenerateProposal,
     required this.onStartNewConversation,
     required this.onOpenDrawer,
   });
@@ -46,6 +47,8 @@ class AssistantPageBody extends ConsumerWidget {
   onConfirmProposal;
   final void Function({required String messageId, required String proposalId})
   onDismissProposal;
+  final void Function({required String messageId, required String proposalId})?
+  onRegenerateProposal;
   final VoidCallback onStartNewConversation;
   final VoidCallback onOpenDrawer;
 
@@ -210,6 +213,7 @@ class AssistantPageBody extends ConsumerWidget {
                     onRetry: onRetry,
                     onConfirmProposal: onConfirmProposal,
                     onDismissProposal: onDismissProposal,
+                    onRegenerateProposal: onRegenerateProposal,
                   ),
                 ),
               ],

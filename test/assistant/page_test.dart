@@ -112,66 +112,83 @@ void main() {
     expect(find.text('• 必须先经过你确认，后端不会直接写入。'), findsOneWidget);
   });
 
-  testWidgets('confirm create proposal writes daily record', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final dailyRecordRepository = _FakeDailyRecordRepository();
+  testWidgets(
+    'confirm create proposal confirms on the backend without a client write',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final repository = _ProposalAssistantRepository();
+      final dailyRecordRepository = _FakeDailyRecordRepository();
 
-    await tester.pumpWidget(
-      _buildTestApp(
-        repository: _ProposalAssistantRepository(),
-        dailyRecordRepository: dailyRecordRepository,
-      ),
-    );
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        _buildTestApp(
+          repository: repository,
+          dailyRecordRepository: dailyRecordRepository,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我记一杯水');
-    await tester.tap(find.byKey(const Key('assistant-send-action')));
-    await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('assistant-input')),
+        '帮我记一杯水',
+      );
+      await tester.tap(find.byKey(const Key('assistant-send-action')));
+      await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('assistant-proposal-confirm-proposal-create-1')),
-    );
-    await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('assistant-proposal-confirm-proposal-create-1')),
+      );
+      await tester.pumpAndSettle();
 
-    expect(dailyRecordRepository.createdInputs, hasLength(1));
-    expect(
-      dailyRecordRepository.createdInputs.single.kind,
-      DailyRecordKind.water,
-    );
-    expect(dailyRecordRepository.createdInputs.single.value, '300');
-    expect(find.text('已确认'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 2));
-  });
+      // The write happens server-side: the confirm request carries the approved
+      // decision and the client repository is never touched.
+      expect(repository.confirmCalls.single.decision, 'approved');
+      expect(repository.confirmCalls.single.proposalIds, <String>[
+        'proposal-create-1',
+      ]);
+      expect(
+        repository.confirmCalls.single.conversationId,
+        'conversation-proposal',
+      );
+      expect(dailyRecordRepository.createdInputs, isEmpty);
+      expect(find.text('已确认'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+    },
+  );
 
-  testWidgets('confirm settings proposal patches user settings', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final settingsController = _TrackingUserSettingsController();
+  testWidgets(
+    'confirm settings proposal confirms on the backend without a client patch',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final repository = _SettingsProposalAssistantRepository();
+      final settingsController = _TrackingUserSettingsController();
 
-    await tester.pumpWidget(
-      _buildTestApp(
-        repository: _SettingsProposalAssistantRepository(),
-        settingsController: settingsController,
-      ),
-    );
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        _buildTestApp(
+          repository: repository,
+          settingsController: settingsController,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('assistant-input')), '关闭记忆');
-    await tester.tap(find.byKey(const Key('assistant-send-action')));
-    await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('assistant-input')), '关闭记忆');
+      await tester.tap(find.byKey(const Key('assistant-send-action')));
+      await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('assistant-proposal-confirm-proposal-settings-1')),
-    );
-    await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('assistant-proposal-confirm-proposal-settings-1')),
+      );
+      await tester.pumpAndSettle();
 
-    expect(settingsController.lastPatch, isNotNull);
-
-    expect(settingsController.lastPatch?.assistantMemoryEnabled, isFalse);
-    expect(find.text('已确认'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 2));
-  });
+      expect(repository.confirmCalls.single.decision, 'approved');
+      expect(repository.confirmCalls.single.proposalIds, <String>[
+        'proposal-settings-1',
+      ]);
+      // No client-side settings patch anymore — the server applies it.
+      expect(settingsController.lastPatch, isNull);
+      expect(find.text('已确认'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+    },
+  );
 
   testWidgets('dismiss proposal hides proposal card', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -225,6 +242,15 @@ void main() {
       isNull,
     );
     expect(dailyRecordRepository.createdInputs, isEmpty);
+
+    // Expired proposals offer a one-tap regenerate entry instead.
+    expect(
+      find.byKey(
+        const Key('assistant-proposal-regenerate-proposal-create-expired'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('重新生成'), findsOneWidget);
   });
 
   testWidgets('disabled AI chat shows hint about toggle above', (tester) async {
@@ -504,9 +530,16 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-/// Stubs the backend proposal confirmation for repositories that only need
-/// local proposal execution in tests.
+/// Stubs the backend proposal confirmation for repositories. Records calls so
+/// tests can assert the confirm request (the real write happens server-side,
+/// F-11).
 mixin _ConfirmProposalsStub implements AssistantRepository {
+  final List<
+    ({String conversationId, List<String> proposalIds, String decision})
+  >
+  confirmCalls =
+      <({String conversationId, List<String> proposalIds, String decision})>[];
+
   @override
   Future<String?> confirmProposals({
     required String conversationId,
@@ -514,6 +547,11 @@ mixin _ConfirmProposalsStub implements AssistantRepository {
     required String decision,
     String? note,
   }) async {
+    confirmCalls.add((
+      conversationId: conversationId,
+      proposalIds: proposalIds,
+      decision: decision,
+    ));
     return null;
   }
 }

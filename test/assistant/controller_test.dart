@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -17,6 +20,16 @@ class _FakeAssistantRepository implements AssistantRepository {
   final Stream<AssistantGenerationEvent>? streamOverride;
 
   String? lastStreamConversationId;
+  List<AssistantMessage>? lastStreamMessages;
+  int streamMessagesCallCount = 0;
+
+  final List<
+    ({String conversationId, List<String> proposalIds, String decision})
+  >
+  confirmCalls =
+      <({String conversationId, List<String> proposalIds, String decision})>[];
+  String? confirmResult;
+  bool throwOnConfirm = false;
 
   @override
   Future<AssistantCapabilities> getCapabilities() async {
@@ -65,7 +78,9 @@ class _FakeAssistantRepository implements AssistantRepository {
     List<AssistantMessage> messages, {
     String? conversationId,
   }) {
+    streamMessagesCallCount++;
     lastStreamConversationId = conversationId;
+    lastStreamMessages = List<AssistantMessage>.of(messages);
     return streamOverride ?? const Stream.empty();
   }
 
@@ -76,8 +91,108 @@ class _FakeAssistantRepository implements AssistantRepository {
     required String decision,
     String? note,
   }) async {
-    return null;
+    confirmCalls.add((
+      conversationId: conversationId,
+      proposalIds: proposalIds,
+      decision: decision,
+    ));
+    if (throwOnConfirm) {
+      throw Exception('confirm failed');
+    }
+    return confirmResult;
   }
+}
+
+AssistantProposedAction _createDailyRecordProposal({
+  required String id,
+  DateTime? expiresAt,
+}) {
+  return AssistantProposedAction(
+    id: id,
+    type: AssistantProposedActionType.createDailyRecord,
+    title: '保存这条记录',
+    summary: '准备保存一条 water 记录。',
+    reason: null,
+    previewFields: const <AssistantProposalPreviewField>[],
+    target: const AssistantProposalTarget(
+      kind: 'daily_record_draft',
+      label: 'water',
+    ),
+    constraints: const <String>[],
+    expiresAt: expiresAt ?? DateTime.now().add(const Duration(minutes: 15)),
+    payloadVersion: 1,
+    payload: const AssistantCreateDailyRecordProposalPayload(
+      draft: AssistantCreateDailyRecordDraft(
+        kind: 'water',
+        occurredAt: '2026-08-17',
+        title: null,
+        value: '300',
+        unit: 'ml',
+        note: null,
+        payload: null,
+      ),
+    ),
+  );
+}
+
+AssistantProposedAction _updateUserSettingsProposal({required String id}) {
+  return AssistantProposedAction(
+    id: id,
+    type: AssistantProposedActionType.updateUserSettings,
+    title: '更新助手相关设置',
+    summary: '关闭持久化记忆。',
+    reason: null,
+    previewFields: const <AssistantProposalPreviewField>[],
+    target: const AssistantProposalTarget(
+      kind: 'user_settings',
+      label: '助手设置',
+      settingKeys: <String>['assistantMemoryEnabled'],
+    ),
+    constraints: const <String>[],
+    expiresAt: DateTime.now().add(const Duration(minutes: 15)),
+    payloadVersion: 1,
+    payload: const AssistantUpdateUserSettingsProposalPayload(
+      draft: AssistantUpdateUserSettingsDraft(assistantMemoryEnabled: false),
+    ),
+  );
+}
+
+AssistantConversation _conversationWith({
+  required String id,
+  required List<AssistantMessage> messages,
+}) {
+  return AssistantConversation(
+    id: id,
+    title: null,
+    status: 'active',
+    messages: messages,
+    lastMessageAt: null,
+    createdAt: DateTime(2026, 6, 1),
+    updatedAt: DateTime(2026, 6, 1),
+  );
+}
+
+AssistantMessage _assistantMessage({
+  required String content,
+  List<AssistantProposedAction> proposedActions =
+      const <AssistantProposedAction>[],
+}) {
+  return AssistantMessage(
+    role: AssistantMessageRole.assistant,
+    content: content,
+    createdAt: DateTime(2026, 6, 1, 12),
+    proposedActions: proposedActions,
+  );
+}
+
+ProviderContainer _buildContainer(_FakeAssistantRepository repository) {
+  final container = ProviderContainer(
+    overrides: [
+      authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+      assistantRepositoryProvider.overrideWithValue(repository),
+    ],
+  );
+  return container;
 }
 
 void main() {
@@ -181,6 +296,336 @@ void main() {
 
       expect(fake.lastStreamConversationId, 'persisted-1');
     });
+
+    test(
+      'confirmProposedAction confirms on the backend and emits dailyRecords',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final proposal = _createDailyRecordProposal(id: 'proposal-1');
+        final assistantMessage = _assistantMessage(
+          content: '建议：记录喝水。',
+          proposedActions: <AssistantProposedAction>[proposal],
+        );
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[
+              AssistantMessage(
+                role: AssistantMessageRole.user,
+                content: '帮我记一杯水',
+                createdAt: DateTime(2026, 6, 1, 11),
+              ),
+              assistantMessage,
+            ],
+          ),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        final state = container.read(assistantControllerProvider);
+        await controller.confirmProposedAction(
+          messageId: controller.messageIdOf(state.messages.last),
+          proposalId: 'proposal-1',
+        );
+
+        expect(fake.confirmCalls.single.conversationId, 'persisted-1');
+        expect(fake.confirmCalls.single.proposalIds, <String>['proposal-1']);
+        expect(fake.confirmCalls.single.decision, 'approved');
+
+        final updated = container.read(assistantControllerProvider);
+        final updatedProposal = updated.messages
+            .expand((message) => message.proposedActions)
+            .singleWhere((proposal) => proposal.id == 'proposal-1');
+        expect(
+          updatedProposal.executionState,
+          AssistantProposalExecutionState.confirmed,
+        );
+
+        final bus = container.read(dataChangeBusProvider);
+        expect(bus[DataChangeTopic.dailyRecords], 1);
+        expect(bus[DataChangeTopic.userSettings], isNull);
+      },
+    );
+
+    test(
+      'confirmProposedAction emits userSettings for settings proposals',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final proposal = _updateUserSettingsProposal(id: 'proposal-settings-1');
+        final assistantMessage = _assistantMessage(
+          content: '建议：关闭记忆。',
+          proposedActions: <AssistantProposedAction>[proposal],
+        );
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[
+              AssistantMessage(
+                role: AssistantMessageRole.user,
+                content: '关闭记忆',
+                createdAt: DateTime(2026, 6, 1, 11),
+              ),
+              assistantMessage,
+            ],
+          ),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        final state = container.read(assistantControllerProvider);
+        await controller.confirmProposedAction(
+          messageId: controller.messageIdOf(state.messages.last),
+          proposalId: 'proposal-settings-1',
+        );
+
+        expect(fake.confirmCalls.single.decision, 'approved');
+        final bus = container.read(dataChangeBusProvider);
+        expect(bus[DataChangeTopic.userSettings], 1);
+        expect(bus[DataChangeTopic.dailyRecords], isNull);
+      },
+    );
+
+    test(
+      'confirmProposedAction marks the proposal failed and rethrows',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final proposal = _createDailyRecordProposal(id: 'proposal-1');
+        final assistantMessage = _assistantMessage(
+          content: '建议：记录喝水。',
+          proposedActions: <AssistantProposedAction>[proposal],
+        );
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[assistantMessage],
+          ),
+        )..throwOnConfirm = true;
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        final state = container.read(assistantControllerProvider);
+        await expectLater(
+          controller.confirmProposedAction(
+            messageId: controller.messageIdOf(state.messages.last),
+            proposalId: 'proposal-1',
+          ),
+          throwsA(isA<Exception>()),
+        );
+
+        final updated = container.read(assistantControllerProvider);
+        final updatedProposal = updated.messages
+            .expand((message) => message.proposedActions)
+            .singleWhere((proposal) => proposal.id == 'proposal-1');
+        expect(
+          updatedProposal.executionState,
+          AssistantProposalExecutionState.failed,
+        );
+        expect(updatedProposal.executionError, isNotNull);
+      },
+    );
+
+    test(
+      'confirmProposedAction throws without a persisted conversation',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final fake = _FakeAssistantRepository(
+          streamOverride: Stream<AssistantGenerationEvent>.fromIterable([
+            AssistantGenerationResultEvent(
+              conversationId: '',
+              message: _assistantMessage(
+                content: '建议：记录喝水。',
+                proposedActions: <AssistantProposedAction>[
+                  _createDailyRecordProposal(id: 'proposal-1'),
+                ],
+              ),
+            ),
+          ]),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+        await controller.sendMessage('帮我记一杯水');
+
+        final state = container.read(assistantControllerProvider);
+        expect(state.conversationId, isNull);
+
+        await expectLater(
+          controller.confirmProposedAction(
+            messageId: controller.messageIdOf(state.messages.last),
+            proposalId: 'proposal-1',
+          ),
+          throwsA(isA<StateError>()),
+        );
+        expect(fake.confirmCalls, isEmpty);
+      },
+    );
+
+    test(
+      'regenerateExpiredProposal resends the preceding user message',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final userMessage = AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: '帮我记一杯水',
+          createdAt: DateTime(2026, 6, 1, 11),
+        );
+        final assistantMessage = _assistantMessage(
+          content: '建议已过期。',
+          proposedActions: <AssistantProposedAction>[
+            _createDailyRecordProposal(
+              id: 'proposal-expired',
+              expiresAt: DateTime.now().subtract(const Duration(minutes: 1)),
+            ),
+          ],
+        );
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[userMessage, assistantMessage],
+          ),
+          streamOverride: Stream<AssistantGenerationEvent>.fromIterable([
+            AssistantGenerationResultEvent(
+              conversationId: 'persisted-1',
+              message: _assistantMessage(content: '这是重新生成的建议。'),
+            ),
+          ]),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        final before = container
+            .read(assistantControllerProvider)
+            .messages
+            .length;
+        await controller.regenerateExpiredProposal(
+          messageId: controller.messageIdOf(assistantMessage),
+          proposalId: 'proposal-expired',
+        );
+
+        expect(fake.streamMessagesCallCount, 1);
+        expect(fake.lastStreamConversationId, 'persisted-1');
+        // The pipeline reuses the persisted messages without appending a new
+        // user message; the user message that produced the proposal is in there.
+        expect(fake.lastStreamMessages?.length, 2);
+        expect(fake.lastStreamMessages?.first.content, '帮我记一杯水');
+        // The pipeline reuses persisted messages without appending a new user
+        // message; a fresh assistant reply is appended on the result event.
+        expect(
+          container.read(assistantControllerProvider).messages.length,
+          before + 1,
+        );
+      },
+    );
+
+    test(
+      'regenerateExpiredProposal throws when no user message precedes it',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final assistantMessage = _assistantMessage(
+          content: '建议已过期。',
+          proposedActions: <AssistantProposedAction>[
+            _createDailyRecordProposal(
+              id: 'proposal-expired',
+              expiresAt: DateTime.now().subtract(const Duration(minutes: 1)),
+            ),
+          ],
+        );
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[assistantMessage],
+          ),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        await expectLater(
+          controller.regenerateExpiredProposal(
+            messageId: controller.messageIdOf(assistantMessage),
+            proposalId: 'proposal-expired',
+          ),
+          throwsA(isA<StateError>()),
+        );
+      },
+    );
+
+    test(
+      'regenerateExpiredProposal is skipped while a send is in flight',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final streamController = StreamController<AssistantGenerationEvent>();
+        addTearDown(streamController.close);
+        final userMessage = AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: '帮我记一杯水',
+          createdAt: DateTime(2026, 6, 1, 11),
+        );
+        final assistantMessage = _assistantMessage(
+          content: '建议已过期。',
+          proposedActions: <AssistantProposedAction>[
+            _createDailyRecordProposal(
+              id: 'proposal-expired',
+              expiresAt: DateTime.now().subtract(const Duration(minutes: 1)),
+            ),
+          ],
+        );
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[userMessage, assistantMessage],
+          ),
+          streamOverride: streamController.stream,
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        final sendFuture = controller.sendMessage('第一条消息');
+        expect(container.read(assistantControllerProvider).isSending, isTrue);
+
+        await controller.regenerateExpiredProposal(
+          messageId: controller.messageIdOf(assistantMessage),
+          proposalId: 'proposal-expired',
+        );
+
+        // Only the in-flight send hit the pipeline; the regenerate call was a
+        // no-op. Complete the stream and await the send to clean up.
+        expect(fake.streamMessagesCallCount, 1);
+        streamController.add(
+          AssistantGenerationResultEvent(
+            conversationId: 'persisted-1',
+            message: _assistantMessage(content: 'ok'),
+          ),
+        );
+        await sendFuture;
+      },
+    );
   });
 }
 

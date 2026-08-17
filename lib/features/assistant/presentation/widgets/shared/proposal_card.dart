@@ -14,6 +14,7 @@ class AssistantProposalCard extends StatelessWidget {
     required this.proposal,
     required this.onConfirmProposal,
     required this.onDismissProposal,
+    this.onRegenerateProposal,
   });
 
   final String messageId;
@@ -25,6 +26,11 @@ class AssistantProposalCard extends StatelessWidget {
   onConfirmProposal;
   final void Function({required String messageId, required String proposalId})?
   onDismissProposal;
+
+  /// Re-triggers generation of the user message that produced this proposal,
+  /// used when the proposal has expired.
+  final void Function({required String messageId, required String proposalId})?
+  onRegenerateProposal;
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +136,20 @@ class AssistantProposalCard extends StatelessWidget {
                         ),
                   child: Text(l10n.assistantProposalDismissAction),
                 ),
+                if (proposal.isExpired) ...[
+                  const SizedBox(width: Spacing.level3),
+                  FButton(
+                    key: Key('assistant-proposal-regenerate-${proposal.id}'),
+                    variant: FButtonVariant.ghost,
+                    onPress: onRegenerateProposal == null
+                        ? null
+                        : () => onRegenerateProposal!(
+                            messageId: messageId,
+                            proposalId: proposal.id,
+                          ),
+                    child: Text(l10n.assistantProposalRegenerateAction),
+                  ),
+                ],
               ],
             ),
           ],

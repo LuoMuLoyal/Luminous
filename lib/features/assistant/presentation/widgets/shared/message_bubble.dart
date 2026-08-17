@@ -27,6 +27,7 @@ class AssistantMessageBubble extends StatelessWidget {
     this.createdAt,
     this.onConfirmProposal,
     this.onDismissProposal,
+    this.onRegenerateProposal,
   });
 
   final String messageId;
@@ -44,6 +45,8 @@ class AssistantMessageBubble extends StatelessWidget {
   onConfirmProposal;
   final void Function({required String messageId, required String proposalId})?
   onDismissProposal;
+  final void Function({required String messageId, required String proposalId})?
+  onRegenerateProposal;
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +124,7 @@ class AssistantMessageBubble extends StatelessWidget {
                           proposal: proposal,
                           onConfirmProposal: onConfirmProposal,
                           onDismissProposal: onDismissProposal,
+                          onRegenerateProposal: onRegenerateProposal,
                         ),
                       ),
                   ],
