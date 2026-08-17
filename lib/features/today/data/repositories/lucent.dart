@@ -13,6 +13,42 @@ import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+TodayObservedMetric _observedMetric({
+  required double? value,
+  required bool observed,
+  required int observedCount,
+  required String date,
+}) {
+  final hasValue = observed && value != null;
+  return TodayObservedMetric(
+    value: hasValue ? value : null,
+    state: hasValue
+        ? TodayObservedMetricState.observed
+        : TodayObservedMetricState.unknown,
+    coverage: hasValue
+        ? TodayObservedMetricCoverage.sufficient
+        : TodayObservedMetricCoverage.none,
+    sources: hasValue ? const [TodayObservedMetricSource.manual] : const [],
+    observedCount: hasValue ? observedCount : 0,
+    expectedCount: null,
+    windowStart: date,
+    windowEnd: date,
+  );
+}
+
+TodayObservedMetric _degradedObservedMetric(String date) {
+  return TodayObservedMetric(
+    value: null,
+    state: TodayObservedMetricState.degraded,
+    coverage: TodayObservedMetricCoverage.none,
+    sources: const [],
+    observedCount: 0,
+    expectedCount: null,
+    windowStart: date,
+    windowEnd: date,
+  );
+}
+
 /// Lucent-backed [TodayRepository] that merges real health-context and
 /// daily-record signals with static mock sections for unsupported surfaces.
 class LucentTodayRepository implements TodayRepository {
@@ -110,6 +146,23 @@ class LucentTodayRepository implements TodayRepository {
       waterMetric = _degradedObservedMetric(dateStr);
     }
 
+    var vitalReadout = const _VitalReadout();
+    try {
+      final vitalRecords = await dailyRecordRepository.fetchRecords(
+        dateStr,
+        kind: DailyRecordKind.vital.name,
+        page: 1,
+        pageSize: 50,
+      );
+      vitalReadout = _VitalReadout.fromRecords(
+        vitalRecords.items,
+        date: dateStr,
+      );
+    } catch (e) {
+      talker.error('LucentTodayRepository: fetch vital records failed: $e');
+      vitalReadout = _VitalReadout.degraded(date: dateStr);
+    }
+
     final waterCount = (recordCounts['water'] ?? 0).toInt();
     final completedMedicineIds = <String>{};
     TodayObservedMetric? medicationObservedMetric;
@@ -183,19 +236,17 @@ class LucentTodayRepository implements TodayRepository {
       vitals: [
         TodayVitalSummary(
           type: TodayVitalType.heartRate,
-          valueLabel: recordLatest['vital'] ?? '--',
+          valueLabel: vitalReadout.heartRateLabel,
           observedMetric: summaryFailed
               ? _degradedObservedMetric(dateStr)
-              : _observedMetric(
-                  value: double.tryParse(recordLatest['vital'] ?? ''),
-                  observed: recordLatest['vital'] != null,
-                  observedCount: recordLatest['vital'] == null ? 0 : 1,
-                  date: dateStr,
-                ),
+              : vitalReadout.heartRateMetric,
         ),
-        const TodayVitalSummary(
+        TodayVitalSummary(
           type: TodayVitalType.bloodPressure,
-          valueLabel: '--',
+          valueLabel: vitalReadout.bloodPressureLabel,
+          observedMetric: summaryFailed
+              ? _degradedObservedMetric(dateStr)
+              : vitalReadout.bloodPressureMetric,
         ),
         TodayVitalSummary(
           type: TodayVitalType.sleep,
@@ -287,9 +338,10 @@ class LucentTodayRepository implements TodayRepository {
           valueLabel: '--',
           observedMetric: _degradedObservedMetric(dateStr),
         ),
-        const TodayVitalSummary(
+        TodayVitalSummary(
           type: TodayVitalType.bloodPressure,
           valueLabel: '--',
+          observedMetric: _degradedObservedMetric(dateStr),
         ),
         TodayVitalSummary(
           type: TodayVitalType.sleep,
@@ -399,46 +451,10 @@ class LucentTodayRepository implements TodayRepository {
     return durationMinutes.toDouble() / 60;
   }
 
-  static TodayObservedMetric _observedMetric({
-    required double? value,
-    required bool observed,
-    required int observedCount,
-    required String date,
-  }) {
-    final hasValue = observed && value != null;
-    return TodayObservedMetric(
-      value: hasValue ? value : null,
-      state: hasValue
-          ? TodayObservedMetricState.observed
-          : TodayObservedMetricState.unknown,
-      coverage: hasValue
-          ? TodayObservedMetricCoverage.sufficient
-          : TodayObservedMetricCoverage.none,
-      sources: hasValue ? const [TodayObservedMetricSource.manual] : const [],
-      observedCount: hasValue ? observedCount : 0,
-      expectedCount: null,
-      windowStart: date,
-      windowEnd: date,
-    );
-  }
-
   static TodayObservedMetric _unknownObservedMetric(String date) {
     return TodayObservedMetric(
       value: null,
       state: TodayObservedMetricState.unknown,
-      coverage: TodayObservedMetricCoverage.none,
-      sources: const [],
-      observedCount: 0,
-      expectedCount: null,
-      windowStart: date,
-      windowEnd: date,
-    );
-  }
-
-  static TodayObservedMetric _degradedObservedMetric(String date) {
-    return TodayObservedMetric(
-      value: null,
-      state: TodayObservedMetricState.degraded,
       coverage: TodayObservedMetricCoverage.none,
       sources: const [],
       observedCount: 0,
@@ -512,4 +528,95 @@ class LucentTodayRepository implements TodayRepository {
   @override
   Future<TodayDashboard> get signedOutDashboard =>
       Future.value(TodayDashboard.signedOut());
+}
+
+/// Immutable holder for the latest heart-rate and blood-pressure readouts.
+///
+/// Created from the day's `vital` daily records so that the Today vitals row
+/// reads real observed values instead of static placeholders.
+final class _VitalReadout {
+  const _VitalReadout({
+    this.heartRateMetric,
+    this.bloodPressureMetric,
+    this.heartRateLabel = '--',
+    this.bloodPressureLabel = '--',
+  });
+
+  factory _VitalReadout.degraded({required String date}) {
+    return _VitalReadout(
+      heartRateMetric: _degradedObservedMetric(date),
+      bloodPressureMetric: _degradedObservedMetric(date),
+    );
+  }
+
+  factory _VitalReadout.fromRecords(
+    List<DailyRecordItem> records, {
+    required String date,
+  }) {
+    if (records.isEmpty) {
+      return const _VitalReadout();
+    }
+
+    final sorted = List<DailyRecordItem>.from(records)
+      ..sort((a, b) {
+        final ta = a.occurredTime ?? a.occurredAt;
+        final tb = b.occurredTime ?? b.occurredAt;
+        return tb.compareTo(ta);
+      });
+
+    TodayObservedMetric? heartRateMetric;
+    TodayObservedMetric? bloodPressureMetric;
+    var heartRateLabel = '--';
+    var bloodPressureLabel = '--';
+
+    for (final record in sorted) {
+      final payload = record.payload;
+      final vitalType = payload?['vitalType'] as String?;
+      final value = double.tryParse(record.value ?? '');
+      final unit = record.unit?.trim();
+
+      if (vitalType == 'heartRate' && heartRateMetric == null) {
+        final observed = value != null;
+        heartRateMetric = _observedMetric(
+          value: value,
+          observed: observed,
+          observedCount: observed ? 1 : 0,
+          date: date,
+        );
+        heartRateLabel = observed
+            ? '${value.round()} ${unit ?? ''}'.trim()
+            : '--';
+      }
+
+      if (vitalType == 'bloodPressure' && bloodPressureMetric == null) {
+        final secondaryValue = payload?['secondaryValue'];
+        final observed = value != null && secondaryValue is num;
+        bloodPressureMetric = _observedMetric(
+          value: value,
+          observed: observed,
+          observedCount: observed ? 1 : 0,
+          date: date,
+        );
+        bloodPressureLabel = observed
+            ? '${value.round()}/${secondaryValue.round()} ${unit ?? ''}'.trim()
+            : '--';
+      }
+
+      if (heartRateMetric != null && bloodPressureMetric != null) {
+        break;
+      }
+    }
+
+    return _VitalReadout(
+      heartRateMetric: heartRateMetric,
+      bloodPressureMetric: bloodPressureMetric,
+      heartRateLabel: heartRateLabel,
+      bloodPressureLabel: bloodPressureLabel,
+    );
+  }
+
+  final TodayObservedMetric? heartRateMetric;
+  final TodayObservedMetric? bloodPressureMetric;
+  final String heartRateLabel;
+  final String bloodPressureLabel;
 }
