@@ -326,10 +326,12 @@ class _CompactSummaryMetric extends StatelessWidget {
                 style: TypographyToken.level4
                     .body(context)
                     .copyWith(
-                      fontWeight: item.isFallback
+                      fontWeight: item.isDegraded || item.isFallback
                           ? FontWeight.w500
                           : FontWeight.w700,
-                      color: item.isFallback ? colors.mutedForeground : null,
+                      color: item.isDegraded
+                          ? colors.destructive
+                          : (item.isFallback ? colors.mutedForeground : null),
                     ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

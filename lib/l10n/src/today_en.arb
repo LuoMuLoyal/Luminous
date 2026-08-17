@@ -179,6 +179,7 @@
       "total": {"type": "int"}
     }
   },
+  "todayMetricDegraded": "Temporarily unavailable",
   "todayStatusNeedsImprovement": "Needs improvement",
   "todayStatusCompleted": "Completed",
   "todayMedicationPendingStatus": "Pending",

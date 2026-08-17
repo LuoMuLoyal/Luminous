@@ -139,6 +139,141 @@ void main() {
       );
     },
   );
+
+  test(
+    'returns degraded dashboard when health context snapshot fails',
+    () async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+      final container = ProviderContainer(
+        overrides: [
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => throw StateError('snapshot unavailable'),
+          ),
+          dailyRecordRepositoryProvider.overrideWithValue(
+            _FakeDailyRecordRepository(),
+          ),
+          appDatabaseProvider.overrideWithValue(db),
+          cachedDoseLogDataSourceProvider.overrideWith((ref) {
+            return CachedDoseLogDataSource(
+              remote: _FakeDoseLogDataSource(),
+              dao: db.medicineDoseLogDao,
+            );
+          }),
+          medicineReminderRemoteDataSourceProvider.overrideWithValue(
+            _FakeReminderDataSource(),
+          ),
+          userSettingsRepositoryProvider.overrideWithValue(
+            _FakeUserSettingsRepository(),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final dashboard = await container
+          .read(todayRepositoryProvider)
+          .fetchDashboard();
+
+      expect(
+        dashboard.water.observedMetric?.state,
+        TodayObservedMetricState.degraded,
+      );
+      expect(
+        dashboard.medication.observedMetric?.state,
+        TodayObservedMetricState.degraded,
+      );
+      final sleepVital = dashboard.vitals.firstWhere(
+        (v) => v.type == TodayVitalType.sleep,
+      );
+      expect(
+        sleepVital.observedMetric?.state,
+        TodayObservedMetricState.degraded,
+      );
+    },
+  );
+
+  test(
+    'marks water metric degraded when dailyRecordRepository.fetchRecords fails',
+    () async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+      final container = ProviderContainer(
+        overrides: [
+          healthContextSnapshotProvider.overrideWith((ref) async => _snapshot),
+          dailyRecordRepositoryProvider.overrideWithValue(
+            _ThrowingWaterDailyRecordRepository(),
+          ),
+          appDatabaseProvider.overrideWithValue(db),
+          cachedDoseLogDataSourceProvider.overrideWith((ref) {
+            return CachedDoseLogDataSource(
+              remote: _FakeDoseLogDataSource(),
+              dao: db.medicineDoseLogDao,
+            );
+          }),
+          medicineReminderRemoteDataSourceProvider.overrideWithValue(
+            _FakeReminderDataSource(),
+          ),
+          userSettingsRepositoryProvider.overrideWithValue(
+            _FakeUserSettingsRepository(),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final dashboard = await container
+          .read(todayRepositoryProvider)
+          .fetchDashboard();
+
+      expect(
+        dashboard.water.observedMetric?.state,
+        TodayObservedMetricState.degraded,
+      );
+      expect(dashboard.medication.observedMetric, isNull);
+    },
+  );
+
+  test(
+    'marks medication metric degraded when doseLogRepository.fetchForDate fails',
+    () async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+      final container = ProviderContainer(
+        overrides: [
+          healthContextSnapshotProvider.overrideWith((ref) async => _snapshot),
+          dailyRecordRepositoryProvider.overrideWithValue(
+            _FakeDailyRecordRepository(),
+          ),
+          appDatabaseProvider.overrideWithValue(db),
+          cachedDoseLogDataSourceProvider.overrideWith((ref) {
+            return CachedDoseLogDataSource(
+              remote: _ThrowingDoseLogDataSource(),
+              dao: db.medicineDoseLogDao,
+            );
+          }),
+          medicineReminderRemoteDataSourceProvider.overrideWithValue(
+            _FakeReminderDataSource(),
+          ),
+          userSettingsRepositoryProvider.overrideWithValue(
+            _FakeUserSettingsRepository(),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final dashboard = await container
+          .read(todayRepositoryProvider)
+          .fetchDashboard();
+
+      expect(
+        dashboard.medication.observedMetric?.state,
+        TodayObservedMetricState.degraded,
+      );
+      expect(
+        dashboard.water.observedMetric?.state,
+        isNot(TodayObservedMetricState.degraded),
+      );
+    },
+  );
 }
 
 class _FakeDailyRecordRepository implements DailyRecordRepository {
@@ -308,6 +443,28 @@ MedicineReminderItem _reminder({
     createdAt: '2026-06-08T07:00:00.000Z',
     updatedAt: '2026-06-08T07:00:00.000Z',
   );
+}
+
+class _ThrowingWaterDailyRecordRepository extends _FakeDailyRecordRepository {
+  @override
+  Future<DailyRecordListData> fetchRecords(
+    String date, {
+    String? kind,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
+    if (kind == DailyRecordKind.water.name) {
+      throw StateError('water records unavailable');
+    }
+    return super.fetchRecords(date, kind: kind, page: page, pageSize: pageSize);
+  }
+}
+
+class _ThrowingDoseLogDataSource extends _FakeDoseLogDataSource {
+  @override
+  Future<List<DoseLogItem>> fetchForDate(String date) async {
+    throw StateError('dose logs unavailable');
+  }
 }
 
 const _snapshot = HealthContextSnapshot(

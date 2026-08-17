@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
@@ -14,6 +15,7 @@ class TodayOverviewItem {
     required this.value,
     required this.color,
     this.isFallback = false,
+    this.isDegraded = false,
   });
 
   final IconData icon;
@@ -24,6 +26,10 @@ class TodayOverviewItem {
   /// True when [value] is a placeholder (e.g. "未记录") rather than real data.
   /// Used to de-emphasize the text visually.
   final bool isFallback;
+
+  /// True when the upstream data source for this metric failed and [value]
+  /// should be rendered as "Temporarily unavailable".
+  final bool isDegraded;
 }
 
 class TodayAiSummaryItem {
@@ -138,35 +144,55 @@ List<TodayOverviewItem> buildOverviewItems(
   AppLocalizations l10n,
   TodayDashboard dashboard,
 ) {
-  final sleepIsFallback = !hasMeaningfulVitalValue(
-    dashboard.vitals,
-    TodayVitalType.sleep,
+  final sleepVital = dashboard.vitals.firstWhereOrNull(
+    (v) => v.type == TodayVitalType.sleep,
   );
-  final sleep = vitalValue(
-    dashboard.vitals,
-    TodayVitalType.sleep,
-    fallback: l10n.todaySleepFallbackValue,
-  );
+  final sleepDegraded =
+      sleepVital?.observedMetric?.state == TodayObservedMetricState.degraded;
+  final sleepIsFallback =
+      !sleepDegraded &&
+      !hasMeaningfulVitalValue(dashboard.vitals, TodayVitalType.sleep);
+  final sleep = sleepDegraded
+      ? l10n.todayMetricDegraded
+      : vitalValue(
+          dashboard.vitals,
+          TodayVitalType.sleep,
+          fallback: l10n.todaySleepFallbackValue,
+        );
+
+  final medicationDegraded =
+      dashboard.medication.observedMetric?.state ==
+      TodayObservedMetricState.degraded;
   final medicationDone = dashboard.medication.medicineCount == 0
       ? 0
       : dashboard.medication.medicineCount - dashboard.medication.pendingCount;
   final safeMedicationDone = medicationDone < 0 ? 0 : medicationDone;
 
+  final waterDegraded =
+      dashboard.water.observedMetric?.state ==
+      TodayObservedMetricState.degraded;
+
   return [
     TodayOverviewItem(
       icon: SemanticIcons.recordMedicine,
       label: l10n.todayMedicationOverviewLabel,
-      value: l10n.todayMedicationOverviewCount(
-        safeMedicationDone,
-        dashboard.medication.medicineCount,
-      ),
+      value: medicationDegraded
+          ? l10n.todayMetricDegraded
+          : l10n.todayMedicationOverviewCount(
+              safeMedicationDone,
+              dashboard.medication.medicineCount,
+            ),
       color: SemanticColor.primary,
+      isDegraded: medicationDegraded,
     ),
     TodayOverviewItem(
       icon: SemanticIcons.recordWater,
       label: l10n.todayHydrationOverviewLabel,
-      value: _waterOverviewValue(l10n, dashboard.water),
+      value: waterDegraded
+          ? l10n.todayMetricDegraded
+          : _waterOverviewValue(l10n, dashboard.water),
       color: SemanticColor.primary,
+      isDegraded: waterDegraded,
     ),
     TodayOverviewItem(
       icon: SemanticIcons.recordSleep,
@@ -174,6 +200,7 @@ List<TodayOverviewItem> buildOverviewItems(
       value: sleep,
       color: SemanticColor.primary,
       isFallback: sleepIsFallback,
+      isDegraded: sleepDegraded,
     ),
   ];
 }

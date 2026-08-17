@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added)
+Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -413,6 +413,13 @@ flutter test
   安全清单，两键已无任何引用（`medicineSearchPreviewTitle` / `medicineSearchPreviewEmpty` 保留）。
 - 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-17 F-8 + F-16 数据层 degraded 标记文案
+
+- 新增 `todayMetricDegraded`（zh: 暂不可用 / en: Temporarily unavailable）到 `lib/l10n/src/today_zh.arb` / `today_en.arb`。
+- `buildOverviewItems` 在水、用药、睡眠指标的上游数据源失败时，将值渲染为该键；`_CompactSummaryMetric` 对 `isDegraded` 使用 destructive 颜色 + w500 字重，与未记录的 muted 样式区分。
+- 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+- 顶部 `Last updated` 已同步记录本次新增。
 
 ## 2026-08-17 F-1 skip_dose 失败 toast 文案
 

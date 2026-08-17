@@ -179,6 +179,7 @@
       "total": {"type": "int"}
     }
   },
+  "todayMetricDegraded": "暂不可用",
   "todayStatusNeedsImprovement": "待改善",
   "todayStatusCompleted": "已完成",
   "todayMedicationPendingStatus": "待服用",

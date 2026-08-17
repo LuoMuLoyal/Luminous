@@ -178,6 +178,73 @@ void main() {
     expect(buildOverviewItems(l10n, dashboard)[1].value, '-- / 2000 ml');
   });
 
+  // ── degraded overview values ─────────────────────────────────
+  group('buildOverviewItems degraded state', () {
+    const degradedMetric = TodayObservedMetric(
+      value: null,
+      state: TodayObservedMetricState.degraded,
+      coverage: TodayObservedMetricCoverage.none,
+      sources: [],
+      observedCount: 0,
+      expectedCount: null,
+      windowStart: '2026-08-11',
+      windowEnd: '2026-08-11',
+    );
+
+    test('water degraded renders todayMetricDegraded', () async {
+      final l10n = await loadZh();
+      final dashboard = TodayDashboard.signedOut().copyWith(
+        water: const TodayWaterSummary(
+          completedCount: 3,
+          targetCount: 8,
+          observedMetric: degradedMetric,
+        ),
+      );
+
+      final items = buildOverviewItems(l10n, dashboard);
+      expect(items[1].value, l10n.todayMetricDegraded);
+      expect(items[1].isDegraded, isTrue);
+    });
+
+    test('medication degraded renders todayMetricDegraded', () async {
+      final l10n = await loadZh();
+      final dashboard = TodayDashboard.signedOut().copyWith(
+        medication: const TodayMedicationSummary(
+          medicineCount: 2,
+          pendingCount: 1,
+          nextDoseTimeLabel: '--',
+          nextMedicine: TodayMedicationKind.atorvastatin,
+          observedMetric: degradedMetric,
+        ),
+      );
+
+      final items = buildOverviewItems(l10n, dashboard);
+      expect(items[0].value, l10n.todayMetricDegraded);
+      expect(items[0].isDegraded, isTrue);
+    });
+
+    test(
+      'sleep degraded renders todayMetricDegraded and is not fallback',
+      () async {
+        final l10n = await loadZh();
+        final dashboard = TodayDashboard.signedOut().copyWith(
+          vitals: [
+            const TodayVitalSummary(
+              type: TodayVitalType.sleep,
+              valueLabel: '--',
+              observedMetric: degradedMetric,
+            ),
+          ],
+        );
+
+        final items = buildOverviewItems(l10n, dashboard);
+        expect(items[2].value, l10n.todayMetricDegraded);
+        expect(items[2].isDegraded, isTrue);
+        expect(items[2].isFallback, isFalse);
+      },
+    );
+  });
+
   // ── medicationName ───────────────────────────────────────────
   group('medicationName', () {
     test('returns localized name for atorvastatin', () async {

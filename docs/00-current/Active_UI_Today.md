@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry)
+Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error)
 
 ## 页面结构
 
@@ -93,7 +93,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - AI 解释不缓存，始终走网络按需加载。
 - Dashboard 用药统计通过 `cachedDoseLogDataSourceProvider` 读取（cache-first）。
 - 图标映射提取为独立 `SuggestionIconMapping` 类。
-- Dashboard 超时默认 8 秒，支持 `--dart-define=DASHBOARD_TIMEOUT_SECONDS` 编译时配置。骨架屏加载 2 秒后底部显示 `todayLoadingSlowHint`（"加载较慢，请稍候…"）muted 提示。
+- Dashboard repository 统一捕获健康快照失败，不再抛到 provider；页面级 8 秒 timeout 已移除，不再因单一上游超时导致整页白屏。饮水记录、服药日志、日常记录摘要等数据源失败时，对应指标标记为 `degraded`（`TodayObservedMetricState.degraded`），概览项渲染为 "暂不可用 / Temporarily unavailable" 并使用 destructive 颜色，与真实空态区分。血压等无真实数据源的指标仍保持 `unknown`。
 - Today 移动骨架包含健康观察区块，顺序与加载完成后的移动页面一致；桌面骨架保持原双栏结构。
 - `activeHealthEventProvider` 读取当前用户事件并提供经过认证守卫的 create/check-in/end action；空响应/404 映射为空态，其他请求错误保留为可重试错误。
 - Lucent Task 6 已将建议采集口径收敛到 reminder slot：服务端按用户时区返回 `planned/taken/skipped/unconfirmed/overdueUnconfirmed`，同一药品的多个提醒槽位独立；Luminous 代码暂不改动，Task 8 负责把这些状态接入 Today domain/UI。

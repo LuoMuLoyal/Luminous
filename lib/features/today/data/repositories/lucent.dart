@@ -38,7 +38,20 @@ class LucentTodayRepository implements TodayRepository {
 
   @override
   Future<TodayDashboard> fetchDashboard() async {
-    final snapshot = await fetchHealthContextSnapshot();
+    final today = clock.now();
+    final dateStr =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+
+    HealthContextSnapshot snapshot;
+    try {
+      snapshot = await fetchHealthContextSnapshot();
+    } catch (e) {
+      talker.warning(
+        'LucentTodayRepository: health context snapshot failed: $e',
+      );
+      return _degradedDashboard(today, dateStr);
+    }
+
     final medicines = snapshot.currentMedicines
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);
@@ -48,15 +61,12 @@ class LucentTodayRepository implements TodayRepository {
     final waterTargetCount = await _waterTargetCount();
 
     // Fetch daily record summary for today
-    final today = clock.now();
-    final dateStr =
-        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-
     final Map<String, num> recordCounts = {};
     final Map<String, String?> recordLatest = {};
     final Map<String, Map<String, dynamic>?> recordPayloads = {};
     var waterMetric = _unknownObservedMetric(dateStr);
     Map<String, dynamic>? sleepPayload;
+    var summaryFailed = false;
     try {
       final summary = await dailyRecordRepository.fetchSummary(dateStr);
       for (final s in summary.summaries) {
@@ -69,6 +79,10 @@ class LucentTodayRepository implements TodayRepository {
       }
     } catch (e) {
       talker.error('LucentTodayRepository: fetchSummary failed: $e');
+      summaryFailed = true;
+      recordCounts.clear();
+      recordLatest.clear();
+      recordPayloads.clear();
     }
 
     try {
@@ -85,10 +99,12 @@ class LucentTodayRepository implements TodayRepository {
       );
     } catch (e) {
       talker.error('LucentTodayRepository: fetch water records failed: $e');
+      waterMetric = _degradedObservedMetric(dateStr);
     }
 
     final waterCount = (recordCounts['water'] ?? 0).toInt();
     final completedMedicineIds = <String>{};
+    TodayObservedMetric? medicationObservedMetric;
     try {
       final doseLogs = await doseLogRepository.fetchForDate(dateStr);
       for (final log in doseLogs) {
@@ -101,6 +117,7 @@ class LucentTodayRepository implements TodayRepository {
       }
     } catch (e) {
       talker.error('LucentTodayRepository: dose logs failed: $e');
+      medicationObservedMetric = _degradedObservedMetric(dateStr);
     }
     final pendingMedicines = medicines
         .where((m) => m.isCurrent && !completedMedicineIds.contains(m.id))
@@ -153,17 +170,20 @@ class LucentTodayRepository implements TodayRepository {
         nextDoseTimeLabel: nextReminder?.timeLabel ?? '--',
         nextMedicine: TodayMedicationKind.atorvastatin,
         nextMedicineName: nextMedicineName,
+        observedMetric: medicationObservedMetric,
       ),
       vitals: [
         TodayVitalSummary(
           type: TodayVitalType.heartRate,
           valueLabel: recordLatest['vital'] ?? '--',
-          observedMetric: _observedMetric(
-            value: double.tryParse(recordLatest['vital'] ?? ''),
-            observed: recordLatest['vital'] != null,
-            observedCount: recordLatest['vital'] == null ? 0 : 1,
-            date: dateStr,
-          ),
+          observedMetric: summaryFailed
+              ? _degradedObservedMetric(dateStr)
+              : _observedMetric(
+                  value: double.tryParse(recordLatest['vital'] ?? ''),
+                  observed: recordLatest['vital'] != null,
+                  observedCount: recordLatest['vital'] == null ? 0 : 1,
+                  date: dateStr,
+                ),
         ),
         const TodayVitalSummary(
           type: TodayVitalType.bloodPressure,
@@ -172,12 +192,14 @@ class LucentTodayRepository implements TodayRepository {
         TodayVitalSummary(
           type: TodayVitalType.sleep,
           valueLabel: _formatSleepLabel(sleepPayload),
-          observedMetric: _observedMetric(
-            value: _sleepHours(recordPayloads['sleep']),
-            observed: sleepPayload != null,
-            observedCount: sleepPayload == null ? 0 : 1,
-            date: dateStr,
-          ),
+          observedMetric: summaryFailed
+              ? _degradedObservedMetric(dateStr)
+              : _observedMetric(
+                  value: _sleepHours(recordPayloads['sleep']),
+                  observed: sleepPayload != null,
+                  observedCount: sleepPayload == null ? 0 : 1,
+                  date: dateStr,
+                ),
         ),
         // Deferred by Product_Vision MVP: keep lightweight mood data in the
         // repository for future self-check-ins, but do not surface it as a
@@ -185,12 +207,14 @@ class LucentTodayRepository implements TodayRepository {
         TodayVitalSummary(
           type: TodayVitalType.mood,
           valueLabel: recordLatest['mood'] ?? '--',
-          observedMetric: _observedMetric(
-            value: null,
-            observed: recordLatest['mood'] != null,
-            observedCount: recordLatest['mood'] == null ? 0 : 1,
-            date: dateStr,
-          ),
+          observedMetric: summaryFailed
+              ? _degradedObservedMetric(dateStr)
+              : _observedMetric(
+                  value: null,
+                  observed: recordLatest['mood'] != null,
+                  observedCount: recordLatest['mood'] == null ? 0 : 1,
+                  date: dateStr,
+                ),
         ),
       ],
       mealSuggestion: _staticMealSuggestion,
@@ -222,6 +246,56 @@ class LucentTodayRepository implements TodayRepository {
   static const _staticLumiSuggestion = TodayLumiSuggestion(
     type: TodayLumiSuggestionType.pollenProtection,
   );
+
+  /// Returns a fully-degraded dashboard used when the health-context snapshot
+  /// is unavailable. Every metric that has a real upstream source is marked
+  /// [TodayObservedMetricState.degraded] so the UI can render "Temporarily
+  /// unavailable" instead of a misleading 0 or `--`.
+  TodayDashboard _degradedDashboard(DateTime today, String dateStr) {
+    return TodayDashboard(
+      user: TodayUserSnapshot(
+        moment: todayDayMomentFromHour(today.hour),
+        hasUnreadNotifications: false,
+        updatedAtLabel: _formatTimeLabel(today),
+      ),
+      water: TodayWaterSummary(
+        completedCount: 0,
+        targetCount: TodayDashboard.defaultWaterTargetCount,
+        observedMetric: _degradedObservedMetric(dateStr),
+      ),
+      medication: TodayMedicationSummary(
+        medicineCount: 0,
+        pendingCount: 0,
+        nextDoseTimeLabel: '--',
+        nextMedicine: TodayMedicationKind.atorvastatin,
+        observedMetric: _degradedObservedMetric(dateStr),
+      ),
+      vitals: [
+        TodayVitalSummary(
+          type: TodayVitalType.heartRate,
+          valueLabel: '--',
+          observedMetric: _degradedObservedMetric(dateStr),
+        ),
+        const TodayVitalSummary(
+          type: TodayVitalType.bloodPressure,
+          valueLabel: '--',
+        ),
+        TodayVitalSummary(
+          type: TodayVitalType.sleep,
+          valueLabel: '--',
+          observedMetric: _degradedObservedMetric(dateStr),
+        ),
+        TodayVitalSummary(
+          type: TodayVitalType.mood,
+          valueLabel: '--',
+          observedMetric: _degradedObservedMetric(dateStr),
+        ),
+      ],
+      mealSuggestion: _staticMealSuggestion,
+      environment: _staticEnvironment,
+      lumiSuggestion: _staticLumiSuggestion,
+    );
+  }
 
   /// Reads the authenticated user's water target from settings.
   ///
@@ -341,6 +415,19 @@ class LucentTodayRepository implements TodayRepository {
     return TodayObservedMetric(
       value: null,
       state: TodayObservedMetricState.unknown,
+      coverage: TodayObservedMetricCoverage.none,
+      sources: const [],
+      observedCount: 0,
+      expectedCount: null,
+      windowStart: date,
+      windowEnd: date,
+    );
+  }
+
+  static TodayObservedMetric _degradedObservedMetric(String date) {
+    return TodayObservedMetric(
+      value: null,
+      state: TodayObservedMetricState.degraded,
       coverage: TodayObservedMetricCoverage.none,
       sources: const [],
       observedCount: 0,

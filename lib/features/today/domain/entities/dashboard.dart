@@ -25,7 +25,7 @@ enum TodayEnvironmentLevel { low, medium, high }
 
 enum TodayLumiSuggestionType { pollenProtection }
 
-enum TodayObservedMetricState { observed, unknown }
+enum TodayObservedMetricState { observed, unknown, degraded }
 
 enum TodayObservedMetricCoverage { sufficient, partial, none }
 
