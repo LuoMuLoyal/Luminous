@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (F-11/F-16 added `assistantProposalRegenerateAction` (重新生成 / Regenerate) to the assistant fragment for the expired-proposal regenerate button; F-7 assistant source strip added 14 `assistantSource*` keys to the assistant fragment; removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added; F-13+F-15 added 7 assistant disclaimer / trust-tier keys — `assistantDisclaimerText`, `assistantSourceBadgeLeaflet` / `assistantSourceBadgeDrugbank` / `assistantSourceBadgeMedicalQa`, `assistantSourceLowTrustHint`, `assistantDisclaimerShowAction` / `assistantDisclaimerCollapseAction` — to the assistant fragment)
+Last updated: 2026-08-17 (F-9 added `assistantMemoryHintTitle` / `assistantMemoryHintDescription` (已开启跨会话记忆 / Cross-conversation memory is on) to the assistant fragment for the welcome-panel memory hint; F-11/F-16 added `assistantProposalRegenerateAction` (重新生成 / Regenerate) to the assistant fragment for the expired-proposal regenerate button; F-7 assistant source strip added 14 `assistantSource*` keys to the assistant fragment; removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added; F-13+F-15 added 7 assistant disclaimer / trust-tier keys — `assistantDisclaimerText`, `assistantSourceBadgeLeaflet` / `assistantSourceBadgeDrugbank` / `assistantSourceBadgeMedicalQa`, `assistantSourceLowTrustHint`, `assistantDisclaimerShowAction` / `assistantDisclaimerCollapseAction` — to the assistant fragment)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -485,6 +485,13 @@ flutter test
   - `observed`：按 `targetMl - observedMl` 计算 ml 缺口，缺口 > 0 使用 `todayGreetingAfternoonWaterShort(gap)`，缺口 ≤ 0 使用 `todayGreetingAfternoonWaterDone`。
   - `unknown` 或无法确认的状态：使用 `todayGreetingAfternoonWaterUnknown`。
 - 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+- 顶部 `Last updated` 已同步记录本次新增。
+
+## 2026-08-17 F-9 跨会话记忆提示键
+
+- 新增 `assistantMemoryHintTitle`（zh: 已开启跨会话记忆 / en: Cross-conversation memory is on）与 `assistantMemoryHintDescription`（zh: 你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭。/ en: Your chats may be distilled into points used in later conversations. You can turn this off in settings.）到 `lib/l10n/src/assistant_zh.arb` / `assistant_en.arb`。
+- `AssistantWelcomePanel` 在 `showMemoryHint: true` 时于免责区上方渲染记忆提示块（`SemanticIcons.statusInfo` + 两行小字，样式与免责区一致）。
+- 所有权在 assistant 分片（`assistant*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。
 
 ## 2026-08-17 F-11/F-16 过期提案重新生成动作键

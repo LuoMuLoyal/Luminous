@@ -127,5 +127,7 @@
   "assistantSourceBadgeMedicalQa": "Medical Q&A",
   "assistantSourceLowTrustHint": "Low-trust educational reference",
   "assistantDisclaimerShowAction": "View disclaimer",
-  "assistantDisclaimerCollapseAction": "Collapse disclaimer"
+  "assistantDisclaimerCollapseAction": "Collapse disclaimer",
+  "assistantMemoryHintTitle": "Cross-conversation memory is on",
+  "assistantMemoryHintDescription": "Your chats may be distilled into points used in later conversations. You can turn this off in settings."
 }

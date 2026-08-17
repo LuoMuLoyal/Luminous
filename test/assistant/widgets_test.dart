@@ -135,6 +135,30 @@ void main() {
       expect(text.maxLines, 1);
       expect(find.byIcon(SemanticIcons.actionExpand), findsOneWidget);
     });
+
+    testWidgets('shows the memory hint when showMemoryHint is true', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          AssistantWelcomePanel(onStarterPrompt: (_) {}, showMemoryHint: true),
+        ),
+      );
+
+      expect(find.text('已开启跨会话记忆'), findsOneWidget);
+      expect(find.text('你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭。'), findsOneWidget);
+    });
+
+    testWidgets('hides the memory hint when showMemoryHint is false', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(AssistantWelcomePanel(onStarterPrompt: (_) {})),
+      );
+
+      expect(find.text('已开启跨会话记忆'), findsNothing);
+      expect(find.text('你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭。'), findsNothing);
+    });
   });
 
   group('AssistantMessageBubble', () {

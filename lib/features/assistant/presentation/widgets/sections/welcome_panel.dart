@@ -10,12 +10,17 @@ class AssistantWelcomePanel extends StatefulWidget {
     super.key,
     required this.onStarterPrompt,
     this.showDisclaimerExpanded = true,
+    this.showMemoryHint = false,
   });
 
   final ValueChanged<String> onStarterPrompt;
 
   /// Initial expansion state of the health disclaimer at the panel bottom.
   final bool showDisclaimerExpanded;
+
+  /// Whether the "cross-conversation memory is on" hint is shown above the
+  /// disclaimer (driven by the user's memory setting).
+  final bool showMemoryHint;
 
   @override
   State<AssistantWelcomePanel> createState() => _AssistantWelcomePanelState();
@@ -83,7 +88,11 @@ class _AssistantWelcomePanelState extends State<AssistantWelcomePanel> {
                   onSelected: widget.onStarterPrompt,
                 ),
               ),
-              const SizedBox(height: Spacing.level5),
+              if (widget.showMemoryHint) ...[
+                const SizedBox(height: Spacing.level5),
+                const _WelcomeMemoryHintSection(),
+              ],
+              const SizedBox(height: Spacing.level3),
               _WelcomeDisclaimerSection(
                 expanded: _disclaimerExpanded,
                 onToggle: () =>
@@ -92,6 +101,57 @@ class _AssistantWelcomePanelState extends State<AssistantWelcomePanel> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Static "cross-conversation memory is on" hint shown above the disclaimer
+/// when the user enabled persisted memory. Styled like the disclaimer row:
+/// a small info icon plus two muted text lines.
+class _WelcomeMemoryHintSection extends StatelessWidget {
+  const _WelcomeMemoryHintSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            SemanticIcons.statusInfo,
+            size: 14,
+            color: colors.mutedForeground,
+          ),
+          const SizedBox(width: Spacing.level2),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.assistantMemoryHintTitle,
+                  style: TypographyToken.level2
+                      .body(context)
+                      .copyWith(
+                        color: colors.mutedForeground,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: Spacing.level1),
+                Text(
+                  l10n.assistantMemoryHintDescription,
+                  style: TypographyToken.level2
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

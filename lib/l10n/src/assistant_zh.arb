@@ -127,5 +127,7 @@
   "assistantSourceBadgeMedicalQa": "医疗问答",
   "assistantSourceLowTrustHint": "低可信教育参考",
   "assistantDisclaimerShowAction": "展开免责说明",
-  "assistantDisclaimerCollapseAction": "收起免责说明"
+  "assistantDisclaimerCollapseAction": "收起免责说明",
+  "assistantMemoryHintTitle": "已开启跨会话记忆",
+  "assistantMemoryHintDescription": "你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭。"
 }

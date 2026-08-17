@@ -92,6 +92,7 @@ class AssistantConversationSurface extends ConsumerWidget {
           child: showStarterPrompts && capabilities.canSendMessages
               ? AssistantWelcomePanel(
                   onStarterPrompt: onStarterPrompt,
+                  showMemoryHint: capabilities.assistantMemoryEnabled,
                   showDisclaimerExpanded: ref
                       .watch(
                         assistantControllerProvider.select(
