@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry)
+Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false)
 
 ## 页面结构
 
@@ -27,7 +27,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - 底部 `已采纳 / 稍后处理 / 不适用 / 不再看到` 四个 ghost 按钮，根据后端 `feedbackOptions` 动态渲染，接入 `POST /today/suggestions/:id/feedback`。
   - 反馈提交期间保持旧卡内容可见，仅按钮自身进入本地 loading 状态；提交成功后按钮切换为只读「已反馈」指示器，同时 provider 在后台静默拉取新物化结果并替换卡片内容。
   - 若提交请求本身失败，显示失败 toast，不切换「已反馈」状态；若提交成功但后台刷新失败，仅记录日志，不替换当前卡片，不抛异常给 UI。
-- 证据折叠区内「AI 解释」按钮，按需加载 `POST /today/suggestions/:id/explain`（重试上限 3 次）。
+- 证据折叠区内「AI 解释」按钮，按需加载 `POST /today/suggestions/:id/explain`。瞬时网络错误保留最多 3 次重试；若后端返回 `aiGenerated: false`（模型未配置/策略拒绝/生成失败回退到规则文案），则直接展示 fallback 解释内容并标注「基于规则 / Rule-based」，不再空转重试。
 - 证据区结构化逐条展示（`_EvidenceList` + `_EvidenceItemRow`），`subtype == 'water'` 显示 `FDeterminateProgress` 饮水进度条。
 - `lifecycleState == fading` 时 `Opacity(0.6)` 视觉降级。
 - 反馈提交后切换为只读「已反馈」指示器。

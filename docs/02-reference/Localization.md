@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added)
+Last updated: 2026-08-17 (F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -446,5 +446,13 @@ flutter test
   - `todayAnalysisStaleHint`：物化结果已过期、正在重新物化时的提示。
   - `todayAnalysisFailedHint`：物化失败时的提示。
   - `todayAnalysisRefreshAction`：物化提示条与空态的刷新操作文案。
+- 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+- 顶部 `Last updated` 已同步记录本次新增。
+
+
+## 2026-08-17 F-3 AI 解释规则兜底标签
+
+- 新增 `todaySuggestionRuleBasedLabel`（zh: 基于规则 / en: Rule-based）到 `lib/l10n/src/today_zh.arb` / `today_en.arb`。
+- `SuggestionAiExplainButton` 在 `aiGenerated == false` 时直接展示后端返回的 fallback 解释内容，并用该键替换原有的「AI」标签，不再自动重试。
 - 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。

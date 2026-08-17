@@ -264,7 +264,7 @@ void main() {
       expect(find.text(l10n.todaySuggestionAiLabel), findsOneWidget);
     });
 
-    testWidgets('shows trigger button again when aiGenerated is false', (
+    testWidgets('shows rule-based fallback content when aiGenerated is false', (
       tester,
     ) async {
       const explanation = TodaySuggestionExplanation(
@@ -290,9 +290,12 @@ void main() {
       await tester.tap(find.text(l10n.todaySuggestionAiExplainAction));
       await tester.pumpAndSettle();
 
-      // Should NOT show AI content, should show trigger button again
-      expect(find.text('规则文案'), findsNothing);
-      expect(find.text(l10n.todaySuggestionAiExplainAction), findsOneWidget);
+      // Should show fallback explanation content and rule-based label
+      expect(find.text('规则文案'), findsOneWidget);
+      expect(find.text('规则边界'), findsOneWidget);
+      expect(find.text(l10n.todaySuggestionRuleBasedLabel), findsOneWidget);
+      // Should not offer retry for rule-based fallback
+      expect(find.text(l10n.todaySuggestionAiExplainRetry), findsNothing);
     });
 
     testWidgets('shows retry button on error', (tester) async {

@@ -178,22 +178,14 @@ class _SuggestionAiExplainButtonState
 
     return explanationAsync.when(
       data: (explanation) {
-        if (explanation == null || !explanation.aiGenerated) {
-          if (_retryCount >= _maxRetries) {
-            return AiExplainUnavailable(l10n: l10n);
-          }
-          return FButton(
-            onPress: () {
-              setState(() => _retryCount += 1);
-              unawaited(
-                ref.refresh(suggestionExplanationProvider(params).future),
-              );
-            },
-            variant: FButtonVariant.ghost,
-            size: FButtonSizeVariant.xs,
-            mainAxisSize: MainAxisSize.min,
-            child: Text(l10n.todaySuggestionAiExplainAction),
-          );
+        if (explanation == null) {
+          return AiExplainUnavailable(l10n: l10n);
+        }
+        // aiGenerated=false means the backend returned a rule-based fallback
+        // explanation (e.g. model not configured). Do not waste retries;
+        // display the fallback content with a rule-based label.
+        if (!explanation.aiGenerated) {
+          return AiExplainContent(explanation: explanation);
         }
         return AiExplainContent(explanation: explanation);
       },
@@ -258,17 +250,25 @@ class AiExplainContent extends StatelessWidget {
           Row(
             children: [
               Icon(
-                SemanticIcons.aiGenerated,
+                explanation.aiGenerated
+                    ? SemanticIcons.aiGenerated
+                    : SemanticIcons.statusInfo,
                 size: Spacing.level4,
-                color: colors.primary,
+                color: explanation.aiGenerated
+                    ? colors.primary
+                    : colors.mutedForeground,
               ),
               const SizedBox(width: Spacing.level1),
               Text(
-                l10n.todaySuggestionAiLabel,
+                explanation.aiGenerated
+                    ? l10n.todaySuggestionAiLabel
+                    : l10n.todaySuggestionRuleBasedLabel,
                 style: TypographyToken.level3
                     .body(context)
                     .copyWith(
-                      color: colors.primary,
+                      color: explanation.aiGenerated
+                          ? colors.primary
+                          : colors.mutedForeground,
                       fontWeight: FontWeight.w700,
                     ),
               ),

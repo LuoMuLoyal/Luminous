@@ -361,6 +361,7 @@
   "todaySuggestionAiExplainLoading": "Generating AI explanation…",
   "todaySuggestionAiExplainRetry": "Retry",
   "todaySuggestionAiLabel": "AI",
+  "todaySuggestionRuleBasedLabel": "Rule-based",
   "todaySuggestionEmptyTitle": "No suggestions today",
   "todaySuggestionEmptySubtitle": "Log more data to get personalized suggestions",
   "todaySuggestionLoadingHint": "Loading today's suggestions…",

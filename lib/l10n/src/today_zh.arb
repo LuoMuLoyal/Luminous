@@ -361,6 +361,7 @@
   "todaySuggestionAiExplainLoading": "正在生成 AI 解释…",
   "todaySuggestionAiExplainRetry": "重试",
   "todaySuggestionAiLabel": "AI",
+  "todaySuggestionRuleBasedLabel": "基于规则",
   "todaySuggestionEmptyTitle": "今日暂无建议",
   "todaySuggestionEmptySubtitle": "记录更多数据后将会生成个性化建议",
   "todaySuggestionLoadingHint": "正在获取今日建议…",
