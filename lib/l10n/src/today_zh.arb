@@ -347,6 +347,7 @@
   "todaySuggestionSuppressAction": "不再看到",
   "todaySuggestionFeedbackSuccess": "反馈已提交",
   "todaySuggestionFeedbackError": "反馈提交失败，请稍后再试",
+  "todaySuggestionSkipDoseError": "跳过本次用药失败，请稍后再试",
   "todaySuggestionAiExplainAction": "AI 解释",
   "todaySuggestionAiExplainLoading": "正在生成 AI 解释…",
   "todaySuggestionAiExplainRetry": "重试",

@@ -4,15 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
+    show doseLogRepositoryProvider;
+import 'package:luminous/features/medicine/domain/entities/dose_log.dart'
+    as dose;
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/mocks.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
@@ -624,6 +631,229 @@ void main() {
       expect(service.impressionRuleCodes, ['unknown_free_text_rule']);
     });
   });
+
+  // ── Secondary Actions ───────────────────────────────────────────────────
+
+  group('Secondary actions', () {
+    /// A bundle whose primary card carries a `skip_dose` secondary action.
+    final skipDoseBundle = testSuggestionBundle.copyWith(
+      primary: testSuggestionBundle.primary!.copyWith(
+        secondaryActions: [
+          const TodaySuggestionAction(
+            actionId: 'skip_dose',
+            label: 'skip_dose',
+            route:
+                '/medicine?action=skip&currentMedicineId=med-1&reminderId=rem-1&scheduledFor=2026-07-09&scheduledTime=08:00',
+            authRequired: true,
+          ),
+        ],
+      ),
+    );
+
+    /// A [dose.DoseLogItem] returned by a successful skip mark.
+    const dummyDoseLog = dose.DoseLogItem(
+      id: 'dl-1',
+      currentMedicineId: 'med-1',
+      reminderId: 'rem-1',
+      status: dose.DoseLogStatus.skipped,
+      scheduledFor: '2026-07-09',
+      scheduledTime: '08:00',
+      createdAt: '2026-07-09T08:00:00.000Z',
+      updatedAt: '2026-07-09T08:00:00.000Z',
+    );
+
+    Widget buildSkipApp({
+      required TodaySuggestionBundle bundle,
+      MockDoseLogRepository? repo,
+      _RecordingDataChangeBus? bus,
+    }) {
+      return ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todaySuggestionProvider.overrideWith(() => _BundleNotifier(bundle)),
+          if (repo != null) doseLogRepositoryProvider.overrideWithValue(repo),
+          if (bus != null) dataChangeBusProvider.overrideWith(() => bus),
+        ],
+        child: const TestForuiApp(
+          locale: Locale('zh'),
+          showToaster: true,
+          home: SingleChildScrollView(child: TodayPrimarySuggestionSection()),
+        ),
+      );
+    }
+
+    testWidgets('renders secondary action button', (tester) async {
+      await tester.pumpWidget(buildSkipApp(bundle: skipDoseBundle));
+      await settle(tester);
+
+      expect(find.text('skip_dose'), findsOneWidget);
+    });
+
+    testWidgets('skip_dose calls mark and emits doseLogs topic on success', (
+      tester,
+    ) async {
+      final repo = MockDoseLogRepository();
+      when(
+        () => repo.mark(
+          currentMedicineId: 'med-1',
+          status: 'skipped',
+          date: '2026-07-09',
+          reminderId: 'rem-1',
+          scheduledTime: '08:00',
+        ),
+      ).thenAnswer((_) async => dummyDoseLog);
+
+      final bus = _RecordingDataChangeBus();
+
+      await tester.pumpWidget(
+        buildSkipApp(bundle: skipDoseBundle, repo: repo, bus: bus),
+      );
+      await settle(tester);
+
+      await tester.tap(find.text('skip_dose'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      verify(
+        () => repo.mark(
+          currentMedicineId: 'med-1',
+          status: 'skipped',
+          date: '2026-07-09',
+          reminderId: 'rem-1',
+          scheduledTime: '08:00',
+        ),
+      ).called(1);
+      expect(bus.emittedTopics, [DataChangeTopic.doseLogs]);
+    });
+
+    testWidgets('skip_dose shows error toast and does not emit on failure', (
+      tester,
+    ) async {
+      final repo = MockDoseLogRepository();
+      when(
+        () => repo.mark(
+          currentMedicineId: 'med-1',
+          status: 'skipped',
+          date: '2026-07-09',
+          reminderId: 'rem-1',
+          scheduledTime: '08:00',
+        ),
+      ).thenThrow(Exception('network error'));
+
+      final bus = _RecordingDataChangeBus();
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        buildSkipApp(bundle: skipDoseBundle, repo: repo, bus: bus),
+      );
+      await settle(tester);
+
+      await tester.tap(find.text('skip_dose'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(l10n.todaySuggestionSkipDoseError), findsOneWidget);
+      expect(bus.emittedTopics, isEmpty);
+
+      // Drain the toast auto-dismiss timer so the test framework does not
+      // report a pending timer.
+      await tester.pump(const Duration(milliseconds: 2000));
+    });
+
+    testWidgets(
+      'skip_dose falls back to navigation when currentMedicineId is missing',
+      (tester) async {
+        const fallbackBundle = TodaySuggestionBundle(
+          generatedAt: '2026-07-09T10:00:00.000Z',
+          primary: TodaySuggestionCard(
+            id: 'sug_test_missing_med',
+            type: TodaySuggestionType.compliance,
+            cardTone: TodaySuggestionCardTone.urgent,
+            icon: 'pill',
+            title: '上午的阿托伐他汀尚未确认',
+            reason: '计划服药时间为 08:00，当前已超时 4 小时且未标记服用。',
+            evidence: [],
+            boundary: '此提醒基于您的用药计划，不能替代医生或药师建议。',
+            primaryAction: TodaySuggestionAction(
+              actionId: 'go_confirm',
+              label: '去确认',
+              route: '/medicine',
+              authRequired: true,
+            ),
+            confidence: TodaySuggestionConfidence.high,
+            ruleId: 'missed_dose_pending',
+            ruleVersion: '1.0.0',
+            triggerType: TodaySuggestionTriggerType.event,
+            lifecycleState: TodaySuggestionLifecycleState.active,
+            secondaryActions: [
+              TodaySuggestionAction(
+                actionId: 'skip_dose',
+                label: 'skip_dose',
+                route:
+                    '/medicine?action=skip&scheduledFor=2026-07-09&scheduledTime=08:00',
+                authRequired: true,
+              ),
+            ],
+          ),
+        );
+
+        final repo = MockDoseLogRepository();
+        final bus = _RecordingDataChangeBus();
+        final observer = _RecordingNavigatorObserver();
+        final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+              todaySuggestionProvider.overrideWith(
+                () => _BundleNotifier(fallbackBundle),
+              ),
+              doseLogRepositoryProvider.overrideWithValue(repo),
+              dataChangeBusProvider.overrideWith(() => bus),
+            ],
+            child: TestForuiRouterApp(
+              locale: const Locale('zh'),
+              routerConfig: GoRouter(
+                initialLocation: '/',
+                observers: [observer],
+                routes: [
+                  GoRoute(
+                    path: '/',
+                    builder: (context, state) => const SingleChildScrollView(
+                      child: TodayPrimarySuggestionSection(),
+                    ),
+                  ),
+                  GoRoute(
+                    path: '/medicine',
+                    builder: (context, state) =>
+                        const Scaffold(body: Text('medicine-page')),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        await settle(tester);
+
+        await tester.tap(find.text('skip_dose'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        verifyNever(
+          () => repo.mark(
+            currentMedicineId: any(named: 'currentMedicineId'),
+            status: any(named: 'status'),
+            date: any(named: 'date'),
+          ),
+        );
+        expect(bus.emittedTopics, isEmpty);
+        expect(find.text(l10n.todaySuggestionSkipDoseError), findsNothing);
+        expect(observer.pushedRoutes, isNotEmpty);
+        expect(observer.pushedRoutes.last.settings.name, contains('/medicine'));
+      },
+    );
+  });
 }
 
 // ── Test Notifiers ───────────────────────────────────────────────────────
@@ -669,3 +899,28 @@ class _RecordingProductEventService extends ProductEventService {
 }
 
 class _MockProductEventsApi extends Mock implements ProductEventsApi {}
+
+/// Records pushed routes for navigation assertions.
+class _RecordingNavigatorObserver extends NavigatorObserver {
+  final List<Route<dynamic>> pushedRoutes = [];
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    pushedRoutes.add(route);
+    super.didPush(route, previousRoute);
+  }
+}
+
+/// Records topics emitted to the [DataChangeBus] for verification.
+class _RecordingDataChangeBus extends DataChangeBus {
+  final List<String> emittedTopics = [];
+
+  @override
+  Map<String, int> build() => {};
+
+  @override
+  void emit(String topic) {
+    emittedTopics.add(topic);
+    super.emit(topic);
+  }
+}

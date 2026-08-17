@@ -347,6 +347,7 @@
   "todaySuggestionSuppressAction": "Don't show again",
   "todaySuggestionFeedbackSuccess": "Feedback submitted",
   "todaySuggestionFeedbackError": "Feedback failed, please try again later",
+  "todaySuggestionSkipDoseError": "Failed to skip this dose, please try again later",
   "todaySuggestionAiExplainAction": "AI explain",
   "todaySuggestionAiExplainLoading": "Generating AI explanation…",
   "todaySuggestionAiExplainRetry": "Retry",

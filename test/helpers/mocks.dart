@@ -28,6 +28,7 @@ library;
 
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
+import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
@@ -50,6 +51,8 @@ class MockReportRepository extends Mock implements ReportRepository {}
 
 class MockMedicineWorkspaceRepository extends Mock
     implements MedicineWorkspaceRepository {}
+
+class MockDoseLogRepository extends Mock implements DoseLogRepository {}
 
 class MockMineRepository extends Mock implements MineRepository {}
 

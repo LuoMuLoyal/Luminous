@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-17
 ---
 
 # Flutter Localization
 
-Last updated: 2026-08-16 (health_sync preview metric titles localized)
+Last updated: 2026-08-17 (F-1 skip_dose error toast key added)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -411,4 +411,11 @@ flutter test
   桌面 `PreviewPanel` 不再把「规格 / 厂商」subtitle 当临床提示展示、不再渲染恒空
   安全清单，两键已无任何引用（`medicineSearchPreviewTitle` / `medicineSearchPreviewEmpty` 保留）。
 - 所有权在 medicine 分片（`medicine*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
+  `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+
+## 2026-08-17 F-1 skip_dose 失败 toast 文案
+
+- 新增 `todaySuggestionSkipDoseError`（zh: 跳过本次用药失败，请稍后再试 / en: Failed to skip this dose, please try again later）到 `lib/l10n/src/today_zh.arb` / `today_en.arb`。
+- `suggestion_primary_card.dart` 的 `_skipDose` catch 分支改用该键，避免复用反馈失败的 `todaySuggestionFeedbackError`。
+- 所有权在 today 分片（`today*` 前缀）；经 `dart scripts/arb_tools.dart merge` +
   `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。

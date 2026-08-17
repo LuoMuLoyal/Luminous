@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-17
 ---
 
 # Active UI — Today
 
-Last updated: 2026-08-11 (health event confirmation UI and proactive suggestion runtime)
+Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark)
 
 ## 页面结构
 
@@ -23,6 +23,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - 用药类建议使用 `TodayCardTone.urgent`（destructive 边框 + 淡红底色），饮水类使用 `SemanticColor.primary`。
 - 主卡图标使用 `gradient: true`，用药红色渐变、饮水蓝色渐变。
 - 首屏只保留图标+标题+原因+进度条+主按钮，证据和边界收入 `FCollapsible` 折叠区。
+- 原因下方渲染后端 `secondaryActions`（ghost `xs` 按钮）。其中 `skip_dose` 解析 route query 后调用 `DoseLogRepository.mark(status: 'skipped')`，成功后经 `DataChangeBus.doseLogs` 刷新建议；失败仅 toast `todaySuggestionFeedbackError`，不切换反馈行状态。
 - 底部 `已采纳 / 稍后处理 / 不适用 / 不再看到` 四个 ghost 按钮，根据后端 `feedbackOptions` 动态渲染，接入 `POST /today/suggestions/:id/feedback`。
 - 证据折叠区内「AI 解释」按钮，按需加载 `POST /today/suggestions/:id/explain`（重试上限 3 次）。
 - 证据区结构化逐条展示（`_EvidenceList` + `_EvidenceItemRow`），`subtype == 'water'` 显示 `FDeterminateProgress` 饮水进度条。

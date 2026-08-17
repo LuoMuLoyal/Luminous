@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/features/today/application/usecases/skip_dose.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_interactive.dart';
@@ -37,6 +40,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
   late final AnimationController _controller;
   late final CurvedAnimation _animation;
   bool _evidenceExpanded = false;
+  final Set<String> _loadingActionIds = {};
 
   @override
   void initState() {
@@ -61,6 +65,46 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
   void _toggleEvidence() {
     setState(() => _evidenceExpanded = !_evidenceExpanded);
     unawaited(_controller.toggle());
+  }
+
+  Future<void> _handleSecondaryAction(TodaySuggestionAction action) async {
+    if (action.actionId == 'skip_dose') {
+      await _skipDose(action);
+    } else {
+      openRoute(context, action.route);
+    }
+  }
+
+  Future<void> _skipDose(TodaySuggestionAction action) async {
+    setState(() => _loadingActionIds.add(action.actionId));
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final params = Uri.parse(action.route).queryParameters;
+      final medicineId = params['currentMedicineId'];
+      final scheduledFor = params['scheduledFor'];
+      if (medicineId == null || scheduledFor == null) {
+        // Insufficient routing information: fall back to navigating to the
+        // medicine page instead of calling mark with incomplete data.
+        openRoute(context, action.route);
+        return;
+      }
+
+      await SkipDoseUseCase(ref: ref)(
+        currentMedicineId: medicineId,
+        date: scheduledFor,
+        reminderId: params['reminderId'],
+        scheduledTime: params['scheduledTime'],
+      );
+    } catch (e, st) {
+      appTalker.error('skip_dose failed: $e', e, st);
+      if (mounted) {
+        unawaited(Toast.show(context, l10n.todaySuggestionSkipDoseError));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _loadingActionIds.remove(action.actionId));
+      }
+    }
   }
 
   @override
@@ -127,6 +171,39 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                           fontWeight: FontWeight.w600,
                         ),
                   ),
+                  if (card.secondaryActions != null &&
+                      card.secondaryActions!.isNotEmpty) ...[
+                    const SizedBox(height: Spacing.level3),
+                    Wrap(
+                      spacing: Spacing.level2,
+                      runSpacing: Spacing.level2,
+                      children: [
+                        for (final action in card.secondaryActions!)
+                          FButton(
+                            onPress: _loadingActionIds.contains(action.actionId)
+                                ? null
+                                : () => _handleSecondaryAction(action),
+                            variant: FButtonVariant.ghost,
+                            size: FButtonSizeVariant.xs,
+                            mainAxisSize: MainAxisSize.min,
+                            child: _loadingActionIds.contains(action.actionId)
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const SizedBox(
+                                        width: Spacing.level4,
+                                        height: Spacing.level4,
+                                        child: FCircularProgress.loader(),
+                                      ),
+                                      const SizedBox(width: Spacing.level2),
+                                      Text(action.label),
+                                    ],
+                                  )
+                                : Text(action.label),
+                          ),
+                      ],
+                    ),
+                  ],
                   if (card.subtype == 'water' && widget.dashboard != null) ...[
                     const SizedBox(height: Spacing.level3),
                     WaterProgressBar(
