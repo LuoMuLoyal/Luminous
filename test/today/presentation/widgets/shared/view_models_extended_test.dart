@@ -26,7 +26,6 @@ void main() {
           medicineCount: 3,
           pendingCount: 2,
           nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
         ),
       );
 
@@ -46,7 +45,6 @@ void main() {
           medicineCount: 2,
           pendingCount: 0,
           nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
         ),
       );
 
@@ -159,7 +157,6 @@ void main() {
           medicineCount: 2,
           pendingCount: 1,
           nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
         ),
       );
 
@@ -179,7 +176,6 @@ void main() {
           medicineCount: 2,
           pendingCount: 0,
           nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
         ),
       );
 
@@ -270,7 +266,7 @@ void main() {
           medicineCount: 2,
           pendingCount: 1,
           nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
+
           observedMetric: degradedMetric,
         ),
       );
@@ -302,29 +298,6 @@ void main() {
     );
   });
 
-  // ── medicationName ───────────────────────────────────────────
-  group('medicationName', () {
-    test('returns localized name for atorvastatin', () async {
-      final l10n = await loadZh();
-      final name = medicationName(l10n, TodayMedicationKind.atorvastatin);
-      expect(name, l10n.todayMedicationNameAtorvastatin);
-    });
-
-    test('returns localized name for vitaminBComplex', () async {
-      final l10n = await loadZh();
-      final name = medicationName(l10n, TodayMedicationKind.vitaminBComplex);
-      expect(name, l10n.todayMedicationNameVitaminBComplex);
-    });
-
-    test('returns non-empty string for all medication kinds', () async {
-      final l10n = await loadZh();
-      for (final kind in TodayMedicationKind.values) {
-        final name = medicationName(l10n, kind);
-        expect(name, isNotEmpty, reason: 'Name for $kind should be non-empty');
-      }
-    });
-  });
-
   // ── buildQuickActionItems ────────────────────────────────────
   group('buildQuickActionItems', () {
     test('returns exactly 5 items', () async {
@@ -341,7 +314,6 @@ void main() {
           medicineCount: 3,
           pendingCount: 2,
           nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
         ),
       );
       final items = buildQuickActionItems(l10n, dashboard);
@@ -357,7 +329,6 @@ void main() {
           medicineCount: 2,
           pendingCount: 0,
           nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
         ),
       );
       final items = buildQuickActionItems(l10n, dashboard);
@@ -449,7 +420,6 @@ void main() {
             medicineCount: 3,
             pendingCount: 2,
             nextDoseTimeLabel: '--',
-            nextMedicine: TodayMedicationKind.atorvastatin,
           ),
         );
         final bullets = buildAiSummaryBullets(l10n, dashboard);
@@ -464,7 +434,6 @@ void main() {
           medicineCount: 2,
           pendingCount: 0,
           nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
         ),
       );
       final bullets = buildAiSummaryBullets(l10n, dashboard);

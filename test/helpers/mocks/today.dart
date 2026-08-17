@@ -26,7 +26,6 @@ class MockTodayRepository implements TodayRepository {
       medicineCount: 0,
       pendingCount: 0,
       nextDoseTimeLabel: '--:--',
-      nextMedicine: TodayMedicationKind.atorvastatin,
     ),
     vitals: <TodayVitalSummary>[
       TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
@@ -65,7 +64,6 @@ class MockTodayRepository implements TodayRepository {
       medicineCount: 1,
       pendingCount: 1,
       nextDoseTimeLabel: '--:--',
-      nextMedicine: TodayMedicationKind.atorvastatin,
     ),
     vitals: <TodayVitalSummary>[
       TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),

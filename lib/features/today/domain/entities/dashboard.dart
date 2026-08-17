@@ -10,8 +10,6 @@ TodayDayMoment todayDayMomentFromHour(int hour) {
 
 enum TodayDayMoment { morning, afternoon, evening }
 
-enum TodayMedicationKind { atorvastatin, vitaminBComplex }
-
 // Deferred by Product_Vision MVP: keep the lightweight mood vital type because
 // future self-check-ins may use it, but do not surface it as a formal
 // mental-health module in Today.
@@ -92,7 +90,6 @@ abstract class TodayDashboard with _$TodayDashboard {
       medicineCount: 0,
       pendingCount: 0,
       nextDoseTimeLabel: '--',
-      nextMedicine: TodayMedicationKind.atorvastatin,
     ),
     vitals: <TodayVitalSummary>[],
     mealSuggestion: const TodayMealSuggestion(
@@ -160,7 +157,6 @@ abstract class TodayMedicationSummary with _$TodayMedicationSummary {
     required int medicineCount,
     required int pendingCount,
     required String nextDoseTimeLabel,
-    required TodayMedicationKind nextMedicine,
     String? nextMedicineName,
     TodayObservedMetric? observedMetric,
   }) = _TodayMedicationSummary;

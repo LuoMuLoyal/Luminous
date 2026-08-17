@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count)
+Last updated: 2026-08-17 (F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed)
 
 ## 页面结构
 
@@ -177,6 +177,12 @@ Last updated: 2026-08-01
 ## 2026-07-22 今日摘要卡片调整
 
 - **按钮对齐**：`Show basis` / `Hide` 展开按钮与右下角 `Generate` 操作按钮放入同一 `Row`，`crossAxisAlignment: CrossAxisAlignment.center`，消除原先不在同一水平线的问题。
+
+## 2026-08-17 Today 用药概览死代码清理
+
+- `TodayMedicationKind` 枚举与 `TodayMedicationSummary.nextMedicine` 字段已删除；UI 只消费 `nextMedicineName`，不再维护虚假的分类枚举。
+- `view_models.dart` 中未使用的 `medicationName()` 辅助函数已删除。
+- `lib/l10n/src/today_zh.arb` / `today_en.arb` 删除 `todayMedicationName*` 系列键。
 
 ## 2026-08-14 建议卡曝光测量
 

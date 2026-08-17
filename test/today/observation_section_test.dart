@@ -28,7 +28,6 @@ const _noSleepDashboard = TodayDashboard(
     medicineCount: 2,
     pendingCount: 1,
     nextDoseTimeLabel: '--',
-    nextMedicine: TodayMedicationKind.atorvastatin,
   ),
   vitals: <TodayVitalSummary>[
     TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
@@ -54,7 +53,6 @@ const _hasSleepDashboard = TodayDashboard(
     medicineCount: 2,
     pendingCount: 1,
     nextDoseTimeLabel: '--',
-    nextMedicine: TodayMedicationKind.atorvastatin,
   ),
   vitals: <TodayVitalSummary>[
     TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '7.5h'),

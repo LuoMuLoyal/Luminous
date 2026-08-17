@@ -125,8 +125,6 @@
       }
     }
   },
-  "todayMedicationNameAtorvastatin": "阿托伐他汀",
-  "todayMedicationNameVitaminBComplex": "维生素B族",
   "todayHealthSummaryCardTitle": "今日摘要",
   "todayVitalHeartRateLabel": "心率",
   "todayVitalHeartRateUnit": "次/分",

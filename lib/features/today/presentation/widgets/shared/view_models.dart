@@ -112,14 +112,6 @@ String _afternoonWaterGreeting(AppLocalizations l10n, TodayWaterSummary water) {
   return l10n.todayGreetingAfternoonWaterShort(gap);
 }
 
-String medicationName(AppLocalizations l10n, TodayMedicationKind kind) {
-  return switch (kind) {
-    TodayMedicationKind.atorvastatin => l10n.todayMedicationNameAtorvastatin,
-    TodayMedicationKind.vitaminBComplex =>
-      l10n.todayMedicationNameVitaminBComplex,
-  };
-}
-
 String vitalValue(
   List<TodayVitalSummary> vitals,
   TodayVitalType type, {

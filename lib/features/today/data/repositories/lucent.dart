@@ -177,7 +177,6 @@ class LucentTodayRepository implements TodayRepository {
         medicineCount: todayMedicineCount,
         pendingCount: pendingMedicines.length,
         nextDoseTimeLabel: nextReminder?.timeLabel ?? '--',
-        nextMedicine: TodayMedicationKind.atorvastatin,
         nextMedicineName: nextMedicineName,
         observedMetric: medicationObservedMetric,
       ),
@@ -280,7 +279,6 @@ class LucentTodayRepository implements TodayRepository {
         medicineCount: 0,
         pendingCount: 0,
         nextDoseTimeLabel: '--',
-        nextMedicine: TodayMedicationKind.atorvastatin,
         observedMetric: _degradedObservedMetric(dateStr),
       ),
       vitals: [

@@ -125,8 +125,6 @@
       }
     }
   },
-  "todayMedicationNameAtorvastatin": "Atorvastatin",
-  "todayMedicationNameVitaminBComplex": "Vitamin B complex",
   "todayHealthSummaryCardTitle": "Today summary",
   "todayVitalHeartRateLabel": "Heart rate",
   "todayVitalHeartRateUnit": "bpm",
