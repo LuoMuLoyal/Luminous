@@ -2,6 +2,7 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
+import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/today/data/repositories/lucent.dart';
@@ -19,6 +20,7 @@ TodayRepository todayRepository(Ref ref) {
     doseLogRepository: ref.watch(doseLogRepositoryProvider),
     userSettingsRepository: ref.watch(userSettingsRepositoryProvider),
     reminderRepository: ref.watch(reminderRepositoryProvider),
+    notificationRepository: ref.watch(notificationRepositoryProvider),
     talker: ref.watch(talkerProvider),
   );
 }

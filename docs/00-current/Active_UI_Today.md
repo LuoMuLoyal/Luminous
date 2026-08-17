@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false)
+Last updated: 2026-08-17 (F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count)
 
 ## 页面结构
 
@@ -117,6 +117,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - 应用重启后的首次 GET 也会先恢复本地 suggestion cache，再将 `pending / stale / failed` 状态与旧卡合并，避免服务端尚未完成物化时覆盖可用内容。
 - DataChangeBus、resume 和手动操作触发的建议 GET 按 FIFO 串行执行，旧请求完成后不会覆盖较新的刷新结果。
 - Proactive Suggestion Runtime Task 9 已完成：服务端写入 → worker 物化 → Today 只读 GET 的 PostgreSQL + Redis live acceptance 已通过；连续 10 次相关写入最终收敛到同一 `sourceVersion / computedVersion`，客户端继续保留 `pending / stale / failed` 的旧卡回退语义。
+- `TodayUserSnapshot.hasUnreadNotifications` 不再硬编码为 `false`；`LucentTodayRepository` 在 `fetchDashboard` 中调用 `NotificationRepository.getUnreadCount()`，将未读数映射为布尔标志，获取失败时降级为 `false`。
 
 ## 助手入口
 

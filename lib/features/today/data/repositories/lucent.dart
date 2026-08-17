@@ -5,6 +5,7 @@ import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
+import 'package:luminous/features/notification/domain/repositories/notification.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
@@ -21,6 +22,7 @@ class LucentTodayRepository implements TodayRepository {
     required this.doseLogRepository,
     required this.userSettingsRepository,
     required this.reminderRepository,
+    required this.notificationRepository,
     required this.talker,
   });
 
@@ -34,6 +36,7 @@ class LucentTodayRepository implements TodayRepository {
   final DoseLogRepository doseLogRepository;
   final UserSettingsRepository userSettingsRepository;
   final ReminderRepository reminderRepository;
+  final NotificationRepository notificationRepository;
   final Talker talker;
 
   @override
@@ -49,7 +52,12 @@ class LucentTodayRepository implements TodayRepository {
       talker.warning(
         'LucentTodayRepository: health context snapshot failed: $e',
       );
-      return _degradedDashboard(today, dateStr);
+      final hasUnreadNotifications = await _unreadNotificationsFlag();
+      return _degradedDashboard(
+        today,
+        dateStr,
+        hasUnreadNotifications: hasUnreadNotifications,
+      );
     }
 
     final medicines = snapshot.currentMedicines
@@ -152,11 +160,12 @@ class LucentTodayRepository implements TodayRepository {
         : (medicines.isNotEmpty ? medicines.first : null);
     final nextMedicineName =
         nextMedicine?.displayName ?? fallbackMedicine?.displayName;
+    final hasUnreadNotifications = await _unreadNotificationsFlag();
 
     return TodayDashboard(
       user: TodayUserSnapshot(
         moment: todayDayMomentFromHour(today.hour),
-        hasUnreadNotifications: false,
+        hasUnreadNotifications: hasUnreadNotifications,
         updatedAtLabel: _formatTimeLabel(today),
       ),
       water: TodayWaterSummary(
@@ -251,11 +260,15 @@ class LucentTodayRepository implements TodayRepository {
   /// is unavailable. Every metric that has a real upstream source is marked
   /// [TodayObservedMetricState.degraded] so the UI can render "Temporarily
   /// unavailable" instead of a misleading 0 or `--`.
-  TodayDashboard _degradedDashboard(DateTime today, String dateStr) {
+  TodayDashboard _degradedDashboard(
+    DateTime today,
+    String dateStr, {
+    bool hasUnreadNotifications = false,
+  }) {
     return TodayDashboard(
       user: TodayUserSnapshot(
         moment: todayDayMomentFromHour(today.hour),
-        hasUnreadNotifications: false,
+        hasUnreadNotifications: hasUnreadNotifications,
         updatedAtLabel: _formatTimeLabel(today),
       ),
       water: TodayWaterSummary(
@@ -486,6 +499,16 @@ class LucentTodayRepository implements TodayRepository {
     final hour = value.hour.toString().padLeft(2, '0');
     final minute = value.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
+  }
+
+  Future<bool> _unreadNotificationsFlag() async {
+    try {
+      final count = await notificationRepository.getUnreadCount();
+      return count > 0;
+    } catch (e) {
+      talker.warning('LucentTodayRepository: unread count failed: $e');
+      return false;
+    }
   }
 
   @override

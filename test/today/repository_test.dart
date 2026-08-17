@@ -12,6 +12,9 @@ import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
+import 'package:luminous/features/notification/data/repositories/lucent.dart';
+import 'package:luminous/features/notification/domain/entities/notification.dart';
+import 'package:luminous/features/notification/domain/repositories/notification.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
@@ -76,6 +79,9 @@ void main() {
           userSettingsRepositoryProvider.overrideWithValue(
             _FakeUserSettingsRepository(),
           ),
+          notificationRepositoryProvider.overrideWithValue(
+            _FakeNotificationRepository(count: 3),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -94,6 +100,7 @@ void main() {
         TodayObservedMetricCoverage.partial,
       );
       expect(dashboard.water.observedMetric?.observedCount, 2);
+      expect(dashboard.user.hasUnreadNotifications, isTrue);
     },
   );
 
@@ -121,6 +128,9 @@ void main() {
           userSettingsRepositoryProvider.overrideWithValue(
             _FakeUserSettingsRepository(),
           ),
+          notificationRepositoryProvider.overrideWithValue(
+            _FakeNotificationRepository(count: 0),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -137,6 +147,7 @@ void main() {
         dashboard.water.observedMetric?.state,
         TodayObservedMetricState.unknown,
       );
+      expect(dashboard.user.hasUnreadNotifications, isFalse);
     },
   );
 
@@ -166,6 +177,9 @@ void main() {
           userSettingsRepositoryProvider.overrideWithValue(
             _FakeUserSettingsRepository(),
           ),
+          notificationRepositoryProvider.overrideWithValue(
+            _FakeNotificationRepository(count: 0),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -189,6 +203,7 @@ void main() {
         sleepVital.observedMetric?.state,
         TodayObservedMetricState.degraded,
       );
+      expect(dashboard.user.hasUnreadNotifications, isFalse);
     },
   );
 
@@ -216,6 +231,9 @@ void main() {
           userSettingsRepositoryProvider.overrideWithValue(
             _FakeUserSettingsRepository(),
           ),
+          notificationRepositoryProvider.overrideWithValue(
+            _FakeNotificationRepository(count: 0),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -229,6 +247,7 @@ void main() {
         TodayObservedMetricState.degraded,
       );
       expect(dashboard.medication.observedMetric, isNull);
+      expect(dashboard.user.hasUnreadNotifications, isFalse);
     },
   );
 
@@ -256,6 +275,9 @@ void main() {
           userSettingsRepositoryProvider.overrideWithValue(
             _FakeUserSettingsRepository(),
           ),
+          notificationRepositoryProvider.overrideWithValue(
+            _FakeNotificationRepository(count: 0),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -272,6 +294,7 @@ void main() {
         dashboard.water.observedMetric?.state,
         isNot(TodayObservedMetricState.degraded),
       );
+      expect(dashboard.user.hasUnreadNotifications, isFalse);
     },
   );
 }
@@ -465,6 +488,37 @@ class _ThrowingDoseLogDataSource extends _FakeDoseLogDataSource {
   Future<List<DoseLogItem>> fetchForDate(String date) async {
     throw StateError('dose logs unavailable');
   }
+}
+
+class _FakeNotificationRepository implements NotificationRepository {
+  _FakeNotificationRepository({required this.count});
+
+  final int count;
+
+  @override
+  Future<NotificationPage> findAll({
+    required int page,
+    required int pageSize,
+  }) async => throw UnimplementedError();
+
+  @override
+  Future<NotificationDetail?> findOne(String id) async =>
+      throw UnimplementedError();
+
+  @override
+  Future<int> getUnreadCount() async => count;
+
+  @override
+  Future<void> markAllAsRead() async {}
+
+  @override
+  Future<void> markAsRead(String id) async {}
+
+  @override
+  Future<void> markAsUnread(String id) async {}
+
+  @override
+  Future<void> delete(String id) async {}
 }
 
 const _snapshot = HealthContextSnapshot(
