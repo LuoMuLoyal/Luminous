@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (removed `todayMedicationName*` keys; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added)
+Last updated: 2026-08-17 (removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.

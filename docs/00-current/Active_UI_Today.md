@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed; Today vital row reads real heart-rate/blood-pressure daily records)
+Last updated: 2026-08-17 (F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed; Today vital row reads real heart-rate/blood-pressure daily records; summary fallback narrative uses neutral onboarding copy)
 
 ## 页面结构
 
@@ -188,6 +188,10 @@ Last updated: 2026-08-01
 
 - `LucentTodayRepository` 新增 `_VitalReadout`：从 `DailyRecordKind.vital` 记录中按 `vitalType` 筛选最新心率/血压条目，读取 `value`、`secondaryValue`、`unit` 与 `observedMetric`。
 - 摘要卡 vital 行的心率、血压值与 observed metric 现在来自真实日常记录；无记录时回退 `--`；读取失败时随整体 dashboard 标记 `degraded`。
+
+## 2026-08-17 Today 摘要 fallback 叙述改为中性引导文案
+
+- `lib/l10n/src/today_zh.arb` / `today_en.arb` 中 `todaySummaryFallbackNarrative` 改为中性引导文案（"点生成，用今天的记录整理一句总结。" / "Tap generate to summarize today's records."），不再假装 AI 已生成摘要。
 
 ## 2026-08-14 建议卡曝光测量
 

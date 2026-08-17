@@ -269,7 +269,7 @@
   },
   "todayAiSummaryWaterDone": "Today's water check-ins are complete. Keep taking small amounts often",
   "todayAiSummarySleepPlaceholder": "Record sleep to include it in today's summary",
-  "todaySummaryFallbackNarrative": "Handle today's items and you're all set.",
+  "todaySummaryFallbackNarrative": "Tap generate to summarize today's records.",
   "todayRecommendationSectionTitle": "Proactive advice",
   "todayRecommendationErrorTitle": "Recommendations failed to load",
   "todayRecommendationErrorDescription": "Please check your network and try again",
