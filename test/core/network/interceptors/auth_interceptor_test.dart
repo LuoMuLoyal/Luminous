@@ -456,112 +456,106 @@ void main() {
       expect(refreshAdapter.callCount, 0);
     });
 
-    test(
-      'attempts refresh for 401 without tokenExpired code and keeps session '
-      'on transient refresh failure',
-      () async {
-        final store = _MemorySessionStore();
-        await store.write(
-          const LucentSessionTokens(
-            accessToken: 'bad-token',
-            refreshToken: 'valid-refresh-token',
-          ),
+    test('attempts refresh for 401 without tokenExpired code and keeps session '
+        'on transient refresh failure', () async {
+      final store = _MemorySessionStore();
+      await store.write(
+        const LucentSessionTokens(
+          accessToken: 'bad-token',
+          refreshToken: 'valid-refresh-token',
+        ),
+      );
+
+      bool sessionExpiredCalled = false;
+      final mainAdapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 401,
+          data: _unauthorizedBody,
+          statusMessage: 'Unauthorized',
         );
 
-        bool sessionExpiredCalled = false;
-        final mainAdapter = _MockAdapter()
-          ..enqueueError(
-            statusCode: 401,
-            data: _unauthorizedBody,
-            statusMessage: 'Unauthorized',
-          );
+      // Refresh endpoint returns 200 with an empty body (malformed —
+      // transient failure): the session must be kept.
+      final refreshAdapter = _MockAdapter();
 
-        // Refresh endpoint returns 200 with an empty body (malformed —
-        // transient failure): the session must be kept.
-        final refreshAdapter = _MockAdapter();
+      final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+      dio.httpClientAdapter = mainAdapter;
+      dio.interceptors.add(
+        AuthInterceptor(
+          dio: dio,
+          sessionStore: store,
+          refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+            ..httpClientAdapter = refreshAdapter,
+          onSessionExpired: () async {
+            sessionExpiredCalled = true;
+          },
+        ),
+      );
 
-        final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
-        dio.httpClientAdapter = mainAdapter;
-        dio.interceptors.add(
-          AuthInterceptor(
-            dio: dio,
-            sessionStore: store,
-            refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
-              ..httpClientAdapter = refreshAdapter,
-            onSessionExpired: () async {
-              sessionExpiredCalled = true;
-            },
-          ),
+      try {
+        await dio.get('/api/v1/test');
+      } on DioException {
+        // Expected
+      }
+
+      // A non-tokenExpired 401 still triggers a refresh attempt...
+      expect(mainAdapter.callCount, 1);
+      expect(refreshAdapter.callCount, 1);
+      // ...but a transient refresh failure keeps the session.
+      expect(sessionExpiredCalled, isFalse);
+      expect(await store.read(), isNotNull);
+    });
+
+    test('keeps session when refresh fails with network error', () async {
+      final store = _MemorySessionStore();
+      await store.write(
+        const LucentSessionTokens(
+          accessToken: 'expired-token',
+          refreshToken: 'valid-refresh-token',
+        ),
+      );
+
+      bool sessionExpiredCalled = false;
+      final mainAdapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 401,
+          data: _tokenExpiredBody,
+          statusMessage: 'Unauthorized',
         );
 
-        try {
-          await dio.get('/api/v1/test');
-        } on DioException {
-          // Expected
-        }
+      final refreshAdapter = _ThrowingRefreshAdapter(
+        DioException(
+          requestOptions: RequestOptions(path: '/api/v1/auth/refresh'),
+          type: DioExceptionType.connectionError,
+          message: 'Connection refused',
+        ),
+      );
 
-        // A non-tokenExpired 401 still triggers a refresh attempt...
-        expect(mainAdapter.callCount, 1);
-        expect(refreshAdapter.callCount, 1);
-        // ...but a transient refresh failure keeps the session.
-        expect(sessionExpiredCalled, isFalse);
-        expect(await store.read(), isNotNull);
-      },
-    );
+      final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+      dio.httpClientAdapter = mainAdapter;
+      dio.interceptors.add(
+        AuthInterceptor(
+          dio: dio,
+          sessionStore: store,
+          refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+            ..httpClientAdapter = refreshAdapter,
+          onSessionExpired: () async {
+            sessionExpiredCalled = true;
+          },
+        ),
+      );
 
-    test(
-      'keeps session when refresh fails with network error',
-      () async {
-        final store = _MemorySessionStore();
-        await store.write(
-          const LucentSessionTokens(
-            accessToken: 'expired-token',
-            refreshToken: 'valid-refresh-token',
-          ),
-        );
+      try {
+        await dio.get('/api/v1/test');
+      } on DioException {
+        // Expected
+      }
 
-        bool sessionExpiredCalled = false;
-        final mainAdapter = _MockAdapter()
-          ..enqueueError(
-            statusCode: 401,
-            data: _tokenExpiredBody,
-            statusMessage: 'Unauthorized',
-          );
-
-        final refreshAdapter = _ThrowingRefreshAdapter(
-          DioException(
-            requestOptions: RequestOptions(path: '/api/v1/auth/refresh'),
-            type: DioExceptionType.connectionError,
-            message: 'Connection refused',
-          ),
-        );
-
-        final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
-        dio.httpClientAdapter = mainAdapter;
-        dio.interceptors.add(
-          AuthInterceptor(
-            dio: dio,
-            sessionStore: store,
-            refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
-              ..httpClientAdapter = refreshAdapter,
-            onSessionExpired: () async {
-              sessionExpiredCalled = true;
-            },
-          ),
-        );
-
-        try {
-          await dio.get('/api/v1/test');
-        } on DioException {
-          // Expected
-        }
-
-        expect(refreshAdapter.callCount, 1);
-        expect(sessionExpiredCalled, isFalse);
-        // Network blip must not force-log-out the user.
-        expect(await store.read(), isNotNull);
-      },
-    );
+      expect(refreshAdapter.callCount, 1);
+      expect(sessionExpiredCalled, isFalse);
+      // Network blip must not force-log-out the user.
+      expect(await store.read(), isNotNull);
+    });
 
     test('keeps session when refresh endpoint returns 5xx', () async {
       final store = _MemorySessionStore();
