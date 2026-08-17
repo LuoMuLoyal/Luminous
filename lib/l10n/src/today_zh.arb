@@ -379,15 +379,16 @@
     }
   },
   "todayGreetingMorningClear": "早上好，今天暂无用药安排",
-  "todayGreetingAfternoonWaterShort": "下午好，饮水还差 {count} 次",
+  "todayGreetingAfternoonWaterShort": "下午好，饮水还差 {gap} ml",
   "@todayGreetingAfternoonWaterShort": {
     "placeholders": {
-      "count": {
+      "gap": {
         "type": "int"
       }
     }
   },
   "todayGreetingAfternoonWaterDone": "下午好，饮水已达标",
+  "todayGreetingAfternoonWaterUnknown": "下午好，今天还没记饮水",
   "todayGreetingEveningPending": "晚上好，还有 {count} 条用药未确认",
   "@todayGreetingEveningPending": {
     "placeholders": {

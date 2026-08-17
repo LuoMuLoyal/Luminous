@@ -55,7 +55,7 @@ void main() {
     });
 
     test(
-      'afternoon with remaining water returns water short message',
+      'afternoon with observed water below target returns ml gap message',
       () async {
         final l10n = await loadZh();
         final dashboard = TodayDashboard.signedOut().copyWith(
@@ -64,16 +64,29 @@ void main() {
             hasUnreadNotifications: false,
             updatedAtLabel: '--',
           ),
-          water: const TodayWaterSummary(completedCount: 3, targetCount: 8),
+          water: const TodayWaterSummary(
+            completedCount: 3,
+            targetCount: 8,
+            observedMetric: TodayObservedMetric(
+              value: 500,
+              state: TodayObservedMetricState.observed,
+              coverage: TodayObservedMetricCoverage.sufficient,
+              sources: [TodayObservedMetricSource.manual],
+              observedCount: 2,
+              expectedCount: null,
+              windowStart: '2026-08-11',
+              windowEnd: '2026-08-11',
+            ),
+          ),
         );
 
         final subtitle = greetingSubtitle(l10n, dashboard);
-        expect(subtitle, l10n.todayGreetingAfternoonWaterShort(5));
+        expect(subtitle, l10n.todayGreetingAfternoonWaterShort(1500));
       },
     );
 
     test(
-      'afternoon with no remaining water returns water done message',
+      'afternoon with observed water meeting target returns done message',
       () async {
         final l10n = await loadZh();
         final dashboard = TodayDashboard.signedOut().copyWith(
@@ -82,11 +95,55 @@ void main() {
             hasUnreadNotifications: false,
             updatedAtLabel: '--',
           ),
-          water: const TodayWaterSummary(completedCount: 8, targetCount: 8),
+          water: const TodayWaterSummary(
+            completedCount: 8,
+            targetCount: 8,
+            observedMetric: TodayObservedMetric(
+              value: 2000,
+              state: TodayObservedMetricState.observed,
+              coverage: TodayObservedMetricCoverage.sufficient,
+              sources: [TodayObservedMetricSource.manual],
+              observedCount: 8,
+              expectedCount: null,
+              windowStart: '2026-08-11',
+              windowEnd: '2026-08-11',
+            ),
+          ),
         );
 
         final subtitle = greetingSubtitle(l10n, dashboard);
         expect(subtitle, l10n.todayGreetingAfternoonWaterDone);
+      },
+    );
+
+    test(
+      'afternoon with unknown water metric returns unknown message',
+      () async {
+        final l10n = await loadZh();
+        final dashboard = TodayDashboard.signedOut().copyWith(
+          user: const TodayUserSnapshot(
+            moment: TodayDayMoment.afternoon,
+            hasUnreadNotifications: false,
+            updatedAtLabel: '--',
+          ),
+          water: const TodayWaterSummary(
+            completedCount: 0,
+            targetCount: 8,
+            observedMetric: TodayObservedMetric(
+              value: null,
+              state: TodayObservedMetricState.unknown,
+              coverage: TodayObservedMetricCoverage.none,
+              sources: [TodayObservedMetricSource.manual],
+              observedCount: 0,
+              expectedCount: null,
+              windowStart: '2026-08-11',
+              windowEnd: '2026-08-11',
+            ),
+          ),
+        );
+
+        final subtitle = greetingSubtitle(l10n, dashboard);
+        expect(subtitle, l10n.todayGreetingAfternoonWaterUnknown);
       },
     );
 

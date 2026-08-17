@@ -379,15 +379,16 @@
     }
   },
   "todayGreetingMorningClear": "Good morning, no medications scheduled today",
-  "todayGreetingAfternoonWaterShort": "{count, plural, =1{Good afternoon, 1 water check-in to go} other{Good afternoon, {count} water check-ins to go}}",
+  "todayGreetingAfternoonWaterShort": "Good afternoon, {gap} ml of water to go",
   "@todayGreetingAfternoonWaterShort": {
     "placeholders": {
-      "count": {
+      "gap": {
         "type": "int"
       }
     }
   },
   "todayGreetingAfternoonWaterDone": "Good afternoon, water goal reached",
+  "todayGreetingAfternoonWaterUnknown": "Good afternoon, no water logged today",
   "todayGreetingEveningPending": "{count, plural, =1{Good evening, 1 medication item still unconfirmed} other{Good evening, {count} medication items still unconfirmed}}",
   "@todayGreetingEveningPending": {
     "placeholders": {

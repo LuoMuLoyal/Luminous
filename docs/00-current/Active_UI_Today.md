@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false)
+Last updated: 2026-08-17 (F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false)
 
 ## 页面结构
 
@@ -74,7 +74,13 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 
 ## 空态与提示
 
-- 顶栏动态问候语根据用药待确认数和饮水剩余数动态生成。
+- 顶栏动态问候语根据用药待确认数和饮水状态动态生成。
+  - 早上：按 `medication.pendingCount` 提示待确认用药数或“暂无用药安排”。
+  - 下午：按 `water.observedMetric.state` 判断：
+    - `observed`：按目标 ml 与已记录 ml 的缺口报“还差 {gap} ml”；缺口 ≤ 0 时报“饮水已达标”。
+    - `unknown`（今天没有饮水记录）：报“今天还没记饮水”。
+    - `degraded` 等不可确认状态同样回退到“今天还没记饮水”，避免与概览区 ml 口径冲突。
+  - 晚上：按 `medication.pendingCount` 提示未确认用药数或“今天的记录都已处理”。
 
 ## 骨架屏
 

@@ -82,24 +82,34 @@ class TodayQuickActionItem {
 String greetingSubtitle(AppLocalizations l10n, TodayDashboard dashboard) {
   final moment = dashboard.user.moment;
   final hasPendingMeds = dashboard.medication.pendingCount > 0;
-  final hasWaterRemaining = dashboard.water.remainingCount > 0;
 
   return switch (moment) {
     TodayDayMoment.morning =>
       hasPendingMeds
           ? l10n.todayGreetingMorningPending(dashboard.medication.pendingCount)
           : l10n.todayGreetingMorningClear,
-    TodayDayMoment.afternoon =>
-      hasWaterRemaining
-          ? l10n.todayGreetingAfternoonWaterShort(
-              dashboard.water.remainingCount,
-            )
-          : l10n.todayGreetingAfternoonWaterDone,
+    TodayDayMoment.afternoon => _afternoonWaterGreeting(l10n, dashboard.water),
     TodayDayMoment.evening =>
       hasPendingMeds
           ? l10n.todayGreetingEveningPending(dashboard.medication.pendingCount)
           : l10n.todayGreetingEveningAllDone,
   };
+}
+
+String _afternoonWaterGreeting(AppLocalizations l10n, TodayWaterSummary water) {
+  final metric = water.observedMetric;
+  if (metric == null || metric.state != TodayObservedMetricState.observed) {
+    return l10n.todayGreetingAfternoonWaterUnknown;
+  }
+  final observedMl = water.observedMl;
+  if (observedMl == null) {
+    return l10n.todayGreetingAfternoonWaterUnknown;
+  }
+  final gap = water.targetMl - observedMl.round();
+  if (gap <= 0) {
+    return l10n.todayGreetingAfternoonWaterDone;
+  }
+  return l10n.todayGreetingAfternoonWaterShort(gap);
 }
 
 String medicationName(AppLocalizations l10n, TodayMedicationKind kind) {
