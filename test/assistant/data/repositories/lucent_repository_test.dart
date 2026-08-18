@@ -18,6 +18,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     this._openedConversation,
     this._clearResult,
     this._stream,
+    this._regenerateStream,
   }) : super(
          api: lucent.AssistantApi(Dio(BaseOptions())),
          dio: Dio(BaseOptions()),
@@ -29,9 +30,11 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   final lucent.AssistantConversationDataDto? _openedConversation;
   final bool? _clearResult;
   final Stream<AssistantRemoteEvent>? _stream;
+  final Stream<AssistantRemoteEvent>? _regenerateStream;
 
   String? lastOpenedConversationId;
   String? lastStreamConversationId;
+  String? lastRegenerateConversationId;
   final List<(String, List<String>, String, String?)> confirmProposalsCalls =
       <(String, List<String>, String, String?)>[];
 
@@ -77,6 +80,14 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   }) {
     lastStreamConversationId = conversationId;
     return _stream ?? const Stream.empty();
+  }
+
+  @override
+  Stream<AssistantRemoteEvent> regenerateLastMessage({
+    required String conversationId,
+  }) {
+    lastRegenerateConversationId = conversationId;
+    return _regenerateStream ?? const Stream.empty();
   }
 
   @override
@@ -1138,6 +1149,41 @@ void main() {
 
       expect(fake.lastStreamConversationId, 'conv-persisted');
     });
+  });
+
+  group('LucentAssistantRepository.regenerateLastMessage', () {
+    test(
+      'forwards conversation id and calls onChunk for chunk events',
+      () async {
+        final fake = _FakeAssistantRemoteDataSource(
+          regenerateStream: Stream<AssistantRemoteEvent>.fromIterable([
+            const AssistantRemoteChunkEvent('新的'),
+            AssistantRemoteResultEvent(
+              conversationId: 'conv-1',
+              content: '新的回答',
+              usedTools: const <String>[],
+              generatedAt: DateTime(2026, 8, 17, 10),
+              proposedActions: const <Map<String, dynamic>>[],
+            ),
+          ]),
+        );
+        final repo = LucentAssistantRepository(dataSource: fake);
+        final chunks = <String>[];
+
+        final events = await repo
+            .regenerateLastMessage('conv-1', onChunk: chunks.add)
+            .toList();
+
+        expect(fake.lastRegenerateConversationId, 'conv-1');
+        expect(chunks, <String>['新的']);
+        expect(events, hasLength(2));
+        expect(events[0], isA<AssistantGenerationChunkEvent>());
+        expect(events[1], isA<AssistantGenerationResultEvent>());
+        final message = (events[1] as AssistantGenerationResultEvent).message;
+        expect(message.role, AssistantMessageRole.assistant);
+        expect(message.content, '新的回答');
+      },
+    );
   });
 
   group('LucentAssistantRepository.confirmProposals', () {

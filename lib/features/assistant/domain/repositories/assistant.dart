@@ -45,6 +45,14 @@ abstract interface class AssistantRepository {
     String? conversationId,
   });
 
+  /// Regenerates the last assistant message of a persisted conversation
+  /// (F-5b): the backend replays the recorded checkpoint and streams a fresh
+  /// answer; the old answer stays in the conversation as a revision.
+  Stream<AssistantGenerationEvent> regenerateLastMessage(
+    String conversationId, {
+    required void Function(String content) onChunk,
+  });
+
   /// Confirms or rejects pending assistant write proposals on the backend and
   /// resumes the suspended graph thread. Returns the final assistant content
   /// produced after the decision is applied, or null when unavailable.

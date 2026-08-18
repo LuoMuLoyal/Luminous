@@ -305,21 +305,38 @@ class AssistantController extends Notifier<AssistantState> {
           .error('AssistantController._sendMessageInternal: failed: $error');
       final message = LucentErrorMapper.fromObject(error).message;
       final errorType = _classifySendError(error);
+      // F-3 断流补偿:当流因网络中断提前结束且已有残句时,把残句保留为
+      // 一条失败的助手消息(内容可复制),错误条仍显示,用户可点击「继续生成」
+      // 复用 lastFailedInput 重新发起。
+      final draft = state.streamingDraft;
+      final preserveDraft =
+          errorType == AssistantSendErrorType.streamInterrupted &&
+          draft.isNotEmpty;
       state = state.copyWith(
         isSending: false,
         sendError: message,
         sendErrorType: errorType,
         lastFailedInput: trimmed,
         streamingDraft: '',
+        messages: preserveDraft
+            ? <AssistantMessage>[
+                ...state.messages,
+                AssistantMessage(
+                  role: AssistantMessageRole.assistant,
+                  content: draft,
+                  createdAt: clock.now(),
+                ),
+              ]
+            : state.messages,
       );
     }
   }
 
   AssistantSendErrorType _classifySendError(Object error) {
     if (error is LucentApiException) {
-      final statusCode = error.statusCode;
-      if (statusCode != null && statusCode >= 500) {
-        return AssistantSendErrorType.server;
+      // 网络层中断(连接断开/超时)视为流中断,触发 F-3 残句保留。
+      if (error.isNetworkConnectivityError) {
+        return AssistantSendErrorType.streamInterrupted;
       }
       return AssistantSendErrorType.server;
     }
@@ -327,6 +344,105 @@ class AssistantController extends Notifier<AssistantState> {
       return AssistantSendErrorType.streamInterrupted;
     }
     return AssistantSendErrorType.unknown;
+  }
+
+  /// Regenerates the last assistant message of the current conversation
+  /// (F-5b). Requires a persisted conversation; the backend only allows the
+  /// last message to be regenerated and rejects anything else with 400,
+  /// surfaced as a toast by the page.
+  Future<void> regenerateLastMessage() async {
+    final conversationId = state.conversationId;
+    if (conversationId == null || conversationId.isEmpty) {
+      throw StateError('没有可重新生成的持久化会话');
+    }
+    if (state.isSending || state.isLoadingConversation) {
+      return;
+    }
+
+    state = state.copyWith(
+      isSending: true,
+      sendError: null,
+      sendErrorType: null,
+      streamingDraft: '',
+    );
+
+    try {
+      await for (final event
+          in ref
+              .read(assistantRepositoryProvider)
+              .regenerateLastMessage(
+                conversationId,
+                onChunk: (content) {
+                  state = state.copyWith(
+                    streamingDraft: '${state.streamingDraft}$content',
+                  );
+                },
+              )) {
+        switch (event) {
+          case AssistantGenerationChunkEvent():
+            break; // 已由 onChunk 更新 streamingDraft。
+          case AssistantGenerationResultEvent():
+            state = state.copyWith(
+              isSending: false,
+              streamingDraft: '',
+              conversationId: event.conversationId.isEmpty
+                  ? state.conversationId
+                  : event.conversationId,
+              messages: <AssistantMessage>[...state.messages, event.message],
+            );
+            await loadRecentConversations();
+            return;
+        }
+      }
+
+      state = state.copyWith(
+        isSending: false,
+        sendError: null,
+        sendErrorType: AssistantSendErrorType.emptyResult,
+        lastFailedInput: null,
+      );
+    } catch (error) {
+      ref
+          .read(talkerProvider)
+          .error('AssistantController.regenerateLastMessage: failed: $error');
+      final message = LucentErrorMapper.fromObject(error).message;
+      final errorType = _classifySendError(error);
+      // 与 _sendMessageInternal 相同的 F-3 补偿:断流残句保留为失败消息。
+      final draft = state.streamingDraft;
+      final preserveDraft =
+          errorType == AssistantSendErrorType.streamInterrupted &&
+          draft.isNotEmpty;
+      state = state.copyWith(
+        isSending: false,
+        sendError: message,
+        sendErrorType: errorType,
+        lastFailedInput: null,
+        streamingDraft: '',
+        messages: preserveDraft
+            ? <AssistantMessage>[
+                ...state.messages,
+                AssistantMessage(
+                  role: AssistantMessageRole.assistant,
+                  content: draft,
+                  createdAt: clock.now(),
+                ),
+              ]
+            : state.messages,
+      );
+    }
+  }
+
+  /// Re-sends an existing user message (「重新发送」): the content is already
+  /// in the conversation history, so it is not appended again — the backend
+  /// dedupes via its findAppendStartIndex. If an assistant reply already
+  /// follows the message, a new reply is appended, matching the "ask again"
+  /// semantics.
+  Future<void> resendMessage(String content) async {
+    final trimmed = content.trim();
+    if (trimmed.isEmpty) {
+      return;
+    }
+    await _sendMessageInternal(trimmed, appendUserMessage: false);
   }
 
   Future<void> retryLastMessage() async {

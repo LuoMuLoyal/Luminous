@@ -136,6 +136,39 @@ class LucentAssistantRepository implements AssistantRepository {
     }
   }
 
+  @override
+  Stream<AssistantGenerationEvent> regenerateLastMessage(
+    String conversationId, {
+    required void Function(String content) onChunk,
+  }) async* {
+    await for (final event in dataSource.regenerateLastMessage(
+      conversationId: conversationId,
+    )) {
+      switch (event) {
+        case AssistantRemoteChunkEvent():
+          onChunk(event.content);
+          yield AssistantGenerationChunkEvent(event.content);
+        case AssistantRemoteResultEvent():
+          yield AssistantGenerationResultEvent(
+            conversationId: event.conversationId,
+            message: AssistantMessage(
+              role: AssistantMessageRole.assistant,
+              content: event.content,
+              usedTools: event.usedTools,
+              createdAt: event.generatedAt,
+              toolDetails: event.toolDetails
+                  .map(_mapToolDetail)
+                  .toList(growable: false),
+              proposedActions: event.proposedActions
+                  .map(_mapProposedActionFromJson)
+                  .whereType<AssistantProposedAction>()
+                  .toList(growable: false),
+            ),
+          );
+      }
+    }
+  }
+
   AssistantCapabilities _mapCapabilities(
     lucent.AssistantCapabilitiesDataDto dto,
   ) {

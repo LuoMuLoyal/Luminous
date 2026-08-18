@@ -249,6 +249,57 @@ class AssistantPage extends HookConsumerWidget {
       }
     }
 
+    Future<void> handleRegenerate(BuildContext ctx) async {
+      final l = AppLocalizations.of(ctx)!;
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.handleRegenerate',
+        action: () => ref
+            .read(assistantControllerProvider.notifier)
+            .regenerateLastMessage(),
+      );
+      switch (result) {
+        case Success():
+          // 流式回复本身就是成功反馈,不再额外 toast。
+          return;
+        case Failure(:final error):
+          if (!ctx.mounted) return;
+          await Toast.show(
+            ctx,
+            userMessageFromError(
+              error,
+              fallback: l.assistantRegenerateAction,
+              l10n: l,
+            ),
+          );
+      }
+    }
+
+    Future<void> handleResend(BuildContext ctx, String content) async {
+      final l = AppLocalizations.of(ctx)!;
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.handleResend',
+        action: () => ref
+            .read(assistantControllerProvider.notifier)
+            .resendMessage(content),
+      );
+      switch (result) {
+        case Success():
+          return;
+        case Failure(:final error):
+          if (!ctx.mounted) return;
+          await Toast.show(
+            ctx,
+            userMessageFromError(
+              error,
+              fallback: l.assistantResendAction,
+              l10n: l,
+            ),
+          );
+      }
+    }
+
     // Watch only the drawer-relevant fields so streaming chunks (messages /
     // streamingDraft) do not rebuild the sheet contents on every event.
     final drawerState = ref.watch(
@@ -309,6 +360,8 @@ class AssistantPage extends HookConsumerWidget {
             ),
           );
         },
+        onRegenerate: () => unawaited(handleRegenerate(context)),
+        onResend: (content) => unawaited(handleResend(context, content)),
         onStartNewConversation: handleStartNewConversation,
         onOpenDrawer: openConversationDrawer,
       ),

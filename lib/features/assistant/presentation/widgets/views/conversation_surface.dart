@@ -25,6 +25,8 @@ class AssistantConversationSurface extends ConsumerWidget {
     required this.onConfirmProposal,
     required this.onDismissProposal,
     this.onRegenerateProposal,
+    this.onRegenerate,
+    this.onResend,
     this.showStarterPrompts = false,
   });
 
@@ -44,6 +46,12 @@ class AssistantConversationSurface extends ConsumerWidget {
   onDismissProposal;
   final void Function({required String messageId, required String proposalId})?
   onRegenerateProposal;
+
+  /// Regenerates the last assistant message (F-5b).
+  final VoidCallback? onRegenerate;
+
+  /// Re-sends an existing user message (「重新发送」).
+  final void Function(String content)? onResend;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -107,6 +115,8 @@ class AssistantConversationSurface extends ConsumerWidget {
                   onConfirmProposal: onConfirmProposal,
                   onDismissProposal: onDismissProposal,
                   onRegenerateProposal: onRegenerateProposal,
+                  onRegenerate: onRegenerate,
+                  onResend: onResend,
                 ),
         ),
         if (sendError != null) ...[
@@ -116,7 +126,9 @@ class AssistantConversationSurface extends ConsumerWidget {
             description: sendErrorDescription(l10n, sendErrorType, sendError),
             icon: sendErrorIcon(sendErrorType),
             tone: StateTone.warning,
-            actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
+            actionLabel: onRetry != null
+                ? l10n.assistantContinueGeneratingAction
+                : null,
             onAction: onRetry,
             actionKey: const Key('assistant-retry-action'),
             padding: const EdgeInsets.all(Spacing.level4),

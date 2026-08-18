@@ -24,6 +24,8 @@ class AssistantConversationStack extends ConsumerWidget {
     required this.onConfirmProposal,
     required this.onDismissProposal,
     this.onRegenerateProposal,
+    this.onRegenerate,
+    this.onResend,
   });
 
   final TextEditingController inputController;
@@ -43,6 +45,12 @@ class AssistantConversationStack extends ConsumerWidget {
   onDismissProposal;
   final void Function({required String messageId, required String proposalId})?
   onRegenerateProposal;
+
+  /// Regenerates the last assistant message (F-5b).
+  final VoidCallback? onRegenerate;
+
+  /// Re-sends an existing user message (「重新发送」).
+  final void Function(String content)? onResend;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,6 +76,8 @@ class AssistantConversationStack extends ConsumerWidget {
           onConfirmProposal: onConfirmProposal,
           onDismissProposal: onDismissProposal,
           onRegenerateProposal: onRegenerateProposal,
+          onRegenerate: onRegenerate,
+          onResend: onResend,
         ),
         if (!isNearBottom.value)
           Positioned(

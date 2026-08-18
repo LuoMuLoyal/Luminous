@@ -58,6 +58,7 @@
   "assistantConversationTapToName": "Tap to name",
   "assistantStreamingLabel": "Generating",
   "assistantRetryAction": "Retry",
+  "assistantContinueGeneratingAction": "Continue generating",
   "assistantErrorStreamInterrupted": "The connection was interrupted. Check your network and try again.",
   "assistantErrorEmptyResult": "AI did not return a valid response. Please try again.",
   "assistantErrorServer": "The server encountered an issue. Please try again later.",

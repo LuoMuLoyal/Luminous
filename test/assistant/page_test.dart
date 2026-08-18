@@ -686,6 +686,14 @@ mixin _ConfirmProposalsStub implements AssistantRepository {
   Future<void> deleteConversation(String conversationId) async {
     deleteCalls.add(conversationId);
   }
+
+  @override
+  Stream<AssistantGenerationEvent> regenerateLastMessage(
+    String conversationId, {
+    required void Function(String content) onChunk,
+  }) async* {
+    // no-op stub; page tests do not exercise regeneration streaming.
+  }
 }
 
 class _FakeAssistantRepository

@@ -58,6 +58,7 @@
   "assistantConversationTapToName": "点击补名",
   "assistantStreamingLabel": "正在生成",
   "assistantRetryAction": "重新发送",
+  "assistantContinueGeneratingAction": "继续生成",
   "assistantErrorStreamInterrupted": "连接中断了，请检查网络后重试。",
   "assistantErrorEmptyResult": "AI 没有返回有效内容，可以再试一次。",
   "assistantErrorServer": "服务端出现问题，请稍后再试。",

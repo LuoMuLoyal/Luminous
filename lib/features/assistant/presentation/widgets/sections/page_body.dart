@@ -31,6 +31,8 @@ class AssistantPageBody extends ConsumerWidget {
     required this.onConfirmProposal,
     required this.onDismissProposal,
     this.onRegenerateProposal,
+    this.onRegenerate,
+    this.onResend,
     required this.onStartNewConversation,
     required this.onOpenDrawer,
   });
@@ -49,6 +51,12 @@ class AssistantPageBody extends ConsumerWidget {
   onDismissProposal;
   final void Function({required String messageId, required String proposalId})?
   onRegenerateProposal;
+
+  /// Regenerates the last assistant message (F-5b).
+  final VoidCallback? onRegenerate;
+
+  /// Re-sends an existing user message (「重新发送」).
+  final void Function(String content)? onResend;
   final VoidCallback onStartNewConversation;
   final VoidCallback onOpenDrawer;
 
@@ -214,6 +222,8 @@ class AssistantPageBody extends ConsumerWidget {
                     onConfirmProposal: onConfirmProposal,
                     onDismissProposal: onDismissProposal,
                     onRegenerateProposal: onRegenerateProposal,
+                    onRegenerate: onRegenerate,
+                    onResend: onResend,
                   ),
                 ),
               ],

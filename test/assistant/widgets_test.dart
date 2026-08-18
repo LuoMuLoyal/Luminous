@@ -334,6 +334,103 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pumpAndSettle();
     });
+
+    testWidgets('assistant message regenerate menu invokes onRegenerate', (
+      tester,
+    ) async {
+      var regenerateCalls = 0;
+      await tester.pumpWidget(
+        _shell(
+          AssistantMessageBubble(
+            messageId: 'msg-assistant-regenerate',
+            role: AssistantMessageRole.assistant,
+            content: 'Assistant reply',
+            usedTools: const <String>[],
+            onRegenerate: () {
+              regenerateCalls++;
+            },
+          ),
+        ),
+      );
+
+      await tester.longPress(find.byType(FContextMenu));
+      await tester.pumpAndSettle();
+      expect(find.text('重新生成'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('assistant-message-regenerate')));
+      await tester.pumpAndSettle();
+      expect(regenerateCalls, 1);
+
+      // Flush the Forui tappable hold timer so no timer is left pending.
+      await tester.pump(const Duration(milliseconds: 600));
+    });
+
+    testWidgets('assistant regenerate menu is absent while streaming', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-streaming-regenerate',
+            role: AssistantMessageRole.assistant,
+            content: 'Streaming',
+            usedTools: <String>[],
+            isStreaming: true,
+          ),
+        ),
+      );
+
+      // The typing-indicator dots animate forever, so pumpAndSettle would
+      // time out; pump a few fixed frames instead.
+      await tester.longPress(find.byType(FContextMenu));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(
+        find.byKey(const Key('assistant-message-regenerate')),
+        findsNothing,
+      );
+      expect(find.byKey(const Key('assistant-message-resend')), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 600));
+    });
+
+    testWidgets('user message resend menu invokes onResend with content', (
+      tester,
+    ) async {
+      String? resentContent;
+      await tester.pumpWidget(
+        _shell(
+          AssistantMessageBubble(
+            messageId: 'msg-user-resend',
+            role: AssistantMessageRole.user,
+            content: 'User message',
+            usedTools: const <String>[],
+            // Timestamp renders below the selectable text; the context menu
+            // opens on long-press of the bubble (the selectable text itself
+            // wins the gesture arena, so target the timestamp area instead).
+            createdAt: DateTime(2026, 6, 1, 12, 30),
+            onResend: (content) {
+              resentContent = content;
+            },
+          ),
+        ),
+      );
+
+      final menuRect = tester.getRect(find.byType(FContextMenu));
+      // Long-press the timestamp area at the bottom of the user bubble: the
+      // selectable text itself wins the gesture arena for long presses.
+      await tester.longPressAt(Offset(menuRect.left + 24, menuRect.bottom - 8));
+      await tester.pumpAndSettle();
+      expect(find.text('重新发送'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('assistant-message-resend')));
+      await tester.pumpAndSettle();
+      expect(resentContent, 'User message');
+
+      await tester.pump(const Duration(milliseconds: 600));
+    });
   });
 
   group('AssistantProposalCard', () {

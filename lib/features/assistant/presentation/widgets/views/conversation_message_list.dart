@@ -20,6 +20,8 @@ class AssistantConversationMessageList extends ConsumerWidget {
     required this.onConfirmProposal,
     required this.onDismissProposal,
     this.onRegenerateProposal,
+    this.onRegenerate,
+    this.onResend,
   });
 
   final AssistantCapabilities capabilities;
@@ -33,6 +35,12 @@ class AssistantConversationMessageList extends ConsumerWidget {
   onDismissProposal;
   final void Function({required String messageId, required String proposalId})?
   onRegenerateProposal;
+
+  /// Regenerates the last assistant message (F-5b).
+  final VoidCallback? onRegenerate;
+
+  /// Re-sends an existing user message (「重新发送」).
+  final void Function(String content)? onResend;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,6 +105,8 @@ class AssistantConversationMessageList extends ConsumerWidget {
           onConfirmProposal: onConfirmProposal,
           onDismissProposal: onDismissProposal,
           onRegenerateProposal: onRegenerateProposal,
+          onRegenerate: onRegenerate,
+          onResend: onResend,
         );
       },
       separatorBuilder: (_, __) => const SizedBox(height: Spacing.level4),

@@ -309,4 +309,104 @@ void main() {
       );
     });
   });
+
+  group('AssistantRemoteDataSource — regenerateLastMessage', () {
+    late Dio dio;
+    late lucent.AssistantApi api;
+    late AssistantRemoteDataSource ds;
+
+    setUp(() {
+      dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
+      api = lucent.AssistantApi(dio);
+      ds = AssistantRemoteDataSource(api: api, dio: dio);
+    });
+
+    test(
+      'posts to the regenerate endpoint and parses chunk/result events',
+      () async {
+        String? capturedPath;
+        final sseText = [
+          _sseEvent('chunk', {'content': '新的'}),
+          _sseEvent('result', {
+            'conversationId': 'conv-1',
+            'content': '新的回答',
+            'usedTools': <String>[],
+            'generatedAt': '2026-08-17T10:00:00.000Z',
+            'proposedActions': <Object>[],
+          }),
+          _sseEvent('done', null),
+        ].join();
+
+        dio.httpClientAdapter = _PathCapturingSseAdapter(
+          sseText,
+          onFetch: (options) {
+            capturedPath = options.path;
+          },
+        );
+
+        final events = await ds
+            .regenerateLastMessage(conversationId: 'conv-1')
+            .toList();
+
+        expect(
+          capturedPath,
+          '/api/v1/user/assistant/conversations/conv-1/regenerate',
+        );
+        expect(events, hasLength(2));
+        expect((events[0] as AssistantRemoteChunkEvent).content, '新的');
+        final result = events[1] as AssistantRemoteResultEvent;
+        expect(result.conversationId, 'conv-1');
+        expect(result.content, '新的回答');
+        expect(result.usedTools, isEmpty);
+        expect(result.proposedActions, isEmpty);
+      },
+    );
+
+    test('throws LucentApiException on error event', () async {
+      final sseText = [
+        _sseEvent('error', {
+          'message': '只有最后一条助手消息可以重新生成',
+          'code': 400,
+          'statusCode': 400,
+        }),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      expect(
+        () => ds.regenerateLastMessage(conversationId: 'conv-1').toList(),
+        throwsA(isA<LucentApiException>()),
+      );
+    });
+  });
+}
+
+/// SSE adapter that also records the requested path via [onFetch].
+class _PathCapturingSseAdapter implements HttpClientAdapter {
+  _PathCapturingSseAdapter(this.sseText, {required this.onFetch});
+
+  final String sseText;
+  final void Function(RequestOptions options) onFetch;
+
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<List<int>>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    onFetch(options);
+    final bytes = Uint8List.fromList(utf8.encode(sseText));
+    final stream = Stream.fromIterable([bytes]);
+
+    return ResponseBody(
+      stream,
+      200,
+      headers: {
+        Headers.contentTypeHeader: ['text/event-stream'],
+      },
+    );
+  }
 }

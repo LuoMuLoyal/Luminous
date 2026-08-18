@@ -28,6 +28,8 @@ class AssistantMessageBubble extends StatelessWidget {
     this.onConfirmProposal,
     this.onDismissProposal,
     this.onRegenerateProposal,
+    this.onRegenerate,
+    this.onResend,
   });
 
   final String messageId;
@@ -47,6 +49,14 @@ class AssistantMessageBubble extends StatelessWidget {
   onDismissProposal;
   final void Function({required String messageId, required String proposalId})?
   onRegenerateProposal;
+
+  /// Regenerates the last assistant message (F-5b). Only meaningful for the
+  /// final assistant message; the backend rejects other positions with 400,
+  /// surfaced as a toast by the page.
+  final VoidCallback? onRegenerate;
+
+  /// Re-sends an existing user message (「重新发送」).
+  final void Function(String content)? onResend;
 
   @override
   Widget build(BuildContext context) {
@@ -192,11 +202,18 @@ class AssistantMessageBubble extends StatelessWidget {
               }
             },
           ),
-          // TODO: wire regenerate / resend once the controller supports it.
           if (!isUser && !isStreaming)
-            FTile(title: Text(l10n.assistantRegenerateAction), onPress: null),
+            FTile(
+              key: const Key('assistant-message-regenerate'),
+              title: Text(l10n.assistantRegenerateAction),
+              onPress: onRegenerate,
+            ),
           if (isUser && !isStreaming)
-            FTile(title: Text(l10n.assistantResendAction), onPress: null),
+            FTile(
+              key: const Key('assistant-message-resend'),
+              title: Text(l10n.assistantResendAction),
+              onPress: onResend == null ? null : () => onResend!(content),
+            ),
         ],
       ),
     ];

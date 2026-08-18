@@ -133,14 +133,38 @@ class AssistantRemoteDataSource {
   }) async* {
     final sse = LucentSseClient(dio: dio);
 
-    await for (final event in sse.postJson(
-      '/api/v1/user/assistant/messages/stream',
-      body: <String, Object?>{
-        'messages': messages.map((message) => message.toJson()).toList(),
-        if (conversationId != null && conversationId.isNotEmpty)
-          'conversationId': conversationId,
-      },
-    )) {
+    yield* _readEvents(
+      sse.postJson(
+        '/api/v1/user/assistant/messages/stream',
+        body: <String, Object?>{
+          'messages': messages.map((message) => message.toJson()).toList(),
+          if (conversationId != null && conversationId.isNotEmpty)
+            'conversationId': conversationId,
+        },
+      ),
+    );
+  }
+
+  /// Regenerates the last assistant message of a persisted conversation
+  /// (F-5b) via the SSE endpoint, yielding the same chunk/result events as
+  /// [streamMessages].
+  Stream<AssistantRemoteEvent> regenerateLastMessage({
+    required String conversationId,
+  }) async* {
+    final sse = LucentSseClient(dio: dio);
+
+    yield* _readEvents(
+      sse.postJson(
+        '/api/v1/user/assistant/conversations/$conversationId/regenerate',
+        body: const <String, Object?>{},
+      ),
+    );
+  }
+
+  Stream<AssistantRemoteEvent> _readEvents(
+    Stream<LucentSseEvent> events,
+  ) async* {
+    await for (final event in events) {
       switch (event.event) {
         case 'chunk':
           final data = requireMap(event.data);

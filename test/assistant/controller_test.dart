@@ -14,10 +14,14 @@ import '../auth/test_helpers.dart';
 
 /// A fake repository with canned responses.
 class _FakeAssistantRepository implements AssistantRepository {
-  _FakeAssistantRepository({this.latestConversation, this.streamOverride});
+  _FakeAssistantRepository({
+    this.latestConversation,
+    this.streamOverride,
+    this.regenerateStream,
+  });
 
   AssistantConversation? latestConversation;
-  final Stream<AssistantGenerationEvent>? streamOverride;
+  Stream<AssistantGenerationEvent>? streamOverride;
 
   /// Conversations returned by [listRecentConversations].
   List<AssistantConversationSummary> recentList =
@@ -39,6 +43,11 @@ class _FakeAssistantRepository implements AssistantRepository {
   String? lastStreamConversationId;
   List<AssistantMessage>? lastStreamMessages;
   int streamMessagesCallCount = 0;
+
+  /// Stream returned by [regenerateLastMessage].
+  Stream<AssistantGenerationEvent>? regenerateStream;
+  String? lastRegenerateConversationId;
+  int regenerateCallCount = 0;
 
   final List<
     ({String conversationId, List<String> proposalIds, String decision})
@@ -133,6 +142,22 @@ class _FakeAssistantRepository implements AssistantRepository {
     lastStreamConversationId = conversationId;
     lastStreamMessages = List<AssistantMessage>.of(messages);
     return streamOverride ?? const Stream.empty();
+  }
+
+  @override
+  Stream<AssistantGenerationEvent> regenerateLastMessage(
+    String conversationId, {
+    required void Function(String content) onChunk,
+  }) async* {
+    regenerateCallCount++;
+    lastRegenerateConversationId = conversationId;
+    await for (final event
+        in regenerateStream ?? const Stream<AssistantGenerationEvent>.empty()) {
+      if (event is AssistantGenerationChunkEvent) {
+        onChunk(event.content);
+      }
+      yield event;
+    }
   }
 
   @override
@@ -992,6 +1017,216 @@ void main() {
         expect(state.conversationError, isNotNull);
       },
     );
+
+    test(
+      'regenerateLastMessage appends the new answer and keeps the old one',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final oldAnswer = _assistantMessage(content: '旧回答');
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[
+              AssistantMessage(
+                role: AssistantMessageRole.user,
+                content: '帮我查一下睡眠',
+                createdAt: DateTime(2026, 6, 1, 11),
+              ),
+              oldAnswer,
+            ],
+          ),
+          regenerateStream: Stream<AssistantGenerationEvent>.fromIterable([
+            const AssistantGenerationChunkEvent('新的'),
+            AssistantGenerationResultEvent(
+              conversationId: 'persisted-1',
+              message: _assistantMessage(content: '新的回答'),
+            ),
+          ]),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        final before = container
+            .read(assistantControllerProvider)
+            .messages
+            .length;
+        await controller.regenerateLastMessage();
+
+        expect(fake.regenerateCallCount, 1);
+        expect(fake.lastRegenerateConversationId, 'persisted-1');
+        final state = container.read(assistantControllerProvider);
+        expect(state.messages.length, before + 1);
+        // 旧答案保留为修订,新回答追加在末尾。
+        expect(state.messages[before - 1].content, '旧回答');
+        expect(state.messages.last.content, '新的回答');
+        expect(state.isSending, isFalse);
+        expect(state.sendError, isNull);
+      },
+    );
+
+    test(
+      'regenerateLastMessage throws without a persisted conversation',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final fake = _FakeAssistantRepository();
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        await expectLater(
+          controller.regenerateLastMessage(),
+          throwsA(isA<StateError>()),
+        );
+        expect(fake.regenerateCallCount, 0);
+      },
+    );
+
+    test('regenerateLastMessage surfaces streaming errors', () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final fake = _FakeAssistantRepository(
+        latestConversation: _conversationWith(
+          id: 'persisted-1',
+          messages: <AssistantMessage>[_assistantMessage(content: '旧回答')],
+        ),
+        regenerateStream: Stream<AssistantGenerationEvent>.error(
+          StateError('stream closed'),
+        ),
+      );
+      final container = _buildContainer(fake);
+      addTearDown(container.dispose);
+
+      final controller = container.read(assistantControllerProvider.notifier);
+      await controller.loadCapabilities();
+      await controller.loadLatestConversation();
+
+      await controller.regenerateLastMessage();
+
+      final state = container.read(assistantControllerProvider);
+      expect(state.isSending, isFalse);
+      expect(state.sendErrorType, AssistantSendErrorType.streamInterrupted);
+      expect(state.sendError, isNotNull);
+    });
+
+    test(
+      'resendMessage reuses the pipeline without appending the user message',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[
+              AssistantMessage(
+                role: AssistantMessageRole.user,
+                content: '帮我记一杯水',
+                createdAt: DateTime(2026, 6, 1, 11),
+              ),
+              _assistantMessage(content: '好的,已记录。'),
+            ],
+          ),
+          streamOverride: Stream<AssistantGenerationEvent>.fromIterable([
+            AssistantGenerationResultEvent(
+              conversationId: 'persisted-1',
+              message: _assistantMessage(content: '再次回答。'),
+            ),
+          ]),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        final before = container
+            .read(assistantControllerProvider)
+            .messages
+            .length;
+        await controller.resendMessage('帮我记一杯水');
+
+        expect(fake.streamMessagesCallCount, 1);
+        // 用户消息已在历史中,不重复 append。
+        expect(fake.lastStreamMessages?.length, 2);
+        expect(fake.lastStreamMessages?.first.content, '帮我记一杯水');
+        expect(fake.lastStreamMessages?.last.content, '好的,已记录。');
+        final state = container.read(assistantControllerProvider);
+        // 仅新增一条助手回答(重新让助手回答)。
+        expect(state.messages.length, before + 1);
+        expect(state.messages.last.content, '再次回答。');
+      },
+    );
+
+    test(
+      'F-3: streamInterrupted preserves the partial draft as a copyable message',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final fake = _FakeAssistantRepository(
+          streamOverride: Stream<AssistantGenerationEvent>.multi((controller) {
+            controller.add(const AssistantGenerationChunkEvent('部分内容'));
+            controller.addError(StateError('stream closed'));
+          }),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+        await controller.sendMessage('hello');
+
+        final state = container.read(assistantControllerProvider);
+        expect(state.sendErrorType, AssistantSendErrorType.streamInterrupted);
+        // 错误条仍显示,但残句已保留为可复制的失败消息。
+        expect(state.sendError, isNotNull);
+        expect(state.streamingDraft, isEmpty);
+        expect(state.messages.last.role, AssistantMessageRole.assistant);
+        expect(state.messages.last.content, '部分内容');
+        // 「继续生成」按钮语义 = retry,复用 lastFailedInput。
+        expect(state.lastFailedInput, 'hello');
+
+        fake.streamOverride = Stream<AssistantGenerationEvent>.fromIterable([
+          AssistantGenerationResultEvent(
+            conversationId: 'persisted-1',
+            message: _assistantMessage(content: '完整回答。'),
+          ),
+        ]);
+        await controller.retryLastMessage();
+        final retried = container.read(assistantControllerProvider);
+        expect(retried.sendError, isNull);
+        expect(retried.messages.last.content, '完整回答。');
+      },
+    );
+
+    test('F-3: non-interrupted errors drop the partial draft', () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final fake = _FakeAssistantRepository(
+        streamOverride: Stream<AssistantGenerationEvent>.multi((controller) {
+          controller.add(const AssistantGenerationChunkEvent('残句'));
+          controller.addError(Exception('generic failure'));
+        }),
+      );
+      final container = _buildContainer(fake);
+      addTearDown(container.dispose);
+
+      final controller = container.read(assistantControllerProvider.notifier);
+      await controller.loadCapabilities();
+      await controller.loadLatestConversation();
+      await controller.sendMessage('hello');
+
+      final state = container.read(assistantControllerProvider);
+      expect(state.sendErrorType, AssistantSendErrorType.unknown);
+      // 非断流错误不保留残句。
+      expect(
+        state.messages.where((message) => message.content == '残句'),
+        isEmpty,
+      );
+    });
   });
 }
 
@@ -1034,6 +1269,14 @@ class _ErrorThrowingRepository implements AssistantRepository {
   Stream<AssistantGenerationEvent> streamMessages(
     List<AssistantMessage> messages, {
     String? conversationId,
+  }) async* {
+    // no-op
+  }
+
+  @override
+  Stream<AssistantGenerationEvent> regenerateLastMessage(
+    String conversationId, {
+    required void Function(String content) onChunk,
   }) async* {
     // no-op
   }
