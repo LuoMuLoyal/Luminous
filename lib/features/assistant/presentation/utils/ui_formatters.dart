@@ -24,12 +24,52 @@ String localizeToolName(String toolId, BuildContext context) {
     'search_medical_qa_corpus' => l10n.assistantToolSearchMedicalQaCorpus,
     'resolve_drugbank_entity' => l10n.assistantToolResolveDrugbankEntity,
     'search_drugbank_passages' => l10n.assistantToolSearchDrugbankPassages,
+    'search_cn_medicine_products' => l10n.assistantToolSearchCnMedicineProducts,
+    'get_cn_medicine_detail' => l10n.assistantToolCnMedicineDetail,
+    'get_drugbank_detail' => l10n.assistantToolDrugbankDetail,
     'propose_create_daily_record' => l10n.assistantToolProposeCreateRecord,
     'propose_update_daily_record' => l10n.assistantToolProposeUpdateRecord,
     'propose_delete_daily_record' => l10n.assistantToolProposeDeleteRecord,
     'propose_update_user_settings' => l10n.assistantToolProposeUpdateSettings,
     _ => toolId,
   };
+}
+
+/// F-10 能力详情:工具停用原因的用户话术。后端 `AssistantToolDisabledReason`
+/// 枚举值映射为本地化文案,未知值显示原文(不硬造)。
+String assistantToolDisabledReasonText(
+  AppLocalizations l10n,
+  String? reason, {
+  required bool implemented,
+}) {
+  final raw = reason?.trim() ?? '';
+  return switch (raw) {
+    'chat_disabled' => l10n.assistantToolDisabledChat,
+    'context_disabled' => l10n.assistantToolDisabledContext,
+    'model_not_configured' => l10n.assistantToolDisabledModel,
+    'not_implemented' => l10n.assistantToolDisabledNotImplemented,
+    '' =>
+      implemented
+          ? l10n.assistantToolDisabledGeneric
+          : l10n.assistantToolDisabledNotImplemented,
+    _ => raw,
+  };
+}
+
+/// F-10 能力详情:工具状态文案 —— enabled 显示「可用」,disabled 显示
+/// disabledReason 翻译。
+String assistantToolStatusText(
+  AppLocalizations l10n,
+  AssistantToolCapability tool,
+) {
+  if (tool.enabled) {
+    return l10n.assistantToolEnabledLabel;
+  }
+  return assistantToolDisabledReasonText(
+    l10n,
+    tool.disabledReason,
+    implemented: tool.implemented,
+  );
 }
 
 String messageIdFor(AssistantMessage message) {

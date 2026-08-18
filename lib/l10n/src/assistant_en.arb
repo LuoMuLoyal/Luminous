@@ -120,5 +120,4 @@
   "assistantMarkdownLinkConfirmTitle": "Open external link?",
   "assistantMarkdownLinkConfirmDescription": "This link opens outside the app.",
   "assistantMarkdownLinkOpenAction": "Open",
-  "assistantReplacedLabel": "Replaced",
 }

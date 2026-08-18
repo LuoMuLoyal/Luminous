@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
@@ -1198,64 +1199,126 @@ void main() {
     });
   });
 
-  group('AssistantMessageBubble replaced state (F-5b)', () {
-    testWidgets('replaced assistant message shows badge and mutes content', (
-      tester,
-    ) async {
+  group('AssistantCapabilitiesPanel (F-10)', () {
+    const capabilities = AssistantCapabilities(
+      phase: 'production',
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      assistantContext: AssistantContextAccess(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
+      ),
+      chatModelConfigured: true,
+      interactiveChatReady: true,
+      langGraphReady: true,
+      streamingSupported: true,
+      streamingTransport: 'sse',
+      markdownRenderingRecommended: true,
+      ragEnabled: true,
+      tools: <AssistantToolCapability>[
+        AssistantToolCapability(
+          id: 'get_today_records',
+          requiredContextSources: <String>[],
+          permittedByUser: true,
+          enabled: true,
+          implemented: true,
+          disabledReason: null,
+        ),
+        AssistantToolCapability(
+          id: 'get_user_profile',
+          requiredContextSources: <String>['health_profile'],
+          permittedByUser: false,
+          enabled: false,
+          implemented: true,
+          disabledReason: 'context_disabled',
+        ),
+        AssistantToolCapability(
+          id: 'search_drugbank_passages',
+          requiredContextSources: <String>[],
+          permittedByUser: true,
+          enabled: false,
+          implemented: false,
+          disabledReason: 'not_implemented',
+        ),
+        AssistantToolCapability(
+          id: 'propose_update_daily_record',
+          requiredContextSources: <String>['daily_records'],
+          permittedByUser: true,
+          enabled: false,
+          implemented: true,
+          disabledReason: 'some_future_reason',
+        ),
+      ],
+      updatedAt: null,
+    );
+
+    testWidgets('renders summary rows and tool statuses', (tester) async {
       await tester.pumpWidget(
         _shell(
-          const AssistantMessageBubble(
-            messageId: 'msg-replaced',
-            role: AssistantMessageRole.assistant,
-            content: '旧回答',
-            usedTools: <String>[],
-            replaced: true,
+          const SizedBox(
+            height: 800,
+            child: AssistantCapabilitiesPanel(capabilities: capabilities),
           ),
         ),
       );
 
-      expect(find.byKey(const Key('assistant-replaced-label')), findsOneWidget);
-      expect(find.text('已替换'), findsOneWidget);
-      final muted = tester.widget<Opacity>(
-        find.byKey(const Key('assistant-replaced-muted')),
+      // 摘要区:AI 对话与 RAG 已启用,持久化记忆已关闭。
+      expect(find.text('能力详情'), findsOneWidget);
+      expect(find.text('能力摘要'), findsOneWidget);
+      expect(find.text('启用 AI 对话'), findsOneWidget);
+      expect(find.text('启用持久化记忆'), findsOneWidget);
+      expect(find.text('RAG 检索'), findsOneWidget);
+      expect(find.text('已启用'), findsNWidgets(2));
+      expect(find.text('已关闭'), findsOneWidget);
+
+      // 工具行:enabled → 可用;disabled → disabledReason 翻译。
+      expect(
+        find.byKey(const Key('assistant-capability-tool-get_today_records')),
+        findsOneWidget,
       );
-      expect(muted.opacity, lessThan(1));
-      // 内容仍在(置灰而非隐藏)。
-      expect(find.text('旧回答'), findsOneWidget);
+      expect(find.text('可用'), findsOneWidget);
+      expect(find.text('未开放所需健康上下文'), findsOneWidget);
+      expect(find.text('尚未实现'), findsOneWidget);
+      // 未知 disabledReason 显示原文,不硬造。
+      expect(find.text('some_future_reason'), findsOneWidget);
+      // 计数 1 / 4。
+      expect(find.text('1 / 4'), findsOneWidget);
     });
 
-    testWidgets('normal assistant message shows no replaced badge', (
-      tester,
-    ) async {
+    testWidgets('renders empty tools list gracefully', (tester) async {
       await tester.pumpWidget(
         _shell(
-          const AssistantMessageBubble(
-            messageId: 'msg-normal',
-            role: AssistantMessageRole.assistant,
-            content: '正常回答',
-            usedTools: <String>[],
+          const SizedBox(
+            height: 800,
+            child: AssistantCapabilitiesPanel(
+              capabilities: AssistantCapabilities(
+                phase: 'production',
+                assistantEnabled: true,
+                assistantMemoryEnabled: true,
+                assistantContext: AssistantContextAccess(
+                  healthProfile: true,
+                  dailyRecords: true,
+                  sleepRecords: true,
+                  currentMedicines: true,
+                ),
+                chatModelConfigured: true,
+                interactiveChatReady: true,
+                langGraphReady: true,
+                streamingSupported: true,
+                streamingTransport: 'sse',
+                markdownRenderingRecommended: true,
+                ragEnabled: true,
+                tools: <AssistantToolCapability>[],
+                updatedAt: null,
+              ),
+            ),
           ),
         ),
       );
 
-      expect(find.byKey(const Key('assistant-replaced-label')), findsNothing);
-      expect(find.byKey(const Key('assistant-replaced-muted')), findsNothing);
-    });
-
-    testWidgets('user message ignores the replaced flag', (tester) async {
-      await tester.pumpWidget(
-        _shell(
-          const AssistantMessageBubble(
-            messageId: 'msg-user-replaced',
-            role: AssistantMessageRole.user,
-            content: '用户消息',
-            usedTools: <String>[],
-            replaced: true,
-          ),
-        ),
-      );
-
-      expect(find.byKey(const Key('assistant-replaced-label')), findsNothing);
+      expect(find.text('0 / 0'), findsOneWidget);
     });
   });
 }

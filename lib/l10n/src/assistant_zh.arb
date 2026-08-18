@@ -120,5 +120,4 @@
   "assistantMarkdownLinkConfirmTitle": "打开外部链接？",
   "assistantMarkdownLinkConfirmDescription": "该链接将离开应用打开。",
   "assistantMarkdownLinkOpenAction": "打开",
-  "assistantReplacedLabel": "已替换",
 }

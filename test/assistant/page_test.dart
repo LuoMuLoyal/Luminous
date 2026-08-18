@@ -540,6 +540,10 @@ void main() {
       find.byKey(const Key('assistant-status-settings-action')),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const Key('assistant-capabilities-action')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('assistant settings action navigates to the dedicated AI page', (
@@ -556,6 +560,24 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('AI 设置'), findsOneWidget);
+  });
+
+  testWidgets('F-10: capabilities action opens the capability details panel', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _FakeAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('assistant-capabilities-action')));
+    await tester.pumpAndSettle();
+
+    // 面板摘要区出现。
+    expect(find.text('能力摘要'), findsOneWidget);
+    expect(find.text('启用 AI 对话'), findsOneWidget);
   });
 
   testWidgets('AI chat page renders on mobile screen size', (tester) async {

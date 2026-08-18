@@ -5,6 +5,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 AssistantProposedAction _p(AssistantProposalExecutionState s) {
   return AssistantProposedAction(
@@ -117,6 +118,99 @@ void main() {
       expect(knowledgeSourceTypeOf('get_user_profile'), isNull);
       expect(knowledgeSourceTypeOf('propose_create_daily_record'), isNull);
       expect(knowledgeSourceTypeOf('unknown_tool'), isNull);
+    });
+  });
+
+  group('assistantToolDisabledReasonText (F-10)', () {
+    final zh = lookupAppLocalizations(const Locale('zh'));
+
+    test('maps each backend disabled reason to user copy', () {
+      expect(
+        assistantToolDisabledReasonText(zh, 'chat_disabled', implemented: true),
+        '对话功能未启用',
+      );
+      expect(
+        assistantToolDisabledReasonText(
+          zh,
+          'context_disabled',
+          implemented: true,
+        ),
+        '未开放所需健康上下文',
+      );
+      expect(
+        assistantToolDisabledReasonText(
+          zh,
+          'model_not_configured',
+          implemented: true,
+        ),
+        '服务端模型未配置',
+      );
+      expect(
+        assistantToolDisabledReasonText(
+          zh,
+          'not_implemented',
+          implemented: true,
+        ),
+        '尚未实现',
+      );
+    });
+
+    test('shows raw text for unknown reasons (no fabrication)', () {
+      expect(
+        assistantToolDisabledReasonText(
+          zh,
+          'some_future_reason',
+          implemented: true,
+        ),
+        'some_future_reason',
+      );
+    });
+
+    test('empty reason falls back by implementation state', () {
+      expect(
+        assistantToolDisabledReasonText(zh, null, implemented: true),
+        '已停用',
+      );
+      expect(
+        assistantToolDisabledReasonText(zh, null, implemented: false),
+        '尚未实现',
+      );
+    });
+  });
+
+  group('assistantToolStatusText (F-10)', () {
+    final zh = lookupAppLocalizations(const Locale('zh'));
+
+    AssistantToolCapability tool({
+      required bool enabled,
+      required String? disabledReason,
+      bool implemented = true,
+    }) {
+      return AssistantToolCapability(
+        id: 'get_today_records',
+        requiredContextSources: const <String>[],
+        permittedByUser: true,
+        enabled: enabled,
+        implemented: implemented,
+        disabledReason: disabledReason,
+      );
+    }
+
+    test('enabled tool shows 可用', () {
+      expect(
+        assistantToolStatusText(zh, tool(enabled: true, disabledReason: null)),
+        '可用',
+      );
+    });
+
+    test('disabled tool shows the translated reason', () {
+      expect(
+        assistantToolStatusText(
+          zh,
+          tool(enabled: false, disabledReason: 'context_disabled'),
+        ),
+        '未开放所需健康上下文',
+      );
     });
   });
 }

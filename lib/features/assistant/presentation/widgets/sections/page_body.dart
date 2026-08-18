@@ -12,6 +12,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_stack.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -144,6 +145,22 @@ class AssistantPageBody extends ConsumerWidget {
                 ? null
                 : () => unawaited(context.push(Routes.settingsAi)),
             child: const Icon(SemanticIcons.actionSettings),
+          ),
+        ),
+        // F-10 能力详情入口:与「助手设置」同属能力类动作,放在设置按钮旁。
+        // 能力未加载时禁用。面板内容见 AssistantCapabilitiesPanel。
+        FTooltip(
+          tipBuilder: (context, controller) =>
+              Text(l10n.assistantCapabilitiesAction),
+          child: FButton.icon(
+            key: const Key('assistant-capabilities-action'),
+            variant: FButtonVariant.ghost,
+            onPress: !session.canAccessProtectedData || capabilities == null
+                ? null
+                : () => unawaited(
+                    showAssistantCapabilitiesSheet(context, capabilities),
+                  ),
+            child: const Icon(SemanticIcons.statusInfo),
           ),
         ),
       ],
