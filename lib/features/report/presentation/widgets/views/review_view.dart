@@ -43,6 +43,7 @@ class ReviewView extends StatelessWidget {
     this.historyStatus,
     this.onHistoryStatusChanged,
     this.onEventTap,
+    this.onHistoryLoadMore,
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -66,6 +67,10 @@ class ReviewView extends StatelessWidget {
 
   /// 历史行点击回调（push 详情页）；null 时历史行只读不可点。
   final ValueChanged<ReviewEvent>? onEventTap;
+
+  /// 历史翻页回调；传入当前页的 nextCursor，返回下一页。
+  /// null 时不显示「加载更多」按钮。
+  final Future<ReviewEventPage> Function(String cursor)? onHistoryLoadMore;
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +129,7 @@ class ReviewView extends StatelessWidget {
         selectedStatus: historyStatus,
         onStatusChanged: onHistoryStatusChanged,
         onEventTap: onEventTap,
+        onLoadMore: onHistoryLoadMore,
       ),
     ];
 

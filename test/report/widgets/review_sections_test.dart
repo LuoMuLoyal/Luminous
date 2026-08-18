@@ -29,8 +29,10 @@ void main() {
     });
 
     await tester.pumpWidget(
-      TestForuiApp(
-        home: Scaffold(body: SingleChildScrollView(child: section)),
+      ProviderScope(
+        child: TestForuiApp(
+          home: Scaffold(body: SingleChildScrollView(child: section)),
+        ),
       ),
     );
     await tester.pump();
@@ -505,6 +507,208 @@ void main() {
       // 不可点时整行不应被包成 FTappable，也不应抛错或触发任何动作。
       expect(find.byType(FTappable), findsNothing);
       expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('shows load-more button when nextCursor is present', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        ReviewHistorySection(
+          history: const AsyncValue<ReviewEventPage>.data(
+            ReviewEventPage(
+              items: [
+                ReviewEvent(
+                  id: 'evt-1',
+                  kind: ReviewEventKind.symptom,
+                  title: '头痛观察',
+                  status: ReviewEventStatus.ended,
+                  startedAt: '2026-08-01T00:00:00.000Z',
+                  endedAt: '2026-08-10T00:00:00.000Z',
+                  outcome: ReviewEventOutcome.improved,
+                  currentMedicineIds: [],
+                ),
+              ],
+              total: 25,
+              nextCursor: 'cursor-abc',
+            ),
+          ),
+          onLoadMore: (_) async => const ReviewEventPage(items: [], total: 25),
+        ),
+      );
+
+      expect(find.byKey(const Key('review-history-load-more')), findsOneWidget);
+    });
+
+    testWidgets('does not show load-more when nextCursor is null', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.data(
+            reviewHistoryPage([reviewEventItem(id: 'evt-1', title: '头痛观察')]),
+          ),
+          onLoadMore: (_) async => const ReviewEventPage(items: [], total: 1),
+        ),
+      );
+
+      expect(find.byKey(const Key('review-history-load-more')), findsNothing);
+    });
+
+    testWidgets('does not show load-more without onLoadMore callback', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        const ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.data(
+            ReviewEventPage(items: [], total: 25, nextCursor: 'cursor-abc'),
+          ),
+        ),
+      );
+
+      expect(find.byKey(const Key('review-history-load-more')), findsNothing);
+    });
+
+    testWidgets('appends next page items on load-more tap', (tester) async {
+      await pumpSection(
+        tester,
+        ReviewHistorySection(
+          history: const AsyncValue<ReviewEventPage>.data(
+            ReviewEventPage(
+              items: [
+                ReviewEvent(
+                  id: 'evt-1',
+                  kind: ReviewEventKind.symptom,
+                  title: '头痛观察',
+                  status: ReviewEventStatus.ended,
+                  startedAt: '2026-08-01T00:00:00.000Z',
+                  endedAt: '2026-08-10T00:00:00.000Z',
+                  outcome: ReviewEventOutcome.improved,
+                  currentMedicineIds: [],
+                ),
+              ],
+              total: 3,
+              nextCursor: 'cursor-1',
+            ),
+          ),
+          onLoadMore: (cursor) async {
+            expect(cursor, 'cursor-1');
+            return ReviewEventPage(
+              items: [reviewEventItem(id: 'evt-2', title: '嗓子疼观察')],
+              total: 3,
+            );
+          },
+        ),
+      );
+
+      expect(find.text('头痛观察'), findsOneWidget);
+      expect(find.text('嗓子疼观察'), findsNothing);
+
+      await tester.tap(find.byKey(const Key('review-history-load-more')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('头痛观察'), findsOneWidget);
+      expect(find.text('嗓子疼观察'), findsOneWidget);
+      // 下一页无 nextCursor，加载更多按钮消失。
+      expect(find.byKey(const Key('review-history-load-more')), findsNothing);
+    });
+
+    testWidgets('shows retry after load-more failure', (tester) async {
+      await pumpSection(
+        tester,
+        ReviewHistorySection(
+          history: const AsyncValue<ReviewEventPage>.data(
+            ReviewEventPage(
+              items: [
+                ReviewEvent(
+                  id: 'evt-1',
+                  kind: ReviewEventKind.symptom,
+                  title: '头痛观察',
+                  status: ReviewEventStatus.ended,
+                  startedAt: '2026-08-01T00:00:00.000Z',
+                  endedAt: '2026-08-10T00:00:00.000Z',
+                  outcome: ReviewEventOutcome.improved,
+                  currentMedicineIds: [],
+                ),
+              ],
+              total: 3,
+              nextCursor: 'cursor-1',
+            ),
+          ),
+          onLoadMore: (_) async => throw Exception('network error'),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('review-history-load-more')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.reportReviewHistoryLoadMoreFailed), findsOneWidget);
+      // 按钮文案变为重试。
+      final retryButton = find.byKey(const Key('review-history-load-more'));
+      expect(retryButton, findsOneWidget);
+      // FButton 内部包装 child 为 Content，用 find.text 验证文案。
+      expect(
+        find.descendant(
+          of: retryButton,
+          matching: find.text(l10n.todayRetryAction),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('resets appended items when status filter changes', (
+      tester,
+    ) async {
+      // 用 StatefulBuilder 让测试能在同一个 widget instance 上触发重建。
+      var status = ReviewEventStatus.ended;
+      var nextCursor = 'cursor-1';
+      late StateSetter testSetState;
+
+      await pumpSection(
+        tester,
+        StatefulBuilder(
+          builder: (context, setState) {
+            testSetState = setState;
+            return ReviewHistorySection(
+              history: AsyncValue<ReviewEventPage>.data(
+                ReviewEventPage(
+                  items: [
+                    reviewEventItem(
+                      id: 'evt-1',
+                      title: '头痛观察',
+                      status: ReviewEventStatus.ended,
+                    ),
+                  ],
+                  total: 3,
+                  nextCursor: nextCursor,
+                ),
+              ),
+              selectedStatus: status,
+              onLoadMore: (_) async => ReviewEventPage(
+                items: [reviewEventItem(id: 'evt-2', title: '嗓子疼观察')],
+                total: 3,
+              ),
+            );
+          },
+        ),
+      );
+
+      // 加载第二页。
+      await tester.tap(find.byKey(const Key('review-history-load-more')));
+      await tester.pumpAndSettle();
+      expect(find.text('嗓子疼观察'), findsOneWidget);
+
+      // 筛选切换 + 首页 nextCursor 变化，触发 _syncFromFirstPage 重置。
+      testSetState(() {
+        status = ReviewEventStatus.active;
+        nextCursor = 'cursor-2';
+      });
+      await tester.pumpAndSettle();
+
+      // 筛选切换后追加的 evt-2 应该消失。
+      expect(find.text('嗓子疼观察'), findsNothing);
     });
   });
 }

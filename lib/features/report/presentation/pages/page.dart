@@ -19,6 +19,7 @@ import 'package:luminous/features/health_event/presentation/widgets/sheets/end_e
 import 'package:luminous/features/health_event/presentation/widgets/sheets/start_event.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/report/data/providers/review.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/presentation/providers/review.dart';
@@ -302,6 +303,9 @@ class ReportPage extends ConsumerWidget {
             onEventTap: (event) => context.push(
               Routes.reviewDetail.replaceAll(':eventId', event.id),
             ),
+            onHistoryLoadMore: (cursor) => ref
+                .read(reviewRepositoryProvider)
+                .fetchHistory(status: historyStatus, cursor: cursor),
           ),
         ),
       ),

@@ -566,3 +566,10 @@ flutter test
 - 新增 `reportReviewWhatHappenedReasonRecord`（zh: 由记录触发：{title} / en: Triggered by record: {title}，占位符 `title` 为 String）到 report 分片：「发生了什么」段在窗口行之后、症状计数之前渲染触发记录行，由后端 facts `reasonRecordTitle` 驱动（无值不渲染）。
 - 所有权在 report 分片（`report*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。
+
+## 2026-08-18 R-1 回顾历史翻页文案键
+
+- 新增 `reportReviewHistoryLoadMore`（zh: 加载更多 / en: Load more）到 `lib/l10n/src/report_zh.arb` / `report_en.arb`（report 分片）：历史卡片底部「加载更多」按钮文案，当首页 `nextCursor` 非空时显示。
+- 新增 `reportReviewHistoryLoadMoreFailed`（zh: 加载更多失败。/ en: Failed to load more.）到 report 分片：翻页请求失败时的提示文案，按钮切换为重试入口。
+- 所有权在 report 分片（`report*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`。
+- 顶部 `Last updated` 已同步记录本次新增。

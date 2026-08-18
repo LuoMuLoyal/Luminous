@@ -16,7 +16,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// 筛选：提供 status（全部 / 进行中 / 已结束）轻量筛选，由页面装配层的
 /// [reviewHistoryStatusProvider] 驱动重新拉取。时间范围**不是** review
 /// list 合同的一部分（合同只有 status/cursor/limit），不提供日期过滤。
-class ReviewHistorySection extends StatelessWidget {
+///
+/// 翻页：当首页 [ReviewEventPage.nextCursor] 非空时，卡片底部渲染「加载更多」
+/// 按钮；点击后通过 [onLoadMore] 回调请求下一页，追加渲染并防重入。筛选切换
+/// 或 DataChangeBus 刷新时重置为第一页。
+class ReviewHistorySection extends ConsumerStatefulWidget {
   const ReviewHistorySection({
     super.key,
     required this.history,
@@ -24,6 +28,7 @@ class ReviewHistorySection extends StatelessWidget {
     this.selectedStatus,
     this.onStatusChanged,
     this.onEventTap,
+    this.onLoadMore,
   });
 
   final AsyncValue<ReviewEventPage> history;
@@ -39,6 +44,86 @@ class ReviewHistorySection extends StatelessWidget {
 
   /// 历史行点击回调；为 null 时行不可点（只读）。
   final ValueChanged<ReviewEvent>? onEventTap;
+
+  /// 加载更多回调；传入当前页的 nextCursor，返回下一页。
+  /// 为 null 时不显示「加载更多」按钮（测试/独立使用场景）。
+  final Future<ReviewEventPage> Function(String cursor)? onLoadMore;
+
+  @override
+  ConsumerState<ReviewHistorySection> createState() =>
+      _ReviewHistorySectionState();
+}
+
+class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
+  /// 累积的额外页事件（不含首页）。首页数据来自 [widget.history]。
+  List<ReviewEvent> _appendedItems = const [];
+
+  /// 额外页的合并 nextCursor；null 表示无更多或未初始化。
+  String? _appendedNextCursor;
+
+  /// 是否正在加载更多（防重入）。
+  bool _loadingMore = false;
+
+  /// 加载更多失败时的错误信息（非 null 时显示重试）。
+  Object? _loadMoreError;
+
+  /// 当前正在请求的 cursor 值，用于在异步完成后校验是否仍然有效
+  /// （筛选切换后旧请求迟到不应覆盖新状态）。
+  String? _pendingCursor;
+
+  /// 用来跟踪首页数据是否发生了变化（nextCursor 改变意味着筛选/刷新重取）。
+  /// 当首页 nextCursor 与上次记录的不一致时，重置累积列表。
+  String? _lastFirstPageNextCursor;
+  ReviewEventStatus? _lastStatus;
+
+  void _syncFromFirstPage(ReviewEventPage firstPage) {
+    final status = widget.selectedStatus;
+    // 筛选切换或首页 nextCursor 变化（DataChangeBus 刷新重取）时重置。
+    if (_lastStatus != status ||
+        _lastFirstPageNextCursor != firstPage.nextCursor) {
+      // 只有当首页数据确实发生了变化（不是首次构建）时才重置。
+      // 首次构建时 _appendedItems 已经是空列表，重置是 no-op。
+      _appendedItems = const [];
+      _appendedNextCursor = null;
+      _loadMoreError = null;
+      _lastFirstPageNextCursor = firstPage.nextCursor;
+      _lastStatus = status;
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_loadingMore) return;
+
+    final cursor =
+        _appendedNextCursor ?? widget.history.asData?.value.nextCursor;
+    if (cursor == null) return;
+    if (widget.onLoadMore == null) return;
+
+    setState(() {
+      _loadingMore = true;
+      _loadMoreError = null;
+      _pendingCursor = cursor;
+    });
+
+    try {
+      final page = await widget.onLoadMore!(cursor);
+      if (!mounted) return;
+      // 迟到的旧请求：筛选切换后 cursor 已过期，丢弃结果。
+      if (_pendingCursor != cursor) return;
+      setState(() {
+        _appendedItems = [..._appendedItems, ...page.items];
+        _appendedNextCursor = page.nextCursor;
+        _loadingMore = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      if (_pendingCursor != cursor) return;
+      setState(() {
+        _loadMoreError = e;
+        _loadingMore = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,11 +158,11 @@ class ReviewHistorySection extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.level3),
             _StatusFilterRow(
-              selectedStatus: selectedStatus,
-              onStatusChanged: onStatusChanged,
+              selectedStatus: widget.selectedStatus,
+              onStatusChanged: widget.onStatusChanged,
             ),
             const SizedBox(height: Spacing.level3),
-            history.when(
+            widget.history.when(
               skipLoadingOnRefresh: true,
               loading: () => const Padding(
                 padding: EdgeInsets.symmetric(vertical: Spacing.level3),
@@ -95,44 +180,115 @@ class ReviewHistorySection extends StatelessWidget {
                           ),
                     ),
                   ),
-                  if (onRetry != null) ...[
+                  if (widget.onRetry != null) ...[
                     const SizedBox(width: Spacing.level3),
                     FButton(
                       key: const Key('review-history-retry'),
                       variant: FButtonVariant.outline,
                       size: FButtonSizeVariant.sm,
-                      onPress: onRetry,
+                      onPress: widget.onRetry,
                       child: Text(l10n.todayRetryAction),
                     ),
                   ],
                 ],
               ),
-              data: (page) => page.items.isEmpty
-                  ? Text(
-                      l10n.reportReviewHistoryEmpty,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(
-                            color: context.theme.colors.mutedForeground,
-                          ),
-                    )
-                  : Column(
-                      children: [
-                        for (final (index, event) in page.items.indexed) ...[
-                          if (index > 0) const AppDivider(),
-                          _HistoryEventRow(
-                            event: event,
-                            onTap: onEventTap == null
-                                ? null
-                                : () => onEventTap!(event),
-                          ),
-                        ],
-                      ],
-                    ),
+              data: (firstPage) {
+                _syncFromFirstPage(firstPage);
+
+                final allItems = [...firstPage.items, ..._appendedItems];
+
+                if (allItems.isEmpty) {
+                  return Text(
+                    l10n.reportReviewHistoryEmpty,
+                    style: TypographyToken.level3
+                        .body(context)
+                        .copyWith(color: context.theme.colors.mutedForeground),
+                  );
+                }
+
+                // 合并后的 nextCursor：已经加载过追加页时用追加页的 cursor
+                // （可能为 null 表示无更多），否则用首页的 cursor。
+                final mergedNextCursor = _appendedItems.isNotEmpty
+                    ? _appendedNextCursor
+                    : firstPage.nextCursor;
+                final canLoadMore =
+                    mergedNextCursor != null && widget.onLoadMore != null;
+
+                return Column(
+                  children: [
+                    for (final (index, event) in allItems.indexed) ...[
+                      if (index > 0) const AppDivider(),
+                      _HistoryEventRow(
+                        event: event,
+                        onTap: widget.onEventTap == null
+                            ? null
+                            : () => widget.onEventTap!(event),
+                      ),
+                    ],
+                    if (canLoadMore) ...[
+                      const SizedBox(height: Spacing.level3),
+                      _LoadMoreControl(
+                        loading: _loadingMore,
+                        hasError: _loadMoreError != null,
+                        onLoad: _loadMore,
+                      ),
+                    ],
+                  ],
+                );
+              },
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _LoadMoreControl extends StatelessWidget {
+  const _LoadMoreControl({
+    required this.loading,
+    required this.hasError,
+    required this.onLoad,
+  });
+
+  final bool loading;
+  final bool hasError;
+  final VoidCallback onLoad;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    if (loading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: Spacing.level2),
+        child: Center(child: FProgress()),
+      );
+    }
+
+    return Row(
+      children: [
+        if (hasError)
+          Expanded(
+            child: Text(
+              l10n.reportReviewHistoryLoadMoreFailed,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: context.theme.colors.mutedForeground),
+            ),
+          )
+        else
+          const Spacer(),
+        FButton(
+          key: const Key('review-history-load-more'),
+          variant: FButtonVariant.outline,
+          size: FButtonSizeVariant.sm,
+          onPress: onLoad,
+          child: Text(
+            hasError ? l10n.todayRetryAction : l10n.reportReviewHistoryLoadMore,
+          ),
+        ),
+      ],
     );
   }
 }
