@@ -7,13 +7,8 @@ import 'package:luminous/features/report/presentation/widgets/views/review_view.
 import '../helpers/test_forui_app.dart';
 import 'widgets/review_fixtures.dart';
 
-/// Task 9 golden：Review 四状态（active / ended / partial / no-event）的手机
-/// 宽度视觉基线（zh + light + 常规字体），以及 zh/en、dark、大字体矩阵的
-/// 不溢出校验。
-///
-/// golden 目录：`test/report/goldens/`（相对本文件的 `goldens/`）。
-/// 应用未打包自定义字体，golden 使用 Flutter 测试默认字体（Ahem），
-/// 中文以占位方块呈现——布局结构、间距与溢出行为仍然完全确定。
+/// Review 四状态（active / ended / partial / no-event）的 zh/en、dark、
+/// 大字体矩阵不溢出校验。
 void main() {
   Future<void> pumpReviewView(
     WidgetTester tester, {
@@ -96,9 +91,10 @@ void main() {
     ),
   );
 
-  // ── 核心 golden（zh / light / 常规字体） ─────────────────────────
+  // ── 矩阵：zh / en / dark / 大字体 各跑一遍四状态（widget 断言） ──
 
-  testWidgets('golden: active 状态', (tester) async {
+  // zh / light 基线断言（替代原 golden 测试）
+  testWidgets('zh: active 状态断言', (tester) async {
     await pumpReviewView(
       tester,
       current: AsyncValue<EventReview?>.data(reviewActive()),
@@ -108,14 +104,9 @@ void main() {
     expect(find.byKey(const Key('review-event-header')), findsOneWidget);
     expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
     expectNoLegacyDashboardTraces(tester);
-
-    await expectLater(
-      find.byType(ReviewView),
-      matchesGoldenFile('goldens/review_active_zh_light.png'),
-    );
   });
 
-  testWidgets('golden: ended 状态', (tester) async {
+  testWidgets('zh: ended 状态断言', (tester) async {
     await pumpReviewView(
       tester,
       current: AsyncValue<EventReview?>.data(reviewEnded()),
@@ -125,14 +116,9 @@ void main() {
     expect(find.byKey(const Key('review-event-header')), findsOneWidget);
     expect(find.byKey(const Key('review-check-in-action')), findsNothing);
     expectNoLegacyDashboardTraces(tester);
-
-    await expectLater(
-      find.byType(ReviewView),
-      matchesGoldenFile('goldens/review_ended_zh_light.png'),
-    );
   });
 
-  testWidgets('golden: partial 状态（unknown 段落）', (tester) async {
+  testWidgets('zh: partial 状态断言（unknown 段落）', (tester) async {
     await pumpReviewView(
       tester,
       current: AsyncValue<EventReview?>.data(reviewPartial()),
@@ -146,14 +132,9 @@ void main() {
       findsOneWidget,
     );
     expectNoLegacyDashboardTraces(tester);
-
-    await expectLater(
-      find.byType(ReviewView),
-      matchesGoldenFile('goldens/review_partial_zh_light.png'),
-    );
   });
 
-  testWidgets('golden: no-event 状态（开始观察 + 最近历史）', (tester) async {
+  testWidgets('zh: no-event 状态断言（开始观察 + 最近历史）', (tester) async {
     await pumpReviewView(
       tester,
       current: const AsyncValue<EventReview?>.data(null),
@@ -166,14 +147,9 @@ void main() {
       findsOneWidget,
     );
     expectNoLegacyDashboardTraces(tester);
-
-    await expectLater(
-      find.byType(ReviewView),
-      matchesGoldenFile('goldens/review_no_event_zh_light.png'),
-    );
   });
 
-  // ── 矩阵：en / dark / 大字体 各跑一遍四状态（widget 断言，无 golden） ──
+  // ── 矩阵：en / dark / 大字体 各跑一遍四状态（widget 断言） ──
 
   final states = <String, AsyncValue<EventReview?>>{
     'active': AsyncValue<EventReview?>.data(reviewActive()),

@@ -59,7 +59,7 @@ jobs:
         run: flutter analyze
 
       - name: Run tests
-        run: flutter test --coverage --reporter=compact
+        run: flutter test --coverage --reporter=github
 
       - name: Build APK (release)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
