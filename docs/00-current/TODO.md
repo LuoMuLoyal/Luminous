@@ -54,6 +54,18 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - `intl.DateFormat` 替代 ISO 字符串
   - `padLeft` 是线协议格式，DateFormat 不适用
 
+- AI 来源条元数据后端投影（F-14/F-15，0.1.0 后）
+  - 现状：来源条组件与前端字段（confidenceNote/sourceVersion）已就绪；Lucent 的 `buildToolDetails` 尚未把摘要工具的 `confidenceNote`/`sourceVersion` 与说明书的批准文号/更新时间投影进 SSE `toolDetails`，前端「数据截至」行与元数据行待数据到达后自动生效
+  - 依据：assistant 改造计划 F-14/F-15 P2 子项（实施完毕文件已删）；0.1.0 后按既有顺序恢复
+
+- 助手记忆擦除入口与联动（F-9/F-2 遗留，0.1.0 后）
+  - 现状：Lucent `DELETE /assistant/memory` 已就绪（全量擦除）；设置页尚无入口；删除会话不联动清理该会话记忆；`activateConversation` 路径不触发记忆提取（仅「新对话」触发）
+  - 方案：设置页 AI 区接入擦除按钮；会话删除时清理其 `AssistantMemory`；激活路径补提取调度
+
+- 助手重生与确认并发线程锁（0.1.0 后）
+  - 现状：LangGraph time travel 重生与 confirm（HITL 挂起）并发操作同一线程时无 per-thread 锁，极端并发下可能状态竞争
+  - 方案：为 regenerate/confirm 路径加 per-thread 互斥
+
 ## 审查暂缓项
 
 - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。

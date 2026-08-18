@@ -61,7 +61,7 @@ YYYY-MM-DD-short-task-name.md
 4. [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md)
    — 今日建议:AI 摘要卡接线、建议反馈与升级通知执行器
 5. [`2026-08-16-assistant-remediation-plan.md`](2026-08-16-assistant-remediation-plan.md)
-   — AI 助手:P0 三大信任缺口(免责呈现、来源展示、信任分层)
+   — AI 助手:本批任务全部完成并实施完毕文件已删(P0 三大信任缺口、F-2 会话重命名删除、F-5b 重生/断流补偿、F-9 记忆压缩、F-11/F-16 一致性、F-15 语料分层、P2 批次);剩余 F-14/F-15 来源条元数据后端投影与记忆擦除设置页入口(0.1.0 后)
 6. [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md)
    — 记录:vital 时间序列基建、饮水目标契约、摘要网格接线
 7. [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md)
