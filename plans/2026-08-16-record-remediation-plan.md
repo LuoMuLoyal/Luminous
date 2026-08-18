@@ -45,13 +45,6 @@ Created: 2026-08-16
 
 ### P1
 
-#### P1-2 详情页饮水进度卡目标值改读 user-settings(调研 §4.4，0.1.0 前)
-
-- 现状:`detail.dart:820` 硬编码 `_waterDailyTargetMl = 2000`,与 Today Analysis 使用的 `user-settings.waterTargetCount` 口径分裂(详情页说 2000 ml、Today 说 8 杯×250 ml)。
-- 方案:饮水目标改读 `user-settings.waterTargetCount`,按 `waterTargetCount × 单次默认量` 换算为 ml 展示;移除 `_waterDailyTargetMl` 常量。直接读取 `user-settings` API，与 Today Analysis 同源。
-- 涉及文件:客户端 `lib/features/record/presentation/pages/detail.dart`、user-settings 读取 provider;后端不动(settings API 已存在)。
-- 依赖:P1-1(若选 summary 契约路径);mine-settings 计划(第 9 位)不改 `waterTargetCount` 语义,无冲突。
-
 #### P1-3 餐食分析分层触发(懒触发，调研 §1 改造建议，0.1.0 后)
 
 - 现状:任何带 1 张图片的 meal 记录都自动排队完整链路(vision + 分解 2 次 LLM 调用),`worker.service.ts` 全量执行。
@@ -119,10 +112,9 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. P1-2（0.1.0 前）：详情页饮水目标读取 `user-settings`。
-2. P2-1、P2-2、P2-5（0.1.0 前）：Today 联动采用已定门控并由 today 计划主链路消费。
-3. P1-3、P1-4（0.1.0 后）：餐食分层与 vital 时间序列按既有 P1 和依赖顺序恢复。
-4. P2-3、P2-4：桌面高级能力冻结。
+1. P2-1、P2-2、P2-5（0.1.0 前）：Today 联动采用已定门控并由 today 计划主链路消费。
+2. P1-3、P1-4（0.1.0 后）：餐食分层与 vital 时间序列按既有 P1 和依赖顺序恢复。
+3. P2-3、P2-4：桌面高级能力冻结。
 
 ## 六、已决边界与延期项
 

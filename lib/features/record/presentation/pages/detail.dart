@@ -17,6 +17,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/record_detail_actions.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/data/providers/water_target.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -209,6 +210,19 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
       }
     }
 
+    // Daily water target (ml) for the progress card: read from user-settings
+    // `waterTargetCount × 250`, the same source as Today Analysis. While
+    // settings are loading or fail, the mirrored default (8 × 250 = 2000 ml)
+    // keeps the card stable; the target is always > 0, guarding the progress
+    // ratio against division by zero. Only water records with ml data watch
+    // settings, so other record kinds do not trigger a settings fetch.
+    final waterTargetCount =
+        record.kind == DailyRecordKind.water && waterTotalMl > 0
+        ? ref.watch(recordWaterTargetCountProvider).asData?.value ??
+              recordWaterDefaultTargetCount
+        : 0;
+    final waterTargetMl = waterTargetCount * recordWaterMlPerCount;
+
     // Sync the analysis poller with the current status.
     final isAnalyzing =
         mealAnalysis != null && mealAnalysis.status == 'analyzing';
@@ -393,7 +407,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     Text(
                       l10n.recordDetailDailyWaterProgress(
                         waterTotalMl,
-                        _waterDailyTargetMl,
+                        waterTargetMl,
                       ),
                       style: TypographyToken.level3
                           .body(context)
@@ -405,7 +419,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
-                    value: (waterTotalMl / _waterDailyTargetMl).clamp(0.0, 1.0),
+                    value: (waterTotalMl / waterTargetMl).clamp(0.0, 1.0),
                     minHeight: 8,
                     backgroundColor: colors.muted,
                     color: colors.primary,
@@ -815,9 +829,6 @@ class _RecordDetailLoading extends StatelessWidget {
     );
   }
 }
-
-/// Suggested daily hydration goal (ml) used by the water progress card.
-const _waterDailyTargetMl = 2000;
 
 /// Orders same-day records by occurrence date/time (ascending).
 int _compareRecords(DailyRecordItem a, DailyRecordItem b) {

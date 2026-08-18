@@ -7,7 +7,7 @@ updated: 2026-08-18
 
 # Active UI — Record
 
-Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据)
+Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据;P1-2 详情页饮水目标改读 user-settings)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -115,7 +115,7 @@ Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-rec
   - 自定义图标选择器迁移到两处：快速记录设置页"自定义图标"区（7 种类型逐行选择 + 恢复默认）与创建/编辑记录页的 `RecordKindIconField`（仅对映射到快捷类型的 kind 渲染）。
   - `RecordDashboard.defaultQuickActions` / `quickActionFor` 与 `resolveQuickActionIcon` 作为默认图标与生效图标的统一来源。
 - 阶段 8 详情页增强：
-  - 按类型富展示：water 记录显示"今日饮水"卡片（聚合当天 ml 记录，`{total} / 2000 ml` + 进度条）；mood 记录解析 `payload.moodLabel` 展示本地化情绪行。
+  - 按类型富展示：water 记录显示"今日饮水"卡片（聚合当天 ml 记录，目标值读 user-settings（waterTargetCount×250，与 Today Analysis 同源；设置不可用时回退默认目标）+ 进度条）；mood 记录解析 `payload.moodLabel` 展示本地化情绪行。
   - 相邻导航：底部"上一条/下一条"按钮（`dailyRecordListForDateProvider` 拉当天记录，按发生时间排序），`pushReplacement` 切换；边界禁用。
   - 复制摘要：`record-detail-copy-action` 复制类型/数值/情绪/备注/来源/更新时间到剪贴板。
 - 阶段 8 编辑页重构：
