@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
@@ -15,16 +16,26 @@ import 'package:luminous/features/settings/domain/repositories/user_settings.dar
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/test_forui_app.dart';
 
 class _FakeRepo extends DailyRecordRepository {
-  @override
-  Future<DailyRecordItem> get(String id) async {
+  /// Analysis status returned by [get]; starts unconfirmed and flips to
+  /// confirmed after a successful [update], mirroring the PATCH chain.
+  String _analysisStatus = 'unconfirmed';
+
+  /// When true, [update] throws so tests can pin the failure contract.
+  bool updateThrows = false;
+
+  String? lastUpdateId;
+  DailyRecordUpdateInput? lastUpdateInput;
+
+  DailyRecordItem _mealItem(String id) {
     return DailyRecordItem(
       id: id,
       kind: DailyRecordKind.meal,
       occurredAt: '2026-06-10',
       title: '午餐',
-      payload: const {
+      payload: {
         'mealInput': {
           'recognizedDishes': [
             {'rawName': '西红柿炒鸡蛋'},
@@ -32,7 +43,7 @@ class _FakeRepo extends DailyRecordRepository {
           ],
         },
         'mealAnalysis': {
-          'analysisStatus': 'unconfirmed',
+          'analysisStatus': _analysisStatus,
           'coverage': 'partial',
           'mealDescription': '一份米饭配西红柿炒鸡蛋',
           'recognizedDishes': [
@@ -69,6 +80,9 @@ class _FakeRepo extends DailyRecordRepository {
   }
 
   @override
+  Future<DailyRecordItem> get(String id) async => _mealItem(id);
+
+  @override
   Future<DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
@@ -94,7 +108,14 @@ class _FakeRepo extends DailyRecordRepository {
   Future<DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async => throw UnimplementedError();
+  ) async {
+    lastUpdateId = id;
+    lastUpdateInput = input;
+    if (updateThrows) throw Exception('update failed');
+    _analysisStatus = 'confirmed';
+    return _mealItem(id);
+  }
+
   @override
   Future<void> delete(String id) async {}
 }
@@ -403,5 +424,129 @@ void main() {
     // (8 glasses × 250 ml = 2000 ml) so the progress card stays usable.
     expect(find.text('今日饮水'), findsOneWidget);
     expect(find.text('550 / 2000 ml'), findsOneWidget);
+  });
+
+  testWidgets('meal detail shows confirm action for unconfirmed analysis and '
+      'confirming patches analysisStatus', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repo = _FakeRepo();
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+        dailyRecordRepositoryProvider.overrideWithValue(repo),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestForuiRouterApp(
+          showToaster: true,
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const RecordDetailPage(recordId: 'test-id'),
+              ),
+              GoRoute(
+                path: '/home',
+                builder: (_, __) => const Scaffold(body: Text('Home')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+
+    final confirmAction = find.byKey(const Key('meal-analysis-confirm-action'));
+    expect(confirmAction, findsOneWidget);
+
+    // The confirm action sits below the fold inside the page's scroll view.
+    await tester.ensureVisible(confirmAction);
+    await tester.pump();
+    await tester.tap(confirmAction);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+
+    // update was called with the confirmed analysisStatus patch.
+    expect(repo.lastUpdateId, 'test-id');
+    final payload = repo.lastUpdateInput!.payload! as Map<String, dynamic>;
+    expect(
+      (payload['mealAnalysis'] as Map<String, dynamic>)['analysisStatus'],
+      'confirmed',
+    );
+
+    // After the detail reloads the badge reads confirmed and the confirm
+    // action is gone.
+    expect(confirmAction, findsNothing);
+    expect(find.textContaining('已确认'), findsOneWidget);
+
+    // DataChangeBus emitted dailyRecords so the keepAlive recordDashboard
+    // refreshes the timeline badge on return to the record page.
+    final busState = container.read(dataChangeBusProvider);
+    expect(busState[DataChangeTopic.dailyRecords], isNotNull);
+    expect(busState[DataChangeTopic.dailyRecords], greaterThan(0));
+
+    // Drain the success toast auto-dismiss timer.
+    await tester.pump(const Duration(milliseconds: 2000));
+  });
+
+  testWidgets('meal detail confirm failure keeps the confirm action and shows '
+      'an error toast', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repo = _FakeRepo()..updateThrows = true;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+        ],
+        child: TestForuiRouterApp(
+          showToaster: true,
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const RecordDetailPage(recordId: 'test-id'),
+              ),
+              GoRoute(
+                path: '/home',
+                builder: (_, __) => const Scaffold(body: Text('Home')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+
+    final confirmAction = find.byKey(const Key('meal-analysis-confirm-action'));
+    expect(confirmAction, findsOneWidget);
+
+    // The confirm action sits below the fold inside the page's scroll view.
+    await tester.ensureVisible(confirmAction);
+    await tester.pump();
+    await tester.tap(confirmAction);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+
+    // State unchanged: the confirm action is still present and the error
+    // toast is shown.
+    expect(confirmAction, findsOneWidget);
+    expect(find.text('确认失败，请稍后再试'), findsOneWidget);
+
+    // Drain the error toast auto-dismiss timer.
+    await tester.pump(const Duration(milliseconds: 2000));
   });
 }

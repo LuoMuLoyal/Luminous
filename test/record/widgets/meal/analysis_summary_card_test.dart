@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_summary_card.dart';
@@ -37,12 +38,18 @@ void main() {
   group('MealAnalysisSummaryCard', () {
     Future<void> pumpCard(
       WidgetTester tester,
-      MealAnalysisViewData data,
-    ) async {
+      MealAnalysisViewData data, {
+      VoidCallback? onConfirm,
+      bool isConfirming = false,
+    }) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: SingleChildScrollView(
-            child: MealAnalysisSummaryCard(data: data),
+            child: MealAnalysisSummaryCard(
+              data: data,
+              onConfirm: onConfirm,
+              isConfirming: isConfirming,
+            ),
           ),
         ),
       );
@@ -286,6 +293,76 @@ void main() {
       );
 
       expect(find.textContaining('原始菜名'), findsOneWidget);
+    });
+
+    testWidgets('does not render confirm button when status is confirmed', (
+      tester,
+    ) async {
+      await pumpCard(tester, _mkData(status: 'confirmed'), onConfirm: () {});
+
+      expect(
+        find.byKey(const Key('meal-analysis-confirm-action')),
+        findsNothing,
+      );
+    });
+
+    testWidgets(
+      'renders confirm button for unconfirmed status with onConfirm',
+      (tester) async {
+        final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+        await pumpCard(
+          tester,
+          _mkData(status: 'unconfirmed'),
+          onConfirm: () {},
+        );
+
+        final button = find.byKey(const Key('meal-analysis-confirm-action'));
+        expect(button, findsOneWidget);
+        expect(find.text(l10n.recordMealConfirmAction), findsOneWidget);
+      },
+    );
+
+    testWidgets('does not render confirm button when onConfirm is null', (
+      tester,
+    ) async {
+      await pumpCard(tester, _mkData(status: 'unconfirmed'));
+
+      expect(
+        find.byKey(const Key('meal-analysis-confirm-action')),
+        findsNothing,
+      );
+    });
+
+    testWidgets('disables confirm button and shows loading while confirming', (
+      tester,
+    ) async {
+      await pumpCard(
+        tester,
+        _mkData(status: 'unconfirmed'),
+        onConfirm: () {},
+        isConfirming: true,
+      );
+
+      final button = find.byKey(const Key('meal-analysis-confirm-action'));
+      expect(button, findsOneWidget);
+      expect(tester.widget<FButton>(button).onPress, isNull);
+      expect(find.byType(FCircularProgress), findsOneWidget);
+    });
+
+    testWidgets('invokes onConfirm when the confirm button is tapped', (
+      tester,
+    ) async {
+      var confirmed = false;
+      await pumpCard(
+        tester,
+        _mkData(status: 'unconfirmed'),
+        onConfirm: () => confirmed = true,
+      );
+
+      await tester.tap(find.byKey(const Key('meal-analysis-confirm-action')));
+      // Drain the FButton tappable animation timer before the test ends.
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(confirmed, isTrue);
     });
   });
 }

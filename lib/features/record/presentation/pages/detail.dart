@@ -10,6 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -20,6 +22,7 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/providers/water_target.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
@@ -121,6 +124,10 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
   /// Guards against overlapping polls: when a refresh takes longer than the
   /// current interval, the next tick is skipped instead of stacking requests.
   bool _isPolling = false;
+
+  /// Guards against re-entrant meal-analysis confirm requests while one is in
+  /// flight; the summary card shows a loading state while this is true.
+  bool _isConfirming = false;
 
   /// Current poll interval. Starts at [_initialPollInterval] and backs off
   /// exponentially on failure up to [_maxPollInterval].
@@ -356,7 +363,11 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
               ),
             )
           else
-            MealAnalysisSummaryCard(data: mealAnalysis),
+            MealAnalysisSummaryCard(
+              data: mealAnalysis,
+              onConfirm: _confirmMealAnalysis,
+              isConfirming: _isConfirming,
+            ),
         ],
         if (imageAttachment != null) ...[
           const SizedBox(height: Spacing.level4),
@@ -489,6 +500,44 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
         ),
       ],
     );
+  }
+
+  /// Confirms the meal-analysis result in place, reusing the same PATCH
+  /// `analysisStatus='confirmed'` chain as the edit page. On success the
+  /// detail provider is invalidated so the badge flips to confirmed and the
+  /// DataChangeBus broadcasts [DataChangeTopic.dailyRecords] so keepAlive
+  /// dashboards (e.g. the record timeline) refresh; on failure the state is
+  /// untouched and an error toast is shown.
+  Future<void> _confirmMealAnalysis() async {
+    if (_isConfirming) return;
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isConfirming = true);
+    try {
+      await ref
+          .read(dailyRecordRepositoryProvider)
+          .update(
+            widget.record.id,
+            const DailyRecordUpdateInput(
+              payload: <String, dynamic>{
+                'mealAnalysis': <String, dynamic>{
+                  'analysisStatus': 'confirmed',
+                },
+              },
+            ),
+          );
+      if (!mounted) return;
+      ref.invalidate(dailyRecordDetailProvider(widget.record.id));
+      ref
+          .read(dataChangeBusProvider.notifier)
+          .emit(DataChangeTopic.dailyRecords);
+      await Toast.show(context, l10n.recordCreateSavedToast);
+    } catch (e, st) {
+      ref.read(talkerProvider).error('_confirmMealAnalysis: failed: $e', st);
+      if (!mounted) return;
+      await Toast.show(context, l10n.recordMealConfirmFailedToast);
+    } finally {
+      if (mounted) setState(() => _isConfirming = false);
+    }
   }
 
   Future<void> _copySummary(

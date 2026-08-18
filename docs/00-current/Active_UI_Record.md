@@ -7,7 +7,7 @@ updated: 2026-08-18
 
 # Active UI — Record
 
-Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据;P1-2 详情页饮水目标改读 user-settings)
+Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据;P1-2 详情页饮水目标改读 user-settings;P2-1 详情页餐食分析摘要卡可直接确认分析结果)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -116,6 +116,7 @@ Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-rec
   - `RecordDashboard.defaultQuickActions` / `quickActionFor` 与 `resolveQuickActionIcon` 作为默认图标与生效图标的统一来源。
 - 阶段 8 详情页增强：
   - 按类型富展示：water 记录显示"今日饮水"卡片（聚合当天 ml 记录，目标值读 user-settings（waterTargetCount×250，与 Today Analysis 同源；设置不可用时回退默认目标）+ 进度条）；mood 记录解析 `payload.moodLabel` 展示本地化情绪行。
+  - 餐食分析摘要卡（`MealAnalysisSummaryCard`）在未确认态（`analysisStatus='unconfirmed'`）直接提供「确认当前菜品结果」outline 按钮（`meal-analysis-confirm-action`）：点击走 PATCH `analysisStatus='confirmed'` 链路（与编辑页确认同源，模板学习不变），成功后详情自动重载、badge 变为已确认，失败弹 toast 且状态不变；确认中按钮禁用并显示 loading。已确认/分析中/分析失败态不显示该按钮（后两者走独立卡片分支）。
   - 相邻导航：底部"上一条/下一条"按钮（`dailyRecordListForDateProvider` 拉当天记录，按发生时间排序），`pushReplacement` 切换；边界禁用。
   - 复制摘要：`record-detail-copy-action` 复制类型/数值/情绪/备注/来源/更新时间到剪贴板。
 - 阶段 8 编辑页重构：

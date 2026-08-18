@@ -6,9 +6,24 @@ import 'package:luminous/features/record/presentation/widgets/meal/analysis_stat
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MealAnalysisSummaryCard extends StatelessWidget {
-  const MealAnalysisSummaryCard({super.key, required this.data});
+  const MealAnalysisSummaryCard({
+    super.key,
+    required this.data,
+    this.onConfirm,
+    this.isConfirming = false,
+  });
 
   final MealAnalysisViewData data;
+
+  /// Called when the user confirms the analysis result. Only rendered when
+  /// [data.status] is the unconfirmed state and this callback is non-null,
+  /// so the card stays a pure stateless display component testable in
+  /// isolation.
+  final VoidCallback? onConfirm;
+
+  /// Whether a confirm request is in flight; disables the confirm button and
+  /// shows a loading indicator instead of the label.
+  final bool isConfirming;
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +125,25 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 style: TypographyToken.level3
                     .body(context)
                     .copyWith(color: context.theme.colors.primary),
+              ),
+            ],
+            if (data.status == 'unconfirmed' && onConfirm != null) ...[
+              const SizedBox(height: Spacing.level5),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: FButton(
+                  key: const Key('meal-analysis-confirm-action'),
+                  variant: FButtonVariant.outline,
+                  onPress: isConfirming ? null : onConfirm,
+                  prefix: isConfirming
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: FCircularProgress(),
+                        )
+                      : null,
+                  child: Text(l10n.recordMealConfirmAction),
+                ),
               ),
             ],
           ],

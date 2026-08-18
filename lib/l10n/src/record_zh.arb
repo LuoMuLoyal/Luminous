@@ -430,6 +430,7 @@
   "recordMealAnalysisEstimateDisclaimer": "当前结果仅作保守估算，请以实际情况为准。",
   "recordMealConfirmAction": "确认当前菜品结果",
   "recordMealConfirmActionSelected": "保存时确认当前菜品结果",
+  "recordMealConfirmFailedToast": "确认失败，请稍后再试",
   "recordMealDishEditorHelperText": "仅编辑菜品层，食材和营养将由系统重新估算。",
   "recordMealDishAddAction": "添加菜品",
   "recordMealDishRemoveAction": "删除菜品",

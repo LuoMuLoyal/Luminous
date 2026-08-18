@@ -430,6 +430,7 @@
   "recordMealAnalysisEstimateDisclaimer": "This result is a conservative estimate and may not fully match the actual meal.",
   "recordMealConfirmAction": "Confirm current dish result",
   "recordMealConfirmActionSelected": "Will confirm current dish result on save",
+  "recordMealConfirmFailedToast": "Failed to confirm, please try again",
   "recordMealDishEditorHelperText": "Only edit dishes here. Ingredients and nutrition will be re-estimated by the system.",
   "recordMealDishAddAction": "Add dish",
   "recordMealDishRemoveAction": "Remove dish",
