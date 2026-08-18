@@ -31,6 +31,15 @@ abstract interface class AssistantRepository {
 
   Future<bool> clearLatestConversation();
 
+  /// Renames one persisted conversation (title only) on the backend.
+  Future<void> renameConversation({
+    required String conversationId,
+    required String title,
+  });
+
+  /// Soft-deletes one persisted conversation on the backend.
+  Future<void> deleteConversation(String conversationId);
+
   Stream<AssistantGenerationEvent> streamMessages(
     List<AssistantMessage> messages, {
     String? conversationId,

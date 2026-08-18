@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 # Flutter Localization
 
-Last updated: 2026-08-17 (F-9 added `assistantMemoryHintTitle` / `assistantMemoryHintDescription` (已开启跨会话记忆 / Cross-conversation memory is on) to the assistant fragment for the welcome-panel memory hint; F-11/F-16 added `assistantProposalRegenerateAction` (重新生成 / Regenerate) to the assistant fragment for the expired-proposal regenerate button; F-7 assistant source strip added 14 `assistantSource*` keys to the assistant fragment; removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added; F-13+F-15 added 7 assistant disclaimer / trust-tier keys — `assistantDisclaimerText`, `assistantSourceBadgeLeaflet` / `assistantSourceBadgeDrugbank` / `assistantSourceBadgeMedicalQa`, `assistantSourceLowTrustHint`, `assistantDisclaimerShowAction` / `assistantDisclaimerCollapseAction` — to the assistant fragment)
+Last updated: 2026-08-17 (F-2 added `assistantConversationRenameDialogTitle` / `assistantConversationRenameHint` / `assistantConversationDeleteConfirmTitle` / `assistantConversationDeleteConfirmDescription` / `assistantConversationDeletedToast` / `assistantClearingConversationLabel` / `assistantConversationTapToName` to the assistant fragment for the conversation rename/delete drawer flow; F-9 added `assistantMemoryHintTitle` / `assistantMemoryHintDescription` (已开启跨会话记忆 / Cross-conversation memory is on) to the assistant fragment for the welcome-panel memory hint; F-11/F-16 added `assistantProposalRegenerateAction` (重新生成 / Regenerate) to the assistant fragment for the expired-proposal regenerate button; F-7 assistant source strip added 14 `assistantSource*` keys to the assistant fragment; removed `todayMedicationName*` keys; rewrote `todaySummaryFallbackNarrative` to neutral onboarding copy; F-9 afternoon water greeting keys changed to ml-gap semantics and added unknown key; F-1 skip_dose error toast key added; F-10 health event options retry action key added; F-12 todayQuickActionWaterSubtitle key added; F-8+F-16 todayMetricDegraded key added; F-6+F-7 Today AI summary materialization keys corrected to `todayAnalysis*` and `todayAnalysisEmptyBody` added; F-3 todaySuggestionRuleBasedLabel added; F-13+F-15 added 7 assistant disclaimer / trust-tier keys — `assistantDisclaimerText`, `assistantSourceBadgeLeaflet` / `assistantSourceBadgeDrugbank` / `assistantSourceBadgeMedicalQa`, `assistantSourceLowTrustHint`, `assistantDisclaimerShowAction` / `assistantDisclaimerCollapseAction` — to the assistant fragment)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -498,5 +498,18 @@ flutter test
 
 - 新增 `assistantProposalRegenerateAction`（zh: 重新生成 / en: Regenerate）到 `lib/l10n/src/assistant_zh.arb` / `assistant_en.arb`。
 - `AssistantProposalCard` 在提案过期时于按钮行新增 ghost「重新生成」按钮，onPress 复用产生该提案的用户消息重走流式生成管线（`AssistantController.regenerateExpiredProposal`）。
+- 所有权在 assistant 分片（`assistant*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
+- 顶部 `Last updated` 已同步记录本次新增。
+
+## 2026-08-17 F-2 会话重命名与删除键
+
+- 新增 7 个 `assistantConversation*`/`assistantClearingConversation*` 键到 `lib/l10n/src/assistant_zh.arb` / `assistant_en.arb`：
+  - `assistantConversationRenameDialogTitle`（重命名会话 / Rename conversation）：重命名对话框标题。
+  - `assistantConversationRenameHint`（输入新标题 / Enter a new title）：重命名输入框占位提示。
+  - `assistantConversationDeleteConfirmTitle`（删除会话？/ Delete conversation?）与 `assistantConversationDeleteConfirmDescription`（删除后不可恢复。/ This cannot be undone.）：删除二次确认对话框标题与描述。
+  - `assistantConversationDeletedToast`（会话已删除 / Conversation deleted）：删除成功 toast。
+  - `assistantClearingConversationLabel`（归档中… / Archiving…）：当前会话归档时抽屉行 suffix 的 loading 标签（替换「当前」）。
+  - `assistantConversationTapToName`（点击补名 / Tap to name）：空标题会话的补名入口文案。
+- 对话框确认/取消复用既有 `commonConfirm` / `commonCancel`；「重命名」「删除」菜单项复用既有 `assistantConversationRenameAction` / `assistantConversationDeleteAction`，未新增重复键。
 - 所有权在 assistant 分片（`assistant*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。

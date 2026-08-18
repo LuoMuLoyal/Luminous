@@ -12,6 +12,7 @@ class AssistantDrawerState {
   const AssistantDrawerState({
     required this.conversationId,
     required this.isOpeningConversation,
+    this.isClearingConversation = false,
     required this.isLoadingRecentConversations,
     required this.recentConversationError,
     required this.recentConversations,
@@ -19,6 +20,10 @@ class AssistantDrawerState {
 
   final String? conversationId;
   final bool isOpeningConversation;
+
+  /// True while the latest conversation is being archived (clear is async);
+  /// the current conversation row shows an "archiving" label then.
+  final bool isClearingConversation;
   final bool isLoadingRecentConversations;
   final String? recentConversationError;
   final List<AssistantConversationSummary> recentConversations;
@@ -30,6 +35,7 @@ class AssistantDrawerState {
           runtimeType == other.runtimeType &&
           conversationId == other.conversationId &&
           isOpeningConversation == other.isOpeningConversation &&
+          isClearingConversation == other.isClearingConversation &&
           isLoadingRecentConversations == other.isLoadingRecentConversations &&
           recentConversationError == other.recentConversationError &&
           listEquals(recentConversations, other.recentConversations);
@@ -38,6 +44,7 @@ class AssistantDrawerState {
   int get hashCode => Object.hash(
     conversationId,
     isOpeningConversation,
+    isClearingConversation,
     isLoadingRecentConversations,
     recentConversationError,
     recentConversations,

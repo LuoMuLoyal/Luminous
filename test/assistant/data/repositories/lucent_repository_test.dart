@@ -89,6 +89,23 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     confirmProposalsCalls.add((conversationId, proposalIds, decision, note));
     return null;
   }
+
+  final List<(String, String)> renameCalls = <(String, String)>[];
+  final List<String> deleteCalls = <String>[];
+
+  @override
+  Future<lucent.AssistantConversationDataDto> renameConversation({
+    required String conversationId,
+    required String title,
+  }) async {
+    renameCalls.add((conversationId, title));
+    return _conversationDto(id: conversationId, title: title);
+  }
+
+  @override
+  Future<void> deleteConversation(String conversationId) async {
+    deleteCalls.add(conversationId);
+  }
 }
 
 // ── DTO factories ──────────────────────────────────────────────
@@ -1157,6 +1174,29 @@ void main() {
       final call = fake.confirmProposalsCalls.single;
       expect(call.$3, 'rejected');
       expect(call.$4, 'looks wrong');
+    });
+  });
+
+  group('LucentAssistantRepository.renameConversation', () {
+    test('delegates conversationId and trimmed title to data source', () async {
+      final fake = _FakeAssistantRemoteDataSource();
+      final repo = LucentAssistantRepository(dataSource: fake);
+
+      await repo.renameConversation(conversationId: 'conv-1', title: '新标题');
+
+      expect(fake.renameCalls.single.$1, 'conv-1');
+      expect(fake.renameCalls.single.$2, '新标题');
+    });
+  });
+
+  group('LucentAssistantRepository.deleteConversation', () {
+    test('delegates conversationId to data source', () async {
+      final fake = _FakeAssistantRemoteDataSource();
+      final repo = LucentAssistantRepository(dataSource: fake);
+
+      await repo.deleteConversation('conv-1');
+
+      expect(fake.deleteCalls, <String>['conv-1']);
     });
   });
 }

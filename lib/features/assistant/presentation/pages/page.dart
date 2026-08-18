@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
@@ -87,6 +89,98 @@ class AssistantPage extends HookConsumerWidget {
       await ref.read(assistantControllerProvider.notifier).clearConversation();
     }
 
+    Future<void> handleRenameConversation(
+      BuildContext ctx,
+      String conversationId,
+    ) async {
+      final l = AppLocalizations.of(ctx)!;
+      final current = ref
+          .read(assistantControllerProvider)
+          .recentConversations
+          .where((item) => item.id == conversationId)
+          .map((item) => item.title)
+          .firstOrNull;
+
+      final newTitle = await showFDialog<String>(
+        context: ctx,
+        builder: (context, style, animation) => _RenameConversationDialog(
+          initialTitle: current,
+          dialogTitle: l.assistantConversationRenameDialogTitle,
+          hint: l.assistantConversationRenameHint,
+          confirmLabel: l.assistantConversationRenameAction,
+          cancelLabel: l.commonCancel,
+        ),
+      );
+      if (newTitle == null) {
+        return;
+      }
+
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.handleRenameConversation',
+        action: () => ref
+            .read(assistantControllerProvider.notifier)
+            .renameConversation(
+              conversationId: conversationId,
+              title: newTitle,
+            ),
+      );
+      switch (result) {
+        case Success():
+          return;
+        case Failure(:final error):
+          if (!ctx.mounted) return;
+          await Toast.show(
+            ctx,
+            userMessageFromError(
+              error,
+              fallback: l.assistantConversationRenameDialogTitle,
+              l10n: l,
+            ),
+          );
+      }
+    }
+
+    Future<void> handleDeleteConversation(
+      BuildContext ctx,
+      String conversationId,
+    ) async {
+      final l = AppLocalizations.of(ctx)!;
+      final confirmed = await showDangerConfirmationDialog(
+        context: ctx,
+        title: l.assistantConversationDeleteConfirmTitle,
+        message: l.assistantConversationDeleteConfirmDescription,
+        confirmLabel: l.assistantConversationDeleteAction,
+        cancelLabel: l.commonCancel,
+      );
+      if (!confirmed) {
+        return;
+      }
+
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.handleDeleteConversation',
+        action: () => ref
+            .read(assistantControllerProvider.notifier)
+            .deleteConversation(conversationId),
+      );
+      switch (result) {
+        case Success():
+          if (!ctx.mounted) return;
+          await Toast.show(ctx, l.assistantConversationDeletedToast);
+        case Failure(:final error):
+          if (!ctx.mounted) return;
+          await Toast.show(
+            ctx,
+            userMessageFromError(
+              error,
+              fallback: l.assistantConversationDeleteConfirmTitle,
+              l10n: l,
+            ),
+          );
+      }
+    }
+
     Future<void> handleConfirmProposal(
       BuildContext ctx, {
       required String messageId,
@@ -162,6 +256,7 @@ class AssistantPage extends HookConsumerWidget {
         (s) => AssistantDrawerState(
           conversationId: s.conversationId,
           isOpeningConversation: s.isOpeningConversation,
+          isClearingConversation: s.isClearingConversation,
           isLoadingRecentConversations: s.isLoadingRecentConversations,
           recentConversationError: s.recentConversationError,
           recentConversations: s.recentConversations,
@@ -286,6 +381,16 @@ class AssistantPage extends HookConsumerWidget {
                           .openConversation(conversationId),
                     );
                   },
+                  onRename: (conversationId) {
+                    unawaited(
+                      handleRenameConversation(context, conversationId),
+                    );
+                  },
+                  onDelete: (conversationId) {
+                    unawaited(
+                      handleDeleteConversation(context, conversationId),
+                    );
+                  },
                 ),
               ),
               builder: (context, offset, child) {
@@ -304,6 +409,91 @@ class AssistantPage extends HookConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Rename dialog for one assistant conversation: a single-line title field
+/// (prefilled with the current title) plus cancel / confirm actions.
+class _RenameConversationDialog extends StatefulWidget {
+  const _RenameConversationDialog({
+    required this.initialTitle,
+    required this.dialogTitle,
+    required this.hint,
+    required this.confirmLabel,
+    required this.cancelLabel,
+  });
+
+  final String? initialTitle;
+  final String dialogTitle;
+  final String hint;
+  final String confirmLabel;
+  final String cancelLabel;
+
+  @override
+  State<_RenameConversationDialog> createState() =>
+      _RenameConversationDialogState();
+}
+
+class _RenameConversationDialogState extends State<_RenameConversationDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialTitle ?? '');
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FDialog(
+      key: const Key('assistant-conversation-rename-dialog'),
+      constraints: const BoxConstraints(maxWidth: 440),
+      builder: (context, style) => Padding(
+        padding: const EdgeInsets.all(Spacing.level5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.dialogTitle,
+              style: TypographyToken.level6.body(context),
+            ),
+            const SizedBox(height: Spacing.level4),
+            FTextField(
+              key: const Key('assistant-conversation-rename-field'),
+              control: FTextFieldControl.managed(controller: _controller),
+              hint: widget.hint,
+              autofocus: true,
+              maxLength: 48,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+            ),
+            const SizedBox(height: Spacing.level5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: () => Navigator.of(context).pop(),
+                  child: Text(widget.cancelLabel),
+                ),
+                const SizedBox(width: Spacing.level3),
+                FButton(
+                  key: const Key('assistant-conversation-rename-confirm'),
+                  onPress: () => Navigator.of(context).pop(_controller.text),
+                  child: Text(widget.confirmLabel),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

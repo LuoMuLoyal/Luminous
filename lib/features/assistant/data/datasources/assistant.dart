@@ -82,6 +82,29 @@ class AssistantRemoteDataSource {
     return response.data?.data.cleared ?? false;
   }
 
+  /// Renames one persisted conversation (title only) and returns the updated
+  /// conversation payload.
+  Future<lucent.AssistantConversationDataDto> renameConversation({
+    required String conversationId,
+    required String title,
+  }) async {
+    final response = await api.assistantControllerRenameConversationV1(
+      conversationId: conversationId,
+      renameConversationDto: lucent.RenameConversationDto(title: title),
+    );
+    return requireData(
+      requireData(response.data, operation: 'renameConversation').data,
+      operation: 'renameConversation',
+    );
+  }
+
+  /// Soft-deletes one persisted conversation on the backend.
+  Future<void> deleteConversation(String conversationId) async {
+    await api.assistantControllerDeleteConversationV1(
+      conversationId: conversationId,
+    );
+  }
+
   /// Confirms or rejects pending assistant write proposals on the backend and
   /// resumes the suspended graph thread. Returns the final assistant content
   /// produced after the decision is applied, or null when unavailable.

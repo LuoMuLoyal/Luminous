@@ -16,8 +16,25 @@ import '../auth/test_helpers.dart';
 class _FakeAssistantRepository implements AssistantRepository {
   _FakeAssistantRepository({this.latestConversation, this.streamOverride});
 
-  final AssistantConversation? latestConversation;
+  AssistantConversation? latestConversation;
   final Stream<AssistantGenerationEvent>? streamOverride;
+
+  /// Conversations returned by [listRecentConversations].
+  List<AssistantConversationSummary> recentList =
+      const <AssistantConversationSummary>[];
+
+  /// When set, [clearLatestConversation] waits on it (used to observe the
+  /// in-flight clearing state).
+  Completer<bool>? clearGate;
+
+  /// When set, [clearLatestConversation] throws after the gate (if any).
+  bool throwOnClear = false;
+
+  final List<({String conversationId, String title})> renameCalls =
+      <({String conversationId, String title})>[];
+  final List<String> deleteCalls = <String>[];
+  bool throwOnRename = false;
+  bool throwOnDelete = false;
 
   String? lastStreamConversationId;
   List<AssistantMessage>? lastStreamMessages;
@@ -62,7 +79,7 @@ class _FakeAssistantRepository implements AssistantRepository {
 
   @override
   Future<List<AssistantConversationSummary>> listRecentConversations() async {
-    return const <AssistantConversationSummary>[];
+    return recentList;
   }
 
   @override
@@ -71,7 +88,41 @@ class _FakeAssistantRepository implements AssistantRepository {
   }
 
   @override
-  Future<bool> clearLatestConversation() async => true;
+  Future<bool> clearLatestConversation() async {
+    final gate = clearGate;
+    if (gate != null) {
+      await gate.future;
+    }
+    if (throwOnClear) {
+      throw Exception('clear failed');
+    }
+    return true;
+  }
+
+  @override
+  Future<void> renameConversation({
+    required String conversationId,
+    required String title,
+  }) async {
+    renameCalls.add((conversationId: conversationId, title: title));
+    if (throwOnRename) {
+      throw Exception('rename failed');
+    }
+    // Mirror the backend: the persisted title changes, so the refreshed list
+    // returns the new title.
+    recentList = [
+      for (final item in recentList)
+        item.id == conversationId ? _summaryWithTitle(item, title) : item,
+    ];
+  }
+
+  @override
+  Future<void> deleteConversation(String conversationId) async {
+    deleteCalls.add(conversationId);
+    if (throwOnDelete) {
+      throw Exception('delete failed');
+    }
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -154,6 +205,21 @@ AssistantProposedAction _updateUserSettingsProposal({required String id}) {
     payload: const AssistantUpdateUserSettingsProposalPayload(
       draft: AssistantUpdateUserSettingsDraft(assistantMemoryEnabled: false),
     ),
+  );
+}
+
+/// Returns a copy of [summary] with its title replaced.
+AssistantConversationSummary _summaryWithTitle(
+  AssistantConversationSummary summary,
+  String? title,
+) {
+  return AssistantConversationSummary(
+    id: summary.id,
+    title: title,
+    status: summary.status,
+    lastMessageAt: summary.lastMessageAt,
+    createdAt: summary.createdAt,
+    updatedAt: summary.updatedAt,
   );
 }
 
@@ -626,6 +692,306 @@ void main() {
         await sendFuture;
       },
     );
+
+    test('renameConversation updates the title optimistically', () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final now = DateTime(2026, 6, 1);
+      final fake = _FakeAssistantRepository()
+        ..recentList = <AssistantConversationSummary>[
+          AssistantConversationSummary(
+            id: 'c1',
+            title: 'Old title',
+            status: 'active',
+            lastMessageAt: now,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        ];
+      final container = _buildContainer(fake);
+      addTearDown(container.dispose);
+
+      final controller = container.read(assistantControllerProvider.notifier);
+      await controller.loadCapabilities();
+      await controller.loadRecentConversations();
+
+      await controller.renameConversation(
+        conversationId: 'c1',
+        title: '  New title  ',
+      );
+
+      expect(fake.renameCalls.single.title, 'New title');
+      final updated = container
+          .read(assistantControllerProvider)
+          .recentConversations
+          .singleWhere((item) => item.id == 'c1');
+      expect(updated.title, 'New title');
+    });
+
+    test(
+      'renameConversation rolls back the title and rethrows on failure',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final now = DateTime(2026, 6, 1);
+        final fake = _FakeAssistantRepository()
+          ..recentList = <AssistantConversationSummary>[
+            AssistantConversationSummary(
+              id: 'c1',
+              title: 'Old title',
+              status: 'active',
+              lastMessageAt: now,
+              createdAt: now,
+              updatedAt: now,
+            ),
+          ]
+          ..throwOnRename = true;
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadRecentConversations();
+
+        await expectLater(
+          controller.renameConversation(
+            conversationId: 'c1',
+            title: 'New title',
+          ),
+          throwsA(isA<Exception>()),
+        );
+
+        final rolledBack = container
+            .read(assistantControllerProvider)
+            .recentConversations
+            .singleWhere((item) => item.id == 'c1');
+        expect(rolledBack.title, 'Old title');
+      },
+    );
+
+    test(
+      'deleteConversation clears the current conversation and falls back to latest',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final now = DateTime(2026, 6, 1);
+        final fake =
+            _FakeAssistantRepository(
+                latestConversation: AssistantConversation(
+                  id: 'current',
+                  title: 'Current',
+                  status: 'active',
+                  messages: <AssistantMessage>[
+                    AssistantMessage(
+                      role: AssistantMessageRole.user,
+                      content: 'hello',
+                      createdAt: now,
+                    ),
+                  ],
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              )
+              ..recentList = <AssistantConversationSummary>[
+                AssistantConversationSummary(
+                  id: 'current',
+                  title: 'Current',
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+                AssistantConversationSummary(
+                  id: 'other',
+                  title: 'Other',
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              ];
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+        expect(
+          container.read(assistantControllerProvider).conversationId,
+          'current',
+        );
+
+        // Simulate the backend state after deletion: no active conversation left.
+        fake.latestConversation = null;
+        await controller.deleteConversation('current');
+
+        expect(fake.deleteCalls, <String>['current']);
+        final state = container.read(assistantControllerProvider);
+        expect(state.conversationId, isNull);
+        expect(state.messages, isEmpty);
+      },
+    );
+
+    test(
+      'deleteConversation loads the next latest when the deleted one was current',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final now = DateTime(2026, 6, 1);
+        final fake =
+            _FakeAssistantRepository(
+                latestConversation: AssistantConversation(
+                  id: 'current',
+                  title: 'Current',
+                  status: 'active',
+                  messages: const <AssistantMessage>[],
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              )
+              ..recentList = <AssistantConversationSummary>[
+                AssistantConversationSummary(
+                  id: 'current',
+                  title: 'Current',
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              ];
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        // The next latest conversation becomes active after the delete.
+        fake.latestConversation = AssistantConversation(
+          id: 'next',
+          title: 'Next',
+          status: 'active',
+          messages: <AssistantMessage>[
+            AssistantMessage(
+              role: AssistantMessageRole.assistant,
+              content: 'next',
+              createdAt: now,
+            ),
+          ],
+          lastMessageAt: now,
+          createdAt: now,
+          updatedAt: now,
+        );
+        await controller.deleteConversation('current');
+
+        final state = container.read(assistantControllerProvider);
+        expect(state.conversationId, 'next');
+        expect(state.messages.single.content, 'next');
+      },
+    );
+
+    test(
+      'deleteConversation keeps the current conversation when deleting another',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final now = DateTime(2026, 6, 1);
+        final message = AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'hello',
+          createdAt: now,
+        );
+        final fake =
+            _FakeAssistantRepository(
+                latestConversation: AssistantConversation(
+                  id: 'current',
+                  title: 'Current',
+                  status: 'active',
+                  messages: <AssistantMessage>[message],
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              )
+              ..recentList = <AssistantConversationSummary>[
+                AssistantConversationSummary(
+                  id: 'current',
+                  title: 'Current',
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+                AssistantConversationSummary(
+                  id: 'other',
+                  title: 'Other',
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              ];
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        await controller.deleteConversation('other');
+
+        expect(fake.deleteCalls, <String>['other']);
+        final state = container.read(assistantControllerProvider);
+        expect(state.conversationId, 'current');
+        expect(state.messages.single.content, 'hello');
+      },
+    );
+
+    test(
+      'clearConversation exposes isClearingConversation while archiving',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final fake = _FakeAssistantRepository();
+        final gate = Completer<bool>();
+        fake.clearGate = gate;
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        final clearing = controller.clearConversation();
+        expect(
+          container.read(assistantControllerProvider).isClearingConversation,
+          isTrue,
+        );
+
+        gate.complete(true);
+        await clearing;
+
+        final state = container.read(assistantControllerProvider);
+        expect(state.isClearingConversation, isFalse);
+        expect(state.conversationId, isNull);
+      },
+    );
+
+    test(
+      'clearConversation resets isClearingConversation on failure',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final fake = _FakeAssistantRepository()..throwOnClear = true;
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        await controller.clearConversation();
+
+        final state = container.read(assistantControllerProvider);
+        expect(state.isClearingConversation, isFalse);
+        expect(state.conversationError, isNotNull);
+      },
+    );
   });
 }
 
@@ -650,6 +1016,19 @@ class _ErrorThrowingRepository implements AssistantRepository {
 
   @override
   Future<bool> clearLatestConversation() async => true;
+
+  @override
+  Future<void> renameConversation({
+    required String conversationId,
+    required String title,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteConversation(String conversationId) async {
+    throw UnimplementedError();
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(

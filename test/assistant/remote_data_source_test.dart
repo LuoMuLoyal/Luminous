@@ -152,5 +152,48 @@ void main() {
 
       expect(result, isTrue);
     });
+
+    test('renameConversation returns the updated conversation', () async {
+      adapter.responseBody = {
+        'id': 'conv-1',
+        'title': '新标题',
+        'status': 'active',
+        'messages': [
+          {
+            'role': 'user',
+            'content': 'hello',
+            'usedTools': <String>[],
+            'createdAt': '2026-07-01T10:00:00Z',
+          },
+        ],
+        'lastMessageAt': '2026-07-01T10:00:00Z',
+        'createdAt': '2026-07-01T09:00:00Z',
+        'updatedAt': '2026-07-01T10:00:00Z',
+      };
+
+      final ds = AssistantRemoteDataSource(api: api, dio: dio);
+      final result = await ds.renameConversation(
+        conversationId: 'conv-1',
+        title: '新标题',
+      );
+
+      expect(result.id, 'conv-1');
+      expect(result.title, '新标题');
+    });
+
+    test('deleteConversation resolves without payload requirements', () async {
+      adapter.responseBody = {
+        'id': 'conv-1',
+        'title': '旧标题',
+        'status': 'deleted',
+        'messages': <Object?>[],
+        'lastMessageAt': null,
+        'createdAt': '2026-07-01T09:00:00Z',
+        'updatedAt': '2026-07-01T10:00:00Z',
+      };
+
+      final ds = AssistantRemoteDataSource(api: api, dio: dio);
+      await expectLater(ds.deleteConversation('conv-1'), completes);
+    });
   });
 }

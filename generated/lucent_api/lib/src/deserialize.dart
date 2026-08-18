@@ -187,6 +187,7 @@ import 'package:lucent_api/src/model/reminder_delivery_list_response_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_data_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto.dart';
+import 'package:lucent_api/src/model/rename_conversation_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_data_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_score_dto.dart';
@@ -976,6 +977,9 @@ ReturnType deserialize<ReturnType, BaseType>(
       return ReminderDeliveryReceiptResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'RenameConversationDto':
+      return RenameConversationDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ReportDashboardDataDto':
       return ReportDashboardDataDto.fromJson(value as Map<String, dynamic>)

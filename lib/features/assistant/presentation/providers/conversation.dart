@@ -26,6 +26,7 @@ abstract class AssistantState with _$AssistantState {
     @Default(false) bool isLoadingConversation,
     @Default(false) bool isLoadingRecentConversations,
     @Default(false) bool isOpeningConversation,
+    @Default(false) bool isClearingConversation,
     @Default(false) bool isSending,
     AssistantCapabilities? capabilities,
     String? capabilityError,
@@ -344,6 +345,8 @@ class AssistantController extends Notifier<AssistantState> {
       return;
     }
 
+    state = state.copyWith(isClearingConversation: true);
+
     try {
       await ref.read(assistantRepositoryProvider).clearLatestConversation();
     } catch (error) {
@@ -351,11 +354,15 @@ class AssistantController extends Notifier<AssistantState> {
           .read(talkerProvider)
           .error('AssistantController.clearConversation: failed: $error');
       final message = LucentErrorMapper.fromObject(error).message;
-      state = state.copyWith(conversationError: message);
+      state = state.copyWith(
+        isClearingConversation: false,
+        conversationError: message,
+      );
       return;
     }
 
     state = state.copyWith(
+      isClearingConversation: false,
       conversationId: null,
       messages: const <AssistantMessage>[],
       streamingDraft: '',
@@ -364,6 +371,88 @@ class AssistantController extends Notifier<AssistantState> {
       sendErrorType: null,
       lastFailedInput: null,
     );
+    await loadRecentConversations();
+  }
+
+  /// Renames one persisted conversation with an optimistic local update.
+  ///
+  /// The list entry title is replaced immediately (trimmed; empty becomes
+  /// null), then the backend is called. On failure the previous title is
+  /// restored and the error is rethrown so the page can toast it.
+  Future<void> renameConversation({
+    required String conversationId,
+    required String title,
+  }) async {
+    final trimmed = title.trim();
+    final newTitle = trimmed.isEmpty ? null : trimmed;
+
+    final current = state.recentConversations;
+    final index = current.indexWhere((item) => item.id == conversationId);
+    if (index < 0) {
+      return;
+    }
+    final oldTitle = current[index].title;
+    final updated = List<AssistantConversationSummary>.of(current);
+    updated[index] = _summaryWithTitle(current[index], newTitle);
+    state = state.copyWith(recentConversations: updated);
+
+    // The backend rejects empty titles (`@IsNotEmpty`); an empty input only
+    // clears the name locally and is never persisted.
+    if (newTitle == null) {
+      return;
+    }
+
+    try {
+      await ref
+          .read(assistantRepositoryProvider)
+          .renameConversation(conversationId: conversationId, title: newTitle);
+    } catch (_) {
+      state = state.copyWith(
+        recentConversations: state.recentConversations
+            .map(
+              (item) => item.id == conversationId
+                  ? _summaryWithTitle(item, oldTitle)
+                  : item,
+            )
+            .toList(growable: false),
+      );
+      rethrow;
+    }
+
+    // Re-fetch the list so server-derived ordering/title stays authoritative.
+    // Refresh failures are non-fatal; the optimistic title is kept.
+    try {
+      await loadRecentConversations();
+    } catch (_) {
+      // Ignore refresh failure.
+    }
+  }
+
+  /// Soft-deletes one persisted conversation and closes the local state when
+  /// it was the currently active conversation.
+  ///
+  /// Deleting the active conversation clears the local messages and falls back
+  /// to [loadLatestConversation] so the drawer/page never shows a stale or
+  /// blank conversation; [loadLatestConversation] already handles the
+  /// no-conversation case (returns an empty state, not a white screen).
+  Future<void> deleteConversation(String conversationId) async {
+    await ref
+        .read(assistantRepositoryProvider)
+        .deleteConversation(conversationId);
+
+    final isCurrent = state.conversationId == conversationId;
+    if (isCurrent) {
+      state = state.copyWith(
+        conversationId: null,
+        messages: const <AssistantMessage>[],
+        streamingDraft: '',
+        conversationError: null,
+        sendError: null,
+        sendErrorType: null,
+        lastFailedInput: null,
+      );
+      await loadLatestConversation();
+    }
     await loadRecentConversations();
   }
 
@@ -621,3 +710,18 @@ final assistantControllerProvider =
     NotifierProvider<AssistantController, AssistantState>(
       AssistantController.new,
     );
+
+/// Returns a copy of [summary] with its title replaced.
+AssistantConversationSummary _summaryWithTitle(
+  AssistantConversationSummary summary,
+  String? title,
+) {
+  return AssistantConversationSummary(
+    id: summary.id,
+    title: title,
+    status: summary.status,
+    lastMessageAt: summary.lastMessageAt,
+    createdAt: summary.createdAt,
+    updatedAt: summary.updatedAt,
+  );
+}

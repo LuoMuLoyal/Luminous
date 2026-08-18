@@ -59,6 +59,22 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   @override
+  Future<void> renameConversation({
+    required String conversationId,
+    required String title,
+  }) async {
+    await dataSource.renameConversation(
+      conversationId: conversationId,
+      title: title,
+    );
+  }
+
+  @override
+  Future<void> deleteConversation(String conversationId) async {
+    await dataSource.deleteConversation(conversationId);
+  }
+
+  @override
   Future<String?> confirmProposals({
     required String conversationId,
     required List<String> proposalIds,

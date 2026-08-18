@@ -712,6 +712,165 @@ void main() {
       );
     });
 
+    testWidgets('long-press menu offers rename and delete and forwards ids', (
+      tester,
+    ) async {
+      final now = DateTime.now();
+      String? renamedId;
+      String? deletedId;
+
+      await tester.pumpWidget(
+        _shell(
+          AssistantConversationDrawer(
+            state: AssistantDrawerState(
+              conversationId: null,
+              isOpeningConversation: false,
+              isLoadingRecentConversations: false,
+              recentConversationError: null,
+              recentConversations: [
+                AssistantConversationSummary(
+                  id: 'conv-1',
+                  title: 'Sleep chat',
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              ],
+            ),
+            title: 'History',
+            emptyTitle: 'No conversations',
+            emptyDescription: 'Start a new chat',
+            searchHint: 'Search chat content…',
+            searchEmptyTitle: 'No matching chats',
+            searchEmptyDescription: 'Try another search.',
+            onClose: () {},
+            onRetry: () {},
+            onSelect: (_) {},
+            onRename: (id) => renamedId = id,
+            onDelete: (id) => deletedId = id,
+          ),
+        ),
+      );
+
+      await tester.longPress(
+        find.byKey(const Key('assistant-recent-conversation-conv-1')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('重命名'), findsOneWidget);
+      expect(find.text('删除'), findsOneWidget);
+
+      await tester.tap(
+        find.byKey(const Key('assistant-conversation-rename-conv-1')),
+      );
+      expect(renamedId, 'conv-1');
+
+      await tester.longPress(
+        find.byKey(const Key('assistant-recent-conversation-conv-1')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('assistant-conversation-delete-conv-1')),
+      );
+      expect(deletedId, 'conv-1');
+
+      // Flush the Forui tappable hold timer so no timer is left pending.
+      await tester.pump(const Duration(milliseconds: 600));
+    });
+
+    testWidgets('untitled conversations show tap-to-name and route to rename', (
+      tester,
+    ) async {
+      final now = DateTime.now();
+      String? renamedId;
+
+      await tester.pumpWidget(
+        _shell(
+          AssistantConversationDrawer(
+            state: AssistantDrawerState(
+              conversationId: null,
+              isOpeningConversation: false,
+              isLoadingRecentConversations: false,
+              recentConversationError: null,
+              recentConversations: [
+                AssistantConversationSummary(
+                  id: 'conv-untitled',
+                  title: null,
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              ],
+            ),
+            title: 'History',
+            emptyTitle: 'No conversations',
+            emptyDescription: 'Start a new chat',
+            searchHint: 'Search chat content…',
+            searchEmptyTitle: 'No matching chats',
+            searchEmptyDescription: 'Try another search.',
+            onClose: () {},
+            onRetry: () {},
+            onSelect: (_) {},
+            onRename: (id) => renamedId = id,
+            onDelete: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('点击补名'), findsOneWidget);
+      expect(find.text('未命名会话'), findsNothing);
+
+      await tester.tap(find.text('点击补名'));
+      expect(renamedId, 'conv-untitled');
+
+      // Flush the Forui tappable hold timer so no timer is left pending.
+      await tester.pump(const Duration(milliseconds: 600));
+    });
+
+    testWidgets('current conversation shows archiving label while clearing', (
+      tester,
+    ) async {
+      final now = DateTime.now();
+
+      await tester.pumpWidget(
+        _shell(
+          AssistantConversationDrawer(
+            state: AssistantDrawerState(
+              conversationId: 'conv-1',
+              isOpeningConversation: false,
+              isClearingConversation: true,
+              isLoadingRecentConversations: false,
+              recentConversationError: null,
+              recentConversations: [
+                AssistantConversationSummary(
+                  id: 'conv-1',
+                  title: 'Sleep chat',
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              ],
+            ),
+            title: 'History',
+            emptyTitle: 'No conversations',
+            emptyDescription: 'Start a new chat',
+            searchHint: 'Search chat content…',
+            searchEmptyTitle: 'No matching chats',
+            searchEmptyDescription: 'Try another search.',
+            onClose: () {},
+            onRetry: () {},
+            onSelect: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('归档中…'), findsOneWidget);
+      expect(find.text('当前'), findsNothing);
+    });
+
     testWidgets('filters conversations by title in the drawer search', (
       tester,
     ) async {

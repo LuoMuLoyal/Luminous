@@ -9,8 +9,8 @@ import 'package:luminous/features/assistant/presentation/widgets/dialogs/convers
 ///
 /// Conversations are grouped by recency (today / last 7 days / older) and the
 /// currently active conversation is visually highlighted. Rename and delete
-/// actions are currently disabled because the backend does not expose
-/// `PATCH /conversations/:id` or `DELETE /conversations/:id` yet.
+/// are available per conversation through the long-press / right-click menu
+/// wired via [AssistantConversationDrawerList].
 class AssistantConversationDrawer extends StatefulWidget {
   const AssistantConversationDrawer({
     super.key,
@@ -26,6 +26,8 @@ class AssistantConversationDrawer extends StatefulWidget {
     required this.onRetry,
     required this.onSelect,
     this.onNewConversation,
+    this.onRename,
+    this.onDelete,
   });
 
   final AssistantDrawerState state;
@@ -40,6 +42,13 @@ class AssistantConversationDrawer extends StatefulWidget {
   final VoidCallback onRetry;
   final ValueChanged<String> onSelect;
   final VoidCallback? onNewConversation;
+
+  /// Opens the rename dialog for a conversation (also used by the "tap to
+  /// name" entry on untitled conversations).
+  final ValueChanged<String>? onRename;
+
+  /// Opens the delete confirmation for a conversation.
+  final ValueChanged<String>? onDelete;
 
   @override
   State<AssistantConversationDrawer> createState() =>
@@ -115,6 +124,8 @@ class _AssistantConversationDrawerState
                   searchEmptyDescription: widget.searchEmptyDescription,
                   onRetry: widget.onRetry,
                   onSelect: widget.onSelect,
+                  onRename: widget.onRename,
+                  onDelete: widget.onDelete,
                 ),
               ),
             ],

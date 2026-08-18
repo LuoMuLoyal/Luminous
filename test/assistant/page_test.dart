@@ -402,6 +402,121 @@ void main() {
     expect(find.text('先看一下你最近记录里的触发因素。'), findsOneWidget);
   });
 
+  testWidgets('drawer long-press menu renames a conversation', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repository = _RecentConversationsAssistantRepository();
+
+    await tester.pumpWidget(_buildTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('assistant-recent-conversations-action')),
+    );
+    await tester.pumpAndSettle();
+
+    // Long-press opens the Forui context menu with rename + delete entries.
+    await tester.longPress(
+      find.byKey(
+        const Key('assistant-recent-conversation-conversation-headache'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('重命名'), findsOneWidget);
+    expect(find.text('删除'), findsOneWidget);
+
+    await tester.tap(
+      find.byKey(
+        const Key('assistant-conversation-rename-conversation-headache'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // The rename dialog opens and submits the new title through the page.
+    expect(
+      find.byKey(const Key('assistant-conversation-rename-dialog')),
+      findsOneWidget,
+    );
+    await tester.enterText(
+      find.byKey(const Key('assistant-conversation-rename-field')),
+      '新标题',
+    );
+    await tester.tap(
+      find.byKey(const Key('assistant-conversation-rename-confirm')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      repository.renameCalls.single.conversationId,
+      'conversation-headache',
+    );
+    expect(repository.renameCalls.single.title, '新标题');
+  });
+
+  testWidgets(
+    'tap-to-name opens the rename dialog for an untitled conversation',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final repository = _DrawerMenuAssistantRepository();
+
+      await tester.pumpWidget(_buildTestApp(repository: repository));
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.byKey(const Key('assistant-recent-conversations-action')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('点击补名'), findsOneWidget);
+
+      await tester.tap(find.text('点击补名'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('assistant-conversation-rename-dialog')),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('drawer delete flow confirms before deleting and toasts', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repository = _RecentConversationsAssistantRepository();
+
+    await tester.pumpWidget(_buildTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('assistant-recent-conversations-action')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.longPress(
+      find.byKey(
+        const Key('assistant-recent-conversation-conversation-headache'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(
+        const Key('assistant-conversation-delete-conversation-headache'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // The danger confirmation dialog asks again before deleting.
+    expect(find.text('删除会话？'), findsOneWidget);
+    expect(find.text('删除后不可恢复。'), findsOneWidget);
+
+    await tester.tap(find.text('删除').last);
+    await tester.pumpAndSettle();
+
+    expect(repository.deleteCalls, <String>['conversation-headache']);
+  });
+
   testWidgets('assistant header keeps back history new and settings actions', (
     tester,
   ) async {
@@ -553,6 +668,23 @@ mixin _ConfirmProposalsStub implements AssistantRepository {
       decision: decision,
     ));
     return null;
+  }
+
+  final List<({String conversationId, String title})> renameCalls =
+      <({String conversationId, String title})>[];
+  final List<String> deleteCalls = <String>[];
+
+  @override
+  Future<void> renameConversation({
+    required String conversationId,
+    required String title,
+  }) async {
+    renameCalls.add((conversationId: conversationId, title: title));
+  }
+
+  @override
+  Future<void> deleteConversation(String conversationId) async {
+    deleteCalls.add(conversationId);
   }
 }
 
@@ -1226,6 +1358,58 @@ class _RecentConversationsAssistantRepository
   @override
   Future<AssistantCapabilities> getCapabilities() async =>
       _FakeAssistantRepository._capabilities;
+
+  @override
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
+    return const Stream<AssistantGenerationEvent>.empty();
+  }
+}
+
+/// Repository with one titled and one untitled conversation, used to exercise
+/// the drawer's tap-to-name entry.
+class _DrawerMenuAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
+  @override
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
+
+  @override
+  Future<AssistantConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<List<AssistantConversationSummary>> listRecentConversations() async {
+    final now = DateTime.now();
+    return <AssistantConversationSummary>[
+      AssistantConversationSummary(
+        id: 'titled',
+        title: '已命名会话',
+        status: 'active',
+        lastMessageAt: now,
+        createdAt: now,
+        updatedAt: now,
+      ),
+      AssistantConversationSummary(
+        id: 'untitled',
+        title: null,
+        status: 'active',
+        lastMessageAt: now,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    ];
+  }
+
+  @override
+  Future<AssistantConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> clearLatestConversation() async => false;
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(

@@ -241,6 +241,7 @@ export 'package:lucent_api/src/model/reminder_delivery_list_response_dto.dart';
 export 'package:lucent_api/src/model/reminder_delivery_receipt_data_dto.dart';
 export 'package:lucent_api/src/model/reminder_delivery_receipt_dto.dart';
 export 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto.dart';
+export 'package:lucent_api/src/model/rename_conversation_dto.dart';
 export 'package:lucent_api/src/model/report_dashboard_data_dto.dart';
 export 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 export 'package:lucent_api/src/model/report_dashboard_score_dto.dart';

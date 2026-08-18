@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-13
+updated: 2026-08-17
 ---
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-13
+Last updated: 2026-08-17
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -138,6 +138,11 @@ operations.
   `dart run scripts/bootstrap_generated_sources.dart`.
 - The `dart-dio` generator still produces Markdown doc stubs and package test stubs; these are
   tracked by the project baseline and regenerated alongside the rest of the package.
+
+## 2026-08-17 F-2 会话重命名与删除客户端面
+
+- Lucent `pnpm export:openapi`(125 paths / 309 schemas)后执行 `dart run scripts/bootstrap_generated_sources.dart`:`AssistantApi` 新增 `assistantControllerRenameConversationV1`(PATCH,body `RenameConversationDto.title` ≤ 48 字符)与 `assistantControllerDeleteConversationV1`(DELETE,软删除);`AssistantConversationDataDto` / `AssistantConversationSummaryDto` 的 `status` 枚举新增 `deleted`。
+- 既有漂移:`today_analysis_api.dart` 的 recommendations 端点仅注释文案更新(get cold-start onboarding guide cards),无签名变化,与 F-2 无关。
 
 ## 2026-08-14 Clinic summary preview/share 信封绕行
 

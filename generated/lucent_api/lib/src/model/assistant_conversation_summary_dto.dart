@@ -104,6 +104,10 @@ enum AssistantConversationSummaryDtoStatusEnum {
   archived(r'archived'),
 
   /// Current conversation status.
+  @JsonValue(r'deleted')
+  deleted(r'deleted'),
+
+  /// Current conversation status.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
