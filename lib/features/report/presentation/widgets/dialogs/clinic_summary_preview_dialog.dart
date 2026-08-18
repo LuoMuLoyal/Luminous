@@ -365,6 +365,9 @@ class _ClinicSummaryPreviewContentState
     return switch (_shareStep!) {
       _ShareStep.confirm => _ShareConfirmPanel(
         isCreating: _isCreatingShare,
+        hasNotes: _selectedFields.contains(
+          ClinicSummaryRequestDtoSelectedFieldsEnum.notes,
+        ),
         onCancel: _closeShareFlow,
         onConfirm: _createShare,
       ),
@@ -514,11 +517,18 @@ class _FieldToggle extends StatelessWidget {
 class _ShareConfirmPanel extends StatelessWidget {
   const _ShareConfirmPanel({
     required this.isCreating,
+    required this.hasNotes,
     required this.onCancel,
     required this.onConfirm,
   });
 
   final bool isCreating;
+
+  /// Whether the notes field is currently selected — when true, an extra
+  /// privacy warning is shown because notes appear in plain text to anyone
+  /// with the share link (R-2).
+  final bool hasNotes;
+
   final VoidCallback onCancel;
   final VoidCallback onConfirm;
 
@@ -549,6 +559,14 @@ class _ShareConfirmPanel extends StatelessWidget {
           iconColor: SemanticColor.primary.solid(context),
           text: l10n.reportShareConfirmNotice,
         ),
+        if (hasNotes) ...[
+          const SizedBox(height: Spacing.level3),
+          _NoticeRow(
+            icon: SemanticIcons.statusWarning,
+            iconColor: SemanticColor.warning.solid(context),
+            text: l10n.reportClinicSummaryNotesPrivacyWarning,
+          ),
+        ],
         const SizedBox(height: Spacing.level5),
         Row(
           children: [

@@ -37,6 +37,9 @@ ClinicSummaryDto _dto({
   Object? conditions = _defaultSections,
   Object? medicines = _defaultSections,
   List<String>? findings = const ['长期服用需监测'],
+  List<ClinicSummaryWaterEntryDto>? waterEntries,
+  List<ClinicSummarySleepEntryDto>? sleepEntries,
+  List<ClinicSummaryNoteEntryDto>? noteEntries,
   String dataRange = 'last_7_days',
   List<String> selectedFields = const [],
   int? age = 30,
@@ -89,6 +92,9 @@ ClinicSummaryDto _dto({
           ]
         : (medicines as List?)?.cast<ClinicSummaryMedicineDto>(),
     findings: findings,
+    waterEntries: waterEntries,
+    sleepEntries: sleepEntries,
+    noteEntries: noteEntries,
     disclaimer: '本摘要仅供参考，不构成医疗建议',
   );
 }
@@ -379,5 +385,79 @@ void main() {
     expect(find.text(l10n_.reportClinicSummaryShare), findsNothing);
     expect(find.byType(FCircularProgress), findsOneWidget);
     expect(find.text(l10n_.reportClinicSummaryDownloadPdf), findsNothing);
+  });
+
+  // ── R-2: Water / Sleep / Notes rendering ──────────────────────────
+
+  testWidgets('renders water entries when waterEntries is non-empty', (
+    tester,
+  ) async {
+    await pumpContent(
+      tester,
+      _dto(
+        waterEntries: [
+          ClinicSummaryWaterEntryDto(date: '2026-08-10', ml: 1500),
+        ],
+      ),
+    );
+
+    final l10n_ = l10n(tester);
+    expect(find.text(l10n_.reportClinicSummaryWaterSection), findsOneWidget);
+    expect(
+      find.text('2026-08-10  1500${l10n_.reportClinicSummaryWaterUnit}'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('renders sleep entries when sleepEntries is non-empty', (
+    tester,
+  ) async {
+    await pumpContent(
+      tester,
+      _dto(
+        sleepEntries: [
+          ClinicSummarySleepEntryDto(date: '2026-08-10', minutes: 420),
+        ],
+      ),
+    );
+
+    final l10n_ = l10n(tester);
+    expect(find.text(l10n_.reportClinicSummarySleepSection), findsOneWidget);
+    expect(
+      find.text('2026-08-10  420${l10n_.reportClinicSummarySleepUnit}'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('renders note entries when noteEntries is non-empty', (
+    tester,
+  ) async {
+    await pumpContent(
+      tester,
+      _dto(
+        noteEntries: [
+          ClinicSummaryNoteEntryDto(
+            date: '2026-08-10',
+            kind: 'note',
+            text: 'some note',
+          ),
+        ],
+      ),
+    );
+
+    final l10n_ = l10n(tester);
+    expect(find.text(l10n_.reportClinicSummaryNotesSection), findsOneWidget);
+    expect(find.text('2026-08-10  (note)  some note'), findsOneWidget);
+  });
+
+  testWidgets('hides water/sleep/notes sections when entries are null', (
+    tester,
+  ) async {
+    await pumpContent(tester, _dto());
+
+    final l10n_ = l10n(tester);
+    expect(find.text(l10n_.reportClinicSummaryWaterSection), findsNothing);
+    expect(find.text(l10n_.reportClinicSummarySleepSection), findsNothing);
+    expect(find.text(l10n_.reportClinicSummaryNotesSection), findsNothing);
   });
 }

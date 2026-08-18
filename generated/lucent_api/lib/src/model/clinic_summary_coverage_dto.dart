@@ -21,24 +21,26 @@ class ClinicSummaryCoverageDto {
   ClinicSummaryCoverageDto({
     required this.checkIns,
 
-    required this.water,
+    this.water,
 
     required this.dose,
 
-    required this.sleep,
+    this.sleep,
   });
 
   @JsonKey(name: r'checkIns', required: true, includeIfNull: false)
   final ClinicSummaryCoverageEntryDto checkIns;
 
-  @JsonKey(name: r'water', required: true, includeIfNull: false)
-  final ClinicSummaryCoverageEntryDto water;
+  /// Water coverage. Optional: omitted when the `water` field is deselected via selectedFields.
+  @JsonKey(name: r'water', required: false, includeIfNull: false)
+  final ClinicSummaryCoverageEntryDto? water;
 
   @JsonKey(name: r'dose', required: true, includeIfNull: false)
   final ClinicSummaryCoverageEntryDto dose;
 
-  @JsonKey(name: r'sleep', required: true, includeIfNull: false)
-  final ClinicSummaryCoverageEntryDto sleep;
+  /// Sleep coverage. Optional: omitted when the `sleep` field is deselected via selectedFields.
+  @JsonKey(name: r'sleep', required: false, includeIfNull: false)
+  final ClinicSummaryCoverageEntryDto? sleep;
 
   @override
   bool operator ==(Object other) =>

@@ -127,7 +127,8 @@ class ClinicSummaryContent extends StatelessWidget {
           ...currentMedicines.map((e) => _BulletItem(text: e.displayName)),
         ],
 
-        // Key findings.
+        // Key findings — gated by event_overview (R-2): the server only
+        // includes findings when event_overview is selected.
         if (dto.findings != null && dto.findings!.isNotEmpty) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
@@ -135,6 +136,48 @@ class ClinicSummaryContent extends StatelessWidget {
           _SectionTitle(text: l10n.reportClinicSummaryFindingsSection),
           const SizedBox(height: Spacing.level2),
           ...dto.findings!.map((e) => _BulletItem(text: e)),
+        ],
+
+        // Water entries — gated by the `water` field toggle (R-2).
+        if (dto.waterEntries != null && dto.waterEntries!.isNotEmpty) ...[
+          const SizedBox(height: Spacing.level4),
+          const AppDivider(),
+          const SizedBox(height: Spacing.level4),
+          _SectionTitle(text: l10n.reportClinicSummaryWaterSection),
+          const SizedBox(height: Spacing.level2),
+          ...dto.waterEntries!.map(
+            (e) => _BulletItem(
+              text: '${e.date}  ${e.ml}${l10n.reportClinicSummaryWaterUnit}',
+            ),
+          ),
+        ],
+
+        // Sleep entries — gated by the `sleep` field toggle (R-2).
+        if (dto.sleepEntries != null && dto.sleepEntries!.isNotEmpty) ...[
+          const SizedBox(height: Spacing.level4),
+          const AppDivider(),
+          const SizedBox(height: Spacing.level4),
+          _SectionTitle(text: l10n.reportClinicSummarySleepSection),
+          const SizedBox(height: Spacing.level2),
+          ...dto.sleepEntries!.map(
+            (e) => _BulletItem(
+              text:
+                  '${e.date}  ${e.minutes}${l10n.reportClinicSummarySleepUnit}',
+            ),
+          ),
+        ],
+
+        // Note entries — gated by the `notes` field toggle (R-2).
+        // Defaults to off; the user must explicitly opt in.
+        if (dto.noteEntries != null && dto.noteEntries!.isNotEmpty) ...[
+          const SizedBox(height: Spacing.level4),
+          const AppDivider(),
+          const SizedBox(height: Spacing.level4),
+          _SectionTitle(text: l10n.reportClinicSummaryNotesSection),
+          const SizedBox(height: Spacing.level2),
+          ...dto.noteEntries!.map(
+            (e) => _BulletItem(text: '${e.date}  (${e.kind})  ${e.text}'),
+          ),
         ],
 
         // Disclaimer.

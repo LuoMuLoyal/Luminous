@@ -49,12 +49,6 @@ Created: 2026-08-16
 - 方案:`review_history.dart` 增加「加载更多」按钮(或滚动触底加载),调用 repository `fetchHistory(status, cursor: nextCursor)`,追加渲染并防重入;「全部」与 active/ended 筛选下均可用。冲突裁决:取 P1,不采用「P2 可延后」后门。
 - 分工:纯客户端,后端无需改动。
 
-**R-2 就诊摘要字段级隐私门控诚实化(#8，0.1.0 前)**
-
-- 现状:预览弹窗 `_FieldSelectionPanel` 六项开关中只有三项(event_overview/symptom_changes/medication_slots)真正门控内容;`summary-view.ts` 的 `CLINIC_SUMMARY_SHARE_FIELD_SECTIONS` 将 water/sleep/notes 映射为空数组——饮水/睡眠在 `findings`/`coverage` 中不受开关控制,notes 在 `ClinicSummaryDto` 中根本不存在。UI 承诺与真实行为不一致。
-- 方案:保留并实现六个开关。每个已选字段严格控制 API、预览、PDF 与公开分享；未选 section 不返回、不渲染、不分享。档案、过敏和疾病归入「事件概览」；饮水仅输出可解析 ml 的逐日事实，睡眠仅输出正数时长，备注默认关闭、显式选择才输出日期/类型/原文。创建公开分享链接前提示持有链接者可见备注原文。
-- 分工:客户端保留 `_FieldSelectionPanel` 六开关并与服务端 `selectedFields` 回显一致；服务端在 `applySelectedFields` 单一过滤出口实现字段边界，preview/PDF/share 三路径共用。
-
 **R-3 周/月纵向洞察生成器(#14，按逐功能分析取 P1，0.1.0 前)**
 
 - 现状:`POST /reports/summary/generate/stream`(SSE)由 `BaseLlmSummaryService` 编排(setting 开关 → dashboard facts → LLM JSON schema → safety policy → 持久化,模板 fallback),链路真实但输出为泛化总结;仅 legacy 页可达。客户端 `ai_summary_remote.dart` 非流式 `generate()` 为零调用死代码。
@@ -99,10 +93,9 @@ Created: 2026-08-16
 ## 五、本计划内执行顺序
 
 1. R-1 历史翻页(P1,纯客户端,可独立先行)。
-2. R-2 隐私门控诚实化(P1,待方案 a/b 决策后执行)。
-3. R-3 纵向洞察生成器(P1,依赖 record 计划 vital 基建与 medicine 计划 F-5 口径就绪)。
-4. R-4 legacy 打包（0.1.0 前）:先确认 data-export PDF 数据源替代方案 → 客户端死代码清理与数据契约拆分 → 视图重装配(#19/#21/#22)→ 移除 buildScore(#20)→ 评估后端裁剪。
-5. R-5 服务端 409 双保险、R-6 文档更新,随 R-3/R-4 附带完成。
+2. R-3 纵向洞察生成器(P1,依赖 record 计划 vital 基建与 medicine 计划 F-5 口径就绪)。
+3. R-4 legacy 打包（0.1.0 前）:先确认 data-export PDF 数据源替代方案 → 客户端死代码清理与数据契约拆分 → 视图重装配(#19/#21/#22)→ 移除 buildScore(#20)→ 评估后端裁剪。
+4. R-5 服务端 409 双保险、R-6 文档更新,随 R-3/R-4 附带完成。
 
 ## 六、已决边界与保留项
 

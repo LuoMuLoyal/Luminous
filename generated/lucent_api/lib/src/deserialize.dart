@@ -32,6 +32,7 @@ import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_coverage_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_medicine_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_note_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_request_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_response_dto.dart';
@@ -41,6 +42,8 @@ import 'package:lucent_api/src/model/clinic_summary_share_list_item_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_list_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_scope_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_sleep_entry_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_water_entry_dto.dart';
 import 'package:lucent_api/src/model/cn_medicine_detail_dto.dart';
 import 'package:lucent_api/src/model/confirm_assistant_proposal_dto.dart';
 import 'package:lucent_api/src/model/cooldown_message_dto.dart';
@@ -434,6 +437,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'ClinicSummaryMedicineDto':
       return ClinicSummaryMedicineDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ClinicSummaryNoteEntryDto':
+      return ClinicSummaryNoteEntryDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ClinicSummaryProfileDto':
       return ClinicSummaryProfileDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -468,6 +474,12 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ClinicSummaryShareScopeDto':
       return ClinicSummaryShareScopeDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummarySleepEntryDto':
+      return ClinicSummarySleepEntryDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummaryWaterEntryDto':
+      return ClinicSummaryWaterEntryDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'CnMedicineDetailDto':
       return CnMedicineDetailDto.fromJson(value as Map<String, dynamic>)

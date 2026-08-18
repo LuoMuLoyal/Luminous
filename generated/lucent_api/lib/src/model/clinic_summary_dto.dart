@@ -4,10 +4,13 @@
 
 // ignore_for_file: unused_element
 import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_note_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_allergy_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_sleep_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_condition_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_medicine_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_water_entry_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -46,6 +49,12 @@ class ClinicSummaryDto {
     this.currentMedicines,
 
     this.findings,
+
+    this.waterEntries,
+
+    this.sleepEntries,
+
+    this.noteEntries,
 
     required this.disclaimer,
   });
@@ -93,9 +102,21 @@ class ClinicSummaryDto {
   @JsonKey(name: r'currentMedicines', required: false, includeIfNull: false)
   final List<ClinicSummaryMedicineDto>? currentMedicines;
 
-  /// Structured facts and change codes reused from the event review (e.g. health_event, observed_changes, no_completed_actions, active_check_in). `insufficient_coverage` is the fixed 资料不足 statement — no generic AI conclusions are ever added.
+  /// Structured facts and change codes reused from the event review (e.g. health_event, observed_changes, no_completed_actions, active_check_in). `insufficient_coverage` is the fixed 资料不足 statement — no generic AI conclusions are ever added. Controlled by the `event_overview` field toggle (R-2): omitted when the field is deselected.
   @JsonKey(name: r'findings', required: false, includeIfNull: false)
   final List<String>? findings;
+
+  /// Daily water intake facts (only records with a parsable ml value). Controlled by the `water` field toggle (R-2): omitted when the field is deselected.
+  @JsonKey(name: r'waterEntries', required: false, includeIfNull: false)
+  final List<ClinicSummaryWaterEntryDto>? waterEntries;
+
+  /// Daily sleep duration facts (only records with a positive duration). Controlled by the `sleep` field toggle (R-2): omitted when the field is deselected.
+  @JsonKey(name: r'sleepEntries', required: false, includeIfNull: false)
+  final List<ClinicSummarySleepEntryDto>? sleepEntries;
+
+  /// Free-text note records (date, kind, original text). Controlled by the `notes` field toggle (R-2): omitted when the field is deselected. Defaults to off — the user must explicitly opt in.
+  @JsonKey(name: r'noteEntries', required: false, includeIfNull: false)
+  final List<ClinicSummaryNoteEntryDto>? noteEntries;
 
   /// Disclaimer text
   @JsonKey(name: r'disclaimer', required: true, includeIfNull: false)
@@ -117,6 +138,9 @@ class ClinicSummaryDto {
           other.conditions == conditions &&
           other.currentMedicines == currentMedicines &&
           other.findings == findings &&
+          other.waterEntries == waterEntries &&
+          other.sleepEntries == sleepEntries &&
+          other.noteEntries == noteEntries &&
           other.disclaimer == disclaimer;
 
   @override
@@ -133,6 +157,9 @@ class ClinicSummaryDto {
       conditions.hashCode +
       currentMedicines.hashCode +
       findings.hashCode +
+      waterEntries.hashCode +
+      sleepEntries.hashCode +
+      noteEntries.hashCode +
       disclaimer.hashCode;
 
   factory ClinicSummaryDto.fromJson(Map<String, dynamic> json) =>
