@@ -47,6 +47,7 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
     DataChangeTopic.healthContext,
     DataChangeTopic.currentMedicines,
     DataChangeTopic.userSettings,
+    DataChangeTopic.healthEvents,
   };
 
   @override

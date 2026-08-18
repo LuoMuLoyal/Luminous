@@ -599,6 +599,33 @@ void main() {
       },
     );
 
+    test('refreshes when healthEvents topic changes', () async {
+      final bundle = _bundle(primaryId: 's1');
+      when(
+        () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
+          date: any(named: 'date'),
+          excludeIds: any(named: 'excludeIds'),
+        ),
+      ).thenAnswer((_) async => bundle);
+      stubDaoSuccess();
+
+      final c = buildContainer();
+      await c.read(todaySuggestionProvider.future);
+      clearInteractions(mockDataSource);
+
+      c.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.healthEvents);
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+
+      verify(
+        () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
+          date: any(named: 'date'),
+          excludeIds: any(named: 'excludeIds'),
+        ),
+      ).called(1);
+    });
+
     test(
       'serializes overlapping refreshes to prevent stale overwrites',
       () async {

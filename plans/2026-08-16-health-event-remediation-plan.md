@@ -13,7 +13,7 @@ Created: 2026-08-16
 
 目标:
 
-- 补齐事件域「差最后一环」的半成品:kind 筛选(H-4)、事件专属建议升级通知(H-10)。
+- 补齐事件域「差最后一环」的半成品:kind 筛选(H-4)。
 - 处置档案僵尸/半用字段(C-1):weightKg、conditions 改造为真实消费;unitSystem、onboardingCompleted 低优先级改造;emergencyContact、extras 如实不排期。
 - 清除 Mine「档案提醒」硬编码假数据卡(C-3),改造为真实数据出口。
 - 核心生命周期(创建/check-in/结束/回顾)与档案安全链路保持不动。
@@ -46,16 +46,7 @@ Created: 2026-08-16
 - 前后端分工:纯前端;后端 `GET /reports/reviews` 已返回 kind,无需改动。
 - 依赖:无。中期增强「症状标签集合」(创建时勾选症状、与记录页症状库联动)为 0.1.0 后事项。
 
-#### 3. H-10 事件专属建议升级通知 + suggestion topic 补全（0.1.0 前）
-
-- 现状:`HEALTH_EVENT_CHANGED` 已触发建议重算/缓存失效/today-analysis 物化,但 today-suggestion 7 条规则无一消费事件内 check-in 序列;客户端 `suggestion.dart:42-47` watch 的 DataChangeTopic 列表不含 `healthEvents`(靠 onRefresh 兜底)。
-- 改造方案:
-  - 后端新增事件专属信号:`consumableSignalKinds` 增加 `event_check_in_trend` 观察项,证据口径为 check-in 日期与结果序列(H-8 已有数据基础);事件期内连续 2 次 check-in 为「加重」或新记录症状 → 触发升级通知,经建议升级通知执行器投递(每天最多 1 条,超出进 Today 次建议区)。
-  - 客户端 suggestion provider 的 topic 列表补 `healthEvents`,事件动作后建议卡与事件区块同频刷新,去掉对 onRefresh 的依赖。
-- 涉及文件:后端 `Lucent/src/modules/today-suggestion/`(信号注册与规则);前端 `today/presentation/providers/suggestion.dart`。
-- 依赖:升级通知规则与执行器方案见 [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md) 的建议升级通知一节,本文不重复展开;本计划只负责事件侧信号接入与客户端 topic 补全。
-
-#### 4. C-1 `weightKg` 改造为体重记录维度（0.1.0 后）
+#### 3. C-1 `weightKg` 改造为体重记录维度（0.1.0 后）
 
 - 现状:weightKg 仅 user-health-context 自读写,后端无业务消费,前端只展示/计数(半用)。
 - 改造方案:档案字段保留为当前基线,新增体重时间序列记录(手动 + 平台导入),入口放记录页快捷记录;时间序列与血糖、血压合并为「vital 时间序列」基建,进纵向洞察周/月单维趋势(带覆盖率标注)。
@@ -98,18 +89,16 @@ Created: 2026-08-16
 
 ## 四、跨计划引用与依赖
 
-- 建议升级通知规则与执行器(H-10 依赖):见 [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md) 的建议升级通知一节。
 - vital 时间序列基建(C-1 weightKg 依赖):见 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md) 的 vital 基建一节。
 - ObservedMetric 口径(vital 趋势数据口径):见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节。
 - Review 职责改版为日/周/月洞察、事件成为专题视图(H-8 定位补充):归属 report 计划([`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)),本计划只标注依赖、不承担该项;事件详情接线(H-6)已随改造项 2 落地,与 report 计划的 Review 信息架构改版不再有落地顺序耦合。
-- 本计划拥有并写全的横切资产:事件侧 `event_check_in_trend` 信号接入(改造项 3)、档案字段逐字段处置决策(改造项 4/5/7/8 与不排期清单)。
+- 本计划拥有并写全的横切资产:档案字段逐字段处置决策(改造项 3/4/6/7 与不排期清单)。
 - 桌面/Web 形态不再扩展 Flutter 产品面；独立 Next.js + Tauri MVP 在 0.1.0 后启动，不展开。
 
 ## 五、本计划内执行顺序
 
-1. 改造项 3(H-10，0.1.0 前)：依赖 today 计划的升级通知规则落地后接入。
-2. 改造项 6(C-3)与 7/8（0.1.0 前）：先移除硬编码假过敏，再由 Lucent 档案完整度合同驱动展示。
-3. 改造项 1(H-4)、4(weightKg) 与 5(conditions)均为 0.1.0 后，按既有 P1 及依赖顺序恢复。
+1. 改造项 6(C-3)与 7/8（0.1.0 前）：先移除硬编码假过敏，再由 Lucent 档案完整度合同驱动展示。
+2. 改造项 1(H-4)、4(weightKg) 与 5(conditions)均为 0.1.0 后，按既有 P1 及依赖顺序恢复。
 
 ## 六、已决边界与延期项
 

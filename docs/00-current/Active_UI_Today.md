@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-17
+updated: 2026-08-18
 ---
 
 # Active UI — Today
 
-Last updated: 2026-08-17 (F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed; Today vital row reads real heart-rate/blood-pressure daily records; summary fallback narrative uses neutral onboarding copy)
+Last updated: 2026-08-18 (H-10 `todaySuggestionProvider` now watches `DataChangeTopic.healthEvents` so suggestion cards refresh after event create/end/check-in; F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed; Today vital row reads real heart-rate/blood-pressure daily records; summary fallback narrative uses neutral onboarding copy)
 
 ## 页面结构
 
@@ -113,7 +113,8 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - Today AI data source 已按 generate API envelope 解包 `analysis`，并保留 direct analysis data 的类型安全映射；generated DTO 未被改写。
 - Today suggestion GET 已切换为只读物化结果：domain 映射 `ready / stale / pending / failed / empty`，旧缓存缺失状态元数据时按 `ready` 兼容。
 - `pending / stale / failed` 会保留可用的旧建议内容；`failed` 提供重试，`empty` 保持真实空态；缺少 `computedAt` 的 stale 结果仍显示更新中提示。
-- Today suggestion provider 监听相关 `DataChangeBus` 事件并以 300ms 去抖重新 GET，不调用生成接口；应用 resume 时重新读取并比较 `sourceVersion`。
+- Today suggestion provider 监听相关 `DataChangeBus` 事件（`dailyRecords`、`doseLogs`、`medicineReminders`、`healthContext`、`currentMedicines`、`userSettings`、`healthEvents`）并以 300ms 去抖重新 GET，不调用生成接口；应用 resume 时重新读取并比较 `sourceVersion`。
+- `todayDashboardProvider` 同步监听 `healthEvents`，事件创建/结束/check-in 后 dashboard 自动刷新；`dashboard_view.dart` 中事件操作成功后的手动 `onRefresh()` 调用已移除，改由数据总线驱动刷新。
 - 应用重启后的首次 GET 也会先恢复本地 suggestion cache，再将 `pending / stale / failed` 状态与旧卡合并，避免服务端尚未完成物化时覆盖可用内容。
 - DataChangeBus、resume 和手动操作触发的建议 GET 按 FIFO 串行执行，旧请求完成后不会覆盖较新的刷新结果。
 - Proactive Suggestion Runtime Task 9 已完成：服务端写入 → worker 物化 → Today 只读 GET 的 PostgreSQL + Redis live acceptance 已通过；连续 10 次相关写入最终收敛到同一 `sourceVersion / computedVersion`，客户端继续保留 `pending / stale / failed` 的旧卡回退语义。

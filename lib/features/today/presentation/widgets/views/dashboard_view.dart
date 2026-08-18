@@ -253,7 +253,6 @@ class _HealthEventSection extends ConsumerWidget {
     var currentMedicineResult = await _readCurrentMedicineOptions(ref);
     var reasonRecordResult = await _readReasonRecordOptions(ref);
     if (!context.mounted) return;
-    var saved = false;
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
@@ -296,14 +295,14 @@ class _HealthEventSection extends ConsumerWidget {
                       reasonRecordId: reasonRecordId,
                       currentMedicineIds: currentMedicineIds,
                     );
-                saved = true;
                 if (dialogContext.mounted) Navigator.of(dialogContext).pop();
               },
         ),
       ),
     );
-    if (!saved || !context.mounted) return;
-    await onRefresh();
+    // 事件创建成功后由 activeHealthEventProvider 直接更新 state，同时
+    // DataChangeTopic.healthEvents 驱动 todayDashboardProvider /
+    // todaySuggestionProvider 自动刷新，不再依赖手动 onRefresh。
   }
 
   Future<({List<HealthEventAssociationOption> options, bool hasError})>
@@ -370,7 +369,6 @@ class _HealthEventSection extends ConsumerWidget {
     HealthEvent event,
     AppLocalizations l10n,
   ) async {
-    var saved = false;
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
@@ -395,13 +393,13 @@ class _HealthEventSection extends ConsumerWidget {
                 date: localDateKey(DateTime.now(), timeZoneName: userTimezone),
                 outcome: outcome,
               );
-          saved = true;
           if (dialogContext.mounted) Navigator.of(dialogContext).pop();
         },
       ),
     );
-    if (!saved || !context.mounted) return;
-    await onRefresh();
+    // 事件 check-in 成功后由 activeHealthEventProvider 直接更新 state，同时
+    // DataChangeTopic.healthEvents 驱动 todayDashboardProvider /
+    // todaySuggestionProvider 自动刷新，不再依赖手动 onRefresh。
   }
 
   Future<void> _openEnd(
@@ -410,7 +408,6 @@ class _HealthEventSection extends ConsumerWidget {
     HealthEvent event,
     AppLocalizations l10n,
   ) async {
-    var saved = false;
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
@@ -430,13 +427,13 @@ class _HealthEventSection extends ConsumerWidget {
           await ref
               .read(activeHealthEventProvider.notifier)
               .end(eventId: event.id, outcome: outcome);
-          saved = true;
           if (dialogContext.mounted) Navigator.of(dialogContext).pop();
         },
       ),
     );
-    if (!saved || !context.mounted) return;
-    await onRefresh();
+    // 事件结束后由 activeHealthEventProvider 直接更新 state，同时
+    // DataChangeTopic.healthEvents 驱动 todayDashboardProvider /
+    // todaySuggestionProvider 自动刷新，不再依赖手动 onRefresh。
   }
 }
 

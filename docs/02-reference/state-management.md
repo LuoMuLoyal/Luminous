@@ -244,7 +244,7 @@ Future<TodayDashboard> todayDashboard(Ref ref) async {
 | `currentMedicines` | mine (current medicine add/remove), search (add to current medicines) | medicineWorkspace, todayDashboard, healthContextSnapshot |
 | `doseLogs` | medicine (mark dose) | medicineWorkspace, todayDashboard |
 | `medicineReminders` | medicine (reminder create/update/delete) | medicineWorkspace, todayDashboard |
-| `healthEvents` | health_event (create/end/outcome confirm/check-in 落库成功后) | reviewCurrent, reviewHistory |
+| `healthEvents` | health_event (create/end/outcome confirm/check-in 落库成功后) | reviewCurrent, reviewHistory, todayDashboard, todaySuggestion |
 | `userSettings` | settings (water target, AI toggles) | todayDashboard |
 
 > **Note**: `ref.invalidate()` is still appropriate for **same-feature** retry/refresh (e.g. an error

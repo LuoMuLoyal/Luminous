@@ -15,6 +15,7 @@ Future<TodayDashboard> todayDashboard(Ref ref) {
   ref.watch(dataChangeVersionProvider(DataChangeTopic.doseLogs));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.medicineReminders));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.userSettings));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.healthEvents));
 
   // The repository catches every upstream failure and returns a degraded
   // dashboard instead of throwing, so the page never whitescreens because of
