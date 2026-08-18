@@ -13,38 +13,6 @@ void main() {
         expect(dashboard.selectedDay, 11);
       });
 
-      test('creates 7 weekDays starting from Monday', () {
-        // 2026-07-11 is Saturday, weekday = 6 (Mon=1)
-        final date = DateTime(2026, 7, 11);
-        final dashboard = RecordDashboard.signedOut(date);
-
-        expect(dashboard.weekDays.length, 7);
-        // Monday of that week is 2026-07-06
-        expect(dashboard.weekDays[0].date, DateTime(2026, 7, 6));
-        expect(dashboard.weekDays[0].weekdayKey, RecordCopyKey.weekdayMon);
-        expect(dashboard.weekDays[6].date, DateTime(2026, 7, 12));
-        expect(dashboard.weekDays[6].weekdayKey, RecordCopyKey.weekdaySun);
-      });
-
-      test('marks selected day in weekDays', () {
-        final date = DateTime(2026, 7, 8); // Wednesday
-        final dashboard = RecordDashboard.signedOut(date);
-
-        final selectedDays = dashboard.weekDays.where((d) => d.selected);
-        expect(selectedDays.length, 1);
-        expect(selectedDays.first.day, 8);
-      });
-
-      test('weekDays have empty markers', () {
-        final date = DateTime(2026, 7, 11);
-        final dashboard = RecordDashboard.signedOut(date);
-
-        for (final day in dashboard.weekDays) {
-          expect(day.markers, isEmpty);
-          expect(day.hasAlert, isFalse);
-        }
-      });
-
       test('has 7 default quick actions', () {
         final dashboard = RecordDashboard.signedOut(DateTime(2026, 7, 11));
 
@@ -106,53 +74,6 @@ void main() {
 
         expect(dashboard.summary.items, isEmpty);
       });
-    });
-
-    group('_emptyWeekDays — Monday calculation', () {
-      test('handles Sunday (weekday=7)', () {
-        // 2026-07-12 is Sunday
-        final date = DateTime(2026, 7, 12);
-        final dashboard = RecordDashboard.signedOut(date);
-
-        // Monday should be 2026-07-06
-        expect(dashboard.weekDays[0].date, DateTime(2026, 7, 6));
-        expect(dashboard.weekDays[6].day, 12);
-        expect(dashboard.weekDays[6].selected, isTrue);
-      });
-
-      test('handles Monday (weekday=1)', () {
-        // 2026-07-06 is Monday
-        final date = DateTime(2026, 7, 6);
-        final dashboard = RecordDashboard.signedOut(date);
-
-        expect(dashboard.weekDays[0].date, DateTime(2026, 7, 6));
-        expect(dashboard.weekDays[0].selected, isTrue);
-        expect(dashboard.weekDays[6].date, DateTime(2026, 7, 12));
-      });
-
-      test('handles month boundary', () {
-        // 2026-08-01 is Saturday
-        final date = DateTime(2026, 8, 1);
-        final dashboard = RecordDashboard.signedOut(date);
-
-        // Monday is 2026-07-27
-        expect(dashboard.weekDays[0].date, DateTime(2026, 7, 27));
-        expect(dashboard.weekDays[0].day, 27);
-        expect(dashboard.weekDays[6].date, DateTime(2026, 8, 2));
-      });
-    });
-  });
-
-  group('RecordWeekDay', () {
-    test('hasAlert defaults to false', () {
-      final day = RecordWeekDay(
-        date: DateTime(2026, 7, 6),
-        day: 6,
-        weekdayKey: RecordCopyKey.weekdayMon,
-        selected: false,
-        markers: const [],
-      );
-      expect(day.hasAlert, isFalse);
     });
   });
 

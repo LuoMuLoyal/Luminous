@@ -9,7 +9,6 @@ abstract class RecordDashboard with _$RecordDashboard {
   const factory RecordDashboard({
     required DateTime selectedDate,
     required int selectedDay,
-    required List<RecordWeekDay> weekDays,
     required List<RecordCalendarDay> monthDays,
     required List<RecordQuickAction> quickActions,
     required RecordDaySummary summary,
@@ -24,7 +23,6 @@ abstract class RecordDashboard with _$RecordDashboard {
     return RecordDashboard(
       selectedDate: selectedDate,
       selectedDay: selectedDate.day,
-      weekDays: _emptyWeekDays(selectedDate),
       monthDays: const <RecordCalendarDay>[],
       quickActions: defaultQuickActions,
       summary: const RecordDaySummary(items: <RecordSummaryItem>[]),
@@ -32,37 +30,6 @@ abstract class RecordDashboard with _$RecordDashboard {
       timeline: const <RecordTimelineEntry>[],
       trends: const <RecordTrend>[],
     );
-  }
-
-  static List<RecordWeekDay> _emptyWeekDays(DateTime selectedDate) {
-    final date = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-    );
-    final monday = date.subtract(Duration(days: date.weekday - 1));
-    const weekdayKeys = <RecordCopyKey>[
-      RecordCopyKey.weekdayMon,
-      RecordCopyKey.weekdayTue,
-      RecordCopyKey.weekdayWed,
-      RecordCopyKey.weekdayThu,
-      RecordCopyKey.weekdayFri,
-      RecordCopyKey.weekdaySat,
-      RecordCopyKey.weekdaySun,
-    ];
-    return List.generate(7, (i) {
-      final day = monday.add(Duration(days: i));
-      return RecordWeekDay(
-        date: day,
-        day: day.day,
-        weekdayKey: weekdayKeys[i],
-        selected:
-            day.day == date.day &&
-            day.month == date.month &&
-            day.year == date.year,
-        markers: const <SemanticColor>[],
-      );
-    });
   }
 
   static final List<RecordQuickAction> defaultQuickActions =
@@ -185,18 +152,6 @@ abstract class RecordDashboard with _$RecordDashboard {
       selected: false,
     ),
   ];
-}
-
-@freezed
-abstract class RecordWeekDay with _$RecordWeekDay {
-  const factory RecordWeekDay({
-    required DateTime date,
-    required int day,
-    required RecordCopyKey weekdayKey,
-    required bool selected,
-    required List<SemanticColor> markers,
-    @Default(false) bool hasAlert,
-  }) = _RecordWeekDay;
 }
 
 @freezed

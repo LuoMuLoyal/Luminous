@@ -970,65 +970,6 @@ void main() {
     });
   });
 
-  // ── static data: weekDays ────────────────────────────────────
-  group('weekDays generation', () {
-    test('generates 7 days starting from Monday', () async {
-      // 2026-07-14 is a Tuesday (weekday=2)
-      dailyRepo.fetchRecordsResult = const DailyRecordListData(
-        items: [],
-        total: 0,
-      );
-
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
-
-      expect(dashboard.weekDays, hasLength(7));
-      // Monday of that week is 2026-07-13
-      expect(dashboard.weekDays[0].day, 13);
-      expect(dashboard.weekDays[0].weekdayKey, RecordCopyKey.weekdayMon);
-      expect(dashboard.weekDays[6].day, 19);
-      expect(dashboard.weekDays[6].weekdayKey, RecordCopyKey.weekdaySun);
-    });
-
-    test('marks the selected date as selected', () async {
-      dailyRepo.fetchRecordsResult = const DailyRecordListData(
-        items: [],
-        total: 0,
-      );
-
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
-
-      final selectedDays = dashboard.weekDays.where((d) => d.selected);
-      expect(selectedDays, hasLength(1));
-      expect(selectedDays.first.day, 14);
-    });
-
-    test('marks selected day with marker color', () async {
-      dailyRepo.fetchRecordsResult = const DailyRecordListData(
-        items: [],
-        total: 0,
-      );
-
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
-
-      final selectedDay = dashboard.weekDays.firstWhere((d) => d.selected);
-      expect(selectedDay.markers, contains(SemanticColor.primary));
-    });
-
-    test('non-selected days have empty markers', () async {
-      dailyRepo.fetchRecordsResult = const DailyRecordListData(
-        items: [],
-        total: 0,
-      );
-
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
-
-      final nonSelectedDays = dashboard.weekDays.where((d) => !d.selected);
-      for (final day in nonSelectedDays) {
-        expect(day.markers, isEmpty);
-      }
-    });
-  });
-
   // ── static data: monthDays ───────────────────────────────────
   group('monthDays generation', () {
     test('generates correct number of days for July 2026', () async {
@@ -1193,12 +1134,6 @@ void main() {
       final dashboard = await repo.signedOutDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.filters, isNotEmpty);
-    });
-
-    test('returns dashboard with weekDays', () async {
-      final dashboard = await repo.signedOutDashboard(DateTime(2026, 7, 14));
-
-      expect(dashboard.weekDays, hasLength(7));
     });
   });
 }

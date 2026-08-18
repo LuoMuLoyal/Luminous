@@ -83,7 +83,6 @@ class LucentRecordRepository implements RecordRepository {
     return RecordDashboard(
       selectedDate: date,
       selectedDay: date.day,
-      weekDays: _staticWeekDays(date),
       monthDays: _staticMonthDays(date),
       quickActions: _staticQuickActionsFor(),
       summary: _toDaySummary(summaryData, records),
@@ -346,20 +345,6 @@ class LucentRecordRepository implements RecordRepository {
 
   // --- static mock (backend does not yet provide) ---
 
-  static List<RecordWeekDay> _staticWeekDays(DateTime today) {
-    final monday = today.subtract(Duration(days: today.weekday - 1));
-    return List.generate(7, (i) {
-      final day = monday.add(Duration(days: i));
-      return RecordWeekDay(
-        date: day,
-        day: day.day,
-        weekdayKey: _weekdayKey(day.weekday),
-        selected: _isSameDay(day, today),
-        markers: day.day == today.day ? [SemanticColor.primary] : [],
-      );
-    });
-  }
-
   static List<RecordCalendarDay> _staticMonthDays(DateTime today) {
     final first = DateTime(today.year, today.month, 1);
     final last = DateTime(today.year, today.month + 1, 0);
@@ -386,22 +371,6 @@ class LucentRecordRepository implements RecordRepository {
       );
     }
     return days;
-  }
-
-  static RecordCopyKey _weekdayKey(int weekday) {
-    return switch (weekday) {
-      1 => RecordCopyKey.weekdayMon,
-      2 => RecordCopyKey.weekdayTue,
-      3 => RecordCopyKey.weekdayWed,
-      4 => RecordCopyKey.weekdayThu,
-      5 => RecordCopyKey.weekdayFri,
-      6 => RecordCopyKey.weekdaySat,
-      _ => RecordCopyKey.weekdaySun,
-    };
-  }
-
-  static bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   static final _staticQuickActions = <RecordQuickAction>[

@@ -7,7 +7,7 @@ updated: 2026-08-18
 
 # Active UI — Record
 
-Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据;P1-2 详情页饮水目标改读 user-settings;P2-1 详情页餐食分析摘要卡可直接确认分析结果)
+Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据;P1-2 详情页饮水目标改读 user-settings;P2-1 详情页餐食分析摘要卡可直接确认分析结果;P2-2 清理 `weekDays`/`RecordWeekDay` 静态残留)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -159,7 +159,7 @@ Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-rec
 
 ## 2026-08-18 摘要网格与饮水角标接线（P1-1）
 
-- `LucentRecordRepository.fetchDashboard` 不再使用恒空的 `_staticSummary`（该字段唯一消费方被替换后成为死代码，已随本项移除；P2-2 静态残留清理剩余 `_staticWeekDays`），改为并行拉 `fetchRecords` + `fetchSummary(dateStr)`（两个 future 先创建后 await），后端 `GET /api/v1/user/daily-records/summary` 的 summaries 经 `_toDaySummary` 映射为 `RecordDaySummary.items`。
+- `LucentRecordRepository.fetchDashboard` 不再使用恒空的 `_staticSummary`（该字段唯一消费方被替换后成为死代码，已随本项移除；另一静态残留 `_staticWeekDays` 及 `weekDays`/`RecordWeekDay` 全链已于 P2-2 一并清理），改为并行拉 `fetchRecords` + `fetchSummary(dateStr)`（两个 future 先创建后 await），后端 `GET /api/v1/user/daily-records/summary` 的 summaries 经 `_toDaySummary` 映射为 `RecordDaySummary.items`。
 - 桌面 `RecordSummaryGrid` 在有真实摘要数据时渲染（`items.isEmpty` 仍渲染 `SizedBox.shrink()`）；饮水角标「累计 ml」模式从 summary 的 water 项取值。
 - 映射规则：跳过 `count <= 0`（稀疏语义：未知≠0）与无文案基建的 kind（symptom/sleep/note/activity）；water 项显示当日 canonical ml 合计（仅累加 unit=='ml' 且可解析正值，与详情页进度卡同规则），无 ml 记录时回退显示次数 + `summaryTimesUnit`；meal/mood 项显示次数 + `summaryTimesUnit`；vital 项显示最新一条记录值（如 "72 bpm"），无 latest value 时回退次数 + `summaryTimesUnit`；`summaryMlUnit`（"ml"）为新 l10n 单位键。
 - 失败降级：fetchSummary 失败时 summary 为空列表并记录 error，不抛异常、不影响 timeline（与 fetchRecords 失败处理一致）。

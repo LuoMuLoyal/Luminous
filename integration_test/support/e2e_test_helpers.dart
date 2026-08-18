@@ -769,7 +769,6 @@ class E2eRecordRepository implements RecordRepository {
     return RecordDashboard(
       selectedDate: selectedDate,
       selectedDay: selectedDate.day,
-      weekDays: mock.weekDays,
       monthDays: mock.monthDays,
       quickActions: mock.quickActions,
       summary: mock.summary,

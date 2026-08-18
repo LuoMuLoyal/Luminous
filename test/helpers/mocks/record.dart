@@ -31,7 +31,6 @@ class MockRecordRepository implements RecordRepository {
     return RecordDashboard(
       selectedDate: selectedDate,
       selectedDay: selectedDate.day,
-      weekDays: _weekDaysFor(selectedDate),
       monthDays: _monthDays,
       quickActions: _quickActionsFor(),
       summary: RecordDaySummary(items: _summaryItems),
@@ -39,36 +38,6 @@ class MockRecordRepository implements RecordRepository {
       timeline: timeline,
       trends: _trends,
     );
-  }
-
-  static List<RecordWeekDay> _weekDaysFor(DateTime selectedDate) {
-    final date = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-    );
-    final monday = date.subtract(Duration(days: date.weekday - 1));
-    final markerPattern = <List<SemanticColor>>[
-      <SemanticColor>[SemanticColor.primary],
-      <SemanticColor>[SemanticColor.primary],
-      <SemanticColor>[SemanticColor.primary],
-      <SemanticColor>[SemanticColor.primary, SemanticColor.primary],
-      <SemanticColor>[SemanticColor.primary],
-      <SemanticColor>[SemanticColor.primary],
-      <SemanticColor>[SemanticColor.primary],
-    ];
-
-    return List.generate(7, (index) {
-      final day = monday.add(Duration(days: index));
-      return RecordWeekDay(
-        date: day,
-        day: day.day,
-        weekdayKey: _weekdayKey(day.weekday),
-        selected: _isSameDay(day, date),
-        markers: markerPattern[index],
-        hasAlert: index == 5,
-      );
-    });
   }
 
   static final _monthDays = <RecordCalendarDay>[
@@ -593,22 +562,6 @@ class MockRecordRepository implements RecordRepository {
       bars: <double>[],
     ),
   ];
-
-  static RecordCopyKey _weekdayKey(int weekday) {
-    return switch (weekday) {
-      1 => RecordCopyKey.weekdayMon,
-      2 => RecordCopyKey.weekdayTue,
-      3 => RecordCopyKey.weekdayWed,
-      4 => RecordCopyKey.weekdayThu,
-      5 => RecordCopyKey.weekdayFri,
-      6 => RecordCopyKey.weekdaySat,
-      _ => RecordCopyKey.weekdaySun,
-    };
-  }
-
-  static bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
-  }
 
   static bool _isActiveRecordType(RecordFilter filter) {
     return _isActiveRecordEntryType(filter.type);
