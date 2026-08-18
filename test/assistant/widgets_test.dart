@@ -1199,6 +1199,154 @@ void main() {
     });
   });
 
+  group('AssistantMessageBubble replaced state (F-5b)', () {
+    testWidgets('replaced assistant message shows badge and mutes content', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-replaced',
+            role: AssistantMessageRole.assistant,
+            content: '旧回答',
+            usedTools: <String>[],
+            replaced: true,
+          ),
+        ),
+      );
+
+      expect(find.byKey(const Key('assistant-replaced-label')), findsOneWidget);
+      expect(find.text('已替换'), findsOneWidget);
+      final muted = tester.widget<Opacity>(
+        find.byKey(const Key('assistant-replaced-muted')),
+      );
+      expect(muted.opacity, lessThan(1));
+      // 内容仍在(置灰而非隐藏)。
+      expect(find.text('旧回答'), findsOneWidget);
+    });
+
+    testWidgets('normal assistant message shows no replaced badge', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-normal',
+            role: AssistantMessageRole.assistant,
+            content: '正常回答',
+            usedTools: <String>[],
+          ),
+        ),
+      );
+
+      expect(find.byKey(const Key('assistant-replaced-label')), findsNothing);
+      expect(find.byKey(const Key('assistant-replaced-muted')), findsNothing);
+    });
+
+    testWidgets('user message ignores the replaced flag', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-user-replaced',
+            role: AssistantMessageRole.user,
+            content: '用户消息',
+            usedTools: <String>[],
+            replaced: true,
+          ),
+        ),
+      );
+
+      expect(find.byKey(const Key('assistant-replaced-label')), findsNothing);
+    });
+  });
+
+  group('AssistantSourceStrip data-as-of (F-14)', () {
+    testWidgets('shows the data-as-of row from confidenceNote', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['get_today_summary_by_date'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'get_today_summary_by_date',
+                confidenceNote: '截至 2026-08-17',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-source-strip')));
+      await tester.pump();
+
+      expect(find.textContaining('数据截至: 截至 2026-08-17'), findsOneWidget);
+    });
+
+    testWidgets('falls back to the source version when no note exists', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['get_today_summary_by_date'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'get_today_summary_by_date',
+                sourceVersion: '7',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-source-strip')));
+      await tester.pump();
+
+      expect(find.textContaining('数据截至: 版本 7'), findsOneWidget);
+    });
+
+    testWidgets('prefers confidenceNote over sourceVersion', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['get_today_summary_by_date'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'get_today_summary_by_date',
+                confidenceNote: '基于持久化摘要',
+                sourceVersion: '3',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-source-strip')));
+      await tester.pump();
+
+      expect(find.textContaining('数据截至: 基于持久化摘要'), findsOneWidget);
+      expect(find.textContaining('数据截至: 版本'), findsNothing);
+    });
+
+    testWidgets('hides the row when neither field exists', (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['get_today_summary_by_date'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(name: 'get_today_summary_by_date'),
+            ],
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-source-strip')));
+      await tester.pump();
+
+      expect(find.textContaining('数据截至'), findsNothing);
+    });
+  });
+
   group('AssistantCapabilitiesPanel (F-10)', () {
     const capabilities = AssistantCapabilities(
       phase: 'production',

@@ -300,6 +300,8 @@ abstract class AssistantToolDetail with _$AssistantToolDetail {
     String? disclaimer,
     // F-14:摘要工具(如 get_today_summary_by_date)的置信度说明与数据源版本。
     // 后端 buildToolDetails 可选透传;无数据时为 null,来源条不渲染该行。
+    String? confidenceNote,
+    String? sourceVersion,
   }) = _AssistantToolDetail;
 }
 

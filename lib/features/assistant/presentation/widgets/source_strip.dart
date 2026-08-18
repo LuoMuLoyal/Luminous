@@ -244,6 +244,12 @@ class _ToolDetailCard extends StatelessWidget {
           '${_formatGeneratedAt(context, generatedAt)}',
         );
       }
+      // F-14:摘要工具的数据截至信息 —— confidenceNote 非空直接显示,
+      // 否则 sourceVersion 非空显示「版本 <v>」。两者都缺时不渲染该行。
+      final dataAsOf = _dataAsOfText(l10n, detail!);
+      if (dataAsOf != null) {
+        rows.add('${l10n.assistantSourceDataAsOfLabel}: $dataAsOf');
+      }
     }
 
     return DecoratedBox(
@@ -327,6 +333,20 @@ class _ToolDetailCard extends StatelessWidget {
       locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm',
       locale,
     ).format(parsed.toLocal());
+  }
+
+  /// F-14 数据截至文本:confidenceNote 非空直接显示;否则 sourceVersion
+  /// 非空显示「`版本 <v>`」;两者都缺返回 null(不渲染)。
+  String? _dataAsOfText(AppLocalizations l10n, AssistantToolDetail detail) {
+    final note = detail.confidenceNote;
+    if (note != null && note.isNotEmpty) {
+      return note;
+    }
+    final version = detail.sourceVersion;
+    if (version != null && version.isNotEmpty) {
+      return '${l10n.assistantSourceVersionLabel} $version';
+    }
+    return null;
   }
 }
 

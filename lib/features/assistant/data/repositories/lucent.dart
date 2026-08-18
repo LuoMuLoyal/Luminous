@@ -284,6 +284,10 @@ class LucentAssistantRepository implements AssistantRepository {
           items.map((item) => item.toString()).toList(growable: false),
         _ => const <String>[],
       },
+      // F-14:摘要工具(如 get_today_summary_by_date)的置信度说明与数据源版本,
+      // 后端 buildToolDetails 可选透传;缺失时保持 null,来源条不渲染。
+      confidenceNote: json['confidenceNote']?.toString(),
+      sourceVersion: json['sourceVersion']?.toString(),
       disclaimer: json['disclaimer']?.toString(),
     );
   }

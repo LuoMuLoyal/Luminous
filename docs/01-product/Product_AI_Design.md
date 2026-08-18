@@ -50,6 +50,7 @@ AI 的核心差异化不是模型本身，而是经用户授权的个人健康�
 - `AssistantClearResultResponseDto` 等具名响应 DTO 在生成客户端中为强类型，`clearLatestConversation()` 直接访问 `response.data.cleared` 而非手动解析 `Map`。
 - OpenAPI 合同修复后，`nullable: true` 的 DTO 字段已全部补充显式 `type`，生成客户端不再出现 `dynamic` 字段。
 - **提案确认（HITL）写入边界（F-11/F-16）**: 固定提案卡的确认写入口径已从「客户端 `ProposalExecutionOrchestrator` 本地写入」迁移为「服务端原子写入」——`POST /confirm` 对 `approved` 提案直接从 LangGraph 线程状态读取 payload 执行 create/update/delete daily_record 与 update_user_settings，全部成功后才 resume 线程；客户端确认成功后仅 emit `DataChangeBus`（`dailyRecords` / `userSettings`）刷新各 dashboard，不再持有真实写入逻辑。过期提案卡提供「重新生成」按钮，复用产生该提案的用户消息重走流式管线。
+- **回答修订与能力可见性（T9c / F-5b+F-10+F-14）**: 「重新生成」成功后旧回答保留为灰色「已替换」态（本地会话状态，不持久化），新回答追加为正常气泡；页面右上角提供「能力详情」面板，列出全部工具的启用状态与停用原因（`disabledReason` 翻译成用户话术，未知值显示原文）；来源条展开卡在摘要工具返回 `confidenceNote`/`sourceVersion` 时显示「数据截至」行（后端透传落地后生效）。
 - **ADR-0009 缓存策略对 AI 数据的影响**:
   - **建议卡（Today Suggestions）**: 建议卡数据接入 cache-first 模式。网络成功后持久化到本地 Drift 缓存，网络失败时使用缓存兜底（stale-while-error）。这意味着用户在离线状态下仍能看到上一次获取的建议卡内容，但建议的时效性受限于缓存快照时间。AI 解释（`POST /today/suggestions/:id/explain`）不缓存，始终走网络按需加载。
   - **AI 摘要（Today Analysis）**: AI 摘要增量流（`/api/v1/user/today-analysis/generate/stream`）不缓存，每次生成都是实时 AI 调用。

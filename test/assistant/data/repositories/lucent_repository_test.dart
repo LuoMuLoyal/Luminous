@@ -604,6 +604,8 @@ void main() {
                     'generatedAt': '2026-08-17T00:00:00.000Z',
                     'tables': ['cn_medicine_leaflets'],
                   },
+                  'confidenceNote': '基于持久化摘要',
+                  'sourceVersion': 7,
                   'disclaimer': '仅供参考',
                 },
               ],
@@ -633,6 +635,9 @@ void main() {
       expect(detail.sourceTool, 'search_medicine_leaflets');
       expect(detail.sourceGeneratedAt, '2026-08-17T00:00:00.000Z');
       expect(detail.sourceTables, ['cn_medicine_leaflets']);
+      // F-14:confidenceNote/sourceVersion 可选透传映射。
+      expect(detail.confidenceNote, '基于持久化摘要');
+      expect(detail.sourceVersion, '7');
       expect(detail.disclaimer, '仅供参考');
     });
 
@@ -673,6 +678,9 @@ void main() {
       expect(detail.sourceTool, isNull);
       expect(detail.sourceTables, isEmpty);
       expect(detail.disclaimer, isNull);
+      // F-14:缺失时保持 null,来源条不渲染该行。
+      expect(detail.confidenceNote, isNull);
+      expect(detail.sourceVersion, isNull);
     });
 
     test('maps create_daily_record proposed action', () async {
