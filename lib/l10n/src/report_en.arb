@@ -343,6 +343,15 @@
     }
   },
   "reportReviewWindowUntilNow": "now",
+  "reportReviewDetailTitle": "Event review",
+  "reportReviewWhatHappenedReasonRecord": "Triggered by record: {title}",
+  "@reportReviewWhatHappenedReasonRecord": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "reportReviewChangeOutcomeTitle": "Outcome trend",
   "reportReviewChangeWaterTitle": "Water",
   "reportReviewChangeSleepTitle": "Sleep",

@@ -81,6 +81,57 @@ void main() {
 
       expect(find.text(l10n.reportReviewReasonUnknown), findsOneWidget);
     });
+
+    testWidgets('renders the triggering record row after the window row', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        WhatHappenedSection(
+          section: reviewFactsSection('health_event', {
+            'kind': 'symptom',
+            'title': '感冒观察',
+            'startedAt': '2026-08-01T00:00:00.000Z',
+            'endedAt': null,
+            'medicineIds': <String>[],
+            'symptomRecordCount': 1,
+            'checkInCount': 0,
+            'reasonRecordTitle': '头晕',
+          }),
+        ),
+      );
+
+      expect(find.text('由记录触发：头晕'), findsOneWidget);
+      // 触发记录行位于窗口行之后、症状计数之前。
+      final windowDy = tester.getTopLeft(find.textContaining('至今')).dy;
+      final reasonDy = tester.getTopLeft(find.text('由记录触发：头晕')).dy;
+      final symptomDy = tester
+          .getTopLeft(find.text(l10n.reportReviewWhatHappenedSymptomCount(1)))
+          .dy;
+      expect(reasonDy, greaterThan(windowDy));
+      expect(reasonDy, lessThan(symptomDy));
+    });
+
+    testWidgets('omits the triggering record row when the argument is absent', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        WhatHappenedSection(
+          section: reviewFactsSection('health_event', {
+            'kind': 'symptom',
+            'title': '感冒观察',
+            'startedAt': '2026-08-01T00:00:00.000Z',
+            'endedAt': null,
+            'medicineIds': <String>[],
+            'symptomRecordCount': 1,
+            'checkInCount': 0,
+          }),
+        ),
+      );
+
+      expect(find.textContaining('由记录触发'), findsNothing);
+    });
   });
 
   group('KeyChangesSection', () {
@@ -416,6 +467,44 @@ void main() {
       await tester.tap(find.byKey(const Key('review-history-filter-ended')));
       await tester.pumpAndSettle();
       expect(selected, ReviewEventStatus.ended);
+    });
+
+    testWidgets('tapping a history row emits the event through onEventTap', (
+      tester,
+    ) async {
+      ReviewEvent? tapped;
+      await pumpSection(
+        tester,
+        ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.data(
+            reviewHistoryPage([reviewEventItem(id: 'evt-1', title: '头痛观察')]),
+          ),
+          onEventTap: (event) => tapped = event,
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('review-history-item-evt-1')));
+      await tester.pumpAndSettle();
+      expect(tapped?.id, 'evt-1');
+    });
+
+    testWidgets('history rows stay read-only without onEventTap', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.data(
+            reviewHistoryPage([reviewEventItem(id: 'evt-1', title: '头痛观察')]),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('review-history-item-evt-1')));
+      await tester.pumpAndSettle();
+      // 不可点时整行不应被包成 FTappable，也不应抛错或触发任何动作。
+      expect(find.byType(FTappable), findsNothing);
+      expect(tester.takeException(), isNull);
     });
   });
 }

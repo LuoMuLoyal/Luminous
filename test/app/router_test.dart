@@ -206,6 +206,7 @@ void main() {
       '/settings/export',
       '/settings/help',
       '/settings/about',
+      '/report/review/evt-1',
       '/assistant',
       '/notifications',
       '/notifications/123',

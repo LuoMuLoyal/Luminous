@@ -42,6 +42,7 @@ class ReviewView extends StatelessWidget {
     this.onHistoryRetry,
     this.historyStatus,
     this.onHistoryStatusChanged,
+    this.onEventTap,
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -62,6 +63,9 @@ class ReviewView extends StatelessWidget {
   /// reviewHistoryStatusProvider）。缺省时筛选按钮禁用。
   final ReviewEventStatus? historyStatus;
   final ValueChanged<ReviewEventStatus?>? onHistoryStatusChanged;
+
+  /// 历史行点击回调（push 详情页）；null 时历史行只读不可点。
+  final ValueChanged<ReviewEvent>? onEventTap;
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +123,7 @@ class ReviewView extends StatelessWidget {
         onRetry: onHistoryRetry,
         selectedStatus: historyStatus,
         onStatusChanged: onHistoryStatusChanged,
+        onEventTap: onEventTap,
       ),
     ];
 

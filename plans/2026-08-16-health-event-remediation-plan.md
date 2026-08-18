@@ -13,7 +13,7 @@ Created: 2026-08-16
 
 目标:
 
-- 补齐事件域「差最后一环」的半成品:历史事件详情接线(H-6)、kind 筛选(H-4)、reasonRecord 展示(H-9)、事件专属建议升级通知(H-10)。
+- 补齐事件域「差最后一环」的半成品:kind 筛选(H-4)、事件专属建议升级通知(H-10)。
 - 处置档案僵尸/半用字段(C-1):weightKg、conditions 改造为真实消费;unitSystem、onboardingCompleted 低优先级改造;emergencyContact、extras 如实不排期。
 - 清除 Mine「档案提醒」硬编码假数据卡(C-3),改造为真实数据出口。
 - 核心生命周期(创建/check-in/结束/回顾)与档案安全链路保持不动。
@@ -45,17 +45,6 @@ Created: 2026-08-16
 - 改造方案:kind 字段保留(不删字段、不删 `kind === 'other'` 跳过建议重算分支),改造为 Review 历史区「按事件类型筛选」标签——按 kind 过滤历史列表,纯 UI、零后端改造。涉及 `report/presentation/widgets/sections/review_history.dart` 筛选行与 `reviewEventKindLabel` 展示。
 - 前后端分工:纯前端;后端 `GET /reports/reviews` 已返回 kind,无需改动。
 - 依赖:无。中期增强「症状标签集合」(创建时勾选症状、与记录页症状库联动)为 0.1.0 后事项。
-
-#### 2. H-6 + H-9 历史事件详情接线与 reasonRecord 展示（0.1.0 前）
-
-- 现状:后端 `GET /reports/reviews/{eventId}`(`EventReviewService.buildForEvent`)与客户端 `reviewDetailProvider`、`LucentReviewRepository.fetchReview` 全部就绪,但 `_HistoryEventRow` 是无 onTap 的只读行,`reviewDetailProvider` 无消费方;reasonRecordId 关联在用户可见面断裂(录了没展示)。
-- 改造方案:
-  - 历史行加 onTap → push 详情页(GoRouter 顶层路由)或底部弹层,复用 `ReviewView` 事件头部 + 四段渲染现成 widgets,接 `reviewDetailProvider(eventId)`。
-  - 事件头部(active 与 ended)补一行「由记录触发:xxx」:后端在 facts 参数中加 `reasonRecordTitle`(从窗口记录按 id 取,避免客户端再造查询),前端 `event_header.dart` 展示。
-  - 详情打开成功后上报 `review_opened`,复用 `_ReviewOpenedTracker` 的 session 去重语义。
-- 涉及文件:`report/presentation/widgets/sections/review_history.dart`、`report/presentation/providers/review.dart`、`report/presentation/widgets/event_header.dart`;后端 `Lucent/src/modules/reports/services/event-review/facts.service.ts`。
-- 前后端分工:后端仅 facts 增一个字段;前端负责路由、详情页组装与埋点。
-- 依赖:`ReviewView` 四段渲染 widgets(本计划内现资产,直接复用)。
 
 #### 3. H-10 事件专属建议升级通知 + suggestion topic 补全（0.1.0 前）
 
@@ -112,16 +101,15 @@ Created: 2026-08-16
 - 建议升级通知规则与执行器(H-10 依赖):见 [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md) 的建议升级通知一节。
 - vital 时间序列基建(C-1 weightKg 依赖):见 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md) 的 vital 基建一节。
 - ObservedMetric 口径(vital 趋势数据口径):见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节。
-- Review 职责改版为日/周/月洞察、事件成为专题视图(H-8 定位补充):归属 report 计划([`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)),本计划只标注依赖、不承担该项;H-6 详情接线与 report 计划的 Review 信息架构改版需对齐落地顺序。
-- 本计划拥有并写全的横切资产:`ReviewView` 四段渲染复用(改造项 2)、事件侧 `event_check_in_trend` 信号接入(改造项 3)、档案字段逐字段处置决策(改造项 4/5/7/8 与不排期清单)。
+- Review 职责改版为日/周/月洞察、事件成为专题视图(H-8 定位补充):归属 report 计划([`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)),本计划只标注依赖、不承担该项;事件详情接线(H-6)已随改造项 2 落地,与 report 计划的 Review 信息架构改版不再有落地顺序耦合。
+- 本计划拥有并写全的横切资产:事件侧 `event_check_in_trend` 信号接入(改造项 3)、档案字段逐字段处置决策(改造项 4/5/7/8 与不排期清单)。
 - 桌面/Web 形态不再扩展 Flutter 产品面；独立 Next.js + Tauri MVP 在 0.1.0 后启动，不展开。
 
 ## 五、本计划内执行顺序
 
-1. 改造项 2(H-6+H-9，0.1.0 前)：工程量小、闭环价值直接。
-2. 改造项 3(H-10，0.1.0 前)：依赖 today 计划的升级通知规则落地后接入。
-3. 改造项 6(C-3)与 7/8（0.1.0 前）：先移除硬编码假过敏，再由 Lucent 档案完整度合同驱动展示。
-4. 改造项 1(H-4)、4(weightKg) 与 5(conditions)均为 0.1.0 后，按既有 P1 及依赖顺序恢复。
+1. 改造项 3(H-10，0.1.0 前)：依赖 today 计划的升级通知规则落地后接入。
+2. 改造项 6(C-3)与 7/8（0.1.0 前）：先移除硬编码假过敏，再由 Lucent 档案完整度合同驱动展示。
+3. 改造项 1(H-4)、4(weightKg) 与 5(conditions)均为 0.1.0 后，按既有 P1 及依赖顺序恢复。
 
 ## 六、已决边界与延期项
 

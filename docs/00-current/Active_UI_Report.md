@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-15
+updated: 2026-08-18
 ---
 
 # Active UI — Report
 
-Last updated: 2026-08-15 (Workstream 2 Task 10：产品闭环收口 — 分享页信封修复、漏斗合同同步、全量验证)
+Last updated: 2026-08-18 (改造项 2 H-6+H-9：历史事件详情接线 — 历史行可点开 `/report/review/:eventId` 详情页、whatHappened 段展示「由记录触发」、详情呈现上报 review_opened)。Earlier: 2026-08-15 (Workstream 2 Task 10：产品闭环收口 — 分享页信封修复、漏斗合同同步、全量验证)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
 
@@ -64,6 +64,13 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - **旧 dashboard 代码尚未删除**：`dashboard_view.dart` 及 sections、`top_bar.dart` 等 legacy 文件保留原样（文件头带 LEGACY 标注），仅经「更多 → 历史报告」（`/report/legacy` 兼容页）可达；`skeleton_view.dart` 仍被 ReviewView 骨架屏复用，非 legacy。删除评估留待兼容期结束。
 - 全量验证（Task 10，2026-08-13）：`dart run scripts/bootstrap_generated_sources.dart`（无生成物漂移）、`flutter analyze`（无问题）、`flutter test` 全量 **3067 passed / 1 skipped**（跳过为既有）、`dart run scripts/run_daily_checks.dart`、`dart run scripts/check_doc_coverage.dart --warning-only`、`dart run scripts/check_doc_links.dart` 全部通过；桌面 e2e（`report_e2e` 6 + `shell_navigation` 4 + `review_closed_loop` 1 = **11 用例**）此前已 `-d windows` 实跑全绿，Task 10 未重复执行（环境为 Windows 桌面，移动视口限制见迁移日志，未伪造运行结果）；`git diff --check` 无空白错误。
 - 保留的文档化限制：red flag 为用户级静态检查结果、不与事件药物对齐；`doseLogSources` capped 判定；changes 趋势为首末比较简化口径；`buildCurrent` 双重读取为低优先级遗留项；旧 dashboard 删除评估留待兼容期结束。
+
+## 历史事件详情页（改造项 2，H-6 + H-9，2026-08-18）
+
+- **历史行可点开完整回顾**：`_HistoryEventRow` 包 `FTappable`（`onTap` 为空时保持纯只读行，不包 FTappable，避免禁用态语义合并破坏既有遍历顺序）；`ReviewHistorySection` 新增 `onEventTap` 参数，`ReviewView` 透传，`ReportPage` 装配 `context.push(Routes.reviewDetail.replaceAll(':eventId', event.id))`。
+- **新顶层路由 `/report/review/:eventId`**（GoRouter 顶层、slide 过渡、需登录）：`ReportReviewDetailPage`（`presentation/pages/review_detail.dart`）用 `PageScaffold` 外壳 + 复用 `EventHeaderSection`（只读：`showCheckInAction` / `showEndAction` 均为 false，`onCheckIn`/`onEndEvent` 空函数）+ 四段渲染 widgets，接 `reviewDetailProvider(eventId)`（autoDispose family）。loading 复用 `ReportSkeletonView`（放在可滚动容器内，与 Review 首屏骨架一致）；error 用 `StateErrorView` + `ref.invalidate(reviewDetailProvider(eventId))` 重试。
+- **触发记录展示（H-9）**：「发生了什么」段在窗口行之后、症状计数之前新增「由记录触发：{title}」行：后端 facts.arguments 恒带 `reasonRecordTitle`（从事件 `reasonRecordId` 经 daily-records reader 解析记录标题，缺失/读取失败为 null、不阻塞回顾），前端 `reviewArgString` 非空才渲染；新 l10n 键 `reportReviewWhatHappenedReasonRecord`。
+- **埋点**：详情数据成功呈现后（data 分支首次 build 的 post-frame 回调 + mounted 守卫）调用 `ProductEventService.trackReviewOpened()`；session 去重内置，重建/重试不会重复上报。loading/error 不上报。
 
 ## Visit Summary and Product Measurement 收口（Workstream 2 Task 10）
 

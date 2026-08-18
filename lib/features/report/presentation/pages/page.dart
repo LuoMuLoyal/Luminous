@@ -299,6 +299,9 @@ class ReportPage extends ConsumerWidget {
                 : () => _openEnd(context, ref, review),
             onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
             onHistoryRetry: () => ref.invalidate(reviewHistoryProvider),
+            onEventTap: (event) => context.push(
+              Routes.reviewDetail.replaceAll(':eventId', event.id),
+            ),
           ),
         ),
       ),

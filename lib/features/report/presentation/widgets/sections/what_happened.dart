@@ -45,6 +45,7 @@ class WhatHappenedSection extends StatelessWidget {
   ) {
     final startedAt = reviewArgString(args, 'startedAt');
     final endedAt = reviewArgString(args, 'endedAt');
+    final reasonRecordTitle = reviewArgString(args, 'reasonRecordTitle');
     final symptomCount = reviewArgInt(args, 'symptomRecordCount');
     final checkInCount = reviewArgInt(args, 'checkInCount');
 
@@ -60,6 +61,11 @@ class WhatHappenedSection extends StatelessWidget {
                   ? l10n.reportReviewWindowUntilNow
                   : reviewShortDateLabel(context, endedAt),
             ),
+          ),
+        if (reasonRecordTitle != null)
+          ReviewFactRow(
+            icon: SemanticIcons.recordSymptom,
+            text: l10n.reportReviewWhatHappenedReasonRecord(reasonRecordTitle),
           ),
         ReviewFactRow(
           icon: SemanticIcons.recordSymptom,

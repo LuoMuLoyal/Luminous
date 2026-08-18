@@ -350,6 +350,15 @@
     }
   },
   "reportReviewWindowUntilNow": "至今",
+  "reportReviewDetailTitle": "事件回顾",
+  "reportReviewWhatHappenedReasonRecord": "由记录触发：{title}",
+  "@reportReviewWhatHappenedReasonRecord": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "reportReviewChangeOutcomeTitle": "结果变化",
   "reportReviewChangeWaterTitle": "饮水",
   "reportReviewChangeSleepTitle": "睡眠",

@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-17
+updated: 2026-08-18
 ---
 
 # Routing (GoRouter)
 
-Last updated: 2026-08-17
+Last updated: 2026-08-18
 
 本文件是 [[architecture]] 拆分后的子文档。
 
@@ -43,6 +43,7 @@ GoRoute (top-level, no shell)
 ├── /account, /account/oauth/wechat, /account/change-email
 ├── /report/clinic-summary/:token
 ├── /report/legacy
+├── /report/review/:eventId
 └── /scan/barcode
 ```
 

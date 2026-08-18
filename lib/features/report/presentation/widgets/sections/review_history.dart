@@ -9,8 +9,9 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 /// 过去的观察历史：按事件逐条列出（最近在前），不按月份分组。
 ///
-/// 列表项只读展示事件头部信息；点开查看完整回顾属于后续任务。
-/// 历史加载失败不阻塞首屏——卡片内显示一行提示 + 轻量重试入口。
+/// 列表项只读展示事件头部信息；传入 [onEventTap] 时整行可点（FTappable），
+/// 由页面装配层 push 完整回顾详情页。历史加载失败不阻塞首屏——卡片内显示
+/// 一行提示 + 轻量重试入口。
 ///
 /// 筛选：提供 status（全部 / 进行中 / 已结束）轻量筛选，由页面装配层的
 /// [reviewHistoryStatusProvider] 驱动重新拉取。时间范围**不是** review
@@ -22,6 +23,7 @@ class ReviewHistorySection extends StatelessWidget {
     this.onRetry,
     this.selectedStatus,
     this.onStatusChanged,
+    this.onEventTap,
   });
 
   final AsyncValue<ReviewEventPage> history;
@@ -34,6 +36,9 @@ class ReviewHistorySection extends StatelessWidget {
 
   /// 筛选变化回调；为 null 时筛选按钮禁用（测试/独立使用场景）。
   final ValueChanged<ReviewEventStatus?>? onStatusChanged;
+
+  /// 历史行点击回调；为 null 时行不可点（只读）。
+  final ValueChanged<ReviewEvent>? onEventTap;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +120,12 @@ class ReviewHistorySection extends StatelessWidget {
                       children: [
                         for (final (index, event) in page.items.indexed) ...[
                           if (index > 0) const AppDivider(),
-                          _HistoryEventRow(event: event),
+                          _HistoryEventRow(
+                            event: event,
+                            onTap: onEventTap == null
+                                ? null
+                                : () => onEventTap!(event),
+                          ),
                         ],
                       ],
                     ),
@@ -128,9 +138,12 @@ class ReviewHistorySection extends StatelessWidget {
 }
 
 class _HistoryEventRow extends StatelessWidget {
-  const _HistoryEventRow({required this.event});
+  const _HistoryEventRow({required this.event, this.onTap});
 
   final ReviewEvent event;
+
+  /// 行点击回调；null 时整行不可点（只读展示）。
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +155,7 @@ class _HistoryEventRow extends StatelessWidget {
         ? reviewShortDateLabel(context, event.endedAt!)
         : l10n.reportReviewWindowUntilNow;
 
-    return Padding(
+    final row = Padding(
       key: Key('review-history-item-${event.id}'),
       padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
       child: Row(
@@ -188,6 +201,10 @@ class _HistoryEventRow extends StatelessWidget {
         ],
       ),
     );
+
+    // onTap 为空时保持纯只读行（不包 FTappable），避免禁用态把整行文本
+    // 合并进单一语义节点、破坏既有语义遍历顺序；可点时才赋予按压反馈。
+    return onTap == null ? row : FTappable(onPress: onTap, child: row);
   }
 }
 
