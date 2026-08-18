@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
@@ -29,24 +27,6 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
   final ReportAiSummaryRemoteDataSource dataSource;
 
   @override
-  Future<ReportAiSummary> generate(
-    ReportAiSummaryRange range, {
-    String? startDate,
-    String? endDate,
-  }) async {
-    await for (final event in generateStream(
-      range,
-      startDate: startDate,
-      endDate: endDate,
-    )) {
-      if (event is ReportAiGenerationResultEvent) {
-        return event.summary;
-      }
-    }
-    throw StateError('报告 AI 流式响应已结束，但没有返回最终结果。');
-  }
-
-  @override
   Stream<ReportAiGenerationEvent> generateStream(
     ReportAiSummaryRange range, {
     String? startDate,
@@ -73,11 +53,60 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
       endDate: dto.endDate,
       generatedAt: parseDateTimeOrEpoch(dto.generatedAt),
       summary: dto.summary,
-      bullets: dto.bullets.map(_mapBullet).toList(growable: false),
-      actionLabel: dto.actionLabel,
-      action: dto.action,
-      confidenceNote: dto.confidenceNote,
+      coverage: _mapCoverage(dto.coverage),
+      observedPattern: _mapObservedPattern(dto.observedPattern),
+      lowRiskAction: _mapLowRiskAction(dto.lowRiskAction),
+      disclaimer: dto.disclaimer,
     );
+  }
+
+  ReportAiSummaryCoverage _mapCoverage(lucent.ReportCoverageDto dto) {
+    return ReportAiSummaryCoverage(
+      medication: _mapCoverageDimension(dto.medication),
+      water: _mapCoverageDimension(dto.water),
+      sleep: _mapCoverageDimension(dto.sleep),
+    );
+  }
+
+  ReportAiSummaryCoverageDimension _mapCoverageDimension(
+    lucent.ReportCoverageDimensionDto dto,
+  ) {
+    return ReportAiSummaryCoverageDimension(
+      trackedDays: dto.trackedDays.toInt(),
+      totalDays: dto.totalDays.toInt(),
+    );
+  }
+
+  ReportAiSummaryObservedPattern? _mapObservedPattern(
+    lucent.ReportObservedPatternDto? dto,
+  ) {
+    if (dto == null) return null;
+    return ReportAiSummaryObservedPattern(
+      kind: _mapPatternKind(dto.kind),
+      text: dto.text,
+      source: dto.source_,
+    );
+  }
+
+  ReportAiSummaryPatternKind _mapPatternKind(
+    lucent.ReportObservedPatternDtoKindEnum kind,
+  ) {
+    return switch (kind) {
+      lucent.ReportObservedPatternDtoKindEnum.medication =>
+        ReportAiSummaryPatternKind.medication,
+      lucent.ReportObservedPatternDtoKindEnum.hydration =>
+        ReportAiSummaryPatternKind.hydration,
+      lucent.ReportObservedPatternDtoKindEnum.sleep =>
+        ReportAiSummaryPatternKind.sleep,
+      _ => ReportAiSummaryPatternKind.medication,
+    };
+  }
+
+  ReportAiSummaryLowRiskAction? _mapLowRiskAction(
+    lucent.ReportLowRiskActionDto? dto,
+  ) {
+    if (dto == null) return null;
+    return ReportAiSummaryLowRiskAction(label: dto.label, text: dto.text);
   }
 
   ReportAiSummaryRange _mapRange(lucent.ReportSummaryDataDtoRangeEnum range) {
@@ -87,34 +116,6 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
       lucent.ReportSummaryDataDtoRangeEnum.custom =>
         ReportAiSummaryRange.custom,
       _ => ReportAiSummaryRange.last7Days,
-    };
-  }
-
-  ReportAiSummaryBullet _mapBullet(lucent.ReportSummaryBulletDto dto) {
-    final kind = switch (dto.kind.value) {
-      'medication' => ReportAiSummaryBulletKind.medication,
-      'hydration' => ReportAiSummaryBulletKind.hydration,
-      'sleep' => ReportAiSummaryBulletKind.sleep,
-      _ => ReportAiSummaryBulletKind.general,
-    };
-
-    return ReportAiSummaryBullet(
-      kind: kind,
-      text: dto.text,
-      color: _bulletColor(kind),
-      icon: _bulletIcon(kind),
-    );
-  }
-
-  SemanticColor _bulletColor(ReportAiSummaryBulletKind kind) =>
-      SemanticColor.primary;
-
-  IconData _bulletIcon(ReportAiSummaryBulletKind kind) {
-    return switch (kind) {
-      ReportAiSummaryBulletKind.medication => SemanticIcons.recordMedicine,
-      ReportAiSummaryBulletKind.hydration => SemanticIcons.recordWater,
-      ReportAiSummaryBulletKind.sleep => SemanticIcons.recordMoon,
-      ReportAiSummaryBulletKind.general => SemanticIcons.aiTip,
     };
   }
 }

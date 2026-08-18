@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:luminous/core/design/semantic_color.dart';
-
 enum ReportAiSummaryRange {
   last7Days('last_7_days'),
   last30Days('last_30_days'),
@@ -11,6 +8,49 @@ enum ReportAiSummaryRange {
   final String apiValue;
 }
 
+enum ReportAiSummaryPatternKind { medication, hydration, sleep }
+
+class ReportAiSummaryCoverageDimension {
+  const ReportAiSummaryCoverageDimension({
+    required this.trackedDays,
+    required this.totalDays,
+  });
+
+  final int trackedDays;
+  final int totalDays;
+}
+
+class ReportAiSummaryCoverage {
+  const ReportAiSummaryCoverage({
+    required this.medication,
+    required this.water,
+    required this.sleep,
+  });
+
+  final ReportAiSummaryCoverageDimension medication;
+  final ReportAiSummaryCoverageDimension water;
+  final ReportAiSummaryCoverageDimension sleep;
+}
+
+class ReportAiSummaryObservedPattern {
+  const ReportAiSummaryObservedPattern({
+    required this.kind,
+    required this.text,
+    required this.source,
+  });
+
+  final ReportAiSummaryPatternKind kind;
+  final String text;
+  final String source;
+}
+
+class ReportAiSummaryLowRiskAction {
+  const ReportAiSummaryLowRiskAction({required this.label, required this.text});
+
+  final String label;
+  final String text;
+}
+
 class ReportAiSummary {
   const ReportAiSummary({
     required this.range,
@@ -18,10 +58,10 @@ class ReportAiSummary {
     required this.endDate,
     required this.generatedAt,
     required this.summary,
-    required this.bullets,
-    required this.actionLabel,
-    this.action,
-    required this.confidenceNote,
+    required this.coverage,
+    required this.observedPattern,
+    required this.lowRiskAction,
+    required this.disclaimer,
   });
 
   final ReportAiSummaryRange range;
@@ -29,27 +69,11 @@ class ReportAiSummary {
   final String endDate;
   final DateTime generatedAt;
   final String summary;
-  final List<ReportAiSummaryBullet> bullets;
-  final String actionLabel;
-  final String? action;
-  final String confidenceNote;
+  final ReportAiSummaryCoverage coverage;
+  final ReportAiSummaryObservedPattern? observedPattern;
+  final ReportAiSummaryLowRiskAction? lowRiskAction;
+  final String disclaimer;
 }
-
-class ReportAiSummaryBullet {
-  const ReportAiSummaryBullet({
-    required this.kind,
-    required this.text,
-    required this.color,
-    required this.icon,
-  });
-
-  final ReportAiSummaryBulletKind kind;
-  final String text;
-  final SemanticColor color;
-  final IconData icon;
-}
-
-enum ReportAiSummaryBulletKind { medication, hydration, sleep, general }
 
 enum ReportAiSummaryCardStatus { idle, loading, success, error, disabled }
 

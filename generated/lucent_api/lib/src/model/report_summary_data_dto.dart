@@ -3,7 +3,9 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/report_summary_bullet_dto.dart';
+import 'package:lucent_api/src/model/report_low_risk_action_dto.dart';
+import 'package:lucent_api/src/model/report_coverage_dto.dart';
+import 'package:lucent_api/src/model/report_observed_pattern_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -29,13 +31,13 @@ class ReportSummaryDataDto {
 
     required this.summary,
 
-    required this.bullets,
+    required this.coverage,
 
-    required this.actionLabel,
+    this.observedPattern,
 
-    required this.action,
+    this.lowRiskAction,
 
-    required this.confidenceNote,
+    required this.disclaimer,
   });
 
   @JsonKey(
@@ -58,17 +60,19 @@ class ReportSummaryDataDto {
   @JsonKey(name: r'summary', required: true, includeIfNull: false)
   final String summary;
 
-  @JsonKey(name: r'bullets', required: true, includeIfNull: false)
-  final List<ReportSummaryBulletDto> bullets;
+  @JsonKey(name: r'coverage', required: true, includeIfNull: false)
+  final ReportCoverageDto coverage;
 
-  @JsonKey(name: r'actionLabel', required: true, includeIfNull: false)
-  final String actionLabel;
+  /// At most one source-backed observed pattern. Null when data is insufficient.
+  @JsonKey(name: r'observedPattern', required: false, includeIfNull: false)
+  final ReportObservedPatternDto? observedPattern;
 
-  @JsonKey(name: r'action', required: true, includeIfNull: false)
-  final String action;
+  /// At most one low-risk action. Null when no action is warranted.
+  @JsonKey(name: r'lowRiskAction', required: false, includeIfNull: false)
+  final ReportLowRiskActionDto? lowRiskAction;
 
-  @JsonKey(name: r'confidenceNote', required: true, includeIfNull: false)
-  final String confidenceNote;
+  @JsonKey(name: r'disclaimer', required: true, includeIfNull: false)
+  final String disclaimer;
 
   @override
   bool operator ==(Object other) =>
@@ -79,10 +83,10 @@ class ReportSummaryDataDto {
           other.endDate == endDate &&
           other.generatedAt == generatedAt &&
           other.summary == summary &&
-          other.bullets == bullets &&
-          other.actionLabel == actionLabel &&
-          other.action == action &&
-          other.confidenceNote == confidenceNote;
+          other.coverage == coverage &&
+          other.observedPattern == observedPattern &&
+          other.lowRiskAction == lowRiskAction &&
+          other.disclaimer == disclaimer;
 
   @override
   int get hashCode =>
@@ -91,10 +95,10 @@ class ReportSummaryDataDto {
       endDate.hashCode +
       generatedAt.hashCode +
       summary.hashCode +
-      bullets.hashCode +
-      actionLabel.hashCode +
-      action.hashCode +
-      confidenceNote.hashCode;
+      coverage.hashCode +
+      (observedPattern == null ? 0 : observedPattern.hashCode) +
+      (lowRiskAction == null ? 0 : lowRiskAction.hashCode) +
+      disclaimer.hashCode;
 
   factory ReportSummaryDataDto.fromJson(Map<String, dynamic> json) =>
       _$ReportSummaryDataDtoFromJson(json);

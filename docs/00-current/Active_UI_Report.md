@@ -261,3 +261,12 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 响应契约信封化修复后,preview/share/shared 三处 raw Dio 手动解包 workaround 移除,
 统一走生成客户端(`reportsControllerPreviewClinicSummaryV1` 等);`api_paths.dart` 删除
 对应的信封解包常量与注释。行为不变(仍校验信封 code),错误路径由 DioException 驱动。
+
+### 2026-08-18 — R-3 周月纵向洞察生成器替换泛化总结口径
+
+- AI 总结卡片内容结构由泛化 bullets + actionLabel + confidenceNote 替换为 **覆盖率 + 已观察模式 + 低风险行动 + 免责声明** 四段。
+- `ReportAiSummary` entity 字段变更：删除 `bullets`/`actionLabel`/`action`/`confidenceNote`，新增 `coverage`（medication/water/sleep 各 trackedDays+totalDays）、`observedPattern`（nullable）、`lowRiskAction`（nullable）、`disclaimer`。
+- `ReportAiSummaryContent` 不再有 `bullets: List<ReportAiSummaryItem>`，改为 `observedPattern`/`lowRiskAction`/`disclaimer`/`coverage`。
+- 删除非流式 `generate()` 方法（domain interface / remote datasource / repository 三层），仅保留 `generateStream()`。
+- section 渲染由 bullets 列表 + action 按钮改为 observedPattern / lowRiskAction / disclaimer 三段文本。
+- 生成客户端重新生成，新增 `ReportCoverageDto`/`ReportObservedPatternDto`/`ReportLowRiskActionDto` 等模型。

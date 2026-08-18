@@ -1,6 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 
 void main() {
@@ -113,30 +111,30 @@ void main() {
 
   group('ReportAiSummary', () {
     test('stores all fields correctly', () {
-      const bullets = [
-        ReportAiSummaryBullet(
-          kind: ReportAiSummaryBulletKind.medication,
-          text: 'Med advice',
-          color: SemanticColor.primary,
-          icon: SemanticIcons.recordMedicine,
-        ),
-        ReportAiSummaryBullet(
-          kind: ReportAiSummaryBulletKind.hydration,
-          text: 'Water advice',
-          color: SemanticColor.primary,
-          icon: FLucideIcons.droplet,
-        ),
-      ];
       final summary = ReportAiSummary(
         range: ReportAiSummaryRange.last7Days,
         startDate: '2026-07-05',
         endDate: '2026-07-12',
         generatedAt: DateTime(2026, 7, 12, 10, 30),
         summary: 'Weekly summary',
-        bullets: bullets,
-        actionLabel: 'View details',
-        action: 'route://detail',
-        confidenceNote: 'High',
+        coverage: const ReportAiSummaryCoverage(
+          medication: ReportAiSummaryCoverageDimension(
+            trackedDays: 5,
+            totalDays: 7,
+          ),
+          water: ReportAiSummaryCoverageDimension(trackedDays: 3, totalDays: 7),
+          sleep: ReportAiSummaryCoverageDimension(trackedDays: 0, totalDays: 7),
+        ),
+        observedPattern: const ReportAiSummaryObservedPattern(
+          kind: ReportAiSummaryPatternKind.medication,
+          text: '用药完成率稳定。',
+          source: '用药提醒记录',
+        ),
+        lowRiskAction: const ReportAiSummaryLowRiskAction(
+          label: '继续记录',
+          text: '建议保持当前节奏。',
+        ),
+        disclaimer: '仅基于近 7 天数据。',
       );
 
       expect(summary.range, ReportAiSummaryRange.last7Days);
@@ -144,17 +142,25 @@ void main() {
       expect(summary.endDate, '2026-07-12');
       expect(summary.generatedAt, DateTime(2026, 7, 12, 10, 30));
       expect(summary.summary, 'Weekly summary');
-      expect(summary.bullets.length, 2);
-      expect(summary.bullets[0].kind, ReportAiSummaryBulletKind.medication);
-      expect(summary.bullets[0].text, 'Med advice');
-      expect(summary.actionLabel, 'View details');
-      expect(summary.action, 'route://detail');
-      expect(summary.confidenceNote, 'High');
+      expect(summary.coverage.medication.trackedDays, 5);
+      expect(summary.coverage.water.trackedDays, 3);
+      expect(summary.coverage.sleep.trackedDays, 0);
+      expect(summary.observedPattern, isNotNull);
+      expect(
+        summary.observedPattern!.kind,
+        ReportAiSummaryPatternKind.medication,
+      );
+      expect(summary.observedPattern!.text, '用药完成率稳定。');
+      expect(summary.observedPattern!.source, '用药提醒记录');
+      expect(summary.lowRiskAction, isNotNull);
+      expect(summary.lowRiskAction!.label, '继续记录');
+      expect(summary.disclaimer, '仅基于近 7 天数据。');
     });
 
-    test('action is optional', () {
+    test('observedPattern and lowRiskAction are nullable', () {
       final summary = _buildSummary();
-      expect(summary.action, isNull);
+      expect(summary.observedPattern, isNull);
+      expect(summary.lowRiskAction, isNull);
     });
   });
 
@@ -173,15 +179,14 @@ void main() {
     });
   });
 
-  group('ReportAiSummaryBulletKind', () {
+  group('ReportAiSummaryPatternKind', () {
     test('has all expected values', () {
       expect(
-        ReportAiSummaryBulletKind.values,
+        ReportAiSummaryPatternKind.values,
         containsAll([
-          ReportAiSummaryBulletKind.medication,
-          ReportAiSummaryBulletKind.hydration,
-          ReportAiSummaryBulletKind.sleep,
-          ReportAiSummaryBulletKind.general,
+          ReportAiSummaryPatternKind.medication,
+          ReportAiSummaryPatternKind.hydration,
+          ReportAiSummaryPatternKind.sleep,
         ]),
       );
     });
@@ -195,8 +200,16 @@ ReportAiSummary _buildSummary() {
     endDate: '2026-07-12',
     generatedAt: DateTime(2026, 7, 12),
     summary: 'Summary',
-    bullets: const [],
-    actionLabel: 'Action',
-    confidenceNote: 'High',
+    coverage: const ReportAiSummaryCoverage(
+      medication: ReportAiSummaryCoverageDimension(
+        trackedDays: 5,
+        totalDays: 7,
+      ),
+      water: ReportAiSummaryCoverageDimension(trackedDays: 3, totalDays: 7),
+      sleep: ReportAiSummaryCoverageDimension(trackedDays: 0, totalDays: 7),
+    ),
+    observedPattern: null,
+    lowRiskAction: null,
+    disclaimer: 'Disclaimer',
   );
 }

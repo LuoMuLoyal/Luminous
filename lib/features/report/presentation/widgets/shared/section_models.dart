@@ -26,24 +26,21 @@ DataExportRequestInput? reportExportInputForKind(ReportExportKind kind) {
 class ReportAiSummaryContent {
   const ReportAiSummaryContent({
     required this.subtitle,
-    required this.bullets,
     this.summaryText,
-    this.footer,
+    this.observedPattern,
+    this.lowRiskAction,
+    this.disclaimer,
+    this.coverage,
     this.showGenerateButton = false,
   });
 
   final String subtitle;
-  final List<ReportAiSummaryItem> bullets;
   final String? summaryText;
-  final String? footer;
+  final String? observedPattern;
+  final String? lowRiskAction;
+  final String? disclaimer;
+  final ReportAiSummaryCoverage? coverage;
   final bool showGenerateButton;
-}
-
-class ReportAiSummaryItem {
-  const ReportAiSummaryItem({required this.color, required this.text});
-
-  final SemanticColor color;
-  final String text;
 }
 
 // ---------------------------------------------------------------------------
@@ -137,26 +134,14 @@ ReportAiSummaryContent buildReportAiSummaryContent({
   if (!canAccessProtectedData) {
     return ReportAiSummaryContent(
       subtitle: l10n.reportSnapshotHint,
-      bullets: [
-        ReportAiSummaryItem(
-          color: SemanticColor.primary,
-          text: l10n.authLoginRequiredPrompt,
-        ),
-      ],
-      footer: l10n.authNotSignedIn,
+      disclaimer: l10n.authNotSignedIn,
     );
   }
 
   if (aiSummariesEnabled == false || aiState.isDisabled) {
     return ReportAiSummaryContent(
       subtitle: l10n.reportSnapshotHint,
-      bullets: [
-        ReportAiSummaryItem(
-          color: SemanticColor.primary,
-          text: l10n.reportAiSummaryDisabledHint,
-        ),
-      ],
-      footer: l10n.reportAiSummaryDisabledHint,
+      disclaimer: l10n.reportAiSummaryDisabledHint,
     );
   }
 
@@ -165,27 +150,17 @@ ReportAiSummaryContent buildReportAiSummaryContent({
     return ReportAiSummaryContent(
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
       summaryText: summary.summary,
-      bullets: summary.bullets
-          .map(
-            (bullet) =>
-                ReportAiSummaryItem(color: bullet.color, text: bullet.text),
-          )
-          .toList(growable: false),
-      footer: summary.confidenceNote,
+      observedPattern: summary.observedPattern?.text,
+      lowRiskAction: summary.lowRiskAction?.text,
+      disclaimer: summary.disclaimer,
+      coverage: summary.coverage,
     );
   }
 
   if (aiState.status == ReportAiSummaryCardStatus.error) {
     return ReportAiSummaryContent(
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
-      bullets: [
-        ReportAiSummaryItem(
-          color: SemanticColor.primary,
-          text: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
-        ),
-        ...reportAiSummaryFallbackBullets(dashboard),
-      ],
-      footer: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
+      disclaimer: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
       showGenerateButton: dashboard.aiSummaryEnabled,
     );
   }
@@ -194,42 +169,15 @@ ReportAiSummaryContent buildReportAiSummaryContent({
     return ReportAiSummaryContent(
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
       summaryText: aiState.streamingSummary,
-      bullets: [
-        ReportAiSummaryItem(
-          color: SemanticColor.primary,
-          text: reportAiSummaryGeneratingLabel(l10n, selectedRange),
-        ),
-        ...reportAiSummaryFallbackBullets(dashboard),
-      ],
-      footer: reportAiSummaryGeneratingLabel(l10n, selectedRange),
+      disclaimer: reportAiSummaryGeneratingLabel(l10n, selectedRange),
     );
   }
 
   return ReportAiSummaryContent(
     subtitle: l10n.reportSnapshotHint,
-    bullets: reportAiSummaryFallbackBullets(dashboard),
-    footer: l10n.reportAiSummaryDefaultHint,
+    disclaimer: l10n.reportAiSummaryDefaultHint,
     showGenerateButton: dashboard.aiSummaryEnabled,
   );
-}
-
-List<ReportAiSummaryItem> reportAiSummaryFallbackBullets(
-  ReportDashboard dashboard,
-) {
-  return [
-    ReportAiSummaryItem(
-      color: reportStatusColor(dashboard.score.status),
-      text: dashboard.score.summary,
-    ),
-    ...dashboard.findings
-        .take(3)
-        .map(
-          (finding) => ReportAiSummaryItem(
-            color: finding.color,
-            text: '${finding.title}: ${finding.body}',
-          ),
-        ),
-  ];
 }
 
 String reportAiSummarySubtitle(

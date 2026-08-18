@@ -1,12 +1,8 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
@@ -47,8 +43,6 @@ class ReportAiSummarySection extends StatelessWidget {
       selectedRange: selectedRange,
       colors: colors,
     );
-    final action = aiState.summary?.action;
-    final actionLabel = aiState.summary?.actionLabel;
 
     return FCard(
       child: Padding(
@@ -101,10 +95,6 @@ class ReportAiSummarySection extends StatelessWidget {
                                 : FMultiValueControl.lifted(
                                     value: {selectedRange},
                                     onChange: (selection) {
-                                      // FMultiValueControl.lifted 的 _ProxyNotifier
-                                      // 在点击新选项时将新值添加到集合中而不移除旧值，
-                                      // 因此 selection.first 可能返回旧值。过滤出
-                                      // 与当前 selectedRange 不同的值即为新选中项。
                                       final next = selection
                                           .where((v) => v != selectedRange)
                                           .firstOrNull;
@@ -128,12 +118,6 @@ class ReportAiSummarySection extends StatelessWidget {
                               ),
                             ],
                           ),
-                          if (actionLabel != null && action != null)
-                            FButton(
-                              variant: FButtonVariant.outline,
-                              onPress: () => _handleAction(context, action),
-                              child: Text(actionLabel),
-                            ),
                         ],
                       ),
                     ],
@@ -160,43 +144,34 @@ class ReportAiSummarySection extends StatelessWidget {
               ),
               const AppDivider(),
             ],
-            for (var index = 0; index < content.bullets.length; index += 1) ...[
+            if (content.observedPattern != null) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: Spacing.level2),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: content.bullets[index].color.solid(context),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const SizedBox.square(dimension: Spacing.level2),
-                      ),
-                    ),
-                    const SizedBox(width: Spacing.level3),
-                    Expanded(
-                      child: SkeletonText(
-                        text: content.bullets[index].text,
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(color: colors.mutedForeground),
-                        widthFactor: 0.9,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  content.observedPattern!,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
               ),
-              if (index < content.bullets.length - 1) const AppDivider(),
-            ],
-            if (content.footer != null) ...[
-              const SizedBox(height: Spacing.level3),
               const AppDivider(),
+            ],
+            if (content.lowRiskAction != null) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
+                child: Text(
+                  content.lowRiskAction!,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ),
+              const AppDivider(),
+            ],
+            if (content.disclaimer != null) ...[
               const SizedBox(height: Spacing.level3),
               Text(
-                content.footer!,
+                content.disclaimer!,
                 style: TypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.mutedForeground),
@@ -231,12 +206,5 @@ class ReportAiSummarySection extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _handleAction(BuildContext context, String action) {
-    final route = mapActionToRoute(action);
-    if (route != null) {
-      unawaited(context.push(route));
-    }
   }
 }

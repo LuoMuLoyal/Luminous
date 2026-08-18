@@ -17,11 +17,6 @@ class ReportAiGenerationResultEvent extends ReportAiGenerationEvent {
 }
 
 abstract interface class ReportAiSummaryRepository {
-  Future<ReportAiSummary> generate(
-    ReportAiSummaryRange range, {
-    String? startDate,
-    String? endDate,
-  });
   Stream<ReportAiGenerationEvent> generateStream(
     ReportAiSummaryRange range, {
     String? startDate,

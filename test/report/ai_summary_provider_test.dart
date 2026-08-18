@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
@@ -415,16 +414,17 @@ ReportAiSummary _testSummary({required ReportAiSummaryRange range}) {
     endDate: '2026-06-12',
     generatedAt: DateTime.parse('2026-06-12T10:00:00.000Z'),
     summary: '测试周总结',
-    bullets: const [
-      ReportAiSummaryBullet(
-        kind: ReportAiSummaryBulletKind.medication,
-        text: '用药记录良好。',
-        color: SemanticColor.primary,
-        icon: SemanticIcons.recordMedicine,
+    coverage: const ReportAiSummaryCoverage(
+      medication: ReportAiSummaryCoverageDimension(
+        trackedDays: 5,
+        totalDays: 7,
       ),
-    ],
-    actionLabel: '查看报告',
-    confidenceNote: '仅基于近 7 天数据。',
+      water: ReportAiSummaryCoverageDimension(trackedDays: 3, totalDays: 7),
+      sleep: ReportAiSummaryCoverageDimension(trackedDays: 0, totalDays: 7),
+    ),
+    observedPattern: null,
+    lowRiskAction: null,
+    disclaimer: '仅基于近 7 天数据。',
   );
 }
 
@@ -442,19 +442,6 @@ class _FakeReportAiSummaryRepository implements ReportAiSummaryRepository {
   ReportAiSummary? response;
   Object? error;
   List<ReportAiGenerationEvent>? streamEvents;
-
-  @override
-  Future<ReportAiSummary> generate(
-    ReportAiSummaryRange range, {
-    String? startDate,
-    String? endDate,
-  }) async {
-    if (error != null) {
-      // ignore: only_throw_errors
-      throw error!;
-    }
-    return response!;
-  }
 
   @override
   Stream<ReportAiGenerationEvent> generateStream(

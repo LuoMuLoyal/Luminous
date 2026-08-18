@@ -8,36 +8,6 @@ import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 
-/// Adapter that returns a JSON response with configurable body.
-class _JsonAdapter implements HttpClientAdapter {
-  _JsonAdapter() : statusCode = 200, responseBody = null;
-
-  Object? responseBody;
-  int statusCode;
-
-  @override
-  void close({bool force = false}) {}
-
-  @override
-  Future<ResponseBody> fetch(
-    RequestOptions options,
-    Stream<List<int>>? requestStream,
-    Future<void>? cancelFuture,
-  ) async {
-    final body = responseBody != null
-        ? '{"code":0,"message":"ok","data":${jsonEncode(responseBody)}}'
-        : '{"code":0,"message":"ok","data":null}';
-
-    return ResponseBody.fromString(
-      body,
-      statusCode,
-      headers: {
-        Headers.contentTypeHeader: ['application/json'],
-      },
-    );
-  }
-}
-
 /// Adapter that returns an SSE stream from raw event text.
 class _SseAdapter implements HttpClientAdapter {
   _SseAdapter(this.sseText);
@@ -72,84 +42,6 @@ String _sseEvent(String event, Object? data) {
 }
 
 void main() {
-  group('ReportAiSummaryRemoteDataSource — generate', () {
-    late _JsonAdapter adapter;
-    late Dio dio;
-    late lucent.ReportsApi api;
-    late ReportAiSummaryRemoteDataSource ds;
-
-    setUp(() {
-      adapter = _JsonAdapter();
-      dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
-      dio.httpClientAdapter = adapter;
-      api = lucent.ReportsApi(dio);
-      ds = ReportAiSummaryRemoteDataSource(api: api, dio: dio);
-    });
-
-    test('returns ReportSummaryDataDto on success', () async {
-      adapter.responseBody = {
-        'range': 'last_7_days',
-        'startDate': '2026-07-05',
-        'endDate': '2026-07-11',
-        'generatedAt': '2026-07-11T10:00:00.000Z',
-        'summary': '本周记录良好',
-        'bullets': [],
-        'actionLabel': '查看详情',
-        'action': '',
-        'confidenceNote': '中等',
-      };
-
-      final result = await ds.generate(ReportAiSummaryRange.last7Days);
-
-      expect(result.range.value, 'last_7_days');
-      expect(result.startDate, '2026-07-05');
-      expect(result.endDate, '2026-07-11');
-      expect(result.summary, '本周记录良好');
-    });
-
-    test('passes custom range with startDate and endDate', () async {
-      adapter.responseBody = {
-        'range': 'custom',
-        'startDate': '2026-07-01',
-        'endDate': '2026-07-10',
-        'generatedAt': '2026-07-11T10:00:00.000Z',
-        'summary': 'custom',
-        'bullets': [],
-        'actionLabel': '',
-        'action': '',
-        'confidenceNote': '',
-      };
-
-      final result = await ds.generate(
-        ReportAiSummaryRange.custom,
-        startDate: '2026-07-01',
-        endDate: '2026-07-10',
-      );
-
-      expect(result.range.value, 'custom');
-      expect(result.startDate, '2026-07-01');
-      expect(result.endDate, '2026-07-10');
-    });
-
-    test('passes last30Days range correctly', () async {
-      adapter.responseBody = {
-        'range': 'last_30_days',
-        'startDate': '2026-06-12',
-        'endDate': '2026-07-11',
-        'generatedAt': '2026-07-11T10:00:00.000Z',
-        'summary': '30天',
-        'bullets': [],
-        'actionLabel': '',
-        'action': '',
-        'confidenceNote': '',
-      };
-
-      final result = await ds.generate(ReportAiSummaryRange.last30Days);
-
-      expect(result.range.value, 'last_30_days');
-    });
-  });
-
   group('ReportAiSummaryRemoteDataSource — generateStream', () {
     late Dio dio;
     late lucent.ReportsApi api;
@@ -170,10 +62,12 @@ void main() {
           'endDate': '2026-07-11',
           'generatedAt': '2026-07-11T10:00:00.000Z',
           'summary': '完成总结',
-          'bullets': [],
-          'actionLabel': '',
-          'action': '',
-          'confidenceNote': '',
+          'coverage': {
+            'medication': {'trackedDays': 5, 'totalDays': 7},
+            'water': {'trackedDays': 3, 'totalDays': 7},
+            'sleep': {'trackedDays': 0, 'totalDays': 7},
+          },
+          'disclaimer': '仅基于近 7 天数据。',
         }),
         _sseEvent('done', null),
       ].join();
@@ -295,10 +189,12 @@ void main() {
         'endDate': '2026-07-11',
         'generatedAt': '2026-07-11T10:00:00.000Z',
         'summary': 'test',
-        'bullets': [],
-        'actionLabel': '',
-        'action': '',
-        'confidenceNote': '',
+        'coverage': {
+          'medication': {'trackedDays': 5, 'totalDays': 7},
+          'water': {'trackedDays': 3, 'totalDays': 7},
+          'sleep': {'trackedDays': 0, 'totalDays': 7},
+        },
+        'disclaimer': '仅基于近 7 天数据。',
       };
       final sseText = [
         _sseEvent('result', resultData),

@@ -193,14 +193,17 @@ import 'package:lucent_api/src/model/reminder_delivery_receipt_data_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto.dart';
 import 'package:lucent_api/src/model/rename_conversation_dto.dart';
+import 'package:lucent_api/src/model/report_coverage_dimension_dto.dart';
+import 'package:lucent_api/src/model/report_coverage_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_data_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_score_dto.dart';
 import 'package:lucent_api/src/model/report_finding_dto.dart';
+import 'package:lucent_api/src/model/report_low_risk_action_dto.dart';
 import 'package:lucent_api/src/model/report_metric_dto.dart';
 import 'package:lucent_api/src/model/report_observed_metric_dto.dart';
+import 'package:lucent_api/src/model/report_observed_pattern_dto.dart';
 import 'package:lucent_api/src/model/report_pattern_dto.dart';
-import 'package:lucent_api/src/model/report_summary_bullet_dto.dart';
 import 'package:lucent_api/src/model/report_summary_data_dto.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto.dart';
 import 'package:lucent_api/src/model/report_trend_dto.dart';
@@ -1003,6 +1006,12 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'RenameConversationDto':
       return RenameConversationDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ReportCoverageDimensionDto':
+      return ReportCoverageDimensionDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ReportCoverageDto':
+      return ReportCoverageDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ReportDashboardDataDto':
       return ReportDashboardDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1015,17 +1024,20 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'ReportFindingDto':
       return ReportFindingDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ReportLowRiskActionDto':
+      return ReportLowRiskActionDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ReportMetricDto':
       return ReportMetricDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ReportObservedMetricDto':
       return ReportObservedMetricDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ReportObservedPatternDto':
+      return ReportObservedPatternDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ReportPatternDto':
       return ReportPatternDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ReportSummaryBulletDto':
-      return ReportSummaryBulletDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ReportSummaryDataDto':
       return ReportSummaryDataDto.fromJson(value as Map<String, dynamic>)
