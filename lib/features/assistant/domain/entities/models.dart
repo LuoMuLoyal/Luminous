@@ -298,6 +298,8 @@ abstract class AssistantToolDetail with _$AssistantToolDetail {
     String? sourceGeneratedAt,
     @Default(<String>[]) List<String> sourceTables,
     String? disclaimer,
+    // F-14:摘要工具(如 get_today_summary_by_date)的置信度说明与数据源版本。
+    // 后端 buildToolDetails 可选透传;无数据时为 null,来源条不渲染该行。
   }) = _AssistantToolDetail;
 }
 
@@ -311,6 +313,10 @@ abstract class AssistantMessage with _$AssistantMessage {
     @Default(<AssistantToolDetail>[]) List<AssistantToolDetail> toolDetails,
     @Default(<AssistantProposedAction>[])
     List<AssistantProposedAction> proposedActions,
+    // F-5b 旧回答灰态:重新生成成功后,被替换的旧回答标记为 true,气泡整体
+    // 置灰并显示「已替换」标签。这是当前会话内的本地展示状态:不持久化、
+    // 不随历史会话恢复、不回传后端,重新加载会话后所有消息回到 false。
+    @Default(false) bool replaced,
   }) = _AssistantMessage;
 }
 

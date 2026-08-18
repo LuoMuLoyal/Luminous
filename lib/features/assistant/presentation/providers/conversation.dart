@@ -346,6 +346,23 @@ class AssistantController extends Notifier<AssistantState> {
     return AssistantSendErrorType.unknown;
   }
 
+  /// F-5b 灰态辅助:把 [messages] 中最后一条 assistant 消息标记为
+  /// `replaced: true`(已是 replaced 或没有 assistant 消息时原样返回)。
+  List<AssistantMessage> _markLastAssistantReplaced(
+    List<AssistantMessage> messages,
+  ) {
+    final index = messages.lastIndexWhere(
+      (message) => message.role == AssistantMessageRole.assistant,
+    );
+    if (index < 0 || messages[index].replaced) {
+      return messages;
+    }
+    return <AssistantMessage>[
+      for (var i = 0; i < messages.length; i++)
+        i == index ? messages[i].copyWith(replaced: true) : messages[i],
+    ];
+  }
+
   /// Regenerates the last assistant message of the current conversation
   /// (F-5b). Requires a persisted conversation; the backend only allows the
   /// last message to be regenerated and rejects anything else with 400,
@@ -382,13 +399,17 @@ class AssistantController extends Notifier<AssistantState> {
           case AssistantGenerationChunkEvent():
             break; // 已由 onChunk 更新 streamingDraft。
           case AssistantGenerationResultEvent():
+            // F-5b 灰态:重生成成功(result 事件)时,把本次重生成之前的最后一条
+            // assistant 消息标记为「已替换」,再追加新回答。失败/断流不标记,
+            // 旧回答保持正常态。
+            final replacedMessages = _markLastAssistantReplaced(state.messages);
             state = state.copyWith(
               isSending: false,
               streamingDraft: '',
               conversationId: event.conversationId.isEmpty
                   ? state.conversationId
                   : event.conversationId,
-              messages: <AssistantMessage>[...state.messages, event.message],
+              messages: <AssistantMessage>[...replacedMessages, event.message],
             );
             await loadRecentConversations();
             return;

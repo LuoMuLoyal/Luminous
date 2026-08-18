@@ -107,6 +107,7 @@ class AssistantConversationMessageList extends ConsumerWidget {
           toolDetails: message.toolDetails,
           proposedActions: message.proposedActions,
           createdAt: message.createdAt,
+          replaced: message.replaced,
           onConfirmProposal: onConfirmProposal,
           onDismissProposal: onDismissProposal,
           onRegenerateProposal: onRegenerateProposal,

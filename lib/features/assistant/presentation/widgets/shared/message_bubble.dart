@@ -26,6 +26,8 @@ class AssistantMessageBubble extends StatelessWidget {
     this.proposedActions = const <AssistantProposedAction>[],
     this.isStreaming = false,
     this.createdAt,
+    // F-5b 灰态:重新生成后被替换的旧回答置灰并显示「已替换」标签。
+    this.replaced = false,
     this.onConfirmProposal,
     this.onDismissProposal,
     this.onRegenerateProposal,
@@ -42,6 +44,7 @@ class AssistantMessageBubble extends StatelessWidget {
   final List<AssistantProposedAction> proposedActions;
   final bool isStreaming;
   final DateTime? createdAt;
+  final bool replaced;
   final Future<void> Function({
     required String messageId,
     required String proposalId,
@@ -78,8 +81,11 @@ class AssistantMessageBubble extends StatelessWidget {
     final foreground = isUser
         ? SemanticColor.primary.solid(context)
         : colors.foreground;
+    // F-5b 灰态:仅对非用户、非流式的已替换回答生效;时间戳/来源条/免责条保留。
+    final isReplaced = replaced && !isUser && !isStreaming;
 
-    // 内容区:保持 MarkdownStyle.ai 单一样式入口
+    // 内容区:已替换时先渲染右上角「已替换」标签,再以整体降透明度置灰正文。
+    // 不用 mutedForeground 逐元素改色,是为了保持 MarkdownStyle.ai 单一样式入口
     // (markdown_style.dart 注释约定 6 处渲染点不走本地 copyWith 漂移)。
     Widget contentArea;
     if (isUser) {
@@ -99,6 +105,23 @@ class AssistantMessageBubble extends StatelessWidget {
         styleSheet: MarkdownStyle.ai(context, background: background),
         onTapLink: (text, href, title) =>
             _handleLinkTap(context, text, href, title),
+      );
+    }
+    if (isReplaced) {
+      contentArea = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: _ReplacedBadge(label: l10n.assistantReplacedLabel),
+          ),
+          const SizedBox(height: Spacing.level2),
+          Opacity(
+            key: const Key('assistant-replaced-muted'),
+            opacity: 0.55,
+            child: contentArea,
+          ),
+        ],
       );
     }
 
@@ -329,6 +352,40 @@ class _AnimatedDots extends StatelessWidget {
                   ),
         );
       }),
+    );
+  }
+}
+
+/// Small「已替换」badge shown on the top-right of an assistant message whose
+/// answer was superseded by a regeneration (F-5b). Neutral tone matches the
+/// muted content area.
+class _ReplacedBadge extends StatelessWidget {
+  const _ReplacedBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.secondary,
+        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        border: Border.all(color: colors.border),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level2,
+          vertical: 1,
+        ),
+        child: Text(
+          label,
+          key: const Key('assistant-replaced-label'),
+          style: TypographyToken.level1
+              .body(context)
+              .copyWith(color: colors.mutedForeground, height: 1.2),
+        ),
+      ),
     );
   }
 }

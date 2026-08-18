@@ -1069,6 +1069,102 @@ void main() {
     );
 
     test(
+      'F-5b: regenerateLastMessage marks the old answer as replaced',
+      () async {
+        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        final oldAnswer = _assistantMessage(content: '旧回答');
+        final fake = _FakeAssistantRepository(
+          latestConversation: _conversationWith(
+            id: 'persisted-1',
+            messages: <AssistantMessage>[
+              AssistantMessage(
+                role: AssistantMessageRole.user,
+                content: '帮我查一下睡眠',
+                createdAt: DateTime(2026, 6, 1, 11),
+              ),
+              oldAnswer,
+            ],
+          ),
+          regenerateStream: Stream<AssistantGenerationEvent>.fromIterable([
+            AssistantGenerationResultEvent(
+              conversationId: 'persisted-1',
+              message: _assistantMessage(content: '新的回答'),
+            ),
+          ]),
+        );
+        final container = _buildContainer(fake);
+        addTearDown(container.dispose);
+
+        final controller = container.read(assistantControllerProvider.notifier);
+        await controller.loadCapabilities();
+        await controller.loadLatestConversation();
+
+        // 重生成成功前旧回答未被标记。
+        expect(
+          container.read(assistantControllerProvider).messages.last.replaced,
+          isFalse,
+        );
+
+        await controller.regenerateLastMessage();
+
+        final state = container.read(assistantControllerProvider);
+        final old = state.messages[state.messages.length - 2];
+        final fresh = state.messages.last;
+        // 旧回答被标记为「已替换」,新回答保持正常态。
+        expect(old.role, AssistantMessageRole.assistant);
+        expect(old.content, '旧回答');
+        expect(old.replaced, isTrue);
+        expect(fresh.content, '新的回答');
+        expect(fresh.replaced, isFalse);
+      },
+    );
+
+    test('F-5b: failed regenerate keeps the old answer normal', () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final fake = _FakeAssistantRepository(
+        latestConversation: _conversationWith(
+          id: 'persisted-1',
+          messages: <AssistantMessage>[
+            AssistantMessage(
+              role: AssistantMessageRole.user,
+              content: '帮我查一下睡眠',
+              createdAt: DateTime(2026, 6, 1, 11),
+            ),
+            _assistantMessage(content: '旧回答'),
+          ],
+        ),
+        regenerateStream: Stream<AssistantGenerationEvent>.error(
+          StateError('stream closed'),
+        ),
+      );
+      final container = _buildContainer(fake);
+      addTearDown(container.dispose);
+
+      final controller = container.read(assistantControllerProvider.notifier);
+      await controller.loadCapabilities();
+      await controller.loadLatestConversation();
+
+      await controller.regenerateLastMessage();
+
+      final state = container.read(assistantControllerProvider);
+      expect(state.sendError, isNotNull);
+      // 失败不标记:旧回答仍为正常态,也没有新增消息。
+      expect(
+        state.messages.where(
+          (message) => message.role == AssistantMessageRole.assistant,
+        ),
+        hasLength(1),
+      );
+      expect(
+        state.messages
+            .where((message) => message.role == AssistantMessageRole.assistant)
+            .single
+            .replaced,
+        isFalse,
+      );
+    });
+
+    test(
       'regenerateLastMessage throws without a persisted conversation',
       () async {
         SharedPreferences.setMockInitialValues(const <String, Object>{});

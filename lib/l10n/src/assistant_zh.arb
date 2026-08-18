@@ -119,5 +119,6 @@
   "assistantMemoryHintDescription": "你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭。",
   "assistantMarkdownLinkConfirmTitle": "打开外部链接？",
   "assistantMarkdownLinkConfirmDescription": "该链接将离开应用打开。",
-  "assistantMarkdownLinkOpenAction": "打开"
+  "assistantMarkdownLinkOpenAction": "打开",
+  "assistantReplacedLabel": "已替换",
 }

@@ -119,5 +119,6 @@
   "assistantMemoryHintDescription": "Your chats may be distilled into points used in later conversations. You can turn this off in settings.",
   "assistantMarkdownLinkConfirmTitle": "Open external link?",
   "assistantMarkdownLinkConfirmDescription": "This link opens outside the app.",
-  "assistantMarkdownLinkOpenAction": "Open"
+  "assistantMarkdownLinkOpenAction": "Open",
+  "assistantReplacedLabel": "Replaced",
 }
