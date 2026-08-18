@@ -9,6 +9,8 @@ import 'package:lucent_api/src/model/app_info_response_dto.dart';
 import 'package:lucent_api/src/model/apple_o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/assistant_capabilities_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_capabilities_response_dto.dart';
+import 'package:lucent_api/src/model/assistant_clear_memory_data_dto.dart';
+import 'package:lucent_api/src/model/assistant_clear_memory_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_result_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_result_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_confirm_result_dto.dart';
@@ -342,6 +344,14 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'AssistantCapabilitiesResponseDto':
       return AssistantCapabilitiesResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'AssistantClearMemoryDataDto':
+      return AssistantClearMemoryDataDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AssistantClearMemoryResponseDto':
+      return AssistantClearMemoryResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

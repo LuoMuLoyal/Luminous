@@ -326,11 +326,11 @@ class TodayAnalysisApi {
     );
   }
 
-  /// Get random daily health recommendations
+  /// Get cold-start onboarding guide cards
   ///
   ///
   /// Parameters:
-  /// * [exclude] - Recommendation IDs from the last response, used for deduplication
+  /// * [exclude] - Guide IDs from the last response, used for deduplication
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
