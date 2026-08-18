@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-17
+updated: 2026-08-18
 ---
 
 # Active UI — Record
 
-Last updated: 2026-08-17 (Toast action mounted 守卫全量补齐与 recent_searches 日志/生命周期修复)
+Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -155,6 +155,14 @@ Last updated: 2026-08-17 (Toast action mounted 守卫全量补齐与 recent_sear
 - 错误反馈使用 l10n 消息（`recordDeletedToast`/`recordDeleteFailedToast`），不用通用"已保存"/"创建失败"。
 - 删除操作通过 `deleteRecord` use case（`application/usecases/record_detail_actions.dart`）编排：确认对话框 → repo.delete → provider invalidation → toast → pop。编辑页 popCount=2，详情页 popCount=1。
 - 编辑入口通过 `editRecord` use case 编排 auth-required route push。
+
+## 2026-08-18 摘要网格与饮水角标接线（P1-1）
+
+- `LucentRecordRepository.fetchDashboard` 不再使用恒空的 `_staticSummary`（该字段唯一消费方被替换后成为死代码，已随本项移除；P2-2 静态残留清理剩余 `_staticWeekDays`），改为并行拉 `fetchRecords` + `fetchSummary(dateStr)`（两个 future 先创建后 await），后端 `GET /api/v1/user/daily-records/summary` 的 summaries 经 `_toDaySummary` 映射为 `RecordDaySummary.items`。
+- 桌面 `RecordSummaryGrid` 在有真实摘要数据时渲染（`items.isEmpty` 仍渲染 `SizedBox.shrink()`）；饮水角标「累计 ml」模式从 summary 的 water 项取值。
+- 映射规则：跳过 `count <= 0`（稀疏语义：未知≠0）与无文案基建的 kind（symptom/sleep/note/activity）；water 项显示当日 canonical ml 合计（仅累加 unit=='ml' 且可解析正值，与详情页进度卡同规则），无 ml 记录时回退显示次数 + `summaryTimesUnit`；meal/mood 项显示次数 + `summaryTimesUnit`；vital 项显示最新一条记录值（如 "72 bpm"），无 latest value 时回退次数 + `summaryTimesUnit`；`summaryMlUnit`（"ml"）为新 l10n 单位键。
+- 失败降级：fetchSummary 失败时 summary 为空列表并记录 error，不抛异常、不影响 timeline（与 fetchRecords 失败处理一致）。
+- 边界：筛选激活时 `fetchRecords` 按 kind 过滤；非 water 筛选下饮水记录被过滤、ml 合计为 0，饮水瓦片回退为次数口径（water 筛选下 ml 合计仍精确）。
 
 ## 2026-07-19 补充
 

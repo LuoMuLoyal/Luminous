@@ -45,13 +45,6 @@ Created: 2026-08-16
 
 ### P1
 
-#### P1-1 Record 页摘要网格接线 + 饮水 ml 角标恢复(调研 §4.1，0.1.0 前)
-
-- 现状:后端 `GET /api/v1/user/daily-records/summary` 真实存在且 Today 页已消费;但 `LucentRecordRepository.fetchDashboard`(`lib/features/record/data/repositories/lucent.dart:73`)硬编码 `summary: _staticSummary`(恒为空),桌面 `RecordSummaryGrid` 因 `items.isEmpty` 永不渲染,饮水角标「累计 ml」模式也永远取不到值。
-- 方案:`fetchDashboard` 内改为并行拉 `fetchRecords` + `fetchSummary(dateStr)`(后者已在 `LucentDailyRecordRepository` 实现,直接复用),把后端 summaries 映射为 `RecordDaySummary.items`;失败时优雅降级为空,与时间线失败处理一致。
-- 分工:纯客户端改造;后端接口不动,无需改契约。
-- 依赖:无。
-
 #### P1-2 详情页饮水进度卡目标值改读 user-settings(调研 §4.4，0.1.0 前)
 
 - 现状:`detail.dart:820` 硬编码 `_waterDailyTargetMl = 2000`,与 Today Analysis 使用的 `user-settings.waterTargetCount` 口径分裂(详情页说 2000 ml、Today 说 8 杯×250 ml)。
@@ -91,8 +84,8 @@ Created: 2026-08-16
 
 #### P2-2 静态残留清理(调研 §4.1 P2，0.1.0 前)
 
-- 现状:`lucent.dart` 中 `_staticSummary`/`_staticWeekDays` 仍有静态残留。
-- 方案:P1-1 接线完成后,移除 `_staticSummary`;核对 `_staticWeekDays` 的实际引用范围后一并清理。
+- 现状:`lucent.dart` 中 `_staticWeekDays` 仍有静态残留;`_staticSummary` 已于 P1-1 随本项移除。
+- 方案:核对 `_staticWeekDays` 的实际引用范围后一并清理。
 - 依赖:P1-1。
 
 #### P2-3 桌面趋势图真实数据化(调研 §4.2，桌面高级能力冻结)
@@ -126,7 +119,7 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. P1-1、P1-2（0.1.0 前）：摘要网格接线与饮水目标读取 `user-settings`。
+1. P1-2（0.1.0 前）：详情页饮水目标读取 `user-settings`。
 2. P2-1、P2-2、P2-5（0.1.0 前）：Today 联动采用已定门控并由 today 计划主链路消费。
 3. P1-3、P1-4（0.1.0 后）：餐食分层与 vital 时间序列按既有 P1 和依赖顺序恢复。
 4. P2-3、P2-4：桌面高级能力冻结。

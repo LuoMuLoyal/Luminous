@@ -17,6 +17,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   int? lastFetchPage;
   int? lastFetchPageSize;
 
+  DailyRecordSummaryData? fetchSummaryResult;
+  Object? fetchSummaryError;
+  String? lastFetchSummaryDate;
+
   @override
   Future<DailyRecordListData> fetchRecords(
     String date, {
@@ -34,7 +38,9 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
 
   @override
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
-    return const DailyRecordSummaryData(summaries: []);
+    lastFetchSummaryDate = date;
+    if (fetchSummaryError != null) throw fetchSummaryError!;
+    return fetchSummaryResult ?? const DailyRecordSummaryData(summaries: []);
   }
 
   @override
@@ -221,6 +227,202 @@ void main() {
       final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline, isEmpty);
+    });
+
+    test('fetches records and summary with the same date string', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dailyRepo.lastFetchDate, '2026-07-14');
+      expect(dailyRepo.lastFetchSummaryDate, '2026-07-14');
+    });
+
+    test('maps summaries to items with water ml aggregation', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            id: 'w1',
+            kind: DailyRecordKind.water,
+            value: '250',
+            unit: 'ml',
+          ),
+          _item(
+            id: 'w2',
+            kind: DailyRecordKind.water,
+            value: '300',
+            unit: 'ml',
+          ),
+          _item(id: 'w3', kind: DailyRecordKind.water, value: '1', unit: 'cup'),
+        ],
+        total: 3,
+      );
+      dailyRepo.fetchSummaryResult = DailyRecordSummaryData(
+        summaries: [
+          DailyRecordSummary(
+            kind: DailyRecordKind.water,
+            count: 3,
+            latest: _item(
+              kind: DailyRecordKind.water,
+              value: '250',
+              unit: 'ml',
+            ),
+          ),
+          const DailyRecordSummary(kind: DailyRecordKind.meal, count: 2),
+        ],
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      final water = dashboard.summary.items.firstWhere(
+        (item) => item.type == RecordEntryType.water,
+      );
+      expect(water.value, '550');
+      expect(water.unitKey, RecordCopyKey.summaryMlUnit);
+      expect(water.titleKey, RecordCopyKey.summaryWaterTitle);
+      expect(water.icon, SemanticIcons.recordWater);
+
+      final meal = dashboard.summary.items.firstWhere(
+        (item) => item.type == RecordEntryType.meal,
+      );
+      expect(meal.value, '2');
+      expect(meal.unitKey, RecordCopyKey.summaryTimesUnit);
+    });
+
+    test('water item falls back to count when no ml records exist', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(id: 'w1', kind: DailyRecordKind.water, value: '1', unit: 'cup'),
+          _item(
+            id: 'w2',
+            kind: DailyRecordKind.water,
+            value: '2',
+            unit: 'times',
+          ),
+        ],
+        total: 2,
+      );
+      dailyRepo.fetchSummaryResult = const DailyRecordSummaryData(
+        summaries: [DailyRecordSummary(kind: DailyRecordKind.water, count: 3)],
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      final water = dashboard.summary.items.single;
+      expect(water.value, '3');
+      expect(water.unitKey, RecordCopyKey.summaryTimesUnit);
+    });
+
+    test('vital item shows the latest record value when present', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+      dailyRepo.fetchSummaryResult = DailyRecordSummaryData(
+        summaries: [
+          DailyRecordSummary(
+            kind: DailyRecordKind.vital,
+            count: 3,
+            latest: _item(
+              kind: DailyRecordKind.vital,
+              value: '72',
+              unit: 'bpm',
+            ),
+          ),
+        ],
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      final vital = dashboard.summary.items.single;
+      expect(vital.type, RecordEntryType.vitals);
+      expect(vital.value, '72 bpm');
+      expect(vital.unitKey, isNull);
+      expect(vital.titleKey, RecordCopyKey.summaryLatestVitalTitle);
+      expect(vital.icon, SemanticIcons.profileCondition);
+    });
+
+    test(
+      'vital item falls back to count when no latest value exists',
+      () async {
+        dailyRepo.fetchRecordsResult = const DailyRecordListData(
+          items: [],
+          total: 0,
+        );
+        dailyRepo.fetchSummaryResult = const DailyRecordSummaryData(
+          summaries: [
+            DailyRecordSummary(kind: DailyRecordKind.vital, count: 2),
+          ],
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        final vital = dashboard.summary.items.single;
+        expect(vital.value, '2');
+        expect(vital.unitKey, RecordCopyKey.summaryTimesUnit);
+        expect(vital.titleKey, RecordCopyKey.summaryLatestVitalTitle);
+      },
+    );
+
+    test('skips summary kinds with zero count', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+      dailyRepo.fetchSummaryResult = const DailyRecordSummaryData(
+        summaries: [
+          DailyRecordSummary(kind: DailyRecordKind.water, count: 0),
+          DailyRecordSummary(kind: DailyRecordKind.meal, count: 2),
+        ],
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.summary.items, hasLength(1));
+      expect(dashboard.summary.items.first.type, RecordEntryType.meal);
+    });
+
+    test('does not generate items for kinds without summary copy', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+      dailyRepo.fetchSummaryResult = const DailyRecordSummaryData(
+        summaries: [
+          DailyRecordSummary(kind: DailyRecordKind.symptom, count: 1),
+          DailyRecordSummary(kind: DailyRecordKind.sleep, count: 1),
+          DailyRecordSummary(kind: DailyRecordKind.note, count: 1),
+          DailyRecordSummary(kind: DailyRecordKind.activity, count: 1),
+        ],
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.summary.items, isEmpty);
+    });
+
+    test('degrades to empty summary when fetchSummary throws', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            id: 'r1',
+            kind: DailyRecordKind.water,
+            value: '500',
+            unit: 'ml',
+          ),
+        ],
+        total: 1,
+      );
+      dailyRepo.fetchSummaryError = Exception('Summary error');
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.summary.items, isEmpty);
+      // Timeline is not affected by a summary failure.
+      expect(dashboard.timeline, hasLength(1));
     });
   });
 

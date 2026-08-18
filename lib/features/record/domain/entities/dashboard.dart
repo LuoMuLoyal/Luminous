@@ -341,6 +341,7 @@ enum RecordCopyKey {
   summaryMoodTitle,
   summaryTimesUnit,
   summaryCupsUnit,
+  summaryMlUnit,
   summaryRecorded,
   summaryNormal,
   timelineMealLunch,

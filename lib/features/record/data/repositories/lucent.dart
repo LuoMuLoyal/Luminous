@@ -33,18 +33,22 @@ class LucentRecordRepository implements RecordRepository {
         : dailyRecordKindForEntryType(filterType);
     final kind = selectedKind?.name;
 
-    List<DailyRecordItem> records;
-    if (filterType != null &&
-        (selectedKind == null || !_isActiveRecordEntryType(filterType))) {
-      records = [];
-    } else {
+    // Kick off the records and summary fetches in parallel: create both
+    // futures before awaiting either so the requests overlap. Each fetch is
+    // independently guarded — a summary failure degrades to an empty grid
+    // without affecting the timeline, mirroring the records failure path.
+    final recordsFuture = () async {
+      if (filterType != null &&
+          (selectedKind == null || !_isActiveRecordEntryType(filterType))) {
+        return <DailyRecordItem>[];
+      }
       try {
         final result = await dailyRecordRepo.fetchRecords(
           dateStr,
           kind: kind,
           pageSize: 100,
         );
-        records = result.items
+        return result.items
             .where((record) {
               final type = recordEntryTypeForDailyRecordKind(record.kind);
               return _isActiveRecordEntryType(type);
@@ -52,9 +56,21 @@ class LucentRecordRepository implements RecordRepository {
             .toList(growable: false);
       } catch (e) {
         appTalker.error('LucentRecordRepository: fetchRecords failed: $e');
-        records = [];
+        return <DailyRecordItem>[];
       }
-    }
+    }();
+
+    final summaryFuture = () async {
+      try {
+        return await dailyRecordRepo.fetchSummary(dateStr);
+      } catch (e) {
+        appTalker.error('LucentRecordRepository: fetchSummary failed: $e');
+        return const DailyRecordSummaryData(summaries: []);
+      }
+    }();
+
+    final records = await recordsFuture;
+    final summaryData = await summaryFuture;
 
     final sortedRecords = List<DailyRecordItem>.from(records)
       ..sort((a, b) {
@@ -70,11 +86,123 @@ class LucentRecordRepository implements RecordRepository {
       weekDays: _staticWeekDays(date),
       monthDays: _staticMonthDays(date),
       quickActions: _staticQuickActionsFor(),
-      summary: _staticSummary,
+      summary: _toDaySummary(summaryData, records),
       filters: _staticFiltersFor(filterType),
       timeline: timeline,
       trends: _staticTrends,
     );
+  }
+
+  /// Maps backend daily-record summaries into the dashboard summary grid.
+  ///
+  /// Sparse semantics: kinds with `count <= 0` (unknown, not zero) and kinds
+  /// without summary copy infrastructure (symptom / sleep / note / activity)
+  /// produce no item. Water shows the canonical ml total aggregated from the
+  /// day's water records, falling back to the record count with the "times"
+  /// unit when no ml-denominated record exists so the badge never renders a
+  /// bare 0. Vital shows the latest record's value (e.g. "72 bpm") when the
+  /// summary carries a `latest` item with a value, falling back to the record
+  /// count with the "times" unit otherwise.
+  static RecordDaySummary _toDaySummary(
+    DailyRecordSummaryData data,
+    List<DailyRecordItem> records,
+  ) {
+    // Aggregate canonical ml from the day's water records (ml units only,
+    // parseable positive values) — same rule as the detail-page progress card.
+    var waterTotalMl = 0;
+    for (final record in records) {
+      if (record.kind == DailyRecordKind.water && record.unit == 'ml') {
+        final value = int.tryParse(record.value ?? '');
+        if (value != null && value > 0) waterTotalMl += value;
+      }
+    }
+
+    const accent = SemanticColor.primary;
+    const soft = SemanticColor.neutral;
+
+    final items = <RecordSummaryItem>[];
+    for (final summary in data.summaries) {
+      if (summary.count <= 0) continue;
+      final type = recordEntryTypeForDailyRecordKind(summary.kind);
+      if (!_isActiveRecordEntryType(type)) continue;
+
+      switch (summary.kind) {
+        case DailyRecordKind.water:
+          final useMl = waterTotalMl > 0;
+          items.add(
+            RecordSummaryItem(
+              type: type,
+              icon: SemanticIcons.recordWater,
+              titleKey: RecordCopyKey.summaryWaterTitle,
+              value: useMl ? waterTotalMl.toString() : summary.count.toString(),
+              unitKey: useMl
+                  ? RecordCopyKey.summaryMlUnit
+                  : RecordCopyKey.summaryTimesUnit,
+              detailKey: null,
+              accent: accent,
+              softColor: soft,
+            ),
+          );
+        case DailyRecordKind.meal:
+          items.add(
+            RecordSummaryItem(
+              type: type,
+              icon: SemanticIcons.recordMeal,
+              titleKey: RecordCopyKey.summaryMealTitle,
+              value: summary.count.toString(),
+              unitKey: RecordCopyKey.summaryTimesUnit,
+              detailKey: null,
+              accent: accent,
+              softColor: soft,
+            ),
+          );
+        case DailyRecordKind.mood:
+          items.add(
+            RecordSummaryItem(
+              type: type,
+              icon: SemanticIcons.recordMood,
+              titleKey: RecordCopyKey.summaryMoodTitle,
+              value: summary.count.toString(),
+              unitKey: RecordCopyKey.summaryTimesUnit,
+              detailKey: null,
+              accent: accent,
+              softColor: soft,
+            ),
+          );
+        case DailyRecordKind.vital:
+          // Title is "最新体征": prefer the latest record's value with its
+          // unit (e.g. "72 bpm") when present, falling back to the record
+          // count with the "times" unit.
+          final latest = summary.latest;
+          final hasLatestValue =
+              latest != null &&
+              latest.value != null &&
+              latest.value!.trim().isNotEmpty;
+          items.add(
+            RecordSummaryItem(
+              type: type,
+              icon: SemanticIcons.profileCondition,
+              titleKey: RecordCopyKey.summaryLatestVitalTitle,
+              value: hasLatestValue
+                  ? '${latest.value}${latest.unit != null && latest.unit!.trim().isNotEmpty ? ' ${latest.unit}' : ''}'
+                  : summary.count.toString(),
+              unitKey: hasLatestValue ? null : RecordCopyKey.summaryTimesUnit,
+              detailKey: null,
+              accent: accent,
+              softColor: soft,
+            ),
+          );
+        case DailyRecordKind.symptom:
+        case DailyRecordKind.activity:
+        case DailyRecordKind.note:
+        case DailyRecordKind.sleep:
+          // No summary copy infrastructure for these kinds — do not fabricate
+          // a tile (sparse-record semantics: unknown != 0).
+          break;
+      }
+    }
+
+    return RecordDaySummary(items: items);
   }
 
   RecordTimelineEntry _toTimelineEntry(DailyRecordItem record) {
@@ -349,8 +477,6 @@ class LucentRecordRepository implements RecordRepository {
         .where((action) => _isActiveRecordEntryType(action.type))
         .toList(growable: false);
   }
-
-  static const _staticSummary = RecordDaySummary(items: []);
 
   static final _staticFilters = <RecordFilter>[
     const RecordFilter(

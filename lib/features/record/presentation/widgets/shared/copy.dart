@@ -30,6 +30,7 @@ String recordCopy(AppLocalizations l10n, RecordCopyKey key) {
     RecordCopyKey.summaryMoodTitle => l10n.recordSummaryMoodTitle,
     RecordCopyKey.summaryTimesUnit => l10n.recordSummaryTimesUnit,
     RecordCopyKey.summaryCupsUnit => l10n.recordSummaryCupsUnit,
+    RecordCopyKey.summaryMlUnit => l10n.recordSummaryMlUnit,
     RecordCopyKey.summaryRecorded => l10n.recordSummaryRecorded,
     RecordCopyKey.summaryNormal => l10n.recordSummaryNormal,
     RecordCopyKey.timelineMealLunch => l10n.recordTimelineMealLunch,
