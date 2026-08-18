@@ -65,7 +65,7 @@ YYYY-MM-DD-short-task-name.md
 5. AI 助手改造计划（2026-08-16，实施完毕文件已删）
    — 本批任务全部完成(P0 三大信任缺口、F-2 会话重命名删除、F-5b 重生/断流补偿、F-9 记忆压缩、F-11/F-16 一致性、F-15 语料分层、P2 批次);剩余 F-14/F-15 来源条元数据后端投影与记忆擦除设置页入口(0.1.0 后)
 6. [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md)
-   — 记录:vital 时间序列基建、饮水目标契约、摘要网格接线
+   — 记录:0.1.0 前任务全部完成(摘要网格接线与饮水 ml 角标、饮水目标读 user-settings、详情页确认入口、静态残留清理、Today 联动验证);剩余 P1-3 餐食分层与 P1-4 vital 时间序列(0.1.0 后)、P2-3/P2-4 桌面高级能力冻结
 7. [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md)
    — 健康事件与档案:详情接线、事件升级通知、档案字段治理
 8. [`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)

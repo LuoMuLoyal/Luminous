@@ -83,26 +83,17 @@ Created: 2026-08-16
 - 挂起:随桌面/Web 调研启用,见 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)。
 - 依赖:ADR-0012;P1-1 的 summary 接线可提供聚合路径参考。
 
-#### P2-5 Today 联动:饮食/饮水/睡眠/心情升级为建议平级原料(调研 §5，0.1.0 前)
-
-- 现状:Today Analysis 仅由 symptom record、health-event create/end、symptom check-in、dose log 与合格 suggestion materialization 触发;水/餐/眠/情/笔记只进上下文不触发分析(`today-analysis/.../pipeline/context.service.ts`)。
-- 方案:允许饮食、饮水、睡眠、心情在覆盖率足够、变化有行动价值时触发日/周洞察;是否进主卡由覆盖率、时间范围、变化幅度与可行动性门控,不按记录类型一刀切退出闭环;仍禁止无数据或低覆盖时强行生成泛化建议。普通笔记默认只作上下文证据(既定决策,不动)。
-- 分工:后端改 today-analysis 触发器与门控;客户端无需改动(建议展示走既有链路)。
-- 依赖:today 计划(第 4 位)的今日建议主线改造；采用已定门控阈值后实现。
-
 ## 四、跨计划引用与依赖
 
 - **ObservedMetric 口径统一**:`summarizeWaterMetrics`/`toObservedWaterMetric`(Lucent `common`)三处共用 mapper 的口径统一方案见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节,本文不重复展开;P1-4 的 vital 趋势输出沿用该口径。
 - **桌面/Web 形态挂起**:P2-3、P2-4 不再扩展 Flutter 产品面；桌面高级能力继续冻结，本文不展开。
 - **被引用**:本文档「P1-4 vital 时间序列基建」一节为共享基建定义,health-event 计划(C-1 `weightKg`)与 report 计划(纵向洞察趋势)引用本节。
-- **Today 联动分工**:P2-5 的记录侧原料语义以本文为准,建议主链路改造归 today 计划(第 4 位)。
 - **契约**:本计划不改 OpenAPI 契约(P1-1/P1-2 复用既有接口);若 P1-4 新增 vital 趋势端点,需走 `pnpm export:openapi` + `dart run scripts/bootstrap_generated_sources.dart` 标准流程。
 
 ## 五、本计划内执行顺序
 
-1. P2-5（0.1.0 前）：Today 联动采用已定门控并由 today 计划主链路消费。
-2. P1-3、P1-4（0.1.0 后）：餐食分层与 vital 时间序列按既有 P1 和依赖顺序恢复。
-3. P2-3、P2-4：桌面高级能力冻结。
+1. P1-3、P1-4（0.1.0 后）：餐食分层与 vital 时间序列按既有 P1 和依赖顺序恢复。
+2. P2-3、P2-4：桌面高级能力冻结。
 
 ## 六、已决边界与延期项
 

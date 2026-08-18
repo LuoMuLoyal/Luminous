@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-18
 ---
 
 # Luminous TODO
 
-Last updated: 2026-08-16
+Last updated: 2026-08-18
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -16,10 +16,6 @@ Last updated: 2026-08-16
 Product Loop Program（历史决策见已被新产品方向取代的 [[02-reference/adr/0011-event-led-sparse-record-product-loop]]）已实施完毕，
 计划文件已删：健康事件、主动建议、稀疏记录语义、事件优先回顾与隐私克制的闭环测量全部落地，
 就诊摘要支持字段级隐私选择与可撤销分享。以下为延后项。
-
-### 健康事件与关键确认
-
-- 饮食、饮水、睡眠和心情是健康伙伴纵向理解的平级数据源；覆盖率和来源足够时可进入主动建议闭环，普通笔记默认只作上下文证据
 
 ### 平台与验证
 
