@@ -8,6 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
@@ -30,6 +31,7 @@ class AssistantMessageBubble extends StatelessWidget {
     this.onRegenerateProposal,
     this.onRegenerate,
     this.onResend,
+    this.onOpenLink,
   });
 
   final String messageId;
@@ -58,6 +60,11 @@ class AssistantMessageBubble extends StatelessWidget {
   /// Re-sends an existing user message (「重新发送」).
   final void Function(String content)? onResend;
 
+  /// Opens an external URL after the user confirms the markdown link dialog
+  /// (F-4). When null, markdown links in the bubble stay inert — they never
+  /// auto-jump; the shipping surface wires this to `ExternalUrlLauncher`.
+  final Future<bool> Function(Uri uri)? onOpenLink;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
@@ -71,6 +78,29 @@ class AssistantMessageBubble extends StatelessWidget {
     final foreground = isUser
         ? SemanticColor.primary.solid(context)
         : colors.foreground;
+
+    // 内容区:保持 MarkdownStyle.ai 单一样式入口
+    // (markdown_style.dart 注释约定 6 处渲染点不走本地 copyWith 漂移)。
+    Widget contentArea;
+    if (isUser) {
+      contentArea = SelectableText(
+        content,
+        style: TypographyToken.level4.body(context).copyWith(color: foreground),
+      );
+    } else if (isStreaming) {
+      contentArea = Text(
+        content,
+        style: TypographyToken.level4.body(context).copyWith(color: foreground),
+      );
+    } else {
+      contentArea = MarkdownBody(
+        data: content,
+        selectable: true,
+        styleSheet: MarkdownStyle.ai(context, background: background),
+        onTapLink: (text, href, title) =>
+            _handleLinkTap(context, text, href, title),
+      );
+    }
 
     return Align(
       alignment: align,
@@ -91,29 +121,7 @@ class AssistantMessageBubble extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (isUser)
-                    SelectableText(
-                      content,
-                      style: TypographyToken.level4
-                          .body(context)
-                          .copyWith(color: foreground),
-                    )
-                  else if (isStreaming)
-                    Text(
-                      content,
-                      style: TypographyToken.level4
-                          .body(context)
-                          .copyWith(color: foreground),
-                    )
-                  else
-                    MarkdownBody(
-                      data: content,
-                      selectable: true,
-                      styleSheet: MarkdownStyle.ai(
-                        context,
-                        background: background,
-                      ),
-                    ),
+                  contentArea,
                   if (isStreaming) ...[
                     const SizedBox(height: Spacing.level3),
                     _AnimatedDots(color: colors.primary),
@@ -165,6 +173,70 @@ class AssistantMessageBubble extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// F-4 链接契约：链接默认不自动跳转，先弹确认对话框，确认后才交给
+  /// [onOpenLink]（生产由 `ExternalUrlLauncher` 打开）。
+  ///
+  /// 仅放行 http/https 方案；无 opener 或方案不符时保持不响应（不硬校验链接域
+  /// 白名单——规则未定，见计划不确定点）。
+  void _handleLinkTap(
+    BuildContext context,
+    String text,
+    String? href,
+    String title,
+  ) {
+    final uri = Uri.tryParse(href ?? '');
+    if (uri == null ||
+        !uri.hasScheme ||
+        !(uri.isScheme('http') || uri.isScheme('https')) ||
+        onOpenLink == null) {
+      return;
+    }
+    unawaited(_confirmAndOpen(context, uri));
+  }
+
+  Future<void> _confirmAndOpen(BuildContext context, Uri uri) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showAppDialog<bool>(
+      context: context,
+      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+      scrollable: false,
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.assistantMarkdownLinkConfirmTitle,
+            style: TypographyToken.level6.body(context),
+          ),
+          const SizedBox(height: Spacing.level3),
+          Text(
+            l10n.assistantMarkdownLinkConfirmDescription,
+            style: TypographyToken.level4.body(context),
+          ),
+          const SizedBox(height: Spacing.level5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FButton(
+                variant: FButtonVariant.ghost,
+                onPress: () => Navigator.of(context).pop(false),
+                child: Text(l10n.commonCancel),
+              ),
+              const SizedBox(width: Spacing.level3),
+              FButton(
+                onPress: () => Navigator.of(context).pop(true),
+                child: Text(l10n.assistantMarkdownLinkOpenAction),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && context.mounted) {
+      await onOpenLink?.call(uri);
+    }
   }
 
   /// First non-empty per-tool disclaimer, falling back to the fixed

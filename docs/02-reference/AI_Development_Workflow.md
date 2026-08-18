@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-17
 ---
 
 # AI Development Workflow
 
-Last updated: 2026-07-04
+Last updated: 2026-08-17 (T9a: F-18 归档标记 + F-4 助手 Markdown 渲染/链接确认说明)
 
 ## Purpose
 
@@ -72,6 +72,16 @@ It is not the place for:
 
 Those stay in their existing feature boundaries unless a separate plan changes
 that architecture.
+
+> F-18 归档标记（2026-08-17）：`lib/core/ai/` 下 `runtime_config.dart` /
+> `runtime_providers.dart` 文件头标注
+> `// Experimental dev seam — not part of the shipping assistant path.`；
+> 语义不变（实验 seam、默认关闭），不删除、不改动接线。
+
+> F-4 助手 Markdown 渲染（2026-08-17）：助手消息气泡（`assistant` 特性的
+> `MarkdownBody`）样式统一走 `MarkdownStyle.ai`（见 `Design_System.md`「Markdown
+> 渲染」节）；链接默认不自动跳转，先弹确认对话框，确认后经 `ExternalUrlLauncher`
+> 打开。改动 `lib/core/ai/` 或助手消息渲染时不要绕过这两处约定。
 
 ## Experimental Runtime Flags
 

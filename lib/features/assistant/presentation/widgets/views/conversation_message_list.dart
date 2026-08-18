@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
@@ -53,6 +54,9 @@ class AssistantConversationMessageList extends ConsumerWidget {
       assistantControllerProvider.select((s) => s.streamingDraft),
     );
 
+    // F-4 链接契约：气泡先弹确认对话框，确认后经统一外部链接打开工具跳转。
+    final openLink = ref.read(externalUrlLauncherProvider).open;
+
     if (!capabilities.canSendMessages &&
         messages.isEmpty &&
         streamingDraft.isEmpty) {
@@ -90,6 +94,7 @@ class AssistantConversationMessageList extends ConsumerWidget {
             content: item.streamingDraft!,
             isStreaming: true,
             usedTools: const <String>[],
+            onOpenLink: openLink,
           );
         }
 
@@ -107,6 +112,7 @@ class AssistantConversationMessageList extends ConsumerWidget {
           onRegenerateProposal: onRegenerateProposal,
           onRegenerate: onRegenerate,
           onResend: onResend,
+          onOpenLink: openLink,
         );
       },
       separatorBuilder: (_, __) => const SizedBox(height: Spacing.level4),

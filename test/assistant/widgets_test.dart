@@ -431,6 +431,86 @@ void main() {
 
       await tester.pump(const Duration(milliseconds: 600));
     });
+
+    testWidgets('markdown link tap shows confirm dialog and opens on confirm', (
+      tester,
+    ) async {
+      final opened = <Uri>[];
+      await tester.pumpWidget(
+        _shell(
+          AssistantMessageBubble(
+            messageId: 'msg-link-confirm',
+            role: AssistantMessageRole.assistant,
+            content: '[查看资料](https://example.com/doc)',
+            usedTools: const <String>[],
+            onOpenLink: (uri) async {
+              opened.add(uri);
+              return true;
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('查看资料'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('打开外部链接？'), findsOneWidget);
+      expect(find.text('该链接将离开应用打开。'), findsOneWidget);
+
+      await tester.tap(find.text('打开'));
+      await tester.pumpAndSettle();
+
+      expect(opened, <Uri>[Uri.parse('https://example.com/doc')]);
+      expect(find.text('打开外部链接？'), findsNothing);
+    });
+
+    testWidgets('markdown link tap cancel does not open the url', (
+      tester,
+    ) async {
+      final opened = <Uri>[];
+      await tester.pumpWidget(
+        _shell(
+          AssistantMessageBubble(
+            messageId: 'msg-link-cancel',
+            role: AssistantMessageRole.assistant,
+            content: '[查看资料](https://example.com/doc)',
+            usedTools: const <String>[],
+            onOpenLink: (uri) async {
+              opened.add(uri);
+              return true;
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('查看资料'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('取消'));
+      await tester.pumpAndSettle();
+
+      expect(opened, isEmpty);
+      expect(find.text('打开外部链接？'), findsNothing);
+    });
+
+    testWidgets('markdown link stays inert when no opener is wired', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-link-inert',
+            role: AssistantMessageRole.assistant,
+            content: '[查看资料](https://example.com/doc)',
+            usedTools: <String>[],
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('查看资料'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('打开外部链接？'), findsNothing);
+    });
   });
 
   group('AssistantProposalCard', () {
