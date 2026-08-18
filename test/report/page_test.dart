@@ -22,7 +22,6 @@ import 'package:luminous/features/report/presentation/pages/page.dart';
 import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/export.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/readiness.dart';
-import 'package:luminous/features/report/presentation/widgets/sections/score_hero.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -75,13 +74,11 @@ void main() {
       );
       expect(find.byKey(const Key('review-next-step-section')), findsOneWidget);
 
-      // 旧 dashboard 主路径内容不再装配：不构建 ScoreHero、ExportSection
+      // 旧 dashboard 主路径内容不再装配：不构建 ExportSection
       // 或 readiness 卡（canShowFullReport 整页锁所在），也不出现 7/30 天
       // 范围切换（ReportTopBar/ReportRangeMenu 仅 legacy 文件保留）。
       expect(find.byKey(const Key('report-readiness-card')), findsNothing);
-      expect(find.byKey(const Key('report-score-hero')), findsNothing);
       expect(find.byKey(const Key('report-export-section')), findsNothing);
-      expect(find.byType(ReportScoreHero), findsNothing);
       expect(find.byType(ReportExportSection), findsNothing);
       expect(find.byType(ReportReadinessSection), findsNothing);
       expect(find.byType(ReportTopBar), findsNothing);
@@ -152,7 +149,6 @@ void main() {
         findsNothing,
       );
       expect(find.byKey(const Key('report-readiness-card')), findsNothing);
-      expect(find.byKey(const Key('report-score-hero')), findsNothing);
     },
   );
 

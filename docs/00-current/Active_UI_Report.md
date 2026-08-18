@@ -28,7 +28,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 无事件：显示「开始健康观察」入口 + 最近事件历史；完全没有事件时给轻量解释，不自动生成周报。未登录 preview 显示 `SignInHintBanner`，隐藏开始入口。
 - 「开始观察」已与 today 对齐：预读 health context snapshot 的当前用药选项与按用户时区当天解析的症状记录选项，随创建请求转发 `reasonRecordId` / `currentMedicineIds`；选项加载失败静默降级为空列表，不阻塞开始观察。创建成功后由 DataChangeBus 自动刷新 review。
 - 状态处理：首载 loading 显示骨架屏；刷新失败但 `reviewLastCurrentProvider` 有数据时继续渲染旧数据 + 轻量 stale 提示条；无缓存的错误显示 `StateErrorView` + 重试。
-- 主路径回归约束（测试锁定）：不构建 `ReportScoreHero` / `ReportExportSection` / `ReportReadinessSection`（`canShowFullReport` 整页锁所在）；顶栏无 7/30 天范围切换（`ReportTopBar` / `ReportRangeMenu` 仅 legacy 文件）；旧 `reportDashboardProvider` 失败不阻塞 review 渲染。
+- 主路径回归约束（测试锁定）：不构建 `ReportExportSection` / `ReportReadinessSection`（`canShowFullReport` 整页锁所在）；顶栏无 7/30 天范围切换（`ReportTopBar` / `ReportRangeMenu` 仅 legacy 文件）；旧 `reportDashboardProvider` 失败不阻塞 review 渲染。
 - 文案全部走 `report*` l10n 分片（zh/en 齐全），旧 `reportExport*`、诊所摘要等文案保持 Report 口径（Task 8 已将入口移入 More，见「Review More 入口」节）。
 
 ## Review More 入口（Task 8，导出与就诊摘要已迁入）
@@ -113,8 +113,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 ## 评分与指标
 
-- `ReportScoreHero` 已移除：健康评分计算不透明，0 分 preview 无信息价值，且产品文档未将评分列为 Report 页核心组件。
-- 登录后 `dashboard.score.summary` 作为一句话摘要展示在 `ReportReadinessSection` 描述下方，保留评分结论但不独占首屏。
+- `ReportScoreHero` 已移除（R-4 #20）：健康评分计算不透明，0 分 preview 无信息价值，且产品文档未将评分列为 Report 页核心组件。后端 `buildScore` 及 `ReportDashboardScoreDto` 已同步删除，PDF 评分卡已移除。
 - `ReportMetricsGrid` 在移动端和桌面端均渲染，桌面端位于右栏。
 - 指标卡 2 列网格，含 sparkline 趋势条、状态徽章、方向箭头。
 
@@ -193,7 +192,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 ## 2026-07-19 P2 低级一致性打磨
 
-- `score_hero.dart` 的 `circleHelp` 帮助图标外包 `FTooltip`，显示 `reportScoreHelpTooltip`（评分构成说明）。
+- `score_hero.dart` 已随 R-4 #20 移除，不再有评分卡相关的 tooltip 或字号 token。
 - `trend.dart` 图例色点从 8px 增大为 `Spacing.level3`（10px），提升可识别性。X 轴日期已走 `DateFormat.Md(locale)`，无需改动。
 - `suggestion_history.dart` 手写 `DecoratedBox` 徽章改为 `FBadge.raw` + `.delta()` + `shapeDelta` 模式，与项目其他徽章实现一致。
 - `report/page.dart` 移除 `isInsufficient: (_) => false` 恒 false 死代码。
@@ -222,7 +221,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - **装饰图标 ExcludeSemantics**：`readiness.dart` 的状态头像图标和时钟图标包裹 `ExcludeSemantics`，避免屏幕阅读器重复朗读相邻文字。
 - **就绪卡"生成总结"loading**：`readiness.dart` 的 `_PrimaryAction` ready 状态新增 `isGenerating` 参数，生成中禁用按钮 + 显示 `FCircularProgress`。`dashboard_view.dart` 传入 `isGenerating: aiSummaryState.status == ReportAiSummaryCardStatus.loading`。
 - **emptyInsufficientBuilder 死代码删除**：`page.dart` 移除不可达的 `emptyInsufficientBuilder` 分支。
-- **分数字号 token 外覆盖修复**：`score_hero.dart` 从 `TypographyToken.level9.display(context).copyWith(fontSize: ...)` 改为 `TextStyle(fontSize: ...)`，消除先套 token 再覆盖的矛盾写法。
+- **R-4 #20 移除综合评分**：`score_hero.dart` 整文件删除，`ReportHealthScore` 实体删除，`ReportReadinessSection.scoreSummary` 参数删除，`_ScoreHeroPlaceholder` 重命名为 `_ReadinessPlaceholder`。
 - **导出卡禁用态 chevron 修复**：`export.dart` 的 `_ExportCard` trailing 图标在 `requestInFlight.inFlight` 时显示 `lock` 而非 `chevronRight`，正确表达“其他导出进行中”的禁用语义。
 
 ## 2026-07-20 联调修正

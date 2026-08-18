@@ -2,7 +2,7 @@
 // LEGACY — 兼容期保留，已不再装配到主路径。
 //
 // Task 6 起 `/report` 主内容切换为事件优先的 `ReviewView`（review_view.dart），
-// 本文件及配套 section/dialog（score_hero、export、findings、readiness、
+// 本文件及配套 section/dialog（export、findings、readiness、
 // patterns、trend、ai_summary、suggestion_history、preview_empty、
 // range_picker_dialog、clinic_summary_preview_dialog）与
 // `widgets/shared/top_bar.dart`（7/30 天范围切换）均保留代码但不再被
@@ -140,9 +140,6 @@ class ReportDashboardView extends StatelessWidget {
           needsAttentionMetricCount: _needsAttentionMetricCount(),
           l10n: l10n,
           rangeLabel: _rangeLabel(l10n),
-          scoreSummary: readinessStatus == ReportReadinessStatus.ready
-              ? dashboard.score.summary
-              : '',
           onSignIn: onSignIn,
           onContinueRecord: onContinueRecord,
           onGenerate: onGenerateAiSummary == null
@@ -253,9 +250,6 @@ class ReportDashboardView extends StatelessWidget {
           needsAttentionMetricCount: _needsAttentionMetricCount(),
           l10n: l10n,
           rangeLabel: _rangeLabel(l10n),
-          scoreSummary: readinessStatus == ReportReadinessStatus.ready
-              ? dashboard.score.summary
-              : '',
           onSignIn: onSignIn,
           onContinueRecord: onContinueRecord,
           onGenerate: onGenerateAiSummary == null
@@ -382,9 +376,7 @@ class ReportDashboardView extends StatelessWidget {
     if (isPreview || !canAccessProtectedData) {
       return ReportReadinessStatus.signedOut;
     }
-    if (dashboard.metrics.isEmpty ||
-        dashboard.score.status == ReportStatus.insufficientData ||
-        _insufficientMetricCount() > 0) {
+    if (dashboard.metrics.isEmpty || _insufficientMetricCount() > 0) {
       return ReportReadinessStatus.insufficient;
     }
     return ReportReadinessStatus.ready;

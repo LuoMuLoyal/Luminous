@@ -85,12 +85,6 @@ class _FakeReportAdapter implements HttpClientAdapter {
           'startDate': '2026-06-06',
           'endDate': '2026-06-12',
           'generatedAt': '2026-06-12T10:00:00.000Z',
-          'score': <String, Object?>{
-            'value': 82,
-            'maxValue': 100,
-            'status': 'good',
-            'summary': '本周饮水和用药执行整体稳定。',
-          },
           'metrics': <Object?>[
             <String, Object?>{
               'kind': 'water',

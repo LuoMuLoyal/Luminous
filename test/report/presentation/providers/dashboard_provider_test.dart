@@ -181,9 +181,6 @@ void main() {
       expect(dashboard.startDate, '----.--.--');
       expect(dashboard.endDate, '----.--.--');
       expect(dashboard.generatedAt, '');
-      expect(dashboard.score.value, 0);
-      expect(dashboard.score.maxValue, 100);
-      expect(dashboard.score.status, ReportStatus.insufficientData);
       expect(dashboard.metrics, isEmpty);
       expect(dashboard.trends, isEmpty);
       expect(dashboard.findings, isEmpty);

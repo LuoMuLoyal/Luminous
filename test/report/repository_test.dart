@@ -56,7 +56,6 @@ void main() {
         const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
       );
 
-      expect(dashboard.score.status, ReportStatus.stable);
       expect(dashboard.metrics.single.kind, ReportDataKind.sleep);
       expect(dashboard.metrics.single.status, ReportStatus.insufficientData);
       expect(dashboard.metrics.single.direction, ReportMetricDirection.flat);
@@ -243,12 +242,6 @@ lucent.ReportDashboardDataDto _dashboardDto({
     startDate: '2026-06-06',
     endDate: '2026-06-12',
     generatedAt: '2026-06-12T10:00:00.000Z',
-    score: lucent.ReportDashboardScoreDto(
-      value: 78,
-      maxValue: 100,
-      status: lucent.ReportDashboardScoreDtoStatusEnum.stable,
-      summary: '本周整体稳定，睡眠暂缺真实数据。',
-    ),
     metrics: metrics,
     trends: trends,
     findings: findings,

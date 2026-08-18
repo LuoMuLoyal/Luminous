@@ -251,7 +251,6 @@ export 'package:lucent_api/src/model/report_coverage_dimension_dto.dart';
 export 'package:lucent_api/src/model/report_coverage_dto.dart';
 export 'package:lucent_api/src/model/report_dashboard_data_dto.dart';
 export 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
-export 'package:lucent_api/src/model/report_dashboard_score_dto.dart';
 export 'package:lucent_api/src/model/report_finding_dto.dart';
 export 'package:lucent_api/src/model/report_low_risk_action_dto.dart';
 export 'package:lucent_api/src/model/report_metric_dto.dart';

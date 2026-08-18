@@ -18,29 +18,18 @@ class LucentReportRepository implements ReportRepository {
   Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
     final dto = await dataSource.fetchDashboard(query);
     final findings = dto.findings.map(_mapFinding).toList(growable: false);
-    final score = _mapScore(dto.score);
 
     return ReportDashboard(
       range: _mapRange(dto.range.value),
       startDate: dto.startDate,
       endDate: dto.endDate,
       generatedAt: dto.generatedAt,
-      score: score,
       metrics: dto.metrics.map(_mapMetric).toList(growable: false),
       trends: dto.trends.map(_mapTrend).toList(growable: false),
       findings: findings,
       exportActions: _exportActions,
       patterns: dto.patterns.map(_mapPattern).toList(growable: false),
       aiSummaryEnabled: dto.aiSummaryEnabled,
-    );
-  }
-
-  ReportHealthScore _mapScore(lucent.ReportDashboardScoreDto dto) {
-    return ReportHealthScore(
-      value: dto.value.round(),
-      maxValue: dto.maxValue.round(),
-      status: _mapStatus(dto.status.value),
-      summary: dto.summary,
     );
   }
 

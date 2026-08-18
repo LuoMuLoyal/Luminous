@@ -67,7 +67,6 @@ abstract class ReportDashboard with _$ReportDashboard {
     required String startDate,
     required String endDate,
     required String generatedAt,
-    required ReportHealthScore score,
     required List<ReportMetric> metrics,
     required List<ReportTrendSeries> trends,
     required List<ReportFinding> findings,
@@ -82,12 +81,6 @@ abstract class ReportDashboard with _$ReportDashboard {
     startDate: '----.--.--',
     endDate: '----.--.--',
     generatedAt: '',
-    score: ReportHealthScore(
-      value: 0,
-      maxValue: 100,
-      status: ReportStatus.insufficientData,
-      summary: '',
-    ),
     metrics: <ReportMetric>[],
     trends: <ReportTrendSeries>[],
     findings: <ReportFinding>[],
@@ -95,16 +88,6 @@ abstract class ReportDashboard with _$ReportDashboard {
     patterns: <ReportPatternCard>[],
     aiSummaryEnabled: false,
   );
-}
-
-@freezed
-abstract class ReportHealthScore with _$ReportHealthScore {
-  const factory ReportHealthScore({
-    required int value,
-    required int maxValue,
-    required ReportStatus status,
-    required String summary,
-  }) = _ReportHealthScore;
 }
 
 @freezed

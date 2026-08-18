@@ -4,7 +4,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 
 /// Skeleton placeholder for the Report tab loading state.
 ///
-/// Avoids rendering fake scores, metrics, dates, or AI summary text.
+/// Avoids rendering fake metrics, dates, or AI summary text.
 class ReportSkeletonView extends StatelessWidget {
   const ReportSkeletonView({super.key});
 
@@ -29,7 +29,7 @@ class _MobileReportSkeleton extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _ScoreHeroPlaceholder(),
+        _ReadinessPlaceholder(),
         SizedBox(height: Spacing.level4),
         _MetricsGridPlaceholder(),
         SizedBox(height: Spacing.level4),
@@ -57,7 +57,7 @@ class _DesktopReportSkeleton extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _ScoreHeroPlaceholder(),
+        _ReadinessPlaceholder(),
         SizedBox(height: Spacing.level5),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,8 +98,8 @@ class _DesktopReportSkeleton extends StatelessWidget {
   }
 }
 
-class _ScoreHeroPlaceholder extends StatelessWidget {
-  const _ScoreHeroPlaceholder();
+class _ReadinessPlaceholder extends StatelessWidget {
+  const _ReadinessPlaceholder();
 
   @override
   Widget build(BuildContext context) {
@@ -113,27 +113,7 @@ class _ScoreHeroPlaceholder extends StatelessWidget {
           ],
         ),
         SizedBox(height: Spacing.level4),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            InlineSkeletonBlock(
-              height: 56,
-              width: 80,
-              radius: RadiusTokens.level3,
-            ),
-            SizedBox(width: Spacing.level3),
-            Padding(
-              padding: EdgeInsets.only(bottom: Spacing.level2),
-              child: InlineSkeletonBlock(height: 18, width: 48),
-            ),
-            SizedBox(width: Spacing.level3),
-            InlineSkeletonBlock(
-              height: 24,
-              width: 64,
-              radius: RadiusTokens.levelFull,
-            ),
-          ],
-        ),
+        InlineSkeletonBlock(height: 14, widthFactor: 0.6),
       ],
     );
   }

@@ -157,7 +157,7 @@ void main() {
   });
 
   testWidgets(
-    'partial state shows short missing reasons without score or red attention states',
+    'partial state shows short missing reasons without red attention states',
     (tester) async {
       await pumpReviewView(
         tester,

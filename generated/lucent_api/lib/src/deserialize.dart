@@ -197,7 +197,6 @@ import 'package:lucent_api/src/model/report_coverage_dimension_dto.dart';
 import 'package:lucent_api/src/model/report_coverage_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_data_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
-import 'package:lucent_api/src/model/report_dashboard_score_dto.dart';
 import 'package:lucent_api/src/model/report_finding_dto.dart';
 import 'package:lucent_api/src/model/report_low_risk_action_dto.dart';
 import 'package:lucent_api/src/model/report_metric_dto.dart';
@@ -1017,9 +1016,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ReportDashboardResponseDto':
       return ReportDashboardResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ReportDashboardScoreDto':
-      return ReportDashboardScoreDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ReportFindingDto':
       return ReportFindingDto.fromJson(value as Map<String, dynamic>)

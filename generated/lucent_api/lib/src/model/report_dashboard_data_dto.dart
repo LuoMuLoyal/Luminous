@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/report_dashboard_score_dto.dart';
 import 'package:lucent_api/src/model/report_metric_dto.dart';
 import 'package:lucent_api/src/model/report_pattern_dto.dart';
 import 'package:lucent_api/src/model/report_finding_dto.dart';
@@ -30,8 +29,6 @@ class ReportDashboardDataDto {
     required this.endDate,
 
     required this.generatedAt,
-
-    required this.score,
 
     required this.metrics,
 
@@ -61,9 +58,6 @@ class ReportDashboardDataDto {
   @JsonKey(name: r'generatedAt', required: true, includeIfNull: false)
   final String generatedAt;
 
-  @JsonKey(name: r'score', required: true, includeIfNull: false)
-  final ReportDashboardScoreDto score;
-
   @JsonKey(name: r'metrics', required: true, includeIfNull: false)
   final List<ReportMetricDto> metrics;
 
@@ -87,7 +81,6 @@ class ReportDashboardDataDto {
           other.startDate == startDate &&
           other.endDate == endDate &&
           other.generatedAt == generatedAt &&
-          other.score == score &&
           other.metrics == metrics &&
           other.trends == trends &&
           other.findings == findings &&
@@ -100,7 +93,6 @@ class ReportDashboardDataDto {
       startDate.hashCode +
       endDate.hashCode +
       generatedAt.hashCode +
-      score.hashCode +
       metrics.hashCode +
       trends.hashCode +
       findings.hashCode +

@@ -41,12 +41,6 @@ class MockReportRepository implements ReportRepository {
     startDate: _dateOnly(clock.now().subtract(const Duration(days: 7))),
     endDate: _dateOnly(clock.now()),
     generatedAt: clock.now().toIso8601String(),
-    score: ReportHealthScore(
-      value: 0,
-      maxValue: 100,
-      status: ReportStatus.stable,
-      summary: 'Loading latest report snapshot...',
-    ),
     metrics: <ReportMetric>[
       ReportMetric(
         kind: ReportDataKind.medication,
@@ -150,12 +144,6 @@ class MockReportRepository implements ReportRepository {
     startDate: _dateOnly(clock.now().subtract(const Duration(days: 7))),
     endDate: _dateOnly(clock.now()),
     generatedAt: clock.now().toIso8601String(),
-    score: ReportHealthScore(
-      value: 0,
-      maxValue: 100,
-      status: ReportStatus.insufficientData,
-      summary: '登录后可查看最近 7 天的真实报告聚合。',
-    ),
     metrics: <ReportMetric>[
       ReportMetric(
         kind: ReportDataKind.medication,

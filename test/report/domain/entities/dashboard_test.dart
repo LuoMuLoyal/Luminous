@@ -52,13 +52,6 @@ void main() {
       expect(ReportDashboard.signedOut().range, ReportDashboardRange.last7Days);
     });
 
-    test('has zero health score', () {
-      final dashboard = ReportDashboard.signedOut();
-      expect(dashboard.score.value, 0);
-      expect(dashboard.score.maxValue, 100);
-      expect(dashboard.score.status, ReportStatus.insufficientData);
-    });
-
     test('has empty metrics', () {
       expect(ReportDashboard.signedOut().metrics, isEmpty);
     });

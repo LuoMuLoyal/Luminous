@@ -14,7 +14,6 @@ class ReportReadinessSection extends StatelessWidget {
     this.insufficientMetricCount = 0,
     this.needsAttentionMetricCount = 0,
     this.rangeLabel = '',
-    this.scoreSummary = '',
     this.onSignIn,
     this.onContinueRecord,
     this.onGenerate,
@@ -31,11 +30,6 @@ class ReportReadinessSection extends StatelessWidget {
   /// Localized label for the selected date range (e.g. "近 7 天").
   /// Used in the ready title so it reflects the actual selected range.
   final String rangeLabel;
-
-  /// Optional score summary text shown below the description when the score
-  /// card is not rendered separately. Keeps the score explanation accessible
-  /// without giving it a full-screen hero card.
-  final String scoreSummary;
 
   final VoidCallback? onSignIn;
   final VoidCallback? onContinueRecord;
@@ -84,15 +78,6 @@ class ReportReadinessSection extends StatelessWidget {
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
-            if (scoreSummary.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level3),
-              Text(
-                scoreSummary,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w600),
-              ),
-            ],
             if (generatedAtLabel.isNotEmpty) ...[
               const SizedBox(height: Spacing.level3),
               Row(
