@@ -1,3 +1,4 @@
+// Experimental dev seam — not part of the shipping assistant path.
 import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

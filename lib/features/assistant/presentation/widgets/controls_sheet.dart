@@ -1,3 +1,5 @@
+// Experimental/legacy — not part of the shipping assistant path.
+// Kept for reference only; no entry points wire this component.
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';

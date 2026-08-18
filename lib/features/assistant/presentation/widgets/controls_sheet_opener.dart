@@ -1,3 +1,5 @@
+// Experimental/legacy — not part of the shipping assistant path.
+// Kept for reference only; no entry points wire this component.
 import 'dart:async';
 
 import 'package:flutter/material.dart';
