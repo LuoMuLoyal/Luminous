@@ -40,7 +40,9 @@ YYYY-MM-DD-short-task-name.md
 - [`2026-08-17-flowui-migration-plan.md`](2026-08-17-flowui-migration-plan.md)
   — Assistant 页面 FlowUI 迁移：用 flow_ui 替换约 80% 手写聊天 UI 组件，不涉及后端
 - [`2026-08-17-error-handling-reform-plan.md`](2026-08-17-error-handling-reform-plan.md)
-  — 错误处理重构：以 fpdart 的 Either/TaskEither 显式化 repository 的可恢复失败边界
+  — 错误处理硬切：fpdart + LucentFailure + RFC 9457；等待 2026-08-16 十份功能改造计划全部完成、验证并删除后启动
+- [`2026-08-18-review-remediation-plan.md`](2026-08-18-review-remediation-plan.md)
+  — 8-18 审查整改：审查条目已对照 HEAD 复核并改写为确定性处置表（source_strip 非空断言、死代码删除、Toast 守卫、测试拆分等）
 
 ### 功能盘点改造计划(2026-08-16,共 10 份)
 
@@ -48,7 +50,7 @@ YYYY-MM-DD-short-task-name.md
 速览表/结尾汇总仅作参考)。跨功能域共用的内容只在顺序靠前的计划里写全,靠后的计划只做引用;
 桌面/Web 产品方向以已接受的 ADR-0012 为准：Flutter Desktop 与 PC Flutter Web 停止产品扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动。各计划末尾的「已决边界与延期项」记录对应范围。
 
-已确定事项以 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md) 为准；它优先于各计划中尚未清理的旧「不确定点」表述。
+已确定事项以 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md) 为准；它优先于各计划中尚未清理的旧「不确定点」表述。2026-08-16 十份计划全部完成、验证并删除后，才启动错误处理硬切计划；在此之前只修发布阻断项。
 
 全局执行顺序(靠前先执行;跨计划引用均指向顺序在前的文档):
 
@@ -60,8 +62,8 @@ YYYY-MM-DD-short-task-name.md
    — 扫码/搜索:本批任务全部完成(识别出口接建档闭环、预检即时化、去假置信度、候选去重合并);剩余 F-2 条码等值匹配(0.1.0 后)
 4. [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md)
    — 今日建议:AI 摘要卡接线、建议反馈与升级通知执行器
-5. [`2026-08-16-assistant-remediation-plan.md`](2026-08-16-assistant-remediation-plan.md)
-   — AI 助手:本批任务全部完成并实施完毕文件已删(P0 三大信任缺口、F-2 会话重命名删除、F-5b 重生/断流补偿、F-9 记忆压缩、F-11/F-16 一致性、F-15 语料分层、P2 批次);剩余 F-14/F-15 来源条元数据后端投影与记忆擦除设置页入口(0.1.0 后)
+5. AI 助手改造计划（2026-08-16，实施完毕文件已删）
+   — 本批任务全部完成(P0 三大信任缺口、F-2 会话重命名删除、F-5b 重生/断流补偿、F-9 记忆压缩、F-11/F-16 一致性、F-15 语料分层、P2 批次);剩余 F-14/F-15 来源条元数据后端投影与记忆擦除设置页入口(0.1.0 后)
 6. [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md)
    — 记录:vital 时间序列基建、饮水目标契约、摘要网格接线
 7. [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md)

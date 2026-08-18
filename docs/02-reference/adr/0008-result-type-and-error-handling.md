@@ -1,219 +1,131 @@
-# ADR-0008: Result 类型与统一错误处理
+# ADR-0008: Result Type and Unified Error Handling
 
-- **Status**: accepted
+- **Status**: accepted (amended 2026-08-18; previous self-built Result decision superseded)
 - **Date**: 2026-07-10
 - **Deciders**: LuoMuLoyal
+- **Related**: Lucent ADR-0012, RFC 9457 Problem Details
 
 ## Context
 
-当前错误处理依赖 try-catch 传播，存在三个系统性问题：
+Luminous previously relied on repository methods returning `Future<T>` and exceptions being caught in
+providers or widgets. The same error was therefore handled differently in different features. The
+repository signature did not tell callers which failures were expected, and the client had several
+copies of the same `try-catch` and toast mapping logic.
 
-### 1. try-catch 模式遍布 UI 层
-
-几乎每个 widget 的回调都重复相同的错误处理骨架：
-
-```dart
-// 这个模式在 report/page.dart、assistant/page.dart、auth/ 多处重复出现
-try {
-  await ref.read(xxxProvider.notifier).doSomething();
-} catch (error) {
-  ref.read(talkerProvider).error('XxxPage.handle: failed: $error');
-  if (!context.mounted) return;
-  final message = LucentErrorMapper.fromObject(error).message;
-  await AppToast.show(context, message);
-}
-```
-
-搜索结果中至少 12 处 widget 回调遵循这个完全相同的模式。
-
-### 2. `runAuthAction` 被限制在 auth 模块
-
-`auth/presentation/providers/shared/auth_action_runner.dart` 已有统一错误处理 helper：
-
-```dart
-Future<AuthActionResult<T>> runAuthAction<T>({
-  required Ref ref,
-  required String tag,
-  required Future<T> Function() action,
-}) async {
-  try {
-    return (value: await action(), error: null);
-  } catch (e) {
-    ref.read(talkerProvider).error('$tag: failed: $e');
-    return (value: null, error: LucentErrorMapper.fromObject(e).message);
-  }
-}
-```
-
-但它只在 auth feature 内使用。其他 feature 没有类似抽象，各自手写 try-catch。
-
-### 3. Repository 直接抛异常，调用方必须 try-catch
-
-Repository 方法签名是 `Future<T>` 而非 `Future<Result<T, E>>`。调用方无法从签名判断
-可能抛出哪些异常，错误类型信息在传递中丢失：
-
-- `LucentApiException` 的 `code`、`statusCode`、`requestId` 在 UI 层只取了 `message`
-- 不同错误类型（网络超时 vs auth 失败 vs 业务逻辑错误）无法在调用方做差异化处理
-- Provider 层必须用 try-catch 包裹 repository 调用，增加嵌套
+The original decision introduced a small local `Result<T>` type, `AppError`, and `runGuarded`. That
+reduced some repetition, but it created another project-specific abstraction and did not establish
+a complete repository boundary. The 2026-08-17 inventory also found many silent catches, direct throws,
+and old helper call sites. The original self-built Result decision is superseded by this amendment.
 
 ## Decision
 
-### 8.1 引入轻量 `Result` 类型
+### 1. Use fpdart only at the repository/provider boundary
 
-不自引入 `fpdart`，在 `lib/core/errors/` 下定义项目自己的 `Result` 类型（~40 行）：
-
-```dart
-sealed class Result<T> {
-  const Result();
-  factory Result.success(T value) = Success<T>;
-  factory Result.failure(AppError error) = Failure<T>;
-
-  /// 模式匹配
-  R fold<R>({
-    required R Function(T value) onSuccess,
-    required R Function(AppError error) onFailure,
-  });
-}
-
-final class Success<T> extends Result<T> {
-  const Success(this.value);
-  final T value;
-
-  @override
-  R fold<R>({
-    required R Function(T value) onSuccess,
-    required R Function(AppError error) onFailure,
-  }) => onSuccess(value);
-}
-
-final class Failure<T> extends Result<T> {
-  const Failure(this.error);
-  final AppError error;
-
-  @override
-  R fold<R>({
-    required R Function(T value) onSuccess,
-    required R Function(AppError error) onFailure,
-  }) => onFailure(error);
-}
-
-/// 统一应用错误类型，保留原始异常信息。
-class AppError {
-  const AppError({
-    required this.message,
-    this.kind = AppErrorKind.unknown,
-    this.code,
-    this.statusCode,
-    this.requestId,
-    this.cause,
-  });
-
-  final String message;
-  final AppErrorKind kind;     // network / auth / server / business / unknown
-  final int? code;             // Lucent envelope code
-  final int? statusCode;       // HTTP status
-  final String? requestId;     // X-Request-Id response header
-  final String? traceId;       // traceresponse header / traceparent
-  final Object? cause;         // 原始异常
-}
-```
-
-### 8.2 Repository 层返回 `Result`
-
-Repository 方法签名改为 `Future<Result<T>>`。异常在 repository 边界被捕获并转换：
+Use the stable fpdart 1.x API, pinned to `^1.2.0` during this migration:
 
 ```dart
-@override
-Future<Result<ReportDashboard>> fetchDashboard(query) async {
-  try {
-    final dto = await dataSource.fetch(query);
-    return Result.success(mapper.toEntity(dto));
-  } on DioException catch (e) {
-    return Result.failure(LucentErrorMapper.toAppError(e));
-  } catch (e) {
-    return Result.failure(AppError(message: '未知错误', cause: e));
-  }
-}
+typedef AppEither<T> = Either<LucentFailure, T>;
+typedef AppTaskEither<T> = TaskEither<LucentFailure, T>;
 ```
 
-**注意**：网络层的 `AuthInterceptor`（ADR-0007 已实现）内部的 401 refresh 逻辑仍然抛
-异常（它需要在拦截器层面工作），不使用 Result。`ErrorInterceptor`（ADR-0007）已在
-拦截器链末端将 `DioException` 映射为 `LucentApiException`，`LucentErrorMapper.toAppError()`
-在此映射基础上进一步转换为 `AppError`。Result 只在 repository → provider → UI 边界使用。
+- Datasources keep `Future` and `Stream` because they own transport and streaming behavior.
+- Repository interfaces and implementations expose `AppTaskEither<T>` for expected, recoverable
+  failures.
+- Providers run and fold the result into Riverpod `AsyncValue` or an explicit action state.
+- Widgets consume `AsyncValue` and action state; they do not import fpdart or catch network errors.
+- Only `Either` and `TaskEither` are in scope. Do not introduce fpdart `Option`, `Reader`, `State`,
+  or unrelated functional abstractions.
 
-### 8.3 泛化 `runGuarded` helper
+fpdart is a control-flow/container dependency. It does not define the HTTP contract or error
+vocabulary.
 
-将 `runAuthAction` 泛化为全局 `runGuarded`，放在 `lib/core/errors/`：
+### 2. Use `LucentFailure` as the client failure vocabulary
 
-```dart
-Future<Result<T>> runGuarded<T>({
-  required Ref ref,
-  required String tag,
-  required Future<T> Function() action,
-}) async {
-  try {
-    return Result.success(await action());
-  } catch (e) {
-    ref.read(talkerProvider).error('$tag: failed: $e');
-    return Result.failure(LucentErrorMapper.toAppError(e));
-  }
-}
+`LucentFailure` represents a normalized, actionable failure at the client boundary. It may contain:
+
+- a stable Lucent business `code`;
+- a categorized kind such as network, authentication, business, server, or unknown;
+- the HTTP status when a response exists;
+- optional `traceId` for diagnostics;
+- client-only `networkErrorCode` when no HTTP response exists;
+- the original cause for logging/crash reporting, never for user-visible serialization.
+
+`requestId` is not part of the current contract. It is retired in Lucent ADR-0010. HTTP Problem
+Details fields such as `type`, `title`, `detail`, `errors`, `retryable`, and `traceId` are parsed by
+the network layer and mapped into `LucentFailure`.
+
+`LucentFailure` is not a programming exception. Protocol invariants, malformed generated payloads,
+programming errors, cancellation, and SSE stream termination remain explicit throws or stream
+errors and must not be disguised as an ordinary Left value.
+
+### 3. Keep the layer responsibilities explicit
+
+```text
+Dio / datasource       Future<T> or Stream<T>
+repository             TaskEither<LucentFailure, T>
+provider               run() + fold/match -> AsyncValue / action state
+widget                 render state and local UI effects only
 ```
 
-### 8.4 UI 层错误展示统一化
+The network layer maps RFC 9457 `application/problem+json` and transport failures to
+`LucentFailure`. The API contract itself is defined by Lucent ADR-0012: successful responses retain
+the `{ code: 0, message: "", data }` envelope; ordinary HTTP errors are Problem Details and are not
+wrapped in a success envelope.
 
-在 `LuminousApp` 中注册全局 `ref.listen`，监听 provider 错误状态变化，自动展示 toast：
+### 4. Perform a hard cut, not a permanent dual system
 
-```dart
-// 在页面级别
-ref.listen<AsyncValue<void>>(someActionProvider, (previous, next) {
-  next.whenOrNull(
-    error: (error, _) {
-      if (error is AppError) {
-        AppToast.show(context, error.message);
-      }
-    },
-  );
-});
-```
+The migration is deliberately a concentrated freeze-window task. After it is complete:
 
-页面级回调中的 try-catch 减少为只处理需要差异化 UI 的错误（如导航、表单内联错误）。
+- the local `Result<T>` type is deleted;
+- `runGuarded` and feature-local equivalents are deleted;
+- repositories no longer hide expected failures behind `Future<T>`;
+- network `try-catch` is removed from widgets except for documented local UI-only behavior;
+- no new code may introduce a second result abstraction or an undocumented silent fallback.
+
+A catch is permitted only when it has an explicit recovery/degraded contract, structured logging,
+an OTel event or metric where applicable, and a test for the user-visible outcome. `rethrow` is
+permitted for programming errors, cancellation, protocol invariants, and intentionally propagated
+stream failures.
+
+### 5. Separate API migration from Result migration
+
+The RFC 9457 Problem Details API migration is a cross-repository contract change. It is implemented
+as its own stage with OpenAPI and contract tests; it is not hidden inside a repository signature
+change. fpdart migration consumes the resulting `LucentFailure` mapping and does not independently
+change HTTP response shapes.
 
 ## Options Considered
 
-### 保持 try-catch + LucentErrorMapper（现状）
+### Keep the local Result, AppError, and runGuarded
 
-- Pros: 零迁移成本，已有 `runAuthAction` 在 auth 模块工作良好
-- Cons: 12+ 处重复 try-catch 骨架，错误类型信息在传递中丢失，Repository 签名不表达失败可能
+Rejected. It is already under-adopted, duplicates a third-party functional container, and leaves
+multiple call conventions for AI-assisted development to choose between.
 
-### 引入 `fpdart` 的 `Either` / `TaskEither`
+### Use fpdart `Either` / `TaskEither`
 
-- Pros: 成熟库，丰富的函数式 API（`map`、`flatMap`、`traverse` 等）
-- Cons: 引入函数式编程范式，团队学习成本高，`Either<Left, Right>` 的左右约定对 Dart 开发者不直观
+Accepted. It is established in the Dart ecosystem, provides asynchronous composition, makes the
+recoverable failure part of repository contracts, and integrates cleanly with Riverpod after a
+single provider-side fold.
 
-### 自实现轻量 `Result`（本方案）
+### Use `AsyncValue` as the repository result
 
-- Pros: ~40 行代码，无外部依赖，API 直观（`Success` / `Failure`），与 Dart 3 的 sealed
-  class / pattern matching 天然契合
-- Cons: 需自行维护，功能不如 `fpdart` 丰富
-
-### 使用 `AsyncValue` 作为错误载体（不引入 Result）
-
-- Pros: Riverpod 原生支持，零新概念
-- Cons: `AsyncValue` 是 provider 级别的状态容器，不适合表示一次性 action 的结果（如"导出报告"
-  是一个 action 而非持续状态）；错误信息仍需从 `AsyncValue.error` 中提取
+Rejected. `AsyncValue` is a provider state container, not a domain/repository contract, and it does
+not model one-shot actions or composition cleanly.
 
 ## Consequences
 
-- 新增 `lib/core/errors/result.dart` + `lib/core/errors/app_error.dart` + `lib/core/errors/run_guarded.dart`。
-- `LucentErrorMapper` 增加 `toAppError(Object) → AppError` 方法，保留 `fromObject` 向后兼容。
-- Repository 方法签名从 `Future<T>` 改为 `Future<Result<T>>`，存量方法在触碰时迁移。
-- Provider 层从 try-catch 改为 `result.fold(...)`，可基于 `AppErrorKind` 做差异化处理：
-  - `network` → 展示"网络错误"toast + 重试按钮
-  - `auth` → 触发 session expired 流程
-  - `business` → 展示后端返回的业务错误消息
-  - `unknown` → 展示通用错误消息 + 上报 talker
-- `runAuthAction` 标记 `@Deprecated`，新代码使用 `runGuarded`。
-- UI 层 try-catch 显著减少；需要差异化 UI 的场景仍可在 widget 内 try-catch。
-- Mock repository 也需要返回 `Result`，但 mock 基本只返回 `Success`，迁移成本低。
-- `AppError` 保留 `cause` 字段用于 talker 上报，不丢失原始异常栈。
+- Repository, provider, mock, and feature tests change together during the hard cut.
+- The project pays a large one-time migration cost, but future AI-generated code has one repository
+  failure convention and one client failure name.
+- fpdart is isolated behind project typedefs, so replacing the package later does not change domain
+  vocabulary.
+- The generated API client remains transport-facing; it does not become the domain error contract.
+- The old `requestId` field and old error-envelope fallback are removed when the Lucent contract
+  migration is complete.
+
+## References
+
+- [Lucent ADR-0012: Error Contract and Result Boundary](../../../../Lucent/docs/01-reference/adr/0012-error-contract-and-result-boundary.md)
+- Luminous research: `research/03-技术决策/api-response-error-contract-响应信封与问题详情.md`
+- [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html)
+- [ADR-0007: Network Layer Separation](0007-network-layer-separation.md)

@@ -84,8 +84,8 @@ What becomes easier or harder as a result of this decision?
   - Status: accepted
   - Date: 2026-07-10
 - [0008](0008-result-type-and-error-handling.md)
-  - Title: Result 类型与统一错误处理
-  - Status: accepted
+  - Title: Result 类型与统一错误处理（fpdart + LucentFailure；旧自建 Result 方案已取代）
+  - Status: accepted (amended 2026-08-18)
   - Date: 2026-07-10
 - [0009](0009-local-persistence-drift.md)
   - Title: 本地持久化与离线策略 — Drift
