@@ -15,7 +15,6 @@ Created: 2026-08-16
 
 - 补齐安全 PIN elevation 在敏感账号操作上的客户端接线(A6),消除"启用 PIN 后无法改密/改邮箱/解绑"的 403 死角。
 - 消灭设置页 6 个"只有本地开关没有执行器"的假实现:通知类 4 个(healthAlerts/weeklySummary/waterReminders/sleep)与存储类 2 个(图片质量/仅 Wi-Fi),逐个接上真实执行器或明确暂缓。
-- 收敛 support 死代码与后端弃用接口(按调研批注口径:删除后端 `support-resources` 接口,前端 FAQ 维持静态 md)。
 - 其余约 30 项真实现功能保留不动。
 
 ## 二、保留不动(清单)
@@ -76,15 +75,6 @@ Created: 2026-08-16
 - 前后端分工:均为前端文案/交互改动,后端不动(真导出若立项另议)。
 - 依赖:无。
 
-#### P2-3 E3/E4:support 死代码清理 + 删除后端 support-resources 接口
-
-- 现状:`features/support/` 下 `supportResourcesProvider`、`LucentSupportRepository` 的 resources 部分在帮助页自包含化后零消费方(死代码);后端 `SupportResourcesService.getResources()` 返回静态列表,客户端已不调用(`support_resources_api.dart` 无人使用);`appInfoProvider` / `GET /public/app-info` 仍被 about/help/反馈页使用,必须保留。
-- 改造方案(以调研文档第 231 行批注为准,**不采用**速览表/逐功能正文中的"FAQ 上收为后端可运营内容源"方案):
-  - 后端(Lucent):删除 `support-resources` 资源列表接口(`SupportResourcesService.getResources()` 及对应 controller 路由),保留 `app-info` 端点;删除后运行 `pnpm export:openapi`。
-  - 前端(Luminous):删除 `supportResourcesProvider` 与 `LucentSupportRepository` 中的 resources 部分,保留 `appInfoProvider` 及 repository 的 appInfo 部分;重新生成 API 客户端(`dart run scripts/bootstrap_generated_sources.dart`),移除生成的 `support_resources_api.dart` 消费面;FAQ 维持 `assets/faq/faq_{zh,en}.md` 静态 md 自包含渲染,不做上收。
-- 前后端分工:后端删接口 + 重导出契约;前端删死代码 + 重生成客户端。
-- 依赖:Lucent 契约变更需走 openapi 再生成流程；`supportResourcesProvider` 与 repository 的 resources 部分随接口一并删除。
-
 ## 四、跨计划引用与依赖
 
 - **建议升级通知执行器 / today-suggestion 规则引擎**(P1-2 的 R1–R4 与饮水提醒的执行器本体):方案见 [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md),本文不重复展开。
@@ -96,13 +86,12 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. **P2-3 E3/E4 support 清理（0.1.0 前）**——涉及 Lucent 契约删除与客户端再生成。
-2. **P2-1 A5 会话管理 UI**、**P2-2 B5 导出体验修复（均 0.1.0 前）**——彼此独立，收尾阶段并行。
-3. **P1-3 图片质量/仅 Wi-Fi 同步（0.1.0 后）**。
+1. **P2-1 A5 会话管理 UI**、**P2-2 B5 导出体验修复（均 0.1.0 前）**——彼此独立，收尾阶段并行。
+2. **P1-3 图片质量/仅 Wi-Fi 同步（0.1.0 后）**。
 
 ## 六、已决边界与延期项
 
 - Apple 与微信 OAuth 仅隐藏前端入口；不删后端回调、已有身份绑定或数据。QQ、微博、Google 保留；微博/Google 图标问题列入 TODO。
-- 睡眠提醒已在 0.1.0 前接入本地通知执行器。会话管理补 UI；`support-resources` 后端端点及客户端 resources provider/repository 部分一并删除，保留 `app-info` 与静态 FAQ。
+- 睡眠提醒已在 0.1.0 前接入本地通知执行器。会话管理补 UI；`app-info` 与静态 FAQ 保留。
 - 数据导出定义为「导出就诊报告 PDF」：设置入口迁至「设置 → 更多 → 导出就诊报告 PDF」，报告页入口保留；PIN 引导、文案与路由重排均在 0.1.0 前。原始数据导出延后至 TODO。
 - 图片质量和仅 Wi-Fi 同步为 0.1.0 后；备案、公司信息和站内工单仍按外部条件/后续任务处理。新增医疗判断、外部供应商、用户数据结构或部署成本时，另建任务计划并重新 grill。
