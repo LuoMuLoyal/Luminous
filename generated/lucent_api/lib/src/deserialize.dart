@@ -232,9 +232,6 @@ import 'package:lucent_api/src/model/suggestion_history_item_dto.dart';
 import 'package:lucent_api/src/model/suggestion_history_response_dto.dart';
 import 'package:lucent_api/src/model/suggestion_item_dto.dart';
 import 'package:lucent_api/src/model/suggestion_observed_metric_dto.dart';
-import 'package:lucent_api/src/model/support_resource_dto.dart';
-import 'package:lucent_api/src/model/support_resource_list_data_dto.dart';
-import 'package:lucent_api/src/model/support_resource_list_response_dto.dart';
 import 'package:lucent_api/src/model/temperature_indicator_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_async_job_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_async_response_dto.dart';
@@ -1146,19 +1143,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'SuggestionObservedMetricDto':
       return SuggestionObservedMetricDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'SupportResourceActionType':
-    case 'SupportResourceDto':
-      return SupportResourceDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'SupportResourceListDataDto':
-      return SupportResourceListDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'SupportResourceListResponseDto':
-      return SupportResourceListResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'SupportResourceScope':
     case 'TemperatureIndicatorDto':
       return TemperatureIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;

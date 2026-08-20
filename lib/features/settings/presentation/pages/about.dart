@@ -12,7 +12,7 @@ import 'package:luminous/features/settings/presentation/providers/package_info.d
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/features/settings/utils/version_check.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
-import 'package:luminous/features/support/domain/entities/support_resource.dart';
+import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AboutSettingsPage extends ConsumerStatefulWidget {

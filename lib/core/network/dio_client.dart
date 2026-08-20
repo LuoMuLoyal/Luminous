@@ -43,7 +43,7 @@ class LucentClient {
   ReminderDeliveriesApi get reminderDeliveries =>
       _api.getReminderDeliveriesApi();
   ReportsApi get reports => _api.getReportsApi();
-  SupportResourcesApi get supportResources => _api.getSupportResourcesApi();
+  AppInfoApi get appInfo => _api.getAppInfoApi();
   TodayAnalysisApi get todayAnalysis => _api.getTodayAnalysisApi();
   TodaySuggestionApi get todaySuggestion => _api.getTodaySuggestionApi();
   UserHealthContextApi get userHealthContext => _api.getUserHealthContextApi();

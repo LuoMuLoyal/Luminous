@@ -279,5 +279,10 @@ Last updated: 2026-08-20（P1-2 B1：通知偏好远端权威同步、旧 Shared
 - **FAQ 答案 Markdown 样式**（2026-08-03）：走 `MarkdownStyle.legal(context)` 正式文档样式（见 [[Design_System#Markdown 渲染]]）。
 - **反馈入口环境变量**：反馈 tile 通过 `EnvReader.string(EnvKey.supportEmail)` 获取 `SUPPORT_EMAIL` 环境变量，构造 `mailto:` URI 唤起邮件客户端。邮箱未配置时 toast 提示，打开失败时也 toast 提示。
 - **l10n 变更**：新增 6 个 settings 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`）；删除 mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
-- **后端回退**：Lucent `SupportResourcesService.getResources()` 回退为静态列表，不再动态注入 mailto。
+- **后端反馈配置**：反馈入口通过 `appInfoProvider` 读取 Lucent 的 `supportEmail`，不再有服务端资源列表依赖。
 - **反馈邮箱优先级**：`_FeedbackSection` 优先读后端 `appInfoProvider` 的 `supportEmail`，回退到编译期 `SUPPORT_EMAIL` 环境变量。
+
+## 2026-08-20 Support resources 清理
+
+- 删除客户端 `supportResourcesProvider`、SupportResource 实体及资源仓储映射；FAQ 继续由本地 Markdown 自包含渲染。
+- Lucent 仅保留独立 `AppInfoApi` / `appInfoProvider`，用于反馈邮箱和版本检查。

@@ -208,7 +208,7 @@ Last updated: 2026-08-16 (本地通知回执与推送回退能力上报)
 
 ### 帮助页面自包含化
 
-- 帮助页面不再依赖后端 `support-resources` API，FAQ 内容由本地 Markdown 文件提供（`assets/faq/faq_{zh,en}.md`），按 `## ` 标题切分为多个可折叠 Q&A 项。
+- 帮助页面 FAQ 内容由本地 Markdown 文件提供（`assets/faq/faq_{zh,en}.md`），按 `## ` 标题切分为多个可折叠 Q&A 项。
 - 反馈入口改为前端直接通过 `mailto:` 唤起邮件客户端，邮箱地址通过 `SUPPORT_EMAIL` 环境变量注入。
 - 新增 `SUPPORT_EMAIL` 到 `EnvKey` 枚举和 `EnvReader`。
 - 帮助页 `_FeedbackSection` 优先读后端 `appInfoProvider` 的 `supportEmail`，回退到编译期 `SUPPORT_EMAIL` 环境变量。

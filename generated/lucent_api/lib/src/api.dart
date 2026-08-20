@@ -8,6 +8,7 @@ import 'package:lucent_api/src/auth/basic_auth.dart';
 import 'package:lucent_api/src/auth/bearer_auth.dart';
 import 'package:lucent_api/src/auth/oauth.dart';
 import 'package:lucent_api/src/api/account_api.dart';
+import 'package:lucent_api/src/api/app_info_api.dart';
 import 'package:lucent_api/src/api/assistant_api.dart';
 import 'package:lucent_api/src/api/auth_api.dart';
 import 'package:lucent_api/src/api/daily_records_api.dart';
@@ -25,7 +26,6 @@ import 'package:lucent_api/src/api/notifications_api.dart';
 import 'package:lucent_api/src/api/product_events_api.dart';
 import 'package:lucent_api/src/api/reminder_deliveries_api.dart';
 import 'package:lucent_api/src/api/reports_api.dart';
-import 'package:lucent_api/src/api/support_resources_api.dart';
 import 'package:lucent_api/src/api/today_analysis_api.dart';
 import 'package:lucent_api/src/api/today_suggestion_api.dart';
 import 'package:lucent_api/src/api/user_health_context_api.dart';
@@ -160,6 +160,12 @@ class LucentApi {
     return AccountApi(dio);
   }
 
+  /// Get AppInfoApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AppInfoApi getAppInfoApi() {
+    return AppInfoApi(dio);
+  }
+
   /// Get AssistantApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   AssistantApi getAssistantApi() {
@@ -260,12 +266,6 @@ class LucentApi {
   /// by doing that all interceptors will not be executed
   ReportsApi getReportsApi() {
     return ReportsApi(dio);
-  }
-
-  /// Get SupportResourcesApi instance, base route and serializer can be overridden by a given but be careful,
-  /// by doing that all interceptors will not be executed
-  SupportResourcesApi getSupportResourcesApi() {
-    return SupportResourcesApi(dio);
   }
 
   /// Get TodayAnalysisApi instance, base route and serializer can be overridden by a given but be careful,

@@ -6,7 +6,7 @@ import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/settings/presentation/pages/help.dart';
 import 'package:luminous/features/support/data/repositories/lucent.dart';
-import 'package:luminous/features/support/domain/entities/support_resource.dart';
+import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -133,9 +133,6 @@ class _ZhLocaleController extends LocaleController {
 }
 
 class _FakeSupportRepository implements SupportRepository {
-  @override
-  Future<List<SupportResource>> getResources(String scope) async => [];
-
   @override
   Future<AppInfo?> getAppInfo() async => null;
 }

@@ -22,7 +22,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 128 paths / 319 schemas.
+- Last known Lucent export: 127 paths / 314 schemas.
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
@@ -48,6 +48,8 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
   `NotificationPreferencesDataDto` / `UpdateNotificationPreferencesDto`; the notification enum
   includes `ai_weekly_insight`. Event review routes remain in `ReportsApi` and weekly insight
   actions navigate through the existing `report` route token.
+- Application metadata is generated in `AppInfoApi`; the retired `SupportResourcesApi` and
+  support-resource models are no longer part of the client.
 - Legacy user-device registration is no longer part of the Lucent contract. Push identity is
   maintained by the JPush SDK through the authenticated user's UUID alias, so the generated
   client and `LucentDioClient` intentionally expose no `UserDevicesApi` or device-registration DTOs.
