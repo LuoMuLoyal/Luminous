@@ -44,7 +44,7 @@ class DailyRecordImageUploadDto {
   @JsonKey(name: r'objectKey', required: true, includeIfNull: false)
   final String objectKey;
 
-  /// Signed PUT URL for direct COS upload.
+  /// Signed PUT URL for direct object storage upload.
   @JsonKey(name: r'uploadUrl', required: true, includeIfNull: false)
   final String uploadUrl;
 
@@ -52,7 +52,7 @@ class DailyRecordImageUploadDto {
   @JsonKey(name: r'headers', required: true, includeIfNull: false)
   final Object headers;
 
-  /// Optional public/CDN URL when TENCENT_COS_PUBLIC_BASE_URL is configured.
+  /// Optional public/CDN URL when a public base URL is configured.
   @JsonKey(name: r'publicUrl', required: true, includeIfNull: false)
   final Object publicUrl;
 

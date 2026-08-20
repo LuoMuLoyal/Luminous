@@ -25,7 +25,7 @@ class DailyRecordsApi {
 
   const DailyRecordsApi(this._dio);
 
-  /// Create a Tencent COS signed URL for daily record image upload
+  /// Create a signed URL for daily record image upload
   ///
   ///
   /// Parameters:

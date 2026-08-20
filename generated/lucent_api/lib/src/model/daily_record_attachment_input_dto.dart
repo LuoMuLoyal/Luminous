@@ -57,7 +57,7 @@ class DailyRecordAttachmentInputDto {
   @JsonKey(name: r'bucket', required: false, includeIfNull: false)
   final String? bucket;
 
-  /// Storage provider, currently tencent-cos.
+  /// Storage provider (e.g. tencent-cos, s3).
   @JsonKey(name: r'provider', required: false, includeIfNull: false)
   final String? provider;
 
