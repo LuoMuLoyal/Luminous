@@ -14,7 +14,10 @@ import 'package:luminous/features/auth/presentation/pages/account_settings.dart'
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
+import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/data/providers/profile.dart';
+import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
+import 'package:luminous/features/settings/domain/repositories/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/pages/about.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
@@ -235,6 +238,9 @@ Future<void> _pumpApp(
   final container = ProviderContainer(
     overrides: [
       authSessionProvider.overrideWith(() => _StaticAuthSessionNotifier()),
+      notificationPreferencesRepositoryProvider.overrideWithValue(
+        _FakeNotificationPreferencesRepository(),
+      ),
       settingsProfileRemoteDataSourceProvider.overrideWithValue(
         _fakeSettingsProfileRemote,
       ),
@@ -342,6 +348,24 @@ class _FakeNotificationPermissionService extends NotificationPermissionService {
   @override
   Future<NotificationPermissionState> requestPermission() async {
     return state;
+  }
+}
+
+class _FakeNotificationPreferencesRepository
+    implements NotificationPreferencesRepository {
+  NotificationPreferences _value = const NotificationPreferences.defaults(
+    configured: true,
+  );
+
+  @override
+  Future<NotificationPreferences> getPreferences() async => _value;
+
+  @override
+  Future<NotificationPreferences> patchPreferences(
+    NotificationPreferencesPatch patch,
+  ) async {
+    _value = _value.apply(patch).copyWith(configured: true);
+    return _value;
   }
 }
 

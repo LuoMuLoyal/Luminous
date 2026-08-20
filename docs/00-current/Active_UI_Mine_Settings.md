@@ -7,7 +7,7 @@ updated: 2026-08-20
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-20（P1-1：修改邮箱、修改密码、解绑三方身份接入 Security PIN elevation；保留纯页面入口 preflight 兼容假设；改造项 6：Mine「档案提醒」假数据卡真实化——真实过敏/当前用药驱动、接入渲染；缺陷修复：本地化移回展示层、实体改为结构化 items/count/kind；改造项 8：完成度口径 7 项 → 6 项，`onboardingCompleted` 不再计入；emergencyContact 不再作为 readiness gap；改造项 7：档案区体重行接入 kg/lb 单位制显示换算）
+Last updated: 2026-08-20（P1-2 B1：通知偏好远端权威同步、旧 SharedPreferences 一次迁移、四个通知开关接真实消费者；睡眠提醒仅按 bedtime 调度；P1-1 与 Mine 改造项 6/7/8 保持不变）
 
 ## Mine 根页结构
 
@@ -100,6 +100,12 @@ Last updated: 2026-08-20（P1-1：修改邮箱、修改密码、解绑三方身�
 - **AI 设置上下文开关 toast + AI 隐私说明**（T8，2026-08-17）：`_guardedApply` 返回 `Future<bool>`（成功 true / 失败 false，失败仍走原错误 toast）；四个上下文开关（健康档案/日常记录/睡眠记录/当前用药）切换成功 toast「上下文开关将在下次对话生效」（`settingsAiContextChangeNextTurnToast`），通用开关（AI 总结/助手/记忆）不提示；上下文开关组下方新增「AI 隐私」小节（`SettingsSectionLabel` + 三行小字），说明记忆提炼要点用于后续对话、勾选来源在对话时提供给 AI、关闭开关不删除历史数据仅停止后续使用。
 - **免打扰/睡眠提醒默认值一致性修复**（2026-07-19 P1-2）：`NotificationSettingsController.build()` 不再为四个时间字段兜底默认值，null 即"从未设置"；`setSleepReminderEnabled(true)`/`setDndEnabled(true)` 在时间为 null 时持久化语义默认值；`reset()` 显式将四个时间字段置 null。
 
+### P1-2 B1 通知偏好与执行器（2026-08-20）
+
+- `NotificationSettingsController` 登录后读取 Lucent `/api/v1/user/notification-preferences`；远端 `configured=true` 覆盖本地缓存，首次 `configured=false` 才把既有 SharedPreferences 值迁移一次。迁移成功写入完成标记，网络/PATCH 失败保留可重试状态；设置 PATCH 失败回滚内存与本地缓存。
+- `healthAlerts`、`weeklySummary`、`waterReminders`、`sleepReminderEnabled` 均有真实消费者：前三者由 Lucent 规则/周洞察链路门禁，睡眠由独立 `SleepReminderNotificationCoordinator` 调度。
+- 睡眠提醒复用 `LocalNotificationGateway`，使用稳定计划 ID 与 PrefKeys 取消旧计划；只在就寝时间生成未来 7 天计划，不把 `sleepWakeTime` 作为闹钟，并遵循通知权限、DND、声音/振动和网关失败降级。
+
 ## 主题
 
 - 双层选择：显示模式 `system / light / dark` + 颜色主题 `blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc`。
@@ -115,7 +121,7 @@ Last updated: 2026-08-20（P1-1：修改邮箱、修改密码、解绑三方身�
 - 未读圆点外包 `Semantics(label: notificationUnreadSemantics)`，读屏可识别。
 - 详情页带动作路由（「去处理」根据通知类型导航）。
 - 通知类型 chip 使用 l10n 键，不硬编码英文直出。
-- 通知类型支持：`ai_today_summary`、`ai_proactive_suggestion`、`medicine_missed_dose`、`password_changed`、`report_generated`、`medicine_reminder`、`system_announcement`、`oauth_login`（登录提醒，destructive 色）、`identity_linked`（绑定提醒，primary 色）、`unknown` 兜底。
+- 通知类型支持：`ai_today_summary`、`ai_weekly_insight`、`ai_proactive_suggestion`、`medicine_missed_dose`、`password_changed`、`report_generated`、`medicine_reminder`、`system_announcement`、`oauth_login`（登录提醒，destructive 色）、`identity_linked`（绑定提醒，primary 色）、`unknown` 兜底。
 - 详情页 `markAsRead` 在打开时自动调用（接口链路已反转）。
 - 显式标为未读/删除动作。
 - 后端在 AI 摘要完成、报告导出完成、密码变更时生成通知。
@@ -152,6 +158,7 @@ Last updated: 2026-08-20（P1-1：修改邮箱、修改密码、解绑三方身�
 
 - `SettingsProfileRemoteDataSource` 通过 `generated/lucent_api` Retrofit 客户端访问。
 - `updatePreferences` 接受 `Object?` 类型参数（sentinel 区分"不修改"与"设为 null"）。
+- `NotificationPreferencesRepository` 映射生成的偏好 DTO；nullable 睡眠时间清除时经 `LucentApiPaths` 使用 raw PATCH JSON，避免生成 DTO 的 `includeIfNull=false` 丢失显式 null。
 - `UserSettingsController` 状态类型从 DTO 改为 domain `UserSettings` 实体。
 - 设置写入成功后发射 `DataChangeTopic.userSettings`，`todayDashboardProvider` 监听该事件，因此修改饮水目标、AI 摘要开关等设置后今日页会自动刷新。
 - 日期格式化通过 `lib/core/utils/date_format_utils.dart`，不使用手写 `padLeft` 拼接。

@@ -102,6 +102,12 @@ abstract final class PrefKeys {
       'settings.notifications.sleepBedtime';
   static const settingsNotificationsSleepWakeTime =
       'settings.notifications.sleepWakeTime';
+  static const settingsNotificationsRemoteMigrationCompleted =
+      'settings.notifications.remoteMigrationCompleted';
+  static const settingsNotificationsLegacyMigrationOwner =
+      'settings.notifications.legacyMigrationOwner';
+  static const settingsNotificationsSleepScheduledNotificationIds =
+      'settings.notifications.sleepScheduledNotificationIds';
   static const settingsNotificationsDndEnabled =
       'settings.notifications.dnd.enabled';
   static const settingsNotificationsDndStartTime =
@@ -114,6 +120,13 @@ abstract final class PrefKeys {
       'settings.notifications.vibrationEnabled';
   static const settingsNotificationsReminderAdvanceMinutes =
       'settings.notifications.reminderAdvanceMinutes';
+
+  /// Returns the account-scoped form of a notification preference key.
+  ///
+  /// The unscoped constants above are retained as the legacy keys used by
+  /// older installations during the first-account migration only.
+  static String settingsNotificationsScoped(String key, String userId) =>
+      '$key.user.$userId';
 
   // ── Settings / Data Storage ───────────────────────────────────────────
 

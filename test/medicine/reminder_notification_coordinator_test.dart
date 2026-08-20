@@ -14,6 +14,9 @@ import 'package:luminous/features/medicine/domain/services/reminder_notification
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
+import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
+import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
+import 'package:luminous/features/settings/domain/repositories/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -138,6 +141,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationPreferencesRepositoryProvider.overrideWithValue(
+            _FakeNotificationPreferencesRepository(),
+          ),
           localeControllerProvider.overrideWith(
             () => _StaticLocaleController(),
           ),
@@ -195,6 +201,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationPreferencesRepositoryProvider.overrideWithValue(
+            _FakeNotificationPreferencesRepository(),
+          ),
           localeControllerProvider.overrideWith(
             () => _StaticLocaleController(),
           ),
@@ -245,6 +254,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationPreferencesRepositoryProvider.overrideWithValue(
+            _FakeNotificationPreferencesRepository(),
+          ),
           localeControllerProvider.overrideWith(
             () => _StaticLocaleController(),
           ),
@@ -393,6 +405,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+        notificationPreferencesRepositoryProvider.overrideWithValue(
+          _FakeNotificationPreferencesRepository(),
+        ),
         localeControllerProvider.overrideWith(() => _StaticLocaleController()),
         localNotificationGatewayProvider.overrideWithValue(gateway),
         medicineReminderNotificationNowProvider.overrideWithValue(() => now),
@@ -426,6 +441,9 @@ ProviderContainer _syncContainer(
   return ProviderContainer(
     overrides: [
       authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+      notificationPreferencesRepositoryProvider.overrideWithValue(
+        _FakeNotificationPreferencesRepository(),
+      ),
       localeControllerProvider.overrideWith(() => _StaticLocaleController()),
       localNotificationGatewayProvider.overrideWithValue(gateway),
       medicineReminderNotificationNowProvider.overrideWithValue(() => now),
@@ -623,6 +641,24 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
 class _StaticLocaleController extends LocaleController {
   @override
   Future<AppLocale> build() async => AppLocale.zhCn;
+}
+
+class _FakeNotificationPreferencesRepository
+    implements NotificationPreferencesRepository {
+  NotificationPreferences _value = const NotificationPreferences.defaults(
+    configured: true,
+  );
+
+  @override
+  Future<NotificationPreferences> getPreferences() async => _value;
+
+  @override
+  Future<NotificationPreferences> patchPreferences(
+    NotificationPreferencesPatch patch,
+  ) async {
+    _value = _value.apply(patch).copyWith(configured: true);
+    return _value;
+  }
 }
 
 MedicineReminderItem _reminder({
