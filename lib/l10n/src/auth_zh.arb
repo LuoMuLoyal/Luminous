@@ -144,6 +144,7 @@
   "authIdentityUnlinkAction": "解绑",
   "authIdentityUnlinkDisabledAction": "保留",
   "authIdentityUnlinkSuccess": "身份已解绑。",
+  "authSecurityElevationRequiredToast": "请验证安全 PIN",
   "authIdentityUnlinkConfirmTitle": "解绑身份",
   "authIdentityUnlinkConfirmMessage": "确定要解绑 {provider}？",
   "@authIdentityUnlinkConfirmMessage": {

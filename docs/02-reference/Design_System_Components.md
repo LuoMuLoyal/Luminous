@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-20
 ---
 
 # Design System Components
@@ -44,6 +44,7 @@ updated: 2026-08-02
 
 - 共享对话框 helper：`showAppDialog` / `DialogShell`（`lib/core/widgets/common/dialog_shell.dart`）。`showAppDialog` 支持 `barrierDismissible` 参数（默认 `true`），需要不可点击遮罩关闭的场景（如扫码处理遮罩）传 `false`。
 - `RecordNlpDialog` 与 `MedicineAddPrecheckDialog` 已使用它。
+- `SecurityElevationDialog` / `showSecurityElevationDialog`（`lib/core/widgets/common/security_elevation_dialog.dart`）负责敏感操作的 PIN elevation 前置交互：复用 `SecurityElevationController` 与 token holder，持有有效 token 时跳过，过期或无效时清理并重新进入 PIN 验证；它不负责执行具体业务请求。
 - **Forui 0.24.x**：`FCard.raw` / `FDialog.raw` 已移除，API 合并到 `FCard` / `FDialog`。`FDialog` 构造函数从声明式改为 `builder` 模式，调用方需自行用 `Column` + `Row` 构建布局。
 
 ## 反馈与通用 widget

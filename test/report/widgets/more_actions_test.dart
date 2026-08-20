@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -528,9 +529,11 @@ class _FakeUserSettingsController extends UserSettingsController {
 class _VerifiedElevationController extends SecurityElevationController {
   @override
   SecurityElevationState build() {
-    return SecurityElevationVerified(
-      expiresAt: DateTime.now().add(const Duration(minutes: 5)),
-    );
+    final expiresAt = DateTime.now().add(const Duration(minutes: 5));
+    ref
+        .read(securityElevationTokenHolderProvider)
+        .set('test-elevation-token', expiresAt);
+    return SecurityElevationVerified(expiresAt: expiresAt);
   }
 }
 

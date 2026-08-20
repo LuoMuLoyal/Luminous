@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-18
+updated: 2026-08-20
 ---
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-18（改造项 6：Mine「档案提醒」假数据卡真实化——真实过敏/当前用药驱动、接入渲染；缺陷修复：本地化移回展示层、实体改为结构化 items/count/kind；改造项 8：完成度口径 7 项 → 6 项，`onboardingCompleted` 不再计入；emergencyContact 不再作为 readiness gap；改造项 7：档案区体重行接入 kg/lb 单位制显示换算）
+Last updated: 2026-08-20（P1-1：修改邮箱、修改密码、解绑三方身份接入 Security PIN elevation；保留纯页面入口 preflight 兼容假设；改造项 6：Mine「档案提醒」假数据卡真实化——真实过敏/当前用药驱动、接入渲染；缺陷修复：本地化移回展示层、实体改为结构化 items/count/kind；改造项 8：完成度口径 7 项 → 6 项，`onboardingCompleted` 不再计入；emergencyContact 不再作为 readiness gap；改造项 7：档案区体重行接入 kg/lb 单位制显示换算）
 
 ## Mine 根页结构
 
@@ -131,6 +131,10 @@ Last updated: 2026-08-18（改造项 6：Mine「档案提醒」假数据卡真�
 
 - 退出登录 tile（`ConsumerWidget` + `authSessionProvider`），未登录时使用 `primary` 色而非 `error` 色（登录引导不被渲染成危险操作）。
 - 退出登录接入 `showDangerConfirmationDialog` 二次确认。
+- 修改邮箱、修改密码、解绑三方身份在各自页面回调中先执行 `showSecurityElevationDialog(context, ref)`；已有有效 elevation token 自动跳过 PIN 对话框，后续请求由 `SecurityElevationInterceptor` 注入请求头。
+- 纯页面入口 preflight 是兼容假设：`AuthAccountNotifier` 与认证领域接口保持 UI 无依赖，由页面在确认/表单校验后决定是否发起敏感操作；取消或未启用 Security PIN 时不调用后端。
+- 敏感操作收到明确的 403/elevation-token-invalid 响应时，`AuthAccountState.requiresSecurityElevation` 提供机器可读状态，页面使用“请验证安全 PIN”引导文案；普通解绑业务 403 不复用该状态。
+- P1-1 复审确认的两个 follow-up 已登记到 `docs/00-current/TODO.md`，当前仍未修复：settings provider loading/error 时 `asData == null` 的未知状态误判，以及 token/dialog 到期边界统一与精确到期测试。
 - 账号注销支持密码和邮箱验证码两种确认方式（OAuth-only 用户通过验证码注销）。
 - 注销区域顶部显示注销政策提示文字 + ghost 按钮跳转 `/legal/account-cancellation`（2026-07-21 P1）。
 - `AuthAccountNotifier` 接入 `CooldownTimerMixin` 实现验证码发送倒计时。

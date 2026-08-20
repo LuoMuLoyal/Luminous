@@ -141,6 +141,23 @@ Future<void> startWechatIdentityLink(
   }
 }
 
+/// Shows the latest account operation error, translating an invalid security
+/// elevation into the action the user needs to take next.
+Future<void> showAuthAccountFailureToast(
+  BuildContext context,
+  WidgetRef ref,
+  AppLocalizations l10n,
+) async {
+  final state = ref.read(authAccountProvider);
+  final message = state.requiresSecurityElevation
+      ? l10n.authSecurityElevationRequiredToast
+      : state.errorMessage?.isNotEmpty == true
+      ? state.errorMessage
+      : null;
+  if (message == null || !context.mounted) return;
+  await Toast.show(context, message);
+}
+
 /// Returns the OAuth callback URI for WeChat web identity link, or null on
 /// non-web platforms.
 String? webWechatLinkCallbackUri() {

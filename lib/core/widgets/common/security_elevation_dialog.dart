@@ -21,9 +21,16 @@ Future<bool> showSecurityElevationDialog(
 ) async {
   final l10n = AppLocalizations.of(context)!;
 
-  // If a valid elevation token is already held, skip the dialog.
-  if (ref.read(securityElevationControllerProvider).isVerified) {
-    return true;
+  final elevationController = ref.read(
+    securityElevationControllerProvider.notifier,
+  );
+  final elevationState = ref.read(securityElevationControllerProvider);
+  if (elevationState is SecurityElevationVerified) {
+    if (elevationState.expiresAt.isAfter(DateTime.now()) &&
+        elevationController.hasValidToken) {
+      return true;
+    }
+    elevationController.clear();
   }
 
   // Check if PIN is enabled.

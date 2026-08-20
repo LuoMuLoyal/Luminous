@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-18
+updated: 2026-08-20
 ---
 
 # Flutter Localization
 
-Last updated: 2026-08-18 (改造项 6 C-3 Mine「档案提醒」真实化新增 4 键：`mineAlertAllergyCount`、`mineAlertAllergyMore`、`mineAlertMedicineCount`、`mineAlertMedicineMore`（mine 分片），删除 4 键：`mineAlertAllergySubtitle` / `mineAlertAllergyBadge` / `mineAlertMedicineSubtitle` / `mineAlertMedicineBadge`。改造项 7 unitSystem 单位制显示切换新增 2 键：`mineProfileWeightLb`（mine 分片，"{weight}lb"）与 `recordDetailDailyWaterProgressOz`（record 分片，"{total} / {target} fl oz"）。Earlier: removed 2 unused Mine readiness-gap keys `mineCompletenessGapEmergencyContact` / `mineReadinessGapDescEmergencyContact` from `mine_*.arb` — emergency contact is a deferred field and no longer a readiness gap, so the keys had no consumers after `account_hero.dart` stopped deriving that gap. Earlier: R-2 added 7 report-fragment keys for clinic-summary six-toggle field gating: `reportClinicSummaryWaterSection` (饮水记录 / Water Intake), `reportClinicSummaryWaterUnit` (ml / ml), `reportClinicSummarySleepSection` (睡眠记录 / Sleep), `reportClinicSummarySleepUnit` (分钟 / min), `reportClinicSummaryNotesSection` (备注 / Notes), `reportClinicSummaryNotesPrivacyWarning` (创建公开分享链接后，持有链接者可查看备注原文。/ Anyone with the share link can read the notes in plain text.) — water/sleep/notes sections now render in preview, PDF, and shared summary when their toggle is selected; notes defaults off and shows the privacy warning in the share-confirm step when selected. Earlier: R-1 added `reportReviewHistoryLoadMore` (加载更多 / Load more) and `reportReviewHistoryLoadMoreFailed` (加载失败，点击重试 / Load failed, tap to retry) to the report fragment for the review-history pagination. Earlier: H-6+H-9 added `reportReviewDetailTitle` and `reportReviewWhatHappenedReasonRecord`. Earlier: P2-1 added `recordMealConfirmFailedToast`. Earlier: P1-1 added `recordSummaryMlUnit`.)
+Last updated: 2026-08-20 (改造项 6 C-3 Mine「档案提醒」真实化新增 4 键：`mineAlertAllergyCount`、`mineAlertAllergyMore`、`mineAlertMedicineCount`、`mineAlertMedicineMore`（mine 分片），删除 4 键：`mineAlertAllergySubtitle` / `mineAlertAllergyBadge` / `mineAlertMedicineSubtitle` / `mineAlertMedicineBadge`。改造项 7 unitSystem 单位制显示切换新增 2 键：`mineProfileWeightLb`（mine 分片，"{weight}lb"）与 `recordDetailDailyWaterProgressOz`（record 分片，"{total} / {target} fl oz"）。Earlier: removed 2 unused Mine readiness-gap keys `mineCompletenessGapEmergencyContact` / `mineReadinessGapDescEmergencyContact` from `mine_*.arb` — emergency contact is a deferred field and no longer a readiness gap, so the keys had no consumers after `account_hero.dart` stopped deriving that gap. Earlier: R-2 added 7 report-fragment keys for clinic-summary six-toggle field gating: `reportClinicSummaryWaterSection` (饮水记录 / Water Intake), `reportClinicSummaryWaterUnit` (ml / ml), `reportClinicSummarySleepSection` (睡眠记录 / Sleep), `reportClinicSummarySleepUnit` (分钟 / min), `reportClinicSummaryNotesSection` (备注 / Notes), `reportClinicSummaryNotesPrivacyWarning` (创建公开分享链接后，持有链接者可查看备注原文。/ Anyone with the share link can read the notes in plain text.) — water/sleep/notes sections now render in preview, PDF, and shared summary when their toggle is selected; notes defaults off and shows the privacy warning in the share-confirm step when selected. Earlier: R-1 added `reportReviewHistoryLoadMore` (加载更多 / Load more) and `reportReviewHistoryLoadMoreFailed` (加载失败，点击重试 / Load failed, tap to retry) to the report fragment for the review-history pagination. Earlier: H-6+H-9 added `reportReviewDetailTitle` and `reportReviewWhatHappenedReasonRecord`. Earlier: P2-1 added `recordMealConfirmFailedToast`. Earlier: P1-1 added `recordSummaryMlUnit`.)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -592,3 +592,8 @@ flutter test
 - 删除 4 键（grep 全仓确认无引用）：`mineAlertAllergySubtitle` / `mineAlertAllergyBadge` / `mineAlertMedicineSubtitle` / `mineAlertMedicineBadge`——旧假数据卡（静态「花粉、青霉素 / 2 项」「按时服用」等）已删除，由 `MineStatusCard` 结构化数据（`kind` / `items` / `count`）经展示层 `status_alerts.dart` 拼接与上述新键替代（本地化/截断在展示层）；对应 `MineCopyKey` 枚举值与 `mineCopy` switch 分支同步删除。
 - 所有权在 mine 分片；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。
+
+## 2026-08-20 P1-1 账号敏感操作安全 PIN 引导键
+
+- 新增 `authSecurityElevationRequiredToast`（zh: 请验证安全 PIN / en: Please verify your Security PIN.）到 `lib/l10n/src/auth_zh.arb` / `auth_en.arb`。
+- 该文案归属 `auth` 分片，因为它只在修改邮箱、修改密码、解绑三方身份的账号操作失败后由认证页面展示；已执行 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n`。

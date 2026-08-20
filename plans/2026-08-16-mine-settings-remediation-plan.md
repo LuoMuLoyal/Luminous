@@ -48,15 +48,6 @@ Created: 2026-08-16
 
 ### P1
 
-#### P1-1 A6:修改邮箱 / 修改密码 / 解绑三方身份接入 PIN elevation（0.1.0 前）
-
-- 现状:后端 `SecurityElevationGuard` + `@RequireSecurityElevation()` 已真实守卫 `POST /account/email`、`POST /account/password`、`DELETE /account/identities/:identityId`(要求 `x-security-elevation: Bearer <token>`);但 `showSecurityElevationDialog` 仅被数据导出调用,这三条路径从不触发 PIN 对话框,启用 PIN 的用户操作直接 403(`elevation_token_invalid`),只见通用失败 toast。
-- 改造方案:
-  - 前端:在 `AuthAccountNotifier.changePassword / changeEmail / unlinkIdentity` 三个入口统一接入 `showSecurityElevationDialog`(与导出流程复用同一组件;已持有有效 elevation token 时自动跳过,`SecurityElevationInterceptor` 自动注入请求头)。
-  - 前端:403/`elevation_token_invalid` 失败时 toast 改为引导文案"请验证安全 PIN"(l10n 走 `lib/l10n/src/` 片段文件流程)。
-  - 后端:无需改动,守卫与签发逻辑(`pin.service.ts`)已就绪。
-- 依赖:无(机制已存在,仅接线)。
-
 #### P1-2 B1:通知设置四个假开关接执行器（0.1.0 前）
 
 - 现状:`NotificationSettingsController` 把 healthAlerts / weeklySummary / waterReminders / sleepReminderEnabled+时段 全部只写 SharedPreferences,全客户端 grep 无消费者,后端也无周摘要/健康告警生成逻辑;开关可拨动但拨动后什么都不发生。
@@ -116,11 +107,10 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. **P1-1 A6 PIN elevation 接线（0.1.0 前）**——无依赖、机制现成，最先做。
-2. **P1-2 B1 通知假开关改造（0.1.0 前）**——健康提醒/每周摘要/饮水提醒与睡眠提醒均接真实执行器；睡眠仅就寝时间本地通知。
-3. **P2-3 E3/E4 support 清理（0.1.0 前）**——涉及 Lucent 契约删除与客户端再生成。
-4. **P2-1 A5 会话管理 UI**、**P2-2 B5 导出体验修复（均 0.1.0 前）**——彼此独立，收尾阶段并行。
-5. **P1-3 图片质量/仅 Wi-Fi 同步（0.1.0 后）**。
+1. **P1-2 B1 通知假开关改造（0.1.0 前）**——健康提醒/每周摘要/饮水提醒与睡眠提醒均接真实执行器；睡眠仅就寝时间本地通知。
+2. **P2-3 E3/E4 support 清理（0.1.0 前）**——涉及 Lucent 契约删除与客户端再生成。
+3. **P2-1 A5 会话管理 UI**、**P2-2 B5 导出体验修复（均 0.1.0 前）**——彼此独立，收尾阶段并行。
+4. **P1-3 图片质量/仅 Wi-Fi 同步（0.1.0 后）**。
 
 ## 六、已决边界与延期项
 

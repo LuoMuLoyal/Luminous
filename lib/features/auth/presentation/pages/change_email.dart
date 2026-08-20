@@ -9,8 +9,10 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/core/widgets/common/security_elevation_dialog.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/features/auth/presentation/pages/account_settings_helpers.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
@@ -101,19 +103,22 @@ class ChangeEmailPage extends HookConsumerWidget {
                                   false)) {
                                 return;
                               }
+                              final elevated =
+                                  await showSecurityElevationDialog(
+                                    context,
+                                    ref,
+                                  );
+                              if (!elevated || !context.mounted) return;
                               final ok = await accountNotifier.changeEmail(
                                 newEmail: emailController.text,
                                 code: codeController.text,
                               );
                               if (!ok && context.mounted) {
-                                final msg =
-                                    accountState.errorMessage?.isNotEmpty ==
-                                        true
-                                    ? accountState.errorMessage!
-                                    : null;
-                                if (msg != null) {
-                                  await Toast.show(context, msg);
-                                }
+                                await showAuthAccountFailureToast(
+                                  context,
+                                  ref,
+                                  l10n,
+                                );
                               }
                               if (ok && context.mounted) {
                                 await Toast.show(

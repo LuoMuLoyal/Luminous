@@ -6,6 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -24,6 +25,7 @@ abstract class AuthAccountState with _$AuthAccountState {
     String? errorMessage,
     String? successMessage,
     int? lastCooldownSeconds,
+    @Default(false) bool requiresSecurityElevation,
   }) = _AuthAccountState;
 }
 
@@ -44,6 +46,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       errorMessage: null,
       successMessage: null,
       lastCooldownSeconds: null,
+      requiresSecurityElevation: false,
     );
     try {
       final result = await ref
@@ -103,6 +106,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
         isSubmitting: false,
         errorMessage: 'Not signed in.',
         successMessage: null,
+        requiresSecurityElevation: false,
       );
       return false;
     }
@@ -160,6 +164,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       isSubmitting: true,
       errorMessage: null,
       successMessage: null,
+      requiresSecurityElevation: false,
     );
 
     final wechat = ref.read(wechatOAuthServiceProvider);
@@ -257,6 +262,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       isSubmitting: true,
       errorMessage: null,
       successMessage: null,
+      requiresSecurityElevation: false,
     );
     try {
       await action();
@@ -272,13 +278,30 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
 
   bool _fail(Object error) {
     final apiError = LucentErrorMapper.fromObject(error);
+    final requiresSecurityElevation = _isSecurityElevationFailure(apiError);
+    if (requiresSecurityElevation) {
+      ref.read(securityElevationControllerProvider.notifier).clear();
+    }
     state = state.copyWith(
       isSubmitting: false,
       isSendingCode: false,
       errorMessage: apiError.message,
       successMessage: null,
+      requiresSecurityElevation: requiresSecurityElevation,
     );
     return false;
+  }
+
+  bool _isSecurityElevationFailure(LucentApiException error) {
+    if (error.statusCode != 403 || error.code != LucentResultCode.forbidden) {
+      return false;
+    }
+
+    final message = error.message.trim().toLowerCase();
+    return message.contains('elevation_token_invalid') ||
+        message.contains('elevation token') ||
+        message.contains('安全验证令牌') ||
+        message.contains('安全提升令牌');
   }
 
   WechatIdentityLinkResult? _failWithResult(Object error) {

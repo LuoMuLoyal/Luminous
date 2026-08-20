@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../auth/test_helpers.dart';
@@ -145,6 +150,9 @@ void main() {
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
+          securityElevationControllerProvider.overrideWith(
+            _VerifiedSecurityElevationController.new,
+          ),
         ],
         child: TestAuthApp(
           router: GoRouter(
@@ -200,6 +208,98 @@ void main() {
     expect(remote.changePasswordNewPassword, 'new-password');
     expect(find.text('login-page'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets(
+    'Account settings does not change password when PIN is disabled',
+    (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      final remote = FakeLucentAuthRepository();
+      await _pumpAccountSettingsPage(
+        tester,
+        router: GoRouter(
+          initialLocation: '/account',
+          routes: [
+            GoRoute(
+              path: '/account',
+              builder: (context, state) =>
+                  const AccountSettingsPage(enableFormAnimation: false),
+            ),
+          ],
+        ),
+        overrides: [
+          authRepositoryProvider.overrideWithValue(remote),
+          userSettingsControllerProvider.overrideWith(
+            _DisabledSecurityPinSettingsController.new,
+          ),
+        ],
+      );
+
+      await tester.pump();
+      await tester.tap(find.text(l10n.authPasswordSectionTitle));
+      await tester.pumpAndSettle();
+      final passwordFields = find.byType(EditableText);
+      await tester.enterText(passwordFields.at(0), 'old-password');
+      await tester.enterText(passwordFields.at(1), 'new-password');
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pump();
+      await tester.tap(
+        find.widgetWithText(FButton, l10n.authChangePasswordAction),
+      );
+      await tester.pumpAndSettle();
+
+      expect(remote.changePasswordOldPassword, isNull);
+      expect(remote.changePasswordNewPassword, isNull);
+    },
+  );
+
+  testWidgets('Account settings does not change password after PIN cancel', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final remote = FakeLucentAuthRepository();
+    await _pumpAccountSettingsPage(
+      tester,
+      router: GoRouter(
+        initialLocation: '/account',
+        routes: [
+          GoRoute(
+            path: '/account',
+            builder: (context, state) =>
+                const AccountSettingsPage(enableFormAnimation: false),
+          ),
+        ],
+      ),
+      overrides: [
+        authRepositoryProvider.overrideWithValue(remote),
+        userSettingsControllerProvider.overrideWith(
+          _EnabledSecurityPinSettingsController.new,
+        ),
+      ],
+    );
+
+    await tester.pump();
+    final settingsContainer = ProviderScope.containerOf(
+      tester.element(find.byType(AccountSettingsPage)),
+    );
+    await settingsContainer.read(userSettingsControllerProvider.future);
+    await tester.pump();
+    await tester.tap(find.text(l10n.authPasswordSectionTitle));
+    await tester.pumpAndSettle();
+    final passwordFields = find.byType(EditableText);
+    await tester.enterText(passwordFields.at(0), 'old-password');
+    await tester.enterText(passwordFields.at(1), 'new-password');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pump();
+    await tester.tap(
+      find.widgetWithText(FButton, l10n.authChangePasswordAction),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.securityElevationDialogCancel));
+    await tester.pumpAndSettle();
+
+    expect(remote.changePasswordOldPassword, isNull);
+    expect(remote.changePasswordNewPassword, isNull);
   });
 
   testWidgets('Account settings deletes account and routes to login', (
@@ -278,6 +378,9 @@ void main() {
             ],
           ),
         ),
+        securityElevationControllerProvider.overrideWith(
+          _VerifiedSecurityElevationController.new,
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -321,6 +424,108 @@ void main() {
     expect(remote.unlinkIdentityId, 'identity-1');
     expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
     await tester.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets(
+    'Account settings does not unlink an identity when PIN is disabled',
+    (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      final remote = FakeLucentAuthRepository();
+      await _pumpAccountSettingsPage(
+        tester,
+        router: GoRouter(
+          initialLocation: '/account',
+          routes: [
+            GoRoute(
+              path: '/account',
+              builder: (context, state) =>
+                  const AccountSettingsPage(enableFormAnimation: false),
+            ),
+          ],
+        ),
+        sessionNotifier: _SignedInAuthSessionNotifier(
+          linkedIdentities: [_testLinkedIdentity],
+        ),
+        overrides: [
+          authRepositoryProvider.overrideWithValue(remote),
+          userSettingsControllerProvider.overrideWith(
+            _DisabledSecurityPinSettingsController.new,
+          ),
+        ],
+      );
+
+      await tester.pump();
+      final unlinkButton = find
+          .widgetWithText(FButton, l10n.authIdentityUnlinkAction)
+          .first;
+      await tester.scrollUntilVisible(
+        unlinkButton,
+        240,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(unlinkButton);
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.widgetWithText(FButton, l10n.authIdentityUnlinkAction).last,
+      );
+      await tester.pumpAndSettle();
+
+      expect(remote.unlinkIdentityId, isNull);
+    },
+  );
+
+  testWidgets('Account settings does not unlink an identity after PIN cancel', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final remote = FakeLucentAuthRepository();
+    await _pumpAccountSettingsPage(
+      tester,
+      router: GoRouter(
+        initialLocation: '/account',
+        routes: [
+          GoRoute(
+            path: '/account',
+            builder: (context, state) =>
+                const AccountSettingsPage(enableFormAnimation: false),
+          ),
+        ],
+      ),
+      sessionNotifier: _SignedInAuthSessionNotifier(
+        linkedIdentities: [_testLinkedIdentity],
+      ),
+      overrides: [
+        authRepositoryProvider.overrideWithValue(remote),
+        userSettingsControllerProvider.overrideWith(
+          _EnabledSecurityPinSettingsController.new,
+        ),
+      ],
+    );
+
+    await tester.pump();
+    final settingsContainer = ProviderScope.containerOf(
+      tester.element(find.byType(AccountSettingsPage)),
+    );
+    await settingsContainer.read(userSettingsControllerProvider.future);
+    await tester.pump();
+    final unlinkButton = find
+        .widgetWithText(FButton, l10n.authIdentityUnlinkAction)
+        .first;
+    await tester.scrollUntilVisible(
+      unlinkButton,
+      240,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(unlinkButton);
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.widgetWithText(FButton, l10n.authIdentityUnlinkAction).last,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.securityElevationDialogCancel));
+    await tester.pumpAndSettle();
+
+    expect(remote.unlinkIdentityId, isNull);
   });
 
   testWidgets('Account settings links WeChat identity through account flow', (
@@ -447,10 +652,22 @@ class _FakeWechatMobileAuthClient extends WechatMobileAuthClient {
   }
 }
 
+class _VerifiedSecurityElevationController extends SecurityElevationController {
+  @override
+  SecurityElevationState build() {
+    final expiresAt = DateTime.now().add(const Duration(minutes: 5));
+    ref
+        .read(securityElevationTokenHolderProvider)
+        .set('test-elevation-token', expiresAt);
+    return SecurityElevationVerified(expiresAt: expiresAt);
+  }
+}
+
 Future<void> _pumpAccountSettingsPage(
   WidgetTester tester, {
   required GoRouter router,
   AuthSessionNotifier? sessionNotifier,
+  List<Override> overrides = const [],
 }) async {
   await tester.pumpWidget(
     ProviderScope(
@@ -458,10 +675,59 @@ Future<void> _pumpAccountSettingsPage(
         authSessionProvider.overrideWith(
           () => sessionNotifier ?? _SignedInAuthSessionNotifier(),
         ),
+        ...overrides,
       ],
       child: TestAuthApp(router: router),
     ),
   );
+}
+
+final _testLinkedIdentity = AuthLinkedIdentity(
+  id: 'identity-1',
+  provider: 'wechat_web',
+  email: null,
+  emailVerifiedAt: null,
+  linkedAt: DateTime.parse('2026-01-03T00:00:00Z'),
+);
+
+class _DisabledSecurityPinSettingsController extends UserSettingsController {
+  @override
+  Future<UserSettings> build() async {
+    return const UserSettings(
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: false,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettings(
+        healthProfile: false,
+        dailyRecords: false,
+        sleepRecords: false,
+        currentMedicines: false,
+      ),
+      securityPin: SecurityPinSettings(enabled: false),
+    );
+  }
+}
+
+class _EnabledSecurityPinSettingsController extends UserSettingsController {
+  @override
+  Future<UserSettings> build() async {
+    return const UserSettings(
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: false,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettings(
+        healthProfile: false,
+        dailyRecords: false,
+        sleepRecords: false,
+        currentMedicines: false,
+      ),
+      securityPin: SecurityPinSettings(enabled: true),
+    );
+  }
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {

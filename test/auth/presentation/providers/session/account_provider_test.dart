@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/security_elevation_token_holder.dart';
+import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -157,6 +160,48 @@ class _FailingAccountRemote extends _AccountFakeRemote {
         requestOptions: RequestOptions(path: '/send-code'),
         statusCode: 429,
         data: {'code': 429001, 'message': '发送过于频繁', 'data': null},
+      ),
+    );
+  }
+}
+
+class _ElevationTokenInvalidRemote extends _AccountFakeRemote {
+  @override
+  Future<AuthUser> changeEmail({
+    required String newEmail,
+    required String code,
+    required AuthUser currentUser,
+  }) async {
+    throw DioException(
+      requestOptions: RequestOptions(path: '/change-email'),
+      type: DioExceptionType.badResponse,
+      response: Response(
+        requestOptions: RequestOptions(path: '/change-email'),
+        statusCode: 403,
+        data: {
+          'code': 403001,
+          'message': 'elevation_token_invalid',
+          'data': null,
+        },
+      ),
+    );
+  }
+}
+
+class _ForbiddenBusinessRemote extends _AccountFakeRemote {
+  @override
+  Future<AuthUser> unlinkIdentity({required String identityId}) async {
+    throw DioException(
+      requestOptions: RequestOptions(path: '/unlink'),
+      type: DioExceptionType.badResponse,
+      response: Response(
+        requestOptions: RequestOptions(path: '/unlink'),
+        statusCode: 403,
+        data: {
+          'code': 403001,
+          'message': 'Cannot unlink the last sign-in identity',
+          'data': null,
+        },
       ),
     );
   }
@@ -333,6 +378,32 @@ void main() {
       expect(result, isFalse);
       expect(container.read(authAccountProvider).errorMessage, isNotNull);
     });
+
+    test(
+      'does not classify an ordinary forbidden business error as PIN failure',
+      () async {
+        final remote = _ForbiddenBusinessRemote();
+        final container = ProviderContainer(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(remote),
+            authSessionProvider.overrideWith(
+              () => _SignedInAuthSessionNotifier(),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        final result = await container
+            .read(authAccountProvider.notifier)
+            .unlinkIdentity(identityId: 'id-1');
+
+        expect(result, isFalse);
+        expect(
+          container.read(authAccountProvider).requiresSecurityElevation,
+          isFalse,
+        );
+      },
+    );
   });
 
   group('AuthAccountNotifier — changeEmail', () {
@@ -408,6 +479,46 @@ void main() {
       expect(result, isFalse);
       expect(container.read(authAccountProvider).errorMessage, isNotNull);
     });
+
+    test(
+      'marks an invalid elevation token failure for the page to guide PIN verification',
+      () async {
+        final remote = _ElevationTokenInvalidRemote();
+        final holder = SecurityElevationTokenHolder();
+        final container = ProviderContainer(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(remote),
+            authSessionProvider.overrideWith(
+              () => _SignedInAuthSessionNotifier(),
+            ),
+            securityElevationTokenHolderProvider.overrideWithValue(holder),
+            securityElevationControllerProvider.overrideWith(
+              _VerifiedSecurityElevationController.new,
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        final expiresAt = DateTime.now().add(const Duration(minutes: 5));
+        container.read(securityElevationControllerProvider);
+        holder.set('test-elevation-token', expiresAt);
+
+        final result = await container
+            .read(authAccountProvider.notifier)
+            .changeEmail(newEmail: 'expired@example.com', code: '123456');
+
+        expect(result, isFalse);
+        expect(
+          container.read(authAccountProvider).requiresSecurityElevation,
+          isTrue,
+        );
+        expect(
+          container.read(securityElevationControllerProvider),
+          isA<SecurityElevationUnverified>(),
+        );
+        expect(holder.token, isNull);
+      },
+    );
   });
 
   group('AuthAccountNotifier — changePassword', () {
@@ -567,4 +678,13 @@ void main() {
       expect(state.lastCooldownSeconds, isNull);
     });
   });
+}
+
+class _VerifiedSecurityElevationController extends SecurityElevationController {
+  @override
+  SecurityElevationState build() {
+    return SecurityElevationVerified(
+      expiresAt: DateTime.now().add(const Duration(minutes: 5)),
+    );
+  }
 }

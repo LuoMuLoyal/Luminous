@@ -32,9 +32,13 @@ class _FakeLucentClient extends LucentClient {
 /// Elevation is already verified — skips the PIN dialog in the export flow.
 class _VerifiedElevation extends SecurityElevationController {
   @override
-  SecurityElevationState build() => SecurityElevationVerified(
-    expiresAt: DateTime.now().add(const Duration(hours: 1)),
-  );
+  SecurityElevationState build() {
+    final expiresAt = DateTime.now().add(const Duration(hours: 1));
+    ref
+        .read(securityElevationTokenHolderProvider)
+        .set('test-elevation-token', expiresAt);
+    return SecurityElevationVerified(expiresAt: expiresAt);
+  }
 }
 
 /// Records export results instead of posting events.
