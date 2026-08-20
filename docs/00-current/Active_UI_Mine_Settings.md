@@ -7,7 +7,7 @@ updated: 2026-08-18
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-18（改造项 8：完成度口径 7 项 → 6 项，`onboardingCompleted` 不再计入；emergencyContact 不再作为 readiness gap）
+Last updated: 2026-08-18（改造项 8：完成度口径 7 项 → 6 项，`onboardingCompleted` 不再计入；emergencyContact 不再作为 readiness gap；改造项 7：档案区体重行接入 kg/lb 单位制显示换算）
 
 ## Mine 根页结构
 
@@ -50,6 +50,7 @@ Last updated: 2026-08-18（改造项 8：完成度口径 7 项 → 6 项，`onbo
 - 身高字段从 `int.tryParse` 改为 `num.tryParse`，修复 double 身高值丢数据。
 - 健康表单枚举使用 `health_enum_l10n.dart` 提供 l10n 映射。
 - 删除操作接入 `showDangerConfirmationDialog` 二次确认（allergy/condition/medicine 三处编辑页）。
+- 单位制显示切换（改造项 7）：档案 `unitSystem`（`metric | imperial`，设置页/资料编辑页有真实填写入口）接入**纯展示换算**——档案区体重行 imperial 时显示 lb（`weightInLb`：kg × 2.2046226218 后 round()，与 kg 行取整展示一致），metric/未设置显示 kg；身高行恒 cm（计划未列身高）。存储口径不变，仅展示换算；换算工具在 `lib/features/health_context/domain/services/unit_conversion.dart`。摘要瓦片、饮水角标、today 概览等其它 ml 展示点**不做**（保持存储口径 ml）。
 
 ## 健康数据导入与自动同步
 

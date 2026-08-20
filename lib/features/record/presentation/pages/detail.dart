@@ -17,6 +17,8 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/health_context/domain/services/unit_conversion.dart';
 import 'package:luminous/features/record/application/usecases/record_detail_actions.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/providers/water_target.dart';
@@ -230,6 +232,21 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
         : 0;
     final waterTargetMl = waterTargetCount * recordWaterMlPerCount;
 
+    // Unit system for display-only conversions (kg/lb, ml/fl oz). Read from
+    // the shared health-context snapshot; while loading or on error it falls
+    // back to null = metric. Only water records with ml data watch the
+    // snapshot, so other record kinds do not trigger a health-context fetch
+    // (same conditional-watch pattern as recordWaterTargetCountProvider).
+    final unitSystem = record.kind == DailyRecordKind.water && waterTotalMl > 0
+        ? ref
+              .watch(healthContextSnapshotProvider)
+              .asData
+              ?.value
+              .profile
+              .unitSystem
+        : null;
+    final isImperialWater = isImperialUnitSystem(unitSystem);
+
     // Sync the analysis poller with the current status.
     final isAnalyzing =
         mealAnalysis != null && mealAnalysis.status == 'analyzing';
@@ -416,10 +433,15 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                       ),
                     ),
                     Text(
-                      l10n.recordDetailDailyWaterProgress(
-                        waterTotalMl,
-                        waterTargetMl,
-                      ),
+                      isImperialWater
+                          ? l10n.recordDetailDailyWaterProgressOz(
+                              _formatFlOz(waterTotalMl),
+                              _formatFlOz(waterTargetMl),
+                            )
+                          : l10n.recordDetailDailyWaterProgress(
+                              waterTotalMl,
+                              waterTargetMl,
+                            ),
                       style: TypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
@@ -920,6 +942,11 @@ String _valueWithUnit(String value, String? unit) {
   if (trimmedUnit == null || trimmedUnit.isEmpty) return value;
   return '$value $trimmedUnit';
 }
+
+/// Formats an ml value as a fl oz string with one decimal place for the
+/// imperial water progress label (e.g. "18.6"). Display-only conversion;
+/// storage stays in ml.
+String _formatFlOz(num ml) => waterInFlOz(ml).toStringAsFixed(1);
 
 String? _nonEmpty(String? value) {
   final trimmed = value?.trim();

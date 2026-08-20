@@ -152,6 +152,14 @@
       }
     }
   },
+  "mineProfileWeightLb": "{weight}lb",
+  "@mineProfileWeightLb": {
+    "placeholders": {
+      "weight": {
+        "type": "int"
+      }
+    }
+  },
   "mineProfileMeta": "{age} · {height}",
   "@mineProfileMeta": {
     "placeholders": {

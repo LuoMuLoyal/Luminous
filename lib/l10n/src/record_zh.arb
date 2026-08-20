@@ -407,6 +407,17 @@
       }
     }
   },
+  "recordDetailDailyWaterProgressOz": "{total} / {target} fl oz",
+  "@recordDetailDailyWaterProgressOz": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "recordDetailCopyAction": "复制摘要",
   "recordDetailCopiedToast": "已复制到剪贴板",
   "recordDetailPreviousAction": "上一条",

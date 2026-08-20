@@ -34,6 +34,7 @@ abstract class MineDashboard with _$MineDashboard {
       heightCm: null,
       weightKg: null,
       sexAtBirth: null,
+      unitSystem: null,
       allergyCount: 0,
       conditionCount: 0,
       currentMedicineCount: 0,
@@ -56,6 +57,9 @@ abstract class MineProfileSnapshot with _$MineProfileSnapshot {
     required double? heightCm,
     required double? weightKg,
     required String? sexAtBirth,
+
+    /// 档案单位制（`metric` | `imperial`），仅用于展示换算；null 按公制。
+    required String? unitSystem,
     required int allergyCount,
     required int conditionCount,
     required int currentMedicineCount,

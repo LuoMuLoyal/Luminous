@@ -11,6 +11,7 @@ import 'package:luminous/core/widgets/common/soft_icon.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_context/domain/services/unit_conversion.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
@@ -454,7 +455,9 @@ String _profileMeta(AppLocalizations l10n, MineProfileSnapshot profile) {
     if (profile.heightCm != null)
       l10n.mineProfileHeightCm(profile.heightCm?.round() ?? 0),
     if (profile.weightKg != null)
-      l10n.mineProfileWeightKg(profile.weightKg?.round() ?? 0),
+      isImperialUnitSystem(profile.unitSystem)
+          ? l10n.mineProfileWeightLb(weightInLb(profile.weightKg)?.round() ?? 0)
+          : l10n.mineProfileWeightKg(profile.weightKg?.round() ?? 0),
   ];
   if (parts.isEmpty) return l10n.mineArchiveBasicSubtitle;
   return parts.join(' · ');

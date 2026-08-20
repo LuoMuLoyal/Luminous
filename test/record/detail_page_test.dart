@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
@@ -290,6 +292,9 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
           dailyRecordRepositoryProvider.overrideWithValue(repo),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => _waterMetricSnapshot,
+          ),
         ],
         child: TestAuthApp(
           router: GoRouter(
@@ -348,6 +353,9 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
           dailyRecordRepositoryProvider.overrideWithValue(repo),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => _waterMetricSnapshot,
+          ),
           userSettingsRepositoryProvider.overrideWithValue(
             _FakeUserSettingsRepository(waterTargetCount: 12),
           ),
@@ -394,6 +402,9 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
           dailyRecordRepositoryProvider.overrideWithValue(repo),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => _waterMetricSnapshot,
+          ),
           userSettingsRepositoryProvider.overrideWithValue(
             _FakeUserSettingsRepository(throwOnGet: true),
           ),
@@ -424,6 +435,103 @@ void main() {
     // (8 glasses × 250 ml = 2000 ml) so the progress card stays usable.
     expect(find.text('今日饮水'), findsOneWidget);
     expect(find.text('550 / 2000 ml'), findsOneWidget);
+  });
+
+  testWidgets('water detail shows fl oz totals when unit system is imperial', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repo = _WaterFakeRepo();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => _waterImperialSnapshot,
+          ),
+          userSettingsRepositoryProvider.overrideWithValue(
+            _FakeUserSettingsRepository(),
+          ),
+        ],
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const RecordDetailPage(recordId: 'water-2'),
+              ),
+              GoRoute(
+                path: '/record/:id',
+                builder: (_, state) =>
+                    RecordDetailPage(recordId: state.pathParameters['id']!),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+
+    // 250 + 300 ml → 550 ml ≈ 18.6 fl oz; target 8 × 250 = 2000 ml ≈ 67.6
+    // fl oz. The progress bar value still uses the raw ml ratio.
+    expect(find.text('今日饮水'), findsOneWidget);
+    expect(find.text('18.6 / 67.6 fl oz'), findsOneWidget);
+    expect(find.text('550 / 2000 ml'), findsNothing);
+
+    final progress = tester.widget<LinearProgressIndicator>(
+      find.byType(LinearProgressIndicator),
+    );
+    expect(progress.value, closeTo(550 / 2000, 0.0001));
+  });
+
+  testWidgets('water detail falls back to metric when the health snapshot is '
+      'unavailable', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repo = _WaterFakeRepo();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => throw Exception('snapshot unavailable'),
+          ),
+          userSettingsRepositoryProvider.overrideWithValue(
+            _FakeUserSettingsRepository(),
+          ),
+        ],
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const RecordDetailPage(recordId: 'water-2'),
+              ),
+              GoRoute(
+                path: '/record/:id',
+                builder: (_, state) =>
+                    RecordDetailPage(recordId: state.pathParameters['id']!),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+
+    // Snapshot fetch failed → unit system falls back to metric (ml display).
+    expect(find.text('今日饮水'), findsOneWidget);
+    expect(find.text('550 / 2000 ml'), findsOneWidget);
+    expect(find.textContaining('fl oz'), findsNothing);
   });
 
   testWidgets('meal detail shows confirm action for unconfirmed analysis and '
@@ -550,3 +658,63 @@ void main() {
     await tester.pump(const Duration(milliseconds: 2000));
   });
 }
+
+/// Minimal metric health-context snapshot (unitSystem unset → metric) for
+/// the water progress card; avoids a real health-context fetch in tests.
+const _waterMetricSnapshot = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: 27,
+    onboardingCompleted: true,
+    activeAllergyCount: 0,
+    conditionCount: 0,
+    currentMedicineCount: 0,
+    missingCoreProfileFields: [],
+  ),
+  profile: HealthProfile(
+    birthDate: null,
+    sexAtBirth: null,
+    heightCm: null,
+    weightKg: null,
+    bloodType: null,
+    locale: null,
+    timezone: null,
+    unitSystem: null,
+    onboardingCompletedAt: null,
+    emergencyContactName: null,
+    emergencyContactPhone: null,
+    extras: {},
+  ),
+  allergies: [],
+  conditions: [],
+  currentMedicines: [],
+);
+
+/// Same as [_waterMetricSnapshot] but with imperial unit system, so the
+/// water progress card renders fl oz totals (display-only conversion).
+const _waterImperialSnapshot = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: 27,
+    onboardingCompleted: true,
+    activeAllergyCount: 0,
+    conditionCount: 0,
+    currentMedicineCount: 0,
+    missingCoreProfileFields: [],
+  ),
+  profile: HealthProfile(
+    birthDate: null,
+    sexAtBirth: null,
+    heightCm: null,
+    weightKg: null,
+    bloodType: null,
+    locale: null,
+    timezone: null,
+    unitSystem: 'imperial',
+    onboardingCompletedAt: null,
+    emergencyContactName: null,
+    emergencyContactPhone: null,
+    extras: {},
+  ),
+  allergies: [],
+  conditions: [],
+  currentMedicines: [],
+);

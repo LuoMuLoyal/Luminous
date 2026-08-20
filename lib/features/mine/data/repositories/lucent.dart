@@ -93,6 +93,7 @@ MineProfileSnapshot _buildProfile(HealthContextSnapshot snapshot) {
     heightCm: profile.heightCm,
     weightKg: profile.weightKg,
     sexAtBirth: profile.sexAtBirth,
+    unitSystem: profile.unitSystem,
     allergyCount: summary.activeAllergyCount,
     conditionCount: summary.conditionCount,
     currentMedicineCount: summary.currentMedicineCount,

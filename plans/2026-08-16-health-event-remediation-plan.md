@@ -14,7 +14,7 @@ Created: 2026-08-16
 目标:
 
 - 补齐事件域「差最后一环」的半成品:kind 筛选(H-4)。
-- 处置档案僵尸/半用字段(C-1):weightKg、conditions 改造为真实消费;unitSystem 低优先级改造;onboardingCompleted 已处置为引导流程状态(有写入方后纳入完成度);emergencyContact、extras 如实不排期。
+- 处置档案僵尸/半用字段(C-1):weightKg、conditions 改造为真实消费;unitSystem 已接单位制显示切换(纯展示换算、存储口径不变);onboardingCompleted 已处置为引导流程状态(有写入方后纳入完成度);emergencyContact、extras 如实不排期。
 - 清除 Mine「档案提醒」硬编码假数据卡(C-3),改造为真实数据出口。
 - 核心生命周期(创建/check-in/结束/回顾)与档案安全链路保持不动。
 
@@ -69,12 +69,6 @@ Created: 2026-08-16
 - 前后端分工:前端先行(复用现有完成度/gap 口径);若决策后端化再补接口。
 - 依赖:与 C-1 字段决策联动(alert 内容随字段口径调整)。
 
-#### 7. C-1 `unitSystem` 接单位制显示切换
-
-- 现状:无任何消费方的僵尸字段,但设置页有真实填写入口(身高恒 cm、体重恒 kg)。
-- 改造方案:接单位制显示切换(体重 kg/lb、饮水 ml/oz),纯展示层换算,存储口径不变。
-- 前后端分工:纯前端展示换算;后端无需改动。
-
 ### 不排期(如实记录,不占 P0/P1/P2 改造位)
 
 - C-1 `emergencyContactName/Phone`:僵尸字段,标注延后,**不排期**。
@@ -86,12 +80,12 @@ Created: 2026-08-16
 - vital 时间序列基建(C-1 weightKg 依赖):见 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md) 的 vital 基建一节。
 - ObservedMetric 口径(vital 趋势数据口径):见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节。
 - Review 职责改版为日/周/月洞察、事件成为专题视图(H-8 定位补充):归属 report 计划([`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)),本计划只标注依赖、不承担该项;事件详情接线(H-6)已随改造项 2 落地,与 report 计划的 Review 信息架构改版不再有落地顺序耦合。
-- 本计划拥有并写全的横切资产:档案字段逐字段处置决策(改造项 3/4/6/7 与不排期清单)。
+- 本计划拥有并写全的横切资产:档案字段逐字段处置决策(改造项 3/4/6 与不排期清单)。
 - 桌面/Web 形态不再扩展 Flutter 产品面；独立 Next.js + Tauri MVP 在 0.1.0 后启动，不展开。
 
 ## 五、本计划内执行顺序
 
-1. 改造项 6(C-3)与 7（0.1.0 前）：先移除硬编码假过敏，再由 Lucent 档案完整度合同驱动展示。
+1. 改造项 6(C-3)（0.1.0 前）：先移除硬编码假过敏，再由 Lucent 档案完整度合同驱动展示。
 2. 改造项 1(H-4)、4(weightKg) 与 5(conditions)均为 0.1.0 后，按既有 P1 及依赖顺序恢复。
 
 ## 六、已决边界与延期项

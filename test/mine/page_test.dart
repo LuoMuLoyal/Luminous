@@ -485,6 +485,83 @@ void main() {
     expect(find.text(l10n.mineEditProfileTitle), findsOneWidget);
   });
 
+  testWidgets('Mine archive meta shows weight in kg for metric unit system', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_completeSnapshot),
+          ),
+        ],
+        child: const TestForuiApp(home: MinePage()),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // _completeSnapshot: unitSystem null → metric → weight row shows kg.
+    final meta = find.descendant(
+      of: find.byKey(const Key('mine-archive-section')),
+      matching: find.text('27岁 · 170cm · 60kg'),
+    );
+    await tester.ensureVisible(meta);
+    await tester.pump();
+    expect(meta, findsOneWidget);
+    expect(find.text('27岁 · 170cm · 60kg'), findsOneWidget);
+    expect(find.textContaining('lb'), findsNothing);
+  });
+
+  testWidgets('Mine archive meta shows weight in lb for imperial unit system', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_imperialSnapshot),
+          ),
+        ],
+        child: const TestForuiApp(home: MinePage()),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // _imperialSnapshot: unitSystem imperial → weight row converts to lb
+    // (60 kg × 2.2046226218 = 132.28 → round 132), height stays in cm.
+    final meta = find.descendant(
+      of: find.byKey(const Key('mine-archive-section')),
+      matching: find.text('27岁 · 170cm · 132lb'),
+    );
+    await tester.ensureVisible(meta);
+    await tester.pump();
+    expect(meta, findsOneWidget);
+    expect(find.text('27岁 · 170cm · 132lb'), findsOneWidget);
+    expect(find.textContaining('60kg'), findsNothing);
+  });
+
   testWidgets('Mine archive shows login dialog when signed out', (
     tester,
   ) async {
@@ -907,6 +984,36 @@ const _completeSnapshot = HealthContextSnapshot(
     locale: null,
     timezone: null,
     unitSystem: null,
+    onboardingCompletedAt: '2026-01-01T00:00:00Z',
+    emergencyContactName: '张三',
+    emergencyContactPhone: '13800000000',
+    extras: {},
+  ),
+  allergies: [],
+  conditions: [],
+  currentMedicines: [],
+);
+
+/// Same profile as [_completeSnapshot] but with imperial unit system, so the
+/// archive meta weight row renders in lb (display-only conversion).
+const _imperialSnapshot = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: 27,
+    onboardingCompleted: true,
+    activeAllergyCount: 2,
+    conditionCount: 1,
+    currentMedicineCount: 3,
+    missingCoreProfileFields: [],
+  ),
+  profile: HealthProfile(
+    birthDate: '1999-01-15',
+    sexAtBirth: 'female',
+    heightCm: 170.0,
+    weightKg: 60.0,
+    bloodType: null,
+    locale: null,
+    timezone: null,
+    unitSystem: 'imperial',
     onboardingCompletedAt: '2026-01-01T00:00:00Z',
     emergencyContactName: '张三',
     emergencyContactPhone: '13800000000',

@@ -30,6 +30,8 @@ void main() {
 
       expect(dashboard.profile.age, isNull);
       expect(dashboard.profile.heightCm, isNull);
+      expect(dashboard.profile.weightKg, isNull);
+      expect(dashboard.profile.unitSystem, isNull);
       expect(dashboard.profile.allergyCount, 0);
       expect(dashboard.profile.conditionCount, 0);
       expect(dashboard.profile.currentMedicineCount, 0);

@@ -407,6 +407,17 @@
       }
     }
   },
+  "recordDetailDailyWaterProgressOz": "{total} / {target} fl oz",
+  "@recordDetailDailyWaterProgressOz": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "recordDetailCopyAction": "Copy summary",
   "recordDetailCopiedToast": "Copied to clipboard",
   "recordDetailPreviousAction": "Previous",
