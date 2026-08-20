@@ -8,13 +8,17 @@
 /// The token is short-lived (15 minutes) and intentionally **not** persisted
 /// across app restarts — users must re-verify their PIN each session.
 class SecurityElevationTokenHolder {
+  SecurityElevationTokenHolder({DateTime Function()? now})
+    : _now = now ?? DateTime.now;
+
+  final DateTime Function() _now;
   String? _token;
   DateTime? _expiresAt;
 
   /// Returns the raw token string, or `null` if no valid token exists.
   String? get token {
     if (_token == null || _expiresAt == null) return null;
-    if (DateTime.now().isAfter(_expiresAt!)) return null;
+    if (!_now().isBefore(_expiresAt!)) return null;
     return _token;
   }
 

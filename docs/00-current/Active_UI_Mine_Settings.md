@@ -151,7 +151,7 @@ Last updated: 2026-08-20（P2-2 B5：导出就诊报告 PDF 的 PIN 引导与文
 - 修改邮箱、修改密码、解绑三方身份在各自页面回调中先执行 `showSecurityElevationDialog(context, ref)`；已有有效 elevation token 自动跳过 PIN 对话框，后续请求由 `SecurityElevationInterceptor` 注入请求头。
 - 纯页面入口 preflight 是兼容假设：`AuthAccountNotifier` 与认证领域接口保持 UI 无依赖，由页面在确认/表单校验后决定是否发起敏感操作；取消或未启用 Security PIN 时不调用后端。
 - 敏感操作收到明确的 403/elevation-token-invalid 响应时，`AuthAccountState.requiresSecurityElevation` 提供机器可读状态，页面使用“请验证安全 PIN”引导文案；普通解绑业务 403 不复用该状态。
-- P1-1 复审确认的两个 follow-up 已登记到 `docs/00-current/TODO.md`，当前仍未修复：settings provider loading/error 时 `asData == null` 的未知状态误判，以及 token/dialog 到期边界统一与精确到期测试。
+- P1-1 复审的两个 follow-up 已收口：安全 PIN 状态未知时等待设置 future，token 与 dialog 统一使用 `now.isBefore(expiresAt)`，并补充精确到期测试。
 - 账号注销支持密码和邮箱验证码两种确认方式（OAuth-only 用户通过验证码注销）。
 - 注销区域顶部显示注销政策提示文字 + ghost 按钮跳转 `/legal/account-cancellation`（2026-07-21 P1）。
 - `AuthAccountNotifier` 接入 `CooldownTimerMixin` 实现验证码发送倒计时。

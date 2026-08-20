@@ -28,17 +28,32 @@ Future<bool> showSecurityElevationDialog(
   );
   final elevationState = ref.read(securityElevationControllerProvider);
   if (elevationState is SecurityElevationVerified) {
-    if (elevationState.expiresAt.isAfter(DateTime.now()) &&
+    if (DateTime.now().isBefore(elevationState.expiresAt) &&
         elevationController.hasValidToken) {
       return true;
     }
     elevationController.clear();
   }
 
-  // Check if PIN is enabled.
-  final settings = ref.read(userSettingsControllerProvider).asData?.value;
-  final pinEnabled = settings?.securityPin.enabled ?? false;
-  if (!pinEnabled) {
+  // Check if PIN is enabled. An unresolved settings read is unknown, not
+  // equivalent to a disabled PIN; wait for it before deciding.
+  UserSettings? settings = ref
+      .read(userSettingsControllerProvider)
+      .asData
+      ?.value;
+  if (settings == null) {
+    try {
+      settings = await ref.read(userSettingsControllerProvider.future);
+    } catch (_) {
+      if (context.mounted) {
+        await Toast.show(context, l10n.settingsSyncFailed);
+      }
+      return false;
+    }
+  }
+  final resolvedSettings = settings;
+  if (!context.mounted) return false;
+  if (resolvedSettings == null || !resolvedSettings.securityPin.enabled) {
     await _showNotEnabledToast(context, l10n);
     return false;
   }
@@ -74,7 +89,7 @@ Future<SecurityElevationResult> requestSecurityElevationOrSetup(
   );
   final elevationState = ref.read(securityElevationControllerProvider);
   if (elevationState is SecurityElevationVerified &&
-      elevationState.expiresAt.isAfter(DateTime.now()) &&
+      DateTime.now().isBefore(elevationState.expiresAt) &&
       elevationController.hasValidToken) {
     return SecurityElevationResult.verified;
   }

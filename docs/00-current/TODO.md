@@ -62,11 +62,6 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
   - 现状：LangGraph time travel 重生与 confirm（HITL 挂起）并发操作同一线程时无 per-thread 锁，极端并发下可能状态竞争
   - 方案：为 regenerate/confirm 路径加 per-thread 互斥
 
-## 2026-08-20 Mine settings P1-1 deferred follow-ups
-
-- `security_elevation_dialog.dart` 在 `userSettingsControllerProvider` 处于 loading/error、`asData == null` 时会误判为 PIN 未启用，首次敏感操作可能被阻断；后续应等待 `future` 或显式区分未知状态。本条只登记，不在当前任务修复。
-- `SecurityElevationTokenHolder.token` 与 dialog 的到期边界需统一为 `now.isBefore(expiresAt)`，并补充精确到期测试。本条只登记，不在当前任务修复。
-
 ## 2026-08-20 Mine settings P2-1 deferred follow-up
 
 - Lucent `AuthTokenService.listSessions()` 当前将每条会话的 `isCurrent` 固定为 `false`，Luminous 已实现收到 `isCurrent=true` 时撤销后登出的分支，但当前设备无法在会话列表中被标识；后续需在不暴露 refresh token 的前提下补齐服务端当前会话识别。
