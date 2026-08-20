@@ -16,9 +16,9 @@ AI suggestions are generated based on your health profile and medication data fo
 
 On the login page, tap "Forgot password" and use your registered email to receive a verification code to reset your password. If you also cannot access your email, please contact us via Feedback.
 
-## How do I export my health data?
+## How do I export my visit report?
 
-Go to "Settings → Data Export" to request an export of your health data. Once the export is complete, a download link will be generated and you can save the data locally.
+Go to "Settings → Data Export" to request a visit report PDF. Once processing is complete, a download link will be generated and you can save the PDF locally.
 
 ## Is my health data secure?
 

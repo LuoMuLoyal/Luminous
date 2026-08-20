@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -51,6 +53,99 @@ Future<bool> showSecurityElevationDialog(
   );
 
   return result ?? false;
+}
+
+enum SecurityElevationResult { verified, cancelled, setupRequired }
+
+/// Requests elevation for an export-like action and distinguishes a disabled
+/// PIN from a cancelled/failed verification so the caller can route the user
+/// to the PIN setup page instead of silently stopping at a toast.
+Future<SecurityElevationResult> requestSecurityElevationOrSetup(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  final session = ref.read(authSessionProvider);
+  if (!session.canAccessProtectedData) {
+    return SecurityElevationResult.cancelled;
+  }
+
+  final elevationController = ref.read(
+    securityElevationControllerProvider.notifier,
+  );
+  final elevationState = ref.read(securityElevationControllerProvider);
+  if (elevationState is SecurityElevationVerified &&
+      elevationState.expiresAt.isAfter(DateTime.now()) &&
+      elevationController.hasValidToken) {
+    return SecurityElevationResult.verified;
+  }
+
+  UserSettings? settings = ref
+      .read(userSettingsControllerProvider)
+      .asData
+      ?.value;
+  if (settings == null) {
+    try {
+      settings = await ref.read(userSettingsControllerProvider.future);
+    } catch (_) {
+      return SecurityElevationResult.cancelled;
+    }
+  }
+
+  final resolvedSettings = settings;
+  if (resolvedSettings == null || !context.mounted) {
+    return SecurityElevationResult.cancelled;
+  }
+
+  if (!resolvedSettings.securityPin.enabled) {
+    final setup = await showAppDialog<bool>(
+      context: context,
+      maxWidth: 420,
+      scrollable: false,
+      builder: (dialogContext) {
+        final l10n = AppLocalizations.of(dialogContext)!;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.settingsSecurityPinExportGuideTitle,
+              style: TypographyToken.level6.body(dialogContext),
+            ),
+            const SizedBox(height: Spacing.level3),
+            Text(
+              l10n.settingsSecurityPinExportGuideMessage,
+              style: TypographyToken.level4.body(dialogContext),
+            ),
+            const SizedBox(height: Spacing.level5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.commonCancel),
+                ),
+                const SizedBox(width: Spacing.level3),
+                FButton(
+                  onPress: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.settingsSecurityPinExportGuideAction),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+    return setup == true
+        ? SecurityElevationResult.setupRequired
+        : SecurityElevationResult.cancelled;
+  }
+
+  if (!context.mounted) return SecurityElevationResult.cancelled;
+  final verified = await showSecurityElevationDialog(context, ref);
+  return verified
+      ? SecurityElevationResult.verified
+      : SecurityElevationResult.cancelled;
 }
 
 Future<void> _showNotEnabledToast(

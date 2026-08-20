@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
@@ -175,8 +177,13 @@ class DataExportPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     // Security elevation: require PIN verification before creating an export.
-    final elevated = await showSecurityElevationDialog(context, ref);
-    if (!elevated) return;
+    final elevation = await requestSecurityElevationOrSetup(context, ref);
+    if (!context.mounted) return;
+    if (elevation == SecurityElevationResult.setupRequired) {
+      await context.push(Routes.settingsSecurityPin);
+      return;
+    }
+    if (elevation != SecurityElevationResult.verified) return;
 
     final result = await runGuarded(
       ref: ref,

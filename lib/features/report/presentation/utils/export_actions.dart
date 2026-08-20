@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/result.dart';
@@ -47,8 +49,13 @@ Future<void> handleReportExportAction(
   if (input == null) return;
 
   // 安全提升：创建导出前要求 PIN 验证。
-  final elevated = await showSecurityElevationDialog(context, ref);
-  if (!elevated) return;
+  final elevation = await requestSecurityElevationOrSetup(context, ref);
+  if (!context.mounted) return;
+  if (elevation == SecurityElevationResult.setupRequired) {
+    await context.push(Routes.settingsSecurityPin);
+    return;
+  }
+  if (elevation != SecurityElevationResult.verified) return;
 
   final controller = ref.read(dataExportControllerProvider.notifier);
   final launcher = ref.read(externalUrlLauncherProvider);

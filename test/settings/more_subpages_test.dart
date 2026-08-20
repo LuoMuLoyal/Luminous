@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
@@ -16,6 +17,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_forui_app.dart';
+import '../helpers/test_helpers.dart';
 
 // -- Stub controllers --------------------------------------------------
 
@@ -482,6 +484,40 @@ void main() {
       await pumpPageWithExport(tester, const DataExportPage(), null);
 
       expect(find.text(l10n.settingsExportRequestButton), findsOneWidget);
+    });
+
+    testWidgets('guides users to enable PIN before requesting an export', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+            userSettingsControllerProvider.overrideWith(
+              () => _StubSettingsController(_buildSettings()),
+            ),
+            dataExportControllerProvider.overrideWith(
+              () => _StubExportController(null),
+            ),
+          ],
+          child: const TestForuiApp(home: DataExportPage()),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.tap(find.text(l10n.settingsExportRequestButton));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(l10n.settingsSecurityPinExportGuideTitle),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsSecurityPinExportGuideAction),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows status row with label', (tester) async {
