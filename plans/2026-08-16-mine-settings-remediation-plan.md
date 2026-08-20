@@ -48,17 +48,6 @@ Created: 2026-08-16
 
 ### P1
 
-#### P1-2 B1:通知设置四个假开关接执行器（0.1.0 前）
-
-- 现状:`NotificationSettingsController` 把 healthAlerts / weeklySummary / waterReminders / sleepReminderEnabled+时段 全部只写 SharedPreferences,全客户端 grep 无消费者,后端也无周摘要/健康告警生成逻辑;开关可拨动但拨动后什么都不发生。
-- 改造方案(按 2026-08-15 产品决策的统一口径):
-  - **健康提醒(healthAlerts)**:细化为 4 条规则,由 today-suggestion 规则引擎物化后以"建议升级通知"触达,每天最多 1 条——R1 睡眠恶化(有记录且连续 3 晚入睡晚于个人基线)、R2 症状加重(事件期内连续 2 次 check-in 为"加重"或新记录症状)、R3 饮水缺口(连续 2 天已记录进水量低于基线 50%)、R4 档案缺口(新增药物进药箱但过敏史未填写);无记录不触发;反馈复用建议卡"不适用/太频繁/不再提醒"。规则物化与升级通知执行器的实现属于 today 域,见 [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md);本计划只负责把 healthAlerts 开关对接到该链路(开关状态作为规则引擎/通知触达的门禁条件)。
-  - **每周摘要(weeklySummary)**:改造为"每周纵向洞察通知"开关——后端周洞察生成后经站内信/本地通知推送,本开关控制该推送;原"泛化周报"概念退出。周洞察生成本体归 today/report 域链路,本计划只负责开关语义与门禁接线。
-  - **饮水提醒(waterReminders)**:并入 R3(低于基线时触发,每天最多 1 条),执行器同为"建议升级通知",不再做独立的定时饮水提醒调度。
-  - **睡眠提醒(sleepReminderEnabled + 时段)**:0.1.0 前接入本地通知执行器，复用 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) F-7 的协调器/网关；每日只在就寝时间触达，起床时间不作闹钟。
-- 前后端分工:前端负责开关持久化与门禁接线(SharedPreferences + PrefKeys 现状不变);规则引擎物化、升级通知、周洞察推送由 today/通知横切侧实现。
-- 依赖:today-suggestion 规则引擎与建议升级通知执行器(第 4 位计划)。
-
 #### P1-3 B6:数据存储设置两个假开关接执行器（图片质量/仅 Wi-Fi 同步为 0.1.0 后）
 
 - 现状:图片质量(标准/省流)零消费者,无任何图片加载分支读取;同步网络偏好(仅 Wi-Fi)无消费者,`SyncWorker` 只判断"任意网络 != none"即 flush。
@@ -99,7 +88,7 @@ Created: 2026-08-16
 ## 四、跨计划引用与依赖
 
 - **建议升级通知执行器 / today-suggestion 规则引擎**(P1-2 的 R1–R4 与饮水提醒的执行器本体):方案见 [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md),本文不重复展开。
-- **睡眠提醒复用 `LocalNotificationGateway` / `reminder_notification_coordinator`**:接入本地通知执行器后生效；每日仅在就寝时间触达，起床时间只保留为记录/分析偏好，不作为闹钟。
+- **睡眠提醒复用 `LocalNotificationGateway` / `reminder_notification_coordinator`**:已接入独立本地通知协调器；每日仅在就寝时间触达，起床时间只保留为记录/分析偏好，不作为闹钟。
 - **JPush alias 绑定/解绑**(登出 A4 已接入,本计划无新增改动;机制归口):见 [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)。
 - **健康平台自动同步开关**(设置页开关在后端执行器未配置前保持禁用,本组仅引用不改动):见 [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md) 的 health_sync 一节。
 - **桌面/Web 形态挂起项**(微信登录桌面路径等保留代码):Flutter Desktop 与 PC Flutter Web 不再扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动。
@@ -107,14 +96,13 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. **P1-2 B1 通知假开关改造（0.1.0 前）**——健康提醒/每周摘要/饮水提醒与睡眠提醒均接真实执行器；睡眠仅就寝时间本地通知。
-2. **P2-3 E3/E4 support 清理（0.1.0 前）**——涉及 Lucent 契约删除与客户端再生成。
-3. **P2-1 A5 会话管理 UI**、**P2-2 B5 导出体验修复（均 0.1.0 前）**——彼此独立，收尾阶段并行。
-4. **P1-3 图片质量/仅 Wi-Fi 同步（0.1.0 后）**。
+1. **P2-3 E3/E4 support 清理（0.1.0 前）**——涉及 Lucent 契约删除与客户端再生成。
+2. **P2-1 A5 会话管理 UI**、**P2-2 B5 导出体验修复（均 0.1.0 前）**——彼此独立，收尾阶段并行。
+3. **P1-3 图片质量/仅 Wi-Fi 同步（0.1.0 后）**。
 
 ## 六、已决边界与延期项
 
 - Apple 与微信 OAuth 仅隐藏前端入口；不删后端回调、已有身份绑定或数据。QQ、微博、Google 保留；微博/Google 图标问题列入 TODO。
-- 睡眠提醒在 0.1.0 前接入本地通知执行器。会话管理补 UI；`support-resources` 后端端点及客户端 resources provider/repository 部分一并删除，保留 `app-info` 与静态 FAQ。
+- 睡眠提醒已在 0.1.0 前接入本地通知执行器。会话管理补 UI；`support-resources` 后端端点及客户端 resources provider/repository 部分一并删除，保留 `app-info` 与静态 FAQ。
 - 数据导出定义为「导出就诊报告 PDF」：设置入口迁至「设置 → 更多 → 导出就诊报告 PDF」，报告页入口保留；PIN 引导、文案与路由重排均在 0.1.0 前。原始数据导出延后至 TODO。
 - 图片质量和仅 Wi-Fi 同步为 0.1.0 后；备案、公司信息和站内工单仍按外部条件/后续任务处理。新增医疗判断、外部供应商、用户数据结构或部署成本时，另建任务计划并重新 grill。

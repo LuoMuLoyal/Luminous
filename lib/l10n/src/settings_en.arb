@@ -24,7 +24,7 @@
   "settingsSyncFailed": "Failed to sync settings",
   "settingsNotificationsMedicationReminders": "Medication reminders",
   "settingsNotificationsHealthAlerts": "Health alerts",
-  "settingsNotificationsWeeklySummary": "Weekly summary",
+  "settingsNotificationsWeeklySummary": "Weekly longitudinal insights",
   "settingsNotificationsPermissionEnabled": "System notifications are enabled",
   "settingsNotificationsPermissionDisabled": "System notifications are disabled",
   "settingsNotificationsPermissionUnsupported": "Notification permission status is unavailable on this platform",

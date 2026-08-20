@@ -5,6 +5,7 @@
 /// adds new notification types.
 enum NotificationType {
   aiTodaySummary,
+  aiWeeklyInsight,
   aiProactiveSuggestion,
   medicineMissedDose,
   passwordChanged,
@@ -19,6 +20,7 @@ enum NotificationType {
   static NotificationType fromJson(String? json) {
     return switch (json) {
       'ai_today_summary' => NotificationType.aiTodaySummary,
+      'ai_weekly_insight' => NotificationType.aiWeeklyInsight,
       'ai_proactive_suggestion' => NotificationType.aiProactiveSuggestion,
       'medicine_missed_dose' => NotificationType.medicineMissedDose,
       'password_changed' => NotificationType.passwordChanged,

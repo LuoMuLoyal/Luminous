@@ -217,6 +217,10 @@ class _TypeChip extends StatelessWidget {
         l10n.notificationTypeAiTodaySummary,
         SemanticColor.primary,
       ),
+      NotificationType.aiWeeklyInsight => (
+        l10n.notificationTypeAiWeeklyInsight,
+        SemanticColor.primary,
+      ),
       NotificationType.reportGenerated => (
         l10n.notificationTypeReportGenerated,
         SemanticColor.primary,

@@ -25,6 +25,7 @@
   "notificationGroupYesterday": "Yesterday",
   "notificationGroupEarlier": "Earlier",
   "notificationTypeAiTodaySummary": "AI Summary",
+  "notificationTypeAiWeeklyInsight": "Weekly Insight",
   "notificationTypeReportGenerated": "Report",
   "notificationTypePasswordChanged": "Security",
   "notificationTypeAiProactiveSuggestion": "AI Suggestion",
@@ -34,5 +35,8 @@
   "notificationTypeOauthLogin": "Login",
   "notificationTypeIdentityLinked": "Account linked",
   "notificationTypeUnknown": "Notification",
-  "notificationUnreadSemantics": "Unread"
+  "notificationUnreadSemantics": "Unread",
+  "sleepReminderNotificationBody": "Time to wind down for sleep.",
+  "sleepReminderNotificationChannelName": "Sleep reminders",
+  "sleepReminderNotificationChannelDescription": "On-device bedtime reminders."
 }
