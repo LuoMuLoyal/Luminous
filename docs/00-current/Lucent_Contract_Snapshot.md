@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-20
 ---
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-16 (提醒组整组 upsert)
+Last updated: 2026-08-20 (P1-2 B1 通知偏好与每周洞察合同)
 
 ## 基础
 
@@ -32,6 +32,8 @@ Last updated: 2026-08-16 (提醒组整组 upsert)
 - **Sparse Record Semantics Task 6/7**：Report metric、Today suggestion item 和 Today Analysis data 通过 OpenAPI 暴露同构 `observedMetric`：`value`（必返、可空）、`state`、`coverage`、`sources`、`observedCount`、`expectedCount`（必返、可空）、`windowStart`、`windowEnd`。Report 的旧 `value`/`unit`/`status`/`delta`/`direction`/`sparkline` 仅作 deprecated 兼容投影；generated client 与 Today/Report domain mapper 已同步，旧 scalar 仍作为兼容 fallback。
 - **提醒投递三通道**：新增 `POST /api/v1/user/reminder-deliveries/receipts`（幂等回写 `channel='local'`、`status='delivered'` 审计行，body 为 `reminderId` + `scheduledDate`(YYYY-MM-DD) + `scheduledTime`(HH:mm)，服务端按用户 profile 时区换算 UTC 截断分钟为 `scheduledFor`）与 `PUT /api/v1/user/reminder-deliveries/local-capability`（上报 `active`/`unavailable`/`disabled`，服务端缓存 TTL 14 天，调度器仅在 unconfirmed/unavailable 时发 JPush）。生成客户端新增 `ReminderDeliveriesApi` 及对应 DTO 模型；Luminous 消费侧走 raw Dio + `LucentApiPaths` 常量。
 - **提醒组整组保存**：新增 `PUT /api/v1/user/medicine-reminders/group`（body 为组级 `currentMedicineId` + 可空 `label`/`daysOfWeek`/`startDate`/`endDate`/`isActive`/`note` + `slots:[{id?, scheduledHour, scheduledMinute}]`，`slots` 至少 1 项）。整组替换语义：带 id 更新（须属当前用户同组）、无 id 新建、组内缺失行服务端软删；单事务提交后发一次 `REMINDER_CHANGED {userId}`；响应 `{items}`。生成客户端已含 `MedicineRemindersApi.medicineRemindersControllerUpsertGroupV1` 与 `UpsertMedicineReminderGroupDto`/`UpsertReminderSlotDto`；Luminous 消费侧经该生成方法（datasource 映射 domain 输入 → 生成 DTO，空串可选字段省略）。
+- **通知偏好**：`GET/PATCH /api/v1/user/notification-preferences` 返回/更新 `healthAlertsEnabled`（默认 true）、`weeklyInsightEnabled`（默认 false）、`waterRemindersEnabled`（默认 true）、`sleepReminderEnabled`（默认 false）、nullable `sleepBedtimeMinutes`/`sleepWakeTimeMinutes`（0..1439）、`configured` 与 `updatedAt`。客户端以远端为权威，未配置记录仅用于一次旧本地值迁移。
+- **通知类型与周洞察**：`UserNotificationType` 新增 `ai_weekly_insight`；周洞察沿用 Reports 的 7 天纵向 summary，按用户 profile timezone 的周一 09:00 运行，无真实序列不发通知，并由 user/week scope 幂等去重。已有 Report dashboard 与 event-review 路由未改变。
 
 ## Luminous 已使用的后端领域
 

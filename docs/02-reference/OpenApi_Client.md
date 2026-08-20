@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-17
+updated: 2026-08-20
 ---
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-17
+Last updated: 2026-08-20
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -22,7 +22,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 117 paths / 272 schemas.
+- Last known Lucent export: 128 paths / 319 schemas.
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
@@ -44,6 +44,10 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
   `apis` value per run; outputs are merged into `generated/lucent_api/` and formatted.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay
   under `/api/v1/account/*`.
+- Notification preferences are generated in `NotificationPreferencesApi` with
+  `NotificationPreferencesDataDto` / `UpdateNotificationPreferencesDto`; the notification enum
+  includes `ai_weekly_insight`. Event review routes remain in `ReportsApi` and weekly insight
+  actions navigate through the existing `report` route token.
 - Legacy user-device registration is no longer part of the Lucent contract. Push identity is
   maintained by the JPush SDK through the authenticated user's UUID alias, so the generated
   client and `LucentDioClient` intentionally expose no `UserDevicesApi` or device-registration DTOs.

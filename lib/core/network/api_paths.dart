@@ -50,6 +50,11 @@ abstract final class LucentApiPaths {
   /// only changed fields.
   static const healthContextProfile = '/api/v1/user/health-context/profile';
 
+  /// `PATCH /api/v1/user/notification-preferences` — raw fallback is used
+  /// when a nullable sleep time must be explicitly cleared.
+  static const notificationPreferences =
+      '/api/v1/user/notification-preferences';
+
   /// `POST /api/v1/user/daily-records` — used for partial create with
   /// optional fields.
   static const dailyRecords = '/api/v1/user/daily-records';

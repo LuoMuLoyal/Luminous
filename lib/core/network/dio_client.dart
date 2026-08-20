@@ -32,6 +32,8 @@ class LucentClient {
   MedicineDoseLogsApi get medicineDoseLogs => _api.getMedicineDoseLogsApi();
   MedicineRemindersApi get medicineReminders => _api.getMedicineRemindersApi();
   MedicinesApi get medicines => _api.getMedicinesApi();
+  NotificationPreferencesApi get notificationPreferences =>
+      _api.getNotificationPreferencesApi();
   NotificationsApi get notifications => _api.getNotificationsApi();
   // ProductEventsApi was added via the filtered generation path, so the
   // generated LucentApi class has no getter for it yet. Constructing it from

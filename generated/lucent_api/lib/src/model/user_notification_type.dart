@@ -12,6 +12,10 @@ enum UserNotificationType {
   aiTodaySummary(r'ai_today_summary'),
 
   /// Notification type. System-level types (e.g. system_announcement) are not allowed for user-created notifications.
+  @JsonValue(r'ai_weekly_insight')
+  aiWeeklyInsight(r'ai_weekly_insight'),
+
+  /// Notification type. System-level types (e.g. system_announcement) are not allowed for user-created notifications.
   @JsonValue(r'ai_proactive_suggestion')
   aiProactiveSuggestion(r'ai_proactive_suggestion'),
 

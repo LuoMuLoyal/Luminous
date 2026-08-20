@@ -172,6 +172,8 @@ import 'package:lucent_api/src/model/notification_detail_response_dto.dart';
 import 'package:lucent_api/src/model/notification_list_data_dto.dart';
 import 'package:lucent_api/src/model/notification_list_item_dto.dart';
 import 'package:lucent_api/src/model/notification_list_response_dto.dart';
+import 'package:lucent_api/src/model/notification_preferences_data_dto.dart';
+import 'package:lucent_api/src/model/notification_preferences_response_dto.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_data_dto.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_dto.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_response_dto.dart';
@@ -272,6 +274,7 @@ import 'package:lucent_api/src/model/update_health_context_allergy_dto.dart';
 import 'package:lucent_api/src/model/update_health_context_condition_dto.dart';
 import 'package:lucent_api/src/model/update_health_context_profile_dto.dart';
 import 'package:lucent_api/src/model/update_medicine_reminder_dto.dart';
+import 'package:lucent_api/src/model/update_notification_preferences_dto.dart';
 import 'package:lucent_api/src/model/update_user_settings_dto.dart';
 import 'package:lucent_api/src/model/upsert_health_event_check_in_dto.dart';
 import 'package:lucent_api/src/model/upsert_medicine_reminder_group_dto.dart';
@@ -934,6 +937,16 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'NotificationListResponseDto':
       return NotificationListResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'NotificationPreferencesDataDto':
+      return NotificationPreferencesDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'NotificationPreferencesResponseDto':
+      return NotificationPreferencesResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'OAuthAuthorizeDataDto':
       return OAuthAuthorizeDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1308,6 +1321,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'UpdateMedicineReminderDto':
       return UpdateMedicineReminderDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'UpdateNotificationPreferencesDto':
+      return UpdateNotificationPreferencesDto.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'UpdateUserSettingsDto':
       return UpdateUserSettingsDto.fromJson(value as Map<String, dynamic>)
