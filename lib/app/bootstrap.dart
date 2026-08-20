@@ -23,6 +23,7 @@ import 'package:luminous/core/widgets/common/desktop_window_chrome.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_delivery_reporter.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
+import 'package:luminous/features/settings/application/sleep_reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LuminousApp extends ConsumerStatefulWidget {
@@ -81,6 +82,10 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     });
     ref.listen<AsyncValue<void>>(
       medicineReminderNotificationSyncProvider,
+      (_, _) {},
+    );
+    ref.listen<AsyncValue<void>>(
+      sleepReminderNotificationSyncProvider,
       (_, _) {},
     );
     ref.watch(medicineReminderDeliveryReporterProvider);
