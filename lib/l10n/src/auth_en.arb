@@ -183,6 +183,35 @@
   "authSignOutConfirmTitle": "Sign out?",
   "authSignOutConfirmMessage": "You'll need to sign in again to access your health data.",
   "authSignOutConfirmAction": "Sign out",
+  "authSessionsSectionTitle": "Login sessions",
+  "authSessionsSectionSubtitle": "View and revoke sign-ins on other devices",
+  "authSessionsManageAction": "Manage login sessions",
+  "authSessionsPageTitle": "Login sessions",
+  "authSessionsEmpty": "No active login sessions",
+  "authSessionsLoadFailed": "Could not load login sessions",
+  "authSessionsRetryDescription": "Check your connection and try again.",
+  "authSessionsRetry": "Retry",
+  "authSessionsCurrent": "This device",
+  "authSessionsRevoke": "Revoke",
+  "authSessionsRevokeConfirmTitle": "Revoke this login session?",
+  "authSessionsRevokeConfirmMessage": "This device will need to sign in again.",
+  "authSessionsRevokeCurrentMessage": "Revoking this device will sign you out.",
+  "authSessionsRevokeSuccess": "Login session revoked.",
+  "authSessionsRevokeFailed": "Could not revoke the login session.",
+  "authSessionsLastSeen": "Last used: {time}",
+  "@authSessionsLastSeen": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "authSessionsDeviceUnknown": "Unknown device",
+  "authSessionsPlatformAndroid": "Android device",
+  "authSessionsPlatformIos": "iPhone / iPad",
+  "authSessionsPlatformWeb": "Web browser",
+  "authSessionsPlatformWindows": "Windows device",
+  "authSessionsPlatformMacos": "Mac device",
   "authQqSignIn": "Sign in with QQ",
   "authQqCallbackLabel": "QQ callback link / code",
   "authQqCallbackHint": "Paste the callback URL after authorization",

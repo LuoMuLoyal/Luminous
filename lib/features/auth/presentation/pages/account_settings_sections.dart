@@ -170,6 +170,31 @@ class LinkedIdentitiesSection extends StatelessWidget {
   }
 }
 
+class SessionManagementSection extends StatelessWidget {
+  const SessionManagementSection({super.key, required this.onManage});
+
+  final VoidCallback onManage;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return _SectionColumn(
+      title: l10n.authSessionsSectionTitle,
+      children: [
+        _MutedText(l10n.authSessionsSectionSubtitle),
+        SizedBox(
+          width: double.infinity,
+          child: FButton(
+            variant: FButtonVariant.outline,
+            onPress: onManage,
+            child: Text(l10n.authSessionsManageAction),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _LinkedIdentityTile extends StatelessWidget {
   const _LinkedIdentityTile({
     required this.user,

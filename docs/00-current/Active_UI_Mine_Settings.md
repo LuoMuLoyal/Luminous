@@ -7,7 +7,7 @@ updated: 2026-08-20
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-20（P1-2 B1：通知偏好远端权威同步、旧 SharedPreferences 一次迁移、四个通知开关接真实消费者；睡眠提醒仅按 bedtime 调度；P1-1 与 Mine 改造项 6/7/8 保持不变）
+Last updated: 2026-08-20（P2-1 A5：账号与安全新增登录会话管理；P1-2 B1 通知偏好与睡眠执行器、P1-1 与 Mine 改造项 6/7/8 保持不变）
 
 ## Mine 根页结构
 
@@ -105,6 +105,12 @@ Last updated: 2026-08-20（P1-2 B1：通知偏好远端权威同步、旧 Shared
 - `NotificationSettingsController` 登录后读取 Lucent `/api/v1/user/notification-preferences`；远端 `configured=true` 覆盖本地缓存，首次 `configured=false` 才把既有 SharedPreferences 值迁移一次。迁移成功写入完成标记，网络/PATCH 失败保留可重试状态；设置 PATCH 失败回滚内存与本地缓存。
 - `healthAlerts`、`weeklySummary`、`waterReminders`、`sleepReminderEnabled` 均有真实消费者：前三者由 Lucent 规则/周洞察链路门禁，睡眠由独立 `SleepReminderNotificationCoordinator` 调度。
 - 睡眠提醒复用 `LocalNotificationGateway`，使用稳定计划 ID 与 PrefKeys 取消旧计划；只在就寝时间生成未来 7 天计划，不把 `sleepWakeTime` 作为闹钟，并遵循通知权限、DND、声音/振动和网关失败降级。
+
+### P2-1 A5 登录会话管理（2026-08-20）
+
+- 账号与安全页新增「登录会话」入口，进入 `/account/sessions` 后读取 Lucent 活跃会话列表，展示设备/平台及最近使用时间。
+- 撤销其他设备会话后刷新列表；若服务端标记当前会话，撤销后复用现有登出流程清理本地令牌并返回登录页。
+- 会话列表接口当前生成客户端声明为 `void`，客户端通过既有认证 Dio 解析真实 envelope；未新增生产依赖或后端接口。
 
 ## 主题
 

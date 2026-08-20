@@ -6,6 +6,7 @@ import 'package:luminous/features/auth/presentation/pages/change_email.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/auth/presentation/pages/register.dart';
+import 'package:luminous/features/auth/presentation/pages/sessions.dart';
 
 part 'routes.g.dart';
 
@@ -143,6 +144,16 @@ class AccountRoute extends GoRouteData with $AccountRoute {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return slidePage(key: state.pageKey, child: const AccountSettingsPage());
+  }
+}
+
+@TypedGoRoute<AccountSessionsRoute>(path: '/account/sessions')
+class AccountSessionsRoute extends GoRouteData with $AccountSessionsRoute {
+  const AccountSessionsRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return slidePage(key: state.pageKey, child: const AccountSessionsPage());
   }
 }
 

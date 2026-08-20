@@ -183,6 +183,35 @@
   "authSignOutConfirmTitle": "确认退出登录？",
   "authSignOutConfirmMessage": "退出后需要重新登录才能查看你的健康数据。",
   "authSignOutConfirmAction": "退出",
+  "authSessionsSectionTitle": "登录会话",
+  "authSessionsSectionSubtitle": "查看并撤销其他设备上的登录状态",
+  "authSessionsManageAction": "管理登录会话",
+  "authSessionsPageTitle": "登录会话",
+  "authSessionsEmpty": "暂无活跃登录会话",
+  "authSessionsLoadFailed": "无法加载登录会话",
+  "authSessionsRetryDescription": "请检查网络后重试。",
+  "authSessionsRetry": "重试",
+  "authSessionsCurrent": "本设备",
+  "authSessionsRevoke": "撤销",
+  "authSessionsRevokeConfirmTitle": "撤销登录会话？",
+  "authSessionsRevokeConfirmMessage": "撤销后该设备需要重新登录。",
+  "authSessionsRevokeCurrentMessage": "撤销本设备会话后将退出登录。",
+  "authSessionsRevokeSuccess": "登录会话已撤销。",
+  "authSessionsRevokeFailed": "撤销登录会话失败。",
+  "authSessionsLastSeen": "最近使用：{time}",
+  "@authSessionsLastSeen": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "authSessionsDeviceUnknown": "未知设备",
+  "authSessionsPlatformAndroid": "Android 设备",
+  "authSessionsPlatformIos": "iPhone / iPad",
+  "authSessionsPlatformWeb": "网页浏览器",
+  "authSessionsPlatformWindows": "Windows 设备",
+  "authSessionsPlatformMacos": "Mac 设备",
   "authQqSignIn": "QQ 登录",
   "authQqCallbackLabel": "QQ 回调链接 / 授权码",
   "authQqCallbackHint": "授权后粘贴回调链接",

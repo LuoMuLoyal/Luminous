@@ -7,7 +7,7 @@ updated: 2026-08-20
 
 # Flutter Localization
 
-Last updated: 2026-08-20 (P1-2 B1 新增通知文案：`notificationTypeAiWeeklyInsight`、`sleepReminderNotificationBody`、`sleepReminderNotificationChannelName`、`sleepReminderNotificationChannelDescription`，均在 notification 分片；既有 Mine/Record/Report 文案保持不变。)
+Last updated: 2026-08-20 (P2-1 A5 新增账号会话管理双语文案，归属 auth 分片；P1-2 B1 通知文案与既有 Mine/Record/Report 文案保持不变。)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.

@@ -67,6 +67,7 @@ class Routes {
   static const account = '/account';
   static const accountOauthWechat = '/account/oauth/wechat';
   static const accountChangeEmail = '/account/change-email';
+  static const accountSessions = '/account/sessions';
 
   static const settings = '/settings';
   static const settingsLanguage = '/settings/language';

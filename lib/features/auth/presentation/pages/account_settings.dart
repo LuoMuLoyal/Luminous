@@ -210,6 +210,11 @@ class AccountSettingsPage extends HookConsumerWidget {
                               }
                             },
                           ),
+                          const SizedBox(height: Spacing.level6),
+                          SessionManagementSection(
+                            onManage: () =>
+                                context.push(Routes.accountSessions),
+                          ),
                         ],
                       ),
                     ),

@@ -67,6 +67,10 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - `security_elevation_dialog.dart` 在 `userSettingsControllerProvider` 处于 loading/error、`asData == null` 时会误判为 PIN 未启用，首次敏感操作可能被阻断；后续应等待 `future` 或显式区分未知状态。本条只登记，不在当前任务修复。
 - `SecurityElevationTokenHolder.token` 与 dialog 的到期边界需统一为 `now.isBefore(expiresAt)`，并补充精确到期测试。本条只登记，不在当前任务修复。
 
+## 2026-08-20 Mine settings P2-1 deferred follow-up
+
+- Lucent `AuthTokenService.listSessions()` 当前将每条会话的 `isCurrent` 固定为 `false`，Luminous 已实现收到 `isCurrent=true` 时撤销后登出的分支，但当前设备无法在会话列表中被标识；后续需在不暴露 refresh token 的前提下补齐服务端当前会话识别。
+
 ## 审查暂缓项
 
 - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。
