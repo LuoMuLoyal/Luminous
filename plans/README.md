@@ -61,15 +61,15 @@ YYYY-MM-DD-short-task-name.md
 3. [`2026-08-16-scan-search-remediation-plan.md`](2026-08-16-scan-search-remediation-plan.md)
    — 扫码/搜索:本批任务全部完成(识别出口接建档闭环、预检即时化、去假置信度、候选去重合并);剩余 F-2 条码等值匹配(0.1.0 后)
 4. [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md)
-   — 今日建议:AI 摘要卡接线、建议反馈与升级通知执行器
+   — 今日建议:0.1.0 前任务已完成(摘要卡接线、触发扩展与升级通知、skip_dose/静默刷新/重试/一键饮水/未读数/真实化等 13 项);剩余 F-8 `remainingCount` 退役(0.1.0 前)与 F-14 环境装配(0.1.0 后)
 5. AI 助手改造计划（2026-08-16，实施完毕文件已删）
    — 本批任务全部完成(P0 三大信任缺口、F-2 会话重命名删除、F-5b 重生/断流补偿、F-9 记忆压缩、F-11/F-16 一致性、F-15 语料分层、P2 批次);剩余 F-14/F-15 来源条元数据后端投影与记忆擦除设置页入口(0.1.0 后)
 6. [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md)
    — 记录:0.1.0 前任务全部完成(摘要网格接线与饮水 ml 角标、饮水目标读 user-settings、详情页确认入口、静态残留清理、Today 联动验证);剩余 P1-3 餐食分层与 P1-4 vital 时间序列(0.1.0 后)、P2-3/P2-4 桌面高级能力冻结
 7. [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md)
-   — 健康事件与档案:详情接线、事件升级通知、档案字段治理
+   — 健康事件与档案:0.1.0 前任务全部完成(历史事件详情接线与触发记录展示、事件专属升级通知与 topic 补全、档案提醒真实化、单位制切换、完成度口径);剩余 H-4 kind 筛选、weightKg 时间序列、conditions 上下文(0.1.0 后)
 8. [`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)
-   — 报告:纵向洞察生成器、legacy 打包改造(均在 0.1.0 前)
+   — 报告:0.1.0 前部分完成——就诊摘要六开关、历史翻页、纵向洞察服务端口径与移除综合评分已落地;剩余 Review 视图装配(R-3)、legacy 重装配 #19/#21/#22 与后端裁剪(R-4)、409 双保险(R-5)、文档漂移(R-6)
 9. [`2026-08-16-mine-settings-remediation-plan.md`](2026-08-16-mine-settings-remediation-plan.md)
    — 个人中心与设置:PIN elevation 接线、假开关治理、support 接口清理
 10. [`2026-08-16-engineering-backend-plan.md`](2026-08-16-engineering-backend-plan.md)

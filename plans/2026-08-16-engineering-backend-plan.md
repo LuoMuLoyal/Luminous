@@ -26,7 +26,7 @@ Created: 2026-08-16
 - **F-5 文件上传**(`src/modules/files/`):`POST /user/files/upload` 签发 COS 预签名 PUT URL,客户端直传;被餐食识别与记录附件两条客户端链路真实消费。
 - **F-6 可观测性栈**(`src/common/metrics/` + `deploy/`):MetricsService 与 /metrics 端点不动;Grafana 看板与 Alertmanager 规则在 0.1.0 前按「最低可跑」维护,OTel 保持 `OTEL_ENABLED` 默认关闭——这是持续维护原则,非改造项。
 - **F-7 产品事件埋点**(`src/modules/product-events/` + `Luminous/lib/core/analytics/`):客户端在真实成功边界打点、失败落 pending-sync 重放、clientEventId 幂等;隐私设计(枚举-only、无自由文本、90 天删除)保持现状。
-- **F-10 testing-support**(`src/modules/testing-support/`):全栈 E2E 夹具基础设施,环境门 + 密钥门双重隔离干净;唯一待办是删一句陈旧注释,见改造项 P2-E。
+- **F-10 testing-support**(`src/modules/testing-support/`):全栈 E2E 夹具基础设施,环境门 + 密钥门双重隔离干净;唯一待办是删一句陈旧注释,见改造项 P2-F。
 
 ## 三、改造项(按优先级分组)
 
@@ -51,7 +51,7 @@ Created: 2026-08-16
 
 **P2-A F-11 Worker 进程分离——暂缓启用，0.1.0 后触发**
 
-- 现状:同镜像 + `WORKER_MODE` 环境变量拆分 api/worker 进程,worker 带 /healthz+/metrics 探针,compose 有独立 worker 容器与资源限额。设计真实、向后兼容,但解决的问题(队列高峰拖慢 HTTP)在 0.1.0 前单机量级下不存在——9 条队列并发均为 1-3,event loop 竞争不是已观测痛点。
+- 现状:计划设计为「同镜像 + `WORKER_MODE` 环境变量拆分 api/worker 进程,worker 带 /healthz+/metrics 探针,compose 独立 worker 容器与资源限额」,但该设计**从未实现**(当前 api/worker 未拆分,无 WORKER_MODE 分支);要解决的问题(队列高峰拖慢 HTTP)在 0.1.0 前单机量级下不存在——队列并发均为 1-3(mail=3,其余 1),event loop 竞争不是已观测痛点。
 - 方案:保持默认兼容模式运行,启用前不再投入。启用绑定到可观测触发条件,而非时间表:Grafana 里 `bullmq_waiting_jobs` 持续非零,或 p95 HTTP 延迟与队列高峰相关。
 - 前后端分工:纯后端/运维(Lucent deploy),无客户端工作。
 - 依赖:F-6 的 Grafana 看板是触发条件的观测载体(F-6 保留不动,已具备)。
@@ -85,8 +85,9 @@ Created: 2026-08-16
 
 **P2-F 文档与注释漂移修正(architecture.md 两处 + F-10 陈旧注释，0.1.0 前)**
 
-- 现状:三处已定位的漂移——`Lucent/docs/01-reference/architecture.md:393` 队列口径过时；`architecture.md:370-373` 说存在 `metrics.middleware.ts` 文件，实际中间件内联在 `setup-app.ts:158`；`Lucent/src/modules/testing-support/testing-support.controller.ts:18-19` 注释「should always be used alongside JwtAuthGuard」与实际 `@Public()` 用法不符。
-- 方案:修正 architecture.md 为 12 条 Queue 实例（6 条 `BaseAsyncQueueService`、4 条业务直建、2 条调度队列）及真实 concurrency；改写中间件描述指向 `setup-app.ts:158` 内联实现；删除 testing-support 陈旧注释。
+- 现状:三处已定位的漂移——`Lucent/docs/01-reference/architecture.md:393` 队列口径过时(仍写「7 + 1 mail」,实际 12 条);`architecture.md:370-373` 说存在 `metrics.middleware.ts` 文件,实际该文件已删、中间件内联在 `setup-app.ts:121-165`(`recordHttpRequest` 在 `setup-app.ts:158`);`Lucent/src/modules/testing-support/guards/testing-shared-secret.guard.ts:19-20` 注释「should always be used alongside JwtAuthGuard」与实际 `@Public()` 用法不符(controller 本身无此注释)。
+- 方案:修正 architecture.md 为 12 条 Queue 实例（6 条 `BaseAsyncQueueService`、4 条业务直建、2 条调度队列）及真实 concurrency；改写中间件描述指向 `setup-app.ts:158` 内联实现；删除 testing-support guard 陈旧注释。
+- 进展:三处修正均未执行(0.1.0 前唯一可立即落地项)。
 - 前后端分工:纯 Lucent 侧文档/注释改动。
 - 依赖:无,可随时执行,是本计划中唯一可立即落地的改造项。
 
@@ -94,7 +95,7 @@ Created: 2026-08-16
 
 本计划是其余 9 份计划的**工程底座**,底座能力本身保留不动,不在本计划展开:
 
-- **队列与 LLM 底座被全域共用**:F-1 的 9 条队列承载 Today 建议卡、餐食识别、药品识别、报告总结、就诊 PDF、数据导出、邮件;F-3 LLM Runtime 是所有 AI 产物的统一模型入口。medicine、scan-search、today、assistant、record、health-event、report 各计划中涉及的慢任务/AI 产物均运行在此底座上,各计划无需也不应改造底座本身。
+- **队列与 LLM 底座被全域共用**:F-1 的 12 条队列(6 条 `BaseAsyncQueueService`、4 条业务直建、2 条调度)承载 Today 建议卡、餐食识别、药品识别、报告总结、就诊 PDF、数据导出、邮件;F-3 LLM Runtime 是所有 AI 产物的统一模型入口。medicine、scan-search、today、assistant、record、health-event、report 各计划中涉及的慢任务/AI 产物均运行在此底座上,各计划无需也不应改造底座本身。
 - **离线评测集归属**:P2-B 提到餐食识别离线评测集是 scan-search/识别域的建设内容,本计划只登记它是 F-12 热配置的启用前置,不重复展开建设方案。
 - **桌面/Web 形态**:ADR-0012 已接受；独立 Next.js + Tauri MVP 在 0.1.0 后启动，本计划只登记工程侧触发条件(P1-A)。
 - **Flutter 3.47 升级**:执行方案全文引用 [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md),本计划只固化「跟次版本等 patch」的策略惯例(P2-E)。

@@ -85,7 +85,7 @@ Created: 2026-08-16
 
 ## 四、跨计划引用与依赖
 
-- **ObservedMetric 口径统一**:`summarizeWaterMetrics`/`toObservedWaterMetric`(Lucent `common`)三处共用 mapper 的口径统一方案见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节,本文不重复展开;P1-4 的 vital 趋势输出沿用该口径。
+- **ObservedMetric 口径统一**:`summarizeWaterMetrics`/`toObservedWaterMetric`(Lucent `common`)四处共用 mapper 的口径统一方案见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节,本文不重复展开;P1-4 的 vital 趋势输出沿用该口径。
 - **桌面/Web 形态挂起**:P2-3、P2-4 不再扩展 Flutter 产品面；桌面高级能力继续冻结，本文不展开。
 - **被引用**:本文档「P1-4 vital 时间序列基建」一节为共享基建定义,health-event 计划(C-1 `weightKg`)与 report 计划(纵向洞察趋势)引用本节。
 - **契约**:本计划不改 OpenAPI 契约(P1-1/P1-2 复用既有接口);若 P1-4 新增 vital 趋势端点,需走 `pnpm export:openapi` + `dart run scripts/bootstrap_generated_sources.dart` 标准流程。

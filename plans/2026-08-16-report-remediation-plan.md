@@ -13,9 +13,9 @@ Created: 2026-08-16
 
 目标:
 
-- 修复两处「界面承诺与真实行为不一致」:回顾历史无翻页 UI(#5)、就诊摘要字段级隐私三开关无实际门控(#8)。
-- 将 legacy dashboard 的 AI 周报生成链路改造为「周/月纵向洞察生成器」(#14,按逐功能分析取 P1):只输出有来源和覆盖率的模式与低风险动作,证据不足弃权,不生成泛化长文。
-- legacy 残留(#19-#22)打包改造为纵向洞察口径，0.1.0 前完成；不删除功能与代码。
+- 修复两处「界面承诺与真实行为不一致」:回顾历史无翻页 UI(#5,已处置)、就诊摘要字段级隐私三开关无实际门控(#8,已处置)。
+- 将 legacy dashboard 的 AI 周报生成链路改造为「周/月纵向洞察生成器」(#14,按逐功能分析取 P1):只输出有来源和覆盖率的模式与低风险动作,证据不足弃权,不生成泛化长文——服务端口径与客户端死代码清理已落地,Review 视图装配未完成(见 R-3)。
+- legacy 残留(#19-#22)打包改造为纵向洞察口径，0.1.0 前完成；不删除功能与代码——其中 #20 已落地,其余未完成(见 R-4)。
 
 ## 二、保留不动(清单)
 
@@ -43,19 +43,14 @@ Created: 2026-08-16
 
 ### P1（0.1.0 前）
 
-**R-1 回顾历史列表翻页(#5，0.1.0 前)**
-
-- 现状:`review_history.dart` 只渲染 `reviewHistoryProvider` 返回的第一页(limit 20),repository 与后端 cursor 分页合同(`startedAt|id` 复合 cursor、格式校验、has-more 探测)均已实现,但 presentation 层未消费 `nextCursor`,超过 20 条的事件历史永久不可达。
-- 方案:`review_history.dart` 增加「加载更多」按钮(或滚动触底加载),调用 repository `fetchHistory(status, cursor: nextCursor)`,追加渲染并防重入;「全部」与 active/ended 筛选下均可用。冲突裁决:取 P1,不采用「P2 可延后」后门。
-- 分工:纯客户端,后端无需改动。
-
 **R-3 周/月纵向洞察生成器(#14，按逐功能分析取 P1，0.1.0 前)**
 
 - 现状:`POST /reports/summary/generate/stream`(SSE)由 `BaseLlmSummaryService` 编排(setting 开关 → dashboard facts → LLM JSON schema → safety policy → 持久化,模板 fallback),链路真实但输出为泛化总结;仅 legacy 页可达。客户端 `ai_summary_remote.dart` 非流式 `generate()` 为零调用死代码。
 - 方案:
   - 保留 SSE + BullMQ + LLM 基础设施,换新 prompt 与输入口径:输出固定为时间范围、覆盖率、有来源的已观察模式(最多一个)与低风险行动(最多一个),允许用户反馈;数据不足直接弃权,不生成泛化长文。
   - 客户端删除非流式 `generate()` 死代码。
-  - 生成器装配到 Review 的日/周/月视图(与 R-5 legacy 视图改造联动);事件回顾作为专题嵌入,不再统领全部周/月内容。
+  - 生成器装配到 Review 的日/周/月视图(与 R-4 legacy 视图改造联动);事件回顾作为专题嵌入,不再统领全部周/月内容。
+- 进展:服务端口径与客户端死代码清理已落地(Lucent `9549f48c` 换 prompt/schema 弃权口径与 `coverage/observedPattern/lowRiskAction/disclaimer` 输出、`copy.service.ts` 全 insufficient → abstain;Luminous `eec70285` 删非流式 `generate()`,展示层改三段渲染);**「装配到 Review 日/周/月视图」未完成**(`ReportAiSummarySection` 仍只在 legacy 视图,随 R-4 #19 联动)。
 - 依赖:vital 趋势数据源见 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md) 的 vital 基建一节;ObservedMetric/覆盖率口径见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节;本文不重复展开。
 - 分工:服务端换 prompt/schema/输入口径;客户端删死代码 + 装配视图。
 
@@ -70,17 +65,20 @@ Created: 2026-08-16
   - #21:legacy 图表改按 `observedMetric` 口径输出:unknown 天不绘点、只绘已记录数据,图表旁标注「有记录 N 天 / 范围 M 天」覆盖率;废除 unknown→0(服务端)与 unknown→flat/general(客户端)两处口径。observedMetric 口径定义引用 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节。
   - #22:建议历史从 legacy 页移入 Review「建议历史」详情视图,数据源 `/today/suggestions/history`,保留 title|reason|type 去重取最高生命周期状态与详情面板。
   - 同包清理:后端零消费端点(`summary/generate` 非流式、`summary/generate/async` + `status`、`clinic-summary/export/async` + `status`)下线或降级为不暴露;旧 Redis `createShareLink` 缓存桥清理。先做客户端死代码清理与数据契约拆分,再评估后端裁剪,避免先砍后端影响导出(#17 PDF 依赖 dashboard 聚合)。
+- 进展:#20 已落地(Lucent `912c8efa` 移除 `buildScore` 与 DTO score 输出、Luminous `68d42f47` 移除评分卡与 score 引用);客户端非流式 `generate()` 死代码已随 R-3 删除;#19/#21/#22 与后端端点/缓存桥裁剪未完成。
 - 依赖:data-export PDF 数据源替代方案须先行确认(见第六节);vital 数据源引用 record 计划 vital 基建一节。
 
 **R-5 服务端 409 双保险(#15 附注，0.1.0 前)**
 
 - 现状:#15 已修复(主路径无入口 + legacy readiness 门控 + prompt 约束),但后端 `summary/generate*` 端点无服务端「数据不足拒绝」守卫,直接调 API 仍可对空数据生成。
-- 方案:服务端对全 insufficient 请求返回 409/空结果,作为客户端 gate 之外的双保险;随 R-3/R-4 改造落地,非必做项(见第六节)。
+- 方案:服务端对全 insufficient 请求返回 409/空结果,作为客户端 gate 之外的双保险;随 R-3/R-4 改造落地。
+- 口径:按第六节,**服务端数据不足拒绝守卫为必做项**;当前未实现(仅 prompt 弃权 + fallback abstain 空结果语义,无 409 硬拒绝)。
 
 **R-6 文档漂移更新(#17 附注，0.1.0 前)**
 
 - 现状:`Mock_Or_Deferred.md`「clinic share link 无应用内链接管理,只能重新生成」已过时(分享管理已上线);`Active_UI_Report.md` 对 legacy scalar 的描述与 `context.service.ts` 实际 unknown→0 投影不一致。
 - 方案:更新两处文档;legacy scalar 口径描述随 R-4 的 #21 改造完成后自然失效。
+- 进展:两处文档均未更新。
 
 ## 四、跨计划引用与依赖
 
@@ -92,10 +90,9 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. R-1 历史翻页(P1,纯客户端,可独立先行)。
-2. R-3 纵向洞察生成器(P1,依赖 record 计划 vital 基建与 medicine 计划 F-5 口径就绪)。
-3. R-4 legacy 打包（0.1.0 前）:先确认 data-export PDF 数据源替代方案 → 客户端死代码清理与数据契约拆分 → 视图重装配(#19/#21/#22)→ 移除 buildScore(#20)→ 评估后端裁剪。
-4. R-5 服务端 409 双保险、R-6 文档更新,随 R-3/R-4 附带完成。
+1. R-3 纵向洞察生成器(P1,依赖 record 计划 vital 基建与 medicine 计划 F-5 口径就绪;服务端口径与客户端死代码清理已落地,剩余 Review 视图装配)。
+2. R-4 legacy 打包（0.1.0 前）:先确认 data-export PDF 数据源替代方案 → 客户端死代码清理与数据契约拆分(#20 已落地)→ 视图重装配(#19/#21/#22)→ 评估后端裁剪。
+3. R-5 服务端 409 双保险、R-6 文档更新,随 R-3/R-4 附带完成(R-5 按第六节为必做项)。
 
 ## 六、已决边界与保留项
 

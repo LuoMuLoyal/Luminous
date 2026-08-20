@@ -15,7 +15,7 @@ Created: 2026-08-16
 
 - 补齐事件域「差最后一环」的半成品:kind 筛选(H-4)。
 - 处置档案僵尸/半用字段(C-1):weightKg、conditions 改造为真实消费;unitSystem 已接单位制显示切换(纯展示换算、存储口径不变);onboardingCompleted 已处置为引导流程状态(有写入方后纳入完成度);emergencyContact、extras 如实不排期。
-- 已处置:C-3 Mine「档案提醒」硬编码假数据卡已真实化——`MineDashboard.alerts` 为真实数据出口,接真实过敏/当前用药,前端先行(改造项 6,2026-08-18 落地,详见迁移日志与 `docs/00-current/Active_UI_Mine_Settings.md`「档案提醒」小节)。
+- 已处置:C-3 Mine「档案提醒」硬编码假数据卡已真实化——`MineDashboard.alerts` 为真实数据出口,接真实过敏/当前用药,前端先行(改造项 6,2026-08-20 落地,详见迁移日志与 `docs/00-current/Active_UI_Mine_Settings.md`「档案提醒」小节)。
 - 核心生命周期(创建/check-in/结束/回顾)与档案安全链路保持不动。
 
 ## 二、保留不动(清单)
@@ -62,7 +62,7 @@ Created: 2026-08-16
 
 ### P2（0.1.0 前）
 
-无改造项。改造项 6(C-3) 已处置：Mine「档案提醒」假数据卡已真实化（2026-08-18 落地，见迁移日志与 `docs/00-current/Active_UI_Mine_Settings.md`「档案提醒」小节）。
+无改造项。改造项 6(C-3) 已处置：Mine「档案提醒」假数据卡已真实化（2026-08-20 落地，见迁移日志与 `docs/00-current/Active_UI_Mine_Settings.md`「档案提醒」小节）。
 
 ### 不排期(如实记录,不占 P0/P1/P2 改造位)
 
@@ -75,7 +75,7 @@ Created: 2026-08-16
 - vital 时间序列基建(C-1 weightKg 依赖):见 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md) 的 vital 基建一节。
 - ObservedMetric 口径(vital 趋势数据口径):见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节。
 - Review 职责改版为日/周/月洞察、事件成为专题视图(H-8 定位补充):归属 report 计划([`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)),本计划只标注依赖、不承担该项;事件详情接线(H-6)已随改造项 2 落地,与 report 计划的 Review 信息架构改版不再有落地顺序耦合。
-- 本计划拥有并写全的横切资产:档案字段逐字段处置决策(改造项 3/5 与不排期清单;改造项 6 C-3 已处置,决策执行记录见迁移日志 2026-08-18)。
+- 本计划拥有并写全的横切资产:档案字段逐字段处置决策(改造项 3/5 与不排期清单;改造项 6 C-3 已处置,决策执行记录见迁移日志 2026-08-20)。
 - 桌面/Web 形态不再扩展 Flutter 产品面；独立 Next.js + Tauri MVP 在 0.1.0 后启动，不展开。
 
 ## 五、本计划内执行顺序
