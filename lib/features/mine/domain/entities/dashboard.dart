@@ -92,14 +92,31 @@ abstract class MineCompletion with _$MineCompletion {
   }) = _MineCompletion;
 }
 
+/// The kind of a Mine「档案提醒」status card; drives how the presentation
+/// layer composes localized subtitle/badge text from [MineStatusCard.items]
+/// and [MineStatusCard.count] (see `presentation/widgets/sections/status_alerts.dart`).
+enum MineStatusCardKind { allergy, medicine, privacy }
+
 @freezed
 abstract class MineStatusCard with _$MineStatusCard {
   const factory MineStatusCard({
     required IconData icon,
     required SemanticColor accent,
     required MineCopyKey titleKey,
-    required MineCopyKey subtitleKey,
-    required MineCopyKey badgeKey,
+    required MineStatusCardKind kind,
+
+    /// Key-based subtitle (resolved via [MineCopyKey]); kept for cards whose
+    /// copy is static (privacy card).
+    MineCopyKey? subtitleKey,
+    MineCopyKey? badgeKey,
+
+    /// Real labels (allergy) / display names (medicine), full list — the
+    /// presentation layer truncates for display. Defaults to empty.
+    @Default(<String>[]) List<String> items,
+
+    /// Authoritative Lucent count for the card (allergy / medicine); the
+    /// presentation layer renders it as the badge and the「等 N 项/种」suffix.
+    int? count,
   }) = _MineStatusCard;
 }
 
@@ -134,11 +151,7 @@ enum MineCopyKey {
   signedOutNoticeDescription,
   completionTitle,
   alertAllergyTitle,
-  alertAllergySubtitle,
-  alertAllergyBadge,
   alertMedicineTitle,
-  alertMedicineSubtitle,
-  alertMedicineBadge,
   alertPrivacyTitle,
   alertPrivacySubtitle,
   alertPrivacyBadge,

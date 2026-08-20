@@ -37,11 +37,39 @@
   "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。",
   "mineCompletionTitle": "档案完整度",
   "mineAlertAllergyTitle": "过敏史",
-  "mineAlertAllergySubtitle": "花粉、青霉素",
-  "mineAlertAllergyBadge": "2 项",
+  "mineAlertAllergyCount": "{count} 项",
+  "@mineAlertAllergyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineAlertAllergyMore": "等 {count} 项",
+  "@mineAlertAllergyMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "mineAlertMedicineTitle": "当前用药",
-  "mineAlertMedicineSubtitle": "2 种药物",
-  "mineAlertMedicineBadge": "按时服用",
+  "mineAlertMedicineCount": "{count} 种",
+  "@mineAlertMedicineCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineAlertMedicineMore": "等 {count} 种",
+  "@mineAlertMedicineMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "mineAlertPrivacyTitle": "分享控制",
   "mineAlertPrivacySubtitle": "分享前先预览确认",
   "mineAlertPrivacyBadge": "先确认",

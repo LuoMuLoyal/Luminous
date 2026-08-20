@@ -8,6 +8,7 @@ import 'package:luminous/features/mine/presentation/widgets/sections/account_sec
 import 'package:luminous/features/mine/presentation/widgets/sections/ai_privacy.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/archive.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/notifications_reminders.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/status_alerts.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_banner.dart';
 
 class MineDashboardView extends StatelessWidget {
@@ -55,6 +56,10 @@ class MineDashboardView extends StatelessWidget {
           key: const Key('mine-account-header'),
           dashboard: dashboard,
         ),
+        if (dashboard.alerts.isNotEmpty) ...[
+          const SizedBox(height: Spacing.level5),
+          MineStatusAlertsSection(alerts: dashboard.alerts),
+        ],
         const SizedBox(height: Spacing.level5),
         MineArchiveSection(dashboard: dashboard),
         const SizedBox(height: Spacing.level5),
@@ -83,6 +88,10 @@ class MineDashboardView extends StatelessWidget {
                 key: const Key('mine-account-header'),
                 dashboard: dashboard,
               ),
+              if (dashboard.alerts.isNotEmpty) ...[
+                const SizedBox(height: Spacing.level5),
+                MineStatusAlertsSection(alerts: dashboard.alerts),
+              ],
               const SizedBox(height: Spacing.level5),
               MineArchiveSection(dashboard: dashboard),
               const SizedBox(height: Spacing.level5),

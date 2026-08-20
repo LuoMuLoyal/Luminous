@@ -86,6 +86,51 @@ void main() {
       expect(MineCopyKey.values, contains(MineCopyKey.completionTitle));
       expect(MineCopyKey.values, contains(MineCopyKey.privacyNoticeTitle));
       expect(MineCopyKey.values, contains(MineCopyKey.archiveEmergencyTitle));
+      expect(MineCopyKey.values, contains(MineCopyKey.alertAllergyTitle));
+      expect(MineCopyKey.values, contains(MineCopyKey.alertPrivacyBadge));
+    });
+  });
+
+  group('MineStatusCard', () {
+    test('key-only construction defaults structured data', () {
+      const card = MineStatusCard(
+        icon: SemanticIcons.statusWarning,
+        accent: SemanticColor.primary,
+        titleKey: MineCopyKey.alertPrivacyTitle,
+        kind: MineStatusCardKind.privacy,
+        subtitleKey: MineCopyKey.alertPrivacySubtitle,
+        badgeKey: MineCopyKey.alertPrivacyBadge,
+      );
+
+      expect(card.subtitleKey, MineCopyKey.alertPrivacySubtitle);
+      expect(card.badgeKey, MineCopyKey.alertPrivacyBadge);
+      expect(card.items, isEmpty);
+      expect(card.count, isNull);
+    });
+
+    test('structured data construction leaves keys null', () {
+      const card = MineStatusCard(
+        icon: SemanticIcons.statusWarning,
+        accent: SemanticColor.destructive,
+        titleKey: MineCopyKey.alertAllergyTitle,
+        kind: MineStatusCardKind.allergy,
+        items: ['花粉', '青霉素'],
+        count: 2,
+      );
+
+      expect(card.kind, MineStatusCardKind.allergy);
+      expect(card.subtitleKey, isNull);
+      expect(card.badgeKey, isNull);
+      expect(card.items, ['花粉', '青霉素']);
+      expect(card.count, 2);
+    });
+  });
+
+  group('MineStatusCardKind enum', () {
+    test('has all expected values', () {
+      expect(MineStatusCardKind.values, contains(MineStatusCardKind.allergy));
+      expect(MineStatusCardKind.values, contains(MineStatusCardKind.medicine));
+      expect(MineStatusCardKind.values, contains(MineStatusCardKind.privacy));
     });
   });
 }

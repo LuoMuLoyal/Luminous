@@ -7,13 +7,13 @@ updated: 2026-08-18
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-18（改造项 8：完成度口径 7 项 → 6 项，`onboardingCompleted` 不再计入；emergencyContact 不再作为 readiness gap；改造项 7：档案区体重行接入 kg/lb 单位制显示换算）
+Last updated: 2026-08-18（改造项 6：Mine「档案提醒」假数据卡真实化——真实过敏/当前用药驱动、接入渲染；缺陷修复：本地化移回展示层、实体改为结构化 items/count/kind；改造项 8：完成度口径 7 项 → 6 项，`onboardingCompleted` 不再计入；emergencyContact 不再作为 readiness gap；改造项 7：档案区体重行接入 kg/lb 单位制显示换算）
 
 ## Mine 根页结构
 
-移动端：`单一档案状态主卡 → 健康档案分组 → AI 与隐私分组 → 通知与提醒分组 → 账号与安全分组`。
+移动端：`单一档案状态主卡 → 档案提醒 → 健康档案分组 → AI 与隐私分组 → 通知与提醒分组 → 账号与安全分组`。
 
-桌面端双栏：`Row[左7: AccountHero+Archive+NotificationsReminders | 右5: AiPrivacy+AccountSecurity]`，顶部可选 `MineSyncFailedBanner`。
+桌面端双栏：`Row[左7: AccountHero+StatusAlerts+Archive+NotificationsReminders | 右5: AiPrivacy+AccountSecurity]`，顶部可选 `MineSyncFailedBanner`。
 
 - 未登录时登录门槛、preview 说明和主 CTA 并入 Mine 主卡，顶部独立的 `SignInHintBanner` 已移除，避免与 Hero 卡重复。
 - 健康档案分组在未登录 preview 数据为空时，不再渲染空 `FTileGroup`，而是显示 `_ArchiveEmpty` 结构化空态卡片（图标 + 标题 + 描述）。
@@ -28,6 +28,16 @@ Last updated: 2026-08-18（改造项 8：完成度口径 7 项 → 6 项，`onbo
 - 登录胶囊替换为邮箱验证状态：已验证 → `primary` 蓝色白字；未验证 → `secondary` + warning 色；preview → `secondary` 灰色。
 - 完整度计算 6 项（按「有用」而非「有值」计）：`allergyCount` / `currentMedicineCount` / `birthDate` / `heightCm` / `sexAtBirth` / `weightKg`。`onboardingCompleted` 是引导流程状态字段，当前无任何写入方（无 onboarding 流程），暂不纳入完成度；待有真实引导流程写入方后再纳入。
 - 资料编辑页新增：生理性别下拉、体重输入、紧急联系人姓名/电话。
+
+## 档案提醒（改造项 6）
+
+- `MineStatusAlertsSection`（`sections/status_alerts.dart`）渲染在 `MineAccountHero` 之后、`MineArchiveSection` 之前，仅 `dashboard.alerts.isNotEmpty` 时显示；单 `FCard` 列表，每行 icon + 标题 + 副标题 + 右侧 badge，样式对齐健康档案条目。
+- 副标题/badge 由展示层按结构化数据拼接（本地化与截断属展示层职责，data 层只携带结构化 `kind` / `items` / `count`）：过敏/用药卡 items 非空时，副标题为真实 label/药名前 2 项按分隔符拼接（zh「、」/ en ", "）+ 超出追加「等 N 项/种」后缀（`mineAlertAllergyMore/MedicineMore(count)`）；badge 为计数文案（`mineAlertAllergyCount/MedicineCount(count)`）；隐私卡走 `subtitleKey` / `badgeKey` 静态文案。
+- 过敏卡：仅 `activeAllergyCount > 0` 且存在 isActive 过敏时生成，items 为真实 active 过敏 label 全量，count 为 `activeAllergyCount`。
+- 用药卡：仅 `currentMedicineCount > 0` 时生成，items 为真实 isCurrent 药物 displayName 全量，count 为 `currentMedicineCount`；不再显示「按时服用」断言（无数据支持）。
+- 隐私卡：保留，为静态产品提示（分享前先预览确认 / 先确认），非用户数据。
+- 档案缺口（`missingCoreProfileFields`）不生成卡片：缺口已由 MineAccountHero 的 gap 展示（完成度/缺口口径一致），避免重复表达。
+- 卡片顺序：过敏 → 用药 → 隐私；`MineStatusCard` 承载结构化数据（`kind` / `items` / `count`），`MineCopyKey` 仅保留 title 与隐私卡静态键。
 
 ## 同步失败警告
 

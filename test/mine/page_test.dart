@@ -681,6 +681,27 @@ void main() {
       dashboard.account.lastLoginAt,
       DateTime.parse('2026-01-02T08:30:00Z'),
     );
+    // _mockSnapshot has activeAllergyCount: 2 but no allergy items → no
+    // allergy alert card; currentMedicineCount: 3 → medicine card present;
+    // the privacy card is always generated.
+    expect(
+      dashboard.alerts.any(
+        (card) => card.titleKey == MineCopyKey.alertAllergyTitle,
+      ),
+      isFalse,
+    );
+    expect(
+      dashboard.alerts.any(
+        (card) => card.titleKey == MineCopyKey.alertMedicineTitle,
+      ),
+      isTrue,
+    );
+    expect(
+      dashboard.alerts.any(
+        (card) => card.titleKey == MineCopyKey.alertPrivacyTitle,
+      ),
+      isTrue,
+    );
   });
 
   testWidgets('Mine completeness notice shows gaps when profile incomplete', (
@@ -826,6 +847,140 @@ void main() {
     expect(find.text(l10n.mineErrorTitle), findsOneWidget);
     expect(find.text(l10n.mineErrorDescription), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
+  });
+
+  testWidgets('Mine page renders real allergy and medicine alert cards', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_alertsSnapshot),
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) => 0),
+        ],
+        child: const TestForuiApp(home: MinePage()),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final section = find.byKey(const Key('mine-status-alerts-section'));
+    expect(section, findsOneWidget);
+
+    // Allergy card: first two active labels + 「等 N 项」suffix, count badge.
+    expect(
+      find.descendant(of: section, matching: find.text('花粉、青霉素等 3 项')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: section, matching: find.text('3 项')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('mine-status-alert-alertAllergyTitle')),
+      findsOneWidget,
+    );
+
+    // Medicine card: first two isCurrent display names, count badge.
+    expect(
+      find.descendant(of: section, matching: find.text('布洛芬、阿莫西林')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: section, matching: find.text('2 种')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('mine-status-alert-alertMedicineTitle')),
+      findsOneWidget,
+    );
+
+    // Privacy card always present, with static key-based copy.
+    expect(
+      find.descendant(
+        of: section,
+        matching: find.text(l10n.mineAlertPrivacyTitle),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Mine page shows only privacy card when counts are zero', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_noAlertsSnapshot),
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) => 0),
+        ],
+        child: const TestForuiApp(home: MinePage()),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final section = find.byKey(const Key('mine-status-alerts-section'));
+    expect(section, findsOneWidget);
+
+    // count == 0 → allergy / medicine cards are not generated.
+    expect(
+      find.descendant(
+        of: section,
+        matching: find.text(l10n.mineAlertAllergyTitle),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.descendant(
+        of: section,
+        matching: find.text(l10n.mineAlertMedicineTitle),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('mine-status-alert-alertAllergyTitle')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('mine-status-alert-alertMedicineTitle')),
+      findsNothing,
+    );
+
+    // Privacy card always present.
+    expect(
+      find.descendant(
+        of: section,
+        matching: find.text(l10n.mineAlertPrivacyTitle),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Mine page desktop layout uses desktop scroll key', (
@@ -1017,6 +1172,131 @@ const _imperialSnapshot = HealthContextSnapshot(
     onboardingCompletedAt: '2026-01-01T00:00:00Z',
     emergencyContactName: '张三',
     emergencyContactPhone: '13800000000',
+    extras: {},
+  ),
+  allergies: [],
+  conditions: [],
+  currentMedicines: [],
+);
+
+/// Snapshot with real active allergy items (3, one beyond the 2-label cap)
+/// and real isCurrent medicines (2), driving the「档案提醒」status cards.
+const _alertsSnapshot = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: 27,
+    onboardingCompleted: true,
+    activeAllergyCount: 3,
+    conditionCount: 1,
+    currentMedicineCount: 2,
+    missingCoreProfileFields: [],
+  ),
+  profile: HealthProfile(
+    birthDate: '1999-01-15',
+    sexAtBirth: 'female',
+    heightCm: 170.0,
+    weightKg: 60.0,
+    bloodType: null,
+    locale: null,
+    timezone: null,
+    unitSystem: null,
+    onboardingCompletedAt: '2026-01-01T00:00:00Z',
+    emergencyContactName: null,
+    emergencyContactPhone: null,
+    extras: {},
+  ),
+  allergies: [
+    AllergyItem(
+      id: 'allergy-1',
+      kind: 'environment',
+      label: '花粉',
+      reaction: null,
+      severity: null,
+      isActive: true,
+      note: null,
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    ),
+    AllergyItem(
+      id: 'allergy-2',
+      kind: 'drug',
+      label: '青霉素',
+      reaction: null,
+      severity: null,
+      isActive: true,
+      note: null,
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    ),
+    AllergyItem(
+      id: 'allergy-3',
+      kind: 'food',
+      label: '尘螨',
+      reaction: null,
+      severity: null,
+      isActive: true,
+      note: null,
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    ),
+  ],
+  conditions: [],
+  currentMedicines: [
+    CurrentMedicineItem(
+      id: 'medicine-1',
+      source: 'manual',
+      sourceRefId: null,
+      displayName: '布洛芬',
+      strengthText: null,
+      doseText: null,
+      route: null,
+      startedAt: null,
+      endedAt: null,
+      isCurrent: true,
+      note: null,
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    ),
+    CurrentMedicineItem(
+      id: 'medicine-2',
+      source: 'manual',
+      sourceRefId: null,
+      displayName: '阿莫西林',
+      strengthText: null,
+      doseText: null,
+      route: null,
+      startedAt: null,
+      endedAt: null,
+      isCurrent: true,
+      note: null,
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    ),
+  ],
+);
+
+/// Snapshot with zero allergy/medicine counts and no items: only the privacy
+/// card should be generated for「档案提醒」.
+const _noAlertsSnapshot = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: 27,
+    onboardingCompleted: true,
+    activeAllergyCount: 0,
+    conditionCount: 1,
+    currentMedicineCount: 0,
+    missingCoreProfileFields: ['allergies', 'currentMedicines'],
+  ),
+  profile: HealthProfile(
+    birthDate: '1999-01-15',
+    sexAtBirth: 'female',
+    heightCm: 170.0,
+    weightKg: 60.0,
+    bloodType: null,
+    locale: null,
+    timezone: null,
+    unitSystem: null,
+    onboardingCompletedAt: '2026-01-01T00:00:00Z',
+    emergencyContactName: null,
+    emergencyContactPhone: null,
     extras: {},
   ),
   allergies: [],

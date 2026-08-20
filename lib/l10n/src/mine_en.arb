@@ -37,11 +37,39 @@
   "mineSignedOutNoticeDescription": "Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.",
   "mineCompletionTitle": "Profile completion",
   "mineAlertAllergyTitle": "Allergies",
-  "mineAlertAllergySubtitle": "Pollen, penicillin",
-  "mineAlertAllergyBadge": "2 items",
+  "mineAlertAllergyCount": "{count} items",
+  "@mineAlertAllergyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineAlertAllergyMore": "and {count} in total",
+  "@mineAlertAllergyMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "mineAlertMedicineTitle": "Current meds",
-  "mineAlertMedicineSubtitle": "2 medicines",
-  "mineAlertMedicineBadge": "On schedule",
+  "mineAlertMedicineCount": "{count} medicines",
+  "@mineAlertMedicineCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineAlertMedicineMore": "and {count} in total",
+  "@mineAlertMedicineMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "mineAlertPrivacyTitle": "Sharing controls",
   "mineAlertPrivacySubtitle": "Preview before sharing",
   "mineAlertPrivacyBadge": "Confirm first",

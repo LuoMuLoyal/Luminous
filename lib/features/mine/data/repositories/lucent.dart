@@ -125,32 +125,67 @@ MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
   );
 }
 
+/// Builds the Mine「档案提醒」status cards from the real health-context
+/// snapshot (改造项 6, C-3)。
+///
+/// Cards carry structured data only ([MineStatusCard.kind] / [items] / [count]);
+/// 截断(副标题前 2 项 + 「等 N 项/种」后缀)与本地化(badge 计数文案、分隔符)是
+/// 展示层职责,见 `mine/presentation/widgets/sections/status_alerts.dart`。
+///
+/// - 过敏卡:仅 `activeAllergyCount > 0` 且存在 isActive 过敏时生成;items 为真实
+///   active 过敏 label 全量(不截断),count 为 Lucent 权威 `activeAllergyCount`。
+/// - 用药卡:仅 `currentMedicineCount > 0` 时生成;items 为真实 isCurrent 药物
+///   displayName 全量(不截断),count 为权威 `currentMedicineCount`。移除「按时
+///   服用」虚假断言(无数据支持)。
+/// - 隐私卡:保留(静态产品提示,非用户数据,复用既有三键)。
+/// - 不新增「档案缺口」卡:`missingCoreProfileFields` 缺口已由 MineAccountHero 的
+///   gap 展示,避免重复表达(决策见迁移日志 2026-08-18 改造项 6 条目)。
 List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
+  final allergyLabels = _activeAllergyLabels(snapshot);
+  final medicineNames = _currentMedicineNames(snapshot);
+
   return [
-    const MineStatusCard(
-      icon: SemanticIcons.statusWarning,
-      accent: _red,
-      titleKey: MineCopyKey.alertAllergyTitle,
-      subtitleKey: MineCopyKey.alertAllergySubtitle,
-      badgeKey: MineCopyKey.alertAllergyBadge,
-    ),
-    MineStatusCard(
-      icon: SemanticIcons.recordMedicine,
-      accent: _blue,
-      titleKey: MineCopyKey.alertMedicineTitle,
-      subtitleKey: MineCopyKey.alertMedicineSubtitle,
-      badgeKey: snapshot.summary.currentMedicineCount > 0
-          ? MineCopyKey.alertMedicineBadge
-          : MineCopyKey.archiveNeedsFill,
-    ),
+    if (snapshot.summary.activeAllergyCount > 0 && allergyLabels.isNotEmpty)
+      MineStatusCard(
+        icon: SemanticIcons.statusWarning,
+        accent: _red,
+        titleKey: MineCopyKey.alertAllergyTitle,
+        kind: MineStatusCardKind.allergy,
+        items: allergyLabels,
+        count: snapshot.summary.activeAllergyCount,
+      ),
+    if (snapshot.summary.currentMedicineCount > 0)
+      MineStatusCard(
+        icon: SemanticIcons.recordMedicine,
+        accent: _blue,
+        titleKey: MineCopyKey.alertMedicineTitle,
+        kind: MineStatusCardKind.medicine,
+        items: medicineNames,
+        count: snapshot.summary.currentMedicineCount,
+      ),
     const MineStatusCard(
       icon: SemanticIcons.profileUser,
       accent: _green,
       titleKey: MineCopyKey.alertPrivacyTitle,
+      kind: MineStatusCardKind.privacy,
       subtitleKey: MineCopyKey.alertPrivacySubtitle,
       badgeKey: MineCopyKey.alertPrivacyBadge,
     ),
   ];
+}
+
+List<String> _activeAllergyLabels(HealthContextSnapshot snapshot) {
+  return snapshot.allergies
+      .where((allergy) => allergy.isActive)
+      .map((allergy) => allergy.label)
+      .toList();
+}
+
+List<String> _currentMedicineNames(HealthContextSnapshot snapshot) {
+  return snapshot.currentMedicines
+      .where((medicine) => medicine.isCurrent)
+      .map((medicine) => medicine.displayName)
+      .toList();
 }
 
 List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
