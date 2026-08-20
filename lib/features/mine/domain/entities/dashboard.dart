@@ -38,7 +38,6 @@ abstract class MineDashboard with _$MineDashboard {
       conditionCount: 0,
       currentMedicineCount: 0,
       basicInfoCompleted: false,
-      hasEmergencyContact: false,
     ),
     alerts: <MineStatusCard>[],
     archiveEntries: <MineArchiveEntry>[],
@@ -61,7 +60,6 @@ abstract class MineProfileSnapshot with _$MineProfileSnapshot {
     required int conditionCount,
     required int currentMedicineCount,
     required bool basicInfoCompleted,
-    required bool hasEmergencyContact,
   }) = _MineProfileSnapshot;
 }
 

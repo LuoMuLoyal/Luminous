@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-17
+updated: 2026-08-18
 ---
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-17（AI 设置页：上下文开关切换 toast「下次对话生效」+ 新增「AI 隐私」说明小节）
+Last updated: 2026-08-18（改造项 8：完成度口径 7 项 → 6 项，`onboardingCompleted` 不再计入；emergencyContact 不再作为 readiness gap）
 
 ## Mine 根页结构
 
@@ -23,10 +23,10 @@ Last updated: 2026-08-17（AI 设置页：上下文开关切换 toast「下次�
 - `账号与安全` 分组：`账号与安全` → `/account`，`安全 PIN 码` → `/settings/security-pin`。
 - Mine 主卡文案区分 `preview / 缺失关键信息 / 基本就绪` 三种 readiness 语义。
 - Hero 描述文案动态化：根据 `_deriveGaps` 返回的缺失字段类型生成针对性描述（单缺口显示具体说明，多缺口显示汇总）。
-- 缺口检测 6 项：`basicInfo` / `sexAtBirth` / `weight` / `allergy` / `medicine` / `emergencyContact`。
+- 缺口检测 5 项：`basicInfo` / `sexAtBirth` / `weight` / `allergy` / `medicine`。`emergencyContact` 为不排期字段（标注延后，填了无业务用途），不再作为 gap 引导用户填写。
 - 角色文字"用户"已移除，Hero 不再显示角色胶囊。
 - 登录胶囊替换为邮箱验证状态：已验证 → `primary` 蓝色白字；未验证 → `secondary` + warning 色；preview → `secondary` 灰色。
-- 完整度计算 7 项：`onboardingCompleted` / `allergyCount` / `currentMedicineCount` / `birthDate` / `heightCm` / `sexAtBirth` / `weightKg`。
+- 完整度计算 6 项（按「有用」而非「有值」计）：`allergyCount` / `currentMedicineCount` / `birthDate` / `heightCm` / `sexAtBirth` / `weightKg`。`onboardingCompleted` 是引导流程状态字段，当前无任何写入方（无 onboarding 流程），暂不纳入完成度；待有真实引导流程写入方后再纳入。
 - 资料编辑页新增：生理性别下拉、体重输入、紧急联系人姓名/电话。
 
 ## 同步失败警告

@@ -67,13 +67,11 @@
   "mineCompletenessGapAllergyDesc": "Missing allergy data may affect medication safety alerts",
   "mineCompletenessGapMedicine": "Current meds",
   "mineCompletenessGapMedicineDesc": "Missing medication data affects drug interaction checks",
-  "mineCompletenessGapEmergencyContact": "Emergency contact",
   "mineReadinessGapDescBasicInfo": "Birth date and height are essential for dosage calculations",
   "mineReadinessGapDescSexAtBirth": "Sex at birth affects drug selection and safe dosing",
   "mineReadinessGapDescWeight": "Weight is a key parameter for dosage calculations",
   "mineReadinessGapDescAllergy": "Missing allergy data may affect medication safety alerts",
   "mineReadinessGapDescMedicine": "Missing medication data affects drug interaction checks",
-  "mineReadinessGapDescEmergencyContact": "Emergency contact information has not been filled in",
   "mineReadinessGapDescMultiple": "{items} still missing — complete them for more accurate safety alerts",
   "@mineReadinessGapDescMultiple": {
     "placeholders": {

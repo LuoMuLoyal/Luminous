@@ -599,7 +599,7 @@ void main() {
     expect(dashboard.profile.age, 27);
     expect(dashboard.profile.allergyCount, 2);
     expect(dashboard.profile.currentMedicineCount, 3);
-    expect(dashboard.completion.percentLabel, '57%');
+    expect(dashboard.completion.percentLabel, '50%');
     expect(
       dashboard.account.lastLoginAt,
       DateTime.parse('2026-01-02T08:30:00Z'),

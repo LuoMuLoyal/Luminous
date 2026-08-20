@@ -87,9 +87,6 @@ MineProfileSnapshot _buildProfile(HealthContextSnapshot snapshot) {
       profile.birthDate?.isNotEmpty == true &&
       profile.heightCm != null &&
       profile.sexAtBirth != null;
-  final hasEmergencyContact =
-      (profile.emergencyContactName?.isNotEmpty == true) ||
-      (profile.emergencyContactPhone?.isNotEmpty == true);
 
   return MineProfileSnapshot(
     age: summary.age,
@@ -100,14 +97,18 @@ MineProfileSnapshot _buildProfile(HealthContextSnapshot snapshot) {
     conditionCount: summary.conditionCount,
     currentMedicineCount: summary.currentMedicineCount,
     basicInfoCompleted: hasBasicInfo,
-    hasEmergencyContact: hasEmergencyContact,
   );
 }
 
+/// Builds the Mine completion from the real health-context snapshot.
+///
+/// 口径:完成度按「有用」而非「有值」计,共 6 项——过敏史 / 当前用药 / 出生日期
+/// / 身高 / 生理性别 / 体重。`onboardingCompleted` 是引导流程状态字段,当前无
+/// 任何写入方(无 onboarding 流程),暂不纳入完成度;待有真实引导流程写入方后
+/// 再纳入(见 `plans/2026-08-16-remediation-decision-register.md` 与计划文件 C-1 处置清单)。
 MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
-  const total = 7;
+  const total = 6;
   final completed =
-      (snapshot.summary.onboardingCompleted ? 1 : 0) +
       (snapshot.summary.activeAllergyCount > 0 ? 1 : 0) +
       (snapshot.summary.currentMedicineCount > 0 ? 1 : 0) +
       (snapshot.profile.birthDate?.isNotEmpty == true ? 1 : 0) +

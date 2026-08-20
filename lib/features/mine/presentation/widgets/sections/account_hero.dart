@@ -200,8 +200,6 @@ class MineAccountHero extends StatelessWidget {
         _ReadinessGapType.weight => l10n.mineReadinessGapDescWeight,
         _ReadinessGapType.allergy => l10n.mineReadinessGapDescAllergy,
         _ReadinessGapType.medicine => l10n.mineReadinessGapDescMedicine,
-        _ReadinessGapType.emergencyContact =>
-          l10n.mineReadinessGapDescEmergencyContact,
       };
     }
 
@@ -341,14 +339,7 @@ class _StateBadge extends StatelessWidget {
   }
 }
 
-enum _ReadinessGapType {
-  basicInfo,
-  sexAtBirth,
-  weight,
-  allergy,
-  medicine,
-  emergencyContact,
-}
+enum _ReadinessGapType { basicInfo, sexAtBirth, weight, allergy, medicine }
 
 class _ReadinessGap {
   const _ReadinessGap({required this.type, required this.route});
@@ -363,8 +354,6 @@ class _ReadinessGap {
       _ReadinessGapType.weight => l10n.mineCompletenessGapWeight,
       _ReadinessGapType.allergy => l10n.mineCompletenessGapAllergy,
       _ReadinessGapType.medicine => l10n.mineCompletenessGapMedicine,
-      _ReadinessGapType.emergencyContact =>
-        l10n.mineCompletenessGapEmergencyContact,
     };
   }
 }
@@ -395,11 +384,6 @@ List<_ReadinessGap> _deriveGaps(MineProfileSnapshot profile) {
       const _ReadinessGap(
         type: _ReadinessGapType.medicine,
         route: Routes.mineMedicineNew,
-      ),
-    if (!profile.hasEmergencyContact)
-      const _ReadinessGap(
-        type: _ReadinessGapType.emergencyContact,
-        route: Routes.mineProfileEdit,
       ),
   ];
 }

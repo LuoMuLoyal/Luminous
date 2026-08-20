@@ -14,7 +14,7 @@ Created: 2026-08-16
 目标:
 
 - 补齐事件域「差最后一环」的半成品:kind 筛选(H-4)。
-- 处置档案僵尸/半用字段(C-1):weightKg、conditions 改造为真实消费;unitSystem、onboardingCompleted 低优先级改造;emergencyContact、extras 如实不排期。
+- 处置档案僵尸/半用字段(C-1):weightKg、conditions 改造为真实消费;unitSystem 低优先级改造;onboardingCompleted 已处置为引导流程状态(有写入方后纳入完成度);emergencyContact、extras 如实不排期。
 - 清除 Mine「档案提醒」硬编码假数据卡(C-3),改造为真实数据出口。
 - 核心生命周期(创建/check-in/结束/回顾)与档案安全链路保持不动。
 
@@ -75,12 +75,6 @@ Created: 2026-08-16
 - 改造方案:接单位制显示切换(体重 kg/lb、饮水 ml/oz),纯展示层换算,存储口径不变。
 - 前后端分工:纯前端展示换算;后端无需改动。
 
-#### 8. C-1 `onboardingCompleted` 改造为引导流程状态
-
-- 现状:无任何写入方的僵尸字段,唯一作用是 Mine 完成度分母。
-- 改造方案:改造为引导流程状态字段(有真实写入方后纳入完成度);改造落地前同步调整完成度分母与 readiness gap 列表(C-4 口径对齐在此一并完成)。
-- 依赖:无。
-
 ### 不排期(如实记录,不占 P0/P1/P2 改造位)
 
 - C-1 `emergencyContactName/Phone`:僵尸字段,标注延后,**不排期**。
@@ -97,7 +91,7 @@ Created: 2026-08-16
 
 ## 五、本计划内执行顺序
 
-1. 改造项 6(C-3)与 7/8（0.1.0 前）：先移除硬编码假过敏，再由 Lucent 档案完整度合同驱动展示。
+1. 改造项 6(C-3)与 7（0.1.0 前）：先移除硬编码假过敏，再由 Lucent 档案完整度合同驱动展示。
 2. 改造项 1(H-4)、4(weightKg) 与 5(conditions)均为 0.1.0 后，按既有 P1 及依赖顺序恢复。
 
 ## 六、已决边界与延期项

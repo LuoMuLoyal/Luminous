@@ -67,13 +67,11 @@
   "mineCompletenessGapAllergyDesc": "缺失可能影响用药安全提醒",
   "mineCompletenessGapMedicine": "当前用药",
   "mineCompletenessGapMedicineDesc": "缺失将影响药物相互作用检查",
-  "mineCompletenessGapEmergencyContact": "紧急联系人",
   "mineReadinessGapDescBasicInfo": "出生日期和身高是剂量计算的基础",
   "mineReadinessGapDescSexAtBirth": "生理性别影响药物选择和安全剂量",
   "mineReadinessGapDescWeight": "体重是剂量计算的关键参数",
   "mineReadinessGapDescAllergy": "过敏史缺失可能影响用药安全提醒",
   "mineReadinessGapDescMedicine": "当前用药记录缺失将影响药物相互作用检查",
-  "mineReadinessGapDescEmergencyContact": "紧急联系人信息尚未填写",
   "mineReadinessGapDescMultiple": "{items}待补充，完善后可提升安全提醒精度",
   "@mineReadinessGapDescMultiple": {
     "placeholders": {

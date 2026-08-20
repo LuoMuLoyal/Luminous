@@ -69,7 +69,6 @@ class MockMineRepository implements MineRepository {
     conditionCount: 0,
     currentMedicineCount: 0,
     basicInfoCompleted: false,
-    hasEmergencyContact: false,
   );
 
   static const _mockProfile = MineProfileSnapshot(
@@ -81,7 +80,6 @@ class MockMineRepository implements MineRepository {
     conditionCount: 0,
     currentMedicineCount: 2,
     basicInfoCompleted: true,
-    hasEmergencyContact: true,
   );
 
   static final _mockAlerts = [
