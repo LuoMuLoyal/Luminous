@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-17
+updated: 2026-08-21
 ---
 
 # AI Development Workflow
 
-Last updated: 2026-08-17 (T9a: F-18 归档标记 + F-4 助手 Markdown 渲染/链接确认说明)
+Last updated: 2026-08-21 (Flutter 3.47.1 upgrade branch rebased onto current refactor)
 
 ## Purpose
 
@@ -22,9 +22,9 @@ It complements:
 
 ## Current Integration Boundary
 
-- `Luminous` 日常开发在 `Flutter 3.44.x`（Dart 3.12）上；升级分支 `upgrade/flutter-3.47` 已含
-  3.47 配置类准备（依赖/AGP 9/Gradle 9.3.1/部署目标/CI 版本），被 flutter/flutter#191095
-  semantics 回归阻塞，等 3.47.1 后按 `plans/2026-08-14-flutter-3.47-upgrade-plan.md` 完成。
+- 当前 `upgrade/flutter-3.47` 分支已使用 `Flutter 3.47.1` / `Dart 3.13.1`；analyze、Android release、Web
+  release 已通过。基线 `refactor` 仍保留 Flutter 3.44.x（Dart 3.12）约束，升级分支因
+  flutter/flutter#191095 语义回归仍未合并，待上游修复后重跑全量测试。
 - AI-assisted coding is enabled through committed repo instructions plus a
   committed MCP config, not by relying on private IDE state.
 - Shipping in-app AI features still use Lucent-owned APIs.
