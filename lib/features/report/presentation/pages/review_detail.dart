@@ -30,7 +30,12 @@ class ReportReviewDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
+    // l10n is null only if the widget tree lacks localizationsDelegates,
+    // which cannot happen inside the configured MaterialApp. Guard
+    // defensively to avoid the force-unwrap (`!`) pattern flagged in
+    // review — if somehow null, show a bare scaffold instead of crashing.
+    if (l10n == null) return const Scaffold();
     final detailAsync = ref.watch(reviewDetailProvider(eventId));
 
     return PageScaffold(

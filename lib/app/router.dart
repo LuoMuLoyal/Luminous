@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -269,10 +270,21 @@ GoRouter appRouter(Ref ref) => GoRouter(
     // -- public shared clinic summary (deep link, no auth required) --
     GoRoute(
       path: Routes.reportClinicSummaryShared,
-      pageBuilder: (context, state) => slidePage(
-        key: state.pageKey,
-        child: ClinicSummarySharedPage(token: state.pathParameters['token']!),
-      ),
+      pageBuilder: (context, state) {
+        final token = state.pathParameters['token'];
+        if (token == null) {
+          return slidePage(
+            key: state.pageKey,
+            child: const Scaffold(
+              body: Center(child: Text('Invalid link: missing token.')),
+            ),
+          );
+        }
+        return slidePage(
+          key: state.pageKey,
+          child: ClinicSummarySharedPage(token: token),
+        );
+      },
     ),
     // -- legacy dashboard compatibility page (Review More sheet entry) --
     GoRoute(
@@ -285,12 +297,21 @@ GoRouter appRouter(Ref ref) => GoRouter(
     // -- event review detail page (history row tap, requires auth) --
     GoRoute(
       path: Routes.reviewDetail,
-      pageBuilder: (context, state) => slidePage(
-        key: state.pageKey,
-        child: ReportReviewDetailPage(
-          eventId: state.pathParameters['eventId']!,
-        ),
-      ),
+      pageBuilder: (context, state) {
+        final eventId = state.pathParameters['eventId'];
+        if (eventId == null) {
+          return slidePage(
+            key: state.pageKey,
+            child: const Scaffold(
+              body: Center(child: Text('Invalid link: missing event ID.')),
+            ),
+          );
+        }
+        return slidePage(
+          key: state.pageKey,
+          child: ReportReviewDetailPage(eventId: eventId),
+        );
+      },
     ),
   ],
 );

@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-18
+updated: 2026-08-21
 ---
 
 # Routing (GoRouter)
 
-Last updated: 2026-08-18
+Last updated: 2026-08-21
 
 本文件是 [[architecture]] 拆分后的子文档。
 
