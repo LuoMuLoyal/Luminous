@@ -76,16 +76,44 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
   String? _lastFirstPageNextCursor;
   ReviewEventStatus? _lastStatus;
 
+  @override
+  void initState() {
+    super.initState();
+    // If the first page is already available synchronously (e.g. cached),
+    // seed the tracking fields so the first build doesn't falsely detect a
+    // "change" and reset. didUpdateWidget handles subsequent updates.
+    final firstPage = widget.history.asData?.value;
+    if (firstPage != null) {
+      _lastFirstPageNextCursor = firstPage.nextCursor;
+      _lastStatus = widget.selectedStatus;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ReviewHistorySection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Sync from the first page whenever the widget is updated (filter switch,
+    // DataChangeBus refresh, etc.). This was previously done in build(),
+    // which is a violation of the build purity contract — state mutations
+    // must happen in lifecycle methods, not during build.
+    final firstPage = widget.history.asData?.value;
+    if (firstPage != null) {
+      _syncFromFirstPage(firstPage);
+    }
+  }
+
   void _syncFromFirstPage(ReviewEventPage firstPage) {
     final status = widget.selectedStatus;
     // 筛选切换或首页 nextCursor 变化（DataChangeBus 刷新重取）时重置。
     if (_lastStatus != status ||
         _lastFirstPageNextCursor != firstPage.nextCursor) {
-      // 只有当首页数据确实发生了变化（不是首次构建）时才重置。
-      // 首次构建时 _appendedItems 已经是空列表，重置是 no-op。
+      // 重置所有累积状态，包括 _pendingCursor：一个在途的 loadMore
+      // 请求返回后，其 cursor 与 _pendingCursor（已清为 null）不匹配，
+      // 因此迟到结果会被正确丢弃，不会混入新筛选的数据。
       _appendedItems = const [];
       _appendedNextCursor = null;
       _loadMoreError = null;
+      _pendingCursor = null;
       _lastFirstPageNextCursor = firstPage.nextCursor;
       _lastStatus = status;
     }
@@ -193,8 +221,6 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                 ],
               ),
               data: (firstPage) {
-                _syncFromFirstPage(firstPage);
-
                 final allItems = [...firstPage.items, ..._appendedItems];
 
                 if (allItems.isEmpty) {
