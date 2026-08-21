@@ -122,7 +122,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 
 ## 助手入口
 
-Last updated: 2026-08-01
+Last updated: 2026-08-21
 
 - Today 顶部栏暴露一级助手入口（`FLucideIcons.sparkles` 图标按钮）→ `/assistant` 工作区。
 - 助手页使用轻量 Forui header：从左到右为返回、历史对话、新会话、设置；不再在消息区常驻技术状态卡。
@@ -142,6 +142,7 @@ Last updated: 2026-08-01
 - **会话分组边界**（2026-08-03）：会话列表"今天/本周"边界由 `isAfter` 改为 `!isBefore`（等价 isAfterOrEqualTo），正好 00:00:00 更新的会话归入当天/本周而非"更早"。
 - **AI 内容 Markdown 样式统一**（2026-08-03）：助手消息气泡、Today AI 摘要（w600）、建议 reason/boundary 均接入 `MarkdownStyle.ai`（见 [[Design_System#Markdown 渲染]]）；气泡传入自身背景色使代码背景自适配。
 - **Drawer 状态投影**（2026-08-04）：新增 `AssistantDrawerState` 轻量数据类（`conversationId / isOpeningConversation / isLoadingRecentConversations / recentConversationError / recentConversations`）。`AssistantPage` 通过 `select(...)` 仅投影 drawer 所需字段，避免流式消息/`streamingDraft` 变化时重建整个 `AssistantConversationDrawer` 与列表。
+- **FlowUI 主题桥接**（2026-08-21）：assistant 入口局部注入从当前 Forui 主题和 Luminous 语义色/字体派生的 `FlowTheme`，保留父主题已有扩展；FlowUI 主题不会泄露到其他页面。bridge 作用域测试和真实 `AssistantPage` 构建树接线测试覆盖该约束。
 
 ## 2026-07-19 补充
 

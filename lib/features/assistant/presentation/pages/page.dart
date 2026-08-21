@@ -14,6 +14,7 @@ import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
+import 'package:luminous/features/assistant/presentation/widgets/flow_theme_bridge.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/page_body.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -367,7 +368,7 @@ class AssistantPage extends HookConsumerWidget {
       ),
     );
 
-    return ClipRect(
+    final assistantContent = ClipRect(
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
@@ -464,6 +465,8 @@ class AssistantPage extends HookConsumerWidget {
         ],
       ),
     );
+
+    return withLuminousFlowTheme(context, assistantContent);
   }
 }
 

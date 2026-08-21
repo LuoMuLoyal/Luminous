@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -601,6 +602,35 @@ void main() {
         matching: find.byKey(const Key('assistant-send-action')),
       ),
       findsOneWidget,
+    );
+  });
+
+  testWidgets('AssistantPage scopes one FlowTheme below MaterialApp', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _FakeAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    final pageThemes = tester
+        .widgetList<Theme>(
+          find.ancestor(
+            of: find.byKey(const Key('assistant-main-content')),
+            matching: find.byType(Theme),
+          ),
+        )
+        .toList();
+    final flowThemes = pageThemes
+        .where((theme) => theme.data.extension<FlowTheme>() != null)
+        .toList();
+
+    expect(flowThemes, hasLength(1));
+    expect(
+      pageThemes.where((theme) => theme.data.extension<FlowTheme>() == null),
+      hasLength(1),
     );
   });
 
