@@ -135,7 +135,7 @@ Last updated: 2026-08-21
 - **消息气泡去工程化**：`AssistantMessageBubble` 移除工具 chip 渲染与"正在生成"文字标签，流式期间使用 pulsing dots 动画指示器；用户气泡文字使用主色实色，避免浅色背景上使用浅色 `primaryForeground` 导致不可读；上下文菜单改用 `FContextMenu.tiles`，复制和"重新生成 / 重新发送"操作的完整按钮化交互仍列入 TODO。
 - **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。当前后端对常见 graph 回答先执行 `graph.invoke()`，再通过空白切分回放伪 chunk；SSE 传输正常，但尚未实现从 graph/LLM 到 HTTP 的真实增量流。
 - **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 通过页面内 `Stack` 从左侧推入，固定不透明背景；顶部使用 Forui 搜索框、关闭和新对话按钮；会话仍按"今天 / 最近 7 天 / 更早"分组，当前会话用 `prefix` 对勾图标高亮；搜索只过滤已加载列表，重命名/删除因后端暂无对应接口暂未接入。
-- **首屏重做**：空会话由 `FlowGreeting` 展示标题和 AI 图标，`AssistantWelcomeSupport` 保留描述、临时 starter prompts、记忆提示和可展开/收起的健康免责；输入区和聊天消息状态不改变。
+- **首屏重做**：空会话由 `FlowGreeting` 展示标题和 AI 图标，`AssistantWelcomeSupport` 保留描述、starter prompts、记忆提示和可展开/收起的健康免责；输入区和聊天消息状态不改变。starter prompts 已迁移到 FlowUI 的 column suggestions。
 - **设置页独立化**：聊天页设置按钮跳转现有 `/settings/ai` 独立页面；`AssistantControlsSheet` 保留为未使用的旧实现，当前聊天流程不再打开透明设置浮层。
 - **测试覆盖**：`test/assistant/widgets_test.dart` 覆盖消息气泡上下文菜单、会话 drawer 分组/高亮/空态/新建按钮/搜索过滤、状态消息等；流式渲染、drawer 推移、header 四入口和设置跳转由 `test/assistant/page_test.dart` 覆盖。
 - **drawer 宽度缓存**（2026-08-03）：`AssistantPage` 的 `drawerWidth` 由每帧 `MediaQuery.sizeOf` 计算改为 `useMemoized` 缓存，仅屏幕宽度变化时重算。
@@ -216,5 +216,12 @@ Last updated: 2026-08-21
 ## 2026-08-21 Assistant FlowChatScreen 编排（阶段 2c）
 
 - `AssistantPageBody` 正常能力分支使用 `FlowChatScreen`，传入现有 `AssistantConversationMessageList`、`AssistantInputBar` facade、共享 `scrollController` 和 `assistantScrollToBottom` tooltip；打开会话提示、发送错误与重试仍通过 `aboveComposer` 保留。
-- 空态仅在无对话且能力允许发送时启用；FlowGreeting 使用 `assistantWelcomeTitle` 和 `SemanticIcons.aiGenerated`，`AssistantWelcomeSupport` 保留现有描述、starter prompts、记忆提示、免责文案和展开/收起语义。2d/2e 尚未提前实现。
+- 空态仅在无对话且能力允许发送时启用；FlowGreeting 使用 `assistantWelcomeTitle` 和 `SemanticIcons.aiGenerated`，`AssistantWelcomeSupport` 保留现有描述、starter prompts、记忆提示、免责文案和展开/收起语义。starter prompts 由 `FlowSuggestionGroup(layout: FlowSuggestionLayout.column)` 渲染四个既有 l10n prompt；2e 尚未实现。
 - 删除 `conversation_stack.dart`；保留并更新 `scroll_behavior_test.dart` 验证 FlowChatScreen jump-to-latest。`conversation_surface.dart`、welcome/starter、message-list、input-bar、adapter 保留，未修改 domain/data/controller/SSE 或 l10n。
+
+## 2026-08-21 Assistant starter prompts（阶段 2d）
+
+- `AssistantInputStarterPrompts` 保留原类名、`onSelected` API、标题和四个 l10n prompt 的顺序/文案；内部从 Forui `FButton/Wrap` 迁移为 `FlowSuggestionGroup` 的 column 布局与四个 `FlowSuggestion`。
+- 每个 suggestion 的 `label` 使用原 prompt，`onTap` 传回同一个原 prompt；`onSelected == null` 时所有 suggestions 通过 null `onTap` 禁用。未引入 icon、attachment、menu 或新 l10n。
+- 保持 `AssistantWelcomeSupport`、`FlowChatScreen` 空态/page body 与现有 domain/controller 不变；保留 starter widget 文件。
+- 旧 host 文件阶段 3 清理。

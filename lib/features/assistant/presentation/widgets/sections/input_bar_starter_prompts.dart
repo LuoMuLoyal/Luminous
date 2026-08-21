@@ -1,3 +1,4 @@
+import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -21,6 +22,7 @@ class AssistantInputStarterPrompts extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
+    final callback = onSelected;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,16 +34,13 @@ class AssistantInputStarterPrompts extends StatelessWidget {
               .copyWith(color: colors.mutedForeground),
         ),
         const SizedBox(height: Spacing.level2),
-        Wrap(
-          spacing: Spacing.level2,
-          runSpacing: Spacing.level2,
-          children: [
+        FlowSuggestionGroup(
+          layout: FlowSuggestionLayout.column,
+          suggestions: [
             for (final prompt in _prompts(l10n))
-              FButton(
-                variant: FButtonVariant.outline,
-                mainAxisSize: MainAxisSize.min,
-                onPress: onSelected != null ? () => onSelected!(prompt) : null,
-                child: Text(prompt),
+              FlowSuggestion(
+                label: prompt,
+                onTap: callback == null ? null : () => callback(prompt),
               ),
           ],
         ),

@@ -1,3 +1,4 @@
+import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -8,6 +9,7 @@ import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabil
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar_starter_prompts.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/welcome_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
@@ -60,6 +62,69 @@ void main() {
         ),
       );
       expect(find.byType(AssistantLoadingView), findsOneWidget);
+    });
+  });
+
+  group('AssistantInputStarterPrompts', () {
+    testWidgets('renders four column FlowUI suggestions in prompt order', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(const AssistantInputStarterPrompts(onSelected: _noop)),
+      );
+
+      expect(find.byType(FlowSuggestionGroup), findsOneWidget);
+      final group = tester.widget<FlowSuggestionGroup>(
+        find.byType(FlowSuggestionGroup),
+      );
+
+      expect(group.layout, FlowSuggestionLayout.column);
+      expect(group.suggestions.map((suggestion) => suggestion.label), <String>[
+        '总结我今天的记录',
+        '我最近睡眠怎么样',
+        '我当前在吃什么药',
+        '帮我看看要注意什么',
+      ]);
+      expect(group.suggestions, everyElement(isA<FlowSuggestion>()));
+      expect(
+        group.suggestions.map((suggestion) => suggestion.icon),
+        everyElement(isNull),
+      );
+    });
+
+    testWidgets('forwards the exact prompt from a suggestion tap', (
+      tester,
+    ) async {
+      String? selectedPrompt;
+
+      await tester.pumpWidget(
+        _shell(
+          AssistantInputStarterPrompts(
+            onSelected: (prompt) => selectedPrompt = prompt,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('我当前在吃什么药'));
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(selectedPrompt, '我当前在吃什么药');
+    });
+
+    testWidgets('disables all suggestions when the callback is null', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_shell(const AssistantInputStarterPrompts()));
+
+      expect(find.byType(FlowSuggestionGroup), findsOneWidget);
+      final group = tester.widget<FlowSuggestionGroup>(
+        find.byType(FlowSuggestionGroup),
+      );
+
+      expect(
+        group.suggestions.map((suggestion) => suggestion.onTap),
+        everyElement(isNull),
+      );
     });
   });
 
@@ -1470,3 +1535,5 @@ void main() {
     });
   });
 }
+
+void _noop(String _) {}
