@@ -53,6 +53,9 @@ class AssistantConversationMessageList extends ConsumerWidget {
     final streamingDraft = ref.watch(
       assistantControllerProvider.select((s) => s.streamingDraft),
     );
+    final isSending = ref.watch(
+      assistantControllerProvider.select((s) => s.isSending),
+    );
     final conversationId = ref.watch(
       assistantControllerProvider.select((s) => s.conversationId),
     );
@@ -71,7 +74,9 @@ class AssistantConversationMessageList extends ConsumerWidget {
       );
     }
 
-    if (messages.isEmpty && streamingDraft.isEmpty) {
+    final pending = isSending && streamingDraft.isEmpty;
+
+    if (messages.isEmpty && streamingDraft.isEmpty && !pending) {
       return StateMessageView(
         title: l10n.assistantConversationEmptyTitle,
         description: l10n.assistantConversationEmptyDescription,
@@ -86,6 +91,7 @@ class AssistantConversationMessageList extends ConsumerWidget {
       onRegenerate: onRegenerate,
       onResend: onResend,
       onOpenLink: openLink,
+      thinkingLabel: l10n.assistantStreamingLabel,
     );
 
     return FlowThread(
@@ -94,6 +100,8 @@ class AssistantConversationMessageList extends ConsumerWidget {
         conversationId: conversationId ?? 'unscoped',
         messages: messages,
         streamingDraft: streamingDraft,
+        isSending: isSending,
+        pending: pending,
       ),
       controller: scrollController,
       padding: EdgeInsets.zero,

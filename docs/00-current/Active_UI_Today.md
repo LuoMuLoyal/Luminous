@@ -144,6 +144,8 @@ Last updated: 2026-08-21
 - **Drawer 状态投影**（2026-08-04）：新增 `AssistantDrawerState` 轻量数据类（`conversationId / isOpeningConversation / isLoadingRecentConversations / recentConversationError / recentConversations`）。`AssistantPage` 通过 `select(...)` 仅投影 drawer 所需字段，避免流式消息/`streamingDraft` 变化时重建整个 `AssistantConversationDrawer` 与列表。
 - **FlowUI 主题桥接**（2026-08-21）：assistant 入口局部注入从当前 Forui 主题和 Luminous 语义色/字体派生的 `FlowTheme`，保留父主题已有扩展；FlowUI 主题不会泄露到其他页面。bridge 作用域测试和真实 `AssistantPage` 构建树接线测试覆盖该约束。
 - **FlowUI 消息列表**（2026-08-21）：生产消息列表已通过 assistant FlowUI adapter 使用 `FlowThread` + `FlowMessage`；旧 `AssistantMessageBubble` 仅保留给阶段 3 清理前的孤立测试，消息身份、proposal canonical id、Markdown 链接确认和现有消息操作回调继续由 adapter 透传。
+- **FlowUI thinking indicator（阶段 2e，2026-08-21）**：发送中且 `streamingDraft` 为空时，消息列表将 adapter 的 pending `FlowMessage` 加入 `FlowThread`，由 `FlowThinkingIndicator` 渲染；即使能力快照关闭但已有历史消息，重生成/发送中的 pending 状态仍保留；真正无消息、无 draft 且能力关闭时继续显示 disabled `StateMessageView`。发送中已有 draft 时保持 `FlowTextPart` + `FlowMessageStatus.streaming`。pending/streaming 均不创建 footer/actions，完成态继续保留 footer/actions；生产消息列表不再渲染 `AssistantMessageBubble` 或其旧 dots 路径。
+- thinking label 暂复用现有 `assistantStreamingLabel`（不新增或编辑 ARB）；阶段 4 再切换到计划中的 `assistantThinkingLabel`，并处理其余新 l10n key。
 
 ## 2026-07-19 补充
 
@@ -216,7 +218,7 @@ Last updated: 2026-08-21
 ## 2026-08-21 Assistant FlowChatScreen 编排（阶段 2c）
 
 - `AssistantPageBody` 正常能力分支使用 `FlowChatScreen`，传入现有 `AssistantConversationMessageList`、`AssistantInputBar` facade、共享 `scrollController` 和 `assistantScrollToBottom` tooltip；打开会话提示、发送错误与重试仍通过 `aboveComposer` 保留。
-- 空态仅在无对话且能力允许发送时启用；FlowGreeting 使用 `assistantWelcomeTitle` 和 `SemanticIcons.aiGenerated`，`AssistantWelcomeSupport` 保留现有描述、starter prompts、记忆提示、免责文案和展开/收起语义。starter prompts 由 `FlowSuggestionGroup(layout: FlowSuggestionLayout.column)` 渲染四个既有 l10n prompt；2e 尚未实现。
+- 空态仅在无对话、能力允许发送且当前未发送时启用；FlowGreeting 使用 `assistantWelcomeTitle` 和 `SemanticIcons.aiGenerated`，`AssistantWelcomeSupport` 保留现有描述、starter prompts、记忆提示、免责文案和展开/收起语义。starter prompts 由 `FlowSuggestionGroup(layout: FlowSuggestionLayout.column)` 渲染四个既有 l10n prompt。
 - 删除 `conversation_stack.dart`；保留并更新 `scroll_behavior_test.dart` 验证 FlowChatScreen jump-to-latest。`conversation_surface.dart`、welcome/starter、message-list、input-bar、adapter 保留，未修改 domain/data/controller/SSE 或 l10n。
 
 ## 2026-08-21 Assistant starter prompts（阶段 2d）

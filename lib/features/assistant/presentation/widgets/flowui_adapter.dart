@@ -59,6 +59,7 @@ class AssistantFlowUiAdapter {
     this.onRegenerate,
     this.onResend,
     this.onOpenLink,
+    this.thinkingLabel,
   });
 
   final Future<void> Function({
@@ -73,12 +74,15 @@ class AssistantFlowUiAdapter {
   final VoidCallback? onRegenerate;
   final void Function(String content)? onResend;
   final Future<bool> Function(Uri uri)? onOpenLink;
+  final String? thinkingLabel;
 
-  /// Maps all persisted messages and, when present, appends the draft turn.
+  /// Maps all persisted messages and, when requested, appends the draft turn.
   List<FlowMessageData> mapMessages({
     required String conversationId,
     required List<AssistantMessage> messages,
     String streamingDraft = '',
+    bool isSending = false,
+    bool pending = false,
   }) {
     final mapped = <FlowMessageData>[
       for (var index = 0; index < messages.length; index++)
@@ -88,7 +92,7 @@ class AssistantFlowUiAdapter {
           index: index,
         ),
     ];
-    if (streamingDraft.isNotEmpty) {
+    if (streamingDraft.isNotEmpty || (isSending && pending)) {
       mapped.add(mapStreamingDraft(streamingDraft));
     }
     return mapped;
@@ -172,6 +176,7 @@ class AssistantFlowUiAdapter {
       message,
       customPartBuilder: buildCustomPart,
       footer: isComplete ? _buildFooter(context, message) : null,
+      thinkingLabel: thinkingLabel,
     );
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
@@ -86,6 +87,34 @@ void main() {
       },
     );
 
+    test('mapMessages explicitly maps pending and streaming send states', () {
+      const adapter = AssistantFlowUiAdapter();
+
+      final pending = adapter
+          .mapMessages(
+            conversationId: 'conversation-1',
+            messages: const <AssistantMessage>[],
+            isSending: true,
+            pending: true,
+          )
+          .single;
+      final streaming = adapter
+          .mapMessages(
+            conversationId: 'conversation-1',
+            messages: const <AssistantMessage>[],
+            streamingDraft: 'partial answer',
+            isSending: true,
+            pending: false,
+          )
+          .single;
+
+      expect(pending.parts, isEmpty);
+      expect(pending.status, FlowMessageStatus.pending);
+      expect(streaming.parts.single, isA<FlowTextPart>());
+      expect((streaming.parts.single as FlowTextPart).text, 'partial answer');
+      expect(streaming.status, FlowMessageStatus.streaming);
+    });
+
     test('visible proposal part carries the canonical message id', () {
       final message = _message(
         content: 'proposal answer',
@@ -158,7 +187,7 @@ void main() {
   testWidgets('pending FlowMessage renders thinking without message actions', (
     tester,
   ) async {
-    const adapter = AssistantFlowUiAdapter();
+    const adapter = AssistantFlowUiAdapter(thinkingLabel: '正在生成');
     final pending = adapter.mapStreamingDraft('');
 
     await tester.pumpWidget(
@@ -176,11 +205,194 @@ void main() {
     );
 
     expect(find.byType(FlowThinkingIndicator), findsOneWidget);
+    expect(find.text('正在生成'), findsOneWidget);
     expect(find.byType(FlowMessageActions), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();
   });
+
+  testWidgets('streaming FlowMessage keeps animated text without actions', (
+    tester,
+  ) async {
+    const adapter = AssistantFlowUiAdapter();
+    final streaming = adapter.mapStreamingDraft('partial answer');
+
+    await tester.pumpWidget(
+      TestForuiApp(
+        home: SizedBox(
+          height: 200,
+          child: Builder(
+            builder: (context) => adapter.buildMessage(context, streaming),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(FlowStreamingText), findsOneWidget);
+    expect(find.byType(FlowMessageActions), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+  });
+
+  testWidgets(
+    'sending with empty draft renders localized thinking without empty state',
+    (tester) async {
+      final scrollController = ScrollController();
+      addTearDown(scrollController.dispose);
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: SizedBox(
+            height: 300,
+            child: ProviderScope(
+              overrides: [
+                assistantControllerProvider.overrideWith(
+                  () => _TestAssistantController(
+                    const AssistantState(
+                      conversationId: 'conversation-1',
+                      capabilities: _capabilities,
+                      isSending: true,
+                    ),
+                  ),
+                ),
+              ],
+              child: AssistantConversationMessageList(
+                capabilities: _capabilities,
+                scrollController: scrollController,
+                onConfirmProposal:
+                    ({required messageId, required proposalId}) async {},
+                onDismissProposal:
+                    ({required messageId, required proposalId}) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(FlowThread), findsOneWidget);
+      expect(find.byType(FlowThinkingIndicator), findsOneWidget);
+      expect(find.text('正在生成'), findsOneWidget);
+      expect(find.byType(StateMessageView), findsNothing);
+      expect(find.byType(FlowMessageActions), findsNothing);
+      // The production list must not render the legacy bubble or its dots.
+      expect(find.byType(AssistantMessageBubble), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    },
+  );
+
+  testWidgets(
+    'sending with empty draft keeps thinking when capability is disabled but history exists',
+    (tester) async {
+      final scrollController = ScrollController();
+      addTearDown(scrollController.dispose);
+      final capabilities = _capabilitiesWithAssistantEnabled(false);
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: SizedBox(
+            height: 400,
+            child: ProviderScope(
+              overrides: [
+                assistantControllerProvider.overrideWith(
+                  () => _TestAssistantController(
+                    AssistantState(
+                      conversationId: 'conversation-1',
+                      capabilities: capabilities,
+                      isSending: true,
+                      messages: <AssistantMessage>[
+                        _message(content: 'previous answer'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              child: AssistantConversationMessageList(
+                capabilities: capabilities,
+                scrollController: scrollController,
+                onConfirmProposal:
+                    ({required messageId, required proposalId}) async {},
+                onDismissProposal:
+                    ({required messageId, required proposalId}) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(FlowThinkingIndicator), findsOneWidget);
+      expect(find.byType(StateMessageView), findsNothing);
+      expect(find.byType(AssistantMessageBubble), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    },
+  );
+
+  testWidgets(
+    'streaming draft in the real message list has no streaming actions',
+    (tester) async {
+      final scrollController = ScrollController();
+      addTearDown(scrollController.dispose);
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: SizedBox(
+            height: 400,
+            child: ProviderScope(
+              overrides: [
+                assistantControllerProvider.overrideWith(
+                  () => _TestAssistantController(
+                    AssistantState(
+                      conversationId: 'conversation-1',
+                      capabilities: _capabilities,
+                      isSending: true,
+                      streamingDraft: 'partial answer',
+                      messages: <AssistantMessage>[
+                        _message(content: 'previous answer'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              child: AssistantConversationMessageList(
+                capabilities: _capabilities,
+                scrollController: scrollController,
+                onConfirmProposal:
+                    ({required messageId, required proposalId}) async {},
+                onDismissProposal:
+                    ({required messageId, required proposalId}) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final streamingMessage = find.byWidgetPredicate(
+        (widget) =>
+            widget is FlowMessage &&
+            widget.message.status == FlowMessageStatus.streaming,
+      );
+      expect(find.byType(FlowStreamingText), findsOneWidget);
+      expect(
+        find.descendant(
+          of: streamingMessage,
+          matching: find.byType(FlowMessageActions),
+        ),
+        findsNothing,
+      );
+      expect(find.byType(AssistantMessageBubble), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    },
+  );
 
   testWidgets('production message list renders through FlowThread', (
     tester,
@@ -455,6 +667,24 @@ const _capabilities = AssistantCapabilities(
   tools: <AssistantToolCapability>[],
   updatedAt: null,
 );
+
+AssistantCapabilities _capabilitiesWithAssistantEnabled(bool enabled) {
+  return AssistantCapabilities(
+    phase: _capabilities.phase,
+    assistantEnabled: enabled,
+    assistantMemoryEnabled: _capabilities.assistantMemoryEnabled,
+    assistantContext: _capabilities.assistantContext,
+    chatModelConfigured: _capabilities.chatModelConfigured,
+    interactiveChatReady: _capabilities.interactiveChatReady,
+    langGraphReady: _capabilities.langGraphReady,
+    streamingSupported: _capabilities.streamingSupported,
+    streamingTransport: _capabilities.streamingTransport,
+    markdownRenderingRecommended: _capabilities.markdownRenderingRecommended,
+    ragEnabled: _capabilities.ragEnabled,
+    tools: _capabilities.tools,
+    updatedAt: _capabilities.updatedAt,
+  );
+}
 
 class _TestAssistantController extends AssistantController {
   _TestAssistantController(this.initialState);
