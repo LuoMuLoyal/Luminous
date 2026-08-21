@@ -128,8 +128,12 @@ class ClinicSummaryContent extends StatelessWidget {
         ],
 
         // Key findings — gated by event_overview (R-2): the server only
-        // includes findings when event_overview is selected.
-        if (dto.findings != null && dto.findings!.isNotEmpty) ...[
+        // includes findings when event_overview is selected. The
+        // _sectionSelected guard ensures consistency with the other
+        // selectable fields (profile, conditions, currentMedicines).
+        if (dto.findings != null &&
+            dto.findings!.isNotEmpty &&
+            _sectionSelected(dto.selectedFields, 'findings')) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
@@ -139,7 +143,9 @@ class ClinicSummaryContent extends StatelessWidget {
         ],
 
         // Water entries — gated by the `water` field toggle (R-2).
-        if (dto.waterEntries != null && dto.waterEntries!.isNotEmpty) ...[
+        if (dto.waterEntries != null &&
+            dto.waterEntries!.isNotEmpty &&
+            _sectionSelected(dto.selectedFields, 'water')) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
@@ -153,7 +159,9 @@ class ClinicSummaryContent extends StatelessWidget {
         ],
 
         // Sleep entries — gated by the `sleep` field toggle (R-2).
-        if (dto.sleepEntries != null && dto.sleepEntries!.isNotEmpty) ...[
+        if (dto.sleepEntries != null &&
+            dto.sleepEntries!.isNotEmpty &&
+            _sectionSelected(dto.selectedFields, 'sleep')) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
@@ -169,7 +177,9 @@ class ClinicSummaryContent extends StatelessWidget {
 
         // Note entries — gated by the `notes` field toggle (R-2).
         // Defaults to off; the user must explicitly opt in.
-        if (dto.noteEntries != null && dto.noteEntries!.isNotEmpty) ...[
+        if (dto.noteEntries != null &&
+            dto.noteEntries!.isNotEmpty &&
+            _sectionSelected(dto.selectedFields, 'notes')) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),

@@ -1,4 +1,5 @@
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
@@ -91,15 +92,21 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
   ReportAiSummaryPatternKind _mapPatternKind(
     lucent.ReportObservedPatternDtoKindEnum kind,
   ) {
-    return switch (kind) {
-      lucent.ReportObservedPatternDtoKindEnum.medication =>
-        ReportAiSummaryPatternKind.medication,
-      lucent.ReportObservedPatternDtoKindEnum.hydration =>
-        ReportAiSummaryPatternKind.hydration,
-      lucent.ReportObservedPatternDtoKindEnum.sleep =>
-        ReportAiSummaryPatternKind.sleep,
-      _ => ReportAiSummaryPatternKind.medication,
-    };
+    switch (kind) {
+      case lucent.ReportObservedPatternDtoKindEnum.medication:
+        return ReportAiSummaryPatternKind.medication;
+      case lucent.ReportObservedPatternDtoKindEnum.hydration:
+        return ReportAiSummaryPatternKind.hydration;
+      case lucent.ReportObservedPatternDtoKindEnum.sleep:
+        return ReportAiSummaryPatternKind.sleep;
+      // The OpenAPI generator emits this sentinel for any value the server
+      // returns that the generated client does not know about. Log a
+      // warning and fall back to `medication` rather than throwing,
+      // so a single unknown pattern kind does not break the entire summary.
+      case lucent.ReportObservedPatternDtoKindEnum.unknownDefaultOpenApi:
+        appTalker.warning('Unknown pattern kind from API: $kind');
+        return ReportAiSummaryPatternKind.medication;
+    }
   }
 
   ReportAiSummaryLowRiskAction? _mapLowRiskAction(
@@ -110,12 +117,19 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
   }
 
   ReportAiSummaryRange _mapRange(lucent.ReportSummaryDataDtoRangeEnum range) {
-    return switch (range) {
-      lucent.ReportSummaryDataDtoRangeEnum.last30Days =>
-        ReportAiSummaryRange.last30Days,
-      lucent.ReportSummaryDataDtoRangeEnum.custom =>
-        ReportAiSummaryRange.custom,
-      _ => ReportAiSummaryRange.last7Days,
-    };
+    switch (range) {
+      case lucent.ReportSummaryDataDtoRangeEnum.last7Days:
+        return ReportAiSummaryRange.last7Days;
+      case lucent.ReportSummaryDataDtoRangeEnum.last30Days:
+        return ReportAiSummaryRange.last30Days;
+      case lucent.ReportSummaryDataDtoRangeEnum.custom:
+        return ReportAiSummaryRange.custom;
+      // The OpenAPI generator emits this sentinel for any value the server
+      // returns that the generated client does not know about. Log a
+      // warning and fall back to `last7Days` rather than throwing.
+      case lucent.ReportSummaryDataDtoRangeEnum.unknownDefaultOpenApi:
+        appTalker.warning('Unknown summary range from API: $range');
+        return ReportAiSummaryRange.last7Days;
+    }
   }
 }
