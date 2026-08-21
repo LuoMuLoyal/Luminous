@@ -186,7 +186,7 @@ void main() {
   testWidgets('pending FlowMessage renders thinking without message actions', (
     tester,
   ) async {
-    const adapter = AssistantFlowUiAdapter(thinkingLabel: '正在生成');
+    const adapter = AssistantFlowUiAdapter(thinkingLabel: '思考中…');
     final pending = adapter.mapStreamingDraft('');
 
     await tester.pumpWidget(
@@ -204,7 +204,7 @@ void main() {
     );
 
     expect(find.byType(FlowThinkingIndicator), findsOneWidget);
-    expect(find.text('正在生成'), findsOneWidget);
+    expect(find.text('思考中…'), findsOneWidget);
     expect(find.byType(FlowMessageActions), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
@@ -273,7 +273,7 @@ void main() {
 
       expect(find.byType(FlowThread), findsOneWidget);
       expect(find.byType(FlowThinkingIndicator), findsOneWidget);
-      expect(find.text('正在生成'), findsOneWidget);
+      expect(find.text('思考中…'), findsOneWidget);
       expect(find.byType(StateMessageView), findsNothing);
       expect(find.byType(FlowMessageActions), findsNothing);
       await tester.pumpWidget(const SizedBox.shrink());

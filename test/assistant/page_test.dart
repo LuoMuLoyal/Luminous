@@ -706,7 +706,7 @@ void main() {
       identical(screen.threadController, threadWidget.scrollController),
       isTrue,
     );
-    expect(screen.jumpToLatestTooltip, isNotEmpty);
+    expect(screen.jumpToLatestTooltip, '跳转到最新');
   });
 
   testWidgets('empty assistant page keeps greeting and welcome support copy', (

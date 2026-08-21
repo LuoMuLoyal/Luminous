@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-21
+updated: 2026-08-22
 ---
 
 # Flutter Localization
 
-Last updated: 2026-08-21 (移除已删除的 assistant desktop send shortcut hint l10n key，保留 assistant input disabled hint 归属。)
+Last updated: 2026-08-22 (完成 assistant 阶段 4 l10n 同步并清理已废弃 key。)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -596,3 +596,11 @@ flutter test
 
 - 新增 `authSecurityElevationRequiredToast`（zh: 请验证安全 PIN / en: Please verify your Security PIN.）到 `lib/l10n/src/auth_zh.arb` / `auth_en.arb`。
 - 该文案归属 `auth` 分片，因为它只在修改邮箱、修改密码、解绑三方身份的账号操作失败后由认证页面展示；已执行 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n`。
+
+## 2026-08-22 Assistant 阶段 4 l10n 同步
+
+- `assistantThinkingLabel`（思考中… / Thinking…）归属 `lib/l10n/src/assistant_zh.arb` / `assistant_en.arb`，由 `conversation_message_list.dart` 传给 `AssistantFlowUiAdapter` 的 pending thinking indicator。
+- `assistantJumpToLatestTooltip`（跳转到最新 / Jump to latest）归属 assistant fragment，由 `page_body.dart` 传给 `FlowChatScreen.jumpToLatestTooltip`。
+- `assistantComposerPlaceholder` 归属 assistant fragment，复用原 `assistantInputHint` 的中英文值，由 page body 私有 composer host 使用。
+- 确认 `lib/` 与 `test/` 无 active 引用后，删除 obsolete `assistantStreamingLabel`、`assistantScrollToBottom`、`assistantInputHint`；未删除仍在使用的其他 assistant key。
+- 已执行 `dart scripts/arb_tools.dart merge` 与 `flutter gen-l10n`，新 fragment key 已进入生成的 app localization 产物。

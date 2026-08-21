@@ -31,7 +31,7 @@ void main() {
               itemSpacing: 8,
             ),
             threadController: controller,
-            jumpToLatestTooltip: 'jump-to-latest',
+            jumpToLatestTooltip: '跳转到最新',
           ),
         ),
       ),
@@ -42,7 +42,7 @@ void main() {
     expect(controller.offset, greaterThan(0));
 
     await tester.pump();
-    final jumpButton = find.byTooltip('jump-to-latest');
+    final jumpButton = find.byTooltip('跳转到最新');
     expect(jumpButton, findsOneWidget);
 
     await tester.tap(jumpButton);

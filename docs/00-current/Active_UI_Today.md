@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-21
+updated: 2026-08-22
 ---
 
 # Active UI — Today
 
-Last updated: 2026-08-21 (H-10 `todaySuggestionProvider` now watches `DataChangeTopic.healthEvents` so suggestion cards refresh after event create/end/check-in; F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed; Today vital row reads real heart-rate/blood-pressure daily records; summary fallback narrative uses neutral onboarding copy; assistant production input now uses FlowComposer and no longer shows desktop shortcut guidance)
+Last updated: 2026-08-22 (H-10 `todaySuggestionProvider` now watches `DataChangeTopic.healthEvents` so suggestion cards refresh after event create/end/check-in; F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed; Today vital row reads real heart-rate/blood-pressure daily records; summary fallback narrative uses neutral onboarding copy; assistant production input now uses FlowComposer and no longer shows desktop shortcut guidance; assistant 阶段 4 l10n 已完成 merge/gen-l10n)
 
 ## 页面结构
 
@@ -128,10 +128,10 @@ Last updated: 2026-08-21
 - 助手页使用轻量 Forui header：从左到右为返回、历史对话、新会话、设置；不再在消息区常驻技术状态卡。
 - 历史对话使用页面内不透明 push drawer：聊天页整体向右移动，抽屉内容不会通过透明 modal barrier 覆盖聊天页。
 - 助手设置（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从 header 设置按钮跳转到独立 `/settings/ai` 页面调整。
-- 流式滚底由 FlowUI `FlowChatScreen` 接管：`FlowThread` 与页面共享 `ScrollController`，使用现有 `assistantScrollToBottom` tooltip 的内置 jump-to-latest；页面不再自建滚动按钮或恢复旧的 maxScrollExtent 逻辑。
+- 流式滚底由 FlowUI `FlowChatScreen` 接管：`FlowThread` 与页面共享 `ScrollController`，使用 assistant `assistantJumpToLatestTooltip` 的内置 jump-to-latest；页面不再自建滚动按钮或恢复旧的 maxScrollExtent 逻辑。
 - 助手状态文案已重写为自然语言（"AI 助手已准备好" / "AI 助手正在准备中" / "AI 助手暂时不可用" / "AI 助手已关闭"）。
 - **页面结构拆分**：`AssistantPage` 仅保留控制器与高层回调，UI 布局下沉到 `AssistantPageBody`；消息列表、输入区和空态由 body-only 的 `FlowChatScreen` 组装，保留 header/drawer、状态门控和错误处理。
-- **输入区使用 page body 私有 composer host**：复用现有 controller 和 placeholder，最多 5 行；移动端换行与发送由 FlowComposer 提供；`canSendMessages == false` 保留 disabled hint，发送中禁用且 `isStreaming: false`，不显示桌面 Ctrl/Cmd+Enter 提示。
+- **输入区使用 page body 私有 composer host**：复用现有 controller 和 `assistantComposerPlaceholder`，最多 5 行；移动端换行与发送由 FlowComposer 提供；`canSendMessages == false` 保留 disabled hint，发送中禁用且 `isStreaming: false`，不显示桌面 Ctrl/Cmd+Enter 提示。
 - **FlowUI 消息渲染**：`AssistantFlowUiAdapter` 负责 FlowMessage、Markdown、proposal、来源/免责条和消息 actions；流式与 pending 状态由 FlowUI 原生组件渲染，旧 message bubble 路径已删除。当前后端对常见 graph 回答先执行 `graph.invoke()`，再通过空白切分回放伪 chunk；SSE 传输正常，但尚未实现从 graph/LLM 到 HTTP 的真实增量流。
 - **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 通过页面内 `Stack` 从左侧推入，固定不透明背景；顶部使用 Forui 搜索框、关闭和新对话按钮；会话仍按"今天 / 最近 7 天 / 更早"分组，当前会话用 `prefix` 对勾图标高亮；搜索只过滤已加载列表；重命名/删除已接入 Lucent/`AssistantController`，当前会话清理使用 `isClearingConversation` / loading 状态。
 - **首屏重做**：空会话由 `FlowGreeting` 展示标题和 AI 图标，page body 私有 empty support 保留描述、starter prompts、记忆提示和可展开/收起的健康免责；输入区和聊天消息状态不改变。starter prompts 使用 FlowUI 的 column suggestions。
@@ -144,7 +144,7 @@ Last updated: 2026-08-21
 - **FlowUI 主题桥接**（2026-08-21）：assistant 入口局部注入从当前 Forui 主题和 Luminous 语义色/字体派生的 `FlowTheme`，保留父主题已有扩展；FlowUI 主题不会泄露到其他页面。bridge 作用域测试和真实 `AssistantPage` 构建树接线测试覆盖该约束。
 - **FlowUI 消息列表**（2026-08-21）：生产消息列表已通过 assistant FlowUI adapter 使用 `FlowThread` + `FlowMessage`；旧 message bubble 已删除，消息身份、proposal canonical id、Markdown 链接确认和现有消息操作回调继续由 adapter 透传。
 - **FlowUI thinking indicator（阶段 2e，2026-08-21）**：发送中且 `streamingDraft` 为空时，消息列表将 adapter 的 pending `FlowMessage` 加入 `FlowThread`，由 `FlowThinkingIndicator` 渲染；即使能力快照关闭但已有历史消息，重生成/发送中的 pending 状态仍保留；真正无消息、无 draft 且能力关闭时继续显示 disabled `StateMessageView`。发送中已有 draft 时保持 `FlowTextPart` + `FlowMessageStatus.streaming`。pending/streaming 均不创建 footer/actions，完成态继续保留 footer/actions；旧手写 bubble 与 dots 路径已删除。
-- thinking label 暂复用现有 `assistantStreamingLabel`（不新增或编辑 ARB）；阶段 4 再切换到计划中的 `assistantThinkingLabel`，并处理其余新 l10n key。
+- thinking label 使用 assistant fragment 的 `assistantThinkingLabel`；jump-to-latest tooltip 使用 `assistantJumpToLatestTooltip`，composer 使用复用 `assistantInputHint` 原值的 `assistantComposerPlaceholder`。旧 `assistantStreamingLabel`、`assistantScrollToBottom`、`assistantInputHint` 已在确认无 active 引用后从 assistant fragments 删除；已完成 `dart scripts/arb_tools.dart merge` 与 `flutter gen-l10n` 验证。
 
 ## 2026-07-19 补充
 

@@ -288,7 +288,7 @@ class AssistantPageBody extends ConsumerWidget {
                           )
                         : null,
                     threadController: scrollController,
-                    jumpToLatestTooltip: l10n.assistantScrollToBottom,
+                    jumpToLatestTooltip: l10n.assistantJumpToLatestTooltip,
                   ),
                 ),
               ],
@@ -428,7 +428,7 @@ class _AssistantComposerHost extends StatelessWidget {
           child: FlowComposer(
             key: const Key('assistant-input'),
             controller: controller,
-            placeholder: l10n.assistantInputHint,
+            placeholder: l10n.assistantComposerPlaceholder,
             maxLines: 5,
             submitOnEnter: false,
             enabled: canSendMessages && !isSending,

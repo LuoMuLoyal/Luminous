@@ -91,7 +91,7 @@ class AssistantConversationMessageList extends ConsumerWidget {
       onRegenerate: onRegenerate,
       onResend: onResend,
       onOpenLink: openLink,
-      thinkingLabel: l10n.assistantStreamingLabel,
+      thinkingLabel: l10n.assistantThinkingLabel,
     );
 
     return FlowThread(
