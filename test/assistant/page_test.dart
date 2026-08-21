@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -13,8 +14,6 @@ import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/pages/page.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar_starter_prompts.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -286,6 +285,13 @@ void main() {
 
     // Should show hint about toggling in settings
     expect(find.text('你已关闭 AI 对话，在右上角设置中打开“启用 AI 对话”开关即可恢复。'), findsOneWidget);
+    final composer = tester.widget<FlowComposer>(find.byType(FlowComposer));
+    expect(composer.enabled, isFalse);
+    expect(
+      tester.widget<TextField>(_assistantInputTextField()).enabled,
+      isFalse,
+    );
+    expect(find.byIcon(Icons.stop_rounded), findsNothing);
   });
 
   testWidgets('disabled AI chat still shows restored history', (tester) async {
@@ -611,6 +617,73 @@ void main() {
     expect(_assistantSendButton(), findsOneWidget);
   });
 
+  testWidgets('page send trims input and clears the shared controller', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repository = _RecordingAssistantRepository();
+
+    await tester.pumpWidget(_buildTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(_assistantInputTextField(), '  帮我看看睡眠  ');
+    await tester.pump();
+    await tester.tap(_assistantSendButton());
+    await tester.pumpAndSettle();
+
+    final textField = tester.widget<TextField>(_assistantInputTextField());
+    expect(textField.controller?.text, isEmpty);
+    expect(repository.sentMessageBatches, hasLength(1));
+    expect(repository.sentMessageBatches.single.single.content, '帮我看看睡眠');
+  });
+
+  testWidgets('page composer keeps editing on hardware Enter shortcuts', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repository = _RecordingAssistantRepository();
+
+    await tester.pumpWidget(_buildTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(_assistantInputTextField(), 'keep editing');
+    await tester.tap(_assistantInputTextField());
+    await tester.pump();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter, character: '\n');
+    await tester.pump();
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.control);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter, character: '\n');
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.control);
+    await tester.pump();
+
+    expect(repository.sentMessageBatches, isEmpty);
+    expect(
+      tester.widget<TextField>(_assistantInputTextField()).controller?.text,
+      'keep editing',
+    );
+  });
+
+  testWidgets('page composer preserves the FlowUI input contract', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _FakeAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    final composer = tester.widget<FlowComposer>(find.byType(FlowComposer));
+    expect(composer.enabled, isTrue);
+    expect(composer.isStreaming, isFalse);
+    expect(composer.submitOnEnter, isFalse);
+
+    final textField = tester.widget<TextField>(_assistantInputTextField());
+    expect(textField.maxLines, 5);
+    expect(textField.decoration?.hintText, '比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。');
+  });
+
   testWidgets('normal assistant page uses the FlowChatScreen composition', (
     tester,
   ) async {
@@ -623,25 +696,17 @@ void main() {
 
     final screen = tester.widget<FlowChatScreen>(find.byType(FlowChatScreen));
     final threadWidget = screen.thread! as AssistantConversationMessageList;
-    final composer = screen.composer;
 
     expect(find.byType(FlowChatScreen), findsOneWidget);
     expect(find.byType(FlowThread), findsOneWidget);
     expect(screen.thread, isA<AssistantConversationMessageList>());
-    expect(composer, isA<AssistantInputBar>());
+    expect(find.byType(FlowComposer), findsOneWidget);
     expect(screen.threadController, isNotNull);
     expect(
       identical(screen.threadController, threadWidget.scrollController),
       isTrue,
     );
     expect(screen.jumpToLatestTooltip, isNotEmpty);
-    expect(
-      find.byWidgetPredicate(
-        (widget) =>
-            widget.runtimeType.toString() == 'AssistantConversationStack',
-      ),
-      findsNothing,
-    );
   });
 
   testWidgets('empty assistant page keeps greeting and welcome support copy', (
@@ -660,7 +725,14 @@ void main() {
     expect(find.byType(FlowGreeting), findsOneWidget);
     expect(find.text('开始和 Luminous 聊天'), findsOneWidget);
     expect(find.text('可以问我最近的睡眠、记录和用药情况。'), findsOneWidget);
-    expect(find.byType(AssistantInputStarterPrompts), findsOneWidget);
+    final suggestions = tester.widget<FlowSuggestionGroup>(
+      find.byType(FlowSuggestionGroup),
+    );
+    expect(suggestions.layout, FlowSuggestionLayout.column);
+    expect(
+      suggestions.suggestions.map((suggestion) => suggestion.label),
+      <String>['总结我今天的记录', '我最近睡眠怎么样', '我当前在吃什么药', '帮我看看要注意什么'],
+    );
     const starterPrompt = '总结我今天的记录';
     await tester.tap(find.text(starterPrompt));
     await tester.pump();
@@ -674,6 +746,32 @@ void main() {
       find.byKey(const Key('assistant-welcome-disclaimer')),
       findsOneWidget,
     );
+    expect(find.byIcon(SemanticIcons.actionCollapse), findsOneWidget);
+    final disclaimer = find.byKey(const Key('assistant-welcome-disclaimer'));
+    await tester.ensureVisible(disclaimer);
+    await tester.tap(disclaimer);
+    await tester.pump();
+    expect(
+      tester
+          .widget<Text>(find.text('AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。'))
+          .maxLines,
+      1,
+    );
+    expect(find.byIcon(SemanticIcons.actionExpand), findsOneWidget);
+  });
+
+  testWidgets('empty assistant page shows the memory hint when enabled', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _MemoryEnabledAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('已开启跨会话记忆'), findsOneWidget);
+    expect(find.text('你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭。'), findsOneWidget);
   });
 
   testWidgets('AssistantPage scopes one FlowTheme below MaterialApp', (
@@ -868,6 +966,47 @@ class _FakeAssistantRepository
   }) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
+}
+
+class _RecordingAssistantRepository extends _FakeAssistantRepository {
+  final List<List<AssistantMessage>> sentMessageBatches =
+      <List<AssistantMessage>>[];
+
+  @override
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
+    sentMessageBatches.add(List<AssistantMessage>.of(messages));
+    return const Stream<AssistantGenerationEvent>.empty();
+  }
+}
+
+class _MemoryEnabledAssistantRepository extends _FakeAssistantRepository {
+  static const _memoryEnabledCapabilities = AssistantCapabilities(
+    phase: 'phase_1',
+    assistantEnabled: true,
+    assistantMemoryEnabled: true,
+    assistantContext: AssistantContextAccess(
+      healthProfile: true,
+      dailyRecords: true,
+      sleepRecords: true,
+      currentMedicines: true,
+    ),
+    chatModelConfigured: true,
+    interactiveChatReady: true,
+    langGraphReady: true,
+    streamingSupported: true,
+    streamingTransport: 'sse',
+    markdownRenderingRecommended: true,
+    ragEnabled: false,
+    tools: <AssistantToolCapability>[],
+    updatedAt: null,
+  );
+
+  @override
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _memoryEnabledCapabilities;
 }
 
 Widget _buildTestApp({

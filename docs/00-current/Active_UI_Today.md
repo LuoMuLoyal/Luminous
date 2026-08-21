@@ -131,20 +131,19 @@ Last updated: 2026-08-21
 - 流式滚底由 FlowUI `FlowChatScreen` 接管：`FlowThread` 与页面共享 `ScrollController`，使用现有 `assistantScrollToBottom` tooltip 的内置 jump-to-latest；页面不再自建滚动按钮或恢复旧的 maxScrollExtent 逻辑。
 - 助手状态文案已重写为自然语言（"AI 助手已准备好" / "AI 助手正在准备中" / "AI 助手暂时不可用" / "AI 助手已关闭"）。
 - **页面结构拆分**：`AssistantPage` 仅保留控制器与高层回调，UI 布局下沉到 `AssistantPageBody`；消息列表、输入区和空态由 body-only 的 `FlowChatScreen` 组装，保留 header/drawer、状态门控和错误处理。
-- **输入区使用 `AssistantInputBar` → `FlowComposer` 过渡 facade**：复用现有 controller 和 placeholder，最多 5 行；移动端换行与发送由 FlowComposer 提供；`canSendMessages == false` 保留 disabled hint，发送中禁用且 `isStreaming: false`，不显示桌面 Ctrl/Cmd+Enter 提示。
-- **消息气泡去工程化**：`AssistantMessageBubble` 移除工具 chip 渲染与"正在生成"文字标签，流式期间使用 pulsing dots 动画指示器；用户气泡文字使用主色实色，避免浅色背景上使用浅色 `primaryForeground` 导致不可读；上下文菜单改用 `FContextMenu.tiles`，复制和"重新生成 / 重新发送"操作的完整按钮化交互仍列入 TODO。
-- **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。当前后端对常见 graph 回答先执行 `graph.invoke()`，再通过空白切分回放伪 chunk；SSE 传输正常，但尚未实现从 graph/LLM 到 HTTP 的真实增量流。
-- **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 通过页面内 `Stack` 从左侧推入，固定不透明背景；顶部使用 Forui 搜索框、关闭和新对话按钮；会话仍按"今天 / 最近 7 天 / 更早"分组，当前会话用 `prefix` 对勾图标高亮；搜索只过滤已加载列表，重命名/删除因后端暂无对应接口暂未接入。
-- **首屏重做**：空会话由 `FlowGreeting` 展示标题和 AI 图标，`AssistantWelcomeSupport` 保留描述、starter prompts、记忆提示和可展开/收起的健康免责；输入区和聊天消息状态不改变。starter prompts 已迁移到 FlowUI 的 column suggestions。
+- **输入区使用 page body 私有 composer host**：复用现有 controller 和 placeholder，最多 5 行；移动端换行与发送由 FlowComposer 提供；`canSendMessages == false` 保留 disabled hint，发送中禁用且 `isStreaming: false`，不显示桌面 Ctrl/Cmd+Enter 提示。
+- **FlowUI 消息渲染**：`AssistantFlowUiAdapter` 负责 FlowMessage、Markdown、proposal、来源/免责条和消息 actions；流式与 pending 状态由 FlowUI 原生组件渲染，旧 message bubble 路径已删除。当前后端对常见 graph 回答先执行 `graph.invoke()`，再通过空白切分回放伪 chunk；SSE 传输正常，但尚未实现从 graph/LLM 到 HTTP 的真实增量流。
+- **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 通过页面内 `Stack` 从左侧推入，固定不透明背景；顶部使用 Forui 搜索框、关闭和新对话按钮；会话仍按"今天 / 最近 7 天 / 更早"分组，当前会话用 `prefix` 对勾图标高亮；搜索只过滤已加载列表；重命名/删除已接入 Lucent/`AssistantController`，当前会话清理使用 `isClearingConversation` / loading 状态。
+- **首屏重做**：空会话由 `FlowGreeting` 展示标题和 AI 图标，page body 私有 empty support 保留描述、starter prompts、记忆提示和可展开/收起的健康免责；输入区和聊天消息状态不改变。starter prompts 使用 FlowUI 的 column suggestions。
 - **设置页独立化**：聊天页设置按钮跳转现有 `/settings/ai` 独立页面；`AssistantControlsSheet` 保留为未使用的旧实现，当前聊天流程不再打开透明设置浮层。
-- **测试覆盖**：`test/assistant/widgets_test.dart` 覆盖消息气泡上下文菜单、会话 drawer 分组/高亮/空态/新建按钮/搜索过滤、状态消息等；流式渲染、drawer 推移、header 四入口和设置跳转由 `test/assistant/page_test.dart` 覆盖。
+- **测试覆盖**：`test/assistant/flowui_adapter_test.dart` 覆盖消息/Markdown/proposal/actions/links，`test/assistant/widgets_test.dart` 覆盖保留组件和会话 drawer，流式渲染、空态、drawer 推移、header 四入口和设置跳转由 `test/assistant/page_test.dart` 覆盖。
 - **drawer 宽度缓存**（2026-08-03）：`AssistantPage` 的 `drawerWidth` 由每帧 `MediaQuery.sizeOf` 计算改为 `useMemoized` 缓存，仅屏幕宽度变化时重算。
 - **会话分组边界**（2026-08-03）：会话列表"今天/本周"边界由 `isAfter` 改为 `!isBefore`（等价 isAfterOrEqualTo），正好 00:00:00 更新的会话归入当天/本周而非"更早"。
 - **AI 内容 Markdown 样式统一**（2026-08-03）：助手消息气泡、Today AI 摘要（w600）、建议 reason/boundary 均接入 `MarkdownStyle.ai`（见 [[Design_System#Markdown 渲染]]）；气泡传入自身背景色使代码背景自适配。
-- **Drawer 状态投影**（2026-08-04）：新增 `AssistantDrawerState` 轻量数据类（`conversationId / isOpeningConversation / isLoadingRecentConversations / recentConversationError / recentConversations`）。`AssistantPage` 通过 `select(...)` 仅投影 drawer 所需字段，避免流式消息/`streamingDraft` 变化时重建整个 `AssistantConversationDrawer` 与列表。
+- **Drawer 状态投影**（2026-08-04）：新增 `AssistantDrawerState` 轻量数据类（`conversationId / isOpeningConversation / isClearingConversation / isLoadingRecentConversations / recentConversationError / recentConversations`）。`AssistantPage` 通过 `select(...)` 仅投影 drawer 当前会话加载/清理和列表所需字段，避免流式消息/`streamingDraft` 变化时重建整个 `AssistantConversationDrawer` 与列表。
 - **FlowUI 主题桥接**（2026-08-21）：assistant 入口局部注入从当前 Forui 主题和 Luminous 语义色/字体派生的 `FlowTheme`，保留父主题已有扩展；FlowUI 主题不会泄露到其他页面。bridge 作用域测试和真实 `AssistantPage` 构建树接线测试覆盖该约束。
-- **FlowUI 消息列表**（2026-08-21）：生产消息列表已通过 assistant FlowUI adapter 使用 `FlowThread` + `FlowMessage`；旧 `AssistantMessageBubble` 仅保留给阶段 3 清理前的孤立测试，消息身份、proposal canonical id、Markdown 链接确认和现有消息操作回调继续由 adapter 透传。
-- **FlowUI thinking indicator（阶段 2e，2026-08-21）**：发送中且 `streamingDraft` 为空时，消息列表将 adapter 的 pending `FlowMessage` 加入 `FlowThread`，由 `FlowThinkingIndicator` 渲染；即使能力快照关闭但已有历史消息，重生成/发送中的 pending 状态仍保留；真正无消息、无 draft 且能力关闭时继续显示 disabled `StateMessageView`。发送中已有 draft 时保持 `FlowTextPart` + `FlowMessageStatus.streaming`。pending/streaming 均不创建 footer/actions，完成态继续保留 footer/actions；生产消息列表不再渲染 `AssistantMessageBubble` 或其旧 dots 路径。
+- **FlowUI 消息列表**（2026-08-21）：生产消息列表已通过 assistant FlowUI adapter 使用 `FlowThread` + `FlowMessage`；旧 message bubble 已删除，消息身份、proposal canonical id、Markdown 链接确认和现有消息操作回调继续由 adapter 透传。
+- **FlowUI thinking indicator（阶段 2e，2026-08-21）**：发送中且 `streamingDraft` 为空时，消息列表将 adapter 的 pending `FlowMessage` 加入 `FlowThread`，由 `FlowThinkingIndicator` 渲染；即使能力快照关闭但已有历史消息，重生成/发送中的 pending 状态仍保留；真正无消息、无 draft 且能力关闭时继续显示 disabled `StateMessageView`。发送中已有 draft 时保持 `FlowTextPart` + `FlowMessageStatus.streaming`。pending/streaming 均不创建 footer/actions，完成态继续保留 footer/actions；旧手写 bubble 与 dots 路径已删除。
 - thinking label 暂复用现有 `assistantStreamingLabel`（不新增或编辑 ARB）；阶段 4 再切换到计划中的 `assistantThinkingLabel`，并处理其余新 l10n key。
 
 ## 2026-07-19 补充
@@ -209,21 +208,9 @@ Last updated: 2026-08-21
 - 第二个快捷操作由"快速记录"改为一键饮水，点击后直接创建饮水记录并刷新相关 dashboard，不再跳转表单页。
 - `WaterQuickEntryFlow` 与 `QuickEntryUndoService` 从 record presentation 层迁移到 `lib/features/record/application/usecases/`，Today 通过 `executeTodayWaterQuickEntry` 复用，避免跨 feature 直接依赖 record presentation。
 
-## 2026-08-21 Assistant 输入区 FlowComposer
+## 2026-08-21 Assistant UI 清理（阶段 3）
 
-- 生产 `AssistantInputBar` 保留为过渡 facade，内部改由 `FlowComposer` 提供多行输入、移动软键盘换行和发送按钮；复用现有 controller、placeholder 和发送回调。
-- `maxLines` 保持 5；`canSendMessages == false` 保留现有禁用提示和状态图标；发送中整体禁用 composer，`isStreaming` 恒为 false，不显示 stop/cancel。
-- 删除桌面 Ctrl/Cmd+Enter 快捷键提示与自动隐藏 timer；保留 `input_bar.dart` 供后续阶段继续使用，未删除 conversation surface/page body。
-
-## 2026-08-21 Assistant FlowChatScreen 编排（阶段 2c）
-
-- `AssistantPageBody` 正常能力分支使用 `FlowChatScreen`，传入现有 `AssistantConversationMessageList`、`AssistantInputBar` facade、共享 `scrollController` 和 `assistantScrollToBottom` tooltip；打开会话提示、发送错误与重试仍通过 `aboveComposer` 保留。
-- 空态仅在无对话、能力允许发送且当前未发送时启用；FlowGreeting 使用 `assistantWelcomeTitle` 和 `SemanticIcons.aiGenerated`，`AssistantWelcomeSupport` 保留现有描述、starter prompts、记忆提示、免责文案和展开/收起语义。starter prompts 由 `FlowSuggestionGroup(layout: FlowSuggestionLayout.column)` 渲染四个既有 l10n prompt。
-- 删除 `conversation_stack.dart`；保留并更新 `scroll_behavior_test.dart` 验证 FlowChatScreen jump-to-latest。`conversation_surface.dart`、welcome/starter、message-list、input-bar、adapter 保留，未修改 domain/data/controller/SSE 或 l10n。
-
-## 2026-08-21 Assistant starter prompts（阶段 2d）
-
-- `AssistantInputStarterPrompts` 保留原类名、`onSelected` API、标题和四个 l10n prompt 的顺序/文案；内部从 Forui `FButton/Wrap` 迁移为 `FlowSuggestionGroup` 的 column 布局与四个 `FlowSuggestion`。
-- 每个 suggestion 的 `label` 使用原 prompt，`onTap` 传回同一个原 prompt；`onSelected == null` 时所有 suggestions 通过 null `onTap` 禁用。未引入 icon、attachment、menu 或新 l10n。
-- 保持 `AssistantWelcomeSupport`、`FlowChatScreen` 空态/page body 与现有 domain/controller 不变；保留 starter widget 文件。
-- 旧 host 文件阶段 3 清理。
+- `AssistantPageBody` 继续以 `FlowChatScreen` 作为唯一编排路径；composer 能力收拢到 page body 私有 host，直接复用共享 controller、现有 placeholder 和无参发送回调。
+- empty support 收拢到 page body 私有 StatefulWidget；`FlowGreeting` 继续由 `FlowChatScreen` 提供，support 保留描述、四个既有 prompt、memory hint、disclaimer 展开/收起和 `assistant-welcome-disclaimer` 语义 key。
+- 删除旧的 `message_bubble.dart`、`input_bar.dart`、`conversation_surface.dart`、`welcome_panel.dart`、`input_bar_starter_prompts.dart`；前序已删除的 shortcut hint 和 conversation stack 不恢复。
+- 保留 `flowui_adapter.dart`、`conversation_message_list.dart`、`loading_view.dart`、`proposal_card.dart`、`chips.dart`、conversation drawer/dialogs 及 status/controls 实验性文件。domain/data/controller/SSE、Localization 和计划文件未修改。

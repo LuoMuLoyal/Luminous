@@ -471,10 +471,10 @@ flutter test
 ## 2026-08-17 F-13 + F-15 AI 回答免责与来源级信任分层键
 
 - 新增 7 个 `assistant*` 键到 `lib/l10n/src/assistant_zh.arb` / `assistant_en.arb`：
-  - `assistantDisclaimerText`（zh: AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。/ en: AI responses are for health reference only…）：助手消息免责条与欢迎面板免责区的固定免责文案。
+  - `assistantDisclaimerText`（zh: AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。/ en: AI responses are for health reference only…）：助手消息免责条与 page_body 私有 empty support 免责区的固定免责文案。
   - `assistantSourceBadgeLeaflet`（说明书 / Leaflet）、`assistantSourceBadgeDrugbank`（DrugBank / DrugBank）、`assistantSourceBadgeMedicalQa`（医疗问答 / Medical Q&A）：来源条折叠行知识工具信任层级徽标。
   - `assistantSourceLowTrustHint`（低可信教育参考 / Low-trust educational reference）：medicalQa 工具出现时折叠行下方的固定低可信提示。
-  - `assistantDisclaimerShowAction`（展开免责说明 / View disclaimer）与 `assistantDisclaimerCollapseAction`（收起免责说明 / Collapse disclaimer）：欢迎面板免责区展开/收起语义标签。
+  - `assistantDisclaimerShowAction`（展开免责说明 / View disclaimer）与 `assistantDisclaimerCollapseAction`（收起免责说明 / Collapse disclaimer）：page_body 私有 empty support 免责区展开/收起语义标签。
 - 所有权在 assistant 分片（`assistant*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。
 
@@ -489,7 +489,7 @@ flutter test
 ## 2026-08-17 F-9 跨会话记忆提示键
 
 - 新增 `assistantMemoryHintTitle`（zh: 已开启跨会话记忆 / en: Cross-conversation memory is on）与 `assistantMemoryHintDescription`（zh: 你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭。/ en: Your chats may be distilled into points used in later conversations. You can turn this off in settings.）到 `lib/l10n/src/assistant_zh.arb` / `assistant_en.arb`。
-- `AssistantWelcomePanel` 在 `showMemoryHint: true` 时于免责区上方渲染记忆提示块（`SemanticIcons.statusInfo` + 两行小字，样式与免责区一致）。
+- assistant fragment 继续归属 `assistantMemoryHintTitle` / `assistantMemoryHintDescription` 等现有 key；当前由 `page_body.dart` 的私有 empty support 在 `showMemoryHint: true` 时于免责区上方渲染记忆提示块（`SemanticIcons.statusInfo` + 两行小字，样式与免责区一致），starter prompts 使用 `FlowSuggestionGroup` 的 column 布局，不再依赖旧的 welcome panel 类型。
 - 所有权在 assistant 分片（`assistant*` 前缀）；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。
 - 顶部 `Last updated` 已同步记录本次新增。
 

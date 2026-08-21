@@ -108,10 +108,9 @@ updated: 2026-08-17
   - **代码块限制（已记录）**：flutter_markdown_plus 把 `pre` 硬编码为横向 ScrollView，样式表无折行开关；折行会破坏代码缩进，故保持库默认横向滚动，不硬造自定义 builder。
 - 链接契约（F-4，仅助手消息气泡）：链接默认不自动跳转；点击先弹确认对话框（`assistantMarkdownLink*` 文案，取消复用 `commonCancel`），确认后经 `ExternalUrlLauncher` 打开；仅放行 http/https 方案。表格列数 / 链接域白名单硬校验规则未定，暂不做。
 - 两套均基于 `TypographyToken` / `Spacing` / `RadiusTokens` / `SemanticColor` 与 Forui `FColors` 解析，深浅色自动适配；代码块/行内代码/表格/分割线/链接统一接入主题 token。
-- 全部 6 处渲染点已迁移：legal 2 处（`legal/detail.dart`、`settings/help.dart`）+ ai 4 处（`assistant/message_bubble.dart`、`today/summary.dart`、`today/suggestion_interactive.dart`、`report/ai_summary.dart`）。
+- 全部 6 处渲染点已迁移：legal 2 处（`legal/detail.dart`、`settings/help.dart`）+ ai 4 处（`assistant/flowui_adapter.dart` 的 `FlowMessage` custom part、`today/summary.dart`、`today/suggestion_interactive.dart`、`report/ai_summary.dart`）。
 
 
 
 相关子文档：
 - [[Design_System_Components]]
-

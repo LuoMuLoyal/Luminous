@@ -11,7 +11,6 @@ import 'package:luminous/features/assistant/presentation/providers/conversation.
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
 import 'package:luminous/features/assistant/presentation/widgets/flowui_adapter.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/message_bubble.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
@@ -277,9 +276,6 @@ void main() {
       expect(find.text('正在生成'), findsOneWidget);
       expect(find.byType(StateMessageView), findsNothing);
       expect(find.byType(FlowMessageActions), findsNothing);
-      // The production list must not render the legacy bubble or its dots.
-      expect(find.byType(AssistantMessageBubble), findsNothing);
-
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
     },
@@ -327,8 +323,6 @@ void main() {
 
       expect(find.byType(FlowThinkingIndicator), findsOneWidget);
       expect(find.byType(StateMessageView), findsNothing);
-      expect(find.byType(AssistantMessageBubble), findsNothing);
-
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
     },
@@ -387,8 +381,6 @@ void main() {
         ),
         findsNothing,
       );
-      expect(find.byType(AssistantMessageBubble), findsNothing);
-
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
     },
@@ -434,7 +426,6 @@ void main() {
     expect(find.byType(FlowThread), findsOneWidget);
     expect(find.byType(FlowMessage), findsOneWidget);
     expect(find.byType(MarkdownBody), findsOneWidget);
-    expect(find.byType(AssistantMessageBubble), findsNothing);
     expect(find.byType(AssistantSourceStrip), findsOneWidget);
     expect(find.byType(AssistantDisclaimerBar), findsOneWidget);
     expect(find.byKey(const Key('assistant-replaced-label')), findsOneWidget);

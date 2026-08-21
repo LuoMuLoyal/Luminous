@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-21
 ---
 
 # Mock or Deferred
 
-Last updated: 2026-08-16
+Last updated: 2026-08-21
 
 ## 扫码（barcode / box scan）测试与平台桥接
 
@@ -24,7 +24,7 @@ Last updated: 2026-08-16
 
 ## 助手用户消息可复制
 
-- `message_bubble.dart` 的用户消息从 `Text` 改为 `SelectableText`，允许选择复制。
+- AssistantFlowUiAdapter 的 assistant Markdown custom part 保持 selectable；user message 使用 `FlowTextPart`；两者均通过 `FlowMessageActions` 提供 copy。
 
 ## Mock 状态
 
