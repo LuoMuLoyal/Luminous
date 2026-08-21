@@ -1,19 +1,18 @@
 import 'dart:async';
 
+import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar_shortcut_hint.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Chat-style input bar for the assistant page.
+/// Transitional host facade for the assistant composer.
 ///
-/// - Single-line height by default, expanding to [maxLines] as the user types.
-/// - Circular send icon button instead of a full text button.
-/// - Desktop shortcut hint (Ctrl/⌘ + Enter) appears only while the field is
-///   focused and fades after a short delay.
-class AssistantInputBar extends StatefulWidget {
+/// The page still owns the shared controller and its existing no-argument
+/// send callback. FlowComposer owns text editing, multiline behavior and the
+/// send action; the facade only adapts FlowUI's trimmed payload to that
+/// existing callback and renders the host disabled hint.
+class AssistantInputBar extends StatelessWidget {
   const AssistantInputBar({
     super.key,
     required this.controller,
@@ -24,68 +23,30 @@ class AssistantInputBar extends StatefulWidget {
   });
 
   final TextEditingController controller;
+
+  /// Kept for the existing page-body call site during the 2b transition.
+  /// FlowComposer derives its enabled state from [canSendMessages] and
+  /// [isSending].
   final bool canSend;
+
   final bool isSending;
   final bool canSendMessages;
   final Future<void> Function() onSend;
 
-  @override
-  State<AssistantInputBar> createState() => _AssistantInputBarState();
-}
-
-class _AssistantInputBarState extends State<AssistantInputBar> {
-  final FocusNode _focusNode = FocusNode();
-  bool _showShortcutHint = false;
-
   static const int _maxLines = 5;
 
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(_onFocusChanged);
-  }
+  void _handleSend(String text) {
+    final trimmedText = text.trim();
+    if (trimmedText.isEmpty) return;
 
-  @override
-  void dispose() {
-    _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  void _onFocusChanged() {
-    if (!mounted) return;
-    setState(() {
-      _showShortcutHint = _focusNode.hasFocus && _isDesktop(context);
-    });
-  }
-
-  bool _isDesktop(BuildContext context) {
-    return MediaQuery.sizeOf(context).width >= Breakpoints.tablet;
-  }
-
-  void _hideShortcutHint() {
-    if (!mounted || !_showShortcutHint) return;
-    setState(() => _showShortcutHint = false);
-  }
-
-  Future<void> _handleSend() async {
-    if (!widget.canSend) return;
-    await widget.onSend();
-  }
-
-  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent) return KeyEventResult.ignored;
-    if (event.logicalKey != LogicalKeyboardKey.enter) {
-      return KeyEventResult.ignored;
-    }
-    final withModifier =
-        HardwareKeyboard.instance.isControlPressed ||
-        HardwareKeyboard.instance.isMetaPressed;
-    if (!withModifier) return KeyEventResult.ignored;
-    if (widget.canSend) {
-      unawaited(_handleSend());
-    }
-    return KeyEventResult.handled;
+    // The existing page callback reads this shared controller rather than
+    // accepting a text argument. Keep that contract while passing along
+    // FlowComposer's trimmed payload.
+    controller.value = TextEditingValue(
+      text: trimmedText,
+      selection: TextSelection.collapsed(offset: trimmedText.length),
+    );
+    unawaited(onSend());
   }
 
   @override
@@ -96,7 +57,7 @@ class _AssistantInputBarState extends State<AssistantInputBar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!widget.canSendMessages) ...[
+        if (!canSendMessages) ...[
           Padding(
             padding: const EdgeInsets.only(bottom: Spacing.level3),
             child: Row(
@@ -119,54 +80,20 @@ class _AssistantInputBarState extends State<AssistantInputBar> {
             ),
           ),
         ],
-        Focus(
-          focusNode: _focusNode,
-          onKeyEvent: _handleKeyEvent,
-          child: FTextField(
+        Material(
+          type: MaterialType.transparency,
+          child: FlowComposer(
             key: const Key('assistant-input'),
-            control: FTextFieldControl.managed(controller: widget.controller),
-            minLines: 1,
+            controller: controller,
+            placeholder: l10n.assistantInputHint,
             maxLines: _maxLines,
-            hint: l10n.assistantInputHint,
-            enabled: widget.canSendMessages,
-            suffixBuilder: (context, style, variants) => Padding(
-              padding: const EdgeInsets.only(
-                right: Spacing.level2,
-                bottom: Spacing.level2,
-              ),
-              child: FButton.icon(
-                key: const Key('assistant-send-action'),
-                size: FButtonSizeVariant.sm,
-                variant: FButtonVariant.primary,
-                onPress: widget.canSend ? _handleSend : null,
-                child: widget.isSending
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: FCircularProgress(),
-                      )
-                    : const Icon(
-                        SemanticIcons.actionSend,
-                        size: IconSizeTokens.level3,
-                      ),
-              ),
-            ),
+            submitOnEnter: false,
+            enabled: canSendMessages && !isSending,
+            isStreaming: false,
+            clearOnSend: true,
+            onSend: _handleSend,
           ),
         ),
-        if (_showShortcutHint) ...[
-          const SizedBox(height: Spacing.level2),
-          Padding(
-            padding: const EdgeInsets.only(left: Spacing.level1),
-            child: Text(
-              l10n.assistantSendShortcutHint,
-              style: TypographyToken.level2
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
-            ),
-          ),
-          // Fade the hint after a short delay so it does not linger forever.
-          AssistantShortcutHintAutoHide(onHide: _hideShortcutHint),
-        ],
       ],
     );
   }

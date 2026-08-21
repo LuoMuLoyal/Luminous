@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 
 # Flutter Localization
 
-Last updated: 2026-08-20 (P2-2 B5 更新导出就诊报告 PDF 文案并新增 PIN 引导双语键；P2-1 会话管理文案归属 auth 分片，P1-2 B1 通知文案与既有 Mine/Record/Report 文案保持不变。)
+Last updated: 2026-08-21 (移除已删除的 assistant desktop send shortcut hint l10n key，保留 assistant input disabled hint 归属。)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -198,9 +198,8 @@ Persisted preference keys:
   entries. The hint text references the top-right settings entry point.
 - Assistant chat welcome and conversation search strings (`assistantWelcome*` and
   `assistantConversationSearch*`) are owned by the Assistant ARB entries.
-- Assistant hero toggle strings (`assistantHeroCollapseAction` / `assistantHeroExpandAction`), the input
-   disabled hint (`assistantInputDisabledHint`), and the desktop send shortcut hint
-   (`assistantSendShortcutHint`) are owned by the Assistant ARB entries.
+- Assistant hero toggle strings (`assistantHeroCollapseAction` / `assistantHeroExpandAction`) and the
+  input disabled hint (`assistantInputDisabledHint`) are owned by the Assistant ARB entries.
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
 - Remove l10n keys when the active UI that owns them is deleted.

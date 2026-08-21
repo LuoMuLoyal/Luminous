@@ -27,6 +27,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_forui_app.dart';
 
+Finder _assistantInputTextField() => find.descendant(
+  of: find.byKey(const Key('assistant-input')),
+  matching: find.byType(TextField),
+);
+
+Finder _assistantSendButton() => find.descendant(
+  of: find.byKey(const Key('assistant-input')),
+  matching: find.byType(InkWell),
+);
+
 void main() {
   testWidgets('AI chat page shows sign-in gate when signed out', (
     tester,
@@ -78,10 +88,11 @@ void main() {
     await tester.pumpAndSettle();
 
     // Type and send a message
-    final input = find.byKey(const Key('assistant-input'));
+    final input = _assistantInputTextField();
     expect(input, findsOneWidget);
     await tester.enterText(input, '帮我看看最近的睡眠');
-    await tester.tap(find.byKey(const Key('assistant-send-action')));
+    await tester.pump();
+    await tester.tap(_assistantSendButton());
     await tester.pumpAndSettle();
 
     // Error message and retry button should be visible
@@ -99,8 +110,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我记一杯水');
-    await tester.tap(find.byKey(const Key('assistant-send-action')));
+    await tester.enterText(_assistantInputTextField(), '帮我记一杯水');
+    await tester.pump();
+    await tester.tap(_assistantSendButton());
     await tester.pumpAndSettle();
 
     expect(find.text('保存这条记录'), findsOneWidget);
@@ -128,11 +140,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byKey(const Key('assistant-input')),
-        '帮我记一杯水',
-      );
-      await tester.tap(find.byKey(const Key('assistant-send-action')));
+      await tester.enterText(_assistantInputTextField(), '帮我记一杯水');
+      await tester.pump();
+      await tester.tap(_assistantSendButton());
       await tester.pumpAndSettle();
 
       await tester.tap(
@@ -171,8 +181,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(const Key('assistant-input')), '关闭记忆');
-      await tester.tap(find.byKey(const Key('assistant-send-action')));
+      await tester.enterText(_assistantInputTextField(), '关闭记忆');
+      await tester.pump();
+      await tester.tap(_assistantSendButton());
       await tester.pumpAndSettle();
 
       await tester.tap(
@@ -199,8 +210,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我记一杯水');
-    await tester.tap(find.byKey(const Key('assistant-send-action')));
+    await tester.enterText(_assistantInputTextField(), '帮我记一杯水');
+    await tester.pump();
+    await tester.tap(_assistantSendButton());
     await tester.pumpAndSettle();
 
     expect(find.text('保存这条记录'), findsOneWidget);
@@ -227,8 +239,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我记一杯水');
-    await tester.tap(find.byKey(const Key('assistant-send-action')));
+    await tester.enterText(_assistantInputTextField(), '帮我记一杯水');
+    await tester.pump();
+    await tester.tap(_assistantSendButton());
     await tester.pumpAndSettle();
 
     expect(find.text('这条建议已经过期，请重新生成后再确认。'), findsOneWidget);
@@ -313,10 +326,8 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.enterText(
-        find.byKey(const Key('assistant-input')),
-        '这条输入会被清空',
-      );
+      await tester.enterText(_assistantInputTextField(), '这条输入会被清空');
+      await tester.pump();
       await tester.tap(
         find.byKey(const Key('assistant-new-conversation-action')),
       );
@@ -338,11 +349,9 @@ void main() {
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
 
-    await tester.enterText(
-      find.byKey(const Key('assistant-input')),
-      '帮我看看最近睡眠',
-    );
-    await tester.tap(find.byKey(const Key('assistant-send-action')));
+    await tester.enterText(_assistantInputTextField(), '帮我看看最近睡眠');
+    await tester.pump();
+    await tester.tap(_assistantSendButton());
     await tester.pumpAndSettle();
 
     expect(find.text('这次回复没有完成'), findsOneWidget);
@@ -596,13 +605,7 @@ void main() {
 
     // Input field should be visible on mobile
     expect(find.byKey(const Key('assistant-input')), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('assistant-input')),
-        matching: find.byKey(const Key('assistant-send-action')),
-      ),
-      findsOneWidget,
-    );
+    expect(_assistantSendButton(), findsOneWidget);
   });
 
   testWidgets('AssistantPage scopes one FlowTheme below MaterialApp', (

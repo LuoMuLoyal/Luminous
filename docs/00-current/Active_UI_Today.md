@@ -7,7 +7,7 @@ updated: 2026-08-21
 
 # Active UI — Today
 
-Last updated: 2026-08-18 (H-10 `todaySuggestionProvider` now watches `DataChangeTopic.healthEvents` so suggestion cards refresh after event create/end/check-in; F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed; Today vital row reads real heart-rate/blood-pressure daily records; summary fallback narrative uses neutral onboarding copy)
+Last updated: 2026-08-21 (H-10 `todaySuggestionProvider` now watches `DataChangeTopic.healthEvents` so suggestion cards refresh after event create/end/check-in; F-9 afternoon greeting now reports water gap in ml based on observedMetric.state; secondary action skip_dose wired to real dose-log mark; health-event association options show retry on load failure; quick-actions second slot changed to one-tap water quick-entry; dashboard data sources report degraded per-section instead of full-page error; Today AI summary uses materialized read model with empty/pending/ready/stale/failed states; ai_today_summary push routes to / with foreground toast; observation tiles render suppress feedback entry; AI explain falls back to rule-based label without retry when aiGenerated is false; TodayUserSnapshot.hasUnreadNotifications now reflects real notification unread count; medication summary dead enum TodayMedicationKind and nextMedicine removed; Today vital row reads real heart-rate/blood-pressure daily records; summary fallback narrative uses neutral onboarding copy; assistant production input now uses FlowComposer and no longer shows desktop shortcut guidance)
 
 ## 页面结构
 
@@ -131,7 +131,7 @@ Last updated: 2026-08-21
 - 流式滚底优化：仅当用户已处于底部附近时自动滚底；用户上翻后显示"回到底部"悬浮按钮。
 - 助手状态文案已重写为自然语言（"AI 助手已准备好" / "AI 助手正在准备中" / "AI 助手暂时不可用" / "AI 助手已关闭"）。
 - **页面结构拆分**：`AssistantPage` 仅保留控制器与高层回调，UI 布局下沉到 `AssistantPageBody`；消息列表 + 输入区由 `AssistantConversationStack` 负责；文件行数全部达标（`page.dart` 163 行，子组件均 < 250 行）。
-- **输入区重构为 `AssistantInputBar`**：默认单行，最多 5 行；发送按钮放入同一个 Forui `FTextField` suffix，避免盒中盒；空会话的 4 个本地化快捷提问 chip（今日总结 / 睡眠 / 用药 / 注意事项）移到中央欢迎区，点击后写入输入框；桌面端 focus 后显示 `Ctrl/⌘ + Enter` 快捷键提示，3 秒后自动淡出。
+- **输入区使用 `AssistantInputBar` → `FlowComposer` 过渡 facade**：复用现有 controller 和 placeholder，最多 5 行；移动端换行与发送由 FlowComposer 提供；`canSendMessages == false` 保留 disabled hint，发送中禁用且 `isStreaming: false`，不显示桌面 Ctrl/Cmd+Enter 提示。
 - **消息气泡去工程化**：`AssistantMessageBubble` 移除工具 chip 渲染与"正在生成"文字标签，流式期间使用 pulsing dots 动画指示器；用户气泡文字使用主色实色，避免浅色背景上使用浅色 `primaryForeground` 导致不可读；上下文菜单改用 `FContextMenu.tiles`，复制和"重新生成 / 重新发送"操作的完整按钮化交互仍列入 TODO。
 - **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。当前后端对常见 graph 回答先执行 `graph.invoke()`，再通过空白切分回放伪 chunk；SSE 传输正常，但尚未实现从 graph/LLM 到 HTTP 的真实增量流。
 - **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 通过页面内 `Stack` 从左侧推入，固定不透明背景；顶部使用 Forui 搜索框、关闭和新对话按钮；会话仍按"今天 / 最近 7 天 / 更早"分组，当前会话用 `prefix` 对勾图标高亮；搜索只过滤已加载列表，重命名/删除因后端暂无对应接口暂未接入。
@@ -206,3 +206,9 @@ Last updated: 2026-08-21
 
 - 第二个快捷操作由"快速记录"改为一键饮水，点击后直接创建饮水记录并刷新相关 dashboard，不再跳转表单页。
 - `WaterQuickEntryFlow` 与 `QuickEntryUndoService` 从 record presentation 层迁移到 `lib/features/record/application/usecases/`，Today 通过 `executeTodayWaterQuickEntry` 复用，避免跨 feature 直接依赖 record presentation。
+
+## 2026-08-21 Assistant 输入区 FlowComposer
+
+- 生产 `AssistantInputBar` 保留为过渡 facade，内部改由 `FlowComposer` 提供多行输入、移动软键盘换行和发送按钮；复用现有 controller、placeholder 和发送回调。
+- `maxLines` 保持 5；`canSendMessages == false` 保留现有禁用提示和状态图标；发送中整体禁用 composer，`isStreaming` 恒为 false，不显示 stop/cancel。
+- 删除桌面 Ctrl/Cmd+Enter 快捷键提示与自动隐藏 timer；保留 `input_bar.dart` 供后续阶段继续使用，未删除 conversation surface/page body。

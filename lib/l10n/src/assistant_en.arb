@@ -103,7 +103,6 @@
   "assistantProposalRegenerateAction": "Regenerate",
   "assistantControlsDrawerTitle": "Assistant settings",
   "assistantInputDisabledHint": "AI chat is turned off and input is disabled. Open the settings in the top-right to resume.",
-  "assistantSendShortcutHint": "Ctrl/⌘ + Enter to send",
   "assistantCopyAction": "Copy text",
   "assistantCopySuccess": "Copied to clipboard",
   "assistantRegenerateAction": "Regenerate",
