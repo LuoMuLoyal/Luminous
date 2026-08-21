@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-20（P2-2 B5：导出就诊报告 PDF 的 PIN 引导与文案对齐；P2-1 会话管理、P1-2 通知偏好与睡眠执行器、P1-1 与 Mine 改造项 6/7/8 保持不变）
+Last updated: 2026-08-21（增量审查修复：elevation dialog 可注入时间源 + 失败检测精确匹配 + 会话实体日期注释 + 通知协调器 DND/ID 断言 + scoped preferences 注释）
 
 ## Mine 根页结构
 

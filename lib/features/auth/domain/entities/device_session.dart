@@ -29,6 +29,10 @@ class AuthDeviceSession {
       deviceType: json['deviceType']?.toString(),
       deviceName: json['deviceName']?.toString(),
       platform: json['platform']?.toString(),
+      // lastUsedAt is intentionally nullable: a freshly created session
+      // may not have been used yet, so the API omits or nulls this field.
+      // Unlike createdAt/expiresAt which are always present and throwing
+      // on their absence is correct, lastUsedAt absence is a valid state.
       lastUsedAt: json['lastUsedAt'] == null
           ? null
           : DateTime.tryParse(json['lastUsedAt'].toString()),
