@@ -75,9 +75,9 @@ class AssistantWelcomePanel extends StatelessWidget {
 
 /// Reusable support copy for the empty assistant state.
 ///
-/// [FlowChatScreen] owns the greeting/composer layout; this host keeps the
-/// assistant-specific description, temporary starter prompts, memory hint,
-/// and collapsible health disclaimer together until the suggestion migration.
+/// [FlowChatScreen] owns the greeting/composer layout; this host provides the
+/// assistant-specific description, starter prompts, memory hint, and
+/// collapsible health disclaimer support.
 class AssistantWelcomeSupport extends StatefulWidget {
   const AssistantWelcomeSupport({
     super.key,
