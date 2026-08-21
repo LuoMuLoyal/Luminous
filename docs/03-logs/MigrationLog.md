@@ -1,6 +1,6 @@
 # Luminous Migration Log
 
-Last updated: 2026-08-02
+Last updated: 2026-08-21
 
 Records changes after the full reset only. Detailed entries are split by date under
 `docs/03-logs/migration-log/`. Pre-2026-07 entries are archived under `docs/04-archive/migration-log/`.
@@ -18,6 +18,7 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
+- [2026-08-21](migration-log/2026-08-21.md) — 增量代码审查修复（08-20 审查报告 2🔴+5🟡 + 08-19 遗留 6 项）
 - [2026-07-31](migration-log/2026-07-31.md) — 7-31 审查修复（血压 systolic/diastolic 配对逻辑从 Repository 移至 Mapper 利用原始 HealthDataType 精确区分 + 去重 pageSize 200→2000 + elk_icon_picker 版本约束 ^0.1.3）
 - [2026-07-30](migration-log/2026-07-30.md) — Health Data Integration（health_data feature + vital/activity payload + OAuth 微博/谷歌 + OCR 防御 + Record source 字段）
 - [2026-07-27](migration-log/2026-07-27.md) — 7-26 审查修复（_parseOptionalDateTime 防御性 FormatException 捕获 + changeEmail 复用 _parseOptionalDateTime + 网络错误时保留 session store）+ EnvelopeInterceptor 拦截器层统一校验业务 envelope
