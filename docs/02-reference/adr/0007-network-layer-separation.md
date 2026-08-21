@@ -45,7 +45,7 @@ lib/core/network/
 ├── api_client.dart            # LucentClient 包装，暴露 .client 属性
 ├── session_store.dart         # 不变
 ├── sse_client.dart            # 不变（增加 reconnect 选项）
-├── envelope.dart              # 迁移期间移除成功 envelope 解析
+├── envelope.dart              # 迁移期间移除旧响应解析
 ├── api_exception.dart         # 不变
 ├── error_mapper.dart          # 解析 Problem Details
 └── network_providers.dart     # 精简：只保留 dioClientProvider + apiClientProvider

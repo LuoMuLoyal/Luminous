@@ -81,7 +81,7 @@ Lucent 后端选择 `neverthrow`；不使用 `@backendkit-labs/result`、`@sapph
 
 - 删除旧 `Result<T>`、`Success`、`Failure`；
 - 删除 `runGuarded` 和 feature-local action runner；
-- 删除旧 error-envelope fallback；
+- 删除旧错误响应 fallback；
 - 删除 `requestId` 读取和旧 `AppError` 公共类型名；
 - 删除无日志、无说明的静默 catch；
 - 更新 ADR、迁移日志和当前状态文档；
@@ -105,7 +105,7 @@ Lucent 后端选择 `neverthrow`；不使用 `@backendkit-labs/result`、`@sapph
 
 1. Luminous 先具备 Problem Details 解析、HTTP status 重试判定和 `LucentFailure`。
 2. Lucent 切换成功资源响应、Problem Details filter、OpenAPI 和 SSE error event。
-3. Luminous 导出并同步生成客户端，删除旧错误 envelope fallback。
+3. Luminous 导出并同步生成客户端，删除旧错误响应 fallback。
 4. 两端完成 repository/provider Result 硬切。
 5. 删除旧类型、旧 helper、旧错误码和旧文档，并运行全量门禁。
 
@@ -117,7 +117,7 @@ Lucent 后端选择 `neverthrow`；不使用 `@backendkit-labs/result`、`@sapph
 - 每个迁移 repository/provider 都有成功、Left、降级和异常边界测试。
 - OTel 能关联未预期错误和明确降级；traceId 不参与业务分支。
 - `flutter analyze`、`flutter test`、Lucent typecheck、contract/e2e tests 和双仓文档检查全部通过。
-- 旧 Result、runGuarded、AppError、错误 envelope fallback 不再有生产引用。
+- 旧 Result、runGuarded、AppError、错误响应 fallback 不再有生产引用。
 
 ## 八、不做的事
 

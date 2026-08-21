@@ -50,7 +50,7 @@ vocabulary.
 - client-only `networkErrorCode` when no HTTP response exists;
 - the original cause for logging/crash reporting, never for user-visible serialization.
 
-`requestId` is not part of the current contract. It is retired in Lucent ADR-0010. HTTP Problem
+`requestId` is not part of the target HTTP contract. It is retired in Lucent ADR-0010. HTTP Problem
 Details fields such as `type`, `title`, `detail`, `errors`, `retryable`, and `traceId` are parsed by
 the network layer and mapped into `LucentFailure`.
 
@@ -69,8 +69,7 @@ widget                 render state and local UI effects only
 
 The network layer maps RFC 9457 `application/problem+json` and transport failures to
 `LucentFailure`. The API contract itself is defined by Lucent ADR-0012: successful responses return
-the endpoint resource representation directly; ordinary HTTP errors are Problem Details and are
-not wrapped in a success envelope.
+the endpoint resource representation directly, and ordinary HTTP errors use Problem Details.
 
 ### 4. Perform a hard cut, not a permanent dual system
 

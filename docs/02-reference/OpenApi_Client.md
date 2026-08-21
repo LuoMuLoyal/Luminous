@@ -18,7 +18,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
   generic `{ code, message, data }` success wrapper.
 - `204 No Content` responses have no JSON body.
 - Ordinary HTTP 4xx/5xx responses use `application/problem+json`.
-- The checked-in OpenAPI export and generated package still reflect the pre-migration envelope until
+- The checked-in OpenAPI export and generated package still reflect the pre-migration response shape until
   the Lucent contract migration is implemented and regenerated.
 
 ## Files
@@ -82,7 +82,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
   fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain
   code should still depend on the feature repository boundary.
 - Today AI REST reads/generation/refresh currently use the generated OpenAPI transport and unwrap
-  the legacy `{ code, message, data }` envelope in the Today data source. After the response
+  the legacy response shape in the Today data source. After the response
   contract migration these calls will consume the endpoint resource representation directly. Today
   AI streaming, Report AI summary, and assistant streaming continue to use manual Dio + SSE parsing
   in `lib/core/network/sse.dart`.
@@ -160,7 +160,7 @@ operations.
 - Lucent `pnpm export:openapi`(125 paths / 309 schemas)后执行 `dart run scripts/bootstrap_generated_sources.dart`:`AssistantApi` 新增 `assistantControllerRenameConversationV1`(PATCH,body `RenameConversationDto.title` ≤ 48 字符)与 `assistantControllerDeleteConversationV1`(DELETE,软删除);`AssistantConversationDataDto` / `AssistantConversationSummaryDto` 的 `status` 枚举新增 `deleted`。
 - 既有漂移:`today_analysis_api.dart` 的 recommendations 端点仅注释文案更新(get cold-start onboarding guide cards),无签名变化,与 F-2 无关。
 
-## 2026-08-14 Clinic summary preview/share 信封绕行
+## 历史记录：2026-08-14 Clinic summary preview/share 旧响应绕行
 
-- `POST /user/reports/clinic-summary/preview` 与 `/share` 的服务端响应是 `{code, message, data}` 信封，而生成的 `ReportsApi` 把 body 直接当裸 `ClinicSummaryDto` / `ClinicSummaryShareResponseDto` 反序列化（会抛 `CheckedFromJsonException`）。这两个端点因此不走生成客户端，改由 `LucentApiPaths.clinicSummaryPreview` / `clinicSummaryShare` + 原始 Dio 调用：解信封后再 `fromJson`（四个 section 键已随合同改可选，未选键反序列化为 null，不再占位补齐）。预览 PDF（POST 带 body）由 `downloadAndSharePdf` 的 `postBody` 参数承载字段选择。
-- `GET /user/reports/clinic-summary/shared/{token}`（公开分享页）同型缺陷：Task 10 起同样走 raw Dio（`LucentApiPaths.clinicSummaryShared(token)` + `skipAuthorization: true`）解信封，不再使用生成客户端方法；与 preview 同一模式（占位补齐已随合同债收口删除）；相关 provider 测试以 scripted HttpClientAdapter 断言请求不带 Authorization 头。
+- `POST /user/reports/clinic-summary/preview` 与 `/share` 在迁移前返回旧响应形状，而生成的 `ReportsApi` 把 body 直接当裸 `ClinicSummaryDto` / `ClinicSummaryShareResponseDto` 反序列化（会抛 `CheckedFromJsonException`）。这两个端点因此暂时不走生成客户端，改由 `LucentApiPaths.clinicSummaryPreview` / `clinicSummaryShare` + 原始 Dio 调用：解包后再 `fromJson`（四个 section 键已随合同改可选，未选键反序列化为 null，不再占位补齐）。预览 PDF（POST 带 body）由 `downloadAndSharePdf` 的 `postBody` 参数承载字段选择。
+- `GET /user/reports/clinic-summary/shared/{token}`（公开分享页）同型缺陷：Task 10 起同样走 raw Dio（`LucentApiPaths.clinicSummaryShared(token)` + `skipAuthorization: true`）解包，不再使用生成客户端方法；目标契约迁移后应直接消费资源 schema。

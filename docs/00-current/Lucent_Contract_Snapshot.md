@@ -13,7 +13,7 @@ Last updated: 2026-08-21 (响应契约目标更新；P1-2 B1 通知偏好与每�
 
 - API base：`/api/v1`
 - 响应契约目标：2xx JSON 直接返回 endpoint 资源表示；`204 No Content` 不返回 body；4xx/5xx 使用 `application/problem+json`。
-- 当前实现状态：Lucent 代码、`docs/openapi.json` 和生成客户端仍处于旧 envelope 形状；完成契约迁移后必须重新导出 OpenAPI 并同步生成客户端。
+- 实施状态：目标契约尚未落地；Lucent 代码、`docs/openapi.json` 和生成客户端仍处于旧响应形状。完成契约迁移后必须重新导出 OpenAPI 并同步生成客户端。
 - 生成合同：`Lucent/docs/openapi.json`
 - 生成客户端：`generated/lucent_api/`（`@openapitools/openapi-generator-cli` 7.22.0，generator `dart-dio`，`serializationLibrary=json_serializable`，`enumUnknownDefaultCase=true`）
 - 重新生成流程：Lucent `pnpm export:openapi` → Luminous `dart run scripts/bootstrap_generated_sources.dart`（生成 Today Analysis、Report metric 与 Suggestion item 相关 model，并运行 build_runner）
@@ -86,6 +86,6 @@ Last updated: 2026-08-21 (响应契约目标更新；P1-2 B1 通知偏好与每�
 
 - **产品事件**：`POST /api/v1/user/product-events`（批量 1..50，白名单属性，clientEventId 幂等）。客户端 `LucentClient.productEvents` getter 用共享 Dio 直接构造 `ProductEventsApi`（生成端 `LucentApi` 尚无 getter，等下次全量客户端再生成补齐）。
 - **产品事件漏斗（Task 9/10 合同同步）**：`GET /api/v1/user/product-events/funnel`（admin-only）新增 `FunnelResponseDto`/`FunnelDailyCountsDto`/`FunnelOptionalCountsDto`/`FunnelTotalsDto`/`FunnelWindowDto`；bootstrap `_productEventsModels` 已补全这 5 个模型，生成客户端含 `productEventsControllerGetFunnelV1` 方法（客户端不消费，仅合同完整性）。
-- **就诊摘要公开分享响应**：`GET /user/reports/clinic-summary/shared/{token}` 与 preview/share 的目标成功响应直接返回资源 DTO；当前实现仍有旧 envelope 与生成 DTO 不一致的历史绕行，契约迁移时统一以 OpenAPI 资源 schema 重新生成客户端并移除解信封逻辑；四个 section 键合同已改可选，未选键反序列化为 null，占位补齐已删除。
+- **就诊摘要公开分享响应**：`GET /user/reports/clinic-summary/shared/{token}` 与 preview/share 的目标成功响应直接返回资源 DTO；迁移前实现存在旧响应形状与生成 DTO 不一致的历史绕行，契约迁移时统一以 OpenAPI 资源 schema 重新生成客户端并移除解包逻辑；四个 section 键合同已改可选，未选键反序列化为 null，占位补齐已删除。
 
-- **响应 DTO 信封契约修复(2026-08-15)**:`NotificationListResponseDto`、`UnreadCountResponseDto`、`ClinicSummaryResponseDto`(新增)、`ClinicSummaryShareResponseDto`、`FunnelResponseDto`、`SecurityPinElevationResponseDto` 全部补全 `data` 嵌套层,与全局 `{code,message,data}` 信封一致。此前 6 个 DTO 为扁平结构,前端解析运行时响应必失败并触发 Riverpod 自动重试。已重新 `export:openapi` 并重新生成客户端;bootstrap 脚本新增 `Notifications`/`UserSettings` 过滤生成组。
+- **历史响应 DTO 形状修复(2026-08-15)**：迁移前的 `NotificationListResponseDto`、`UnreadCountResponseDto`、`ClinicSummaryResponseDto`(新增)、`ClinicSummaryShareResponseDto`、`FunnelResponseDto`、`SecurityPinElevationResponseDto` 曾缺少统一响应体的 `data` 层，导致前端解析失败并触发 Riverpod 自动重试。该条仅记录历史生成物修复；目标契约以 endpoint 资源 schema 为准。

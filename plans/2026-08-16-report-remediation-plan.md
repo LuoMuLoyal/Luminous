@@ -86,7 +86,7 @@ Created: 2026-08-16
 - 引用 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md):vital 趋势数据源基建(R-3/R-4 的纵向洞察输入依赖)。
 - 引用 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md):F-5 一节的 ObservedMetric/覆盖率口径定义(R-3、R-4 之 #21 共用)。
 - 引用 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md):#20 Flutter 桌面/Web 大屏趋势比较冻结项；独立 Next.js + Tauri MVP 在 0.1.0 后启动。
-- 横切条目(Dashboard 聚合耦合、`applySelectedFields` 单一出口、DataChangeBus、PIN elevation、product events、信封解包、`aiSummariesEnabled`、BullMQ)已在 R-2/R-3/R-4 各自展开,无跨计划归属冲突。
+- 横切条目(Dashboard 聚合耦合、`applySelectedFields` 单一出口、DataChangeBus、PIN elevation、product events、旧响应解包、`aiSummariesEnabled`、BullMQ)已在 R-2/R-3/R-4 各自展开,无跨计划归属冲突。
 
 ## 五、本计划内执行顺序
 
