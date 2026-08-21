@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 
 # Design System Components

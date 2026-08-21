@@ -628,6 +628,14 @@ final notificationSettingsControllerProvider =
       NotificationSettingsState
     >(NotificationSettingsController.new);
 
+/// A user-scoped wrapper around [SharedPreferences].
+///
+/// Currently only used by the notification preferences module. When a second
+/// feature needs user-isolated local storage, extract this into
+/// `core/storage/` with a generic key-scoping strategy (e.g. a
+/// `ScopedStorage` class that takes a key prefix function). Until then,
+/// keeping it here avoids a premature abstraction that may not fit future
+/// use cases.
 class _ScopedPreferences {
   _ScopedPreferences(this._preferences, this._userId);
 

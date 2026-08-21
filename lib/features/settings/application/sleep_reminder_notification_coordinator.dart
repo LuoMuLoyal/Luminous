@@ -30,6 +30,11 @@ class SleepReminderNotificationCoordinator {
     this.horizonDays = 7,
   });
 
+  /// Base ID for sleep reminder notifications. IDs are allocated as
+  /// `_notificationIdBase + dayOffset` (0 .. horizonDays-1). Keep this
+  /// range disjoint from other notification ID bases (e.g. medicine
+  /// reminders use 2,000,000). If horizonDays is increased beyond
+  /// 1000, update the base to avoid collisions.
   static const _notificationIdBase = 2_100_000;
 
   final LocalNotificationGateway gateway;
@@ -73,6 +78,10 @@ class SleepReminderNotificationCoordinator {
     }
 
     final referenceNow = now ?? DateTime.now();
+    assert(
+      horizonDays <= 1000,
+      'horizonDays ($horizonDays) too large — risk of notification ID collision',
+    );
     final plannedIds = <int>[];
     var allScheduled = true;
     for (var dayOffset = 0; dayOffset < horizonDays; dayOffset += 1) {
@@ -113,6 +122,14 @@ class SleepReminderNotificationCoordinator {
     return allScheduled;
   }
 
+  /// Whether [minute] (0–1439) falls inside the DND window.
+  ///
+  /// When [start] == [end] the window covers the entire day — this is
+  /// intentional: it means the user explicitly set both times to the same
+  /// value (e.g. 00:00–00:00), which the UI treats as "suppress all sleep
+  /// reminders". This is distinct from DND being disabled (controlled by
+  /// the `dndEnabled` flag in [resync]); if DND is enabled with identical
+  /// start/end, every reminder is suppressed.
   bool _isInDndWindow(int minute, int start, int end) {
     if (start == end) return true;
     if (start < end) return minute >= start && minute < end;
