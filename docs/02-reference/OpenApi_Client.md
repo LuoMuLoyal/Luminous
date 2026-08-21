@@ -2,15 +2,24 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-20
+Last updated: 2026-08-21
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
+
+## Response Contract Target
+
+- Successful JSON responses return the endpoint resource representation directly; there is no
+  generic `{ code, message, data }` success wrapper.
+- `204 No Content` responses have no JSON body.
+- Ordinary HTTP 4xx/5xx responses use `application/problem+json`.
+- The checked-in OpenAPI export and generated package still reflect the pre-migration envelope until
+  the Lucent contract migration is implemented and regenerated.
 
 ## Files
 
@@ -72,10 +81,11 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 - Reminder delivery history is read through the feature data source and maps generated/raw response
   fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain
   code should still depend on the feature repository boundary.
-- Today AI REST reads/generation/refresh use the generated OpenAPI transport and unwrap the
-  `{ code, message, data }` envelope in the Today data source. Today AI streaming, Report AI
-  summary, and assistant streaming continue to use manual Dio + SSE parsing in
-  `lib/core/network/sse.dart`.
+- Today AI REST reads/generation/refresh currently use the generated OpenAPI transport and unwrap
+  the legacy `{ code, message, data }` envelope in the Today data source. After the response
+  contract migration these calls will consume the endpoint resource representation directly. Today
+  AI streaming, Report AI summary, and assistant streaming continue to use manual Dio + SSE parsing
+  in `lib/core/network/sse.dart`.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
 - `401002` triggers refresh and retry.

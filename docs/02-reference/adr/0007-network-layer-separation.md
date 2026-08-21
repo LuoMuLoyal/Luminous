@@ -11,7 +11,7 @@
 1. **Dio 实例管理** — 创建、配置、dispose 两个 Dio 实例（主 + refresh）
 2. **Token 注入拦截器** — 从 `SessionStore` 读取 access token 并注入 `Authorization` header
 3. **401 刷新逻辑** — 检测 token 过期、调用 refresh 端点、重试原请求、刷新去重
-4. **错误映射** — 将 `DioException` + envelope 解析为 `LucentApiException`
+4. **错误映射** — 将 `DioException` + HTTP status/Problem Details 解析为 `LucentApiException`
 5. **Session 读写代理** — `writeSession`、`readAccessToken`、`readRefreshToken`、`clearSession`
    直接转发给 `SessionStore`
 6. **15+ API getter** — `healthApi`、`accountApi`、`authApi`... 每个只是 `_client.xxx` 的
@@ -45,9 +45,9 @@ lib/core/network/
 ├── api_client.dart            # LucentClient 包装，暴露 .client 属性
 ├── session_store.dart         # 不变
 ├── sse_client.dart            # 不变（增加 reconnect 选项）
-├── envelope.dart              # 不变
+├── envelope.dart              # 迁移期间移除成功 envelope 解析
 ├── api_exception.dart         # 不变
-├── error_mapper.dart          # 不变
+├── error_mapper.dart          # 解析 Problem Details
 └── network_providers.dart     # 精简：只保留 dioClientProvider + apiClientProvider
 ```
 
@@ -96,8 +96,9 @@ class LucentDioClient {
 #### `error_interceptor.dart`
 
 封装 `DioException` → `LucentApiException` 映射。从 `LucentDioClient._mapToApiException()`
-+ `_fallbackMessage()` 提取。`LucentApiException` 保留 `traceId`（来自 `traceresponse`
-header），`LucentErrorMapper.toAppError()` 将其透传到 `AppError` 供诊断场景使用。
++ `_fallbackMessage()` 提取。`LucentApiException` 解析 HTTP status 与 Problem Details，并保留
+`traceId`（来自 `traceresponse` header），`LucentErrorMapper.toAppError()` 将其透传到 `AppError`
+供诊断场景使用。
 
 #### `retry_interceptor.dart`
 

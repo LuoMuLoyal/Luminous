@@ -68,9 +68,9 @@ widget                 render state and local UI effects only
 ```
 
 The network layer maps RFC 9457 `application/problem+json` and transport failures to
-`LucentFailure`. The API contract itself is defined by Lucent ADR-0012: successful responses retain
-the `{ code: 0, message: "", data }` envelope; ordinary HTTP errors are Problem Details and are not
-wrapped in a success envelope.
+`LucentFailure`. The API contract itself is defined by Lucent ADR-0012: successful responses return
+the endpoint resource representation directly; ordinary HTTP errors are Problem Details and are
+not wrapped in a success envelope.
 
 ### 4. Perform a hard cut, not a permanent dual system
 
@@ -87,12 +87,11 @@ an OTel event or metric where applicable, and a test for the user-visible outcom
 permitted for programming errors, cancellation, protocol invariants, and intentionally propagated
 stream failures.
 
-### 5. Separate API migration from Result migration
+### 5. HTTP response contract
 
-The RFC 9457 Problem Details API migration is a cross-repository contract change. It is implemented
-as its own stage with OpenAPI and contract tests; it is not hidden inside a repository signature
-change. fpdart migration consumes the resulting `LucentFailure` mapping and does not independently
-change HTTP response shapes.
+The HTTP response shape is defined by Lucent ADR-0012. This ADR does not define a second wire format:
+successful responses use endpoint resource representations, and ordinary HTTP errors use Problem
+Details.
 
 ## Options Considered
 
@@ -120,8 +119,7 @@ not model one-shot actions or composition cleanly.
 - fpdart is isolated behind project typedefs, so replacing the package later does not change domain
   vocabulary.
 - The generated API client remains transport-facing; it does not become the domain error contract.
-- The old `requestId` field and old error-envelope fallback are removed when the Lucent contract
-  migration is complete.
+- HTTP response fields and media types follow Lucent ADR-0012.
 
 ## References
 

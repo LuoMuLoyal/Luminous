@@ -104,14 +104,14 @@ Lucent 后端选择 `neverthrow`；不使用 `@backendkit-labs/result`、`@sapph
 ## 六、跨仓发布顺序
 
 1. Luminous 先具备 Problem Details 解析、HTTP status 重试判定和 `LucentFailure`。
-2. Lucent 切换 Problem Details filter、OpenAPI 和 SSE error event；成功 envelope 保留。
+2. Lucent 切换成功资源响应、Problem Details filter、OpenAPI 和 SSE error event。
 3. Luminous 导出并同步生成客户端，删除旧错误 envelope fallback。
 4. 两端完成 repository/provider Result 硬切。
 5. 删除旧类型、旧 helper、旧错误码和旧文档，并运行全量门禁。
 
 ## 七、验收标准
 
-- 所有 2xx JSON 响应是成功 envelope 且 `code == 0`。
+- 所有 2xx JSON 响应符合 endpoint 的资源 schema；`204` 响应无 body。
 - 所有普通 4xx/5xx JSON 响应是 `application/problem+json`，不含 `statusCode`、`requestId`、堆栈或内部敏感数据。
 - 客户端只根据 HTTP status、稳定业务 code、请求幂等性、Retry-After 和明确 retryable 处理重试。
 - 每个迁移 repository/provider 都有成功、Left、降级和异常边界测试。

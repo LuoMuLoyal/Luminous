@@ -68,7 +68,7 @@
 
 **实际作用**：无事件时引导用户开始观察，而不是产出无意义内容。
 
-**真伪判定**：真实现。抽样验证：`review_view.dart` 中 `review == null` 分支仅渲染入口卡与历史，无任何 AI 周报/泛化内容；后端 `buildCurrent` 无事件返回 null（成功信封），非 404。
+**真伪判定**：真实现。抽样验证：`review_view.dart` 中 `review == null` 分支仅渲染入口卡与历史，无任何 AI 周报/泛化内容；当前后端实现 `buildCurrent` 无事件返回 null（旧成功 envelope），非 404。
 
 **结论**：保留。
 
