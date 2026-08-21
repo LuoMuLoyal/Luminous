@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-18
+updated: 2026-08-21
 ---
 
 # Active UI — Today
@@ -143,6 +143,7 @@ Last updated: 2026-08-21
 - **AI 内容 Markdown 样式统一**（2026-08-03）：助手消息气泡、Today AI 摘要（w600）、建议 reason/boundary 均接入 `MarkdownStyle.ai`（见 [[Design_System#Markdown 渲染]]）；气泡传入自身背景色使代码背景自适配。
 - **Drawer 状态投影**（2026-08-04）：新增 `AssistantDrawerState` 轻量数据类（`conversationId / isOpeningConversation / isLoadingRecentConversations / recentConversationError / recentConversations`）。`AssistantPage` 通过 `select(...)` 仅投影 drawer 所需字段，避免流式消息/`streamingDraft` 变化时重建整个 `AssistantConversationDrawer` 与列表。
 - **FlowUI 主题桥接**（2026-08-21）：assistant 入口局部注入从当前 Forui 主题和 Luminous 语义色/字体派生的 `FlowTheme`，保留父主题已有扩展；FlowUI 主题不会泄露到其他页面。bridge 作用域测试和真实 `AssistantPage` 构建树接线测试覆盖该约束。
+- **FlowUI 消息列表**（2026-08-21）：生产消息列表已通过 assistant FlowUI adapter 使用 `FlowThread` + `FlowMessage`；旧 `AssistantMessageBubble` 仅保留给阶段 3 清理前的孤立测试，消息身份、proposal canonical id、Markdown 链接确认和现有消息操作回调继续由 adapter 透传。
 
 ## 2026-07-19 补充
 

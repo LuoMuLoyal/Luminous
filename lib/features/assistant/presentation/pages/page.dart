@@ -16,11 +16,16 @@ import 'package:luminous/features/assistant/presentation/widgets/dialogs/convers
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/features/assistant/presentation/widgets/flow_theme_bridge.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/page_body.dart';
+import 'package:luminous/features/assistant/presentation/widgets/views/conversation_stack.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Scroll distance (logical pixels) from the bottom edge that still counts
 /// as "near bottom" for auto-scroll.
 const _scrollProximityThreshold = 96.0;
+
+@visibleForTesting
+bool assistantIsNearLatest(double pixels) =>
+    pixels <= _scrollProximityThreshold;
 
 class AssistantPage extends HookConsumerWidget {
   const AssistantPage({super.key});
@@ -35,22 +40,13 @@ class AssistantPage extends HookConsumerWidget {
 
     void scrollToBottom() {
       if (!scrollController.hasClients) return;
-      unawaited(
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: DurationTokens.widgetQuick,
-          curve: MotionTokens.snappy,
-        ),
-      );
+      unawaited(scrollAssistantToLatest(scrollController));
     }
 
     void onUserScroll() {
       if (!scrollController.hasClients) return;
       final pos = scrollController.position;
-      final nearBottom =
-          (pos.pixels - pos.maxScrollExtent).abs() <=
-              _scrollProximityThreshold ||
-          pos.pixels >= pos.maxScrollExtent - 1;
+      final nearBottom = assistantIsNearLatest(pos.pixels);
       if (isNearBottom.value != nearBottom) {
         isNearBottom.value = nearBottom;
       }

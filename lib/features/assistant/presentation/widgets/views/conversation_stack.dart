@@ -7,6 +7,19 @@ import 'package:luminous/features/assistant/presentation/providers/conversation.
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_surface.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// Scrolls the reverse FlowUI conversation to its newest message.
+///
+/// [FlowThread] keeps the newest message at offset zero, unlike a regular
+/// non-reversed list whose newest content is at [maxScrollExtent].
+Future<void> scrollAssistantToLatest(ScrollController controller) async {
+  if (!controller.hasClients) return;
+  await controller.animateTo(
+    0,
+    duration: DurationTokens.widgetQuick,
+    curve: MotionTokens.snappy,
+  );
+}
+
 /// The floating-scroll-to-bottom button + conversation surface stack.
 /// Extracted from [AssistantPageBody] so the parent only orchestrates page-level
 /// state without owning the scroll-to-bottom interaction details.
@@ -88,7 +101,7 @@ class AssistantConversationStack extends ConsumerWidget {
               mainAxisSize: .min,
               onPress: () async {
                 isNearBottom.value = true;
-                await _scrollToBottom(scrollController);
+                await scrollAssistantToLatest(scrollController);
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -101,15 +114,6 @@ class AssistantConversationStack extends ConsumerWidget {
             ),
           ),
       ],
-    );
-  }
-
-  Future<void> _scrollToBottom(ScrollController controller) async {
-    if (!controller.hasClients) return;
-    await controller.animateTo(
-      controller.position.maxScrollExtent,
-      duration: DurationTokens.widgetQuick,
-      curve: MotionTokens.snappy,
     );
   }
 }
