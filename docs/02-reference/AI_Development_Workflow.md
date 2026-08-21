@@ -22,9 +22,8 @@ It complements:
 
 ## Current Integration Boundary
 
-- 当前 `upgrade/flutter-3.47` 分支已使用 `Flutter 3.47.1` / `Dart 3.13.1`；analyze、Android release、Web
-  release 已通过。基线 `refactor` 仍保留 Flutter 3.44.x（Dart 3.12）约束，升级分支因
-  flutter/flutter#191095 语义回归仍未合并，待上游修复后重跑全量测试。
+- 当前 `refactor` 已使用 `Flutter 3.47.1` / `Dart 3.13.1`；analyze、Android release、Web
+  release 已通过。全量测试因 flutter/flutter#191095 语义回归仍未通过，待上游修复后重跑。
 - AI-assisted coding is enabled through committed repo instructions plus a
   committed MCP config, not by relying on private IDE state.
 - Shipping in-app AI features still use Lucent-owned APIs.
