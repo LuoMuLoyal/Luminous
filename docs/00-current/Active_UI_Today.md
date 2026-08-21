@@ -128,14 +128,14 @@ Last updated: 2026-08-21
 - 助手页使用轻量 Forui header：从左到右为返回、历史对话、新会话、设置；不再在消息区常驻技术状态卡。
 - 历史对话使用页面内不透明 push drawer：聊天页整体向右移动，抽屉内容不会通过透明 modal barrier 覆盖聊天页。
 - 助手设置（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从 header 设置按钮跳转到独立 `/settings/ai` 页面调整。
-- 流式滚底优化：仅当用户已处于底部附近时自动滚底；用户上翻后显示"回到底部"悬浮按钮。
+- 流式滚底由 FlowUI `FlowChatScreen` 接管：`FlowThread` 与页面共享 `ScrollController`，使用现有 `assistantScrollToBottom` tooltip 的内置 jump-to-latest；页面不再自建滚动按钮或恢复旧的 maxScrollExtent 逻辑。
 - 助手状态文案已重写为自然语言（"AI 助手已准备好" / "AI 助手正在准备中" / "AI 助手暂时不可用" / "AI 助手已关闭"）。
-- **页面结构拆分**：`AssistantPage` 仅保留控制器与高层回调，UI 布局下沉到 `AssistantPageBody`；消息列表 + 输入区由 `AssistantConversationStack` 负责；文件行数全部达标（`page.dart` 163 行，子组件均 < 250 行）。
+- **页面结构拆分**：`AssistantPage` 仅保留控制器与高层回调，UI 布局下沉到 `AssistantPageBody`；消息列表、输入区和空态由 body-only 的 `FlowChatScreen` 组装，保留 header/drawer、状态门控和错误处理。
 - **输入区使用 `AssistantInputBar` → `FlowComposer` 过渡 facade**：复用现有 controller 和 placeholder，最多 5 行；移动端换行与发送由 FlowComposer 提供；`canSendMessages == false` 保留 disabled hint，发送中禁用且 `isStreaming: false`，不显示桌面 Ctrl/Cmd+Enter 提示。
 - **消息气泡去工程化**：`AssistantMessageBubble` 移除工具 chip 渲染与"正在生成"文字标签，流式期间使用 pulsing dots 动画指示器；用户气泡文字使用主色实色，避免浅色背景上使用浅色 `primaryForeground` 导致不可读；上下文菜单改用 `FContextMenu.tiles`，复制和"重新生成 / 重新发送"操作的完整按钮化交互仍列入 TODO。
 - **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。当前后端对常见 graph 回答先执行 `graph.invoke()`，再通过空白切分回放伪 chunk；SSE 传输正常，但尚未实现从 graph/LLM 到 HTTP 的真实增量流。
 - **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 通过页面内 `Stack` 从左侧推入，固定不透明背景；顶部使用 Forui 搜索框、关闭和新对话按钮；会话仍按"今天 / 最近 7 天 / 更早"分组，当前会话用 `prefix` 对勾图标高亮；搜索只过滤已加载列表，重命名/删除因后端暂无对应接口暂未接入。
-- **首屏重做**：空会话在消息区展示居中的 `AssistantWelcomePanel` 和 starter prompts；输入区保持轻量圆角表面，聊天消息状态不改变。
+- **首屏重做**：空会话由 `FlowGreeting` 展示标题和 AI 图标，`AssistantWelcomeSupport` 保留描述、临时 starter prompts、记忆提示和可展开/收起的健康免责；输入区和聊天消息状态不改变。
 - **设置页独立化**：聊天页设置按钮跳转现有 `/settings/ai` 独立页面；`AssistantControlsSheet` 保留为未使用的旧实现，当前聊天流程不再打开透明设置浮层。
 - **测试覆盖**：`test/assistant/widgets_test.dart` 覆盖消息气泡上下文菜单、会话 drawer 分组/高亮/空态/新建按钮/搜索过滤、状态消息等；流式渲染、drawer 推移、header 四入口和设置跳转由 `test/assistant/page_test.dart` 覆盖。
 - **drawer 宽度缓存**（2026-08-03）：`AssistantPage` 的 `drawerWidth` 由每帧 `MediaQuery.sizeOf` 计算改为 `useMemoized` 缓存，仅屏幕宽度变化时重算。
@@ -212,3 +212,9 @@ Last updated: 2026-08-21
 - 生产 `AssistantInputBar` 保留为过渡 facade，内部改由 `FlowComposer` 提供多行输入、移动软键盘换行和发送按钮；复用现有 controller、placeholder 和发送回调。
 - `maxLines` 保持 5；`canSendMessages == false` 保留现有禁用提示和状态图标；发送中整体禁用 composer，`isStreaming` 恒为 false，不显示 stop/cancel。
 - 删除桌面 Ctrl/Cmd+Enter 快捷键提示与自动隐藏 timer；保留 `input_bar.dart` 供后续阶段继续使用，未删除 conversation surface/page body。
+
+## 2026-08-21 Assistant FlowChatScreen 编排（阶段 2c）
+
+- `AssistantPageBody` 正常能力分支使用 `FlowChatScreen`，传入现有 `AssistantConversationMessageList`、`AssistantInputBar` facade、共享 `scrollController` 和 `assistantScrollToBottom` tooltip；打开会话提示、发送错误与重试仍通过 `aboveComposer` 保留。
+- 空态仅在无对话且能力允许发送时启用；FlowGreeting 使用 `assistantWelcomeTitle` 和 `SemanticIcons.aiGenerated`，`AssistantWelcomeSupport` 保留现有描述、starter prompts、记忆提示、免责文案和展开/收起语义。2d/2e 尚未提前实现。
+- 删除 `conversation_stack.dart`；保留并更新 `scroll_behavior_test.dart` 验证 FlowChatScreen jump-to-latest。`conversation_surface.dart`、welcome/starter、message-list、input-bar、adapter 保留，未修改 domain/data/controller/SSE 或 l10n。

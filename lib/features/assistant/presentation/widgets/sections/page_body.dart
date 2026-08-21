@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,9 +14,12 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
+import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/welcome_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
-import 'package:luminous/features/assistant/presentation/widgets/views/conversation_stack.dart';
+import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -26,7 +31,6 @@ class AssistantPageBody extends ConsumerWidget {
     super.key,
     required this.inputController,
     required this.scrollController,
-    required this.isNearBottom,
     required this.onSend,
     required this.onRetry,
     required this.onConfirmProposal,
@@ -40,7 +44,6 @@ class AssistantPageBody extends ConsumerWidget {
 
   final TextEditingController inputController;
   final ScrollController scrollController;
-  final ValueNotifier<bool> isNearBottom;
   final Future<void> Function() onSend;
   final VoidCallback? onRetry;
   final Future<void> Function({
@@ -89,6 +92,21 @@ class AssistantPageBody extends ConsumerWidget {
     );
     final hasConversation = ref.watch(
       assistantControllerProvider.select((s) => s.hasConversation),
+    );
+    final recentConversations = ref.watch(
+      assistantControllerProvider.select((s) => s.recentConversations),
+    );
+    final isSending = ref.watch(
+      assistantControllerProvider.select((s) => s.isSending),
+    );
+    final sendError = ref.watch(
+      assistantControllerProvider.select((s) => s.sendError),
+    );
+    final sendErrorType = ref.watch(
+      assistantControllerProvider.select((s) => s.sendErrorType),
+    );
+    final lastFailedInput = ref.watch(
+      assistantControllerProvider.select((s) => s.lastFailedInput),
     );
 
     final width = MediaQuery.sizeOf(context).width;
@@ -227,20 +245,53 @@ class AssistantPageBody extends ConsumerWidget {
                 ],
                 const SizedBox(height: Spacing.level3),
                 Expanded(
-                  child: AssistantConversationStack(
-                    inputController: inputController,
-                    scrollController: scrollController,
-                    isNearBottom: isNearBottom,
-                    capabilities: capabilities,
-                    hasConversation: hasConversation,
-                    onStarterPrompt: handleStarterPrompt,
-                    onSend: onSend,
-                    onRetry: onRetry,
-                    onConfirmProposal: onConfirmProposal,
-                    onDismissProposal: onDismissProposal,
-                    onRegenerateProposal: onRegenerateProposal,
-                    onRegenerate: onRegenerate,
-                    onResend: onResend,
+                  child: FlowChatScreen(
+                    key: const Key('assistant-flow-chat-screen'),
+                    empty:
+                        !hasConversation &&
+                        capabilities.canSendMessages &&
+                        !isSending,
+                    greeting: FlowGreeting(
+                      text: l10n.assistantWelcomeTitle,
+                      icon: SemanticIcons.aiGenerated,
+                    ),
+                    suggestions: AssistantWelcomeSupport(
+                      onStarterPrompt: handleStarterPrompt,
+                      showMemoryHint: capabilities.assistantMemoryEnabled,
+                      showDisclaimerExpanded: recentConversations.isEmpty,
+                    ),
+                    thread: AssistantConversationMessageList(
+                      capabilities: capabilities,
+                      scrollController: scrollController,
+                      onConfirmProposal: onConfirmProposal,
+                      onDismissProposal: onDismissProposal,
+                      onRegenerateProposal: onRegenerateProposal,
+                      onRegenerate: onRegenerate,
+                      onResend: onResend,
+                    ),
+                    composer: AssistantInputBar(
+                      controller: inputController,
+                      canSend: capabilities.canSendMessages && !isSending,
+                      isSending: isSending,
+                      canSendMessages: capabilities.canSendMessages,
+                      onSend: onSend,
+                    ),
+                    aboveComposer: isOpeningConversation || sendError != null
+                        ? _AssistantAboveComposer(
+                            isOpeningConversation: isOpeningConversation,
+                            sendError: sendError,
+                            sendErrorType: sendErrorType,
+                            onRetry: lastFailedInput != null
+                                ? () => ref
+                                      .read(
+                                        assistantControllerProvider.notifier,
+                                      )
+                                      .retryLastMessage()
+                                : onRetry,
+                          )
+                        : null,
+                    threadController: scrollController,
+                    jumpToLatestTooltip: l10n.assistantScrollToBottom,
                   ),
                 ),
               ],
@@ -248,6 +299,70 @@ class AssistantPageBody extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AssistantAboveComposer extends StatelessWidget {
+  const _AssistantAboveComposer({
+    required this.isOpeningConversation,
+    required this.sendError,
+    required this.sendErrorType,
+    required this.onRetry,
+  });
+
+  final bool isOpeningConversation;
+  final String? sendError;
+  final AssistantSendErrorType? sendErrorType;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (isOpeningConversation)
+          Padding(
+            padding: const EdgeInsets.only(bottom: Spacing.level3),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: FCircularProgress(),
+                    )
+                    .animate(onPlay: (controller) => controller.repeat())
+                    .rotate(duration: 800.ms),
+                const SizedBox(width: Spacing.level2),
+                Text(
+                  l10n.assistantOpeningConversationLabel,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ],
+            ),
+          ),
+        if (sendError != null) ...[
+          if (isOpeningConversation) const SizedBox(height: Spacing.level4),
+          StateMessageView(
+            title: l10n.assistantSendErrorTitle,
+            description: sendErrorDescription(l10n, sendErrorType, sendError!),
+            icon: sendErrorIcon(sendErrorType),
+            tone: StateTone.warning,
+            actionLabel: onRetry != null
+                ? l10n.assistantContinueGeneratingAction
+                : null,
+            onAction: onRetry,
+            actionKey: const Key('assistant-retry-action'),
+            padding: const EdgeInsets.all(Spacing.level4),
+          ),
+        ],
+      ],
     );
   }
 }

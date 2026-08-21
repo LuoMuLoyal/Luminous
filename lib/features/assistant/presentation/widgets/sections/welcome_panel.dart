@@ -5,7 +5,7 @@ import 'package:luminous/features/assistant/presentation/widgets/sections/input_
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Empty-state welcome content for a new assistant conversation.
-class AssistantWelcomePanel extends StatefulWidget {
+class AssistantWelcomePanel extends StatelessWidget {
   const AssistantWelcomePanel({
     super.key,
     required this.onStarterPrompt,
@@ -23,22 +23,8 @@ class AssistantWelcomePanel extends StatefulWidget {
   final bool showMemoryHint;
 
   @override
-  State<AssistantWelcomePanel> createState() => _AssistantWelcomePanelState();
-}
-
-class _AssistantWelcomePanelState extends State<AssistantWelcomePanel> {
-  late bool _disclaimerExpanded;
-
-  @override
-  void initState() {
-    super.initState();
-    _disclaimerExpanded = widget.showDisclaimerExpanded;
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(
@@ -74,34 +60,83 @@ class _AssistantWelcomePanelState extends State<AssistantWelcomePanel> {
                     .copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: Spacing.level3),
-              Text(
-                l10n.assistantWelcomeDescription,
-                textAlign: TextAlign.center,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
-              ),
-              const SizedBox(height: Spacing.level6),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: AssistantInputStarterPrompts(
-                  onSelected: widget.onStarterPrompt,
-                ),
-              ),
-              if (widget.showMemoryHint) ...[
-                const SizedBox(height: Spacing.level5),
-                const _WelcomeMemoryHintSection(),
-              ],
-              const SizedBox(height: Spacing.level3),
-              _WelcomeDisclaimerSection(
-                expanded: _disclaimerExpanded,
-                onToggle: () =>
-                    setState(() => _disclaimerExpanded = !_disclaimerExpanded),
+              AssistantWelcomeSupport(
+                onStarterPrompt: onStarterPrompt,
+                showMemoryHint: showMemoryHint,
+                showDisclaimerExpanded: showDisclaimerExpanded,
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Reusable support copy for the empty assistant state.
+///
+/// [FlowChatScreen] owns the greeting/composer layout; this host keeps the
+/// assistant-specific description, temporary starter prompts, memory hint,
+/// and collapsible health disclaimer together until the suggestion migration.
+class AssistantWelcomeSupport extends StatefulWidget {
+  const AssistantWelcomeSupport({
+    super.key,
+    required this.onStarterPrompt,
+    this.showMemoryHint = false,
+    this.showDisclaimerExpanded = true,
+  });
+
+  final ValueChanged<String> onStarterPrompt;
+  final bool showMemoryHint;
+  final bool showDisclaimerExpanded;
+
+  @override
+  State<AssistantWelcomeSupport> createState() =>
+      _AssistantWelcomeSupportState();
+}
+
+class _AssistantWelcomeSupportState extends State<AssistantWelcomeSupport> {
+  late bool _disclaimerExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _disclaimerExpanded = widget.showDisclaimerExpanded;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.assistantWelcomeDescription,
+          textAlign: TextAlign.center,
+          style: TypographyToken.level4
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
+        ),
+        const SizedBox(height: Spacing.level6),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: AssistantInputStarterPrompts(
+            onSelected: widget.onStarterPrompt,
+          ),
+        ),
+        if (widget.showMemoryHint) ...[
+          const SizedBox(height: Spacing.level5),
+          const _WelcomeMemoryHintSection(),
+        ],
+        const SizedBox(height: Spacing.level3),
+        _WelcomeDisclaimerSection(
+          expanded: _disclaimerExpanded,
+          onToggle: () =>
+              setState(() => _disclaimerExpanded = !_disclaimerExpanded),
+        ),
+      ],
     );
   }
 }

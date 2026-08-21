@@ -1,33 +1,37 @@
+import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/assistant/presentation/pages/page.dart';
-import 'package:luminous/features/assistant/presentation/widgets/views/conversation_stack.dart';
 
 import '../helpers/test_forui_app.dart';
 
 void main() {
-  test('near-latest threshold uses reverse-list offset semantics', () {
-    expect(assistantIsNearLatest(0), isTrue);
-    expect(assistantIsNearLatest(96), isTrue);
-    expect(assistantIsNearLatest(97), isFalse);
-  });
-
-  testWidgets('scroll-to-latest animates a reverse list to offset zero', (
+  testWidgets('FlowChatScreen jumps a reverse FlowThread to latest', (
     tester,
   ) async {
     final controller = ScrollController();
     addTearDown(controller.dispose);
+    final messages = List<FlowMessageData>.generate(
+      30,
+      (index) => FlowMessageData.text(
+        id: 'message-$index',
+        role: index.isEven ? FlowMessageRole.user : FlowMessageRole.assistant,
+        text: 'Message $index with enough content to create scroll range.',
+      ),
+    );
 
     await tester.pumpWidget(
       TestForuiApp(
         home: SizedBox(
-          height: 120,
-          child: ListView.builder(
-            reverse: true,
-            controller: controller,
-            itemCount: 30,
-            itemBuilder: (_, index) =>
-                SizedBox(height: 40, child: Text('message-$index')),
+          height: 320,
+          child: FlowChatScreen(
+            thread: FlowThread(
+              messages: messages,
+              controller: controller,
+              padding: EdgeInsets.zero,
+              itemSpacing: 8,
+            ),
+            threadController: controller,
+            jumpToLatestTooltip: 'jump-to-latest',
           ),
         ),
       ),
@@ -37,9 +41,12 @@ void main() {
     controller.jumpTo(controller.position.maxScrollExtent);
     expect(controller.offset, greaterThan(0));
 
-    final scrollFuture = scrollAssistantToLatest(controller);
+    await tester.pump();
+    final jumpButton = find.byTooltip('jump-to-latest');
+    expect(jumpButton, findsOneWidget);
+
+    await tester.tap(jumpButton);
     await tester.pumpAndSettle();
-    await scrollFuture;
 
     expect(controller.offset, 0);
   });

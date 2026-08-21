@@ -16,16 +16,7 @@ import 'package:luminous/features/assistant/presentation/widgets/dialogs/convers
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/features/assistant/presentation/widgets/flow_theme_bridge.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/page_body.dart';
-import 'package:luminous/features/assistant/presentation/widgets/views/conversation_stack.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-/// Scroll distance (logical pixels) from the bottom edge that still counts
-/// as "near bottom" for auto-scroll.
-const _scrollProximityThreshold = 96.0;
-
-@visibleForTesting
-bool assistantIsNearLatest(double pixels) =>
-    pixels <= _scrollProximityThreshold;
 
 class AssistantPage extends HookConsumerWidget {
   const AssistantPage({super.key});
@@ -36,42 +27,9 @@ class AssistantPage extends HookConsumerWidget {
 
     final inputController = useTextEditingController();
     final scrollController = useMemoized(() => ScrollController());
-    final isNearBottom = useState<bool>(true);
-
-    void scrollToBottom() {
-      if (!scrollController.hasClients) return;
-      unawaited(scrollAssistantToLatest(scrollController));
-    }
-
-    void onUserScroll() {
-      if (!scrollController.hasClients) return;
-      final pos = scrollController.position;
-      final nearBottom = assistantIsNearLatest(pos.pixels);
-      if (isNearBottom.value != nearBottom) {
-        isNearBottom.value = nearBottom;
-      }
-    }
-
-    ref.listen<int>(
-      assistantControllerProvider.select(
-        (s) => s.messages.length + (s.streamingDraft.isNotEmpty ? 1 : 0),
-      ),
-      (prev, next) {
-        final grew = (prev ?? 0) < next;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (isNearBottom.value || grew) {
-            scrollToBottom();
-          }
-        });
-      },
-    );
 
     useEffect(() {
-      scrollController.addListener(onUserScroll);
-      return () {
-        scrollController.removeListener(onUserScroll);
-        scrollController.dispose();
-      };
+      return scrollController.dispose;
     }, [scrollController]);
 
     Future<void> handleSend() async {
@@ -329,7 +287,6 @@ class AssistantPage extends HookConsumerWidget {
       child: AssistantPageBody(
         inputController: inputController,
         scrollController: scrollController,
-        isNearBottom: isNearBottom,
         onSend: handleSend,
         onRetry: null,
         onConfirmProposal: ({required messageId, required proposalId}) =>

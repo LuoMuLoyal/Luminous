@@ -13,7 +13,10 @@ import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/pages/page.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar_starter_prompts.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
+import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -606,6 +609,71 @@ void main() {
     // Input field should be visible on mobile
     expect(find.byKey(const Key('assistant-input')), findsOneWidget);
     expect(_assistantSendButton(), findsOneWidget);
+  });
+
+  testWidgets('normal assistant page uses the FlowChatScreen composition', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _RestoredConversationAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    final screen = tester.widget<FlowChatScreen>(find.byType(FlowChatScreen));
+    final threadWidget = screen.thread! as AssistantConversationMessageList;
+    final composer = screen.composer;
+
+    expect(find.byType(FlowChatScreen), findsOneWidget);
+    expect(find.byType(FlowThread), findsOneWidget);
+    expect(screen.thread, isA<AssistantConversationMessageList>());
+    expect(composer, isA<AssistantInputBar>());
+    expect(screen.threadController, isNotNull);
+    expect(
+      identical(screen.threadController, threadWidget.scrollController),
+      isTrue,
+    );
+    expect(screen.jumpToLatestTooltip, isNotEmpty);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget.runtimeType.toString() == 'AssistantConversationStack',
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets('empty assistant page keeps greeting and welcome support copy', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _FakeAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    final screen = tester.widget<FlowChatScreen>(find.byType(FlowChatScreen));
+
+    expect(screen.empty, isTrue);
+    expect(find.byType(FlowGreeting), findsOneWidget);
+    expect(find.text('开始和 Luminous 聊天'), findsOneWidget);
+    expect(find.text('可以问我最近的睡眠、记录和用药情况。'), findsOneWidget);
+    expect(find.byType(AssistantInputStarterPrompts), findsOneWidget);
+    const starterPrompt = '总结我今天的记录';
+    await tester.tap(find.text(starterPrompt));
+    await tester.pump();
+    final composerTextField = tester.widget<TextField>(
+      _assistantInputTextField(),
+    );
+    expect(composerTextField.controller?.text, starterPrompt);
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。'), findsOneWidget);
+    expect(
+      find.byKey(const Key('assistant-welcome-disclaimer')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('AssistantPage scopes one FlowTheme below MaterialApp', (
