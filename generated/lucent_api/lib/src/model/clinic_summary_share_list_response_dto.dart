@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/clinic_summary_share_list_data_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_list_item_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,33 +18,19 @@ part 'clinic_summary_share_list_response_dto.g.dart';
 )
 class ClinicSummaryShareListResponseDto {
   /// Returns a new [ClinicSummaryShareListResponseDto] instance.
-  ClinicSummaryShareListResponseDto({
-    required this.code,
+  ClinicSummaryShareListResponseDto({required this.items});
 
-    required this.message,
-
-    required this.data,
-  });
-
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
-
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final ClinicSummaryShareListDataDto data;
+  /// The caller shares, newest first (createdAt desc); revoked shares stay listed.
+  @JsonKey(name: r'items', required: true, includeIfNull: false)
+  final List<ClinicSummaryShareListItemDto> items;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ClinicSummaryShareListResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+      other is ClinicSummaryShareListResponseDto && other.items == items;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode => items.hashCode;
 
   factory ClinicSummaryShareListResponseDto.fromJson(
     Map<String, dynamic> json,

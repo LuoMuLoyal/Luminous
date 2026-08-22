@@ -32,7 +32,7 @@ ClinicSummaryCoverageDto _coverage() {
 /// explicit null (a deselected section omitted from the wire response).
 const _defaultSections = Object();
 
-ClinicSummaryDto _dto({
+ClinicSummaryResponseDto _dto({
   Object? allergies = _defaultSections,
   Object? conditions = _defaultSections,
   Object? medicines = _defaultSections,
@@ -46,7 +46,7 @@ ClinicSummaryDto _dto({
   String? sexAtBirth = 'male',
   String? bloodType = 'A',
 }) {
-  return ClinicSummaryDto(
+  return ClinicSummaryResponseDto(
     generatedAt: '2026-07-01T10:30:00',
     scopeLabel: dataRange,
     start: '2026-06-24T00:00:00',
@@ -102,7 +102,7 @@ ClinicSummaryDto _dto({
 void main() {
   Future<void> pumpContent(
     WidgetTester tester,
-    ClinicSummaryDto dto, {
+    ClinicSummaryResponseDto dto, {
     VoidCallback? onDownloadPdf,
     VoidCallback? onShare,
     bool isPdfDownloading = false,

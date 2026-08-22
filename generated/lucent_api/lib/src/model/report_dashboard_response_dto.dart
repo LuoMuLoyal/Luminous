@@ -3,7 +3,10 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/report_dashboard_data_dto.dart';
+import 'package:lucent_api/src/model/report_metric_dto.dart';
+import 'package:lucent_api/src/model/report_pattern_dto.dart';
+import 'package:lucent_api/src/model/report_finding_dto.dart';
+import 'package:lucent_api/src/model/report_trend_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +22,82 @@ part 'report_dashboard_response_dto.g.dart';
 class ReportDashboardResponseDto {
   /// Returns a new [ReportDashboardResponseDto] instance.
   ReportDashboardResponseDto({
-    required this.code,
+    required this.range,
 
-    required this.message,
+    required this.startDate,
 
-    required this.data,
+    required this.endDate,
+
+    required this.generatedAt,
+
+    required this.metrics,
+
+    required this.trends,
+
+    required this.findings,
+
+    required this.patterns,
+
+    required this.aiSummaryEnabled,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  @JsonKey(
+    name: r'range',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue: ReportDashboardResponseDtoRangeEnum.unknownDefaultOpenApi,
+  )
+  final ReportDashboardResponseDtoRangeEnum range;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  @JsonKey(name: r'startDate', required: true, includeIfNull: false)
+  final String startDate;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final ReportDashboardDataDto data;
+  @JsonKey(name: r'endDate', required: true, includeIfNull: false)
+  final String endDate;
+
+  @JsonKey(name: r'generatedAt', required: true, includeIfNull: false)
+  final String generatedAt;
+
+  @JsonKey(name: r'metrics', required: true, includeIfNull: false)
+  final List<ReportMetricDto> metrics;
+
+  @JsonKey(name: r'trends', required: true, includeIfNull: false)
+  final List<ReportTrendDto> trends;
+
+  @JsonKey(name: r'findings', required: true, includeIfNull: false)
+  final List<ReportFindingDto> findings;
+
+  @JsonKey(name: r'patterns', required: true, includeIfNull: false)
+  final List<ReportPatternDto> patterns;
+
+  @JsonKey(name: r'aiSummaryEnabled', required: true, includeIfNull: false)
+  final bool aiSummaryEnabled;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ReportDashboardResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.range == range &&
+          other.startDate == startDate &&
+          other.endDate == endDate &&
+          other.generatedAt == generatedAt &&
+          other.metrics == metrics &&
+          other.trends == trends &&
+          other.findings == findings &&
+          other.patterns == patterns &&
+          other.aiSummaryEnabled == aiSummaryEnabled;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      range.hashCode +
+      startDate.hashCode +
+      endDate.hashCode +
+      generatedAt.hashCode +
+      metrics.hashCode +
+      trends.hashCode +
+      findings.hashCode +
+      patterns.hashCode +
+      aiSummaryEnabled.hashCode;
 
   factory ReportDashboardResponseDto.fromJson(Map<String, dynamic> json) =>
       _$ReportDashboardResponseDtoFromJson(json);
@@ -55,4 +108,22 @@ class ReportDashboardResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum ReportDashboardResponseDtoRangeEnum {
+  @JsonValue(r'last_7_days')
+  last7Days(r'last_7_days'),
+  @JsonValue(r'last_30_days')
+  last30Days(r'last_30_days'),
+  @JsonValue(r'custom')
+  custom(r'custom'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const ReportDashboardResponseDtoRangeEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

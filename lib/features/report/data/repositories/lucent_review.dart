@@ -1,5 +1,5 @@
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/domain/repositories/review.dart';
 
@@ -15,10 +15,10 @@ class ReviewRemoteDataSource {
 
   Future<lucent.EventReviewDataDto?> fetchCurrentReview() async {
     final response = await api.reportsControllerGetCurrentReviewV1();
-    return response.data?.data;
+    return response.data;
   }
 
-  Future<lucent.EventReviewListDataDto> fetchHistory({
+  Future<lucent.EventReviewListResponseDto> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int? limit,
@@ -28,14 +28,15 @@ class ReviewRemoteDataSource {
       cursor: cursor,
       limit: limit,
     );
-    return requireData(response.data, operation: 'fetchHistory').data;
+    return requireData(response.data, operation: 'fetchHistory');
   }
 
   Future<lucent.EventReviewDataDto> fetchReview(String eventId) async {
     final response = await api.reportsControllerGetEventReviewV1(
       eventId: eventId,
     );
-    return requireData(response.data, operation: 'fetchReview').data;
+    final dto = requireData(response.data, operation: 'fetchReview');
+    return lucent.EventReviewDataDto.fromJson(dto.toJson());
   }
 
   /// [ReviewEventStatus.unknown] 是契约外的防御值，不能发给后端。

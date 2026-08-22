@@ -123,12 +123,8 @@ void main() {
     // The export controller's build()/refresh() read the latest request;
     // return a benign response so those reads never throw.
     when(() => api.dataExportControllerGetLatestRequestV1()).thenAnswer(
-      (_) async => Response<DataExportLatestResponseDto>(
-        data: DataExportLatestResponseDto(
-          code: 0,
-          message: 'ok',
-          data: _request(DataExportStatus.completed),
-        ),
+      (_) async => Response<DataExportRequestDataDto>(
+        data: _request(DataExportStatus.completed),
         requestOptions: RequestOptions(path: '/data-export-requests/latest'),
         statusCode: 200,
       ),
@@ -144,10 +140,8 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
-          data: DataExportRequestResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _request(DataExportStatus.failed),
+          data: DataExportRequestResponseDto.fromJson(
+            _request(DataExportStatus.failed).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -172,10 +166,8 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
-          data: DataExportRequestResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _request(DataExportStatus.completed),
+          data: DataExportRequestResponseDto.fromJson(
+            _request(DataExportStatus.completed).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -198,10 +190,8 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
-          data: DataExportRequestResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _request(DataExportStatus.unavailable),
+          data: DataExportRequestResponseDto.fromJson(
+            _request(DataExportStatus.unavailable).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,

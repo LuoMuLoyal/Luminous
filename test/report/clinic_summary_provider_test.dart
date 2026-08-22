@@ -77,9 +77,9 @@ Map<String, dynamic> _requestBody(RequestOptions options) {
       : (data as Map).cast<String, dynamic>();
 }
 
-ResponseBody _jsonBody(Map<String, dynamic> envelope) {
+ResponseBody _jsonBody(Map<String, dynamic> body) {
   return ResponseBody.fromString(
-    const JsonEncoder().convert(envelope),
+    const JsonEncoder().convert(body),
     200,
     headers: {
       'content-type': ['application/json; charset=utf-8'],
@@ -87,8 +87,8 @@ ResponseBody _jsonBody(Map<String, dynamic> envelope) {
   );
 }
 
-Map<String, dynamic> _envelope(Object? data) {
-  return {'code': 0, 'message': '', 'data': data};
+Map<String, dynamic> _body(Map<String, dynamic> data) {
+  return data;
 }
 
 Map<String, dynamic> _coverageJson() {
@@ -183,11 +183,7 @@ Response<ClinicSummaryShareListResponseDto> _shareListResponse(
   List<ClinicSummaryShareListItemDto> items,
 ) {
   return Response<ClinicSummaryShareListResponseDto>(
-    data: ClinicSummaryShareListResponseDto(
-      code: 0,
-      message: '',
-      data: ClinicSummaryShareListDataDto(items: items),
-    ),
+    data: ClinicSummaryShareListResponseDto(items: items),
     requestOptions: RequestOptions(path: '/shares'),
     statusCode: 200,
   );
@@ -239,7 +235,7 @@ void main() {
         adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (
           o,
         ) async {
-          return _jsonBody(_envelope(_summaryJson()));
+          return _jsonBody(_body(_summaryJson()));
         });
         final dioClient = LucentDioClient(
           baseUrl: 'http://localhost',
@@ -275,7 +271,7 @@ void main() {
       adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (
         o,
       ) async {
-        return _jsonBody(_envelope(_summaryJson()));
+        return _jsonBody(_body(_summaryJson()));
       });
       final dioClient = LucentDioClient(
         baseUrl: 'http://localhost',
@@ -307,9 +303,7 @@ void main() {
         o,
       ) async {
         return _jsonBody(
-          _envelope(
-            _summaryJson(sections: const ['profile', 'currentMedicines']),
-          ),
+          _body(_summaryJson(sections: const ['profile', 'currentMedicines'])),
         );
       });
       final dioClient = LucentDioClient(
@@ -341,7 +335,7 @@ void main() {
           o,
         ) async {
           return _jsonBody(
-            _envelope(
+            _body(
               _summaryJson(sections: const ['conditions', 'currentMedicines']),
             ),
           );
@@ -375,7 +369,7 @@ void main() {
       adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (
         o,
       ) async {
-        return _jsonBody(_envelope(_summaryJson(sections: const [])));
+        return _jsonBody(_body(_summaryJson(sections: const [])));
       });
       final dioClient = LucentDioClient(
         baseUrl: 'http://localhost',
@@ -416,7 +410,7 @@ void main() {
 
       final c = makeContainer(dioClient: dioClient, useMockClient: false);
       // Keep the autoDispose provider alive while the error propagates.
-      final sub = c.listen<AsyncValue<ClinicSummaryDto>>(
+      final sub = c.listen<AsyncValue<ClinicSummaryResponseDto>>(
         clinicSummaryPreviewProvider(kClinicSummaryDefaultFields),
         (_, __) {},
       );
@@ -446,35 +440,28 @@ void main() {
       return makeContainer(dioClient: dioClient, useMockClient: false);
     }
 
-    test(
-      'fetches a shared summary by token via raw Dio (envelope unwrapped)',
-      () async {
-        final adapter = _ScriptedAdapter();
-        adapter.on(
-          'GET',
-          '/api/v1/user/reports/clinic-summary/shared/abc123',
-          (o) async =>
-              _jsonBody(_envelope(_summaryJson(findings: const ['发现一条']))),
-        );
+    test('fetches a shared summary by token via raw Dio', () async {
+      final adapter = _ScriptedAdapter();
+      adapter.on(
+        'GET',
+        '/api/v1/user/reports/clinic-summary/shared/abc123',
+        (o) async => _jsonBody(_body(_summaryJson(findings: const ['发现一条']))),
+      );
 
-        final c = await containerWithShared(adapter);
-        final dto = await c.read(clinicSummarySharedProvider('abc123').future);
+      final c = await containerWithShared(adapter);
+      final dto = await c.read(clinicSummarySharedProvider('abc123').future);
 
-        expect(dto.dataRange, 'last_7_days');
-        expect(dto.findings, ['发现一条']);
-        expect(dto.allergies!.single.label, '青霉素');
+      expect(dto.dataRange, 'last_7_days');
+      expect(dto.findings, ['发现一条']);
+      expect(dto.allergies!.single.label, '青霉素');
 
-        // Public route: the request carries no Authorization header, exactly
-        // like the public shared PDF download.
-        final options = adapter.requests.single;
-        expect(
-          options.path,
-          '/api/v1/user/reports/clinic-summary/shared/abc123',
-        );
-        expect(options.extra['skipAuthorization'], isTrue);
-        expect(options.headers.containsKey('Authorization'), isFalse);
-      },
-    );
+      // Public route: the request carries no Authorization header, exactly
+      // like the public shared PDF download.
+      final options = adapter.requests.single;
+      expect(options.path, '/api/v1/user/reports/clinic-summary/shared/abc123');
+      expect(options.extra['skipAuthorization'], isTrue);
+      expect(options.headers.containsKey('Authorization'), isFalse);
+    });
 
     test(
       'tolerates deselected sections omitted from the shared response',
@@ -486,7 +473,7 @@ void main() {
           'GET',
           '/api/v1/user/reports/clinic-summary/shared/abc123',
           (o) async => _jsonBody(
-            _envelope(
+            _body(
               _summaryJson(sections: const ['conditions', 'currentMedicines']),
             ),
           ),
@@ -511,12 +498,12 @@ void main() {
       adapter.on(
         'GET',
         '/api/v1/user/reports/clinic-summary/shared/a',
-        (o) async => _jsonBody(_envelope(_summaryJson())),
+        (o) async => _jsonBody(_body(_summaryJson())),
       );
       adapter.on(
         'GET',
         '/api/v1/user/reports/clinic-summary/shared/b',
-        (o) async => _jsonBody(_envelope(_summaryJson())),
+        (o) async => _jsonBody(_body(_summaryJson())),
       );
 
       final c = await containerWithShared(adapter);
@@ -537,17 +524,13 @@ void main() {
         throw DioException(
           requestOptions: o,
           type: DioExceptionType.badResponse,
-          response: Response(
-            requestOptions: o,
-            statusCode: 404,
-            data: _envelope(null),
-          ),
+          response: Response(requestOptions: o, statusCode: 404, data: null),
         );
       });
 
       final c = await containerWithShared(adapter);
       // Keep the autoDispose provider alive while the error propagates.
-      final sub = c.listen<AsyncValue<ClinicSummaryDto>>(
+      final sub = c.listen<AsyncValue<ClinicSummaryResponseDto>>(
         clinicSummarySharedProvider('abc123'),
         (_, __) {},
       );
@@ -626,7 +609,7 @@ void main() {
     adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (
       o,
     ) async {
-      return _jsonBody(_envelope(_summaryJson()));
+      return _jsonBody(_body(_summaryJson()));
     });
     (handlers ?? const {}).forEach((key, handler) {
       final parts = key.split(' ');
@@ -651,7 +634,7 @@ void main() {
       return Response<ClinicSummaryResponseDto>(
         requestOptions: RequestOptions(path: '/preview'),
         statusCode: 200,
-        data: ClinicSummaryResponseDto.fromJson(_envelope(_summaryJson())),
+        data: ClinicSummaryResponseDto.fromJson(_body(_summaryJson())),
       );
     });
 
@@ -964,7 +947,7 @@ void main() {
             requestOptions: RequestOptions(path: '/share'),
             statusCode: 200,
             data: ClinicSummaryShareResponseDto.fromJson(
-              _envelope({
+              _body({
                 'shareId': 'share-42',
                 'token': 'tok',
                 'shareUrl':
@@ -1070,7 +1053,7 @@ void main() {
             requestOptions: RequestOptions(path: '/share'),
             statusCode: 200,
             data: ClinicSummaryShareResponseDto.fromJson(
-              _envelope({
+              _body({
                 'shareId': 'share-new',
                 'token': 'tok',
                 'shareUrl':
@@ -1134,7 +1117,7 @@ void main() {
             requestOptions: RequestOptions(path: '/share'),
             statusCode: 200,
             data: ClinicSummaryShareResponseDto.fromJson(
-              _envelope({
+              _body({
                 'shareId': 'share-42',
                 'token': 'tok',
                 'shareUrl':

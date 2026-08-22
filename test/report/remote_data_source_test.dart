@@ -23,7 +23,7 @@ void main() {
     });
 
     test(
-      'fetchDashboard requests dashboard endpoint and unwraps envelope',
+      'fetchDashboard requests dashboard endpoint and parses the resource',
       () async {
         final dashboard = await dataSource.fetchDashboard(
           const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
@@ -36,7 +36,7 @@ void main() {
         expect(request.queryParameters, containsPair('range', 'last_7_days'));
         expect(
           dashboard.range,
-          lucent.ReportDashboardDataDtoRangeEnum.last7Days,
+          lucent.ReportDashboardResponseDtoRangeEnum.last7Days,
         );
         expect(dashboard.startDate, '2026-06-06');
         expect(dashboard.endDate, '2026-06-12');
@@ -78,50 +78,46 @@ class _FakeReportAdapter implements HttpClientAdapter {
 
     return ResponseBody.fromString(
       jsonEncode(<String, Object?>{
-        'code': 0,
-        'message': '',
-        'data': <String, Object?>{
-          'range': 'last_7_days',
-          'startDate': '2026-06-06',
-          'endDate': '2026-06-12',
-          'generatedAt': '2026-06-12T10:00:00.000Z',
-          'metrics': <Object?>[
-            <String, Object?>{
-              'kind': 'water',
-              'value': '1.8',
-              'unit': 'L',
-              'status': 'good',
-              'delta': '+0.4L',
-              'direction': 'up',
-              'sparkline': <num>[1.2, 1.5, 1.7, 1.6, 1.8, 1.9, 1.8],
-            },
-          ],
-          'trends': <Object?>[
-            <String, Object?>{
-              'kind': 'water',
-              'unit': 'L',
-              'currentValue': '1.8L',
-              'values': <num>[1.2, 1.5, 1.7, 1.6, 1.8, 1.9, 1.8],
-            },
-          ],
-          'findings': <Object?>[
-            <String, Object?>{
-              'kind': 'hydration',
-              'title': '饮水改善',
-              'body': '最近 7 天饮水量较前期更稳定。',
-            },
-          ],
-          'patterns': <Object?>[
-            <String, Object?>{
-              'kind': 'hydration',
-              'title': '饮水正在回升',
-              'status': 'good',
-              'body': '工作日下午的补水频率更稳定。',
-              'sparkline': <num>[30, 34, 38, 36, 42, 44, 43],
-            },
-          ],
-          'aiSummaryEnabled': true,
-        },
+        'range': 'last_7_days',
+        'startDate': '2026-06-06',
+        'endDate': '2026-06-12',
+        'generatedAt': '2026-06-12T10:00:00.000Z',
+        'metrics': <Object?>[
+          <String, Object?>{
+            'kind': 'water',
+            'value': '1.8',
+            'unit': 'L',
+            'status': 'good',
+            'delta': '+0.4L',
+            'direction': 'up',
+            'sparkline': <num>[1.2, 1.5, 1.7, 1.6, 1.8, 1.9, 1.8],
+          },
+        ],
+        'trends': <Object?>[
+          <String, Object?>{
+            'kind': 'water',
+            'unit': 'L',
+            'currentValue': '1.8L',
+            'values': <num>[1.2, 1.5, 1.7, 1.6, 1.8, 1.9, 1.8],
+          },
+        ],
+        'findings': <Object?>[
+          <String, Object?>{
+            'kind': 'hydration',
+            'title': '饮水改善',
+            'body': '最近 7 天饮水量较前期更稳定。',
+          },
+        ],
+        'patterns': <Object?>[
+          <String, Object?>{
+            'kind': 'hydration',
+            'title': '饮水正在回升',
+            'status': 'good',
+            'body': '工作日下午的补水频率更稳定。',
+            'sparkline': <num>[30, 34, 38, 36, 42, 44, 43],
+          },
+        ],
+        'aiSummaryEnabled': true,
       }),
       200,
       headers: const <String, List<String>>{

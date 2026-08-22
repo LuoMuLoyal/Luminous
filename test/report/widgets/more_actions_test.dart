@@ -574,8 +574,8 @@ ClinicSummaryCoverageDto _coverage() {
   );
 }
 
-ClinicSummaryDto _clinicDto() {
-  return ClinicSummaryDto(
+ClinicSummaryResponseDto _clinicDto() {
+  return ClinicSummaryResponseDto(
     generatedAt: '2026-08-13T09:00:00',
     scopeLabel: 'last_7_days',
     start: '2026-08-07T00:00:00',

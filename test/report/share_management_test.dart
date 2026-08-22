@@ -51,11 +51,7 @@ Response<ClinicSummaryShareListResponseDto> _shareListResponse(
   List<ClinicSummaryShareListItemDto> items,
 ) {
   return Response<ClinicSummaryShareListResponseDto>(
-    data: ClinicSummaryShareListResponseDto(
-      code: 0,
-      message: '',
-      data: ClinicSummaryShareListDataDto(items: items),
-    ),
+    data: ClinicSummaryShareListResponseDto(items: items),
     requestOptions: RequestOptions(path: '/shares'),
     statusCode: 200,
   );

@@ -222,23 +222,23 @@ class _FakeReportRemoteDataSource extends ReportRemoteDataSource {
         dio: Dio(BaseOptions()),
       );
 
-  final lucent.ReportDashboardDataDto _dto;
+  final lucent.ReportDashboardResponseDto _dto;
 
   @override
-  Future<lucent.ReportDashboardDataDto> fetchDashboard(
+  Future<lucent.ReportDashboardResponseDto> fetchDashboard(
     ReportDashboardQuery query,
   ) async => _dto;
 }
 
-lucent.ReportDashboardDataDto _dashboardDto({
+lucent.ReportDashboardResponseDto _dashboardDto({
   required bool aiSummaryEnabled,
   required List<lucent.ReportMetricDto> metrics,
   required List<lucent.ReportTrendDto> trends,
   required List<lucent.ReportFindingDto> findings,
   required List<lucent.ReportPatternDto> patterns,
 }) {
-  return lucent.ReportDashboardDataDto(
-    range: lucent.ReportDashboardDataDtoRangeEnum.last7Days,
+  return lucent.ReportDashboardResponseDto(
+    range: lucent.ReportDashboardResponseDtoRangeEnum.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
     generatedAt: '2026-06-12T10:00:00.000Z',

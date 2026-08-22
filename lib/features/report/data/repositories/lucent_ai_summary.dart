@@ -47,7 +47,7 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
     }
   }
 
-  ReportAiSummary _mapSummary(lucent.ReportSummaryDataDto dto) {
+  ReportAiSummary _mapSummary(lucent.ReportSummaryResponseDto dto) {
     return ReportAiSummary(
       range: _mapRange(dto.range),
       startDate: dto.startDate,
@@ -116,18 +116,20 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
     return ReportAiSummaryLowRiskAction(label: dto.label, text: dto.text);
   }
 
-  ReportAiSummaryRange _mapRange(lucent.ReportSummaryDataDtoRangeEnum range) {
+  ReportAiSummaryRange _mapRange(
+    lucent.ReportSummaryResponseDtoRangeEnum range,
+  ) {
     switch (range) {
-      case lucent.ReportSummaryDataDtoRangeEnum.last7Days:
+      case lucent.ReportSummaryResponseDtoRangeEnum.last7Days:
         return ReportAiSummaryRange.last7Days;
-      case lucent.ReportSummaryDataDtoRangeEnum.last30Days:
+      case lucent.ReportSummaryResponseDtoRangeEnum.last30Days:
         return ReportAiSummaryRange.last30Days;
-      case lucent.ReportSummaryDataDtoRangeEnum.custom:
+      case lucent.ReportSummaryResponseDtoRangeEnum.custom:
         return ReportAiSummaryRange.custom;
       // The OpenAPI generator emits this sentinel for any value the server
       // returns that the generated client does not know about. Log a
       // warning and fall back to `last7Days` rather than throwing.
-      case lucent.ReportSummaryDataDtoRangeEnum.unknownDefaultOpenApi:
+      case lucent.ReportSummaryResponseDtoRangeEnum.unknownDefaultOpenApi:
         appTalker.warning('Unknown summary range from API: $range');
         return ReportAiSummaryRange.last7Days;
     }

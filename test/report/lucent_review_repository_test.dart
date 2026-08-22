@@ -211,7 +211,7 @@ void main() {
     test('maps a page of event summaries with total and cursor', () async {
       final repository = LucentReviewRepository(
         dataSource: _FakeReviewRemoteDataSource(
-          page: lucent.EventReviewListDataDto(
+          page: lucent.EventReviewListResponseDto(
             items: [
               _eventDto(id: 'evt-2', status: lucent.HealthEventStatus.ended),
               _eventDto(id: 'evt-1', status: lucent.HealthEventStatus.active),
@@ -236,7 +236,7 @@ void main() {
       'forwards status, cursor and limit to the remote data source',
       () async {
         final dataSource = _FakeReviewRemoteDataSource(
-          page: lucent.EventReviewListDataDto(
+          page: lucent.EventReviewListResponseDto(
             items: const [],
             total: 0,
             nextCursor: null,
@@ -301,7 +301,7 @@ class _FakeReviewRemoteDataSource extends ReviewRemoteDataSource {
     : super(api: lucent.ReportsApi(Dio(BaseOptions())));
 
   lucent.EventReviewDataDto? current;
-  lucent.EventReviewListDataDto? page;
+  lucent.EventReviewListResponseDto? page;
   lucent.EventReviewDataDto? detail;
 
   ReviewEventStatus? lastStatus;
@@ -312,7 +312,7 @@ class _FakeReviewRemoteDataSource extends ReviewRemoteDataSource {
   Future<lucent.EventReviewDataDto?> fetchCurrentReview() async => current;
 
   @override
-  Future<lucent.EventReviewListDataDto> fetchHistory({
+  Future<lucent.EventReviewListResponseDto> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int? limit,

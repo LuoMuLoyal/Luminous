@@ -13,8 +13,8 @@ import 'package:lucent_api/src/model/clinic_summary_request_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_list_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
+import 'package:lucent_api/src/model/event_review_data_dto.dart';
 import 'package:lucent_api/src/model/event_review_list_response_dto.dart';
-import 'package:lucent_api/src/model/event_review_nullable_response_dto.dart';
 import 'package:lucent_api/src/model/event_review_response_dto.dart';
 import 'package:lucent_api/src/model/generate_report_summary_dto.dart';
 import 'package:lucent_api/src/model/health_event_status.dart';
@@ -595,10 +595,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [EventReviewNullableResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [EventReviewDataDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EventReviewNullableResponseDto>>
-  reportsControllerGetCurrentReviewV1({
+  Future<Response<EventReviewDataDto>> reportsControllerGetCurrentReviewV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -622,16 +621,17 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    EventReviewNullableResponseDto? _responseData;
+    EventReviewDataDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              EventReviewNullableResponseDto,
-              EventReviewNullableResponseDto
-            >(rawData, 'EventReviewNullableResponseDto', growable: true);
+          : deserialize<EventReviewDataDto, EventReviewDataDto>(
+              rawData,
+              'EventReviewDataDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -642,7 +642,7 @@ class ReportsApi {
       );
     }
 
-    return Response<EventReviewNullableResponseDto>(
+    return Response<EventReviewDataDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

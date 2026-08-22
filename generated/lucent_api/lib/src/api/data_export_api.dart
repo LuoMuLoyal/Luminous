@@ -10,7 +10,7 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/create_data_export_request_dto.dart';
-import 'package:lucent_api/src/model/data_export_latest_response_dto.dart';
+import 'package:lucent_api/src/model/data_export_request_data_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_response_dto.dart';
 
 class DataExportApi {
@@ -116,9 +116,9 @@ class DataExportApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DataExportLatestResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DataExportRequestDataDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DataExportLatestResponseDto>>
+  Future<Response<DataExportRequestDataDto>>
   dataExportControllerGetLatestRequestV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -143,16 +143,17 @@ class DataExportApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DataExportLatestResponseDto? _responseData;
+    DataExportRequestDataDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              DataExportLatestResponseDto,
-              DataExportLatestResponseDto
-            >(rawData, 'DataExportLatestResponseDto', growable: true);
+          : deserialize<DataExportRequestDataDto, DataExportRequestDataDto>(
+              rawData,
+              'DataExportRequestDataDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -163,7 +164,7 @@ class DataExportApi {
       );
     }
 
-    return Response<DataExportLatestResponseDto>(
+    return Response<DataExportRequestDataDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

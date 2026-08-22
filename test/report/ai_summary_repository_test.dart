@@ -10,8 +10,8 @@ void main() {
   test('Lucent report ai summary repository maps summary dto', () async {
     final repository = LucentReportAiSummaryRepository(
       dataSource: _FakeReportAiSummaryRemoteDataSource(
-        lucent.ReportSummaryDataDto(
-          range: lucent.ReportSummaryDataDtoRangeEnum.last30Days,
+        lucent.ReportSummaryResponseDto(
+          range: lucent.ReportSummaryResponseDtoRangeEnum.last30Days,
           startDate: '2026-06-06',
           endDate: '2026-06-12',
           generatedAt: '2026-06-12T10:00:00.000Z',
@@ -78,7 +78,7 @@ class _FakeReportAiSummaryRemoteDataSource
         dio: Dio(BaseOptions()),
       );
 
-  final lucent.ReportSummaryDataDto _dto;
+  final lucent.ReportSummaryResponseDto _dto;
 
   @override
   Stream<ReportAiRemoteEvent> generateStream(

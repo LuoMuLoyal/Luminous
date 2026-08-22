@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 
 /// All six selectable clinic summary fields, in display order.
@@ -34,10 +33,10 @@ const kClinicSummaryDefaultFields = <ClinicSummaryRequestDtoSelectedFieldsEnum>[
 /// are omitted from the response (and from the PDF / share, which consume the
 /// same filtered view).
 final clinicSummaryPreviewProvider = FutureProvider.autoDispose
-    .family<ClinicSummaryDto, List<ClinicSummaryRequestDtoSelectedFieldsEnum>>((
-      ref,
-      selectedFields,
-    ) async {
+    .family<
+      ClinicSummaryResponseDto,
+      List<ClinicSummaryRequestDtoSelectedFieldsEnum>
+    >((ref, selectedFields) async {
       return authGuarded(
         ref: ref,
         fetch: () => _fetchPreview(ref, selectedFields),
@@ -45,7 +44,7 @@ final clinicSummaryPreviewProvider = FutureProvider.autoDispose
       );
     });
 
-Future<ClinicSummaryDto> _fetchPreview(
+Future<ClinicSummaryResponseDto> _fetchPreview(
   Ref ref,
   List<ClinicSummaryRequestDtoSelectedFieldsEnum> selectedFields,
 ) async {
@@ -55,9 +54,7 @@ Future<ClinicSummaryDto> _fetchPreview(
       selectedFields: selectedFields,
     ),
   );
-  final dto = response.data!;
-  ensureEnvelopeSuccess(code: dto.code, message: dto.message);
-  return dto.data;
+  return response.data!;
 }
 
 /// Fetches a shared clinic summary by its public token.
@@ -65,15 +62,13 @@ Future<ClinicSummaryDto> _fetchPreview(
 /// Calls `GET /api/v1/user/reports/clinic-summary/shared/{token}` — no
 /// authentication required. Used by the public deep-link share page.
 final clinicSummarySharedProvider = FutureProvider.autoDispose
-    .family<ClinicSummaryDto, String>((ref, token) async {
+    .family<ClinicSummaryResponseDto, String>((ref, token) async {
       final api = ref.watch(lucentClientProvider).reports;
       final response = await api.reportsControllerGetSharedClinicSummaryV1(
         token: token,
         extra: const {'skipAuthorization': true},
       );
-      final dto = response.data!;
-      ensureEnvelopeSuccess(code: dto.code, message: dto.message);
-      return dto.data;
+      return response.data!;
     });
 
 /// The current user's clinic summary shares, newest first.
@@ -95,7 +90,7 @@ class ClinicSummaryShareList
       fetch: () async {
         final api = ref.watch(lucentClientProvider).reports;
         final response = await api.reportsControllerListClinicSummarySharesV1();
-        return response.data?.data.items ?? const [];
+        return response.data?.items ?? const [];
       },
       signedOutFallback: () => pendingAuthSessionResolution(),
     );

@@ -12,7 +12,6 @@ import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/report/presentation/providers/clinic_summary.dart';
@@ -121,7 +120,7 @@ class _ClinicSummaryPreviewContentState
     // visit_summary_previewed 在服务端响应边界记录：AsyncData → success，
     // AsyncError → failure（失败不算 previewed）。每次对话框呈现只记一条
     // （自动重试与 rebuild 不重复计数）。
-    ref.listen<AsyncValue<ClinicSummaryDto>>(
+    ref.listen<AsyncValue<ClinicSummaryResponseDto>>(
       clinicSummaryPreviewProvider(_selectedFields),
       (_, next) {
         if (_previewMeasured) return;
@@ -272,7 +271,7 @@ class _ClinicSummaryPreviewContentState
     notifier.set(true);
     setState(() => _isCreatingShare = true);
     try {
-      // 生成客户端直接反序列化信封（{code, message, data}），无需再手动解包。
+      // 生成客户端直接反序列化资源，无需再手动解包。
       // 请求体携带当前字段选择，未选择字段不会进入分享内容。
       final result = await runGuarded(
         ref: ref,
@@ -284,9 +283,7 @@ class _ClinicSummaryPreviewContentState
               selectedFields: _selectedFields,
             ),
           );
-          final dto = response.data!;
-          ensureEnvelopeSuccess(code: dto.code, message: dto.message);
-          return dto;
+          return response.data!;
         },
       );
       switch (result) {
@@ -315,7 +312,7 @@ class _ClinicSummaryPreviewContentState
 
   Future<void> _copyLink() async {
     final l10n = AppLocalizations.of(context)!;
-    final url = _shareResponse?.data.shareUrl ?? '';
+    final url = _shareResponse?.shareUrl ?? '';
     if (url.isEmpty) return;
     await Clipboard.setData(ClipboardData(text: url));
     if (mounted) {
@@ -325,7 +322,7 @@ class _ClinicSummaryPreviewContentState
 
   Future<void> _revokeShare() async {
     final l10n = AppLocalizations.of(context)!;
-    final shareId = _shareResponse?.data.shareId;
+    final shareId = _shareResponse?.shareId;
     if (shareId == null || shareId.isEmpty) {
       if (mounted) {
         await Toast.show(context, l10n.reportShareRevokeFailed);
@@ -633,14 +630,14 @@ class _ShareCreatedPanel extends StatelessWidget {
         const SizedBox(height: Spacing.level3),
         MetaRow(
           label: l10n.reportShareCreatedExpiresAt,
-          value: formatDateTimeFull(response.data.expiresAt, locale),
+          value: formatDateTimeFull(response.expiresAt, locale),
         ),
         const SizedBox(height: Spacing.level4),
         FCard(
           child: Padding(
             padding: const EdgeInsets.all(Spacing.level4),
             child: Text(
-              response.data.shareUrl,
+              response.shareUrl,
               style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
