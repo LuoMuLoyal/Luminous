@@ -10,11 +10,7 @@ void main() {
   group('appInfoProvider', () {
     test('returns app info data DTO', () async {
       final fakeApi = FakeAppInfoApi(
-        response: AppInfoResponseDto(
-          code: 0,
-          message: '',
-          data: AppInfoDataDto(supportEmail: 'support@lumos.app'),
-        ),
+        response: AppInfoResponseDto(supportEmail: 'support@lumos.app'),
       );
 
       final container = ProviderContainer(

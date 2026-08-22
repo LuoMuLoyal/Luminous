@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/app_info_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,34 +18,42 @@ part 'app_info_response_dto.g.dart';
 class AppInfoResponseDto {
   /// Returns a new [AppInfoResponseDto] instance.
   AppInfoResponseDto({
-    required this.code,
+    this.minClientVersion,
 
-    required this.message,
+    this.latestVersion,
 
-    required this.data,
+    this.downloadUrl,
+
+    this.supportEmail,
   });
 
-  /// Result code.
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  @JsonKey(name: r'minClientVersion', required: false, includeIfNull: false)
+  final String? minClientVersion;
 
-  /// Message.
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  @JsonKey(name: r'latestVersion', required: false, includeIfNull: false)
+  final String? latestVersion;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final AppInfoDataDto data;
+  @JsonKey(name: r'downloadUrl', required: false, includeIfNull: false)
+  final String? downloadUrl;
+
+  @JsonKey(name: r'supportEmail', required: false, includeIfNull: false)
+  final String? supportEmail;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AppInfoResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.minClientVersion == minClientVersion &&
+          other.latestVersion == latestVersion &&
+          other.downloadUrl == downloadUrl &&
+          other.supportEmail == supportEmail;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      (minClientVersion == null ? 0 : minClientVersion.hashCode) +
+      (latestVersion == null ? 0 : latestVersion.hashCode) +
+      (downloadUrl == null ? 0 : downloadUrl.hashCode) +
+      (supportEmail == null ? 0 : supportEmail.hashCode);
 
   factory AppInfoResponseDto.fromJson(Map<String, dynamic> json) =>
       _$AppInfoResponseDtoFromJson(json);

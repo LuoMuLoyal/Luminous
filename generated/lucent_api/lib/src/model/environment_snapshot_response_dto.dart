@@ -3,7 +3,12 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/environment_snapshot_dto.dart';
+import 'package:lucent_api/src/model/humidity_indicator_dto.dart';
+import 'package:lucent_api/src/model/temperature_indicator_dto.dart';
+import 'package:lucent_api/src/model/air_quality_indicator_dto.dart';
+import 'package:lucent_api/src/model/environment_data_source.dart';
+import 'package:lucent_api/src/model/pollen_indicator_dto.dart';
+import 'package:lucent_api/src/model/uv_indicator_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +24,76 @@ part 'environment_snapshot_response_dto.g.dart';
 class EnvironmentSnapshotResponseDto {
   /// Returns a new [EnvironmentSnapshotResponseDto] instance.
   EnvironmentSnapshotResponseDto({
-    required this.code,
+    required this.dataSource,
 
-    required this.message,
+    required this.updatedAt,
 
-    required this.data,
+    required this.regionHint,
+
+    required this.pollen,
+
+    required this.uv,
+
+    required this.airQuality,
+
+    required this.temperature,
+
+    required this.humidity,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  @JsonKey(
+    name: r'dataSource',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue: EnvironmentDataSource.unknownDefaultOpenApi,
+  )
+  final EnvironmentDataSource dataSource;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  /// ISO-8601 timestamp for the static reference data refresh.
+  @JsonKey(name: r'updatedAt', required: true, includeIfNull: false)
+  final String updatedAt;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final EnvironmentSnapshotDto data;
+  @JsonKey(name: r'regionHint', required: true, includeIfNull: true)
+  final String? regionHint;
+
+  @JsonKey(name: r'pollen', required: true, includeIfNull: false)
+  final PollenIndicatorDto pollen;
+
+  @JsonKey(name: r'uv', required: true, includeIfNull: false)
+  final UvIndicatorDto uv;
+
+  @JsonKey(name: r'airQuality', required: true, includeIfNull: false)
+  final AirQualityIndicatorDto airQuality;
+
+  @JsonKey(name: r'temperature', required: true, includeIfNull: false)
+  final TemperatureIndicatorDto temperature;
+
+  @JsonKey(name: r'humidity', required: true, includeIfNull: false)
+  final HumidityIndicatorDto humidity;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is EnvironmentSnapshotResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.dataSource == dataSource &&
+          other.updatedAt == updatedAt &&
+          other.regionHint == regionHint &&
+          other.pollen == pollen &&
+          other.uv == uv &&
+          other.airQuality == airQuality &&
+          other.temperature == temperature &&
+          other.humidity == humidity;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      dataSource.hashCode +
+      updatedAt.hashCode +
+      (regionHint == null ? 0 : regionHint.hashCode) +
+      pollen.hashCode +
+      uv.hashCode +
+      airQuality.hashCode +
+      temperature.hashCode +
+      humidity.hashCode;
 
   factory EnvironmentSnapshotResponseDto.fromJson(Map<String, dynamic> json) =>
       _$EnvironmentSnapshotResponseDtoFromJson(json);
