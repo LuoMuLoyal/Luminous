@@ -20,6 +20,11 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 - Ordinary HTTP 4xx/5xx responses use `application/problem+json`.
 - The checked-in OpenAPI export and generated package now reflect the direct-resource response shape
   after the Lucent hard cut.
+- Problem Details and SSE Problem Details are generated as named DTOs with stable string `code`,
+  localized `title`/`detail`, optional retry metadata, and stream-only termination `status`.
+- Queued endpoints use named async response DTOs whose `jobId` and inline result fields are
+  optional; exactly one branch is returned at runtime. They are not generated as mutually required
+  `oneOf` fields or numeric envelopes.
 
 The Luminous target-state error foundation is wired through the generated client and repository/provider
 call chain. `ProblemDetails` parsing is strict and does not interpret the retired success/error
@@ -40,7 +45,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 127 paths / 259 schemas.
+- Last known Lucent export: 127 paths / 268 schemas.
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.

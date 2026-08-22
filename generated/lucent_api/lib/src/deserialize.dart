@@ -22,6 +22,7 @@ import 'package:lucent_api/src/model/clinic_summary_allergy_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_condition_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_coverage_entry_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_export_async_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_medicine_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_note_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
@@ -119,6 +120,8 @@ import 'package:lucent_api/src/model/mark_dose_log_dto.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_dto_detail.dart';
 import 'package:lucent_api/src/model/medicine_pagination_dto.dart';
+import 'package:lucent_api/src/model/medicine_recognition_async_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_recognition_result_dto.dart';
 import 'package:lucent_api/src/model/medicine_red_flag_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_item_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response_dto.dart';
@@ -142,6 +145,7 @@ import 'package:lucent_api/src/model/o_auth_authorize_response_dto.dart';
 import 'package:lucent_api/src/model/o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/o_auth_code_callback_dto.dart';
 import 'package:lucent_api/src/model/pollen_indicator_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/qq_o_auth_authorize_dto.dart';
 import 'package:lucent_api/src/model/qq_o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/recognize_medicine_dto.dart';
@@ -163,10 +167,10 @@ import 'package:lucent_api/src/model/report_metric_dto.dart';
 import 'package:lucent_api/src/model/report_observed_metric_dto.dart';
 import 'package:lucent_api/src/model/report_observed_pattern_dto.dart';
 import 'package:lucent_api/src/model/report_pattern_dto.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_dto.dart';
+import 'package:lucent_api/src/model/report_summary_data_dto.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto.dart';
 import 'package:lucent_api/src/model/report_trend_dto.dart';
-import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response.dart';
-import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response_data.dart';
 import 'package:lucent_api/src/model/reset_password_dto.dart';
 import 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
@@ -175,8 +179,11 @@ import 'package:lucent_api/src/model/security_pin_settings_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_api/src/model/set_password_dto.dart';
+import 'package:lucent_api/src/model/sse_problem_details_dto.dart';
 import 'package:lucent_api/src/model/stream_assistant_messages_dto.dart';
 import 'package:lucent_api/src/model/suggestion_action_dto.dart';
+import 'package:lucent_api/src/model/suggestion_explanation_async_response_dto.dart';
+import 'package:lucent_api/src/model/suggestion_explanation_data_dto.dart';
 import 'package:lucent_api/src/model/suggestion_explanation_response_dto.dart';
 import 'package:lucent_api/src/model/suggestion_feedback_dto.dart';
 import 'package:lucent_api/src/model/suggestion_feedback_response_dto.dart';
@@ -204,8 +211,6 @@ import 'package:lucent_api/src/model/today_analysis_stream_result_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_stream_result_dto_data.dart';
 import 'package:lucent_api/src/model/today_analysis_stream_summary_dto.dart';
 import 'package:lucent_api/src/model/today_recommendation_response_dto.dart';
-import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response.dart';
-import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response_data.dart';
 import 'package:lucent_api/src/model/today_suggestions_response_dto.dart';
 import 'package:lucent_api/src/model/tokens_dto.dart';
 import 'package:lucent_api/src/model/unread_count_response_dto.dart';
@@ -348,6 +353,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ClinicSummaryCoverageEntryDto':
       return ClinicSummaryCoverageEntryDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ClinicSummaryExportAsyncResponseDto':
+      return ClinicSummaryExportAsyncResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -697,6 +707,16 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'MedicinePaginationDto':
       return MedicinePaginationDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'MedicineRecognitionAsyncResponseDto':
+      return MedicineRecognitionAsyncResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineRecognitionResultDto':
+      return MedicineRecognitionResultDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'MedicineRedFlagDto':
       return MedicineRedFlagDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -784,6 +804,9 @@ ReturnType deserialize<ReturnType, BaseType>(
       return PollenIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'PollenLevel':
+    case 'ProblemDetailsDto':
+      return ProblemDetailsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ProductEventName':
     case 'ProductEventResult':
     case 'ProductEventSurface':
@@ -852,21 +875,19 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'ReportPatternDto':
       return ReportPatternDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ReportSummaryAsyncResponseDto':
+      return ReportSummaryAsyncResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportSummaryDataDto':
+      return ReportSummaryDataDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ReportSummaryResponseDto':
       return ReportSummaryResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ReportTrendDto':
       return ReportTrendDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ReportsControllerExportClinicSummaryPdfAsyncV1201Response':
-      return ReportsControllerExportClinicSummaryPdfAsyncV1201Response.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'ReportsControllerExportClinicSummaryPdfAsyncV1201ResponseData':
-      return ReportsControllerExportClinicSummaryPdfAsyncV1201ResponseData.fromJson(
-            value as Map<String, dynamic>,
-          )
           as ReturnType;
     case 'ResetPasswordDto':
       return ResetPasswordDto.fromJson(value as Map<String, dynamic>)
@@ -897,11 +918,24 @@ ReturnType deserialize<ReturnType, BaseType>(
       return SetPasswordDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'SexAtBirth':
+    case 'SseProblemDetailsDto':
+      return SseProblemDetailsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'StreamAssistantMessagesDto':
       return StreamAssistantMessagesDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'SuggestionActionDto':
       return SuggestionActionDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'SuggestionExplanationAsyncResponseDto':
+      return SuggestionExplanationAsyncResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'SuggestionExplanationDataDto':
+      return SuggestionExplanationDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'SuggestionExplanationResponseDto':
       return SuggestionExplanationResponseDto.fromJson(
@@ -1015,16 +1049,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'TodayRecommendationResponseDto':
       return TodayRecommendationResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'TodaySuggestionControllerExplainSuggestionAsyncV1202Response':
-      return TodaySuggestionControllerExplainSuggestionAsyncV1202Response.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'TodaySuggestionControllerExplainSuggestionAsyncV1202ResponseData':
-      return TodaySuggestionControllerExplainSuggestionAsyncV1202ResponseData.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

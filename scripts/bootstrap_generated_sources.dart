@@ -159,20 +159,6 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
       generatedClientRoot,
       'lib/src/deserialize.dart',
     );
-    // 过滤生成（apis=X,models=Y）只产出命名 schema 模型，不会生成内联响应
-    // 模型；而 deserialize.dart 由全量 supporting 生成并引用它们。从全量
-    // 输出补齐过滤客户端实际引用的内联响应模型（与既有
-    // today_suggestion_controller_..._v1202_response 的遗留处理一致）。
-    for (final model in _inlineResponseModels) {
-      final relative = 'lib/src/model/$model';
-      final source = File(
-        '${supportingOutput.path}${Platform.pathSeparator}'
-        '${relative.replaceAll('/', Platform.pathSeparator)}',
-      );
-      if (source.existsSync()) {
-        _copyGeneratedFile(supportingOutput, generatedClientRoot, relative);
-      }
-    }
   } finally {
     for (final output in filteredOutputs) {
       await output.delete(recursive: true);
@@ -589,14 +575,6 @@ const _reminderDeliveriesModels = [
   'LocalCapabilityStateDto',
   'LocalCapabilityDataDto',
   'LocalCapabilityResponseDto',
-];
-
-/// 过滤生成无法产出的内联响应模型（openapi-generator 7.x 的 `models=` 只接受
-/// 命名 schema，内联 schema 由生成器自动命名并输出 snake_case 文件名）。
-/// 从 supporting 全量输出复制。
-const _inlineResponseModels = <String>[
-  'reports_controller_export_clinic_summary_pdf_async_v1201_response.dart',
-  'reports_controller_export_clinic_summary_pdf_async_v1201_response_data.dart',
 ];
 
 /// 过滤客户端的数据驱动配置：每一条对应一次 openapi-generator 过滤生成
