@@ -262,10 +262,11 @@ class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
     throw DioException(
       requestOptions: RequestOptions(path: '/register'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/register'),
+      response: problemResponse(
+        path: '/register',
         statusCode: 409,
-        data: {'code': 409001, 'message': '邮箱已注册', 'data': null},
+        code: 'AUTH_EMAIL_ALREADY_REGISTERED',
+        detail: '邮箱已注册',
       ),
     );
   }
@@ -278,10 +279,11 @@ class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
     throw DioException(
       requestOptions: RequestOptions(path: '/send-code'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/send-code'),
+      response: problemResponse(
+        path: '/send-code',
         statusCode: 429,
-        data: {'code': 429001, 'message': '发送过于频繁', 'data': null},
+        code: 'AUTH_LOGIN_RATE_LIMITED',
+        detail: '发送过于频繁',
       ),
     );
   }

@@ -268,10 +268,11 @@ class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
     throw DioException(
       requestOptions: RequestOptions(path: '/login'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/login'),
+      response: problemResponse(
+        path: '/login',
         statusCode: 401,
-        data: {'code': 401005, 'message': '密码错误', 'data': null},
+        code: 'AUTH_WRONG_PASSWORD',
+        detail: '密码错误',
       ),
     );
   }
@@ -284,10 +285,11 @@ class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
     throw DioException(
       requestOptions: RequestOptions(path: '/send-code'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/send-code'),
+      response: problemResponse(
+        path: '/send-code',
         statusCode: 429,
-        data: {'code': 429001, 'message': '发送过于频繁', 'data': null},
+        code: 'AUTH_LOGIN_RATE_LIMITED',
+        detail: '发送过于频繁',
       ),
     );
   }

@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/auth/data/mappers/auth.dart';
 
-/// Helper to build a LoginDataDto with minimal required fields.
-LoginDataDto _loginData({
+/// Helper to build a LoginResponseDto with minimal required fields.
+LoginResponseDto _loginData({
   String userId = 'u-1',
   String email = 'test@example.com',
   String? nickname,
@@ -14,7 +14,7 @@ LoginDataDto _loginData({
   String createdAt = '2026-06-10T08:00:00.000Z',
   String updatedAt = '2026-06-10T08:00:00.000Z',
 }) {
-  return LoginDataDto(
+  return LoginResponseDto(
     user: UserFullDto(
       id: userId,
       email: email,

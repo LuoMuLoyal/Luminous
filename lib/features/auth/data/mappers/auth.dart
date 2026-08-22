@@ -3,11 +3,11 @@ import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 abstract final class AuthMapper {
-  static AuthSession toSessionFromLogin(LoginDataDto data) {
+  static AuthSession toSessionFromLogin(LoginResponseDto data) {
     return _toSession(user: data.user, tokens: data.tokens);
   }
 
-  static AuthSession toSessionFromRegister(RegisterDataDto data) {
+  static AuthSession toSessionFromRegister(RegisterResponseDto data) {
     final user = data.user;
     final tokens = data.tokens;
     // UserBriefDto 不携带 updatedAt,注册场景沿用 createdAt 作为占位。

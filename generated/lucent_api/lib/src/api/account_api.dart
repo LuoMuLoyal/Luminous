@@ -19,7 +19,6 @@ import 'package:lucent_api/src/model/o_auth_authorize_response_dto.dart';
 import 'package:lucent_api/src/model/o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/o_auth_code_callback_dto.dart';
 import 'package:lucent_api/src/model/set_password_dto.dart';
-import 'package:lucent_api/src/model/success_response_dto.dart';
 import 'package:lucent_api/src/model/update_account_dto.dart';
 
 class AccountApi {
@@ -126,9 +125,9 @@ class AccountApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
+  /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> accountControllerChangePasswordV1({
+  Future<Response<void>> accountControllerChangePasswordV1({
     required ChangePasswordDto changePasswordDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -168,37 +167,7 @@ class AccountApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuccessResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<SuccessResponseDto, SuccessResponseDto>(
-              rawData,
-              'SuccessResponseDto',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<SuccessResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
+    return _response;
   }
 
   /// Create WeChat web OAuth authorize URL for linking
@@ -301,9 +270,9 @@ class AccountApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
+  /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> accountControllerDeleteAccountV1({
+  Future<Response<void>> accountControllerDeleteAccountV1({
     required DeleteAccountDto deleteAccountDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -343,37 +312,7 @@ class AccountApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuccessResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<SuccessResponseDto, SuccessResponseDto>(
-              rawData,
-              'SuccessResponseDto',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<SuccessResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
+    return _response;
   }
 
   /// Get authenticated account profile
@@ -634,9 +573,9 @@ class AccountApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
+  /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> accountControllerSetPasswordV1({
+  Future<Response<void>> accountControllerSetPasswordV1({
     required SetPasswordDto setPasswordDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -676,37 +615,7 @@ class AccountApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuccessResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<SuccessResponseDto, SuccessResponseDto>(
-              rawData,
-              'SuccessResponseDto',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<SuccessResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
+    return _response;
   }
 
   /// Unlink authenticated account OAuth identity

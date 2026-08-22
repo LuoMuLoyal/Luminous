@@ -13,6 +13,27 @@ import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 
 import '../helpers/test_forui_app.dart';
 
+Response<dynamic> problemResponse({
+  required String path,
+  required int statusCode,
+  required String code,
+  required String detail,
+}) {
+  return Response<dynamic>(
+    requestOptions: RequestOptions(path: path),
+    statusCode: statusCode,
+    data: <String, dynamic>{
+      'type': 'https://api.lumos.example/problems/$code',
+      'title': 'Request failed',
+      'detail': detail,
+      'code': code,
+    },
+    headers: Headers.fromMap(const {
+      Headers.contentTypeHeader: ['application/problem+json'],
+    }),
+  );
+}
+
 class TestAuthApp extends StatelessWidget {
   const TestAuthApp({super.key, required this.router});
 

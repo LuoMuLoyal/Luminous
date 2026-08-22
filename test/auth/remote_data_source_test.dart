@@ -50,7 +50,7 @@ class _MemStore implements LucentSessionStore {
   Future<void> clear() async => _tokens = null;
 }
 
-/// Helper: build a login response envelope.
+/// Helper: build a direct login resource response.
 Map<String, dynamic> _loginResponse({
   String accessToken = 'at-1',
   String refreshToken = 'rt-1',
@@ -58,27 +58,23 @@ Map<String, dynamic> _loginResponse({
   String email = 'test@example.com',
 }) {
   return <String, dynamic>{
-    'code': 0,
-    'message': '',
-    'data': <String, dynamic>{
-      'user': <String, dynamic>{
-        'id': userId,
-        'email': email,
-        'nickname': 'TestUser',
-        'avatar': null,
-        'emailVerified': false,
-        'emailVerifiedAt': null,
-        'hasPassword': true,
-        'lastLoginAt': null,
-        'linkedIdentities': <dynamic>[],
-        'createdAt': '2026-06-10T08:00:00.000Z',
-        'updatedAt': '2026-06-10T08:00:00.000Z',
-      },
-      'tokens': <String, dynamic>{
-        'accessToken': accessToken,
-        'refreshToken': refreshToken,
-        'expiresIn': 3600,
-      },
+    'user': <String, dynamic>{
+      'id': userId,
+      'email': email,
+      'nickname': 'TestUser',
+      'avatar': null,
+      'emailVerified': false,
+      'emailVerifiedAt': null,
+      'hasPassword': true,
+      'lastLoginAt': null,
+      'linkedIdentities': <dynamic>[],
+      'createdAt': '2026-06-10T08:00:00.000Z',
+      'updatedAt': '2026-06-10T08:00:00.000Z',
+    },
+    'tokens': <String, dynamic>{
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
+      'expiresIn': 3600,
     },
   };
 }
@@ -140,27 +136,23 @@ void main() {
     group('register', () {
       test('returns session on success', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'user': <String, dynamic>{
-              'id': 'u-2',
-              'email': 'new@example.com',
-              'nickname': 'NewUser',
-              'avatar': null,
-              'emailVerified': false,
-              'emailVerifiedAt': null,
-              'hasPassword': true,
-              'lastLoginAt': null,
-              'linkedIdentities': <dynamic>[],
-              'createdAt': '2026-06-10T08:00:00.000Z',
-              'updatedAt': '2026-06-10T08:00:00.000Z',
-            },
-            'tokens': <String, dynamic>{
-              'accessToken': 'at-reg',
-              'refreshToken': 'rt-reg',
-              'expiresIn': 3600,
-            },
+          'user': <String, dynamic>{
+            'id': 'u-2',
+            'email': 'new@example.com',
+            'nickname': 'NewUser',
+            'avatar': null,
+            'emailVerified': false,
+            'emailVerifiedAt': null,
+            'hasPassword': true,
+            'lastLoginAt': null,
+            'linkedIdentities': <dynamic>[],
+            'createdAt': '2026-06-10T08:00:00.000Z',
+            'updatedAt': '2026-06-10T08:00:00.000Z',
+          },
+          'tokens': <String, dynamic>{
+            'accessToken': 'at-reg',
+            'refreshToken': 'rt-reg',
+            'expiresIn': 3600,
           },
         };
 
@@ -186,20 +178,16 @@ void main() {
     group('fetchAccount', () {
       test('returns AuthUser from account endpoint', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'id': 'u-1',
-            'email': 'test@example.com',
-            'nickname': 'TestUser',
-            'avatar': null,
-            'emailVerifiedAt': null,
-            'hasPassword': true,
-            'lastLoginAt': null,
-            'linkedIdentities': <dynamic>[],
-            'createdAt': '2026-06-10T08:00:00.000Z',
-            'updatedAt': '2026-06-10T08:00:00.000Z',
-          },
+          'id': 'u-1',
+          'email': 'test@example.com',
+          'nickname': 'TestUser',
+          'avatar': null,
+          'emailVerifiedAt': null,
+          'hasPassword': true,
+          'lastLoginAt': null,
+          'linkedIdentities': <dynamic>[],
+          'createdAt': '2026-06-10T08:00:00.000Z',
+          'updatedAt': '2026-06-10T08:00:00.000Z',
         };
 
         final user = await dataSource.fetchAccount();
@@ -218,11 +206,7 @@ void main() {
 
     group('sendVerificationCode', () {
       test('returns cooldown message', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{'cooldown': 60, 'message': '验证码已发送'},
-        };
+        adapter.body = <String, dynamic>{'cooldown': 60, 'message': '验证码已发送'};
 
         final msg = await dataSource.sendVerificationCode(
           email: 'test@example.com',

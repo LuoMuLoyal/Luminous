@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/local_capability_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,33 +17,24 @@ part 'local_capability_response_dto.g.dart';
 )
 class LocalCapabilityResponseDto {
   /// Returns a new [LocalCapabilityResponseDto] instance.
-  LocalCapabilityResponseDto({
-    required this.code,
+  LocalCapabilityResponseDto({required this.state});
 
-    required this.message,
-
-    required this.data,
-  });
-
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
-
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final LocalCapabilityDataDto data;
+  /// Persisted local scheduling capability state.
+  @JsonKey(
+    name: r'state',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue: LocalCapabilityResponseDtoStateEnum.unknownDefaultOpenApi,
+  )
+  final LocalCapabilityResponseDtoStateEnum state;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is LocalCapabilityResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+      other is LocalCapabilityResponseDto && other.state == state;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode => state.hashCode;
 
   factory LocalCapabilityResponseDto.fromJson(Map<String, dynamic> json) =>
       _$LocalCapabilityResponseDtoFromJson(json);
@@ -55,4 +45,30 @@ class LocalCapabilityResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+/// Persisted local scheduling capability state.
+enum LocalCapabilityResponseDtoStateEnum {
+  /// Persisted local scheduling capability state.
+  @JsonValue(r'active')
+  active(r'active'),
+
+  /// Persisted local scheduling capability state.
+  @JsonValue(r'unavailable')
+  unavailable(r'unavailable'),
+
+  /// Persisted local scheduling capability state.
+  @JsonValue(r'disabled')
+  disabled(r'disabled'),
+
+  /// Persisted local scheduling capability state.
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const LocalCapabilityResponseDtoStateEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

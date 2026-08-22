@@ -30,7 +30,6 @@ import 'package:lucent_api/src/model/register_response_dto.dart';
 import 'package:lucent_api/src/model/reset_password_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
-import 'package:lucent_api/src/model/success_response_dto.dart';
 import 'package:lucent_api/src/model/verify_email_dto.dart';
 import 'package:lucent_api/src/model/verify_email_response_dto.dart';
 import 'package:lucent_api/src/model/weibo_o_auth_authorize_dto.dart';
@@ -314,9 +313,9 @@ class AuthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
+  /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> localControllerResetPasswordV1({
+  Future<Response<void>> localControllerResetPasswordV1({
     required ResetPasswordDto resetPasswordDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -356,37 +355,7 @@ class AuthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuccessResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<SuccessResponseDto, SuccessResponseDto>(
-              rawData,
-              'SuccessResponseDto',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<SuccessResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
+    return _response;
   }
 
   /// Send email verification code
@@ -1536,9 +1505,9 @@ class AuthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
+  /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> sessionControllerLogoutV1({
+  Future<Response<void>> sessionControllerLogoutV1({
     required LogoutDto logoutDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1578,37 +1547,7 @@ class AuthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuccessResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<SuccessResponseDto, SuccessResponseDto>(
-              rawData,
-              'SuccessResponseDto',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<SuccessResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
+    return _response;
   }
 
   /// Refresh token

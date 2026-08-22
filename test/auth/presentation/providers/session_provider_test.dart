@@ -387,14 +387,13 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
       throw DioException(
         requestOptions: RequestOptions(path: '/account'),
         type: DioExceptionType.badResponse,
-        response: Response(
-          requestOptions: RequestOptions(path: '/account'),
+        response: problemResponse(
+          path: '/account',
           statusCode: fetchAccountFailureIsAuth ? 401 : 500,
-          data: {
-            'code': fetchAccountFailureIsAuth ? 401001 : 500,
-            'message': 'token已过期',
-            'data': null,
-          },
+          code: fetchAccountFailureIsAuth
+              ? 'AUTH_TOKEN_EXPIRED'
+              : 'INTERNAL_SERVER_ERROR',
+          detail: 'token已过期',
         ),
       );
     }
@@ -416,14 +415,11 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
       throw DioException(
         requestOptions: RequestOptions(path: '/auth/refresh'),
         type: DioExceptionType.badResponse,
-        response: Response(
-          requestOptions: RequestOptions(path: '/auth/refresh'),
+        response: problemResponse(
+          path: '/auth/refresh',
           statusCode: 401,
-          data: {
-            'code': 401003,
-            'message': 'refresh token invalid',
-            'data': null,
-          },
+          code: 'AUTH_REFRESH_TOKEN_INVALID',
+          detail: 'refresh token invalid',
         ),
       );
     }
@@ -450,10 +446,11 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
       throw DioException(
         requestOptions: RequestOptions(path: '/logout'),
         type: DioExceptionType.badResponse,
-        response: Response(
-          requestOptions: RequestOptions(path: '/logout'),
+        response: problemResponse(
+          path: '/logout',
           statusCode: 500,
-          data: {'code': 500, 'message': '服务器错误', 'data': null},
+          code: 'INTERNAL_SERVER_ERROR',
+          detail: '服务器错误',
         ),
       );
     }

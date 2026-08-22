@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/o_auth_authorize_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,34 +18,46 @@ part 'o_auth_authorize_response_dto.g.dart';
 class OAuthAuthorizeResponseDto {
   /// Returns a new [OAuthAuthorizeResponseDto] instance.
   OAuthAuthorizeResponseDto({
-    required this.code,
+    required this.authorizeUrl,
 
-    required this.message,
+    required this.state,
 
-    required this.data,
+    required this.expiresIn,
+
+    this.callbackUri,
   });
 
-  /// 结果码
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  /// 第三方授权地址
+  @JsonKey(name: r'authorizeUrl', required: true, includeIfNull: false)
+  final String authorizeUrl;
 
-  /// 提示消息
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  /// 本次授权 state
+  @JsonKey(name: r'state', required: true, includeIfNull: false)
+  final String state;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final OAuthAuthorizeDataDto data;
+  /// state 过期时间（秒）
+  @JsonKey(name: r'expiresIn', required: true, includeIfNull: false)
+  final num expiresIn;
+
+  /// 客户端回跳地址。桌面端 loopback 或可信 Web 回调登录时返回。
+  @JsonKey(name: r'callbackUri', required: false, includeIfNull: false)
+  final String? callbackUri;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is OAuthAuthorizeResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.authorizeUrl == authorizeUrl &&
+          other.state == state &&
+          other.expiresIn == expiresIn &&
+          other.callbackUri == callbackUri;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      authorizeUrl.hashCode +
+      state.hashCode +
+      expiresIn.hashCode +
+      callbackUri.hashCode;
 
   factory OAuthAuthorizeResponseDto.fromJson(Map<String, dynamic> json) =>
       _$OAuthAuthorizeResponseDtoFromJson(json);

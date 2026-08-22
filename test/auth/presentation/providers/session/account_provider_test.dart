@@ -49,10 +49,11 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/account'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/account'),
+      response: problemResponse(
+        path: '/account',
         statusCode: 500,
-        data: {'code': 500, 'message': '服务器错误', 'data': null},
+        code: 'INTERNAL_SERVER_ERROR',
+        detail: '服务器错误',
       ),
     );
   }
@@ -65,10 +66,11 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/verify-email'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/verify-email'),
+      response: problemResponse(
+        path: '/verify-email',
         statusCode: 400,
-        data: {'code': 400001, 'message': '验证码错误', 'data': null},
+        code: 'AUTH_VERIFICATION_CODE_INVALID',
+        detail: '验证码错误',
       ),
     );
   }
@@ -81,10 +83,11 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/account'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/account'),
+      response: problemResponse(
+        path: '/account',
         statusCode: 400,
-        data: {'code': 400002, 'message': '昵称已被使用', 'data': null},
+        code: 'ACCOUNT_NICKNAME_CONFLICT',
+        detail: '昵称已被使用',
       ),
     );
   }
@@ -97,10 +100,11 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/change-password'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/change-password'),
+      response: problemResponse(
+        path: '/change-password',
         statusCode: 400,
-        data: {'code': 400003, 'message': '原密码错误', 'data': null},
+        code: 'AUTH_CURRENT_PASSWORD_INVALID',
+        detail: '原密码错误',
       ),
     );
   }
@@ -110,10 +114,11 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/delete-account'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/delete-account'),
+      response: problemResponse(
+        path: '/delete-account',
         statusCode: 400,
-        data: {'code': 400004, 'message': '密码不正确', 'data': null},
+        code: 'AUTH_PASSWORD_INVALID',
+        detail: '密码不正确',
       ),
     );
   }
@@ -123,10 +128,11 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/unlink'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/unlink'),
+      response: problemResponse(
+        path: '/unlink',
         statusCode: 400,
-        data: {'code': 400005, 'message': '无法解绑', 'data': null},
+        code: 'AUTH_IDENTITY_UNLINK_FAILED',
+        detail: '无法解绑',
       ),
     );
   }
@@ -140,10 +146,11 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/change-email'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/change-email'),
+      response: problemResponse(
+        path: '/change-email',
         statusCode: 400,
-        data: {'code': 400006, 'message': '邮箱已被占用', 'data': null},
+        code: 'AUTH_EMAIL_CONFLICT',
+        detail: '邮箱已被占用',
       ),
     );
   }
@@ -156,10 +163,11 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/send-code'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/send-code'),
+      response: problemResponse(
+        path: '/send-code',
         statusCode: 429,
-        data: {'code': 429001, 'message': '发送过于频繁', 'data': null},
+        code: 'AUTH_LOGIN_RATE_LIMITED',
+        detail: '发送过于频繁',
       ),
     );
   }
@@ -175,14 +183,11 @@ class _ElevationTokenInvalidRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/change-email'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/change-email'),
+      response: problemResponse(
+        path: '/change-email',
         statusCode: 403,
-        data: {
-          'code': 403001,
-          'message': 'elevation_token_invalid',
-          'data': null,
-        },
+        code: 'AUTH_ELEVATION_TOKEN_INVALID',
+        detail: 'elevation_token_invalid',
       ),
     );
   }
@@ -194,14 +199,11 @@ class _ForbiddenBusinessRemote extends _AccountFakeRemote {
     throw DioException(
       requestOptions: RequestOptions(path: '/unlink'),
       type: DioExceptionType.badResponse,
-      response: Response(
-        requestOptions: RequestOptions(path: '/unlink'),
+      response: problemResponse(
+        path: '/unlink',
         statusCode: 403,
-        data: {
-          'code': 403001,
-          'message': 'Cannot unlink the last sign-in identity',
-          'data': null,
-        },
+        code: 'AUTH_LAST_IDENTITY_CANNOT_UNLINK',
+        detail: 'Cannot unlink the last sign-in identity',
       ),
     );
   }

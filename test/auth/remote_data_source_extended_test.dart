@@ -67,27 +67,23 @@ Map<String, dynamic> _loginResponse({
   String nickname = 'TestUser',
 }) {
   return <String, dynamic>{
-    'code': 0,
-    'message': '',
-    'data': <String, dynamic>{
-      'user': <String, dynamic>{
-        'id': userId,
-        'email': email,
-        'nickname': nickname,
-        'avatar': null,
-        'emailVerified': false,
-        'emailVerifiedAt': null,
-        'hasPassword': true,
-        'lastLoginAt': null,
-        'linkedIdentities': <dynamic>[],
-        'createdAt': '2026-06-10T08:00:00.000Z',
-        'updatedAt': '2026-06-10T08:00:00.000Z',
-      },
-      'tokens': <String, dynamic>{
-        'accessToken': accessToken,
-        'refreshToken': refreshToken,
-        'expiresIn': 3600,
-      },
+    'user': <String, dynamic>{
+      'id': userId,
+      'email': email,
+      'nickname': nickname,
+      'avatar': null,
+      'emailVerified': false,
+      'emailVerifiedAt': null,
+      'hasPassword': true,
+      'lastLoginAt': null,
+      'linkedIdentities': <dynamic>[],
+      'createdAt': '2026-06-10T08:00:00.000Z',
+      'updatedAt': '2026-06-10T08:00:00.000Z',
+    },
+    'tokens': <String, dynamic>{
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
+      'expiresIn': 3600,
     },
   };
 }
@@ -103,20 +99,16 @@ Map<String, dynamic> _accountDto({
   List<Map<String, dynamic>> linkedIdentities = const [],
 }) {
   return <String, dynamic>{
-    'code': 0,
-    'message': '',
-    'data': <String, dynamic>{
-      'id': id,
-      'email': email,
-      'nickname': nickname,
-      'avatar': avatar,
-      'emailVerifiedAt': emailVerifiedAt,
-      'hasPassword': hasPassword,
-      'lastLoginAt': lastLoginAt,
-      'linkedIdentities': linkedIdentities,
-      'createdAt': '2026-06-10T08:00:00.000Z',
-      'updatedAt': '2026-06-10T08:00:00.000Z',
-    },
+    'id': id,
+    'email': email,
+    'nickname': nickname,
+    'avatar': avatar,
+    'emailVerifiedAt': emailVerifiedAt,
+    'hasPassword': hasPassword,
+    'lastLoginAt': lastLoginAt,
+    'linkedIdentities': linkedIdentities,
+    'createdAt': '2026-06-10T08:00:00.000Z',
+    'updatedAt': '2026-06-10T08:00:00.000Z',
   };
 }
 
@@ -270,14 +262,10 @@ void main() {
     group('createWechatWebAuthorizeUrl', () {
       test('returns authorize data with callback URI', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'authorizeUrl':
-                'https://open.weixin.qq.com/connect/oauth2/authorize?...',
-            'state': 'random_state',
-            'expiresIn': 300,
-          },
+          'authorizeUrl':
+              'https://open.weixin.qq.com/connect/oauth2/authorize?...',
+          'state': 'random_state',
+          'expiresIn': 300,
         };
 
         final result = await dataSource.createWechatWebAuthorizeUrl(
@@ -290,13 +278,9 @@ void main() {
 
       test('sends null body when callbackUri is empty', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'authorizeUrl': 'https://open.weixin.qq.com/...',
-            'state': 'st',
-            'expiresIn': 300,
-          },
+          'authorizeUrl': 'https://open.weixin.qq.com/...',
+          'state': 'st',
+          'expiresIn': 300,
         };
 
         await dataSource.createWechatWebAuthorizeUrl(callbackUri: null);
@@ -306,13 +290,9 @@ void main() {
 
       test('sends null body when callbackUri is whitespace', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'authorizeUrl': 'https://open.weixin.qq.com/...',
-            'state': 'st',
-            'expiresIn': 300,
-          },
+          'authorizeUrl': 'https://open.weixin.qq.com/...',
+          'state': 'st',
+          'expiresIn': 300,
         };
 
         await dataSource.createWechatWebAuthorizeUrl(callbackUri: '   ');
@@ -324,13 +304,9 @@ void main() {
     group('createQqAuthorizeUrl', () {
       test('returns authorize data', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'authorizeUrl': 'https://graph.qq.com/oauth2.0/authorize?...',
-            'state': 'qq_state',
-            'expiresIn': 300,
-          },
+          'authorizeUrl': 'https://graph.qq.com/oauth2.0/authorize?...',
+          'state': 'qq_state',
+          'expiresIn': 300,
         };
 
         final result = await dataSource.createQqAuthorizeUrl(
@@ -343,13 +319,9 @@ void main() {
 
       test('sends null body when callbackUri is null', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'authorizeUrl': 'https://graph.qq.com/...',
-            'state': 'st',
-            'expiresIn': 300,
-          },
+          'authorizeUrl': 'https://graph.qq.com/...',
+          'state': 'st',
+          'expiresIn': 300,
         };
 
         await dataSource.createQqAuthorizeUrl(callbackUri: null);
@@ -427,11 +399,7 @@ void main() {
               refreshToken: 'rt-1',
             ),
           );
-          adapter.body = <String, dynamic>{
-            'code': 0,
-            'message': '',
-            'data': null,
-          };
+          adapter.body = null;
 
           await dataSource.logout();
 
@@ -461,27 +429,23 @@ void main() {
     group('register', () {
       test('returns session on success', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'user': <String, dynamic>{
-              'id': 'u-reg',
-              'email': 'new@example.com',
-              'nickname': 'NewUser',
-              'avatar': null,
-              'emailVerified': false,
-              'emailVerifiedAt': null,
-              'hasPassword': true,
-              'lastLoginAt': null,
-              'linkedIdentities': <dynamic>[],
-              'createdAt': '2026-06-10T08:00:00.000Z',
-              'updatedAt': '2026-06-10T08:00:00.000Z',
-            },
-            'tokens': <String, dynamic>{
-              'accessToken': 'at-reg',
-              'refreshToken': 'rt-reg',
-              'expiresIn': 3600,
-            },
+          'user': <String, dynamic>{
+            'id': 'u-reg',
+            'email': 'new@example.com',
+            'nickname': 'NewUser',
+            'avatar': null,
+            'emailVerified': false,
+            'emailVerifiedAt': null,
+            'hasPassword': true,
+            'lastLoginAt': null,
+            'linkedIdentities': <dynamic>[],
+            'createdAt': '2026-06-10T08:00:00.000Z',
+            'updatedAt': '2026-06-10T08:00:00.000Z',
+          },
+          'tokens': <String, dynamic>{
+            'accessToken': 'at-reg',
+            'refreshToken': 'rt-reg',
+            'expiresIn': 3600,
           },
         };
 
@@ -499,27 +463,23 @@ void main() {
 
       test('includes nickname when provided', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'user': <String, dynamic>{
-              'id': 'u-reg',
-              'email': 'new@example.com',
-              'nickname': 'CustomNick',
-              'avatar': null,
-              'emailVerified': false,
-              'emailVerifiedAt': null,
-              'hasPassword': true,
-              'lastLoginAt': null,
-              'linkedIdentities': <dynamic>[],
-              'createdAt': '2026-06-10T08:00:00.000Z',
-              'updatedAt': '2026-06-10T08:00:00.000Z',
-            },
-            'tokens': <String, dynamic>{
-              'accessToken': 'at',
-              'refreshToken': 'rt',
-              'expiresIn': 3600,
-            },
+          'user': <String, dynamic>{
+            'id': 'u-reg',
+            'email': 'new@example.com',
+            'nickname': 'CustomNick',
+            'avatar': null,
+            'emailVerified': false,
+            'emailVerifiedAt': null,
+            'hasPassword': true,
+            'lastLoginAt': null,
+            'linkedIdentities': <dynamic>[],
+            'createdAt': '2026-06-10T08:00:00.000Z',
+            'updatedAt': '2026-06-10T08:00:00.000Z',
+          },
+          'tokens': <String, dynamic>{
+            'accessToken': 'at',
+            'refreshToken': 'rt',
+            'expiresIn': 3600,
           },
         };
 
@@ -535,27 +495,23 @@ void main() {
 
       test('omits nickname when null', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'user': <String, dynamic>{
-              'id': 'u-reg',
-              'email': 'new@example.com',
-              'nickname': null,
-              'avatar': null,
-              'emailVerified': false,
-              'emailVerifiedAt': null,
-              'hasPassword': true,
-              'lastLoginAt': null,
-              'linkedIdentities': <dynamic>[],
-              'createdAt': '2026-06-10T08:00:00.000Z',
-              'updatedAt': '2026-06-10T08:00:00.000Z',
-            },
-            'tokens': <String, dynamic>{
-              'accessToken': 'at',
-              'refreshToken': 'rt',
-              'expiresIn': 3600,
-            },
+          'user': <String, dynamic>{
+            'id': 'u-reg',
+            'email': 'new@example.com',
+            'nickname': null,
+            'avatar': null,
+            'emailVerified': false,
+            'emailVerifiedAt': null,
+            'hasPassword': true,
+            'lastLoginAt': null,
+            'linkedIdentities': <dynamic>[],
+            'createdAt': '2026-06-10T08:00:00.000Z',
+            'updatedAt': '2026-06-10T08:00:00.000Z',
+          },
+          'tokens': <String, dynamic>{
+            'accessToken': 'at',
+            'refreshToken': 'rt',
+            'expiresIn': 3600,
           },
         };
 
@@ -570,27 +526,23 @@ void main() {
 
       test('omits nickname when empty string after trim', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'user': <String, dynamic>{
-              'id': 'u-reg',
-              'email': 'new@example.com',
-              'nickname': null,
-              'avatar': null,
-              'emailVerified': false,
-              'emailVerifiedAt': null,
-              'hasPassword': true,
-              'lastLoginAt': null,
-              'linkedIdentities': <dynamic>[],
-              'createdAt': '2026-06-10T08:00:00.000Z',
-              'updatedAt': '2026-06-10T08:00:00.000Z',
-            },
-            'tokens': <String, dynamic>{
-              'accessToken': 'at',
-              'refreshToken': 'rt',
-              'expiresIn': 3600,
-            },
+          'user': <String, dynamic>{
+            'id': 'u-reg',
+            'email': 'new@example.com',
+            'nickname': null,
+            'avatar': null,
+            'emailVerified': false,
+            'emailVerifiedAt': null,
+            'hasPassword': true,
+            'lastLoginAt': null,
+            'linkedIdentities': <dynamic>[],
+            'createdAt': '2026-06-10T08:00:00.000Z',
+            'updatedAt': '2026-06-10T08:00:00.000Z',
+          },
+          'tokens': <String, dynamic>{
+            'accessToken': 'at',
+            'refreshToken': 'rt',
+            'expiresIn': 3600,
           },
         };
 
@@ -606,27 +558,23 @@ void main() {
 
       test('trims email, password, and code', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'user': <String, dynamic>{
-              'id': 'u-reg',
-              'email': 'new@example.com',
-              'nickname': null,
-              'avatar': null,
-              'emailVerified': false,
-              'emailVerifiedAt': null,
-              'hasPassword': true,
-              'lastLoginAt': null,
-              'linkedIdentities': <dynamic>[],
-              'createdAt': '2026-06-10T08:00:00.000Z',
-              'updatedAt': '2026-06-10T08:00:00.000Z',
-            },
-            'tokens': <String, dynamic>{
-              'accessToken': 'at',
-              'refreshToken': 'rt',
-              'expiresIn': 3600,
-            },
+          'user': <String, dynamic>{
+            'id': 'u-reg',
+            'email': 'new@example.com',
+            'nickname': null,
+            'avatar': null,
+            'emailVerified': false,
+            'emailVerifiedAt': null,
+            'hasPassword': true,
+            'lastLoginAt': null,
+            'linkedIdentities': <dynamic>[],
+            'createdAt': '2026-06-10T08:00:00.000Z',
+            'updatedAt': '2026-06-10T08:00:00.000Z',
+          },
+          'tokens': <String, dynamic>{
+            'accessToken': 'at',
+            'refreshToken': 'rt',
+            'expiresIn': 3600,
           },
         };
 
@@ -709,11 +657,7 @@ void main() {
     // ─── sendVerificationCode ────────────────────────────────────────
     group('sendVerificationCode — extended', () {
       test('trims email', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{'cooldown': 60, 'message': '已发送'},
-        };
+        adapter.body = <String, dynamic>{'cooldown': 60, 'message': '已发送'};
 
         await dataSource.sendVerificationCode(
           email: '  test@example.com  ',
@@ -724,11 +668,7 @@ void main() {
       });
 
       test('passes scene correctly for resetPassword', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{'cooldown': 30, 'message': '已发送'},
-        };
+        adapter.body = <String, dynamic>{'cooldown': 30, 'message': '已发送'};
 
         await dataSource.sendVerificationCode(
           email: 'test@example.com',
@@ -742,11 +682,7 @@ void main() {
       });
 
       test('passes scene correctly for changeEmail', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{'cooldown': 30, 'message': '已发送'},
-        };
+        adapter.body = <String, dynamic>{'cooldown': 30, 'message': '已发送'};
 
         await dataSource.sendVerificationCode(
           email: 'test@example.com',
@@ -763,11 +699,7 @@ void main() {
     // ─── resetPassword ───────────────────────────────────────────────
     group('resetPassword', () {
       test('completes without error on success', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': null,
-        };
+        adapter.body = null;
 
         await dataSource.resetPassword(
           email: 'test@example.com',
@@ -781,11 +713,7 @@ void main() {
       });
 
       test('trims all fields', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': null,
-        };
+        adapter.body = null;
 
         await dataSource.resetPassword(
           email: '  test@example.com  ',
@@ -802,11 +730,7 @@ void main() {
     // ─── forgotPassword ──────────────────────────────────────────────
     group('forgotPassword', () {
       test('returns cooldown message', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{'cooldown': 120, 'message': '重置链接已发送'},
-        };
+        adapter.body = <String, dynamic>{'cooldown': 120, 'message': '重置链接已发送'};
 
         final result = await dataSource.forgotPassword(
           email: 'test@example.com',
@@ -817,11 +741,7 @@ void main() {
       });
 
       test('trims email', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{'cooldown': 60, 'message': '已发送'},
-        };
+        adapter.body = <String, dynamic>{'cooldown': 60, 'message': '已发送'};
 
         await dataSource.forgotPassword(email: '  test@example.com  ');
         expect(adapter.lastBody?['email'], 'test@example.com');
@@ -831,11 +751,7 @@ void main() {
     // ─── verifyEmail ─────────────────────────────────────────────────
     group('verifyEmail', () {
       test('completes without error on success', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': {'emailVerified': true},
-        };
+        adapter.body = <String, dynamic>{'emailVerified': true};
 
         await dataSource.verifyEmail(email: 'test@example.com', code: '123456');
 
@@ -844,11 +760,7 @@ void main() {
       });
 
       test('trims email and code', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': {'emailVerified': true},
-        };
+        adapter.body = <String, dynamic>{'emailVerified': true};
 
         await dataSource.verifyEmail(
           email: '  test@example.com  ',
@@ -906,11 +818,7 @@ void main() {
           const LucentSessionTokens(accessToken: 'at-1', refreshToken: 'rt-1'),
         );
 
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': null,
-        };
+        adapter.body = null;
 
         await dataSource.changePassword(
           oldPassword: 'OldPass123',
@@ -921,11 +829,7 @@ void main() {
       });
 
       test('trims passwords', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': null,
-        };
+        adapter.body = null;
 
         await dataSource.changePassword(
           oldPassword: '  OldPass123  ',
@@ -941,12 +845,8 @@ void main() {
     group('changeEmail', () {
       test('returns user with updated email and emailVerifiedAt', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'email': 'new@example.com',
-            'emailVerifiedAt': '2026-07-11T00:00:00.000Z',
-          },
+          'email': 'new@example.com',
+          'emailVerifiedAt': '2026-07-11T00:00:00.000Z',
         };
 
         final currentUser = AuthUser(
@@ -974,12 +874,8 @@ void main() {
 
       test('trims newEmail and code', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'email': 'new@example.com',
-            'emailVerifiedAt': '2026-07-11T00:00:00.000Z',
-          },
+          'email': 'new@example.com',
+          'emailVerifiedAt': '2026-07-11T00:00:00.000Z',
         };
 
         final currentUser = AuthUser(
@@ -1004,12 +900,8 @@ void main() {
 
       test('returns null emailVerifiedAt when date is malformed', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'email': 'new@example.com',
-            'emailVerifiedAt': 'not-a-date',
-          },
+          'email': 'new@example.com',
+          'emailVerifiedAt': 'not-a-date',
         };
 
         final currentUser = AuthUser(
@@ -1034,12 +926,8 @@ void main() {
 
       test('returns null emailVerifiedAt when date is empty string', () async {
         adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': <String, dynamic>{
-            'email': 'new@example.com',
-            'emailVerifiedAt': '',
-          },
+          'email': 'new@example.com',
+          'emailVerifiedAt': '',
         };
 
         final currentUser = AuthUser(
@@ -1070,11 +958,7 @@ void main() {
           const LucentSessionTokens(accessToken: 'at-1', refreshToken: 'rt-1'),
         );
 
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': null,
-        };
+        adapter.body = null;
 
         await dataSource.deleteAccount(password: 'Pass123');
 
@@ -1082,11 +966,7 @@ void main() {
       });
 
       test('trims password', () async {
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': null,
-        };
+        adapter.body = null;
 
         await dataSource.deleteAccount(password: '  Pass123  ');
         expect(adapter.lastBody?['password'], 'Pass123');

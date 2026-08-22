@@ -26,25 +26,21 @@ void main() {
   );
 
   test(
-    'maps the real session envelope and sends revoke to the session path',
+    'maps the direct session resource and sends revoke to the session path',
     () async {
       final adapter = CaptureAdapter(
-        responseData: {
-          'code': 0,
-          'message': '',
-          'data': [
-            {
-              'id': 'session-1',
-              'deviceType': 'desktop',
-              'deviceName': null,
-              'platform': 'web',
-              'lastUsedAt': '2026-08-20T10:00:00Z',
-              'createdAt': '2026-08-19T10:00:00Z',
-              'expiresAt': '2026-09-18T10:00:00Z',
-              'isCurrent': false,
-            },
-          ],
-        },
+        responseData: [
+          {
+            'id': 'session-1',
+            'deviceType': 'desktop',
+            'deviceName': null,
+            'platform': 'web',
+            'lastUsedAt': '2026-08-20T10:00:00Z',
+            'createdAt': '2026-08-19T10:00:00Z',
+            'expiresAt': '2026-09-18T10:00:00Z',
+            'isCurrent': false,
+          },
+        ],
       );
       final dio = Dio(BaseOptions(baseUrl: 'https://api.example.test'))
         ..httpClientAdapter = adapter;
@@ -57,7 +53,7 @@ void main() {
       expect(adapter.capturedRequest?.path, LucentApiPaths.authSessions);
       expect(adapter.capturedRequest?.method, 'GET');
 
-      adapter.responseData = {'code': 0, 'message': '', 'data': null};
+      adapter.responseData = null;
       await repository.revokeSession('session-1');
       expect(
         adapter.capturedRequest?.path,

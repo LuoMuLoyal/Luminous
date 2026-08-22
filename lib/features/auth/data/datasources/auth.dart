@@ -31,7 +31,7 @@ class LucentAuthRepository implements AuthRepository {
 
   /// Extracts the response body, throwing a descriptive error if null.
   ///
-  /// Replaces `response.data!.data` to avoid `NullPointerException` when
+  /// Replaces `response.data!` to avoid `NullPointerException` when
   /// the server returns an empty body (500 error, network timeout, CDN
   /// interception). [operation] names the API call so production errors
   /// carry request context.
@@ -80,7 +80,7 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     final session = AuthMapper.toSessionFromLogin(
-      _requireBody(response.data, 'login').data,
+      _requireBody(response.data, 'login'),
     );
     await _persistSession(session);
     return session;
@@ -98,7 +98,7 @@ class LucentAuthRepository implements AuthRepository {
               : null,
         );
     return _mapAuthorizeData(
-      _requireBody(response.data, 'createWechatWebAuthorizeUrl').data,
+      _requireBody(response.data, 'createWechatWebAuthorizeUrl'),
     );
   }
 
@@ -114,10 +114,7 @@ class LucentAuthRepository implements AuthRepository {
               : null,
         );
     return _mapAuthorizeData(
-      _requireBody(
-        response.data,
-        'createWechatWebIdentityLinkAuthorizeUrl',
-      ).data,
+      _requireBody(response.data, 'createWechatWebIdentityLinkAuthorizeUrl'),
     );
   }
 
@@ -133,7 +130,7 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     final session = AuthMapper.toSessionFromLogin(
-      _requireBody(response.data, 'loginWithWechatWeb').data,
+      _requireBody(response.data, 'loginWithWechatWeb'),
     );
     await _persistSession(session);
     return session;
@@ -145,7 +142,7 @@ class LucentAuthRepository implements AuthRepository {
       oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
     );
     final session = AuthMapper.toSessionFromLogin(
-      _requireBody(response.data, 'loginWithWechatMobile').data,
+      _requireBody(response.data, 'loginWithWechatMobile'),
     );
     await _persistSession(session);
     return session;
@@ -167,7 +164,7 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     final session = AuthMapper.toSessionFromLogin(
-      _requireBody(response.data, 'loginWithApple').data,
+      _requireBody(response.data, 'loginWithApple'),
     );
     await _persistSession(session);
     return session;
@@ -182,7 +179,7 @@ class LucentAuthRepository implements AuthRepository {
           : null,
     );
     return _mapAuthorizeData(
-      _requireBody(response.data, 'createQqAuthorizeUrl').data,
+      _requireBody(response.data, 'createQqAuthorizeUrl'),
     );
   }
 
@@ -198,7 +195,7 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     final session = AuthMapper.toSessionFromLogin(
-      _requireBody(response.data, 'loginWithQq').data,
+      _requireBody(response.data, 'loginWithQq'),
     );
     await _persistSession(session);
     return session;
@@ -216,7 +213,7 @@ class LucentAuthRepository implements AuthRepository {
               : null,
         );
     return _mapAuthorizeData(
-      _requireBody(response.data, 'createWeiboAuthorizeUrl').data,
+      _requireBody(response.data, 'createWeiboAuthorizeUrl'),
     );
   }
 
@@ -232,7 +229,7 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     final session = AuthMapper.toSessionFromLogin(
-      _requireBody(response.data, 'loginWithWeibo').data,
+      _requireBody(response.data, 'loginWithWeibo'),
     );
     await _persistSession(session);
     return session;
@@ -250,7 +247,7 @@ class LucentAuthRepository implements AuthRepository {
               : null,
         );
     return _mapAuthorizeData(
-      _requireBody(response.data, 'createGoogleAuthorizeUrl').data,
+      _requireBody(response.data, 'createGoogleAuthorizeUrl'),
     );
   }
 
@@ -266,7 +263,7 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     final session = AuthMapper.toSessionFromLogin(
-      _requireBody(response.data, 'loginWithGoogle').data,
+      _requireBody(response.data, 'loginWithGoogle'),
     );
     await _persistSession(session);
     return session;
@@ -285,7 +282,7 @@ class LucentAuthRepository implements AuthRepository {
           ),
         );
     return _authUserFromAccount(
-      _requireBody(response.data, 'linkWechatWebIdentity').data,
+      _requireBody(response.data, 'linkWechatWebIdentity'),
     );
   }
 
@@ -296,7 +293,7 @@ class LucentAuthRepository implements AuthRepository {
           oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
         );
     return _authUserFromAccount(
-      _requireBody(response.data, 'linkWechatMobileIdentity').data,
+      _requireBody(response.data, 'linkWechatMobileIdentity'),
     );
   }
 
@@ -316,7 +313,7 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     return AuthMapper.toSessionFromRegister(
-      _requireBody(response.data, 'register').data,
+      _requireBody(response.data, 'register'),
     );
   }
 
@@ -339,9 +336,7 @@ class LucentAuthRepository implements AuthRepository {
   @override
   Future<AuthUser> fetchAccount() async {
     final response = await _client.account.accountControllerGetAccountV1();
-    return _authUserFromAccount(
-      _requireBody(response.data, 'fetchAccount').data,
-    );
+    return _authUserFromAccount(_requireBody(response.data, 'fetchAccount'));
   }
 
   @override
@@ -349,7 +344,7 @@ class LucentAuthRepository implements AuthRepository {
     final response = await _client.auth.sessionControllerRefreshV1(
       refreshDto: RefreshDto(refreshToken: refreshToken.trim()),
     );
-    final tokens = _requireBody(response.data, 'refreshSession').data;
+    final tokens = _requireBody(response.data, 'refreshSession');
     await _sessionStore.write(
       LucentSessionTokens(
         accessToken: tokens.accessToken,
@@ -376,9 +371,8 @@ class LucentAuthRepository implements AuthRepository {
         scene: _toDtoScene(scene),
       ),
     );
-    return _mapCooldown(
-      _requireBody(response.data, 'sendVerificationCode').data,
-    );
+    final dto = _requireBody(response.data, 'sendVerificationCode');
+    return _mapCooldown(dto.message, dto.cooldown);
   }
 
   @override
@@ -401,7 +395,8 @@ class LucentAuthRepository implements AuthRepository {
     final response = await _client.auth.localControllerForgotPasswordV1(
       forgotPasswordDto: ForgotPasswordDto(email: email.trim()),
     );
-    return _mapCooldown(_requireBody(response.data, 'forgotPassword').data);
+    final dto = _requireBody(response.data, 'forgotPassword');
+    return _mapCooldown(dto.message, dto.cooldown);
   }
 
   @override
@@ -426,7 +421,7 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     return _authUserFromAccount(
-      _requireBody(response.data, 'updateAccountProfile').data,
+      _requireBody(response.data, 'updateAccountProfile'),
     );
   }
 
@@ -456,7 +451,7 @@ class LucentAuthRepository implements AuthRepository {
         code: code.trim(),
       ),
     );
-    final body = _requireBody(response.data, 'changeEmail').data;
+    final body = _requireBody(response.data, 'changeEmail');
     return currentUser.copyWith(
       email: body.email,
       emailVerifiedAt: parseDateTimeOrNull(body.emailVerifiedAt),
@@ -479,12 +474,10 @@ class LucentAuthRepository implements AuthRepository {
     final response = await _client.account.accountControllerUnlinkIdentityV1(
       identityId: identityId,
     );
-    return _authUserFromAccount(
-      _requireBody(response.data, 'unlinkIdentity').data,
-    );
+    return _authUserFromAccount(_requireBody(response.data, 'unlinkIdentity'));
   }
 
-  AuthUser _authUserFromAccount(AccountDto user) {
+  AuthUser _authUserFromAccount(AccountResponseDto user) {
     return AuthUser(
       id: user.id,
       email: user.email?.toString(),
@@ -509,7 +502,7 @@ class LucentAuthRepository implements AuthRepository {
     );
   }
 
-  OAuthAuthorizeData _mapAuthorizeData(OAuthAuthorizeDataDto dto) {
+  OAuthAuthorizeData _mapAuthorizeData(OAuthAuthorizeResponseDto dto) {
     return OAuthAuthorizeData(
       authorizeUrl: dto.authorizeUrl,
       state: dto.state,
@@ -517,10 +510,10 @@ class LucentAuthRepository implements AuthRepository {
     );
   }
 
-  VerificationCooldown _mapCooldown(CooldownMessageDto dto) {
+  VerificationCooldown _mapCooldown(String message, num cooldown) {
     return VerificationCooldown(
-      message: dto.message,
-      cooldownSeconds: dto.cooldown.toInt(),
+      message: message,
+      cooldownSeconds: cooldown.toInt(),
     );
   }
 }
