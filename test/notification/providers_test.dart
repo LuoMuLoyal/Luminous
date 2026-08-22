@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
@@ -32,7 +31,7 @@ class FakeNotificationsApi implements NotificationsApi {
 
   int unreadCount;
   List<NotificationListItemDto> notifications;
-  NotificationDetailDto? detail;
+  NotificationDetailResponseDto? detail;
   bool shouldThrow;
   int findAllCallCount = 0;
 
@@ -49,13 +48,7 @@ class FakeNotificationsApi implements NotificationsApi {
     if (shouldThrow) {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
-    return _response(
-      UnreadCountResponseDto(
-        code: 0,
-        message: '',
-        data: UnreadCountDataDto(count: unreadCount),
-      ),
-    );
+    return _response(UnreadCountResponseDto(count: unreadCount));
   }
 
   @override
@@ -76,12 +69,8 @@ class FakeNotificationsApi implements NotificationsApi {
     }
     return _response(
       NotificationListResponseDto(
-        code: 0,
-        message: '',
-        data: NotificationListDataDto(
-          items: notifications,
-          total: notifications.length,
-        ),
+        items: notifications,
+        total: notifications.length,
       ),
     );
   }
@@ -101,20 +90,15 @@ class FakeNotificationsApi implements NotificationsApi {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
     return _response(
-      NotificationDetailResponseDto(
-        code: 0,
-        message: '',
-        data:
-            detail ??
-            NotificationDetailDto(
-              id: id,
-              type: UserNotificationType.medicineReminder,
-              title: '',
-              content: '',
-              isRead: false,
-              createdAt: '2026-06-10T08:00:00.000Z',
-            ),
-      ),
+      detail ??
+          NotificationDetailResponseDto(
+            id: id,
+            type: UserNotificationType.medicineReminder,
+            title: '',
+            content: '',
+            isRead: false,
+            createdAt: '2026-06-10T08:00:00.000Z',
+          ),
     );
   }
 
@@ -146,13 +130,7 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    return _response(
-      UnreadCountResponseDto(
-        code: 0,
-        message: '',
-        data: UnreadCountDataDto(count: 0),
-      ),
-    );
+    return _response(UnreadCountResponseDto(count: 0));
   }
 
   @override
@@ -166,13 +144,7 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    return _response(
-      NotificationListResponseDto(
-        code: 0,
-        message: '',
-        data: NotificationListDataDto(items: [], total: 0),
-      ),
-    );
+    return _response(NotificationListResponseDto(items: [], total: 0));
   }
 
   @override
@@ -187,20 +159,15 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     return _response(
-      NotificationDetailResponseDto(
-        code: 0,
-        message: '',
-        data:
-            detail ??
-            NotificationDetailDto(
-              id: id,
-              type: UserNotificationType.medicineReminder,
-              title: '',
-              content: '',
-              isRead: true,
-              createdAt: '2026-06-10T08:00:00.000Z',
-            ),
-      ),
+      detail ??
+          NotificationDetailResponseDto(
+            id: id,
+            type: UserNotificationType.medicineReminder,
+            title: '',
+            content: '',
+            isRead: true,
+            createdAt: '2026-06-10T08:00:00.000Z',
+          ),
     );
   }
 
@@ -216,20 +183,15 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     return _response(
-      NotificationDetailResponseDto(
-        code: 0,
-        message: '',
-        data:
-            detail ??
-            NotificationDetailDto(
-              id: id,
-              type: UserNotificationType.medicineReminder,
-              title: '',
-              content: '',
-              isRead: false,
-              createdAt: '2026-06-10T08:00:00.000Z',
-            ),
-      ),
+      detail ??
+          NotificationDetailResponseDto(
+            id: id,
+            type: UserNotificationType.medicineReminder,
+            title: '',
+            content: '',
+            isRead: false,
+            createdAt: '2026-06-10T08:00:00.000Z',
+          ),
     );
   }
 }
@@ -260,55 +222,7 @@ class _ErrorUnreadCountApi extends FakeNotificationsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    return _response(
-      UnreadCountResponseDto(
-        code: 500001,
-        message: 'Server error',
-        data: UnreadCountDataDto(count: 0),
-      ),
-    );
-  }
-}
-
-/// markAllAsRead 返回非 0 业务码(业务失败)。
-class _ErrorMarkAllAsReadApi extends FakeNotificationsApi {
-  @override
-  Future<Response<UnreadCountResponseDto>>
-  notificationsControllerMarkAllAsReadV1({
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    return _response(
-      UnreadCountResponseDto(
-        code: 500001,
-        message: 'Server error',
-        data: UnreadCountDataDto(count: 0),
-      ),
-    );
-  }
-}
-
-/// delete 返回带非 0 业务码的信封响应体(业务失败)。
-class _ErrorDeleteApi extends FakeNotificationsApi {
-  @override
-  Future<Response<void>> notificationsControllerRemoveV1({
-    required String id,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    return Response<Object>(
-      data: <String, dynamic>{'code': 500001, 'message': 'Server error'},
-      requestOptions: RequestOptions(path: ''),
-      statusCode: 200,
-    );
+    return _response(UnreadCountResponseDto(count: 0));
   }
 }
 
@@ -378,7 +292,7 @@ void main() {
   group('notificationDetailProvider', () {
     test('returns notification detail', () async {
       final api = FakeNotificationsApi(
-        detail: NotificationDetailDto(
+        detail: NotificationDetailResponseDto(
           id: 'notif-1',
           type: UserNotificationType.medicineReminder,
           title: 'Missed dose',
@@ -515,23 +429,9 @@ void main() {
     });
   });
 
-  group('LucentNotificationRepository 信封校验', () {
-    test('markAllAsRead surfaces non-zero business code', () async {
-      final repo = LucentNotificationRepository(api: _ErrorMarkAllAsReadApi());
+  test('delete succeeds on empty 204-style body', () async {
+    final repo = LucentNotificationRepository(api: FakeNotificationsApi());
 
-      expect(repo.markAllAsRead(), throwsA(isA<LucentApiException>()));
-    });
-
-    test('delete surfaces non-zero business code in envelope body', () async {
-      final repo = LucentNotificationRepository(api: _ErrorDeleteApi());
-
-      expect(repo.delete('1'), throwsA(isA<LucentApiException>()));
-    });
-
-    test('delete succeeds on empty 204-style body (no envelope)', () async {
-      final repo = LucentNotificationRepository(api: FakeNotificationsApi());
-
-      await repo.delete('1');
-    });
+    await repo.delete('1');
   });
 }

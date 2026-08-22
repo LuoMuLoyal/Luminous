@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/notification_preferences_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +18,71 @@ part 'notification_preferences_response_dto.g.dart';
 class NotificationPreferencesResponseDto {
   /// Returns a new [NotificationPreferencesResponseDto] instance.
   NotificationPreferencesResponseDto({
-    required this.code,
+    required this.healthAlertsEnabled,
 
-    required this.message,
+    required this.weeklyInsightEnabled,
 
-    required this.data,
+    required this.waterRemindersEnabled,
+
+    required this.sleepReminderEnabled,
+
+    required this.sleepBedtimeMinutes,
+
+    required this.sleepWakeTimeMinutes,
+
+    required this.configured,
+
+    required this.updatedAt,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  @JsonKey(name: r'healthAlertsEnabled', required: true, includeIfNull: false)
+  final bool healthAlertsEnabled;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  @JsonKey(name: r'weeklyInsightEnabled', required: true, includeIfNull: false)
+  final bool weeklyInsightEnabled;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final NotificationPreferencesDataDto data;
+  @JsonKey(name: r'waterRemindersEnabled', required: true, includeIfNull: false)
+  final bool waterRemindersEnabled;
+
+  @JsonKey(name: r'sleepReminderEnabled', required: true, includeIfNull: false)
+  final bool sleepReminderEnabled;
+
+  @JsonKey(name: r'sleepBedtimeMinutes', required: true, includeIfNull: true)
+  final num? sleepBedtimeMinutes;
+
+  @JsonKey(name: r'sleepWakeTimeMinutes', required: true, includeIfNull: true)
+  final num? sleepWakeTimeMinutes;
+
+  /// Whether the user has a persisted preference row.
+  @JsonKey(name: r'configured', required: true, includeIfNull: false)
+  final bool configured;
+
+  @JsonKey(name: r'updatedAt', required: true, includeIfNull: true)
+  final String? updatedAt;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is NotificationPreferencesResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.healthAlertsEnabled == healthAlertsEnabled &&
+          other.weeklyInsightEnabled == weeklyInsightEnabled &&
+          other.waterRemindersEnabled == waterRemindersEnabled &&
+          other.sleepReminderEnabled == sleepReminderEnabled &&
+          other.sleepBedtimeMinutes == sleepBedtimeMinutes &&
+          other.sleepWakeTimeMinutes == sleepWakeTimeMinutes &&
+          other.configured == configured &&
+          other.updatedAt == updatedAt;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      healthAlertsEnabled.hashCode +
+      weeklyInsightEnabled.hashCode +
+      waterRemindersEnabled.hashCode +
+      sleepReminderEnabled.hashCode +
+      (sleepBedtimeMinutes == null ? 0 : sleepBedtimeMinutes.hashCode) +
+      (sleepWakeTimeMinutes == null ? 0 : sleepWakeTimeMinutes.hashCode) +
+      configured.hashCode +
+      (updatedAt == null ? 0 : updatedAt.hashCode);
 
   factory NotificationPreferencesResponseDto.fromJson(
     Map<String, dynamic> json,

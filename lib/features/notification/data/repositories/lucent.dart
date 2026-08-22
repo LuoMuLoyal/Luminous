@@ -1,7 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/network/map_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/notification.dart';
@@ -32,10 +30,9 @@ class LucentNotificationRepository implements NotificationRepository {
       pageSize: pageSize,
     );
     final dto = response.data!;
-    ensureEnvelopeSuccess(code: dto.code, message: dto.message);
     return NotificationPage(
-      items: dto.data.items.map(_mapItem).toList(),
-      total: dto.data.total.toInt(),
+      items: dto.items.map(_mapItem).toList(),
+      total: dto.total.toInt(),
       page: page,
       pageSize: pageSize,
     );
@@ -45,8 +42,7 @@ class LucentNotificationRepository implements NotificationRepository {
   Future<NotificationDetail?> findOne(String id) async {
     final response = await api.notificationsControllerFindOneV1(id: id);
     final dto = response.data!;
-    ensureEnvelopeSuccess(code: dto.code, message: dto.message);
-    final d = dto.data!;
+    final d = dto;
     return NotificationDetail(
       id: d.id,
       type: NotificationType.fromJson(d.type.value),
@@ -65,8 +61,7 @@ class LucentNotificationRepository implements NotificationRepository {
     try {
       final response = await api.notificationsControllerGetUnreadCountV1();
       final dto = response.data!;
-      ensureEnvelopeSuccess(code: dto.code, message: dto.message);
-      return dto.data.count.toInt();
+      return dto.count.toInt();
     } catch (e) {
       // 未读数徽章是后台轮询类展示,单次失败不应让 UI 报错:降级返回 0
       // 并记录日志,下次轮询会自然恢复(失败原因仍可从日志排查)。
@@ -79,9 +74,7 @@ class LucentNotificationRepository implements NotificationRepository {
 
   @override
   Future<void> markAllAsRead() async {
-    final response = await api.notificationsControllerMarkAllAsReadV1();
-    final dto = response.data!;
-    ensureEnvelopeSuccess(code: dto.code, message: dto.message);
+    await api.notificationsControllerMarkAllAsReadV1();
   }
 
   @override
@@ -96,18 +89,7 @@ class LucentNotificationRepository implements NotificationRepository {
 
   @override
   Future<void> delete(String id) async {
-    final response = await api.notificationsControllerRemoveV1(id: id);
-    // 生成客户端将该端点建模为 Response<void>(后端 DELETE 返回 204 无响应体),
-    // data 无法直接读取;运行时对象实际仍是 Response<Object>,转回以便响应体
-    // 意外携带信封时按 findAll 同款模式校验业务码,避免业务失败被静默当成成功。
-    final json = coerceToStringMap((response as Response<Object>).data);
-    if (json != null && json.containsKey('code')) {
-      final envelope = LucentEnvelope<Object?>.fromJson(
-        json,
-        dataDecoder: (rawData) => rawData,
-      );
-      ensureEnvelopeSuccess(code: envelope.code, message: envelope.message);
-    }
+    await api.notificationsControllerRemoveV1(id: id);
   }
 
   NotificationItem _mapItem(NotificationListItemDto dto) {
