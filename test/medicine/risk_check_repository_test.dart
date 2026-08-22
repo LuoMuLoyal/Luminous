@@ -23,19 +23,19 @@ MedicineRiskCheckResponseDto _response() {
   );
 }
 
-MedicineRiskCheckRecordDto _record() {
-  return MedicineRiskCheckRecordDto(
-    checkType: MedicineRiskCheckRecordDtoCheckTypeEnum.static_,
+MedicineRiskCheckRecordResponseDto _record() {
+  return MedicineRiskCheckRecordResponseDto(
+    checkType: MedicineRiskCheckRecordResponseDtoCheckTypeEnum.static_,
     result: _response(),
     riskScore: 0,
-    riskLevel: MedicineRiskCheckRecordDtoRiskLevelEnum.safe,
+    riskLevel: MedicineRiskCheckRecordResponseDtoRiskLevelEnum.safe,
     stale: false,
     createdAt: DateTime(2026, 7, 1),
     updatedAt: DateTime(2026, 7, 1),
   );
 }
 
-Response<T> _envelope<T>(T data) {
+Response<T> _apiResponse<T>(T data) {
   return Response<T>(
     data: data,
     requestOptions: RequestOptions(path: '/api/v1/medicines/risk-check'),
@@ -63,13 +63,12 @@ void main() {
   });
 
   group('MedicineRiskCheckRemoteDataSource — fetchRecords', () {
-    test('maps envelope data to records', () async {
+    test('maps the direct resource to records', () async {
       when(() => api.medicinesControllerGetRiskCheckV1()).thenAnswer(
-        (_) async => _envelope(
+        (_) async => _apiResponse(
           MedicineRiskCheckRecordsResponseDto(
-            code: 0,
-            message: 'ok',
-            data: MedicineRiskCheckRecordsDto(static_: _record(), llm: null),
+            static_: MedicineRiskCheckRecordDto.fromJson(_record().toJson()),
+            llm: null,
           ),
         ),
       );
@@ -82,7 +81,7 @@ void main() {
       verify(() => api.medicinesControllerGetRiskCheckV1()).called(1);
     });
 
-    test('throws empty response error when envelope data is null', () async {
+    test('throws empty response error when the resource is null', () async {
       when(() => api.medicinesControllerGetRiskCheckV1()).thenAnswer(
         (_) async => Response<MedicineRiskCheckRecordsResponseDto>(
           data: null,
@@ -111,15 +110,7 @@ void main() {
         () => api.medicinesControllerRunRiskCheckV1(
           runRiskCheckDto: any(named: 'runRiskCheckDto'),
         ),
-      ).thenAnswer(
-        (_) async => _envelope(
-          MedicineRiskCheckRecordResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _record(),
-          ),
-        ),
-      );
+      ).thenAnswer((_) async => _apiResponse(_record()));
 
       final record = await dataSource.runCheck(MedicineRiskCheckType.static_);
 
@@ -136,15 +127,7 @@ void main() {
         () => api.medicinesControllerRunRiskCheckV1(
           runRiskCheckDto: any(named: 'runRiskCheckDto'),
         ),
-      ).thenAnswer(
-        (_) async => _envelope(
-          MedicineRiskCheckRecordResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _record(),
-          ),
-        ),
-      );
+      ).thenAnswer((_) async => _apiResponse(_record()));
 
       await dataSource.runCheck(MedicineRiskCheckType.llm);
 
@@ -193,15 +176,7 @@ void main() {
           () => api.medicinesControllerRunRiskCheckV1(
             runRiskCheckDto: any(named: 'runRiskCheckDto'),
           ),
-        ).thenAnswer(
-          (_) async => _envelope(
-            MedicineRiskCheckRecordResponseDto(
-              code: 0,
-              message: 'ok',
-              data: _record(),
-            ),
-          ),
-        );
+        ).thenAnswer((_) async => _apiResponse(_record()));
 
         final result = await dataSource.runPrecheck(
           source: 'cn',
@@ -233,15 +208,7 @@ void main() {
         () => api.medicinesControllerRunRiskCheckV1(
           runRiskCheckDto: any(named: 'runRiskCheckDto'),
         ),
-      ).thenAnswer(
-        (_) async => _envelope(
-          MedicineRiskCheckRecordResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _record(),
-          ),
-        ),
-      );
+      ).thenAnswer((_) async => _apiResponse(_record()));
 
       await dataSource.runPrecheck(source: 'drugbank', sourceRefId: 'DB01050');
 
@@ -289,12 +256,8 @@ void main() {
   group('LucentMedicineRiskCheckRepository', () {
     test('getRecords delegates to the data source', () async {
       when(() => api.medicinesControllerGetRiskCheckV1()).thenAnswer(
-        (_) async => _envelope(
-          MedicineRiskCheckRecordsResponseDto(
-            code: 0,
-            message: 'ok',
-            data: MedicineRiskCheckRecordsDto(static_: null, llm: null),
-          ),
+        (_) async => _apiResponse(
+          MedicineRiskCheckRecordsResponseDto(static_: null, llm: null),
         ),
       );
 
@@ -307,15 +270,7 @@ void main() {
         () => api.medicinesControllerRunRiskCheckV1(
           runRiskCheckDto: any(named: 'runRiskCheckDto'),
         ),
-      ).thenAnswer(
-        (_) async => _envelope(
-          MedicineRiskCheckRecordResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _record(),
-          ),
-        ),
-      );
+      ).thenAnswer((_) async => _apiResponse(_record()));
 
       final record = await repository.runCheck(MedicineRiskCheckType.static_);
       expect(record.riskScore, 0);
@@ -327,15 +282,7 @@ void main() {
         () => api.medicinesControllerRunRiskCheckV1(
           runRiskCheckDto: any(named: 'runRiskCheckDto'),
         ),
-      ).thenAnswer(
-        (_) async => _envelope(
-          MedicineRiskCheckRecordResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _record(),
-          ),
-        ),
-      );
+      ).thenAnswer((_) async => _apiResponse(_record()));
 
       final result = await repository.runPrecheck(
         source: 'drugbank',

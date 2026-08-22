@@ -18,7 +18,7 @@ void main() {
     dataSource = MedicineDetailRemoteDataSource(api: api);
   });
 
-  test('maps envelope data to MedicineDetail', () async {
+  test('maps the direct resource to MedicineDetail', () async {
     when(
       () => api.medicinesControllerGetDetailV1(
         id: any(named: 'id'),
@@ -27,22 +27,18 @@ void main() {
     ).thenAnswer(
       (_) async => Response<MedicineDetailResponseDto>(
         data: MedicineDetailResponseDto(
-          code: 0,
-          message: 'ok',
-          data: MedicineDetailDataDto(
-            id: 'cn_1',
-            source_: MedicineDetailDataDtoSource_Enum.cn,
-            name: '布洛芬片',
-            subtitle: null,
-            detail: MedicineDetailDataDtoDetail(
-              kind: 'cnProduct',
-              groups: const [],
-              categories: const [],
-              atcCodes: const [],
-              synonyms: const [],
-              foodInteractions: const [],
-              indications: '用于缓解轻至中度疼痛',
-            ),
+          id: 'cn_1',
+          source_: MedicineDetailResponseDtoSource_Enum.cn,
+          name: '布洛芬片',
+          subtitle: null,
+          detail: MedicineDetailResponseDtoDetail(
+            kind: 'cnProduct',
+            groups: const [],
+            categories: const [],
+            atcCodes: const [],
+            synonyms: const [],
+            foodInteractions: const [],
+            indications: '用于缓解轻至中度疼痛',
           ),
         ),
         requestOptions: RequestOptions(path: '/api/v1/medicines/cn_1'),
@@ -62,7 +58,7 @@ void main() {
     ).called(1);
   });
 
-  test('throws empty response error when envelope data is null', () async {
+  test('throws empty response error when the resource is null', () async {
     when(
       () => api.medicinesControllerGetDetailV1(
         id: any(named: 'id'),

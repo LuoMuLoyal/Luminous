@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/medicine/data/mappers/medicine_detail.dart';
 
-MedicineDetailDataDtoDetail _detail({
+MedicineDetailResponseDtoDetail _detail({
   String kind = 'cnProduct',
   List<String> groups = const [],
   List<String> categories = const [],
@@ -33,7 +33,7 @@ MedicineDetailDataDtoDetail _detail({
   String? mechanismOfAction,
   String? halfLife,
 }) {
-  return MedicineDetailDataDtoDetail(
+  return MedicineDetailResponseDtoDetail(
     kind: kind,
     groups: groups,
     categories: categories,
@@ -71,9 +71,9 @@ void main() {
     const mapper = MedicineDetailMapper();
 
     test('maps CN detail and trims empty/whitespace strings to null', () {
-      final dto = MedicineDetailDataDto(
+      final dto = MedicineDetailResponseDto(
         id: 'cn_1',
-        source_: MedicineDetailDataDtoSource_Enum.cn,
+        source_: MedicineDetailResponseDtoSource_Enum.cn,
         name: '布洛芬片',
         subtitle: '   ',
         detail: _detail(
@@ -102,9 +102,9 @@ void main() {
     });
 
     test('maps DrugBank detail lists and drug interactions', () {
-      final dto = MedicineDetailDataDto(
+      final dto = MedicineDetailResponseDto(
         id: 'DB01050',
-        source_: MedicineDetailDataDtoSource_Enum.drugbank,
+        source_: MedicineDetailResponseDtoSource_Enum.drugbank,
         name: 'Ibuprofen',
         subtitle: 'Small molecule',
         detail: _detail(
@@ -145,9 +145,9 @@ void main() {
     });
 
     test('maps null drug interactions to empty list', () {
-      final dto = MedicineDetailDataDto(
+      final dto = MedicineDetailResponseDto(
         id: 'DB01050',
-        source_: MedicineDetailDataDtoSource_Enum.drugbank,
+        source_: MedicineDetailResponseDtoSource_Enum.drugbank,
         name: 'Ibuprofen',
         subtitle: null,
         detail: _detail(kind: 'drugbank'),
@@ -157,9 +157,9 @@ void main() {
     });
 
     test('normalizes unknown source enum to drugbank', () {
-      final dto = MedicineDetailDataDto(
+      final dto = MedicineDetailResponseDto(
         id: 'x',
-        source_: MedicineDetailDataDtoSource_Enum.unknownDefaultOpenApi,
+        source_: MedicineDetailResponseDtoSource_Enum.unknownDefaultOpenApi,
         name: 'X',
         subtitle: null,
         detail: _detail(kind: 'drugbank'),

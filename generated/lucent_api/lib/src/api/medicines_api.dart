@@ -12,7 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_safety_tip_list_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
 import 'package:lucent_api/src/model/recognize_medicine_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
@@ -194,9 +194,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineSafetyTipListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [List<MedicineSafetyTipResponseDto>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineSafetyTipListResponseDto>>
+  Future<Response<List<MedicineSafetyTipResponseDto>>>
   medicinesControllerGetSafetyTipsV1({
     List<String>? exclude,
     CancelToken? cancelToken,
@@ -227,16 +227,16 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineSafetyTipListResponseDto? _responseData;
+    List<MedicineSafetyTipResponseDto>? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              MedicineSafetyTipListResponseDto,
-              MedicineSafetyTipListResponseDto
-            >(rawData, 'MedicineSafetyTipListResponseDto', growable: true);
+              List<MedicineSafetyTipResponseDto>,
+              MedicineSafetyTipResponseDto
+            >(rawData, 'List<MedicineSafetyTipResponseDto>', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -247,7 +247,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<MedicineSafetyTipListResponseDto>(
+    return Response<List<MedicineSafetyTipResponseDto>>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

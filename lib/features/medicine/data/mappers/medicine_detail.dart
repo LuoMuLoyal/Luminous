@@ -4,13 +4,13 @@ import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart'
 /// Maps the generated medicine-detail DTOs to the [MedicineDetail] domain
 /// entity.
 ///
-/// The detail envelope is flattened by the backend into a single
-/// [MedicineDetailDataDtoDetail] carrying both CN and DrugBank fields; the
+/// The detail response is flattened by the backend into a single
+/// [MedicineDetailResponseDtoDetail] carrying both CN and DrugBank fields; the
 /// `kind` discriminator decides which family is meaningful.
 class MedicineDetailMapper {
   const MedicineDetailMapper();
 
-  MedicineDetail dataDtoToEntity(MedicineDetailDataDto dto) {
+  MedicineDetail dataDtoToEntity(MedicineDetailResponseDto dto) {
     final detail = dto.detail;
     return MedicineDetail(
       id: dto.id,
@@ -73,11 +73,12 @@ class MedicineDetailMapper {
   /// generated client's `unknownDefaultOpenApi` fallback only appears on
   /// unexpected payloads; it is folded into `drugbank` (the client's default
   /// source) so the entity's `source` stays within the two known values.
-  String _sourceValue(MedicineDetailDataDtoSource_Enum source) =>
+  String _sourceValue(MedicineDetailResponseDtoSource_Enum source) =>
       switch (source) {
-        MedicineDetailDataDtoSource_Enum.cn => 'cn',
-        MedicineDetailDataDtoSource_Enum.drugbank => 'drugbank',
-        MedicineDetailDataDtoSource_Enum.unknownDefaultOpenApi => 'drugbank',
+        MedicineDetailResponseDtoSource_Enum.cn => 'cn',
+        MedicineDetailResponseDtoSource_Enum.drugbank => 'drugbank',
+        MedicineDetailResponseDtoSource_Enum.unknownDefaultOpenApi =>
+          'drugbank',
       };
 
   String? _trimToNull(String? value) {

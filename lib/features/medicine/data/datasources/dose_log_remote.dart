@@ -109,12 +109,11 @@ class DoseLogRemoteDataSource {
     );
   }
 
-  /// Extracts the `data` field from a Lucent envelope response as a
-  /// [Map<String, dynamic>], throwing [LucentApiException] if the body
-  /// or data field is missing or malformed.
+  /// Extracts the direct resource body as a [Map<String, dynamic>], throwing
+  /// [LucentApiException] if the body is missing or malformed.
   Map<String, dynamic> _requireData(Response<dynamic> response) {
     final body = requireBody(response);
-    final data = coerceToStringMap(body['data']);
+    final data = coerceToStringMap(body);
     if (data == null) {
       throw const LucentApiException(
         message: '用药记录响应数据为空',

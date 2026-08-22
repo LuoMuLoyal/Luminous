@@ -110,14 +110,14 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
             .toList(growable: false),
       ),
     );
-    final envelope = response.data;
-    if (envelope == null) {
+    final body = response.data;
+    if (body == null) {
       throw const LucentApiException(
         message: '用药提醒组响应体为空',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
-    return envelope.data.items.map(_fromDto).toList(growable: false);
+    return body.items.map(_fromDto).toList(growable: false);
   }
 
   @override
@@ -126,7 +126,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     required String scheduledDate,
     required String scheduledTime,
   }) async {
-    final response = await dio.request<Object>(
+    await dio.request<Object>(
       LucentApiPaths.reminderDeliveryReceipts,
       data: <String, Object?>{
         'reminderId': reminderId,
@@ -135,17 +135,15 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
       },
       options: Options(method: 'POST', contentType: Headers.jsonContentType),
     );
-    _responseData(response.data);
   }
 
   @override
   Future<void> reportLocalCapability(String state) async {
-    final response = await dio.request<Object>(
+    await dio.request<Object>(
       LucentApiPaths.reminderDeliveryLocalCapability,
       data: <String, Object?>{'state': state},
       options: Options(method: 'PUT', contentType: Headers.jsonContentType),
     );
-    _responseData(response.data);
   }
 
   MedicineReminderItem _fromJson(Map<String, dynamic> json) {
@@ -231,12 +229,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
-    final data = coerceToStringMap(body['data']);
-    if (data != null) return data;
-    throw const LucentApiException(
-      message: '用药提醒响应数据为空',
-      networkErrorCode: NetworkErrorCode.emptyResponse,
-    );
+    return body;
   }
 
   String? _optionalString(Object? value) {

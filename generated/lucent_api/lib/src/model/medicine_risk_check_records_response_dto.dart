@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/medicine_risk_check_records_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_record_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +19,30 @@ part 'medicine_risk_check_records_response_dto.g.dart';
 class MedicineRiskCheckRecordsResponseDto {
   /// Returns a new [MedicineRiskCheckRecordsResponseDto] instance.
   MedicineRiskCheckRecordsResponseDto({
-    required this.code,
+    required this.static_,
 
-    required this.message,
-
-    required this.data,
+    required this.llm,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  /// Latest static check record, null if never checked
+  @JsonKey(name: r'static', required: true, includeIfNull: true)
+  final MedicineRiskCheckRecordDto? static_;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final MedicineRiskCheckRecordsDto data;
+  /// Latest LLM check record, null if never checked
+  @JsonKey(name: r'llm', required: true, includeIfNull: true)
+  final MedicineRiskCheckRecordDto? llm;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is MedicineRiskCheckRecordsResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.static_ == static_ &&
+          other.llm == llm;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      (static_ == null ? 0 : static_.hashCode) +
+      (llm == null ? 0 : llm.hashCode);
 
   factory MedicineRiskCheckRecordsResponseDto.fromJson(
     Map<String, dynamic> json,

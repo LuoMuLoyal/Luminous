@@ -3,7 +3,8 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/medicine_search_data_dto.dart';
+import 'package:lucent_api/src/model/medicine_search_item_dto.dart';
+import 'package:lucent_api/src/model/medicine_pagination_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,33 +19,23 @@ part 'medicine_search_response_dto.g.dart';
 )
 class MedicineSearchResponseDto {
   /// Returns a new [MedicineSearchResponseDto] instance.
-  MedicineSearchResponseDto({
-    required this.code,
+  MedicineSearchResponseDto({required this.items, required this.pagination});
 
-    required this.message,
+  @JsonKey(name: r'items', required: true, includeIfNull: false)
+  final List<MedicineSearchItemDto> items;
 
-    required this.data,
-  });
-
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
-
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final MedicineSearchDataDto data;
+  @JsonKey(name: r'pagination', required: true, includeIfNull: false)
+  final MedicinePaginationDto pagination;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is MedicineSearchResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.items == items &&
+          other.pagination == pagination;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode => items.hashCode + pagination.hashCode;
 
   factory MedicineSearchResponseDto.fromJson(Map<String, dynamic> json) =>
       _$MedicineSearchResponseDtoFromJson(json);

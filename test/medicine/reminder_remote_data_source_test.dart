@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
-import 'package:luminous/core/network/api.dart' show LucentApiException;
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 
 void main() {
@@ -318,15 +317,12 @@ void main() {
       expect(request.body, containsPair('state', 'active'));
     });
 
-    test('reportLocalReceipt throws when the envelope is empty', () async {
+    test('reportLocalReceipt accepts an empty 204 response', () async {
       adapter.failWithEmptyBody = true;
-      await expectLater(
-        dataSource.reportLocalReceipt(
-          reminderId: 'reminder-1',
-          scheduledDate: '2026-06-10',
-          scheduledTime: '21:30',
-        ),
-        throwsA(isA<LucentApiException>()),
+      await dataSource.reportLocalReceipt(
+        reminderId: 'reminder-1',
+        scheduledDate: '2026-06-10',
+        scheduledTime: '21:30',
       );
     });
   });
@@ -377,15 +373,11 @@ class _FakeReminderAdapter implements HttpClientAdapter {
     if (options.path == '/api/v1/user/reminder-deliveries/receipts') {
       return ResponseBody.fromString(
         jsonEncode(<String, Object?>{
-          'code': 0,
-          'message': '',
-          'data': <String, Object?>{
-            'item': <String, Object?>{
-              'id': 'receipt-1',
-              'reminderId': body?['reminderId'],
-              'channel': 'local',
-              'status': 'delivered',
-            },
+          'item': <String, Object?>{
+            'id': 'receipt-1',
+            'reminderId': body?['reminderId'],
+            'channel': 'local',
+            'status': 'delivered',
           },
         }),
         200,
@@ -396,11 +388,7 @@ class _FakeReminderAdapter implements HttpClientAdapter {
     }
     if (options.path == '/api/v1/user/reminder-deliveries/local-capability') {
       return ResponseBody.fromString(
-        jsonEncode(<String, Object?>{
-          'code': 0,
-          'message': '',
-          'data': <String, Object?>{'state': body?['state']},
-        }),
+        jsonEncode(<String, Object?>{'state': body?['state']}),
         200,
         headers: const <String, List<String>>{
           Headers.contentTypeHeader: <String>['application/json'],
@@ -435,11 +423,7 @@ class _FakeReminderAdapter implements HttpClientAdapter {
         }
       }
       return ResponseBody.fromString(
-        jsonEncode(<String, Object?>{
-          'code': 0,
-          'message': '',
-          'data': <String, Object?>{'items': groupItems},
-        }),
+        jsonEncode(<String, Object?>{'items': groupItems}),
         200,
         headers: const <String, List<String>>{
           Headers.contentTypeHeader: <String>['application/json'],
@@ -449,24 +433,20 @@ class _FakeReminderAdapter implements HttpClientAdapter {
     if (options.method == 'POST' || options.method == 'PATCH') {
       return ResponseBody.fromString(
         jsonEncode(<String, Object?>{
-          'code': 0,
-          'message': '',
-          'data': <String, Object?>{
-            'id': options.method == 'PATCH' ? 'reminder-1' : 'reminder-new',
-            'currentMedicineId': body?['currentMedicineId'],
-            'label': body?['label'],
-            'scheduledHour': body?['scheduledHour'],
-            'scheduledMinute': body?['scheduledMinute'],
-            'daysOfWeek': body?.containsKey('daysOfWeek') == true
-                ? body!['daysOfWeek']
-                : null,
-            'startDate': body?['startDate'],
-            'endDate': body?['endDate'],
-            'isActive': body?['isActive'] ?? true,
-            'note': body?['note'],
-            'createdAt': '2026-06-08T07:00:00.000Z',
-            'updatedAt': '2026-06-09T07:00:00.000Z',
-          },
+          'id': options.method == 'PATCH' ? 'reminder-1' : 'reminder-new',
+          'currentMedicineId': body?['currentMedicineId'],
+          'label': body?['label'],
+          'scheduledHour': body?['scheduledHour'],
+          'scheduledMinute': body?['scheduledMinute'],
+          'daysOfWeek': body?.containsKey('daysOfWeek') == true
+              ? body!['daysOfWeek']
+              : null,
+          'startDate': body?['startDate'],
+          'endDate': body?['endDate'],
+          'isActive': body?['isActive'] ?? true,
+          'note': body?['note'],
+          'createdAt': '2026-06-08T07:00:00.000Z',
+          'updatedAt': '2026-06-09T07:00:00.000Z',
         }),
         200,
         headers: const <String, List<String>>{
@@ -477,11 +457,7 @@ class _FakeReminderAdapter implements HttpClientAdapter {
 
     if (options.path == '/api/v1/user/reminder-deliveries') {
       return ResponseBody.fromString(
-        jsonEncode(<String, Object?>{
-          'code': 0,
-          'message': '',
-          'data': <String, Object?>{'items': deliveryItems},
-        }),
+        jsonEncode(<String, Object?>{'items': deliveryItems}),
         200,
         headers: const <String, List<String>>{
           Headers.contentTypeHeader: <String>['application/json'],
@@ -490,11 +466,7 @@ class _FakeReminderAdapter implements HttpClientAdapter {
     }
 
     return ResponseBody.fromString(
-      jsonEncode(<String, Object?>{
-        'code': 0,
-        'message': '',
-        'data': <String, Object?>{'items': items},
-      }),
+      jsonEncode(<String, Object?>{'items': items}),
       200,
       headers: const <String, List<String>>{
         Headers.contentTypeHeader: <String>['application/json'],

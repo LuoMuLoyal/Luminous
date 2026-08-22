@@ -122,25 +122,19 @@ class _FakeDoseLogAdapter implements HttpClientAdapter {
     );
 
     if (options.method == 'GET') {
-      return _jsonResponse(<String, Object?>{
-        'code': 0,
-        'message': '',
-        'data': <String, Object?>{'items': listItems},
-      });
+      return _jsonResponse(<String, Object?>{'items': listItems});
     }
 
     if (options.method == 'DELETE') {
-      return _jsonResponse(<String, Object?>{'code': 0, 'message': ''});
+      return ResponseBody.fromString('', 204);
     }
 
     final payload = requests.last.jsonBody;
     final currentMedicineId =
         payload['currentMedicineId'] as String? ??
         listItems.first['currentMedicineId'] as String?;
-    return _jsonResponse(<String, Object?>{
-      'code': 0,
-      'message': '',
-      'data': _doseJson(
+    return _jsonResponse(
+      _doseJson(
         id: options.method == 'PATCH' ? 'dose-1' : 'dose-new',
         currentMedicineId: currentMedicineId,
         reminderId: payload['reminderId'] as String?,
@@ -148,7 +142,7 @@ class _FakeDoseLogAdapter implements HttpClientAdapter {
         scheduledFor: payload['scheduledFor'] as String? ?? '2026-06-08',
         scheduledTime: payload['scheduledTime'] as String?,
       ),
-    });
+    );
   }
 
   @override

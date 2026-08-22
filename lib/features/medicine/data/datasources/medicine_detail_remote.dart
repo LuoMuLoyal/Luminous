@@ -6,7 +6,7 @@ import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart'
 /// Remote data source for the medication knowledge detail.
 ///
 /// Calls the generated [MedicinesApi] `GET /api/v1/medicines/{id}?source=`
-/// and maps the response envelope to [MedicineDetail] via
+/// and maps the direct response resource to [MedicineDetail] via
 /// [MedicineDetailMapper].
 class MedicineDetailRemoteDataSource {
   const MedicineDetailRemoteDataSource({
@@ -33,6 +33,6 @@ class MedicineDetailRemoteDataSource {
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
-    return mapper.dataDtoToEntity(dto.data);
+    return mapper.dataDtoToEntity(dto);
   }
 }

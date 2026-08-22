@@ -27,7 +27,7 @@ class MedicineRiskCheckRemoteDataSource {
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
-    return mapper.recordsDtoToDomain(dto.data);
+    return mapper.recordsDtoToDomain(dto);
   }
 
   /// POST — manually triggers a risk check of the given [type].
@@ -43,7 +43,7 @@ class MedicineRiskCheckRemoteDataSource {
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
-    return mapper.recordDtoToDomain(resp.data);
+    return mapper.recordDtoToDomain(resp);
   }
 
   /// POST — runs an immediate static pre-check for a candidate medicine from
@@ -66,6 +66,6 @@ class MedicineRiskCheckRemoteDataSource {
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
-    return mapper.recordDtoToDomain(resp.data).result;
+    return mapper.recordDtoToDomain(resp).result;
   }
 }

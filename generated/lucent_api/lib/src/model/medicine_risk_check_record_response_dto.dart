@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/medicine_risk_check_record_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_response_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +19,77 @@ part 'medicine_risk_check_record_response_dto.g.dart';
 class MedicineRiskCheckRecordResponseDto {
   /// Returns a new [MedicineRiskCheckRecordResponseDto] instance.
   MedicineRiskCheckRecordResponseDto({
-    required this.code,
+    required this.checkType,
 
-    required this.message,
+    required this.result,
 
-    required this.data,
+    required this.riskScore,
+
+    required this.riskLevel,
+
+    required this.stale,
+
+    required this.createdAt,
+
+    required this.updatedAt,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  @JsonKey(
+    name: r'checkType',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        MedicineRiskCheckRecordResponseDtoCheckTypeEnum.unknownDefaultOpenApi,
+  )
+  final MedicineRiskCheckRecordResponseDtoCheckTypeEnum checkType;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  @JsonKey(name: r'result', required: true, includeIfNull: false)
+  final MedicineRiskCheckResponseDto result;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final MedicineRiskCheckRecordDto data;
+  // minimum: 0
+  // maximum: 100
+  @JsonKey(name: r'riskScore', required: true, includeIfNull: false)
+  final num riskScore;
+
+  @JsonKey(
+    name: r'riskLevel',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        MedicineRiskCheckRecordResponseDtoRiskLevelEnum.unknownDefaultOpenApi,
+  )
+  final MedicineRiskCheckRecordResponseDtoRiskLevelEnum riskLevel;
+
+  @JsonKey(name: r'stale', required: true, includeIfNull: false)
+  final bool stale;
+
+  @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
+  final DateTime createdAt;
+
+  @JsonKey(name: r'updatedAt', required: true, includeIfNull: false)
+  final DateTime updatedAt;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is MedicineRiskCheckRecordResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.checkType == checkType &&
+          other.result == result &&
+          other.riskScore == riskScore &&
+          other.riskLevel == riskLevel &&
+          other.stale == stale &&
+          other.createdAt == createdAt &&
+          other.updatedAt == updatedAt;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      checkType.hashCode +
+      result.hashCode +
+      riskScore.hashCode +
+      riskLevel.hashCode +
+      stale.hashCode +
+      createdAt.hashCode +
+      updatedAt.hashCode;
 
   factory MedicineRiskCheckRecordResponseDto.fromJson(
     Map<String, dynamic> json,
@@ -57,4 +102,40 @@ class MedicineRiskCheckRecordResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum MedicineRiskCheckRecordResponseDtoCheckTypeEnum {
+  @JsonValue(r'static')
+  static_(r'static'),
+  @JsonValue(r'llm')
+  llm(r'llm'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const MedicineRiskCheckRecordResponseDtoCheckTypeEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum MedicineRiskCheckRecordResponseDtoRiskLevelEnum {
+  @JsonValue(r'safe')
+  safe(r'safe'),
+  @JsonValue(r'caution')
+  caution(r'caution'),
+  @JsonValue(r'risk')
+  risk(r'risk'),
+  @JsonValue(r'danger')
+  danger(r'danger'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const MedicineRiskCheckRecordResponseDtoRiskLevelEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

@@ -21,7 +21,7 @@ class SafetyTipsRemoteDataSource {
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
-    final dtos = dto.data;
+    final dtos = dto;
     return dtos
         .map(
           (d) =>

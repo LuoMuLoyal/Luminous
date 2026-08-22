@@ -24,16 +24,16 @@ MedicineRiskCheckResponseDto _response({
   );
 }
 
-MedicineRiskCheckRecordDto _record({
-  MedicineRiskCheckRecordDtoCheckTypeEnum checkType =
-      MedicineRiskCheckRecordDtoCheckTypeEnum.static_,
-  MedicineRiskCheckRecordDtoRiskLevelEnum riskLevel =
-      MedicineRiskCheckRecordDtoRiskLevelEnum.safe,
+MedicineRiskCheckRecordResponseDto _record({
+  MedicineRiskCheckRecordResponseDtoCheckTypeEnum checkType =
+      MedicineRiskCheckRecordResponseDtoCheckTypeEnum.static_,
+  MedicineRiskCheckRecordResponseDtoRiskLevelEnum riskLevel =
+      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.safe,
   MedicineRiskCheckResponseDto? result,
   int score = 10,
   bool stale = false,
 }) {
-  return MedicineRiskCheckRecordDto(
+  return MedicineRiskCheckRecordResponseDto(
     checkType: checkType,
     result: result ?? _response(score: score),
     riskScore: score,
@@ -50,11 +50,18 @@ void main() {
   group('recordsDtoToDomain', () {
     test('maps static + llm records', () {
       final records = mapper.recordsDtoToDomain(
-        MedicineRiskCheckRecordsDto(
-          static_: _record(
-            checkType: MedicineRiskCheckRecordDtoCheckTypeEnum.static_,
+        MedicineRiskCheckRecordsResponseDto(
+          static_: MedicineRiskCheckRecordDto.fromJson(
+            _record(
+              checkType:
+                  MedicineRiskCheckRecordResponseDtoCheckTypeEnum.static_,
+            ).toJson(),
           ),
-          llm: _record(checkType: MedicineRiskCheckRecordDtoCheckTypeEnum.llm),
+          llm: MedicineRiskCheckRecordDto.fromJson(
+            _record(
+              checkType: MedicineRiskCheckRecordResponseDtoCheckTypeEnum.llm,
+            ).toJson(),
+          ),
         ),
       );
 
@@ -66,7 +73,7 @@ void main() {
 
     test('handles null records', () {
       final records = mapper.recordsDtoToDomain(
-        MedicineRiskCheckRecordsDto(static_: null, llm: null),
+        MedicineRiskCheckRecordsResponseDto(static_: null, llm: null),
       );
 
       expect(records.staticRecord, isNull);
@@ -81,8 +88,8 @@ void main() {
     test('maps record fields', () {
       final record = mapper.recordDtoToDomain(
         _record(
-          checkType: MedicineRiskCheckRecordDtoCheckTypeEnum.llm,
-          riskLevel: MedicineRiskCheckRecordDtoRiskLevelEnum.danger,
+          checkType: MedicineRiskCheckRecordResponseDtoCheckTypeEnum.llm,
+          riskLevel: MedicineRiskCheckRecordResponseDtoRiskLevelEnum.danger,
           score: 88,
           stale: true,
         ),
@@ -99,8 +106,8 @@ void main() {
     test('maps unknown check type to static', () {
       final record = mapper.recordDtoToDomain(
         _record(
-          checkType:
-              MedicineRiskCheckRecordDtoCheckTypeEnum.unknownDefaultOpenApi,
+          checkType: MedicineRiskCheckRecordResponseDtoCheckTypeEnum
+              .unknownDefaultOpenApi,
         ),
       );
       expect(record.checkType, MedicineRiskCheckType.static_);
@@ -109,8 +116,8 @@ void main() {
     test('maps unknown risk level to safe', () {
       final record = mapper.recordDtoToDomain(
         _record(
-          riskLevel:
-              MedicineRiskCheckRecordDtoRiskLevelEnum.unknownDefaultOpenApi,
+          riskLevel: MedicineRiskCheckRecordResponseDtoRiskLevelEnum
+              .unknownDefaultOpenApi,
         ),
       );
       expect(record.riskLevel, MedicineRiskLevel.safe);

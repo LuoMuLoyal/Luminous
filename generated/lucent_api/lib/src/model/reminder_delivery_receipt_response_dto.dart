@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/reminder_delivery_receipt_data_dto.dart';
+import 'package:lucent_api/src/model/reminder_delivery_item_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,33 +18,18 @@ part 'reminder_delivery_receipt_response_dto.g.dart';
 )
 class ReminderDeliveryReceiptResponseDto {
   /// Returns a new [ReminderDeliveryReceiptResponseDto] instance.
-  ReminderDeliveryReceiptResponseDto({
-    required this.code,
+  ReminderDeliveryReceiptResponseDto({required this.item});
 
-    required this.message,
-
-    required this.data,
-  });
-
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
-
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final ReminderDeliveryReceiptDataDto data;
+  @JsonKey(name: r'item', required: true, includeIfNull: false)
+  final ReminderDeliveryItemDto item;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ReminderDeliveryReceiptResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+      other is ReminderDeliveryReceiptResponseDto && other.item == item;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode => item.hashCode;
 
   factory ReminderDeliveryReceiptResponseDto.fromJson(
     Map<String, dynamic> json,

@@ -5,16 +5,28 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 class MedicineRiskCheckMapper {
   const MedicineRiskCheckMapper();
 
-  MedicineRiskCheckRecords recordsDtoToDomain(MedicineRiskCheckRecordsDto dto) {
+  MedicineRiskCheckRecords recordsDtoToDomain(
+    MedicineRiskCheckRecordsResponseDto dto,
+  ) {
     return MedicineRiskCheckRecords(
       staticRecord: dto.static_ != null
-          ? recordDtoToDomain(dto.static_!)
+          ? recordDtoToDomain(
+              MedicineRiskCheckRecordResponseDto.fromJson(
+                dto.static_!.toJson(),
+              ),
+            )
           : null,
-      llmRecord: dto.llm != null ? recordDtoToDomain(dto.llm!) : null,
+      llmRecord: dto.llm == null
+          ? null
+          : recordDtoToDomain(
+              MedicineRiskCheckRecordResponseDto.fromJson(dto.llm!.toJson()),
+            ),
     );
   }
 
-  MedicineRiskCheckRecord recordDtoToDomain(MedicineRiskCheckRecordDto dto) {
+  MedicineRiskCheckRecord recordDtoToDomain(
+    MedicineRiskCheckRecordResponseDto dto,
+  ) {
     return MedicineRiskCheckRecord(
       checkType: _mapCheckType(dto.checkType),
       result: responseDtoToDomain(dto.result),
@@ -122,26 +134,29 @@ class MedicineRiskCheckMapper {
   }
 
   MedicineRiskLevel _mapRiskLevelFromRecord(
-    MedicineRiskCheckRecordDtoRiskLevelEnum level,
+    MedicineRiskCheckRecordResponseDtoRiskLevelEnum level,
   ) {
     return switch (level) {
-      MedicineRiskCheckRecordDtoRiskLevelEnum.safe => MedicineRiskLevel.safe,
-      MedicineRiskCheckRecordDtoRiskLevelEnum.caution =>
+      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.safe =>
+        MedicineRiskLevel.safe,
+      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.caution =>
         MedicineRiskLevel.caution,
-      MedicineRiskCheckRecordDtoRiskLevelEnum.risk => MedicineRiskLevel.risk,
-      MedicineRiskCheckRecordDtoRiskLevelEnum.danger =>
+      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.risk =>
+        MedicineRiskLevel.risk,
+      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.danger =>
         MedicineRiskLevel.danger,
       _ => MedicineRiskLevel.safe,
     };
   }
 
   MedicineRiskCheckType _mapCheckType(
-    MedicineRiskCheckRecordDtoCheckTypeEnum type,
+    MedicineRiskCheckRecordResponseDtoCheckTypeEnum type,
   ) {
     return switch (type) {
-      MedicineRiskCheckRecordDtoCheckTypeEnum.static_ =>
+      MedicineRiskCheckRecordResponseDtoCheckTypeEnum.static_ =>
         MedicineRiskCheckType.static_,
-      MedicineRiskCheckRecordDtoCheckTypeEnum.llm => MedicineRiskCheckType.llm,
+      MedicineRiskCheckRecordResponseDtoCheckTypeEnum.llm =>
+        MedicineRiskCheckType.llm,
       _ => MedicineRiskCheckType.static_,
     };
   }
