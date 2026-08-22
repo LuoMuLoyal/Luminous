@@ -22,12 +22,8 @@ SecurityPinElevationResponseDto _successResponse({
   String token = 'elevation-token',
 }) {
   return SecurityPinElevationResponseDto(
-    code: 0,
-    message: 'ok',
-    data: SecurityPinElevationDataDto(
-      elevationToken: token,
-      expiresAt: expiresAt,
-    ),
+    elevationToken: token,
+    expiresAt: expiresAt,
   );
 }
 
@@ -75,26 +71,19 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async => _response(
     UserSettingsResponseDto(
-      code: 0,
-      message: 'ok',
-      data: UserSettingsDataDto(
-        aiSummariesEnabled: false,
-        dataSharingConsent: false,
-        assistantEnabled: true,
-        assistantMemoryEnabled: false,
-        waterTargetCount: 8,
-        assistantContext: AssistantContextSettingsDto(
-          healthProfile: true,
-          dailyRecords: true,
-          sleepRecords: true,
-          currentMedicines: true,
-        ),
-        updatedAt: '2026-06-12T00:00:00.000Z',
-        securityPin: SecurityPinSettingsDto(
-          enabled: false,
-          lastChangedAt: null,
-        ),
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettingsDto(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
       ),
+      updatedAt: '2026-06-12T00:00:00.000Z',
+      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
     ),
   );
 
@@ -110,26 +99,19 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async => _response(
     UserSettingsResponseDto(
-      code: 0,
-      message: 'ok',
-      data: UserSettingsDataDto(
-        aiSummariesEnabled: false,
-        dataSharingConsent: false,
-        assistantEnabled: true,
-        assistantMemoryEnabled: false,
-        waterTargetCount: 8,
-        assistantContext: AssistantContextSettingsDto(
-          healthProfile: true,
-          dailyRecords: true,
-          sleepRecords: true,
-          currentMedicines: true,
-        ),
-        updatedAt: '2026-06-12T00:00:00.000Z',
-        securityPin: SecurityPinSettingsDto(
-          enabled: false,
-          lastChangedAt: null,
-        ),
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettingsDto(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
       ),
+      updatedAt: '2026-06-12T00:00:00.000Z',
+      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
     ),
   );
 
@@ -145,23 +127,19 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async => _response(
     UserSettingsResponseDto(
-      code: 0,
-      message: 'ok',
-      data: UserSettingsDataDto(
-        aiSummariesEnabled: false,
-        dataSharingConsent: false,
-        assistantEnabled: true,
-        assistantMemoryEnabled: false,
-        waterTargetCount: 8,
-        assistantContext: AssistantContextSettingsDto(
-          healthProfile: true,
-          dailyRecords: true,
-          sleepRecords: true,
-          currentMedicines: true,
-        ),
-        updatedAt: '2026-06-12T00:00:00.000Z',
-        securityPin: SecurityPinSettingsDto(enabled: true, lastChangedAt: null),
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettingsDto(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
       ),
+      updatedAt: '2026-06-12T00:00:00.000Z',
+      securityPin: SecurityPinSettingsDto(enabled: true, lastChangedAt: null),
     ),
   );
 
@@ -177,23 +155,19 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async => _response(
     UserSettingsResponseDto(
-      code: 0,
-      message: 'ok',
-      data: UserSettingsDataDto(
-        aiSummariesEnabled: false,
-        dataSharingConsent: false,
-        assistantEnabled: true,
-        assistantMemoryEnabled: false,
-        waterTargetCount: 8,
-        assistantContext: AssistantContextSettingsDto(
-          healthProfile: true,
-          dailyRecords: true,
-          sleepRecords: true,
-          currentMedicines: true,
-        ),
-        updatedAt: '2026-06-12T00:00:00.000Z',
-        securityPin: SecurityPinSettingsDto(enabled: true, lastChangedAt: null),
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettingsDto(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
       ),
+      updatedAt: '2026-06-12T00:00:00.000Z',
+      securityPin: SecurityPinSettingsDto(enabled: true, lastChangedAt: null),
     ),
   );
 
@@ -209,26 +183,19 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async => _response(
     UserSettingsResponseDto(
-      code: 0,
-      message: 'ok',
-      data: UserSettingsDataDto(
-        aiSummariesEnabled: false,
-        dataSharingConsent: false,
-        assistantEnabled: true,
-        assistantMemoryEnabled: false,
-        waterTargetCount: 8,
-        assistantContext: AssistantContextSettingsDto(
-          healthProfile: true,
-          dailyRecords: true,
-          sleepRecords: true,
-          currentMedicines: true,
-        ),
-        updatedAt: '2026-06-12T00:00:00.000Z',
-        securityPin: SecurityPinSettingsDto(
-          enabled: false,
-          lastChangedAt: null,
-        ),
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettingsDto(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
       ),
+      updatedAt: '2026-06-12T00:00:00.000Z',
+      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
     ),
   );
 }
@@ -332,31 +299,6 @@ void main() {
         container.read(securityElevationControllerProvider).isVerified,
         isFalse,
       );
-      expect(
-        container.read(securityElevationTokenHolderProvider).token,
-        isNull,
-      );
-    });
-
-    test('业务码非 0(拦截器未生效的调用路径):返回 false', () async {
-      final api = _FakeUserSettingsApi(
-        verifyResponse: SecurityPinElevationResponseDto(
-          code: 401001,
-          message: 'pin not enabled',
-          data: SecurityPinElevationDataDto(
-            elevationToken: 'should-not-be-set',
-            expiresAt: '2030-01-01T00:00:00.000Z',
-          ),
-        ),
-      );
-      container = buildContainer(api: api);
-
-      final controller = container.read(
-        securityElevationControllerProvider.notifier,
-      );
-      final ok = await controller.verify('123456');
-
-      expect(ok, isFalse);
       expect(
         container.read(securityElevationTokenHolderProvider).token,
         isNull,

@@ -56,7 +56,7 @@ class AppError {
   /// See [AppErrorKind] for the full taxonomy.
   final AppErrorKind kind;
 
-  /// Lucent envelope `code` field (e.g. `401002` for token expired).
+  /// Numeric application error code, when the failure exposes one.
   ///
   /// `null` when the error did not originate from a Lucent API response.
   final int? code;

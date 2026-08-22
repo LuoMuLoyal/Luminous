@@ -32,7 +32,7 @@ abstract final class LucentApiPaths {
 
   /// `POST /api/v1/user/today-analysis/refresh` — the generated client merges
   /// the oneOf response variants into a single DTO with all fields required,
-  /// so callers parse the raw envelope and dispatch on `status`/`analysis`.
+  /// so callers parse the direct resource and dispatch on `status`/`analysis`.
   static const todayAnalysisRefresh = '/api/v1/user/today-analysis/refresh';
 
   /// `POST /api/v1/user/reports/summary/generate/stream`

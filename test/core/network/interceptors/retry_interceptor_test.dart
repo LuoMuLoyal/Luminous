@@ -19,12 +19,7 @@ class _MockAdapter implements HttpClientAdapter {
   }
 
   void enqueueSuccess({int statusCode = 200, Map<String, dynamic>? data}) {
-    enqueue(
-      _MockResponse(
-        statusCode: statusCode,
-        data: data ?? {'code': 0, 'message': '', 'data': null},
-      ),
-    );
+    enqueue(_MockResponse(statusCode: statusCode, data: data));
   }
 
   void enqueueError({
@@ -106,7 +101,7 @@ void main() {
     test('retries on 500 and succeeds', () async {
       adapter
         ..enqueueError(statusCode: 500)
-        ..enqueueSuccess(data: {'code': 0, 'message': '', 'data': 'ok'});
+        ..enqueueSuccess(data: {'result': 'ok'});
 
       final response = await dio.get('/api/v1/test');
 

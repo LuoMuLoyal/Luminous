@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-21
+updated: 2026-08-22
 ---
 
 # Lucent OpenAPI Client
@@ -18,20 +18,17 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
   generic `{ code, message, data }` success wrapper.
 - `204 No Content` responses have no JSON body.
 - Ordinary HTTP 4xx/5xx responses use `application/problem+json`.
-- The checked-in OpenAPI export and generated package still reflect the pre-migration response shape until
-  the Lucent contract migration is implemented and regenerated.
+- The checked-in OpenAPI export and generated package now reflect the direct-resource response shape
+  after the Lucent hard cut.
 
-The Luminous target-state error foundation is now present in `lib/core/network/problem_details.dart`,
-`lib/core/errors/lucent_failure.dart`, and `lib/core/network/retry_policy.dart`. The parser is strict
-and does not interpret the retired success/error envelope. This foundation is not yet wired into the
-generated client or repository/provider call chain; that wiring belongs to the same hard-cut window as
-the Lucent HTTP contract change.
+The Luminous target-state error foundation is wired through the generated client and repository/provider
+call chain. `ProblemDetails` parsing is strict and does not interpret the retired success/error
+envelope; HTTP failures are mapped to `LucentFailure` by the Dio error chain.
 
 The Dio error chain now maps `application/problem+json` responses through
 `LucentErrorMapper` to `LucentFailure`; `AuthInterceptor` consumes the same Problem Details codes
 for refresh decisions. The retired `EnvelopeInterceptor` is no longer registered. Generated DTOs
-still reflect the old success shape until Lucent exports the resource-based OpenAPI contract and the
-client is regenerated.
+now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unions.
 
 ## Files
 
@@ -43,7 +40,7 @@ client is regenerated.
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 127 paths / 314 schemas.
+- Last known Lucent export: 127 paths / 259 schemas.
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
@@ -93,14 +90,13 @@ client is regenerated.
 - Reminder delivery history is read through the feature data source and maps generated/raw response
   fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain
   code should still depend on the feature repository boundary.
-- Today AI REST reads/generation/refresh currently use the generated OpenAPI transport and unwrap
-  the legacy response shape in the Today data source. After the response
-  contract migration these calls will consume the endpoint resource representation directly. Today
-  AI streaming, Report AI summary, and assistant streaming continue to use manual Dio + SSE parsing
-  in `lib/core/network/sse.dart`.
+- Today AI REST reads/generation/refresh use the generated OpenAPI transport and consume endpoint
+  resource representations directly, including explicit nullable and `oneOf` response models.
+  Today AI streaming, Report AI summary, and assistant streaming continue to use manual Dio + SSE
+  parsing in `lib/core/network/sse.dart`.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
-- `401002` triggers refresh and retry.
+- `AUTH_TOKEN_EXPIRED` triggers refresh and retry.
 - Dio errors are unwrapped through `LucentErrorMapper`.
 - Use `LucentDioClient.medicinesHeaders(bypassCache: true)` for one-off medicine reads that must
   bypass Lucent read cache.

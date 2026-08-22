@@ -4,7 +4,7 @@
 /// [LucentFailure]. The presentation layer maps it to a localized string via
 /// [NetworkErrorL10n].
 enum NetworkErrorCode {
-  /// Business code is non-zero ({code, message, data} envelope code != 0)
+  /// A domain/business failure that is not represented by a transport error.
   businessFailure,
 
   /// Stream response is empty

@@ -1,23 +1,15 @@
-import 'package:lucent_api/src/model/account_dto.dart';
-import 'package:lucent_api/src/model/account_email_data_dto.dart';
 import 'package:lucent_api/src/model/account_email_response_dto.dart';
 import 'package:lucent_api/src/model/account_identity_dto.dart';
 import 'package:lucent_api/src/model/account_response_dto.dart';
 import 'package:lucent_api/src/model/air_quality_indicator_dto.dart';
-import 'package:lucent_api/src/model/app_info_data_dto.dart';
 import 'package:lucent_api/src/model/app_info_response_dto.dart';
 import 'package:lucent_api/src/model/apple_o_auth_callback_dto.dart';
-import 'package:lucent_api/src/model/assistant_capabilities_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_capabilities_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_clear_memory_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_memory_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_clear_result_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_result_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_confirm_result_dto.dart';
 import 'package:lucent_api/src/model/assistant_confirm_result_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_context_settings_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_data_dto.dart';
-import 'package:lucent_api/src/model/assistant_conversation_list_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_message_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_summary_dto.dart';
@@ -30,14 +22,11 @@ import 'package:lucent_api/src/model/clinic_summary_allergy_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_condition_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_coverage_entry_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_medicine_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_note_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_request_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_response_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_share_data_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_share_list_data_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_list_item_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_list_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
@@ -46,7 +35,6 @@ import 'package:lucent_api/src/model/clinic_summary_sleep_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_water_entry_dto.dart';
 import 'package:lucent_api/src/model/cn_medicine_detail_dto.dart';
 import 'package:lucent_api/src/model/confirm_assistant_proposal_dto.dart';
-import 'package:lucent_api/src/model/cooldown_message_dto.dart';
 import 'package:lucent_api/src/model/create_current_medicine_dto.dart';
 import 'package:lucent_api/src/model/create_daily_record_dto.dart';
 import 'package:lucent_api/src/model/create_daily_record_image_upload_dto.dart';
@@ -62,25 +50,19 @@ import 'package:lucent_api/src/model/create_product_event_batch_dto.dart';
 import 'package:lucent_api/src/model/create_product_event_dto.dart';
 import 'package:lucent_api/src/model/daily_record_attachment_dto.dart';
 import 'package:lucent_api/src/model/daily_record_attachment_input_dto.dart';
-import 'package:lucent_api/src/model/daily_record_candidate_data_dto.dart';
 import 'package:lucent_api/src/model/daily_record_candidate_item_dto.dart';
 import 'package:lucent_api/src/model/daily_record_candidate_response_dto.dart';
-import 'package:lucent_api/src/model/daily_record_image_upload_dto.dart';
 import 'package:lucent_api/src/model/daily_record_image_upload_response_dto.dart';
 import 'package:lucent_api/src/model/daily_record_item_dto.dart';
-import 'package:lucent_api/src/model/daily_record_list_data_dto.dart';
 import 'package:lucent_api/src/model/daily_record_list_response_dto.dart';
 import 'package:lucent_api/src/model/daily_record_response_dto.dart';
-import 'package:lucent_api/src/model/daily_record_summary_data_dto.dart';
 import 'package:lucent_api/src/model/daily_record_summary_dto.dart';
 import 'package:lucent_api/src/model/daily_record_summary_response_dto.dart';
-import 'package:lucent_api/src/model/data_export_latest_response_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_data_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_response_dto.dart';
 import 'package:lucent_api/src/model/delete_account_dto.dart';
 import 'package:lucent_api/src/model/disable_security_pin_dto.dart';
 import 'package:lucent_api/src/model/dose_log_item_dto.dart';
-import 'package:lucent_api/src/model/dose_log_list_data_dto.dart';
 import 'package:lucent_api/src/model/dose_log_list_response_dto.dart';
 import 'package:lucent_api/src/model/dose_log_response_dto.dart';
 import 'package:lucent_api/src/model/drugbank_drug_interaction_dto.dart';
@@ -88,15 +70,12 @@ import 'package:lucent_api/src/model/drugbank_medicine_detail_dto.dart';
 import 'package:lucent_api/src/model/emergency_contact_dto.dart';
 import 'package:lucent_api/src/model/enable_security_pin_dto.dart';
 import 'package:lucent_api/src/model/end_health_event_dto.dart';
-import 'package:lucent_api/src/model/environment_snapshot_dto.dart';
 import 'package:lucent_api/src/model/environment_snapshot_response_dto.dart';
 import 'package:lucent_api/src/model/event_review_check_in_coverage_dto.dart';
 import 'package:lucent_api/src/model/event_review_coverage_summary_dto.dart';
 import 'package:lucent_api/src/model/event_review_data_dto.dart';
 import 'package:lucent_api/src/model/event_review_event_dto.dart';
-import 'package:lucent_api/src/model/event_review_list_data_dto.dart';
 import 'package:lucent_api/src/model/event_review_list_response_dto.dart';
-import 'package:lucent_api/src/model/event_review_nullable_response_dto.dart';
 import 'package:lucent_api/src/model/event_review_observed_source_dto.dart';
 import 'package:lucent_api/src/model/event_review_response_dto.dart';
 import 'package:lucent_api/src/model/event_review_section_dto.dart';
@@ -108,7 +87,6 @@ import 'package:lucent_api/src/model/evidence_item_dto.dart';
 import 'package:lucent_api/src/model/forgot_password_dto.dart';
 import 'package:lucent_api/src/model/forgot_password_response_dto.dart';
 import 'package:lucent_api/src/model/funnel_daily_counts_dto.dart';
-import 'package:lucent_api/src/model/funnel_data_dto.dart';
 import 'package:lucent_api/src/model/funnel_optional_counts_dto.dart';
 import 'package:lucent_api/src/model/funnel_response_dto.dart';
 import 'package:lucent_api/src/model/funnel_totals_dto.dart';
@@ -120,39 +98,29 @@ import 'package:lucent_api/src/model/google_o_auth_authorize_dto.dart';
 import 'package:lucent_api/src/model/google_o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/health_app_info_dto.dart';
 import 'package:lucent_api/src/model/health_component_dto.dart';
-import 'package:lucent_api/src/model/health_context_data_dto.dart';
 import 'package:lucent_api/src/model/health_context_response_dto.dart';
 import 'package:lucent_api/src/model/health_event_check_in_response_dto.dart';
 import 'package:lucent_api/src/model/health_event_coverage_dto.dart';
 import 'package:lucent_api/src/model/health_event_item_dto.dart';
-import 'package:lucent_api/src/model/health_event_list_data_dto.dart';
 import 'package:lucent_api/src/model/health_event_list_response_dto.dart';
-import 'package:lucent_api/src/model/health_event_nullable_response_dto.dart';
 import 'package:lucent_api/src/model/health_event_response_dto.dart';
-import 'package:lucent_api/src/model/health_probe_dto.dart';
 import 'package:lucent_api/src/model/health_response_dto.dart';
 import 'package:lucent_api/src/model/health_summary_dto.dart';
 import 'package:lucent_api/src/model/humidity_indicator_dto.dart';
-import 'package:lucent_api/src/model/legal_document_detail_dto.dart';
 import 'package:lucent_api/src/model/legal_document_detail_response_dto.dart';
-import 'package:lucent_api/src/model/legal_document_list_data_dto.dart';
 import 'package:lucent_api/src/model/legal_document_list_item_dto.dart';
 import 'package:lucent_api/src/model/legal_document_list_response_dto.dart';
-import 'package:lucent_api/src/model/local_capability_data_dto.dart';
 import 'package:lucent_api/src/model/local_capability_response_dto.dart';
 import 'package:lucent_api/src/model/local_capability_state_dto.dart';
-import 'package:lucent_api/src/model/login_data_dto.dart';
 import 'package:lucent_api/src/model/login_dto.dart';
 import 'package:lucent_api/src/model/login_response_dto.dart';
 import 'package:lucent_api/src/model/logout_dto.dart';
 import 'package:lucent_api/src/model/mark_dose_log_dto.dart';
-import 'package:lucent_api/src/model/medicine_detail_data_dto.dart';
-import 'package:lucent_api/src/model/medicine_detail_data_dto_detail.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_dto_detail.dart';
 import 'package:lucent_api/src/model/medicine_pagination_dto.dart';
 import 'package:lucent_api/src/model/medicine_red_flag_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_item_dto.dart';
-import 'package:lucent_api/src/model/medicine_reminder_list_data_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_dto.dart';
@@ -162,19 +130,13 @@ import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.da
 import 'package:lucent_api/src/model/medicine_risk_check_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_coverage_issue_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_finding_dto.dart';
-import 'package:lucent_api/src/model/medicine_safety_tip_list_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_search_data_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_item_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
-import 'package:lucent_api/src/model/notification_detail_dto.dart';
 import 'package:lucent_api/src/model/notification_detail_response_dto.dart';
-import 'package:lucent_api/src/model/notification_list_data_dto.dart';
 import 'package:lucent_api/src/model/notification_list_item_dto.dart';
 import 'package:lucent_api/src/model/notification_list_response_dto.dart';
-import 'package:lucent_api/src/model/notification_preferences_data_dto.dart';
 import 'package:lucent_api/src/model/notification_preferences_response_dto.dart';
-import 'package:lucent_api/src/model/o_auth_authorize_data_dto.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_dto.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_response_dto.dart';
 import 'package:lucent_api/src/model/o_auth_callback_dto.dart';
@@ -185,19 +147,15 @@ import 'package:lucent_api/src/model/qq_o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/recognize_medicine_dto.dart';
 import 'package:lucent_api/src/model/refresh_dto.dart';
 import 'package:lucent_api/src/model/refresh_response_dto.dart';
-import 'package:lucent_api/src/model/register_data_dto.dart';
 import 'package:lucent_api/src/model/register_dto.dart';
 import 'package:lucent_api/src/model/register_response_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_item_dto.dart';
-import 'package:lucent_api/src/model/reminder_delivery_list_data_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_response_dto.dart';
-import 'package:lucent_api/src/model/reminder_delivery_receipt_data_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto.dart';
 import 'package:lucent_api/src/model/rename_conversation_dto.dart';
 import 'package:lucent_api/src/model/report_coverage_dimension_dto.dart';
 import 'package:lucent_api/src/model/report_coverage_dto.dart';
-import 'package:lucent_api/src/model/report_dashboard_data_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 import 'package:lucent_api/src/model/report_finding_dto.dart';
 import 'package:lucent_api/src/model/report_low_risk_action_dto.dart';
@@ -205,7 +163,6 @@ import 'package:lucent_api/src/model/report_metric_dto.dart';
 import 'package:lucent_api/src/model/report_observed_metric_dto.dart';
 import 'package:lucent_api/src/model/report_observed_pattern_dto.dart';
 import 'package:lucent_api/src/model/report_pattern_dto.dart';
-import 'package:lucent_api/src/model/report_summary_data_dto.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto.dart';
 import 'package:lucent_api/src/model/report_trend_dto.dart';
 import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response.dart';
@@ -213,43 +170,35 @@ import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pd
 import 'package:lucent_api/src/model/reset_password_dto.dart';
 import 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
-import 'package:lucent_api/src/model/security_pin_elevation_data_dto.dart';
 import 'package:lucent_api/src/model/security_pin_elevation_response_dto.dart';
 import 'package:lucent_api/src/model/security_pin_settings_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_api/src/model/set_password_dto.dart';
 import 'package:lucent_api/src/model/stream_assistant_messages_dto.dart';
-import 'package:lucent_api/src/model/success_response_dto.dart';
 import 'package:lucent_api/src/model/suggestion_action_dto.dart';
-import 'package:lucent_api/src/model/suggestion_explanation_data_dto.dart';
 import 'package:lucent_api/src/model/suggestion_explanation_response_dto.dart';
-import 'package:lucent_api/src/model/suggestion_feedback_data_dto.dart';
 import 'package:lucent_api/src/model/suggestion_feedback_dto.dart';
 import 'package:lucent_api/src/model/suggestion_feedback_response_dto.dart';
-import 'package:lucent_api/src/model/suggestion_history_data_dto.dart';
 import 'package:lucent_api/src/model/suggestion_history_item_dto.dart';
 import 'package:lucent_api/src/model/suggestion_history_response_dto.dart';
 import 'package:lucent_api/src/model/suggestion_item_dto.dart';
 import 'package:lucent_api/src/model/suggestion_observed_metric_dto.dart';
 import 'package:lucent_api/src/model/temperature_indicator_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_async_job_data_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_async_response_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_async_response_dto_data.dart';
 import 'package:lucent_api/src/model/today_analysis_async_result_data_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_async_result_data_dto_result.dart';
 import 'package:lucent_api/src/model/today_analysis_async_status_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_controller_generate_async_v1202_response.dart';
+import 'package:lucent_api/src/model/today_analysis_controller_generate_v1200_response.dart';
+import 'package:lucent_api/src/model/today_analysis_controller_refresh_v1201_response.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_generate_response_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_metric_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_observed_metric_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_read_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_read_response_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_refresh_pending_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_refresh_ready_data_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_refresh_response_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_refresh_response_dto_data.dart';
 import 'package:lucent_api/src/model/today_analysis_stream_error_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_stream_result_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_stream_result_dto_data.dart';
@@ -257,10 +206,8 @@ import 'package:lucent_api/src/model/today_analysis_stream_summary_dto.dart';
 import 'package:lucent_api/src/model/today_recommendation_response_dto.dart';
 import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response.dart';
 import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response_data.dart';
-import 'package:lucent_api/src/model/today_suggestions_data_dto.dart';
 import 'package:lucent_api/src/model/today_suggestions_response_dto.dart';
 import 'package:lucent_api/src/model/tokens_dto.dart';
-import 'package:lucent_api/src/model/unread_count_data_dto.dart';
 import 'package:lucent_api/src/model/unread_count_response_dto.dart';
 import 'package:lucent_api/src/model/update_account_dto.dart';
 import 'package:lucent_api/src/model/update_assistant_context_settings_dto.dart';
@@ -283,10 +230,8 @@ import 'package:lucent_api/src/model/user_current_medicine_item_dto.dart';
 import 'package:lucent_api/src/model/user_full_dto.dart';
 import 'package:lucent_api/src/model/user_health_profile_dto.dart';
 import 'package:lucent_api/src/model/user_health_summary_dto.dart';
-import 'package:lucent_api/src/model/user_settings_data_dto.dart';
 import 'package:lucent_api/src/model/user_settings_response_dto.dart';
 import 'package:lucent_api/src/model/uv_indicator_dto.dart';
-import 'package:lucent_api/src/model/verify_email_data_dto.dart';
 import 'package:lucent_api/src/model/verify_email_dto.dart';
 import 'package:lucent_api/src/model/verify_email_response_dto.dart';
 import 'package:lucent_api/src/model/verify_security_pin_dto.dart';
@@ -315,11 +260,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return (valueString == 'true' || valueString == '1') as ReturnType;
     case 'double':
       return (value is double ? value : double.parse('$value')) as ReturnType;
-    case 'AccountDto':
-      return AccountDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-    case 'AccountEmailDataDto':
-      return AccountEmailDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'AccountEmailResponseDto':
       return AccountEmailResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -333,43 +273,26 @@ ReturnType deserialize<ReturnType, BaseType>(
       return AirQualityIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AirQualityLevel':
-    case 'AppInfoDataDto':
-      return AppInfoDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'AppInfoResponseDto':
       return AppInfoResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AppleOAuthCallbackDto':
       return AppleOAuthCallbackDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'AssistantCapabilitiesDataDto':
-      return AssistantCapabilitiesDataDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
     case 'AssistantCapabilitiesResponseDto':
       return AssistantCapabilitiesResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'AssistantClearMemoryDataDto':
-      return AssistantClearMemoryDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AssistantClearMemoryResponseDto':
       return AssistantClearMemoryResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'AssistantClearResultDataDto':
-      return AssistantClearResultDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'AssistantClearResultResponseDto':
       return AssistantClearResultResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'AssistantConfirmResultDto':
-      return AssistantConfirmResultDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AssistantConfirmResultResponseDto':
       return AssistantConfirmResultResponseDto.fromJson(
@@ -381,11 +304,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'AssistantConversationDataDto':
       return AssistantConversationDataDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'AssistantConversationListResponseDto':
-      return AssistantConversationListResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -433,9 +351,6 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'ClinicSummaryDto':
-      return ClinicSummaryDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'ClinicSummaryMedicineDto':
       return ClinicSummaryMedicineDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -450,14 +365,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ClinicSummaryResponseDto':
       return ClinicSummaryResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ClinicSummaryShareDataDto':
-      return ClinicSummaryShareDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ClinicSummaryShareListDataDto':
-      return ClinicSummaryShareListDataDto.fromJson(
-            value as Map<String, dynamic>,
-          )
           as ReturnType;
     case 'ClinicSummaryShareListItemDto':
       return ClinicSummaryShareListItemDto.fromJson(
@@ -488,9 +395,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ConfirmAssistantProposalDto':
       return ConfirmAssistantProposalDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'CooldownMessageDto':
-      return CooldownMessageDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'CreateCurrentMedicineDto':
       return CreateCurrentMedicineDto.fromJson(value as Map<String, dynamic>)
@@ -546,9 +450,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           )
           as ReturnType;
     case 'DailyRecordAttachmentKind':
-    case 'DailyRecordCandidateDataDto':
-      return DailyRecordCandidateDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'DailyRecordCandidateItemDto':
       return DailyRecordCandidateItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -557,9 +458,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return DailyRecordCandidateResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'DailyRecordImageUploadDto':
-      return DailyRecordImageUploadDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'DailyRecordImageUploadResponseDto':
       return DailyRecordImageUploadResponseDto.fromJson(
@@ -570,17 +468,11 @@ ReturnType deserialize<ReturnType, BaseType>(
       return DailyRecordItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'DailyRecordKind':
-    case 'DailyRecordListDataDto':
-      return DailyRecordListDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'DailyRecordListResponseDto':
       return DailyRecordListResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'DailyRecordResponseDto':
       return DailyRecordResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'DailyRecordSummaryDataDto':
-      return DailyRecordSummaryDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'DailyRecordSummaryDto':
       return DailyRecordSummaryDto.fromJson(value as Map<String, dynamic>)
@@ -592,9 +484,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'DataExportFormat':
     case 'DataExportKind':
-    case 'DataExportLatestResponseDto':
-      return DataExportLatestResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'DataExportRange':
     case 'DataExportRequestDataDto':
       return DataExportRequestDataDto.fromJson(value as Map<String, dynamic>)
@@ -613,9 +502,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'DoseLogItemDto':
       return DoseLogItemDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'DoseLogListDataDto':
-      return DoseLogListDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'DoseLogListResponseDto':
       return DoseLogListResponseDto.fromJson(value as Map<String, dynamic>)
@@ -640,9 +526,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return EndHealthEventDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'EnvironmentDataSource':
-    case 'EnvironmentSnapshotDto':
-      return EnvironmentSnapshotDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'EnvironmentSnapshotResponseDto':
       return EnvironmentSnapshotResponseDto.fromJson(
             value as Map<String, dynamic>,
@@ -664,16 +547,8 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'EventReviewEventDto':
       return EventReviewEventDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'EventReviewListDataDto':
-      return EventReviewListDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'EventReviewListResponseDto':
       return EventReviewListResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'EventReviewNullableResponseDto':
-      return EventReviewNullableResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
           as ReturnType;
     case 'EventReviewObservedSourceDto':
       return EventReviewObservedSourceDto.fromJson(
@@ -712,9 +587,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'FunnelDailyCountsDto':
       return FunnelDailyCountsDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'FunnelDataDto':
-      return FunnelDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'FunnelOptionalCountsDto':
       return FunnelOptionalCountsDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -751,9 +623,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return HealthComponentDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'HealthComponentStatus':
-    case 'HealthContextDataDto':
-      return HealthContextDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'HealthContextResponseDto':
       return HealthContextResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -769,16 +638,8 @@ ReturnType deserialize<ReturnType, BaseType>(
       return HealthEventItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'HealthEventKind':
-    case 'HealthEventListDataDto':
-      return HealthEventListDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'HealthEventListResponseDto':
       return HealthEventListResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'HealthEventNullableResponseDto':
-      return HealthEventNullableResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
           as ReturnType;
     case 'HealthEventOutcome':
     case 'HealthEventResponseDto':
@@ -786,9 +647,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'HealthEventStatus':
     case 'HealthOverallStatus':
-    case 'HealthProbeDto':
-      return HealthProbeDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'HealthProbeType':
     case 'HealthResponseDto':
       return HealthResponseDto.fromJson(value as Map<String, dynamic>)
@@ -799,16 +657,10 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'HumidityIndicatorDto':
       return HumidityIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'LegalDocumentDetailDto':
-      return LegalDocumentDetailDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'LegalDocumentDetailResponseDto':
       return LegalDocumentDetailResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'LegalDocumentListDataDto':
-      return LegalDocumentListDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'LegalDocumentListItemDto':
       return LegalDocumentListItemDto.fromJson(value as Map<String, dynamic>)
@@ -818,17 +670,12 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'LocalCapabilityDataDto':
-      return LocalCapabilityDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'LocalCapabilityResponseDto':
       return LocalCapabilityResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'LocalCapabilityStateDto':
       return LocalCapabilityStateDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'LoginDataDto':
-      return LoginDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'LoginDto':
       return LoginDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'LoginResponseDto':
@@ -839,14 +686,13 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'MarkDoseLogDto':
       return MarkDoseLogDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'MedicineDetailDataDto':
-      return MedicineDetailDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'MedicineDetailDataDtoDetail':
-      return MedicineDetailDataDtoDetail.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'MedicineDetailResponseDto':
       return MedicineDetailResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineDetailResponseDtoDetail':
+      return MedicineDetailResponseDtoDetail.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'MedicinePaginationDto':
       return MedicinePaginationDto.fromJson(value as Map<String, dynamic>)
@@ -856,9 +702,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineReminderItemDto':
       return MedicineReminderItemDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'MedicineReminderListDataDto':
-      return MedicineReminderListDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'MedicineReminderListResponseDto':
       return MedicineReminderListResponseDto.fromJson(
@@ -897,18 +740,10 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'MedicineRiskFindingDto':
       return MedicineRiskFindingDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'MedicineSafetyTipListResponseDto':
-      return MedicineSafetyTipListResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
     case 'MedicineSafetyTipResponseDto':
       return MedicineSafetyTipResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'MedicineSearchDataDto':
-      return MedicineSearchDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'MedicineSearchItemDto':
       return MedicineSearchItemDto.fromJson(value as Map<String, dynamic>)
@@ -917,16 +752,10 @@ ReturnType deserialize<ReturnType, BaseType>(
       return MedicineSearchResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'MedicineSource':
-    case 'NotificationDetailDto':
-      return NotificationDetailDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'NotificationDetailResponseDto':
       return NotificationDetailResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'NotificationListDataDto':
-      return NotificationListDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'NotificationListItemDto':
       return NotificationListItemDto.fromJson(value as Map<String, dynamic>)
@@ -934,18 +763,10 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'NotificationListResponseDto':
       return NotificationListResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'NotificationPreferencesDataDto':
-      return NotificationPreferencesDataDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
     case 'NotificationPreferencesResponseDto':
       return NotificationPreferencesResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'OAuthAuthorizeDataDto':
-      return OAuthAuthorizeDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'OAuthAuthorizeDto':
       return OAuthAuthorizeDto.fromJson(value as Map<String, dynamic>)
@@ -980,9 +801,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'RefreshResponseDto':
       return RefreshResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'RegisterDataDto':
-      return RegisterDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'RegisterDto':
       return RegisterDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'RegisterResponseDto':
@@ -991,16 +809,8 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'ReminderDeliveryItemDto':
       return ReminderDeliveryItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'ReminderDeliveryListDataDto':
-      return ReminderDeliveryListDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'ReminderDeliveryListResponseDto':
       return ReminderDeliveryListResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'ReminderDeliveryReceiptDataDto':
-      return ReminderDeliveryReceiptDataDto.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1020,9 +830,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ReportCoverageDto':
       return ReportCoverageDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ReportDashboardDataDto':
-      return ReportDashboardDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ReportDashboardResponseDto':
       return ReportDashboardResponseDto.fromJson(value as Map<String, dynamic>)
@@ -1044,9 +851,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ReportPatternDto':
       return ReportPatternDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ReportSummaryDataDto':
-      return ReportSummaryDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ReportSummaryResponseDto':
       return ReportSummaryResponseDto.fromJson(value as Map<String, dynamic>)
@@ -1073,9 +877,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'RunRiskCheckDto':
       return RunRiskCheckDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'SecurityPinElevationDataDto':
-      return SecurityPinElevationDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'SecurityPinElevationResponseDto':
       return SecurityPinElevationResponseDto.fromJson(
             value as Map<String, dynamic>,
@@ -1099,24 +900,13 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'StreamAssistantMessagesDto':
       return StreamAssistantMessagesDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'SuccessResponseDto':
-      return SuccessResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'SuggestionActionDto':
       return SuggestionActionDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'SuggestionExplanationDataDto':
-      return SuggestionExplanationDataDto.fromJson(
-            value as Map<String, dynamic>,
-          )
           as ReturnType;
     case 'SuggestionExplanationResponseDto':
       return SuggestionExplanationResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'SuggestionFeedbackDataDto':
-      return SuggestionFeedbackDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'SuggestionFeedbackDto':
       return SuggestionFeedbackDto.fromJson(value as Map<String, dynamic>)
@@ -1125,9 +915,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return SuggestionFeedbackResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'SuggestionHistoryDataDto':
-      return SuggestionHistoryDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'SuggestionHistoryItemDto':
       return SuggestionHistoryItemDto.fromJson(value as Map<String, dynamic>)
@@ -1151,23 +938,8 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'TodayAnalysisAsyncResponseDto':
-      return TodayAnalysisAsyncResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'TodayAnalysisAsyncResponseDtoData':
-      return TodayAnalysisAsyncResponseDtoData.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
     case 'TodayAnalysisAsyncResultDataDto':
       return TodayAnalysisAsyncResultDataDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'TodayAnalysisAsyncResultDataDtoResult':
-      return TodayAnalysisAsyncResultDataDtoResult.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1179,13 +951,23 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'TodayAnalysisBulletDto':
       return TodayAnalysisBulletDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'TodayAnalysisDataDto':
-      return TodayAnalysisDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'TodayAnalysisGenerateResponseDto':
-      return TodayAnalysisGenerateResponseDto.fromJson(
+    case 'TodayAnalysisControllerGenerateAsyncV1202Response':
+      return TodayAnalysisControllerGenerateAsyncV1202Response.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'TodayAnalysisControllerGenerateV1200Response':
+      return TodayAnalysisControllerGenerateV1200Response.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisControllerRefreshV1201Response':
+      return TodayAnalysisControllerRefreshV1201Response.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisDataDto':
+      return TodayAnalysisDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'TodayAnalysisMetricDto':
       return TodayAnalysisMetricDto.fromJson(value as Map<String, dynamic>)
@@ -1210,16 +992,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'TodayAnalysisRefreshReadyDataDto':
       return TodayAnalysisRefreshReadyDataDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'TodayAnalysisRefreshResponseDto':
-      return TodayAnalysisRefreshResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'TodayAnalysisRefreshResponseDtoData':
-      return TodayAnalysisRefreshResponseDtoData.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1256,18 +1028,12 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'TodaySuggestionsDataDto':
-      return TodaySuggestionsDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'TodaySuggestionsResponseDto':
       return TodaySuggestionsResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'TokensDto':
       return TokensDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'UnitSystem':
-    case 'UnreadCountDataDto':
-      return UnreadCountDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'UnreadCountResponseDto':
       return UnreadCountResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1349,9 +1115,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return UserHealthSummaryDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'UserNotificationType':
-    case 'UserSettingsDataDto':
-      return UserSettingsDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'UserSettingsResponseDto':
       return UserSettingsResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1359,9 +1122,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return UvIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'UvLevel':
-    case 'VerifyEmailDataDto':
-      return VerifyEmailDataDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'VerifyEmailDto':
       return VerifyEmailDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
