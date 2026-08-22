@@ -41,11 +41,13 @@ class RecordNlpSheet extends HookConsumerWidget {
       if (msg == null || msg == previous?.errorMessage) {
         return;
       }
+      if (!context.mounted) return;
       unawaited(Toast.show(context, msg));
     });
 
     Future<void> handleGenerate() async {
       if (controller.text.trim().isEmpty) {
+        if (!context.mounted) return;
         await Toast.show(context, l10n.recordNlpInputRequiredToast);
         return;
       }

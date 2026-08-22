@@ -253,6 +253,7 @@ class RecordCreatePage extends HookConsumerWidget {
 
     Future<void> onSave(String dateStr) async {
       if (kind.value == DailyRecordKind.sleep && !isValidSleepValue()) {
+        if (!context.mounted) return;
         unawaited(
           Toast.show(
             context,

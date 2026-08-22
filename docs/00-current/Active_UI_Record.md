@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-18
+updated: 2026-08-22
 ---
 
 # Active UI — Record
 
-Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据;P1-2 详情页饮水目标改读 user-settings;P2-1 详情页餐食分析摘要卡可直接确认分析结果;P2-2 清理 `weekDays`/`RecordWeekDay` 静态残留;改造项 7:water 进度卡 imperial 单位制下总量/目标显示 fl oz,进度条仍用 ml 比例)
+Last updated: 2026-08-22 (P1-1 摘要网格与饮水角标接入真实 daily-records summary 数据;P1-2 详情页饮水目标改读 user-settings;P2-1 详情页餐食分析摘要卡可直接确认分析结果;P2-2 清理 `weekDays`/`RecordWeekDay` 静态残留;改造项 7:water 进度卡 imperial 单位制下总量/目标显示 fl oz,进度条仍用 ml 比例;NLP sheet 与 create page Toast 生命周期守卫补齐)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -303,6 +303,10 @@ Last updated: 2026-08-18 (P1-1 摘要网格与饮水角标接入真实 daily-rec
 
 - record 模块 6 处 `Toast.showWithAction` action 回调（`quick_entry_executor.dart`、`fast_entry_dialog.dart`、`quick_entry_sleep.dart`、`quick_entry_medication.dart` × 3）均新增 `if (!context.mounted) return;` 守卫，与 scan/auth 模块已修复的模式一致，防止用户关闭调用面后点击延迟 action 触发 `debugDeactivated` 断言崩溃。
 - `recent_searches.dart` `_settleInitialLoad` 空 catch 块补齐 `talker.warning` 日志（08-16 遗留 🔴）；`_pendingLoad` 在初始 load 完成后通过 `whenComplete` 置空，生命周期更精确。
+
+## 2026-08-22 审查整改
+
+- `nlp_sheet.dart` 的错误监听、空输入提示与 `create.dart` 的睡眠值校验 Toast 均在调用前检查 `context.mounted`，避免页面销毁后的异步反馈访问失效上下文。
 
 
 ## 2026-08-17 快速记录 use-case 层迁移（F-12）
