@@ -4,7 +4,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/response_body.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/doc_type.dart';
@@ -44,7 +44,7 @@ class LucentLegalRepository implements LegalRepository {
       final response = await api.legalDocumentsControllerFindAllV1(
         lang: localeResolver(),
       );
-      return requireData(response.data, operation: 'findAll').data.items
+      return requireData(response.data, operation: 'findAll').items
           .map(
             (item) => LegalDocumentSummary(
               docType:
@@ -70,7 +70,7 @@ class LucentLegalRepository implements LegalRepository {
         docType: docType.pathSegment,
         lang: localeResolver(),
       );
-      final d = requireData(response.data, operation: 'findOne').data;
+      final d = requireData(response.data, operation: 'findOne');
       return LegalDocument(
         docType: docType,
         title: d.title,

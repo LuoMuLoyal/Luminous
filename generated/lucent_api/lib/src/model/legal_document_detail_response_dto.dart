@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/legal_document_detail_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,34 +18,42 @@ part 'legal_document_detail_response_dto.g.dart';
 class LegalDocumentDetailResponseDto {
   /// Returns a new [LegalDocumentDetailResponseDto] instance.
   LegalDocumentDetailResponseDto({
-    required this.code,
+    required this.docType,
 
-    required this.message,
+    required this.title,
 
-    required this.data,
+    required this.content,
+
+    required this.updatedAt,
   });
 
-  /// Result code.
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  /// Document type identifier used in URL paths.
+  @JsonKey(name: r'docType', required: true, includeIfNull: false)
+  final String docType;
 
-  /// Message.
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  @JsonKey(name: r'title', required: true, includeIfNull: false)
+  final String title;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final LegalDocumentDetailDto data;
+  /// Markdown content of the document.
+  @JsonKey(name: r'content', required: true, includeIfNull: false)
+  final String content;
+
+  /// ISO-8601 timestamp of last update.
+  @JsonKey(name: r'updatedAt', required: true, includeIfNull: false)
+  final String updatedAt;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is LegalDocumentDetailResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.docType == docType &&
+          other.title == title &&
+          other.content == content &&
+          other.updatedAt == updatedAt;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      docType.hashCode + title.hashCode + content.hashCode + updatedAt.hashCode;
 
   factory LegalDocumentDetailResponseDto.fromJson(Map<String, dynamic> json) =>
       _$LegalDocumentDetailResponseDtoFromJson(json);

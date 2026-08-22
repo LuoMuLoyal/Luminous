@@ -39,23 +39,19 @@ void main() {
       test('maps API items to LegalDocumentSummary list', () async {
         final response = _response(
           LegalDocumentListResponseDto(
-            code: 0,
-            message: 'ok',
-            data: LegalDocumentListDataDto(
-              items: [
-                LegalDocumentListItemDto(
-                  docType: 'terms',
-                  title: '服务条款',
-                  updatedAt: '2026-07-01T00:00:00Z',
-                ),
-                LegalDocumentListItemDto(
-                  docType: 'privacy',
-                  title: '隐私政策',
-                  updatedAt: '2026-07-02T00:00:00Z',
-                ),
-              ],
-              updatedAt: '2026-07-02T00:00:00Z',
-            ),
+            items: [
+              LegalDocumentListItemDto(
+                docType: 'terms',
+                title: '服务条款',
+                updatedAt: '2026-07-01T00:00:00Z',
+              ),
+              LegalDocumentListItemDto(
+                docType: 'privacy',
+                title: '隐私政策',
+                updatedAt: '2026-07-02T00:00:00Z',
+              ),
+            ],
+            updatedAt: '2026-07-02T00:00:00Z',
           ),
         );
 
@@ -76,18 +72,14 @@ void main() {
       test('defaults to terms for unknown docType', () async {
         final response = _response(
           LegalDocumentListResponseDto(
-            code: 0,
-            message: 'ok',
-            data: LegalDocumentListDataDto(
-              items: [
-                LegalDocumentListItemDto(
-                  docType: 'unknown-type',
-                  title: 'Unknown',
-                  updatedAt: '',
-                ),
-              ],
-              updatedAt: '',
-            ),
+            items: [
+              LegalDocumentListItemDto(
+                docType: 'unknown-type',
+                title: 'Unknown',
+                updatedAt: '',
+              ),
+            ],
+            updatedAt: '',
           ),
         );
 
@@ -103,11 +95,7 @@ void main() {
 
       test('returns empty list when API returns no items', () async {
         final response = _response(
-          LegalDocumentListResponseDto(
-            code: 0,
-            message: 'ok',
-            data: LegalDocumentListDataDto(items: [], updatedAt: ''),
-          ),
+          LegalDocumentListResponseDto(items: [], updatedAt: ''),
         );
 
         when(
@@ -143,11 +131,7 @@ void main() {
         );
 
         final response = _response(
-          LegalDocumentListResponseDto(
-            code: 0,
-            message: 'ok',
-            data: LegalDocumentListDataDto(items: [], updatedAt: ''),
-          ),
+          LegalDocumentListResponseDto(items: [], updatedAt: ''),
         );
 
         when(
@@ -167,14 +151,10 @@ void main() {
       test('maps API response to LegalDocument', () async {
         final response = _response(
           LegalDocumentDetailResponseDto(
-            code: 0,
-            message: 'ok',
-            data: LegalDocumentDetailDto(
-              docType: 'terms',
-              title: '服务条款',
-              content: '# 服务条款\n\n正文内容',
-              updatedAt: '2026-07-01T00:00:00Z',
-            ),
+            docType: 'terms',
+            title: '服务条款',
+            content: '# 服务条款\n\n正文内容',
+            updatedAt: '2026-07-01T00:00:00Z',
           ),
         );
 
@@ -197,14 +177,10 @@ void main() {
         for (final type in LegalDocType.values) {
           final response = _response(
             LegalDocumentDetailResponseDto(
-              code: 0,
-              message: 'ok',
-              data: LegalDocumentDetailDto(
-                docType: type.pathSegment,
-                title: 'T',
-                content: 'C',
-                updatedAt: '',
-              ),
+              docType: type.pathSegment,
+              title: 'T',
+              content: 'C',
+              updatedAt: '',
             ),
           );
 
@@ -283,11 +259,7 @@ void main() {
 
     test("passes 'en' to findAll", () async {
       final response = _response(
-        LegalDocumentListResponseDto(
-          code: 0,
-          message: 'ok',
-          data: LegalDocumentListDataDto(items: [], updatedAt: ''),
-        ),
+        LegalDocumentListResponseDto(items: [], updatedAt: ''),
       );
 
       when(
@@ -302,14 +274,10 @@ void main() {
     test("passes 'en' to findOne", () async {
       final response = _response(
         LegalDocumentDetailResponseDto(
-          code: 0,
-          message: 'ok',
-          data: LegalDocumentDetailDto(
-            docType: 'privacy',
-            title: 'Privacy Policy',
-            content: '# Privacy',
-            updatedAt: '',
-          ),
+          docType: 'privacy',
+          title: 'Privacy Policy',
+          content: '# Privacy',
+          updatedAt: '',
         ),
       );
 
