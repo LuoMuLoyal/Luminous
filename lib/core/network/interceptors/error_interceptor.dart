@@ -3,11 +3,11 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 
-/// Error interceptor: maps `DioException` → `LucentApiException`.
+/// Error interceptor: maps `DioException` → `LucentFailure`.
 ///
 /// The actual mapping logic lives in [LucentErrorMapper.fromObject], which is
-/// also used by repositories/features — keeping a single source of truth for
-/// envelope parsing, fallback messages, and network-error-code derivation.
+/// keeping a single source of truth for Problem Details parsing and transport
+/// failure classification.
 /// This interceptor only adapts the mapped exception back into a rejected
 /// [DioException].
 ///
@@ -21,10 +21,8 @@ class ErrorInterceptor extends Interceptor {
     handler.reject(_rejectWithMappedError(err));
   }
 
-  /// Maps [err] via [LucentErrorMapper.fromObject] (which short-circuits when
-  /// `err.error` is already a `LucentApiException`, e.g. one rejected by the
-  /// `EnvelopeInterceptor`) and re-wraps it so downstream handlers keep
-  /// seeing a [DioException] carrying the mapped [LucentApiException].
+  /// Maps [err] via [LucentErrorMapper.fromObject] and re-wraps it so
+  /// downstream handlers receive a [DioException] carrying [LucentFailure].
   DioException _rejectWithMappedError(DioException err) {
     final mapped = LucentErrorMapper.fromObject(err);
     return DioException(

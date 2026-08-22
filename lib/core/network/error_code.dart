@@ -1,7 +1,7 @@
 /// Network-layer error codes used to map l10n strings in the presentation layer.
 ///
 /// The network layer carries this enum (not hardcoded message text) when throwing
-/// [LucentApiException]. The presentation layer maps it to a localized string via
+/// [LucentFailure]. The presentation layer maps it to a localized string via
 /// [NetworkErrorL10n].
 enum NetworkErrorCode {
   /// Business code is non-zero ({code, message, data} envelope code != 0)

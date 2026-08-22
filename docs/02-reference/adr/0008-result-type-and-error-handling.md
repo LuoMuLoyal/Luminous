@@ -58,10 +58,11 @@ errors and must not be disguised as an ordinary Left value.
 ### 2.1 Current foundation status (2026-08-22)
 
 The hard-cut window now contains the target-state `ProblemDetails` parser,
-`LucentFailure.fromProblemDetails`, direct fpdart `Either` / `TaskEither` repository types, and the
-narrow transport `RetryPolicy`. The parser rejects the retired `{ code, message, data }` envelope;
-no legacy/new response fallback was added. Generated-client and repository/provider wiring remains
-the next migration slice and must be completed together with Lucent's HTTP contract switch.
+`LucentFailure.fromProblemDetails`, direct fpdart `Either` / `TaskEither` repository types, the
+narrow transport `RetryPolicy`, and the `DioException` → `LucentFailure` error chain. The parser
+rejects the retired `{ code, message, data }` envelope; no legacy/new HTTP response fallback was
+added. Generated-client and repository/provider wiring remains the next migration slice and must be
+completed together with Lucent's HTTP contract switch.
 
 ### 3. Keep the layer responsibilities explicit
 

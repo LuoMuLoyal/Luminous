@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/network/interceptors/auth_interceptor.dart';
-import 'package:luminous/core/network/result_code.dart';
 import 'package:luminous/core/network/session_store.dart';
 
 // ── In-memory session store ────────────────────────────────────
@@ -52,10 +51,7 @@ class _MockAdapter implements HttpClientAdapter {
 
   void enqueueSuccess({int statusCode = 200, Map<String, dynamic>? data}) {
     enqueue(
-      _MockResponse(
-        statusCode: statusCode,
-        data: data ?? {'code': 0, 'message': '', 'data': null},
-      ),
+      _MockResponse(statusCode: statusCode, data: data ?? <String, dynamic>{}),
     );
   }
 
@@ -81,9 +77,9 @@ class _MockAdapter implements HttpClientAdapter {
       _MockResponse(
         statusCode: 200,
         data: {
-          'code': 0,
-          'message': '',
-          'data': {'accessToken': accessToken, 'refreshToken': refreshToken},
+          'accessToken': accessToken,
+          'refreshToken': refreshToken,
+          'expiresIn': 3600,
         },
       ),
     );
@@ -107,8 +103,12 @@ class _MockAdapter implements HttpClientAdapter {
     return ResponseBody(
       body.isNotEmpty ? Stream.value(body) : const Stream.empty(),
       response.statusCode,
-      headers: const {
-        Headers.contentTypeHeader: ['application/json'],
+      headers: {
+        Headers.contentTypeHeader: [
+          response.statusCode >= 400
+              ? 'application/problem+json'
+              : 'application/json',
+        ],
       },
       statusMessage: response.statusMessage,
     );
@@ -151,15 +151,19 @@ class _ThrowingRefreshAdapter implements HttpClientAdapter {
 // ── Helpers ────────────────────────────────────────────────────
 
 const _tokenExpiredBody = {
-  'code': LucentResultCode.tokenExpired,
-  'message': 'token expired',
-  'data': null,
+  'type': 'https://api.lumos.example/problems/auth/token-expired',
+  'title': 'Authentication token expired',
+  'detail': 'The access token has expired.',
+  'code': 'AUTH_TOKEN_EXPIRED',
+  'retryable': false,
 };
 
 const _unauthorizedBody = {
-  'code': LucentResultCode.unauthorized,
-  'message': 'unauthorized',
-  'data': null,
+  'type': 'https://api.lumos.example/problems/auth/unauthorized',
+  'title': 'Unauthorized',
+  'detail': 'The credentials are not accepted.',
+  'code': 'AUTH_UNAUTHORIZED',
+  'retryable': false,
 };
 
 void main() {
@@ -338,7 +342,7 @@ void main() {
             data: _tokenExpiredBody,
             statusMessage: 'Unauthorized',
           )
-          ..enqueueSuccess(data: {'code': 0, 'message': '', 'data': 'ok'});
+          ..enqueueSuccess(data: {});
 
         final refreshAdapter = _MockAdapter()..enqueueRefreshSuccess();
 
@@ -429,7 +433,12 @@ void main() {
       final mainAdapter = _MockAdapter()
         ..enqueueError(
           statusCode: 500,
-          data: {'code': 500001, 'message': 'server error', 'data': null},
+          data: {
+            'type': 'https://api.lumos.example/problems/internal-error',
+            'title': 'Internal error',
+            'detail': 'The server failed to process the request.',
+            'code': 'INTERNAL_ERROR',
+          },
           statusMessage: 'Internal Server Error',
         );
 
@@ -577,7 +586,12 @@ void main() {
       final refreshAdapter = _MockAdapter()
         ..enqueueError(
           statusCode: 500,
-          data: {'code': 500001, 'message': 'server error', 'data': null},
+          data: {
+            'type': 'https://api.lumos.example/problems/internal-error',
+            'title': 'Internal error',
+            'detail': 'The server failed to process the request.',
+            'code': 'INTERNAL_ERROR',
+          },
           statusMessage: 'Internal Server Error',
         );
 
@@ -622,9 +636,10 @@ void main() {
           ..enqueueError(
             statusCode: 401,
             data: {
-              'code': LucentResultCode.wrongPassword,
-              'message': 'wrong password',
-              'data': null,
+              'type': 'https://api.lumos.example/problems/auth/wrong-password',
+              'title': 'Wrong password',
+              'detail': 'The password is incorrect.',
+              'code': 'AUTH_WRONG_PASSWORD',
             },
             statusMessage: 'Unauthorized',
           );
@@ -773,9 +788,11 @@ void main() {
           ..enqueueError(
             statusCode: 401,
             data: {
-              'code': LucentResultCode.refreshTokenInvalid,
-              'message': 'refresh token invalid',
-              'data': null,
+              'type':
+                  'https://api.lumos.example/problems/auth/refresh-token-invalid',
+              'title': 'Refresh token invalid',
+              'detail': 'The refresh token is invalid.',
+              'code': 'AUTH_REFRESH_TOKEN_INVALID',
             },
             statusMessage: 'Unauthorized',
           );

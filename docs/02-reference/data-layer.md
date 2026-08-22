@@ -34,28 +34,27 @@ Widget
   layer files. Features use `ref.watch(lucentClientProvider).medicines` etc. to access typed API
   methods.
 - `lib/core/network/error_mapper.dart`: `LucentErrorMapper.fromObject()` is the single source of
-  truth for `DioException` → `LucentApiException` mapping (envelope parsing, fallback messages,
-  network-error-code derivation, traceId binding). `lib/core/network/interceptors/error_interceptor.dart`
-  delegates to it and only re-wraps the mapped exception into a rejected `DioException`, so the
-  mapping logic is not duplicated between the interceptor and feature call sites.
-  `LucentErrorMapper.toAppError()` now preserves `traceId` on the resulting `AppError` so the
-  diagnostics panel in Mine sync failures can copy it.
+  truth for `DioException` → `LucentFailure` mapping. HTTP errors require
+  `application/problem+json` and strict Problem Details parsing; transport failures receive
+  client-only network metadata and trace correlation. `lib/core/network/interceptors/error_interceptor.dart`
+  delegates to it and re-wraps the mapped failure into a rejected `DioException`.
+  `LucentErrorMapper.toAppError()` is the temporary projection used by the pre-Result application
+  layer and preserves trace correlation without parsing the retired HTTP envelope.
 - `lib/core/network/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
   optional reconnect and capped exponential backoff (1s, 2s, 4s, ... clamped to 60s) so raising
   `maxReconnects` later cannot produce unbounded delays.
-- `lib/core/network/envelope.dart`: `LucentEnvelope` + `requireData<T>(data, {operation})` —
-  unwrapping convention for generated-client responses. `EnvelopeInterceptor` already rejects
-  empty bodies and business-failure envelopes; call sites use `requireData(response.data,
-  operation: 'apiName').data` instead of `response.data!.data` so a payload-less success response
-  surfaces as a descriptive `StateError` (with the API name) rather than a bare `!` crash.
+- `lib/core/network/envelope.dart`: current generated-client response unwrapping convention
+  retained until the Lucent success-resource/OpenAPI cut. Call sites use
+  `requireData(response.data, operation: 'apiName').data` instead of `response.data!.data` so a
+  payload-less response surfaces as a descriptive `StateError` rather than a bare `!` crash.
 - `lib/core/network/interceptors/auth_interceptor.dart`: token injection + 401 refresh + retry +
   session clear. Refresh outcomes are typed (`_RefreshOutcome`): the refresh token being rejected
-  (401/403 or `refreshTokenInvalid`/`tokenExpired` business code) is an auth failure that clears
-  the session and notifies the auth layer, while network/timeout/5xx/empty-body failures are
-  transient and keep the session — a network blip no longer force-log-out the user. 401s are
-  refresh candidates unless the business code is explicitly non-refreshable
-  (`refreshTokenInvalid`/`loginRateLimited`/`wrongPassword`). The `onSessionExpired` callback is
-  guarded (a throwing callback is logged and the original error still resolves).
+  (Problem Details 401/403) is an auth failure that clears the session and notifies the auth layer,
+  while network/timeout/5xx/empty-body failures are transient and keep the session. 401s are
+  refresh candidates unless the Problem Details code is explicitly non-refreshable
+  (`AUTH_REFRESH_TOKEN_INVALID`/`AUTH_LOGIN_RATE_LIMITED`/`AUTH_WRONG_PASSWORD`). The
+  `onSessionExpired` callback is guarded (a throwing callback is logged and the original error
+  still resolves).
 
 ### Generated API Client
 
@@ -174,4 +173,3 @@ ADR-0009 introduced Drift-based local persistence. Repositories for `daily-recor
   `DataRetentionPeriod` setting.
 
 ---
-

@@ -4,9 +4,8 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_paths.dart';
-import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/result_code.dart';
 import 'package:luminous/core/network/session_store.dart';
 
 /// Outcome of a token-refresh attempt.
@@ -176,18 +175,11 @@ class AuthInterceptor extends Interceptor {
     return error.response?.statusCode == 401;
   }
 
-  /// Auth business codes for which a token refresh can never help.
-  ///
-  /// Any other 401 — including envelopes carrying unknown or unrecognised
-  /// codes (e.g. `tokenInvalid`-style responses) — is treated as a refresh
-  /// candidate, so recoverable sessions are not force-logged-out.
-  static const _nonRefreshableAuthCodes = <int>{
-    // refresh 端点自身的拒绝码,出现在主请求 401 时刷新无意义。
-    LucentResultCode.refreshTokenInvalid,
-    // 限流不是令牌问题,刷新无法解除。
-    LucentResultCode.loginRateLimited,
-    // 凭据错误不是令牌过期。
-    LucentResultCode.wrongPassword,
+  /// Problem Details codes for which a token refresh can never help.
+  static const _nonRefreshableAuthCodes = <String>{
+    'AUTH_REFRESH_TOKEN_INVALID',
+    'AUTH_LOGIN_RATE_LIMITED',
+    'AUTH_WRONG_PASSWORD',
   };
 
   Future<bool> _shouldRefresh(DioException error) async {
@@ -205,12 +197,8 @@ class AuthInterceptor extends Interceptor {
       return false;
     }
 
-    final data = error.response?.data;
-    final json = coerceToStringMap(data);
-    final envelope = json == null
-        ? null
-        : LucentEnvelope<Object?>.fromJson(json, dataDecoder: (raw) => raw);
-    final code = envelope?.code;
+    final failure = LucentErrorMapper.fromObject(error);
+    final code = failure.code;
 
     if (code != null && _nonRefreshableAuthCodes.contains(code)) {
       return false;
@@ -253,43 +241,28 @@ class AuthInterceptor extends Interceptor {
         ),
       );
 
-      final json = coerceToStringMap(response.data);
-      if (json == null) {
+      final dataMap = coerceToStringMap(response.data);
+      if (dataMap == null) {
         // 响应体为空/非对象:非认证类失败,保留会话。
         return const _RefreshTransientFailure();
       }
 
-      final envelope = LucentEnvelope<LucentSessionTokens>.fromJson(
-        json,
-        dataDecoder: (raw) {
-          final dataMap = coerceToStringMap(raw) ?? const <String, dynamic>{};
-          final accessToken = dataMap['accessToken']?.toString().trim() ?? '';
-          final nextRefreshToken =
-              dataMap['refreshToken']?.toString().trim() ?? '';
-          return LucentSessionTokens(
-            accessToken: accessToken,
-            refreshToken: nextRefreshToken,
-          );
-        },
+      final accessToken = dataMap['accessToken'];
+      final nextRefreshToken = dataMap['refreshToken'];
+      if (accessToken is! String ||
+          nextRefreshToken is! String ||
+          accessToken.trim().isEmpty ||
+          nextRefreshToken.trim().isEmpty) {
+        // 成功响应但缺少完整 token resource:按临时故障处理,保留会话。
+        return const _RefreshTransientFailure();
+      }
+
+      final tokens = LucentSessionTokens(
+        accessToken: accessToken.trim(),
+        refreshToken: nextRefreshToken.trim(),
       );
-
-      if (!envelope.isSuccess) {
-        // 业务码非 0:仅 refreshTokenInvalid / tokenExpired 属认证失效;
-        // 其余业务错误(如服务端内部错误)按临时故障处理。
-        if (envelope.code == LucentResultCode.refreshTokenInvalid ||
-            envelope.code == LucentResultCode.tokenExpired) {
-          return const _RefreshAuthFailure();
-        }
-        return const _RefreshTransientFailure();
-      }
-
-      if (envelope.data == null || !envelope.data!.hasAccessToken) {
-        // 成功响应但缺少 accessToken(响应体异常):按临时故障处理,保留会话。
-        return const _RefreshTransientFailure();
-      }
-
-      await _sessionStore.write(envelope.data!);
-      return _RefreshSuccess(envelope.data!);
+      await _sessionStore.write(tokens);
+      return _RefreshSuccess(tokens);
     } on DioException catch (e) {
       // Log refresh failures (endpoint + status) instead of swallowing them,
       // so production issues are diagnosable. Token values are never logged.
@@ -298,10 +271,10 @@ class AuthInterceptor extends Interceptor {
         'status=${e.response?.statusCode} endpoint=${e.requestOptions.uri} '
         'error=${e.message}',
       );
-      // 401/403 表示刷新令牌被拒绝或无权访问:认证失效,应清会话。
+      // Problem Details 401/403 表示刷新令牌被拒绝或无权访问:认证失效,
       // 网络连接类、超时、5xx 等均为临时故障,保留会话。
-      final statusCode = e.response?.statusCode;
-      if (statusCode == 401 || statusCode == 403) {
+      final failure = LucentErrorMapper.fromObject(e);
+      if (failure.statusCode == 401 || failure.statusCode == 403) {
         return const _RefreshAuthFailure();
       }
       return const _RefreshTransientFailure();

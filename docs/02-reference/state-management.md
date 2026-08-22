@@ -294,6 +294,6 @@ See [ADR-0001: Riverpod State Management](adr/0001-riverpod-state-management.md)
 
 `SecurityElevationController.verify` 调用生成客户端
 `userSettingsControllerVerifySecurityPinV1`(响应 DTO 信封契约修复后生成客户端可直接解析)。
-失败路径区分可预期失败与意外异常:业务码非 0(EnvelopeInterceptor 转为 DioException)与
-网络/HTTP 错误直接返回 false;`expiresAt` 解析失败拒绝设置提升令牌并记警告日志;意外异常
+失败路径区分可预期失败与意外异常:HTTP Problem Details 与网络错误由错误拦截器映射后
+直接返回 false;`expiresAt` 解析失败拒绝设置提升令牌并记警告日志;意外异常
 (TypeError、空响应、解析错误等)经 `appTalker.error` 记录错误与堆栈后返回 false。

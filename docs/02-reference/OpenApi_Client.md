@@ -27,6 +27,12 @@ and does not interpret the retired success/error envelope. This foundation is no
 generated client or repository/provider call chain; that wiring belongs to the same hard-cut window as
 the Lucent HTTP contract change.
 
+The Dio error chain now maps `application/problem+json` responses through
+`LucentErrorMapper` to `LucentFailure`; `AuthInterceptor` consumes the same Problem Details codes
+for refresh decisions. The retired `EnvelopeInterceptor` is no longer registered. Generated DTOs
+still reflect the old success shape until Lucent exports the resource-based OpenAPI contract and the
+client is regenerated.
+
 ## Files
 
 - Generated OpenAPI source from the `Luminous` repo root: local export `../Lucent/docs/openapi.json`

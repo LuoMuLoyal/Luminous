@@ -1,148 +1,152 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/error.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_exception.dart';
-import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/result_code.dart';
+import 'package:luminous/core/network/problem_details.dart';
 
 abstract final class LucentErrorMapper {
-  static LucentApiException fromObject(Object error) {
-    if (error is LucentApiException) {
+  /// Converts a transport error into the target application failure type.
+  ///
+  /// HTTP errors must be RFC 9457 Problem Details with the
+  /// `application/problem+json` media type. The retired success envelope is
+  /// intentionally not parsed here.
+  static LucentFailure fromObject(Object error) {
+    if (error is LucentFailure) {
       return error;
     }
 
-    if (error is DioException && error.error is LucentApiException) {
-      return error.error! as LucentApiException;
+    if (error is LucentApiException) {
+      return _fromLegacyLocalException(error);
     }
 
     if (error is DioException) {
       final embedded = error.error;
-      if (embedded is LucentApiException) {
+      if (embedded is LucentFailure) {
         return embedded;
+      }
+      if (embedded is LucentApiException) {
+        return _fromLegacyLocalException(embedded);
       }
 
       final response = error.response;
-      final json = coerceToStringMap(response?.data);
-      final envelope = json == null
-          ? null
-          : LucentEnvelope<Object?>.fromJson(json, dataDecoder: (raw) => raw);
-      final requestId = response?.headers.value('X-Request-Id');
-      final traceResponse = response?.headers.value('traceresponse');
-      final traceId = traceResponse != null && traceResponse.isNotEmpty
-          ? traceIdFromTraceHeader(traceResponse)
-          : error.requestOptions.extra['traceId'] as String?;
+      if (response != null) {
+        return _fromProblemResponse(error, response);
+      }
 
-      return LucentApiException(
-        message: () {
-          final env = envelope;
-          if (env != null && env.message.isNotEmpty) {
-            return env.message;
-          }
-          return _fallbackMessage(error);
-        }(),
-        code: envelope?.code,
-        statusCode: response?.statusCode,
-        requestId: requestId,
-        traceId: traceId,
-        data: json,
-        networkErrorCode: envelope != null && !envelope.isSuccess
-            ? NetworkErrorCode.businessFailure
-            : _errorCodeFromDioType(error.type),
+      return LucentFailure.network(
+        message: _networkMessage(error.type),
+        networkErrorCode: _errorCodeFromDioType(error.type),
+        traceId: _traceIdFor(error),
+        cause: error,
       );
     }
 
-    return const LucentApiException(
+    return LucentFailure.unknown(
       message: 'An unexpected error occurred.',
-      networkErrorCode: NetworkErrorCode.unknown,
-    );
-  }
-
-  /// Converts any thrown object into a structured [AppError].
-  ///
-  /// Delegates to [fromObject] to extract the [LucentApiException], then
-  /// derives [AppErrorKind] from HTTP status code, Lucent envelope code,
-  /// and Dio error type.
-  ///
-  /// - HTTP 401 / 403 or auth-related envelope codes → [AppErrorKind.auth]
-  /// - HTTP 5xx or server-side envelope codes → [AppErrorKind.server]
-  /// - Network timeouts / connection errors → [AppErrorKind.network]
-  /// - Other HTTP 4xx with a business envelope code → [AppErrorKind.business]
-  /// - Everything else → [AppErrorKind.unknown]
-  static AppError toAppError(Object error) {
-    final apiException = fromObject(error);
-    return AppError(
-      message: apiException.message,
-      kind: _deriveKind(apiException, error),
-      code: apiException.code,
-      statusCode: apiException.statusCode,
-      requestId: apiException.requestId,
-      traceId: apiException.traceId,
-      networkErrorCode: apiException.networkErrorCode,
       cause: error,
     );
   }
 
-  static AppErrorKind _deriveKind(
-    LucentApiException apiException,
-    Object original,
-  ) {
-    final statusCode = apiException.statusCode;
-    final code = apiException.code;
-
-    // Known auth/session envelope codes take priority over HTTP status.
-    // wrongPassword (401005) is deliberately excluded — it's a credential
-    // validation error, not a session/permission error.
-    if (code == LucentResultCode.unauthorized ||
-        code == LucentResultCode.tokenExpired ||
-        code == LucentResultCode.refreshTokenInvalid ||
-        code == LucentResultCode.forbidden) {
-      return AppErrorKind.auth;
-    }
-
-    // HTTP 401/403 without a specific business code → auth.
-    if ((statusCode == 401 || statusCode == 403) && code == null) {
-      return AppErrorKind.auth;
-    }
-
-    // Server-side: HTTP 5xx or server envelope codes.
-    if ((statusCode != null && statusCode >= 500) ||
-        code == LucentResultCode.internalError ||
-        code == LucentResultCode.databaseError ||
-        code == LucentResultCode.externalServiceError) {
-      return AppErrorKind.server;
-    }
-
-    // Network errors: Dio timeouts / connection failures (no HTTP response).
-    if (original is DioException) {
-      switch (original.type) {
-        case DioExceptionType.connectionTimeout:
-        case DioExceptionType.sendTimeout:
-        case DioExceptionType.receiveTimeout:
-        case DioExceptionType.connectionError:
-        case DioExceptionType.badCertificate:
-          return AppErrorKind.network;
-        case DioExceptionType.cancel:
-        case DioExceptionType.badResponse:
-        case DioExceptionType.unknown:
-          break;
-      }
-    }
-
-    // Business logic: HTTP 4xx with a Lucent envelope code (non-auth).
-    if (statusCode != null &&
-        statusCode >= 400 &&
-        statusCode < 500 &&
-        code != null) {
-      return AppErrorKind.business;
-    }
-
-    return AppErrorKind.unknown;
+  /// Transitional adapter for the pre-Result application layer.
+  ///
+  /// The HTTP boundary is already [LucentFailure]; this method only projects
+  /// it into the legacy [AppError] shape until repositories/providers migrate.
+  static AppError toAppError(Object error) {
+    final failure = fromObject(error);
+    return AppError(
+      message: failure.message,
+      kind: _toAppErrorKind(failure.kind),
+      code: int.tryParse(failure.code ?? ''),
+      statusCode: failure.statusCode,
+      traceId: failure.traceId,
+      networkErrorCode: failure.networkErrorCode,
+      cause: error,
+    );
   }
 
-  static String _fallbackMessage(DioException error) {
-    return switch (error.type) {
+  static LucentFailure _fromProblemResponse(
+    DioException error,
+    Response<dynamic> response,
+  ) {
+    final mediaType = response.headers
+        .value(Headers.contentTypeHeader)
+        ?.split(';')
+        .first
+        .trim()
+        .toLowerCase();
+    if (mediaType != 'application/problem+json') {
+      throw FormatException(
+        'Lucent HTTP error must use application/problem+json, got ${mediaType ?? '<missing>'}',
+      );
+    }
+
+    final json = coerceToStringMap(response.data);
+    if (json == null) {
+      throw const FormatException(
+        'Lucent Problem Details body must be an object',
+      );
+    }
+
+    final problem = ProblemDetails.fromJson(json);
+    return LucentFailure.fromProblemDetails(
+      problem,
+      statusCode: response.statusCode ?? 0,
+      traceId: _traceIdFor(error),
+      cause: error,
+    );
+  }
+
+  static LucentFailure _fromLegacyLocalException(LucentApiException error) {
+    final kind = error.isNetworkConnectivityError
+        ? LucentFailureKind.network
+        : _kindForStatus(error.statusCode);
+    return LucentFailure(
+      kind: kind,
+      message: error.message,
+      code: error.code?.toString(),
+      statusCode: error.statusCode,
+      traceId: error.traceId,
+      networkErrorCode: error.networkErrorCode,
+      cause: error,
+    );
+  }
+
+  static LucentFailureKind _kindForStatus(int? statusCode) {
+    if (statusCode == 401 || statusCode == 403) {
+      return LucentFailureKind.authentication;
+    }
+    if (statusCode != null && statusCode >= 500) {
+      return LucentFailureKind.server;
+    }
+    if (statusCode != null && statusCode >= 400) {
+      return LucentFailureKind.business;
+    }
+    return LucentFailureKind.unknown;
+  }
+
+  static AppErrorKind _toAppErrorKind(LucentFailureKind kind) {
+    return switch (kind) {
+      LucentFailureKind.network => AppErrorKind.network,
+      LucentFailureKind.authentication => AppErrorKind.auth,
+      LucentFailureKind.business => AppErrorKind.business,
+      LucentFailureKind.server => AppErrorKind.server,
+      LucentFailureKind.unknown => AppErrorKind.unknown,
+    };
+  }
+
+  static String? _traceIdFor(DioException error) {
+    final traceResponse = error.response?.headers.value('traceresponse');
+    if (traceResponse != null && traceResponse.isNotEmpty) {
+      return traceIdFromTraceHeader(traceResponse);
+    }
+    return error.requestOptions.extra['traceId'] as String?;
+  }
+
+  static String _networkMessage(DioExceptionType type) {
+    return switch (type) {
       DioExceptionType.connectionTimeout =>
         'Connection timed out. Please try again later.',
       DioExceptionType.sendTimeout =>

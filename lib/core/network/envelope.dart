@@ -68,11 +68,10 @@ class LucentEnvelope<T> {
 
 /// Extracts a non-null payload from a generated-client response envelope.
 ///
-/// [EnvelopeInterceptor] already rejects empty response bodies and
-/// business-failure envelopes, so [data] (the `response.data` envelope) is
-/// normally non-null; this guard keeps the failure path descriptive instead
-/// of a bare `!` null-check crash. [operation] names the API call so the
-/// error carries request context.
+/// [data] (the generated client's response envelope) is normally non-null;
+/// this guard keeps the failure path descriptive instead of a bare `!`
+/// null-check crash. [operation] names the API call so the error carries
+/// request context.
 ///
 /// ```dart
 /// final settings = _mapSettings(requireData(response.data, operation: 'getSettings').data);

@@ -1,7 +1,7 @@
 /// Extracts a user-friendly message from an arbitrary error object.
 ///
 /// When an [AsyncValue] is in an error state, the error object can be an
-/// [AppError], a [LucentApiException], a [DioException], or a plain
+/// [AppError], a [LucentFailure], a [DioException], or a plain
 /// `Exception`. Displaying `error.toString()` directly exposes internal
 /// details, stack traces, or English-only text to the user.
 ///

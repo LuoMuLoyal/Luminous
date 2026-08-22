@@ -7,7 +7,7 @@ updated: 2026-08-21
 
 # Active UI — Report
 
-Last updated: 2026-08-21（增量审查修复：review_history _pendingCursor 重置 + build 副作用移至 lifecycle + review_detail l10n null guard + router 路由参数安全解包 + lucent_ai_summary 未知枚举映射日志 + clinic_summary _sectionSelected 一致性）
+Last updated: 2026-08-22（增量审查修复：review_history _pendingCursor 重置 + build 副作用移至 lifecycle + review_detail l10n null guard + router 路由参数安全解包 + lucent_ai_summary 未知枚举映射日志 + clinic_summary _sectionSelected 一致性；Report AI 403 状态改由 LucentFailure 的 HTTP status 归一化）
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
 

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
 
@@ -72,7 +72,11 @@ class _CaptureAdapter implements HttpClientAdapter {
       headers:
           responseHeaders ??
           <String, List<String>>{
-            Headers.contentTypeHeader: <String>['application/json'],
+            Headers.contentTypeHeader: <String>[
+              resolvedStatus >= 400
+                  ? 'application/problem+json'
+                  : 'application/json',
+            ],
           },
       statusMessage: isSecondCall ? 'OK (retry)' : statusMessage,
     );
@@ -82,33 +86,36 @@ class _CaptureAdapter implements HttpClientAdapter {
   void close({bool force = false}) {}
 }
 
-/// 401 response with tokenExpired code.
+/// Target 401 Problem Details response with an expired access token.
 const Map<String, dynamic> _tokenExpiredBody = <String, dynamic>{
-  'code': 401002, // LucentResultCode.tokenExpired
-  'message': 'token expired',
-  'data': null,
+  'type': 'https://api.lumos.example/problems/auth/token-expired',
+  'title': 'Authentication token expired',
+  'detail': 'The access token has expired.',
+  'code': 'AUTH_TOKEN_EXPIRED',
+  'retryable': false,
 };
 
-/// Generic success response.
+/// Direct token/resource response used by the target contract tests.
 const Map<String, dynamic> _successBody = <String, dynamic>{
-  'code': 0,
-  'message': '',
-  'data': null,
+  'accessToken': 'new-access-token',
+  'refreshToken': 'new-refresh-token',
+  'expiresIn': 3600,
 };
 
-/// 401 with non-token-expired code.
+/// 401 Problem Details response that cannot be fixed by refreshing.
 const Map<String, dynamic> _unauthorizedBody = <String, dynamic>{
-  'code': 401001, // LucentResultCode.unauthorized
-  'message': 'unauthorized',
-  'data': null,
+  'type': 'https://api.lumos.example/problems/auth/unauthorized',
+  'title': 'Unauthorized',
+  'detail': 'The credentials are not accepted.',
+  'code': 'AUTH_UNAUTHORIZED',
+  'retryable': false,
 };
 
 /// Adapter that throws a DioException with a configurable type.
 class _FailingAdapter implements HttpClientAdapter {
-  _FailingAdapter({required this.exceptionType, this.responseData});
+  _FailingAdapter({required this.exceptionType});
 
   final DioExceptionType exceptionType;
-  final Object? responseData;
 
   @override
   Future<ResponseBody> fetch(
@@ -116,17 +123,7 @@ class _FailingAdapter implements HttpClientAdapter {
     Stream<Uint8List>? requestStream,
     Future<dynamic>? cancelFuture,
   ) async {
-    throw DioException(
-      requestOptions: options,
-      type: exceptionType,
-      response: responseData != null
-          ? Response(
-              requestOptions: options,
-              statusCode: 500,
-              data: responseData,
-            )
-          : null,
-    );
+    throw DioException(requestOptions: options, type: exceptionType);
   }
 
   @override
@@ -212,52 +209,40 @@ void main() {
   group('LucentDioClient token refresh (onError)', () {
     // ── Successful refresh + retry ──
 
-    test('refreshes token on 401 with tokenExpired code and retries request', () async {
-      final store = _MemorySessionStore();
-      await store.write(
-        const LucentSessionTokens(
-          accessToken: 'expired-token',
-          refreshToken: 'valid-refresh-token',
-        ),
-      );
+    test(
+      'refreshes token on 401 with tokenExpired code and retries request',
+      () async {
+        final store = _MemorySessionStore();
+        await store.write(
+          const LucentSessionTokens(
+            accessToken: 'expired-token',
+            refreshToken: 'valid-refresh-token',
+          ),
+        );
 
-      // Adapter returns 401 first, then success on retry
-      // The refresh call (POST /api/v1/auth/refresh) should return success
-      final adapter = _CaptureAdapter(responseData: _tokenExpiredBody);
-      adapter.statusCode = 401;
-      adapter.statusMessage = 'Unauthorized';
-      adapter.secondCallStatusCode = 200;
-      adapter.secondCallResponseData = _successBody;
+        // Adapter returns 401 first, then success on retry
+        // The refresh call (POST /api/v1/auth/refresh) should return success
+        final adapter = _CaptureAdapter(responseData: _tokenExpiredBody);
+        adapter.statusCode = 401;
+        adapter.statusMessage = 'Unauthorized';
+        adapter.secondCallStatusCode = 200;
+        adapter.secondCallResponseData = _successBody;
 
-      // We use a separate adapter for _refreshDio since it's a different Dio instance.
-      // Actually, with httpClientAdapter parameter, both dio instances share the adapter.
-      final client = LucentDioClient(
-        baseUrl: 'http://localhost:3000',
-        sessionStore: store,
-        httpClientAdapter: adapter,
-      );
+        // We use a separate adapter for _refreshDio since it's a different Dio instance.
+        // Actually, with httpClientAdapter parameter, both dio instances share the adapter.
+        final client = LucentDioClient(
+          baseUrl: 'http://localhost:3000',
+          sessionStore: store,
+          httpClientAdapter: adapter,
+        );
 
-      // The request will:
-      // 1. Send GET /api/v1/test → adapter returns 401 with tokenExpired
-      // 2. Interceptor calls _refreshTokens → _doRefresh → POST /api/v1/auth/refresh
-      //    → adapter returns 200 with _successBody
-      // 3. But _doRefresh expects specific refresh response format...
-
-      // Since the adapter returns _successBody (code:0) for the refresh call,
-      // _doRefresh will parse it and fail because data is null.
-      // We need the adapter to return the right body for the refresh endpoint.
-
-      // For now, let's verify that the refresh was attempted (adapter got called at least twice)
-      try {
         await client.dio.get('/api/v1/test');
-      } on DioException {
-        // Expected when refresh response doesn't match expected format
-      }
 
-      // At minimum, the adapter should have been called twice:
-      // 1. Original request, 2. Refresh request
-      expect(adapter.callCount, greaterThanOrEqualTo(2));
-    });
+        // Original request + refresh request + retried original request.
+        expect(adapter.callCount, equals(3));
+        expect((await store.read())?.accessToken, 'new-access-token');
+      },
+    );
 
     // ── No refresh when skipAuthRefresh is set ──
 
@@ -305,10 +290,11 @@ void main() {
       );
 
       final adapter = _CaptureAdapter(
-        responseData: <String, dynamic>{
-          'code': 500001,
-          'message': 'server error',
-          'data': null,
+        responseData: const <String, dynamic>{
+          'type': 'https://api.lumos.example/problems/internal-error',
+          'title': 'Internal error',
+          'detail': 'The server failed to process the request.',
+          'code': 'INTERNAL_ERROR',
         },
       );
       adapter.statusCode = 500;
@@ -390,10 +376,12 @@ void main() {
 
         bool sessionExpiredCalled = false;
         final adapter = _CaptureAdapter(
-          responseData: <String, dynamic>{
-            'code': 401003, // LucentResultCode.refreshTokenInvalid
-            'message': 'refresh token invalid',
-            'data': null,
+          responseData: const <String, dynamic>{
+            'type':
+                'https://api.lumos.example/problems/auth/refresh-token-invalid',
+            'title': 'Refresh token invalid',
+            'detail': 'The refresh token is invalid.',
+            'code': 'AUTH_REFRESH_TOKEN_INVALID',
           },
         );
         adapter.statusCode = 401;
@@ -642,8 +630,8 @@ void main() {
       } catch (error) {
         expect(error, isA<DioException>());
         final mapped = (error as DioException).error;
-        expect(mapped, isA<LucentApiException>());
-        expect((mapped as LucentApiException).message, expectedMessage);
+        expect(mapped, isA<LucentFailure>());
+        expect((mapped as LucentFailure).message, expectedMessage);
       }
     }
 
@@ -703,43 +691,6 @@ void main() {
       );
     });
 
-    test(
-      'uses envelope message when response body has valid Lucent envelope',
-      () async {
-        final store = _MemorySessionStore();
-        final responseData = <String, dynamic>{
-          'code': 500001,
-          'message': 'custom-server-error',
-          'data': null,
-        };
-        final adapter = _FailingAdapter(
-          exceptionType: DioExceptionType.badResponse,
-          responseData: responseData,
-        );
-
-        final client = LucentDioClient(
-          baseUrl: 'http://localhost:3000',
-          sessionStore: store,
-          httpClientAdapter: adapter,
-        );
-
-        try {
-          await client.dio.get(
-            '/api/v1/test',
-            options: Options(extra: <String, Object?>{'retryEnabled': false}),
-          );
-          fail('Expected DioException');
-        } catch (error) {
-          expect(error, isA<DioException>());
-          final mapped = (error as DioException).error;
-          expect(mapped, isA<LucentApiException>());
-          final apiEx = mapped as LucentApiException;
-          expect(apiEx.message, 'custom-server-error');
-          expect(apiEx.code, 500001);
-        }
-      },
-    );
-
     test('maps error without response data gracefully', () async {
       final store = _MemorySessionStore();
       final adapter = _FailingAdapter(
@@ -761,9 +712,9 @@ void main() {
       } catch (error) {
         expect(error, isA<DioException>());
         final mapped = (error as DioException).error;
-        expect(mapped, isA<LucentApiException>());
+        expect(mapped, isA<LucentFailure>());
         expect(
-          (mapped as LucentApiException).message,
+          (mapped as LucentFailure).message,
           'Network request failed. Please check your connection.',
         );
       }

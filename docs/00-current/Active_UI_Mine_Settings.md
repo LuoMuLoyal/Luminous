@@ -7,7 +7,7 @@ updated: 2026-08-21
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-21（增量审查修复：elevation dialog 可注入时间源 + 失败检测精确匹配 + 会话实体日期注释 + 通知协调器 DND/ID 断言 + scoped preferences 注释）
+Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间源 + 失败检测精确匹配 + 会话实体日期注释 + 通知协调器 DND/ID 断言 + scoped preferences 注释；HTTP 403 安全提升失败现在经 LucentFailure 归一化）
 
 ## Mine 根页结构
 

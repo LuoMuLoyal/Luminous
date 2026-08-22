@@ -26,12 +26,12 @@ enum AppErrorKind {
 
 /// Unified application error type.
 ///
-/// Wraps [LucentApiException] (or any thrown object) into a structured error
+/// Wraps [LucentFailure] (or any thrown object) into a structured error
 /// that preserves the original exception while exposing a categorized
 /// [kind] for callers to dispatch on.
 ///
 /// Created exclusively via [LucentErrorMapper.toAppError] or manually in
-/// repository catch blocks.
+/// repository catch blocks during the Result migration.
 class AppError {
   const AppError({
     required this.message,

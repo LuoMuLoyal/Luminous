@@ -10,6 +10,7 @@ enum LucentFailureKind { network, authentication, business, server, unknown }
 final class LucentFailure {
   const LucentFailure({
     required this.kind,
+    required this.message,
     this.type,
     this.title,
     this.detail,
@@ -26,10 +27,12 @@ final class LucentFailure {
   factory LucentFailure.fromProblemDetails(
     ProblemDetails problem, {
     required int statusCode,
+    String? traceId,
     Object? cause,
   }) {
     return LucentFailure(
       kind: _kindForStatus(statusCode),
+      message: problem.detail ?? problem.title,
       type: problem.type,
       title: problem.title,
       detail: problem.detail,
@@ -38,12 +41,43 @@ final class LucentFailure {
       errors: problem.errors,
       retryable: problem.retryable,
       retryAfter: problem.retryAfter,
-      traceId: problem.traceId,
+      traceId: traceId ?? problem.traceId,
+      cause: cause,
+    );
+  }
+
+  factory LucentFailure.network({
+    required String message,
+    required NetworkErrorCode networkErrorCode,
+    String? traceId,
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: LucentFailureKind.network,
+      message: message,
+      traceId: traceId,
+      networkErrorCode: networkErrorCode,
+      cause: cause,
+    );
+  }
+
+  factory LucentFailure.unknown({
+    required String message,
+    NetworkErrorCode networkErrorCode = NetworkErrorCode.unknown,
+    String? traceId,
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: LucentFailureKind.unknown,
+      message: message,
+      traceId: traceId,
+      networkErrorCode: networkErrorCode,
       cause: cause,
     );
   }
 
   final LucentFailureKind kind;
+  final String message;
   final String? type;
   final String? title;
   final String? detail;
@@ -55,6 +89,17 @@ final class LucentFailure {
   final String? traceId;
   final NetworkErrorCode? networkErrorCode;
   final Object? cause;
+
+  bool get isTokenExpired => code == 'AUTH_TOKEN_EXPIRED';
+
+  bool get isRefreshTokenInvalid => code == 'AUTH_REFRESH_TOKEN_INVALID';
+
+  bool get isNetworkConnectivityError =>
+      networkErrorCode == NetworkErrorCode.connectionTimeout ||
+      networkErrorCode == NetworkErrorCode.sendTimeout ||
+      networkErrorCode == NetworkErrorCode.receiveTimeout ||
+      networkErrorCode == NetworkErrorCode.connectionError ||
+      networkErrorCode == NetworkErrorCode.badCertificate;
 
   @override
   String toString() {

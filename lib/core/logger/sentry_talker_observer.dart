@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/trace_context.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -15,8 +17,8 @@ import 'package:talker_flutter/talker_flutter.dart';
 /// stay in Talker's in-memory history and console output only.
 ///
 /// The trace id attached to the [Hint] is per-error: the backend trace id of
-/// the failing request ([LucentApiException.traceId]) when the wrapped error
-/// is an API exception, otherwise the best-effort [TraceContext.lastTraceId].
+/// the failing request ([LucentFailure.traceId]) when the wrapped error is a
+/// normalized API failure, otherwise the best-effort [TraceContext.lastTraceId].
 /// `main.dart`'s `beforeSend` promotes this hint value to the `trace_id` tag.
 class SentryTalkerObserver extends TalkerObserver {
   @override
@@ -44,10 +46,20 @@ class SentryTalkerObserver extends TalkerObserver {
   /// Builds the [Hint] forwarded to Sentry, attaching the trace id of the
   /// failing request (when available) for Jaeger correlation.
   Hint _buildHint(String? message, Object? error) {
-    final traceId = switch (error) {
-      LucentApiException(:final traceId) => traceId,
-      _ => TraceContext.lastTraceId,
-    };
+    String? traceId;
+    if (error is LucentFailure) {
+      traceId = error.traceId;
+    } else if (error is LucentApiException) {
+      traceId = error.traceId;
+    } else if (error is DioException) {
+      final embedded = error.error;
+      if (embedded is LucentFailure) {
+        traceId = embedded.traceId;
+      } else if (embedded is LucentApiException) {
+        traceId = embedded.traceId;
+      }
+    }
+    traceId ??= TraceContext.lastTraceId;
     return Hint.withMap({
       'talker_message': message,
       if (traceId != null) 'trace_id': traceId,
