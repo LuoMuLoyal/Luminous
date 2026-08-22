@@ -5,7 +5,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/core/network/security_elevation_token_holder.dart';
 
 /// State of the security elevation flow.
@@ -66,10 +66,7 @@ class SecurityElevationController extends Notifier<SecurityElevationState> {
         verifySecurityPinDto: VerifySecurityPinDto(pin: pin),
       );
       final dto = requireData(response.data, operation: 'verifySecurityPin');
-      // 生成客户端切换到资源响应前，保留 DTO 内部状态校验；错误 HTTP
-      // 响应已经由 Problem Details 错误链处理。
-      ensureEnvelopeSuccess(code: dto.code, message: dto.message);
-      final data = dto.data;
+      final data = dto;
       final expiresAtStr = data.expiresAt;
       final expiresAt = DateTime.tryParse(expiresAtStr);
       if (expiresAt == null) {
