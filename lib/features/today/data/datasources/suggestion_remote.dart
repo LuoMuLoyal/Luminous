@@ -1,13 +1,13 @@
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/suggestion.dart';
 
 /// Remote data source for the Today suggestion engine.
 ///
 /// Wraps the generated [TodaySuggestionApi] and maps DTOs to domain entities.
-/// The Retrofit client returns envelope-wrapped DTOs (code/message/data);
-/// this class unwraps `.data` and converts to domain types.
+/// The Retrofit client returns direct resource DTOs, which this class maps to
+/// domain types.
 class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   const TodaySuggestionRemoteDataSource({required this.api});
 
@@ -28,7 +28,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       excludeIds: excludeIds,
     );
     return _mapBundle(
-      requireData(response.data, operation: 'fetchSuggestions').data,
+      requireData(response.data, operation: 'fetchSuggestions'),
     );
   }
 
@@ -46,7 +46,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
         feedback: _mapFeedbackToDto(feedback),
       ),
     );
-    final data = requireData(response.data, operation: 'submitFeedback').data;
+    final data = requireData(response.data, operation: 'submitFeedback');
     return TodaySuggestionFeedbackResult(
       suggestionId: data.suggestionId,
       feedback: _mapFeedbackFromString(data.feedback.value),
@@ -69,10 +69,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       id: id,
       acceptLanguage: language,
     );
-    final data = requireData(
-      response.data,
-      operation: 'explainSuggestion',
-    ).data;
+    final data = requireData(response.data, operation: 'explainSuggestion');
     return TodaySuggestionExplanation(
       suggestionId: data.suggestionId,
       reason: data.reason,
@@ -102,7 +99,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       type: type,
       limit: limit,
     );
-    final data = requireData(response.data, operation: 'fetchHistory').data;
+    final data = requireData(response.data, operation: 'fetchHistory');
     return TodaySuggestionHistory(
       items: data.items.map(_mapHistoryItem).toList(growable: false),
       total: data.total.toInt(),
@@ -113,7 +110,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
 
   // ── Mapping helpers ────────────────────────────────────────────────────
 
-  TodaySuggestionBundle _mapBundle(TodaySuggestionsDataDto dto) {
+  TodaySuggestionBundle _mapBundle(TodaySuggestionsResponseDto dto) {
     return TodaySuggestionBundle(
       generatedAt: dto.generatedAt,
       materializationStatus: TodaySuggestionMaterializationStatus.fromJson(

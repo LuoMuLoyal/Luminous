@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/suggestion_history_data_dto.dart';
+import 'package:lucent_api/src/model/suggestion_history_item_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +19,43 @@ part 'suggestion_history_response_dto.g.dart';
 class SuggestionHistoryResponseDto {
   /// Returns a new [SuggestionHistoryResponseDto] instance.
   SuggestionHistoryResponseDto({
-    required this.code,
+    required this.items,
 
-    required this.message,
+    required this.total,
 
-    required this.data,
+    required this.startDate,
+
+    required this.endDate,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  /// Suggestion history items
+  @JsonKey(name: r'items', required: true, includeIfNull: false)
+  final List<SuggestionHistoryItemDto> items;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  /// Total count of matching items
+  @JsonKey(name: r'total', required: true, includeIfNull: false)
+  final num total;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final SuggestionHistoryDataDto data;
+  /// Start date used for the query
+  @JsonKey(name: r'startDate', required: true, includeIfNull: false)
+  final String startDate;
+
+  /// End date used for the query
+  @JsonKey(name: r'endDate', required: true, includeIfNull: false)
+  final String endDate;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SuggestionHistoryResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.items == items &&
+          other.total == total &&
+          other.startDate == startDate &&
+          other.endDate == endDate;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      items.hashCode + total.hashCode + startDate.hashCode + endDate.hashCode;
 
   factory SuggestionHistoryResponseDto.fromJson(Map<String, dynamic> json) =>
       _$SuggestionHistoryResponseDtoFromJson(json);

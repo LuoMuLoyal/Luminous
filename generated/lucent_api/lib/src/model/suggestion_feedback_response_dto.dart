@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/suggestion_feedback_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +18,56 @@ part 'suggestion_feedback_response_dto.g.dart';
 class SuggestionFeedbackResponseDto {
   /// Returns a new [SuggestionFeedbackResponseDto] instance.
   SuggestionFeedbackResponseDto({
-    required this.code,
+    required this.suggestionId,
 
-    required this.message,
+    required this.feedback,
 
-    required this.data,
+    required this.appliedEffect,
+
+    this.expiresAt,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  @JsonKey(name: r'suggestionId', required: true, includeIfNull: false)
+  final String suggestionId;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  @JsonKey(
+    name: r'feedback',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        SuggestionFeedbackResponseDtoFeedbackEnum.unknownDefaultOpenApi,
+  )
+  final SuggestionFeedbackResponseDtoFeedbackEnum feedback;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final SuggestionFeedbackDataDto data;
+  /// Effect applied by the feedback engine
+  @JsonKey(
+    name: r'appliedEffect',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        SuggestionFeedbackResponseDtoAppliedEffectEnum.unknownDefaultOpenApi,
+  )
+  final SuggestionFeedbackResponseDtoAppliedEffectEnum appliedEffect;
+
+  /// When the suppression expires (if applicable)
+  @JsonKey(name: r'expiresAt', required: false, includeIfNull: false)
+  final String? expiresAt;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SuggestionFeedbackResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.suggestionId == suggestionId &&
+          other.feedback == feedback &&
+          other.appliedEffect == appliedEffect &&
+          other.expiresAt == expiresAt;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      suggestionId.hashCode +
+      feedback.hashCode +
+      appliedEffect.hashCode +
+      expiresAt.hashCode;
 
   factory SuggestionFeedbackResponseDto.fromJson(Map<String, dynamic> json) =>
       _$SuggestionFeedbackResponseDtoFromJson(json);
@@ -55,4 +78,54 @@ class SuggestionFeedbackResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum SuggestionFeedbackResponseDtoFeedbackEnum {
+  @JsonValue(r'accepted')
+  accepted(r'accepted'),
+  @JsonValue(r'later')
+  later(r'later'),
+  @JsonValue(r'not_applicable')
+  notApplicable(r'not_applicable'),
+  @JsonValue(r'suppress')
+  suppress(r'suppress'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const SuggestionFeedbackResponseDtoFeedbackEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+/// Effect applied by the feedback engine
+enum SuggestionFeedbackResponseDtoAppliedEffectEnum {
+  /// Effect applied by the feedback engine
+  @JsonValue(r'boosted_type')
+  boostedType(r'boosted_type'),
+
+  /// Effect applied by the feedback engine
+  @JsonValue(r'delayed_until')
+  delayedUntil(r'delayed_until'),
+
+  /// Effect applied by the feedback engine
+  @JsonValue(r'suppressed_type')
+  suppressedType(r'suppressed_type'),
+
+  /// Effect applied by the feedback engine
+  @JsonValue(r'noted')
+  noted(r'noted'),
+
+  /// Effect applied by the feedback engine
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const SuggestionFeedbackResponseDtoAppliedEffectEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

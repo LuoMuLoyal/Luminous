@@ -22,9 +22,7 @@ class _JsonAdapter implements HttpClientAdapter {
     Stream<List<int>>? requestStream,
     Future<void>? cancelFuture,
   ) async {
-    final body = responseBody != null
-        ? '{"code":0,"message":"ok","data":${jsonEncode(responseBody)}}'
-        : '{"code":0,"message":"ok","data":null}';
+    final body = jsonEncode(responseBody);
 
     return ResponseBody.fromString(
       body,

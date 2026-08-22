@@ -28,33 +28,28 @@ class TodayAiRemoteDataSource {
 
   Future<lucent.TodayAnalysisReadDataDto> read({String? date}) async {
     final response = await api.todayAnalysisControllerReadV1(date: date);
-    final envelope = response.data;
-    if (envelope == null) {
+    final data = response.data;
+    if (data == null) {
       throw StateError('Today analysis read response was empty.');
     }
-    return envelope.data;
+    return lucent.TodayAnalysisReadDataDto.fromJson(data.toJson());
   }
 
   /// Requests a bounded refresh and normalizes the oneOf response to a read
   /// DTO. The generated client merges the union variants incorrectly (all
   /// fields become required), so this method uses a raw [Dio] call and parses
-  /// the envelope by inspecting `status`/`analysis`.
+  /// the direct resource by inspecting `status`/`analysis`.
   Future<lucent.TodayAnalysisReadDataDto> refresh({String? date}) async {
     final response = await dio.post<Object>(
       LucentApiPaths.todayAnalysisRefresh,
       data: <String, Object?>{if (date != null) 'date': date},
     );
 
-    final envelope = response.data;
-    if (envelope is! Map<String, dynamic>) {
+    final data = response.data;
+    if (data is! Map<String, dynamic>) {
       throw StateError(
         'Today analysis refresh response was empty or malformed.',
       );
-    }
-
-    final data = envelope['data'];
-    if (data is! Map<String, dynamic>) {
-      throw StateError('Today analysis refresh data was empty or malformed.');
     }
 
     return _normalizeRefreshData(data);
