@@ -2,8 +2,8 @@
 
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/map_utils.dart';
+import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 
 /// Remote data source that fetches and writes health-context data to Lucent.
@@ -18,14 +18,16 @@ class HealthContextRemoteDataSource {
   final Dio _dio;
 
   /// Calls GET /api/v1/user/health-context and returns the parsed DTO.
-  Future<HealthContextDataDto> fetchHealthContext() async {
+  Future<HealthContextResponseDto> fetchHealthContext() async {
     final response = await _api
         .userHealthContextControllerGetUserHealthContextV1();
-    return requireData(response.data, operation: 'fetchHealthContext').data;
+    return requireData(response.data, operation: 'fetchHealthContext');
   }
 
   /// Calls PATCH /api/v1/user/health-context/profile and returns the parsed DTO.
-  Future<HealthContextDataDto> updateProfile(HealthProfileUpdateInput input) {
+  Future<HealthContextResponseDto> updateProfile(
+    HealthProfileUpdateInput input,
+  ) {
     return _write(
       method: 'PATCH',
       path: '/api/v1/user/health-context/profile',
@@ -34,7 +36,9 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls POST /api/v1/user/health-context/allergies and returns the parsed DTO.
-  Future<HealthContextDataDto> createAllergy(HealthAllergyWriteInput input) {
+  Future<HealthContextResponseDto> createAllergy(
+    HealthAllergyWriteInput input,
+  ) {
     return _write(
       method: 'POST',
       path: '/api/v1/user/health-context/allergies',
@@ -43,7 +47,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls PATCH /api/v1/user/health-context/allergies/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> updateAllergy(
+  Future<HealthContextResponseDto> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
   ) {
@@ -55,7 +59,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls DELETE /api/v1/user/health-context/allergies/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> deleteAllergy(String id) {
+  Future<HealthContextResponseDto> deleteAllergy(String id) {
     return _write(
       method: 'DELETE',
       path: '/api/v1/user/health-context/allergies/$id',
@@ -63,7 +67,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls POST /api/v1/user/health-context/conditions and returns the parsed DTO.
-  Future<HealthContextDataDto> createCondition(
+  Future<HealthContextResponseDto> createCondition(
     HealthConditionWriteInput input,
   ) {
     return _write(
@@ -74,7 +78,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls PATCH /api/v1/user/health-context/conditions/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> updateCondition(
+  Future<HealthContextResponseDto> updateCondition(
     String id,
     HealthConditionUpdateInput input,
   ) {
@@ -86,7 +90,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls DELETE /api/v1/user/health-context/conditions/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> deleteCondition(String id) {
+  Future<HealthContextResponseDto> deleteCondition(String id) {
     return _write(
       method: 'DELETE',
       path: '/api/v1/user/health-context/conditions/$id',
@@ -94,7 +98,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls POST /api/v1/user/health-context/current-medicines and returns the parsed DTO.
-  Future<HealthContextDataDto> createCurrentMedicine(
+  Future<HealthContextResponseDto> createCurrentMedicine(
     CurrentMedicineWriteInput input,
   ) {
     return _write(
@@ -105,7 +109,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls PATCH /api/v1/user/health-context/current-medicines/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> updateCurrentMedicine(
+  Future<HealthContextResponseDto> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
   ) {
@@ -117,14 +121,14 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls DELETE /api/v1/user/health-context/current-medicines/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> deleteCurrentMedicine(String id) {
+  Future<HealthContextResponseDto> deleteCurrentMedicine(String id) {
     return _write(
       method: 'DELETE',
       path: '/api/v1/user/health-context/current-medicines/$id',
     );
   }
 
-  Future<HealthContextDataDto> _write({
+  Future<HealthContextResponseDto> _write({
     required String method,
     required String path,
     Map<String, dynamic>? payload,
@@ -140,7 +144,7 @@ class HealthContextRemoteDataSource {
       message: 'Lucent health-context response is empty.',
     );
 
-    return HealthContextResponseDto.fromJson(body).data;
+    return HealthContextResponseDto.fromJson(body);
   }
 }
 

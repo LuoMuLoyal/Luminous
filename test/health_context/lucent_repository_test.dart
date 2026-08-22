@@ -16,17 +16,17 @@ import 'package:talker_flutter/talker_flutter.dart';
 
 class _FakeHealthContextRemoteDataSource
     implements HealthContextRemoteDataSource {
-  HealthContextDataDto? fetchResult;
-  HealthContextDataDto? updateProfileResult;
-  HealthContextDataDto? createAllergyResult;
-  HealthContextDataDto? updateAllergyResult;
-  HealthContextDataDto? deleteAllergyResult;
-  HealthContextDataDto? createConditionResult;
-  HealthContextDataDto? updateConditionResult;
-  HealthContextDataDto? deleteConditionResult;
-  HealthContextDataDto? createCurrentMedicineResult;
-  HealthContextDataDto? updateCurrentMedicineResult;
-  HealthContextDataDto? deleteCurrentMedicineResult;
+  HealthContextResponseDto? fetchResult;
+  HealthContextResponseDto? updateProfileResult;
+  HealthContextResponseDto? createAllergyResult;
+  HealthContextResponseDto? updateAllergyResult;
+  HealthContextResponseDto? deleteAllergyResult;
+  HealthContextResponseDto? createConditionResult;
+  HealthContextResponseDto? updateConditionResult;
+  HealthContextResponseDto? deleteConditionResult;
+  HealthContextResponseDto? createCurrentMedicineResult;
+  HealthContextResponseDto? updateCurrentMedicineResult;
+  HealthContextResponseDto? deleteCurrentMedicineResult;
 
   Object? fetchError;
   int fetchCallCount = 0;
@@ -45,14 +45,14 @@ class _FakeHealthContextRemoteDataSource
   );
 
   @override
-  Future<HealthContextDataDto> fetchHealthContext() async {
+  Future<HealthContextResponseDto> fetchHealthContext() async {
     fetchCallCount++;
     if (fetchError != null) throw fetchError!;
     return fetchResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextDataDto> updateProfile(
+  Future<HealthContextResponseDto> updateProfile(
     HealthProfileUpdateInput input,
   ) async {
     if (writeShouldFail) {
@@ -62,7 +62,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> createAllergy(
+  Future<HealthContextResponseDto> createAllergy(
     HealthAllergyWriteInput input,
   ) async {
     if (writeShouldFail) {
@@ -72,7 +72,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> updateAllergy(
+  Future<HealthContextResponseDto> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
   ) async {
@@ -83,7 +83,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> deleteAllergy(String id) async {
+  Future<HealthContextResponseDto> deleteAllergy(String id) async {
     if (writeShouldFail) {
       throw _networkError('/api/v1/user/health-context/allergies/$id');
     }
@@ -91,7 +91,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> createCondition(
+  Future<HealthContextResponseDto> createCondition(
     HealthConditionWriteInput input,
   ) async {
     if (writeShouldFail) {
@@ -101,7 +101,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> updateCondition(
+  Future<HealthContextResponseDto> updateCondition(
     String id,
     HealthConditionUpdateInput input,
   ) async {
@@ -112,7 +112,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> deleteCondition(String id) async {
+  Future<HealthContextResponseDto> deleteCondition(String id) async {
     if (writeShouldFail) {
       throw _networkError('/api/v1/user/health-context/conditions/$id');
     }
@@ -120,7 +120,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> createCurrentMedicine(
+  Future<HealthContextResponseDto> createCurrentMedicine(
     CurrentMedicineWriteInput input,
   ) async {
     if (writeShouldFail) {
@@ -130,7 +130,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> updateCurrentMedicine(
+  Future<HealthContextResponseDto> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
   ) async {
@@ -141,7 +141,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> deleteCurrentMedicine(String id) async {
+  Future<HealthContextResponseDto> deleteCurrentMedicine(String id) async {
     if (writeShouldFail) {
       throw _networkError('/api/v1/user/health-context/current-medicines/$id');
     }
@@ -167,14 +167,14 @@ class _FakeSyncWorker extends SyncWorker {
 
 // ── DTO builder ─────────────────────────────────────────────────
 
-HealthContextDataDto _buildDto({
+HealthContextResponseDto _buildDto({
   int? age,
   bool onboardingCompleted = true,
   int activeAllergyCount = 0,
   int conditionCount = 0,
   int currentMedicineCount = 0,
 }) {
-  return HealthContextDataDto(
+  return HealthContextResponseDto(
     summary: UserHealthSummaryDto(
       age: age,
       onboardingCompleted: onboardingCompleted,
@@ -532,7 +532,7 @@ void main() {
 
   group('cache JSON round-trip', () {
     test('snapshot with allergies survives cache round-trip', () async {
-      dataSource.createAllergyResult = HealthContextDataDto(
+      dataSource.createAllergyResult = HealthContextResponseDto(
         summary: UserHealthSummaryDto(
           age: 30,
           onboardingCompleted: true,
@@ -592,7 +592,7 @@ void main() {
     });
 
     test('snapshot with conditions survives cache round-trip', () async {
-      dataSource.createConditionResult = HealthContextDataDto(
+      dataSource.createConditionResult = HealthContextResponseDto(
         summary: UserHealthSummaryDto(
           age: null,
           onboardingCompleted: true,
@@ -646,7 +646,7 @@ void main() {
     });
 
     test('snapshot with currentMedicines survives cache round-trip', () async {
-      dataSource.createCurrentMedicineResult = HealthContextDataDto(
+      dataSource.createCurrentMedicineResult = HealthContextResponseDto(
         summary: UserHealthSummaryDto(
           age: null,
           onboardingCompleted: true,
@@ -708,7 +708,7 @@ void main() {
     });
 
     test('snapshot with profile extras survives cache round-trip', () async {
-      dataSource.updateProfileResult = HealthContextDataDto(
+      dataSource.updateProfileResult = HealthContextResponseDto(
         summary: UserHealthSummaryDto(
           age: 35,
           onboardingCompleted: true,

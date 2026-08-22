@@ -404,11 +404,7 @@ class _FakeHealthContextAdapter implements HttpClientAdapter {
       items = [];
     }
 
-    return _jsonResponse(<String, Object?>{
-      'code': 0,
-      'message': 'ok',
-      'data': _healthContextBody(items),
-    });
+    return _jsonResponse(_healthContextBody(items));
   }
 
   @override

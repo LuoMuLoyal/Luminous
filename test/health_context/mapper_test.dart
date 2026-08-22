@@ -44,7 +44,7 @@ void main() {
 
   group('fromDto - summary', () {
     test('maps fields', () {
-      final dto = HealthContextDataDto(
+      final dto = HealthContextResponseDto(
         summary: _s(age: 30, ob: true, ac: 2, cc: 1, mc: 3),
         profile: _p(),
         allergies: const [],
@@ -58,7 +58,7 @@ void main() {
       expect(s.currentMedicineCount, 3);
     });
     test('non-int age → null', () {
-      final dto = HealthContextDataDto(
+      final dto = HealthContextResponseDto(
         summary: _s(age: 30.5),
         profile: _p(),
         allergies: const [],
@@ -71,7 +71,7 @@ void main() {
 
   group('fromDto - profile', () {
     test('maps fields', () {
-      final dto = HealthContextDataDto(
+      final dto = HealthContextResponseDto(
         summary: _s(),
         profile: _p(h: 175, bd: '1990-01-15', sx: SexAtBirth.male),
         allergies: const [],
@@ -84,7 +84,7 @@ void main() {
       expect(p.sexAtBirth, 'male');
     });
     test('nulls propagate', () {
-      final dto = HealthContextDataDto(
+      final dto = HealthContextResponseDto(
         summary: _s(),
         profile: _p(),
         allergies: const [],
@@ -99,7 +99,7 @@ void main() {
 
   group('fromDto - allergies', () {
     test('maps fields', () {
-      final dto = HealthContextDataDto(
+      final dto = HealthContextResponseDto(
         summary: _s(),
         profile: _p(),
         allergies: [
@@ -125,7 +125,7 @@ void main() {
       expect(a.label, 'Penicillin');
     });
     test('empty list', () {
-      final dto = HealthContextDataDto(
+      final dto = HealthContextResponseDto(
         summary: _s(),
         profile: _p(),
         allergies: const [],
@@ -138,7 +138,7 @@ void main() {
 
   group('fromDto - full integration', () {
     test('complete dto', () {
-      final dto = HealthContextDataDto(
+      final dto = HealthContextResponseDto(
         summary: _s(age: 42),
         profile: _p(h: 165, sx: SexAtBirth.female),
         allergies: [
