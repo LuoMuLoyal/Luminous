@@ -3,7 +3,11 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/health_probe_dto.dart';
+import 'package:lucent_api/src/model/health_probe_type.dart';
+import 'package:lucent_api/src/model/health_overall_status.dart';
+import 'package:lucent_api/src/model/health_component_dto.dart';
+import 'package:lucent_api/src/model/health_app_info_dto.dart';
+import 'package:lucent_api/src/model/health_summary_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +23,66 @@ part 'health_response_dto.g.dart';
 class HealthResponseDto {
   /// Returns a new [HealthResponseDto] instance.
   HealthResponseDto({
-    required this.code,
+    required this.probe,
 
-    required this.message,
+    required this.status,
 
-    required this.data,
+    required this.checkedAt,
+
+    required this.app,
+
+    required this.summary,
+
+    required this.components,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  @JsonKey(
+    name: r'probe',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue: HealthProbeType.unknownDefaultOpenApi,
+  )
+  final HealthProbeType probe;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  @JsonKey(
+    name: r'status',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue: HealthOverallStatus.unknownDefaultOpenApi,
+  )
+  final HealthOverallStatus status;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final HealthProbeDto data;
+  @JsonKey(name: r'checkedAt', required: true, includeIfNull: false)
+  final String checkedAt;
+
+  @JsonKey(name: r'app', required: true, includeIfNull: false)
+  final HealthAppInfoDto app;
+
+  @JsonKey(name: r'summary', required: true, includeIfNull: false)
+  final HealthSummaryDto summary;
+
+  @JsonKey(name: r'components', required: true, includeIfNull: false)
+  final List<HealthComponentDto> components;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is HealthResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.probe == probe &&
+          other.status == status &&
+          other.checkedAt == checkedAt &&
+          other.app == app &&
+          other.summary == summary &&
+          other.components == components;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      probe.hashCode +
+      status.hashCode +
+      checkedAt.hashCode +
+      app.hashCode +
+      summary.hashCode +
+      components.hashCode;
 
   factory HealthResponseDto.fromJson(Map<String, dynamic> json) =>
       _$HealthResponseDtoFromJson(json);

@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/health_event_list_data_dto.dart';
+import 'package:lucent_api/src/model/health_event_item_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,33 +18,23 @@ part 'health_event_list_response_dto.g.dart';
 )
 class HealthEventListResponseDto {
   /// Returns a new [HealthEventListResponseDto] instance.
-  HealthEventListResponseDto({
-    required this.code,
+  HealthEventListResponseDto({required this.items, required this.total});
 
-    required this.message,
+  @JsonKey(name: r'items', required: true, includeIfNull: false)
+  final List<HealthEventItemDto> items;
 
-    required this.data,
-  });
-
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
-
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final HealthEventListDataDto data;
+  @JsonKey(name: r'total', required: true, includeIfNull: false)
+  final num total;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is HealthEventListResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.items == items &&
+          other.total == total;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode => items.hashCode + total.hashCode;
 
   factory HealthEventListResponseDto.fromJson(Map<String, dynamic> json) =>
       _$HealthEventListResponseDtoFromJson(json);

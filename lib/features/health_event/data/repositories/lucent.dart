@@ -13,7 +13,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   Future<HealthEvent?> fetchActive() async {
     try {
       final response = await _api.healthEventsControllerActiveV1();
-      return _mapNullable(response.data?.data);
+      return _mapNullable(response.data);
     } on DioException catch (error) {
       if (error.response?.statusCode == 404) return null;
       rethrow;
@@ -24,7 +24,10 @@ class LucentHealthEventRepository implements HealthEventRepository {
   Future<HealthEvent?> fetchById(String eventId) async {
     try {
       final response = await _api.healthEventsControllerGetV1(id: eventId);
-      return _mapNullable(response.data?.data);
+      final dto = response.data;
+      return dto == null
+          ? null
+          : _mapRequired(api.HealthEventItemDto.fromJson(dto.toJson()));
     } on DioException catch (error) {
       if (error.response?.statusCode == 404) return null;
       rethrow;
@@ -34,7 +37,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   @override
   Future<List<HealthEvent>> fetchHistory() async {
     final response = await _api.healthEventsControllerListV1();
-    final items = response.data?.data.items ?? const <api.HealthEventItemDto>[];
+    final items = response.data?.items ?? const <api.HealthEventItemDto>[];
     return items.map(_map).toList(growable: false);
   }
 
@@ -53,7 +56,10 @@ class LucentHealthEventRepository implements HealthEventRepository {
             : List<String>.of(currentMedicineIds),
       ),
     );
-    return _mapRequired(response.data?.data);
+    final dto = response.data;
+    return _mapRequired(
+      dto == null ? null : api.HealthEventItemDto.fromJson(dto.toJson()),
+    );
   }
 
   @override
@@ -69,7 +75,10 @@ class LucentHealthEventRepository implements HealthEventRepository {
         outcome: _toApiOutcome(outcome),
       ),
     );
-    return _mapRequired(response.data?.data);
+    final dto = response.data;
+    return _mapRequired(
+      dto == null ? null : api.HealthEventItemDto.fromJson(dto.toJson()),
+    );
   }
 
   @override
@@ -81,7 +90,10 @@ class LucentHealthEventRepository implements HealthEventRepository {
       id: eventId,
       endHealthEventDto: api.EndHealthEventDto(outcome: _toApiOutcome(outcome)),
     );
-    return _mapRequired(response.data?.data);
+    final dto = response.data;
+    return _mapRequired(
+      dto == null ? null : api.HealthEventItemDto.fromJson(dto.toJson()),
+    );
   }
 
   HealthEvent? _mapNullable(api.HealthEventItemDto? dto) {

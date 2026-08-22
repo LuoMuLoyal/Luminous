@@ -215,13 +215,11 @@ void main() {
   });
 }
 
-Response<api.HealthEventNullableResponseDto> _activeResponse(
-  api.HealthEventItemDto? data,
-) {
-  return Response<api.HealthEventNullableResponseDto>(
+Response<api.HealthEventItemDto> _activeResponse(api.HealthEventItemDto? data) {
+  return Response<api.HealthEventItemDto>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events/active'),
     statusCode: 200,
-    data: api.HealthEventNullableResponseDto(code: 0, message: '', data: data),
+    data: data,
   );
 }
 
@@ -231,7 +229,7 @@ Response<api.HealthEventResponseDto> _eventResponse(
   return Response<api.HealthEventResponseDto>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
     statusCode: 200,
-    data: api.HealthEventResponseDto(code: 0, message: '', data: data),
+    data: api.HealthEventResponseDto.fromJson(data.toJson()),
   );
 }
 
@@ -248,11 +246,7 @@ Response<api.HealthEventListResponseDto> _listResponse(
   return Response<api.HealthEventListResponseDto>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
     statusCode: 200,
-    data: api.HealthEventListResponseDto(
-      code: 0,
-      message: '',
-      data: api.HealthEventListDataDto(items: items, total: items.length),
-    ),
+    data: api.HealthEventListResponseDto(items: items, total: items.length),
   );
 }
 
