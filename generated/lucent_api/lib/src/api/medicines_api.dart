@@ -10,13 +10,13 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/medicine_detail_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_recognition_async_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
 import 'package:lucent_api/src/model/recognize_medicine_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
-import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response.dart';
 
 class MedicinesApi {
   final Dio _dio;
@@ -271,9 +271,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [TodaySuggestionControllerExplainSuggestionAsyncV1202Response] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineRecognitionAsyncResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<TodaySuggestionControllerExplainSuggestionAsyncV1202Response>>
+  Future<Response<MedicineRecognitionAsyncResponseDto>>
   medicinesControllerRecognizeAsyncV1({
     required RecognizeMedicineDto recognizeMedicineDto,
     CancelToken? cancelToken,
@@ -314,20 +314,16 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    TodaySuggestionControllerExplainSuggestionAsyncV1202Response? _responseData;
+    MedicineRecognitionAsyncResponseDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              TodaySuggestionControllerExplainSuggestionAsyncV1202Response,
-              TodaySuggestionControllerExplainSuggestionAsyncV1202Response
-            >(
-              rawData,
-              'TodaySuggestionControllerExplainSuggestionAsyncV1202Response',
-              growable: true,
-            );
+              MedicineRecognitionAsyncResponseDto,
+              MedicineRecognitionAsyncResponseDto
+            >(rawData, 'MedicineRecognitionAsyncResponseDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -338,9 +334,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<
-      TodaySuggestionControllerExplainSuggestionAsyncV1202Response
-    >(
+    return Response<MedicineRecognitionAsyncResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
