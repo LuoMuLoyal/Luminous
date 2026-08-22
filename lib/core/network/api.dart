@@ -15,5 +15,7 @@ export 'interceptors/envelope_interceptor.dart';
 export 'interceptors/error_interceptor.dart';
 export 'interceptors/retry_interceptor.dart';
 export 'interceptors/trace_interceptor.dart';
+export 'problem_details.dart';
 export 'result_code.dart';
+export 'retry_policy.dart';
 export 'session_store.dart';

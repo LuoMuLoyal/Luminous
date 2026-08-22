@@ -7,7 +7,7 @@ updated: 2026-08-21
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-21
+Last updated: 2026-08-22
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -20,6 +20,12 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 - Ordinary HTTP 4xx/5xx responses use `application/problem+json`.
 - The checked-in OpenAPI export and generated package still reflect the pre-migration response shape until
   the Lucent contract migration is implemented and regenerated.
+
+The Luminous target-state error foundation is now present in `lib/core/network/problem_details.dart`,
+`lib/core/errors/lucent_failure.dart`, and `lib/core/network/retry_policy.dart`. The parser is strict
+and does not interpret the retired success/error envelope. This foundation is not yet wired into the
+generated client or repository/provider call chain; that wiring belongs to the same hard-cut window as
+the Lucent HTTP contract change.
 
 ## Files
 

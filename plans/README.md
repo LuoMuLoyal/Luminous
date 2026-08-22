@@ -38,14 +38,14 @@ YYYY-MM-DD-short-task-name.md
 - [`2026-08-01-ai-chat-redesign-plan.md`](2026-08-01-ai-chat-redesign-plan.md)
 - [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)
 - [`2026-08-17-error-handling-reform-plan.md`](2026-08-17-error-handling-reform-plan.md)
-  — 错误处理硬切：fpdart + LucentFailure + RFC 9457；等待 2026-08-16 十份功能改造计划全部完成、验证并删除后启动
+  — 错误处理硬切：fpdart + LucentFailure + RFC 9457；2026-08-22 已进入冻结新功能的硬切窗口，0.1.0 后遗留工作不再阻塞
 ### 功能盘点改造计划(2026-08-16,共 10 份)
 
 来源:`research/02-功能盘点/` 十份调研文档(已审阅;内容以各文档「逐功能分析」为准改写,
 速览表/结尾汇总仅作参考)。跨功能域共用的内容只在顺序靠前的计划里写全,靠后的计划只做引用;
 桌面/Web 产品方向以已接受的 ADR-0012 为准：Flutter Desktop 与 PC Flutter Web 停止产品扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动。各计划末尾的「已决边界与延期项」记录对应范围。
 
-已确定事项以 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md) 为准；它优先于各计划中尚未清理的旧「不确定点」表述。2026-08-16 十份计划全部完成、验证并删除后，才启动错误处理硬切计划；在此之前只修发布阻断项。
+已确定事项以 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md) 为准；它优先于各计划中尚未清理的旧「不确定点」表述。2026-08-22 起，十份计划的 0.1.0 前工作视为完成并进入响应契约硬切窗口；保留的 0.1.0 后工作继续执行，但不与本次契约迁移混合。
 
 全局执行顺序(靠前先执行;跨计划引用均指向顺序在前的文档):
 

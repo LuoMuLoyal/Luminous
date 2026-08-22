@@ -21,15 +21,12 @@ and old helper call sites. The original self-built Result decision is superseded
 
 ### 1. Use fpdart only at the repository/provider boundary
 
-Use the stable fpdart 1.x API, pinned to `^1.2.0` during this migration:
-
-```dart
-typedef AppEither<T> = Either<LucentFailure, T>;
-typedef AppTaskEither<T> = TaskEither<LucentFailure, T>;
-```
+Use the stable fpdart 1.x API, pinned to `^1.2.0` during this migration. Repository boundaries
+use `Either<LucentFailure, T>` for immediate results and `TaskEither<LucentFailure, T>` for
+asynchronous operations; the project does not add a second type-alias layer.
 
 - Datasources keep `Future` and `Stream` because they own transport and streaming behavior.
-- Repository interfaces and implementations expose `AppTaskEither<T>` for expected, recoverable
+- Repository interfaces and implementations expose `TaskEither<LucentFailure, T>` for expected, recoverable
   failures.
 - Providers run and fold the result into Riverpod `AsyncValue` or an explicit action state.
 - Widgets consume `AsyncValue` and action state; they do not import fpdart or catch network errors.
@@ -57,6 +54,14 @@ the network layer and mapped into `LucentFailure`.
 `LucentFailure` is not a programming exception. Protocol invariants, malformed generated payloads,
 programming errors, cancellation, and SSE stream termination remain explicit throws or stream
 errors and must not be disguised as an ordinary Left value.
+
+### 2.1 Current foundation status (2026-08-22)
+
+The hard-cut window now contains the target-state `ProblemDetails` parser,
+`LucentFailure.fromProblemDetails`, direct fpdart `Either` / `TaskEither` repository types, and the
+narrow transport `RetryPolicy`. The parser rejects the retired `{ code, message, data }` envelope;
+no legacy/new response fallback was added. Generated-client and repository/provider wiring remains
+the next migration slice and must be completed together with Lucent's HTTP contract switch.
 
 ### 3. Keep the layer responsibilities explicit
 

@@ -2,7 +2,7 @@
 
 Created: 2026-08-17
 Updated: 2026-08-18
-Status: blocked until the 2026-08-16 feature-plan gate is complete
+Status: active — hard-cut window opened 2026-08-22
 
 > 权威决策见 [`ADR-0008`](../docs/02-reference/adr/0008-result-type-and-error-handling.md) 和
 > [Lucent ADR-0012](../../Lucent/docs/01-reference/adr/0012-error-contract-and-result-boundary.md)。
@@ -10,14 +10,11 @@ Status: blocked until the 2026-08-16 feature-plan gate is complete
 
 ## 一、最终决策
 
-引入 `fpdart: ^1.2.0`，只使用 `Either` 和 `TaskEither`。项目公共失败类型命名为 `LucentFailure`：
+引入 `fpdart: ^1.2.0`，只使用 `Either` 和 `TaskEither`。项目公共失败类型命名为
+`LucentFailure`；repository 直接使用 `Either<LucentFailure, T>` 和
+`TaskEither<LucentFailure, T>`，不再定义项目自有类型别名。
 
-```dart
-typedef AppEither<T> = Either<LucentFailure, T>;
-typedef AppTaskEither<T> = TaskEither<LucentFailure, T>;
-```
-
-- repository 的预期可恢复失败统一返回 `AppTaskEither<T>`。
+- repository 的预期可恢复失败统一返回 `TaskEither<LucentFailure, T>`。
 - datasource 保持 `Future` / `Stream`，负责传输和流语义。
 - provider 调用 `.run()` 并将 Left 映射到 `AsyncValue` 或明确的 action state。
 - widget 不导入 fpdart，不处理网络 try-catch。
@@ -28,6 +25,10 @@ Lucent 后端选择 `neverthrow`；不使用 `@backendkit-labs/result`、`@sapph
 两端共享 RFC 9457 Problem Details 契约，不强求共享 Result 库。
 
 ## 二、启动门禁
+
+2026-08-22 启动决策：2026-08-16 十份功能计划的 0.1.0 前工作已经完成；其中仍保留的
+0.1.0 后工作继续作为后续计划，不再阻塞本次错误/API 契约硬切。冻结新功能，在当前分支
+执行本计划；不建立新旧契约并存的运行时兼容期。
 
 在以下条件全部满足前，本计划不启动 Result/API 错误契约迁移：
 
@@ -63,7 +64,7 @@ Lucent 后端选择 `neverthrow`；不使用 `@backendkit-labs/result`、`@sapph
 
 ### 阶段 1：health_context + today
 
-按 `domain interface → implementation → provider → mock → tests` 的顺序，把预期可恢复读写操作改为 `AppTaskEither<T>`。provider 为每个 Left 分支写测试；协议不变量不映射为 `LucentFailure`。
+按 `domain interface → implementation → provider → mock → tests` 的顺序，把预期可恢复读写操作改为 `TaskEither<LucentFailure, T>`。provider 为每个 Left 分支写测试；协议不变量不映射为 `LucentFailure`。
 
 ### 阶段 2：record + assistant + medicine
 

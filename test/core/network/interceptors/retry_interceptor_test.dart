@@ -321,10 +321,28 @@ void main() {
 
       await dio.post(
         '/api/v1/test',
-        options: Options(extra: {'retryEnabled': true}),
+        options: Options(
+          extra: {'retryEnabled': true},
+          headers: {'Idempotency-Key': 'idem-123'},
+        ),
       );
 
       expect(adapter.callCount, 2);
+    });
+
+    test('does not retry opted-in POST without an idempotency key', () async {
+      adapter.enqueueError(statusCode: 500);
+
+      try {
+        await dio.post(
+          '/api/v1/test',
+          options: Options(extra: {'retryEnabled': true}),
+        );
+      } on DioException {
+        // expected
+      }
+
+      expect(adapter.callCount, 1);
     });
 
     test('does not retry GET when retryEnabled extra is false', () async {
