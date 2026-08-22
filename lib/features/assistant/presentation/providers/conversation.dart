@@ -12,6 +12,7 @@ import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
+import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
 
 part 'conversation.freezed.dart';
 
@@ -45,6 +46,8 @@ abstract class AssistantState with _$AssistantState {
 }
 
 class AssistantController extends Notifier<AssistantState> {
+  final Set<String> _renamingConversationIds = <String>{};
+
   @override
   AssistantState build() {
     final session = ref.watch(authSessionProvider);
@@ -528,6 +531,15 @@ class AssistantController extends Notifier<AssistantState> {
     if (index < 0) {
       return;
     }
+    if (newTitle != null && !_renamingConversationIds.add(conversationId)) {
+      ref
+          .read(talkerProvider)
+          .debug(
+            'AssistantController.renameConversation: ignored concurrent rename '
+            'for conversation $conversationId',
+          );
+      return;
+    }
     final oldTitle = current[index].title;
     final updated = List<AssistantConversationSummary>.of(current);
     updated[index] = _summaryWithTitle(current[index], newTitle);
@@ -554,14 +566,29 @@ class AssistantController extends Notifier<AssistantState> {
             .toList(growable: false),
       );
       rethrow;
+    } finally {
+      _renamingConversationIds.remove(conversationId);
     }
 
     // Re-fetch the list so server-derived ordering/title stays authoritative.
     // Refresh failures are non-fatal; the optimistic title is kept.
     try {
       await loadRecentConversations();
-    } catch (_) {
-      // Ignore refresh failure.
+      if (state.recentConversationError != null) {
+        ref
+            .read(talkerProvider)
+            .debug(
+              'AssistantController.renameConversation: refresh failed '
+              'after rename for conversation $conversationId',
+            );
+      }
+    } catch (error) {
+      ref
+          .read(talkerProvider)
+          .debug(
+            'AssistantController.renameConversation: refresh failed '
+            'after rename for conversation $conversationId: $error',
+          );
     }
   }
 
@@ -708,7 +735,7 @@ class AssistantController extends Notifier<AssistantState> {
   /// given id, or null when there is none.
   AssistantMessage? _precedingUserMessage(String messageId) {
     final index = state.messages.indexWhere(
-      (message) => _messageIdOf(message) == messageId,
+      (message) => messageIdFor(message) == messageId,
     );
     if (index < 0) {
       return null;
@@ -795,7 +822,7 @@ class AssistantController extends Notifier<AssistantState> {
     required String proposalId,
   }) {
     for (final message in state.messages) {
-      if (_messageIdOf(message) != messageId) {
+      if (messageIdFor(message) != messageId) {
         continue;
       }
       for (final proposal in message.proposedActions) {
@@ -816,7 +843,7 @@ class AssistantController extends Notifier<AssistantState> {
     state = state.copyWith(
       messages: state.messages
           .map((message) {
-            if (_messageIdOf(message) != messageId) {
+            if (messageIdFor(message) != messageId) {
               return message;
             }
             return message.copyWith(
@@ -834,12 +861,6 @@ class AssistantController extends Notifier<AssistantState> {
           })
           .toList(growable: false),
     );
-  }
-
-  String messageIdOf(AssistantMessage message) => _messageIdOf(message);
-
-  String _messageIdOf(AssistantMessage message) {
-    return '${message.role.name}-${message.createdAt.toIso8601String()}-${message.content.hashCode}';
   }
 }
 
