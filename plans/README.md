@@ -33,6 +33,8 @@ YYYY-MM-DD-short-task-name.md
 
 ## Current Plans
 
+- [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
+  — 中小型到中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门
 - [`2026-07-10-legal-compliance-pages.md`](2026-07-10-legal-compliance-pages.md)
 - [`2026-07-29-native-bridging-roadmap.md`](2026-07-29-native-bridging-roadmap.md)
 - [`2026-08-01-ai-chat-redesign-plan.md`](2026-08-01-ai-chat-redesign-plan.md)
