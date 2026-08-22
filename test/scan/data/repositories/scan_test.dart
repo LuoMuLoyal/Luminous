@@ -47,16 +47,12 @@ void main() {
         ),
       ];
       final searchResponse = MedicineSearchResponseDto(
-        code: 0,
-        message: 'ok',
-        data: MedicineSearchDataDto(
-          items: items,
-          pagination: MedicinePaginationDto(
-            page: 1,
-            pageSize: 20,
-            total: 1,
-            totalPages: 1,
-          ),
+        items: items,
+        pagination: MedicinePaginationDto(
+          page: 1,
+          pageSize: 20,
+          total: 1,
+          totalPages: 1,
         ),
       );
 
@@ -94,16 +90,12 @@ void main() {
 
     test('returns empty list when API returns empty data', () async {
       final emptyResponse = MedicineSearchResponseDto(
-        code: 0,
-        message: 'ok',
-        data: MedicineSearchDataDto(
-          items: [],
-          pagination: MedicinePaginationDto(
-            page: 1,
-            pageSize: 20,
-            total: 0,
-            totalPages: 0,
-          ),
+        items: [],
+        pagination: MedicinePaginationDto(
+          page: 1,
+          pageSize: 20,
+          total: 0,
+          totalPages: 0,
         ),
       );
 
@@ -158,7 +150,7 @@ void main() {
         () => mockDio.post<Object>(any(), data: any(named: 'data')),
       ).thenAnswer(
         (_) async => Response<Object>(
-          data: {'code': 0, 'message': 'ok', 'data': presignData},
+          data: presignData,
           statusCode: 200,
           requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
         ),
@@ -196,7 +188,7 @@ void main() {
         () => mockDio.post<Object>(any(), data: any(named: 'data')),
       ).thenAnswer(
         (_) async => Response<Object>(
-          data: {'code': 0, 'message': 'ok', 'data': presignData},
+          data: presignData,
           statusCode: 200,
           requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
         ),
@@ -232,13 +224,9 @@ void main() {
         expect(data['sizeBytes'], 999);
         return Response<Object>(
           data: {
-            'code': 0,
-            'message': 'ok',
-            'data': {
-              'uploadUrl': 'https://upload.example.com',
-              'publicUrl': 'https://cdn.example.com/img.jpg',
-              'headers': {},
-            },
+            'uploadUrl': 'https://upload.example.com',
+            'publicUrl': 'https://cdn.example.com/img.jpg',
+            'headers': {},
           },
           statusCode: 200,
           requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
@@ -274,13 +262,9 @@ void main() {
         expect(data['fileName'], 'test.jpg');
         return Response<Object>(
           data: {
-            'code': 0,
-            'message': 'ok',
-            'data': {
-              'uploadUrl': 'https://upload.example.com',
-              'publicUrl': 'https://cdn.example.com/img.jpg',
-              'headers': {},
-            },
+            'uploadUrl': 'https://upload.example.com',
+            'publicUrl': 'https://cdn.example.com/img.jpg',
+            'headers': {},
           },
           statusCode: 200,
           requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
@@ -329,9 +313,8 @@ void main() {
   group('LucentScanRepository.recognizeMedicine', () {
     test('returns recognized data', () async {
       final responseData = {
-        'code': 0,
-        'message': 'ok',
-        'data': {'name': '布洛芬缓释胶囊', 'approvalNumber': '国药准字H20044321'},
+        'name': '布洛芬缓释胶囊',
+        'approvalNumber': '国药准字H20044321',
       };
 
       when(
@@ -376,11 +359,7 @@ void main() {
         final data = invocation.namedArguments[#data] as Map<String, Object?>;
         expect(data['imageUrl'], 'https://cdn.example.com/img.jpg');
         return Response<Object>(
-          data: {
-            'code': 0,
-            'message': 'ok',
-            'data': {'name': 'Test'},
-          },
+          data: {'name': 'Test'},
           statusCode: 200,
           requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
         );

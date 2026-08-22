@@ -28,7 +28,7 @@ class LucentScanRepository implements ScanRepository {
       page: 1,
       pageSize: 20,
     );
-    return requireData(response.data, operation: 'search').data.items
+    return requireData(response.data, operation: 'search').items
         .map(
           (item) => ScanSearchResult(
             id: item.id,
@@ -54,11 +54,10 @@ class LucentScanRepository implements ScanRepository {
         if (fileName != null) 'fileName': fileName,
       },
     );
-    final envelope = coerceToStringMap(presignResponse.data);
-    if (envelope == null) {
+    final uploadData = coerceToStringMap(presignResponse.data);
+    if (uploadData == null) {
       throw StateError('File upload presign response is empty.');
     }
-    final uploadData = coerceToStringMap(envelope['data']) ?? const {};
     final uploadUrl = uploadData['uploadUrl']?.toString() ?? '';
     final headers = coerceToStringMap(uploadData['headers']) ?? const {};
     final publicUrl = uploadData['publicUrl']?.toString();
@@ -87,11 +86,10 @@ class LucentScanRepository implements ScanRepository {
       LucentApiPaths.medicinesRecognize,
       data: <String, Object?>{'imageUrl': imageUrl},
     );
-    final envelope = coerceToStringMap(response.data);
-    if (envelope == null) {
+    final data = coerceToStringMap(response.data);
+    if (data == null) {
       throw StateError('Recognize medicine response is empty.');
     }
-    final data = Map<String, dynamic>.from(envelope['data'] as Map);
     return MedicineRecognitionResult(
       name: data['name'] as String? ?? '',
       approvalNumber: data['approvalNumber'] as String?,
