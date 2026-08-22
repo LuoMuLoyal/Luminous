@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/core/network/result_code.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/repositories/ai_summary.dart';
@@ -89,7 +88,7 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
           .read(talkerProvider)
           .error('ReportAiSummaryController.generate: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
-      if (apiError.code == LucentResultCode.forbidden) {
+      if (apiError.statusCode == 403) {
         state = const ReportAiSummaryCardState.disabled();
         return state;
       }

@@ -5,8 +5,9 @@ import 'package:luminous/features/report/domain/repositories/review.dart';
 
 /// Review 端点的远程数据源。
 ///
-/// 业务信封（code != 0）由全局 EnvelopeInterceptor 统一拒绝，这里只需
-/// 解包 `data` 字段；current 端点的 data 可为 null（无事件时空信封）。
+/// HTTP Problem Details 由全局错误链处理；当前生成客户端仍处于旧成功
+/// 响应 DTO 阶段，这里暂时解包 `data` 字段；current 端点的 data 可为 null
+///（无事件时空信封）。
 class ReviewRemoteDataSource {
   ReviewRemoteDataSource({required this.api});
 

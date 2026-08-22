@@ -66,9 +66,8 @@ class SecurityElevationController extends Notifier<SecurityElevationState> {
         verifySecurityPinDto: VerifySecurityPinDto(pin: pin),
       );
       final dto = requireData(response.data, operation: 'verifySecurityPin');
-      // 业务码非 0(如 PIN 错误)在线上由 EnvelopeInterceptor 转为
-      // DioException;此处显式校验兜底,避免拦截器未生效时把失败响应当成
-      // 成功并错误地签发提升令牌。
+      // 生成客户端切换到资源响应前，保留 DTO 内部状态校验；错误 HTTP
+      // 响应已经由 Problem Details 错误链处理。
       ensureEnvelopeSuccess(code: dto.code, message: dto.message);
       final data = dto.data;
       final expiresAtStr = data.expiresAt;
@@ -88,11 +87,11 @@ class SecurityElevationController extends Notifier<SecurityElevationState> {
       state = SecurityElevationVerified(expiresAt: expiresAt);
       return true;
     } on DioException {
-      // 可预期失败:业务码非 0(EnvelopeInterceptor 已转为 DioException)
-      // 与网络/HTTP 层错误,均属正常用户可见失败,直接返回 false。
+      // 可预期失败:Problem Details 与网络/HTTP 层错误均属正常用户可见
+      // 失败,直接返回 false。
       return false;
     } on LucentApiException {
-      // 业务码非 0 且 EnvelopeInterceptor 未生效的调用路径(如测试直连)。
+      // 旧 DTO 直连或本地手工错误仍可能抛出此异常；资源客户端迁移后删除。
       return false;
     } catch (e, st) {
       // 意外异常(TypeError、空响应、解析错误等):记录日志与堆栈后返回

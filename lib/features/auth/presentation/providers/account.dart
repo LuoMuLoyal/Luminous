@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/providers/security_elevation.dart';
@@ -292,16 +293,14 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     return false;
   }
 
-  bool _isSecurityElevationFailure(LucentApiException error) {
-    if (error.statusCode != 403 || error.code != LucentResultCode.forbidden) {
+  bool _isSecurityElevationFailure(LucentFailure error) {
+    if (error.statusCode != 403) {
       return false;
     }
 
     final message = error.message.trim().toLowerCase();
-    // Only match the precise machine-readable error code and exact Chinese
-    // phrases. Avoid broad substring matches like 'elevation token' which
-    // would also match messages where the token is valid but another condition
-    // (e.g. account locked) caused the 403.
+    // Match the precise target error detail phrases. Avoid broad substring
+    // matches like 'elevation token', which could also match another 403.
     return message.contains('elevation_token_invalid') ||
         message.contains('安全验证令牌') ||
         message.contains('安全提升令牌');

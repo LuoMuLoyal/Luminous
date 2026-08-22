@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/core/network/result_code.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
@@ -110,7 +109,7 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
       return state;
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
-      if (apiError.code == LucentResultCode.forbidden) {
+      if (apiError.statusCode == 403) {
         return const TodayAiAnalysisCardState.disabled();
       }
       rethrow;
@@ -204,7 +203,7 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
     } catch (error) {
       ref.read(talkerProvider).error('TodayAiAnalysisNotifier.refresh: $error');
       final apiError = LucentErrorMapper.fromObject(error);
-      if (apiError.code == LucentResultCode.forbidden) {
+      if (apiError.statusCode == 403) {
         if (!_disposed) {
           state = const AsyncData(TodayAiAnalysisCardState.disabled());
         }
