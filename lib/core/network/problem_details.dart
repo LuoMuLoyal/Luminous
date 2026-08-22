@@ -108,3 +108,70 @@ final class ProblemDetails {
     return Duration(seconds: value.toInt());
   }
 }
+
+enum SseErrorStatus {
+  clientError,
+  serverError,
+  cancelled,
+  serverShutdown,
+  unknown,
+}
+
+final class SseProblemDetails {
+  const SseProblemDetails({required this.problem, required this.status});
+
+  factory SseProblemDetails.fromJson(Map<String, dynamic> json) {
+    final problem = ProblemDetails.fromJson(json);
+    if (problem.detail == null || problem.detail!.trim().isEmpty) {
+      throw const FormatException(
+        'SSE Problem Details field "detail" must be a non-empty string',
+      );
+    }
+    return SseProblemDetails(
+      problem: problem,
+      status: _parseStatus(json['status']),
+    );
+  }
+
+  final ProblemDetails problem;
+  final SseErrorStatus status;
+
+  String get type => problem.type;
+  String get title => problem.title;
+  String get detail => problem.detail!;
+  String get code => problem.code;
+  Map<String, dynamic>? get errors => problem.errors;
+  bool? get retryable => problem.retryable;
+  Duration? get retryAfter => problem.retryAfter;
+  String? get traceId => problem.traceId;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      ...problem.toJson(),
+      'status': _statusValue(status),
+    };
+  }
+
+  static SseErrorStatus _parseStatus(Object? value) {
+    return switch (value) {
+      'client_error' => SseErrorStatus.clientError,
+      'server_error' => SseErrorStatus.serverError,
+      'cancelled' => SseErrorStatus.cancelled,
+      'server_shutdown' => SseErrorStatus.serverShutdown,
+      'unknown' => SseErrorStatus.unknown,
+      _ => throw const FormatException(
+        'SSE Problem Details field "status" has an unsupported value',
+      ),
+    };
+  }
+
+  static String _statusValue(SseErrorStatus status) {
+    return switch (status) {
+      SseErrorStatus.clientError => 'client_error',
+      SseErrorStatus.serverError => 'server_error',
+      SseErrorStatus.cancelled => 'cancelled',
+      SseErrorStatus.serverShutdown => 'server_shutdown',
+      SseErrorStatus.unknown => 'unknown',
+    };
+  }
+}

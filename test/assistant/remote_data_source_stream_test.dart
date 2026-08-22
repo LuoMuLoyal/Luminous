@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 
@@ -225,12 +226,16 @@ void main() {
       expect(result.toolDetails, isEmpty);
     });
 
-    test('throws LucentApiException on error event', () async {
+    test('maps the SSE Problem Details error event to LucentFailure', () async {
       final sseText = [
         _sseEvent('error', {
-          'message': '服务不可用',
-          'code': 500,
-          'statusCode': 503,
+          'type': 'https://api.lumos.example/problems/dependency-unavailable',
+          'title': 'Service temporarily unavailable',
+          'detail': 'Try again later.',
+          'code': 'DEPENDENCY_UNAVAILABLE',
+          'retryable': true,
+          'retryAfter': 5,
+          'status': 'server_error',
         }),
       ].join();
 
@@ -238,27 +243,28 @@ void main() {
 
       expect(
         () => ds.streamMessages(messages: const []).toList(),
-        throwsA(isA<LucentApiException>()),
+        throwsA(
+          isA<LucentFailure>()
+              .having((e) => e.code, 'code', 'DEPENDENCY_UNAVAILABLE')
+              .having(
+                (e) => e.retryAfter,
+                'retryAfter',
+                const Duration(seconds: 5),
+              ),
+        ),
       );
     });
 
-    test(
-      'throws LucentApiException with default message on error without message',
-      () async {
-        final sseText = [_sseEvent('error', {})].join();
+    test('rejects malformed SSE Problem Details error events', () async {
+      final sseText = [_sseEvent('error', {})].join();
 
-        dio.httpClientAdapter = _SseAdapter(sseText);
+      dio.httpClientAdapter = _SseAdapter(sseText);
 
-        expect(
-          () => ds.streamMessages(messages: const []).toList(),
-          throwsA(
-            predicate<LucentApiException>(
-              (e) => e.message == 'Request failed.',
-            ),
-          ),
-        );
-      },
-    );
+      expect(
+        () => ds.streamMessages(messages: const []).toList(),
+        throwsA(isA<FormatException>()),
+      );
+    });
 
     test('done event terminates stream', () async {
       final sseText = _sseEvent('done', null);
@@ -362,12 +368,15 @@ void main() {
       },
     );
 
-    test('throws LucentApiException on error event', () async {
+    test('maps regenerate SSE Problem Details to LucentFailure', () async {
       final sseText = [
         _sseEvent('error', {
-          'message': '只有最后一条助手消息可以重新生成',
-          'code': 400,
-          'statusCode': 400,
+          'type': 'https://api.lumos.example/problems/forbidden',
+          'title': 'Access denied',
+          'detail': 'Regeneration is not allowed.',
+          'code': 'FORBIDDEN',
+          'retryable': false,
+          'status': 'client_error',
         }),
       ].join();
 
@@ -375,7 +384,9 @@ void main() {
 
       expect(
         () => ds.regenerateLastMessage(conversationId: 'conv-1').toList(),
-        throwsA(isA<LucentApiException>()),
+        throwsA(
+          isA<LucentFailure>().having((e) => e.code, 'code', 'FORBIDDEN'),
+        ),
       );
     });
   });

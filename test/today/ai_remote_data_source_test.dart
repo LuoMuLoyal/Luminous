@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 
 /// SSE adapter that returns a stream of events.
@@ -275,14 +275,17 @@ void main() {
       expect(events, isEmpty);
     });
 
-    test('error event throws LucentApiException', () async {
+    test('error event maps SSE Problem Details to LucentFailure', () async {
       final adapter = _SseAdapter([
         (
           event: 'error',
           data: {
-            'message': 'AI service unavailable',
-            'code': 5000,
-            'statusCode': 500,
+            'type': 'https://api.lumos.example/problems/dependency-unavailable',
+            'title': 'Service temporarily unavailable',
+            'detail': 'AI service unavailable. Try again later.',
+            'code': 'DEPENDENCY_UNAVAILABLE',
+            'retryable': true,
+            'status': 'server_error',
           },
         ),
       ]);
@@ -295,11 +298,17 @@ void main() {
 
       expect(
         () => ds.generateStream().toList(),
-        throwsA(isA<LucentApiException>()),
+        throwsA(
+          isA<LucentFailure>().having(
+            (e) => e.code,
+            'code',
+            'DEPENDENCY_UNAVAILABLE',
+          ),
+        ),
       );
     });
 
-    test('error event with empty data uses default message', () async {
+    test('error event with empty data is rejected as malformed', () async {
       final adapter = _SseAdapter([(event: 'error', data: {})]);
       dio.httpClientAdapter = adapter;
 
@@ -310,13 +319,7 @@ void main() {
 
       expect(
         () => ds.generateStream().toList(),
-        throwsA(
-          isA<LucentApiException>().having(
-            (e) => e.message,
-            'message',
-            'Request failed.',
-          ),
-        ),
+        throwsA(isA<FormatException>()),
       );
     });
 

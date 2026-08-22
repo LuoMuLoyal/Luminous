@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 
@@ -115,36 +115,45 @@ void main() {
       expect(events, isEmpty);
     });
 
-    test('throws LucentApiException on error event', () async {
+    test('maps SSE Problem Details error event to LucentFailure', () async {
       final sseText = [
-        _sseEvent('error', {'message': '服务繁忙', 'code': 500, 'statusCode': 500}),
+        _sseEvent('error', {
+          'type': 'https://api.lumos.example/problems/dependency-timeout',
+          'title': 'Service timed out',
+          'detail': 'The AI service timed out. Try again later.',
+          'code': 'DEPENDENCY_TIMEOUT',
+          'retryable': true,
+          'retryAfter': 3,
+          'status': 'server_error',
+        }),
       ].join();
 
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       expect(
         () => ds.generateStream(ReportAiSummaryRange.last7Days).toList(),
-        throwsA(isA<LucentApiException>()),
+        throwsA(
+          isA<LucentFailure>()
+              .having((e) => e.code, 'code', 'DEPENDENCY_TIMEOUT')
+              .having(
+                (e) => e.retryAfter,
+                'retryAfter',
+                const Duration(seconds: 3),
+              ),
+        ),
       );
     });
 
-    test(
-      'throws LucentApiException with default message on error event without message',
-      () async {
-        final sseText = [_sseEvent('error', {})].join();
+    test('rejects malformed SSE Problem Details error events', () async {
+      final sseText = [_sseEvent('error', {})].join();
 
-        dio.httpClientAdapter = _SseAdapter(sseText);
+      dio.httpClientAdapter = _SseAdapter(sseText);
 
-        expect(
-          () => ds.generateStream(ReportAiSummaryRange.last7Days).toList(),
-          throwsA(
-            predicate<LucentApiException>(
-              (e) => e.message == 'Request failed.',
-            ),
-          ),
-        );
-      },
-    );
+      expect(
+        () => ds.generateStream(ReportAiSummaryRange.last7Days).toList(),
+        throwsA(isA<FormatException>()),
+      );
+    });
 
     test('done event terminates stream immediately', () async {
       final sseText = _sseEvent('done', null);

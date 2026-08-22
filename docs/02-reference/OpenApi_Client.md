@@ -93,7 +93,8 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 - Today AI REST reads/generation/refresh use the generated OpenAPI transport and consume endpoint
   resource representations directly, including explicit nullable and `oneOf` response models.
   Today AI streaming, Report AI summary, and assistant streaming continue to use manual Dio + SSE
-  parsing in `lib/core/network/sse.dart`.
+  parsing in `lib/core/network/sse.dart`; SSE `error` events use strict Problem Details and map to
+  `LucentFailure`, with stream termination status kept separate from HTTP status.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
 - `AUTH_TOKEN_EXPIRED` triggers refresh and retry.

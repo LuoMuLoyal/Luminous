@@ -46,6 +46,28 @@ final class LucentFailure {
     );
   }
 
+  factory LucentFailure.fromSseProblemDetails(
+    SseProblemDetails problem, {
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: _kindForSseStatus(problem.status, problem.code),
+      message: problem.detail,
+      type: problem.type,
+      title: problem.title,
+      detail: problem.detail,
+      code: problem.code,
+      errors: problem.errors,
+      retryable: problem.retryable,
+      retryAfter: problem.retryAfter,
+      traceId: problem.traceId,
+      networkErrorCode: problem.status == SseErrorStatus.cancelled
+          ? NetworkErrorCode.cancelled
+          : null,
+      cause: cause,
+    );
+  }
+
   factory LucentFailure.network({
     required String message,
     required NetworkErrorCode networkErrorCode,
@@ -121,5 +143,19 @@ final class LucentFailure {
     if (statusCode >= 500) return LucentFailureKind.server;
     if (statusCode >= 400) return LucentFailureKind.business;
     return LucentFailureKind.unknown;
+  }
+
+  static LucentFailureKind _kindForSseStatus(
+    SseErrorStatus status,
+    String code,
+  ) {
+    if (code.startsWith('AUTH_')) return LucentFailureKind.authentication;
+    return switch (status) {
+      SseErrorStatus.clientError => LucentFailureKind.business,
+      SseErrorStatus.serverError => LucentFailureKind.server,
+      SseErrorStatus.cancelled ||
+      SseErrorStatus.unknown => LucentFailureKind.unknown,
+      SseErrorStatus.serverShutdown => LucentFailureKind.server,
+    };
   }
 }
