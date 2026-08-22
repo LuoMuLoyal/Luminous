@@ -213,4 +213,10 @@ Last updated: 2026-08-21
 - `AssistantPageBody` 继续以 `FlowChatScreen` 作为唯一编排路径；composer 能力收拢到 page body 私有 host，直接复用共享 controller、现有 placeholder 和无参发送回调。
 - empty support 收拢到 page body 私有 StatefulWidget；`FlowGreeting` 继续由 `FlowChatScreen` 提供，support 保留描述、四个既有 prompt、memory hint、disclaimer 展开/收起和 `assistant-welcome-disclaimer` 语义 key。
 - 删除旧的 `message_bubble.dart`、`input_bar.dart`、`conversation_surface.dart`、`welcome_panel.dart`、`input_bar_starter_prompts.dart`；前序已删除的 shortcut hint 和 conversation stack 不恢复。
-- 保留 `flowui_adapter.dart`、`conversation_message_list.dart`、`loading_view.dart`、`proposal_card.dart`、`chips.dart`、conversation drawer/dialogs 及 status/controls 实验性文件。domain/data/controller/SSE、Localization 和计划文件未修改。
+- 保留 `flowui_adapter.dart`、`conversation_message_list.dart`、`loading_view.dart`、`proposal_card.dart`、`chips.dart` 与 conversation drawer/dialogs；旧 status/controls 实验性文件已移除。domain/data/SSE、Localization 和 API 消费方式保持不变。
+
+## 2026-08-22 Assistant 审查整改
+
+- source strip 的工具详情渲染使用局部可提升值，字段缺失时保持无详情/不渲染语义；短日期格式集中由 `formatAssistantDateTimeShort` 处理，按 `Locale.languageCode` 区分中英文。
+- assistant message ID 由 `presentation/utils/message_id.dart` 单点生成；会话重命名对同一会话增加 in-flight 守卫，刷新失败保留乐观标题并写 debug 日志。
+- record NLP sheet 与 create page 的 Toast 入口补充 `context.mounted` 守卫；controller 测试按 send/conversation/regenerate seam 拆分。
