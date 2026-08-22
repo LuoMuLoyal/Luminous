@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/daily_record_candidate_data_dto.dart';
+import 'package:lucent_api/src/model/daily_record_candidate_item_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,32 +19,45 @@ part 'daily_record_candidate_response_dto.g.dart';
 class DailyRecordCandidateResponseDto {
   /// Returns a new [DailyRecordCandidateResponseDto] instance.
   DailyRecordCandidateResponseDto({
-    required this.code,
+    required this.locale,
 
-    required this.message,
+    required this.generatedAt,
 
-    required this.data,
+    required this.confirmationHint,
+
+    required this.items,
   });
 
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  /// Normalized parse locale.
+  @JsonKey(name: r'locale', required: true, includeIfNull: false)
+  final String locale;
 
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  /// ISO-8601 timestamp when candidates were generated.
+  @JsonKey(name: r'generatedAt', required: true, includeIfNull: false)
+  final String generatedAt;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final DailyRecordCandidateDataDto data;
+  /// Short UI hint telling the client that these are candidates, not saved records.
+  @JsonKey(name: r'confirmationHint', required: true, includeIfNull: false)
+  final String confirmationHint;
+
+  @JsonKey(name: r'items', required: true, includeIfNull: false)
+  final List<DailyRecordCandidateItemDto> items;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is DailyRecordCandidateResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.locale == locale &&
+          other.generatedAt == generatedAt &&
+          other.confirmationHint == confirmationHint &&
+          other.items == items;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      locale.hashCode +
+      generatedAt.hashCode +
+      confirmationHint.hashCode +
+      items.hashCode;
 
   factory DailyRecordCandidateResponseDto.fromJson(Map<String, dynamic> json) =>
       _$DailyRecordCandidateResponseDtoFromJson(json);

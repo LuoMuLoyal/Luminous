@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/daily_record_summary_data_dto.dart';
+import 'package:lucent_api/src/model/daily_record_summary_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,33 +18,18 @@ part 'daily_record_summary_response_dto.g.dart';
 )
 class DailyRecordSummaryResponseDto {
   /// Returns a new [DailyRecordSummaryResponseDto] instance.
-  DailyRecordSummaryResponseDto({
-    required this.code,
+  DailyRecordSummaryResponseDto({required this.summaries});
 
-    required this.message,
-
-    required this.data,
-  });
-
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
-
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final DailyRecordSummaryDataDto data;
+  @JsonKey(name: r'summaries', required: true, includeIfNull: false)
+  final List<DailyRecordSummaryDto> summaries;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DailyRecordSummaryResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+      other is DailyRecordSummaryResponseDto && other.summaries == summaries;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode => summaries.hashCode;
 
   factory DailyRecordSummaryResponseDto.fromJson(Map<String, dynamic> json) =>
       _$DailyRecordSummaryResponseDtoFromJson(json);

@@ -244,60 +244,42 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
 
     if (options.path.endsWith('/attachments/images/presign-upload')) {
       return _jsonResponse(<String, Object?>{
-        'code': 0,
-        'message': '',
-        'data': <String, Object?>{
-          'provider': 'tencent-cos',
-          'bucket': 'bucket-1',
-          'objectKey': 'daily-records/u1/photo.jpg',
-          'uploadUrl': 'https://cos.example.test/upload-object',
-          'headers': <String, String>{'Content-Type': 'image/jpeg'},
-          'publicUrl': 'https://cdn.example.test/photo.jpg',
-          'expiresAt': '2026-06-06T00:10:00.000Z',
-          'maxSizeBytes': 50000000,
-        },
+        'provider': 'tencent-cos',
+        'bucket': 'bucket-1',
+        'objectKey': 'daily-records/u1/photo.jpg',
+        'uploadUrl': 'https://cos.example.test/upload-object',
+        'headers': <String, String>{'Content-Type': 'image/jpeg'},
+        'publicUrl': 'https://cdn.example.test/photo.jpg',
+        'expiresAt': '2026-06-06T00:10:00.000Z',
+        'maxSizeBytes': 50000000,
       });
     }
 
     if (options.path == '/api/v1/user/daily-records/summary') {
       return _jsonResponse(<String, Object?>{
-        'code': 0,
-        'message': '',
-        'data': <String, Object?>{
-          'summaries': <Object?>[
-            <String, Object?>{
-              'kind': 'meal',
-              'count': 1,
-              'latest': _recordJson(attachments: const <Object?>[]),
-            },
-          ],
-        },
+        'summaries': <Object?>[
+          <String, Object?>{
+            'kind': 'meal',
+            'count': 1,
+            'latest': _recordJson(attachments: const <Object?>[]),
+          },
+        ],
       });
     }
 
     if (options.method == 'GET' &&
         options.path == '/api/v1/user/daily-records') {
       return _jsonResponse(<String, Object?>{
-        'code': 0,
-        'message': '',
-        'data': <String, Object?>{
-          'items': <Object?>[
-            _recordJson(
-              attachments: _lastJsonAttachments() ?? const <Object?>[],
-            ),
-          ],
-          'total': 1,
-        },
+        'items': <Object?>[
+          _recordJson(attachments: _lastJsonAttachments() ?? const <Object?>[]),
+        ],
+        'total': 1,
       });
     }
 
-    return _jsonResponse(<String, Object?>{
-      'code': 0,
-      'message': '',
-      'data': _recordJson(
-        attachments: _lastJsonAttachments() ?? const <Object?>[],
-      ),
-    });
+    return _jsonResponse(
+      _recordJson(attachments: _lastJsonAttachments() ?? const <Object?>[]),
+    );
   }
 
   @override

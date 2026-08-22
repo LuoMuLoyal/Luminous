@@ -33,7 +33,7 @@ class DailyRecordRemoteDataSource {
       page: page,
       pageSize: pageSize,
     );
-    final dto = requireData(response.data, operation: 'fetchRecords').data;
+    final dto = requireData(response.data, operation: 'fetchRecords');
     return DailyRecordListData(
       items: dto.items.map(_toItem).toList(growable: false),
       total: dto.total,
@@ -42,7 +42,7 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
     final response = await api.dailyRecordsControllerSummaryV1(date: date);
-    final dto = requireData(response.data, operation: 'fetchSummary').data;
+    final dto = requireData(response.data, operation: 'fetchSummary');
     return DailyRecordSummaryData(
       summaries: dto.summaries
           .mapIndexed(
@@ -58,7 +58,8 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordItem> get(String id) async {
     final response = await api.dailyRecordsControllerGetV1(id: id);
-    return _toItem(requireData(response.data, operation: 'get').data);
+    final dto = requireData(response.data, operation: 'get');
+    return _toItem(lucent.DailyRecordItemDto.fromJson(dto.toJson()));
   }
 
   Future<DailyRecordAttachmentInput> uploadImage(
@@ -71,10 +72,7 @@ class DailyRecordRemoteDataSource {
         fileName: input.fileName,
       ),
     );
-    final upload = requireData(
-      presignResponse.data,
-      operation: 'uploadImage',
-    ).data;
+    final upload = requireData(presignResponse.data, operation: 'uploadImage');
     final headers = _coerceToStringMap(upload.headers);
 
     await dio.put<Object>(
@@ -114,10 +112,7 @@ class DailyRecordRemoteDataSource {
         occurredAt: occurredAt,
       ),
     );
-    final dto = requireData(
-      response.data,
-      operation: 'generateCandidates',
-    ).data;
+    final dto = requireData(response.data, operation: 'generateCandidates');
     return DailyRecordCandidateResult(
       locale: dto.locale,
       generatedAt: dto.generatedAt,
@@ -204,12 +199,9 @@ class DailyRecordRemoteDataSource {
       options: Options(method: 'DELETE', contentType: Headers.jsonContentType),
     );
 
-    final body = requireBody(
-      response,
-      message: 'Daily record delete response is empty.',
-    );
-    final envelope = LucentEnvelope<void>.fromJson(body);
-    envelope.throwIfFailed();
+    if (response.statusCode != 204) {
+      throw StateError('Daily record delete returned ${response.statusCode}.');
+    }
   }
 
   Future<lucent.DailyRecordItemDto> _write(
@@ -228,7 +220,7 @@ class DailyRecordRemoteDataSource {
       message: 'Daily record response is empty.',
     );
 
-    return lucent.DailyRecordResponseDto.fromJson(body).data;
+    return lucent.DailyRecordItemDto.fromJson(body);
   }
 
   DailyRecordItem _toItem(lucent.DailyRecordItemDto item) {
