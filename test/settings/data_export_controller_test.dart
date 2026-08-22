@@ -416,22 +416,16 @@ DataExportRequestResponseDto _buildCreateResponse({
   String id = 'req-2',
   DataExportStatus status = DataExportStatus.requested,
 }) {
-  return DataExportRequestResponseDto(
-    code: 0,
-    message: 'ok',
-    data: _buildRequestData(id: id, status: status),
+  return DataExportRequestResponseDto.fromJson(
+    _buildRequestData(id: id, status: status).toJson(),
   );
 }
 
-DataExportLatestResponseDto _buildLatestResponse({
+DataExportRequestDataDto _buildLatestResponse({
   String id = 'req-1',
   DataExportStatus status = DataExportStatus.completed,
 }) {
-  return DataExportLatestResponseDto(
-    code: 0,
-    message: 'ok',
-    data: _buildRequestData(id: id, status: status),
-  );
+  return _buildRequestData(id: id, status: status);
 }
 
 // ---------------------------------------------------------------------------
@@ -447,7 +441,7 @@ class _FakeDataExportApi implements DataExportApi {
 
   // GET latest state.
   int getLatestCallCount = 0;
-  DataExportLatestResponseDto? latestResponse;
+  DataExportRequestDataDto? latestResponse;
   bool latestReturnsNullData = false;
   bool getLatestReturnsNullResponse = false;
   DioException? getLatestException;
@@ -461,7 +455,7 @@ class _FakeDataExportApi implements DataExportApi {
   Duration createDelay;
 
   @override
-  Future<Response<DataExportLatestResponseDto>>
+  Future<Response<DataExportRequestDataDto>>
   dataExportControllerGetLatestRequestV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -488,14 +482,7 @@ class _FakeDataExportApi implements DataExportApi {
         ),
       );
     }
-    return _response(
-      latestResponse ??
-          DataExportLatestResponseDto(
-            code: 0,
-            message: 'ok',
-            data: _buildRequestData(),
-          ),
-    );
+    return _response(latestResponse ?? _buildRequestData());
   }
 
   @override
