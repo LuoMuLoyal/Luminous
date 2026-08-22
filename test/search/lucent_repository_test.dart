@@ -46,8 +46,8 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   }
 }
 
-MedicineSearchDataDto _defaultData([List<MedicineSearchItemDto>? items]) =>
-    MedicineSearchDataDto(
+MedicineSearchResponseDto _defaultData([List<MedicineSearchItemDto>? items]) =>
+    MedicineSearchResponseDto(
       items: items ?? [],
       pagination: MedicinePaginationDto(
         page: 1,
@@ -60,36 +60,29 @@ MedicineSearchDataDto _defaultData([List<MedicineSearchItemDto>? items]) =>
 MedicineSearchResponseDto _okSearchResponse([
   List<MedicineSearchItemDto>? items,
 ]) {
-  return MedicineSearchResponseDto(
-    code: 0,
-    message: '',
-    data: _defaultData(items),
-  );
+  return _defaultData(items);
 }
 
-MedicineDetailDataDtoDetail _minimalDetail() => MedicineDetailDataDtoDetail(
-  kind: '',
-  groups: [],
-  categories: [],
-  atcCodes: [],
-  synonyms: [],
-  foodInteractions: [],
-);
+MedicineDetailResponseDtoDetail _minimalDetail() =>
+    MedicineDetailResponseDtoDetail(
+      kind: '',
+      groups: [],
+      categories: [],
+      atcCodes: [],
+      synonyms: [],
+      foodInteractions: [],
+    );
 
 MedicineDetailResponseDto _okDetailResponse({
   String name = 'Test Medicine',
   String? subtitle,
 }) {
   return MedicineDetailResponseDto(
-    code: 0,
-    message: '',
-    data: MedicineDetailDataDto(
-      id: 'med-1',
-      source_: MedicineDetailDataDtoSource_Enum.cn,
-      name: name,
-      subtitle: subtitle,
-      detail: _minimalDetail(),
-    ),
+    id: 'med-1',
+    source_: MedicineDetailResponseDtoSource_Enum.cn,
+    name: name,
+    subtitle: subtitle,
+    detail: _minimalDetail(),
   );
 }
 
@@ -160,44 +153,6 @@ void main() {
 
         expect(results, isEmpty);
       });
-
-      test('throws on non-zero business code', () async {
-        dataSource.searchResponse = MedicineSearchResponseDto(
-          code: 1001,
-          message: '参数错误',
-          data: _defaultData(),
-        );
-
-        expect(
-          () => repo.search(query: 'test', source: MedicineSearchSource.cn),
-          throwsA(isA<Exception>()),
-        );
-      });
-
-      test(
-        'throws with default message when response message is empty',
-        () async {
-          dataSource.searchResponse = MedicineSearchResponseDto(
-            code: 500,
-            message: '',
-            data: _defaultData(),
-          );
-
-          expect(
-            () => repo.search(
-              query: 'test',
-              source: MedicineSearchSource.drugbank,
-            ),
-            throwsA(
-              isA<Exception>().having(
-                (e) => e.toString(),
-                'toString',
-                contains('500'),
-              ),
-            ),
-          );
-        },
-      );
 
       test('passes source, query, page, pageSize to dataSource', () async {
         dataSource.searchResponse = _okSearchResponse();
@@ -281,24 +236,6 @@ void main() {
         expect(result.conditions[0], 'Pain reliever');
         expect(result.conditions[1], 'Fever reducer');
         expect(result.checklist, isEmpty);
-      });
-
-      test('returns null on non-zero business code', () async {
-        dataSource.detailResponse = MedicineDetailResponseDto(
-          code: 1002,
-          message: 'Not found',
-          data: MedicineDetailDataDto(
-            id: 'med-x',
-            source_: MedicineDetailDataDtoSource_Enum.cn,
-            name: '',
-            subtitle: null,
-            detail: _minimalDetail(),
-          ),
-        );
-
-        final result = await repo.fetchDetail('med-x', MedicineSearchSource.cn);
-
-        expect(result, isNull);
       });
 
       test('returns null when dataSource throws', () async {

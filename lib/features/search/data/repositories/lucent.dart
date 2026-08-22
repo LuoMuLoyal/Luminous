@@ -32,9 +32,7 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
       pageSize: pageSize,
     );
 
-    ensureEnvelopeSuccess(code: response.code, message: response.message);
-
-    return response.data.items.map(mapper.dtoToResult).toList();
+    return response.items.map(mapper.dtoToResult).toList();
   }
 
   /// 桌面端旧预览面板遗留的详情拉取（F-11 去造假后保留但**不接入主路径**）。
@@ -51,9 +49,7 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
     try {
       final response = await dataSource.getDetail(id: id, source: source.name);
 
-      ensureEnvelopeSuccess(code: response.code, message: response.message);
-
-      final detail = response.data;
+      final detail = response;
       return MedicineSearchSafetyPreview(
         title: detail.name,
         conditions: detail.subtitle?.toString().split('\n') ?? [],
