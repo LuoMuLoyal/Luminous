@@ -4,8 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/network/api_exception.dart';
-import 'package:luminous/core/network/result_code.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
@@ -321,9 +320,11 @@ void main() {
 
   test('Today AI provider maps forbidden error to disabled state', () async {
     const repository = _ThrowingTodayAiRepository(
-      LucentApiException(
+      LucentFailure(
+        kind: LucentFailureKind.authentication,
         message: 'AI summaries are disabled for this user',
-        code: LucentResultCode.forbidden,
+        code: 'FORBIDDEN',
+        statusCode: 403,
       ),
     );
 
@@ -351,7 +352,10 @@ void main() {
 
   test('Today AI provider maps generic refresh error to error state', () async {
     const repository = _ThrowingTodayAiRepository(
-      LucentApiException(message: 'Network request failed.'),
+      LucentFailure(
+        kind: LucentFailureKind.network,
+        message: 'Network request failed.',
+      ),
     );
 
     final container = ProviderContainer(
@@ -377,9 +381,11 @@ void main() {
     'Today AI provider maps initial forbidden read to disabled state',
     () async {
       const repository = _ThrowingTodayAiRepository(
-        LucentApiException(
+        LucentFailure(
+          kind: LucentFailureKind.authentication,
           message: 'AI summaries are disabled for this user',
-          code: LucentResultCode.forbidden,
+          code: 'FORBIDDEN',
+          statusCode: 403,
         ),
       );
 
