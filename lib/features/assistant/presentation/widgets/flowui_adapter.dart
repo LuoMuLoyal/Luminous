@@ -10,7 +10,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
-import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
+import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
 import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';

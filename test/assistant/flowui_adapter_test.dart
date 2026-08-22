@@ -8,7 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
-import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
+import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
 import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
 import 'package:luminous/features/assistant/presentation/widgets/flowui_adapter.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';

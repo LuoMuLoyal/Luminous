@@ -72,8 +72,9 @@ String assistantToolStatusText(
   );
 }
 
-String messageIdFor(AssistantMessage message) {
-  return '${message.role.name}-${message.createdAt.toIso8601String()}-${message.content.hashCode}';
+String formatAssistantDateTimeShort(Locale locale, DateTime dateTime) {
+  final pattern = locale.languageCode == 'zh' ? 'M月d日 HH:mm' : 'MMM d, HH:mm';
+  return intl.DateFormat(pattern, locale.toString()).format(dateTime.toLocal());
 }
 
 IconData proposalIcon(AssistantProposedActionType type) {

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 
 void main() {

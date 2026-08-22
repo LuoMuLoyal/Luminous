@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
@@ -35,6 +36,8 @@ AssistantProposedAction _p(AssistantProposalExecutionState s) {
 }
 
 void main() {
+  setUpAll(initializeDateFormatting);
+
   group('proposalStateColor', () {
     final colors = FTheme.neutral.light.touch.colors;
     test('pending → primary', () {
@@ -88,6 +91,28 @@ void main() {
       for (final t in AssistantSendErrorType.values) {
         expect(sendErrorIcon(t), isA<IconData>());
       }
+    });
+  });
+
+  group('formatAssistantDateTimeShort', () {
+    test('uses the Chinese short date pattern for zh locales', () {
+      expect(
+        formatAssistantDateTimeShort(
+          const Locale('zh'),
+          DateTime(2026, 8, 17, 10, 5),
+        ),
+        '8月17日 10:05',
+      );
+    });
+
+    test('uses the English short date pattern for en locales', () {
+      expect(
+        formatAssistantDateTimeShort(
+          const Locale('en'),
+          DateTime(2026, 8, 17, 10, 5),
+        ),
+        'Aug 17, 10:05',
+      );
     });
   });
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
@@ -169,7 +168,6 @@ class _ProposalMetaSection extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
     final l10n = AppLocalizations.of(context)!;
-    final locale = Localizations.localeOf(context).toString();
     final metaRows = <String>[
       '${l10n.assistantProposalTargetLabel}: ${proposal.target.label}',
       if (proposal.target.matchedBy.isNotEmpty)
@@ -177,7 +175,7 @@ class _ProposalMetaSection extends StatelessWidget {
       if (proposal.target.settingKeys.isNotEmpty)
         '${l10n.assistantProposalSettingKeysLabel}: ${proposal.target.settingKeys.join(', ')}',
       if (proposal.expiresAt case final expiresAt?)
-        '${l10n.assistantProposalExpiresAtLabel}: ${intl.DateFormat(locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm', locale).format(expiresAt.toLocal())}',
+        '${l10n.assistantProposalExpiresAtLabel}: ${formatAssistantDateTimeShort(Localizations.localeOf(context), expiresAt)}',
     ];
 
     return DecoratedBox(
