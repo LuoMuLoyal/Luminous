@@ -1,6 +1,6 @@
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,7 +21,7 @@ class LucentSupportRepository implements SupportRepository {
   @override
   Future<AppInfo?> getAppInfo() async {
     final response = await api.appInfoControllerGetAppInfoV1();
-    final d = requireData(response.data, operation: 'getAppInfo').data;
+    final d = requireData(response.data, operation: 'getAppInfo');
     return AppInfo(
       minClientVersion: d.minClientVersion,
       latestVersion: d.latestVersion,
