@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
@@ -165,10 +164,9 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
 
   String? _labelFor(String tool) {
     for (final detail in widget.toolDetails) {
-      if (detail.name == tool &&
-          detail.label != null &&
-          detail.label!.isNotEmpty) {
-        return detail.label;
+      final label = detail.label;
+      if (detail.name == tool && label != null && label.isNotEmpty) {
+        return label;
       }
     }
     return null;
@@ -205,10 +203,11 @@ class _ToolDetailCard extends StatelessWidget {
     final title = label == null ? localized : '$localized($label)';
 
     final rows = <String>[];
+    final detail = this.detail;
     if (detail != null) {
-      final coverageStatus = _coverageStatusText(l10n, detail!.coverageStatus);
+      final coverageStatus = _coverageStatusText(l10n, detail.coverageStatus);
       if (coverageStatus != null) {
-        final reason = detail!.coverageReason;
+        final reason = detail.coverageReason;
         rows.add(
           '${l10n.assistantSourceCoverageLabel}: $coverageStatus'
           '${reason != null && reason.isNotEmpty ? ' $reason' : ''}',
@@ -216,28 +215,28 @@ class _ToolDetailCard extends StatelessWidget {
       }
       final confidenceLevel = _confidenceLevelText(
         l10n,
-        detail!.confidenceLevel,
+        detail.confidenceLevel,
       );
       if (confidenceLevel != null) {
-        final reason = detail!.confidenceReason;
+        final reason = detail.confidenceReason;
         rows.add(
           '${l10n.assistantSourceConfidenceLabel}: $confidenceLevel'
           '${reason != null && reason.isNotEmpty ? ' $reason' : ''}',
         );
       }
-      if (detail!.ambiguities.isNotEmpty) {
+      if (detail.ambiguities.isNotEmpty) {
         rows.add(
           '${l10n.assistantSourceAmbiguitiesLabel}: '
-          '${detail!.ambiguities.join(', ')}',
+          '${detail.ambiguities.join(', ')}',
         );
       }
-      if (detail!.sourceTables.isNotEmpty) {
+      if (detail.sourceTables.isNotEmpty) {
         rows.add(
           '${l10n.assistantSourceSourceLabel}: '
-          '${detail!.sourceTables.join(', ')}',
+          '${detail.sourceTables.join(', ')}',
         );
       }
-      final generatedAt = detail!.sourceGeneratedAt;
+      final generatedAt = detail.sourceGeneratedAt;
       if (generatedAt != null && generatedAt.isNotEmpty) {
         rows.add(
           '${l10n.assistantSourceGeneratedAtLabel}: '
@@ -246,11 +245,13 @@ class _ToolDetailCard extends StatelessWidget {
       }
       // F-14:摘要工具的数据截至信息 —— confidenceNote 非空直接显示,
       // 否则 sourceVersion 非空显示「版本 <v>」。两者都缺时不渲染该行。
-      final dataAsOf = _dataAsOfText(l10n, detail!);
+      final dataAsOf = _dataAsOfText(l10n, detail);
       if (dataAsOf != null) {
         rows.add('${l10n.assistantSourceDataAsOfLabel}: $dataAsOf');
       }
     }
+
+    final disclaimer = detail?.disclaimer;
 
     return DecoratedBox(
       key: Key('assistant-source-tool-$tool'),
@@ -286,11 +287,11 @@ class _ToolDetailCard extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (detail!.disclaimer != null && detail!.disclaimer!.isNotEmpty)
+              if (disclaimer != null && disclaimer.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: Spacing.level1),
                   child: Text(
-                    detail!.disclaimer!,
+                    disclaimer,
                     style: typography.body.xs.copyWith(
                       color: colors.mutedForeground,
                     ),
@@ -328,11 +329,10 @@ class _ToolDetailCard extends StatelessWidget {
     if (parsed == null) {
       return raw;
     }
-    final locale = Localizations.localeOf(context).toString();
-    return intl.DateFormat(
-      locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm',
-      locale,
-    ).format(parsed.toLocal());
+    return formatAssistantDateTimeShort(
+      Localizations.localeOf(context),
+      parsed,
+    );
   }
 
   /// F-14 数据截至文本:confidenceNote 非空直接显示;否则 sourceVersion
