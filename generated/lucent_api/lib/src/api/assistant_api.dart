@@ -13,8 +13,9 @@ import 'package:lucent_api/src/model/assistant_capabilities_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_memory_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_result_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_confirm_result_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_conversation_list_response_dto.dart';
+import 'package:lucent_api/src/model/assistant_conversation_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_response_dto.dart';
+import 'package:lucent_api/src/model/assistant_conversation_summary_dto.dart';
 import 'package:lucent_api/src/model/confirm_assistant_proposal_dto.dart';
 import 'package:lucent_api/src/model/rename_conversation_dto.dart';
 import 'package:lucent_api/src/model/stream_assistant_messages_dto.dart';
@@ -419,9 +420,9 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantConversationResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantConversationDataDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantConversationResponseDto>>
+  Future<Response<AssistantConversationDataDto>>
   assistantControllerGetLatestConversationV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -446,16 +447,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantConversationResponseDto? _responseData;
+    AssistantConversationDataDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantConversationResponseDto,
-              AssistantConversationResponseDto
-            >(rawData, 'AssistantConversationResponseDto', growable: true);
+              AssistantConversationDataDto,
+              AssistantConversationDataDto
+            >(rawData, 'AssistantConversationDataDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -466,7 +467,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantConversationResponseDto>(
+    return Response<AssistantConversationDataDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -489,9 +490,9 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantConversationListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [List<AssistantConversationSummaryDto>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantConversationListResponseDto>>
+  Future<Response<List<AssistantConversationSummaryDto>>>
   assistantControllerListRecentConversationsV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -516,16 +517,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantConversationListResponseDto? _responseData;
+    List<AssistantConversationSummaryDto>? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantConversationListResponseDto,
-              AssistantConversationListResponseDto
-            >(rawData, 'AssistantConversationListResponseDto', growable: true);
+              List<AssistantConversationSummaryDto>,
+              AssistantConversationSummaryDto
+            >(rawData, 'List<AssistantConversationSummaryDto>', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -536,7 +537,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantConversationListResponseDto>(
+    return Response<List<AssistantConversationSummaryDto>>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

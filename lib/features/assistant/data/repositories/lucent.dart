@@ -170,7 +170,7 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   AssistantCapabilities _mapCapabilities(
-    lucent.AssistantCapabilitiesDataDto dto,
+    lucent.AssistantCapabilitiesResponseDto dto,
   ) {
     return AssistantCapabilities(
       phase: dto.phase,

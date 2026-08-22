@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/assistant_clear_memory_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,35 +17,19 @@ part 'assistant_clear_memory_response_dto.g.dart';
 )
 class AssistantClearMemoryResponseDto {
   /// Returns a new [AssistantClearMemoryResponseDto] instance.
-  AssistantClearMemoryResponseDto({
-    required this.code,
+  AssistantClearMemoryResponseDto({required this.cleared});
 
-    required this.message,
-
-    required this.data,
-  });
-
-  /// Result code.
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
-
-  /// Message.
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final AssistantClearMemoryDataDto data;
+  /// Number of persisted assistant memory rows deleted.
+  @JsonKey(name: r'cleared', required: true, includeIfNull: false)
+  final num cleared;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AssistantClearMemoryResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+      other is AssistantClearMemoryResponseDto && other.cleared == cleared;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode => cleared.hashCode;
 
   factory AssistantClearMemoryResponseDto.fromJson(Map<String, dynamic> json) =>
       _$AssistantClearMemoryResponseDtoFromJson(json);

@@ -1,8 +1,8 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/map_utils.dart';
+import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/core/network/sse.dart';
 
 sealed class AssistantRemoteEvent {
@@ -41,23 +41,20 @@ class AssistantRemoteDataSource {
   final lucent.AssistantApi api;
   final Dio dio;
 
-  Future<lucent.AssistantCapabilitiesDataDto> getCapabilities() async {
+  Future<lucent.AssistantCapabilitiesResponseDto> getCapabilities() async {
     final response = await api.assistantControllerGetCapabilitiesV1();
-    return requireData(response.data, operation: 'getCapabilities').data;
+    return requireData(response.data, operation: 'getCapabilities');
   }
 
   Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
     final response = await api.assistantControllerGetLatestConversationV1();
-    return requireData(response.data, operation: 'getLatestConversation').data;
+    return requireData(response.data, operation: 'getLatestConversation');
   }
 
   Future<List<lucent.AssistantConversationSummaryDto>>
   listRecentConversations() async {
     final response = await api.assistantControllerListRecentConversationsV1();
-    return requireData(
-      response.data,
-      operation: 'listRecentConversations',
-    ).data;
+    return requireData(response.data, operation: 'listRecentConversations');
   }
 
   Future<lucent.AssistantConversationDataDto> openConversation(
@@ -68,10 +65,11 @@ class AssistantRemoteDataSource {
     );
     // The DTO's `data` field is nullable; guard both layers so a
     // payload-less success response is reported instead of a `!` crash.
-    return requireData(
-      requireData(response.data, operation: 'openConversation').data,
+    final responseDto = requireData(
+      response.data,
       operation: 'openConversation',
     );
+    return lucent.AssistantConversationDataDto.fromJson(responseDto.toJson());
   }
 
   Future<bool> clearLatestConversation() async {
@@ -79,7 +77,7 @@ class AssistantRemoteDataSource {
     // The backend treats an empty JSON body as absent, so a no-body POST is
     // accepted by this endpoint.
     final response = await api.assistantControllerClearLatestConversationV1();
-    return response.data?.data.cleared ?? false;
+    return response.data?.cleared ?? false;
   }
 
   /// Renames one persisted conversation (title only) and returns the updated
@@ -92,10 +90,11 @@ class AssistantRemoteDataSource {
       conversationId: conversationId,
       renameConversationDto: lucent.RenameConversationDto(title: title),
     );
-    return requireData(
-      requireData(response.data, operation: 'renameConversation').data,
+    final responseDto = requireData(
+      response.data,
       operation: 'renameConversation',
     );
+    return lucent.AssistantConversationDataDto.fromJson(responseDto.toJson());
   }
 
   /// Soft-deletes one persisted conversation on the backend.
@@ -124,7 +123,7 @@ class AssistantRemoteDataSource {
         note: note,
       ),
     );
-    return response.data?.data.finalContent;
+    return response.data?.finalContent;
   }
 
   Stream<AssistantRemoteEvent> streamMessages({

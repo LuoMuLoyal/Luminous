@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/assistant_confirm_result_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,34 +18,56 @@ part 'assistant_confirm_result_response_dto.g.dart';
 class AssistantConfirmResultResponseDto {
   /// Returns a new [AssistantConfirmResultResponseDto] instance.
   AssistantConfirmResultResponseDto({
-    required this.code,
+    required this.conversationId,
 
-    required this.message,
+    required this.decision,
 
-    required this.data,
+    required this.status,
+
+    required this.finalContent,
   });
 
-  /// Result code.
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  /// Conversation (LangGraph thread) id the proposals belong to.
+  @JsonKey(name: r'conversationId', required: true, includeIfNull: false)
+  final String conversationId;
 
-  /// Message.
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
+  @JsonKey(
+    name: r'decision',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        AssistantConfirmResultResponseDtoDecisionEnum.unknownDefaultOpenApi,
+  )
+  final AssistantConfirmResultResponseDtoDecisionEnum decision;
 
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final AssistantConfirmResultDto data;
+  @JsonKey(
+    name: r'status',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        AssistantConfirmResultResponseDtoStatusEnum.unknownDefaultOpenApi,
+  )
+  final AssistantConfirmResultResponseDtoStatusEnum status;
+
+  /// Final assistant content after the decision is applied.
+  @JsonKey(name: r'finalContent', required: true, includeIfNull: true)
+  final String? finalContent;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AssistantConfirmResultResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.conversationId == conversationId &&
+          other.decision == decision &&
+          other.status == status &&
+          other.finalContent == finalContent;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode =>
+      conversationId.hashCode +
+      decision.hashCode +
+      status.hashCode +
+      (finalContent == null ? 0 : finalContent.hashCode);
 
   factory AssistantConfirmResultResponseDto.fromJson(
     Map<String, dynamic> json,
@@ -59,4 +80,36 @@ class AssistantConfirmResultResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum AssistantConfirmResultResponseDtoDecisionEnum {
+  @JsonValue(r'approved')
+  approved(r'approved'),
+  @JsonValue(r'rejected')
+  rejected(r'rejected'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const AssistantConfirmResultResponseDtoDecisionEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum AssistantConfirmResultResponseDtoStatusEnum {
+  @JsonValue(r'approved')
+  approved(r'approved'),
+  @JsonValue(r'rejected')
+  rejected(r'rejected'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const AssistantConfirmResultResponseDtoStatusEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

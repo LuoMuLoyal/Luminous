@@ -24,7 +24,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
          dio: Dio(BaseOptions()),
        );
 
-  final lucent.AssistantCapabilitiesDataDto? _capabilities;
+  final lucent.AssistantCapabilitiesResponseDto? _capabilities;
   final lucent.AssistantConversationDataDto? _latestConversation;
   final List<lucent.AssistantConversationSummaryDto>? _recentConversations;
   final lucent.AssistantConversationDataDto? _openedConversation;
@@ -39,7 +39,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
       <(String, List<String>, String, String?)>[];
 
   @override
-  Future<lucent.AssistantCapabilitiesDataDto> getCapabilities() async {
+  Future<lucent.AssistantCapabilitiesResponseDto> getCapabilities() async {
     if (_capabilities == null) {
       throw const LucentApiException(message: 'not configured');
     }
@@ -153,7 +153,7 @@ lucent.AssistantToolCapabilityDto _tool({
   );
 }
 
-lucent.AssistantCapabilitiesDataDto _capabilitiesDto({
+lucent.AssistantCapabilitiesResponseDto _capabilitiesDto({
   String phase = 'preview',
   bool enabled = true,
   bool memory = false,
@@ -167,7 +167,7 @@ lucent.AssistantCapabilitiesDataDto _capabilitiesDto({
   List<lucent.AssistantToolCapabilityDto>? tools,
   String? updatedAt,
 }) {
-  return lucent.AssistantCapabilitiesDataDto(
+  return lucent.AssistantCapabilitiesResponseDto(
     phase: phase,
     assistantEnabled: enabled,
     assistantMemoryEnabled: memory,
