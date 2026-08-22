@@ -39,7 +39,7 @@ class _FakeLocaleController extends LocaleController {
   }
 }
 
-HealthContextDataDto _testDto() => HealthContextDataDto(
+HealthContextResponseDto _testDto() => HealthContextResponseDto(
   summary: UserHealthSummaryDto(
     age: null,
     onboardingCompleted: false,

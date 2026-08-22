@@ -378,7 +378,7 @@ class _FakeSettingsProfileRemoteDataSource
   Object? lastUnitSystem = settingsProfileNoChange;
 
   @override
-  Future<HealthContextDataDto> updatePreferences({
+  Future<HealthContextResponseDto> updatePreferences({
     Object? locale = settingsProfileNoChange,
     Object? timezone = settingsProfileNoChange,
     Object? unitSystem = settingsProfileNoChange,
@@ -386,7 +386,7 @@ class _FakeSettingsProfileRemoteDataSource
     lastLocale = locale;
     lastTimezone = timezone;
     lastUnitSystem = unitSystem;
-    return HealthContextDataDto(
+    return HealthContextResponseDto(
       summary: UserHealthSummaryDto(
         age: null,
         onboardingCompleted: false,

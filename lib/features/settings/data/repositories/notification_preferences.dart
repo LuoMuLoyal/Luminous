@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/api_paths.dart';
-import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/repositories/notification_preferences.dart';
 
@@ -19,7 +19,7 @@ class LucentNotificationPreferencesRepository
   Future<NotificationPreferences> getPreferences() async {
     final response = await api.notificationPreferencesControllerGetV1();
     return _map(
-      requireData(response.data, operation: 'getNotificationPreferences').data,
+      requireData(response.data, operation: 'getNotificationPreferences'),
     );
   }
 
@@ -45,10 +45,7 @@ class LucentNotificationPreferencesRepository
 
     if (response is Response<NotificationPreferencesResponseDto>) {
       return _map(
-        requireData(
-          response.data,
-          operation: 'patchNotificationPreferences',
-        ).data,
+        requireData(response.data, operation: 'patchNotificationPreferences'),
       );
     }
 
@@ -56,15 +53,10 @@ class LucentNotificationPreferencesRepository
     if (raw is! Map<String, dynamic>) {
       throw StateError('API 返回空的通知偏好响应');
     }
-    final envelope = LucentEnvelope<NotificationPreferencesDataDto>.fromJson(
-      raw,
-      dataDecoder: (data) =>
-          NotificationPreferencesDataDto.fromJson(data as Map<String, dynamic>),
-    );
-    return _map(envelope.unwrapOrThrow());
+    return _map(NotificationPreferencesResponseDto.fromJson(raw));
   }
 
-  NotificationPreferences _map(NotificationPreferencesDataDto data) {
+  NotificationPreferences _map(NotificationPreferencesResponseDto data) {
     return NotificationPreferences(
       healthAlertsEnabled: data.healthAlertsEnabled,
       weeklyInsightEnabled: data.weeklyInsightEnabled,

@@ -3,7 +3,7 @@ import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 /// Settings is a thin configuration surface: its data layer maps directly to
-/// generated Lucent DTOs (e.g. [HealthContextDataDto]) and local platform
+/// generated Lucent DTOs (e.g. [HealthContextResponseDto]) and local platform
 /// services. There is no dedicated domain layer because the business rules are
 /// limited to form-level validation and preference persistence.
 
@@ -14,7 +14,7 @@ class SettingsProfileRemoteDataSource {
 
   final Dio dio;
 
-  Future<HealthContextDataDto> updatePreferences({
+  Future<HealthContextResponseDto> updatePreferences({
     Object? locale = settingsProfileNoChange,
     Object? timezone = settingsProfileNoChange,
     Object? unitSystem = settingsProfileNoChange,
@@ -41,6 +41,6 @@ class SettingsProfileRemoteDataSource {
       message: 'Lucent health-context profile response is empty.',
     );
 
-    return HealthContextResponseDto.fromJson(body).data;
+    return HealthContextResponseDto.fromJson(body);
   }
 }

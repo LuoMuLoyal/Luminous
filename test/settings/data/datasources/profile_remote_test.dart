@@ -53,34 +53,30 @@ String _healthContextResponseJson({
   String unitSystem = 'metric',
 }) {
   return jsonEncode({
-    'code': 0,
-    'message': '',
-    'data': {
-      'summary': {
-        'age': null,
-        'onboardingCompleted': false,
-        'activeAllergyCount': 0,
-        'conditionCount': 0,
-        'currentMedicineCount': 0,
-        'missingCoreProfileFields': [],
-      },
-      'profile': {
-        'birthDate': null,
-        'sexAtBirth': 'unknown',
-        'heightCm': null,
-        'weightKg': null,
-        'bloodType': null,
-        'locale': locale,
-        'timezone': timezone,
-        'unitSystem': unitSystem,
-        'onboardingCompletedAt': null,
-        'emergencyContact': {'name': null, 'phone': null},
-        'extras': null,
-      },
-      'allergies': [],
-      'conditions': [],
-      'currentMedicines': [],
+    'summary': {
+      'age': null,
+      'onboardingCompleted': false,
+      'activeAllergyCount': 0,
+      'conditionCount': 0,
+      'currentMedicineCount': 0,
+      'missingCoreProfileFields': [],
     },
+    'profile': {
+      'birthDate': null,
+      'sexAtBirth': 'unknown',
+      'heightCm': null,
+      'weightKg': null,
+      'bloodType': null,
+      'locale': locale,
+      'timezone': timezone,
+      'unitSystem': unitSystem,
+      'onboardingCompletedAt': null,
+      'emergencyContact': {'name': null, 'phone': null},
+      'extras': null,
+    },
+    'allergies': [],
+    'conditions': [],
+    'currentMedicines': [],
   });
 }
 
@@ -186,7 +182,7 @@ void main() {
 
     // ── updatePreferences — response parsing ─────────────────
     group('updatePreferences response parsing', () {
-      test('returns parsed HealthContextDataDto on success', () async {
+      test('returns parsed HealthContextResponseDto on success', () async {
         adapter.responseData = _healthContextResponseJson(
           locale: 'en-US',
           timezone: 'America/New_York',
@@ -200,15 +196,18 @@ void main() {
         expect(result.profile.unitSystem, UnitSystem.imperial);
       });
 
-      test('returns parsed HealthContextDataDto with zh-CN defaults', () async {
-        adapter.responseData = _healthContextResponseJson();
+      test(
+        'returns parsed HealthContextResponseDto with zh-CN defaults',
+        () async {
+          adapter.responseData = _healthContextResponseJson();
 
-        final result = await dataSource.updatePreferences();
+          final result = await dataSource.updatePreferences();
 
-        expect(result.profile.locale, 'zh-CN');
-        expect(result.profile.timezone, 'Asia/Shanghai');
-        expect(result.profile.unitSystem, UnitSystem.metric);
-      });
+          expect(result.profile.locale, 'zh-CN');
+          expect(result.profile.timezone, 'Asia/Shanghai');
+          expect(result.profile.unitSystem, UnitSystem.metric);
+        },
+      );
     });
 
     // ── settingsProfileNoChange sentinel ──────────────────────

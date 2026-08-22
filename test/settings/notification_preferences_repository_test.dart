@@ -11,18 +11,14 @@ void main() {
     final dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
     dio.httpClientAdapter = _JsonAdapter(
       responseData: {
-        'code': 0,
-        'message': '',
-        'data': {
-          'healthAlertsEnabled': false,
-          'weeklyInsightEnabled': true,
-          'waterRemindersEnabled': true,
-          'sleepReminderEnabled': true,
-          'sleepBedtimeMinutes': 1380,
-          'sleepWakeTimeMinutes': 420,
-          'configured': true,
-          'updatedAt': '2026-08-20T00:00:00.000Z',
-        },
+        'healthAlertsEnabled': false,
+        'weeklyInsightEnabled': true,
+        'waterRemindersEnabled': true,
+        'sleepReminderEnabled': true,
+        'sleepBedtimeMinutes': 1380,
+        'sleepWakeTimeMinutes': 420,
+        'configured': true,
+        'updatedAt': '2026-08-20T00:00:00.000Z',
       },
     );
     final repository = LucentNotificationPreferencesRepository(
@@ -43,19 +39,15 @@ void main() {
     () async {
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
       final adapter = _JsonAdapter(
-        responseData: {
-          'code': 0,
-          'message': '',
-          'data': const {
-            'healthAlertsEnabled': true,
-            'weeklyInsightEnabled': false,
-            'waterRemindersEnabled': true,
-            'sleepReminderEnabled': false,
-            'sleepBedtimeMinutes': null,
-            'sleepWakeTimeMinutes': null,
-            'configured': true,
-            'updatedAt': null,
-          },
+        responseData: const {
+          'healthAlertsEnabled': true,
+          'weeklyInsightEnabled': false,
+          'waterRemindersEnabled': true,
+          'sleepReminderEnabled': false,
+          'sleepBedtimeMinutes': null,
+          'sleepWakeTimeMinutes': null,
+          'configured': true,
+          'updatedAt': null,
         },
       );
       dio.httpClientAdapter = adapter;

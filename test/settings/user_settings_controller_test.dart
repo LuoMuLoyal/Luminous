@@ -448,25 +448,21 @@ UserSettingsResponseDto _buildResponse({
   AssistantContextSettingsDto? assistantContext,
 }) {
   return UserSettingsResponseDto(
-    code: 0,
-    message: 'ok',
-    data: UserSettingsDataDto(
-      aiSummariesEnabled: aiSummariesEnabled,
-      dataSharingConsent: dataSharingConsent,
-      assistantEnabled: assistantEnabled,
-      assistantMemoryEnabled: assistantMemoryEnabled,
-      waterTargetCount: 8,
-      assistantContext:
-          assistantContext ??
-          AssistantContextSettingsDto(
-            healthProfile: true,
-            dailyRecords: true,
-            sleepRecords: true,
-            currentMedicines: true,
-          ),
-      updatedAt: '2026-06-12T00:00:00.000Z',
-      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
-    ),
+    aiSummariesEnabled: aiSummariesEnabled,
+    dataSharingConsent: dataSharingConsent,
+    assistantEnabled: assistantEnabled,
+    assistantMemoryEnabled: assistantMemoryEnabled,
+    waterTargetCount: 8,
+    assistantContext:
+        assistantContext ??
+        AssistantContextSettingsDto(
+          healthProfile: true,
+          dailyRecords: true,
+          sleepRecords: true,
+          currentMedicines: true,
+        ),
+    updatedAt: '2026-06-12T00:00:00.000Z',
+    securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
   );
 }
 
@@ -481,23 +477,19 @@ class _FakeUserSettingsApi implements UserSettingsApi {
   }) : _getResponseData = responseData;
 
   static UserSettingsResponseDto _defaultResponse() => UserSettingsResponseDto(
-    code: 0,
-    message: 'ok',
-    data: UserSettingsDataDto(
-      aiSummariesEnabled: false,
-      dataSharingConsent: true,
-      assistantEnabled: true,
-      assistantMemoryEnabled: false,
-      waterTargetCount: 8,
-      assistantContext: AssistantContextSettingsDto(
-        healthProfile: true,
-        dailyRecords: true,
-        sleepRecords: true,
-        currentMedicines: true,
-      ),
-      updatedAt: '2026-06-12T00:00:00.000Z',
-      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
+    aiSummariesEnabled: false,
+    dataSharingConsent: true,
+    assistantEnabled: true,
+    assistantMemoryEnabled: false,
+    waterTargetCount: 8,
+    assistantContext: AssistantContextSettingsDto(
+      healthProfile: true,
+      dailyRecords: true,
+      sleepRecords: true,
+      currentMedicines: true,
     ),
+    updatedAt: '2026-06-12T00:00:00.000Z',
+    securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
   );
 
   // GET state.
@@ -583,12 +575,8 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async => _response(
     SecurityPinElevationResponseDto(
-      code: 0,
-      message: '',
-      data: SecurityPinElevationDataDto(
-        elevationToken: 'token',
-        expiresAt: '2026-06-12T01:00:00.000Z',
-      ),
+      elevationToken: 'token',
+      expiresAt: '2026-06-12T01:00:00.000Z',
     ),
   );
 

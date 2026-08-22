@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/security_pin_elevation_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,34 +18,28 @@ part 'security_pin_elevation_response_dto.g.dart';
 class SecurityPinElevationResponseDto {
   /// Returns a new [SecurityPinElevationResponseDto] instance.
   SecurityPinElevationResponseDto({
-    required this.code,
+    required this.elevationToken,
 
-    required this.message,
-
-    required this.data,
+    required this.expiresAt,
   });
 
-  /// Result code.
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final num code;
+  /// Short-lived signed elevation token
+  @JsonKey(name: r'elevationToken', required: true, includeIfNull: false)
+  final String elevationToken;
 
-  /// Message.
-  @JsonKey(name: r'message', required: true, includeIfNull: false)
-  final String message;
-
-  @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final SecurityPinElevationDataDto data;
+  /// ISO-8601 timestamp when the elevation token expires
+  @JsonKey(name: r'expiresAt', required: true, includeIfNull: false)
+  final String expiresAt;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SecurityPinElevationResponseDto &&
-          other.code == code &&
-          other.message == message &&
-          other.data == data;
+          other.elevationToken == elevationToken &&
+          other.expiresAt == expiresAt;
 
   @override
-  int get hashCode => code.hashCode + message.hashCode + data.hashCode;
+  int get hashCode => elevationToken.hashCode + expiresAt.hashCode;
 
   factory SecurityPinElevationResponseDto.fromJson(Map<String, dynamic> json) =>
       _$SecurityPinElevationResponseDtoFromJson(json);
