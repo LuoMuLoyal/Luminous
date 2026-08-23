@@ -174,6 +174,11 @@ class _EndEventSheetState extends State<EndEventSheet> {
       _submitError = null;
     });
 
+    // 提交失败投影：调用方 onSubmit（ActiveHealthEvent notifier）内部已完成
+    // repository 的 run()+fold——Left 以 LucentFailure 抛出、协议异常
+    // （FormatException 逃逸 .run()）同样在此被捕获，统一投影到既有
+    // submitError state。widget 不导入 fpdart、不读 DioException、不解析
+    // code/status。
     try {
       await widget.onSubmit(outcome);
     } catch (_) {

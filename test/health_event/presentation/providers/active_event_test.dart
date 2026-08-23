@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_event/data/providers/health_event.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
@@ -10,10 +13,10 @@ import 'package:luminous/features/health_event/domain/repositories/health_event.
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 
 class _FakeHealthEventRepository implements HealthEventRepository {
-  _FakeHealthEventRepository({this.event, this.error});
+  _FakeHealthEventRepository({this.event, this.failure});
 
   HealthEvent? event;
-  Object? error;
+  LucentFailure? failure;
   int fetchCount = 0;
   String? createdTitle;
   List<String>? createdMedicineIds;
@@ -25,69 +28,95 @@ class _FakeHealthEventRepository implements HealthEventRepository {
   Completer<HealthEvent>? endCompleter;
 
   @override
-  Future<HealthEvent?> fetchActive() async {
+  TaskEither<LucentFailure, HealthEvent?> fetchActive() {
     fetchCount++;
     final pending = fetchCompleter;
     if (pending != null) {
       fetchCompleter = null;
-      return pending.future;
+      return TaskEither.tryCatch(
+        () => pending.future,
+        (error, stackTrace) => LucentErrorMapper.fromObject(error),
+      );
     }
-    if (error != null) throw error!;
-    return event;
+    final currentFailure = failure;
+    if (currentFailure != null) {
+      return TaskEither.left(currentFailure);
+    }
+    return TaskEither.right(event);
   }
 
   @override
-  Future<HealthEvent?> fetchById(String eventId) => throw UnimplementedError();
+  TaskEither<LucentFailure, HealthEvent?> fetchById(String eventId) =>
+      throw UnimplementedError();
 
   @override
-  Future<List<HealthEvent>> fetchHistory() => throw UnimplementedError();
+  TaskEither<LucentFailure, List<HealthEvent>> fetchHistory() =>
+      throw UnimplementedError();
 
   @override
-  Future<HealthEvent> create({
+  TaskEither<LucentFailure, HealthEvent> create({
     required String title,
     String? reasonRecordId,
     List<String> currentMedicineIds = const [],
-  }) async {
+  }) {
     createdTitle = title;
     createdMedicineIds = currentMedicineIds;
-    if (error != null) throw error!;
+    final currentFailure = failure;
+    if (currentFailure != null) {
+      return TaskEither.left(currentFailure);
+    }
     final pending = createCompleter;
     if (pending != null) {
       createCompleter = null;
-      return pending.future;
+      return TaskEither.tryCatch(
+        () => pending.future,
+        (error, stackTrace) => LucentErrorMapper.fromObject(error),
+      );
     }
-    return event!;
+    return TaskEither.right(event!);
   }
 
   @override
-  Future<HealthEvent> checkIn({
+  TaskEither<LucentFailure, HealthEvent> checkIn({
     required String eventId,
     required String date,
     required HealthEventOutcome outcome,
-  }) async {
+  }) {
     checkedInOutcome = outcome;
-    if (error != null) throw error!;
+    final currentFailure = failure;
+    if (currentFailure != null) {
+      return TaskEither.left(currentFailure);
+    }
     final pending = checkInCompleter;
     if (pending != null) {
       checkInCompleter = null;
-      return pending.future;
+      return TaskEither.tryCatch(
+        () => pending.future,
+        (error, stackTrace) => LucentErrorMapper.fromObject(error),
+      );
     }
-    return event!;
+    return TaskEither.right(event!);
   }
 
   @override
-  Future<HealthEvent> end({
+  TaskEither<LucentFailure, HealthEvent> end({
     required String eventId,
     required HealthEventOutcome outcome,
-  }) async {
+  }) {
     endedOutcome = outcome;
-    if (error != null) throw error!;
+    final currentFailure = failure;
+    if (currentFailure != null) {
+      return TaskEither.left(currentFailure);
+    }
     final pending = endCompleter;
     if (pending != null) {
       endCompleter = null;
-      return pending.future;
+      return TaskEither.tryCatch(
+        () => pending.future,
+        (error, stackTrace) => LucentErrorMapper.fromObject(error),
+      );
     }
-    return event!;
+    return TaskEither.right(event!);
   }
 }
 
@@ -119,9 +148,12 @@ void main() {
   });
 
   test('exposes repository failures as provider errors', () async {
-    final error = StateError('active event unavailable');
-    final repository = _FakeHealthEventRepository(error: error);
+    final failure = LucentFailure.unknown(message: 'active event unavailable');
+    final repository = _FakeHealthEventRepository(failure: failure);
+    // LucentFailure 非 `Error` 子类，容器默认 retry 会指数退避重试并保持
+    // loading——关闭 retry 让 Left 立即以 AsyncError 投影（report 套件同款）。
     final container = ProviderContainer(
+      retry: (count, error) => null,
       overrides: [
         authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
         healthEventRepositoryProvider.overrideWithValue(repository),
@@ -131,7 +163,7 @@ void main() {
 
     await expectLater(
       container.read(activeHealthEventProvider.future),
-      throwsA(same(error)),
+      throwsA(same(failure)),
     );
     expect(container.read(activeHealthEventProvider).hasError, isTrue);
   });

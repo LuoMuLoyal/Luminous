@@ -14,8 +14,10 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     final expectedUserId = ref.read(authSessionProvider).user?.id;
     return authGuarded(
       ref: ref,
-      fetch: () => ref.watch(healthEventRepositoryProvider).fetchActive(),
-    ).then((event) {
+      fetch: () => ref.watch(healthEventRepositoryProvider).fetchActive().run(),
+    ).then((result) {
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      final event = result.fold((failure) => throw failure, (event) => event);
       _ensureAuthenticated(expectedUserId);
       return event;
     });
@@ -24,12 +26,15 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
   Future<void> refresh() async {
     final expectedUserId = ref.read(authSessionProvider).user?.id;
     state = const AsyncLoading();
-    final result = await AsyncValue.guard(
-      () => authGuarded(
+    final result = await AsyncValue.guard(() async {
+      final either = await authGuarded(
         ref: ref,
-        fetch: () => ref.read(healthEventRepositoryProvider).fetchActive(),
-      ),
-    );
+        fetch: () =>
+            ref.read(healthEventRepositoryProvider).fetchActive().run(),
+      );
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      return either.fold((failure) => throw failure, (event) => event);
+    });
     if (!_isSameAuthenticatedUser(expectedUserId)) {
       state = AsyncError(const AuthRequiredException(), StackTrace.current);
       return;
@@ -43,7 +48,7 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     List<String> currentMedicineIds = const [],
   }) async {
     final expectedUserId = ref.read(authSessionProvider).user?.id;
-    final event = await authGuarded(
+    final either = await authGuarded(
       ref: ref,
       fetch: () => ref
           .read(healthEventRepositoryProvider)
@@ -51,8 +56,11 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
             title: title,
             reasonRecordId: reasonRecordId,
             currentMedicineIds: currentMedicineIds,
-          ),
+          )
+          .run(),
     );
+    // Left 重抛 LucentFailure：调用方（sheet 提交回调）投影到 submitError。
+    final event = either.fold((failure) => throw failure, (event) => event);
     _ensureAuthenticated(expectedUserId);
     state = AsyncData(event);
     _emitHealthEventsChanged();
@@ -65,12 +73,15 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     required HealthEventOutcome outcome,
   }) async {
     final expectedUserId = ref.read(authSessionProvider).user?.id;
-    final event = await authGuarded(
+    final either = await authGuarded(
       ref: ref,
       fetch: () => ref
           .read(healthEventRepositoryProvider)
-          .checkIn(eventId: eventId, date: date, outcome: outcome),
+          .checkIn(eventId: eventId, date: date, outcome: outcome)
+          .run(),
     );
+    // Left 重抛 LucentFailure：调用方（sheet 提交回调）投影到 submitError。
+    final event = either.fold((failure) => throw failure, (event) => event);
     _ensureAuthenticated(expectedUserId);
     state = AsyncData(event);
     _emitHealthEventsChanged();
@@ -82,12 +93,15 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     required HealthEventOutcome outcome,
   }) async {
     final expectedUserId = ref.read(authSessionProvider).user?.id;
-    final event = await authGuarded(
+    final either = await authGuarded(
       ref: ref,
       fetch: () => ref
           .read(healthEventRepositoryProvider)
-          .end(eventId: eventId, outcome: outcome),
+          .end(eventId: eventId, outcome: outcome)
+          .run(),
     );
+    // Left 重抛 LucentFailure：调用方（sheet 提交回调）投影到 submitError。
+    final event = either.fold((failure) => throw failure, (event) => event);
     _ensureAuthenticated(expectedUserId);
     state = const AsyncData(null);
     _emitHealthEventsChanged();

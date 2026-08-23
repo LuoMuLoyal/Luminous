@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart'
     hide HealthEventStatus, HealthEventOutcome, DailyRecordKind;
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -947,46 +949,49 @@ class _FakeHealthEventRepository implements HealthEventRepository {
   HealthEventOutcome? endedOutcome;
 
   @override
-  Future<HealthEvent?> fetchActive() async => null;
+  TaskEither<LucentFailure, HealthEvent?> fetchActive() =>
+      TaskEither.right(null);
 
   @override
-  Future<HealthEvent?> fetchById(String eventId) async => null;
+  TaskEither<LucentFailure, HealthEvent?> fetchById(String eventId) =>
+      TaskEither.right(null);
 
   @override
-  Future<List<HealthEvent>> fetchHistory() async => const [];
+  TaskEither<LucentFailure, List<HealthEvent>> fetchHistory() =>
+      TaskEither.right(const []);
 
   @override
-  Future<HealthEvent> create({
+  TaskEither<LucentFailure, HealthEvent> create({
     required String title,
     String? reasonRecordId,
     List<String> currentMedicineIds = const [],
-  }) async {
+  }) {
     createdTitle = title;
     createdReasonRecordId = reasonRecordId;
     createdMedicineIds = currentMedicineIds;
-    return _createdEvent(title);
+    return TaskEither.right(_createdEvent(title));
   }
 
   @override
-  Future<HealthEvent> checkIn({
+  TaskEither<LucentFailure, HealthEvent> checkIn({
     required String eventId,
     required String date,
     required HealthEventOutcome outcome,
-  }) async {
+  }) {
     checkedInEventId = eventId;
     checkedInDate = date;
     checkedInOutcome = outcome;
-    return _createdEvent('感冒观察');
+    return TaskEither.right(_createdEvent('感冒观察'));
   }
 
   @override
-  Future<HealthEvent> end({
+  TaskEither<LucentFailure, HealthEvent> end({
     required String eventId,
     required HealthEventOutcome outcome,
-  }) async {
+  }) {
     endedEventId = eventId;
     endedOutcome = outcome;
-    return _createdEvent('感冒观察');
+    return TaskEither.right(_createdEvent('感冒观察'));
   }
 
   HealthEvent _createdEvent(String title) {

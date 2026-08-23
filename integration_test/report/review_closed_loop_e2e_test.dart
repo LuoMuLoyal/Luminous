@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:fpdart/fpdart.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
@@ -241,45 +243,49 @@ class E2eLoopHealthEventRepository implements HealthEventRepository {
   late E2eHealthEventLoopStore _store;
 
   @override
-  Future<HealthEvent?> fetchActive() async => _store.active;
+  TaskEither<LucentFailure, HealthEvent?> fetchActive() =>
+      TaskEither.right(_store.active);
 
   @override
-  Future<HealthEvent?> fetchById(String eventId) async {
+  TaskEither<LucentFailure, HealthEvent?> fetchById(String eventId) {
     final active = _store.active;
-    if (active?.id == eventId) return active;
+    if (active?.id == eventId) return TaskEither.right(active);
     for (final event in _store.ended) {
-      if (event.id == eventId) return event;
+      if (event.id == eventId) return TaskEither.right(event);
     }
-    return null;
+    return TaskEither.right(null);
   }
 
   @override
-  Future<List<HealthEvent>> fetchHistory() async => _store.ended;
+  TaskEither<LucentFailure, List<HealthEvent>> fetchHistory() =>
+      TaskEither.right(_store.ended);
 
   @override
-  Future<HealthEvent> create({
+  TaskEither<LucentFailure, HealthEvent> create({
     required String title,
     String? reasonRecordId,
     List<String> currentMedicineIds = const [],
-  }) async {
-    return _store.start(title: title, currentMedicineIds: currentMedicineIds);
+  }) {
+    return TaskEither.right(
+      _store.start(title: title, currentMedicineIds: currentMedicineIds),
+    );
   }
 
   @override
-  Future<HealthEvent> checkIn({
+  TaskEither<LucentFailure, HealthEvent> checkIn({
     required String eventId,
     required String date,
     required HealthEventOutcome outcome,
-  }) async {
-    return _store.checkIn(eventId: eventId, outcome: outcome);
+  }) {
+    return TaskEither.right(_store.checkIn(eventId: eventId, outcome: outcome));
   }
 
   @override
-  Future<HealthEvent> end({
+  TaskEither<LucentFailure, HealthEvent> end({
     required String eventId,
     required HealthEventOutcome outcome,
-  }) async {
-    return _store.end(eventId, outcome);
+  }) {
+    return TaskEither.right(_store.end(eventId, outcome));
   }
 }
 

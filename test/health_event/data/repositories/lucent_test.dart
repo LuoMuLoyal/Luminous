@@ -1,9 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:lucent_api/lucent_api.dart' as api;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/health_event/data/repositories/lucent.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../../../helpers/task_either.dart';
 
 class _MockHealthEventsApi extends Mock implements api.HealthEventsApi {}
 
@@ -30,187 +35,388 @@ void main() {
     repository = LucentHealthEventRepository(apiClient: healthEventsApi);
   });
 
-  test('maps generated event response into domain data', () async {
-    when(
-      () => healthEventsApi.healthEventsControllerActiveV1(),
-    ).thenAnswer((_) async => _activeResponse(_eventDto()));
+  group('fetchActive', () {
+    test('maps generated event response into domain data', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerActiveV1(),
+      ).thenAnswer((_) async => _activeResponse(_eventDto()));
 
-    final event = await repository.fetchActive();
+      final event = await expectTaskRight(repository.fetchActive());
 
-    expect(event, isNotNull);
-    expect(event!.id, 'event-1');
-    expect(event.status, HealthEventStatus.active);
-    expect(event.outcome, HealthEventOutcome.improved);
-    expect(event.checkIn?.date, '2026-08-09');
-    expect(event.coverage.checkInCount, 3);
+      expect(event, isNotNull);
+      expect(event!.id, 'event-1');
+      expect(event.status, HealthEventStatus.active);
+      expect(event.outcome, HealthEventOutcome.improved);
+      expect(event.checkIn?.date, '2026-08-09');
+      expect(event.coverage.checkInCount, 3);
+    });
+
+    test('maps an empty active response to Right(null)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerActiveV1(),
+      ).thenAnswer((_) async => _activeResponse(null));
+
+      expect(await expectTaskRight(repository.fetchActive()), isNull);
+    });
+
+    test(
+      'maps an active 404 to Right(null) — no active event is normal',
+      () async {
+        when(
+          () => healthEventsApi.healthEventsControllerActiveV1(),
+        ).thenThrow(_dioException(404));
+
+        expect(await expectTaskRight(repository.fetchActive()), isNull);
+      },
+    );
+
+    test('maps an active 404 Problem Details to Right(null)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerActiveV1(),
+      ).thenThrow(_problemDetails(404, code: 'EVENT_NOT_FOUND'));
+
+      expect(await expectTaskRight(repository.fetchActive()), isNull);
+    });
+
+    test('maps active network failure to Left(network)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerActiveV1(),
+      ).thenThrow(_connectionTimeout());
+
+      final failure = await expectTaskLeft(repository.fetchActive());
+      expect(failure.kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.connectionTimeout);
+    });
+
+    test('maps a non-string field in the response to Left(unknown) keeping the '
+        'cause (protocol invariant)', () async {
+      final malformed = _eventDto().toJson()..['endedAt'] = 123;
+      when(() => healthEventsApi.healthEventsControllerActiveV1()).thenAnswer(
+        (_) async =>
+            _activeResponse(api.HealthEventItemDto.fromJson(malformed)),
+      );
+
+      final failure = await expectTaskLeft(repository.fetchActive());
+      expect(failure.kind, LucentFailureKind.unknown);
+      expect(failure.cause, isA<CheckedFromJsonException>());
+    });
   });
 
-  test('maps an empty active response to null', () async {
-    when(
-      () => healthEventsApi.healthEventsControllerActiveV1(),
-    ).thenAnswer((_) async => _activeResponse(null));
+  group('fetchById', () {
+    test('maps detail response into domain data', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerGetV1(id: 'event-1'),
+      ).thenAnswer((_) async => _eventResponse(_eventDto()));
 
-    expect(await repository.fetchActive(), isNull);
+      final detail = await expectTaskRight(repository.fetchById('event-1'));
+      expect(detail?.title, 'Cold observation');
+      expect(detail?.id, 'event-1');
+    });
+
+    test('maps a detail 404 to Right(null)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerGetV1(id: 'event-1'),
+      ).thenThrow(_dioException(404));
+
+      expect(await expectTaskRight(repository.fetchById('event-1')), isNull);
+    });
   });
 
-  test('maps an active 404 to null', () async {
-    when(
-      () => healthEventsApi.healthEventsControllerActiveV1(),
-    ).thenThrow(_dioException(404));
+  group('fetchHistory', () {
+    test('maps history response into domain data', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerListV1(),
+      ).thenAnswer((_) async => _listResponse([_eventDto()]));
 
-    expect(await repository.fetchActive(), isNull);
+      final history = await expectTaskRight(repository.fetchHistory());
+      expect(history.single.id, 'event-1');
+    });
+
+    test('keeps a legal empty history as Right', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerListV1(),
+      ).thenAnswer((_) async => _listResponse(const []));
+
+      expect(await expectTaskRight(repository.fetchHistory()), isEmpty);
+    });
+
+    test(
+      'maps empty history success body to Left(network, emptyResponse)',
+      () async {
+        when(
+          () => healthEventsApi.healthEventsControllerListV1(),
+        ).thenAnswer((_) async => _emptyListResponse());
+
+        final failure = await expectTaskLeft(repository.fetchHistory());
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+      },
+    );
+
+    test('404 Problem Details keeps code and status as a Left', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerListV1(),
+      ).thenThrow(_problemDetails(404, code: 'EVENT_NOT_FOUND'));
+
+      final failure = await expectTaskLeft(repository.fetchHistory());
+      expect(failure.code, 'EVENT_NOT_FOUND');
+      expect(failure.statusCode, 404);
+      expect(failure.kind, LucentFailureKind.business);
+    });
+
+    test('maps history network failure to Left(network)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerListV1(),
+      ).thenThrow(_connectionTimeout());
+
+      final failure = await expectTaskLeft(repository.fetchHistory());
+      expect(failure.kind, LucentFailureKind.network);
+    });
   });
 
-  test('maps successful writes, detail, and history responses', () async {
-    when(
-      () => healthEventsApi.healthEventsControllerCreateV1(
-        createHealthEventDto: any(named: 'createHealthEventDto'),
-      ),
-    ).thenAnswer((_) async => _eventResponse(_eventDto()));
-    when(
-      () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
-        id: any(named: 'id'),
-        date: any(named: 'date'),
-        upsertHealthEventCheckInDto: any(named: 'upsertHealthEventCheckInDto'),
-      ),
-    ).thenAnswer((_) async => _eventResponse(_eventDto()));
-    when(
-      () => healthEventsApi.healthEventsControllerEndV1(
-        id: any(named: 'id'),
-        endHealthEventDto: any(named: 'endHealthEventDto'),
-      ),
-    ).thenAnswer((_) async => _eventResponse(_eventDto()));
-    when(
-      () => healthEventsApi.healthEventsControllerGetV1(id: 'event-1'),
-    ).thenAnswer((_) async => _eventResponse(_eventDto()));
-    when(
-      () => healthEventsApi.healthEventsControllerListV1(),
-    ).thenAnswer((_) async => _listResponse([_eventDto()]));
-
-    final created = await repository.create(
-      title: 'Cold observation',
-      reasonRecordId: 'record-1',
-      currentMedicineIds: const ['medicine-1'],
-    );
-    final checkedIn = await repository.checkIn(
-      eventId: 'event-1',
-      date: '2026-08-09',
-      outcome: HealthEventOutcome.improved,
-    );
-    final ended = await repository.end(
-      eventId: 'event-1',
-      outcome: HealthEventOutcome.unchanged,
-    );
-    final detail = await repository.fetchById('event-1');
-    final history = await repository.fetchHistory();
-
-    expect(created.id, 'event-1');
-    expect(checkedIn.checkIn?.outcome, HealthEventOutcome.improved);
-    expect(ended.coverage.checkInCount, 3);
-    expect(detail?.title, 'Cold observation');
-    expect(history.single.id, 'event-1');
-
-    final createCall =
-        verify(
-              () => healthEventsApi.healthEventsControllerCreateV1(
-                createHealthEventDto: captureAny(named: 'createHealthEventDto'),
-              ),
-            ).captured.single
-            as api.CreateHealthEventDto;
-    expect(createCall.title, 'Cold observation');
-    expect(createCall.reasonRecordId, 'record-1');
-    expect(createCall.currentMedicineIds, ['medicine-1']);
-    verify(
-      () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
-        id: 'event-1',
-        date: '2026-08-09',
-        upsertHealthEventCheckInDto: captureAny(
-          named: 'upsertHealthEventCheckInDto',
+  group('writes', () {
+    test('maps successful writes, detail, and history responses', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerCreateV1(
+          createHealthEventDto: any(named: 'createHealthEventDto'),
         ),
-      ),
-    ).called(1);
-    verify(
-      () => healthEventsApi.healthEventsControllerEndV1(
-        id: 'event-1',
-        endHealthEventDto: captureAny(named: 'endHealthEventDto'),
-      ),
-    ).called(1);
-  });
+      ).thenAnswer((_) async => _eventResponse(_eventDto()));
+      when(
+        () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+          id: any(named: 'id'),
+          date: any(named: 'date'),
+          upsertHealthEventCheckInDto: any(
+            named: 'upsertHealthEventCheckInDto',
+          ),
+        ),
+      ).thenAnswer((_) async => _eventResponse(_eventDto()));
+      when(
+        () => healthEventsApi.healthEventsControllerEndV1(
+          id: any(named: 'id'),
+          endHealthEventDto: any(named: 'endHealthEventDto'),
+        ),
+      ).thenAnswer((_) async => _eventResponse(_eventDto()));
 
-  test('rejects missing write response data', () async {
-    when(
-      () => healthEventsApi.healthEventsControllerCreateV1(
-        createHealthEventDto: any(named: 'createHealthEventDto'),
-      ),
-    ).thenAnswer((_) async => _emptyEventResponse());
-    when(
-      () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
-        id: any(named: 'id'),
-        date: any(named: 'date'),
-        upsertHealthEventCheckInDto: any(named: 'upsertHealthEventCheckInDto'),
-      ),
-    ).thenAnswer((_) async => _emptyEventResponse());
-    when(
-      () => healthEventsApi.healthEventsControllerEndV1(
-        id: any(named: 'id'),
-        endHealthEventDto: any(named: 'endHealthEventDto'),
-      ),
-    ).thenAnswer((_) async => _emptyEventResponse());
+      final created = await expectTaskRight(
+        repository.create(
+          title: 'Cold observation',
+          reasonRecordId: 'record-1',
+          currentMedicineIds: const ['medicine-1'],
+        ),
+      );
+      final checkedIn = await expectTaskRight(
+        repository.checkIn(
+          eventId: 'event-1',
+          date: '2026-08-09',
+          outcome: HealthEventOutcome.improved,
+        ),
+      );
+      final ended = await expectTaskRight(
+        repository.end(
+          eventId: 'event-1',
+          outcome: HealthEventOutcome.unchanged,
+        ),
+      );
 
-    await expectLater(
-      repository.create(title: 'Cold observation'),
-      throwsA(isA<StateError>()),
-    );
-    await expectLater(
-      repository.checkIn(
-        eventId: 'event-1',
-        date: '2026-08-09',
-        outcome: HealthEventOutcome.improved,
-      ),
-      throwsA(isA<StateError>()),
-    );
-    await expectLater(
-      repository.end(eventId: 'event-1', outcome: HealthEventOutcome.unchanged),
-      throwsA(isA<StateError>()),
-    );
-  });
+      expect(created.id, 'event-1');
+      expect(checkedIn.checkIn?.outcome, HealthEventOutcome.improved);
+      expect(ended.coverage.checkInCount, 3);
 
-  test('propagates create, check-in, and end failures', () async {
-    final error = StateError('request failed');
-    when(
-      () => healthEventsApi.healthEventsControllerCreateV1(
-        createHealthEventDto: any(named: 'createHealthEventDto'),
-      ),
-    ).thenThrow(error);
-    when(
-      () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
-        id: any(named: 'id'),
-        date: any(named: 'date'),
-        upsertHealthEventCheckInDto: any(named: 'upsertHealthEventCheckInDto'),
-      ),
-    ).thenThrow(error);
-    when(
-      () => healthEventsApi.healthEventsControllerEndV1(
-        id: any(named: 'id'),
-        endHealthEventDto: any(named: 'endHealthEventDto'),
-      ),
-    ).thenThrow(error);
+      final createCall =
+          verify(
+                () => healthEventsApi.healthEventsControllerCreateV1(
+                  createHealthEventDto: captureAny(
+                    named: 'createHealthEventDto',
+                  ),
+                ),
+              ).captured.single
+              as api.CreateHealthEventDto;
+      expect(createCall.title, 'Cold observation');
+      expect(createCall.reasonRecordId, 'record-1');
+      expect(createCall.currentMedicineIds, ['medicine-1']);
+      verify(
+        () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+          id: 'event-1',
+          date: '2026-08-09',
+          upsertHealthEventCheckInDto: captureAny(
+            named: 'upsertHealthEventCheckInDto',
+          ),
+        ),
+      ).called(1);
+      verify(
+        () => healthEventsApi.healthEventsControllerEndV1(
+          id: 'event-1',
+          endHealthEventDto: captureAny(named: 'endHealthEventDto'),
+        ),
+      ).called(1);
+    });
 
-    await expectLater(
-      repository.create(title: 'Cold observation'),
-      throwsA(same(error)),
+    test('rejects missing write response data as Left(unknown) keeping the '
+        'StateError cause (protocol invariant)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerCreateV1(
+          createHealthEventDto: any(named: 'createHealthEventDto'),
+        ),
+      ).thenAnswer((_) async => _emptyEventResponse());
+      when(
+        () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+          id: any(named: 'id'),
+          date: any(named: 'date'),
+          upsertHealthEventCheckInDto: any(
+            named: 'upsertHealthEventCheckInDto',
+          ),
+        ),
+      ).thenAnswer((_) async => _emptyEventResponse());
+      when(
+        () => healthEventsApi.healthEventsControllerEndV1(
+          id: any(named: 'id'),
+          endHealthEventDto: any(named: 'endHealthEventDto'),
+        ),
+      ).thenAnswer((_) async => _emptyEventResponse());
+
+      for (final task in [
+        repository.create(title: 'Cold observation'),
+        repository.checkIn(
+          eventId: 'event-1',
+          date: '2026-08-09',
+          outcome: HealthEventOutcome.improved,
+        ),
+        repository.end(
+          eventId: 'event-1',
+          outcome: HealthEventOutcome.unchanged,
+        ),
+      ]) {
+        final failure = await expectTaskLeft(task);
+        expect(failure.kind, LucentFailureKind.unknown);
+        expect(failure.cause, isA<StateError>());
+      }
+    });
+
+    test('maps an unknown status enum to Left(unknown) keeping the StateError '
+        'cause (protocol invariant)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+          id: any(named: 'id'),
+          date: any(named: 'date'),
+          upsertHealthEventCheckInDto: any(
+            named: 'upsertHealthEventCheckInDto',
+          ),
+        ),
+      ).thenAnswer(
+        (_) async => _eventResponse(
+          _eventDto(status: api.HealthEventStatus.unknownDefaultOpenApi),
+        ),
+      );
+
+      final failure = await expectTaskLeft(
+        repository.checkIn(
+          eventId: 'event-1',
+          date: '2026-08-09',
+          outcome: HealthEventOutcome.improved,
+        ),
+      );
+      expect(failure.kind, LucentFailureKind.unknown);
+      expect(failure.cause, isA<StateError>());
+    });
+
+    test('maps an unknown outcome enum to Left(unknown) keeping the StateError '
+        'cause (protocol invariant)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerEndV1(
+          id: any(named: 'id'),
+          endHealthEventDto: any(named: 'endHealthEventDto'),
+        ),
+      ).thenAnswer(
+        (_) async => _eventResponse(
+          _eventDto(
+            checkInOutcome: api.HealthEventOutcome.unknownDefaultOpenApi,
+          ),
+        ),
+      );
+
+      final failure = await expectTaskLeft(
+        repository.end(
+          eventId: 'event-1',
+          outcome: HealthEventOutcome.unchanged,
+        ),
+      );
+      expect(failure.kind, LucentFailureKind.unknown);
+      expect(failure.cause, isA<StateError>());
+    });
+
+    test(
+      '404 Problem Details on writes keeps code and status as a Left',
+      () async {
+        final problem = _problemDetails(404, code: 'EVENT_NOT_FOUND');
+        when(
+          () => healthEventsApi.healthEventsControllerCreateV1(
+            createHealthEventDto: any(named: 'createHealthEventDto'),
+          ),
+        ).thenThrow(problem);
+        when(
+          () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+            id: any(named: 'id'),
+            date: any(named: 'date'),
+            upsertHealthEventCheckInDto: any(
+              named: 'upsertHealthEventCheckInDto',
+            ),
+          ),
+        ).thenThrow(problem);
+        when(
+          () => healthEventsApi.healthEventsControllerEndV1(
+            id: any(named: 'id'),
+            endHealthEventDto: any(named: 'endHealthEventDto'),
+          ),
+        ).thenThrow(problem);
+
+        for (final task in [
+          repository.create(title: 'Cold observation'),
+          repository.checkIn(
+            eventId: 'event-1',
+            date: '2026-08-09',
+            outcome: HealthEventOutcome.improved,
+          ),
+          repository.end(
+            eventId: 'event-1',
+            outcome: HealthEventOutcome.unchanged,
+          ),
+        ]) {
+          final failure = await expectTaskLeft(task);
+          expect(failure.code, 'EVENT_NOT_FOUND');
+          expect(failure.statusCode, 404);
+          expect(failure.kind, LucentFailureKind.business);
+        }
+      },
     );
-    await expectLater(
-      repository.checkIn(
-        eventId: 'event-1',
-        date: '2026-08-09',
-        outcome: HealthEventOutcome.improved,
-      ),
-      throwsA(same(error)),
-    );
-    await expectLater(
-      repository.end(eventId: 'event-1', outcome: HealthEventOutcome.unchanged),
-      throwsA(same(error)),
+
+    test('network failure on writes maps to Left(network)', () async {
+      when(
+        () => healthEventsApi.healthEventsControllerCreateV1(
+          createHealthEventDto: any(named: 'createHealthEventDto'),
+        ),
+      ).thenThrow(_connectionTimeout());
+
+      final failure = await expectTaskLeft(
+        repository.create(title: 'Cold observation'),
+      );
+      expect(failure.kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.connectionTimeout);
+    });
+
+    test(
+      'non-Problem Details error body propagates FormatException from run()',
+      () async {
+        when(
+          () => healthEventsApi.healthEventsControllerCreateV1(
+            createHealthEventDto: any(named: 'createHealthEventDto'),
+          ),
+        ).thenThrow(_nonProblemBody400());
+
+        await expectLater(
+          repository.create(title: 'Cold observation').run(),
+          throwsA(isA<FormatException>()),
+        );
+      },
     );
   });
 }
@@ -250,12 +456,24 @@ Response<api.HealthEventListResponseDto> _listResponse(
   );
 }
 
-api.HealthEventItemDto _eventDto({String? endedAt, String? reasonRecordId}) {
+Response<api.HealthEventListResponseDto> _emptyListResponse() {
+  return Response<api.HealthEventListResponseDto>(
+    requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
+    statusCode: 200,
+  );
+}
+
+api.HealthEventItemDto _eventDto({
+  String? endedAt,
+  String? reasonRecordId,
+  api.HealthEventStatus status = api.HealthEventStatus.active,
+  api.HealthEventOutcome checkInOutcome = api.HealthEventOutcome.improved,
+}) {
   return api.HealthEventItemDto(
     kind: api.HealthEventKind.symptom,
     id: 'event-1',
     title: 'Cold observation',
-    status: api.HealthEventStatus.active,
+    status: status,
     startedAt: '2026-08-08T16:00:00.000Z',
     endedAt: endedAt,
     outcome: api.HealthEventOutcome.improved,
@@ -265,7 +483,7 @@ api.HealthEventItemDto _eventDto({String? endedAt, String? reasonRecordId}) {
       id: 'check-in-1',
       eventId: 'event-1',
       date: '2026-08-09',
-      outcome: api.HealthEventOutcome.improved,
+      outcome: checkInOutcome,
       createdAt: '2026-08-09T01:00:00.000Z',
       updatedAt: '2026-08-09T01:00:00.000Z',
     ),
@@ -282,5 +500,50 @@ DioException _dioException(int statusCode) {
   return DioException(
     requestOptions: request,
     response: Response<void>(requestOptions: request, statusCode: statusCode),
+  );
+}
+
+/// A Problem Details error body served with `application/problem+json`.
+DioException _problemDetails(int statusCode, {required String code}) {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
+    type: DioExceptionType.badResponse,
+    response: Response(
+      requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
+      statusCode: statusCode,
+      headers: Headers.fromMap({
+        Headers.contentTypeHeader: ['application/problem+json'],
+      }),
+      data: {
+        'type': 'https://api.lumos.example/problems/$code',
+        'title': 'Not found',
+        'detail': '健康事件不存在或不可用',
+        'code': code,
+      },
+    ),
+  );
+}
+
+/// A network timeout with no HTTP response.
+DioException _connectionTimeout() {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
+    type: DioExceptionType.connectionTimeout,
+  );
+}
+
+/// A 400 body that is not Problem Details (protocol invariant violation).
+DioException _nonProblemBody400() {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
+    type: DioExceptionType.badResponse,
+    response: Response(
+      requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
+      statusCode: 400,
+      headers: Headers.fromMap({
+        Headers.contentTypeHeader: ['application/json'],
+      }),
+      data: {'error': 'oops'},
+    ),
   );
 }

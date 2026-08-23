@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_event/data/providers/health_event.dart';
@@ -34,55 +36,62 @@ class _FakeHealthEventRepository implements HealthEventRepository {
   HealthEventOutcome? endedOutcome;
 
   @override
-  Future<HealthEvent?> fetchActive() async => active;
+  TaskEither<LucentFailure, HealthEvent?> fetchActive() =>
+      TaskEither.right(active);
 
   @override
-  Future<HealthEvent?> fetchById(String eventId) async => active;
+  TaskEither<LucentFailure, HealthEvent?> fetchById(String eventId) =>
+      TaskEither.right(active);
 
   @override
-  Future<List<HealthEvent>> fetchHistory() async => const [];
+  TaskEither<LucentFailure, List<HealthEvent>> fetchHistory() =>
+      TaskEither.right(const []);
 
   @override
-  Future<HealthEvent> create({
+  TaskEither<LucentFailure, HealthEvent> create({
     required String title,
     String? reasonRecordId,
     List<String> currentMedicineIds = const [],
-  }) async {
+  }) {
     createdTitle = title;
     createdReasonRecordId = reasonRecordId;
     createdMedicineIds = currentMedicineIds;
-    return activeEvent;
+    return TaskEither.right(activeEvent);
   }
 
   @override
-  Future<HealthEvent> checkIn({
+  TaskEither<LucentFailure, HealthEvent> checkIn({
     required String eventId,
     required String date,
     required HealthEventOutcome outcome,
-  }) async {
+  }) {
     checkedInOutcome = outcome;
-    return activeEvent.copyWith(
-      checkIn: HealthEventCheckIn(
-        id: 'check-in-1',
-        eventId: eventId,
-        date: date,
-        outcome: outcome,
-        createdAt: '2026-08-09T00:00:00.000Z',
-        updatedAt: '2026-08-09T00:00:00.000Z',
+    return TaskEither.right(
+      activeEvent.copyWith(
+        checkIn: HealthEventCheckIn(
+          id: 'check-in-1',
+          eventId: eventId,
+          date: date,
+          outcome: outcome,
+          createdAt: '2026-08-09T00:00:00.000Z',
+          updatedAt: '2026-08-09T00:00:00.000Z',
+        ),
       ),
     );
   }
 
   @override
-  Future<HealthEvent> end({
+  TaskEither<LucentFailure, HealthEvent> end({
     required String eventId,
     required HealthEventOutcome outcome,
-  }) async {
+  }) {
     endedOutcome = outcome;
-    return activeEvent.copyWith(
-      status: HealthEventStatus.ended,
-      outcome: outcome,
-      endedAt: '2026-08-09T00:00:00.000Z',
+    return TaskEither.right(
+      activeEvent.copyWith(
+        status: HealthEventStatus.ended,
+        outcome: outcome,
+        endedAt: '2026-08-09T00:00:00.000Z',
+      ),
     );
   }
 }
