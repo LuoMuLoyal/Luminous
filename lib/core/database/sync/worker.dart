@@ -99,11 +99,14 @@ class SyncWorker {
       talker.info('SyncWorker: synced ${entry.entityType} ${entry.id}');
     } on DioException catch (e) {
       final isPermanentlyFailed = entry.retryCount + 1 >= entry.maxRetry;
-      final appError = LucentErrorMapper.toAppError(e);
+      final failure = LucentErrorMapper.fromObject(e);
       await pendingSyncDao.markFailed(
         entry.id,
         raw: e.toString(),
-        details: PendingSyncErrorDetails.fromAppError(appError, e.toString()),
+        details: PendingSyncErrorDetails.fromLucentFailure(
+          failure,
+          e.toString(),
+        ),
       );
       if (isPermanentlyFailed) {
         talker.error(
@@ -117,11 +120,14 @@ class SyncWorker {
         );
       }
     } catch (e) {
-      final appError = LucentErrorMapper.toAppError(e);
+      final failure = LucentErrorMapper.fromObject(e);
       await pendingSyncDao.markFailed(
         entry.id,
         raw: e.toString(),
-        details: PendingSyncErrorDetails.fromAppError(appError, e.toString()),
+        details: PendingSyncErrorDetails.fromLucentFailure(
+          failure,
+          e.toString(),
+        ),
       );
       talker.error('SyncWorker: item ${entry.id} unexpected error: $e');
     }

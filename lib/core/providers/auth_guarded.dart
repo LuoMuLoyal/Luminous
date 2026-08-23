@@ -26,8 +26,15 @@ import 'package:luminous/core/auth/session_provider.dart';
 /// final mineDashboardProvider = FutureProvider<MineDashboard>((ref) {
 ///   return authGuarded(
 ///     ref: ref,
-///     fetch: () => ref.watch(mineRepositoryProvider).fetchDashboard(),
-///     signedOutFallback: () => ref.watch(mineRepositoryProvider).signedOutDashboard,
+///     fetch: () async {
+///       final result = await ref
+///           .watch(mineRepositoryProvider)
+///           .fetchDashboard()
+///           .run();
+///       return result.fold((failure) => throw failure, (dashboard) => dashboard);
+///     },
+///     signedOutFallback: () =>
+///         ref.watch(mineRepositoryProvider).signedOutDashboard,
 ///   );
 /// });
 /// ```

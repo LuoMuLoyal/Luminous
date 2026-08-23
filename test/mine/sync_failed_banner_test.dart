@@ -5,7 +5,7 @@ import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/error.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_banner.dart';
 import 'package:mocktail/mocktail.dart';
@@ -30,7 +30,7 @@ void main() {
     errorDetails: const PendingSyncErrorDetails(
       message: 'Connection timed out',
       networkErrorCode: NetworkErrorCode.connectionError,
-      kind: AppErrorKind.network,
+      kind: LucentFailureKind.network,
       raw: 'DioException [connectionError]: network unavailable',
     ),
   );

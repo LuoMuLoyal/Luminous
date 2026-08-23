@@ -170,7 +170,7 @@ class _CountingMineRepository implements MineRepository {
   int calls = 0;
 
   @override
-  Future<MineDashboard> fetchDashboard() async {
+  TaskEither<LucentFailure, MineDashboard> fetchDashboard() {
     calls += 1;
     return const MockMineRepository().fetchDashboard();
   }

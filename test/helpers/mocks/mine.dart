@@ -1,6 +1,8 @@
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/mine/data/repositories/lucent.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
@@ -35,28 +37,30 @@ class MockMineRepository implements MineRepository {
   }
 
   @override
-  Future<MineDashboard> fetchDashboard() async {
-    return buildDashboard(
-      account: MineAccount(
-        isAuthenticated: true,
-        displayNameKey: MineCopyKey.accountDisplayName,
-        displayName: '[DEMO] User',
-        email: 'demo@example.com',
-        statusKey: MineCopyKey.accountSignedIn,
-        roleKey: MineCopyKey.accountStudentRole,
-        emailVerified: true,
-        hasPassword: true,
-        linkedIdentityCount: 1,
-        lastLoginAt: DateTime.utc(2099, 1, 1, 0, 0),
+  TaskEither<LucentFailure, MineDashboard> fetchDashboard() {
+    return TaskEither.right(
+      buildDashboard(
+        account: MineAccount(
+          isAuthenticated: true,
+          displayNameKey: MineCopyKey.accountDisplayName,
+          displayName: '[DEMO] User',
+          email: 'demo@example.com',
+          statusKey: MineCopyKey.accountSignedIn,
+          roleKey: MineCopyKey.accountStudentRole,
+          emailVerified: true,
+          hasPassword: true,
+          linkedIdentityCount: 1,
+          lastLoginAt: DateTime.utc(2099, 1, 1, 0, 0),
+        ),
+        profile: _mockProfile,
+        completion: const MineCompletion(
+          progress: 0.82,
+          percentLabel: '82%',
+          titleKey: MineCopyKey.completionTitle,
+        ),
+        alerts: _mockAlerts,
+        archiveEntries: _mockArchiveEntries,
       ),
-      profile: _mockProfile,
-      completion: const MineCompletion(
-        progress: 0.82,
-        percentLabel: '82%',
-        titleKey: MineCopyKey.completionTitle,
-      ),
-      alerts: _mockAlerts,
-      archiveEntries: _mockArchiveEntries,
     );
   }
 

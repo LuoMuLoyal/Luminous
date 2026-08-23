@@ -13,7 +13,14 @@ Future<MineDashboard> mineDashboard(Ref ref) {
 
   return authGuarded(
     ref: ref,
-    fetch: () => ref.watch(mineRepositoryProvider).fetchDashboard(),
+    fetch: () async {
+      final result = await ref
+          .watch(mineRepositoryProvider)
+          .fetchDashboard()
+          .run();
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+    },
     signedOutFallback: () =>
         ref.watch(mineRepositoryProvider).signedOutDashboard,
   );

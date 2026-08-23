@@ -1,7 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
@@ -16,21 +19,28 @@ import 'package:luminous/features/mine/domain/repositories/profile.dart';
 ///
 /// Mine is therefore a presentation-facing aggregation layer rather than a
 /// standalone data owner.
+///
+/// Repository boundary: a health-context snapshot load failure (network,
+/// server business failure) is a `TaskEither` Left produced via
+/// `LucentErrorMapper.fromObject` — the dashboard is never fabricated from
+/// default values when the snapshot fails.
 class LucentMineRepository implements MineRepository {
   LucentMineRepository(this._ref);
 
   final Ref _ref;
 
   @override
-  Future<MineDashboard> fetchDashboard() async {
-    final snapshot = await _ref.watch(healthContextSnapshotProvider.future);
-    return buildDashboard(
-      account: _buildAccount(),
-      profile: _buildProfile(snapshot),
-      completion: _buildCompletion(snapshot),
-      alerts: _buildAlerts(snapshot),
-      archiveEntries: _buildArchiveEntries(snapshot),
-    );
+  TaskEither<LucentFailure, MineDashboard> fetchDashboard() {
+    return TaskEither.tryCatch(() async {
+      final snapshot = await _ref.watch(healthContextSnapshotProvider.future);
+      return buildDashboard(
+        account: _buildAccount(),
+        profile: _buildProfile(snapshot),
+        completion: _buildCompletion(snapshot),
+        alerts: _buildAlerts(snapshot),
+        archiveEntries: _buildArchiveEntries(snapshot),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   MineAccount _buildAccount() {

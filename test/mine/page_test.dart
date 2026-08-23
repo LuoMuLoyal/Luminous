@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/soft_icon.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -1033,7 +1035,8 @@ class _EmptyPreviewMineRepository implements MineRepository {
   const _EmptyPreviewMineRepository();
 
   @override
-  Future<MineDashboard> fetchDashboard() async => MineDashboard.signedOut();
+  TaskEither<LucentFailure, MineDashboard> fetchDashboard() =>
+      TaskEither.right(MineDashboard.signedOut());
 
   @override
   Future<MineDashboard> get signedOutDashboard =>
