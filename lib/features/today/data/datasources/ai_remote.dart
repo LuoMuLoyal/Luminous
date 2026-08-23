@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/sse.dart';
 
@@ -30,7 +32,10 @@ class TodayAiRemoteDataSource {
     final response = await api.todayAnalysisControllerReadV1(date: date);
     final data = response.data;
     if (data == null) {
-      throw StateError('Today analysis read response was empty.');
+      throw LucentFailure.network(
+        message: 'Today analysis read response was empty.',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
     }
     return lucent.TodayAnalysisReadDataDto.fromJson(data.toJson());
   }
@@ -47,8 +52,9 @@ class TodayAiRemoteDataSource {
 
     final data = response.data;
     if (data is! Map<String, dynamic>) {
-      throw StateError(
-        'Today analysis refresh response was empty or malformed.',
+      throw LucentFailure.network(
+        message: 'Today analysis refresh response was empty or malformed.',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
 

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 
 /// SSE adapter that returns a stream of events.
@@ -44,7 +45,7 @@ class _SseAdapter implements HttpClientAdapter {
 class _JsonAdapter implements HttpClientAdapter {
   _JsonAdapter({this.responseBody}) : statusCode = 200;
 
-  Map<String, dynamic>? responseBody;
+  Object? responseBody;
   int statusCode;
 
   @override
@@ -69,6 +70,67 @@ class _JsonAdapter implements HttpClientAdapter {
 }
 
 void main() {
+  group('TodayAiRemoteDataSource — read', () {
+    late Dio dio;
+
+    setUp(() {
+      dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
+    });
+
+    test('returns parsed DTO on success', () async {
+      dio.httpClientAdapter = _JsonAdapter(
+        responseBody: {
+          'status': 'ready',
+          'analysis': {
+            'date': '2026-07-11',
+            'generatedAt': '2026-07-11T08:00:00.000Z',
+            'summary': '今日状态良好',
+            'bullets': [],
+            'actionLabel': '保持现状',
+            'action': 'navigate_to_record',
+            'confidenceNote': '基于最近7天数据',
+            'aiGenerated': true,
+          },
+          'sourceVersion': 1,
+          'computedVersion': 1,
+          'computedAt': '2026-07-11T08:00:00.000Z',
+          'retryAfterSeconds': null,
+        },
+      );
+
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+      final result = await ds.read();
+
+      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.ready);
+      expect(result.analysis, isNotNull);
+    });
+
+    test('throws LucentFailure when response body is empty', () async {
+      dio.httpClientAdapter = _JsonAdapter(responseBody: null);
+
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+
+      expect(
+        () => ds.read(),
+        throwsA(
+          isA<LucentFailure>()
+              .having(
+                (e) => e.networkErrorCode,
+                'networkErrorCode',
+                NetworkErrorCode.emptyResponse,
+              )
+              .having((e) => e.kind, 'kind', LucentFailureKind.network),
+        ),
+      );
+    });
+  });
+
   group('TodayAiRemoteDataSource — refresh', () {
     late Dio dio;
 
@@ -175,6 +237,50 @@ void main() {
 
       expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.failed);
       expect(result.analysis, isNull);
+    });
+
+    test('throws LucentFailure when response body is empty', () async {
+      dio.httpClientAdapter = _JsonAdapter(responseBody: null);
+
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+
+      expect(
+        () => ds.refresh(),
+        throwsA(
+          isA<LucentFailure>()
+              .having(
+                (e) => e.networkErrorCode,
+                'networkErrorCode',
+                NetworkErrorCode.emptyResponse,
+              )
+              .having((e) => e.kind, 'kind', LucentFailureKind.network),
+        ),
+      );
+    });
+
+    test('throws LucentFailure when response body is malformed', () async {
+      dio.httpClientAdapter = _JsonAdapter(responseBody: 'not an object');
+
+      final ds = TodayAiRemoteDataSource(
+        api: lucent.TodayAnalysisApi(dio),
+        dio: dio,
+      );
+
+      expect(
+        () => ds.refresh(),
+        throwsA(
+          isA<LucentFailure>()
+              .having(
+                (e) => e.networkErrorCode,
+                'networkErrorCode',
+                NetworkErrorCode.emptyResponse,
+              )
+              .having((e) => e.kind, 'kind', LucentFailureKind.network),
+        ),
+      );
     });
   });
 
