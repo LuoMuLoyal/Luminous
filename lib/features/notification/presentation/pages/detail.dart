@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
@@ -110,9 +111,27 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
   Future<void> _autoMarkRead() async {
     if (!mounted) return;
     final repo = ref.read(notificationRepositoryProvider);
-    await repo.markAsRead(widget.detail.id);
-    ref.invalidate(notificationUnreadCountProvider);
-    ref.invalidate(notificationListControllerProvider);
+    try {
+      final result = await repo.markAsRead(widget.detail.id).run();
+      result.fold(
+        (failure) {
+          // 自动标记已读属 best-effort：失败仅记录日志，不打断详情页。
+          appTalker.warning(
+            'NotificationDetailPage auto-mark-read failed: $failure',
+          );
+        },
+        (_) {
+          ref.invalidate(notificationUnreadCountProvider);
+          ref.invalidate(notificationListControllerProvider);
+        },
+      );
+    } catch (e) {
+      // 协议异常（非 problem+json 错误体）逃逸 .run()：自动标记已读仍属
+      // best-effort，仅记录日志，不产生未处理异步异常（today 水目标同款）。
+      appTalker.warning(
+        'NotificationDetailPage auto-mark-read protocol error: $e',
+      );
+    }
   }
 
   @override
@@ -155,25 +174,59 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
           onNavigate: () => _handleAction(context, detail.action),
           onMarkRead: () async {
             final repo = ref.read(notificationRepositoryProvider);
-            await repo.markAsRead(detail.id);
-            ref.invalidate(notificationUnreadCountProvider);
-            ref.invalidate(notificationListControllerProvider);
-            ref.invalidate(notificationDetailProvider(detail.id));
-            if (context.mounted) {
+            try {
+              final result = await repo.markAsRead(detail.id).run();
+              result.fold((failure) => throw failure, (_) {});
+              ref.invalidate(notificationUnreadCountProvider);
+              ref.invalidate(notificationListControllerProvider);
+              ref.invalidate(notificationDetailProvider(detail.id));
+              if (!context.mounted) return;
               unawaited(Toast.show(context, l10n.notificationMarkReadSuccess));
               context.pop();
+            } catch (e) {
+              // Left 投影为失败 toast；成功分支（成功 toast/pop）不执行。
+              if (!context.mounted) return;
+              unawaited(
+                Toast.show(
+                  context,
+                  userMessageFromError(
+                    e,
+                    // 死路径兜底（LucentFailure.message 恒非空）：失败语义，
+                    // 不再误用成功文案；l10n 无 mark 失败文案，故为空串。
+                    fallback: '',
+                    l10n: l10n,
+                  ),
+                ),
+              );
             }
           },
           onMarkUnread: () async {
             final repo = ref.read(notificationRepositoryProvider);
-            await repo.markAsUnread(detail.id);
-            ref.invalidate(notificationUnreadCountProvider);
-            ref.invalidate(notificationListControllerProvider);
-            if (context.mounted) {
+            try {
+              final result = await repo.markAsUnread(detail.id).run();
+              result.fold((failure) => throw failure, (_) {});
+              ref.invalidate(notificationUnreadCountProvider);
+              ref.invalidate(notificationListControllerProvider);
+              if (!context.mounted) return;
               unawaited(
                 Toast.show(context, l10n.notificationMarkUnreadSuccess),
               );
               context.pop();
+            } catch (e) {
+              // Left 投影为失败 toast；成功分支（成功 toast/pop）不执行。
+              if (!context.mounted) return;
+              unawaited(
+                Toast.show(
+                  context,
+                  userMessageFromError(
+                    e,
+                    // 死路径兜底（LucentFailure.message 恒非空）：失败语义，
+                    // 不再误用成功文案；l10n 无 mark 失败文案，故为空串。
+                    fallback: '',
+                    l10n: l10n,
+                  ),
+                ),
+              );
             }
           },
           onDelete: () async {

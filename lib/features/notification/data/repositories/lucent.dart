@@ -1,5 +1,9 @@
-import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/core/network/api.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/notification.dart';
@@ -15,81 +19,107 @@ NotificationRepository notificationRepository(Ref ref) {
 }
 
 /// Lucent-backed implementation of [NotificationRepository].
+///
+/// Every expected recoverable failure (network, server business failure) is a
+/// `TaskEither` Left produced via `LucentErrorMapper.fromObject`; a successful
+/// response is a Right. An empty success response body for a data-returning
+/// method is a `LucentFailure.network(emptyResponse)` (auth `_requireBody`
+/// precedent); void mutations accept an empty (204-style) success body.
+/// Protocol violations (non `problem+json` error bodies) keep the mapper's
+/// `FormatException` which propagates from `.run()`.
 class LucentNotificationRepository implements NotificationRepository {
   LucentNotificationRepository({required this.api});
 
   final NotificationsApi api;
 
   @override
-  Future<NotificationPage> findAll({
+  TaskEither<LucentFailure, NotificationPage> findAll({
     required int page,
     required int pageSize,
-  }) async {
-    final response = await api.notificationsControllerFindAllV1(
-      page: page,
-      pageSize: pageSize,
-    );
-    final dto = response.data!;
-    return NotificationPage(
-      items: dto.items.map(_mapItem).toList(),
-      total: dto.total.toInt(),
-      page: page,
-      pageSize: pageSize,
-    );
-  }
-
-  @override
-  Future<NotificationDetail?> findOne(String id) async {
-    final response = await api.notificationsControllerFindOneV1(id: id);
-    final dto = response.data!;
-    final d = dto;
-    return NotificationDetail(
-      id: d.id,
-      type: NotificationType.fromJson(d.type.value),
-      title: d.title,
-      content: d.content,
-      action: d.action,
-      actionPayload: d.actionPayload,
-      isRead: d.isRead,
-      createdAt: d.createdAt,
-      readAt: d.readAt,
-    );
-  }
-
-  @override
-  Future<int> getUnreadCount() async {
-    try {
-      final response = await api.notificationsControllerGetUnreadCountV1();
-      final dto = response.data!;
-      return dto.count.toInt();
-    } catch (e) {
-      // 未读数徽章是后台轮询类展示,单次失败不应让 UI 报错:降级返回 0
-      // 并记录日志,下次轮询会自然恢复(失败原因仍可从日志排查)。
-      appTalker.warning(
-        'NotificationRepository.getUnreadCount 获取失败,降级返回 0: $e',
+  }) {
+    return TaskEither.tryCatch(() async {
+      final response = await api.notificationsControllerFindAllV1(
+        page: page,
+        pageSize: pageSize,
       );
-      return 0;
+      final dto = _requireData(response.data, operation: 'findAll');
+      return NotificationPage(
+        items: dto.items.map(_mapItem).toList(),
+        total: dto.total.toInt(),
+        page: page,
+        pageSize: pageSize,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, NotificationDetail?> findOne(String id) {
+    return TaskEither.tryCatch(() async {
+      final response = await api.notificationsControllerFindOneV1(id: id);
+      final d = _requireData(response.data, operation: 'findOne');
+      return NotificationDetail(
+        id: d.id,
+        type: NotificationType.fromJson(d.type.value),
+        title: d.title,
+        content: d.content,
+        action: d.action,
+        actionPayload: d.actionPayload,
+        isRead: d.isRead,
+        createdAt: d.createdAt,
+        readAt: d.readAt,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, int> getUnreadCount() {
+    return TaskEither.tryCatch(() async {
+      final response = await api.notificationsControllerGetUnreadCountV1();
+      final dto = _requireData(response.data, operation: 'getUnreadCount');
+      return dto.count.toInt();
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, void> markAllAsRead() {
+    return TaskEither.tryCatch(() async {
+      await api.notificationsControllerMarkAllAsReadV1();
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, void> markAsRead(String id) {
+    return TaskEither.tryCatch(() async {
+      await api.notificationsControllerMarkAsReadV1(id: id);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, void> markAsUnread(String id) {
+    return TaskEither.tryCatch(() async {
+      await api.notificationsControllerMarkAsUnreadV1(id: id);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, void> delete(String id) {
+    return TaskEither.tryCatch(() async {
+      await api.notificationsControllerRemoveV1(id: id);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  /// Extracts a non-null generated-client payload, throwing
+  /// [LucentFailure.network] (emptyResponse) when the success body is absent
+  /// (auth `_requireBody` / settings `_requireData` precedent).
+  T _requireData<T>(T? data, {String? operation}) {
+    if (data == null) {
+      final context = operation == null ? '' : '（$operation）';
+      throw LucentFailure.network(
+        message: 'API 返回空响应体$context',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
     }
-  }
-
-  @override
-  Future<void> markAllAsRead() async {
-    await api.notificationsControllerMarkAllAsReadV1();
-  }
-
-  @override
-  Future<void> markAsRead(String id) async {
-    await api.notificationsControllerMarkAsReadV1(id: id);
-  }
-
-  @override
-  Future<void> markAsUnread(String id) async {
-    await api.notificationsControllerMarkAsUnreadV1(id: id);
-  }
-
-  @override
-  Future<void> delete(String id) async {
-    await api.notificationsControllerRemoveV1(id: id);
+    return data;
   }
 
   NotificationItem _mapItem(NotificationListItemDto dto) {

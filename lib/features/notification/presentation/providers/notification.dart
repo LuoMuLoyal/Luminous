@@ -17,7 +17,14 @@ const _notificationPageSize = 20;
 Future<NotificationDetail?> notificationDetail(Ref ref, String id) async {
   return authGuarded(
     ref: ref,
-    fetch: () => ref.watch(notificationRepositoryProvider).findOne(id),
+    fetch: () async {
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      final result = await ref
+          .watch(notificationRepositoryProvider)
+          .findOne(id)
+          .run();
+      return result.fold((failure) => throw failure, (detail) => detail);
+    },
     signedOutFallback: () => pendingAuthSessionResolution(),
   );
 }
@@ -50,12 +57,19 @@ class NotificationListController extends AsyncNotifier<NotificationPage> {
     _currentPage = 1;
     return authGuarded(
       ref: ref,
-      fetch: () {
-        final repo = ref.read(notificationRepositoryProvider);
-        return repo.findAll(page: 1, pageSize: _notificationPageSize);
-      },
+      fetch: _fetchFirstPage,
       signedOutFallback: () => pendingAuthSessionResolution(),
     );
+  }
+
+  /// Runs the first page and projects a Left to `AsyncValue.error` by
+  /// rethrowing the failure (Riverpod captures it).
+  Future<NotificationPage> _fetchFirstPage() async {
+    final repo = ref.read(notificationRepositoryProvider);
+    final result = await repo
+        .findAll(page: 1, pageSize: _notificationPageSize)
+        .run();
+    return result.fold((failure) => throw failure, (page) => page);
   }
 
   Future<void> loadMore() async {
@@ -66,10 +80,10 @@ class NotificationListController extends AsyncNotifier<NotificationPage> {
     try {
       final repo = ref.read(notificationRepositoryProvider);
       final nextPage = _currentPage + 1;
-      final page = await repo.findAll(
-        page: nextPage,
-        pageSize: _notificationPageSize,
-      );
+      final result = await repo
+          .findAll(page: nextPage, pageSize: _notificationPageSize)
+          .run();
+      final page = result.fold((failure) => throw failure, (page) => page);
       _currentPage = nextPage;
       state = AsyncValue.data(
         NotificationPage(
@@ -80,6 +94,7 @@ class NotificationListController extends AsyncNotifier<NotificationPage> {
         ),
       );
     } catch (e, st) {
+      // Left 与协议异常（FormatException 逃逸 .run()）均投影到错误态。
       state = AsyncValue.error(e, st);
     } finally {
       ref.read(notificationListLoadingMoreProvider.notifier).setLoading(false);
@@ -88,27 +103,26 @@ class NotificationListController extends AsyncNotifier<NotificationPage> {
 
   Future<void> markAllAsRead() async {
     final repo = ref.read(notificationRepositoryProvider);
-    await repo.markAllAsRead();
+    final result = await repo.markAllAsRead().run();
+    result.fold((failure) => throw failure, (_) {});
     ref.invalidate(notificationUnreadCountProvider);
     _currentPage = 1;
-    state = await AsyncValue.guard(
-      () => repo.findAll(page: 1, pageSize: _notificationPageSize),
-    );
+    state = await AsyncValue.guard(_fetchFirstPage);
   }
 
   Future<void> deleteNotification(String id) async {
     final repo = ref.read(notificationRepositoryProvider);
-    await repo.delete(id);
+    final result = await repo.delete(id).run();
+    result.fold((failure) => throw failure, (_) {});
     ref.invalidate(notificationUnreadCountProvider);
     _currentPage = 1;
-    state = await AsyncValue.guard(
-      () => repo.findAll(page: 1, pageSize: _notificationPageSize),
-    );
+    state = await AsyncValue.guard(_fetchFirstPage);
   }
 
   Future<void> markAsRead(String id) async {
     final repo = ref.read(notificationRepositoryProvider);
-    await repo.markAsRead(id);
+    final result = await repo.markAsRead(id).run();
+    result.fold((failure) => throw failure, (_) {});
     ref.invalidate(notificationUnreadCountProvider);
     final current = state.value;
     if (current == null) return;
@@ -130,7 +144,8 @@ class NotificationListController extends AsyncNotifier<NotificationPage> {
 
   Future<void> markAsUnread(String id) async {
     final repo = ref.read(notificationRepositoryProvider);
-    await repo.markAsUnread(id);
+    final result = await repo.markAsUnread(id).run();
+    result.fold((failure) => throw failure, (_) {});
     ref.invalidate(notificationUnreadCountProvider);
     final current = state.value;
     if (current == null) return;
@@ -165,10 +180,7 @@ class NotificationListController extends AsyncNotifier<NotificationPage> {
 
   Future<void> refresh() async {
     _currentPage = 1;
-    final repo = ref.read(notificationRepositoryProvider);
-    state = await AsyncValue.guard(
-      () => repo.findAll(page: 1, pageSize: _notificationPageSize),
-    );
+    state = await AsyncValue.guard(_fetchFirstPage);
   }
 }
 

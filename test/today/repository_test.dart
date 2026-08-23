@@ -8,6 +8,7 @@ import 'package:lucent_api/lucent_api.dart'
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
@@ -343,6 +344,48 @@ void main() {
     expect(dashboard.medication.medicineCount, 2);
     expect(dashboard.user.hasUnreadNotifications, isFalse);
   });
+
+  test(
+    'degrades unread flag when unread count fails (best-effort contract)',
+    () async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+      final container = ProviderContainer(
+        overrides: [
+          healthContextSnapshotProvider.overrideWith((ref) async => _snapshot),
+          dailyRecordRepositoryProvider.overrideWithValue(
+            _FakeDailyRecordRepository(),
+          ),
+          appDatabaseProvider.overrideWithValue(db),
+          cachedDoseLogDataSourceProvider.overrideWith((ref) {
+            return CachedDoseLogDataSource(
+              remote: _FakeDoseLogDataSource(),
+              dao: db.medicineDoseLogDao,
+            );
+          }),
+          medicineReminderRemoteDataSourceProvider.overrideWithValue(
+            _FakeReminderDataSource(),
+          ),
+          userSettingsRepositoryProvider.overrideWithValue(
+            _FakeUserSettingsRepository(),
+          ),
+          notificationRepositoryProvider.overrideWithValue(
+            _FailingNotificationRepository(),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // 未读徽章失败属 best-effort：Left 降级为 hasUnreadNotifications=false，
+      // dashboard 其余部分正常渲染。
+      final dashboard = await expectTaskRight(
+        container.read(todayRepositoryProvider).fetchDashboard(),
+      );
+
+      expect(dashboard.user.hasUnreadNotifications, isFalse);
+      expect(dashboard.medication.medicineCount, 2);
+    },
+  );
 }
 
 class _FakeDailyRecordRepository implements DailyRecordRepository {
@@ -561,29 +604,65 @@ class _FakeNotificationRepository implements NotificationRepository {
   final int count;
 
   @override
-  Future<NotificationPage> findAll({
+  TaskEither<LucentFailure, NotificationPage> findAll({
     required int page,
     required int pageSize,
-  }) async => throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
-  Future<NotificationDetail?> findOne(String id) async =>
+  TaskEither<LucentFailure, NotificationDetail?> findOne(String id) =>
       throw UnimplementedError();
 
   @override
-  Future<int> getUnreadCount() async => count;
+  TaskEither<LucentFailure, int> getUnreadCount() => TaskEither.right(count);
 
   @override
-  Future<void> markAllAsRead() async {}
+  TaskEither<LucentFailure, void> markAllAsRead() => TaskEither.right(null);
 
   @override
-  Future<void> markAsRead(String id) async {}
+  TaskEither<LucentFailure, void> markAsRead(String id) =>
+      TaskEither.right(null);
 
   @override
-  Future<void> markAsUnread(String id) async {}
+  TaskEither<LucentFailure, void> markAsUnread(String id) =>
+      TaskEither.right(null);
 
   @override
-  Future<void> delete(String id) async {}
+  TaskEither<LucentFailure, void> delete(String id) => TaskEither.right(null);
+}
+
+class _FailingNotificationRepository implements NotificationRepository {
+  @override
+  TaskEither<LucentFailure, NotificationPage> findAll({
+    required int page,
+    required int pageSize,
+  }) => throw UnimplementedError();
+
+  @override
+  TaskEither<LucentFailure, NotificationDetail?> findOne(String id) =>
+      throw UnimplementedError();
+
+  @override
+  TaskEither<LucentFailure, int> getUnreadCount() => TaskEither.left(
+    LucentFailure.network(
+      message: 'unread count unavailable',
+      networkErrorCode: NetworkErrorCode.connectionError,
+    ),
+  );
+
+  @override
+  TaskEither<LucentFailure, void> markAllAsRead() => TaskEither.right(null);
+
+  @override
+  TaskEither<LucentFailure, void> markAsRead(String id) =>
+      TaskEither.right(null);
+
+  @override
+  TaskEither<LucentFailure, void> markAsUnread(String id) =>
+      TaskEither.right(null);
+
+  @override
+  TaskEither<LucentFailure, void> delete(String id) => TaskEither.right(null);
 }
 
 const _snapshot = HealthContextSnapshot(

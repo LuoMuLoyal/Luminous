@@ -569,10 +569,17 @@ class LucentTodayRepository implements TodayRepository {
 
   Future<bool> _unreadNotificationsFlag() async {
     try {
-      final count = await notificationRepository.getUnreadCount();
-      return count > 0;
+      final result = await notificationRepository.getUnreadCount().run();
+      final hasUnread = result.fold((failure) {
+        talker.warning('LucentTodayRepository: unread count failed: $failure');
+        return false;
+      }, (count) => count > 0);
+      return hasUnread;
     } catch (e) {
-      talker.warning('LucentTodayRepository: unread count failed: $e');
+      // 协议异常（非 problem+json 错误体）逃逸 .run()：未读徽章属轮询类
+      // best-effort 展示，与 Left 一样降级为无未读并记录（water target 同款
+      // 合同），不打断 dashboard。
+      talker.warning('LucentTodayRepository: unread count protocol error: $e');
       return false;
     }
   }
