@@ -91,6 +91,11 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 - `legal_list_page_test.dart` `pumpPage` 的 `Object? error` 参数现仅作 null 判定标志（传入值被丢弃）：纯遗留装饰，可改 `bool fail`，非必须。
 
+## 2026-08-23 mine 迁移审查遗留（错误迁移 Task 5f，归入 Task 9 文档收尾）
+
+- `docs/02-reference/adr/0006-riverpod-generator-and-auth-guard.md` 的 mine 示例 `fetch: () => ref.watch(mineRepositoryProvider).fetchDashboard()` 对 TaskEither 接口已过时（不再可编译），需补 `.run()` + fold 写法。
+- `docs/02-reference/state-management.md` 的通用 `myRepositoryProvider` 示例为迁移前模式，可顺手更新为当前推荐写法。
+
 ## 审查暂缓项
 
 - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。
