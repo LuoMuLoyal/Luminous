@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_code.dart';
@@ -50,23 +49,6 @@ abstract final class LucentErrorMapper {
     );
   }
 
-  /// Transitional adapter for the pre-Result application layer.
-  ///
-  /// The HTTP boundary is already [LucentFailure]; this method only projects
-  /// it into the legacy [AppError] shape until repositories/providers migrate.
-  static AppError toAppError(Object error) {
-    final failure = fromObject(error);
-    return AppError(
-      message: failure.message,
-      kind: _toAppErrorKind(failure.kind),
-      code: int.tryParse(failure.code ?? ''),
-      statusCode: failure.statusCode,
-      traceId: failure.traceId,
-      networkErrorCode: failure.networkErrorCode,
-      cause: error,
-    );
-  }
-
   static LucentFailure _fromProblemResponse(
     DioException error,
     Response<dynamic> response,
@@ -99,6 +81,10 @@ abstract final class LucentErrorMapper {
     );
   }
 
+  /// Transitional adapter for legacy code paths that still throw
+  /// [LucentApiException] (SSE, map_utils, wechat). The HTTP boundary is
+  /// already [LucentFailure]; this branch only projects the retired local
+  /// exception into the current failure type until Task 7 removes it.
   static LucentFailure _fromLegacyLocalException(LucentApiException error) {
     final kind = error.isNetworkConnectivityError
         ? LucentFailureKind.network
@@ -125,16 +111,6 @@ abstract final class LucentErrorMapper {
       return LucentFailureKind.business;
     }
     return LucentFailureKind.unknown;
-  }
-
-  static AppErrorKind _toAppErrorKind(LucentFailureKind kind) {
-    return switch (kind) {
-      LucentFailureKind.network => AppErrorKind.network,
-      LucentFailureKind.authentication => AppErrorKind.auth,
-      LucentFailureKind.business => AppErrorKind.business,
-      LucentFailureKind.server => AppErrorKind.server,
-      LucentFailureKind.unknown => AppErrorKind.unknown,
-    };
   }
 
   static String? _traceIdFor(DioException error) {
