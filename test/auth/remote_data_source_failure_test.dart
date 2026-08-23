@@ -233,20 +233,19 @@ void main() {
     });
 
     group('resetPassword', () {
-      test('invalid verification code keeps its code', () async {
+      test('invalid reset token keeps its code', () async {
         adapter.statusCode = 400;
         adapter.contentType = 'application/problem+json';
-        adapter.body = _problemBody('AUTH_VERIFICATION_CODE_INVALID', '验证码错误');
+        adapter.body = _problemBody('AUTH_RESET_TOKEN_INVALID', '重置链接无效或已过期');
 
         final failure = await _left(
           dataSource.resetPassword(
-            email: 'test@example.com',
-            code: 'wrong',
+            token: 'invalid-token',
             password: 'NewPass123',
           ),
         );
 
-        expect(failure.code, 'AUTH_VERIFICATION_CODE_INVALID');
+        expect(failure.code, 'AUTH_RESET_TOKEN_INVALID');
         expect(failure.statusCode, 400);
       });
     });
@@ -267,16 +266,16 @@ void main() {
     });
 
     group('verifyEmail', () {
-      test('invalid verification code keeps its code', () async {
+      test('invalid verification token keeps its code', () async {
         adapter.statusCode = 400;
         adapter.contentType = 'application/problem+json';
-        adapter.body = _problemBody('AUTH_VERIFICATION_CODE_INVALID', '验证码错误');
+        adapter.body = _problemBody('AUTH_VERIFY_TOKEN_INVALID', '验证链接无效或已过期');
 
         final failure = await _left(
-          dataSource.verifyEmail(email: 'test@example.com', code: 'wrong'),
+          dataSource.verifyEmail(token: 'invalid-token'),
         );
 
-        expect(failure.code, 'AUTH_VERIFICATION_CODE_INVALID');
+        expect(failure.code, 'AUTH_VERIFY_TOKEN_INVALID');
         expect(failure.statusCode, 400);
       });
     });

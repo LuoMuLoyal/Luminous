@@ -17,23 +17,18 @@ part 'verify_email_dto.g.dart';
 )
 class VerifyEmailDto {
   /// Returns a new [VerifyEmailDto] instance.
-  VerifyEmailDto({required this.email, required this.code});
+  VerifyEmailDto({required this.token});
 
-  /// 邮箱地址
-  @JsonKey(name: r'email', required: true, includeIfNull: false)
-  final String email;
-
-  /// 验证码
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final String code;
+  /// Better Auth 邮件验证 token
+  @JsonKey(name: r'token', required: true, includeIfNull: false)
+  final String token;
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is VerifyEmailDto && other.email == email && other.code == code;
+      identical(this, other) || other is VerifyEmailDto && other.token == token;
 
   @override
-  int get hashCode => email.hashCode + code.hashCode;
+  int get hashCode => token.hashCode;
 
   factory VerifyEmailDto.fromJson(Map<String, dynamic> json) =>
       _$VerifyEmailDtoFromJson(json);

@@ -62,7 +62,10 @@
   "authResetPasswordSuccess": "Password updated. Please sign in again.",
   "authLoginSubtitle": "Sign in to continue your health tracking",
   "authRegisterSubtitle": "Join Luminous and start your health journal",
-  "authForgotPasswordSubtitle": "We'll send a code to reset your password",
+  "authForgotPasswordSubtitle": "We'll send a reset link to your email",
+  "authResetPasswordSubtitle": "Set a new password",
+  "authResetPasswordEmailSent": "Reset link sent. Please check your email.",
+  "authEmailVerifyLinkHint": "A verification email has been sent. Please tap the link in the email to complete verification.",
   "authTermsAgreement": "By creating an account, you agree to the {terms} and {privacy}",
   "@authTermsAgreement": {
     "placeholders": {

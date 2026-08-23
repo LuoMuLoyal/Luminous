@@ -64,10 +64,6 @@ enum SendVerificationCodeDtoSceneEnum {
   login(r'login'),
 
   /// 验证码场景
-  @JsonValue(r'reset-password')
-  resetPassword(r'reset-password'),
-
-  /// 验证码场景
   @JsonValue(r'change-email')
   changeEmail(r'change-email'),
 

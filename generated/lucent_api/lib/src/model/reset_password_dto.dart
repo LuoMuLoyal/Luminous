@@ -17,21 +17,11 @@ part 'reset_password_dto.g.dart';
 )
 class ResetPasswordDto {
   /// Returns a new [ResetPasswordDto] instance.
-  ResetPasswordDto({
-    required this.email,
+  ResetPasswordDto({required this.token, required this.password});
 
-    required this.code,
-
-    required this.password,
-  });
-
-  /// 邮箱地址
-  @JsonKey(name: r'email', required: true, includeIfNull: false)
-  final String email;
-
-  /// 验证码
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
-  final String code;
+  /// Better Auth 密码重置 token
+  @JsonKey(name: r'token', required: true, includeIfNull: false)
+  final String token;
 
   /// 新密码（8-32位，需包含大小写字母和数字）
   @JsonKey(name: r'password', required: true, includeIfNull: false)
@@ -41,12 +31,11 @@ class ResetPasswordDto {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ResetPasswordDto &&
-          other.email == email &&
-          other.code == code &&
+          other.token == token &&
           other.password == password;
 
   @override
-  int get hashCode => email.hashCode + code.hashCode + password.hashCode;
+  int get hashCode => token.hashCode + password.hashCode;
 
   factory ResetPasswordDto.fromJson(Map<String, dynamic> json) =>
       _$ResetPasswordDtoFromJson(json);

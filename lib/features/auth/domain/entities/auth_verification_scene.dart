@@ -2,7 +2,7 @@
 enum AuthVerificationScene {
   register,
   login,
-  resetPassword,
+  setPassword,
   changeEmail,
   deleteAccount,
 }

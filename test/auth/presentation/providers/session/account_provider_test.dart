@@ -39,11 +39,9 @@ class _AccountFakeRemote extends FakeLucentAuthRepository {
   }
 
   @override
-  TaskEither<LucentFailure, void> verifyEmail({
-    required String email,
-    required String code,
-  }) {
+  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
     verifyEmailCalled = true;
+    verifyEmailToken = token;
     return TaskEither.right(null);
   }
 }
@@ -67,10 +65,7 @@ class _FailingAccountRemote extends _AccountFakeRemote {
   }
 
   @override
-  TaskEither<LucentFailure, void> verifyEmail({
-    required String email,
-    required String code,
-  }) {
+  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
     return TaskEither.tryCatch(() async {
       throw DioException(
         requestOptions: RequestOptions(path: '/verify-email'),
@@ -78,8 +73,27 @@ class _FailingAccountRemote extends _AccountFakeRemote {
         response: problemResponse(
           path: '/verify-email',
           statusCode: 400,
-          code: 'AUTH_VERIFICATION_CODE_INVALID',
-          detail: '验证码错误',
+          code: 'AUTH_VERIFY_TOKEN_INVALID',
+          detail: '验证链接无效或已过期',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
+    required String email,
+    required AuthVerificationScene scene,
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/send-verification-code'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/send-verification-code',
+          statusCode: 429,
+          code: 'AUTH_LOGIN_RATE_LIMITED',
+          detail: '发送过于频繁',
         ),
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
@@ -175,25 +189,6 @@ class _FailingAccountRemote extends _AccountFakeRemote {
           statusCode: 400,
           code: 'AUTH_EMAIL_CONFLICT',
           detail: '邮箱已被占用',
-        ),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-
-  @override
-  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
-    required String email,
-    required AuthVerificationScene scene,
-  }) {
-    return TaskEither.tryCatch(() async {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/send-code'),
-        type: DioExceptionType.badResponse,
-        response: problemResponse(
-          path: '/send-code',
-          statusCode: 429,
-          code: 'AUTH_LOGIN_RATE_LIMITED',
-          detail: '发送过于频繁',
         ),
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
@@ -332,13 +327,11 @@ void main() {
 
       final notifier = container.read(authAccountProvider.notifier);
 
-      final result = await notifier.verifyEmail(
-        email: 'user@example.com',
-        code: '123456',
-      );
+      final result = await notifier.verifyEmail(token: 'verify-token-1');
 
       expect(result, isTrue);
       expect(remote.verifyEmailCalled, isTrue);
+      expect(remote.verifyEmailToken, 'verify-token-1');
       expect(remote.fetchAccountCalled, isTrue);
       final state = container.read(authAccountProvider);
       expect(state.isSubmitting, isFalse);
@@ -359,10 +352,7 @@ void main() {
 
       final notifier = container.read(authAccountProvider.notifier);
 
-      final result = await notifier.verifyEmail(
-        email: 'user@example.com',
-        code: 'wrong',
-      );
+      final result = await notifier.verifyEmail(token: 'invalid-token');
 
       expect(result, isFalse);
       final state = container.read(authAccountProvider);

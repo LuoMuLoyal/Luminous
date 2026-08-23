@@ -738,19 +738,19 @@ void main() {
         expect(adapter.lastBody?['email'], 'test@example.com');
       });
 
-      test('passes scene correctly for resetPassword', () async {
+      test('passes scene correctly for setPassword', () async {
         adapter.body = <String, dynamic>{'cooldown': 30, 'message': '已发送'};
 
         await _right(
           dataSource.sendVerificationCode(
             email: 'test@example.com',
-            scene: AuthVerificationScene.resetPassword,
+            scene: AuthVerificationScene.setPassword,
           ),
         );
 
         expect(
           adapter.lastBody?['scene'],
-          SendVerificationCodeDtoSceneEnum.resetPassword.value,
+          SendVerificationCodeDtoSceneEnum.setPassword.value,
         );
       });
 
@@ -778,30 +778,26 @@ void main() {
 
         await _right(
           dataSource.resetPassword(
-            email: 'test@example.com',
-            code: '123456',
+            token: 'reset-token-1',
             password: 'NewPass123',
           ),
         );
 
-        expect(adapter.lastBody?['email'], 'test@example.com');
-        expect(adapter.lastBody?['code'], '123456');
+        expect(adapter.lastBody?['token'], 'reset-token-1');
         expect(adapter.lastBody?['password'], 'NewPass123');
       });
 
-      test('trims all fields', () async {
+      test('trims token and password', () async {
         adapter.body = null;
 
         await _right(
           dataSource.resetPassword(
-            email: '  test@example.com  ',
-            code: '  123456  ',
+            token: '  reset-token-1  ',
             password: '  NewPass123  ',
           ),
         );
 
-        expect(adapter.lastBody?['email'], 'test@example.com');
-        expect(adapter.lastBody?['code'], '123456');
+        expect(adapter.lastBody?['token'], 'reset-token-1');
         expect(adapter.lastBody?['password'], 'NewPass123');
       });
     });
@@ -832,26 +828,17 @@ void main() {
       test('completes without error on success', () async {
         adapter.body = <String, dynamic>{'emailVerified': true};
 
-        await _right(
-          dataSource.verifyEmail(email: 'test@example.com', code: '123456'),
-        );
+        await _right(dataSource.verifyEmail(token: 'verify-token-1'));
 
-        expect(adapter.lastBody?['email'], 'test@example.com');
-        expect(adapter.lastBody?['code'], '123456');
+        expect(adapter.lastBody?['token'], 'verify-token-1');
       });
 
-      test('trims email and code', () async {
+      test('trims token', () async {
         adapter.body = <String, dynamic>{'emailVerified': true};
 
-        await _right(
-          dataSource.verifyEmail(
-            email: '  test@example.com  ',
-            code: '  123456  ',
-          ),
-        );
+        await _right(dataSource.verifyEmail(token: '  verify-token-1  '));
 
-        expect(adapter.lastBody?['email'], 'test@example.com');
-        expect(adapter.lastBody?['code'], '123456');
+        expect(adapter.lastBody?['token'], 'verify-token-1');
       });
     });
 

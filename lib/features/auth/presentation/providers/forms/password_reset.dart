@@ -16,14 +16,12 @@ part 'password_reset.freezed.dart';
 abstract class PasswordResetState with _$PasswordResetState {
   const factory PasswordResetState({
     @Default('') String email,
-    @Default('') String code,
     @Default('') String password,
     @Default('') String confirmPassword,
     @Default(false) bool isSubmitting,
     @Default(false) bool isSendingCode,
     int? cooldownSeconds,
     String? emailError,
-    String? codeError,
     String? passwordError,
     String? confirmPasswordError,
     String? errorMessage,
@@ -41,10 +39,6 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
 
   void updateEmail(String value) {
     state = state.copyWith(email: value, emailError: null, errorMessage: null);
-  }
-
-  void updateCode(String value) {
-    state = state.copyWith(code: value, codeError: null, errorMessage: null);
   }
 
   void updatePassword(String value) {
@@ -70,7 +64,6 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
   bool validate({
     required String emailRequired,
     required String emailInvalid,
-    required String codeRequired,
     required String passwordRequired,
     required String confirmPasswordRequired,
     required String passwordsDoNotMatch,
@@ -80,7 +73,6 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       requiredMessage: emailRequired,
       invalidMessage: emailInvalid,
     );
-    final codeError = CodeInput.validate(state.code, codeRequired);
     final passwordError = PasswordInput.validate(
       state.password,
       passwordRequired,
@@ -94,14 +86,12 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
 
     state = state.copyWith(
       emailError: emailError,
-      codeError: codeError,
       passwordError: passwordError,
       confirmPasswordError: confirmPasswordError,
       errorMessage: null,
     );
 
     return emailError == null &&
-        codeError == null &&
         passwordError == null &&
         confirmPasswordError == null;
   }
@@ -152,7 +142,10 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     return true;
   }
 
-  Future<bool> resetPassword() async {
+  Future<bool> resetPassword({
+    required String token,
+    required String password,
+  }) async {
     state = state.copyWith(
       isSubmitting: true,
       errorMessage: null,
@@ -160,11 +153,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     );
     final result = await ref
         .read(authRepositoryProvider)
-        .resetPassword(
-          email: state.email,
-          code: state.code,
-          password: state.password,
-        )
+        .resetPassword(token: token, password: password)
         .run();
     return switch (result) {
       Left(:final value) => _failResetPassword(value),

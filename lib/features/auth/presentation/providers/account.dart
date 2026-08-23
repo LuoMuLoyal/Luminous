@@ -100,21 +100,15 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     return true;
   }
 
-  Future<bool> verifyEmail({
-    required String email,
-    required String code,
-  }) async {
+  Future<bool> verifyEmail({required String token}) async {
     return _run(() async {
       await _resolve(
-        ref.read(authRepositoryProvider).verifyEmail(email: email, code: code),
+        ref.read(authRepositoryProvider).verifyEmail(token: token),
       );
-      final currentUser = ref.read(authSessionProvider).user;
-      if (currentUser != null && currentUser.email == email.trim()) {
-        final user = await _resolve(
-          ref.read(authRepositoryProvider).fetchAccount(),
-        );
-        ref.read(authSessionProvider.notifier).applyUser(user);
-      }
+      final user = await _resolve(
+        ref.read(authRepositoryProvider).fetchAccount(),
+      );
+      ref.read(authSessionProvider.notifier).applyUser(user);
     });
   }
 

@@ -36,13 +36,6 @@ void main() {
       expect(state.errorMessage, isNull);
     });
 
-    test('updateCode sets code and clears errors', () {
-      final notifier = container.read(passwordResetProvider.notifier);
-      notifier.updateCode('888888');
-      expect(container.read(passwordResetProvider).code, '888888');
-      expect(container.read(passwordResetProvider).codeError, isNull);
-    });
-
     test('updatePassword sets password and clears errors', () {
       final notifier = container.read(passwordResetProvider.notifier);
       notifier.updatePassword('NewPass1');
@@ -73,7 +66,6 @@ void main() {
       final valid = notifier.validate(
         emailRequired: '请输入邮箱',
         emailInvalid: '邮箱格式不正确',
-        codeRequired: '请输入验证码',
         passwordRequired: '请输入密码',
         confirmPasswordRequired: '请确认密码',
         passwordsDoNotMatch: '两次密码不一致',
@@ -81,7 +73,6 @@ void main() {
       expect(valid, isFalse);
       final state = container.read(passwordResetProvider);
       expect(state.emailError, '请输入邮箱');
-      expect(state.codeError, '请输入验证码');
       expect(state.passwordError, '请输入密码');
       expect(state.confirmPasswordError, '请确认密码');
     });
@@ -89,13 +80,11 @@ void main() {
     test('returns false for invalid email', () {
       final notifier = container.read(passwordResetProvider.notifier);
       notifier.updateEmail('not-email');
-      notifier.updateCode('123456');
       notifier.updatePassword('pass');
       notifier.updateConfirmPassword('pass');
       final valid = notifier.validate(
         emailRequired: '请输入邮箱',
         emailInvalid: '邮箱格式不正确',
-        codeRequired: '请输入验证码',
         passwordRequired: '请输入密码',
         confirmPasswordRequired: '请确认密码',
         passwordsDoNotMatch: '两次密码不一致',
@@ -107,13 +96,11 @@ void main() {
     test('returns false for mismatched passwords', () {
       final notifier = container.read(passwordResetProvider.notifier);
       notifier.updateEmail('user@example.com');
-      notifier.updateCode('123456');
       notifier.updatePassword('passA');
       notifier.updateConfirmPassword('passB');
       final valid = notifier.validate(
         emailRequired: '请输入邮箱',
         emailInvalid: '邮箱格式不正确',
-        codeRequired: '请输入验证码',
         passwordRequired: '请输入密码',
         confirmPasswordRequired: '请确认密码',
         passwordsDoNotMatch: '两次密码不一致',
@@ -128,13 +115,11 @@ void main() {
     test('returns true for all valid fields', () {
       final notifier = container.read(passwordResetProvider.notifier);
       notifier.updateEmail('user@example.com');
-      notifier.updateCode('123456');
       notifier.updatePassword('NewPass1');
       notifier.updateConfirmPassword('NewPass1');
       final valid = notifier.validate(
         emailRequired: '请输入邮箱',
         emailInvalid: '邮箱格式不正确',
-        codeRequired: '请输入验证码',
         passwordRequired: '请输入密码',
         confirmPasswordRequired: '请确认密码',
         passwordsDoNotMatch: '两次密码不一致',
@@ -202,15 +187,16 @@ void main() {
   group('PasswordResetNotifier — resetPassword', () {
     test('returns true and clears isSubmitting on success', () async {
       final notifier = container.read(passwordResetProvider.notifier);
-      notifier.updateEmail('reset@example.com');
-      notifier.updateCode('123456');
       notifier.updatePassword('NewPass1');
+      notifier.updateConfirmPassword('NewPass1');
 
-      final result = await notifier.resetPassword();
+      final result = await notifier.resetPassword(
+        token: 'reset-token-1',
+        password: 'NewPass1',
+      );
 
       expect(result, isTrue);
-      expect(remote.resetPasswordEmail, 'reset@example.com');
-      expect(remote.resetPasswordCode, '123456');
+      expect(remote.resetPasswordToken, 'reset-token-1');
       expect(remote.resetPasswordValue, 'NewPass1');
       final state = container.read(passwordResetProvider);
       expect(state.isSubmitting, isFalse);
@@ -229,11 +215,13 @@ void main() {
       addTearDown(container.dispose);
 
       final notifier = container.read(passwordResetProvider.notifier);
-      notifier.updateEmail('reset@example.com');
-      notifier.updateCode('wrong');
       notifier.updatePassword('NewPass1');
+      notifier.updateConfirmPassword('NewPass1');
 
-      final result = await notifier.resetPassword();
+      final result = await notifier.resetPassword(
+        token: 'bad-token',
+        password: 'NewPass1',
+      );
 
       expect(result, isFalse);
       expect(container.read(passwordResetProvider).isSubmitting, isFalse);
@@ -268,8 +256,7 @@ class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
 
   @override
   TaskEither<LucentFailure, void> resetPassword({
-    required String email,
-    required String code,
+    required String token,
     required String password,
   }) {
     return TaskEither.tryCatch(() async {
@@ -279,8 +266,8 @@ class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
         response: problemResponse(
           path: '/reset-password',
           statusCode: 400,
-          code: 'AUTH_VERIFICATION_CODE_INVALID',
-          detail: '验证码错误',
+          code: 'AUTH_RESET_TOKEN_INVALID',
+          detail: '重置链接无效或已过期',
         ),
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));

@@ -13,13 +13,16 @@ import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class ForgotPasswordPage extends HookConsumerWidget {
-  const ForgotPasswordPage({super.key});
+class ResetPasswordPage extends HookConsumerWidget {
+  const ResetPasswordPage({super.key, required this.token});
+
+  final String token;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
-    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final confirmPasswordController = useTextEditingController();
 
     final state = ref.watch(passwordResetProvider);
     final notifier = ref.read(passwordResetProvider.notifier);
@@ -27,7 +30,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
 
     return AuthShell(
       title: l10n.authResetPasswordAction,
-      subtitle: l10n.authForgotPasswordSubtitle,
+      subtitle: l10n.authResetPasswordSubtitle,
       logo: const AuthBrandLogo(),
       leading: const AppBackButton(fallbackRoute: Routes.home),
       centerTitle: true,
@@ -37,29 +40,57 @@ class ForgotPasswordPage extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            FTextFormField.email(
-              control: FTextFieldControl.managed(controller: emailController),
-              label: Text(l10n.authEmailLabel),
-              hint: l10n.authEmailHint,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => EmailInput.validate(
-                value,
-                requiredMessage: l10n.authEmailRequiredError,
-                invalidMessage: l10n.authEmailInvalidError,
+            FTextFormField.password(
+              control: FTextFieldControl.managed(
+                controller: passwordController,
               ),
+              label: Text(l10n.authNewPasswordLabel),
+              hint: l10n.authPasswordHint,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) =>
+                  PasswordInput.validate(value, l10n.authPasswordRequiredError),
+            ),
+            const SizedBox(height: Spacing.level4),
+            FTextFormField.password(
+              control: FTextFieldControl.managed(
+                controller: confirmPasswordController,
+              ),
+              label: Text(l10n.authConfirmPasswordLabel),
+              hint: l10n.authPasswordHint,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                final requiredError = RequiredInput.validate(
+                  value,
+                  l10n.authConfirmPasswordRequiredError,
+                );
+                if (requiredError != null) {
+                  return requiredError;
+                }
+                if ((value ?? '') != passwordController.text) {
+                  return l10n.authPasswordsDoNotMatchError;
+                }
+                return null;
+              },
             ),
             const SizedBox(height: Spacing.level6),
             SizedBox(
               width: double.infinity,
               child: FButton(
-                onPress: state.isSendingCode
+                onPress: state.isSubmitting
                     ? null
                     : () async {
                         if (!(formKey.currentState?.validate() ?? false)) {
                           return;
                         }
-                        notifier.updateEmail(emailController.text);
-                        final ok = await notifier.sendResetCode();
+                        final password = passwordController.text;
+                        notifier.updatePassword(password);
+                        notifier.updateConfirmPassword(
+                          confirmPasswordController.text,
+                        );
+                        final ok = await notifier.resetPassword(
+                          token: token,
+                          password: password,
+                        );
                         if (!ok && context.mounted) {
                           final msg = ref
                               .read(passwordResetProvider)
@@ -72,43 +103,21 @@ class ForgotPasswordPage extends HookConsumerWidget {
                         if (ok && context.mounted) {
                           await Toast.show(
                             context,
-                            l10n.authResetPasswordEmailSent,
+                            l10n.authResetPasswordSuccess,
                           );
+                          if (context.mounted) {
+                            context.go(Routes.login);
+                          }
                         }
                       },
-                child: state.isSendingCode
+                child: state.isSubmitting
                     ? const SizedBox(
                         width: 18,
                         height: 18,
                         child: FCircularProgress(),
                       )
-                    : Text(l10n.authSendCode),
+                    : Text(l10n.authResetPasswordAction),
               ),
-            ),
-            const SizedBox(height: Spacing.level3),
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: Spacing.level2,
-              runSpacing: Spacing.level1,
-              children: [
-                Text(
-                  l10n.authRememberPasswordPrompt,
-                  style: TypographyToken.level2
-                      .body(context)
-                      .copyWith(color: context.theme.colors.mutedForeground),
-                ),
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  size: FButtonSizeVariant.sm,
-                  mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push(Routes.login),
-                  child: Text(
-                    l10n.authSignIn,
-                    style: TypographyToken.level2.body(context),
-                  ),
-                ),
-              ],
             ),
           ],
         ),

@@ -6,6 +6,7 @@ import 'package:luminous/features/auth/presentation/pages/change_email.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/auth/presentation/pages/register.dart';
+import 'package:luminous/features/auth/presentation/pages/reset_password.dart';
 import 'package:luminous/features/auth/presentation/pages/sessions.dart';
 
 part 'routes.g.dart';
@@ -122,6 +123,21 @@ class ForgotPasswordRoute extends GoRouteData with $ForgotPasswordRoute {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return fadePage(key: state.pageKey, child: const ForgotPasswordPage());
+  }
+}
+
+@TypedGoRoute<ResetPasswordRoute>(path: '/reset-password')
+class ResetPasswordRoute extends GoRouteData with $ResetPasswordRoute {
+  const ResetPasswordRoute({this.token});
+
+  final String? token;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return fadePage(
+      key: state.pageKey,
+      child: ResetPasswordPage(token: token ?? ''),
+    );
   }
 }
 

@@ -17,11 +17,7 @@ part 'set_password_dto.g.dart';
 )
 class SetPasswordDto {
   /// Returns a new [SetPasswordDto] instance.
-  SetPasswordDto({this.email, required this.code, required this.password});
-
-  /// 邮箱（OAuth-only 用户尚无邮箱时必须提供，用于同时绑定邮箱）
-  @JsonKey(name: r'email', required: false, includeIfNull: false)
-  final String? email;
+  SetPasswordDto({required this.code, required this.password});
 
   /// 发往邮箱的验证码
   @JsonKey(name: r'code', required: true, includeIfNull: false)
@@ -35,12 +31,11 @@ class SetPasswordDto {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SetPasswordDto &&
-          other.email == email &&
           other.code == code &&
           other.password == password;
 
   @override
-  int get hashCode => email.hashCode + code.hashCode + password.hashCode;
+  int get hashCode => code.hashCode + password.hashCode;
 
   factory SetPasswordDto.fromJson(Map<String, dynamic> json) =>
       _$SetPasswordDtoFromJson(json);

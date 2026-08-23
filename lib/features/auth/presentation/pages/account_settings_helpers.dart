@@ -5,7 +5,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
-import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
@@ -227,100 +226,14 @@ Future<bool> confirmUnlinkIdentity(
   return result ?? false;
 }
 
-/// Sends a verification code, prompts for the code, and verifies the email.
+/// Informs the user that email verification is done via the link in the
+/// verification email. Better Auth requires a token from that link; the
+/// app consumes it on the deep-link route when the user taps the email.
 Future<void> verifyEmailFlow(
   BuildContext context,
   AppLocalizations l10n,
   WidgetRef ref,
   String email,
 ) async {
-  final notifier = ref.read(authAccountProvider.notifier);
-  final sent = await notifier.sendVerificationCode(
-    email: email,
-    scene: AuthVerificationScene.register,
-  );
-  if (!context.mounted) return;
-  if (!sent) {
-    final state = ref.read(authAccountProvider);
-    final msg = state.errorMessage?.isNotEmpty == true
-        ? state.errorMessage!
-        : l10n.authEmailRequiredError;
-    await Toast.show(context, msg);
-    return;
-  }
-
-  await Toast.show(context, l10n.authSendCode);
-  if (!context.mounted) return;
-
-  final code = await showVerifyEmailDialog(context, l10n);
-  if (code == null || !context.mounted) return;
-
-  final ok = await notifier.verifyEmail(email: email, code: code);
-  if (!context.mounted) return;
-  if (ok) {
-    await Toast.show(context, l10n.authEmailVerifiedAt(email));
-  } else {
-    final state = ref.read(authAccountProvider);
-    final msg = state.errorMessage?.isNotEmpty == true
-        ? state.errorMessage!
-        : l10n.authCodeRequiredError;
-    await Toast.show(context, msg);
-  }
-}
-
-/// Shows a dialog for entering the email verification code.
-Future<String?> showVerifyEmailDialog(
-  BuildContext context,
-  AppLocalizations l10n,
-) async {
-  final controller = TextEditingController();
-  final result = await showAppDialog<String>(
-    context: context,
-    maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
-      MediaQuery.sizeOf(context).width,
-    ),
-    builder: (dialogContext) => Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.authEmailVerifyAction,
-          style: TypographyToken.level6
-              .body(dialogContext)
-              .copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: Spacing.level4),
-        FTextField(
-          control: FTextFieldControl.managed(controller: controller),
-          label: Text(l10n.authCodeLabel),
-          hint: l10n.authCodeLabel,
-          keyboardType: TextInputType.number,
-          autofocus: true,
-        ),
-        const SizedBox(height: Spacing.level6),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
-              variant: FButtonVariant.outline,
-              size: FButtonSizeVariant.sm,
-              mainAxisSize: MainAxisSize.min,
-              onPress: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.authCancelAction),
-            ),
-            const SizedBox(width: Spacing.level3),
-            FButton(
-              size: FButtonSizeVariant.sm,
-              mainAxisSize: MainAxisSize.min,
-              onPress: () =>
-                  Navigator.of(dialogContext).pop(controller.text.trim()),
-              child: Text(l10n.authEmailVerifyAction),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-  controller.dispose();
-  return result;
+  await Toast.show(context, l10n.authEmailVerifyLinkHint);
 }

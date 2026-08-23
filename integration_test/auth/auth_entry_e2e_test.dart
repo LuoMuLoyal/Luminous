@@ -94,41 +94,37 @@ void main() {
     expect(remote.sentCodeScene, AuthVerificationScene.register);
   });
 
-  testWidgets('auth forgot password flow submits reset from login entry', (
-    tester,
-  ) async {
-    final remote = E2eLucentAuthRepository();
-    await pumpOfflineApp(
-      tester,
-      authRepository: remote,
-      medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
-    );
+  testWidgets(
+    'auth forgot password flow submits reset request from login entry',
+    (tester) async {
+      final remote = E2eLucentAuthRepository();
+      await pumpOfflineApp(
+        tester,
+        authRepository: remote,
+        medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
+      );
 
-    await openLoginFromSignedOutMine(tester);
+      await openLoginFromSignedOutMine(tester);
 
-    final forgotLink = find.text('忘记密码？');
-    await tester.scrollUntilVisible(
-      forgotLink,
-      240,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(forgotLink);
-    await settleE2e(tester);
+      final forgotLink = find.text('忘记密码？');
+      await tester.scrollUntilVisible(
+        forgotLink,
+        240,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(forgotLink);
+      await settleE2e(tester);
 
-    expect(find.text('重置密码'), findsWidgets);
+      expect(find.text('重置密码'), findsWidgets);
 
-    final inputs = find.byType(EditableText);
-    await tester.enterText(inputs.at(0), 'reset-e2e@example.com');
-    await tester.enterText(inputs.at(1), '654321');
-    await tester.enterText(inputs.at(2), 'Password123');
-    await tester.enterText(inputs.at(3), 'Password123');
-    await tester.tap(find.widgetWithText(FButton, '重置密码'));
-    await settleE2e(tester);
+      final inputs = find.byType(EditableText);
+      await tester.enterText(inputs.at(0), 'reset-e2e@example.com');
+      await tester.tap(find.widgetWithText(FButton, '发送验证码'));
+      await settleE2e(tester);
 
-    expect(remote.resetPasswordEmail, 'reset-e2e@example.com');
-    expect(remote.resetPasswordCode, '654321');
-    expect(remote.resetPasswordValue, 'Password123');
-  });
+      expect(remote.forgotPasswordEmail, 'reset-e2e@example.com');
+    },
+  );
 
   testWidgets('auth forgot password flow sends reset verification code', (
     tester,

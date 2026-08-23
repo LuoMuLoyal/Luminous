@@ -65,8 +65,8 @@ class LucentAuthRepository implements AuthRepository {
       AuthVerificationScene.register =>
         SendVerificationCodeDtoSceneEnum.register,
       AuthVerificationScene.login => SendVerificationCodeDtoSceneEnum.login,
-      AuthVerificationScene.resetPassword =>
-        SendVerificationCodeDtoSceneEnum.resetPassword,
+      AuthVerificationScene.setPassword =>
+        SendVerificationCodeDtoSceneEnum.setPassword,
       AuthVerificationScene.changeEmail =>
         SendVerificationCodeDtoSceneEnum.changeEmail,
       AuthVerificationScene.deleteAccount =>
@@ -432,15 +432,13 @@ class LucentAuthRepository implements AuthRepository {
 
   @override
   TaskEither<LucentFailure, void> resetPassword({
-    required String email,
-    required String code,
+    required String token,
     required String password,
   }) {
     return TaskEither.tryCatch(() async {
       await _client.auth.localControllerResetPasswordV1(
         resetPasswordDto: ResetPasswordDto(
-          email: email.trim(),
-          code: code.trim(),
+          token: token.trim(),
           password: password.trim(),
         ),
       );
@@ -461,13 +459,10 @@ class LucentAuthRepository implements AuthRepository {
   }
 
   @override
-  TaskEither<LucentFailure, void> verifyEmail({
-    required String email,
-    required String code,
-  }) {
+  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
     return TaskEither.tryCatch(() async {
       await _client.auth.localControllerVerifyEmailV1(
-        verifyEmailDto: VerifyEmailDto(email: email.trim(), code: code.trim()),
+        verifyEmailDto: VerifyEmailDto(token: token.trim()),
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }

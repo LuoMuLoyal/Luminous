@@ -92,8 +92,7 @@ abstract interface class AuthRepository {
   });
 
   TaskEither<LucentFailure, void> resetPassword({
-    required String email,
-    required String code,
+    required String token,
     required String password,
   });
 
@@ -101,10 +100,7 @@ abstract interface class AuthRepository {
     required String email,
   });
 
-  TaskEither<LucentFailure, void> verifyEmail({
-    required String email,
-    required String code,
-  });
+  TaskEither<LucentFailure, void> verifyEmail({required String token});
 
   TaskEither<LucentFailure, AuthUser> updateAccountProfile({
     String? nickname,

@@ -62,7 +62,10 @@
   "authResetPasswordSuccess": "密码已更新，请重新登录。",
   "authLoginSubtitle": "登录以继续你的健康记录",
   "authRegisterSubtitle": "加入 Luminous,开启你的健康记录",
-  "authForgotPasswordSubtitle": "我们将发送验证码以重置你的密码",
+  "authForgotPasswordSubtitle": "我们将发送重置链接到你的邮箱",
+  "authResetPasswordSubtitle": "请设置新密码",
+  "authResetPasswordEmailSent": "重置链接已发送，请检查邮箱。",
+  "authEmailVerifyLinkHint": "验证邮件已发送，请点击邮件中的链接完成验证。",
   "authTermsAgreement": "创建即表示同意{terms}与{privacy}",
   "@authTermsAgreement": {
     "placeholders": {
