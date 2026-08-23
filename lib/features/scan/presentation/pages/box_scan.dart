@@ -303,7 +303,11 @@ Future<List<MedicineMatchResult>> _processPhoto(
 
     final results = <MedicineMatchResult>[];
     for (final candidate in candidates) {
-      final items = await repo.search(candidate.query);
+      final searchResult = await repo.search(candidate.query).run();
+      final items = searchResult.fold(
+        (failure) => throw failure,
+        (items) => items,
+      );
       for (final item in items) {
         results.add(
           MedicineMatchResult(
@@ -322,19 +326,33 @@ Future<List<MedicineMatchResult>> _processPhoto(
   } else {
     final rawBytes = await File(photo.path).readAsBytes();
     final bytes = await ImageCompressor.compressForAiRecognition(rawBytes);
-    final imageUrl = await repo.uploadImage(
-      bytes: bytes,
-      contentType: 'image/jpeg',
-      fileName: 'medicine-box-${clock.now().millisecondsSinceEpoch}.jpg',
+    final uploadResult = await repo
+        .uploadImage(
+          bytes: bytes,
+          contentType: 'image/jpeg',
+          fileName: 'medicine-box-${clock.now().millisecondsSinceEpoch}.jpg',
+        )
+        .run();
+    final imageUrl = uploadResult.fold(
+      (failure) => throw failure,
+      (url) => url,
     );
-    final recognition = await repo.recognizeMedicine(imageUrl);
+    final recognitionResult = await repo.recognizeMedicine(imageUrl).run();
+    final recognition = recognitionResult.fold(
+      (failure) => throw failure,
+      (result) => result,
+    );
 
     final name = recognition.name;
     final approvalNumber = recognition.approvalNumber ?? '';
     if (name.isEmpty && approvalNumber.isEmpty) return [];
 
     final query = approvalNumber.isNotEmpty ? approvalNumber : name;
-    final items = await repo.search(query);
+    final aiSearchResult = await repo.search(query).run();
+    final items = aiSearchResult.fold(
+      (failure) => throw failure,
+      (items) => items,
+    );
 
     return items.map((item) {
       // The AI recognition path has no real confidence score from the

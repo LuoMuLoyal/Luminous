@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
@@ -276,7 +279,9 @@ void main() {
         ],
       );
       when(() => mockRepo.search('阿莫西林胶囊')).thenAnswer(
-        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        (_) => TaskEither.right(const [
+          ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+        ]),
       );
 
       await openMethodPicker(tester);
@@ -324,7 +329,9 @@ void main() {
           ],
         );
         when(() => mockRepo.search('阿莫西林胶囊')).thenAnswer(
-          (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+          (_) => TaskEither.right(const [
+            ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+          ]),
         );
 
         await openMethodPicker(tester);
@@ -369,10 +376,14 @@ void main() {
           ],
         );
         when(() => mockRepo.search('阿莫西林胶囊')).thenAnswer(
-          (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+          (_) => TaskEither.right(const [
+            ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+          ]),
         );
         when(() => mockRepo.search('阿莫西林颗粒')).thenAnswer(
-          (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林颗粒')],
+          (_) => TaskEither.right(const [
+            ScanSearchResult(id: 'med-1', name: '阿莫西林颗粒'),
+          ]),
         );
 
         await openMethodPicker(tester);
@@ -387,6 +398,42 @@ void main() {
         verify(() => mockRepo.search('阿莫西林颗粒')).called(1);
       },
     );
+
+    testWidgets('search Left shows the scan failure dialog', (tester) async {
+      // A repository Left (network/business failure) must surface through
+      // the run()+fold projection into the existing failure dialog — no
+      // DioException parsing, no code/status inspection in the widget.
+      when(() => mockOcr.recognize(any())).thenAnswer(
+        (_) async => const [
+          OcrTextBlock(
+            text: '阿莫西林胶囊',
+            confidence: 0.95,
+            boundingBox: Rect.fromLTRB(0, 0, 100, 40),
+            points: [
+              Offset(0, 0),
+              Offset(100, 0),
+              Offset(100, 40),
+              Offset(0, 40),
+            ],
+          ),
+        ],
+      );
+      when(() => mockRepo.search('阿莫西林胶囊')).thenAnswer(
+        (_) => TaskEither.left(
+          LucentFailure.network(
+            message: 'network down',
+            networkErrorCode: NetworkErrorCode.connectionError,
+          ),
+        ),
+      );
+
+      await openMethodPicker(tester);
+      await tester.tap(find.text(l10n.scanMethodOcrTitle));
+      await flushAsync(tester, 12);
+
+      expect(find.text(l10n.scanRecognitionFailedToast), findsOneWidget);
+      expect(find.text(l10n.scanManualSearchToast), findsOneWidget);
+    });
   });
 
   group('showMedicineBoxScanSheet - AI flow', () {

@@ -105,9 +105,12 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
     final repo = ref.read(scanRepositoryProvider);
 
     try {
-      final items = await repo.search(barcode.rawValue!);
-
+      final searchResult = await repo.search(barcode.rawValue!).run();
       if (!mounted) return;
+      final items = searchResult.fold(
+        (failure) => throw failure,
+        (items) => items,
+      );
 
       if (items.isEmpty) {
         unawaited(

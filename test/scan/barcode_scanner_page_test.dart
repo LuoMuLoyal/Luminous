@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -255,7 +258,9 @@ void main() {
     testWidgets('single result shows the scan result sheet instead of '
         'navigating directly', (tester) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
-        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        (_) => TaskEither.right(const [
+          ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+        ]),
       );
       await pumpPage(tester);
 
@@ -276,7 +281,9 @@ void main() {
       tester,
     ) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
-        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        (_) => TaskEither.right(const [
+          ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+        ]),
       );
       await pumpPage(tester);
 
@@ -294,7 +301,9 @@ void main() {
       tester,
     ) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
-        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        (_) => TaskEither.right(const [
+          ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+        ]),
       );
       await pumpPage(
         tester,
@@ -328,7 +337,9 @@ void main() {
       final fakeRepo = FakeHealthContextRepository()
         ..reflectCreatedMedicine = true;
       when(() => mockRepo.search('6901234567890')).thenAnswer(
-        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        (_) => TaskEither.right(const [
+          ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+        ]),
       );
       await pumpPage(
         tester,
@@ -366,7 +377,9 @@ void main() {
     testWidgets('already added result shows added state and opens reminder '
         'detail with the box record id', (tester) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
-        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        (_) => TaskEither.right(const [
+          ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+        ]),
       );
       await pumpPage(
         tester,
@@ -404,7 +417,9 @@ void main() {
       final fakeRepo = FakeHealthContextRepository()
         ..reflectCreatedMedicine = true;
       when(() => mockRepo.search('6901234567890')).thenAnswer(
-        (_) async => const [ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊')],
+        (_) => TaskEither.right(const [
+          ScanSearchResult(id: 'med-1', name: '阿莫西林胶囊'),
+        ]),
       );
       await pumpPage(
         tester,
@@ -458,10 +473,10 @@ void main() {
 
     testWidgets('multiple results show candidate picker sheet', (tester) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
-        (_) async => const [
+        (_) => TaskEither.right(const [
           ScanSearchResult(id: 'med-1', name: '药品甲'),
           ScanSearchResult(id: 'med-2', name: '药品乙'),
-        ],
+        ]),
       );
       await pumpPage(tester);
 
@@ -476,10 +491,10 @@ void main() {
     testWidgets('candidate selection opens the result sheet and can view '
         'instructions', (tester) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
-        (_) async => const [
+        (_) => TaskEither.right(const [
           ScanSearchResult(id: 'med-1', name: '药品甲'),
           ScanSearchResult(id: 'med-2', name: '药品乙'),
-        ],
+        ]),
       );
       await pumpPage(tester);
 
@@ -510,7 +525,7 @@ void main() {
     ) async {
       when(
         () => mockRepo.search('6901234567890'),
-      ).thenAnswer((_) async => const <ScanSearchResult>[]);
+      ).thenAnswer((_) => TaskEither.right(const <ScanSearchResult>[]));
       await pumpPage(tester);
 
       await emitBarcode(tester, '6901234567890');
@@ -525,12 +540,15 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
     });
 
-    testWidgets('search error shows toast and resumes scanning', (
-      tester,
-    ) async {
-      when(
-        () => mockRepo.search('6901234567890'),
-      ).thenThrow(Exception('network down'));
+    testWidgets('search Left shows toast and resumes scanning', (tester) async {
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) => TaskEither.left(
+          LucentFailure.network(
+            message: 'network down',
+            networkErrorCode: NetworkErrorCode.connectionError,
+          ),
+        ),
+      );
       await pumpPage(tester);
 
       await emitBarcode(tester, '6901234567890');
