@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/sse.dart';
 
 /// A mock Dio adapter that returns a controlled SSE byte stream.
@@ -146,6 +148,34 @@ void main() {
       final events = await client.postJson('/test', body: {}).toList();
 
       expect(events, isEmpty);
+    });
+
+    test('throws LucentFailure.network(emptyStreamResponse) when the response '
+        'body is null', () async {
+      // A resolved response with a null body hits the empty-stream guard in
+      // the client instead of the adapter stream.
+      final dio = Dio()
+        ..interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              handler.resolve(Response(requestOptions: options, data: null));
+            },
+          ),
+        );
+      final client = LucentSseClient(dio: dio);
+
+      expect(
+        () => client.postJson('/test', body: {}).toList(),
+        throwsA(
+          isA<LucentFailure>()
+              .having(
+                (e) => e.networkErrorCode,
+                'networkErrorCode',
+                NetworkErrorCode.emptyStreamResponse,
+              )
+              .having((e) => e.kind, 'kind', LucentFailureKind.network),
+        ),
+      );
     });
   });
 }

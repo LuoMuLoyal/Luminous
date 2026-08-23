@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/error_code.dart';
 
 // ignore_for_file: prefer_initializing_formals
@@ -94,7 +94,7 @@ class LucentSseClient {
 
     final responseBody = response.data;
     if (responseBody == null) {
-      throw const LucentApiException(
+      throw LucentFailure.network(
         message: 'SSE stream response is empty.',
         networkErrorCode: NetworkErrorCode.emptyStreamResponse,
       );

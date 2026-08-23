@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -5,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 
 /// Adapter that returns an SSE stream from raw event text.
@@ -303,16 +303,129 @@ void main() {
     });
 
     test('handles invalid data type for event (non-map)', () async {
-      // When event.data is not a Map, _requireMap should throw
-      // LucentApiException
+      // When event.data is not a Map, requireMap throws a FormatException
+      // (protocol invariant), surfacing as a stream error.
       final sseText = [_sseEvent('chunk', 'just-a-string')].join();
 
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       expect(
         () => ds.streamMessages(messages: const []).toList(),
-        throwsA(isA<LucentApiException>()),
+        throwsA(isA<FormatException>()),
       );
+    });
+
+    test('premature stream close ends the stream without a fabricated '
+        'business error', () async {
+      // A connection that closes without a `done` event (server shutdown /
+      // premature close) must keep its stream semantics: the events emitted
+      // so far are delivered and the stream ends — it is never disguised as
+      // a business Problem Details failure.
+      final sseText = _sseEvent('chunk', {'content': 'partial'});
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds.streamMessages(messages: const []).toList();
+
+      expect(events, hasLength(1));
+      expect((events[0] as AssistantRemoteChunkEvent).content, 'partial');
+    });
+
+    test(
+      'connection break surfaces as a stream error, not a business failure',
+      () async {
+        dio.httpClientAdapter = _ErrorSseAdapter(
+          DioException(
+            requestOptions: RequestOptions(
+              path: '/api/v1/user/assistant/messages/stream',
+            ),
+            type: DioExceptionType.connectionError,
+          ),
+        );
+
+        expect(
+          () => ds.streamMessages(messages: const []).toList(),
+          throwsA(
+            isA<DioException>().having(
+              (e) => e.type,
+              'type',
+              DioExceptionType.connectionError,
+            ),
+          ),
+        );
+      },
+    );
+
+    test('client cancellation stops the stream without an error', () async {
+      // Events are gated: nothing is emitted until the gate completes, so the
+      // consumer can cancel mid-stream deterministically. After cancellation
+      // the adapter's remaining events must be dropped — no fabricated
+      // business error, no unhandled stream error.
+      final gate = Completer<void>();
+      dio.httpClientAdapter = _GatedSseAdapter([
+        _sseEvent('chunk', {'content': 'first'}),
+        _sseEvent('chunk', {'content': 'second'}),
+        _sseEvent('done', null),
+      ], gate);
+
+      final received = <AssistantRemoteEvent>[];
+      final subscription = ds
+          .streamMessages(messages: const [])
+          .listen(
+            received.add,
+            onError: (Object error, StackTrace stackTrace) {
+              fail('unexpected stream error after cancel: $error');
+            },
+          );
+
+      await subscription.cancel();
+      gate.complete();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(received, isEmpty);
+    });
+
+    test('error event does not leak requestId, statusCode, stack, or raw '
+        'server data', () async {
+      final sseText = [
+        _sseEvent('error', {
+          'type': 'https://api.lumos.example/problems/dependency-unavailable',
+          'title': 'Service temporarily unavailable',
+          'detail': 'Try again later.',
+          'code': 'DEPENDENCY_UNAVAILABLE',
+          'status': 'server_error',
+          // Retired / noise fields must be ignored by the parser.
+          'statusCode': 503,
+          'requestId': 'legacy-request-id',
+          'stack': 'at Server.processRequest (server.dart:123)',
+          'data': {'secret': 'raw-envelope-data'},
+        }),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      Object? thrown;
+      try {
+        await ds.streamMessages(messages: const []).toList();
+        fail('expected the error event to fail the stream');
+      } catch (error) {
+        thrown = error;
+      }
+
+      expect(thrown, isA<LucentFailure>());
+      final failure = thrown as LucentFailure;
+      expect(failure.code, 'DEPENDENCY_UNAVAILABLE');
+      expect(failure.statusCode, isNull);
+      expect(failure.traceId, isNull);
+
+      final text = failure.toString();
+      expect(text, contains('DEPENDENCY_UNAVAILABLE'));
+      expect(text, isNot(contains('requestId')));
+      expect(text, isNot(contains('legacy-request-id')));
+      expect(text, isNot(contains('503')));
+      expect(text, isNot(contains('Try again later.')));
+      expect(text, isNot(contains('raw-envelope-data')));
+      expect(text, isNot(contains('server.dart')));
     });
   });
 
@@ -414,6 +527,71 @@ class _PathCapturingSseAdapter implements HttpClientAdapter {
 
     return ResponseBody(
       stream,
+      200,
+      headers: {
+        Headers.contentTypeHeader: ['text/event-stream'],
+      },
+    );
+  }
+}
+
+/// SSE adapter whose byte stream fails immediately, simulating a connection
+/// that breaks mid-stream.
+class _ErrorSseAdapter implements HttpClientAdapter {
+  _ErrorSseAdapter(this.error);
+
+  final Object error;
+
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<List<int>>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    return ResponseBody(
+      Stream<Uint8List>.error(error),
+      200,
+      headers: {
+        Headers.contentTypeHeader: ['text/event-stream'],
+      },
+    );
+  }
+}
+
+/// SSE adapter that holds every event behind [gate], so a test can cancel the
+/// subscription before any data is emitted.
+class _GatedSseAdapter implements HttpClientAdapter {
+  _GatedSseAdapter(this.sseTexts, this.gate);
+
+  final List<String> sseTexts;
+  final Completer<void> gate;
+
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<List<int>>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    final controller = StreamController<Uint8List>();
+    Future<void>.delayed(Duration.zero, () async {
+      for (final text in sseTexts) {
+        await gate.future;
+        if (controller.isClosed) return;
+        controller.add(Uint8List.fromList(utf8.encode(text)));
+      }
+      if (!controller.isClosed) {
+        await controller.close();
+      }
+    });
+
+    return ResponseBody(
+      controller.stream,
       200,
       headers: {
         Headers.contentTypeHeader: ['text/event-stream'],

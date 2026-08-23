@@ -61,6 +61,44 @@ void main() {
       );
     });
 
+    test('parses an SSE error event and ignores retired noise fields', () {
+      final problem = SseProblemDetails.fromJson({
+        'type': 'https://api.lumos.example/problems/dependency-unavailable',
+        'title': 'Service temporarily unavailable',
+        'detail': 'Try again later.',
+        'code': 'DEPENDENCY_UNAVAILABLE',
+        'status': 'server_error',
+        // Retired / noise fields must not be interpreted or re-emitted.
+        'statusCode': 503,
+        'requestId': 'legacy-request-id',
+        'stack': 'at Server.processRequest (server.dart:123)',
+        'data': {'secret': 'raw-envelope-data'},
+      });
+
+      expect(problem.status, SseErrorStatus.serverError);
+      expect(problem.code, 'DEPENDENCY_UNAVAILABLE');
+      expect(problem.toJson(), {
+        'type': 'https://api.lumos.example/problems/dependency-unavailable',
+        'title': 'Service temporarily unavailable',
+        'detail': 'Try again later.',
+        'code': 'DEPENDENCY_UNAVAILABLE',
+        'status': 'server_error',
+      });
+    });
+
+    test('rejects a numeric status instead of treating it as an HTTP code', () {
+      expect(
+        () => SseProblemDetails.fromJson({
+          'type': 'https://api.lumos.example/problems/dependency-unavailable',
+          'title': 'Service temporarily unavailable',
+          'detail': 'Try again later.',
+          'code': 'DEPENDENCY_UNAVAILABLE',
+          'status': 503,
+        }),
+        throwsFormatException,
+      );
+    });
+
     test('does not expose retired status or request correlation fields', () {
       final problem = ProblemDetails.fromJson({
         'type': 'https://api.lumos.example/problems/conflict',

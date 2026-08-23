@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_exception.dart';
-import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/problem_details.dart';
 
 /// Coerces a JSON-decoded value into a `Map<String, dynamic>`.
@@ -35,15 +33,15 @@ Map<String, dynamic> requireBody(
   return body;
 }
 
-/// Coerces a JSON-decoded SSE payload into a `Map<String, dynamic>`,
-/// throwing [LucentApiException] if the data is not a map.
+/// Coerces a JSON-decoded SSE payload into a `Map<String, dynamic>`.
+///
+/// A non-map payload is a protocol violation, so this throws a
+/// [FormatException] (matching the malformed-error-payload contract) instead
+/// of a legacy exception type.
 Map<String, dynamic> requireMap(Object? data) {
   final map = coerceToStringMap(data);
   if (map == null) {
-    throw const LucentApiException(
-      message: 'Lucent SSE payload is invalid.',
-      networkErrorCode: NetworkErrorCode.invalidSsePayload,
-    );
+    throw const FormatException('Lucent SSE payload is invalid.');
   }
   return map;
 }

@@ -155,6 +155,92 @@ void main() {
       );
     });
 
+    test('premature stream close ends the stream without a fabricated '
+        'business error', () async {
+      // A connection that closes without a `done` event (server shutdown /
+      // premature close) keeps stream semantics: events emitted so far are
+      // delivered and the stream ends — never disguised as a business
+      // Problem Details failure.
+      final sseText = _sseEvent('summary', {'summary': 'partial'});
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds
+          .generateStream(ReportAiSummaryRange.last7Days)
+          .toList();
+
+      expect(events, hasLength(1));
+      expect((events[0] as ReportAiRemoteSummaryEvent).summary, 'partial');
+    });
+
+    test(
+      'connection break surfaces as a stream error, not a business failure',
+      () async {
+        dio.httpClientAdapter = _ErrorSseAdapter(
+          DioException(
+            requestOptions: RequestOptions(
+              path: '/api/v1/user/reports/summary/generate/stream',
+            ),
+            type: DioExceptionType.connectionError,
+          ),
+        );
+
+        expect(
+          () => ds.generateStream(ReportAiSummaryRange.last7Days).toList(),
+          throwsA(
+            isA<DioException>().having(
+              (e) => e.type,
+              'type',
+              DioExceptionType.connectionError,
+            ),
+          ),
+        );
+      },
+    );
+
+    test('error event does not leak requestId, statusCode, stack, or raw '
+        'server data', () async {
+      final sseText = [
+        _sseEvent('error', {
+          'type': 'https://api.lumos.example/problems/dependency-unavailable',
+          'title': 'Service temporarily unavailable',
+          'detail': 'Try again later.',
+          'code': 'DEPENDENCY_UNAVAILABLE',
+          'status': 'server_error',
+          // Retired / noise fields must be ignored by the parser.
+          'statusCode': 503,
+          'requestId': 'legacy-request-id',
+          'stack': 'at Server.processRequest (server.dart:123)',
+          'data': {'secret': 'raw-envelope-data'},
+        }),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      Object? thrown;
+      try {
+        await ds.generateStream(ReportAiSummaryRange.last7Days).toList();
+        fail('expected the error event to fail the stream');
+      } catch (error) {
+        thrown = error;
+      }
+
+      expect(thrown, isA<LucentFailure>());
+      final failure = thrown as LucentFailure;
+      expect(failure.code, 'DEPENDENCY_UNAVAILABLE');
+      expect(failure.statusCode, isNull);
+      expect(failure.traceId, isNull);
+
+      final text = failure.toString();
+      expect(text, contains('DEPENDENCY_UNAVAILABLE'));
+      expect(text, isNot(contains('requestId')));
+      expect(text, isNot(contains('legacy-request-id')));
+      expect(text, isNot(contains('503')));
+      expect(text, isNot(contains('Try again later.')));
+      expect(text, isNot(contains('raw-envelope-data')));
+      expect(text, isNot(contains('server.dart')));
+    });
+
     test('done event terminates stream immediately', () async {
       final sseText = _sseEvent('done', null);
 
@@ -261,6 +347,32 @@ class _RecordingSseAdapter implements HttpClientAdapter {
 
     return ResponseBody(
       stream,
+      200,
+      headers: {
+        Headers.contentTypeHeader: ['text/event-stream'],
+      },
+    );
+  }
+}
+
+/// SSE adapter whose byte stream fails immediately, simulating a connection
+/// that breaks mid-stream.
+class _ErrorSseAdapter implements HttpClientAdapter {
+  _ErrorSseAdapter(this.error);
+
+  final Object error;
+
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<List<int>>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    return ResponseBody(
+      Stream<Uint8List>.error(error),
       200,
       headers: {
         Headers.contentTypeHeader: ['text/event-stream'],

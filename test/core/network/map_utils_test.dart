@@ -35,4 +35,18 @@ void main() {
       expect(coerceToStringMap([1, 2, 3]), isNull);
     });
   });
+
+  group('requireMap', () {
+    test('returns the coerced map for map-like input', () {
+      final result = requireMap(<dynamic, dynamic>{'a': 1, 'b': 'two'});
+      expect(result, {'a': 1, 'b': 'two'});
+    });
+
+    test('throws FormatException for non-map input (protocol invariant)', () {
+      expect(() => requireMap('just-a-string'), throwsFormatException);
+      expect(() => requireMap(42), throwsFormatException);
+      expect(() => requireMap(<int>[1, 2, 3]), throwsFormatException);
+      expect(() => requireMap(null), throwsFormatException);
+    });
+  });
 }
