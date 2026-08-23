@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
@@ -378,6 +379,42 @@ void main() {
   });
 
   test(
+    'Today AI provider projects refresh FormatException to an AsyncError',
+    () async {
+      final repository = _FormatExceptionTodayAiRepository();
+
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          todayAiRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(userSettingsControllerProvider.future);
+      await container.read(todayAiAnalysisControllerProvider.future);
+
+      // A malformed (non-problem+json) body surfaces as a FormatException
+      // from the repository; refresh() must not rethrow — it projects the
+      // failure into an AsyncError state.
+      await container
+          .read(todayAiAnalysisControllerProvider.notifier)
+          .refresh();
+
+      final asyncValue = container.read(todayAiAnalysisControllerProvider);
+      expect(asyncValue.hasError, isTrue);
+      expect(asyncValue.error, isA<LucentFailure>());
+      expect(
+        (asyncValue.error as LucentFailure).kind,
+        LucentFailureKind.unknown,
+      );
+    },
+  );
+
+  test(
     'Today AI provider maps initial forbidden read to disabled state',
     () async {
       const repository = _ThrowingTodayAiRepository(
@@ -573,13 +610,16 @@ class _StaticTodayAiRepository implements TodayAiRepository {
   final TodayAiAnalysis analysis;
 
   @override
-  Future<TodayAiAnalysis> read(DateTime date) async => analysis;
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+      TaskEither.right(analysis);
 
   @override
-  Future<TodayAiAnalysis> refresh(DateTime date) async => analysis;
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+      TaskEither.right(analysis);
 
   @override
-  Future<TodayAiAnalysis> generate({String? date}) async => analysis;
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+      TaskEither.right(analysis);
 
   @override
   Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
@@ -602,13 +642,16 @@ class _SequenceTodayAiRepository implements TodayAiRepository {
   }
 
   @override
-  Future<TodayAiAnalysis> read(DateTime date) async => _next;
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+      TaskEither.right(_next);
 
   @override
-  Future<TodayAiAnalysis> refresh(DateTime date) async => _next;
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+      TaskEither.right(_next);
 
   @override
-  Future<TodayAiAnalysis> generate({String? date}) async => _next;
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+      TaskEither.right(_next);
 
   @override
   Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
@@ -623,19 +666,22 @@ class _CallCountingTodayAiRepository implements TodayAiRepository {
   int readCount = 0;
 
   @override
-  Future<TodayAiAnalysis> read(DateTime date) async {
-    readCount++;
-    return analysis;
-  }
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+      TaskEither(() async {
+        readCount++;
+        return Right(analysis);
+      });
 
   @override
-  Future<TodayAiAnalysis> refresh(DateTime date) async {
-    readCount++;
-    return analysis;
-  }
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+      TaskEither(() async {
+        readCount++;
+        return Right(analysis);
+      });
 
   @override
-  Future<TodayAiAnalysis> generate({String? date}) async => analysis;
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+      TaskEither.right(analysis);
 
   @override
   Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
@@ -646,25 +692,56 @@ class _CallCountingTodayAiRepository implements TodayAiRepository {
 class _ThrowingTodayAiRepository implements TodayAiRepository {
   const _ThrowingTodayAiRepository(this.error);
 
-  final Object error;
+  final LucentFailure error;
 
   @override
-  Future<TodayAiAnalysis> read(DateTime date) {
-    return Future<TodayAiAnalysis>.error(error);
-  }
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+      TaskEither.left(error);
 
   @override
-  Future<TodayAiAnalysis> refresh(DateTime date) {
-    return Future<TodayAiAnalysis>.error(error);
-  }
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+      TaskEither.left(error);
 
   @override
-  Future<TodayAiAnalysis> generate({String? date}) {
-    return Future<TodayAiAnalysis>.error(error);
-  }
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+      TaskEither.left(error);
 
   @override
   Stream<TodayAiGenerationEvent> generateStream({String? date}) {
     return Stream<TodayAiGenerationEvent>.error(error);
+  }
+}
+
+/// Read succeeds but [refresh] throws a [FormatException] — simulating a
+/// malformed (non-problem+json) response body at the HTTP boundary.
+class _FormatExceptionTodayAiRepository implements TodayAiRepository {
+  TodayAiAnalysis get _analysis => TodayAiAnalysis(
+    date: '2026-06-12',
+    generatedAt: generatedAt,
+    summary: 'Existing summary.',
+    bullets: const [],
+    actionLabel: '',
+    confidenceNote: '',
+    materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
+    aiGenerated: true,
+  );
+
+  @override
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+      TaskEither.right(_analysis);
+
+  @override
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+      TaskEither(() async {
+        throw const FormatException('malformed response body');
+      });
+
+  @override
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+      TaskEither.right(_analysis);
+
+  @override
+  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
+    yield TodayAiGenerationResultEvent(_analysis);
   }
 }

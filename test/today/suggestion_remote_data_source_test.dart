@@ -3,15 +3,27 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
+import '../helpers/task_either.dart';
+
 /// Adapter that returns a JSON response with configurable body.
 class _JsonAdapter implements HttpClientAdapter {
-  _JsonAdapter({this.responseBody}) : statusCode = 200;
+  _JsonAdapter({
+    this.responseBody,
+    this.statusCode = 200,
+    this.contentType = 'application/json',
+    this.error,
+  });
 
   Map<String, dynamic>? responseBody;
   int statusCode;
+  String contentType;
+
+  /// When set, [fetch] throws this object instead of returning a response.
+  Object? error;
 
   @override
   void close({bool force = false}) {}
@@ -22,13 +34,17 @@ class _JsonAdapter implements HttpClientAdapter {
     Stream<List<int>>? requestStream,
     Future<void>? cancelFuture,
   ) async {
+    final e = error;
+    if (e != null) {
+      throw e;
+    }
     final body = jsonEncode(responseBody);
 
     return ResponseBody.fromString(
       body,
       statusCode,
       headers: {
-        Headers.contentTypeHeader: ['application/json'],
+        Headers.contentTypeHeader: [contentType],
       },
     );
   }
@@ -96,7 +112,9 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions(language: 'zh-CN');
+      final result = await expectTaskRight(
+        ds.fetchSuggestions(language: 'zh-CN'),
+      );
 
       expect(result.generatedAt, '2026-07-11T08:00:00.000Z');
       expect(
@@ -136,7 +154,9 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions(language: 'zh-CN');
+      final result = await expectTaskRight(
+        ds.fetchSuggestions(language: 'zh-CN'),
+      );
 
       expect(result.primary, isNull);
       expect(result.secondary, isNull);
@@ -198,7 +218,9 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions(language: 'zh-CN');
+      final result = await expectTaskRight(
+        ds.fetchSuggestions(language: 'zh-CN'),
+      );
 
       expect(result.secondary!.length, 1);
       expect(result.secondary![0].type, TodaySuggestionType.behaviorAdvice);
@@ -261,7 +283,9 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions(language: 'zh-CN');
+      final result = await expectTaskRight(
+        ds.fetchSuggestions(language: 'zh-CN'),
+      );
 
       expect(result.primary!.evidence.length, 2);
       expect(result.primary!.evidence[0].label, 'Aspirin');
@@ -284,9 +308,8 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.submitFeedback(
-        id: 's1',
-        feedback: TodaySuggestionFeedback.accepted,
+      final result = await expectTaskRight(
+        ds.submitFeedback(id: 's1', feedback: TodaySuggestionFeedback.accepted),
       );
 
       expect(result.suggestionId, 's1');
@@ -308,7 +331,9 @@ void main() {
         dio.httpClientAdapter = adapter;
 
         final ds = TodaySuggestionRemoteDataSource(api: api);
-        final result = await ds.submitFeedback(id: 's1', feedback: feedback);
+        final result = await expectTaskRight(
+          ds.submitFeedback(id: 's1', feedback: feedback),
+        );
 
         expect(
           result.feedback,
@@ -333,7 +358,9 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.explainSuggestion(id: 's1', language: 'zh-CN');
+      final result = await expectTaskRight(
+        ds.explainSuggestion(id: 's1', language: 'zh-CN'),
+      );
 
       expect(result.suggestionId, 's1');
       expect(result.reason, '基于您的用药记录和血压数据');
@@ -374,10 +401,12 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchHistory(
-        language: 'zh-CN',
-        startDate: '2026-07-01',
-        endDate: '2026-07-10',
+      final result = await expectTaskRight(
+        ds.fetchHistory(
+          language: 'zh-CN',
+          startDate: '2026-07-01',
+          endDate: '2026-07-10',
+        ),
       );
 
       expect(result.items.length, 1);
@@ -419,7 +448,7 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchHistory(language: 'zh-CN');
+      final result = await expectTaskRight(ds.fetchHistory(language: 'zh-CN'));
 
       expect(result.items[0].feedback, isNull);
       expect(result.items[0].feedbackAt, isNull);
@@ -460,11 +489,91 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions(language: 'zh-CN');
+      final result = await expectTaskRight(
+        ds.fetchSuggestions(language: 'zh-CN'),
+      );
 
       expect(result.primary!.confidence, TodaySuggestionConfidence.medium);
       expect(result.primary!.triggerType, TodaySuggestionTriggerType.timer);
     });
+  });
+
+  group('failure branches', () {
+    test('404 Problem Details keeps code and status', () async {
+      final adapter = _JsonAdapter(
+        statusCode: 404,
+        contentType: 'application/problem+json',
+        responseBody: {
+          'type': 'https://api.lumos.example/problems/SUGGESTION_NOT_FOUND',
+          'title': 'Not found',
+          'detail': '建议不存在或已过期',
+          'code': 'SUGGESTION_NOT_FOUND',
+        },
+      );
+      dio.httpClientAdapter = adapter;
+
+      final ds = TodaySuggestionRemoteDataSource(api: api);
+      final failure = await expectTaskLeft(
+        ds.fetchSuggestions(language: 'zh-CN'),
+      );
+
+      expect(failure.code, 'SUGGESTION_NOT_FOUND');
+      expect(failure.statusCode, 404);
+    });
+
+    test('network timeout maps to a network connectivity Left', () async {
+      final adapter = _JsonAdapter(
+        error: DioException(
+          requestOptions: RequestOptions(
+            path: '/api/v1/user/today/suggestions',
+          ),
+          type: DioExceptionType.connectionTimeout,
+        ),
+      );
+      dio.httpClientAdapter = adapter;
+
+      final ds = TodaySuggestionRemoteDataSource(api: api);
+      final failure = await expectTaskLeft(
+        ds.fetchSuggestions(language: 'zh-CN'),
+      );
+
+      expect(failure.isNetworkConnectivityError, isTrue);
+    });
+
+    test(
+      'non-Problem Details error body propagates FormatException from run()',
+      () async {
+        final adapter = _JsonAdapter(
+          statusCode: 400,
+          responseBody: {'error': 'oops'},
+        );
+        dio.httpClientAdapter = adapter;
+
+        final ds = TodaySuggestionRemoteDataSource(api: api);
+        await expectLater(
+          ds.fetchSuggestions(language: 'zh-CN').run(),
+          throwsA(isA<FormatException>()),
+        );
+      },
+    );
+
+    test(
+      'empty success body maps to a Left(unknown) via requireData',
+      () async {
+        // HTTP 200 with a JSON `null` body: the generated client leaves
+        // response.data null, so requireData throws StateError, which maps
+        // to an unknown Left.
+        final adapter = _JsonAdapter(statusCode: 200, responseBody: null);
+        dio.httpClientAdapter = adapter;
+
+        final ds = TodaySuggestionRemoteDataSource(api: api);
+        final failure = await expectTaskLeft(
+          ds.fetchSuggestions(language: 'zh-CN'),
+        );
+
+        expect(failure.kind, LucentFailureKind.unknown);
+      },
+    );
   });
 }
 

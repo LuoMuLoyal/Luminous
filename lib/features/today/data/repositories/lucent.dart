@@ -1,5 +1,8 @@
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
@@ -76,7 +79,19 @@ class LucentTodayRepository implements TodayRepository {
   final Talker talker;
 
   @override
-  Future<TodayDashboard> fetchDashboard() async {
+  TaskEither<LucentFailure, TodayDashboard> fetchDashboard() {
+    return TaskEither.tryCatch(
+      _buildDashboard,
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    );
+  }
+
+  /// Builds the merged dashboard.
+  ///
+  /// Known upstream failures are caught inside and degrade the affected
+  /// metrics (degraded dashboard is the product behaviour); only unexpected
+  /// errors escape and become a Left at the repository boundary.
+  Future<TodayDashboard> _buildDashboard() async {
     final today = clock.now();
     final dateStr =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';

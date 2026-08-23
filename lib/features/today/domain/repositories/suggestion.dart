@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
 /// Domain interface for reading today suggestions and history.
@@ -7,26 +9,26 @@ import 'package:luminous/features/today/domain/entities/suggestion.dart';
 /// concrete data source.
 abstract interface class SuggestionRepository {
   /// Fetches the current suggestion bundle.
-  Future<TodaySuggestionBundle> fetchSuggestions({
+  TaskEither<LucentFailure, TodaySuggestionBundle> fetchSuggestions({
     required String language,
     String? date,
     List<String>? excludeIds,
   });
 
   /// Submits user feedback for a suggestion.
-  Future<TodaySuggestionFeedbackResult> submitFeedback({
+  TaskEither<LucentFailure, TodaySuggestionFeedbackResult> submitFeedback({
     required String id,
     required TodaySuggestionFeedback feedback,
   });
 
   /// Fetches AI explanation for a suggestion.
-  Future<TodaySuggestionExplanation> explainSuggestion({
+  TaskEither<LucentFailure, TodaySuggestionExplanation> explainSuggestion({
     required String id,
     required String language,
   });
 
   /// Fetches suggestion history for the Report page.
-  Future<TodaySuggestionHistory> fetchHistory({
+  TaskEither<LucentFailure, TodaySuggestionHistory> fetchHistory({
     required String language,
     String? startDate,
     String? endDate,

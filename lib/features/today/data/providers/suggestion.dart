@@ -30,15 +30,19 @@ SuggestionRepository suggestionRepository(Ref ref) {
 Future<TodaySuggestionHistory?> suggestionHistory(Ref ref) async {
   return authGuarded(
     ref: ref,
-    fetch: () {
+    fetch: () async {
       final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
-      return ds.fetchHistory(
-        language:
-            (ref.read(localeControllerProvider).asData?.value ??
-                    AppLocale.system)
-                .acceptLanguage,
-        limit: 20,
-      );
+      final result = await ds
+          .fetchHistory(
+            language:
+                (ref.read(localeControllerProvider).asData?.value ??
+                        AppLocale.system)
+                    .acceptLanguage,
+            limit: 20,
+          )
+          .run();
+      // Left 投影到 AsyncValue.error。
+      return result.fold((failure) => throw failure, (history) => history);
     },
     signedOutFallback: () async => null,
   );

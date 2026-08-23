@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 
@@ -92,7 +94,6 @@ class MockTodayRepository implements TodayRepository {
   );
 
   @override
-  Future<TodayDashboard> fetchDashboard() async {
-    return previewDashboard;
-  }
+  TaskEither<LucentFailure, TodayDashboard> fetchDashboard() =>
+      TaskEither.right(previewDashboard);
 }

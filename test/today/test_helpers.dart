@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
@@ -18,9 +20,11 @@ class StaticTodayRepository implements TodayRepository {
   final Duration delay;
 
   @override
-  Future<TodayDashboard> fetchDashboard() async {
-    if (delay != Duration.zero) await Future.delayed(delay);
-    return dashboard;
+  TaskEither<LucentFailure, TodayDashboard> fetchDashboard() {
+    return TaskEither(() async {
+      if (delay != Duration.zero) await Future.delayed(delay);
+      return Right(dashboard);
+    });
   }
 
   @override
@@ -46,19 +50,27 @@ class FakeTodayAiRepository implements TodayAiRepository {
   final Completer<TodayAiAnalysis> _completer = Completer<TodayAiAnalysis>();
 
   @override
-  Future<TodayAiAnalysis> read(DateTime date) {
-    return _completer.future;
-  }
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) => TaskEither(
+    () => _completer.future.then(
+      (analysis) => Right<LucentFailure, TodayAiAnalysis>(analysis),
+    ),
+  );
 
   @override
-  Future<TodayAiAnalysis> refresh(DateTime date) {
-    return _completer.future;
-  }
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+      TaskEither(
+        () => _completer.future.then(
+          (analysis) => Right<LucentFailure, TodayAiAnalysis>(analysis),
+        ),
+      );
 
   @override
-  Future<TodayAiAnalysis> generate({String? date}) {
-    return _completer.future;
-  }
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+      TaskEither(
+        () => _completer.future.then(
+          (analysis) => Right<LucentFailure, TodayAiAnalysis>(analysis),
+        ),
+      );
 
   @override
   Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {

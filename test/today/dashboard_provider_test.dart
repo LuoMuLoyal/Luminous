@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
@@ -19,9 +21,13 @@ class _CountingTodayRepository implements TodayRepository {
   Future<TodayDashboard> get signedOutDashboard => dashboard;
 
   @override
-  Future<TodayDashboard> fetchDashboard() {
+  TaskEither<LucentFailure, TodayDashboard> fetchDashboard() {
     fetchDashboardCallCount += 1;
-    return dashboard;
+    return TaskEither(
+      () => dashboard.then(
+        (value) => Right<LucentFailure, TodayDashboard>(value),
+      ),
+    );
   }
 }
 

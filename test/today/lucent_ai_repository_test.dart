@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/repositories/ai.dart';
+
+import '../helpers/task_either.dart';
 
 class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   _FakeTodayAiRemoteDataSource();
@@ -14,6 +17,8 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   Object? streamError;
   lucent.TodayAnalysisReadDataDto? readResult;
   lucent.TodayAnalysisReadDataDto? refreshResult;
+  Object? readError;
+  Object? refreshError;
 
   @override
   final lucent.TodayAnalysisApi api = lucent.TodayAnalysisApi(
@@ -25,6 +30,8 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
 
   @override
   Future<lucent.TodayAnalysisReadDataDto> read({String? date}) async {
+    final error = readError;
+    if (error != null) throw error;
     if (readResult == null) {
       throw StateError('read() not stubbed');
     }
@@ -33,6 +40,8 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
 
   @override
   Future<lucent.TodayAnalysisReadDataDto> refresh({String? date}) async {
+    final error = refreshError;
+    if (error != null) throw error;
     if (refreshResult == null) {
       throw StateError('refresh() not stubbed');
     }
@@ -120,7 +129,9 @@ void main() {
           ),
         );
 
-        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+        final analysis = await expectTaskRight(
+          repo.read(DateTime.utc(2026, 7, 11)),
+        );
 
         expect(analysis.date, '2026-07-11');
         expect(analysis.summary, '今日健康提醒');
@@ -137,7 +148,9 @@ void main() {
           analysis: null,
         );
 
-        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+        final analysis = await expectTaskRight(
+          repo.read(DateTime.utc(2026, 7, 11)),
+        );
 
         expect(
           analysis.materializationStatus,
@@ -153,7 +166,9 @@ void main() {
           computedAt: '2026-07-10T08:00:00.000Z',
         );
 
-        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+        final analysis = await expectTaskRight(
+          repo.read(DateTime.utc(2026, 7, 11)),
+        );
 
         expect(
           analysis.materializationStatus,
@@ -171,7 +186,9 @@ void main() {
           analysis: _buildDto(aiGenerated: false),
         );
 
-        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+        final analysis = await expectTaskRight(
+          repo.read(DateTime.utc(2026, 7, 11)),
+        );
 
         expect(
           analysis.materializationStatus,
@@ -186,7 +203,9 @@ void main() {
           analysis: null,
         );
 
-        final analysis = await repo.read(DateTime.utc(2026, 7, 11));
+        final analysis = await expectTaskRight(
+          repo.read(DateTime.utc(2026, 7, 11)),
+        );
 
         expect(
           analysis.materializationStatus,
@@ -206,7 +225,9 @@ void main() {
           ),
         );
 
-        final analysis = await repo.refresh(DateTime.utc(2026, 7, 11));
+        final analysis = await expectTaskRight(
+          repo.refresh(DateTime.utc(2026, 7, 11)),
+        );
 
         expect(analysis.summary, '刷新后的摘要');
         expect(
@@ -221,12 +242,70 @@ void main() {
           analysis: null,
         );
 
-        final analysis = await repo.refresh(DateTime.utc(2026, 7, 11));
+        final analysis = await expectTaskRight(
+          repo.refresh(DateTime.utc(2026, 7, 11)),
+        );
 
         expect(
           analysis.materializationStatus,
           TodayAiAnalysisMaterializationStatus.pending,
         );
+      });
+    });
+
+    // ─── failure branches ──────────────────────────────────────────────
+    group('failure branches', () {
+      test('read network timeout maps to a network Left', () async {
+        dataSource.readError = DioException(
+          requestOptions: RequestOptions(path: '/api/v1/user/today/analysis'),
+          type: DioExceptionType.connectionTimeout,
+        );
+
+        final failure = await expectTaskLeft(
+          repo.read(DateTime.utc(2026, 7, 11)),
+        );
+
+        expect(failure.isNetworkConnectivityError, isTrue);
+      });
+
+      test('read 403 Problem Details keeps code and status', () async {
+        const path = '/api/v1/user/today/analysis';
+        dataSource.readError = DioException(
+          requestOptions: RequestOptions(path: path),
+          response: Response<Object>(
+            requestOptions: RequestOptions(path: path),
+            statusCode: 403,
+            headers: Headers()
+              ..set(Headers.contentTypeHeader, 'application/problem+json'),
+            data: <String, dynamic>{
+              'type': 'https://api.lumos.example/problems/FORBIDDEN',
+              'title': 'Forbidden',
+              'detail': 'AI 摘要未启用',
+              'code': 'FORBIDDEN',
+            },
+          ),
+        );
+
+        final failure = await expectTaskLeft(
+          repo.read(DateTime.utc(2026, 7, 11)),
+        );
+
+        expect(failure.code, 'FORBIDDEN');
+        expect(failure.statusCode, 403);
+        expect(failure.kind, LucentFailureKind.authentication);
+      });
+
+      test('refresh network failure maps to a network Left', () async {
+        dataSource.refreshError = DioException(
+          requestOptions: RequestOptions(path: '/api/v1/user/today/analysis'),
+          type: DioExceptionType.connectionError,
+        );
+
+        final failure = await expectTaskLeft(
+          repo.refresh(DateTime.utc(2026, 7, 11)),
+        );
+
+        expect(failure.isNetworkConnectivityError, isTrue);
       });
     });
 
@@ -384,22 +463,29 @@ void main() {
           TodayAiRemoteResultEvent(dto),
         ];
 
-        final analysis = await repo.generate();
+        final analysis = await expectTaskRight(repo.generate());
 
         expect(analysis.date, '2026-07-10');
         expect(analysis.summary, '健康日报');
       });
 
-      test('throws StateError when stream ends without result event', () async {
-        dataSource.streamEvents = [const TodayAiRemoteSummaryEvent('分析中...')];
+      test(
+        'stream ending without a result event becomes an unknown Left',
+        () async {
+          dataSource.streamEvents = [const TodayAiRemoteSummaryEvent('分析中...')];
 
-        expect(() => repo.generate(), throwsA(isA<StateError>()));
-      });
+          final failure = await expectTaskLeft(repo.generate());
 
-      test('throws StateError when stream is empty', () async {
+          expect(failure.kind, LucentFailureKind.unknown);
+        },
+      );
+
+      test('empty stream becomes an unknown Left', () async {
         dataSource.streamEvents = [];
 
-        expect(() => repo.generate(), throwsA(isA<StateError>()));
+        final failure = await expectTaskLeft(repo.generate());
+
+        expect(failure.kind, LucentFailureKind.unknown);
       });
 
       test('returns analysis immediately when result is first event', () async {
@@ -407,7 +493,7 @@ void main() {
 
         dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
 
-        final analysis = await repo.generate();
+        final analysis = await expectTaskRight(repo.generate());
 
         expect(analysis.date, '2026-07-10');
       });
@@ -417,15 +503,19 @@ void main() {
 
         dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
 
-        final analysis = await repo.generate(date: '2026-07-15');
+        final analysis = await expectTaskRight(
+          repo.generate(date: '2026-07-15'),
+        );
 
         expect(analysis.date, '2026-07-15');
       });
 
-      test('propagates stream errors', () async {
+      test('stream errors surface as a Left failure', () async {
         dataSource.streamError = Exception('Stream failed');
 
-        expect(() => repo.generate(), throwsException);
+        final failure = await expectTaskLeft(repo.generate());
+
+        expect(failure.kind, LucentFailureKind.unknown);
       });
     });
   });

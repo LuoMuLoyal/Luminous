@@ -180,13 +180,16 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
     }
 
     try {
-      final bundle = await ds.fetchSuggestions(
-        language:
-            (ref.read(localeControllerProvider).asData?.value ??
-                    AppLocale.system)
-                .acceptLanguage,
-        excludeIds: _dismissedIds.isEmpty ? null : _dismissedIds,
-      );
+      final result = await ds
+          .fetchSuggestions(
+            language:
+                (ref.read(localeControllerProvider).asData?.value ??
+                        AppLocale.system)
+                    .acceptLanguage,
+            excludeIds: _dismissedIds.isEmpty ? null : _dismissedIds,
+          )
+          .run();
+      final bundle = result.fold((failure) => throw failure, (value) => value);
       final materialized = _preservePreviousContent(bundle);
       // Persist to cache
       await dao.replace(TodaySuggestionJsonCodec.bundleToJson(materialized));
@@ -250,7 +253,10 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
     required TodaySuggestionFeedback feedback,
   }) async {
     final ds = ref.read(todaySuggestionRemoteDataSourceProvider);
-    await ds.submitFeedback(id: suggestionId, feedback: feedback);
+    final result = await ds
+        .submitFeedback(id: suggestionId, feedback: feedback)
+        .run();
+    result.fold((failure) => throw failure, (_) {});
 
     if (feedback == TodaySuggestionFeedback.suppress) {
       _dismissedIds.add(suggestionId);
@@ -291,11 +297,15 @@ Future<TodaySuggestionExplanation?> suggestionExplanation(
 ) async {
   return authGuarded(
     ref: ref,
-    fetch: () {
+    fetch: () async {
       final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
-      return ds.explainSuggestion(
-        id: params.suggestionId,
-        language: params.language,
+      final result = await ds
+          .explainSuggestion(id: params.suggestionId, language: params.language)
+          .run();
+      // Left 投影到 AsyncValue.error。
+      return result.fold(
+        (failure) => throw failure,
+        (explanation) => explanation,
       );
     },
     signedOutFallback: () async => null,

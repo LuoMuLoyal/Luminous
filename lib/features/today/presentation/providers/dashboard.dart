@@ -17,12 +17,18 @@ Future<TodayDashboard> todayDashboard(Ref ref) {
   ref.watch(dataChangeVersionProvider(DataChangeTopic.userSettings));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.healthEvents));
 
-  // The repository catches every upstream failure and returns a degraded
-  // dashboard instead of throwing, so the page never whitescreens because of
-  // a single data-source outage.
+  // The repository degrades specific metrics on known upstream failures
+  // (degraded dashboard is product behaviour); a Left here means an
+  // unexpected error and is projected to AsyncValue.error.
   return authGuarded(
     ref: ref,
-    fetch: () => ref.watch(todayRepositoryProvider).fetchDashboard(),
+    fetch: () async {
+      final result = await ref
+          .watch(todayRepositoryProvider)
+          .fetchDashboard()
+          .run();
+      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+    },
     signedOutFallback: () =>
         ref.watch(todayRepositoryProvider).signedOutDashboard,
   );

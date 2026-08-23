@@ -26,6 +26,8 @@ import 'package:luminous/features/settings/domain/repositories/user_settings.dar
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 
+import '../helpers/task_either.dart';
+
 void main() {
   test(
     'Lucent today repository uses earliest pending medicine reminder',
@@ -86,9 +88,9 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final dashboard = await container
-          .read(todayRepositoryProvider)
-          .fetchDashboard();
+      final dashboard = await expectTaskRight(
+        container.read(todayRepositoryProvider).fetchDashboard(),
+      );
 
       expect(dashboard.medication.medicineCount, 2);
       expect(dashboard.medication.pendingCount, 1);
@@ -135,9 +137,9 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final dashboard = await container
-          .read(todayRepositoryProvider)
-          .fetchDashboard();
+      final dashboard = await expectTaskRight(
+        container.read(todayRepositoryProvider).fetchDashboard(),
+      );
 
       expect(dashboard.medication.pendingCount, 2);
       expect(dashboard.medication.nextDoseTimeLabel, '--');
@@ -184,9 +186,9 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final dashboard = await container
-          .read(todayRepositoryProvider)
-          .fetchDashboard();
+      final dashboard = await expectTaskRight(
+        container.read(todayRepositoryProvider).fetchDashboard(),
+      );
 
       expect(
         dashboard.water.observedMetric?.state,
@@ -238,9 +240,9 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final dashboard = await container
-          .read(todayRepositoryProvider)
-          .fetchDashboard();
+      final dashboard = await expectTaskRight(
+        container.read(todayRepositoryProvider).fetchDashboard(),
+      );
 
       expect(
         dashboard.water.observedMetric?.state,
@@ -282,9 +284,9 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final dashboard = await container
-          .read(todayRepositoryProvider)
-          .fetchDashboard();
+      final dashboard = await expectTaskRight(
+        container.read(todayRepositoryProvider).fetchDashboard(),
+      );
 
       expect(
         dashboard.medication.observedMetric?.state,

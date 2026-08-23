@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
@@ -102,18 +104,20 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
 
   Future<TodayAiAnalysisCardState> _fetch() async {
     final repo = ref.read(todayAiRepositoryProvider);
-    try {
-      final analysis = await repo.read(DateTime.now());
-      final state = _mapToCardState(analysis, previous: _lastState?.analysis);
-      _lastState = state;
-      return state;
-    } catch (error) {
-      final apiError = LucentErrorMapper.fromObject(error);
-      if (apiError.statusCode == 403) {
-        return const TodayAiAnalysisCardState.disabled();
-      }
-      rethrow;
-    }
+    final result = await repo.read(DateTime.now()).run();
+    return result.fold(
+      (failure) {
+        if (failure.statusCode == 403) {
+          return const TodayAiAnalysisCardState.disabled();
+        }
+        throw failure;
+      },
+      (analysis) {
+        final state = _mapToCardState(analysis, previous: _lastState?.analysis);
+        _lastState = state;
+        return state;
+      },
+    );
   }
 
   TodayAiAnalysisCardState _mapToCardState(
@@ -191,28 +195,42 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
       return;
     }
 
+    final repo = ref.read(todayAiRepositoryProvider);
+    final previousAnalysis = state.asData?.value.analysis;
+    final Either<LucentFailure, TodayAiAnalysis> result;
     try {
-      final repo = ref.read(todayAiRepositoryProvider);
-      final previousAnalysis = state.asData?.value.analysis;
-      final analysis = await repo.refresh(DateTime.now());
+      result = await repo.refresh(DateTime.now()).run();
+    } on FormatException catch (e, st) {
+      // 协议不变量（非 problem+json / 畸形 body）：直接投影为错误态，不抛出。
+      ref.read(talkerProvider).error('TodayAiAnalysisNotifier.refresh: $e');
       if (!_disposed) {
-        state = AsyncData(
-          _mapToCardState(analysis, previous: previousAnalysis),
-        );
+        state = AsyncError(LucentErrorMapper.fromObject(e), st);
       }
-    } catch (error) {
-      ref.read(talkerProvider).error('TodayAiAnalysisNotifier.refresh: $error');
-      final apiError = LucentErrorMapper.fromObject(error);
-      if (apiError.statusCode == 403) {
-        if (!_disposed) {
-          state = const AsyncData(TodayAiAnalysisCardState.disabled());
-        }
-        return;
-      }
-      if (!_disposed) {
-        state = AsyncError(apiError, StackTrace.current);
-      }
+      return;
     }
+    result.fold(
+      (failure) {
+        ref
+            .read(talkerProvider)
+            .error('TodayAiAnalysisNotifier.refresh: $failure');
+        if (failure.statusCode == 403) {
+          if (!_disposed) {
+            state = const AsyncData(TodayAiAnalysisCardState.disabled());
+          }
+          return;
+        }
+        if (!_disposed) {
+          state = AsyncError(failure, StackTrace.current);
+        }
+      },
+      (analysis) {
+        if (!_disposed) {
+          state = AsyncData(
+            _mapToCardState(analysis, previous: previousAnalysis),
+          );
+        }
+      },
+    );
   }
 
   void reset() {

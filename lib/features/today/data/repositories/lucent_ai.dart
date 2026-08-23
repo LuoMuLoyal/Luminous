@@ -1,6 +1,9 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:intl/intl.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
@@ -29,25 +32,34 @@ class LucentTodayAiRepository implements TodayAiRepository {
   static final _dateFormat = DateFormat('yyyy-MM-dd');
 
   @override
-  Future<TodayAiAnalysis> read(DateTime date) async {
-    final dto = await dataSource.read(date: _formatDate(date));
-    return _mapReadDataDto(dto);
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) {
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.read(date: _formatDate(date));
+      return _mapReadDataDto(dto);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<TodayAiAnalysis> refresh(DateTime date) async {
-    final dto = await dataSource.refresh(date: _formatDate(date));
-    return _mapReadDataDto(dto);
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) {
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.refresh(date: _formatDate(date));
+      return _mapReadDataDto(dto);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
+  /// 兼容保留：当前无生产消费者，仅保留 API 兼容；流结束无结果按本地
+  /// 不变量映射 Left(unknown)。
   @override
-  Future<TodayAiAnalysis> generate({String? date}) async {
-    await for (final event in generateStream(date: date)) {
-      if (event is TodayAiGenerationResultEvent) {
-        return event.analysis;
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) {
+    return TaskEither.tryCatch(() async {
+      await for (final event in generateStream(date: date)) {
+        if (event is TodayAiGenerationResultEvent) {
+          return event.analysis;
+        }
       }
-    }
-    throw StateError('今日 AI 流式响应已结束，但没有返回最终结果。');
+      // 流结束但无最终结果：本地不变量违规，不当作服务端失败。
+      throw StateError('今日 AI 流式响应已结束，但没有返回最终结果。');
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override

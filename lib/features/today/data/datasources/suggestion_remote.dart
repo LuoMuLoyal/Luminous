@@ -1,4 +1,7 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/suggestion.dart';
@@ -7,7 +10,10 @@ import 'package:luminous/features/today/domain/repositories/suggestion.dart';
 ///
 /// Wraps the generated [TodaySuggestionApi] and maps DTOs to domain entities.
 /// The Retrofit client returns direct resource DTOs, which this class maps to
-/// domain types.
+/// domain types. As the sole implementation of [SuggestionRepository] it
+/// returns [TaskEither]; transport errors are normalized through
+/// [LucentErrorMapper] (server business failures keep their Problem Details
+/// code, network failures become network Lefts).
 class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   const TodaySuggestionRemoteDataSource({required this.api});
 
@@ -17,95 +23,103 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
 
   /// GET /api/v1/user/today/suggestions
   @override
-  Future<TodaySuggestionBundle> fetchSuggestions({
+  TaskEither<LucentFailure, TodaySuggestionBundle> fetchSuggestions({
     required String language,
     String? date,
     List<String>? excludeIds,
-  }) async {
-    final response = await api.todaySuggestionControllerGetSuggestionsV1(
-      acceptLanguage: language,
-      date: date,
-      excludeIds: excludeIds,
-    );
-    return _mapBundle(
-      requireData(response.data, operation: 'fetchSuggestions'),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      final response = await api.todaySuggestionControllerGetSuggestionsV1(
+        acceptLanguage: language,
+        date: date,
+        excludeIds: excludeIds,
+      );
+      return _mapBundle(
+        requireData(response.data, operation: 'fetchSuggestions'),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   // ── Feedback ───────────────────────────────────────────────────────────
 
   /// POST /api/v1/user/today/suggestions/:id/feedback
   @override
-  Future<TodaySuggestionFeedbackResult> submitFeedback({
+  TaskEither<LucentFailure, TodaySuggestionFeedbackResult> submitFeedback({
     required String id,
     required TodaySuggestionFeedback feedback,
-  }) async {
-    final response = await api.todaySuggestionControllerSubmitFeedbackV1(
-      id: id,
-      suggestionFeedbackDto: SuggestionFeedbackDto(
-        feedback: _mapFeedbackToDto(feedback),
-      ),
-    );
-    final data = requireData(response.data, operation: 'submitFeedback');
-    return TodaySuggestionFeedbackResult(
-      suggestionId: data.suggestionId,
-      feedback: _mapFeedbackFromString(data.feedback.value),
-      appliedEffect: TodaySuggestionFeedbackEffect.fromJson(
-        data.appliedEffect.value,
-      ),
-      expiresAt: data.expiresAt,
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      final response = await api.todaySuggestionControllerSubmitFeedbackV1(
+        id: id,
+        suggestionFeedbackDto: SuggestionFeedbackDto(
+          feedback: _mapFeedbackToDto(feedback),
+        ),
+      );
+      final data = requireData(response.data, operation: 'submitFeedback');
+      return TodaySuggestionFeedbackResult(
+        suggestionId: data.suggestionId,
+        feedback: _mapFeedbackFromString(data.feedback.value),
+        appliedEffect: TodaySuggestionFeedbackEffect.fromJson(
+          data.appliedEffect.value,
+        ),
+        expiresAt: data.expiresAt,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   // ── Explanation ────────────────────────────────────────────────────────
 
   /// POST /api/v1/user/today/suggestions/:id/explain
   @override
-  Future<TodaySuggestionExplanation> explainSuggestion({
+  TaskEither<LucentFailure, TodaySuggestionExplanation> explainSuggestion({
     required String id,
     required String language,
-  }) async {
-    final response = await api.todaySuggestionControllerExplainSuggestionV1(
-      id: id,
-      acceptLanguage: language,
-    );
-    final data = requireData(response.data, operation: 'explainSuggestion');
-    return TodaySuggestionExplanation(
-      suggestionId: data.suggestionId,
-      reason: data.reason,
-      boundary: data.boundary,
-      aiGenerated: data.aiGenerated,
-      locale: data.locale,
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      final response = await api.todaySuggestionControllerExplainSuggestionV1(
+        id: id,
+        acceptLanguage: language,
+      );
+      final data = requireData(response.data, operation: 'explainSuggestion');
+      return TodaySuggestionExplanation(
+        suggestionId: data.suggestionId,
+        reason: data.reason,
+        boundary: data.boundary,
+        aiGenerated: data.aiGenerated,
+        locale: data.locale,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   // ── History ────────────────────────────────────────────────────────────
 
   /// GET /api/v1/user/today/suggestions/history
   @override
-  Future<TodaySuggestionHistory> fetchHistory({
+  TaskEither<LucentFailure, TodaySuggestionHistory> fetchHistory({
     required String language,
     String? startDate,
     String? endDate,
     String? lifecycleState,
     String? type,
     int? limit,
-  }) async {
-    final response = await api.todaySuggestionControllerGetHistoryV1(
-      acceptLanguage: language,
-      startDate: startDate,
-      endDate: endDate,
-      lifecycleState: lifecycleState,
-      type: type,
-      limit: limit,
-    );
-    final data = requireData(response.data, operation: 'fetchHistory');
-    return TodaySuggestionHistory(
-      items: data.items.map(_mapHistoryItem).toList(growable: false),
-      total: data.total.toInt(),
-      startDate: data.startDate,
-      endDate: data.endDate,
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      final response = await api.todaySuggestionControllerGetHistoryV1(
+        acceptLanguage: language,
+        startDate: startDate,
+        endDate: endDate,
+        lifecycleState: lifecycleState,
+        type: type,
+        limit: limit,
+      );
+      final data = requireData(response.data, operation: 'fetchHistory');
+      return TodaySuggestionHistory(
+        items: data.items.map(_mapHistoryItem).toList(growable: false),
+        total: data.total.toInt(),
+        startDate: data.startDate,
+        endDate: data.endDate,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   // ── Mapping helpers ────────────────────────────────────────────────────

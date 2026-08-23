@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/today_suggestion_dao.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/data/providers/suggestion.dart';
@@ -116,7 +118,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle);
+      ).thenAnswer((_) => TaskEither.right(bundle));
       stubDaoSuccess();
 
       final c = buildContainer();
@@ -149,9 +151,10 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenThrow(Exception('Network error'));
+      ).thenAnswer(
+        (_) => TaskEither.left(LucentFailure.unknown(message: 'Network error')),
+      );
       when(() => mockDao.fetch()).thenAnswer((_) async => null);
-
       final c = buildContainer();
 
       // The provider will try network first, fail, then try cache.
@@ -172,7 +175,10 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenThrow(Exception('Network error'));
+        ).thenAnswer(
+          (_) =>
+              TaskEither.left(LucentFailure.unknown(message: 'Network error')),
+        );
         // Return corrupt JSON that will fail deserialization
         when(() => mockDao.fetch()).thenAnswer((_) async => '{corrupt json}');
         when(() => mockDao.clear()).thenAnswer((_) async {});
@@ -202,7 +208,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle1);
+      ).thenAnswer((_) => TaskEither.right(bundle1));
       stubDaoSuccess();
 
       final c = buildContainer();
@@ -215,7 +221,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle2);
+      ).thenAnswer((_) => TaskEither.right(bundle2));
 
       await c.read(todaySuggestionProvider.notifier).dismiss('s1');
 
@@ -237,13 +243,20 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => bundle1);
+        ).thenAnswer((_) => TaskEither.right(bundle1));
         when(
           () => mockDataSource.submitFeedback(
             id: any(named: 'id'),
             feedback: any(named: 'feedback'),
           ),
-        ).thenAnswer((_) => submitCompleter.future);
+        ).thenAnswer(
+          (_) => TaskEither<LucentFailure, TodaySuggestionFeedbackResult>(
+            () => submitCompleter.future.then(
+              (value) =>
+                  Right<LucentFailure, TodaySuggestionFeedbackResult>(value),
+            ),
+          ),
+        );
         stubDaoSuccess();
 
         final c = buildContainer();
@@ -256,7 +269,7 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => bundle2);
+        ).thenAnswer((_) => TaskEither.right(bundle2));
 
         final submitFuture = c
             .read(todaySuggestionProvider.notifier)
@@ -305,17 +318,19 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => bundle1);
+        ).thenAnswer((_) => TaskEither.right(bundle1));
         when(
           () => mockDataSource.submitFeedback(
             id: any(named: 'id'),
             feedback: any(named: 'feedback'),
           ),
         ).thenAnswer(
-          (_) async => const TodaySuggestionFeedbackResult(
-            suggestionId: 's1',
-            feedback: TodaySuggestionFeedback.accepted,
-            appliedEffect: TodaySuggestionFeedbackEffect.noted,
+          (_) => TaskEither.right(
+            const TodaySuggestionFeedbackResult(
+              suggestionId: 's1',
+              feedback: TodaySuggestionFeedback.accepted,
+              appliedEffect: TodaySuggestionFeedbackEffect.noted,
+            ),
           ),
         );
         stubDaoSuccess();
@@ -329,7 +344,7 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => bundle2);
+        ).thenAnswer((_) => TaskEither.right(bundle2));
 
         await c
             .read(todaySuggestionProvider.notifier)
@@ -354,17 +369,19 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle1);
+      ).thenAnswer((_) => TaskEither.right(bundle1));
       when(
         () => mockDataSource.submitFeedback(
           id: any(named: 'id'),
           feedback: any(named: 'feedback'),
         ),
       ).thenAnswer(
-        (_) async => const TodaySuggestionFeedbackResult(
-          suggestionId: 's1',
-          feedback: TodaySuggestionFeedback.accepted,
-          appliedEffect: TodaySuggestionFeedbackEffect.noted,
+        (_) => TaskEither.right(
+          const TodaySuggestionFeedbackResult(
+            suggestionId: 's1',
+            feedback: TodaySuggestionFeedback.accepted,
+            appliedEffect: TodaySuggestionFeedbackEffect.noted,
+          ),
         ),
       );
       stubDaoSuccess();
@@ -378,7 +395,9 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenThrow(Exception('Network error'));
+      ).thenAnswer(
+        (_) => TaskEither.left(LucentFailure.unknown(message: 'Network error')),
+      );
 
       await c
           .read(todaySuggestionProvider.notifier)
@@ -404,13 +423,16 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => bundle1);
+        ).thenAnswer((_) => TaskEither.right(bundle1));
         when(
           () => mockDataSource.submitFeedback(
             id: any(named: 'id'),
             feedback: any(named: 'feedback'),
           ),
-        ).thenThrow(Exception('Submit failed'));
+        ).thenAnswer(
+          (_) =>
+              TaskEither.left(LucentFailure.unknown(message: 'Submit failed')),
+        );
         stubDaoSuccess();
 
         final c = buildContainer();
@@ -423,7 +445,7 @@ void main() {
                 suggestionId: 's1',
                 feedback: TodaySuggestionFeedback.accepted,
               ),
-          throwsA(isA<Exception>()),
+          throwsA(isA<LucentFailure>()),
         );
 
         final state = c.read(todaySuggestionProvider);
@@ -443,7 +465,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle1);
+      ).thenAnswer((_) => TaskEither.right(bundle1));
       stubDaoSuccess();
 
       final c = buildContainer();
@@ -455,7 +477,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle2);
+      ).thenAnswer((_) => TaskEither.right(bundle2));
 
       await c.read(todaySuggestionProvider.notifier).refresh();
 
@@ -472,7 +494,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle);
+      ).thenAnswer((_) => TaskEither.right(bundle));
       stubDaoSuccess();
 
       final c = buildContainer();
@@ -504,7 +526,7 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => oldBundle);
+        ).thenAnswer((_) => TaskEither.right(oldBundle));
         stubDaoSuccess();
 
         final c = buildContainer();
@@ -516,7 +538,7 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => pendingBundle);
+        ).thenAnswer((_) => TaskEither.right(pendingBundle));
 
         await c.read(todaySuggestionProvider.notifier).refresh();
 
@@ -543,7 +565,7 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => pendingBundle);
+        ).thenAnswer((_) => TaskEither.right(pendingBundle));
         when(() => mockDao.fetch()).thenAnswer(
           (_) async => TodaySuggestionJsonCodec.bundleToJson(cachedBundle),
         );
@@ -570,7 +592,7 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => bundle);
+        ).thenAnswer((_) => TaskEither.right(bundle));
         stubDaoSuccess();
 
         final c = buildContainer();
@@ -607,7 +629,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => bundle);
+      ).thenAnswer((_) => TaskEither.right(bundle));
       stubDaoSuccess();
 
       final c = buildContainer();
@@ -638,7 +660,7 @@ void main() {
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
-        ).thenAnswer((_) async => initialBundle);
+        ).thenAnswer((_) => TaskEither.right(initialBundle));
         stubDaoSuccess();
 
         final c = buildContainer();
@@ -654,12 +676,19 @@ void main() {
           ),
         ).thenAnswer((_) {
           refreshCall++;
-          return refreshCall == 1
-              ? Future.delayed(
-                  const Duration(milliseconds: 30),
-                  () => olderBundle,
-                )
-              : Future.value(newerBundle);
+          if (refreshCall == 1) {
+            return TaskEither<LucentFailure, TodaySuggestionBundle>(
+              () =>
+                  Future<TodaySuggestionBundle>.delayed(
+                    const Duration(milliseconds: 30),
+                    () => olderBundle,
+                  ).then(
+                    (value) =>
+                        Right<LucentFailure, TodaySuggestionBundle>(value),
+                  ),
+            );
+          }
+          return TaskEither.right(newerBundle);
         });
 
         final firstRefresh = notifier.refresh();
@@ -682,7 +711,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => initialBundle);
+      ).thenAnswer((_) => TaskEither.right(initialBundle));
       stubDaoSuccess();
 
       final c = buildContainer();
@@ -695,7 +724,7 @@ void main() {
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
-      ).thenAnswer((_) async => refreshedBundle);
+      ).thenAnswer((_) => TaskEither.right(refreshedBundle));
 
       WidgetsBinding.instance.handleAppLifecycleStateChanged(
         AppLifecycleState.resumed,

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
@@ -375,13 +377,16 @@ class _StaticTodayAiRepository implements TodayAiRepository {
   final TodayAiAnalysis analysis;
 
   @override
-  Future<TodayAiAnalysis> read(DateTime date) async => analysis;
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+      TaskEither.right(analysis);
 
   @override
-  Future<TodayAiAnalysis> refresh(DateTime date) async => analysis;
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+      TaskEither.right(analysis);
 
   @override
-  Future<TodayAiAnalysis> generate({String? date}) async => analysis;
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+      TaskEither.right(analysis);
 
   @override
   Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
@@ -392,8 +397,7 @@ class _StaticTodayAiRepository implements TodayAiRepository {
 class _TappableTodayAiRepository implements TodayAiRepository {
   int refreshCount = 0;
 
-  @override
-  Future<TodayAiAnalysis> read(DateTime date) async => TodayAiAnalysis(
+  TodayAiAnalysis get _analysis => TodayAiAnalysis(
     date: '2026-06-12',
     generatedAt: generatedAt,
     summary: 'Summary.',
@@ -405,17 +409,21 @@ class _TappableTodayAiRepository implements TodayAiRepository {
   );
 
   @override
-  Future<TodayAiAnalysis> refresh(DateTime date) async {
+  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+      TaskEither.right(_analysis);
+
+  @override
+  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) {
     refreshCount++;
-    return read(date);
+    return TaskEither.right(_analysis);
   }
 
   @override
-  Future<TodayAiAnalysis> generate({String? date}) async =>
-      read(DateTime.now());
+  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+      TaskEither.right(_analysis);
 
   @override
   Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
-    yield TodayAiGenerationResultEvent(await read(DateTime.now()));
+    yield TodayAiGenerationResultEvent(_analysis);
   }
 }
