@@ -4,7 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
@@ -222,14 +224,14 @@ class _FakeRepository extends MedicineReminderRemoteDataSource {
   bool throwOnReport = false;
 
   @override
-  Future<void> reportLocalReceipt({
+  TaskEither<LucentFailure, void> reportLocalReceipt({
     required String reminderId,
     required String scheduledDate,
     required String scheduledTime,
-  }) async {
+  }) {
     receiptAttempts += 1;
     if (throwOnReport) {
-      throw StateError('report failed');
+      return TaskEither.left(LucentFailure.unknown(message: 'report failed'));
     }
     receipts.add(
       _Receipt(
@@ -238,6 +240,7 @@ class _FakeRepository extends MedicineReminderRemoteDataSource {
         time: scheduledTime,
       ),
     );
+    return TaskEither.right(null);
   }
 }
 

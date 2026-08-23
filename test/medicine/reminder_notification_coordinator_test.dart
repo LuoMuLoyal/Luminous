@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -553,24 +555,25 @@ class _FakeReminderSource extends MedicineReminderRemoteDataSource {
   final reportedReceipts = <_ReportedReceipt>[];
 
   @override
-  Future<List<MedicineReminderItem>> fetchAll() async {
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchAll() {
     if (throwOnFetch) {
-      throw StateError('fetch failed');
+      return TaskEither.left(LucentFailure.unknown(message: 'fetch failed'));
     }
-    return items;
+    return TaskEither.right(items);
   }
 
   @override
-  Future<void> reportLocalCapability(String state) async {
+  TaskEither<LucentFailure, void> reportLocalCapability(String state) {
     reportedCapabilities.add(state);
+    return TaskEither.right(null);
   }
 
   @override
-  Future<void> reportLocalReceipt({
+  TaskEither<LucentFailure, void> reportLocalReceipt({
     required String reminderId,
     required String scheduledDate,
     required String scheduledTime,
-  }) async {
+  }) {
     reportedReceipts.add(
       _ReportedReceipt(
         reminderId: reminderId,
@@ -578,6 +581,7 @@ class _FakeReminderSource extends MedicineReminderRemoteDataSource {
         time: scheduledTime,
       ),
     );
+    return TaskEither.right(null);
   }
 }
 

@@ -1,15 +1,20 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' hide DoseLogStatus;
+import 'package:luminous/core/database/daos/medicine_dose_log_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/error.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+
+import '../helpers/task_either.dart';
 
 class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   _FakeDoseLogRemote() : super(api: MedicineDoseLogsApi(Dio()), dio: Dio());
@@ -208,7 +213,9 @@ void main() {
       test('fetches from network when cache is empty', () async {
         remote.fetchResult = [_buildItem()];
 
-        final result = await dataSource.fetchForDate('2026-07-10');
+        final result = await expectTaskRight(
+          dataSource.fetchForDate('2026-07-10'),
+        );
 
         expect(result, hasLength(1));
         expect(result.first.id, 'log-1');
@@ -219,13 +226,15 @@ void main() {
       test('returns cached items when cache is populated', () async {
         // Seed cache by fetching once
         remote.fetchResult = [_buildItem()];
-        await dataSource.fetchForDate('2026-07-10');
+        await dataSource.fetchForDate('2026-07-10').run();
 
         // Reset fetch result to different items to verify cache is used
         remote.fetchResult = [_buildItem(id: 'log-2')];
         remote.fetchCallCount = 0;
 
-        final result = await dataSource.fetchForDate('2026-07-10');
+        final result = await expectTaskRight(
+          dataSource.fetchForDate('2026-07-10'),
+        );
 
         // Should return cached items, not new ones
         expect(result, hasLength(1));
@@ -250,13 +259,15 @@ void main() {
         );
 
         remote.fetchResult = [item];
-        await dataSource.fetchForDate('2026-07-11');
+        await dataSource.fetchForDate('2026-07-11').run();
 
         // Reset to verify cache content
         remote.fetchResult = [];
         remote.fetchCallCount = 0;
 
-        final result = await dataSource.fetchForDate('2026-07-11');
+        final result = await expectTaskRight(
+          dataSource.fetchForDate('2026-07-11'),
+        );
 
         expect(result, hasLength(1));
         final cached = result.first;
@@ -279,12 +290,14 @@ void main() {
           _buildItem(id: 'log-3', status: DoseLogStatus.missed),
         ];
 
-        await dataSource.fetchForDate('2026-07-10');
+        await dataSource.fetchForDate('2026-07-10').run();
 
         remote.fetchResult = [];
         remote.fetchCallCount = 0;
 
-        final result = await dataSource.fetchForDate('2026-07-10');
+        final result = await expectTaskRight(
+          dataSource.fetchForDate('2026-07-10'),
+        );
 
         expect(result, hasLength(3));
         expect(result[0].id, 'log-1');
@@ -298,12 +311,14 @@ void main() {
       test('handles null currentMedicineId', () async {
         remote.fetchResult = [_buildItem(currentMedicineId: null)];
 
-        await dataSource.fetchForDate('2026-07-10');
+        await dataSource.fetchForDate('2026-07-10').run();
 
         remote.fetchResult = [];
         remote.fetchCallCount = 0;
 
-        final result = await dataSource.fetchForDate('2026-07-10');
+        final result = await expectTaskRight(
+          dataSource.fetchForDate('2026-07-10'),
+        );
 
         expect(result, hasLength(1));
         expect(result.first.currentMedicineId, isNull);
@@ -319,12 +334,14 @@ void main() {
           ),
         ];
 
-        await dataSource.fetchForDate('2026-07-10');
+        await dataSource.fetchForDate('2026-07-10').run();
 
         remote.fetchResult = [];
         remote.fetchCallCount = 0;
 
-        final result = await dataSource.fetchForDate('2026-07-10');
+        final result = await expectTaskRight(
+          dataSource.fetchForDate('2026-07-10'),
+        );
 
         expect(result, hasLength(1));
         expect(result.first.reminderId, isNull);
@@ -336,12 +353,14 @@ void main() {
       test('handles planned status', () async {
         remote.fetchResult = [_buildItem(status: DoseLogStatus.planned)];
 
-        await dataSource.fetchForDate('2026-07-10');
+        await dataSource.fetchForDate('2026-07-10').run();
 
         remote.fetchResult = [];
         remote.fetchCallCount = 0;
 
-        final result = await dataSource.fetchForDate('2026-07-10');
+        final result = await expectTaskRight(
+          dataSource.fetchForDate('2026-07-10'),
+        );
 
         expect(result.first.status, DoseLogStatus.planned);
       });
@@ -349,15 +368,55 @@ void main() {
       test('returns empty list when remote returns empty', () async {
         remote.fetchResult = [];
 
-        final result = await dataSource.fetchForDate('2026-07-10');
+        final result = await expectTaskRight(
+          dataSource.fetchForDate('2026-07-10'),
+        );
 
         expect(result, isEmpty);
       });
 
-      test('propagates remote fetch errors when cache is empty', () async {
-        remote.fetchError = Exception('Network error');
+      test(
+        'propagates remote fetch errors when cache is empty as a Left',
+        () async {
+          remote.fetchError = Exception('Network error');
 
-        expect(() => dataSource.fetchForDate('2026-07-10'), throwsException);
+          final failure = await expectTaskLeft(
+            dataSource.fetchForDate('2026-07-10'),
+          );
+
+          expect(failure.kind, LucentFailureKind.unknown);
+        },
+      );
+
+      test(
+        '404 Problem Details keeps server code and status as a Left',
+        () async {
+          remote.fetchError = _problemDetails404();
+
+          final failure = await expectTaskLeft(
+            dataSource.fetchForDate('2026-07-10'),
+          );
+
+          expect(failure.code, 'DOSE_LOG_NOT_FOUND');
+          expect(failure.statusCode, 404);
+          expect(failure.kind, LucentFailureKind.business);
+        },
+      );
+
+      test('structural protocol error keeps the StateError cause as a '
+          'Left(unknown)', () async {
+        // The remote data source throws a protocol StateError for a
+        // structurally malformed body (e.g. items not a list); the
+        // repository boundary maps it to Left(unknown) without losing the
+        // original cause.
+        remote.fetchError = StateError('用药记录列表格式异常');
+
+        final failure = await expectTaskLeft(
+          dataSource.fetchForDate('2026-07-10'),
+        );
+
+        expect(failure.kind, LucentFailureKind.unknown);
+        expect(failure.cause, isA<StateError>());
       });
     });
 
@@ -367,7 +426,9 @@ void main() {
         final created = _buildItem(id: 'new-log');
         remote.createResult = created;
 
-        final result = await dataSource.create('med-1', 'taken', '2026-07-10');
+        final result = await expectTaskRight(
+          dataSource.create('med-1', 'taken', '2026-07-10'),
+        );
 
         expect(result.id, 'new-log');
         expect(remote.lastCreateDate, '2026-07-10');
@@ -375,7 +436,7 @@ void main() {
       });
 
       test('refreshes cache after create', () async {
-        await dataSource.create('med-1', 'taken', '2026-07-10');
+        await dataSource.create('med-1', 'taken', '2026-07-10').run();
 
         // create calls _refreshCache which calls fetchForDate
         expect(remote.fetchCallCount, greaterThanOrEqualTo(1));
@@ -389,7 +450,9 @@ void main() {
         final updated = _buildItem(id: 'log-1', status: DoseLogStatus.skipped);
         remote.updateResult = updated;
 
-        final result = await dataSource.update('log-1', 'skipped');
+        final result = await expectTaskRight(
+          dataSource.update('log-1', 'skipped'),
+        );
 
         expect(result.id, 'log-1');
         expect(result.status, DoseLogStatus.skipped);
@@ -398,7 +461,7 @@ void main() {
       });
 
       test('does not refresh cache after update (no date info)', () async {
-        await dataSource.update('log-1', 'skipped');
+        await dataSource.update('log-1', 'skipped').run();
 
         // update should NOT call fetchForDate (no date to target)
         expect(remote.fetchCallCount, 0);
@@ -411,10 +474,12 @@ void main() {
         final marked = _buildItem(id: 'marked-1');
         remote.markResult = marked;
 
-        final result = await dataSource.mark(
-          currentMedicineId: 'med-1',
-          status: 'taken',
-          date: '2026-07-10',
+        final result = await expectTaskRight(
+          dataSource.mark(
+            currentMedicineId: 'med-1',
+            status: 'taken',
+            date: '2026-07-10',
+          ),
         );
 
         expect(result.id, 'marked-1');
@@ -424,13 +489,15 @@ void main() {
       });
 
       test('passes reminderId and scheduledTime', () async {
-        await dataSource.mark(
-          currentMedicineId: 'med-1',
-          status: 'taken',
-          date: '2026-07-10',
-          reminderId: 'rem-1',
-          scheduledTime: '08:00',
-        );
+        await dataSource
+            .mark(
+              currentMedicineId: 'med-1',
+              status: 'taken',
+              date: '2026-07-10',
+              reminderId: 'rem-1',
+              scheduledTime: '08:00',
+            )
+            .run();
 
         expect(remote.lastMarkReminderId, 'rem-1');
         expect(remote.lastMarkScheduledTime, '08:00');
@@ -439,11 +506,13 @@ void main() {
       test(
         'passes null reminderId and scheduledTime when not provided',
         () async {
-          await dataSource.mark(
-            currentMedicineId: 'med-1',
-            status: 'taken',
-            date: '2026-07-10',
-          );
+          await dataSource
+              .mark(
+                currentMedicineId: 'med-1',
+                status: 'taken',
+                date: '2026-07-10',
+              )
+              .run();
 
           expect(remote.lastMarkReminderId, isNull);
           expect(remote.lastMarkScheduledTime, isNull);
@@ -451,11 +520,13 @@ void main() {
       );
 
       test('refreshes cache after mark', () async {
-        await dataSource.mark(
-          currentMedicineId: 'med-1',
-          status: 'taken',
-          date: '2026-07-10',
-        );
+        await dataSource
+            .mark(
+              currentMedicineId: 'med-1',
+              status: 'taken',
+              date: '2026-07-10',
+            )
+            .run();
 
         expect(remote.fetchCallCount, greaterThanOrEqualTo(1));
         expect(remote.lastFetchDate, '2026-07-10');
@@ -467,7 +538,7 @@ void main() {
       test(
         'deletes remote dose log and refreshes cache for the date',
         () async {
-          await dataSource.delete('log-1', date: '2026-07-10');
+          await dataSource.delete('log-1', date: '2026-07-10').run();
 
           expect(remote.lastDeleteId, 'log-1');
           expect(remote.fetchCallCount, greaterThanOrEqualTo(1));
@@ -485,12 +556,12 @@ void main() {
               '2026-07-${(status.index + 1).toString().padLeft(2, '0')}';
           remote.fetchResult = [_buildItem(status: status, scheduledFor: date)];
 
-          await dataSource.fetchForDate(date);
+          await dataSource.fetchForDate(date).run();
 
           remote.fetchResult = [];
           remote.fetchCallCount = 0;
 
-          final result = await dataSource.fetchForDate(date);
+          final result = await expectTaskRight(dataSource.fetchForDate(date));
 
           expect(
             result.first.status,
@@ -527,10 +598,11 @@ void main() {
       test('create enqueues pending sync on network failure', () async {
         remote.writeShouldFail = true;
 
-        expect(
-          () => dataSource.create('med-1', 'taken', '2026-07-10'),
-          throwsA(isA<AppError>()),
+        final failure = await expectTaskLeft(
+          dataSource.create('med-1', 'taken', '2026-07-10'),
         );
+
+        expect(failure.kind, LucentFailureKind.network);
 
         await Future.delayed(Duration.zero);
 
@@ -547,14 +619,15 @@ void main() {
       test('mark enqueues pending sync on network failure', () async {
         remote.writeShouldFail = true;
 
-        expect(
-          () => dataSource.mark(
+        final failure = await expectTaskLeft(
+          dataSource.mark(
             currentMedicineId: 'med-1',
             status: 'taken',
             date: '2026-07-10',
           ),
-          throwsA(isA<AppError>()),
         );
+
+        expect(failure.kind, LucentFailureKind.network);
 
         await Future.delayed(Duration.zero);
 
@@ -570,10 +643,11 @@ void main() {
       test('update enqueues pending sync on network failure', () async {
         remote.writeShouldFail = true;
 
-        expect(
-          () => dataSource.update('log-1', 'skipped'),
-          throwsA(isA<AppError>()),
+        final failure = await expectTaskLeft(
+          dataSource.update('log-1', 'skipped'),
         );
+
+        expect(failure.kind, LucentFailureKind.network);
 
         await Future.delayed(Duration.zero);
 
@@ -589,10 +663,11 @@ void main() {
       test('delete enqueues pending sync on network failure', () async {
         remote.writeShouldFail = true;
 
-        expect(
-          () => dataSource.delete('log-1', date: '2026-07-10'),
-          throwsA(isA<AppError>()),
+        final failure = await expectTaskLeft(
+          dataSource.delete('log-1', date: '2026-07-10'),
         );
+
+        expect(failure.kind, LucentFailureKind.network);
 
         await Future.delayed(Duration.zero);
 
@@ -612,10 +687,11 @@ void main() {
         );
         remote.writeShouldFail = true;
 
-        expect(
-          () => dataSource.create('med-1', 'taken', '2026-07-10'),
-          throwsA(isA<AppError>()),
+        final failure = await expectTaskLeft(
+          dataSource.create('med-1', 'taken', '2026-07-10'),
         );
+
+        expect(failure.kind, LucentFailureKind.network);
 
         await Future.delayed(Duration.zero);
 
@@ -627,6 +703,141 @@ void main() {
           ),
         );
       });
+
+      test(
+        'enqueue self-failure does not mask the original network failure',
+        () async {
+          remote.writeShouldFail = true;
+          // The local DB enqueue itself throws; the enqueue exception must be
+          // only logged — the original network failure kind is still surfaced
+          // as the Left (never downgraded to unknown).
+          when(
+            () => pendingSyncDao.enqueue(
+              entityType: any(named: 'entityType'),
+              entityId: any(named: 'entityId'),
+              operation: any(named: 'operation'),
+              payload: any(named: 'payload'),
+            ),
+          ).thenThrow(StateError('local db write failed'));
+
+          final failure = await expectTaskLeft(
+            dataSource.create('med-1', 'taken', '2026-07-10'),
+          );
+
+          expect(failure.kind, LucentFailureKind.network);
+          expect(failure.isNetworkConnectivityError, isTrue);
+          expect(failure.cause, isA<DioException>());
+        },
+      );
+    });
+
+    // ─── cache write failure paths (health_context A/B pattern) ──────
+    group('cache write failure paths', () {
+      late _MockMedicineDoseLogDao mockDao;
+
+      setUp(() {
+        mockDao = _MockMedicineDoseLogDao();
+        dataSource = CachedDoseLogDataSource(remote: remote, dao: mockDao);
+      });
+
+      test(
+        'path A: cache write failure after empty-cache fetch surfaces a Left',
+        () async {
+          remote.fetchResult = [_buildItem()];
+          when(
+            () => mockDao.fetchByDate('2026-07-10'),
+          ).thenAnswer((_) async => const <String>[]);
+          when(
+            () => mockDao.replaceByDate('2026-07-10', any()),
+          ).thenThrow(Exception('disk full'));
+
+          final failure = await expectTaskLeft(
+            dataSource.fetchForDate('2026-07-10'),
+          );
+
+          expect(failure.kind, LucentFailureKind.unknown);
+          expect(remote.fetchCallCount, 1);
+        },
+      );
+
+      test(
+        'path B: background refresh cache write failure keeps cached items',
+        () async {
+          when(
+            () => mockDao.fetchByDate('2026-07-10'),
+          ).thenAnswer((_) async => <String>[_cachedItemJson()]);
+          when(
+            () => mockDao.replaceByDate('2026-07-10', any()),
+          ).thenThrow(Exception('disk full'));
+
+          // Cache hit returns the cached items immediately; the background
+          // refresh's cache write fails but is best-effort and only observed.
+          final result = await expectTaskRight(
+            dataSource.fetchForDate('2026-07-10'),
+          );
+          await Future.delayed(const Duration(milliseconds: 100));
+
+          expect(result.single.id, 'log-1');
+        },
+      );
+
+      test(
+        'write path B: post-write cache refresh failure keeps the write result',
+        () async {
+          when(
+            () => mockDao.fetchByDate('2026-07-10'),
+          ).thenAnswer((_) async => const <String>[]);
+          when(
+            () => mockDao.replaceByDate('2026-07-10', any()),
+          ).thenThrow(Exception('disk full'));
+
+          // The remote write succeeds; the cache refresh (which refetches and
+          // rewrites the date) fails but is best-effort — the write result is
+          // still a Right and nothing is enqueued for replay.
+          final result = await expectTaskRight(
+            dataSource.create('med-1', 'taken', '2026-07-10'),
+          );
+
+          expect(result.id, 'created-1');
+        },
+      );
     });
   });
 }
+
+String _cachedItemJson() => jsonEncode({
+  'id': 'log-1',
+  'currentMedicineId': 'med-1',
+  'reminderId': null,
+  'status': 'taken',
+  'scheduledFor': '2026-07-10',
+  'scheduledTime': '08:00',
+  'doseText': null,
+  'note': null,
+  'createdAt': '2026-07-10T00:00:00.000Z',
+  'updatedAt': '2026-07-10T00:00:00.000Z',
+});
+
+/// A 404 RFC 9457 Problem Details body served with
+/// `application/problem+json` (server business failure).
+DioException _problemDetails404({String code = 'DOSE_LOG_NOT_FOUND'}) {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/user/medicine-dose-logs'),
+    type: DioExceptionType.badResponse,
+    response: Response(
+      requestOptions: RequestOptions(path: '/api/v1/user/medicine-dose-logs'),
+      statusCode: 404,
+      headers: Headers.fromMap({
+        Headers.contentTypeHeader: ['application/problem+json'],
+      }),
+      data: {
+        'type': 'https://api.lumos.example/problems/$code',
+        'title': 'Not found',
+        'detail': '用药记录不存在',
+        'code': code,
+      },
+    ),
+  );
+}
+
+class _MockMedicineDoseLogDao extends Mock implements MedicineDoseLogDao {}

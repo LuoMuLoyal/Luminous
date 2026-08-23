@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/sync/worker.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/error_mapper.dart';
@@ -15,15 +17,26 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dose_log_cached.g.dart';
 
-/// Cache-first wrapper around [DoseLogRemoteDataSource].
+/// Cache-first wrapper around [DoseLogRemoteDataSource], implementing the
+/// [DoseLogRepository] boundary.
 ///
-/// Read: returns cached dose logs for a date immediately, then background refreshes.
-/// If cache is empty, fetches from network and populates cache.
+/// Repository boundary: every expected recoverable failure is a `TaskEither`
+/// Left produced via `LucentErrorMapper.fromObject`.
 ///
-/// Write: attempts remote mutation; on success, updates the cache.
-/// On network failure ([DioException]), enqueues the HTTP request into the
-/// pending sync queue for later replay by [SyncWorker], then rethrows so the
-/// UI can show an error.
+/// Read: returns cached dose logs for a date immediately, then background
+/// refreshes (path B — best-effort, failures are logged and the cached value
+/// is still returned). If the cache is empty, fetches from the network and
+/// populates the cache; populating the cache is part of the request contract
+/// (path A), so a cache read/write failure on this path is a Left. A corrupt
+/// cache entry is likewise a Left — it is never silently converted into an
+/// unconditional success.
+///
+/// Write: attempts the remote mutation; on success, refreshes the cache for
+/// the affected date as best-effort (path B — the write itself succeeded, a
+/// cache refresh failure is only observed). On network failure
+/// ([DioException]), enqueues the HTTP request into the pending sync queue
+/// for later replay by [SyncWorker], then surfaces a Left so the UI can show
+/// an error.
 class CachedDoseLogDataSource implements DoseLogRepository {
   CachedDoseLogDataSource({
     required this.remote,
@@ -40,86 +53,107 @@ class CachedDoseLogDataSource implements DoseLogRepository {
   DateTime? _lastRefreshAttempt;
 
   @override
-  Future<List<DoseLogItem>> fetchForDate(String date) async {
-    // 1. Check cache
-    final cachedJson = await dao.fetchByDate(date);
-    if (cachedJson.isNotEmpty) {
-      final cached = cachedJson.map(_itemFromJson).toList();
-      // Background refresh (throttled 60s for dose logs — TTL is 1h)
-      _refreshInBackground(date);
-      return cached;
-    }
+  TaskEither<LucentFailure, List<DoseLogItem>> fetchForDate(String date) {
+    return TaskEither.tryCatch(() async {
+      // 1. Check cache
+      final cachedJson = await dao.fetchByDate(date);
+      if (cachedJson.isNotEmpty) {
+        final cached = cachedJson.map(_itemFromJson).toList();
+        // Background refresh (throttled 60s for dose logs — TTL is 1h),
+        // best-effort cache write (path B).
+        _refreshInBackground(date);
+        return cached;
+      }
 
-    // 2. Cache empty → fetch from network
-    final remoteItems = await remote.fetchForDate(date);
-    final jsonItems = remoteItems.map(_itemToJson).toList();
-    await dao.replaceByDate(date, jsonItems);
-    return remoteItems;
+      // 2. Cache empty → fetch from network. Populating the cache is part of
+      // the request contract (path A): a cache write failure is a Left.
+      final remoteItems = await remote.fetchForDate(date);
+      final jsonItems = remoteItems.map(_itemToJson).toList();
+      await dao.replaceByDate(date, jsonItems);
+      return remoteItems;
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<DoseLogItem> create(
+  TaskEither<LucentFailure, DoseLogItem> create(
     String currentMedicineId,
     String status,
     String date,
-  ) async {
-    try {
-      final result = await remote.create(currentMedicineId, status, date);
-      // Refresh cache for this date
-      await _refreshCache(date);
-      return result;
-    } on DioException catch (e) {
-      await _enqueueWriteFailure(e);
-      throw LucentErrorMapper.toAppError(e);
-    }
+  ) {
+    return _write(
+      () => remote.create(currentMedicineId, status, date),
+      date: date,
+    );
   }
 
   @override
-  Future<DoseLogItem> update(String doseLogId, String status) async {
-    try {
-      final result = await remote.update(doseLogId, status);
-      // Refresh cache for this date (we don't know the date, so skip targeted refresh)
-      return result;
-    } on DioException catch (e) {
-      await _enqueueWriteFailure(e);
-      throw LucentErrorMapper.toAppError(e);
-    }
+  TaskEither<LucentFailure, DoseLogItem> update(
+    String doseLogId,
+    String status,
+  ) {
+    // No date to target, so no targeted cache refresh (existing contract).
+    return _write(() => remote.update(doseLogId, status));
   }
 
   @override
-  Future<void> delete(String doseLogId, {required String date}) async {
-    try {
-      await remote.delete(doseLogId);
-      await _refreshCache(date);
-    } on DioException catch (e) {
-      await _enqueueWriteFailure(e, dateOverride: date);
-      throw LucentErrorMapper.toAppError(e);
-    }
+  TaskEither<LucentFailure, void> delete(
+    String doseLogId, {
+    required String date,
+  }) {
+    return TaskEither.tryCatch(() async {
+      try {
+        await remote.delete(doseLogId);
+        await _refreshCacheBestEffort(date);
+      } on DioException catch (e) {
+        await _enqueueWriteFailure(e, dateOverride: date);
+        rethrow;
+      }
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<DoseLogItem> mark({
+  TaskEither<LucentFailure, DoseLogItem> mark({
     required String currentMedicineId,
     required String status,
     required String date,
     String? reminderId,
     String? scheduledTime,
-  }) async {
-    try {
-      final result = await remote.mark(
+  }) {
+    return _write(
+      () => remote.mark(
         currentMedicineId: currentMedicineId,
         status: status,
         date: date,
         reminderId: reminderId,
         scheduledTime: scheduledTime,
-      );
-      // Refresh cache for this date
-      await _refreshCache(date);
-      return result;
-    } on DioException catch (e) {
-      await _enqueueWriteFailure(e);
-      throw LucentErrorMapper.toAppError(e);
-    }
+      ),
+      date: date,
+    );
+  }
+
+  /// Runs a remote mutation and maps every failure to a [LucentFailure] Left.
+  ///
+  /// Network failures ([DioException]) are first enqueued into the pending
+  /// sync queue (existing offline contract), then surfaced as a Left. After a
+  /// successful remote write the cache refresh for [date] is best-effort
+  /// (path B): a refresh failure — network or cache write — is only logged,
+  /// never turned into a write failure, and never enqueued as a replay.
+  TaskEither<LucentFailure, DoseLogItem> _write(
+    Future<DoseLogItem> Function() remoteCall, {
+    String? date,
+  }) {
+    return TaskEither.tryCatch(() async {
+      try {
+        final result = await remoteCall();
+        if (date != null) {
+          await _refreshCacheBestEffort(date);
+        }
+        return result;
+      } on DioException catch (e) {
+        await _enqueueWriteFailure(e);
+        rethrow;
+      }
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   /// Enqueues a failed write operation into the pending sync queue.
@@ -128,6 +162,9 @@ class CachedDoseLogDataSource implements DoseLogRepository {
   /// [DioException]'s [RequestOptions]. If the request body contains a
   /// `scheduledFor` field, it is also stored so the replay handler can
   /// refresh the cache for that date after a successful replay.
+  ///
+  /// Enqueueing is best-effort: if the local DB write fails, the failure is
+  /// only logged and the original network failure is still surfaced as a Left.
   Future<void> _enqueueWriteFailure(
     DioException e, {
     String? dateOverride,
@@ -137,15 +174,25 @@ class CachedDoseLogDataSource implements DoseLogRepository {
     final psq = pendingSyncDao;
     if (psq == null) return;
 
-    await psq.enqueue(
-      entityType: 'dose_log',
-      operation: 'write',
-      payload: _serializeHttpRequest(
-        e.requestOptions,
-        dateOverride: dateOverride,
-      ),
-    );
-    unawaited(syncWorker?.flush());
+    try {
+      await psq.enqueue(
+        entityType: 'dose_log',
+        operation: 'write',
+        payload: _serializeHttpRequest(
+          e.requestOptions,
+          dateOverride: dateOverride,
+        ),
+      );
+      unawaited(syncWorker?.flush());
+    } catch (error, stackTrace) {
+      // 入队（本地 DB 写）失败不得掩盖原始网络失败：仅记录日志，仍按原
+      // 网络失败映射 Left。
+      appTalker.error(
+        'DoseLog write enqueue failed, keeping the original network '
+        'failure: $error',
+        stackTrace,
+      );
+    }
   }
 
   /// Serializes a [RequestOptions] into a JSON string for the pending sync
@@ -185,6 +232,16 @@ class CachedDoseLogDataSource implements DoseLogRepository {
         }
       }),
     );
+  }
+
+  /// Best-effort cache refresh after a successful write (path B): failures —
+  /// network or cache write — are only observed, never surfaced.
+  Future<void> _refreshCacheBestEffort(String date) async {
+    try {
+      await _refreshCache(date);
+    } catch (e) {
+      appTalker.warning('DoseLog post-write cache refresh failed: $e');
+    }
   }
 
   Future<void> _refreshCache(String date) async {

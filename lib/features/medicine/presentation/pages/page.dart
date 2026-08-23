@@ -206,7 +206,7 @@ Future<void> _markDose(
       '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 
   try {
-    await ref
+    final result = await ref
         .read(cachedDoseLogDataSourceProvider)
         .mark(
           currentMedicineId: request.currentMedicineId,
@@ -214,7 +214,9 @@ Future<void> _markDose(
           scheduledTime: request.scheduledTime,
           status: request.action.name,
           date: dateStr,
-        );
+        )
+        .run();
+    result.fold((failure) => throw failure, (_) {});
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
     if (context.mounted) {
       unawaited(
@@ -249,7 +251,7 @@ Future<void> _undoDose(
   if (!context.mounted) return;
   final l10n = AppLocalizations.of(context)!;
   try {
-    await ref
+    final result = await ref
         .read(cachedDoseLogDataSourceProvider)
         .mark(
           currentMedicineId: request.currentMedicineId,
@@ -257,7 +259,9 @@ Future<void> _undoDose(
           scheduledTime: request.scheduledTime,
           status: DoseLogStatus.planned.name,
           date: dateStr,
-        );
+        )
+        .run();
+    result.fold((failure) => throw failure, (_) {});
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
     if (context.mounted) {
       unawaited(Toast.show(context, l10n.medicineDoseUndoneToast));

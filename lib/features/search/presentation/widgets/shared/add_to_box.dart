@@ -78,13 +78,24 @@ Future<void> addMedicineToBoxWithPrecheck(
     // now genuinely includes the medicine about to be added.
     MedicineRiskCheckResult? previewResult;
     try {
-      previewResult = await riskCheckRepository.runPrecheck(
-        source: medicineSource.name,
-        sourceRefId: sourceRefId,
-      );
+      final precheckResult = await riskCheckRepository
+          .runPrecheck(source: medicineSource.name, sourceRefId: sourceRefId)
+          .run();
+      previewResult = precheckResult.fold((failure) {
+        // Pre-check failure must not block adding: be honest that the check
+        // could not be run now and continue without a safety judgement.
+        ref
+            .read(talkerProvider)
+            .error('addMedicineToBoxWithPrecheck: precheck failed: $failure');
+        if (context.mounted) {
+          unawaited(
+            Toast.show(context, l10n.medicineSearchPrecheckUnavailableToast),
+          );
+        }
+        return null;
+      }, (result) => result);
     } catch (e) {
-      // Pre-check failure must not block adding: be honest that the check
-      // could not be run now and continue without a safety judgement.
+      // 协议异常（如非 problem+json 错误体）从 run() 直接传播，同样降级。
       ref
           .read(talkerProvider)
           .error('addMedicineToBoxWithPrecheck: precheck failed: $e');

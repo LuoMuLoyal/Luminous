@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
@@ -13,6 +16,16 @@ export 'package:luminous/features/medicine/domain/entities/reminder.dart'
         MedicineReminderSlotUpsertInput,
         ReminderDeliveryItem;
 
+/// Remote data source for medicine reminders.
+///
+/// As the sole implementation of [ReminderRepository] it returns
+/// `TaskEither` directly (today suggestion data source precedent); transport
+/// errors are normalized through [LucentErrorMapper] — server business
+/// failures keep their Problem Details code/status, network failures become
+/// network Lefts. An empty success body is a `LucentFailure.network(
+/// emptyResponse)`; a structurally malformed body is a thrown protocol
+/// exception (logged via [appTalker] for diagnosability) that surfaces as a
+/// `Left(unknown)`.
 class MedicineReminderRemoteDataSource implements ReminderRepository {
   MedicineReminderRemoteDataSource({required this.api, required this.dio});
 
@@ -20,130 +33,156 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
   final Dio dio;
 
   @override
-  Future<List<MedicineReminderItem>> fetchActive() => _fetch(activeOnly: true);
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchActive() =>
+      _fetch(activeOnly: true);
 
   @override
-  Future<List<MedicineReminderItem>> fetchAll() => _fetch(activeOnly: false);
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchAll() =>
+      _fetch(activeOnly: false);
 
-  Future<List<MedicineReminderItem>> _fetch({required bool activeOnly}) async {
-    final response = await dio.request<Object>(
-      LucentApiPaths.medicineReminders,
-      queryParameters: <String, Object?>{if (activeOnly) 'activeOnly': 'true'},
-      options: Options(method: 'GET'),
-    );
-    return _responseItems(response.data).map(_fromJson).toList(growable: false);
+  TaskEither<LucentFailure, List<MedicineReminderItem>> _fetch({
+    required bool activeOnly,
+  }) {
+    return TaskEither.tryCatch(() async {
+      final response = await dio.request<Object>(
+        LucentApiPaths.medicineReminders,
+        queryParameters: <String, Object?>{
+          if (activeOnly) 'activeOnly': 'true',
+        },
+        options: Options(method: 'GET'),
+      );
+      return _responseItems(
+        response.data,
+      ).map(_fromJson).toList(growable: false);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<List<ReminderDeliveryItem>> fetchDeliveries({
+  TaskEither<LucentFailure, List<ReminderDeliveryItem>> fetchDeliveries({
     String? date,
     int limit = 20,
-  }) async {
-    final response = await dio.request<Object>(
-      LucentApiPaths.reminderDeliveries,
-      queryParameters: <String, Object?>{
-        if (date != null) 'date': date,
-        'limit': limit,
-      },
-      options: Options(method: 'GET'),
-    );
-    return _responseItems(
-      response.data,
-    ).map(_deliveryFromJson).toList(growable: false);
+  }) {
+    return TaskEither.tryCatch(() async {
+      final response = await dio.request<Object>(
+        LucentApiPaths.reminderDeliveries,
+        queryParameters: <String, Object?>{
+          if (date != null) 'date': date,
+          'limit': limit,
+        },
+        options: Options(method: 'GET'),
+      );
+      return _responseItems(
+        response.data,
+      ).map(_deliveryFromJson).toList(growable: false);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<MedicineReminderItem> create(MedicineReminderWriteInput input) async {
-    final response = await dio.request<Object>(
-      LucentApiPaths.medicineReminders,
-      data: input.toJson(),
-      options: Options(method: 'POST', contentType: Headers.jsonContentType),
-    );
-    return _fromJson(_responseData(response.data));
+  TaskEither<LucentFailure, MedicineReminderItem> create(
+    MedicineReminderWriteInput input,
+  ) {
+    return TaskEither.tryCatch(() async {
+      final response = await dio.request<Object>(
+        LucentApiPaths.medicineReminders,
+        data: input.toJson(),
+        options: Options(method: 'POST', contentType: Headers.jsonContentType),
+      );
+      return _fromJson(_responseData(response.data));
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<MedicineReminderItem> update(
+  TaskEither<LucentFailure, MedicineReminderItem> update(
     String id,
     MedicineReminderWriteInput input,
-  ) async {
-    final response = await dio.request<Object>(
-      LucentApiPaths.medicineReminder(id),
-      data: input.toJson(),
-      options: Options(method: 'PATCH', contentType: Headers.jsonContentType),
-    );
-    return _fromJson(_responseData(response.data));
+  ) {
+    return TaskEither.tryCatch(() async {
+      final response = await dio.request<Object>(
+        LucentApiPaths.medicineReminder(id),
+        data: input.toJson(),
+        options: Options(method: 'PATCH', contentType: Headers.jsonContentType),
+      );
+      return _fromJson(_responseData(response.data));
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> delete(String id) async {
-    await dio.request<Object>(
-      LucentApiPaths.medicineReminder(id),
-      options: Options(method: 'DELETE'),
-    );
+  TaskEither<LucentFailure, void> delete(String id) {
+    return TaskEither.tryCatch(() async {
+      await dio.request<Object>(
+        LucentApiPaths.medicineReminder(id),
+        options: Options(method: 'DELETE'),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<List<MedicineReminderItem>> upsertGroup(
+  TaskEither<LucentFailure, List<MedicineReminderItem>> upsertGroup(
     MedicineReminderGroupUpsertInput input,
-  ) async {
+  ) {
     // 消费再生契约的生成 API 方法（PUT /api/v1/user/medicine-reminders/group），
     // 请求/响应均走生成 DTO（UpsertMedicineReminderGroupDto /
     // MedicineReminderListResponseDto），与 openapi.json 对齐。
-    final response = await api.medicineRemindersControllerUpsertGroupV1(
-      upsertMedicineReminderGroupDto: UpsertMedicineReminderGroupDto(
-        currentMedicineId: input.currentMedicineId,
-        label: _nonEmptyOrNull(input.label),
-        daysOfWeek: input.daysOfWeek,
-        startDate: _nonEmptyOrNull(input.startDate),
-        endDate: _nonEmptyOrNull(input.endDate),
-        isActive: input.isActive,
-        note: _nonEmptyOrNull(input.note),
-        slots: input.slots
-            .map(
-              (slot) => UpsertReminderSlotDto(
-                id: slot.id,
-                scheduledHour: slot.scheduledHour,
-                scheduledMinute: slot.scheduledMinute,
-              ),
-            )
-            .toList(growable: false),
-      ),
-    );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: '用药提醒组响应体为空',
-        networkErrorCode: NetworkErrorCode.emptyResponse,
+    return TaskEither.tryCatch(() async {
+      final response = await api.medicineRemindersControllerUpsertGroupV1(
+        upsertMedicineReminderGroupDto: UpsertMedicineReminderGroupDto(
+          currentMedicineId: input.currentMedicineId,
+          label: _nonEmptyOrNull(input.label),
+          daysOfWeek: input.daysOfWeek,
+          startDate: _nonEmptyOrNull(input.startDate),
+          endDate: _nonEmptyOrNull(input.endDate),
+          isActive: input.isActive,
+          note: _nonEmptyOrNull(input.note),
+          slots: input.slots
+              .map(
+                (slot) => UpsertReminderSlotDto(
+                  id: slot.id,
+                  scheduledHour: slot.scheduledHour,
+                  scheduledMinute: slot.scheduledMinute,
+                ),
+              )
+              .toList(growable: false),
+        ),
       );
-    }
-    return body.items.map(_fromDto).toList(growable: false);
+      final body = response.data;
+      if (body == null) {
+        throw LucentFailure.network(
+          message: '用药提醒组响应体为空',
+          networkErrorCode: NetworkErrorCode.emptyResponse,
+        );
+      }
+      return body.items.map(_fromDto).toList(growable: false);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> reportLocalReceipt({
+  TaskEither<LucentFailure, void> reportLocalReceipt({
     required String reminderId,
     required String scheduledDate,
     required String scheduledTime,
-  }) async {
-    await dio.request<Object>(
-      LucentApiPaths.reminderDeliveryReceipts,
-      data: <String, Object?>{
-        'reminderId': reminderId,
-        'scheduledDate': scheduledDate,
-        'scheduledTime': scheduledTime,
-      },
-      options: Options(method: 'POST', contentType: Headers.jsonContentType),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      await dio.request<Object>(
+        LucentApiPaths.reminderDeliveryReceipts,
+        data: <String, Object?>{
+          'reminderId': reminderId,
+          'scheduledDate': scheduledDate,
+          'scheduledTime': scheduledTime,
+        },
+        options: Options(method: 'POST', contentType: Headers.jsonContentType),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> reportLocalCapability(String state) async {
-    await dio.request<Object>(
-      LucentApiPaths.reminderDeliveryLocalCapability,
-      data: <String, Object?>{'state': state},
-      options: Options(method: 'PUT', contentType: Headers.jsonContentType),
-    );
+  TaskEither<LucentFailure, void> reportLocalCapability(String state) {
+    return TaskEither.tryCatch(() async {
+      await dio.request<Object>(
+        LucentApiPaths.reminderDeliveryLocalCapability,
+        data: <String, Object?>{'state': state},
+        options: Options(method: 'PUT', contentType: Headers.jsonContentType),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   MedicineReminderItem _fromJson(Map<String, dynamic> json) {
@@ -206,25 +245,27 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
           .map((item) {
             final map = coerceToStringMap(item);
             if (map == null) {
-              throw const LucentApiException(
-                message: '用药提醒项格式异常',
-                networkErrorCode: NetworkErrorCode.emptyResponse,
+              appTalker.error(
+                'MedicineReminderRemoteDataSource._responseItems: item is '
+                'not a map: $item',
               );
+              throw StateError('用药提醒项格式异常');
             }
             return map;
           })
           .toList(growable: false);
     }
-    throw const LucentApiException(
-      message: '用药提醒列表格式异常',
-      networkErrorCode: NetworkErrorCode.emptyResponse,
+    appTalker.error(
+      'MedicineReminderRemoteDataSource._responseItems: items is not a '
+      'list: $items',
     );
+    throw StateError('用药提醒列表格式异常');
   }
 
   Map<String, dynamic> _responseData(Object? value) {
     final body = coerceToStringMap(value);
     if (body == null) {
-      throw const LucentApiException(
+      throw LucentFailure.network(
         message: '用药提醒响应体为空',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );

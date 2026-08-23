@@ -63,12 +63,22 @@ class MedicineReminderDeliveryReporter {
       return;
     }
     try {
-      await repository.reportLocalReceipt(
-        reminderId: payload.reminderId,
-        scheduledDate: payload.date,
-        scheduledTime: payload.time,
+      final result = await repository
+          .reportLocalReceipt(
+            reminderId: payload.reminderId,
+            scheduledDate: payload.date,
+            scheduledTime: payload.time,
+          )
+          .run();
+      result.fold(
+        (failure) => appTalker.error(
+          'MedicineReminderDeliveryReporter: reportLocalReceipt failed: '
+          '$failure',
+        ),
+        (_) {},
       );
     } catch (e) {
+      // 协议异常（如非 problem+json 错误体）从 run() 直接传播，同样只记录。
       appTalker.error(
         'MedicineReminderDeliveryReporter: reportLocalReceipt failed: $e',
       );

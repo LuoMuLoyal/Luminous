@@ -3,12 +3,14 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/database.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -370,63 +372,70 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
   final upsertGroupInputs = <MedicineReminderGroupUpsertInput>[];
 
   @override
-  Future<List<MedicineReminderItem>> fetchActive() async => items;
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchActive() =>
+      TaskEither.right(items);
 
   @override
-  Future<List<MedicineReminderItem>> fetchAll() async => items;
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchAll() =>
+      TaskEither.right(items);
 
   @override
-  Future<List<ReminderDeliveryItem>> fetchDeliveries({
+  TaskEither<LucentFailure, List<ReminderDeliveryItem>> fetchDeliveries({
     String? date,
     int limit = 20,
-  }) async {
-    return deliveries;
-  }
+  }) => TaskEither.right(deliveries);
 
   @override
-  Future<MedicineReminderItem> create(MedicineReminderWriteInput input) async {
+  TaskEither<LucentFailure, MedicineReminderItem> create(
+    MedicineReminderWriteInput input,
+  ) {
     createdInputs.add(input);
-    return _reminder(
-      id: 'created-${createdInputs.length}',
-      hour: input.scheduledHour,
-      minute: input.scheduledMinute,
-      daysOfWeek: input.daysOfWeek,
-      startDate: input.startDate,
-      endDate: input.endDate,
-      note: input.note,
+    return TaskEither.right(
+      _reminder(
+        id: 'created-${createdInputs.length}',
+        hour: input.scheduledHour,
+        minute: input.scheduledMinute,
+        daysOfWeek: input.daysOfWeek,
+        startDate: input.startDate,
+        endDate: input.endDate,
+        note: input.note,
+      ),
     );
   }
 
   @override
-  Future<MedicineReminderItem> update(
+  TaskEither<LucentFailure, MedicineReminderItem> update(
     String id,
     MedicineReminderWriteInput input,
-  ) async {
+  ) {
     updatedIds.add(id);
     updatedInputs.add(input);
-    return _reminder(
-      id: id,
-      hour: input.scheduledHour,
-      minute: input.scheduledMinute,
-      daysOfWeek: input.daysOfWeek,
-      startDate: input.startDate,
-      endDate: input.endDate,
-      note: input.note,
-      isActive: input.isActive,
+    return TaskEither.right(
+      _reminder(
+        id: id,
+        hour: input.scheduledHour,
+        minute: input.scheduledMinute,
+        daysOfWeek: input.daysOfWeek,
+        startDate: input.startDate,
+        endDate: input.endDate,
+        note: input.note,
+        isActive: input.isActive,
+      ),
     );
   }
 
   @override
-  Future<void> delete(String id) async {
+  TaskEither<LucentFailure, void> delete(String id) {
     deletedIds.add(id);
+    return TaskEither.right(null);
   }
 
   @override
-  Future<List<MedicineReminderItem>> upsertGroup(
+  TaskEither<LucentFailure, List<MedicineReminderItem>> upsertGroup(
     MedicineReminderGroupUpsertInput input,
-  ) async {
+  ) {
     upsertGroupInputs.add(input);
-    return items;
+    return TaskEither.right(items);
   }
 }
 

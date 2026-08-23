@@ -4,7 +4,10 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+
+import '../helpers/task_either.dart';
 
 void main() {
   group('MedicineReminderRemoteDataSource', () {
@@ -36,7 +39,7 @@ void main() {
           ),
         ];
 
-        final reminders = await dataSource.fetchActive();
+        final reminders = await expectTaskRight(dataSource.fetchActive());
 
         final request = adapter.requestAt(
           'GET',
@@ -68,7 +71,7 @@ void main() {
         ),
       ];
 
-      final reminder = (await dataSource.fetchActive()).single;
+      final reminder = (await expectTaskRight(dataSource.fetchActive())).single;
 
       expect(reminder.timeLabel, '20:00');
       expect(reminder.daysOfWeek, isNull);
@@ -87,7 +90,7 @@ void main() {
         ),
       ];
 
-      final reminders = await dataSource.fetchAll();
+      final reminders = await expectTaskRight(dataSource.fetchAll());
 
       final request = adapter.requestAt(
         'GET',
@@ -98,16 +101,18 @@ void main() {
     });
 
     test('create sends reminder payload and maps response', () async {
-      final reminder = await dataSource.create(
-        const MedicineReminderWriteInput(
-          currentMedicineId: 'med-1',
-          label: 'Morning',
-          scheduledHour: 8,
-          scheduledMinute: 30,
-          daysOfWeek: [1, 2, 3],
-          startDate: '2026-06-10',
-          endDate: '2026-06-20',
-          note: 'After breakfast',
+      final reminder = await expectTaskRight(
+        dataSource.create(
+          const MedicineReminderWriteInput(
+            currentMedicineId: 'med-1',
+            label: 'Morning',
+            scheduledHour: 8,
+            scheduledMinute: 30,
+            daysOfWeek: [1, 2, 3],
+            startDate: '2026-06-10',
+            endDate: '2026-06-20',
+            note: 'After breakfast',
+          ),
         ),
       );
 
@@ -131,17 +136,19 @@ void main() {
     });
 
     test('update can send null daysOfWeek for every day schedule', () async {
-      final reminder = await dataSource.update(
-        'reminder-1',
-        const MedicineReminderWriteInput(
-          currentMedicineId: 'med-1',
-          label: 'Daily',
-          scheduledHour: 20,
-          scheduledMinute: 0,
-          daysOfWeek: null,
-          startDate: null,
-          endDate: null,
-          note: null,
+      final reminder = await expectTaskRight(
+        dataSource.update(
+          'reminder-1',
+          const MedicineReminderWriteInput(
+            currentMedicineId: 'med-1',
+            label: 'Daily',
+            scheduledHour: 20,
+            scheduledMinute: 0,
+            daysOfWeek: null,
+            startDate: null,
+            endDate: null,
+            note: null,
+          ),
         ),
       );
 
@@ -170,9 +177,8 @@ void main() {
         ),
       ];
 
-      final deliveries = await dataSource.fetchDeliveries(
-        date: '2026-06-10',
-        limit: 5,
+      final deliveries = await expectTaskRight(
+        dataSource.fetchDeliveries(date: '2026-06-10', limit: 5),
       );
 
       final request = adapter.requestAt(
@@ -190,7 +196,7 @@ void main() {
     });
 
     test('delete calls reminder endpoint', () async {
-      await dataSource.delete('reminder-1');
+      await expectTaskRight(dataSource.delete('reminder-1'));
 
       final request = adapter.requestAt(
         'DELETE',
@@ -200,32 +206,34 @@ void main() {
     });
 
     test('upsertGroup PUTs the whole group and maps response items', () async {
-      final items = await dataSource.upsertGroup(
-        const MedicineReminderGroupUpsertInput(
-          currentMedicineId: 'med-1',
-          label: '阿托伐他汀钙片',
-          daysOfWeek: [1, 2, 3],
-          startDate: '2026-06-10',
-          endDate: null,
-          isActive: true,
-          note: '饭后服用',
-          slots: [
-            MedicineReminderSlotUpsertInput(
-              id: 'reminder-1',
-              scheduledHour: 8,
-              scheduledMinute: 0,
-            ),
-            MedicineReminderSlotUpsertInput(
-              id: 'reminder-2',
-              scheduledHour: 20,
-              scheduledMinute: 0,
-            ),
-            MedicineReminderSlotUpsertInput(
-              id: null,
-              scheduledHour: 21,
-              scheduledMinute: 15,
-            ),
-          ],
+      final items = await expectTaskRight(
+        dataSource.upsertGroup(
+          const MedicineReminderGroupUpsertInput(
+            currentMedicineId: 'med-1',
+            label: '阿托伐他汀钙片',
+            daysOfWeek: [1, 2, 3],
+            startDate: '2026-06-10',
+            endDate: null,
+            isActive: true,
+            note: '饭后服用',
+            slots: [
+              MedicineReminderSlotUpsertInput(
+                id: 'reminder-1',
+                scheduledHour: 8,
+                scheduledMinute: 0,
+              ),
+              MedicineReminderSlotUpsertInput(
+                id: 'reminder-2',
+                scheduledHour: 20,
+                scheduledMinute: 0,
+              ),
+              MedicineReminderSlotUpsertInput(
+                id: null,
+                scheduledHour: 21,
+                scheduledMinute: 15,
+              ),
+            ],
+          ),
         ),
       );
 
@@ -263,22 +271,24 @@ void main() {
     test(
       'upsertGroup omits empty-string startDate/endDate from PUT body',
       () async {
-        await dataSource.upsertGroup(
-          const MedicineReminderGroupUpsertInput(
-            currentMedicineId: 'med-1',
-            label: '阿托伐他汀钙片',
-            daysOfWeek: null,
-            startDate: '',
-            endDate: '',
-            isActive: true,
-            note: null,
-            slots: [
-              MedicineReminderSlotUpsertInput(
-                id: 'reminder-1',
-                scheduledHour: 8,
-                scheduledMinute: 0,
-              ),
-            ],
+        await expectTaskRight(
+          dataSource.upsertGroup(
+            const MedicineReminderGroupUpsertInput(
+              currentMedicineId: 'med-1',
+              label: '阿托伐他汀钙片',
+              daysOfWeek: null,
+              startDate: '',
+              endDate: '',
+              isActive: true,
+              note: null,
+              slots: [
+                MedicineReminderSlotUpsertInput(
+                  id: 'reminder-1',
+                  scheduledHour: 8,
+                  scheduledMinute: 0,
+                ),
+              ],
+            ),
           ),
         );
 
@@ -292,10 +302,12 @@ void main() {
     );
 
     test('reportLocalReceipt posts the idempotent receipt payload', () async {
-      await dataSource.reportLocalReceipt(
-        reminderId: 'reminder-1',
-        scheduledDate: '2026-06-10',
-        scheduledTime: '21:30',
+      await expectTaskRight(
+        dataSource.reportLocalReceipt(
+          reminderId: 'reminder-1',
+          scheduledDate: '2026-06-10',
+          scheduledTime: '21:30',
+        ),
       );
 
       final request = adapter.requestAt(
@@ -308,7 +320,7 @@ void main() {
     });
 
     test('reportLocalCapability puts the capability state', () async {
-      await dataSource.reportLocalCapability('active');
+      await expectTaskRight(dataSource.reportLocalCapability('active'));
 
       final request = adapter.requestAt(
         'PUT',
@@ -319,10 +331,65 @@ void main() {
 
     test('reportLocalReceipt accepts an empty 204 response', () async {
       adapter.failWithEmptyBody = true;
-      await dataSource.reportLocalReceipt(
-        reminderId: 'reminder-1',
-        scheduledDate: '2026-06-10',
-        scheduledTime: '21:30',
+      await expectTaskRight(
+        dataSource.reportLocalReceipt(
+          reminderId: 'reminder-1',
+          scheduledDate: '2026-06-10',
+          scheduledTime: '21:30',
+        ),
+      );
+    });
+
+    group('endpoint failure branches', () {
+      test(
+        '404 Problem Details keeps server code and status as a Left',
+        () async {
+          adapter.returnProblem404 = true;
+
+          final failure = await expectTaskLeft(dataSource.fetchActive());
+
+          expect(failure.code, 'REMINDER_NOT_FOUND');
+          expect(failure.statusCode, 404);
+          expect(failure.kind, LucentFailureKind.business);
+        },
+      );
+
+      test(
+        'items not a list maps to Left(unknown) keeping the StateError cause',
+        () async {
+          adapter.itemsBodyOverride = <String, Object?>{'items': 'not-a-list'};
+
+          final failure = await expectTaskLeft(dataSource.fetchActive());
+
+          expect(failure.kind, LucentFailureKind.unknown);
+          expect(failure.cause, isA<StateError>());
+        },
+      );
+
+      test(
+        'item not a map maps to Left(unknown) keeping the StateError cause',
+        () async {
+          adapter.itemsBodyOverride = <String, Object?>{
+            'items': <Object?>[42],
+          };
+
+          final failure = await expectTaskLeft(dataSource.fetchActive());
+
+          expect(failure.kind, LucentFailureKind.unknown);
+          expect(failure.cause, isA<StateError>());
+        },
+      );
+
+      test(
+        'non-Problem Details error body propagates FormatException from run()',
+        () async {
+          adapter.returnNonProblem400 = true;
+
+          await expectLater(
+            dataSource.fetchActive().run(),
+            throwsA(isA<FormatException>()),
+          );
+        },
       );
     });
   });
@@ -333,6 +400,11 @@ class _FakeReminderAdapter implements HttpClientAdapter {
   List<Map<String, Object?>> items = const <Map<String, Object?>>[];
   List<Map<String, Object?>> deliveryItems = const <Map<String, Object?>>[];
   bool failWithEmptyBody = false;
+  bool returnProblem404 = false;
+  bool returnNonProblem400 = false;
+
+  /// When set, replaces the default `{'items': items}` list response body.
+  Map<String, Object?>? itemsBodyOverride;
 
   _CapturedReminderRequest requestAt(String method, String path) {
     return requests.singleWhere(
@@ -359,6 +431,31 @@ class _FakeReminderAdapter implements HttpClientAdapter {
       return ResponseBody.fromString(
         '',
         200,
+        headers: const <String, List<String>>{
+          Headers.contentTypeHeader: <String>['application/json'],
+        },
+      );
+    }
+
+    if (returnProblem404) {
+      return ResponseBody.fromString(
+        jsonEncode(<String, Object?>{
+          'type': 'https://api.lumos.example/problems/REMINDER_NOT_FOUND',
+          'title': 'Not found',
+          'detail': '用药提醒不存在',
+          'code': 'REMINDER_NOT_FOUND',
+        }),
+        404,
+        headers: const <String, List<String>>{
+          Headers.contentTypeHeader: <String>['application/problem+json'],
+        },
+      );
+    }
+
+    if (returnNonProblem400) {
+      return ResponseBody.fromString(
+        jsonEncode(<String, Object?>{'error': 'oops'}),
+        400,
         headers: const <String, List<String>>{
           Headers.contentTypeHeader: <String>['application/json'],
         },
@@ -466,7 +563,7 @@ class _FakeReminderAdapter implements HttpClientAdapter {
     }
 
     return ResponseBody.fromString(
-      jsonEncode(<String, Object?>{'items': items}),
+      jsonEncode(itemsBodyOverride ?? <String, Object?>{'items': items}),
       200,
       headers: const <String, List<String>>{
         Headers.contentTypeHeader: <String>['application/json'],

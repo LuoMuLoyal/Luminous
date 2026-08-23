@@ -687,26 +687,30 @@ class _FakeMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
 
   final MedicineRiskCheckResult result;
 
-  /// When true, [runPrecheck] throws — simulating an unavailable pre-check.
+  /// When true, [runPrecheck] returns a Left — simulating an unavailable
+  /// pre-check.
   final bool failPrecheck;
 
   /// Records the most recent [runPrecheck] invocation arguments.
   ({String source, String sourceRefId})? lastPrecheck;
 
   @override
-  Future<MedicineRiskCheckResult> runPrecheck({
+  TaskEither<LucentFailure, MedicineRiskCheckResult> runPrecheck({
     required String source,
     required String sourceRefId,
-  }) async {
+  }) {
     lastPrecheck = (source: source, sourceRefId: sourceRefId);
     if (failPrecheck) {
-      throw Exception('precheck unavailable');
+      return TaskEither.left(
+        LucentFailure.unknown(message: 'precheck unavailable'),
+      );
     }
-    return result;
+    return TaskEither.right(result);
   }
 
   @override
-  Future<MedicineRiskCheckRecords> getRecords() async =>
+  TaskEither<LucentFailure, MedicineRiskCheckRecords> getRecords() {
+    return TaskEither.right(
       MedicineRiskCheckRecords(
         staticRecord: MedicineRiskCheckRecord(
           checkType: MedicineRiskCheckType.static_,
@@ -717,10 +721,15 @@ class _FakeMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
           createdAt: DateTime(2026, 7, 27),
           updatedAt: DateTime(2026, 7, 27),
         ),
-      );
+      ),
+    );
+  }
 
   @override
-  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async =>
+  TaskEither<LucentFailure, MedicineRiskCheckRecord> runCheck(
+    MedicineRiskCheckType type,
+  ) {
+    return TaskEither.right(
       MedicineRiskCheckRecord(
         checkType: type,
         result: result,
@@ -729,7 +738,9 @@ class _FakeMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
         stale: false,
         createdAt: DateTime(2026, 7, 27),
         updatedAt: DateTime(2026, 7, 27),
-      );
+      ),
+    );
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

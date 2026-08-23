@@ -23,7 +23,7 @@ class SkipDoseUseCase {
     String? reminderId,
     String? scheduledTime,
   }) async {
-    await ref
+    final result = await ref
         .read(doseLogRepositoryProvider)
         .mark(
           currentMedicineId: currentMedicineId,
@@ -31,7 +31,9 @@ class SkipDoseUseCase {
           date: date,
           reminderId: reminderId,
           scheduledTime: scheduledTime,
-        );
+        )
+        .run();
+    result.fold((failure) => throw failure, (_) {});
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
   }
 }

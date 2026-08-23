@@ -2,10 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/database.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
@@ -405,13 +407,16 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
   final List<MedicineReminderItem> _items;
 
   @override
-  Future<List<MedicineReminderItem>> fetchActive() async => _items;
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchActive() =>
+      TaskEither.right(_items);
 }
 
 class _ThrowingReminderDataSource extends _FakeReminderDataSource {
   @override
-  Future<List<MedicineReminderItem>> fetchActive() async {
-    throw StateError('reminders unavailable');
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchActive() {
+    return TaskEither.left(
+      LucentFailure.unknown(message: 'reminders unavailable'),
+    );
   }
 }
 

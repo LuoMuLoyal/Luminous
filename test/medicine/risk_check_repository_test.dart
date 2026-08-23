@@ -1,13 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/medicine/data/datasources/risk_check_remote.dart';
 import 'package:luminous/features/medicine/data/mappers/risk_check.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../helpers/task_either.dart';
 
 class _MockMedicinesApi extends Mock implements MedicinesApi {}
 
@@ -40,6 +42,44 @@ Response<T> _apiResponse<T>(T data) {
     data: data,
     requestOptions: RequestOptions(path: '/api/v1/medicines/risk-check'),
     statusCode: 200,
+  );
+}
+
+/// A 404 RFC 9457 Problem Details body served with
+/// `application/problem+json` (server business failure).
+DioException _problemDetails404({String code = 'RISK_CHECK_NOT_FOUND'}) {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/medicines/risk-check'),
+    type: DioExceptionType.badResponse,
+    response: Response(
+      requestOptions: RequestOptions(path: '/api/v1/medicines/risk-check'),
+      statusCode: 404,
+      headers: Headers.fromMap({
+        Headers.contentTypeHeader: ['application/problem+json'],
+      }),
+      data: {
+        'type': 'https://api.lumos.example/problems/$code',
+        'title': 'Not found',
+        'detail': '风险检查记录不存在',
+        'code': code,
+      },
+    ),
+  );
+}
+
+/// A 400 body that is not Problem Details (protocol invariant violation).
+DioException _nonProblemBody400() {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/medicines/risk-check'),
+    type: DioExceptionType.badResponse,
+    response: Response(
+      requestOptions: RequestOptions(path: '/api/v1/medicines/risk-check'),
+      statusCode: 400,
+      headers: Headers.fromMap({
+        Headers.contentTypeHeader: ['application/json'],
+      }),
+      data: {'error': 'oops'},
+    ),
   );
 }
 
@@ -92,7 +132,8 @@ void main() {
       await expectLater(
         dataSource.fetchRecords(),
         throwsA(
-          isA<LucentApiException>()
+          isA<LucentFailure>()
+              .having((e) => e.kind, 'kind', LucentFailureKind.network)
               .having(
                 (e) => e.networkErrorCode,
                 'networkErrorCode',
@@ -156,7 +197,8 @@ void main() {
       await expectLater(
         dataSource.runCheck(MedicineRiskCheckType.static_),
         throwsA(
-          isA<LucentApiException>()
+          isA<LucentFailure>()
+              .having((e) => e.kind, 'kind', LucentFailureKind.network)
               .having(
                 (e) => e.networkErrorCode,
                 'networkErrorCode',
@@ -241,7 +283,8 @@ void main() {
       await expectLater(
         dataSource.runPrecheck(source: 'cn', sourceRefId: 'id-1'),
         throwsA(
-          isA<LucentApiException>()
+          isA<LucentFailure>()
+              .having((e) => e.kind, 'kind', LucentFailureKind.network)
               .having(
                 (e) => e.networkErrorCode,
                 'networkErrorCode',
@@ -261,7 +304,7 @@ void main() {
         ),
       );
 
-      final records = await repository.getRecords();
+      final records = await expectTaskRight(repository.getRecords());
       expect(records.isEmpty, isTrue);
     });
 
@@ -272,7 +315,9 @@ void main() {
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
-      final record = await repository.runCheck(MedicineRiskCheckType.static_);
+      final record = await expectTaskRight(
+        repository.runCheck(MedicineRiskCheckType.static_),
+      );
       expect(record.riskScore, 0);
       expect(record.stale, isFalse);
     });
@@ -284,11 +329,36 @@ void main() {
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
-      final result = await repository.runPrecheck(
-        source: 'drugbank',
-        sourceRefId: 'DB01050',
+      final result = await expectTaskRight(
+        repository.runPrecheck(source: 'drugbank', sourceRefId: 'DB01050'),
       );
       expect(result.checkedMedicineCount, 2);
     });
+
+    test('404 Problem Details keeps code and status as a Left', () async {
+      when(
+        () => api.medicinesControllerGetRiskCheckV1(),
+      ).thenThrow(_problemDetails404(code: 'RISK_CHECK_NOT_FOUND'));
+
+      final failure = await expectTaskLeft(repository.getRecords());
+
+      expect(failure.code, 'RISK_CHECK_NOT_FOUND');
+      expect(failure.statusCode, 404);
+      expect(failure.kind, LucentFailureKind.business);
+    });
+
+    test(
+      'non-Problem Details error body propagates FormatException from run()',
+      () async {
+        when(
+          () => api.medicinesControllerGetRiskCheckV1(),
+        ).thenThrow(_nonProblemBody400());
+
+        await expectLater(
+          repository.getRecords().run(),
+          throwsA(isA<FormatException>()),
+        );
+      },
+    );
   });
 }

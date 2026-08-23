@@ -218,7 +218,13 @@ void _reportLocalCapability(Ref ref, String state) {
   final repository = ref.read(reminderRepositoryProvider);
   unawaited(() async {
     try {
-      await repository.reportLocalCapability(state);
+      final result = await repository.reportLocalCapability(state).run();
+      result.fold(
+        (failure) => ref
+            .read(talkerProvider)
+            .error('reportLocalCapability($state) failed: $failure'),
+        (_) {},
+      );
     } catch (e) {
       ref
           .read(talkerProvider)

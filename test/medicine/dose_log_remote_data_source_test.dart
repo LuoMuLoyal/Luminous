@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 
 void main() {
@@ -86,12 +88,56 @@ void main() {
 
       adapter.requestAt('DELETE', '/api/v1/user/medicine-dose-logs/dose-1');
     });
+
+    test('fetchForDate throws StateError when items is not a list', () async {
+      adapter.getBodyOverride = <String, Object?>{'items': 'not-a-list'};
+
+      await expectLater(
+        dataSource.fetchForDate('2026-07-10'),
+        throwsA(isA<StateError>()),
+      );
+    });
+
+    test('fetchForDate throws StateError when an item is not a map', () async {
+      adapter.getBodyOverride = <String, Object?>{
+        'items': <Object?>[42],
+      };
+
+      await expectLater(
+        dataSource.fetchForDate('2026-07-10'),
+        throwsA(isA<StateError>()),
+      );
+    });
+
+    test('fetchForDate maps an empty success body to a network emptyResponse '
+        'failure', () async {
+      adapter.emptyGetBody = true;
+
+      await expectLater(
+        dataSource.fetchForDate('2026-07-10'),
+        throwsA(
+          isA<LucentFailure>()
+              .having((f) => f.kind, 'kind', LucentFailureKind.network)
+              .having(
+                (f) => f.networkErrorCode,
+                'networkErrorCode',
+                NetworkErrorCode.emptyResponse,
+              ),
+        ),
+      );
+    });
   });
 }
 
 class _FakeDoseLogAdapter implements HttpClientAdapter {
   final requests = <_CapturedDoseLogRequest>[];
   List<Map<String, Object?>> listItems = const <Map<String, Object?>>[];
+
+  /// When set, replaces the default `{'items': listItems}` GET response body.
+  Map<String, Object?>? getBodyOverride;
+
+  /// When set, the GET response has an empty body (success status).
+  bool emptyGetBody = false;
 
   _CapturedDoseLogRequest requestAt(String method, String path) {
     return requests.singleWhere(
@@ -122,7 +168,18 @@ class _FakeDoseLogAdapter implements HttpClientAdapter {
     );
 
     if (options.method == 'GET') {
-      return _jsonResponse(<String, Object?>{'items': listItems});
+      if (emptyGetBody) {
+        return ResponseBody.fromString(
+          '',
+          200,
+          headers: const <String, List<String>>{
+            Headers.contentTypeHeader: <String>['application/json'],
+          },
+        );
+      }
+      return _jsonResponse(
+        getBodyOverride ?? <String, Object?>{'items': listItems},
+      );
     }
 
     if (options.method == 'DELETE') {

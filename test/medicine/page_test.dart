@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
 import 'package:luminous/app/router.dart';
@@ -13,6 +14,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/core/design/spacing.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
@@ -1130,8 +1132,8 @@ class _EmptyPreviewWorkspaceRepository implements MedicineWorkspaceRepository {
   const _EmptyPreviewWorkspaceRepository();
 
   @override
-  Future<MedicineWorkspace> fetchWorkspace() async =>
-      MedicineWorkspace.signedOut();
+  TaskEither<LucentFailure, MedicineWorkspace> fetchWorkspace() =>
+      TaskEither.right(MedicineWorkspace.signedOut());
 
   @override
   Future<MedicineWorkspace> get signedOutWorkspace =>
@@ -1169,7 +1171,8 @@ class _StaticMedicineWorkspaceRepository
   final MedicineWorkspace workspace;
 
   @override
-  Future<MedicineWorkspace> fetchWorkspace() async => workspace;
+  TaskEither<LucentFailure, MedicineWorkspace> fetchWorkspace() =>
+      TaskEither.right(workspace);
 
   @override
   Future<MedicineWorkspace> get signedOutWorkspace =>
@@ -1483,13 +1486,13 @@ class _FakeCachedDoseLogDataSource extends CachedDoseLogDataSource {
   bool markShouldFail = false;
 
   @override
-  Future<DoseLogItem> mark({
+  TaskEither<LucentFailure, DoseLogItem> mark({
     required String currentMedicineId,
     required String status,
     required String date,
     String? reminderId,
     String? scheduledTime,
-  }) async {
+  }) {
     markCalls.add(
       _MarkCall(
         currentMedicineId: currentMedicineId,
@@ -1500,17 +1503,19 @@ class _FakeCachedDoseLogDataSource extends CachedDoseLogDataSource {
       ),
     );
     if (markShouldFail) {
-      throw Exception('mark failed');
+      return TaskEither.left(LucentFailure.unknown(message: 'mark failed'));
     }
-    return DoseLogItem(
-      id: 'marked-${markCalls.length}',
-      currentMedicineId: currentMedicineId,
-      reminderId: reminderId,
-      status: DoseLogStatus.taken,
-      scheduledFor: date,
-      scheduledTime: scheduledTime,
-      createdAt: '2026-07-10T00:00:00.000Z',
-      updatedAt: '2026-07-10T00:00:00.000Z',
+    return TaskEither.right(
+      DoseLogItem(
+        id: 'marked-${markCalls.length}',
+        currentMedicineId: currentMedicineId,
+        reminderId: reminderId,
+        status: DoseLogStatus.taken,
+        scheduledFor: date,
+        scheduledTime: scheduledTime,
+        createdAt: '2026-07-10T00:00:00.000Z',
+        updatedAt: '2026-07-10T00:00:00.000Z',
+      ),
     );
   }
 }

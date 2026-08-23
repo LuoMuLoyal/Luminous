@@ -15,6 +15,8 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 
+import '../helpers/task_either.dart';
+
 void main() {
   test(
     'Lucent medicine workspace maps current medicines from health context',
@@ -26,7 +28,7 @@ void main() {
       // 06:00 早于 07:45 槽，槽位未到期（not overdue）。
       final workspace = await withClock(
         Clock.fixed(DateTime(2026, 6, 4, 6, 0)),
-        () async => repository.fetchWorkspace(),
+        () => expectTaskRight(repository.fetchWorkspace()),
       );
 
       expect(workspace.hero.metricDosesToday, '1');
@@ -75,7 +77,7 @@ void main() {
       // 10:00：07:45 已到期（taken），19:00 未到期。
       final workspace = await withClock(
         Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
-        () async => repository.fetchWorkspace(),
+        () => expectTaskRight(repository.fetchWorkspace()),
       );
 
       expect(workspace.hero.metricDosesToday, '2');
@@ -133,7 +135,7 @@ void main() {
 
       final workspace = await withClock(
         Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
-        () async => repository.fetchWorkspace(),
+        () => expectTaskRight(repository.fetchWorkspace()),
       );
 
       // 分母只有 07:45（已到期 taken），12:00/19:00 未到期不计入分母。
@@ -165,7 +167,7 @@ void main() {
 
       final workspace = await withClock(
         Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
-        () async => repository.fetchWorkspace(),
+        () => expectTaskRight(repository.fetchWorkspace()),
       );
 
       expect(workspace.hero.metricAdherence, '--');
@@ -200,7 +202,7 @@ void main() {
       // 20:00：07:45 taken（已到期），19:00 未确认且已过时刻 → overdue。
       final workspace = await withClock(
         Clock.fixed(DateTime(2026, 6, 4, 20, 0)),
-        () async => repository.fetchWorkspace(),
+        () => expectTaskRight(repository.fetchWorkspace()),
       );
 
       expect(workspace.hero.metricAdherence, '50%');
@@ -229,7 +231,7 @@ void main() {
       // 10:00：08:00 槽未确认且已过时刻 → overdue，todayStatus 仍 pending。
       final workspace = await withClock(
         Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
-        () async => repository.fetchWorkspace(),
+        () => expectTaskRight(repository.fetchWorkspace()),
       );
 
       expect(workspace.hero.metricNextDose, '--');
@@ -261,7 +263,7 @@ void main() {
 
     final workspace = await withClock(
       Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
-      () async => repository.fetchWorkspace(),
+      () => expectTaskRight(repository.fetchWorkspace()),
     );
 
     expect(workspace.hero.metricAdherence, '0%');
@@ -282,7 +284,7 @@ void main() {
 
       final workspace = await withClock(
         Clock.fixed(DateTime(2026, 6, 4, 10, 0)),
-        () async => repository.fetchWorkspace(),
+        () => expectTaskRight(repository.fetchWorkspace()),
       );
 
       expect(workspace.hero.metricDosesToday, '0');
@@ -312,7 +314,7 @@ void main() {
         );
         return withClock(
           Clock.fixed(now),
-          () async => repository.fetchWorkspace(),
+          () => expectTaskRight(repository.fetchWorkspace()),
         );
       }
 
@@ -435,43 +437,50 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
   final List<MedicineReminderItem> _items;
 
   @override
-  Future<List<MedicineReminderItem>> fetchActive() async => _items;
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchActive() =>
+      TaskEither.right(_items);
 }
 
 class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
   @override
-  Future<MedicineRiskCheckRecords> getRecords() async {
-    return const MedicineRiskCheckRecords();
+  TaskEither<LucentFailure, MedicineRiskCheckRecords> getRecords() {
+    return TaskEither.right(const MedicineRiskCheckRecords());
   }
 
   @override
-  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
-    return MedicineRiskCheckRecord(
-      checkType: type,
-      result: const MedicineRiskCheckResult(
+  TaskEither<LucentFailure, MedicineRiskCheckRecord> runCheck(
+    MedicineRiskCheckType type,
+  ) {
+    return TaskEither.right(
+      MedicineRiskCheckRecord(
+        checkType: type,
+        result: const MedicineRiskCheckResult(
+          currentMedicineCount: 0,
+          checkedMedicineCount: 0,
+          findings: [],
+          coverageIssues: [],
+        ),
+        riskScore: 0,
+        riskLevel: MedicineRiskLevel.safe,
+        stale: false,
+        createdAt: DateTime(2026, 7, 27),
+        updatedAt: DateTime(2026, 7, 27),
+      ),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, MedicineRiskCheckResult> runPrecheck({
+    required String source,
+    required String sourceRefId,
+  }) {
+    return TaskEither.right(
+      const MedicineRiskCheckResult(
         currentMedicineCount: 0,
         checkedMedicineCount: 0,
         findings: [],
         coverageIssues: [],
       ),
-      riskScore: 0,
-      riskLevel: MedicineRiskLevel.safe,
-      stale: false,
-      createdAt: DateTime(2026, 7, 27),
-      updatedAt: DateTime(2026, 7, 27),
-    );
-  }
-
-  @override
-  Future<MedicineRiskCheckResult> runPrecheck({
-    required String source,
-    required String sourceRefId,
-  }) async {
-    return const MedicineRiskCheckResult(
-      currentMedicineCount: 0,
-      checkedMedicineCount: 0,
-      findings: [],
-      coverageIssues: [],
     );
   }
 

@@ -29,10 +29,19 @@ Future<void> undoMedicationQuickAction(
   try {
     await QuickEntryUndoService(
       deleteDailyRecord: ref.read(dailyRecordRepositoryProvider).delete,
-      deleteDoseLog: (doseLogId) =>
-          ref.read(doseLogRepositoryProvider).delete(doseLogId, date: date),
+      deleteDoseLog: (doseLogId) async {
+        final result = await ref
+            .read(doseLogRepositoryProvider)
+            .delete(doseLogId, date: date)
+            .run();
+        result.fold((failure) => throw failure, (_) {});
+      },
       updateDoseLogStatus: (doseLogId, status) async {
-        await ref.read(doseLogRepositoryProvider).update(doseLogId, status);
+        final result = await ref
+            .read(doseLogRepositoryProvider)
+            .update(doseLogId, status)
+            .run();
+        result.fold((failure) => throw failure, (_) {});
       },
       emitDataChange: (topic) =>
           ref.read(dataChangeBusProvider.notifier).emit(topic),
@@ -257,15 +266,19 @@ Future<void> handleMedicationQuickAction(
       const QuickEntryPreferences();
   QuickEntryUndoAction? undoAction;
   final flow = MedicationQuickEntryFlow(
-    markDose: (input) => ref
-        .read(doseLogRepositoryProvider)
-        .mark(
-          currentMedicineId: input.currentMedicineId,
-          status: input.status,
-          date: input.date,
-          reminderId: input.reminderId,
-          scheduledTime: input.scheduledTime,
-        ),
+    markDose: (input) async {
+      final result = await ref
+          .read(doseLogRepositoryProvider)
+          .mark(
+            currentMedicineId: input.currentMedicineId,
+            status: input.status,
+            date: input.date,
+            reminderId: input.reminderId,
+            scheduledTime: input.scheduledTime,
+          )
+          .run();
+      return result.fold((failure) => throw failure, (item) => item);
+    },
     emitDataChange: (topic) =>
         ref.read(dataChangeBusProvider.notifier).emit(topic),
     registerUndo: (action) => undoAction = action,
@@ -274,10 +287,22 @@ Future<void> handleMedicationQuickAction(
   late final MedicationQuickEntryOutcome outcome;
   try {
     final snapshot = await ref.read(healthContextSnapshotProvider.future);
-    final reminders = await ref.read(reminderRepositoryProvider).fetchAll();
-    final todayLogs = await ref
+    final remindersResult = await ref
+        .read(reminderRepositoryProvider)
+        .fetchAll()
+        .run();
+    final reminders = remindersResult.fold(
+      (failure) => throw failure,
+      (items) => items,
+    );
+    final todayLogsResult = await ref
         .read(doseLogRepositoryProvider)
-        .fetchForDate(occurredAt);
+        .fetchForDate(occurredAt)
+        .run();
+    final todayLogs = todayLogsResult.fold(
+      (failure) => throw failure,
+      (logs) => logs,
+    );
     outcome = await flow.handleTap(
       context: MedicationQuickEntryContext(date: occurredAt, now: now),
       currentMedicines: snapshot.currentMedicines,

@@ -156,9 +156,9 @@ class _CountingMedicineWorkspaceRepository
   int calls = 0;
 
   @override
-  Future<MedicineWorkspace> fetchWorkspace() async {
+  TaskEither<LucentFailure, MedicineWorkspace> fetchWorkspace() {
     calls += 1;
-    return MockMedicineWorkspaceRepository.previewWorkspace;
+    return TaskEither.right(MockMedicineWorkspaceRepository.previewWorkspace);
   }
 
   @override

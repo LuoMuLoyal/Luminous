@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
     show doseLogRepositoryProvider;
@@ -704,7 +706,7 @@ void main() {
           reminderId: 'rem-1',
           scheduledTime: '08:00',
         ),
-      ).thenAnswer((_) async => dummyDoseLog);
+      ).thenAnswer((_) => TaskEither.right(dummyDoseLog));
 
       final bus = _RecordingDataChangeBus();
 
@@ -741,7 +743,9 @@ void main() {
           reminderId: 'rem-1',
           scheduledTime: '08:00',
         ),
-      ).thenThrow(Exception('network error'));
+      ).thenAnswer(
+        (_) => TaskEither.left(LucentFailure.unknown(message: 'network error')),
+      );
 
       final bus = _RecordingDataChangeBus();
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));

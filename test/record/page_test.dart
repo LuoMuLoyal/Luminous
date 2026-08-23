@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -2637,16 +2639,17 @@ class _FakeCachedDoseLogDataSource implements CachedDoseLogDataSource {
   final updated = <String, String>{};
 
   @override
-  Future<List<DoseLogItem>> fetchForDate(String date) async => logs;
+  TaskEither<LucentFailure, List<DoseLogItem>> fetchForDate(String date) =>
+      TaskEither.right(logs);
 
   @override
-  Future<DoseLogItem> mark({
+  TaskEither<LucentFailure, DoseLogItem> mark({
     required String currentMedicineId,
     required String status,
     required String date,
     String? reminderId,
     String? scheduledTime,
-  }) async {
+  }) {
     markInputs.add(
       _CapturedDoseMark(
         currentMedicineId: currentMedicineId,
@@ -2656,32 +2659,45 @@ class _FakeCachedDoseLogDataSource implements CachedDoseLogDataSource {
         scheduledTime: scheduledTime,
       ),
     );
-    return DoseLogItem(
-      id: 'dose-${markInputs.length}',
-      currentMedicineId: currentMedicineId,
-      reminderId: reminderId,
-      status: DoseLogStatus.taken,
-      scheduledFor: date,
-      scheduledTime: scheduledTime,
-      createdAt: '2026-07-28T08:00:00Z',
-      updatedAt: '2026-07-28T08:00:00Z',
+    return TaskEither.right(
+      DoseLogItem(
+        id: 'dose-${markInputs.length}',
+        currentMedicineId: currentMedicineId,
+        reminderId: reminderId,
+        status: DoseLogStatus.taken,
+        scheduledFor: date,
+        scheduledTime: scheduledTime,
+        createdAt: '2026-07-28T08:00:00Z',
+        updatedAt: '2026-07-28T08:00:00Z',
+      ),
     );
   }
 
   @override
-  Future<void> delete(String doseLogId, {required String date}) async {
+  TaskEither<LucentFailure, void> delete(
+    String doseLogId, {
+    required String date,
+  }) {
     deletedIds.add(doseLogId);
+    return TaskEither.right(null);
   }
 
   @override
-  Future<DoseLogItem> update(String doseLogId, String status) async {
+  TaskEither<LucentFailure, DoseLogItem> update(
+    String doseLogId,
+    String status,
+  ) {
     updated[doseLogId] = status;
-    return DoseLogItem(
-      id: doseLogId,
-      status: DoseLogStatus.values.firstWhere((value) => value.name == status),
-      scheduledFor: '2026-07-28',
-      createdAt: '2026-07-28T08:00:00Z',
-      updatedAt: '2026-07-28T08:00:00Z',
+    return TaskEither.right(
+      DoseLogItem(
+        id: doseLogId,
+        status: DoseLogStatus.values.firstWhere(
+          (value) => value.name == status,
+        ),
+        scheduledFor: '2026-07-28',
+        createdAt: '2026-07-28T08:00:00Z',
+        updatedAt: '2026-07-28T08:00:00Z',
+      ),
     );
   }
 
@@ -2695,28 +2711,28 @@ class _FakeReminderRepository implements ReminderRepository {
   final List<MedicineReminderItem> _reminders;
 
   @override
-  Future<List<MedicineReminderItem>> fetchActive() async =>
-      _reminders.where((r) => r.isActive).toList();
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchActive() =>
+      TaskEither.right(_reminders.where((r) => r.isActive).toList());
 
   @override
-  Future<List<MedicineReminderItem>> fetchAll() async => _reminders;
+  TaskEither<LucentFailure, List<MedicineReminderItem>> fetchAll() =>
+      TaskEither.right(_reminders);
 
   @override
-  Future<void> reportLocalReceipt({
+  TaskEither<LucentFailure, void> reportLocalReceipt({
     required String reminderId,
     required String scheduledDate,
     required String scheduledTime,
-  }) async {}
+  }) => TaskEither.right(null);
 
   @override
-  Future<void> reportLocalCapability(String state) async {}
+  TaskEither<LucentFailure, void> reportLocalCapability(String state) =>
+      TaskEither.right(null);
 
   @override
-  Future<List<MedicineReminderItem>> upsertGroup(
+  TaskEither<LucentFailure, List<MedicineReminderItem>> upsertGroup(
     MedicineReminderGroupUpsertInput input,
-  ) async {
-    return _reminders;
-  }
+  ) => TaskEither.right(_reminders);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

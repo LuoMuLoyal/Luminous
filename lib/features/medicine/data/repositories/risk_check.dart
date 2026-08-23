@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/medicine/data/datasources/risk_check_remote.dart';
 import 'package:luminous/features/medicine/data/mappers/risk_check.dart';
@@ -12,29 +14,44 @@ part 'risk_check.g.dart';
 /// Thin wrapper around [MedicineRiskCheckRemoteDataSource] — all API calls and
 /// DTO-to-domain mapping live in the data source; the repository only exposes
 /// the domain-facing [MedicineRiskCheckRepository] interface.
+///
+/// Repository boundary: every expected recoverable failure (network, server
+/// business failure) is a `TaskEither` Left produced via
+/// `LucentErrorMapper.fromObject`. A legal empty records set stays a Right.
 class LucentMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
   LucentMedicineRiskCheckRepository({required this.remoteDataSource});
 
   final MedicineRiskCheckRemoteDataSource remoteDataSource;
 
   @override
-  Future<MedicineRiskCheckRecords> getRecords() {
-    return remoteDataSource.fetchRecords();
+  TaskEither<LucentFailure, MedicineRiskCheckRecords> getRecords() {
+    return TaskEither.tryCatch(
+      remoteDataSource.fetchRecords,
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    );
   }
 
   @override
-  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) {
-    return remoteDataSource.runCheck(type);
+  TaskEither<LucentFailure, MedicineRiskCheckRecord> runCheck(
+    MedicineRiskCheckType type,
+  ) {
+    return TaskEither.tryCatch(
+      () => remoteDataSource.runCheck(type),
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    );
   }
 
   @override
-  Future<MedicineRiskCheckResult> runPrecheck({
+  TaskEither<LucentFailure, MedicineRiskCheckResult> runPrecheck({
     required String source,
     required String sourceRefId,
   }) {
-    return remoteDataSource.runPrecheck(
-      source: source,
-      sourceRefId: sourceRefId,
+    return TaskEither.tryCatch(
+      () => remoteDataSource.runPrecheck(
+        source: source,
+        sourceRefId: sourceRefId,
+      ),
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
     );
   }
 }

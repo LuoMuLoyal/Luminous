@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
@@ -14,20 +16,24 @@ class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
   int runCount = 0;
 
   @override
-  Future<MedicineRiskCheckRecords> getRecords() async => records;
-
-  @override
-  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
-    runCount++;
-    return runResult;
+  TaskEither<LucentFailure, MedicineRiskCheckRecords> getRecords() {
+    return TaskEither.right(records);
   }
 
   @override
-  Future<MedicineRiskCheckResult> runPrecheck({
+  TaskEither<LucentFailure, MedicineRiskCheckRecord> runCheck(
+    MedicineRiskCheckType type,
+  ) {
+    runCount++;
+    return TaskEither.right(runResult);
+  }
+
+  @override
+  TaskEither<LucentFailure, MedicineRiskCheckResult> runPrecheck({
     required String source,
     required String sourceRefId,
-  }) async {
-    return const MedicineRiskCheckResult();
+  }) {
+    return TaskEither.right(const MedicineRiskCheckResult());
   }
 }
 

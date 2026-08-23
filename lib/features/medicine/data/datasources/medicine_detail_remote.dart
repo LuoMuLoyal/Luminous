@@ -1,3 +1,4 @@
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/medicine/data/mappers/medicine_detail.dart';
@@ -8,6 +9,10 @@ import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart'
 /// Calls the generated [MedicinesApi] `GET /api/v1/medicines/{id}?source=`
 /// and maps the direct response resource to [MedicineDetail] via
 /// [MedicineDetailMapper].
+///
+/// Transport only: returns a plain `Future` and throws — an empty success
+/// body is a [LucentFailure.network] (auth `_requireBody` precedent); the
+/// consuming provider surfaces it as an `AsyncValue.error`.
 class MedicineDetailRemoteDataSource {
   const MedicineDetailRemoteDataSource({
     required this.api,
@@ -28,7 +33,7 @@ class MedicineDetailRemoteDataSource {
     );
     final dto = response.data;
     if (dto == null) {
-      throw const LucentApiException(
+      throw LucentFailure.network(
         message: '药品详情响应体为空',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );

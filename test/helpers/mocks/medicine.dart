@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
@@ -14,8 +15,8 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       Future.value(previewWorkspace);
 
   @override
-  Future<MedicineWorkspace> fetchWorkspace() async {
-    return previewWorkspace;
+  TaskEither<Never, MedicineWorkspace> fetchWorkspace() {
+    return TaskEither.right(previewWorkspace);
   }
 
   static final _mobileScanQuickActions = <MedicineQuickAction>[

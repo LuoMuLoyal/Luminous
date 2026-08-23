@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart' hide DoseLogStatus;
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
@@ -10,6 +12,16 @@ export 'package:luminous/features/medicine/domain/entities/dose_log.dart'
 
 part 'dose_log_remote.g.dart';
 
+/// Remote data source for medicine dose logs.
+///
+/// Transport only: returns plain `Future` and throws `DioException` /
+/// `LucentFailure`; the repository boundary (`CachedDoseLogDataSource`)
+/// maps every failure via `LucentErrorMapper.fromObject`. An empty success
+/// body is a `LucentFailure.network(emptyResponse)` (reminder `_responseData`
+/// / today `ai_remote` precedent — never a transport `FormatException`); a
+/// structurally malformed body is a thrown protocol exception (logged via
+/// [appTalker] for diagnosability) that surfaces as a `Left(unknown)` at the
+/// repository boundary.
 class DoseLogRemoteDataSource {
   DoseLogRemoteDataSource({required this.api, required this.dio});
   final MedicineDoseLogsApi api;
@@ -23,10 +35,10 @@ class DoseLogRemoteDataSource {
     final data = _requireData(response);
     final items = data['items'];
     if (items is! List) {
-      throw const LucentApiException(
-        message: '用药记录列表格式异常',
-        networkErrorCode: NetworkErrorCode.emptyResponse,
+      appTalker.error(
+        'DoseLogRemoteDataSource.fetchForDate: items is not a list: $items',
       );
+      throw StateError('用药记录列表格式异常');
     }
     return items
         .map<DoseLogItem>((d) => _fromJson(_requireItemMap(d)))
@@ -110,12 +122,11 @@ class DoseLogRemoteDataSource {
   }
 
   /// Extracts the direct resource body as a [Map<String, dynamic>], throwing
-  /// [LucentApiException] if the body is missing or malformed.
+  /// [LucentFailure.network] if the body is missing or not a map.
   Map<String, dynamic> _requireData(Response<dynamic> response) {
-    final body = requireBody(response);
-    final data = coerceToStringMap(body);
+    final data = coerceToStringMap(response.data);
     if (data == null) {
-      throw const LucentApiException(
+      throw LucentFailure.network(
         message: '用药记录响应数据为空',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
@@ -123,15 +134,15 @@ class DoseLogRemoteDataSource {
     return data;
   }
 
-  /// Coerces a list item into a [Map<String, dynamic>], throwing
-  /// [LucentApiException] if the item is not a map.
+  /// Coerces a list item into a [Map<String, dynamic>], throwing a protocol
+  /// exception if the item is not a map.
   Map<String, dynamic> _requireItemMap(Object? item) {
     final map = coerceToStringMap(item);
     if (map == null) {
-      throw const LucentApiException(
-        message: '用药记录项格式异常',
-        networkErrorCode: NetworkErrorCode.emptyResponse,
+      appTalker.error(
+        'DoseLogRemoteDataSource._requireItemMap: item is not a map: $item',
       );
+      throw StateError('用药记录项格式异常');
     }
     return map;
   }

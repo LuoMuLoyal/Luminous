@@ -105,7 +105,14 @@ class MedicineReminderFormState {
 Future<List<MedicineReminderItem>> medicineReminderList(Ref ref) {
   return authGuarded(
     ref: ref,
-    fetch: () => ref.watch(medicineReminderRemoteDataSourceProvider).fetchAll(),
+    fetch: () async {
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      final result = await ref
+          .watch(medicineReminderRemoteDataSourceProvider)
+          .fetchAll()
+          .run();
+      return result.fold((failure) => throw failure, (items) => items);
+    },
   );
 }
 
@@ -113,11 +120,16 @@ Future<List<MedicineReminderItem>> medicineReminderList(Ref ref) {
 Future<List<DoseLogItem>> medicineTodayDoseLogs(Ref ref) {
   return authGuarded(
     ref: ref,
-    fetch: () {
+    fetch: () async {
       final today = clock.now();
       final date =
           '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-      return ref.watch(cachedDoseLogDataSourceProvider).fetchForDate(date);
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      final result = await ref
+          .watch(cachedDoseLogDataSourceProvider)
+          .fetchForDate(date)
+          .run();
+      return result.fold((failure) => throw failure, (logs) => logs);
     },
   );
 }
@@ -126,9 +138,14 @@ Future<List<DoseLogItem>> medicineTodayDoseLogs(Ref ref) {
 Future<List<ReminderDeliveryItem>> medicineReminderDeliveryLog(Ref ref) {
   return authGuarded(
     ref: ref,
-    fetch: () => ref
-        .watch(medicineReminderRemoteDataSourceProvider)
-        .fetchDeliveries(limit: 20),
+    fetch: () async {
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      final result = await ref
+          .watch(medicineReminderRemoteDataSourceProvider)
+          .fetchDeliveries(limit: 20)
+          .run();
+      return result.fold((failure) => throw failure, (items) => items);
+    },
   );
 }
 
@@ -209,18 +226,21 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
           ),
       ];
 
-      await dataSource.upsertGroup(
-        MedicineReminderGroupUpsertInput(
-          currentMedicineId: input.currentMedicineId,
-          label: input.label,
-          daysOfWeek: input.daysOfWeek,
-          startDate: input.startDate,
-          endDate: input.endDate,
-          isActive: input.isActive,
-          note: input.note,
-          slots: slots,
-        ),
-      );
+      await dataSource
+          .upsertGroup(
+            MedicineReminderGroupUpsertInput(
+              currentMedicineId: input.currentMedicineId,
+              label: input.label,
+              daysOfWeek: input.daysOfWeek,
+              startDate: input.startDate,
+              endDate: input.endDate,
+              isActive: input.isActive,
+              note: input.note,
+              slots: slots,
+            ),
+          )
+          .run()
+          .then((result) => result.fold((failure) => throw failure, (_) {}));
 
       _invalidateReminderSurfaces();
       state = const MedicineReminderFormState(saved: true);
@@ -242,7 +262,10 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
     try {
       final dataSource = ref.read(medicineReminderRemoteDataSourceProvider);
       for (final reminder in reminders) {
-        await dataSource.delete(reminder.id);
+        await dataSource
+            .delete(reminder.id)
+            .run()
+            .then((result) => result.fold((failure) => throw failure, (_) {}));
       }
       _invalidateReminderSurfaces();
       state = const MedicineReminderFormState(saved: true, deleted: true);

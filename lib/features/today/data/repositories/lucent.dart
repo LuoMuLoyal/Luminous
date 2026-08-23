@@ -181,20 +181,23 @@ class LucentTodayRepository implements TodayRepository {
     final waterCount = (recordCounts['water'] ?? 0).toInt();
     final completedMedicineIds = <String>{};
     TodayObservedMetric? medicationObservedMetric;
-    try {
-      final doseLogs = await doseLogRepository.fetchForDate(dateStr);
-      for (final log in doseLogs) {
-        final medicineId = log.currentMedicineId;
-        if (medicineId != null &&
-            (log.status == DoseLogStatus.taken ||
-                log.status == DoseLogStatus.skipped)) {
-          completedMedicineIds.add(medicineId);
+    final doseLogsResult = await doseLogRepository.fetchForDate(dateStr).run();
+    doseLogsResult.fold(
+      (failure) {
+        talker.error('LucentTodayRepository: dose logs failed: $failure');
+        medicationObservedMetric = _degradedObservedMetric(dateStr);
+      },
+      (doseLogs) {
+        for (final log in doseLogs) {
+          final medicineId = log.currentMedicineId;
+          if (medicineId != null &&
+              (log.status == DoseLogStatus.taken ||
+                  log.status == DoseLogStatus.skipped)) {
+            completedMedicineIds.add(medicineId);
+          }
         }
-      }
-    } catch (e) {
-      talker.error('LucentTodayRepository: dose logs failed: $e');
-      medicationObservedMetric = _degradedObservedMetric(dateStr);
-    }
+      },
+    );
     final pendingMedicines = medicines
         .where((m) => m.isCurrent && !completedMedicineIds.contains(m.id))
         .toList();
@@ -400,23 +403,27 @@ class LucentTodayRepository implements TodayRepository {
     Set<String> allMedicineIds,
   ) async {
     if (allMedicineIds.isEmpty) return {};
-    try {
-      final reminders = await reminderRepository.fetchActive();
-      return reminders
-          .where((reminder) {
-            final medicineId = reminder.currentMedicineId;
-            return medicineId != null &&
-                allMedicineIds.contains(medicineId) &&
-                reminder.matchesDate(today);
-          })
-          .map((reminder) => reminder.currentMedicineId!)
-          .toSet();
-    } catch (e) {
-      talker.error(
-        'LucentTodayRepository._todayScheduledMedicineIds: failed: $e',
-      );
-      return {};
-    }
+    final remindersResult = await reminderRepository.fetchActive().run();
+    return remindersResult.fold(
+      (failure) {
+        talker.error(
+          'LucentTodayRepository._todayScheduledMedicineIds: failed: '
+          '$failure',
+        );
+        return <String>{};
+      },
+      (reminders) {
+        return reminders
+            .where((reminder) {
+              final medicineId = reminder.currentMedicineId;
+              return medicineId != null &&
+                  allMedicineIds.contains(medicineId) &&
+                  reminder.matchesDate(today);
+            })
+            .map((reminder) => reminder.currentMedicineId!)
+            .toSet();
+      },
+    );
   }
 
   Future<MedicineReminderItem?> _nextReminderFor(
@@ -424,23 +431,28 @@ class LucentTodayRepository implements TodayRepository {
     Set<String> pendingMedicineIds,
   ) async {
     if (pendingMedicineIds.isEmpty) return null;
-    try {
-      final reminders = await reminderRepository.fetchActive();
-      final todayReminders =
-          reminders
-              .where((reminder) {
-                final medicineId = reminder.currentMedicineId;
-                return medicineId != null &&
-                    pendingMedicineIds.contains(medicineId) &&
-                    reminder.matchesDate(today);
-              })
-              .toList(growable: false)
-            ..sort(_compareReminderTime);
-      return todayReminders.firstOrNull;
-    } catch (e) {
-      talker.error('LucentTodayRepository._nextReminderFor: failed: $e');
-      return null;
-    }
+    final remindersResult = await reminderRepository.fetchActive().run();
+    return remindersResult.fold(
+      (failure) {
+        talker.error(
+          'LucentTodayRepository._nextReminderFor: failed: $failure',
+        );
+        return null;
+      },
+      (reminders) {
+        final todayReminders =
+            reminders
+                .where((reminder) {
+                  final medicineId = reminder.currentMedicineId;
+                  return medicineId != null &&
+                      pendingMedicineIds.contains(medicineId) &&
+                      reminder.matchesDate(today);
+                })
+                .toList(growable: false)
+              ..sort(_compareReminderTime);
+        return todayReminders.firstOrNull;
+      },
+    );
   }
 
   static int _compareReminderTime(

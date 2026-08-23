@@ -666,38 +666,44 @@ class E2eMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
   const E2eMedicineRiskCheckRepository();
 
   @override
-  Future<MedicineRiskCheckRecords> getRecords() async {
-    return const MedicineRiskCheckRecords();
+  TaskEither<LucentFailure, MedicineRiskCheckRecords> getRecords() {
+    return TaskEither.right(const MedicineRiskCheckRecords());
   }
 
   @override
-  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
-    return MedicineRiskCheckRecord(
-      checkType: type,
-      result: const MedicineRiskCheckResult(
+  TaskEither<LucentFailure, MedicineRiskCheckRecord> runCheck(
+    MedicineRiskCheckType type,
+  ) {
+    return TaskEither.right(
+      MedicineRiskCheckRecord(
+        checkType: type,
+        result: const MedicineRiskCheckResult(
+          currentMedicineCount: 0,
+          checkedMedicineCount: 0,
+          findings: [],
+          coverageIssues: [],
+        ),
+        riskScore: 0,
+        riskLevel: MedicineRiskLevel.safe,
+        stale: false,
+        createdAt: DateTime.fromMillisecondsSinceEpoch(0),
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
+      ),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, MedicineRiskCheckResult> runPrecheck({
+    required String source,
+    required String sourceRefId,
+  }) {
+    return TaskEither.right(
+      const MedicineRiskCheckResult(
         currentMedicineCount: 0,
         checkedMedicineCount: 0,
         findings: [],
         coverageIssues: [],
       ),
-      riskScore: 0,
-      riskLevel: MedicineRiskLevel.safe,
-      stale: false,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(0),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
-    );
-  }
-
-  @override
-  Future<MedicineRiskCheckResult> runPrecheck({
-    required String source,
-    required String sourceRefId,
-  }) async {
-    return const MedicineRiskCheckResult(
-      currentMedicineCount: 0,
-      checkedMedicineCount: 0,
-      findings: [],
-      coverageIssues: [],
     );
   }
 }
@@ -912,38 +918,39 @@ class E2eDailyRecordRepository implements DailyRecordRepository {
 
 class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   @override
-  Future<MedicineWorkspace> fetchWorkspace() async {
-    final mock = await const MockMedicineWorkspaceRepository().fetchWorkspace();
-    return MedicineWorkspace(
-      hero: mock.hero,
-      quickActions: mock.quickActions,
-      plan: const MedicinePlanSurface(
-        items: [
-          MedicinePlanItem(
-            color: SemanticColor.primary,
-            nameKey: MedicineCopyKey.genericName,
-            dosageKey: MedicineCopyKey.genericDosage,
-            scheduleKey: MedicineCopyKey.genericSchedule,
-            slots: [
-              MedicineDoseSlot(
-                rawTime: '08:00',
-                statusKey: MedicineCopyKey.doseStatusPending,
-                status: MedicineDoseStatus.pending,
-              ),
-            ],
-            stateKey: MedicineCopyKey.statusStable,
-            stateColor: SemanticColor.primary,
-            rawName: 'E2E medicine',
-            rawDosage: '1 tablet',
-            rawSchedule: 'morning',
-            rawState: 'pending',
-            todayStatus: MedicineDoseStatus.pending,
-            currentMedicineId: 'e2e-medicine-1',
-          ),
-        ],
+  TaskEither<LucentFailure, MedicineWorkspace> fetchWorkspace() {
+    return const MockMedicineWorkspaceRepository().fetchWorkspace().map(
+      (mock) => MedicineWorkspace(
+        hero: mock.hero,
+        quickActions: mock.quickActions,
+        plan: const MedicinePlanSurface(
+          items: [
+            MedicinePlanItem(
+              color: SemanticColor.primary,
+              nameKey: MedicineCopyKey.genericName,
+              dosageKey: MedicineCopyKey.genericDosage,
+              scheduleKey: MedicineCopyKey.genericSchedule,
+              slots: [
+                MedicineDoseSlot(
+                  rawTime: '08:00',
+                  statusKey: MedicineCopyKey.doseStatusPending,
+                  status: MedicineDoseStatus.pending,
+                ),
+              ],
+              stateKey: MedicineCopyKey.statusStable,
+              stateColor: SemanticColor.primary,
+              rawName: 'E2E medicine',
+              rawDosage: '1 tablet',
+              rawSchedule: 'morning',
+              rawState: 'pending',
+              todayStatus: MedicineDoseStatus.pending,
+              currentMedicineId: 'e2e-medicine-1',
+            ),
+          ],
+        ),
+        alerts: mock.alerts,
+        promisePoints: mock.promisePoints,
       ),
-      alerts: mock.alerts,
-      promisePoints: mock.promisePoints,
     );
   }
 

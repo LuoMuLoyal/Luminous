@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_detail_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
@@ -74,7 +74,8 @@ void main() {
     await expectLater(
       dataSource.fetchDetail(id: 'cn_1', source: 'cn'),
       throwsA(
-        isA<LucentApiException>()
+        isA<LucentFailure>()
+            .having((e) => e.kind, 'kind', LucentFailureKind.network)
             .having(
               (e) => e.networkErrorCode,
               'networkErrorCode',

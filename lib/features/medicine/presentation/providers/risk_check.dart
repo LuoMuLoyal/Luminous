@@ -11,9 +11,11 @@ part 'risk_check.g.dart';
 Future<MedicineRiskCheckRecords> medicineRiskCheckRecords(Ref ref) {
   return authGuarded(
     ref: ref,
-    fetch: () {
+    fetch: () async {
       final repository = ref.watch(medicineRiskCheckRepositoryProvider);
-      return repository.getRecords();
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      final result = await repository.getRecords().run();
+      return result.fold((failure) => throw failure, (records) => records);
     },
   );
 }
@@ -51,7 +53,9 @@ Future<MedicineRiskCheckRecord> runMedicineRiskCheck(
     ref: ref,
     fetch: () async {
       final repository = ref.watch(medicineRiskCheckRepositoryProvider);
-      final record = await repository.runCheck(type);
+      // Left 投影到 AsyncValue.error：页面 catch 既有逻辑不变。
+      final result = await repository.runCheck(type).run();
+      final record = result.fold((failure) => throw failure, (value) => value);
       // Invalidate cached records so next read sees the fresh record.
       ref.invalidate(medicineRiskCheckRecordsProvider);
       return record;

@@ -15,8 +15,14 @@ Future<MedicineWorkspace> medicineWorkspace(Ref ref) {
 
   return authGuarded(
     ref: ref,
-    fetch: () =>
-        ref.watch(medicineWorkspaceRepositoryProvider).fetchWorkspace(),
+    fetch: () async {
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      final result = await ref
+          .watch(medicineWorkspaceRepositoryProvider)
+          .fetchWorkspace()
+          .run();
+      return result.fold((failure) => throw failure, (workspace) => workspace);
+    },
     signedOutFallback: () =>
         ref.watch(medicineWorkspaceRepositoryProvider).signedOutWorkspace,
   );
