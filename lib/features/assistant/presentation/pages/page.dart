@@ -6,8 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
@@ -70,29 +68,23 @@ class AssistantPage extends HookConsumerWidget {
         return;
       }
 
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'AssistantPage.handleRenameConversation',
-        action: () => ref
+      try {
+        await ref
             .read(assistantControllerProvider.notifier)
             .renameConversation(
               conversationId: conversationId,
               title: newTitle,
-            ),
-      );
-      switch (result) {
-        case Success():
-          return;
-        case Failure(:final error):
-          if (!ctx.mounted) return;
-          await Toast.show(
-            ctx,
-            userMessageFromError(
-              error,
-              fallback: l.assistantConversationRenameDialogTitle,
-              l10n: l,
-            ),
-          );
+            );
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await Toast.show(
+          ctx,
+          userMessageFromError(
+            error,
+            fallback: l.assistantConversationRenameDialogTitle,
+            l10n: l,
+          ),
+        );
       }
     }
 
@@ -112,27 +104,22 @@ class AssistantPage extends HookConsumerWidget {
         return;
       }
 
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'AssistantPage.handleDeleteConversation',
-        action: () => ref
+      try {
+        await ref
             .read(assistantControllerProvider.notifier)
-            .deleteConversation(conversationId),
-      );
-      switch (result) {
-        case Success():
-          if (!ctx.mounted) return;
-          await Toast.show(ctx, l.assistantConversationDeletedToast);
-        case Failure(:final error):
-          if (!ctx.mounted) return;
-          await Toast.show(
-            ctx,
-            userMessageFromError(
-              error,
-              fallback: l.assistantConversationDeleteConfirmTitle,
-              l10n: l,
-            ),
-          );
+            .deleteConversation(conversationId);
+        if (!ctx.mounted) return;
+        await Toast.show(ctx, l.assistantConversationDeletedToast);
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await Toast.show(
+          ctx,
+          userMessageFromError(
+            error,
+            fallback: l.assistantConversationDeleteConfirmTitle,
+            l10n: l,
+          ),
+        );
       }
     }
 
@@ -142,32 +129,27 @@ class AssistantPage extends HookConsumerWidget {
       required String proposalId,
     }) async {
       final l = AppLocalizations.of(ctx)!;
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'AssistantPage.handleConfirmProposal',
-        action: () => ref
+      try {
+        await ref
             .read(assistantControllerProvider.notifier)
             .confirmProposedAction(
               messageId: messageId,
               proposalId: proposalId,
-            ),
-      );
-      switch (result) {
-        case Success():
-          if (!ctx.mounted) return;
-          await Toast.show(ctx, l.assistantProposalConfirmedToast);
-        case Failure(:final error):
-          if (!ctx.mounted) return;
-          // 用统一错误文案 helper 提取用户可见消息:message 为空或非预期
-          // 类型时落到本地化兜底,不直接展示原始 message。
-          await Toast.show(
-            ctx,
-            userMessageFromError(
-              error,
-              fallback: l.assistantProposalFailedState,
-              l10n: l,
-            ),
-          );
+            );
+        if (!ctx.mounted) return;
+        await Toast.show(ctx, l.assistantProposalConfirmedToast);
+      } catch (error) {
+        if (!ctx.mounted) return;
+        // 用统一错误文案 helper 提取用户可见消息:message 为空或非预期
+        // 类型时落到本地化兜底,不直接展示原始 message。
+        await Toast.show(
+          ctx,
+          userMessageFromError(
+            error,
+            fallback: l.assistantProposalFailedState,
+            l10n: l,
+          ),
+        );
       }
     }
 
@@ -177,81 +159,63 @@ class AssistantPage extends HookConsumerWidget {
       required String proposalId,
     }) async {
       final l = AppLocalizations.of(ctx)!;
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'AssistantPage.handleRegenerateProposal',
-        action: () => ref
+      try {
+        await ref
             .read(assistantControllerProvider.notifier)
             .regenerateExpiredProposal(
               messageId: messageId,
               proposalId: proposalId,
-            ),
-      );
-      switch (result) {
-        case Success():
-          // 重新生成已进入流式回复,新的回复即为成功反馈,不再额外 toast。
-          return;
-        case Failure(:final error):
-          if (!ctx.mounted) return;
-          await Toast.show(
-            ctx,
-            userMessageFromError(
-              error,
-              fallback: l.assistantProposalFailedState,
-              l10n: l,
-            ),
-          );
+            );
+        // 重新生成已进入流式回复,新的回复即为成功反馈,不再额外 toast。
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await Toast.show(
+          ctx,
+          userMessageFromError(
+            error,
+            fallback: l.assistantProposalFailedState,
+            l10n: l,
+          ),
+        );
       }
     }
 
     Future<void> handleRegenerate(BuildContext ctx) async {
       final l = AppLocalizations.of(ctx)!;
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'AssistantPage.handleRegenerate',
-        action: () => ref
+      try {
+        await ref
             .read(assistantControllerProvider.notifier)
-            .regenerateLastMessage(),
-      );
-      switch (result) {
-        case Success():
-          // 流式回复本身就是成功反馈,不再额外 toast。
-          return;
-        case Failure(:final error):
-          if (!ctx.mounted) return;
-          await Toast.show(
-            ctx,
-            userMessageFromError(
-              error,
-              fallback: l.assistantRegenerateAction,
-              l10n: l,
-            ),
-          );
+            .regenerateLastMessage();
+        // 流式回复本身就是成功反馈,不再额外 toast。
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await Toast.show(
+          ctx,
+          userMessageFromError(
+            error,
+            fallback: l.assistantRegenerateAction,
+            l10n: l,
+          ),
+        );
       }
     }
 
     Future<void> handleResend(BuildContext ctx, String content) async {
       final l = AppLocalizations.of(ctx)!;
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'AssistantPage.handleResend',
-        action: () => ref
+      try {
+        await ref
             .read(assistantControllerProvider.notifier)
-            .resendMessage(content),
-      );
-      switch (result) {
-        case Success():
-          return;
-        case Failure(:final error):
-          if (!ctx.mounted) return;
-          await Toast.show(
-            ctx,
-            userMessageFromError(
-              error,
-              fallback: l.assistantResendAction,
-              l10n: l,
-            ),
-          );
+            .resendMessage(content);
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await Toast.show(
+          ctx,
+          userMessageFromError(
+            error,
+            fallback: l.assistantResendAction,
+            l10n: l,
+          ),
+        );
       }
     }
 

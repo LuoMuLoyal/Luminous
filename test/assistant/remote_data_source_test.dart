@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 
 /// Adapter that returns a JSON response with configurable body.
@@ -193,5 +195,30 @@ void main() {
       final ds = AssistantRemoteDataSource(api: api, dio: dio);
       await expectLater(ds.deleteConversation('conv-1'), completes);
     });
+
+    test(
+      'empty success body is a LucentFailure.network(emptyResponse)',
+      () async {
+        adapter.responseBody = null;
+
+        final ds = AssistantRemoteDataSource(api: api, dio: dio);
+        await expectLater(
+          ds.getCapabilities(),
+          throwsA(
+            isA<LucentFailure>()
+                .having(
+                  (failure) => failure.networkErrorCode,
+                  'networkErrorCode',
+                  NetworkErrorCode.emptyResponse,
+                )
+                .having(
+                  (failure) => failure.kind,
+                  'kind',
+                  LucentFailureKind.network,
+                ),
+          ),
+        );
+      },
+    );
   });
 }

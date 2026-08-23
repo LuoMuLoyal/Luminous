@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -136,7 +137,7 @@ void main() {
             messageId: messageIdFor(state.messages.last),
             proposalId: 'proposal-1',
           ),
-          throwsA(isA<Exception>()),
+          throwsA(isA<LucentFailure>()),
         );
 
         final updated = container.read(assistantControllerProvider);
@@ -305,7 +306,7 @@ void main() {
             conversationId: 'c1',
             title: 'New title',
           ),
-          throwsA(isA<Exception>()),
+          throwsA(isA<LucentFailure>()),
         );
 
         final rolledBack = container

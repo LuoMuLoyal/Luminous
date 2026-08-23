@@ -2,11 +2,16 @@ import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/problem_details.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
+
+import '../../../helpers/task_either.dart';
 
 // ── Fake data source ───────────────────────────────────────────
 
@@ -19,6 +24,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     this._clearResult,
     this._stream,
     this._regenerateStream,
+    this.failureToThrow,
   }) : super(
          api: lucent.AssistantApi(Dio(BaseOptions())),
          dio: Dio(BaseOptions()),
@@ -32,14 +38,27 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   final Stream<AssistantRemoteEvent>? _stream;
   final Stream<AssistantRemoteEvent>? _regenerateStream;
 
+  /// When set, every non-stream method throws this error instead of
+  /// returning its canned value (used to exercise the repository failure
+  /// boundary).
+  final Object? failureToThrow;
+
   String? lastOpenedConversationId;
   String? lastStreamConversationId;
   String? lastRegenerateConversationId;
   final List<(String, List<String>, String, String?)> confirmProposalsCalls =
       <(String, List<String>, String, String?)>[];
 
+  void _maybeThrow() {
+    final failure = failureToThrow;
+    if (failure != null) {
+      throw failure;
+    }
+  }
+
   @override
   Future<lucent.AssistantCapabilitiesResponseDto> getCapabilities() async {
+    _maybeThrow();
     if (_capabilities == null) {
       throw const LucentApiException(message: 'not configured');
     }
@@ -48,12 +67,14 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
 
   @override
   Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
+    _maybeThrow();
     return _latestConversation;
   }
 
   @override
   Future<List<lucent.AssistantConversationSummaryDto>>
   listRecentConversations() async {
+    _maybeThrow();
     return _recentConversations ?? const [];
   }
 
@@ -62,6 +83,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     String conversationId,
   ) async {
     lastOpenedConversationId = conversationId;
+    _maybeThrow();
     if (_openedConversation == null) {
       throw const LucentApiException(message: 'not found');
     }
@@ -70,6 +92,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
 
   @override
   Future<bool> clearLatestConversation() async {
+    _maybeThrow();
     return _clearResult ?? true;
   }
 
@@ -97,6 +120,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     required String decision,
     String? note,
   }) async {
+    _maybeThrow();
     confirmProposalsCalls.add((conversationId, proposalIds, decision, note));
     return null;
   }
@@ -109,12 +133,14 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     required String conversationId,
     required String title,
   }) async {
+    _maybeThrow();
     renameCalls.add((conversationId, title));
     return _conversationDto(id: conversationId, title: title);
   }
 
   @override
   Future<void> deleteConversation(String conversationId) async {
+    _maybeThrow();
     deleteCalls.add(conversationId);
   }
 }
@@ -277,7 +303,7 @@ void main() {
         ),
       );
 
-      final caps = await repo.getCapabilities();
+      final caps = await expectTaskRight(repo.getCapabilities());
 
       expect(caps.phase, 'ga');
       expect(caps.assistantEnabled, isTrue);
@@ -306,7 +332,7 @@ void main() {
           capabilities: _capabilitiesDto(enabled: false),
         ),
       );
-      final caps = await repo.getCapabilities();
+      final caps = await expectTaskRight(repo.getCapabilities());
       expect(caps.canSendMessages, isFalse);
     });
 
@@ -316,7 +342,7 @@ void main() {
           capabilities: _capabilitiesDto(streaming: false),
         ),
       );
-      final caps = await repo.getCapabilities();
+      final caps = await expectTaskRight(repo.getCapabilities());
       expect(caps.canSendMessages, isFalse);
     });
 
@@ -326,7 +352,7 @@ void main() {
           capabilities: _capabilitiesDto(updatedAt: null),
         ),
       );
-      final caps = await repo.getCapabilities();
+      final caps = await expectTaskRight(repo.getCapabilities());
       expect(caps.updatedAt, isNull);
     });
 
@@ -336,7 +362,7 @@ void main() {
           capabilities: _capabilitiesDto(updatedAt: 'not-a-date'),
         ),
       );
-      final caps = await repo.getCapabilities();
+      final caps = await expectTaskRight(repo.getCapabilities());
       expect(caps.updatedAt, isNull);
     });
 
@@ -354,8 +380,17 @@ void main() {
           ),
         ),
       );
-      final caps = await repo.getCapabilities();
+      final caps = await expectTaskRight(repo.getCapabilities());
       expect(caps.tools.single.id, '');
+    });
+
+    test('maps datasource failures to Left(unknown)', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(),
+      );
+      final failure = await expectTaskLeft(repo.getCapabilities());
+      expect(failure.kind, LucentFailureKind.unknown);
+      expect(failure.message, 'not configured');
     });
   });
 
@@ -364,7 +399,7 @@ void main() {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(latestConversation: null),
       );
-      expect(await repo.getLatestConversation(), isNull);
+      expect(await expectTaskRight(repo.getLatestConversation()), isNull);
     });
 
     test('maps conversation with messages', () async {
@@ -390,7 +425,7 @@ void main() {
         ),
       );
 
-      final conv = await repo.getLatestConversation();
+      final conv = await expectTaskRight(repo.getLatestConversation());
 
       expect(conv, isNotNull);
       expect(conv!.id, 'conv-99');
@@ -417,7 +452,7 @@ void main() {
             ),
           ),
         );
-        final conv = await repo.getLatestConversation();
+        final conv = await expectTaskRight(repo.getLatestConversation());
         expect(conv!.createdAt, fixedTime);
         expect(conv.updatedAt, fixedTime);
       });
@@ -437,7 +472,7 @@ void main() {
           ),
         ),
       );
-      final conv = await repo.getLatestConversation();
+      final conv = await expectTaskRight(repo.getLatestConversation());
       expect(conv!.messages.single.role, AssistantMessageRole.assistant);
     });
   });
@@ -458,7 +493,7 @@ void main() {
         ),
       );
 
-      final list = await repo.listRecentConversations();
+      final list = await expectTaskRight(repo.listRecentConversations());
 
       expect(list, hasLength(3));
       expect(list[0].id, 'c1');
@@ -475,7 +510,7 @@ void main() {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(recentConversations: []),
       );
-      expect(await repo.listRecentConversations(), isEmpty);
+      expect(await expectTaskRight(repo.listRecentConversations()), isEmpty);
     });
   });
 
@@ -486,7 +521,7 @@ void main() {
       );
       final repo = LucentAssistantRepository(dataSource: fake);
 
-      await repo.openConversation('conv-open');
+      await expectTaskRight(repo.openConversation('conv-open'));
 
       expect(fake.lastOpenedConversationId, 'conv-open');
     });
@@ -498,10 +533,21 @@ void main() {
         ),
       );
 
-      final conv = await repo.openConversation('conv-x');
+      final conv = await expectTaskRight(repo.openConversation('conv-x'));
 
       expect(conv.id, 'conv-x');
       expect(conv.title, 'Opened');
+    });
+
+    test('maps datasource failures to Left', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(),
+      );
+      final failure = await expectTaskLeft(
+        repo.openConversation('conv-missing'),
+      );
+      expect(failure.kind, LucentFailureKind.unknown);
+      expect(failure.message, 'not found');
     });
   });
 
@@ -510,14 +556,14 @@ void main() {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(clearResult: true),
       );
-      expect(await repo.clearLatestConversation(), isTrue);
+      expect(await expectTaskRight(repo.clearLatestConversation()), isTrue);
     });
 
     test('returns false when data source returns false', () async {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(clearResult: false),
       );
-      expect(await repo.clearLatestConversation(), isFalse);
+      expect(await expectTaskRight(repo.clearLatestConversation()), isFalse);
     });
   });
 
@@ -1199,10 +1245,12 @@ void main() {
       final fake = _FakeAssistantRemoteDataSource();
       final repo = LucentAssistantRepository(dataSource: fake);
 
-      final content = await repo.confirmProposals(
-        conversationId: 'conv-1',
-        proposalIds: const ['pa-1'],
-        decision: 'approved',
+      final content = await expectTaskRight(
+        repo.confirmProposals(
+          conversationId: 'conv-1',
+          proposalIds: const ['pa-1'],
+          decision: 'approved',
+        ),
       );
 
       expect(fake.confirmProposalsCalls, hasLength(1));
@@ -1218,11 +1266,13 @@ void main() {
       final fake = _FakeAssistantRemoteDataSource();
       final repo = LucentAssistantRepository(dataSource: fake);
 
-      await repo.confirmProposals(
-        conversationId: 'conv-1',
-        proposalIds: const ['pa-1'],
-        decision: 'rejected',
-        note: 'looks wrong',
+      await expectTaskRight(
+        repo.confirmProposals(
+          conversationId: 'conv-1',
+          proposalIds: const ['pa-1'],
+          decision: 'rejected',
+          note: 'looks wrong',
+        ),
       );
 
       final call = fake.confirmProposalsCalls.single;
@@ -1236,7 +1286,9 @@ void main() {
       final fake = _FakeAssistantRemoteDataSource();
       final repo = LucentAssistantRepository(dataSource: fake);
 
-      await repo.renameConversation(conversationId: 'conv-1', title: '新标题');
+      await expectTaskRight(
+        repo.renameConversation(conversationId: 'conv-1', title: '新标题'),
+      );
 
       expect(fake.renameCalls.single.$1, 'conv-1');
       expect(fake.renameCalls.single.$2, '新标题');
@@ -1248,9 +1300,85 @@ void main() {
       final fake = _FakeAssistantRemoteDataSource();
       final repo = LucentAssistantRepository(dataSource: fake);
 
-      await repo.deleteConversation('conv-1');
+      await expectTaskRight(repo.deleteConversation('conv-1'));
 
       expect(fake.deleteCalls, <String>['conv-1']);
+    });
+
+    test('maps datasource failures to Left', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          failureToThrow: const LucentApiException(message: 'delete failed'),
+        ),
+      );
+      final failure = await expectTaskLeft(repo.deleteConversation('conv-1'));
+      expect(failure.message, 'delete failed');
+    });
+  });
+
+  group('LucentAssistantRepository — failure boundary', () {
+    test('network failure becomes Left(network)', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          failureToThrow: DioException(
+            requestOptions: RequestOptions(
+              path: '/api/v1/user/assistant/latest',
+            ),
+            type: DioExceptionType.connectionError,
+          ),
+        ),
+      );
+      final failure = await expectTaskLeft(repo.getLatestConversation());
+      expect(failure.kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.connectionError);
+    });
+
+    test('empty success body becomes Left(network/emptyResponse)', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          failureToThrow: LucentFailure.network(
+            message: 'API 返回空响应体（getCapabilities）',
+            networkErrorCode: NetworkErrorCode.emptyResponse,
+          ),
+        ),
+      );
+      final failure = await expectTaskLeft(repo.getCapabilities());
+      expect(failure.kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+    });
+
+    test('Problem Details business failure keeps code/status', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          failureToThrow: LucentFailure.fromProblemDetails(
+            const ProblemDetails(
+              type: 'https://lucent.example/errors/assistant',
+              title: 'Conversation not found',
+              code: 'CONVERSATION_NOT_FOUND',
+              detail: '该会话不存在',
+            ),
+            statusCode: 404,
+          ),
+        ),
+      );
+      final failure = await expectTaskLeft(repo.openConversation('missing'));
+      expect(failure.kind, LucentFailureKind.business);
+      expect(failure.code, 'CONVERSATION_NOT_FOUND');
+      expect(failure.statusCode, 404);
+      expect(failure.message, '该会话不存在');
+    });
+
+    test('rename failure keeps the original cause on Left', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          failureToThrow: const LucentApiException(message: 'rename failed'),
+        ),
+      );
+      final failure = await expectTaskLeft(
+        repo.renameConversation(conversationId: 'conv-1', title: '新标题'),
+      );
+      expect(failure.message, 'rename failed');
+      expect(failure.cause, isA<LucentApiException>());
     });
   });
 }

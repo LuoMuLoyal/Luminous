@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -55,80 +58,89 @@ class FakeAssistantRepository implements AssistantRepository {
   bool throwOnConfirm = false;
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async {
-    return AssistantCapabilities(
-      phase: 'production',
-      assistantEnabled: true,
-      assistantMemoryEnabled: true,
-      assistantContext: const AssistantContextAccess(
-        healthProfile: true,
-        dailyRecords: true,
-        sleepRecords: true,
-        currentMedicines: true,
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(
+      AssistantCapabilities(
+        phase: 'production',
+        assistantEnabled: true,
+        assistantMemoryEnabled: true,
+        assistantContext: const AssistantContextAccess(
+          healthProfile: true,
+          dailyRecords: true,
+          sleepRecords: true,
+          currentMedicines: true,
+        ),
+        chatModelConfigured: true,
+        interactiveChatReady: true,
+        langGraphReady: true,
+        streamingSupported: true,
+        streamingTransport: 'sse',
+        markdownRenderingRecommended: true,
+        ragEnabled: true,
+        tools: const <AssistantToolCapability>[],
+        updatedAt: DateTime(2026, 6, 10),
       ),
-      chatModelConfigured: true,
-      interactiveChatReady: true,
-      langGraphReady: true,
-      streamingSupported: true,
-      streamingTransport: 'sse',
-      markdownRenderingRecommended: true,
-      ragEnabled: true,
-      tools: const <AssistantToolCapability>[],
-      updatedAt: DateTime(2026, 6, 10),
     );
   }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async {
-    return latestConversation;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(latestConversation);
   }
 
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async {
-    return recentList;
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(recentList);
   }
 
   @override
-  Future<AssistantConversation> openConversation(String id) async {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(String id) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async {
-    final gate = clearGate;
-    if (gate != null) {
-      await gate.future;
-    }
-    if (throwOnClear) {
-      throw Exception('clear failed');
-    }
-    return true;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.tryCatch(() async {
+      final gate = clearGate;
+      if (gate != null) {
+        await gate.future;
+      }
+      if (throwOnClear) {
+        throw Exception('clear failed');
+      }
+      return true;
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> renameConversation({
+  TaskEither<LucentFailure, void> renameConversation({
     required String conversationId,
     required String title,
-  }) async {
-    renameCalls.add((conversationId: conversationId, title: title));
-    await renameGate?.future;
-    if (throwOnRename) {
-      throw Exception('rename failed');
-    }
-    // Mirror the backend: the persisted title changes, so the refreshed list
-    // returns the new title.
-    recentList = [
-      for (final item in recentList)
-        item.id == conversationId ? summaryWithTitle(item, title) : item,
-    ];
+  }) {
+    return TaskEither.tryCatch(() async {
+      renameCalls.add((conversationId: conversationId, title: title));
+      await renameGate?.future;
+      if (throwOnRename) {
+        throw Exception('rename failed');
+      }
+      // Mirror the backend: the persisted title changes, so the refreshed list
+      // returns the new title.
+      recentList = [
+        for (final item in recentList)
+          item.id == conversationId ? summaryWithTitle(item, title) : item,
+      ];
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> deleteConversation(String conversationId) async {
-    deleteCalls.add(conversationId);
-    if (throwOnDelete) {
-      throw Exception('delete failed');
-    }
+  TaskEither<LucentFailure, void> deleteConversation(String conversationId) {
+    return TaskEither.tryCatch(() async {
+      deleteCalls.add(conversationId);
+      if (throwOnDelete) {
+        throw Exception('delete failed');
+      }
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
@@ -159,21 +171,23 @@ class FakeAssistantRepository implements AssistantRepository {
   }
 
   @override
-  Future<String?> confirmProposals({
+  TaskEither<LucentFailure, String?> confirmProposals({
     required String conversationId,
     required List<String> proposalIds,
     required String decision,
     String? note,
-  }) async {
-    confirmCalls.add((
-      conversationId: conversationId,
-      proposalIds: proposalIds,
-      decision: decision,
-    ));
-    if (throwOnConfirm) {
-      throw Exception('confirm failed');
-    }
-    return confirmResult;
+  }) {
+    return TaskEither.tryCatch(() async {
+      confirmCalls.add((
+        conversationId: conversationId,
+        proposalIds: proposalIds,
+        decision: decision,
+      ));
+      if (throwOnConfirm) {
+        throw Exception('confirm failed');
+      }
+      return confirmResult;
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }
 
@@ -286,36 +300,46 @@ ProviderContainer buildContainer(FakeAssistantRepository repository) {
 
 class ErrorThrowingRepository implements AssistantRepository {
   @override
-  Future<AssistantCapabilities> getCapabilities() async {
-    throw Exception('Network error');
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.left(
+      LucentFailure.unknown(
+        message: 'Network error',
+        cause: Exception('Network error'),
+      ),
+    );
   }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
-
-  @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async {
-    return const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
   }
 
   @override
-  Future<AssistantConversation> openConversation(String id) async {
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
+
+  @override
+  TaskEither<LucentFailure, AssistantConversation> openConversation(String id) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => true;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(true);
+  }
 
   @override
-  Future<void> renameConversation({
+  TaskEither<LucentFailure, void> renameConversation({
     required String conversationId,
     required String title,
-  }) async {
+  }) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> deleteConversation(String conversationId) async {
+  TaskEither<LucentFailure, void> deleteConversation(String conversationId) {
     throw UnimplementedError();
   }
 
@@ -336,12 +360,12 @@ class ErrorThrowingRepository implements AssistantRepository {
   }
 
   @override
-  Future<String?> confirmProposals({
+  TaskEither<LucentFailure, String?> confirmProposals({
     required String conversationId,
     required List<String> proposalIds,
     required String decision,
     String? note,
-  }) async {
+  }) {
     throw UnimplementedError();
   }
 }

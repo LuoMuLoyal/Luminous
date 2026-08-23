@@ -12,6 +12,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -879,18 +880,18 @@ mixin _ConfirmProposalsStub implements AssistantRepository {
       <({String conversationId, List<String> proposalIds, String decision})>[];
 
   @override
-  Future<String?> confirmProposals({
+  TaskEither<LucentFailure, String?> confirmProposals({
     required String conversationId,
     required List<String> proposalIds,
     required String decision,
     String? note,
-  }) async {
+  }) {
     confirmCalls.add((
       conversationId: conversationId,
       proposalIds: proposalIds,
       decision: decision,
     ));
-    return null;
+    return TaskEither.right(null);
   }
 
   final List<({String conversationId, String title})> renameCalls =
@@ -898,16 +899,18 @@ mixin _ConfirmProposalsStub implements AssistantRepository {
   final List<String> deleteCalls = <String>[];
 
   @override
-  Future<void> renameConversation({
+  TaskEither<LucentFailure, void> renameConversation({
     required String conversationId,
     required String title,
-  }) async {
+  }) {
     renameCalls.add((conversationId: conversationId, title: title));
+    return TaskEither.right(null);
   }
 
   @override
-  Future<void> deleteConversation(String conversationId) async {
+  TaskEither<LucentFailure, void> deleteConversation(String conversationId) {
     deleteCalls.add(conversationId);
+    return TaskEither.right(null);
   }
 
   @override
@@ -944,22 +947,32 @@ class _FakeAssistantRepository
   );
 
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
+  }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async => _capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_capabilities);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1007,8 +1020,9 @@ class _MemoryEnabledAssistantRepository extends _FakeAssistantRepository {
   );
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _memoryEnabledCapabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_memoryEnabledCapabilities);
+  }
 }
 
 Widget _buildTestApp({
@@ -1106,23 +1120,32 @@ class _ErrorStreamAssistantRepository
     with _ConfirmProposalsStub
     implements AssistantRepository {
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
+  }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1139,23 +1162,32 @@ class _ProposalAssistantRepository
     with _ConfirmProposalsStub
     implements AssistantRepository {
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
+  }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1213,23 +1245,32 @@ class _SettingsProposalAssistantRepository
     with _ConfirmProposalsStub
     implements AssistantRepository {
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
+  }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1281,23 +1322,32 @@ class _ExpiredProposalAssistantRepository
     with _ConfirmProposalsStub
     implements AssistantRepository {
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
+  }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1355,41 +1405,51 @@ class _DisabledAssistantRepository
     with _ConfirmProposalsStub
     implements AssistantRepository {
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
+  }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async {
-    return const AssistantCapabilities(
-      phase: 'phase_1',
-      assistantEnabled: false,
-      assistantMemoryEnabled: false,
-      assistantContext: AssistantContextAccess(
-        healthProfile: true,
-        dailyRecords: true,
-        sleepRecords: true,
-        currentMedicines: true,
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(
+      const AssistantCapabilities(
+        phase: 'phase_1',
+        assistantEnabled: false,
+        assistantMemoryEnabled: false,
+        assistantContext: AssistantContextAccess(
+          healthProfile: true,
+          dailyRecords: true,
+          sleepRecords: true,
+          currentMedicines: true,
+        ),
+        chatModelConfigured: true,
+        interactiveChatReady: true,
+        langGraphReady: true,
+        streamingSupported: true,
+        streamingTransport: 'sse',
+        markdownRenderingRecommended: true,
+        ragEnabled: false,
+        tools: <AssistantToolCapability>[],
+        updatedAt: null,
       ),
-      chatModelConfigured: true,
-      interactiveChatReady: true,
-      langGraphReady: true,
-      streamingSupported: true,
-      streamingTransport: 'sse',
-      markdownRenderingRecommended: true,
-      ragEnabled: false,
-      tools: <AssistantToolCapability>[],
-      updatedAt: null,
     );
   }
 
@@ -1405,26 +1465,28 @@ class _DisabledAssistantRepository
 class _DisabledWithHistoryAssistantRepository
     extends _DisabledAssistantRepository {
   @override
-  Future<AssistantConversation?> getLatestConversation() async {
-    return AssistantConversation(
-      id: 'conversation-disabled-history',
-      title: '睡眠复盘',
-      status: 'active',
-      messages: <AssistantMessage>[
-        AssistantMessage(
-          role: AssistantMessageRole.user,
-          content: '之前那次睡眠为什么这么差？',
-          createdAt: DateTime.parse('2026-06-18T02:00:00Z'),
-        ),
-        AssistantMessage(
-          role: AssistantMessageRole.assistant,
-          content: '我先结合你最近几天的睡眠记录来解释。',
-          createdAt: DateTime.parse('2026-06-18T02:01:00Z'),
-        ),
-      ],
-      lastMessageAt: DateTime.parse('2026-06-18T02:01:00Z'),
-      createdAt: DateTime.parse('2026-06-18T02:00:00Z'),
-      updatedAt: DateTime.parse('2026-06-18T02:01:00Z'),
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(
+      AssistantConversation(
+        id: 'conversation-disabled-history',
+        title: '睡眠复盘',
+        status: 'active',
+        messages: <AssistantMessage>[
+          AssistantMessage(
+            role: AssistantMessageRole.user,
+            content: '之前那次睡眠为什么这么差？',
+            createdAt: DateTime.parse('2026-06-18T02:00:00Z'),
+          ),
+          AssistantMessage(
+            role: AssistantMessageRole.assistant,
+            content: '我先结合你最近几天的睡眠记录来解释。',
+            createdAt: DateTime.parse('2026-06-18T02:01:00Z'),
+          ),
+        ],
+        lastMessageAt: DateTime.parse('2026-06-18T02:01:00Z'),
+        createdAt: DateTime.parse('2026-06-18T02:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-18T02:01:00Z'),
+      ),
     );
   }
 }
@@ -1435,8 +1497,9 @@ class _RestoredConversationAssistantRepository
   int clearCalls = 0;
 
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async {
-    return <AssistantConversationSummary>[
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(<AssistantConversationSummary>[
       AssistantConversationSummary(
         id: 'conversation-restored',
         title: '睡眠跟进',
@@ -1445,48 +1508,53 @@ class _RestoredConversationAssistantRepository
         createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
         updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async {
-    return AssistantConversation(
-      id: 'conversation-restored',
-      title: '睡眠跟进',
-      status: 'active',
-      messages: <AssistantMessage>[
-        AssistantMessage(
-          role: AssistantMessageRole.user,
-          content: '昨晚睡得不太好',
-          createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
-        ),
-        AssistantMessage(
-          role: AssistantMessageRole.assistant,
-          content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
-          createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
-          usedTools: const <String>['get_sleep_summary_by_range'],
-        ),
-      ],
-      lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),
-      createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
-      updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(
+      AssistantConversation(
+        id: 'conversation-restored',
+        title: '睡眠跟进',
+        status: 'active',
+        messages: <AssistantMessage>[
+          AssistantMessage(
+            role: AssistantMessageRole.user,
+            content: '昨晚睡得不太好',
+            createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+          ),
+          AssistantMessage(
+            role: AssistantMessageRole.assistant,
+            content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
+            createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
+            usedTools: const <String>['get_sleep_summary_by_range'],
+          ),
+        ],
+        lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),
+        createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
+      ),
     );
   }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) async {
-    return (await getLatestConversation())!;
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
+    return getLatestConversation().map((conversation) => conversation!);
   }
 
   @override
-  Future<bool> clearLatestConversation() async {
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
     clearCalls += 1;
-    return true;
+    return TaskEither.right(true);
   }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1506,23 +1574,32 @@ class _RetryAwareAssistantRepository
   int _attempt = 0;
 
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
+  }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1554,8 +1631,9 @@ class _RecentConversationsAssistantRepository
   final List<String> openedConversationIds = <String>[];
 
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async {
-    return <AssistantConversationSummary>[
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(<AssistantConversationSummary>[
       AssistantConversationSummary(
         id: 'conversation-restored',
         title: '睡眠跟进',
@@ -1572,64 +1650,73 @@ class _RecentConversationsAssistantRepository
         createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
         updatedAt: DateTime.parse('2026-06-17T09:01:00Z'),
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async {
-    return AssistantConversation(
-      id: 'conversation-restored',
-      title: '睡眠跟进',
-      status: 'active',
-      messages: <AssistantMessage>[
-        AssistantMessage(
-          role: AssistantMessageRole.user,
-          content: '昨晚睡得不太好',
-          createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
-        ),
-        AssistantMessage(
-          role: AssistantMessageRole.assistant,
-          content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
-          createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
-        ),
-      ],
-      lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),
-      createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
-      updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(
+      AssistantConversation(
+        id: 'conversation-restored',
+        title: '睡眠跟进',
+        status: 'active',
+        messages: <AssistantMessage>[
+          AssistantMessage(
+            role: AssistantMessageRole.user,
+            content: '昨晚睡得不太好',
+            createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+          ),
+          AssistantMessage(
+            role: AssistantMessageRole.assistant,
+            content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
+            createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
+          ),
+        ],
+        lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),
+        createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
+      ),
     );
   }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) async {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     openedConversationIds.add(conversationId);
-    return AssistantConversation(
-      id: 'conversation-headache',
-      title: '头痛追踪',
-      status: 'active',
-      messages: <AssistantMessage>[
-        AssistantMessage(
-          role: AssistantMessageRole.user,
-          content: '今天头痛还在继续',
-          createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
-        ),
-        AssistantMessage(
-          role: AssistantMessageRole.assistant,
-          content: '先看一下你最近记录里的触发因素。',
-          createdAt: DateTime.parse('2026-06-17T09:01:00Z'),
-        ),
-      ],
-      lastMessageAt: DateTime.parse('2026-06-17T09:01:00Z'),
-      createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
-      updatedAt: DateTime.parse('2026-06-17T09:01:00Z'),
+    return TaskEither.right(
+      AssistantConversation(
+        id: 'conversation-headache',
+        title: '头痛追踪',
+        status: 'active',
+        messages: <AssistantMessage>[
+          AssistantMessage(
+            role: AssistantMessageRole.user,
+            content: '今天头痛还在继续',
+            createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
+          ),
+          AssistantMessage(
+            role: AssistantMessageRole.assistant,
+            content: '先看一下你最近记录里的触发因素。',
+            createdAt: DateTime.parse('2026-06-17T09:01:00Z'),
+          ),
+        ],
+        lastMessageAt: DateTime.parse('2026-06-17T09:01:00Z'),
+        createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-17T09:01:00Z'),
+      ),
     );
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1646,16 +1733,20 @@ class _DrawerMenuAssistantRepository
     with _ConfirmProposalsStub
     implements AssistantRepository {
   @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(null);
+  }
 
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async {
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
     final now = DateTime.now();
-    return <AssistantConversationSummary>[
+    return TaskEither.right(<AssistantConversationSummary>[
       AssistantConversationSummary(
         id: 'titled',
         title: '已命名会话',
@@ -1672,16 +1763,20 @@ class _DrawerMenuAssistantRepository
         createdAt: now,
         updatedAt: now,
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
@@ -1771,24 +1866,38 @@ class _FullyHangingAssistantRepository
   final Completer<AssistantConversation?> _pendingConversation;
 
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() =>
-      _pendingConversation.future;
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.tryCatch(
+      () => _pendingConversation.future,
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    );
+  }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) {
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> clearLatestConversation() async => false;
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.right(false);
+  }
 
   @override
-  Future<AssistantCapabilities> getCapabilities() =>
-      _pendingCapabilities.future;
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.tryCatch(
+      () => _pendingCapabilities.future,
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    );
+  }
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(

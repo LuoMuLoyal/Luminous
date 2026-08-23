@@ -1,8 +1,9 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/core/network/sse.dart';
 
 sealed class AssistantRemoteEvent {
@@ -43,18 +44,18 @@ class AssistantRemoteDataSource {
 
   Future<lucent.AssistantCapabilitiesResponseDto> getCapabilities() async {
     final response = await api.assistantControllerGetCapabilitiesV1();
-    return requireData(response.data, operation: 'getCapabilities');
+    return _requireData(response.data, operation: 'getCapabilities');
   }
 
   Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
     final response = await api.assistantControllerGetLatestConversationV1();
-    return requireData(response.data, operation: 'getLatestConversation');
+    return _requireData(response.data, operation: 'getLatestConversation');
   }
 
   Future<List<lucent.AssistantConversationSummaryDto>>
   listRecentConversations() async {
     final response = await api.assistantControllerListRecentConversationsV1();
-    return requireData(response.data, operation: 'listRecentConversations');
+    return _requireData(response.data, operation: 'listRecentConversations');
   }
 
   Future<lucent.AssistantConversationDataDto> openConversation(
@@ -65,7 +66,7 @@ class AssistantRemoteDataSource {
     );
     // The DTO's `data` field is nullable; guard both layers so a
     // payload-less success response is reported instead of a `!` crash.
-    final responseDto = requireData(
+    final responseDto = _requireData(
       response.data,
       operation: 'openConversation',
     );
@@ -90,7 +91,7 @@ class AssistantRemoteDataSource {
       conversationId: conversationId,
       renameConversationDto: lucent.RenameConversationDto(title: title),
     );
-    final responseDto = requireData(
+    final responseDto = _requireData(
       response.data,
       operation: 'renameConversation',
     );
@@ -206,5 +207,19 @@ class AssistantRemoteDataSource {
       return const <Map<String, dynamic>>[];
     }
     return raw.map((item) => requireMap(item)).toList(growable: false);
+  }
+
+  /// Extracts a non-null generated-client payload, throwing
+  /// [LucentFailure.network] (emptyResponse) when the success body is absent
+  /// (today `ai_remote` / record `record.dart` precedent).
+  T _requireData<T>(T? data, {String? operation}) {
+    if (data == null) {
+      final context = operation == null ? '' : '（$operation）';
+      throw LucentFailure.network(
+        message: 'API 返回空响应体$context',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
+    return data;
   }
 }

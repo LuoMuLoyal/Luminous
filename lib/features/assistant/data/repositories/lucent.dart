@@ -1,6 +1,9 @@
 import 'package:clock/clock.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -27,65 +30,86 @@ class LucentAssistantRepository implements AssistantRepository {
   final AssistantRemoteDataSource dataSource;
 
   @override
-  Future<AssistantCapabilities> getCapabilities() async {
-    final dto = await dataSource.getCapabilities();
-    return _mapCapabilities(dto);
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.getCapabilities();
+      return _mapCapabilities(dto);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async {
-    final dto = await dataSource.getLatestConversation();
-    if (dto == null) {
-      return null;
-    }
-    return _mapConversation(dto);
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.getLatestConversation();
+      if (dto == null) {
+        return null;
+      }
+      return _mapConversation(dto);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async {
-    final items = await dataSource.listRecentConversations();
-    return items.map(_mapConversationSummary).toList(growable: false);
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.tryCatch(() async {
+      final items = await dataSource.listRecentConversations();
+      return items.map(_mapConversationSummary).toList(growable: false);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<AssistantConversation> openConversation(String conversationId) async {
-    final dto = await dataSource.openConversation(conversationId);
-    return _mapConversation(dto);
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.openConversation(conversationId);
+      return _mapConversation(dto);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<bool> clearLatestConversation() {
-    return dataSource.clearLatestConversation();
-  }
-
-  @override
-  Future<void> renameConversation({
-    required String conversationId,
-    required String title,
-  }) async {
-    await dataSource.renameConversation(
-      conversationId: conversationId,
-      title: title,
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
+    return TaskEither.tryCatch(
+      dataSource.clearLatestConversation,
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
     );
   }
 
   @override
-  Future<void> deleteConversation(String conversationId) async {
-    await dataSource.deleteConversation(conversationId);
+  TaskEither<LucentFailure, void> renameConversation({
+    required String conversationId,
+    required String title,
+  }) {
+    return TaskEither.tryCatch(() async {
+      await dataSource.renameConversation(
+        conversationId: conversationId,
+        title: title,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<String?> confirmProposals({
+  TaskEither<LucentFailure, void> deleteConversation(String conversationId) {
+    return TaskEither.tryCatch(() async {
+      await dataSource.deleteConversation(conversationId);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, String?> confirmProposals({
     required String conversationId,
     required List<String> proposalIds,
     required String decision,
     String? note,
   }) {
-    return dataSource.confirmProposals(
-      conversationId: conversationId,
-      proposalIds: proposalIds,
-      decision: decision,
-      note: note,
+    return TaskEither.tryCatch(
+      () => dataSource.confirmProposals(
+        conversationId: conversationId,
+        proposalIds: proposalIds,
+        decision: decision,
+        note: note,
+      ),
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
     );
   }
 

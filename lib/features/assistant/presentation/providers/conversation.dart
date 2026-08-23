@@ -1,12 +1,16 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
@@ -90,24 +94,25 @@ class AssistantController extends Notifier<AssistantState> {
 
     state = state.copyWith(isLoadingCapabilities: true, capabilityError: null);
 
-    try {
-      final capabilities = await ref
-          .read(assistantRepositoryProvider)
-          .getCapabilities();
-      state = state.copyWith(
-        isLoadingCapabilities: false,
-        capabilities: capabilities,
-        capabilityError: null,
-      );
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AssistantController.loadCapabilities: failed: $error');
-      final message = LucentErrorMapper.fromObject(error).message;
-      state = state.copyWith(
-        isLoadingCapabilities: false,
-        capabilityError: message,
-      );
+    final result = await ref
+        .read(assistantRepositoryProvider)
+        .getCapabilities()
+        .run();
+    switch (result) {
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error('AssistantController.loadCapabilities: failed: $value');
+        state = state.copyWith(
+          isLoadingCapabilities: false,
+          capabilityError: value.message,
+        );
+      case Right(:final value):
+        state = state.copyWith(
+          isLoadingCapabilities: false,
+          capabilities: value,
+          capabilityError: null,
+        );
     }
   }
 
@@ -129,29 +134,32 @@ class AssistantController extends Notifier<AssistantState> {
       conversationError: null,
     );
 
-    try {
-      final conversation = await ref
-          .read(assistantRepositoryProvider)
-          .getLatestConversation();
-      state = state.copyWith(
-        isLoadingConversation: false,
-        conversationId: conversation?.id,
-        messages: conversation?.messages ?? const <AssistantMessage>[],
-        streamingDraft: '',
-        conversationError: null,
-        sendError: null,
-        sendErrorType: null,
-        lastFailedInput: null,
-      );
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AssistantController.loadLatestConversation: failed: $error');
-      final message = LucentErrorMapper.fromObject(error).message;
-      state = state.copyWith(
-        isLoadingConversation: false,
-        conversationError: message,
-      );
+    final result = await ref
+        .read(assistantRepositoryProvider)
+        .getLatestConversation()
+        .run();
+    switch (result) {
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error(
+              'AssistantController.loadLatestConversation: failed: $value',
+            );
+        state = state.copyWith(
+          isLoadingConversation: false,
+          conversationError: value.message,
+        );
+      case Right(:final value):
+        state = state.copyWith(
+          isLoadingConversation: false,
+          conversationId: value?.id,
+          messages: value?.messages ?? const <AssistantMessage>[],
+          streamingDraft: '',
+          conversationError: null,
+          sendError: null,
+          sendErrorType: null,
+          lastFailedInput: null,
+        );
     }
   }
 
@@ -171,24 +179,27 @@ class AssistantController extends Notifier<AssistantState> {
       recentConversationError: null,
     );
 
-    try {
-      final items = await ref
-          .read(assistantRepositoryProvider)
-          .listRecentConversations();
-      state = state.copyWith(
-        isLoadingRecentConversations: false,
-        recentConversations: items,
-        recentConversationError: null,
-      );
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AssistantController.loadRecentConversations: failed: $error');
-      final message = LucentErrorMapper.fromObject(error).message;
-      state = state.copyWith(
-        isLoadingRecentConversations: false,
-        recentConversationError: message,
-      );
+    final result = await ref
+        .read(assistantRepositoryProvider)
+        .listRecentConversations()
+        .run();
+    switch (result) {
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error(
+              'AssistantController.loadRecentConversations: failed: $value',
+            );
+        state = state.copyWith(
+          isLoadingRecentConversations: false,
+          recentConversationError: value.message,
+        );
+      case Right(:final value):
+        state = state.copyWith(
+          isLoadingRecentConversations: false,
+          recentConversations: value,
+          recentConversationError: null,
+        );
     }
   }
 
@@ -208,27 +219,28 @@ class AssistantController extends Notifier<AssistantState> {
       streamingDraft: '',
     );
 
-    try {
-      final conversation = await ref
-          .read(assistantRepositoryProvider)
-          .openConversation(conversationId);
-      state = state.copyWith(
-        isOpeningConversation: false,
-        conversationId: conversation.id,
-        messages: conversation.messages,
-        streamingDraft: '',
-        conversationError: null,
-      );
-      await loadRecentConversations();
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AssistantController.openConversation: failed: $error');
-      final message = LucentErrorMapper.fromObject(error).message;
-      state = state.copyWith(
-        isOpeningConversation: false,
-        conversationError: message,
-      );
+    final result = await ref
+        .read(assistantRepositoryProvider)
+        .openConversation(conversationId)
+        .run();
+    switch (result) {
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error('AssistantController.openConversation: failed: $value');
+        state = state.copyWith(
+          isOpeningConversation: false,
+          conversationError: value.message,
+        );
+      case Right(:final value):
+        state = state.copyWith(
+          isOpeningConversation: false,
+          conversationId: value.id,
+          messages: value.messages,
+          streamingDraft: '',
+          conversationError: null,
+        );
+        await loadRecentConversations();
     }
   }
 
@@ -336,8 +348,28 @@ class AssistantController extends Notifier<AssistantState> {
   }
 
   AssistantSendErrorType _classifySendError(Object error) {
+    if (error is LucentFailure) {
+      // 网络层中断(连接断开/超时/取消)视为流中断,触发 F-3 残句保留。
+      if (error.isNetworkConnectivityError ||
+          error.networkErrorCode == NetworkErrorCode.cancelled) {
+        return AssistantSendErrorType.streamInterrupted;
+      }
+      return AssistantSendErrorType.server;
+    }
+    if (error is DioException) {
+      // 运行时链上网络失败经 ErrorInterceptor 携带 LucentFailure 重新抛出；
+      // 遗留 LucentApiException 也一并递归分类（旧拦截器路径的防御完备性）。
+      final embedded = error.error;
+      if (embedded is LucentFailure) {
+        return _classifySendError(embedded);
+      }
+      if (embedded is LucentApiException) {
+        return _classifySendError(embedded);
+      }
+      return AssistantSendErrorType.unknown;
+    }
     if (error is LucentApiException) {
-      // 网络层中断(连接断开/超时)视为流中断,触发 F-3 残句保留。
+      // 遗留兼容:网络层中断(连接断开/超时)视为流中断,触发 F-3 残句保留。
       if (error.isNetworkConnectivityError) {
         return AssistantSendErrorType.streamInterrupted;
       }
@@ -487,18 +519,22 @@ class AssistantController extends Notifier<AssistantState> {
 
     state = state.copyWith(isClearingConversation: true);
 
-    try {
-      await ref.read(assistantRepositoryProvider).clearLatestConversation();
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AssistantController.clearConversation: failed: $error');
-      final message = LucentErrorMapper.fromObject(error).message;
-      state = state.copyWith(
-        isClearingConversation: false,
-        conversationError: message,
-      );
-      return;
+    final result = await ref
+        .read(assistantRepositoryProvider)
+        .clearLatestConversation()
+        .run();
+    switch (result) {
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error('AssistantController.clearConversation: failed: $value');
+        state = state.copyWith(
+          isClearingConversation: false,
+          conversationError: value.message,
+        );
+        return;
+      case Right():
+        break;
     }
 
     state = state.copyWith(
@@ -552,42 +588,41 @@ class AssistantController extends Notifier<AssistantState> {
     }
 
     try {
-      await ref
+      final result = await ref
           .read(assistantRepositoryProvider)
-          .renameConversation(conversationId: conversationId, title: newTitle);
-    } catch (_) {
-      state = state.copyWith(
-        recentConversations: state.recentConversations
-            .map(
-              (item) => item.id == conversationId
-                  ? _summaryWithTitle(item, oldTitle)
-                  : item,
-            )
-            .toList(growable: false),
-      );
-      rethrow;
+          .renameConversation(conversationId: conversationId, title: newTitle)
+          .run();
+      switch (result) {
+        case Left(:final value):
+          ref
+              .read(talkerProvider)
+              .error('AssistantController.renameConversation: failed: $value');
+          state = state.copyWith(
+            recentConversations: state.recentConversations
+                .map(
+                  (item) => item.id == conversationId
+                      ? _summaryWithTitle(item, oldTitle)
+                      : item,
+                )
+                .toList(growable: false),
+          );
+          throw value;
+        case Right():
+          break;
+      }
     } finally {
       _renamingConversationIds.remove(conversationId);
     }
 
     // Re-fetch the list so server-derived ordering/title stays authoritative.
     // Refresh failures are non-fatal; the optimistic title is kept.
-    try {
-      await loadRecentConversations();
-      if (state.recentConversationError != null) {
-        ref
-            .read(talkerProvider)
-            .debug(
-              'AssistantController.renameConversation: refresh failed '
-              'after rename for conversation $conversationId',
-            );
-      }
-    } catch (error) {
+    await loadRecentConversations();
+    if (state.recentConversationError != null) {
       ref
           .read(talkerProvider)
           .debug(
             'AssistantController.renameConversation: refresh failed '
-            'after rename for conversation $conversationId: $error',
+            'after rename for conversation $conversationId',
           );
     }
   }
@@ -600,9 +635,19 @@ class AssistantController extends Notifier<AssistantState> {
   /// blank conversation; [loadLatestConversation] already handles the
   /// no-conversation case (returns an empty state, not a white screen).
   Future<void> deleteConversation(String conversationId) async {
-    await ref
+    final result = await ref
         .read(assistantRepositoryProvider)
-        .deleteConversation(conversationId);
+        .deleteConversation(conversationId)
+        .run();
+    switch (result) {
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error('AssistantController.deleteConversation: failed: $value');
+        throw value;
+      case Right():
+        break;
+    }
 
     final isCurrent = state.conversationId == conversationId;
     if (isCurrent) {
@@ -662,38 +707,39 @@ class AssistantController extends Notifier<AssistantState> {
       executionError: null,
     );
 
-    try {
-      final finalContent = await ref
-          .read(assistantRepositoryProvider)
-          .confirmProposals(
-            conversationId: conversationId,
-            proposalIds: <String>[proposal.id],
-            decision: 'approved',
-          );
-      _appendFinalContent(finalContent);
-      _updateProposalState(
-        messageId: messageId,
-        proposalId: proposalId,
-        executionState: AssistantProposalExecutionState.confirmed,
-        executionError: null,
-      );
-      ref
-          .read(dataChangeBusProvider.notifier)
-          .emit(_dataChangeTopicFor(proposal.type));
-      await loadRecentConversations();
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AssistantController.confirmProposedAction: failed: $error');
-      final messageText = LucentErrorMapper.fromObject(error).message;
-      _updateProposalState(
-        messageId: messageId,
-        proposalId: proposal.id,
-        executionState: AssistantProposalExecutionState.failed,
-        executionError: messageText,
-      );
-      rethrow;
+    final result = await ref
+        .read(assistantRepositoryProvider)
+        .confirmProposals(
+          conversationId: conversationId,
+          proposalIds: <String>[proposal.id],
+          decision: 'approved',
+        )
+        .run();
+    switch (result) {
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error('AssistantController.confirmProposedAction: failed: $value');
+        _updateProposalState(
+          messageId: messageId,
+          proposalId: proposal.id,
+          executionState: AssistantProposalExecutionState.failed,
+          executionError: value.message,
+        );
+        throw value;
+      case Right(:final value):
+        _appendFinalContent(value);
     }
+    _updateProposalState(
+      messageId: messageId,
+      proposalId: proposal.id,
+      executionState: AssistantProposalExecutionState.confirmed,
+      executionError: null,
+    );
+    ref
+        .read(dataChangeBusProvider.notifier)
+        .emit(_dataChangeTopicFor(proposal.type));
+    await loadRecentConversations();
   }
 
   /// Maps a confirmed proposal type to the cross-feature data invalidation
@@ -767,27 +813,28 @@ class AssistantController extends Notifier<AssistantState> {
     // In a persisted conversation dismissing a proposal rejects it on the
     // backend so the suspended graph thread resumes and the user can keep
     // chatting with the same conversation.
-    try {
-      final finalContent = await ref
-          .read(assistantRepositoryProvider)
-          .confirmProposals(
-            conversationId: conversationId,
-            proposalIds: <String>[proposalId],
-            decision: 'rejected',
-          );
-      _appendFinalContent(finalContent);
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AssistantController.dismissProposedAction: failed: $error');
-      final messageText = LucentErrorMapper.fromObject(error).message;
-      _updateProposalState(
-        messageId: messageId,
-        proposalId: proposalId,
-        executionState: AssistantProposalExecutionState.failed,
-        executionError: messageText,
-      );
-      rethrow;
+    final result = await ref
+        .read(assistantRepositoryProvider)
+        .confirmProposals(
+          conversationId: conversationId,
+          proposalIds: <String>[proposalId],
+          decision: 'rejected',
+        )
+        .run();
+    switch (result) {
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error('AssistantController.dismissProposedAction: failed: $value');
+        _updateProposalState(
+          messageId: messageId,
+          proposalId: proposalId,
+          executionState: AssistantProposalExecutionState.failed,
+          executionError: value.message,
+        );
+        throw value;
+      case Right(:final value):
+        _appendFinalContent(value);
     }
 
     _updateProposalState(
