@@ -301,6 +301,48 @@ void main() {
       expect(dashboard.user.hasUnreadNotifications, isFalse);
     },
   );
+  test('uses the default water target when the settings read fails', () async {
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    final container = ProviderContainer(
+      overrides: [
+        healthContextSnapshotProvider.overrideWith((ref) async => _snapshot),
+        dailyRecordRepositoryProvider.overrideWithValue(
+          _FakeDailyRecordRepository(),
+        ),
+        appDatabaseProvider.overrideWithValue(db),
+        cachedDoseLogDataSourceProvider.overrideWith((ref) {
+          return CachedDoseLogDataSource(
+            remote: _FakeDoseLogDataSource(),
+            dao: db.medicineDoseLogDao,
+          );
+        }),
+        medicineReminderRemoteDataSourceProvider.overrideWithValue(
+          _FakeReminderDataSource(),
+        ),
+        userSettingsRepositoryProvider.overrideWithValue(
+          _FailingUserSettingsRepository(),
+        ),
+        notificationRepositoryProvider.overrideWithValue(
+          _FakeNotificationRepository(count: 0),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final dashboard = await expectTaskRight(
+      container.read(todayRepositoryProvider).fetchDashboard(),
+    );
+
+    // A settings Left falls back to the default target; the rest of the
+    // overview still renders normally.
+    expect(dashboard.water.targetCount, TodayDashboard.defaultWaterTargetCount);
+    expect(dashboard.water.targetMl, 0);
+    expect(dashboard.water.progress, 0.0);
+    expect(dashboard.water.completedCount, 3);
+    expect(dashboard.medication.medicineCount, 2);
+    expect(dashboard.user.hasUnreadNotifications, isFalse);
+  });
 }
 
 class _FakeDailyRecordRepository implements DailyRecordRepository {
@@ -419,42 +461,57 @@ class _ThrowingReminderDataSource extends _FakeReminderDataSource {
   }
 }
 
+class _FailingUserSettingsRepository extends _FakeUserSettingsRepository {
+  @override
+  TaskEither<LucentFailure, UserSettings> getSettings() {
+    return TaskEither.left(
+      LucentFailure.unknown(message: 'settings unavailable'),
+    );
+  }
+}
+
 class _FakeUserSettingsRepository implements UserSettingsRepository {
   @override
-  Future<UserSettings> getSettings() async => const UserSettings(
-    aiSummariesEnabled: true,
-    dataSharingConsent: false,
-    assistantEnabled: true,
-    assistantMemoryEnabled: false,
-    waterTargetCount: 8,
-    assistantContext: AssistantContextSettings(
-      healthProfile: false,
-      dailyRecords: false,
-      sleepRecords: false,
-      currentMedicines: false,
+  TaskEither<LucentFailure, UserSettings> getSettings() => TaskEither.right(
+    const UserSettings(
+      aiSummariesEnabled: true,
+      dataSharingConsent: false,
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettings(
+        healthProfile: false,
+        dailyRecords: false,
+        sleepRecords: false,
+        currentMedicines: false,
+      ),
+      securityPin: SecurityPinSettings(enabled: false),
     ),
-    securityPin: SecurityPinSettings(enabled: false),
   );
 
   @override
-  Future<UserSettings> updateSettings({
+  TaskEither<LucentFailure, UserSettings> updateSettings({
     required bool aiSummariesEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
     required bool assistantMemoryEnabled,
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
-  }) async => getSettings();
+  }) => getSettings();
 
   @override
-  Future<UserSettings> enableSecurityPin(String pin) async => getSettings();
-
-  @override
-  Future<UserSettings> changeSecurityPin(String oldPin, String newPin) async =>
+  TaskEither<LucentFailure, UserSettings> enableSecurityPin(String pin) =>
       getSettings();
 
   @override
-  Future<UserSettings> disableSecurityPin(String pin) async => getSettings();
+  TaskEither<LucentFailure, UserSettings> changeSecurityPin(
+    String oldPin,
+    String newPin,
+  ) => getSettings();
+
+  @override
+  TaskEither<LucentFailure, UserSettings> disableSecurityPin(String pin) =>
+      getSettings();
 }
 
 MedicineReminderItem _reminder({

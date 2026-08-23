@@ -403,8 +403,14 @@ class LucentTodayRepository implements TodayRepository {
   /// endpoint fails, so a network blip does not break the overview.
   Future<int> _waterTargetCount() async {
     try {
-      final settings = await userSettingsRepository.getSettings();
-      return settings.waterTargetCount;
+      final result = await userSettingsRepository.getSettings().run();
+      final targetCount = result.fold((failure) {
+        talker.error(
+          'LucentTodayRepository._waterTargetCount: failed: $failure',
+        );
+        return TodayDashboard.defaultWaterTargetCount;
+      }, (settings) => settings.waterTargetCount);
+      return targetCount;
     } catch (e) {
       talker.error('LucentTodayRepository._waterTargetCount: failed: $e');
       return TodayDashboard.defaultWaterTargetCount;

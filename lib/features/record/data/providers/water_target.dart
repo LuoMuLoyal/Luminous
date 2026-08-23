@@ -44,8 +44,20 @@ final recordWaterTargetCountProvider = FutureProvider.autoDispose<int>((
 ) async {
   final repository = ref.watch(userSettingsRepositoryProvider);
   try {
-    final count = (await repository.getSettings()).waterTargetCount;
-    return count > 0 ? count : recordWaterDefaultTargetCount;
+    final result = await repository.getSettings().run();
+    final targetCount = result.fold(
+      (failure) {
+        appTalker.warning(
+          'recordWaterTargetCountProvider: settings read failed, falling '
+          'back to default target $recordWaterDefaultTargetCount: $failure',
+        );
+        return recordWaterDefaultTargetCount;
+      },
+      (settings) => settings.waterTargetCount > 0
+          ? settings.waterTargetCount
+          : recordWaterDefaultTargetCount,
+    );
+    return targetCount;
   } catch (e, st) {
     appTalker.warning(
       'recordWaterTargetCountProvider: settings read failed, falling back to '

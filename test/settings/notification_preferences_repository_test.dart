@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/settings/data/repositories/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
+
+import '../helpers/task_either.dart';
 
 void main() {
   test('maps the generated GET response into the domain entity', () async {
@@ -26,7 +30,7 @@ void main() {
       dio: dio,
     );
 
-    final result = await repository.getPreferences();
+    final result = await expectTaskRight(repository.getPreferences());
 
     expect(result.healthAlertsEnabled, isFalse);
     expect(result.weeklyInsightEnabled, isTrue);
@@ -56,8 +60,10 @@ void main() {
         dio: dio,
       );
 
-      await repository.patchPreferences(
-        const NotificationPreferencesPatch(clearSleepBedtime: true),
+      await expectTaskRight(
+        repository.patchPreferences(
+          const NotificationPreferencesPatch(clearSleepBedtime: true),
+        ),
       );
 
       expect(
@@ -67,12 +73,76 @@ void main() {
       expect(adapter.capturedRequest?.data, {'sleepBedtimeMinutes': null});
     },
   );
+
+  test('empty GET success body maps to a network Left', () async {
+    final dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
+    dio.httpClientAdapter = _JsonAdapter();
+    final repository = LucentNotificationPreferencesRepository(
+      api: NotificationPreferencesApi(dio),
+      dio: dio,
+    );
+
+    final failure = await expectTaskLeft(repository.getPreferences());
+
+    expect(failure.kind, LucentFailureKind.network);
+    expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+  });
+
+  test('empty raw PATCH success body maps to a network Left', () async {
+    final dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
+    dio.httpClientAdapter = _JsonAdapter();
+    final repository = LucentNotificationPreferencesRepository(
+      api: NotificationPreferencesApi(dio),
+      dio: dio,
+    );
+
+    final failure = await expectTaskLeft(
+      repository.patchPreferences(
+        const NotificationPreferencesPatch(clearSleepBedtime: true),
+      ),
+    );
+
+    expect(failure.kind, LucentFailureKind.network);
+    expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+  });
+
+  test('404 Problem Details keeps code and status as a Left', () async {
+    final dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
+    dio.httpClientAdapter = _JsonAdapter(
+      statusCode: 404,
+      contentType: 'application/problem+json',
+      responseData: {
+        'type':
+            'https://api.lumos.example/problems/'
+            'NOTIFICATION_PREFERENCES_NOT_FOUND',
+        'title': 'Not found',
+        'detail': '通知偏好不存在',
+        'code': 'NOTIFICATION_PREFERENCES_NOT_FOUND',
+      },
+    );
+    final repository = LucentNotificationPreferencesRepository(
+      api: NotificationPreferencesApi(dio),
+      dio: dio,
+    );
+
+    final failure = await expectTaskLeft(repository.getPreferences());
+
+    expect(failure.code, 'NOTIFICATION_PREFERENCES_NOT_FOUND');
+    expect(failure.statusCode, 404);
+    expect(failure.kind, LucentFailureKind.business);
+  });
 }
 
 class _JsonAdapter implements HttpClientAdapter {
-  _JsonAdapter({required this.responseData});
+  _JsonAdapter({
+    this.responseData,
+    this.statusCode = 200,
+    this.contentType = 'application/json',
+  });
 
-  final Map<String, dynamic> responseData;
+  final Map<String, dynamic>? responseData;
+  final int statusCode;
+  final String contentType;
   RequestOptions? capturedRequest;
 
   @override
@@ -83,10 +153,11 @@ class _JsonAdapter implements HttpClientAdapter {
   ) async {
     capturedRequest = options;
     return ResponseBody.fromString(
-      jsonEncode(responseData),
-      200,
+      // A null body is an empty success response (dio leaves data null).
+      responseData == null ? '' : jsonEncode(responseData),
+      statusCode,
       headers: {
-        Headers.contentTypeHeader: ['application/json'],
+        Headers.contentTypeHeader: [contentType],
       },
     );
   }

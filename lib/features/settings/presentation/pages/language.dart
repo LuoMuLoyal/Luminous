@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -88,17 +87,17 @@ Future<void> _handleLocaleTap(
   AppLocalizations l10n,
   AppLocale locale,
 ) async {
-  final result = await runGuarded(
-    ref: ref,
-    tag: 'LanguageSettings._handleLocaleTap',
-    action: () =>
-        ref.read(settingsProfileSyncProvider.notifier).setLocale(locale),
-  );
-  if (result case Failure(:final error)) {
+  try {
+    await ref.read(settingsProfileSyncProvider.notifier).setLocale(locale);
+  } catch (error) {
     if (!context.mounted) return;
     await Toast.show(
       context,
-      error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
+      userMessageFromError(
+        error,
+        fallback: l10n.settingsSyncFailed,
+        l10n: l10n,
+      ),
     );
   }
 }

@@ -159,10 +159,18 @@ class NotificationSettingsController
       return local;
     }
 
+    // Remote sync is a documented best-effort degrade: when the preferences
+    // read/patch fails (Left via TaskEither, or a protocol FormatException
+    // escaping `.run()`) the controller keeps the local values — the local
+    // store is the user's primary preference surface — and logs the failure
+    // below. The migration marker stays unset so the next authenticated build
+    // retries the first sync.
     try {
-      final remote = await ref
+      final result = await ref
           .read(notificationPreferencesRepositoryProvider)
-          .getPreferences();
+          .getPreferences()
+          .run();
+      final remote = result.fold((failure) => throw failure, (value) => value);
       if (!remote.configured) {
         final migrationCompleted =
             scoped.getBool(
@@ -172,7 +180,12 @@ class NotificationSettingsController
         if (!migrationCompleted) {
           final migrated = await ref
               .read(notificationPreferencesRepositoryProvider)
-              .patchPreferences(_toRemotePatch(local));
+              .patchPreferences(_toRemotePatch(local))
+              .run();
+          final migratedValue = migrated.fold(
+            (failure) => throw failure,
+            (value) => value,
+          );
           await scoped.setBool(
             PrefKeys.settingsNotificationsRemoteMigrationCompleted,
             true,
@@ -182,8 +195,8 @@ class NotificationSettingsController
             userId,
             legacyOwner: legacyOwner,
           );
-          await _cacheRemote(preferences, migrated, userId);
-          return _applyRemote(local, migrated);
+          await _cacheRemote(preferences, migratedValue, userId);
+          return _applyRemote(local, migratedValue);
         }
         return local;
       }
@@ -503,9 +516,11 @@ class NotificationSettingsController
 
     state = AsyncData(next);
     try {
-      final remote = await ref
+      final result = await ref
           .read(notificationPreferencesRepositoryProvider)
-          .patchPreferences(patch);
+          .patchPreferences(patch)
+          .run();
+      final remote = result.fold((failure) => throw failure, (value) => value);
       final preferences = await SharedPreferences.getInstance();
       await _cacheRemote(preferences, remote, userId);
       state = AsyncData(_applyRemote(next, remote));

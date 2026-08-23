@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 
@@ -41,7 +43,7 @@ void main() {
       expect(fakeApi.getCallCount, 1);
     });
 
-    test('throws when API returns null data', () async {
+    test('throws a network failure when API returns an empty body', () async {
       final api = _FakeUserSettingsApi()..getReturnsNullResponse = true;
       container = buildContainer(api: api);
 
@@ -51,10 +53,13 @@ void main() {
 
       final state = container.read(userSettingsControllerProvider);
       expect(state.hasError, isTrue);
-      expect(state.error, isA<DioException>());
+      final failure = state.error;
+      expect(failure, isA<LucentFailure>());
+      expect((failure as LucentFailure).kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
     });
 
-    test('propagates DioException from API', () async {
+    test('propagates DioException from API as LucentFailure', () async {
       final api = _FakeUserSettingsApi(
         getException: DioException(
           requestOptions: RequestOptions(path: '/api/v1/user/settings'),
@@ -68,7 +73,7 @@ void main() {
 
       final state = container.read(userSettingsControllerProvider);
       expect(state.hasError, isTrue);
-      expect(state.error, isA<DioException>());
+      expect(state.error, isA<LucentFailure>());
     });
   });
 
@@ -136,7 +141,7 @@ void main() {
         () => container
             .read(userSettingsControllerProvider.notifier)
             .setAiSummariesEnabled(true),
-        throwsA(isA<DioException>()),
+        throwsA(isA<LucentFailure>()),
       );
 
       // State remains from the successful initial load.
@@ -145,20 +150,35 @@ void main() {
       expect(state.value?.dataSharingConsent, isTrue);
     });
 
-    test('propagates error when patch response data is null', () async {
-      container = buildContainer();
+    test(
+      'propagates network failure when patch response body is empty',
+      () async {
+        container = buildContainer();
 
-      await container.read(userSettingsControllerProvider.future);
+        await container.read(userSettingsControllerProvider.future);
 
-      fakeApi.patchReturnsNull = true;
+        fakeApi.patchReturnsNull = true;
 
-      expect(
-        () => container
-            .read(userSettingsControllerProvider.notifier)
-            .setAiSummariesEnabled(true),
-        throwsA(isA<DioException>()),
-      );
-    });
+        await expectLater(
+          container
+              .read(userSettingsControllerProvider.notifier)
+              .setAiSummariesEnabled(true),
+          throwsA(
+            isA<LucentFailure>()
+                .having(
+                  (failure) => failure.kind,
+                  'kind',
+                  LucentFailureKind.network,
+                )
+                .having(
+                  (failure) => failure.networkErrorCode,
+                  'networkErrorCode',
+                  NetworkErrorCode.emptyResponse,
+                ),
+          ),
+        );
+      },
+    );
   });
 
   group('setDataSharingConsent', () {
@@ -221,7 +241,7 @@ void main() {
         () => container
             .read(userSettingsControllerProvider.notifier)
             .setDataSharingConsent(true),
-        throwsA(isA<DioException>()),
+        throwsA(isA<LucentFailure>()),
       );
 
       // State should remain from the initial load.
@@ -434,7 +454,7 @@ void main() {
 // Helpers
 // ---------------------------------------------------------------------------
 
-Response<T> _response<T>(T data) => Response<T>(
+Response<T> _response<T>(T? data) => Response<T>(
   data: data,
   requestOptions: RequestOptions(path: ''),
   statusCode: 200,
@@ -520,9 +540,9 @@ class _FakeUserSettingsApi implements UserSettingsApi {
       throw getException!;
     }
     if (getReturnsNullResponse) {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/api/v1/user/settings'),
-      );
+      // HTTP 200 with an empty body: the generated client leaves
+      // response.data null, so the repository throws a network failure.
+      return _response<UserSettingsResponseDto>(null);
     }
     return _response(_getResponseData ?? _defaultResponse());
   }
@@ -544,9 +564,8 @@ class _FakeUserSettingsApi implements UserSettingsApi {
       throw patchException!;
     }
     if (patchReturnsNull) {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/api/v1/user/settings'),
-      );
+      // HTTP 200 with an empty body: response.data is null.
+      return _response<UserSettingsResponseDto>(null);
     }
     return _response(patchResponse);
   }

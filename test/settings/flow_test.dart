@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
@@ -358,14 +360,15 @@ class _FakeNotificationPreferencesRepository
   );
 
   @override
-  Future<NotificationPreferences> getPreferences() async => _value;
+  TaskEither<LucentFailure, NotificationPreferences> getPreferences() =>
+      TaskEither.right(_value);
 
   @override
-  Future<NotificationPreferences> patchPreferences(
+  TaskEither<LucentFailure, NotificationPreferences> patchPreferences(
     NotificationPreferencesPatch patch,
-  ) async {
+  ) {
     _value = _value.apply(patch).copyWith(configured: true);
-    return _value;
+    return TaskEither.right(_value);
   }
 }
 

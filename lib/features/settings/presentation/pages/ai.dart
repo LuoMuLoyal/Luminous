@@ -5,8 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -305,11 +304,11 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     );
   }
 
-  /// Applies a settings patch via [runGuarded], returning `true` when the
-  /// patch succeeded and `false` when it was skipped (auth required, another
-  /// patch in flight) or failed (failure toast already shown here). Callers
-  /// that need to react to success (e.g. the context-toggle next-turn toast)
-  /// branch on the returned value; generic toggles ignore it.
+  /// Applies a settings patch, returning `true` when the patch succeeded and
+  /// `false` when it was skipped (auth required, another patch in flight) or
+  /// failed (failure toast already shown here). Callers that need to react to
+  /// success (e.g. the context-toggle next-turn toast) branch on the returned
+  /// value; generic toggles ignore it.
   Future<bool> _guardedApply({
     required BuildContext context,
     required AppLocalizations l10n,
@@ -323,20 +322,19 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     if (_isPatching) return false;
     setState(() => _isPatching = true);
     try {
-      final result = await runGuarded<void>(
-        ref: ref,
-        tag: 'AiSettingsPage.toggle',
-        action: apply,
-      );
-      if (result case Failure(:final error)) {
-        if (!context.mounted) return false;
-        await Toast.show(
-          context,
-          error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
-        );
-        return false;
-      }
+      await apply();
       return true;
+    } catch (error) {
+      if (!context.mounted) return false;
+      await Toast.show(
+        context,
+        userMessageFromError(
+          error,
+          fallback: l10n.settingsSyncFailed,
+          l10n: l10n,
+        ),
+      );
+      return false;
     } finally {
       if (mounted) {
         setState(() => _isPatching = false);

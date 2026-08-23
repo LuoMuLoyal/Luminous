@@ -4,8 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
@@ -413,24 +412,24 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
       return;
     }
     isSubmitting.value = true;
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'SecurityPinSettings._enablePin',
-      action: () => ref
+    try {
+      await ref
           .read(userSettingsControllerProvider.notifier)
-          .enableSecurityPin(pin),
-    );
-    if (!context.mounted) return;
-    switch (result) {
-      case Success():
-        // PIN changed → invalidate any previously issued elevation token.
-        ref.read(securityElevationControllerProvider.notifier).clear();
-        await Toast.show(context, l10n.settingsSecurityPinEnableSuccess);
-      case Failure(:final error):
-        await Toast.show(
-          context,
-          error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
-        );
+          .enableSecurityPin(pin);
+      if (!context.mounted) return;
+      // PIN changed → invalidate any previously issued elevation token.
+      ref.read(securityElevationControllerProvider.notifier).clear();
+      await Toast.show(context, l10n.settingsSecurityPinEnableSuccess);
+    } catch (error) {
+      if (!context.mounted) return;
+      await Toast.show(
+        context,
+        userMessageFromError(
+          error,
+          fallback: l10n.settingsSyncFailed,
+          l10n: l10n,
+        ),
+      );
     }
     isSubmitting.value = false;
   }
@@ -460,24 +459,24 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
       return;
     }
     isSubmitting.value = true;
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'SecurityPinSettings._changePin',
-      action: () => ref
+    try {
+      await ref
           .read(userSettingsControllerProvider.notifier)
-          .changeSecurityPin(oldPin, newPin),
-    );
-    if (!context.mounted) return;
-    switch (result) {
-      case Success():
-        // PIN changed → invalidate any previously issued elevation token.
-        ref.read(securityElevationControllerProvider.notifier).clear();
-        await Toast.show(context, l10n.settingsSecurityPinChangeSuccess);
-      case Failure(:final error):
-        await Toast.show(
-          context,
-          error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
-        );
+          .changeSecurityPin(oldPin, newPin);
+      if (!context.mounted) return;
+      // PIN changed → invalidate any previously issued elevation token.
+      ref.read(securityElevationControllerProvider.notifier).clear();
+      await Toast.show(context, l10n.settingsSecurityPinChangeSuccess);
+    } catch (error) {
+      if (!context.mounted) return;
+      await Toast.show(
+        context,
+        userMessageFromError(
+          error,
+          fallback: l10n.settingsSyncFailed,
+          l10n: l10n,
+        ),
+      );
     }
     isSubmitting.value = false;
   }
@@ -495,24 +494,24 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
       return;
     }
     isSubmitting.value = true;
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'SecurityPinSettings._disablePin',
-      action: () => ref
+    try {
+      await ref
           .read(userSettingsControllerProvider.notifier)
-          .disableSecurityPin(pin),
-    );
-    if (!context.mounted) return;
-    switch (result) {
-      case Success():
-        // PIN disabled → invalidate any previously issued elevation token.
-        ref.read(securityElevationControllerProvider.notifier).clear();
-        await Toast.show(context, l10n.settingsSecurityPinDisableSuccess);
-      case Failure(:final error):
-        await Toast.show(
-          context,
-          error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
-        );
+          .disableSecurityPin(pin);
+      if (!context.mounted) return;
+      // PIN disabled → invalidate any previously issued elevation token.
+      ref.read(securityElevationControllerProvider.notifier).clear();
+      await Toast.show(context, l10n.settingsSecurityPinDisableSuccess);
+    } catch (error) {
+      if (!context.mounted) return;
+      await Toast.show(
+        context,
+        userMessageFromError(
+          error,
+          fallback: l10n.settingsSyncFailed,
+          l10n: l10n,
+        ),
+      );
     }
     isSubmitting.value = false;
   }

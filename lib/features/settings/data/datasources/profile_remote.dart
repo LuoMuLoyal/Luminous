@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 /// Settings is a thin configuration surface: its data layer maps directly to
@@ -9,6 +12,14 @@ import 'package:luminous/core/network/map_utils.dart';
 
 const Object settingsProfileNoChange = Object();
 
+/// Remote data source for the health-context profile preferences.
+///
+/// Transport-only: keeps a `Future` boundary and propagates [DioException]
+/// (HTTP errors) and [LucentFailure] (empty success body, per the auth
+/// `_requireBody` precedent). A body that does not match the generated-client
+/// structure stays a thrown protocol exception, logged via [appTalker] for
+/// diagnosability, and surfaces at the consuming boundary as
+/// `LucentFailureKind.unknown` (cause preserved).
 class SettingsProfileRemoteDataSource {
   const SettingsProfileRemoteDataSource({required this.dio});
 
@@ -36,11 +47,28 @@ class SettingsProfileRemoteDataSource {
       options: Options(contentType: Headers.jsonContentType),
     );
 
-    final body = requireBody(
-      response,
-      message: 'Lucent health-context profile response is empty.',
-    );
+    final body = coerceToStringMap(response.data);
+    if (body == null) {
+      // Empty success body: transport-level failure (auth `_requireBody`
+      // precedent), not a protocol invariant.
+      throw LucentFailure.network(
+        message: 'Lucent health-context profile response is empty.',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
 
-    return HealthContextResponseDto.fromJson(body);
+    try {
+      return HealthContextResponseDto.fromJson(body);
+    } catch (error) {
+      // Protocol violation: the success body does not match the generated
+      // client structure. Logged for diagnosability and kept as a thrown
+      // protocol exception (mapped to Left(unknown) at the consuming
+      // boundary).
+      appTalker.error(
+        'SettingsProfileRemoteDataSource.updatePreferences: response body '
+        'does not match HealthContextResponseDto: $error',
+      );
+      rethrow;
+    }
   }
 }

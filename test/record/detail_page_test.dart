@@ -206,47 +206,58 @@ class _FakeUserSettingsRepository implements UserSettingsRepository {
 
   final int waterTargetCount;
 
-  /// When true, [getSettings] throws so tests can pin the fallback contract.
+  /// When true, [getSettings] returns a Left so tests can pin the fallback
+  /// contract.
   final bool throwOnGet;
 
   @override
-  Future<UserSettings> getSettings() async {
-    if (throwOnGet) throw Exception('settings unavailable');
-    return UserSettings(
-      aiSummariesEnabled: true,
-      dataSharingConsent: false,
-      assistantEnabled: true,
-      assistantMemoryEnabled: false,
-      waterTargetCount: waterTargetCount,
-      assistantContext: const AssistantContextSettings(
-        healthProfile: false,
-        dailyRecords: false,
-        sleepRecords: false,
-        currentMedicines: false,
+  TaskEither<LucentFailure, UserSettings> getSettings() {
+    if (throwOnGet) {
+      return TaskEither.left(
+        LucentFailure.unknown(message: 'settings unavailable'),
+      );
+    }
+    return TaskEither.right(
+      UserSettings(
+        aiSummariesEnabled: true,
+        dataSharingConsent: false,
+        assistantEnabled: true,
+        assistantMemoryEnabled: false,
+        waterTargetCount: waterTargetCount,
+        assistantContext: const AssistantContextSettings(
+          healthProfile: false,
+          dailyRecords: false,
+          sleepRecords: false,
+          currentMedicines: false,
+        ),
+        securityPin: const SecurityPinSettings(enabled: false),
       ),
-      securityPin: const SecurityPinSettings(enabled: false),
     );
   }
 
   @override
-  Future<UserSettings> updateSettings({
+  TaskEither<LucentFailure, UserSettings> updateSettings({
     required bool aiSummariesEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
     required bool assistantMemoryEnabled,
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
-  }) async => getSettings();
+  }) => getSettings();
 
   @override
-  Future<UserSettings> enableSecurityPin(String pin) async => getSettings();
-
-  @override
-  Future<UserSettings> changeSecurityPin(String oldPin, String newPin) async =>
+  TaskEither<LucentFailure, UserSettings> enableSecurityPin(String pin) =>
       getSettings();
 
   @override
-  Future<UserSettings> disableSecurityPin(String pin) async => getSettings();
+  TaskEither<LucentFailure, UserSettings> changeSecurityPin(
+    String oldPin,
+    String newPin,
+  ) => getSettings();
+
+  @override
+  TaskEither<LucentFailure, UserSettings> disableSecurityPin(String pin) =>
+      getSettings();
 }
 
 void main() {

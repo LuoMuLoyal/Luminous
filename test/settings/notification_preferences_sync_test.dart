@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
@@ -132,6 +134,41 @@ void main() {
     },
   );
 
+  test('keeps local values and leaves the migration marker unset when '
+      'getPreferences fails', () async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      PrefKeys.settingsNotificationsHealthAlerts: false,
+      PrefKeys.settingsNotificationsWeeklySummary: true,
+      PrefKeys.settingsNotificationsWaterReminders: false,
+    });
+    final repository = _FakeNotificationPreferencesRepository(
+      const NotificationPreferences.defaults(configured: false),
+    )..throwOnGet = true;
+    final container = _buildContainer(repository);
+    addTearDown(container.dispose);
+
+    final state = await container.read(
+      notificationSettingsControllerProvider.future,
+    );
+
+    // The remote read failed, so the local values win.
+    expect(state.healthAlerts, isFalse);
+    expect(state.weeklySummary, isTrue);
+    expect(state.waterReminders, isFalse);
+    // No migration patch was attempted.
+    expect(repository.patches, isEmpty);
+    // The migration marker stays unset so the next build retries the sync.
+    expect(
+      (await SharedPreferences.getInstance()).getBool(
+        PrefKeys.settingsNotificationsScoped(
+          PrefKeys.settingsNotificationsRemoteMigrationCompleted,
+          'user-a',
+        ),
+      ),
+      isNull,
+    );
+  });
+
   test(
     'rolls back local and in-memory state when a remote patch fails',
     () async {
@@ -147,7 +184,7 @@ void main() {
         container
             .read(notificationSettingsControllerProvider.notifier)
             .setHealthAlerts(false),
-        throwsA(isA<StateError>()),
+        throwsA(isA<LucentFailure>()),
       );
       expect(
         container
@@ -189,19 +226,31 @@ class _FakeNotificationPreferencesRepository
 
   NotificationPreferences remote;
   final patches = <NotificationPreferencesPatch>[];
+  bool throwOnGet = false;
   bool throwOnPatch = false;
 
   @override
-  Future<NotificationPreferences> getPreferences() async => remote;
+  TaskEither<LucentFailure, NotificationPreferences> getPreferences() {
+    if (throwOnGet) {
+      return TaskEither.left(
+        LucentFailure.unknown(message: 'remote get failed'),
+      );
+    }
+    return TaskEither.right(remote);
+  }
 
   @override
-  Future<NotificationPreferences> patchPreferences(
+  TaskEither<LucentFailure, NotificationPreferences> patchPreferences(
     NotificationPreferencesPatch patch,
-  ) async {
+  ) {
     patches.add(patch);
-    if (throwOnPatch) throw StateError('remote patch failed');
+    if (throwOnPatch) {
+      return TaskEither.left(
+        LucentFailure.unknown(message: 'remote patch failed'),
+      );
+    }
     remote = remote.apply(patch).copyWith(configured: true);
-    return remote;
+    return TaskEither.right(remote);
   }
 }
 
@@ -217,18 +266,18 @@ class _MultiUserNotificationPreferencesRepository
   final patchesByUser = <String, List<NotificationPreferencesPatch>>{};
 
   @override
-  Future<NotificationPreferences> getPreferences() async =>
-      remotes[currentUserId()]!;
+  TaskEither<LucentFailure, NotificationPreferences> getPreferences() =>
+      TaskEither.right(remotes[currentUserId()]!);
 
   @override
-  Future<NotificationPreferences> patchPreferences(
+  TaskEither<LucentFailure, NotificationPreferences> patchPreferences(
     NotificationPreferencesPatch patch,
-  ) async {
+  ) {
     final userId = currentUserId();
     patchesByUser.putIfAbsent(userId, () => []).add(patch);
     final next = remotes[userId]!.apply(patch).copyWith(configured: true);
     remotes[userId] = next;
-    return next;
+    return TaskEither.right(next);
   }
 }
 

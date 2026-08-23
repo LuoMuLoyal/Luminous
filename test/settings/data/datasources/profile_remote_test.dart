@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 
 // ── CaptureAdapter (reused from test/helpers) ──────────────────
@@ -206,6 +208,33 @@ void main() {
           expect(result.profile.locale, 'zh-CN');
           expect(result.profile.timezone, 'Asia/Shanghai');
           expect(result.profile.unitSystem, UnitSystem.metric);
+        },
+      );
+
+      test('throws emptyResponse failure on an empty success body', () async {
+        adapter.responseData = null;
+
+        await expectLater(
+          dataSource.updatePreferences(locale: 'en-US'),
+          throwsA(
+            isA<LucentFailure>().having(
+              (failure) => failure.networkErrorCode,
+              'networkErrorCode',
+              NetworkErrorCode.emptyResponse,
+            ),
+          ),
+        );
+      });
+
+      test(
+        'keeps a protocol exception when the body shape is invalid',
+        () async {
+          adapter.responseData = {'unexpected': 'shape'};
+
+          await expectLater(
+            dataSource.updatePreferences(locale: 'en-US'),
+            throwsA(isA<Object>()),
+          );
         },
       );
     });

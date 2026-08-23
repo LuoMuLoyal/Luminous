@@ -1,18 +1,24 @@
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 
 /// Repository interface for reading and updating user settings.
 ///
 /// All methods require an authenticated session.
+///
+/// Repository boundary: every expected recoverable failure (network, server
+/// business failure) is a `TaskEither` Left produced via
+/// `LucentErrorMapper.fromObject`; a successful response is a Right.
 abstract interface class UserSettingsRepository {
   /// Returns the current user settings.
-  Future<UserSettings> getSettings();
+  TaskEither<LucentFailure, UserSettings> getSettings();
 
   /// Patches one or more settings fields.
   ///
   /// All parameters are required because the backend expects a full
   /// [UpdateUserSettingsDto]. The [AssistantContextPatch] supports partial
   /// updates at the context level (null fields are not sent).
-  Future<UserSettings> updateSettings({
+  TaskEither<LucentFailure, UserSettings> updateSettings({
     required bool aiSummariesEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
@@ -22,11 +28,14 @@ abstract interface class UserSettingsRepository {
   });
 
   /// Enables the security PIN.
-  Future<UserSettings> enableSecurityPin(String pin);
+  TaskEither<LucentFailure, UserSettings> enableSecurityPin(String pin);
 
   /// Changes the security PIN.
-  Future<UserSettings> changeSecurityPin(String oldPin, String newPin);
+  TaskEither<LucentFailure, UserSettings> changeSecurityPin(
+    String oldPin,
+    String newPin,
+  );
 
   /// Disables the security PIN.
-  Future<UserSettings> disableSecurityPin(String pin);
+  TaskEither<LucentFailure, UserSettings> disableSecurityPin(String pin);
 }

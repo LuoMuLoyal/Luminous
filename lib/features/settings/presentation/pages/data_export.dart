@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/security_elevation_dialog.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -185,43 +184,42 @@ class DataExportPage extends ConsumerWidget {
     }
     if (elevation != SecurityElevationResult.verified) return;
 
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'DataExportPage._requestExport',
-      action: () =>
-          ref.read(dataExportControllerProvider.notifier).requestExport(),
-    );
+    final DataExportRequestDataDto? value;
+    try {
+      value = await ref
+          .read(dataExportControllerProvider.notifier)
+          .requestExport();
+    } catch (error) {
+      if (!context.mounted) return;
+      await Toast.show(
+        context,
+        '${l10n.mineExportStatusFailed}: ${userMessageFromError(error, l10n: l10n)}',
+      );
+      return;
+    }
     if (!context.mounted) return;
-    switch (result) {
-      case Success(:final value):
-        switch (dataExportUiStatusForRequest(value)) {
-          case DataExportUiStatus.completed:
-            await Toast.show(context, l10n.mineExportStatusCompleted);
-          case DataExportUiStatus.completedLinkMissing:
-            await Toast.show(context, l10n.reportExportLinkMissingToast);
-          case DataExportUiStatus.failed:
-          case DataExportUiStatus.unavailable:
-            await Toast.show(
-              context,
-              value?.errorMessage?.isNotEmpty == true
-                  ? value?.errorMessage ?? ''
-                  : dataExportUiStatusForRequest(value) ==
-                        DataExportUiStatus.unavailable
-                  ? l10n.mineExportStatusUnavailable
-                  : l10n.mineExportStatusFailed,
-            );
-          case DataExportUiStatus.requested:
-            await Toast.show(context, l10n.mineExportRequested);
-          case DataExportUiStatus.processing:
-            await Toast.show(context, l10n.mineExportStatusPending);
-          case DataExportUiStatus.idle:
-            await Toast.show(context, l10n.mineExportStatusFailed);
-        }
-      case Failure(:final error):
+    switch (dataExportUiStatusForRequest(value)) {
+      case DataExportUiStatus.completed:
+        await Toast.show(context, l10n.mineExportStatusCompleted);
+      case DataExportUiStatus.completedLinkMissing:
+        await Toast.show(context, l10n.reportExportLinkMissingToast);
+      case DataExportUiStatus.failed:
+      case DataExportUiStatus.unavailable:
         await Toast.show(
           context,
-          '${l10n.mineExportStatusFailed}: ${error.message}',
+          value?.errorMessage?.isNotEmpty == true
+              ? value?.errorMessage ?? ''
+              : dataExportUiStatusForRequest(value) ==
+                    DataExportUiStatus.unavailable
+              ? l10n.mineExportStatusUnavailable
+              : l10n.mineExportStatusFailed,
         );
+      case DataExportUiStatus.requested:
+        await Toast.show(context, l10n.mineExportRequested);
+      case DataExportUiStatus.processing:
+        await Toast.show(context, l10n.mineExportStatusPending);
+      case DataExportUiStatus.idle:
+        await Toast.show(context, l10n.mineExportStatusFailed);
     }
   }
 }

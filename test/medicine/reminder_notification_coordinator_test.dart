@@ -654,14 +654,15 @@ class _FakeNotificationPreferencesRepository
   );
 
   @override
-  Future<NotificationPreferences> getPreferences() async => _value;
+  TaskEither<LucentFailure, NotificationPreferences> getPreferences() =>
+      TaskEither.right(_value);
 
   @override
-  Future<NotificationPreferences> patchPreferences(
+  TaskEither<LucentFailure, NotificationPreferences> patchPreferences(
     NotificationPreferencesPatch patch,
-  ) async {
+  ) {
     _value = _value.apply(patch).copyWith(configured: true);
-    return _value;
+    return TaskEither.right(_value);
   }
 }
 

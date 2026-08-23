@@ -15,9 +15,11 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
   Future<UserSettings> build() async {
     return authGuarded(
       ref: ref,
-      fetch: () {
+      fetch: () async {
         final repo = ref.read(userSettingsRepositoryProvider);
-        return repo.getSettings();
+        // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+        final result = await repo.getSettings().run();
+        return result.fold((failure) => throw failure, (settings) => settings);
       },
       signedOutFallback: () => pendingAuthSessionResolution(),
     );
@@ -57,14 +59,17 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     required AssistantContextPatch assistantContext,
   }) async {
     final repo = ref.read(userSettingsRepositoryProvider);
-    final updated = await repo.updateSettings(
-      aiSummariesEnabled: aiSummariesEnabled,
-      dataSharingConsent: dataSharingConsent,
-      assistantEnabled: assistantEnabled,
-      assistantMemoryEnabled: assistantMemoryEnabled,
-      waterTargetCount: waterTargetCount,
-      assistantContext: assistantContext,
-    );
+    final result = await repo
+        .updateSettings(
+          aiSummariesEnabled: aiSummariesEnabled,
+          dataSharingConsent: dataSharingConsent,
+          assistantEnabled: assistantEnabled,
+          assistantMemoryEnabled: assistantMemoryEnabled,
+          waterTargetCount: waterTargetCount,
+          assistantContext: assistantContext,
+        )
+        .run();
+    final updated = result.fold((failure) => throw failure, (value) => value);
     state = AsyncData(updated);
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.userSettings);
   }
@@ -73,19 +78,22 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
 
   Future<void> enableSecurityPin(String pin) async {
     final repo = ref.read(userSettingsRepositoryProvider);
-    final updated = await repo.enableSecurityPin(pin);
+    final result = await repo.enableSecurityPin(pin).run();
+    final updated = result.fold((failure) => throw failure, (value) => value);
     state = AsyncData(updated);
   }
 
   Future<void> changeSecurityPin(String oldPin, String newPin) async {
     final repo = ref.read(userSettingsRepositoryProvider);
-    final updated = await repo.changeSecurityPin(oldPin, newPin);
+    final result = await repo.changeSecurityPin(oldPin, newPin).run();
+    final updated = result.fold((failure) => throw failure, (value) => value);
     state = AsyncData(updated);
   }
 
   Future<void> disableSecurityPin(String pin) async {
     final repo = ref.read(userSettingsRepositoryProvider);
-    final updated = await repo.disableSecurityPin(pin);
+    final result = await repo.disableSecurityPin(pin).run();
+    final updated = result.fold((failure) => throw failure, (value) => value);
     state = AsyncData(updated);
   }
 
@@ -99,27 +107,30 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
   }) async {
     final repo = ref.read(userSettingsRepositoryProvider);
     // On success the state is replaced with the patched snapshot; on failure
-    // the state is left untouched (previous value stays) and the error is
-    // rethrown so callers using `runGuarded` can surface a toast. Rapid-tap
+    // the state is left untouched (previous value stays) and the Left is
+    // rethrown as a [LucentFailure] so callers can surface a toast. Rapid-tap
     // protection is handled in the UI via a local `_isPatching` guard rather
     // than by flipping the controller into `AsyncLoading` (which would lose
     // the previous value and flash a skeleton).
-    final updated = await repo.updateSettings(
-      aiSummariesEnabled: aiSummariesEnabled ?? current.aiSummariesEnabled,
-      dataSharingConsent: dataSharingConsent ?? current.dataSharingConsent,
-      assistantEnabled: assistantEnabled ?? current.assistantEnabled,
-      assistantMemoryEnabled:
-          assistantMemoryEnabled ?? current.assistantMemoryEnabled,
-      waterTargetCount: current.waterTargetCount,
-      assistantContext:
-          assistantContext ??
-          AssistantContextPatch(
-            healthProfile: current.assistantContext.healthProfile,
-            dailyRecords: current.assistantContext.dailyRecords,
-            sleepRecords: current.assistantContext.sleepRecords,
-            currentMedicines: current.assistantContext.currentMedicines,
-          ),
-    );
+    final result = await repo
+        .updateSettings(
+          aiSummariesEnabled: aiSummariesEnabled ?? current.aiSummariesEnabled,
+          dataSharingConsent: dataSharingConsent ?? current.dataSharingConsent,
+          assistantEnabled: assistantEnabled ?? current.assistantEnabled,
+          assistantMemoryEnabled:
+              assistantMemoryEnabled ?? current.assistantMemoryEnabled,
+          waterTargetCount: current.waterTargetCount,
+          assistantContext:
+              assistantContext ??
+              AssistantContextPatch(
+                healthProfile: current.assistantContext.healthProfile,
+                dailyRecords: current.assistantContext.dailyRecords,
+                sleepRecords: current.assistantContext.sleepRecords,
+                currentMedicines: current.assistantContext.currentMedicines,
+              ),
+        )
+        .run();
+    final updated = result.fold((failure) => throw failure, (value) => value);
     state = AsyncData(updated);
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.userSettings);
   }
