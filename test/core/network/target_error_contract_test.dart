@@ -75,6 +75,114 @@ void main() {
       expect(failure.networkErrorCode, NetworkErrorCode.connectionTimeout);
       expect(failure.toString(), isNot(contains('requestId')));
     });
+
+    test('maps every transport failure to LucentFailure.network', () {
+      const cases = <(DioExceptionType, NetworkErrorCode)>[
+        (DioExceptionType.connectionError, NetworkErrorCode.connectionError),
+        (
+          DioExceptionType.connectionTimeout,
+          NetworkErrorCode.connectionTimeout,
+        ),
+        (DioExceptionType.sendTimeout, NetworkErrorCode.sendTimeout),
+        (DioExceptionType.receiveTimeout, NetworkErrorCode.receiveTimeout),
+        (DioExceptionType.badCertificate, NetworkErrorCode.badCertificate),
+      ];
+
+      for (final (type, expectedCode) in cases) {
+        final failure = LucentErrorMapper.fromObject(
+          DioException(
+            requestOptions: RequestOptions(path: '/api/v1/test'),
+            type: type,
+          ),
+        );
+
+        expect(
+          failure.kind,
+          LucentFailureKind.network,
+          reason: 'unexpected kind for $type',
+        );
+        expect(
+          failure.networkErrorCode,
+          expectedCode,
+          reason: 'unexpected networkErrorCode for $type',
+        );
+        expect(failure.statusCode, isNull);
+        expect(failure.code, isNull);
+      }
+    });
+
+    test('rejects a missing body despite the problem+json media type', () {
+      expect(
+        () => LucentErrorMapper.fromObject(_problemError(body: null)),
+        throwsFormatException,
+      );
+      expect(
+        () => LucentErrorMapper.fromObject(_problemError(body: '')),
+        throwsFormatException,
+      );
+    });
+
+    test('rejects a non-object body despite the problem+json media type', () {
+      expect(
+        () => LucentErrorMapper.fromObject(_problemError(body: 'oops')),
+        throwsFormatException,
+      );
+      expect(
+        () => LucentErrorMapper.fromObject(_problemError(body: <int>[1, 2])),
+        throwsFormatException,
+      );
+    });
+
+    test('rejects a wrong media type even with a problem-shaped body', () {
+      final request = RequestOptions(path: '/api/v1/test');
+      final error = DioException(
+        requestOptions: request,
+        type: DioExceptionType.badResponse,
+        response: Response<dynamic>(
+          requestOptions: request,
+          statusCode: 503,
+          data: _problemBody,
+          headers: Headers.fromMap(const {
+            Headers.contentTypeHeader: ['text/html'],
+          }),
+        ),
+      );
+
+      expect(() => LucentErrorMapper.fromObject(error), throwsFormatException);
+    });
+
+    test('rejects a numeric code field', () {
+      expect(
+        () => LucentErrorMapper.fromObject(
+          _problemError(
+            body: <String, dynamic>{..._problemBody, 'code': 409001},
+          ),
+        ),
+        throwsFormatException,
+      );
+    });
+
+    test('rejects a negative retryAfter field', () {
+      expect(
+        () => LucentErrorMapper.fromObject(
+          _problemError(
+            body: <String, dynamic>{..._problemBody, 'retryAfter': -3},
+          ),
+        ),
+        throwsFormatException,
+      );
+    });
+
+    test('rejects a fractional retryAfter field', () {
+      expect(
+        () => LucentErrorMapper.fromObject(
+          _problemError(
+            body: <String, dynamic>{..._problemBody, 'retryAfter': 2.5},
+          ),
+        ),
+        throwsFormatException,
+      );
+    });
   });
 
   test(

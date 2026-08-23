@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_initializing_formals, avoid_renaming_method_parameters
 
 import 'package:dio/dio.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/retry_policy.dart';
 
 /// Retry interceptor: automatically retries 5xx / timeout errors with
@@ -50,14 +51,23 @@ class RetryInterceptor extends Interceptor {
       return;
     }
 
-    if (!_policy.shouldRetry(err, requestOptions)) {
+    // The ErrorInterceptor (registered after this interceptor) is what maps
+    // the error into a LucentFailure; at decision time here `err.error` is
+    // still null, so the policy cannot see server hints (`retryable` /
+    // `retryAfter`) in the response body. Map best-effort so the policy
+    // honors them, while `handler.next`/`handler.resolve` below keep using
+    // the original error/response — the caller-visible mapping stays with
+    // the ErrorInterceptor.
+    final policyError = _withMappedFailure(err);
+
+    if (!_policy.shouldRetry(policyError, requestOptions)) {
       handler.next(err);
       return;
     }
 
     // Wait before retrying (exponential backoff).
     await Future<void>.delayed(
-      _policy.delay(err, attempt: retryCount, fallback: _backoff),
+      _policy.delay(policyError, attempt: retryCount, fallback: _backoff),
     );
 
     final nextExtra = Map<String, dynamic>.from(requestOptions.extra);
@@ -70,6 +80,40 @@ class RetryInterceptor extends Interceptor {
       handler.resolve(retryResponse);
     } on DioException catch (e) {
       handler.next(e);
+    }
+  }
+
+  /// Returns [err] with `error` set to the mapped [LucentFailure] when the
+  /// response body is a valid Problem Details document. Malformed bodies
+  /// ([FormatException]) leave the original error untouched so the decision
+  /// falls back to status-code / error-type based rules.
+  DioException _withMappedFailure(DioException err) {
+    // Skip parsing for responses that are not Problem Details: the mapper
+    // would only throw FormatException for them, so check the media type
+    // first to avoid the throw/catch path on every non-contract error body.
+    final response = err.response;
+    if (response != null) {
+      final mediaType = response.headers
+          .value(Headers.contentTypeHeader)
+          ?.split(';')
+          .first
+          .trim()
+          .toLowerCase();
+      if (mediaType != 'application/problem+json') {
+        return err;
+      }
+    }
+    try {
+      final failure = LucentErrorMapper.fromObject(err);
+      return DioException(
+        requestOptions: err.requestOptions,
+        response: err.response,
+        type: err.type,
+        error: failure,
+        stackTrace: err.stackTrace,
+      );
+    } on FormatException {
+      return err;
     }
   }
 }

@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/interceptors/error_interceptor.dart';
 import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
 
 // ── Mock adapter (same pattern as auth_interceptor_test) ───────
@@ -26,9 +28,15 @@ class _MockAdapter implements HttpClientAdapter {
     int? statusCode,
     Map<String, dynamic>? data,
     DioExceptionType? errorType,
+    String? contentType,
   }) {
     enqueue(
-      _MockResponse(statusCode: statusCode, data: data, errorType: errorType),
+      _MockResponse(
+        statusCode: statusCode,
+        data: data,
+        errorType: errorType,
+        contentType: contentType,
+      ),
     );
   }
 
@@ -64,8 +72,8 @@ class _MockAdapter implements HttpClientAdapter {
     return ResponseBody(
       body.isNotEmpty ? Stream.value(body) : const Stream.empty(),
       response.statusCode ?? 200,
-      headers: const {
-        Headers.contentTypeHeader: ['application/json'],
+      headers: {
+        Headers.contentTypeHeader: [response.contentType ?? 'application/json'],
       },
     );
   }
@@ -75,11 +83,12 @@ class _MockAdapter implements HttpClientAdapter {
 }
 
 class _MockResponse {
-  _MockResponse({this.statusCode, this.data, this.errorType});
+  _MockResponse({this.statusCode, this.data, this.errorType, this.contentType});
 
   final int? statusCode;
   final Map<String, dynamic>? data;
   final DioExceptionType? errorType;
+  final String? contentType;
 }
 
 // ── Tests ──────────────────────────────────────────────────────
@@ -240,6 +249,71 @@ void main() {
 
       expect(adapter.callCount, 1);
     });
+  });
+
+  group('RetryInterceptor — server retryable hints (production chain)', () {
+    // Production order: RetryInterceptor runs before ErrorInterceptor, so
+    // at retry-decision time `err.error` is not yet mapped to a
+    // LucentFailure. The retry decision must still honor the
+    // `retryable`/`retryAfter` hints from the Problem Details body.
+    Dio buildDio() {
+      final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+      dio.httpClientAdapter = adapter;
+      dio.interceptors.addAll(<Interceptor>[
+        RetryInterceptor(dio: dio, retries: 2, backoff: (_) => Duration.zero),
+        ErrorInterceptor(),
+      ]);
+      return dio;
+    }
+
+    const upstreamUnavailable = {
+      'type': 'https://api.lumos.example/problems/upstream-unavailable',
+      'title': 'Upstream unavailable',
+      'code': 'UPSTREAM_UNAVAILABLE',
+    };
+
+    test('does not retry 503 with retryable=false and surfaces the mapped '
+        'failure to the caller', () async {
+      adapter.enqueueError(
+        statusCode: 503,
+        data: {...upstreamUnavailable, 'retryable': false},
+        contentType: 'application/problem+json',
+      );
+
+      try {
+        await buildDio().get('/api/v1/test');
+        fail('expected a DioException');
+      } on DioException catch (error) {
+        // Only the original request ran — `retryable: false` must
+        // suppress the retry before any second attempt.
+        expect(adapter.callCount, 1);
+        // The caller-visible error is still mapped by the ErrorInterceptor.
+        expect(error.error, isA<LucentFailure>());
+        final failure = error.error! as LucentFailure;
+        expect(failure.code, 'UPSTREAM_UNAVAILABLE');
+        expect(failure.retryable, isFalse);
+      }
+    });
+
+    test(
+      'retries 503 when retryable is absent (status-code rule preserved)',
+      () async {
+        adapter
+          ..enqueueError(
+            statusCode: 503,
+            data: upstreamUnavailable,
+            contentType: 'application/problem+json',
+          )
+          ..enqueueSuccess(data: {'result': 'ok'});
+
+        final response = await buildDio().get('/api/v1/test');
+
+        // A missing `retryable` hint must not break the status-code based
+        // retry — the request is retried exactly once.
+        expect(adapter.callCount, 2);
+        expect(response.statusCode, 200);
+      },
+    );
   });
 
   group('RetryInterceptor — max retries', () {

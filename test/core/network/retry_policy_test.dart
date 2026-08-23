@@ -110,6 +110,39 @@ void main() {
     expect(policy.delay(error, attempt: 0), const Duration(seconds: 7));
   });
 
+  test('falls back to exponential backoff for a negative Retry-After', () {
+    final error = failure(
+      statusCode: 503,
+      headers: {
+        'retry-after': ['-5'],
+      },
+    );
+
+    expect(policy.delay(error, attempt: 1), const Duration(milliseconds: 1000));
+  });
+
+  test('falls back to exponential backoff for a fractional Retry-After', () {
+    final error = failure(
+      statusCode: 503,
+      headers: {
+        'retry-after': ['2.5'],
+      },
+    );
+
+    expect(policy.delay(error, attempt: 0), const Duration(milliseconds: 500));
+  });
+
+  test('falls back to exponential backoff for an HTTP-date Retry-After', () {
+    final error = failure(
+      statusCode: 503,
+      headers: {
+        'retry-after': ['Wed, 21 Oct 2015 07:28:00 GMT'],
+      },
+    );
+
+    expect(policy.delay(error, attempt: 2), const Duration(milliseconds: 2000));
+  });
+
   test('uses Problem Details retryAfter before exponential backoff', () {
     final problem = ProblemDetails.fromJson({
       'type': 'https://api.lumos.example/problems/upstream-unavailable',

@@ -319,10 +319,10 @@ void main() {
       expect(adapter.callCount, equals(1));
     });
 
-    // ── 401 without tokenExpired code → refresh attempted, then cleared ──
+    // ── 401 without AUTH_TOKEN_EXPIRED code → no refresh, session cleared ──
 
     test(
-      'attempts refresh then clears session when 401 refresh is rejected',
+      'clears session on 401 without AUTH_TOKEN_EXPIRED without refreshing',
       () async {
         final store = _MemorySessionStore();
         await store.write(
@@ -349,14 +349,14 @@ void main() {
         try {
           await client.dio.get('/api/v1/test');
         } on DioException {
-          // Expected after the refresh request is also rejected with 401.
+          // Expected.
         }
 
-        // New semantics (auth-refresh refactor): a 401 with a non-token-
-        // expired code is still a refresh candidate, so the refresh endpoint
-        // is attempted once. Since the refresh is also rejected with 401,
-        // the session is then cleared and the callback invoked.
-        expect(adapter.callCount, equals(2));
+        // Auth-refresh contract: only AUTH_TOKEN_EXPIRED triggers a refresh
+        // attempt. A 401 with any other Problem Details code is not a refresh
+        // candidate, so no refresh request is made; the session is cleared
+        // and the callback invoked.
+        expect(adapter.callCount, equals(1));
         final storedTokens = await store.read();
         expect(storedTokens, isNull);
         expect(sessionExpiredCalled, isTrue);

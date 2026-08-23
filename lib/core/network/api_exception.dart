@@ -1,5 +1,9 @@
 import 'package:luminous/core/network/error_code.dart';
 
+/// 遗留错误类型：仅保留用于定位剩余构造点（SSE、WeChat 与 medicine
+/// datasource 仍在使用）。新代码不得构造本类型 —— HTTP 边界统一使用
+/// [LucentFailure]，网络层抛出的 DioException 通过
+/// `error` 字段携带 [LucentFailure]。
 class LucentApiException implements Exception {
   const LucentApiException({
     required this.message,

@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/error_mapper.dart';
@@ -175,13 +176,6 @@ class AuthInterceptor extends Interceptor {
     return error.response?.statusCode == 401;
   }
 
-  /// Problem Details codes for which a token refresh can never help.
-  static const _nonRefreshableAuthCodes = <String>{
-    'AUTH_REFRESH_TOKEN_INVALID',
-    'AUTH_LOGIN_RATE_LIMITED',
-    'AUTH_WRONG_PASSWORD',
-  };
-
   Future<bool> _shouldRefresh(DioException error) async {
     final requestOptions = error.requestOptions;
     if (requestOptions.extra['skipAuthRefresh'] == true) {
@@ -197,10 +191,23 @@ class AuthInterceptor extends Interceptor {
       return false;
     }
 
-    final failure = LucentErrorMapper.fromObject(error);
-    final code = failure.code;
-
-    if (code != null && _nonRefreshableAuthCodes.contains(code)) {
+    // Only an explicit AUTH_TOKEN_EXPIRED Problem Details code marks the
+    // session as refreshable. Every other auth failure (AUTH_REQUIRED,
+    // AUTH_REFRESH_TOKEN_INVALID, AUTH_WRONG_PASSWORD, plain 401/403) is
+    // not a refresh candidate and falls through to the 401 session-clear
+    // path below. A malformed body (non-Problem Details) is also not a
+    // refresh candidate: the FormatException semantics stay at the mapper
+    // layer, where the ErrorInterceptor ultimately surfaces them as
+    // protocol errors.
+    LucentFailure? failure;
+    try {
+      failure = LucentErrorMapper.fromObject(error);
+    } on FormatException {
+      // 畸形 body 不是 refresh 候选;格式语义保留在 mapper 层(最终由
+      // ErrorInterceptor 以协议错误暴露),这里走 401 清 session 路径。
+      failure = null;
+    }
+    if (failure == null || !failure.isTokenExpired) {
       return false;
     }
 
@@ -271,10 +278,11 @@ class AuthInterceptor extends Interceptor {
         'status=${e.response?.statusCode} endpoint=${e.requestOptions.uri} '
         'error=${e.message}',
       );
-      // Problem Details 401/403 表示刷新令牌被拒绝或无权访问:认证失效,
-      // 网络连接类、超时、5xx 等均为临时故障,保留会话。
-      final failure = LucentErrorMapper.fromObject(e);
-      if (failure.statusCode == 401 || failure.statusCode == 403) {
+      // 401/403 表示刷新令牌被拒绝或无权访问:认证失效;
+      // 网络连接类、超时、5xx 等均为临时故障,保留会话。直接按状态码分类,
+      // 避免畸形 refresh 错误体在此抛 FormatException 逃逸。
+      final statusCode = e.response?.statusCode;
+      if (statusCode == 401 || statusCode == 403) {
         return const _RefreshAuthFailure();
       }
       return const _RefreshTransientFailure();
