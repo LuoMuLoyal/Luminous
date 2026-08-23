@@ -91,14 +91,8 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 
 - `legal_list_page_test.dart` `pumpPage` 的 `Object? error` 参数现仅作 null 判定标志（传入值被丢弃）：纯遗留装饰，可改 `bool fail`，非必须。
 
-## 2026-08-23 mine 迁移审查遗留（错误迁移 Task 5f，归入 Task 9 文档收尾）
+## 2026-08-23 SSE 迁移审查遗留（错误迁移 Task 7）
 
-- `docs/02-reference/adr/0006-riverpod-generator-and-auth-guard.md` 的 mine 示例 `fetch: () => ref.watch(mineRepositoryProvider).fetchDashboard()` 对 TaskEither 接口已过时（不再可编译），需补 `.run()` + fold 写法。
-- `docs/02-reference/state-management.md` 的通用 `myRepositoryProvider` 示例为迁移前模式，可顺手更新为当前推荐写法。
-
-## 2026-08-23 SSE 迁移审查遗留（错误迁移 Task 7，归入 Task 9 收尾）
-
-- `lib/core/network/error_mapper.dart` `_fromLegacyLocalException` 的 doc 注释仍写「SSE, map_utils, wechat」三个构造点——Task 7 后仅 wechat 属实，注释陈旧，Task 9 文档收尾时同步修正。
 - `NetworkErrorCode.invalidSsePayload` 运行时已无产生点（枚举 + l10n + pending sync 序列化保留以兼容历史持久化行）：若未来清理 legacy pending-sync 数据后可评估移除。
 - `_ErrorSseAdapter` 测试辅助类在 assistant/today/report 三个测试文件各复制一份（沿用每文件自带惯例）：可选收敛到 test/helpers/。
 
