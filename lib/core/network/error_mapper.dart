@@ -81,10 +81,11 @@ abstract final class LucentErrorMapper {
     );
   }
 
-  /// Transitional adapter for legacy code paths that still throw
-  /// [LucentApiException] (SSE, map_utils, wechat). The HTTP boundary is
-  /// already [LucentFailure]; this branch only projects the retired local
-  /// exception into the current failure type until Task 7 removes it.
+  /// Transitional adapter for the last legacy construction site of
+  /// [LucentApiException]: the WeChat mobile auth client throws it for local
+  /// SDK failures (not installed / auth cancelled). The HTTP boundary is
+  /// already [LucentFailure]; this branch only projects that retired local
+  /// exception into the current failure type.
   static LucentFailure _fromLegacyLocalException(LucentApiException error) {
     final kind = error.isNetworkConnectivityError
         ? LucentFailureKind.network

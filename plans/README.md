@@ -41,8 +41,6 @@ YYYY-MM-DD-short-task-name.md
 - [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)
 - [`2026-08-17-error-handling-reform-plan.md`](2026-08-17-error-handling-reform-plan.md)
   — 错误处理硬切：fpdart + LucentFailure + RFC 9457；2026-08-22 已进入冻结新功能的硬切窗口，0.1.0 后遗留工作不再阻塞
-- [`2026-08-23-luminous-error-migration-order.md`](2026-08-23-luminous-error-migration-order.md)
-  — 与 Lucent neverthrow 迁移并行的客户端错误处理迁移顺序；完成后删除
 ### 功能盘点改造计划(2026-08-16,共 10 份)
 
 来源:`research/02-功能盘点/` 十份调研文档(已审阅;内容以各文档「逐功能分析」为准改写,

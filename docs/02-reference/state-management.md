@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-23
 ---
 
 # State Management (Riverpod)
@@ -48,10 +48,13 @@ MyRepository myRepository(Ref ref) {
   return LucentMyRepository(api: ref.watch(lucentClientProvider).myApi);
 }
 
-// 只读异步数据（默认 autoDispose）
+// 只读异步数据（默认 autoDispose）。repository 边界为
+// `TaskEither<LucentFailure, T>`：`run()` 后 fold，Left 抛出让 Riverpod
+// 投影为 AsyncValue.error（widget 只消费 provider state）。
 @riverpod
 Future<MyData> myData(Ref ref) async {
-  return ref.watch(myRepositoryProvider).fetch();
+  final result = await ref.watch(myRepositoryProvider).fetch().run();
+  return result.fold((failure) => throw failure, (data) => data);
 }
 
 // keepAlive 异步数据（跨页面共享、dashboard 级别）
@@ -59,7 +62,13 @@ Future<MyData> myData(Ref ref) async {
 Future<MyDashboard> myDashboard(Ref ref) {
   return authGuarded(
     ref: ref,
-    fetch: () => ref.watch(myRepositoryProvider).fetchDashboard(),
+    fetch: () async {
+      final result = await ref
+          .watch(myRepositoryProvider)
+          .fetchDashboard()
+          .run();
+      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+    },
     signedOutFallback: () => ref.watch(myRepositoryProvider).signedOutDashboard,
   );
 }
@@ -67,7 +76,8 @@ Future<MyDashboard> myDashboard(Ref ref) {
 // family 参数化
 @riverpod
 Future<MyDetail> myDetail(Ref ref, String id) async {
-  return ref.watch(myRepositoryProvider).findOne(id);
+  final result = await ref.watch(myRepositoryProvider).findOne(id).run();
+  return result.fold((failure) => throw failure, (detail) => detail);
 }
 ```
 
@@ -76,6 +86,9 @@ Future<MyDetail> myDetail(Ref ref, String id) async {
   或 `@Riverpod(keepAlive: true)` 注解。
 - 默认 `autoDispose`；需要跨页面保持状态时使用 `@Riverpod(keepAlive: true)`。
 - 文件需添加 `part 'my_file.g.dart';` 和 `import 'package:riverpod_annotation/riverpod_annotation.dart';`。
+- repository 失败统一按 `run()` + fold 消费（Left 抛出 → `AsyncValue.error`）；widget 不导入
+  fpdart、不解析 `DioException`/Problem Details（见 [[data-layer#Repository Failure Boundary]] 与
+  ADR-0008）。
 
 #### 2. 手写 `NotifierProvider` / `AsyncNotifierProvider`（Notifier 类）
 
@@ -177,13 +190,13 @@ Single operations that coordinate repository calls, DataChangeBus emission, and 
 
 ```dart
 // application/usecases/change_record_date.dart
-Future<Result<void>> changeRecordDate({
+Future<void> changeRecordDate({
   required Ref ref,
   required BuildContext context,
   required String recordId,
   required DateTime newDate,
 }) async {
-  // repository call → emit data change → toast feedback
+  // repository 调用（TaskEither）→ fold/重抛 → emit data change → toast feedback
 }
 ```
 
@@ -233,7 +246,13 @@ Future<TodayDashboard> todayDashboard(Ref ref) async {
   ref.watch(dataChangeVersionProvider(DataChangeTopic.doseLogs));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.medicineReminders));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.userSettings));
-  return authGuarded(ref: ref, fetch: () => ...);
+  return authGuarded(
+    ref: ref,
+    fetch: () async {
+      final result = await ref.watch(todayRepositoryProvider).fetchDashboard().run();
+      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+    },
+  );
 }
 ```
 

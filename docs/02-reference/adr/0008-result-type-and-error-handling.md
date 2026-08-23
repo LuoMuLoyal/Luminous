@@ -1,6 +1,6 @@
 # ADR-0008: Result Type and Unified Error Handling
 
-- **Status**: accepted (amended 2026-08-18; previous self-built Result decision superseded)
+- **Status**: accepted (amended 2026-08-18; previous self-built Result decision superseded; implemented 2026-08-23)
 - **Date**: 2026-07-10
 - **Deciders**: LuoMuLoyal
 - **Related**: Lucent ADR-0012, RFC 9457 Problem Details
@@ -63,6 +63,34 @@ The hard-cut window now contains the target-state `ProblemDetails` parser,
 The parser rejects the retired `{ code, message, data }` envelope; no legacy/new HTTP response
 fallback was added. The separate repository Result-boundary migration remains a later stage and
 does not reintroduce a second HTTP response contract.
+
+### 2.2 Implementation status (2026-08-23)
+
+The hard cut completed on 2026-08-23 across all features (auth, today, record, medicine, assistant,
+health_context, health_event, report, notification, settings, mine, legal, support, search, scan):
+
+- Every feature repository now exposes `TaskEither<LucentFailure, T>` for expected, recoverable
+  failures; datasources keep `Future`/`Stream` transport responsibility; providers consume
+  `run()` + fold into `AsyncValue`/action state; widgets do not import fpdart or parse
+  `DioException`/Problem Details.
+- The local `Result<T>`, `Success`/`Failure`, `AppError`/`AppErrorKind`, `runGuarded`, and
+  `LucentErrorMapper.toAppError` were deleted (commit `refactor(error): 删除 Luminous 旧错误类型`).
+  No project type alias replaces them; only fpdart `Either`/`TaskEither` are used.
+- The transport boundary is fixed: HTTP errors must be `application/problem+json` Problem Details
+  parsed by `LucentErrorMapper.fromObject`; missing/wrong-typed bodies and non-Problem media types
+  stay `FormatException` (protocol invariants, surfaced from `.run()`); transport failures map to
+  `LucentFailure.network`. `RetryPolicy` retries only idempotent GETs by status/network error and
+  writes only with explicit `retryEnabled=true` plus a non-empty `Idempotency-Key`;
+  `retryable=false` forbids retry, server `retryable=true` never expands the allowed status set,
+  and `Retry-After` accepts only non-negative integer seconds. Token refresh triggers only on
+  `AUTH_TOKEN_EXPIRED`.
+- SSE `event: error` payloads are parsed as `SseProblemDetails` and mapped via
+  `LucentFailure.fromSseProblemDetails` (the `status` field is an SSE error category, never an HTTP
+  status code); malformed payloads stay protocol exceptions; cancellation/disconnects keep Stream
+  semantics and are never disguised as business failures.
+- The only remaining legacy type is `LucentApiException` (retained solely because the WeChat mobile
+  auth client still constructs it for local SDK failures; its mapper branch is the last legacy
+  compat point).
 
 ### 3. Keep the layer responsibilities explicit
 

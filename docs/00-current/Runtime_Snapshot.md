@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-23
 ---
 
 # Luminous Runtime Snapshot
 
-Last updated: 2026-08-16 (本地通知回执与推送回退能力上报)
+Last updated: 2026-08-23（错误处理迁移收口：TaskEither 全量落地、旧错误类型删除）
 
 ## 技术栈
 
@@ -17,6 +17,16 @@ Last updated: 2026-08-16 (本地通知回执与推送回退能力上报)
 - 日志：`talker_flutter`（全量替换 `debugPrint`），release 保留内存历史 + Sentry 转发。
 - 错误上报：`sentry_flutter ^9.0.0`，`SentryTalkerObserver` 桥接 Talker 事件 → Sentry，`SENTRY_DSN` 空时跳过 init。
 - AI 开发增强：`.github/copilot-instructions.md`、`.cursor/mcp.json`、`dart.mcpServer`、`lib/core/ai/` 实验 seam。
+
+## 错误处理边界（2026-08-23 迁移收口）
+
+- **repository 边界**：全部 feature repository 统一 `TaskEither<LucentFailure, T>`（fpdart 1.x，无项目别名）；datasource 保持 `Future`/`Stream` 传输；provider `run()` + fold 投影 `AsyncValue`/action state；widget 不导入 fpdart、不解析 DioException/Problem Details。
+- **HTTP 契约**：错误响应必须是 `application/problem+json` Problem Details（`LucentErrorMapper.fromObject` 唯一映射入口）；缺 body/媒体类型不符/字段类型不符保持 `FormatException`（协议不变量，从 `.run()` 传播）；网络类 → `LucentFailure.network`。
+- **重试规则**：`RetryPolicy` 只对幂等 GET 按状态/网络错误重试；写请求需显式 `retryEnabled=true` + 非空 `Idempotency-Key`；`retryable=false` 禁止重试，服务端 `retryable=true` 不扩大状态集合；`Retry-After` 仅接受非负整数秒。
+- **认证边界**：仅 `AUTH_TOKEN_EXPIRED` 触发 refresh；`AUTH_REQUIRED`/`AUTH_REFRESH_TOKEN_INVALID`/`AUTH_WRONG_PASSWORD`/普通 401 不刷新（401 清 session，403 保留）；并发单次 refresh；refresh 明确失败清 session 并把原始 `LucentFailure` 传回调用方。
+- **SSE**：`event: error` 按 `SseProblemDetails` 解析 → `LucentFailure.fromSseProblemDetails`（status 为 SSE 错误类别，非 HTTP code）；畸形 payload 保持协议异常；取消/断流保持 Stream 语义，不伪装业务失败。
+- **旧体系已删除**：`Result<T>`/`Success`/`Failure`、`AppError`/`AppErrorKind`、`runGuarded`、`toAppError`（2026-08-23 提交删除）；`LucentApiException` 仅保留给 WeChat mobile SDK 本地失败兼容。
+- **pending sync 错误详情**：`PendingSyncErrorDetails` 已迁移到 `LucentFailureKind`/字符串 code，JSON 解码向后兼容历史行（含 400001/400002 → `VALIDATION_FAILED` 桥接），旧行不丢。
 
 ## 主题与设计系统
 

@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-16
+updated: 2026-08-23
 ---
 
 # Data Layer
@@ -35,25 +35,29 @@ Widget
   methods.
 - `lib/core/network/error_mapper.dart`: `LucentErrorMapper.fromObject()` is the single source of
   truth for `DioException` → `LucentFailure` mapping. HTTP errors require
-  `application/problem+json` and strict Problem Details parsing; transport failures receive
-  client-only network metadata and trace correlation. `lib/core/network/interceptors/error_interceptor.dart`
-  delegates to it and re-wraps the mapped failure into a rejected `DioException`.
-  `LucentErrorMapper.toAppError()` is the temporary projection used by the pre-Result application
-  layer and preserves trace correlation without parsing the retired HTTP envelope.
+  `application/problem+json` and strict Problem Details parsing (missing body, wrong media type,
+  and field-type mismatches stay `FormatException` — protocol invariants, never business
+  `LucentFailure`); transport failures receive client-only network metadata and trace correlation.
+  `lib/core/network/interceptors/error_interceptor.dart` delegates to it and re-wraps the mapped
+  failure into a rejected `DioException`. The legacy `LucentApiException` compat branch is retained
+  only for the WeChat mobile auth client's local SDK failures.
 - `lib/core/network/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
   optional reconnect and capped exponential backoff (1s, 2s, 4s, ... clamped to 60s) so raising
-  `maxReconnects` later cannot produce unbounded delays.
-- `lib/core/network/envelope.dart`: current generated-client response unwrapping convention
-  retained until the Lucent success-resource/OpenAPI cut. Call sites use
-  `requireData(response.data, operation: 'apiName').data` instead of `response.data!.data` so a
-  payload-less response surfaces as a descriptive `StateError` rather than a bare `!` crash.
+  `maxReconnects` later cannot produce unbounded delays. An empty stream response surfaces as
+  `LucentFailure.network(emptyStreamResponse)`.
+- `lib/core/network/response_body.dart`: `requireData(response, operation: 'apiName')` guards
+  success responses — an empty/non-object body throws so the repository boundary maps it to
+  `LucentFailure.network(emptyResponse)` instead of a bare `!` crash. The retired
+  `{ code, message, data }` envelope is not interpreted anywhere.
 - `lib/core/network/interceptors/auth_interceptor.dart`: token injection + 401 refresh + retry +
   session clear. Refresh outcomes are typed (`_RefreshOutcome`): the refresh token being rejected
   (Problem Details 401/403) is an auth failure that clears the session and notifies the auth layer,
-  while network/timeout/5xx/empty-body failures are transient and keep the session. 401s are
-  refresh candidates unless the Problem Details code is explicitly non-refreshable
-  (`AUTH_REFRESH_TOKEN_INVALID`/`AUTH_LOGIN_RATE_LIMITED`/`AUTH_WRONG_PASSWORD`). The
-  `onSessionExpired` callback is guarded (a throwing callback is logged and the original error
+  while network/timeout/5xx/empty-body failures are transient and keep the session. **Only
+  `AUTH_TOKEN_EXPIRED` triggers a refresh** (positive allow-list); `AUTH_REQUIRED`,
+  `AUTH_REFRESH_TOKEN_INVALID`, `AUTH_WRONG_PASSWORD`, and plain 401/403 never refresh — a plain
+  401 clears the session, a 403 does not. Concurrent requests share a single refresh; a definitive
+  refresh failure clears the session and passes the **original** `LucentFailure` back to the caller.
+  The `onSessionExpired` callback is guarded (a throwing callback is logged and the original error
   still resolves).
 
 ### Generated API Client
@@ -99,6 +103,29 @@ entities, `LucentHealthEventRepository` maps the generated `HealthEventsApi`, an
 `activeHealthEventProvider` owns the keep-alive loading/data/error state plus explicit refresh.
 An empty active response and HTTP 404 both mean “no active event”; other transport failures remain
 errors so the UI can offer a retry path.
+
+### Repository Failure Boundary
+
+Every feature repository exposes expected, recoverable failures as
+`TaskEither<LucentFailure, T>` (fpdart 1.x, ADR-0008) — no project-local Result alias exists.
+
+- **Datasources** keep `Future`/`Stream` transport responsibility and throw `DioException` (or
+  `LucentFailure` for empty success bodies, precedent: `LucentFailure.network(emptyResponse)`).
+- **Repositories** wrap datasource calls with
+  `TaskEither.tryCatch(..., (error, stackTrace) => LucentErrorMapper.fromObject(error))`; protocol
+  invariants (malformed generated payloads, non-Problem-Details error bodies) stay thrown
+  `FormatException`/`StateError` and surface from `run()` — they are never disguised as Left.
+- **Providers/controllers** call `run()` and fold: Left → `AsyncValue.error` or an explicit action
+  state; Right → data. Widgets render provider state only — no fpdart, no `DioException`
+  inspection, no code/status parsing.
+- **Offline cache** (daily-records / health-context / dose-logs): cache writes that are required
+  for request success map to Left; best-effort background refresh writes log and continue; write
+  failures enqueue to the pending-sync queue **and** return Left (enqueue self-failures are logged
+  and never mask the original network failure).
+- **Retry** is decided only by `RetryPolicy` (HTTP status, network error type, `retryable`,
+  `retryAfter`, idempotency) in the transport layer — features never add their own retry loops.
+- **SSE**: `event: error` payloads are parsed as `SseProblemDetails` → `LucentFailure`; cancellation
+  and disconnects keep Stream semantics (see ADR-0008 §2.2).
 
 ### Domain Interface Injection (Cross-Feature)
 
@@ -160,15 +187,19 @@ ADR-0009 introduced Drift-based local persistence. Repositories for `daily-recor
 - **Failure details**: `PendingSyncDao.fetchPermanentlyFailed()` exposes the diagnostic fields kept
   in the queue (`entityType`, `entityId`, `operation`, retry counts, `lastError`, and
   `lastErrorDetails`) for the Mine sync-failure dialog. `lastErrorDetails` is a JSON-encoded
-  `PendingSyncErrorDetails` object produced by `LucentErrorMapper.toAppError()`; it carries
-  `message`, `code`, `statusCode`, `traceId`, `networkErrorCode`, and `kind` so the UI can show
-  localized user-facing messages without parsing raw exception strings. `lastError` is kept for
-  backwards compatibility and as the raw diagnostic fallback. `resetForRetry()` clears both error
-  columns before a manual flush; the queued payload is never rendered or modified by the UI. Pending
-  sync ids use a cryptographically random suffix (`Random.secure()`) so they remain unique across
-  hot restarts and isolates. `markFailed()` increments `retryCount` atomically at the database level
-  (`retryCount = retryCount + 1`) so concurrent callers cannot race on a read-then-write value;
-  backoff is computed by the shared `backoffForRetryCount()` helper.
+  `PendingSyncErrorDetails` object produced by the sync worker via
+  `PendingSyncErrorDetails.fromLucentFailure(...)`; it carries `message`, `code`, `statusCode`,
+  `traceId`, `networkErrorCode`, and `kind` (`LucentFailureKind`) so the UI can show localized
+  user-facing messages without parsing raw exception strings. The JSON decoder is backward
+  compatible with rows persisted before the migration (legacy `AppErrorKind` names and numeric
+  codes, including the `VALIDATION_FAILED` bridge for 400001/400002) and never throws on old rows.
+  `lastError` is kept for backwards compatibility and as the raw diagnostic fallback.
+  `resetForRetry()` clears both error columns before a manual flush; the queued payload is never
+  rendered or modified by the UI. Pending sync ids use a cryptographically random suffix
+  (`Random.secure()`) so they remain unique across hot restarts and isolates. `markFailed()`
+  increments `retryCount` atomically at the database level (`retryCount = retryCount + 1`) so
+  concurrent callers cannot race on a read-then-write value; backoff is computed by the shared
+  `backoffForRetryCount()` helper.
 - **Cleanup**: `cacheCleanupProvider` trims expired cache rows at startup based on the user's
   `DataRetentionPeriod` setting.
 

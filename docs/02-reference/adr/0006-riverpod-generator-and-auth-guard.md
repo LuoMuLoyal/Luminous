@@ -113,15 +113,23 @@ Future<T> authGuarded<T>(
 }
 ```
 
-各 feature 的数据 provider 改为：
+各 feature 的数据 provider 改为（repository 边界为 `TaskEither<LucentFailure, T>`，fetch 内 `run()` + fold，Left 抛出让 `authGuarded`/Riverpod 投影为 `AsyncValue.error`）：
 
 ```dart
 @riverpod
-Future<MineDashboard> mineDashboard(MineDashboardRef ref) {
-  return ref.watch(authGuardedProvider(
-    fetch: () => ref.watch(mineRepositoryProvider).fetchDashboard(),
+Future<MineDashboard> mineDashboard(Ref ref) {
+  return authGuarded(
+    ref: ref,
+    fetch: () async {
+      final result = await ref
+          .watch(mineRepositoryProvider)
+          .fetchDashboard()
+          .run();
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+    },
     signedOutFallback: () => ref.watch(mineRepositoryProvider).signedOutDashboard,
-  ).future);
+  );
 }
 ```
 
