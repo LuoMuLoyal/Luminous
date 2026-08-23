@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-21
+updated: 2026-08-23
 ---
 
 # Luminous TODO
 
-Last updated: 2026-08-21
+Last updated: 2026-08-23
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -69,6 +69,11 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 ## 2026-08-20 Mine settings P2-1 deferred follow-up
 
 - Lucent `AuthTokenService.listSessions()` 当前将每条会话的 `isCurrent` 固定为 `false`，Luminous 已实现收到 `isCurrent=true` 时撤销后登出的分支，但当前设备无法在会话列表中被标识；后续需在不暴露 refresh token 的前提下补齐服务端当前会话识别。
+
+## 2026-08-23 网络层收口审查遗留（错误迁移 Task 1）
+
+- RetryInterceptor 链级 `retryAfter` 断言缺失：`retryable=false` 已有链级测试证明映射到达策略层，`retryAfter` 延迟优先级仅由 RetryPolicy 单测覆盖；补链级用例需真实计时（易抖），暂缓。
+- 畸形错误体端到端暴露形态：畸形 401/503 body 最终以 `DioException(error: FormatException)` 暴露（dio 归一化既有行为）；Auth/Retry 已保证不崩溃且 401 清 session 语义正确，端到端暴露形态属既有设计，后续任务跟踪。
 
 ## 审查暂缓项
 
