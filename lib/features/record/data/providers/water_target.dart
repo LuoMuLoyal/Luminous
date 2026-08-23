@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 
@@ -33,6 +34,11 @@ const recordWaterDefaultTargetCount = 8;
 /// Fallback: when the settings read fails or returns a non-positive count, the
 /// provider returns [recordWaterDefaultTargetCount], keeping the target
 /// strictly > 0 (guards against division by zero in the progress bar).
+///
+/// This is a deliberate best-effort degrade of a secondary display value
+/// (documented product contract): the water progress card neither breaks nor
+/// disappears when settings are temporarily unavailable, so the read failure
+/// is only observed via [appTalker], never surfaced as a Left.
 final recordWaterTargetCountProvider = FutureProvider.autoDispose<int>((
   ref,
 ) async {
@@ -40,7 +46,12 @@ final recordWaterTargetCountProvider = FutureProvider.autoDispose<int>((
   try {
     final count = (await repository.getSettings()).waterTargetCount;
     return count > 0 ? count : recordWaterDefaultTargetCount;
-  } catch (_) {
+  } catch (e, st) {
+    appTalker.warning(
+      'recordWaterTargetCountProvider: settings read failed, falling back to '
+      'default target $recordWaterDefaultTargetCount: $e',
+      st,
+    );
     return recordWaterDefaultTargetCount;
   }
 });

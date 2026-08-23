@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -46,6 +45,21 @@ import '../helpers/feature_mocks.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  /// Runs a [LucentRecordRepository] dashboard task, failing the test on Left.
+  Future<RecordDashboard> fetchDashboard(
+    LucentRecordRepository repo,
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) async {
+    final result = await repo
+        .fetchDashboard(selectedDate, filterType: filterType)
+        .run();
+    return result.fold(
+      (failure) => fail('expected Right, got Left: $failure'),
+      (dashboard) => dashboard,
+    );
+  }
+
   testWidgets('Record page renders mobile mock dashboard sections', (
     tester,
   ) async {
@@ -1693,7 +1707,7 @@ void main() {
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+      final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
       expect(dailyRepo.fetchDate, '2026-06-06');
       expect(dashboard.selectedDay, 6);
@@ -1714,7 +1728,7 @@ void main() {
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+      final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
       expect(dashboard.timeline.single.value, '8h');
     },
@@ -1733,7 +1747,7 @@ void main() {
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+      final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
       expect(dashboard.timeline.single.value, '7h 30m');
     },
@@ -1752,7 +1766,7 @@ void main() {
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+      final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
@@ -1790,7 +1804,7 @@ void main() {
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+      final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
       expect(dashboard.timeline.single.rawTitle, '一份米饭配鸡胸肉');
       expect(dashboard.timeline.single.rawDetail, '识别菜品：米饭、鸡胸肉');
@@ -1821,7 +1835,8 @@ void main() {
       final dailyRepo = _FakeDailyRecordRepository(fetchThrows: true);
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(
+      final dashboard = await fetchDashboard(
+        repo,
         DateTime(2026, 6, 6),
         filterType: RecordEntryType.note,
       );
@@ -1845,7 +1860,7 @@ void main() {
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+      final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
       expect(dashboard.timeline.single.rawTitle, isNull);
       expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeNote);
@@ -1864,7 +1879,7 @@ void main() {
     );
     final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-    final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+    final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
     expect(dashboard.timeline.single.rawTitle, 'Evening reflection');
     expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeNote);
@@ -1883,7 +1898,7 @@ void main() {
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+      final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
       expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeWater);
     },
@@ -2151,176 +2166,192 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   bool fetchRecordsCalled = false;
 
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async {
+  }) {
     fetchRecordsCalled = true;
     fetchDate = date;
-    if (fetchThrows) throw Exception('fetch error');
+    if (fetchThrows) {
+      return TaskEither.left(LucentFailure.unknown(message: 'fetch error'));
+    }
     final records = recordsByDate?[date];
     if (records != null) {
-      return DailyRecordListData(items: records, total: records.length);
+      return TaskEither.right(
+        DailyRecordListData(items: records, total: records.length),
+      );
     }
-    return DailyRecordListData(
-      items: [
-        DailyRecordItem(
-          id: 'test-id-1',
-          kind: itemKind,
-          occurredAt: itemOccurredAt ?? date,
-          occurredTime: itemOccurredTime,
-          title: itemTitle,
-          value: itemValue,
-          unit: itemUnit,
-          note: itemNote,
-          payload: itemPayload,
-          mealAnalysisStatus: itemMealAnalysisStatus,
-          mealAnalysisCoverage: itemMealAnalysisCoverage,
-          mealShortDescription: itemMealShortDescription,
-          mealTopFoods: itemMealTopFoods,
-          source: 'manual',
-          createdAt: DateTime.now().toIso8601String(),
-          updatedAt: DateTime.now().toIso8601String(),
-        ),
-      ],
-      total: 1,
+    return TaskEither.right(
+      DailyRecordListData(
+        items: [
+          DailyRecordItem(
+            id: 'test-id-1',
+            kind: itemKind,
+            occurredAt: itemOccurredAt ?? date,
+            occurredTime: itemOccurredTime,
+            title: itemTitle,
+            value: itemValue,
+            unit: itemUnit,
+            note: itemNote,
+            payload: itemPayload,
+            mealAnalysisStatus: itemMealAnalysisStatus,
+            mealAnalysisCoverage: itemMealAnalysisCoverage,
+            mealShortDescription: itemMealShortDescription,
+            mealTopFoods: itemMealTopFoods,
+            source: 'manual',
+            createdAt: DateTime.now().toIso8601String(),
+            updatedAt: DateTime.now().toIso8601String(),
+          ),
+        ],
+        total: 1,
+      ),
     );
   }
 
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async {
-    return generatedCandidates ??
+  }) => TaskEither.right(
+    generatedCandidates ??
         const DailyRecordCandidateResult(
           locale: 'zh-CN',
           generatedAt: '2026-06-14T00:00:00.000Z',
           confirmationHint: '确认后再保存。',
           items: <DailyRecordCandidateItem>[],
-        );
-  }
+        ),
+  );
 
   @override
-  Future<DailyRecordItem> get(String id) async {
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) {
     getCalledWith = id;
-    return DailyRecordItem(
-      id: id,
-      kind: itemKind,
-      occurredAt: itemOccurredAt ?? '2026-05-20',
-      occurredTime: itemOccurredTime,
-      title: itemTitle,
-      value: itemValue,
-      unit: itemUnit,
-      note: itemNote,
-      payload: itemPayload,
-      mealAnalysisStatus: itemMealAnalysisStatus,
-      mealAnalysisCoverage: itemMealAnalysisCoverage,
-      mealShortDescription: itemMealShortDescription,
-      mealTopFoods: itemMealTopFoods,
-      source: 'manual',
-      attachments: withAttachment
-          ? [
-              DailyRecordAttachment(
-                id: 'attachment-1',
-                kind: DailyRecordAttachmentKind.image,
-                objectKey: 'daily-records/user-1/test.jpg',
-                fileName: 'test.jpg',
-                contentType: 'image/jpeg',
-                sizeBytes: 12,
-                publicUrl: 'https://cdn.example.com/test.jpg',
-                createdAt: DateTime.now().toIso8601String(),
-              ),
-            ]
-          : const <DailyRecordAttachment>[],
-      createdAt: DateTime.now().toIso8601String(),
-      updatedAt: DateTime.now().toIso8601String(),
+    return TaskEither.right(
+      DailyRecordItem(
+        id: id,
+        kind: itemKind,
+        occurredAt: itemOccurredAt ?? '2026-05-20',
+        occurredTime: itemOccurredTime,
+        title: itemTitle,
+        value: itemValue,
+        unit: itemUnit,
+        note: itemNote,
+        payload: itemPayload,
+        mealAnalysisStatus: itemMealAnalysisStatus,
+        mealAnalysisCoverage: itemMealAnalysisCoverage,
+        mealShortDescription: itemMealShortDescription,
+        mealTopFoods: itemMealTopFoods,
+        source: 'manual',
+        attachments: withAttachment
+            ? [
+                DailyRecordAttachment(
+                  id: 'attachment-1',
+                  kind: DailyRecordAttachmentKind.image,
+                  objectKey: 'daily-records/user-1/test.jpg',
+                  fileName: 'test.jpg',
+                  contentType: 'image/jpeg',
+                  sizeBytes: 12,
+                  publicUrl: 'https://cdn.example.com/test.jpg',
+                  createdAt: DateTime.now().toIso8601String(),
+                ),
+              ]
+            : const <DailyRecordAttachment>[],
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+      ),
     );
   }
 
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async {
+  ) {
     uploadedImages.add(input);
-    return DailyRecordAttachmentInput(
-      objectKey: 'daily-records/user-1/test.jpg',
-      bucket: 'bucket',
-      provider: 'tencent-cos',
-      fileName: input.fileName,
-      contentType: input.contentType,
-      sizeBytes: input.sizeBytes,
-      publicUrl: 'https://cdn.example.com/test.jpg',
+    return TaskEither.right(
+      DailyRecordAttachmentInput(
+        objectKey: 'daily-records/user-1/test.jpg',
+        bucket: 'bucket',
+        provider: 'tencent-cos',
+        fileName: input.fileName,
+        contentType: input.contentType,
+        sizeBytes: input.sizeBytes,
+        publicUrl: 'https://cdn.example.com/test.jpg',
+      ),
     );
   }
 
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async {
-    return const DailyRecordSummaryData(summaries: []);
-  }
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) =>
+      TaskEither.right(const DailyRecordSummaryData(summaries: []));
 
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) {
     createInput = input;
     createdInputs.add(input);
     final createIndex = createdInputs.length - 1;
     if (failCreateAtIndexes.contains(createIndex)) {
-      throw const LucentApiException(message: 'Create failed.');
+      return TaskEither.left(LucentFailure.unknown(message: 'Create failed.'));
     }
-    return DailyRecordItem(
-      id: 'created-id-${createIndex + 1}',
-      kind: input.kind,
-      occurredAt: input.occurredAt,
-      occurredTime: input.occurredTime,
-      title: input.title,
-      value: input.value,
-      unit: input.unit,
-      note: input.note,
-      payload: input.payload,
-      mealAnalysisStatus: itemMealAnalysisStatus,
-      mealAnalysisCoverage: itemMealAnalysisCoverage,
-      mealShortDescription: itemMealShortDescription,
-      mealTopFoods: itemMealTopFoods,
-      source: 'manual',
-      createdAt: DateTime.now().toIso8601String(),
-      updatedAt: DateTime.now().toIso8601String(),
+    return TaskEither.right(
+      DailyRecordItem(
+        id: 'created-id-${createIndex + 1}',
+        kind: input.kind,
+        occurredAt: input.occurredAt,
+        occurredTime: input.occurredTime,
+        title: input.title,
+        value: input.value,
+        unit: input.unit,
+        note: input.note,
+        payload: input.payload,
+        mealAnalysisStatus: itemMealAnalysisStatus,
+        mealAnalysisCoverage: itemMealAnalysisCoverage,
+        mealShortDescription: itemMealShortDescription,
+        mealTopFoods: itemMealTopFoods,
+        source: 'manual',
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+      ),
     );
   }
 
   @override
-  Future<DailyRecordItem> update(
+  TaskEither<LucentFailure, DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async {
+  ) {
     updateCalledWith = id;
     lastUpdateInput = input;
-    return DailyRecordItem(
-      id: id,
-      kind: DailyRecordKind.vital,
-      occurredAt:
-          (input.occurredAt == dailyRecordNoChange
-              ? fetchDate
-              : input.occurredAt as String?) ??
-          '2026-05-20',
-      occurredTime: input.occurredTime == dailyRecordNoChange
-          ? itemOccurredTime
-          : input.occurredTime as String?,
-      title: input.title as String?,
-      value: input.value as String?,
-      unit: input.unit as String?,
-      note: input.note as String?,
-      source: 'manual',
-      createdAt: DateTime.now().toIso8601String(),
-      updatedAt: DateTime.now().toIso8601String(),
+    return TaskEither.right(
+      DailyRecordItem(
+        id: id,
+        kind: DailyRecordKind.vital,
+        occurredAt:
+            (input.occurredAt == dailyRecordNoChange
+                ? fetchDate
+                : input.occurredAt as String?) ??
+            '2026-05-20',
+        occurredTime: input.occurredTime == dailyRecordNoChange
+            ? itemOccurredTime
+            : input.occurredTime as String?,
+        title: input.title as String?,
+        value: input.value as String?,
+        unit: input.unit as String?,
+        note: input.note as String?,
+        source: 'manual',
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+      ),
     );
   }
 
   @override
-  Future<void> delete(String id) async {
+  TaskEither<LucentFailure, void> delete(String id) {
     deleteCalledWith = id;
     deletedIds.add(id);
+    return TaskEither.right(null);
   }
 }
 
@@ -2431,41 +2462,41 @@ class _FakeRecordRepository implements RecordRepository {
   final requestedFilters = <RecordEntryType?>[];
 
   @override
-  Future<RecordDashboard> fetchDashboard(
+  TaskEither<LucentFailure, RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,
-  }) async {
+  }) {
     requestedDates.add(selectedDate);
     requestedFilters.add(filterType);
-    final mock = await const MockRecordRepository().fetchDashboard(
-      selectedDate,
-      filterType: filterType,
-    );
-    final timeline = withRecordEntry
-        ? [
-            const RecordTimelineEntry(
-              time: '09:45',
-              type: RecordEntryType.vitals,
-              icon: SemanticIcons.profileCondition,
-              accent: SemanticColor.primary,
-              softColor: SemanticColor.neutral,
-              titleKey: RecordCopyKey.typeVitals,
-              rawTitle: 'Blood pressure',
-              value: '118/76 mmHg',
-              recordId: 'test-id-1',
-            ),
-          ]
-        : mock.timeline;
-    return RecordDashboard(
-      selectedDate: selectedDate,
-      selectedDay: selectedDate.day,
-      monthDays: mock.monthDays,
-      quickActions: mock.quickActions,
-      summary: mock.summary,
-      filters: mock.filters,
-      timeline: timeline,
-      trends: mock.trends,
-    );
+    return const MockRecordRepository()
+        .fetchDashboard(selectedDate, filterType: filterType)
+        .map((mock) {
+          final timeline = withRecordEntry
+              ? [
+                  const RecordTimelineEntry(
+                    time: '09:45',
+                    type: RecordEntryType.vitals,
+                    icon: SemanticIcons.profileCondition,
+                    accent: SemanticColor.primary,
+                    softColor: SemanticColor.neutral,
+                    titleKey: RecordCopyKey.typeVitals,
+                    rawTitle: 'Blood pressure',
+                    value: '118/76 mmHg',
+                    recordId: 'test-id-1',
+                  ),
+                ]
+              : mock.timeline;
+          return RecordDashboard(
+            selectedDate: selectedDate,
+            selectedDay: selectedDate.day,
+            monthDays: mock.monthDays,
+            quickActions: mock.quickActions,
+            summary: mock.summary,
+            filters: mock.filters,
+            timeline: timeline,
+            trends: mock.trends,
+          );
+        });
   }
 
   @override
@@ -2477,41 +2508,41 @@ class _FakeRecordRepository implements RecordRepository {
 
 class _LongTimelineRecordRepository implements RecordRepository {
   @override
-  Future<RecordDashboard> fetchDashboard(
+  TaskEither<LucentFailure, RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,
-  }) async {
-    final mock = await const MockRecordRepository().fetchDashboard(
-      selectedDate,
-      filterType: filterType,
-    );
-    final timeline = List<RecordTimelineEntry>.generate(9, (index) {
-      final hour = 8 + (index * 2) ~/ 3;
-      final minute = (index % 3) * 15;
-      final time =
-          '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
-      return RecordTimelineEntry(
-        time: time,
-        type: RecordEntryType.note,
-        icon: SemanticIcons.tabRecord,
-        accent: SemanticColor.primary,
-        softColor: SemanticColor.neutral,
-        titleKey: RecordCopyKey.typeNote,
-        rawTitle: '记录 ${index + 1}',
-        value: '第 ${index + 1} 条',
-        recordId: 'record-${index + 1}',
-      );
-    });
-    return RecordDashboard(
-      selectedDate: selectedDate,
-      selectedDay: selectedDate.day,
-      monthDays: mock.monthDays,
-      quickActions: mock.quickActions,
-      summary: mock.summary,
-      filters: mock.filters,
-      timeline: timeline,
-      trends: mock.trends,
-    );
+  }) {
+    return const MockRecordRepository()
+        .fetchDashboard(selectedDate, filterType: filterType)
+        .map((mock) {
+          final timeline = List<RecordTimelineEntry>.generate(9, (index) {
+            final hour = 8 + (index * 2) ~/ 3;
+            final minute = (index % 3) * 15;
+            final time =
+                '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+            return RecordTimelineEntry(
+              time: time,
+              type: RecordEntryType.note,
+              icon: SemanticIcons.tabRecord,
+              accent: SemanticColor.primary,
+              softColor: SemanticColor.neutral,
+              titleKey: RecordCopyKey.typeNote,
+              rawTitle: '记录 ${index + 1}',
+              value: '第 ${index + 1} 条',
+              recordId: 'record-${index + 1}',
+            );
+          });
+          return RecordDashboard(
+            selectedDate: selectedDate,
+            selectedDay: selectedDate.day,
+            monthDays: mock.monthDays,
+            quickActions: mock.quickActions,
+            summary: mock.summary,
+            filters: mock.filters,
+            timeline: timeline,
+            trends: mock.trends,
+          );
+        });
   }
 
   @override

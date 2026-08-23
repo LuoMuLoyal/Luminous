@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -129,71 +130,67 @@ class _ControllerFakeDailyRecordRepository implements DailyRecordRepository {
   final List<DailyRecordCreateInput> createdInputs = <DailyRecordCreateInput>[];
 
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async {
-    return generatedCandidates;
-  }
+  }) => TaskEither.right(generatedCandidates);
 
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) {
     createdInputs.add(input);
     final index = createdInputs.length - 1;
     if (failCreateAtIndexes.contains(index)) {
-      throw const LucentApiException(message: 'Create failed.');
+      return TaskEither.left(LucentFailure.unknown(message: 'Create failed.'));
     }
-    return DailyRecordItem(
-      id: 'created-$index',
-      kind: input.kind,
-      occurredAt: input.occurredAt,
-      title: input.title,
-      value: input.value,
-      unit: input.unit,
-      note: input.note,
-      payload: input.payload,
-      source: 'manual',
-      createdAt: DateTime.now().toIso8601String(),
-      updatedAt: DateTime.now().toIso8601String(),
+    return TaskEither.right(
+      DailyRecordItem(
+        id: 'created-$index',
+        kind: input.kind,
+        occurredAt: input.occurredAt,
+        title: input.title,
+        value: input.value,
+        unit: input.unit,
+        note: input.note,
+        payload: input.payload,
+        source: 'manual',
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+      ),
     );
   }
 
   @override
-  Future<void> delete(String id) {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, void> delete(String id) =>
+      throw UnimplementedError();
 
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) {
-    throw UnimplementedError();
-  }
+  }) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) =>
+      throw UnimplementedError();
 
   @override
-  Future<DailyRecordItem> get(String id) {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) =>
+      throw UnimplementedError();
 
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordItem> update(String id, DailyRecordUpdateInput input) {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordItem> update(
+    String id,
+    DailyRecordUpdateInput input,
+  ) => throw UnimplementedError();
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {

@@ -125,8 +125,12 @@ Future<void> handleMealQuickActionManual(
 MealQuickEntryFlow _buildFlow(WidgetRef ref, DailyRecordRepository repository) {
   return MealQuickEntryFlow(
     pickImage: ref.read(mealQuickImagePickerProvider),
-    uploadImage: repository.uploadImage,
-    createRecord: repository.create,
+    uploadImage: (input) async => (await repository.uploadImage(input).run())
+        .fold((failure) => throw failure, (attachment) => attachment),
+    createRecord: (input) async => (await repository.create(input).run()).fold(
+      (failure) => throw failure,
+      (item) => item,
+    ),
     emitDataChange: (topic) =>
         ref.read(dataChangeBusProvider.notifier).emit(topic),
   );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
@@ -15,36 +17,38 @@ import '../auth/test_helpers.dart';
 
 class _FakeRepo extends DailyRecordRepository {
   @override
-  Future<DailyRecordItem> get(String id) async => throw UnimplementedError();
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) =>
+      throw UnimplementedError();
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async => throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async =>
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) =>
       throw UnimplementedError();
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async => throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async => throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async =>
-      throw UnimplementedError();
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) => throw UnimplementedError();
   @override
-  Future<DailyRecordItem> update(
+  TaskEither<LucentFailure, DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async => throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
-  Future<void> delete(String id) async {}
+  TaskEither<LucentFailure, void> delete(String id) => TaskEither.right(null);
 }
 
 void main() {

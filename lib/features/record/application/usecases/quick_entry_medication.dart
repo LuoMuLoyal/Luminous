@@ -27,8 +27,13 @@ Future<void> undoMedicationQuickAction(
   String date,
 ) async {
   try {
+    final repository = ref.read(dailyRecordRepositoryProvider);
     await QuickEntryUndoService(
-      deleteDailyRecord: ref.read(dailyRecordRepositoryProvider).delete,
+      deleteDailyRecord: (recordId) async =>
+          (await repository.delete(recordId).run()).fold(
+            (failure) => throw failure,
+            (_) {},
+          ),
       deleteDoseLog: (doseLogId) async {
         final result = await ref
             .read(doseLogRepositoryProvider)

@@ -535,7 +535,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
     final l10n = AppLocalizations.of(context)!;
     setState(() => _isConfirming = true);
     try {
-      await ref
+      final result = await ref
           .read(dailyRecordRepositoryProvider)
           .update(
             widget.record.id,
@@ -546,7 +546,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                 },
               },
             ),
-          );
+          )
+          .run();
+      result.fold((failure) => throw failure, (_) {});
       if (!mounted) return;
       ref.invalidate(dailyRecordDetailProvider(widget.record.id));
       ref

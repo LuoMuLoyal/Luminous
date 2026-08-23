@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:health/health.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
 import 'package:luminous/features/health_data/data/repositories/health_sync.dart';
@@ -185,10 +186,12 @@ void main() {
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
-      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      ).thenAnswer(
+        (_) => TaskEither.right(const DailyRecordListData(items: [], total: 0)),
+      );
       when(
         () => dailyRecordRepo.create(any()),
-      ).thenAnswer((_) async => _record(id: 'r1'));
+      ).thenAnswer((_) => TaskEither.right(_record(id: 'r1')));
 
       final result = await repository.syncToRecords([_metric()]);
 
@@ -210,15 +213,17 @@ void main() {
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
       ).thenAnswer(
-        (_) async => DailyRecordListData(
-          items: [
-            _record(
-              id: 'existing',
-              kind: DailyRecordKind.vital,
-              source: 'health_connect',
-            ),
-          ],
-          total: 1,
+        (_) => TaskEither.right(
+          DailyRecordListData(
+            items: [
+              _record(
+                id: 'existing',
+                kind: DailyRecordKind.vital,
+                source: 'health_connect',
+              ),
+            ],
+            total: 1,
+          ),
         ),
       );
 
@@ -236,16 +241,18 @@ void main() {
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
       ).thenAnswer(
-        (_) async => DailyRecordListData(
-          items: [
-            _record(
-              id: 'existing-decimal',
-              kind: DailyRecordKind.vital,
-              source: 'health_connect',
-              value: '72.0',
-            ),
-          ],
-          total: 1,
+        (_) => TaskEither.right(
+          DailyRecordListData(
+            items: [
+              _record(
+                id: 'existing-decimal',
+                kind: DailyRecordKind.vital,
+                source: 'health_connect',
+                value: '72.0',
+              ),
+            ],
+            total: 1,
+          ),
         ),
       );
 
@@ -262,7 +269,9 @@ void main() {
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
-      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      ).thenAnswer(
+        (_) => TaskEither.right(const DailyRecordListData(items: [], total: 0)),
+      );
       when(() => dailyRecordRepo.create(any())).thenThrow(Exception('boom'));
 
       final result = await repository.syncToRecords([_metric()]);
@@ -277,10 +286,12 @@ void main() {
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
-      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      ).thenAnswer(
+        (_) => TaskEither.right(const DailyRecordListData(items: [], total: 0)),
+      );
       when(
         () => dailyRecordRepo.create(any()),
-      ).thenAnswer((_) async => _record(id: 'r1'));
+      ).thenAnswer((_) => TaskEither.right(_record(id: 'r1')));
 
       final result = await repository.syncToRecords([
         _metric(recordedAt: DateTime(2026, 7, 12, 8, 30)),
@@ -296,9 +307,13 @@ void main() {
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
-      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      ).thenAnswer(
+        (_) => TaskEither.right(const DailyRecordListData(items: [], total: 0)),
+      );
       when(() => dailyRecordRepo.create(any())).thenAnswer(
-        (_) async => _record(id: 'water-created', kind: DailyRecordKind.water),
+        (_) => TaskEither.right(
+          _record(id: 'water-created', kind: DailyRecordKind.water),
+        ),
       );
 
       final result = await repository.syncToRecords([
@@ -325,13 +340,19 @@ void main() {
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
-      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      ).thenAnswer(
+        (_) => TaskEither.right(const DailyRecordListData(items: [], total: 0)),
+      );
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-13', page: 1, pageSize: 500),
-      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      ).thenAnswer(
+        (_) => TaskEither.right(const DailyRecordListData(items: [], total: 0)),
+      );
       when(() => dailyRecordRepo.create(any())).thenAnswer(
-        (_) async => _record(id: 'sleep-created', kind: DailyRecordKind.sleep),
+        (_) => TaskEither.right(
+          _record(id: 'sleep-created', kind: DailyRecordKind.sleep),
+        ),
       );
 
       final result = await repository.syncToRecords([
@@ -363,18 +384,20 @@ void main() {
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
       ).thenAnswer(
-        (_) async => DailyRecordListData(
-          items: [
-            _recordWithPayload(
-              id: 'existing-water',
-              kind: DailyRecordKind.water,
-              source: 'health_connect',
-              value: '250',
-              unit: 'ml',
-              payload: {'externalId': 'water-ext-1'},
-            ),
-          ],
-          total: 1,
+        (_) => TaskEither.right(
+          DailyRecordListData(
+            items: [
+              _recordWithPayload(
+                id: 'existing-water',
+                kind: DailyRecordKind.water,
+                source: 'health_connect',
+                value: '250',
+                unit: 'ml',
+                payload: {'externalId': 'water-ext-1'},
+              ),
+            ],
+            total: 1,
+          ),
         ),
       );
 
@@ -396,29 +419,33 @@ void main() {
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
-      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      ).thenAnswer(
+        (_) => TaskEither.right(const DailyRecordListData(items: [], total: 0)),
+      );
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-13', page: 1, pageSize: 500),
       ).thenAnswer(
-        (_) async => DailyRecordListData(
-          items: [
-            _recordWithPayload(
-              id: 'existing-sleep',
-              kind: DailyRecordKind.sleep,
-              source: 'health_connect',
-              value: '480',
-              unit: 'min',
-              occurredAt: '2026-07-13',
-              payload: {
-                'externalId': 'sleep-ext-1',
-                'startedAt': '2026-07-12T22:00:00.000Z',
-                'endedAt': '2026-07-13T06:00:00.000Z',
-                'durationMinutes': 480,
-              },
-            ),
-          ],
-          total: 1,
+        (_) => TaskEither.right(
+          DailyRecordListData(
+            items: [
+              _recordWithPayload(
+                id: 'existing-sleep',
+                kind: DailyRecordKind.sleep,
+                source: 'health_connect',
+                value: '480',
+                unit: 'min',
+                occurredAt: '2026-07-13',
+                payload: {
+                  'externalId': 'sleep-ext-1',
+                  'startedAt': '2026-07-12T22:00:00.000Z',
+                  'endedAt': '2026-07-13T06:00:00.000Z',
+                  'durationMinutes': 480,
+                },
+              ),
+            ],
+            total: 1,
+          ),
         ),
       );
 
@@ -443,9 +470,13 @@ void main() {
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
-      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      ).thenAnswer(
+        (_) => TaskEither.right(const DailyRecordListData(items: [], total: 0)),
+      );
       when(() => dailyRecordRepo.create(any())).thenAnswer(
-        (_) async => _record(id: 'water-created', kind: DailyRecordKind.water),
+        (_) => TaskEither.right(
+          _record(id: 'water-created', kind: DailyRecordKind.water),
+        ),
       );
 
       final result = await repository.syncToRecords([
@@ -485,37 +516,42 @@ void main() {
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
       ).thenAnswer(
-        (_) async => DailyRecordListData(
-          items: [
-            _record(
-              id: 'a',
-              kind: DailyRecordKind.vital,
-              source: 'health_connect',
-            ),
-          ],
-          total: 1500,
+        (_) => TaskEither.right(
+          DailyRecordListData(
+            items: [
+              _record(
+                id: 'a',
+                kind: DailyRecordKind.vital,
+                source: 'health_connect',
+              ),
+            ],
+            total: 1500,
+          ),
         ),
       );
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 2, pageSize: 500),
       ).thenAnswer(
-        (_) async => DailyRecordListData(
-          items: [
-            _record(
-              id: 'b',
-              kind: DailyRecordKind.vital,
-              source: 'health_connect',
-            ),
-          ],
-          total: 1500,
+        (_) => TaskEither.right(
+          DailyRecordListData(
+            items: [
+              _record(
+                id: 'b',
+                kind: DailyRecordKind.vital,
+                source: 'health_connect',
+              ),
+            ],
+            total: 1500,
+          ),
         ),
       );
       when(
         () =>
             dailyRecordRepo.fetchRecords('2026-07-12', page: 3, pageSize: 500),
       ).thenAnswer(
-        (_) async => const DailyRecordListData(items: [], total: 1500),
+        (_) =>
+            TaskEither.right(const DailyRecordListData(items: [], total: 1500)),
       );
 
       final result = await repository.syncToRecords([_metric()]);

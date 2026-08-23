@@ -309,63 +309,62 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final List<DailyRecordItem> waterRecords;
 
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async => DailyRecordListData(
-    items: kind == DailyRecordKind.water.name ? waterRecords : const [],
-    total: kind == DailyRecordKind.water.name ? waterRecords.length : 0,
+  }) => TaskEither.right(
+    DailyRecordListData(
+      items: kind == DailyRecordKind.water.name ? waterRecords : const [],
+      total: kind == DailyRecordKind.water.name ? waterRecords.length : 0,
+    ),
   );
 
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async {
-    return const DailyRecordSummaryData(
-      summaries: [DailyRecordSummary(kind: DailyRecordKind.water, count: 3)],
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) {
+    return TaskEither.right(
+      const DailyRecordSummaryData(
+        summaries: [DailyRecordSummary(kind: DailyRecordKind.water, count: 3)],
+      ),
     );
   }
 
   @override
-  Future<DailyRecordItem> get(String id) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) =>
+      throw UnimplementedError();
 
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async {
-    return const DailyRecordCandidateResult(
+  }) => TaskEither.right(
+    const DailyRecordCandidateResult(
       locale: 'zh-CN',
       generatedAt: '2026-06-14T00:00:00.000Z',
       confirmationHint: '确认后再保存。',
       items: <DailyRecordCandidateItem>[],
-    );
-  }
+    ),
+  );
 
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordItem> update(
+  TaskEither<LucentFailure, DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<void> delete(String id) async {}
+  TaskEither<LucentFailure, void> delete(String id) => TaskEither.right(null);
 }
 
 DailyRecordItem _waterRecord({
@@ -477,14 +476,16 @@ MedicineReminderItem _reminder({
 
 class _ThrowingWaterDailyRecordRepository extends _FakeDailyRecordRepository {
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async {
+  }) {
     if (kind == DailyRecordKind.water.name) {
-      throw StateError('water records unavailable');
+      return TaskEither.left(
+        LucentFailure.unknown(message: 'water records unavailable'),
+      );
     }
     return super.fetchRecords(date, kind: kind, page: page, pageSize: pageSize);
   }

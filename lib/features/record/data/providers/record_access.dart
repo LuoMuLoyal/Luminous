@@ -86,24 +86,30 @@ RecordRepository recordRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-Future<DailyRecordItem> dailyRecordDetail(Ref ref, String id) {
-  return ref
+Future<DailyRecordItem> dailyRecordDetail(Ref ref, String id) async {
+  final result = await ref
       .watch(dailyRecordRepositoryProvider)
       .get(id)
+      .run()
       .timeout(
         const Duration(seconds: 5),
         onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
       );
+  // Left 投影到 AsyncValue.error。
+  return result.fold((failure) => throw failure, (value) => value);
 }
 
 /// Fetches the full daily-record list for [date] (formatted as a local date
 /// key), used by the record detail page for adjacent-record navigation and
 /// same-day water aggregation.
 final dailyRecordListForDateProvider =
-    FutureProvider.family<DailyRecordListData, DateTime>((ref, date) {
-      return ref
+    FutureProvider.family<DailyRecordListData, DateTime>((ref, date) async {
+      final result = await ref
           .watch(dailyRecordRepositoryProvider)
-          .fetchRecords(_localDateKey(date), pageSize: 200);
+          .fetchRecords(_localDateKey(date), pageSize: 200)
+          .run();
+      // Left 投影到 AsyncValue.error。
+      return result.fold((failure) => throw failure, (data) => data);
     });
 
 /// Formats [date] as `yyyy-MM-dd` in local time, matching the daily-record

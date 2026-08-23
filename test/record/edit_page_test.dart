@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -22,79 +24,74 @@ class _FakeRecordRepo extends DailyRecordRepository {
   DailyRecordUpdateInput? lastUpdateInput;
 
   @override
-  Future<DailyRecordItem> get(String id) async {
-    return DailyRecordItem(
-      id: id,
-      kind: DailyRecordKind.meal,
-      occurredAt: '2026-06-10',
-      title: 'Test Meal',
-      payload: const {
-        'mealInput': {
-          'recognizedDishes': [
-            {'rawName': '西红柿炒鸡蛋'},
-            {'rawName': '米饭'},
-          ],
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) {
+    return TaskEither.right(
+      DailyRecordItem(
+        id: id,
+        kind: DailyRecordKind.meal,
+        occurredAt: '2026-06-10',
+        title: 'Test Meal',
+        payload: const {
+          'mealInput': {
+            'recognizedDishes': [
+              {'rawName': '西红柿炒鸡蛋'},
+              {'rawName': '米饭'},
+            ],
+          },
+          'mealAnalysis': {
+            'analysisStatus': 'unconfirmed',
+            'recognizedDishes': [
+              {'rawName': '西红柿炒鸡蛋'},
+              {'rawName': '米饭'},
+            ],
+          },
         },
-        'mealAnalysis': {
-          'analysisStatus': 'unconfirmed',
-          'recognizedDishes': [
-            {'rawName': '西红柿炒鸡蛋'},
-            {'rawName': '米饭'},
-          ],
-        },
-      },
-      attachments: const <DailyRecordAttachment>[],
-      createdAt: '2026-06-10T08:00:00.000Z',
-      updatedAt: '2026-06-10T08:00:00.000Z',
+        attachments: const <DailyRecordAttachment>[],
+        createdAt: '2026-06-10T08:00:00.000Z',
+        updatedAt: '2026-06-10T08:00:00.000Z',
+      ),
     );
   }
 
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async {
-    throw UnimplementedError();
-  }
+  }) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) =>
+      throw UnimplementedError();
 
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async {
-    throw UnimplementedError();
-  }
+  }) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordItem> update(
+  TaskEither<LucentFailure, DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async {
+  ) {
     lastUpdateInput = input;
     return get(id);
   }
 
   @override
-  Future<void> delete(String id) async {}
+  TaskEither<LucentFailure, void> delete(String id) => TaskEither.right(null);
 }
 
 void main() {

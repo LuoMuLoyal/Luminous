@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
@@ -80,34 +81,56 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     try {
       final result = await ref
           .read(dailyRecordRepositoryProvider)
-          .generateCandidates(text: text, occurredAt: occurredAt);
-      state = state.copyWith(
-        status: RecordNlpStatus.reviewing,
-        resultMeta: RecordNlpResultMeta.fromResult(result),
-        candidates: result.items
-            .map(RecordNlpCandidateDraft.fromCandidate)
-            .toList(growable: false),
-        errorMessage: null,
+          .generateCandidates(text: text, occurredAt: occurredAt)
+          .run();
+      final nextState = result.fold(
+        (failure) =>
+            _onGenerateFailure(failure, previousCandidates, previousMetadata),
+        (result) {
+          state = state.copyWith(
+            status: RecordNlpStatus.reviewing,
+            resultMeta: RecordNlpResultMeta.fromResult(result),
+            candidates: result.items
+                .map(RecordNlpCandidateDraft.fromCandidate)
+                .toList(growable: false),
+            errorMessage: null,
+          );
+          return state;
+        },
       );
-      return state;
-    } catch (error) {
+      return nextState;
+    } catch (error, st) {
       ref
           .read(talkerProvider)
-          .error('RecordNlpController.generate: failed: $error');
-      final apiError = LucentErrorMapper.fromObject(error);
-      final hasPreviousCandidates = previousCandidates.isNotEmpty;
-      state = state.copyWith(
-        // 保留旧候选时回到 reviewing；只有无候选可回退时才进入 error。
-        status: hasPreviousCandidates
-            ? RecordNlpStatus.reviewing
-            : RecordNlpStatus.error,
-        resultMeta: previousMetadata,
-        candidates: previousCandidates,
-        // errorMessage 仅伴随 error 状态展示，避免"审查中 + 错误横幅"并存。
-        errorMessage: hasPreviousCandidates ? null : apiError.message,
+          .error('RecordNlpController.generate: failed: $error', st);
+      return _onGenerateFailure(
+        LucentErrorMapper.fromObject(error),
+        previousCandidates,
+        previousMetadata,
       );
-      return state;
     }
+  }
+
+  /// Projects a generate failure into the controller state: with previous
+  /// candidates the flow returns to reviewing; only with nothing to fall back
+  /// to does it enter the error state.
+  RecordNlpState _onGenerateFailure(
+    LucentFailure failure,
+    List<RecordNlpCandidateDraft> previousCandidates,
+    RecordNlpResultMeta? previousMetadata,
+  ) {
+    final hasPreviousCandidates = previousCandidates.isNotEmpty;
+    state = state.copyWith(
+      // 保留旧候选时回到 reviewing；只有无候选可回退时才进入 error。
+      status: hasPreviousCandidates
+          ? RecordNlpStatus.reviewing
+          : RecordNlpStatus.error,
+      resultMeta: previousMetadata,
+      candidates: previousCandidates,
+      // errorMessage 仅伴随 error 状态展示，避免"审查中 + 错误横幅"并存。
+      errorMessage: hasPreviousCandidates ? null : failure.message,
+    );
+    return state;
   }
 
   Future<RecordNlpSaveOutcome> saveSelected() async {
@@ -144,8 +167,16 @@ class RecordNlpController extends Notifier<RecordNlpState> {
       targetIndexes.map((index) async {
         final item = currentCandidates[index];
         try {
-          await repo.create(item.toCreateInput());
-          return (index: index, success: true, error: null as String?);
+          final result = await repo.create(item.toCreateInput()).run();
+          return result.fold((failure) {
+            ref
+                .read(talkerProvider)
+                .error(
+                  'RecordNlpController._saveCandidates: failed: '
+                  '$failure',
+                );
+            return (index: index, success: false, error: failure.message);
+          }, (_) => (index: index, success: true, error: null as String?));
         } catch (error) {
           ref
               .read(talkerProvider)

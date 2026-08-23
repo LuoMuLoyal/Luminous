@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -82,92 +84,99 @@ class _FakeRepo extends DailyRecordRepository {
   }
 
   @override
-  Future<DailyRecordItem> get(String id) async => _mealItem(id);
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) =>
+      TaskEither.right(_mealItem(id));
 
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async => throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async =>
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) =>
       throw UnimplementedError();
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async => throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async => throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async =>
-      throw UnimplementedError();
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) => throw UnimplementedError();
   @override
-  Future<DailyRecordItem> update(
+  TaskEither<LucentFailure, DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async {
+  ) {
     lastUpdateId = id;
     lastUpdateInput = input;
-    if (updateThrows) throw Exception('update failed');
+    if (updateThrows) {
+      return TaskEither.left(LucentFailure.unknown(message: 'update failed'));
+    }
     _analysisStatus = 'confirmed';
-    return _mealItem(id);
+    return TaskEither.right(_mealItem(id));
   }
 
   @override
-  Future<void> delete(String id) async {}
+  TaskEither<LucentFailure, void> delete(String id) => TaskEither.right(null);
 }
 
 /// Fake repository that returns same-day water records plus the viewed record.
 class _WaterFakeRepo extends DailyRecordRepository {
   @override
-  Future<DailyRecordItem> get(String id) async {
-    return _waterRecord(id: id, value: '300');
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) {
+    return TaskEither.right(_waterRecord(id: id, value: '300'));
   }
 
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async {
-    return DailyRecordListData(
-      items: [
-        _waterRecord(id: 'water-1', value: '250'),
-        _waterRecord(id: 'water-2', value: '300'),
-        _waterRecord(id: 'water-3', value: '1', unit: 'cup'),
-      ],
-      total: 3,
+  }) {
+    return TaskEither.right(
+      DailyRecordListData(
+        items: [
+          _waterRecord(id: 'water-1', value: '250'),
+          _waterRecord(id: 'water-2', value: '300'),
+          _waterRecord(id: 'water-3', value: '1', unit: 'cup'),
+        ],
+        total: 3,
+      ),
     );
   }
 
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async =>
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) =>
       throw UnimplementedError();
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async => throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async => throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async =>
-      throw UnimplementedError();
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) => throw UnimplementedError();
   @override
-  Future<DailyRecordItem> update(
+  TaskEither<LucentFailure, DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async => throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
-  Future<void> delete(String id) async {}
+  TaskEither<LucentFailure, void> delete(String id) => TaskEither.right(null);
 
   DailyRecordItem _waterRecord({
     required String id,

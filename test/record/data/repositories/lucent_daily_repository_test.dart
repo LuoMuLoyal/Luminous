@@ -4,7 +4,8 @@ import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/error.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
 import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
@@ -13,6 +14,8 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+
+import '../../../helpers/task_either.dart';
 
 void main() {
   late _FakeDailyRecordRemoteDataSource dataSource;
@@ -48,7 +51,9 @@ void main() {
         () => dao.fetchByDate('2026-07-12', kind: null),
       ).thenAnswer((_) async => [cachedJson]);
 
-      final result = await repository.fetchRecords('2026-07-12');
+      final result = await expectTaskRight(
+        repository.fetchRecords('2026-07-12'),
+      );
 
       expect(result.items, hasLength(1));
       expect(result.items.first.id, 'cached-1');
@@ -70,7 +75,9 @@ void main() {
           ),
         ).thenAnswer((_) async {});
 
-        final result = await repository.fetchRecords('2026-07-12');
+        final result = await expectTaskRight(
+          repository.fetchRecords('2026-07-12'),
+        );
 
         expect(result.items, hasLength(2));
         expect(result.items.first.id, 'remote-1');
@@ -85,17 +92,40 @@ void main() {
       },
     );
 
-    test('throws AppError when network fails and cache is empty', () async {
-      when(
-        () => dao.fetchByDate('2026-07-12', kind: null),
-      ).thenAnswer((_) async => []);
-      dataSource.fetchRecordsShouldFail = true;
+    test(
+      'returns Left(network) when network fails and cache is empty',
+      () async {
+        when(
+          () => dao.fetchByDate('2026-07-12', kind: null),
+        ).thenAnswer((_) async => []);
+        dataSource.fetchRecordsShouldFail = true;
 
-      expect(
-        () => repository.fetchRecords('2026-07-12'),
-        throwsA(isA<AppError>()),
-      );
-    });
+        final failure = await expectTaskLeft(
+          repository.fetchRecords('2026-07-12'),
+        );
+
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.connectionError);
+      },
+    );
+
+    test(
+      'returns Left(business, RECORD_NOT_FOUND) on 404 Problem Details',
+      () async {
+        when(
+          () => dao.fetchByDate('2026-07-12', kind: null),
+        ).thenAnswer((_) async => []);
+        dataSource.fetchRecordsNotFound = true;
+
+        final failure = await expectTaskLeft(
+          repository.fetchRecords('2026-07-12'),
+        );
+
+        expect(failure.code, 'RECORD_NOT_FOUND');
+        expect(failure.statusCode, 404);
+        expect(failure.kind, LucentFailureKind.business);
+      },
+    );
 
     test('filters by kind when provided', () async {
       final cachedItem = _makeItem(id: 'water-1');
@@ -103,7 +133,9 @@ void main() {
         () => dao.fetchByDate('2026-07-12', kind: 'water'),
       ).thenAnswer((_) async => [DailyRecordJsonCodec.itemToJson(cachedItem)]);
 
-      final result = await repository.fetchRecords('2026-07-12', kind: 'water');
+      final result = await expectTaskRight(
+        repository.fetchRecords('2026-07-12', kind: 'water'),
+      );
 
       expect(result.items.first.id, 'water-1');
       verify(() => dao.fetchByDate('2026-07-12', kind: 'water')).called(1);
@@ -112,7 +144,9 @@ void main() {
 
   group('LucentDailyRecordRepository — fetchSummary', () {
     test('delegates to data source', () async {
-      final result = await repository.fetchSummary('2026-07-12');
+      final result = await expectTaskRight(
+        repository.fetchSummary('2026-07-12'),
+      );
       expect(result.summaries, hasLength(1));
       expect(result.summaries.first.kind, DailyRecordKind.water);
     });
@@ -120,7 +154,7 @@ void main() {
 
   group('LucentDailyRecordRepository — get', () {
     test('delegates to data source', () async {
-      final result = await repository.get('item-1');
+      final result = await expectTaskRight(repository.get('item-1'));
       expect(result.id, 'remote-get-1');
     });
   });
@@ -132,16 +166,15 @@ void main() {
         contentType: 'image/jpeg',
         sizeBytes: 3,
       );
-      final result = await repository.uploadImage(input);
+      final result = await expectTaskRight(repository.uploadImage(input));
       expect(result.objectKey, 'test-key');
     });
   });
 
   group('LucentDailyRecordRepository — generateCandidates', () {
     test('delegates to data source', () async {
-      final result = await repository.generateCandidates(
-        text: '喝了一杯水',
-        occurredAt: '2026-07-12',
+      final result = await expectTaskRight(
+        repository.generateCandidates(text: '喝了一杯水', occurredAt: '2026-07-12'),
       );
       expect(result.locale, 'zh');
       expect(result.items, hasLength(1));
@@ -157,7 +190,9 @@ void main() {
         ).thenAnswer((_) async => 'local_temp');
         when(() => dao.confirmSync(any(), any())).thenAnswer((_) async {});
 
-        final result = await repository.create(_dummyCreateInput);
+        final result = await expectTaskRight(
+          repository.create(_dummyCreateInput),
+        );
 
         expect(result.id, 'remote-create-1');
         verify(() => dao.insertOptimistic(any(), any())).called(1);
@@ -166,7 +201,7 @@ void main() {
     );
 
     test(
-      'enqueues pending sync and returns optimistic item on network failure',
+      'enqueues pending sync and returns Left(network) on network failure',
       () async {
         when(
           () => dao.insertOptimistic(any(), any()),
@@ -182,10 +217,11 @@ void main() {
 
         dataSource.createShouldFail = true;
 
-        final result = await repository.create(_dummyCreateInput);
+        final failure = await expectTaskLeft(
+          repository.create(_dummyCreateInput),
+        );
 
-        expect(result.id, startsWith('local_'));
-        expect(result.source, 'local');
+        expect(failure.kind, LucentFailureKind.network);
         verify(
           () => pendingSyncDao.enqueue(
             entityType: 'daily_record',
@@ -198,43 +234,77 @@ void main() {
       },
     );
 
-    test('does not enqueue when pendingSyncDao is null', () async {
-      repository = LucentDailyRecordRepository(
-        dataSource: dataSource,
-        dao: dao,
-      );
+    test(
+      'does not enqueue when pendingSyncDao is null and still returns Left',
+      () async {
+        repository = LucentDailyRecordRepository(
+          dataSource: dataSource,
+          dao: dao,
+        );
 
-      when(
-        () => dao.insertOptimistic(any(), any()),
-      ).thenAnswer((_) async => 'local_temp');
-      dataSource.createShouldFail = true;
+        when(
+          () => dao.insertOptimistic(any(), any()),
+        ).thenAnswer((_) async => 'local_temp');
+        dataSource.createShouldFail = true;
 
-      final result = await repository.create(_dummyCreateInput);
+        final failure = await expectTaskLeft(
+          repository.create(_dummyCreateInput),
+        );
 
-      expect(result.id, startsWith('local_'));
-      verifyNever(
-        () => pendingSyncDao.enqueue(
-          entityType: any(named: 'entityType'),
-          entityId: any(named: 'entityId'),
-          operation: any(named: 'operation'),
-          payload: any(named: 'payload'),
-        ),
-      );
-    });
+        expect(failure.kind, LucentFailureKind.network);
+        verifyNever(
+          () => pendingSyncDao.enqueue(
+            entityType: any(named: 'entityType'),
+            entityId: any(named: 'entityId'),
+            operation: any(named: 'operation'),
+            payload: any(named: 'payload'),
+          ),
+        );
+      },
+    );
+
+    test(
+      'enqueue failure does not mask the original network failure',
+      () async {
+        when(
+          () => dao.insertOptimistic(any(), any()),
+        ).thenAnswer((_) async => 'local_temp');
+        when(
+          () => pendingSyncDao.enqueue(
+            entityType: any(named: 'entityType'),
+            entityId: any(named: 'entityId'),
+            operation: any(named: 'operation'),
+            payload: any(named: 'payload'),
+          ),
+        ).thenThrow(StateError('local db write failed'));
+
+        dataSource.createShouldFail = true;
+
+        final failure = await expectTaskLeft(
+          repository.create(_dummyCreateInput),
+        );
+
+        // 入队（本地 DB 写）失败不得掩盖原始网络失败 kind。
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.connectionError);
+      },
+    );
   });
 
   group('LucentDailyRecordRepository — update', () {
     test('updates cache with confirmed server response on success', () async {
       when(() => dao.updateData(any(), any())).thenAnswer((_) async {});
 
-      final result = await repository.update('item-1', _dummyUpdateInput);
+      final result = await expectTaskRight(
+        repository.update('item-1', _dummyUpdateInput),
+      );
 
       expect(result.id, 'remote-update-1');
       verify(() => dao.updateData('item-1', any())).called(1);
     });
 
     test(
-      'enqueues pending sync and throws AppError on network failure',
+      'enqueues pending sync and returns Left(network) on network failure',
       () async {
         when(
           () => pendingSyncDao.enqueue(
@@ -247,14 +317,11 @@ void main() {
 
         dataSource.updateShouldFail = true;
 
-        expect(
-          () => repository.update('item-1', _dummyUpdateInput),
-          throwsA(isA<AppError>()),
+        final failure = await expectTaskLeft(
+          repository.update('item-1', _dummyUpdateInput),
         );
 
-        // Wait for the async enqueue to complete
-        await Future.delayed(Duration.zero);
-
+        expect(failure.kind, LucentFailureKind.network);
         verify(
           () => pendingSyncDao.enqueue(
             entityType: 'daily_record',
@@ -272,13 +339,13 @@ void main() {
     test('deletes from remote and cache on success', () async {
       when(() => dao.deleteById(any())).thenAnswer((_) async {});
 
-      await repository.delete('item-1');
+      await expectTaskRight(repository.delete('item-1'));
 
       verify(() => dao.deleteById('item-1')).called(1);
     });
 
     test(
-      'enqueues pending sync and throws AppError on network failure',
+      'enqueues pending sync and returns Left(network) on network failure',
       () async {
         when(
           () => pendingSyncDao.enqueue(
@@ -291,10 +358,9 @@ void main() {
 
         dataSource.deleteShouldFail = true;
 
-        expect(() => repository.delete('item-1'), throwsA(isA<AppError>()));
+        final failure = await expectTaskLeft(repository.delete('item-1'));
 
-        await Future.delayed(Duration.zero);
-
+        expect(failure.kind, LucentFailureKind.network);
         verify(
           () => pendingSyncDao.enqueue(
             entityType: 'daily_record',
@@ -306,31 +372,6 @@ void main() {
         expect(syncWorker.flushCalled, isTrue);
       },
     );
-  });
-
-  group('LucentDailyRecordRepository — fetchRecordsResult extension', () {
-    test('returns Success on normal fetch', () async {
-      when(
-        () => dao.fetchByDate('2026-07-12', kind: null),
-      ).thenAnswer((_) async => [_dummyJson]);
-
-      final result = await repository.fetchRecordsResult('2026-07-12');
-
-      expect(result.isSuccess, isTrue);
-      expect(result.valueOrNull, isNotNull);
-    });
-
-    test('returns Failure on DioException', () async {
-      when(
-        () => dao.fetchByDate('2026-07-12', kind: null),
-      ).thenAnswer((_) async => []);
-      dataSource.fetchRecordsShouldFail = true;
-
-      final result = await repository.fetchRecordsResult('2026-07-12');
-
-      expect(result.isFailure, isTrue);
-      expect(result.errorOrNull, isA<AppError>());
-    });
   });
 }
 
@@ -348,6 +389,7 @@ class _FakeDailyRecordRemoteDataSource extends DailyRecordRemoteDataSource {
       );
 
   bool fetchRecordsShouldFail = false;
+  bool fetchRecordsNotFound = false;
   bool createShouldFail = false;
   bool updateShouldFail = false;
   bool deleteShouldFail = false;
@@ -364,6 +406,9 @@ class _FakeDailyRecordRemoteDataSource extends DailyRecordRemoteDataSource {
         requestOptions: RequestOptions(path: '/daily-records'),
         type: DioExceptionType.connectionError,
       );
+    }
+    if (fetchRecordsNotFound) {
+      throw _problemDetails404();
     }
     return DailyRecordListData(
       items: [
@@ -477,6 +522,29 @@ class _FakeSyncWorker extends SyncWorker {
 // Helpers
 // ---------------------------------------------------------------------------
 
+/// A 404 RFC 9457 Problem Details body served with
+/// `application/problem+json` (server business failure).
+DioException _problemDetails404() {
+  return DioException(
+    requestOptions: RequestOptions(path: '/daily-records'),
+    type: DioExceptionType.badResponse,
+    response: Response(
+      requestOptions: RequestOptions(path: '/daily-records'),
+      statusCode: 404,
+      headers: Headers.fromMap({
+        Headers.contentTypeHeader: ['application/problem+json'],
+      }),
+      data: {
+        'type': 'https://api.lumos.example/problems/RECORD_NOT_FOUND',
+        'title': 'Not found',
+        'detail': '记录不存在',
+        'code': 'RECORD_NOT_FOUND',
+        'retryable': false,
+      },
+    ),
+  );
+}
+
 DailyRecordItem _makeItem({required String id, String? source}) {
   return DailyRecordItem(
     id: id,
@@ -507,5 +575,3 @@ const _dummyImageUploadInput = DailyRecordImageUploadInput(
   contentType: 'image/jpeg',
   sizeBytes: 3,
 );
-
-final _dummyJson = DailyRecordJsonCodec.itemToJson(_makeItem(id: 'json-1'));

@@ -253,7 +253,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
   Future<void> _saveChoice(RecordFastChoice choice) async {
     setState(() => _saving = true);
     try {
-      final item = await ref
+      final result = await ref
           .read(dailyRecordRepositoryProvider)
           .create(
             DailyRecordCreateInput(
@@ -266,7 +266,9 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
               note: choice.note,
               payload: choice.payload,
             ),
-          );
+          )
+          .run();
+      final item = result.fold((failure) => throw failure, (item) => item);
 
       ref
           .read(dataChangeBusProvider.notifier)
@@ -315,9 +317,11 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
     ];
 
     setState(() => _saving = true);
+    final repository = ref.read(dailyRecordRepositoryProvider);
     final result =
         await SymptomQuickEntryFlow(
-          createRecord: ref.read(dailyRecordRepositoryProvider).create,
+          createRecord: (input) async => (await repository.create(input).run())
+              .fold((failure) => throw failure, (item) => item),
           emitDataChange: (topic) =>
               ref.read(dataChangeBusProvider.notifier).emit(topic),
           registerUndo: (_) {},
@@ -382,8 +386,10 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
 
   Future<void> _undoCreatedRecord(String recordId) async {
     try {
+      final repository = ref.read(dailyRecordRepositoryProvider);
       await QuickEntryUndoService(
-        deleteDailyRecord: ref.read(dailyRecordRepositoryProvider).delete,
+        deleteDailyRecord: (id) async => (await repository.delete(id).run())
+            .fold((failure) => throw failure, (_) {}),
         emitDataChange: (topic) =>
             ref.read(dataChangeBusProvider.notifier).emit(topic),
       ).undo(QuickEntryUndoAction.deleteDailyRecord(recordId: recordId));

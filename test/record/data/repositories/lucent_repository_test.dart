@@ -1,5 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -22,64 +25,64 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   String? lastFetchSummaryDate;
 
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async {
+  }) {
     lastFetchDate = date;
     lastFetchKind = kind;
     lastFetchPage = page;
     lastFetchPageSize = pageSize;
-    if (fetchRecordsError != null) throw fetchRecordsError!;
-    return fetchRecordsResult ?? const DailyRecordListData(items: [], total: 0);
+    if (fetchRecordsError != null) {
+      return TaskEither.left(LucentErrorMapper.fromObject(fetchRecordsError!));
+    }
+    return TaskEither.right(
+      fetchRecordsResult ?? const DailyRecordListData(items: [], total: 0),
+    );
   }
 
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async {
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) {
     lastFetchSummaryDate = date;
-    if (fetchSummaryError != null) throw fetchSummaryError!;
-    return fetchSummaryResult ?? const DailyRecordSummaryData(summaries: []);
+    if (fetchSummaryError != null) {
+      return TaskEither.left(LucentErrorMapper.fromObject(fetchSummaryError!));
+    }
+    return TaskEither.right(
+      fetchSummaryResult ?? const DailyRecordSummaryData(summaries: []),
+    );
   }
 
   @override
-  Future<DailyRecordItem> get(String id) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) =>
+      throw UnimplementedError();
 
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async {
-    throw UnimplementedError();
-  }
+  }) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) => throw UnimplementedError();
 
   @override
-  Future<DailyRecordItem> update(
+  TaskEither<LucentFailure, DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<void> delete(String id) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, void> delete(String id) =>
+      throw UnimplementedError();
 }
 
 DailyRecordItem _item({
@@ -127,6 +130,20 @@ void main() {
     repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
   });
 
+  /// Runs the repository's dashboard task, failing the test on Left.
+  Future<RecordDashboard> fetchDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) async {
+    final result = await repo
+        .fetchDashboard(selectedDate, filterType: filterType)
+        .run();
+    return result.fold(
+      (failure) => fail('expected Right, got Left: $failure'),
+      (dashboard) => dashboard,
+    );
+  }
+
   // ── fetchDashboard — basic orchestration ─────────────────────
   group('fetchDashboard', () {
     test('returns dashboard with empty timeline when no records', () async {
@@ -135,7 +152,7 @@ void main() {
         total: 0,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.selectedDate, DateTime(2026, 7, 14));
       expect(dashboard.selectedDay, 14);
@@ -159,7 +176,7 @@ void main() {
           total: 2,
         );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
         expect(dashboard.timeline, hasLength(2));
         expect(dashboard.timeline[0].recordId, 'r1');
@@ -173,7 +190,7 @@ void main() {
         total: 0,
       );
 
-      await repo.fetchDashboard(DateTime(2026, 3, 5));
+      await fetchDashboard(DateTime(2026, 3, 5));
 
       expect(dailyRepo.lastFetchDate, '2026-03-05');
     });
@@ -184,7 +201,7 @@ void main() {
         total: 0,
       );
 
-      await repo.fetchDashboard(
+      await fetchDashboard(
         DateTime(2026, 7, 14),
         filterType: RecordEntryType.water,
       );
@@ -198,7 +215,7 @@ void main() {
         total: 0,
       );
 
-      await repo.fetchDashboard(DateTime(2026, 7, 14));
+      await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dailyRepo.lastFetchKind, isNull);
     });
@@ -211,7 +228,7 @@ void main() {
           total: 0,
         );
 
-        await repo.fetchDashboard(
+        await fetchDashboard(
           DateTime(2026, 7, 14),
           filterType: RecordEntryType.medication,
         );
@@ -224,7 +241,7 @@ void main() {
     test('returns empty timeline when fetchRecords throws', () async {
       dailyRepo.fetchRecordsError = Exception('Network error');
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline, isEmpty);
     });
@@ -235,7 +252,7 @@ void main() {
         total: 0,
       );
 
-      await repo.fetchDashboard(DateTime(2026, 7, 14));
+      await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dailyRepo.lastFetchDate, '2026-07-14');
       expect(dailyRepo.lastFetchSummaryDate, '2026-07-14');
@@ -275,7 +292,7 @@ void main() {
         ],
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       final water = dashboard.summary.items.firstWhere(
         (item) => item.type == RecordEntryType.water,
@@ -309,7 +326,7 @@ void main() {
         summaries: [DailyRecordSummary(kind: DailyRecordKind.water, count: 3)],
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       final water = dashboard.summary.items.single;
       expect(water.value, '3');
@@ -335,7 +352,7 @@ void main() {
         ],
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       final vital = dashboard.summary.items.single;
       expect(vital.type, RecordEntryType.vitals);
@@ -358,7 +375,7 @@ void main() {
           ],
         );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
         final vital = dashboard.summary.items.single;
         expect(vital.value, '2');
@@ -379,7 +396,7 @@ void main() {
         ],
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.summary.items, hasLength(1));
       expect(dashboard.summary.items.first.type, RecordEntryType.meal);
@@ -399,7 +416,7 @@ void main() {
         ],
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.summary.items, isEmpty);
     });
@@ -418,7 +435,7 @@ void main() {
       );
       dailyRepo.fetchSummaryError = Exception('Summary error');
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.summary.items, isEmpty);
       // Timeline is not affected by a summary failure.
@@ -446,7 +463,7 @@ void main() {
           total: 1,
         );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
         expect(dashboard.timeline.first.icon, expectedIcon);
       });
@@ -461,7 +478,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.rawTitle, 'Morning Water');
     });
@@ -478,7 +495,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.rawTitle, 'Rice with chicken');
     });
@@ -498,7 +515,7 @@ void main() {
           total: 1,
         );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
         // rawTitle falls back to "kind value" format
         expect(dashboard.timeline.first.rawTitle, isNotNull);
@@ -513,7 +530,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.rawTitle, isNull);
     });
@@ -524,7 +541,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.rawTitle, isNull);
     });
@@ -538,7 +555,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.value, '500 ml');
     });
@@ -555,7 +572,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.value, 'Feeling good today');
     });
@@ -572,7 +589,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.value, '7h 30m');
     });
@@ -589,7 +606,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.value, '7h');
     });
@@ -606,7 +623,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.value, '30m');
     });
@@ -623,7 +640,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.value, isNull);
     });
@@ -642,7 +659,7 @@ void main() {
           total: 1,
         );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
         expect(dashboard.timeline.first.value, isNull);
       },
@@ -660,7 +677,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.value, isNull);
     });
@@ -676,7 +693,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.value, 'Light breakfast');
     });
@@ -701,7 +718,7 @@ void main() {
           total: 1,
         );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
         expect(dashboard.timeline.first.valueKey, expectedKey);
       });
@@ -718,7 +735,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.valueKey, isNull);
     });
@@ -731,7 +748,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.valueKey, isNull);
     });
@@ -744,7 +761,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.valueKey, isNull);
     });
@@ -755,7 +772,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.valueKey, isNull);
     });
@@ -781,7 +798,7 @@ void main() {
           total: 1,
         );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
         expect(dashboard.timeline.first.badgeKey, expectedKey);
       });
@@ -795,7 +812,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.badgeKey, isNull);
     });
@@ -821,7 +838,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(
         dashboard.timeline.first.imageUrl,
@@ -847,7 +864,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.imageUrl, isNull);
     });
@@ -858,7 +875,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.imageUrl, isNull);
     });
@@ -877,7 +894,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.rawDetail, isNotNull);
       expect(dashboard.timeline.first.rawDetail, contains('Rice'));
@@ -891,7 +908,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.rawDetail, isNull);
     });
@@ -902,7 +919,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline, hasLength(1));
       expect(dashboard.timeline.first.type, RecordEntryType.vitals);
@@ -914,7 +931,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline, hasLength(1));
       expect(dashboard.timeline.first.type, RecordEntryType.activity);
@@ -928,7 +945,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.rawDetail, isNull);
     });
@@ -942,7 +959,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.time, '14:30');
     });
@@ -953,7 +970,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.time, '—');
     });
@@ -964,7 +981,7 @@ void main() {
         total: 1,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.timeline.first.time, '—');
     });
@@ -978,7 +995,7 @@ void main() {
         total: 0,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       // July 2026: July 1 is Wednesday (weekday=3), so 2 offset days
       // 2 offset + 31 days = 33 total
@@ -991,7 +1008,7 @@ void main() {
         total: 0,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       // July 1, 2026 is Wednesday, so offset = 2
       expect(dashboard.monthDays[0].day, 0);
@@ -1006,7 +1023,7 @@ void main() {
         total: 0,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       final selectedDays = dashboard.monthDays.where((d) => d.selected);
       expect(selectedDays, hasLength(1));
@@ -1019,7 +1036,7 @@ void main() {
         total: 0,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       final inMonthDays = dashboard.monthDays.where((d) => d.inMonth);
       expect(inMonthDays, hasLength(31));
@@ -1041,7 +1058,7 @@ void main() {
           total: 0,
         );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
         expect(dashboard.filters, isNotEmpty);
         for (final filter in dashboard.filters) {
@@ -1058,7 +1075,7 @@ void main() {
           total: 0,
         );
 
-        final dashboard = await repo.fetchDashboard(
+        final dashboard = await fetchDashboard(
           DateTime(2026, 7, 14),
           filterType: RecordEntryType.water,
         );
@@ -1086,7 +1103,7 @@ void main() {
         total: 0,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       expect(dashboard.quickActions, isNotEmpty);
     });
@@ -1097,7 +1114,7 @@ void main() {
         total: 0,
       );
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
       for (final action in dashboard.quickActions) {
         expect(action.type, isNot(RecordEntryType.heartRate));

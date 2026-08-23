@@ -46,16 +46,23 @@ Future<RecordDashboard> recordDashboard(Ref ref) async {
   final selectedDate = ref.watch(selectedRecordDateProvider);
   final selectedFilter = ref.watch(selectedRecordFilterProvider);
 
+  // The record repository degrades the timeline/summary on known upstream
+  // failures (empty degrade is product behaviour); a Left here means an
+  // unexpected error and is projected to AsyncValue.error.
   return authGuarded(
     ref: ref,
-    fetch: () => ref
-        .watch(recordRepositoryProvider)
-        .fetchDashboard(selectedDate, filterType: selectedFilter)
-        .timeout(
-          const Duration(seconds: 5),
-          onTimeout: () =>
-              throw TimeoutException('Record dashboard fetch timed out'),
-        ),
+    fetch: () async {
+      final result = await ref
+          .watch(recordRepositoryProvider)
+          .fetchDashboard(selectedDate, filterType: selectedFilter)
+          .run()
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('Record dashboard fetch timed out'),
+          );
+      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+    },
     signedOutFallback: () => ref
         .watch(recordRepositoryProvider)
         .signedOutDashboard(selectedDate, filterType: selectedFilter),

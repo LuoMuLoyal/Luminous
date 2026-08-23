@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/application/usecases/change_record_date.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
@@ -58,7 +59,7 @@ void main() {
     testWidgets('updates repo, bus, and selected date', (tester) async {
       when(
         () => repo.update(any(), any()),
-      ).thenAnswer((_) async => _FakeItem());
+      ).thenAnswer((_) => TaskEither.right(_FakeItem()));
 
       await pumpPage(tester);
       final newDate = DateTime(2026, 7, 15);
@@ -102,7 +103,7 @@ void main() {
     testWidgets('zero-padded yyyy-MM-dd format', (tester) async {
       when(
         () => repo.update(any(), any()),
-      ).thenAnswer((_) async => _FakeItem());
+      ).thenAnswer((_) => TaskEither.right(_FakeItem()));
 
       await pumpPage(tester);
 

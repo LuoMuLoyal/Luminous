@@ -46,7 +46,8 @@ Future<void> executeTodayWaterQuickEntry(
   QuickEntryUndoAction? undoAction;
   try {
     await WaterQuickEntryFlow(
-      createRecord: repository.create,
+      createRecord: (input) async => (await repository.create(input).run())
+          .fold((failure) => throw failure, (item) => item),
       emitDataChange: (topic) {
         ref.read(dataChangeBusProvider.notifier).emit(topic);
       },
@@ -89,7 +90,11 @@ Future<void> _undo(
   try {
     final repository = ref.read(dailyRecordRepositoryProvider);
     await QuickEntryUndoService(
-      deleteDailyRecord: repository.delete,
+      deleteDailyRecord: (recordId) async =>
+          (await repository.delete(recordId).run()).fold(
+            (failure) => throw failure,
+            (_) {},
+          ),
       emitDataChange: (topic) {
         ref.read(dataChangeBusProvider.notifier).emit(topic);
       },

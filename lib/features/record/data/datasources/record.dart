@@ -3,13 +3,26 @@ import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart'
     hide DailyRecordKind, DailyRecordAttachmentKind;
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 
+/// Remote data source for daily records.
+///
+/// Transport only: returns plain `Future` and throws `DioException` /
+/// `LucentFailure`; the repository boundary (`LucentDailyRecordRepository`)
+/// maps every failure via `LucentErrorMapper.fromObject`. An empty success
+/// body is a `LucentFailure.network(emptyResponse)` (today `ai_remote` /
+/// medicine `dose_log_remote` precedent — never a transport exception); a
+/// structurally malformed body or a delete status other than 204 is a thrown
+/// protocol exception (logged via [appTalker] for diagnosability) that
+/// surfaces as a `Left(unknown)` at the repository boundary.
 class DailyRecordRemoteDataSource {
   DailyRecordRemoteDataSource({required this.api, required this.dio});
 
@@ -33,7 +46,7 @@ class DailyRecordRemoteDataSource {
       page: page,
       pageSize: pageSize,
     );
-    final dto = requireData(response.data, operation: 'fetchRecords');
+    final dto = _requireData(response.data, operation: 'fetchRecords');
     return DailyRecordListData(
       items: dto.items.map(_toItem).toList(growable: false),
       total: dto.total,
@@ -42,7 +55,7 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
     final response = await api.dailyRecordsControllerSummaryV1(date: date);
-    final dto = requireData(response.data, operation: 'fetchSummary');
+    final dto = _requireData(response.data, operation: 'fetchSummary');
     return DailyRecordSummaryData(
       summaries: dto.summaries
           .mapIndexed(
@@ -58,7 +71,7 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordItem> get(String id) async {
     final response = await api.dailyRecordsControllerGetV1(id: id);
-    final dto = requireData(response.data, operation: 'get');
+    final dto = _requireData(response.data, operation: 'get');
     return _toItem(lucent.DailyRecordItemDto.fromJson(dto.toJson()));
   }
 
@@ -72,7 +85,7 @@ class DailyRecordRemoteDataSource {
         fileName: input.fileName,
       ),
     );
-    final upload = requireData(presignResponse.data, operation: 'uploadImage');
+    final upload = _requireData(presignResponse.data, operation: 'uploadImage');
     final headers = _coerceToStringMap(upload.headers);
 
     await dio.put<Object>(
@@ -112,7 +125,7 @@ class DailyRecordRemoteDataSource {
         occurredAt: occurredAt,
       ),
     );
-    final dto = requireData(response.data, operation: 'generateCandidates');
+    final dto = _requireData(response.data, operation: 'generateCandidates');
     return DailyRecordCandidateResult(
       locale: dto.locale,
       generatedAt: dto.generatedAt,
@@ -200,6 +213,13 @@ class DailyRecordRemoteDataSource {
     );
 
     if (response.statusCode != 204) {
+      // Protocol invariant: a delete that did not return 204 is a structural
+      // mismatch, logged for diagnosability and kept throwing; the repository
+      // boundary maps it to Left(unknown) with the original cause preserved.
+      appTalker.error(
+        'DailyRecordRemoteDataSource.delete: expected 204, got '
+        '${response.statusCode}.',
+      );
       throw StateError('Daily record delete returned ${response.statusCode}.');
     }
   }
@@ -215,12 +235,28 @@ class DailyRecordRemoteDataSource {
       options: Options(method: method, contentType: Headers.jsonContentType),
     );
 
-    final body = requireBody(
-      response,
-      message: 'Daily record response is empty.',
-    );
+    final body = coerceToStringMap(response.data);
+    if (body == null) {
+      throw LucentFailure.network(
+        message: 'Daily record response is empty.',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
 
     return lucent.DailyRecordItemDto.fromJson(body);
+  }
+
+  /// Extracts a non-null generated-client payload, throwing
+  /// [LucentFailure.network] (emptyResponse) when the success body is absent.
+  T _requireData<T>(T? data, {String? operation}) {
+    if (data == null) {
+      final context = operation == null ? '' : '（$operation）';
+      throw LucentFailure.network(
+        message: 'API 返回空响应体$context',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
+    return data;
   }
 
   DailyRecordItem _toItem(lucent.DailyRecordItemDto item) {

@@ -38,7 +38,11 @@ Future<void> deleteRecord({
   if (confirmed != true) return;
 
   try {
-    await ref.read(dailyRecordRepositoryProvider).delete(recordId);
+    final result = await ref
+        .read(dailyRecordRepositoryProvider)
+        .delete(recordId)
+        .run();
+    result.fold((failure) => throw failure, (_) {});
     ref.invalidate(dailyRecordDetailProvider(recordId));
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.dailyRecords);
     if (!context.mounted) return;

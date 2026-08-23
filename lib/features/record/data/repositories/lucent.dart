@@ -1,6 +1,9 @@
 import 'package:collection/collection.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
@@ -12,84 +15,95 @@ import 'package:luminous/features/record/presentation/utils/meal_analysis_payloa
 /// Lucent-backed implementation of [RecordRepository] that maps real daily
 /// records into the timeline while keeping other dashboard sections as static
 /// mock until their backend APIs exist.
+///
+/// Repository boundary: the daily-record inputs (timeline records, daily
+/// summary) are secondary dashboard signals — their failures degrade to
+/// empty and are observed via [appTalker] (product behaviour, same as the
+/// today dashboard degrade), never surfaced as a dashboard failure. Only
+/// unexpected errors (including a protocol `FormatException` escaping
+/// `.run()`) become a Left at this boundary.
 class LucentRecordRepository implements RecordRepository {
   LucentRecordRepository({required this.dailyRecordRepo});
 
   final DailyRecordRepository dailyRecordRepo;
 
   @override
-  Future<RecordDashboard> fetchDashboard(
+  TaskEither<LucentFailure, RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,
-  }) async {
-    final date = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-    );
-    final dateStr = formatRecordDate(date);
-    final selectedKind = filterType == null
-        ? null
-        : dailyRecordKindForEntryType(filterType);
-    final kind = selectedKind?.name;
+  }) {
+    return TaskEither.tryCatch(() async {
+      final date = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+      );
+      final dateStr = formatRecordDate(date);
+      final selectedKind = filterType == null
+          ? null
+          : dailyRecordKindForEntryType(filterType);
+      final kind = selectedKind?.name;
 
-    // Kick off the records and summary fetches in parallel: create both
-    // futures before awaiting either so the requests overlap. Each fetch is
-    // independently guarded — a summary failure degrades to an empty grid
-    // without affecting the timeline, mirroring the records failure path.
-    final recordsFuture = () async {
-      if (filterType != null &&
-          (selectedKind == null || !_isActiveRecordEntryType(filterType))) {
-        return <DailyRecordItem>[];
-      }
-      try {
-        final result = await dailyRecordRepo.fetchRecords(
-          dateStr,
-          kind: kind,
-          pageSize: 100,
+      // Kick off the records and summary fetches in parallel: create both
+      // futures before awaiting either so the requests overlap. Each fetch is
+      // independently guarded — a summary failure degrades to an empty grid
+      // without affecting the timeline, mirroring the records failure path.
+      final recordsFuture = () async {
+        if (filterType != null &&
+            (selectedKind == null || !_isActiveRecordEntryType(filterType))) {
+          return <DailyRecordItem>[];
+        }
+        final result = await dailyRecordRepo
+            .fetchRecords(dateStr, kind: kind, pageSize: 100)
+            .run();
+        return result.fold(
+          (failure) {
+            appTalker.error(
+              'LucentRecordRepository: fetchRecords failed: $failure',
+            );
+            return <DailyRecordItem>[];
+          },
+          (data) => data.items
+              .where((record) {
+                final type = recordEntryTypeForDailyRecordKind(record.kind);
+                return _isActiveRecordEntryType(type);
+              })
+              .toList(growable: false),
         );
-        return result.items
-            .where((record) {
-              final type = recordEntryTypeForDailyRecordKind(record.kind);
-              return _isActiveRecordEntryType(type);
-            })
-            .toList(growable: false);
-      } catch (e) {
-        appTalker.error('LucentRecordRepository: fetchRecords failed: $e');
-        return <DailyRecordItem>[];
-      }
-    }();
+      }();
 
-    final summaryFuture = () async {
-      try {
-        return await dailyRecordRepo.fetchSummary(dateStr);
-      } catch (e) {
-        appTalker.error('LucentRecordRepository: fetchSummary failed: $e');
-        return const DailyRecordSummaryData(summaries: []);
-      }
-    }();
+      final summaryFuture = () async {
+        final result = await dailyRecordRepo.fetchSummary(dateStr).run();
+        return result.fold((failure) {
+          appTalker.error(
+            'LucentRecordRepository: fetchSummary failed: $failure',
+          );
+          return const DailyRecordSummaryData(summaries: []);
+        }, (summary) => summary);
+      }();
 
-    final records = await recordsFuture;
-    final summaryData = await summaryFuture;
+      final records = await recordsFuture;
+      final summaryData = await summaryFuture;
 
-    final sortedRecords = List<DailyRecordItem>.from(records)
-      ..sort((a, b) {
-        final ta = a.occurredTime ?? a.occurredAt;
-        final tb = b.occurredTime ?? b.occurredAt;
-        return tb.compareTo(ta);
-      });
-    final timeline = sortedRecords.map(_toTimelineEntry).toList();
+      final sortedRecords = List<DailyRecordItem>.from(records)
+        ..sort((a, b) {
+          final ta = a.occurredTime ?? a.occurredAt;
+          final tb = b.occurredTime ?? b.occurredAt;
+          return tb.compareTo(ta);
+        });
+      final timeline = sortedRecords.map(_toTimelineEntry).toList();
 
-    return RecordDashboard(
-      selectedDate: date,
-      selectedDay: date.day,
-      monthDays: _staticMonthDays(date),
-      quickActions: _staticQuickActionsFor(),
-      summary: _toDaySummary(summaryData, records),
-      filters: _staticFiltersFor(filterType),
-      timeline: timeline,
-      trends: _staticTrends,
-    );
+      return RecordDashboard(
+        selectedDate: date,
+        selectedDay: date.day,
+        monthDays: _staticMonthDays(date),
+        quickActions: _staticQuickActionsFor(),
+        summary: _toDaySummary(summaryData, records),
+        filters: _staticFiltersFor(filterType),
+        timeline: timeline,
+        trends: _staticTrends,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   /// Maps backend daily-record summaries into the dashboard summary grid.

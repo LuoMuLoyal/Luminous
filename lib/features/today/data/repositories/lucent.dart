@@ -126,57 +126,76 @@ class LucentTodayRepository implements TodayRepository {
     var waterMetric = _unknownObservedMetric(dateStr);
     Map<String, dynamic>? sleepPayload;
     var summaryFailed = false;
-    try {
-      final summary = await dailyRecordRepository.fetchSummary(dateStr);
-      for (final s in summary.summaries) {
-        recordCounts[s.kind.name] = s.count;
-        recordLatest[s.kind.name] = s.latest?.value;
-        recordPayloads[s.kind.name] = s.latest?.payload;
-        if (s.kind.name == 'sleep') {
-          sleepPayload = s.latest?.payload;
+    final summaryResult = await dailyRecordRepository
+        .fetchSummary(dateStr)
+        .run();
+    summaryResult.fold(
+      (failure) {
+        talker.error('LucentTodayRepository: fetchSummary failed: $failure');
+        summaryFailed = true;
+        recordCounts.clear();
+        recordLatest.clear();
+        recordPayloads.clear();
+      },
+      (summary) {
+        for (final s in summary.summaries) {
+          recordCounts[s.kind.name] = s.count;
+          recordLatest[s.kind.name] = s.latest?.value;
+          recordPayloads[s.kind.name] = s.latest?.payload;
+          if (s.kind.name == 'sleep') {
+            sleepPayload = s.latest?.payload;
+          }
         }
-      }
-    } catch (e) {
-      talker.error('LucentTodayRepository: fetchSummary failed: $e');
-      summaryFailed = true;
-      recordCounts.clear();
-      recordLatest.clear();
-      recordPayloads.clear();
-    }
+      },
+    );
 
-    try {
-      final waterRecords = await dailyRecordRepository.fetchRecords(
-        dateStr,
-        kind: DailyRecordKind.water.name,
-        page: 1,
-        pageSize: 200,
-      );
-      waterMetric = _waterObservedMetric(
-        waterRecords.items,
-        total: waterRecords.total,
-        date: dateStr,
-      );
-    } catch (e) {
-      talker.error('LucentTodayRepository: fetch water records failed: $e');
-      waterMetric = _degradedObservedMetric(dateStr);
-    }
+    final waterResult = await dailyRecordRepository
+        .fetchRecords(
+          dateStr,
+          kind: DailyRecordKind.water.name,
+          page: 1,
+          pageSize: 200,
+        )
+        .run();
+    waterResult.fold(
+      (failure) {
+        talker.error(
+          'LucentTodayRepository: fetch water records failed: $failure',
+        );
+        waterMetric = _degradedObservedMetric(dateStr);
+      },
+      (waterRecords) {
+        waterMetric = _waterObservedMetric(
+          waterRecords.items,
+          total: waterRecords.total,
+          date: dateStr,
+        );
+      },
+    );
 
     var vitalReadout = const _VitalReadout();
-    try {
-      final vitalRecords = await dailyRecordRepository.fetchRecords(
-        dateStr,
-        kind: DailyRecordKind.vital.name,
-        page: 1,
-        pageSize: 50,
-      );
-      vitalReadout = _VitalReadout.fromRecords(
-        vitalRecords.items,
-        date: dateStr,
-      );
-    } catch (e) {
-      talker.error('LucentTodayRepository: fetch vital records failed: $e');
-      vitalReadout = _VitalReadout.degraded(date: dateStr);
-    }
+    final vitalResult = await dailyRecordRepository
+        .fetchRecords(
+          dateStr,
+          kind: DailyRecordKind.vital.name,
+          page: 1,
+          pageSize: 50,
+        )
+        .run();
+    vitalResult.fold(
+      (failure) {
+        talker.error(
+          'LucentTodayRepository: fetch vital records failed: $failure',
+        );
+        vitalReadout = _VitalReadout.degraded(date: dateStr);
+      },
+      (vitalRecords) {
+        vitalReadout = _VitalReadout.fromRecords(
+          vitalRecords.items,
+          date: dateStr,
+        );
+      },
+    );
 
     final waterCount = (recordCounts['water'] ?? 0).toInt();
     final completedMedicineIds = <String>{};

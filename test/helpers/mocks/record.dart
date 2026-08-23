@@ -1,4 +1,6 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 
@@ -11,15 +13,15 @@ class MockRecordRepository implements RecordRepository {
   Future<RecordDashboard> signedOutDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,
-  }) => fetchDashboard(selectedDate, filterType: filterType);
+  }) => fetchDashboard(selectedDate, filterType: filterType).run().then(
+    (result) => result.fold((failure) => throw failure, (value) => value),
+  );
 
   @override
-  Future<RecordDashboard> fetchDashboard(
+  TaskEither<LucentFailure, RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,
-  }) async {
-    return dashboardFor(selectedDate, filterType: filterType);
-  }
+  }) => TaskEither.right(dashboardFor(selectedDate, filterType: filterType));
 
   static RecordDashboard dashboardFor(
     DateTime selectedDate, {

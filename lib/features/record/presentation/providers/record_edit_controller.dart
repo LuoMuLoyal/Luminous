@@ -206,7 +206,8 @@ class RecordEditController extends Notifier<RecordEditState> {
     state = state.copyWith(loading: true);
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
-      final record = await repo.get(recordId);
+      final result = await repo.get(recordId).run();
+      final record = result.fold((failure) => throw failure, (item) => item);
       final mealAnalysis = parseMealAnalysisViewData(record.payload);
       final startAt = record.payload?['startAt'] as String?;
       final endAt = record.payload?['endAt'] as String?;
@@ -364,22 +365,25 @@ class RecordEditController extends Notifier<RecordEditState> {
       final trimmedUnit = unit.trim();
       final trimmedTitle = title.trim();
       final trimmedNote = note.trim();
-      await repo.update(
-        recordId,
-        DailyRecordUpdateInput(
-          kind: state.kind,
-          occurredAt: formatRecordDate(state.occurredAt ?? clock.now()),
-          occurredTime: occurredTime,
-          title: rules.showTitle ? _optional(trimmedTitle) : null,
-          value: state.kind == DailyRecordKind.sleep
-              ? null
-              : _optional(trimmedValue),
-          unit: _resolvedUnit(trimmedUnit),
-          note: _optional(trimmedNote),
-          payload: _buildPayload(),
-          attachments: attachmentPatch,
-        ),
-      );
+      final result = await repo
+          .update(
+            recordId,
+            DailyRecordUpdateInput(
+              kind: state.kind,
+              occurredAt: formatRecordDate(state.occurredAt ?? clock.now()),
+              occurredTime: occurredTime,
+              title: rules.showTitle ? _optional(trimmedTitle) : null,
+              value: state.kind == DailyRecordKind.sleep
+                  ? null
+                  : _optional(trimmedValue),
+              unit: _resolvedUnit(trimmedUnit),
+              note: _optional(trimmedNote),
+              payload: _buildPayload(),
+              attachments: attachmentPatch,
+            ),
+          )
+          .run();
+      result.fold((failure) => throw failure, (_) {});
       _invalidateData(recordId);
       return RecordEditSaveResult.saved;
     } catch (e) {
@@ -409,13 +413,19 @@ class RecordEditController extends Notifier<RecordEditState> {
     final image = state.selectedImage;
     if (image == null) return const <DailyRecordAttachmentInput>[];
     final repo = ref.read(dailyRecordRepositoryProvider);
-    final attachment = await repo.uploadImage(
-      DailyRecordImageUploadInput(
-        bytes: image.bytes,
-        contentType: image.contentType,
-        sizeBytes: image.bytes.length,
-        fileName: image.fileName,
-      ),
+    final result = await repo
+        .uploadImage(
+          DailyRecordImageUploadInput(
+            bytes: image.bytes,
+            contentType: image.contentType,
+            sizeBytes: image.bytes.length,
+            fileName: image.fileName,
+          ),
+        )
+        .run();
+    final attachment = result.fold(
+      (failure) => throw failure,
+      (attachment) => attachment,
     );
     return <DailyRecordAttachmentInput>[attachment];
   }

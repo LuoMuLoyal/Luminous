@@ -184,10 +184,10 @@ class _CountingRecordRepository implements RecordRepository {
   int calls = 0;
 
   @override
-  Future<RecordDashboard> fetchDashboard(
+  TaskEither<LucentFailure, RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,
-  }) async {
+  }) {
     calls += 1;
     return const MockRecordRepository().fetchDashboard(
       selectedDate,

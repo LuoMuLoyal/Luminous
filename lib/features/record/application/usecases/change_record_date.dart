@@ -20,9 +20,11 @@ Future<void> changeRecordDate({
   final dateStr = formatRecordDate(newDate);
 
   try {
-    await ref
+    final result = await ref
         .read(dailyRecordRepositoryProvider)
-        .update(recordId, DailyRecordUpdateInput(occurredAt: dateStr));
+        .update(recordId, DailyRecordUpdateInput(occurredAt: dateStr))
+        .run();
+    result.fold((failure) => throw failure, (_) {});
 
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.dailyRecords);
 

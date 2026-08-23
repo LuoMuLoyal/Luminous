@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -198,11 +200,51 @@ void main() {
         expect(item.mealTopFoods, <String>['米饭', '鸡胸肉']);
       },
     );
+
+    test(
+      'delete throws StateError when the server returns a non-204 status',
+      () async {
+        await expectLater(
+          dataSource.delete('record-1'),
+          throwsA(
+            isA<StateError>().having(
+              (e) => e.message,
+              'message',
+              'Daily record delete returned 200.',
+            ),
+          ),
+        );
+      },
+    );
+
+    test(
+      'get throws LucentFailure(emptyResponse) on an empty success body',
+      () async {
+        adapter.emptyBody = true;
+
+        await expectLater(
+          dataSource.get('record-1'),
+          throwsA(
+            isA<LucentFailure>()
+                .having((e) => e.kind, 'kind', LucentFailureKind.network)
+                .having(
+                  (e) => e.networkErrorCode,
+                  'networkErrorCode',
+                  NetworkErrorCode.emptyResponse,
+                ),
+          ),
+        );
+      },
+    );
   });
 }
 
 class _FakeDailyRecordAdapter implements HttpClientAdapter {
   final requests = <_CapturedRequest>[];
+
+  /// When true, every request gets a JSON `null` body — decoded by Dio as
+  /// `response.data == null`, the empty-success-body transport failure case.
+  bool emptyBody = false;
 
   _CapturedRequest requestAt(String method, String uriOrPath) {
     return requests.singleWhere(
@@ -237,6 +279,16 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
         bodyBytes: bodyBytes,
       ),
     );
+
+    if (emptyBody) {
+      return ResponseBody.fromString(
+        'null',
+        200,
+        headers: const <String, List<String>>{
+          Headers.contentTypeHeader: <String>['application/json'],
+        },
+      );
+    }
 
     if (options.uri.host == 'cos.example.test') {
       return ResponseBody.fromString('', 200);

@@ -786,38 +786,37 @@ class E2eRecordRepository implements RecordRepository {
   final requestedDates = <DateTime>[];
 
   @override
-  Future<RecordDashboard> fetchDashboard(
+  TaskEither<LucentFailure, RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,
-  }) async {
+  }) {
     requestedDates.add(selectedDate);
-    final mock = await const MockRecordRepository().fetchDashboard(
-      selectedDate,
-      filterType: filterType,
-    );
-
-    return RecordDashboard(
-      selectedDate: selectedDate,
-      selectedDay: selectedDate.day,
-      monthDays: mock.monthDays,
-      quickActions: mock.quickActions,
-      summary: mock.summary,
-      filters: mock.filters,
-      timeline: const [
-        RecordTimelineEntry(
-          time: '09:45',
-          type: RecordEntryType.vitals,
-          icon: FLucideIcons.heart,
-          accent: SemanticColor.destructive,
-          softColor: SemanticColor.neutral,
-          titleKey: RecordCopyKey.typeVitals,
-          rawTitle: 'E2E blood pressure',
-          value: '118/76 mmHg',
-          recordId: 'e2e-record-1',
-        ),
-      ],
-      trends: mock.trends,
-    );
+    return const MockRecordRepository()
+        .fetchDashboard(selectedDate, filterType: filterType)
+        .map(
+          (mock) => RecordDashboard(
+            selectedDate: selectedDate,
+            selectedDay: selectedDate.day,
+            monthDays: mock.monthDays,
+            quickActions: mock.quickActions,
+            summary: mock.summary,
+            filters: mock.filters,
+            timeline: const [
+              RecordTimelineEntry(
+                time: '09:45',
+                type: RecordEntryType.vitals,
+                icon: FLucideIcons.heart,
+                accent: SemanticColor.destructive,
+                softColor: SemanticColor.neutral,
+                titleKey: RecordCopyKey.typeVitals,
+                rawTitle: 'E2E blood pressure',
+                value: '118/76 mmHg',
+                recordId: 'e2e-record-1',
+              ),
+            ],
+            trends: mock.trends,
+          ),
+        );
   }
 
   @override
@@ -835,71 +834,71 @@ class E2eDailyRecordRepository implements DailyRecordRepository {
   DailyRecordUpdateInput? updateInput;
 
   @override
-  Future<DailyRecordListData> fetchRecords(
+  TaskEither<LucentFailure, DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async {
-    return const DailyRecordListData(items: [_record], total: 1);
-  }
+  }) => TaskEither.right(const DailyRecordListData(items: [_record], total: 1));
 
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async {
-    return const DailyRecordSummaryData(summaries: []);
-  }
+  TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) =>
+      TaskEither.right(const DailyRecordSummaryData(summaries: []));
 
   @override
-  Future<DailyRecordItem> get(String id) async {
+  TaskEither<LucentFailure, DailyRecordItem> get(String id) {
     getCalledWith = id;
-    return _record;
+    return TaskEither.right(_record);
   }
 
   @override
-  Future<DailyRecordAttachmentInput> uploadImage(
+  TaskEither<LucentFailure, DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async {
-    return DailyRecordAttachmentInput(
+  ) => TaskEither.right(
+    DailyRecordAttachmentInput(
       objectKey: 'daily-records/e2e/test.jpg',
       fileName: input.fileName,
       contentType: input.contentType,
       sizeBytes: input.sizeBytes,
       publicUrl: 'https://cdn.example.com/e2e.jpg',
-    );
-  }
+    ),
+  );
 
   @override
-  Future<DailyRecordCandidateResult> generateCandidates({
+  TaskEither<LucentFailure, DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async {
-    return const DailyRecordCandidateResult(
+  }) => TaskEither.right(
+    const DailyRecordCandidateResult(
       locale: 'zh-CN',
       generatedAt: '2026-06-14T00:00:00.000Z',
       confirmationHint: '确认后再保存。',
       items: <DailyRecordCandidateItem>[],
-    );
-  }
+    ),
+  );
 
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
+  TaskEither<LucentFailure, DailyRecordItem> create(
+    DailyRecordCreateInput input,
+  ) {
     createInput = input;
-    return _record;
+    return TaskEither.right(_record);
   }
 
   @override
-  Future<DailyRecordItem> update(
+  TaskEither<LucentFailure, DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async {
+  ) {
     updateCalledWith = id;
     updateInput = input;
-    return _record;
+    return TaskEither.right(_record);
   }
 
   @override
-  Future<void> delete(String id) async {
+  TaskEither<LucentFailure, void> delete(String id) {
     deleteCalledWith = id;
+    return TaskEither.right(null);
   }
 
   static const _record = DailyRecordItem(

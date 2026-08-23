@@ -47,13 +47,16 @@ Future<List<DailyRecordItem>> fetchSleepQuickCandidates(
   final repository = ref.read(dailyRecordRepositoryProvider);
   final dates = [selectedDate.subtract(const Duration(days: 1)), selectedDate];
   final lists = await Future.wait(
-    dates.map(
-      (date) => repository.fetchRecords(
-        formatRecordDate(date),
-        kind: DailyRecordKind.sleep.name,
-        pageSize: 100,
-      ),
-    ),
+    dates.map((date) async {
+      final result = await repository
+          .fetchRecords(
+            formatRecordDate(date),
+            kind: DailyRecordKind.sleep.name,
+            pageSize: 100,
+          )
+          .run();
+      return result.fold((failure) => throw failure, (data) => data);
+    }),
   );
   return [for (final list in lists) ...list.items];
 }
@@ -64,8 +67,13 @@ Future<void> undoDailyRecordQuickAction(
   QuickEntryUndoAction action,
 ) async {
   try {
+    final repository = ref.read(dailyRecordRepositoryProvider);
     await QuickEntryUndoService(
-      deleteDailyRecord: ref.read(dailyRecordRepositoryProvider).delete,
+      deleteDailyRecord: (recordId) async =>
+          (await repository.delete(recordId).run()).fold(
+            (failure) => throw failure,
+            (_) {},
+          ),
       emitDataChange: (topic) =>
           ref.read(dataChangeBusProvider.notifier).emit(topic),
     ).undo(action);
@@ -411,8 +419,12 @@ Future<void> handleSleepQuickAction(
   final repository = ref.read(dailyRecordRepositoryProvider);
   QuickEntryUndoAction? undoAction;
   final flow = SleepQuickEntryFlow(
-    createRecord: repository.create,
-    deleteRecord: repository.delete,
+    createRecord: (input) async => (await repository.create(input).run()).fold(
+      (failure) => throw failure,
+      (item) => item,
+    ),
+    deleteRecord: (recordId) async => (await repository.delete(recordId).run())
+        .fold((failure) => throw failure, (_) {}),
     emitDataChange: (topic) =>
         ref.read(dataChangeBusProvider.notifier).emit(topic),
     registerUndo: (action) => undoAction = action,

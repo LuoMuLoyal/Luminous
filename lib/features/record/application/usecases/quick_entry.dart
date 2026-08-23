@@ -82,9 +82,17 @@ Future<void> handleQuickAction(
       ref.read(quickEntryPreferencesProvider).asData?.value ??
       const QuickEntryPreferences();
 
+  final repository = ref.read(dailyRecordRepositoryProvider);
   await QuickEntryExecutor(
-    createRecord: ref.read(dailyRecordRepositoryProvider).create,
-    deleteDailyRecord: ref.read(dailyRecordRepositoryProvider).delete,
+    createRecord: (input) async => (await repository.create(input).run()).fold(
+      (failure) => throw failure,
+      (item) => item,
+    ),
+    deleteDailyRecord: (recordId) async =>
+        (await repository.delete(recordId).run()).fold(
+          (failure) => throw failure,
+          (_) {},
+        ),
     emitDataChange: (topic) =>
         ref.read(dataChangeBusProvider.notifier).emit(topic),
     preferences: prefs,

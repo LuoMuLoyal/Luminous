@@ -85,9 +85,18 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
       }
 
       try {
-        await dailyRecordRepo.create(input);
-        fingerprints.add(fingerprint);
-        success++;
+        final result = await dailyRecordRepo.create(input).run();
+        result.fold(
+          (failure) {
+            appTalker.warning('HealthSync: failed to create record: $failure');
+            errors.add('$failure');
+            failed++;
+          },
+          (_) {
+            fingerprints.add(fingerprint);
+            success++;
+          },
+        );
       } catch (e) {
         appTalker.warning('HealthSync: failed to create record: $e');
         errors.add('$e');
@@ -130,17 +139,24 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
         // instead of spinning on repeated fetches.
         var page = 1;
         while (page <= _maxDedupPages) {
-          final result = await dailyRecordRepo.fetchRecords(
-            date,
-            page: page,
-            pageSize: _dedupPageSize,
-          );
-          for (final record in result.items) {
+          final result = await dailyRecordRepo
+              .fetchRecords(date, page: page, pageSize: _dedupPageSize)
+              .run();
+          // Left aborts the sync: dedup relies on the existing records, and
+          // silently importing duplicates would corrupt the data.
+          final data = result.fold((failure) {
+            appTalker.error(
+              'HealthSync: failed to fetch existing records for $date: '
+              '$failure',
+            );
+            throw failure;
+          }, (data) => data);
+          for (final record in data.items) {
             final source = record.source ?? 'manual';
             final fingerprint = _fingerprintForRecord(record, source);
             if (fingerprint != null) fingerprints.add(fingerprint);
           }
-          if (result.items.isEmpty || page * _dedupPageSize >= result.total) {
+          if (data.items.isEmpty || page * _dedupPageSize >= data.total) {
             break;
           }
           page++;

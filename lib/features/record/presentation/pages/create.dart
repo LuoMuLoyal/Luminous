@@ -240,13 +240,19 @@ class RecordCreatePage extends HookConsumerWidget {
       if (image == null) return const <DailyRecordAttachmentInput>[];
 
       final repo = ref.read(dailyRecordRepositoryProvider);
-      final attachment = await repo.uploadImage(
-        DailyRecordImageUploadInput(
-          bytes: image.bytes,
-          contentType: image.contentType,
-          sizeBytes: image.bytes.length,
-          fileName: image.fileName,
-        ),
+      final result = await repo
+          .uploadImage(
+            DailyRecordImageUploadInput(
+              bytes: image.bytes,
+              contentType: image.contentType,
+              sizeBytes: image.bytes.length,
+              fileName: image.fileName,
+            ),
+          )
+          .run();
+      final attachment = result.fold(
+        (failure) => throw failure,
+        (attachment) => attachment,
       );
       return <DailyRecordAttachmentInput>[attachment];
     }
@@ -301,19 +307,24 @@ class RecordCreatePage extends HookConsumerWidget {
       try {
         final repo = ref.read(dailyRecordRepositoryProvider);
         final attachments = await uploadSelectedImage();
-        await repo.create(
-          DailyRecordCreateInput(
-            kind: kind.value,
-            occurredAt: dateStr,
-            occurredTime: recordTime.value,
-            title: rules.showTitle ? optionalText(titleController) : null,
-            value: rules.showValue ? normalizedValueForKind(kind.value) : null,
-            unit: rules.showUnit ? unitTextForKind(kind.value) : null,
-            note: optionalText(noteController),
-            payload: buildSleepPayload(kind.value),
-            attachments: attachments,
-          ),
-        );
+        final result = await repo
+            .create(
+              DailyRecordCreateInput(
+                kind: kind.value,
+                occurredAt: dateStr,
+                occurredTime: recordTime.value,
+                title: rules.showTitle ? optionalText(titleController) : null,
+                value: rules.showValue
+                    ? normalizedValueForKind(kind.value)
+                    : null,
+                unit: rules.showUnit ? unitTextForKind(kind.value) : null,
+                note: optionalText(noteController),
+                payload: buildSleepPayload(kind.value),
+                attachments: attachments,
+              ),
+            )
+            .run();
+        result.fold((failure) => throw failure, (_) {});
         ref
             .read(dataChangeBusProvider.notifier)
             .emit(DataChangeTopic.dailyRecords);
