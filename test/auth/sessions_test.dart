@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/features/auth/data/providers/sessions.dart';
 import 'package:luminous/features/auth/data/repositories/sessions.dart';
@@ -12,6 +14,16 @@ import 'package:luminous/features/auth/presentation/providers/sessions.dart';
 
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
+
+/// Resolves a repository task, returning the Right value and failing the
+/// test when the repository reports a Left.
+Future<T> _right<T>(TaskEither<LucentFailure, T> task) async {
+  final result = await task.run();
+  return result.fold(
+    (failure) => fail('expected Right, got $failure'),
+    (value) => value,
+  );
+}
 
 void main() {
   final session = AuthDeviceSession(
@@ -46,7 +58,7 @@ void main() {
         ..httpClientAdapter = adapter;
       final repository = LucentAuthSessionsRepository(dio: dio);
 
-      final mapped = await repository.listSessions();
+      final mapped = await _right(repository.listSessions());
       expect(mapped, hasLength(1));
       expect(mapped.single.id, 'session-1');
       expect(mapped.single.platform, 'web');
@@ -54,7 +66,7 @@ void main() {
       expect(adapter.capturedRequest?.method, 'GET');
 
       adapter.responseData = null;
-      await repository.revokeSession('session-1');
+      await _right(repository.revokeSession('session-1'));
       expect(
         adapter.capturedRequest?.path,
         LucentApiPaths.authSession('session-1'),
@@ -141,15 +153,16 @@ class _FakeAuthSessionsRepository implements AuthSessionsRepository {
   int listCalls = 0;
 
   @override
-  Future<List<AuthDeviceSession>> listSessions() async {
+  TaskEither<LucentFailure, List<AuthDeviceSession>> listSessions() {
     listCalls += 1;
-    return List<AuthDeviceSession>.of(_sessions);
+    return TaskEither.right(List<AuthDeviceSession>.of(_sessions));
   }
 
   @override
-  Future<void> revokeSession(String sessionId) async {
+  TaskEither<LucentFailure, void> revokeSession(String sessionId) {
     revokedIds.add(sessionId);
     _sessions = _sessions.where((item) => item.id != sessionId).toList();
+    return TaskEither.right(null);
   }
 }
 

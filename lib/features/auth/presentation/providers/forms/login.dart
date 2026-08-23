@@ -1,13 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/forms/validators.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
 
 part 'login.freezed.dart';
@@ -104,65 +106,68 @@ class LoginFormNotifier extends Notifier<LoginFormState>
 
   Future<AuthSession?> submit() async {
     state = state.copyWith(isSubmitting: true, errorMessage: null);
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'LoginFormNotifier.submit',
-      action: () async {
-        final session = await ref
-            .read(authRepositoryProvider)
-            .login(
-              email: state.email,
-              password: state.mode == AuthLoginMode.password
-                  ? state.password
-                  : null,
-              code: state.mode == AuthLoginMode.code ? state.code : null,
-            );
-        await ref.read(authSessionProvider.notifier).applySession(session);
-        return session;
-      },
-    );
-    switch (result) {
-      case Failure(:final error):
-        state = state.copyWith(
-          isSubmitting: false,
-          errorMessage: error.message,
-        );
-        return null;
-      case Success(:final value):
-        state = state.copyWith(isSubmitting: false);
-        return value;
-    }
+    final result = await ref
+        .read(authRepositoryProvider)
+        .login(
+          email: state.email,
+          password: state.mode == AuthLoginMode.password
+              ? state.password
+              : null,
+          code: state.mode == AuthLoginMode.code ? state.code : null,
+        )
+        .run();
+    return switch (result) {
+      Left(:final value) => _failSubmit(value),
+      Right(:final value) => _succeedSubmit(value),
+    };
+  }
+
+  Future<AuthSession?> _failSubmit(LucentFailure failure) async {
+    ref
+        .read(talkerProvider)
+        .error('LoginFormNotifier.submit: failed: $failure');
+    state = state.copyWith(isSubmitting: false, errorMessage: failure.message);
+    return null;
+  }
+
+  Future<AuthSession?> _succeedSubmit(AuthSession session) async {
+    await ref.read(authSessionProvider.notifier).applySession(session);
+    state = state.copyWith(isSubmitting: false);
+    return session;
   }
 
   Future<bool> sendCode() async {
     state = state.copyWith(isSendingCode: true, errorMessage: null);
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'LoginFormNotifier.sendCode',
-      action: () => ref
-          .read(authRepositoryProvider)
-          .sendVerificationCode(
-            email: state.email,
-            scene: AuthVerificationScene.login,
-          ),
+    final result = await ref
+        .read(authRepositoryProvider)
+        .sendVerificationCode(
+          email: state.email,
+          scene: AuthVerificationScene.login,
+        )
+        .run();
+    return switch (result) {
+      Left(:final value) => _failSendCode(value),
+      Right(:final value) => _succeedSendCode(value),
+    };
+  }
+
+  bool _failSendCode(LucentFailure failure) {
+    ref
+        .read(talkerProvider)
+        .error('LoginFormNotifier.sendCode: failed: $failure');
+    state = state.copyWith(isSendingCode: false, errorMessage: failure.message);
+    return false;
+  }
+
+  bool _succeedSendCode(VerificationCooldown value) {
+    final cooldown = value.cooldownSeconds;
+    state = state.copyWith(isSendingCode: false, cooldownSeconds: cooldown);
+    startCooldown(
+      cooldown,
+      getCooldownSeconds: () => state.cooldownSeconds,
+      setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
     );
-    switch (result) {
-      case Failure(:final error):
-        state = state.copyWith(
-          isSendingCode: false,
-          errorMessage: error.message,
-        );
-        return false;
-      case Success(:final value):
-        final cooldown = value.cooldownSeconds;
-        state = state.copyWith(isSendingCode: false, cooldownSeconds: cooldown);
-        startCooldown(
-          cooldown,
-          getCooldownSeconds: () => state.cooldownSeconds,
-          setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
-        );
-        return true;
-    }
+    return true;
   }
 }
 

@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/forms/validators.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 
 import '../shared/form_mixin.dart';
 
@@ -122,37 +124,40 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       errorMessage: null,
       successMessage: null,
     );
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'RegisterFormNotifier.sendCode',
-      action: () => ref
-          .read(authRepositoryProvider)
-          .sendVerificationCode(
-            email: state.email,
-            scene: AuthVerificationScene.register,
-          ),
+    final result = await ref
+        .read(authRepositoryProvider)
+        .sendVerificationCode(
+          email: state.email,
+          scene: AuthVerificationScene.register,
+        )
+        .run();
+    return switch (result) {
+      Left(:final value) => _failSendCode(value),
+      Right(:final value) => _succeedSendCode(value),
+    };
+  }
+
+  bool _failSendCode(LucentFailure failure) {
+    ref
+        .read(talkerProvider)
+        .error('RegisterFormNotifier.sendCode: failed: $failure');
+    state = state.copyWith(
+      isSendingCode: false,
+      errorMessage: failure.message,
+      successMessage: null,
     );
-    switch (result) {
-      case Failure(:final error):
-        state = state.copyWith(
-          isSendingCode: false,
-          errorMessage: error.message,
-          successMessage: null,
-        );
-        return false;
-      case Success(:final value):
-        final cooldown = value.cooldownSeconds;
-        state = state.copyWith(
-          isSendingCode: false,
-          successMessage: value.message,
-        );
-        startCooldown(
-          cooldown,
-          getCooldownSeconds: () => state.cooldownSeconds,
-          setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
-        );
-        return true;
-    }
+    return false;
+  }
+
+  bool _succeedSendCode(VerificationCooldown value) {
+    final cooldown = value.cooldownSeconds;
+    state = state.copyWith(isSendingCode: false, successMessage: value.message);
+    startCooldown(
+      cooldown,
+      getCooldownSeconds: () => state.cooldownSeconds,
+      setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
+    );
+    return true;
   }
 
   Future<bool> submit() async {
@@ -161,29 +166,32 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       errorMessage: null,
       successMessage: null,
     );
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'RegisterFormNotifier.submit',
-      action: () => ref
-          .read(authRepositoryProvider)
-          .register(
-            email: state.email,
-            password: state.password,
-            code: state.code,
-            nickname: state.nickname,
-          ),
-    );
-    switch (result) {
-      case Failure(:final error):
-        state = state.copyWith(
-          isSubmitting: false,
-          errorMessage: error.message,
-        );
-        return false;
-      case Success():
-        state = state.copyWith(isSubmitting: false, successMessage: '');
-        return true;
-    }
+    final result = await ref
+        .read(authRepositoryProvider)
+        .register(
+          email: state.email,
+          password: state.password,
+          code: state.code,
+          nickname: state.nickname,
+        )
+        .run();
+    return switch (result) {
+      Left(:final value) => _failSubmit(value),
+      Right() => _succeedSubmit(),
+    };
+  }
+
+  bool _failSubmit(LucentFailure failure) {
+    ref
+        .read(talkerProvider)
+        .error('RegisterFormNotifier.submit: failed: $failure');
+    state = state.copyWith(isSubmitting: false, errorMessage: failure.message);
+    return false;
+  }
+
+  bool _succeedSubmit() {
+    state = state.copyWith(isSubmitting: false, successMessage: '');
+    return true;
   }
 }
 

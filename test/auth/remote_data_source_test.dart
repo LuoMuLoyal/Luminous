@@ -3,8 +3,11 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/dio_client.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -48,6 +51,16 @@ class _MemStore implements LucentSessionStore {
   Future<void> write(LucentSessionTokens t) async => _tokens = t;
   @override
   Future<void> clear() async => _tokens = null;
+}
+
+/// Resolves a repository task, returning the Right value and failing the
+/// test when the repository reports a Left.
+Future<T> _right<T>(TaskEither<LucentFailure, T> task) async {
+  final result = await task.run();
+  return result.fold(
+    (failure) => fail('expected Right, got $failure'),
+    (value) => value,
+  );
 }
 
 /// Helper: build a direct login resource response.
@@ -99,9 +112,8 @@ void main() {
       test('returns session and writes tokens on success', () async {
         adapter.body = _loginResponse();
 
-        final session = await dataSource.login(
-          email: 'test@example.com',
-          password: 'Pass123',
+        final session = await _right(
+          dataSource.login(email: 'test@example.com', password: 'Pass123'),
         );
 
         expect(session.user.id, 'u-1');
@@ -113,23 +125,30 @@ void main() {
         expect(stored?.refreshToken, 'rt-1');
       });
 
-      test('throws on null response body', () async {
+      test('returns Left with emptyResponse on null response body', () async {
         adapter.body = null;
 
-        expect(
-          () => dataSource.login(email: 'test@example.com', password: 'Pw'),
-          throwsA(isA<StateError>()),
+        final result = await dataSource
+            .login(email: 'test@example.com', password: 'Pw')
+            .run();
+
+        final failure = result.fold(
+          (failure) => failure,
+          (value) => fail('expected Left, got $value'),
         );
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
       });
 
       test('trims email and password', () async {
         adapter.body = _loginResponse();
 
-        await dataSource.login(
-          email: '  test@example.com  ',
-          password: '  Pass123  ',
+        await _right(
+          dataSource.login(
+            email: '  test@example.com  ',
+            password: '  Pass123  ',
+          ),
         );
-        // If no exception, the trimmed values were accepted
+        // If no failure, the trimmed values were accepted
       });
     });
 
@@ -156,10 +175,12 @@ void main() {
           },
         };
 
-        final session = await dataSource.register(
-          email: 'new@example.com',
-          password: 'Pass123',
-          code: '123456',
+        final session = await _right(
+          dataSource.register(
+            email: 'new@example.com',
+            password: 'Pass123',
+            code: '123456',
+          ),
         );
 
         expect(session.user.id, 'u-2');
@@ -169,7 +190,7 @@ void main() {
 
     group('logout', () {
       test('clears session when no refresh token', () async {
-        await dataSource.logout();
+        await _right(dataSource.logout());
         final tokens = await store.read();
         expect(tokens, isNull);
       });
@@ -190,17 +211,22 @@ void main() {
           'updatedAt': '2026-06-10T08:00:00.000Z',
         };
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
 
         expect(user.id, 'u-1');
         expect(user.email, 'test@example.com');
         expect(user.nickname, 'TestUser');
       });
 
-      test('throws on null response', () async {
+      test('returns Left with emptyResponse on null response', () async {
         adapter.body = null;
 
-        expect(() => dataSource.fetchAccount(), throwsA(isA<StateError>()));
+        final result = await dataSource.fetchAccount().run();
+        final failure = result.fold(
+          (failure) => failure,
+          (value) => fail('expected Left, got $value'),
+        );
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
       });
     });
 
@@ -208,9 +234,11 @@ void main() {
       test('returns cooldown message', () async {
         adapter.body = <String, dynamic>{'cooldown': 60, 'message': '验证码已发送'};
 
-        final msg = await dataSource.sendVerificationCode(
-          email: 'test@example.com',
-          scene: AuthVerificationScene.login,
+        final msg = await _right(
+          dataSource.sendVerificationCode(
+            email: 'test@example.com',
+            scene: AuthVerificationScene.login,
+          ),
         );
 
         expect(msg.cooldownSeconds, 60);

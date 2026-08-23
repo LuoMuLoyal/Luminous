@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -253,38 +256,42 @@ class _NoOpAuthSessionNotifier extends AuthSessionNotifier {
 
 class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
   @override
-  Future<AuthSession> register({
+  TaskEither<LucentFailure, AuthSession> register({
     required String email,
     required String password,
     required String code,
     String? nickname,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/register'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/register',
-        statusCode: 409,
-        code: 'AUTH_EMAIL_ALREADY_REGISTERED',
-        detail: '邮箱已注册',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/register'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/register',
+          statusCode: 409,
+          code: 'AUTH_EMAIL_ALREADY_REGISTERED',
+          detail: '邮箱已注册',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<VerificationCooldown> sendVerificationCode({
+  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/send-code'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/send-code',
-        statusCode: 429,
-        code: 'AUTH_LOGIN_RATE_LIMITED',
-        detail: '发送过于频繁',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/send-code'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/send-code',
+          statusCode: 429,
+          code: 'AUTH_LOGIN_RATE_LIMITED',
+          detail: '发送过于频繁',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }

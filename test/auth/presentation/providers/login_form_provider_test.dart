@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -260,37 +263,41 @@ class _NoOpAuthSessionNotifier extends AuthSessionNotifier {
 /// Fails all network operations with a [DioException].
 class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
   @override
-  Future<AuthSession> login({
+  TaskEither<LucentFailure, AuthSession> login({
     required String email,
     String? password,
     String? code,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/login'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/login',
-        statusCode: 401,
-        code: 'AUTH_WRONG_PASSWORD',
-        detail: '密码错误',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/login'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/login',
+          statusCode: 401,
+          code: 'AUTH_WRONG_PASSWORD',
+          detail: '密码错误',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<VerificationCooldown> sendVerificationCode({
+  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/send-code'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/send-code',
-        statusCode: 429,
-        code: 'AUTH_LOGIN_RATE_LIMITED',
-        detail: '发送过于频繁',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/send-code'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/send-code',
+          statusCode: 429,
+          code: 'AUTH_LOGIN_RATE_LIMITED',
+          detail: '发送过于频繁',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }

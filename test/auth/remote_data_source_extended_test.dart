@@ -3,7 +3,9 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
@@ -57,6 +59,16 @@ class _MemStore implements LucentSessionStore {
   Future<void> write(LucentSessionTokens t) async => _tokens = t;
   @override
   Future<void> clear() async => _tokens = null;
+}
+
+/// Resolves a repository task, returning the Right value and failing the
+/// test when the repository reports a Left.
+Future<T> _right<T>(TaskEither<LucentFailure, T> task) async {
+  final result = await task.run();
+  return result.fold(
+    (failure) => fail('expected Right, got $failure'),
+    (value) => value,
+  );
 }
 
 Map<String, dynamic> _loginResponse({
@@ -136,9 +148,8 @@ void main() {
           refreshToken: 'wx-rt',
         );
 
-        final session = await dataSource.loginWithWechatWeb(
-          code: 'wx_code',
-          state: 'wx_state',
+        final session = await _right(
+          dataSource.loginWithWechatWeb(code: 'wx_code', state: 'wx_state'),
         );
 
         expect(session.accessToken, 'wx-at');
@@ -151,9 +162,11 @@ void main() {
       test('trims code and state', () async {
         adapter.body = _loginResponse();
 
-        await dataSource.loginWithWechatWeb(
-          code: '  wx_code  ',
-          state: '  wx_state  ',
+        await _right(
+          dataSource.loginWithWechatWeb(
+            code: '  wx_code  ',
+            state: '  wx_state  ',
+          ),
         );
 
         // Verify the request body was trimmed
@@ -170,8 +183,8 @@ void main() {
           refreshToken: 'wxm-rt',
         );
 
-        final session = await dataSource.loginWithWechatMobile(
-          code: 'wx_mobile_code',
+        final session = await _right(
+          dataSource.loginWithWechatMobile(code: 'wx_mobile_code'),
         );
 
         expect(session.accessToken, 'wxm-at');
@@ -184,7 +197,7 @@ void main() {
       test('trims code', () async {
         adapter.body = _loginResponse();
 
-        await dataSource.loginWithWechatMobile(code: '  wx_code  ');
+        await _right(dataSource.loginWithWechatMobile(code: '  wx_code  '));
         expect(adapter.lastBody?['code'], 'wx_code');
       });
     });
@@ -197,8 +210,8 @@ void main() {
           refreshToken: 'apple-rt',
         );
 
-        final session = await dataSource.loginWithApple(
-          identityToken: 'apple_identity_token',
+        final session = await _right(
+          dataSource.loginWithApple(identityToken: 'apple_identity_token'),
         );
 
         expect(session.accessToken, 'apple-at');
@@ -211,11 +224,13 @@ void main() {
       test('passes all optional fields when provided', () async {
         adapter.body = _loginResponse();
 
-        await dataSource.loginWithApple(
-          identityToken: 'tok',
-          authorizationCode: 'auth_code',
-          givenName: 'John',
-          familyName: 'Doe',
+        await _right(
+          dataSource.loginWithApple(
+            identityToken: 'tok',
+            authorizationCode: 'auth_code',
+            givenName: 'John',
+            familyName: 'Doe',
+          ),
         );
 
         expect(adapter.lastBody?['identityToken'], 'tok');
@@ -233,9 +248,8 @@ void main() {
           refreshToken: 'qq-rt',
         );
 
-        final session = await dataSource.loginWithQq(
-          code: 'qq_code',
-          state: 'qq_state',
+        final session = await _right(
+          dataSource.loginWithQq(code: 'qq_code', state: 'qq_state'),
         );
 
         expect(session.accessToken, 'qq-at');
@@ -248,9 +262,8 @@ void main() {
       test('trims code and state', () async {
         adapter.body = _loginResponse();
 
-        await dataSource.loginWithQq(
-          code: '  qq_code  ',
-          state: '  qq_state  ',
+        await _right(
+          dataSource.loginWithQq(code: '  qq_code  ', state: '  qq_state  '),
         );
 
         expect(adapter.lastBody?['code'], 'qq_code');
@@ -268,8 +281,10 @@ void main() {
           'expiresIn': 300,
         };
 
-        final result = await dataSource.createWechatWebAuthorizeUrl(
-          callbackUri: 'https://app.example.com/callback',
+        final result = await _right(
+          dataSource.createWechatWebAuthorizeUrl(
+            callbackUri: 'https://app.example.com/callback',
+          ),
         );
 
         expect(result.authorizeUrl, isNotEmpty);
@@ -283,7 +298,7 @@ void main() {
           'expiresIn': 300,
         };
 
-        await dataSource.createWechatWebAuthorizeUrl(callbackUri: null);
+        await _right(dataSource.createWechatWebAuthorizeUrl(callbackUri: null));
         // When body is null, the generated Retrofit client sends an empty map
         expect(adapter.lastBody ?? {}, isEmpty);
       });
@@ -295,7 +310,9 @@ void main() {
           'expiresIn': 300,
         };
 
-        await dataSource.createWechatWebAuthorizeUrl(callbackUri: '   ');
+        await _right(
+          dataSource.createWechatWebAuthorizeUrl(callbackUri: '   '),
+        );
         // When callbackUri is whitespace, it trims to empty and body becomes null
         expect(adapter.lastBody ?? {}, isEmpty);
       });
@@ -309,8 +326,10 @@ void main() {
           'expiresIn': 300,
         };
 
-        final result = await dataSource.createQqAuthorizeUrl(
-          callbackUri: 'https://app.example.com/qq/callback',
+        final result = await _right(
+          dataSource.createQqAuthorizeUrl(
+            callbackUri: 'https://app.example.com/qq/callback',
+          ),
         );
 
         expect(result.authorizeUrl, isNotEmpty);
@@ -324,7 +343,7 @@ void main() {
           'expiresIn': 300,
         };
 
-        await dataSource.createQqAuthorizeUrl(callbackUri: null);
+        await _right(dataSource.createQqAuthorizeUrl(callbackUri: null));
         // When body is null, the generated Retrofit client sends an empty map
         expect(adapter.lastBody ?? {}, isEmpty);
       });
@@ -345,9 +364,11 @@ void main() {
           ],
         );
 
-        final user = await dataSource.linkWechatWebIdentity(
-          code: 'link_code',
-          state: 'link_state',
+        final user = await _right(
+          dataSource.linkWechatWebIdentity(
+            code: 'link_code',
+            state: 'link_state',
+          ),
         );
 
         expect(user.id, 'u-1');
@@ -359,9 +380,11 @@ void main() {
       test('trims code and state', () async {
         adapter.body = _accountDto();
 
-        await dataSource.linkWechatWebIdentity(
-          code: '  link_code  ',
-          state: '  link_state  ',
+        await _right(
+          dataSource.linkWechatWebIdentity(
+            code: '  link_code  ',
+            state: '  link_state  ',
+          ),
         );
 
         expect(adapter.lastBody?['code'], 'link_code');
@@ -373,8 +396,8 @@ void main() {
       test('returns AuthUser from linked identity', () async {
         adapter.body = _accountDto();
 
-        final user = await dataSource.linkWechatMobileIdentity(
-          code: 'mobile_link_code',
+        final user = await _right(
+          dataSource.linkWechatMobileIdentity(code: 'mobile_link_code'),
         );
 
         expect(user.id, 'u-1');
@@ -383,7 +406,9 @@ void main() {
       test('trims code', () async {
         adapter.body = _accountDto();
 
-        await dataSource.linkWechatMobileIdentity(code: '  link_code  ');
+        await _right(
+          dataSource.linkWechatMobileIdentity(code: '  link_code  '),
+        );
         expect(adapter.lastBody?['code'], 'link_code');
       });
     });
@@ -401,7 +426,7 @@ void main() {
           );
           adapter.body = null;
 
-          await dataSource.logout();
+          await _right(dataSource.logout());
 
           expect(await store.read(), isNull);
         },
@@ -409,7 +434,7 @@ void main() {
 
       test('clears store without API call when no refresh token', () async {
         // Store is already empty
-        await dataSource.logout();
+        await _right(dataSource.logout());
 
         expect(await store.read(), isNull);
       });
@@ -419,9 +444,43 @@ void main() {
           const LucentSessionTokens(accessToken: 'at-1', refreshToken: ''),
         );
 
-        await dataSource.logout();
+        await _right(dataSource.logout());
 
         expect(await store.read(), isNull);
+      });
+    });
+
+    // ─── refreshSession ──────────────────────────────────────────────
+    group('refreshSession', () {
+      test('writes fresh tokens and returns the refreshed session', () async {
+        // First request: refresh tokens. Second request: fetchAccount after
+        // token refresh. Serve a fixed sequence of bodies, one per request.
+        final sequenced = _SequencedAdapter([
+          <String, dynamic>{
+            'accessToken': 'new-at',
+            'refreshToken': 'new-rt',
+            'expiresIn': 1800,
+          },
+          _accountDto(),
+        ]);
+        final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+          ..httpClientAdapter = sequenced;
+        dataSource = LucentAuthRepository(
+          LucentClient(LucentApi(dio: dio)),
+          store,
+        );
+
+        final session = await _right(
+          dataSource.refreshSession(refreshToken: 'old-rt'),
+        );
+
+        expect(session.accessToken, 'new-at');
+        expect(session.refreshToken, 'new-rt');
+        expect(session.expiresInSeconds, 1800);
+        expect(session.user.id, 'u-1');
+        final stored = await store.read();
+        expect(stored?.accessToken, 'new-at');
+        expect(stored?.refreshToken, 'new-rt');
       });
     });
 
@@ -449,10 +508,12 @@ void main() {
           },
         };
 
-        final session = await dataSource.register(
-          email: 'new@example.com',
-          password: 'Pass123',
-          code: '123456',
+        final session = await _right(
+          dataSource.register(
+            email: 'new@example.com',
+            password: 'Pass123',
+            code: '123456',
+          ),
         );
 
         expect(session.user.id, 'u-reg');
@@ -483,11 +544,13 @@ void main() {
           },
         };
 
-        await dataSource.register(
-          email: 'new@example.com',
-          password: 'Pass123',
-          code: '123456',
-          nickname: 'CustomNick',
+        await _right(
+          dataSource.register(
+            email: 'new@example.com',
+            password: 'Pass123',
+            code: '123456',
+            nickname: 'CustomNick',
+          ),
         );
 
         expect(adapter.lastBody?['nickname'], 'CustomNick');
@@ -515,10 +578,12 @@ void main() {
           },
         };
 
-        await dataSource.register(
-          email: 'new@example.com',
-          password: 'Pass123',
-          code: '123456',
+        await _right(
+          dataSource.register(
+            email: 'new@example.com',
+            password: 'Pass123',
+            code: '123456',
+          ),
         );
 
         expect(adapter.lastBody?['nickname'], isNull);
@@ -546,11 +611,13 @@ void main() {
           },
         };
 
-        await dataSource.register(
-          email: 'new@example.com',
-          password: 'Pass123',
-          code: '123456',
-          nickname: '   ',
+        await _right(
+          dataSource.register(
+            email: 'new@example.com',
+            password: 'Pass123',
+            code: '123456',
+            nickname: '   ',
+          ),
         );
 
         expect(adapter.lastBody?['nickname'], isNull);
@@ -578,10 +645,12 @@ void main() {
           },
         };
 
-        await dataSource.register(
-          email: '  new@example.com  ',
-          password: '  Pass123  ',
-          code: '  123456  ',
+        await _right(
+          dataSource.register(
+            email: '  new@example.com  ',
+            password: '  Pass123  ',
+            code: '  123456  ',
+          ),
         );
 
         expect(adapter.lastBody?['email'], 'new@example.com');
@@ -612,7 +681,7 @@ void main() {
           ],
         );
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
 
         expect(user.linkedIdentities, hasLength(2));
         expect(user.linkedIdentities[0].provider, 'wechat');
@@ -626,7 +695,7 @@ void main() {
       test('parses emailVerifiedAt when present', () async {
         adapter.body = _accountDto(emailVerifiedAt: '2026-07-01T00:00:00.000Z');
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(user.emailVerifiedAt, isNotNull);
         expect(user.emailVerified, isTrue);
       });
@@ -634,7 +703,7 @@ void main() {
       test('emailVerified is false when emailVerifiedAt is null', () async {
         adapter.body = _accountDto(emailVerifiedAt: null);
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(user.emailVerifiedAt, isNull);
         expect(user.emailVerified, isFalse);
       });
@@ -642,14 +711,14 @@ void main() {
       test('parses lastLoginAt when present', () async {
         adapter.body = _accountDto(lastLoginAt: '2026-07-10T12:00:00.000Z');
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(user.lastLoginAt, isNotNull);
       });
 
       test('parses empty linked identities list', () async {
         adapter.body = _accountDto();
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(user.linkedIdentities, isEmpty);
       });
     });
@@ -659,9 +728,11 @@ void main() {
       test('trims email', () async {
         adapter.body = <String, dynamic>{'cooldown': 60, 'message': '已发送'};
 
-        await dataSource.sendVerificationCode(
-          email: '  test@example.com  ',
-          scene: AuthVerificationScene.register,
+        await _right(
+          dataSource.sendVerificationCode(
+            email: '  test@example.com  ',
+            scene: AuthVerificationScene.register,
+          ),
         );
 
         expect(adapter.lastBody?['email'], 'test@example.com');
@@ -670,9 +741,11 @@ void main() {
       test('passes scene correctly for resetPassword', () async {
         adapter.body = <String, dynamic>{'cooldown': 30, 'message': '已发送'};
 
-        await dataSource.sendVerificationCode(
-          email: 'test@example.com',
-          scene: AuthVerificationScene.resetPassword,
+        await _right(
+          dataSource.sendVerificationCode(
+            email: 'test@example.com',
+            scene: AuthVerificationScene.resetPassword,
+          ),
         );
 
         expect(
@@ -684,9 +757,11 @@ void main() {
       test('passes scene correctly for changeEmail', () async {
         adapter.body = <String, dynamic>{'cooldown': 30, 'message': '已发送'};
 
-        await dataSource.sendVerificationCode(
-          email: 'test@example.com',
-          scene: AuthVerificationScene.changeEmail,
+        await _right(
+          dataSource.sendVerificationCode(
+            email: 'test@example.com',
+            scene: AuthVerificationScene.changeEmail,
+          ),
         );
 
         expect(
@@ -701,10 +776,12 @@ void main() {
       test('completes without error on success', () async {
         adapter.body = null;
 
-        await dataSource.resetPassword(
-          email: 'test@example.com',
-          code: '123456',
-          password: 'NewPass123',
+        await _right(
+          dataSource.resetPassword(
+            email: 'test@example.com',
+            code: '123456',
+            password: 'NewPass123',
+          ),
         );
 
         expect(adapter.lastBody?['email'], 'test@example.com');
@@ -715,10 +792,12 @@ void main() {
       test('trims all fields', () async {
         adapter.body = null;
 
-        await dataSource.resetPassword(
-          email: '  test@example.com  ',
-          code: '  123456  ',
-          password: '  NewPass123  ',
+        await _right(
+          dataSource.resetPassword(
+            email: '  test@example.com  ',
+            code: '  123456  ',
+            password: '  NewPass123  ',
+          ),
         );
 
         expect(adapter.lastBody?['email'], 'test@example.com');
@@ -732,8 +811,8 @@ void main() {
       test('returns cooldown message', () async {
         adapter.body = <String, dynamic>{'cooldown': 120, 'message': '重置链接已发送'};
 
-        final result = await dataSource.forgotPassword(
-          email: 'test@example.com',
+        final result = await _right(
+          dataSource.forgotPassword(email: 'test@example.com'),
         );
 
         expect(result.cooldownSeconds, 120);
@@ -743,7 +822,7 @@ void main() {
       test('trims email', () async {
         adapter.body = <String, dynamic>{'cooldown': 60, 'message': '已发送'};
 
-        await dataSource.forgotPassword(email: '  test@example.com  ');
+        await _right(dataSource.forgotPassword(email: '  test@example.com  '));
         expect(adapter.lastBody?['email'], 'test@example.com');
       });
     });
@@ -753,7 +832,9 @@ void main() {
       test('completes without error on success', () async {
         adapter.body = <String, dynamic>{'emailVerified': true};
 
-        await dataSource.verifyEmail(email: 'test@example.com', code: '123456');
+        await _right(
+          dataSource.verifyEmail(email: 'test@example.com', code: '123456'),
+        );
 
         expect(adapter.lastBody?['email'], 'test@example.com');
         expect(adapter.lastBody?['code'], '123456');
@@ -762,9 +843,11 @@ void main() {
       test('trims email and code', () async {
         adapter.body = <String, dynamic>{'emailVerified': true};
 
-        await dataSource.verifyEmail(
-          email: '  test@example.com  ',
-          code: '  123456  ',
+        await _right(
+          dataSource.verifyEmail(
+            email: '  test@example.com  ',
+            code: '  123456  ',
+          ),
         );
 
         expect(adapter.lastBody?['email'], 'test@example.com');
@@ -780,9 +863,11 @@ void main() {
           avatar: 'https://cdn.example.com/avatar.png',
         );
 
-        final user = await dataSource.updateAccountProfile(
-          nickname: 'UpdatedNick',
-          avatar: 'https://cdn.example.com/avatar.png',
+        final user = await _right(
+          dataSource.updateAccountProfile(
+            nickname: 'UpdatedNick',
+            avatar: 'https://cdn.example.com/avatar.png',
+          ),
         );
 
         expect(user.nickname, 'UpdatedNick');
@@ -792,9 +877,11 @@ void main() {
       test('trims nickname and avatar', () async {
         adapter.body = _accountDto();
 
-        await dataSource.updateAccountProfile(
-          nickname: '  NewNick  ',
-          avatar: '  https://cdn.example.com/a.png  ',
+        await _right(
+          dataSource.updateAccountProfile(
+            nickname: '  NewNick  ',
+            avatar: '  https://cdn.example.com/a.png  ',
+          ),
         );
 
         expect(adapter.lastBody?['nickname'], 'NewNick');
@@ -804,7 +891,7 @@ void main() {
       test('passes null values', () async {
         adapter.body = _accountDto();
 
-        await dataSource.updateAccountProfile();
+        await _right(dataSource.updateAccountProfile());
 
         expect(adapter.lastBody?['nickname'], isNull);
         expect(adapter.lastBody?['avatar'], isNull);
@@ -820,9 +907,11 @@ void main() {
 
         adapter.body = null;
 
-        await dataSource.changePassword(
-          oldPassword: 'OldPass123',
-          newPassword: 'NewPass456',
+        await _right(
+          dataSource.changePassword(
+            oldPassword: 'OldPass123',
+            newPassword: 'NewPass456',
+          ),
         );
 
         expect(await store.read(), isNull);
@@ -831,9 +920,11 @@ void main() {
       test('trims passwords', () async {
         adapter.body = null;
 
-        await dataSource.changePassword(
-          oldPassword: '  OldPass123  ',
-          newPassword: '  NewPass456  ',
+        await _right(
+          dataSource.changePassword(
+            oldPassword: '  OldPass123  ',
+            newPassword: '  NewPass456  ',
+          ),
         );
 
         expect(adapter.lastBody?['oldPassword'], 'OldPass123');
@@ -859,10 +950,12 @@ void main() {
           updatedAt: DateTime.parse('2026-06-10T08:00:00.000Z'),
         );
 
-        final result = await dataSource.changeEmail(
-          newEmail: 'new@example.com',
-          code: '123456',
-          currentUser: currentUser,
+        final result = await _right(
+          dataSource.changeEmail(
+            newEmail: 'new@example.com',
+            code: '123456',
+            currentUser: currentUser,
+          ),
         );
 
         expect(result.email, 'new@example.com');
@@ -888,10 +981,12 @@ void main() {
           updatedAt: DateTime.parse('2026-06-10T08:00:00.000Z'),
         );
 
-        await dataSource.changeEmail(
-          newEmail: '  new@example.com  ',
-          code: '  123456  ',
-          currentUser: currentUser,
+        await _right(
+          dataSource.changeEmail(
+            newEmail: '  new@example.com  ',
+            code: '  123456  ',
+            currentUser: currentUser,
+          ),
         );
 
         expect(adapter.lastBody?['newEmail'], 'new@example.com');
@@ -914,10 +1009,12 @@ void main() {
           updatedAt: DateTime.parse('2026-06-10T08:00:00.000Z'),
         );
 
-        final result = await dataSource.changeEmail(
-          newEmail: 'new@example.com',
-          code: '123456',
-          currentUser: currentUser,
+        final result = await _right(
+          dataSource.changeEmail(
+            newEmail: 'new@example.com',
+            code: '123456',
+            currentUser: currentUser,
+          ),
         );
 
         expect(result.email, 'new@example.com');
@@ -940,10 +1037,12 @@ void main() {
           updatedAt: DateTime.parse('2026-06-10T08:00:00.000Z'),
         );
 
-        final result = await dataSource.changeEmail(
-          newEmail: 'new@example.com',
-          code: '123456',
-          currentUser: currentUser,
+        final result = await _right(
+          dataSource.changeEmail(
+            newEmail: 'new@example.com',
+            code: '123456',
+            currentUser: currentUser,
+          ),
         );
 
         expect(result.email, 'new@example.com');
@@ -960,7 +1059,7 @@ void main() {
 
         adapter.body = null;
 
-        await dataSource.deleteAccount(password: 'Pass123');
+        await _right(dataSource.deleteAccount(password: 'Pass123'));
 
         expect(await store.read(), isNull);
       });
@@ -968,7 +1067,7 @@ void main() {
       test('trims password', () async {
         adapter.body = null;
 
-        await dataSource.deleteAccount(password: '  Pass123  ');
+        await _right(dataSource.deleteAccount(password: '  Pass123  '));
         expect(adapter.lastBody?['password'], 'Pass123');
       });
     });
@@ -978,7 +1077,9 @@ void main() {
       test('returns AuthUser after unlinking', () async {
         adapter.body = _accountDto(linkedIdentities: []);
 
-        final user = await dataSource.unlinkIdentity(identityId: 'id-1');
+        final user = await _right(
+          dataSource.unlinkIdentity(identityId: 'id-1'),
+        );
 
         expect(user.id, 'u-1');
         expect(user.linkedIdentities, isEmpty);
@@ -990,7 +1091,7 @@ void main() {
       test('handles null avatar and null emailVerifiedAt', () async {
         adapter.body = _accountDto(avatar: null, emailVerifiedAt: null);
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
 
         expect(user.avatar, isNull);
         expect(user.emailVerifiedAt, isNull);
@@ -999,21 +1100,21 @@ void main() {
       test('handles hasPassword false', () async {
         adapter.body = _accountDto(hasPassword: false);
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(user.hasPassword, isFalse);
       });
 
       test('handles empty linkedIdentities', () async {
         adapter.body = _accountDto(linkedIdentities: []);
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(user.linkedIdentities, isEmpty);
       });
 
       test('parses emailVerifiedAt as DateTime', () async {
         adapter.body = _accountDto(emailVerifiedAt: '2026-07-01T12:30:00.000Z');
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(
           user.emailVerifiedAt,
           equals(DateTime.parse('2026-07-01T12:30:00.000Z')),
@@ -1023,14 +1124,14 @@ void main() {
       test('returns null emailVerifiedAt when date is malformed', () async {
         adapter.body = _accountDto(emailVerifiedAt: 'invalid-date');
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(user.emailVerifiedAt, isNull);
       });
 
       test('returns null lastLoginAt when date is malformed', () async {
         adapter.body = _accountDto(lastLoginAt: 'not-a-date');
 
-        final user = await dataSource.fetchAccount();
+        final user = await _right(dataSource.fetchAccount());
         expect(user.lastLoginAt, isNull);
       });
     });
@@ -1040,10 +1141,12 @@ void main() {
       test('passes null password when empty after trim', () async {
         adapter.body = _loginResponse();
 
-        await dataSource.login(
-          email: 'test@example.com',
-          password: '   ',
-          code: '123456',
+        await _right(
+          dataSource.login(
+            email: 'test@example.com',
+            password: '   ',
+            code: '123456',
+          ),
         );
 
         expect(adapter.lastBody?['password'], isNull);
@@ -1053,10 +1156,12 @@ void main() {
       test('passes null code when empty after trim', () async {
         adapter.body = _loginResponse();
 
-        await dataSource.login(
-          email: 'test@example.com',
-          password: 'Pass123',
-          code: '   ',
+        await _right(
+          dataSource.login(
+            email: 'test@example.com',
+            password: 'Pass123',
+            code: '   ',
+          ),
         );
 
         expect(adapter.lastBody?['code'], isNull);
@@ -1066,10 +1171,12 @@ void main() {
       test('passes null password and code when both null', () async {
         adapter.body = _loginResponse();
 
-        await dataSource.login(
-          email: 'test@example.com',
-          password: null,
-          code: null,
+        await _right(
+          dataSource.login(
+            email: 'test@example.com',
+            password: null,
+            code: null,
+          ),
         );
 
         expect(adapter.lastBody?['password'], isNull);
@@ -1077,4 +1184,32 @@ void main() {
       });
     });
   });
+}
+
+/// Adapter that serves a fixed sequence of bodies, one per request.
+class _SequencedAdapter implements HttpClientAdapter {
+  _SequencedAdapter(this._bodies);
+
+  final List<Object?> _bodies;
+  int _index = 0;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<dynamic>? cancelFuture,
+  ) async {
+    final body = _index < _bodies.length ? _bodies[_index++] : null;
+    final json = body != null ? utf8.encode(jsonEncode(body)) : <int>[];
+    return ResponseBody(
+      Stream.value(Uint8List.fromList(json)),
+      200,
+      headers: <String, List<String>>{
+        Headers.contentTypeHeader: <String>['application/json'],
+      },
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
 }

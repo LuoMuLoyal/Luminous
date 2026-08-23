@@ -1,105 +1,133 @@
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 
 abstract interface class AuthRepository {
-  Future<AuthSession> login({
+  TaskEither<LucentFailure, AuthSession> login({
     required String email,
     String? password,
     String? code,
   });
 
-  Future<AuthSession> register({
+  TaskEither<LucentFailure, AuthSession> register({
     required String email,
     required String password,
     required String code,
     String? nickname,
   });
 
-  Future<void> logout();
+  TaskEither<LucentFailure, void> logout();
 
-  Future<AuthUser> fetchAccount();
+  TaskEither<LucentFailure, AuthUser> fetchAccount();
 
-  Future<AuthSession> refreshSession({required String refreshToken});
+  TaskEither<LucentFailure, AuthSession> refreshSession({
+    required String refreshToken,
+  });
 
-  Future<OAuthAuthorizeData> createWechatWebAuthorizeUrl({String? callbackUri});
-
-  Future<OAuthAuthorizeData> createWechatWebIdentityLinkAuthorizeUrl({
+  TaskEither<LucentFailure, OAuthAuthorizeData> createWechatWebAuthorizeUrl({
     String? callbackUri,
   });
 
-  Future<AuthSession> loginWithWechatWeb({
+  TaskEither<LucentFailure, OAuthAuthorizeData>
+  createWechatWebIdentityLinkAuthorizeUrl({String? callbackUri});
+
+  TaskEither<LucentFailure, AuthSession> loginWithWechatWeb({
     required String code,
     required String state,
   });
 
-  Future<AuthSession> loginWithWechatMobile({required String code});
+  TaskEither<LucentFailure, AuthSession> loginWithWechatMobile({
+    required String code,
+  });
 
-  Future<AuthSession> loginWithApple({
+  TaskEither<LucentFailure, AuthSession> loginWithApple({
     required String identityToken,
     String? authorizationCode,
     String? givenName,
     String? familyName,
   });
 
-  Future<OAuthAuthorizeData> createQqAuthorizeUrl({String? callbackUri});
+  TaskEither<LucentFailure, OAuthAuthorizeData> createQqAuthorizeUrl({
+    String? callbackUri,
+  });
 
-  Future<AuthSession> loginWithQq({
+  TaskEither<LucentFailure, AuthSession> loginWithQq({
     required String code,
     required String state,
   });
 
-  Future<OAuthAuthorizeData> createWeiboAuthorizeUrl({String? callbackUri});
+  TaskEither<LucentFailure, OAuthAuthorizeData> createWeiboAuthorizeUrl({
+    String? callbackUri,
+  });
 
-  Future<AuthSession> loginWithWeibo({
+  TaskEither<LucentFailure, AuthSession> loginWithWeibo({
     required String code,
     required String state,
   });
 
-  Future<OAuthAuthorizeData> createGoogleAuthorizeUrl({String? callbackUri});
+  TaskEither<LucentFailure, OAuthAuthorizeData> createGoogleAuthorizeUrl({
+    String? callbackUri,
+  });
 
-  Future<AuthSession> loginWithGoogle({
+  TaskEither<LucentFailure, AuthSession> loginWithGoogle({
     required String code,
     required String state,
   });
 
-  Future<AuthUser> linkWechatWebIdentity({
+  TaskEither<LucentFailure, AuthUser> linkWechatWebIdentity({
     required String code,
     required String state,
   });
 
-  Future<AuthUser> linkWechatMobileIdentity({required String code});
+  TaskEither<LucentFailure, AuthUser> linkWechatMobileIdentity({
+    required String code,
+  });
 
-  Future<VerificationCooldown> sendVerificationCode({
+  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
   });
 
-  Future<void> resetPassword({
+  TaskEither<LucentFailure, void> resetPassword({
     required String email,
     required String code,
     required String password,
   });
 
-  Future<VerificationCooldown> forgotPassword({required String email});
+  TaskEither<LucentFailure, VerificationCooldown> forgotPassword({
+    required String email,
+  });
 
-  Future<void> verifyEmail({required String email, required String code});
+  TaskEither<LucentFailure, void> verifyEmail({
+    required String email,
+    required String code,
+  });
 
-  Future<AuthUser> updateAccountProfile({String? nickname, String? avatar});
+  TaskEither<LucentFailure, AuthUser> updateAccountProfile({
+    String? nickname,
+    String? avatar,
+  });
 
-  Future<void> changePassword({
+  TaskEither<LucentFailure, void> changePassword({
     required String oldPassword,
     required String newPassword,
   });
 
-  Future<AuthUser> changeEmail({
+  TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
     required AuthUser currentUser,
   });
 
-  Future<void> deleteAccount({String? password, String? code});
+  TaskEither<LucentFailure, void> deleteAccount({
+    String? password,
+    String? code,
+  });
 
-  Future<AuthUser> unlinkIdentity({required String identityId});
+  TaskEither<LucentFailure, AuthUser> unlinkIdentity({
+    required String identityId,
+  });
 }

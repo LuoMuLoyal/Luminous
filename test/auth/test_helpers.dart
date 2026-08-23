@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
@@ -87,181 +89,213 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   String? wechatMobileIdentityLinkCallbackCode;
 
   @override
-  Future<AuthSession> login({
+  TaskEither<LucentFailure, AuthSession> login({
     required String email,
     String? password,
     String? code,
-  }) async {
+  }) {
     loginEmail = email;
     loginPassword = password;
     loginCode = code;
-    return testSession(email: email);
+    return TaskEither.right(testSession(email: email));
   }
 
   @override
-  Future<OAuthAuthorizeData> createWechatWebAuthorizeUrl({
+  TaskEither<LucentFailure, OAuthAuthorizeData> createWechatWebAuthorizeUrl({
     String? callbackUri,
-  }) async {
+  }) {
     createWechatAuthorizeCalled = true;
     wechatAuthorizeCallbackUri = callbackUri;
-    return const OAuthAuthorizeData(
-      authorizeUrl:
-          'https://open.weixin.qq.com/connect/qrconnect?state=state-1',
-      state: 'state-1',
-      expiresInSeconds: 600,
+    return TaskEither.right(
+      const OAuthAuthorizeData(
+        authorizeUrl:
+            'https://open.weixin.qq.com/connect/qrconnect?state=state-1',
+        state: 'state-1',
+        expiresInSeconds: 600,
+      ),
     );
   }
 
   @override
-  Future<OAuthAuthorizeData> createWechatWebIdentityLinkAuthorizeUrl({
-    String? callbackUri,
-  }) async {
+  TaskEither<LucentFailure, OAuthAuthorizeData>
+  createWechatWebIdentityLinkAuthorizeUrl({String? callbackUri}) {
     createWechatIdentityLinkAuthorizeCalled = true;
     wechatIdentityLinkAuthorizeCallbackUri = callbackUri;
-    return const OAuthAuthorizeData(
-      authorizeUrl:
-          'https://open.weixin.qq.com/connect/qrconnect?state=link-state-1',
-      state: 'link-state-1',
-      expiresInSeconds: 600,
+    return TaskEither.right(
+      const OAuthAuthorizeData(
+        authorizeUrl:
+            'https://open.weixin.qq.com/connect/qrconnect?state=link-state-1',
+        state: 'link-state-1',
+        expiresInSeconds: 600,
+      ),
     );
   }
 
   @override
-  Future<AuthSession> loginWithWechatWeb({
+  TaskEither<LucentFailure, AuthSession> loginWithWechatWeb({
     required String code,
     required String state,
-  }) async {
+  }) {
     wechatCallbackCode = code;
     wechatCallbackState = state;
-    return testSession(email: 'wechat@example.com', nickname: 'WechatUser');
-  }
-
-  @override
-  Future<AuthSession> loginWithWechatMobile({required String code}) async {
-    wechatMobileCallbackCode = code;
-    return testSession(
-      email: 'wechat-mobile@example.com',
-      nickname: 'WxMobile',
+    return TaskEither.right(
+      testSession(email: 'wechat@example.com', nickname: 'WechatUser'),
     );
   }
 
   @override
-  Future<AuthUser> linkWechatWebIdentity({
+  TaskEither<LucentFailure, AuthSession> loginWithWechatMobile({
+    required String code,
+  }) {
+    wechatMobileCallbackCode = code;
+    return TaskEither.right(
+      testSession(email: 'wechat-mobile@example.com', nickname: 'WxMobile'),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, AuthUser> linkWechatWebIdentity({
     required String code,
     required String state,
-  }) async {
+  }) {
     wechatIdentityLinkCallbackCode = code;
     wechatIdentityLinkCallbackState = state;
-    return _linkedWechatUser(provider: 'wechat_web');
+    return TaskEither.right(_linkedWechatUser(provider: 'wechat_web'));
   }
 
   @override
-  Future<AuthUser> linkWechatMobileIdentity({required String code}) async {
+  TaskEither<LucentFailure, AuthUser> linkWechatMobileIdentity({
+    required String code,
+  }) {
     wechatMobileIdentityLinkCallbackCode = code;
-    return _linkedWechatUser(provider: 'wechat_mobile');
+    return TaskEither.right(_linkedWechatUser(provider: 'wechat_mobile'));
   }
 
   @override
-  Future<AuthSession> refreshSession({required String refreshToken}) async {
-    return testSession(email: 'refresh@example.com', nickname: 'Refreshed');
+  TaskEither<LucentFailure, AuthSession> refreshSession({
+    required String refreshToken,
+  }) {
+    return TaskEither.right(
+      testSession(email: 'refresh@example.com', nickname: 'Refreshed'),
+    );
   }
 
   @override
-  Future<AuthSession> register({
+  TaskEither<LucentFailure, AuthSession> register({
     required String email,
     required String password,
     required String code,
     String? nickname,
-  }) async {
+  }) {
     registerEmail = email;
     registerPassword = password;
     registerCode = code;
     registerNickname = nickname;
-    return testSession(email: email, nickname: nickname);
+    return TaskEither.right(testSession(email: email, nickname: nickname));
   }
 
   @override
-  Future<VerificationCooldown> sendVerificationCode({
+  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
-  }) async {
+  }) {
     sentCodeEmail = email;
     sentCodeScene = scene;
-    return const VerificationCooldown(message: 'sent', cooldownSeconds: 60);
-  }
-
-  @override
-  Future<VerificationCooldown> forgotPassword({required String email}) async {
-    forgotPasswordEmail = email;
-    return const VerificationCooldown(message: 'sent', cooldownSeconds: 60);
-  }
-
-  @override
-  Future<void> resetPassword({
-    required String email,
-    required String code,
-    required String password,
-  }) async {
-    resetPasswordEmail = email;
-    resetPasswordCode = code;
-    resetPasswordValue = password;
-  }
-
-  @override
-  Future<AuthUser> changeEmail({
-    required String newEmail,
-    required String code,
-    required AuthUser currentUser,
-  }) async {
-    changeEmailNewEmail = newEmail;
-    changeEmailCode = code;
-    return currentUser.copyWith(email: newEmail, emailVerifiedAt: null);
-  }
-
-  @override
-  Future<AuthUser> updateAccountProfile({
-    String? nickname,
-    String? avatar,
-  }) async {
-    updateProfileNickname = nickname;
-    updateProfileAvatar = avatar;
-    return AuthUser(
-      id: 'user-1',
-      email: 'user@example.com',
-      nickname: nickname,
-      avatar: avatar,
-      emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
-      createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
-      updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+    return TaskEither.right(
+      const VerificationCooldown(message: 'sent', cooldownSeconds: 60),
     );
   }
 
   @override
-  Future<void> changePassword({
+  TaskEither<LucentFailure, VerificationCooldown> forgotPassword({
+    required String email,
+  }) {
+    forgotPasswordEmail = email;
+    return TaskEither.right(
+      const VerificationCooldown(message: 'sent', cooldownSeconds: 60),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, void> resetPassword({
+    required String email,
+    required String code,
+    required String password,
+  }) {
+    resetPasswordEmail = email;
+    resetPasswordCode = code;
+    resetPasswordValue = password;
+    return TaskEither.right(null);
+  }
+
+  @override
+  TaskEither<LucentFailure, AuthUser> changeEmail({
+    required String newEmail,
+    required String code,
+    required AuthUser currentUser,
+  }) {
+    changeEmailNewEmail = newEmail;
+    changeEmailCode = code;
+    return TaskEither.right(
+      currentUser.copyWith(email: newEmail, emailVerifiedAt: null),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, AuthUser> updateAccountProfile({
+    String? nickname,
+    String? avatar,
+  }) {
+    updateProfileNickname = nickname;
+    updateProfileAvatar = avatar;
+    return TaskEither.right(
+      AuthUser(
+        id: 'user-1',
+        email: 'user@example.com',
+        nickname: nickname,
+        avatar: avatar,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+      ),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, void> changePassword({
     required String oldPassword,
     required String newPassword,
-  }) async {
+  }) {
     changePasswordOldPassword = oldPassword;
     changePasswordNewPassword = newPassword;
+    return TaskEither.right(null);
   }
 
   @override
-  Future<void> deleteAccount({String? password, String? code}) async {
+  TaskEither<LucentFailure, void> deleteAccount({
+    String? password,
+    String? code,
+  }) {
     deleteAccountPassword = password;
+    return TaskEither.right(null);
   }
 
   @override
-  Future<AuthUser> unlinkIdentity({required String identityId}) async {
+  TaskEither<LucentFailure, AuthUser> unlinkIdentity({
+    required String identityId,
+  }) {
     unlinkIdentityId = identityId;
-    return AuthUser(
-      id: 'user-1',
-      email: 'user@example.com',
-      nickname: 'Lumi',
-      avatar: null,
-      emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
-      hasPassword: true,
-      createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
-      updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+    return TaskEither.right(
+      AuthUser(
+        id: 'user-1',
+        email: 'user@example.com',
+        nickname: 'Lumi',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        hasPassword: true,
+        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+      ),
     );
   }
 

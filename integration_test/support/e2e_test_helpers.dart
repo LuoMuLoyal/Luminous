@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' show LucentApi, MedicineDoseLogsApi;
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client_providers.dart'
     show
         lucentBaseUrlProvider,
@@ -433,153 +435,178 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   bool logoutCalled = false;
 
   @override
-  Future<AuthSession> login({
+  TaskEither<LucentFailure, AuthSession> login({
     required String email,
     String? password,
     String? code,
-  }) async {
+  }) {
     loginEmail = email;
     loginPassword = password;
     loginCode = code;
-    return AuthSession(
-      user: AuthUser(
-        id: 'e2e-auth-user-1',
-        email: email,
-        nickname: 'E2E Auth User',
-        avatar: null,
-        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
-        hasPassword: true,
-        createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
-        updatedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+    return TaskEither.right(
+      AuthSession(
+        user: AuthUser(
+          id: 'e2e-auth-user-1',
+          email: email,
+          nickname: 'E2E Auth User',
+          avatar: null,
+          emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+          hasPassword: true,
+          createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+          updatedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        ),
+        accessToken: 'e2e-access-token',
+        refreshToken: 'e2e-refresh-token',
+        expiresInSeconds: 3600,
       ),
-      accessToken: 'e2e-access-token',
-      refreshToken: 'e2e-refresh-token',
-      expiresInSeconds: 3600,
     );
   }
 
   @override
-  Future<AuthSession> register({
+  TaskEither<LucentFailure, AuthSession> register({
     required String email,
     required String password,
     required String code,
     String? nickname,
-  }) async {
+  }) {
     registerEmail = email;
     registerPassword = password;
     registerCode = code;
     registerNickname = nickname;
-    return AuthSession(
-      user: AuthUser(
-        id: 'e2e-register-user-1',
-        email: email,
-        nickname: nickname,
-        avatar: null,
-        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
-        hasPassword: true,
-        createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
-        updatedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+    return TaskEither.right(
+      AuthSession(
+        user: AuthUser(
+          id: 'e2e-register-user-1',
+          email: email,
+          nickname: nickname,
+          avatar: null,
+          emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+          hasPassword: true,
+          createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+          updatedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        ),
+        accessToken: 'e2e-register-access-token',
+        refreshToken: 'e2e-register-refresh-token',
+        expiresInSeconds: 3600,
       ),
-      accessToken: 'e2e-register-access-token',
-      refreshToken: 'e2e-register-refresh-token',
-      expiresInSeconds: 3600,
     );
   }
 
   @override
-  Future<VerificationCooldown> sendVerificationCode({
+  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
-  }) async {
+  }) {
     sentCodeEmail = email;
     sentCodeScene = scene;
-    return const VerificationCooldown(message: 'sent', cooldownSeconds: 60);
+    return TaskEither.right(
+      const VerificationCooldown(message: 'sent', cooldownSeconds: 60),
+    );
   }
 
   @override
-  Future<VerificationCooldown> forgotPassword({required String email}) async {
+  TaskEither<LucentFailure, VerificationCooldown> forgotPassword({
+    required String email,
+  }) {
     forgotPasswordEmail = email;
-    return const VerificationCooldown(message: 'sent', cooldownSeconds: 60);
+    return TaskEither.right(
+      const VerificationCooldown(message: 'sent', cooldownSeconds: 60),
+    );
   }
 
   @override
-  Future<void> resetPassword({
+  TaskEither<LucentFailure, void> resetPassword({
     required String email,
     required String code,
     required String password,
-  }) async {
+  }) {
     resetPasswordEmail = email;
     resetPasswordCode = code;
     resetPasswordValue = password;
+    return TaskEither.right(null);
   }
 
   @override
-  Future<AuthUser> changeEmail({
+  TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
     required AuthUser currentUser,
-  }) async {
+  }) {
     changeEmailNewEmail = newEmail;
     changeEmailCode = code;
-    return currentUser.copyWith(
-      email: newEmail,
-      emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
-      updatedAt: DateTime.parse('2026-06-06T02:00:00Z'),
+    return TaskEither.right(
+      currentUser.copyWith(
+        email: newEmail,
+        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-06T02:00:00Z'),
+      ),
     );
   }
 
   @override
-  Future<AuthUser> updateAccountProfile({
+  TaskEither<LucentFailure, AuthUser> updateAccountProfile({
     String? nickname,
     String? avatar,
-  }) async {
+  }) {
     updateProfileNickname = nickname;
     updateProfileAvatar = avatar;
-    return AuthUser(
-      id: 'e2e-user-1',
-      email: 'e2e@example.com',
-      nickname: nickname,
-      avatar: avatar,
-      emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
-      hasPassword: true,
-      createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
-      updatedAt: DateTime.parse('2026-06-06T01:00:00Z'),
+    return TaskEither.right(
+      AuthUser(
+        id: 'e2e-user-1',
+        email: 'e2e@example.com',
+        nickname: nickname,
+        avatar: avatar,
+        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        hasPassword: true,
+        createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-06T01:00:00Z'),
+      ),
     );
   }
 
   @override
-  Future<void> changePassword({
+  TaskEither<LucentFailure, void> changePassword({
     required String oldPassword,
     required String newPassword,
-  }) async {
+  }) {
     changePasswordOldPassword = oldPassword;
     changePasswordNewPassword = newPassword;
+    return TaskEither.right(null);
   }
 
   @override
-  Future<void> deleteAccount({String? password, String? code}) async {
+  TaskEither<LucentFailure, void> deleteAccount({
+    String? password,
+    String? code,
+  }) {
     deleteAccountPassword = password;
+    return TaskEither.right(null);
   }
 
   @override
-  Future<AuthUser> unlinkIdentity({required String identityId}) async {
+  TaskEither<LucentFailure, AuthUser> unlinkIdentity({
+    required String identityId,
+  }) {
     unlinkIdentityId = identityId;
-    return AuthUser(
-      id: 'e2e-user-1',
-      email: 'e2e@example.com',
-      nickname: 'E2E User',
-      avatar: null,
-      emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
-      hasPassword: true,
-      linkedIdentities: const [],
-      createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
-      updatedAt: DateTime.parse('2026-06-06T03:00:00Z'),
+    return TaskEither.right(
+      AuthUser(
+        id: 'e2e-user-1',
+        email: 'e2e@example.com',
+        nickname: 'E2E User',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        hasPassword: true,
+        linkedIdentities: const [],
+        createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-06T03:00:00Z'),
+      ),
     );
   }
 
   @override
-  Future<void> logout() async {
+  TaskEither<LucentFailure, void> logout() {
     logoutCalled = true;
+    return TaskEither.right(null);
   }
 }
 

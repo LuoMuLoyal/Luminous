@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
@@ -154,6 +156,13 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
   WechatOAuthService get _wechat => ref.read(wechatOAuthServiceProvider);
   AuthRepository get _remote => ref.read(authRepositoryProvider);
 
+  /// Resolves a repository [TaskEither] by rethrowing the [LucentFailure]
+  /// on Left so the surrounding try/catch projects it into action state.
+  Future<T> _resolve<T>(TaskEither<LucentFailure, T> task) async {
+    final either = await task.run();
+    return either.fold((failure) => throw failure, (value) => value);
+  }
+
   /// Maps an error to a user-facing message and logs it.
   String _mapError(Object error, String tag) {
     ref.read(talkerProvider).error('$tag: failed: $error');
@@ -233,7 +242,7 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
         isCompletingWechat: true,
         errorMessage: null,
       );
-      final s = await _remote.loginWithWechatMobile(code: code);
+      final s = await _resolve(_remote.loginWithWechatMobile(code: code));
       await ref.read(authSessionProvider.notifier).applySession(s);
       state = state.copyWith(
         isStartingWechat: false,
@@ -266,9 +275,8 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
         isCompletingWechat: true,
         errorMessage: null,
       );
-      final s = await _remote.loginWithWechatWeb(
-        code: result.code,
-        state: result.state,
+      final s = await _resolve(
+        _remote.loginWithWechatWeb(code: result.code, state: result.state),
       );
       await ref.read(authSessionProvider.notifier).applySession(s);
       state = state.copyWith(isCompletingWechat: false);
@@ -297,7 +305,9 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
       errorMessage: null,
     );
     try {
-      final s = await _remote.loginWithWechatWeb(code: code, state: state);
+      final s = await _resolve(
+        _remote.loginWithWechatWeb(code: code, state: state),
+      );
       await ref.read(authSessionProvider.notifier).applySession(s);
       this.state = this.state.copyWith(isCompletingWechat: false);
       return s;
@@ -329,8 +339,8 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
       qqState: null,
     );
     try {
-      final authorize = await _remote.createQqAuthorizeUrl(
-        callbackUri: webCallbackUri,
+      final authorize = await _resolve(
+        _remote.createQqAuthorizeUrl(callbackUri: webCallbackUri),
       );
       state = state.copyWith(
         isStartingQq: false,
@@ -352,7 +362,7 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
   }) async {
     this.state = this.state.copyWith(isCompletingQq: true, errorMessage: null);
     try {
-      final s = await _remote.loginWithQq(code: code, state: state);
+      final s = await _resolve(_remote.loginWithQq(code: code, state: state));
       await ref.read(authSessionProvider.notifier).applySession(s);
       this.state = this.state.copyWith(isCompletingQq: false);
       return s;
@@ -381,8 +391,8 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
       weiboState: null,
     );
     try {
-      final authorize = await _remote.createWeiboAuthorizeUrl(
-        callbackUri: webCallbackUri,
+      final authorize = await _resolve(
+        _remote.createWeiboAuthorizeUrl(callbackUri: webCallbackUri),
       );
       state = state.copyWith(
         isStartingWeibo: false,
@@ -410,7 +420,9 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
       errorMessage: null,
     );
     try {
-      final s = await _remote.loginWithWeibo(code: code, state: state);
+      final s = await _resolve(
+        _remote.loginWithWeibo(code: code, state: state),
+      );
       await ref.read(authSessionProvider.notifier).applySession(s);
       this.state = this.state.copyWith(isCompletingWeibo: false);
       return s;
@@ -442,8 +454,8 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
       googleState: null,
     );
     try {
-      final authorize = await _remote.createGoogleAuthorizeUrl(
-        callbackUri: webCallbackUri,
+      final authorize = await _resolve(
+        _remote.createGoogleAuthorizeUrl(callbackUri: webCallbackUri),
       );
       state = state.copyWith(
         isStartingGoogle: false,
@@ -474,7 +486,9 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
       errorMessage: null,
     );
     try {
-      final s = await _remote.loginWithGoogle(code: code, state: state);
+      final s = await _resolve(
+        _remote.loginWithGoogle(code: code, state: state),
+      );
       await ref.read(authSessionProvider.notifier).applySession(s);
       this.state = this.state.copyWith(isCompletingGoogle: false);
       return s;
@@ -504,11 +518,13 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
   }) async {
     state = state.copyWith(isStartingApple: true, errorMessage: null);
     try {
-      final s = await _remote.loginWithApple(
-        identityToken: identityToken,
-        authorizationCode: authorizationCode,
-        givenName: givenName,
-        familyName: familyName,
+      final s = await _resolve(
+        _remote.loginWithApple(
+          identityToken: identityToken,
+          authorizationCode: authorizationCode,
+          givenName: givenName,
+          familyName: familyName,
+        ),
       );
       await ref.read(authSessionProvider.notifier).applySession(s);
       state = state.copyWith(isStartingApple: false);

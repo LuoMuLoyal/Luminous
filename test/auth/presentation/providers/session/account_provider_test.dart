@@ -1,8 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/security_elevation_token_holder.dart';
 import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
@@ -20,192 +23,222 @@ class _AccountFakeRemote extends FakeLucentAuthRepository {
   bool verifyEmailCalled = false;
 
   @override
-  Future<AuthUser> fetchAccount() async {
+  TaskEither<LucentFailure, AuthUser> fetchAccount() {
     fetchAccountCalled = true;
-    return AuthUser(
-      id: 'user-1',
-      email: 'user@example.com',
-      nickname: 'Lumi',
-      avatar: null,
-      emailVerifiedAt: DateTime.parse('2026-07-11T00:00:00Z'),
-      createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
-      updatedAt: DateTime.parse('2026-07-11T00:00:00Z'),
+    return TaskEither.right(
+      AuthUser(
+        id: 'user-1',
+        email: 'user@example.com',
+        nickname: 'Lumi',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-07-11T00:00:00Z'),
+        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-07-11T00:00:00Z'),
+      ),
     );
   }
 
   @override
-  Future<void> verifyEmail({
+  TaskEither<LucentFailure, void> verifyEmail({
     required String email,
     required String code,
-  }) async {
+  }) {
     verifyEmailCalled = true;
+    return TaskEither.right(null);
   }
 }
 
 /// Fails account operations with a [DioException].
 class _FailingAccountRemote extends _AccountFakeRemote {
   @override
-  Future<AuthUser> fetchAccount() async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/account'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/account',
-        statusCode: 500,
-        code: 'INTERNAL_SERVER_ERROR',
-        detail: '服务器错误',
-      ),
-    );
+  TaskEither<LucentFailure, AuthUser> fetchAccount() {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/account'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/account',
+          statusCode: 500,
+          code: 'INTERNAL_SERVER_ERROR',
+          detail: '服务器错误',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> verifyEmail({
+  TaskEither<LucentFailure, void> verifyEmail({
     required String email,
     required String code,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/verify-email'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/verify-email',
-        statusCode: 400,
-        code: 'AUTH_VERIFICATION_CODE_INVALID',
-        detail: '验证码错误',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/verify-email'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/verify-email',
+          statusCode: 400,
+          code: 'AUTH_VERIFICATION_CODE_INVALID',
+          detail: '验证码错误',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<AuthUser> updateAccountProfile({
+  TaskEither<LucentFailure, AuthUser> updateAccountProfile({
     String? nickname,
     String? avatar,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/account'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/account',
-        statusCode: 400,
-        code: 'ACCOUNT_NICKNAME_CONFLICT',
-        detail: '昵称已被使用',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/account'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/account',
+          statusCode: 400,
+          code: 'ACCOUNT_NICKNAME_CONFLICT',
+          detail: '昵称已被使用',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> changePassword({
+  TaskEither<LucentFailure, void> changePassword({
     required String oldPassword,
     required String newPassword,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/change-password'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/change-password',
-        statusCode: 400,
-        code: 'AUTH_CURRENT_PASSWORD_INVALID',
-        detail: '原密码错误',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/change-password'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/change-password',
+          statusCode: 400,
+          code: 'AUTH_CURRENT_PASSWORD_INVALID',
+          detail: '原密码错误',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> deleteAccount({String? password, String? code}) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/delete-account'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/delete-account',
-        statusCode: 400,
-        code: 'AUTH_PASSWORD_INVALID',
-        detail: '密码不正确',
-      ),
-    );
+  TaskEither<LucentFailure, void> deleteAccount({
+    String? password,
+    String? code,
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/delete-account'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/delete-account',
+          statusCode: 400,
+          code: 'AUTH_PASSWORD_INVALID',
+          detail: '密码不正确',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<AuthUser> unlinkIdentity({required String identityId}) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/unlink'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/unlink',
-        statusCode: 400,
-        code: 'AUTH_IDENTITY_UNLINK_FAILED',
-        detail: '无法解绑',
-      ),
-    );
+  TaskEither<LucentFailure, AuthUser> unlinkIdentity({
+    required String identityId,
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/unlink'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/unlink',
+          statusCode: 400,
+          code: 'AUTH_IDENTITY_UNLINK_FAILED',
+          detail: '无法解绑',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<AuthUser> changeEmail({
+  TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
     required AuthUser currentUser,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/change-email'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/change-email',
-        statusCode: 400,
-        code: 'AUTH_EMAIL_CONFLICT',
-        detail: '邮箱已被占用',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/change-email'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/change-email',
+          statusCode: 400,
+          code: 'AUTH_EMAIL_CONFLICT',
+          detail: '邮箱已被占用',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<VerificationCooldown> sendVerificationCode({
+  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/send-code'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/send-code',
-        statusCode: 429,
-        code: 'AUTH_LOGIN_RATE_LIMITED',
-        detail: '发送过于频繁',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/send-code'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/send-code',
+          statusCode: 429,
+          code: 'AUTH_LOGIN_RATE_LIMITED',
+          detail: '发送过于频繁',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }
 
 class _ElevationTokenInvalidRemote extends _AccountFakeRemote {
   @override
-  Future<AuthUser> changeEmail({
+  TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
     required AuthUser currentUser,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/change-email'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/change-email',
-        statusCode: 403,
-        code: 'AUTH_ELEVATION_TOKEN_INVALID',
-        detail: 'elevation_token_invalid',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/change-email'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/change-email',
+          statusCode: 403,
+          code: 'AUTH_ELEVATION_TOKEN_INVALID',
+          detail: 'elevation_token_invalid',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }
 
 class _ForbiddenBusinessRemote extends _AccountFakeRemote {
   @override
-  Future<AuthUser> unlinkIdentity({required String identityId}) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/unlink'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/unlink',
-        statusCode: 403,
-        code: 'AUTH_LAST_IDENTITY_CANNOT_UNLINK',
-        detail: 'Cannot unlink the last sign-in identity',
-      ),
-    );
+  TaskEither<LucentFailure, AuthUser> unlinkIdentity({
+    required String identityId,
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/unlink'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/unlink',
+          statusCode: 403,
+          code: 'AUTH_LAST_IDENTITY_CANNOT_UNLINK',
+          detail: 'Cannot unlink the last sign-in identity',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }
 

@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
@@ -24,6 +26,13 @@ class WechatOAuthService {
   WechatOAuthService(this._ref);
 
   final Ref _ref;
+
+  /// Resolves a repository [TaskEither] by rethrowing the [LucentFailure]
+  /// on Left so callers keep their documented "throws on failure" contract.
+  Future<T> _resolve<T>(TaskEither<LucentFailure, T> task) async {
+    final either = await task.run();
+    return either.fold((failure) => throw failure, (value) => value);
+  }
 
   // ---- Mobile ----
 
@@ -54,13 +63,15 @@ class WechatOAuthService {
     final remote = _ref.read(authRepositoryProvider);
     final server = await listener.start();
     try {
-      final authorize = forIdentityLink
-          ? await remote.createWechatWebIdentityLinkAuthorizeUrl(
-              callbackUri: server.callbackUri.toString(),
-            )
-          : await remote.createWechatWebAuthorizeUrl(
-              callbackUri: server.callbackUri.toString(),
-            );
+      final authorize = await _resolve(
+        forIdentityLink
+            ? remote.createWechatWebIdentityLinkAuthorizeUrl(
+                callbackUri: server.callbackUri.toString(),
+              )
+            : remote.createWechatWebAuthorizeUrl(
+                callbackUri: server.callbackUri.toString(),
+              ),
+      );
 
       final opened = await _ref
           .read(externalUrlLauncherProvider)
@@ -88,11 +99,13 @@ class WechatOAuthService {
     bool forIdentityLink = false,
   }) async {
     final remote = _ref.read(authRepositoryProvider);
-    return forIdentityLink
-        ? remote.createWechatWebIdentityLinkAuthorizeUrl(
-            callbackUri: callbackUri,
-          )
-        : remote.createWechatWebAuthorizeUrl(callbackUri: callbackUri);
+    return _resolve(
+      forIdentityLink
+          ? remote.createWechatWebIdentityLinkAuthorizeUrl(
+              callbackUri: callbackUri,
+            )
+          : remote.createWechatWebAuthorizeUrl(callbackUri: callbackUri),
+    );
   }
 }
 

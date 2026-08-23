@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/forms/validators.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 
 import '../shared/form_mixin.dart';
 
@@ -116,34 +118,38 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       errorMessage: null,
       successMessage: null,
     );
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'PasswordResetNotifier.sendResetCode',
-      action: () =>
-          ref.read(authRepositoryProvider).forgotPassword(email: state.email),
+    final result = await ref
+        .read(authRepositoryProvider)
+        .forgotPassword(email: state.email)
+        .run();
+    return switch (result) {
+      Left(:final value) => _failSendResetCode(value),
+      Right(:final value) => _succeedSendResetCode(value),
+    };
+  }
+
+  bool _failSendResetCode(LucentFailure failure) {
+    ref
+        .read(talkerProvider)
+        .error('PasswordResetNotifier.sendResetCode: failed: $failure');
+    state = state.copyWith(
+      isSubmitting: false,
+      isSendingCode: false,
+      errorMessage: failure.message,
+      successMessage: null,
     );
-    switch (result) {
-      case Failure(:final error):
-        state = state.copyWith(
-          isSubmitting: false,
-          isSendingCode: false,
-          errorMessage: error.message,
-          successMessage: null,
-        );
-        return false;
-      case Success(:final value):
-        final cooldown = value.cooldownSeconds;
-        state = state.copyWith(
-          isSendingCode: false,
-          successMessage: value.message,
-        );
-        startCooldown(
-          cooldown,
-          getCooldownSeconds: () => state.cooldownSeconds,
-          setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
-        );
-        return true;
-    }
+    return false;
+  }
+
+  bool _succeedSendResetCode(VerificationCooldown value) {
+    final cooldown = value.cooldownSeconds;
+    state = state.copyWith(isSendingCode: false, successMessage: value.message);
+    startCooldown(
+      cooldown,
+      getCooldownSeconds: () => state.cooldownSeconds,
+      setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
+    );
+    return true;
   }
 
   Future<bool> resetPassword() async {
@@ -152,30 +158,36 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       errorMessage: null,
       successMessage: null,
     );
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'PasswordResetNotifier.resetPassword',
-      action: () => ref
-          .read(authRepositoryProvider)
-          .resetPassword(
-            email: state.email,
-            code: state.code,
-            password: state.password,
-          ),
+    final result = await ref
+        .read(authRepositoryProvider)
+        .resetPassword(
+          email: state.email,
+          code: state.code,
+          password: state.password,
+        )
+        .run();
+    return switch (result) {
+      Left(:final value) => _failResetPassword(value),
+      Right() => _succeedResetPassword(),
+    };
+  }
+
+  bool _failResetPassword(LucentFailure failure) {
+    ref
+        .read(talkerProvider)
+        .error('PasswordResetNotifier.resetPassword: failed: $failure');
+    state = state.copyWith(
+      isSubmitting: false,
+      isSendingCode: false,
+      errorMessage: failure.message,
+      successMessage: null,
     );
-    switch (result) {
-      case Failure(:final error):
-        state = state.copyWith(
-          isSubmitting: false,
-          isSendingCode: false,
-          errorMessage: error.message,
-          successMessage: null,
-        );
-        return false;
-      case Success():
-        state = state.copyWith(isSubmitting: false, successMessage: '');
-        return true;
-    }
+    return false;
+  }
+
+  bool _succeedResetPassword() {
+    state = state.copyWith(isSubmitting: false, successMessage: '');
+    return true;
   }
 }
 

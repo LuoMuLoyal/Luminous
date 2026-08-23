@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_state.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
@@ -27,74 +28,79 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   Future<void> restore() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     final store = ref.read(lucentSessionStoreProvider);
-    try {
-      final refreshToken = await store.readRefreshToken();
-      if (refreshToken == null || refreshToken.isEmpty) {
-        state = const AuthSessionState();
-        return;
-      }
+    final refreshToken = await store.readRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      state = const AuthSessionState();
+      return;
+    }
 
-      // Attempt a quick restore with the current access token. If that fails
-      // with an auth error (expired/invalid access token), fall back to the
-      // refresh flow so cold starts don't force the user to log in again.
-      try {
-        final user = await ref.read(authRepositoryProvider).fetchAccount();
+    // Attempt a quick restore with the current access token. If that fails
+    // with an auth error (expired/invalid access token), fall back to the
+    // refresh flow so cold starts don't force the user to log in again.
+    final fetchResult = await ref
+        .read(authRepositoryProvider)
+        .fetchAccount()
+        .run();
+    switch (fetchResult) {
+      case Right(:final value):
         state = AuthSessionState(
-          user: user,
+          user: value,
           isLoading: false,
           isAuthenticated: true,
         );
         return;
-      } catch (error) {
-        final apiError = LucentErrorMapper.fromObject(error);
+      case Left(:final value):
         final isAuthError =
-            apiError.statusCode == 401 ||
-            apiError.statusCode == 403 ||
-            apiError.isTokenExpired ||
-            apiError.isRefreshTokenInvalid;
+            value.statusCode == 401 ||
+            value.statusCode == 403 ||
+            value.isTokenExpired ||
+            value.isRefreshTokenInvalid;
         if (!isAuthError) {
           // Network connectivity errors (timeout, connection refused, etc.)
           // must NOT clear the session store — the token may still be valid
           // and the user should be able to retry once connectivity is restored.
-          if (apiError.isNetworkConnectivityError) {
+          if (value.isNetworkConnectivityError) {
             state = AuthSessionState(
               isAuthenticated: false,
-              errorMessage: apiError.message,
+              errorMessage: value.message,
             );
             return;
           }
           await store.clear();
           state = AuthSessionState(
             isAuthenticated: false,
-            errorMessage: apiError.message,
+            errorMessage: value.message,
           );
           return;
         }
-        // Continue with refresh below.
-      }
+      // Continue with refresh below.
+    }
 
-      final session = await ref
-          .read(authRepositoryProvider)
-          .refreshSession(refreshToken: refreshToken);
-      state = AuthSessionState(
-        user: session.user,
-        isLoading: false,
-        isAuthenticated: true,
-      );
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AuthSessionNotifier.restore: failed: $error');
-      final apiError = LucentErrorMapper.fromObject(error);
-      // Preserve the session store for network connectivity errors so the
-      // user can retry restore() once the network recovers.
-      if (!apiError.isNetworkConnectivityError) {
-        await store.clear();
-      }
-      state = AuthSessionState(
-        isAuthenticated: false,
-        errorMessage: apiError.message,
-      );
+    final refreshResult = await ref
+        .read(authRepositoryProvider)
+        .refreshSession(refreshToken: refreshToken)
+        .run();
+    switch (refreshResult) {
+      case Right(:final value):
+        state = AuthSessionState(
+          user: value.user,
+          isLoading: false,
+          isAuthenticated: true,
+        );
+      case Left(:final value):
+        ref
+            .read(talkerProvider)
+            .error('AuthSessionNotifier.restore: failed: $value');
+        // Preserve the session store for network connectivity errors so the
+        // user can retry restore() once the network recovers. Auth failures
+        // (e.g. AUTH_REFRESH_TOKEN_INVALID) clear the unrecoverable session.
+        if (!value.isNetworkConnectivityError) {
+          await store.clear();
+        }
+        state = AuthSessionState(
+          isAuthenticated: false,
+          errorMessage: value.message,
+        );
     }
   }
 
@@ -121,10 +127,19 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
 
   Future<void> logout() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    try {
-      await ref.read(authRepositoryProvider).logout();
-    } finally {
-      state = const AuthSessionState();
+    final result = await ref.read(authRepositoryProvider).logout().run();
+    switch (result) {
+      case Right():
+        // 远程注销成功才把 UI 置为登出；本地 session 由 repository 在
+        // Right 路径清空。
+        state = const AuthSessionState();
+      case Left(:final value):
+        // 远程注销失败：保留尚未确认的本地 session，仅投影失败信息到
+        // action state，不把用户误登出。
+        ref
+            .read(talkerProvider)
+            .error('AuthSessionNotifier.logout: failed: $value');
+        state = state.copyWith(isLoading: false, errorMessage: value.message);
     }
   }
 }

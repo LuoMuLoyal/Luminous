@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -313,23 +316,29 @@ void main() {
       expect(state.user, isNull);
     });
 
-    test('resets state even when remote logout throws', () async {
-      remote.logoutShouldFail = true;
-      // First set authenticated
-      final session = testSession(email: 'logout@example.com');
-      await container.read(authSessionProvider.notifier).applySession(session);
+    test(
+      'keeps the session and sets errorMessage when remote logout fails',
+      () async {
+        remote.logoutShouldFail = true;
+        // First set authenticated
+        final session = testSession(email: 'logout@example.com');
+        await container
+            .read(authSessionProvider.notifier)
+            .applySession(session);
+        expect(container.read(authSessionProvider).isAuthenticated, isTrue);
 
-      // Logout should still reset state (exception propagates via finally)
-      await expectLater(
-        container.read(authSessionProvider.notifier).logout(),
-        throwsA(isA<DioException>()),
-      );
+        // Logout failure keeps the local session: UI stays signed in and the
+        // failure is projected into errorMessage (no exception escapes).
+        await container.read(authSessionProvider.notifier).logout();
 
-      final state = container.read(authSessionProvider);
-      expect(state.isAuthenticated, isFalse);
-      expect(state.isLoading, isFalse);
-      expect(state.user, isNull);
-    });
+        final state = container.read(authSessionProvider);
+        expect(remote.logoutCalled, isTrue);
+        expect(state.isAuthenticated, isTrue);
+        expect(state.isLoading, isFalse);
+        expect(state.errorMessage, isNotNull);
+        expect(state.user?.email, 'logout@example.com');
+      },
+    );
   });
 
   group('AuthSessionNotifier — onSessionExpired callback', () {
@@ -376,8 +385,21 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
   bool refreshSessionCalled = false;
 
   @override
-  Future<AuthUser> fetchAccount() async {
-    if (fetchAccountShouldFail) {
+  TaskEither<LucentFailure, AuthUser> fetchAccount() {
+    if (!fetchAccountShouldFail) {
+      return TaskEither.right(
+        AuthUser(
+          id: 'user-1',
+          email: 'fetchAccount@example.com',
+          nickname: 'Fetched',
+          avatar: null,
+          emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+          createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+          updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+        ),
+      );
+    }
+    return TaskEither.tryCatch(() async {
       if (fetchAccountFailureIsNetworkError) {
         throw DioException(
           requestOptions: RequestOptions(path: '/account'),
@@ -396,64 +418,64 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
           detail: 'token已过期',
         ),
       );
-    }
-    return AuthUser(
-      id: 'user-1',
-      email: 'fetchAccount@example.com',
-      nickname: 'Fetched',
-      avatar: null,
-      emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
-      createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
-      updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
-    );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<AuthSession> refreshSession({required String refreshToken}) async {
+  TaskEither<LucentFailure, AuthSession> refreshSession({
+    required String refreshToken,
+  }) {
     refreshSessionCalled = true;
     if (refreshSessionShouldFail) {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/auth/refresh'),
-        type: DioExceptionType.badResponse,
-        response: problemResponse(
-          path: '/auth/refresh',
-          statusCode: 401,
-          code: 'AUTH_REFRESH_TOKEN_INVALID',
-          detail: 'refresh token invalid',
-        ),
-      );
+      return TaskEither.tryCatch(() async {
+        throw DioException(
+          requestOptions: RequestOptions(path: '/auth/refresh'),
+          type: DioExceptionType.badResponse,
+          response: problemResponse(
+            path: '/auth/refresh',
+            statusCode: 401,
+            code: 'AUTH_REFRESH_TOKEN_INVALID',
+            detail: 'refresh token invalid',
+          ),
+        );
+      }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
     }
-    return AuthSession(
-      user: AuthUser(
-        id: 'user-1',
-        email: 'refreshed@example.com',
-        nickname: 'Refreshed',
-        avatar: null,
-        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
-        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
-        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+    return TaskEither.right(
+      AuthSession(
+        user: AuthUser(
+          id: 'user-1',
+          email: 'refreshed@example.com',
+          nickname: 'Refreshed',
+          avatar: null,
+          emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+          createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+          updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+        ),
+        accessToken: 'new-access-token',
+        refreshToken: 'new-refresh-token',
+        expiresInSeconds: 3600,
       ),
-      accessToken: 'new-access-token',
-      refreshToken: 'new-refresh-token',
-      expiresInSeconds: 3600,
     );
   }
 
   @override
-  Future<void> logout() async {
+  TaskEither<LucentFailure, void> logout() {
     logoutCalled = true;
     if (logoutShouldFail) {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/logout'),
-        type: DioExceptionType.badResponse,
-        response: problemResponse(
-          path: '/logout',
-          statusCode: 500,
-          code: 'INTERNAL_SERVER_ERROR',
-          detail: '服务器错误',
-        ),
-      );
+      return TaskEither.tryCatch(() async {
+        throw DioException(
+          requestOptions: RequestOptions(path: '/logout'),
+          type: DioExceptionType.badResponse,
+          response: problemResponse(
+            path: '/logout',
+            statusCode: 500,
+            code: 'INTERNAL_SERVER_ERROR',
+            detail: '服务器错误',
+          ),
+        );
+      }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
     }
+    return TaskEither.right(null);
   }
 }
 

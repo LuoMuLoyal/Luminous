@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/password_reset.dart';
@@ -246,34 +249,40 @@ class _NoOpAuthSessionNotifier extends AuthSessionNotifier {
 
 class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
   @override
-  Future<VerificationCooldown> forgotPassword({required String email}) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/forgot-password'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/forgot-password',
-        statusCode: 429,
-        code: 'AUTH_LOGIN_RATE_LIMITED',
-        detail: '发送过于频繁',
-      ),
-    );
+  TaskEither<LucentFailure, VerificationCooldown> forgotPassword({
+    required String email,
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/forgot-password'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/forgot-password',
+          statusCode: 429,
+          code: 'AUTH_LOGIN_RATE_LIMITED',
+          detail: '发送过于频繁',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<void> resetPassword({
+  TaskEither<LucentFailure, void> resetPassword({
     required String email,
     required String code,
     required String password,
-  }) async {
-    throw DioException(
-      requestOptions: RequestOptions(path: '/reset-password'),
-      type: DioExceptionType.badResponse,
-      response: problemResponse(
-        path: '/reset-password',
-        statusCode: 400,
-        code: 'AUTH_VERIFICATION_CODE_INVALID',
-        detail: '验证码错误',
-      ),
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/reset-password'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/reset-password',
+          statusCode: 400,
+          code: 'AUTH_VERIFICATION_CODE_INVALID',
+          detail: '验证码错误',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }
