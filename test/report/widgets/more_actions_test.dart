@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -487,19 +489,18 @@ class _FakeReviewRepository implements ReviewRepository {
   ReviewEventPage? page;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async => current;
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() =>
+      TaskEither.right(current);
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
-    return page ?? const ReviewEventPage(items: [], total: 0);
-  }
+  }) => TaskEither.right(page ?? const ReviewEventPage(items: [], total: 0));
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     throw UnimplementedError();
   }
 }

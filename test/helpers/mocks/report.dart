@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';
 
@@ -14,9 +16,9 @@ class MockReportRepository implements ReportRepository {
       Future.value(_signedOutDashboard);
 
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
-    return _dashboardForQuery(query);
-  }
+  TaskEither<LucentFailure, ReportDashboard> fetchDashboard(
+    ReportDashboardQuery query,
+  ) => TaskEither.right(_dashboardForQuery(query));
 
   static ReportDashboard _dashboardForQuery(ReportDashboardQuery query) {
     final startDate =

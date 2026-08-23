@@ -7,9 +7,8 @@ import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
@@ -273,34 +272,32 @@ class _ClinicSummaryPreviewContentState
     try {
       // 生成客户端直接反序列化资源，无需再手动解包。
       // 请求体携带当前字段选择，未选择字段不会进入分享内容。
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'ClinicSummaryPreviewDialog._createShare',
-        action: () async {
-          final api = ref.read(lucentClientProvider).reports;
-          final response = await api.reportsControllerShareClinicSummaryV1(
-            clinicSummaryRequestDto: ClinicSummaryRequestDto(
-              selectedFields: _selectedFields,
-            ),
-          );
-          return response.data!;
-        },
+      // 创建失败（网络 / 服务端业务失败；空响应体的协议异常逃逸）统一
+      // 提示失败，字段选择保持可重试（widget 不读 code/status）。
+      final api = ref.read(lucentClientProvider).reports;
+      final response = await api.reportsControllerShareClinicSummaryV1(
+        clinicSummaryRequestDto: ClinicSummaryRequestDto(
+          selectedFields: _selectedFields,
+        ),
       );
-      switch (result) {
-        case Success(:final value):
-          // The share list is cached (keepAlive) — invalidate it so the
-          // management sheet shows the newly created share on next open.
-          ref.invalidate(clinicSummaryShareListProvider);
-          if (mounted) {
-            setState(() {
-              _shareResponse = value;
-              _shareStep = _ShareStep.created;
-            });
-          }
-        case Failure():
-          if (mounted) {
-            await Toast.show(context, l10n.reportShareCreateFailed);
-          }
+      final value = response.data!;
+      // The share list is cached (keepAlive) — invalidate it so the
+      // management sheet shows the newly created share on next open.
+      ref.invalidate(clinicSummaryShareListProvider);
+      if (mounted) {
+        setState(() {
+          _shareResponse = value;
+          _shareStep = _ShareStep.created;
+        });
+      }
+    } catch (error) {
+      // 创建失败（网络 / 服务端业务失败 / 协议异常逃逸）统一提示失败，
+      // 字段选择保持可重试（widget 不读 code/status）。
+      ref
+          .read(talkerProvider)
+          .error('ClinicSummaryPreviewDialog._createShare: failed: $error');
+      if (mounted) {
+        await Toast.show(context, l10n.reportShareCreateFailed);
       }
     } finally {
       notifier.set(false);
@@ -331,25 +328,21 @@ class _ClinicSummaryPreviewContentState
     }
     setState(() => _isRevokingShare = true);
     try {
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'ClinicSummaryPreviewDialog._revokeShare',
-        action: () async {
-          final api = ref.read(lucentClientProvider).reports;
-          await api.reportsControllerRevokeClinicSummaryShareV1(
-            shareId: shareId,
-          );
-        },
-      );
-      switch (result) {
-        case Success():
-          if (mounted) {
-            setState(() => _shareStep = _ShareStep.revoked);
-          }
-        case Failure():
-          if (mounted) {
-            await Toast.show(context, l10n.reportShareRevokeFailed);
-          }
+      // 撤销失败（网络 / 服务端业务失败 / 协议异常逃逸）统一提示失败，
+      // created 步骤保持可重试（widget 不读 code/status）。
+      final api = ref.read(lucentClientProvider).reports;
+      await api.reportsControllerRevokeClinicSummaryShareV1(shareId: shareId);
+      if (mounted) {
+        setState(() => _shareStep = _ShareStep.revoked);
+      }
+    } catch (error) {
+      // 撤销失败（网络 / 服务端业务失败 / 协议异常逃逸）统一提示失败，
+      // created 步骤保持可重试（widget 不读 code/status）。
+      ref
+          .read(talkerProvider)
+          .error('ClinicSummaryPreviewDialog._revokeShare: failed: $error');
+      if (mounted) {
+        await Toast.show(context, l10n.reportShareRevokeFailed);
       }
     } finally {
       if (mounted) {

@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
@@ -50,11 +52,72 @@ void main() {
         expect(dashboard.patterns.single.title, '饮水正在回升');
       },
     );
+
+    test('throws emptyResponse failure on an empty success body', () async {
+      adapter.responseData = null;
+
+      await expectLater(
+        dataSource.fetchDashboard(
+          const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+        ),
+        throwsA(
+          isA<LucentFailure>().having(
+            (failure) => failure.networkErrorCode,
+            'networkErrorCode',
+            NetworkErrorCode.emptyResponse,
+          ),
+        ),
+      );
+    });
   });
 }
 
 class _FakeReportAdapter implements HttpClientAdapter {
   final requests = <_CapturedReportRequest>[];
+
+  /// Null → empty success body (the emptyResponse contract test).
+  Object? responseData = <String, Object?>{
+    'range': 'last_7_days',
+    'startDate': '2026-06-06',
+    'endDate': '2026-06-12',
+    'generatedAt': '2026-06-12T10:00:00.000Z',
+    'metrics': <Object?>[
+      <String, Object?>{
+        'kind': 'water',
+        'value': '1.8',
+        'unit': 'L',
+        'status': 'good',
+        'delta': '+0.4L',
+        'direction': 'up',
+        'sparkline': <num>[1.2, 1.5, 1.7, 1.6, 1.8, 1.9, 1.8],
+      },
+    ],
+    'trends': <Object?>[
+      <String, Object?>{
+        'kind': 'water',
+        'unit': 'L',
+        'currentValue': '1.8L',
+        'values': <num>[1.2, 1.5, 1.7, 1.6, 1.8, 1.9, 1.8],
+      },
+    ],
+    'findings': <Object?>[
+      <String, Object?>{
+        'kind': 'hydration',
+        'title': '饮水改善',
+        'body': '最近 7 天饮水量较前期更稳定。',
+      },
+    ],
+    'patterns': <Object?>[
+      <String, Object?>{
+        'kind': 'hydration',
+        'title': '饮水正在回升',
+        'status': 'good',
+        'body': '工作日下午的补水频率更稳定。',
+        'sparkline': <num>[30, 34, 38, 36, 42, 44, 43],
+      },
+    ],
+    'aiSummaryEnabled': true,
+  };
 
   _CapturedReportRequest requestAt(String method, String path) {
     return requests.singleWhere(
@@ -76,49 +139,10 @@ class _FakeReportAdapter implements HttpClientAdapter {
       ),
     );
 
+    final body = responseData != null ? jsonEncode(responseData) : '';
+
     return ResponseBody.fromString(
-      jsonEncode(<String, Object?>{
-        'range': 'last_7_days',
-        'startDate': '2026-06-06',
-        'endDate': '2026-06-12',
-        'generatedAt': '2026-06-12T10:00:00.000Z',
-        'metrics': <Object?>[
-          <String, Object?>{
-            'kind': 'water',
-            'value': '1.8',
-            'unit': 'L',
-            'status': 'good',
-            'delta': '+0.4L',
-            'direction': 'up',
-            'sparkline': <num>[1.2, 1.5, 1.7, 1.6, 1.8, 1.9, 1.8],
-          },
-        ],
-        'trends': <Object?>[
-          <String, Object?>{
-            'kind': 'water',
-            'unit': 'L',
-            'currentValue': '1.8L',
-            'values': <num>[1.2, 1.5, 1.7, 1.6, 1.8, 1.9, 1.8],
-          },
-        ],
-        'findings': <Object?>[
-          <String, Object?>{
-            'kind': 'hydration',
-            'title': '饮水改善',
-            'body': '最近 7 天饮水量较前期更稳定。',
-          },
-        ],
-        'patterns': <Object?>[
-          <String, Object?>{
-            'kind': 'hydration',
-            'title': '饮水正在回升',
-            'status': 'good',
-            'body': '工作日下午的补水频率更稳定。',
-            'sparkline': <num>[30, 34, 38, 36, 42, 44, 43],
-          },
-        ],
-        'aiSummaryEnabled': true,
-      }),
+      body,
       200,
       headers: const <String, List<String>>{
         Headers.contentTypeHeader: <String>['application/json'],

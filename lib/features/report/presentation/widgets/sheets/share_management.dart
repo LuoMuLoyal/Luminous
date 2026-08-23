@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
@@ -193,16 +192,17 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
     final l10n = AppLocalizations.of(context)!;
     setState(() => _revokingShareIds.add(shareId));
     try {
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'ShareManagementSheet._revoke',
-        action: () =>
-            ref.read(clinicSummaryShareListProvider.notifier).revoke(shareId),
-      );
-      if (result case Failure()) {
-        if (context.mounted) {
-          await Toast.show(context, l10n.reportShareRevokeFailed);
-        }
+      // 撤销失败（网络 / 服务端业务失败 / 协议异常逃逸）统一提示失败，
+      // 行保留可重试（widget 不读 code/status）。
+      await ref.read(clinicSummaryShareListProvider.notifier).revoke(shareId);
+    } catch (error) {
+      // 撤销失败（网络 / 服务端业务失败 / 协议异常逃逸）统一提示失败，
+      // 行保留可重试（widget 不读 code/status）。
+      ref
+          .read(talkerProvider)
+          .error('ShareManagementSheet._revoke: failed: $error');
+      if (context.mounted) {
+        await Toast.show(context, l10n.reportShareRevokeFailed);
       }
     } finally {
       if (mounted) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/error.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/client_providers.dart';
@@ -54,8 +54,8 @@ class _ClinicSummarySharedPageState
           ],
         ),
         error: (error, _) {
-          final appError = LucentErrorMapper.toAppError(error);
-          final isNetworkError = appError.kind == AppErrorKind.network;
+          final failure = LucentErrorMapper.fromObject(error);
+          final isNetworkError = failure.kind == LucentFailureKind.network;
 
           return StateErrorView(
             title: isNetworkError

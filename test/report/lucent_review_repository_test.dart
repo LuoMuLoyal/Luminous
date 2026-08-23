@@ -1,8 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/report/data/repositories/lucent_review.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
+
+import '../helpers/task_either.dart';
 
 void main() {
   group('LucentReviewRepository – current', () {
@@ -13,7 +17,7 @@ void main() {
           dataSource: _FakeReviewRemoteDataSource(current: _reviewDto()),
         );
 
-        final review = await repository.fetchCurrentReview();
+        final review = await expectTaskRight(repository.fetchCurrentReview());
 
         expect(review, isNotNull);
         expect(review!.event.id, 'evt-1');
@@ -128,7 +132,7 @@ void main() {
         ),
       );
 
-      final review = await repository.fetchCurrentReview();
+      final review = await expectTaskRight(repository.fetchCurrentReview());
 
       expect(review!.event.kind, ReviewEventKind.unknown);
       expect(review.event.status, ReviewEventStatus.unknown);
@@ -154,7 +158,7 @@ void main() {
         dataSource: _FakeReviewRemoteDataSource(current: null),
       );
 
-      final review = await repository.fetchCurrentReview();
+      final review = await expectTaskRight(repository.fetchCurrentReview());
 
       expect(review, isNull);
     });
@@ -176,7 +180,7 @@ void main() {
           ),
         );
 
-        final review = await repository.fetchCurrentReview();
+        final review = await expectTaskRight(repository.fetchCurrentReview());
 
         expect(review!.availableActions, const [
           ReviewAction.checkIn,
@@ -200,7 +204,7 @@ void main() {
         ),
       );
 
-      final review = await repository.fetchCurrentReview();
+      final review = await expectTaskRight(repository.fetchCurrentReview());
 
       expect(review!.sections.whatHappened.facts?.code, 'fact.broken');
       expect(review.sections.whatHappened.facts?.arguments, isEmpty);
@@ -222,7 +226,7 @@ void main() {
         ),
       );
 
-      final page = await repository.fetchHistory(limit: 2);
+      final page = await expectTaskRight(repository.fetchHistory(limit: 2));
 
       expect(page.items, hasLength(2));
       expect(page.items.first.id, 'evt-2');
@@ -244,17 +248,19 @@ void main() {
         );
         final repository = LucentReviewRepository(dataSource: dataSource);
 
-        await repository.fetchHistory(
-          status: ReviewEventStatus.ended,
-          cursor: '2026-08-01T00:00:00.000Z|evt-2',
-          limit: 7,
+        await expectTaskRight(
+          repository.fetchHistory(
+            status: ReviewEventStatus.ended,
+            cursor: '2026-08-01T00:00:00.000Z|evt-2',
+            limit: 7,
+          ),
         );
         expect(dataSource.lastStatus, ReviewEventStatus.ended);
         expect(dataSource.lastCursor, '2026-08-01T00:00:00.000Z|evt-2');
         expect(dataSource.lastLimit, 7);
 
         // 默认参数：无状态过滤、limit 20。
-        await repository.fetchHistory();
+        await expectTaskRight(repository.fetchHistory());
         expect(dataSource.lastStatus, isNull);
         expect(dataSource.lastCursor, isNull);
         expect(dataSource.lastLimit, 20);
@@ -281,7 +287,7 @@ void main() {
         ),
       );
 
-      final review = await repository.fetchReview('evt-9');
+      final review = await expectTaskRight(repository.fetchReview('evt-9'));
 
       expect(review.event.id, 'evt-9');
       expect(review.event.status, ReviewEventStatus.ended);
@@ -290,6 +296,126 @@ void main() {
       expect(review.event.currentMedicineIds, const ['med-3']);
     });
   });
+
+  group('LucentReviewRepository – failure branches', () {
+    test('network failure maps to Left(network)', () async {
+      final repository = LucentReviewRepository(
+        dataSource: _FakeReviewRemoteDataSource(
+          current: _reviewDto(),
+          error: DioException(
+            requestOptions: RequestOptions(
+              path: '/api/v1/user/reports/reviews/current',
+            ),
+            type: DioExceptionType.connectionTimeout,
+          ),
+        ),
+      );
+
+      final failure = await expectTaskLeft(repository.fetchCurrentReview());
+      expect(failure.kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.connectionTimeout);
+    });
+
+    test('detail not-found keeps Problem Details code and status', () async {
+      final repository = LucentReviewRepository(
+        dataSource: _FakeReviewRemoteDataSource(
+          error: DioException(
+            requestOptions: RequestOptions(
+              path: '/api/v1/user/reports/reviews/evt-x',
+            ),
+            response: Response(
+              requestOptions: RequestOptions(
+                path: '/api/v1/user/reports/reviews/evt-x',
+              ),
+              statusCode: 404,
+              headers: Headers.fromMap({
+                Headers.contentTypeHeader: ['application/problem+json'],
+              }),
+              data: <String, Object?>{
+                'type': 'about:blank',
+                'title': 'Not Found',
+                'status': 404,
+                'detail': '事件回顾不存在',
+                'code': 'REVIEW_NOT_FOUND',
+              },
+            ),
+            type: DioExceptionType.badResponse,
+          ),
+        ),
+      );
+
+      final failure = await expectTaskLeft(repository.fetchReview('evt-x'));
+      expect(failure.code, 'REVIEW_NOT_FOUND');
+      expect(failure.statusCode, 404);
+      expect(failure.kind, LucentFailureKind.business);
+    });
+
+    test(
+      'empty success response body maps to Left(network/emptyResponse)',
+      () async {
+        final repository = LucentReviewRepository(
+          dataSource: _FakeReviewRemoteDataSource(
+            page: null,
+            error: LucentFailure.network(
+              message: 'API 返回空响应体（fetchHistory）',
+              networkErrorCode: NetworkErrorCode.emptyResponse,
+            ),
+          ),
+        );
+
+        final failure = await expectTaskLeft(repository.fetchHistory());
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+      },
+    );
+
+    test(
+      'non problem+json error body keeps FormatException from .run()',
+      () async {
+        final repository = LucentReviewRepository(
+          dataSource: _FakeReviewRemoteDataSource(
+            error: DioException(
+              requestOptions: RequestOptions(
+                path: '/api/v1/user/reports/reviews',
+              ),
+              response: Response(
+                requestOptions: RequestOptions(
+                  path: '/api/v1/user/reports/reviews',
+                ),
+                statusCode: 500,
+                headers: Headers.fromMap({
+                  Headers.contentTypeHeader: ['text/plain'],
+                }),
+                data: 'boom',
+              ),
+              type: DioExceptionType.badResponse,
+            ),
+          ),
+        );
+
+        await expectLater(
+          repository.fetchHistory().run(),
+          throwsA(isA<FormatException>()),
+        );
+      },
+    );
+
+    test(
+      'unexpected exception maps to Left(unknown) with cause preserved',
+      () async {
+        final repository = LucentReviewRepository(
+          dataSource: _FakeReviewRemoteDataSource(
+            current: _reviewDto(),
+            error: StateError('boom'),
+          ),
+        );
+
+        final failure = await expectTaskLeft(repository.fetchCurrentReview());
+        expect(failure.kind, LucentFailureKind.unknown);
+        expect(failure.cause, isA<StateError>());
+      },
+    );
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -297,19 +423,30 @@ void main() {
 // ---------------------------------------------------------------------------
 
 class _FakeReviewRemoteDataSource extends ReviewRemoteDataSource {
-  _FakeReviewRemoteDataSource({this.current, this.page, this.detail})
-    : super(api: lucent.ReportsApi(Dio(BaseOptions())));
+  _FakeReviewRemoteDataSource({
+    this.current,
+    this.page,
+    this.detail,
+    this.error,
+  }) : super(api: lucent.ReportsApi(Dio(BaseOptions())));
 
   lucent.EventReviewDataDto? current;
   lucent.EventReviewListResponseDto? page;
   lucent.EventReviewDataDto? detail;
+  Object? error;
 
   ReviewEventStatus? lastStatus;
   String? lastCursor;
   int? lastLimit;
 
   @override
-  Future<lucent.EventReviewDataDto?> fetchCurrentReview() async => current;
+  Future<lucent.EventReviewDataDto?> fetchCurrentReview() async {
+    if (error != null) {
+      // ignore: only_throw_errors
+      throw error!;
+    }
+    return current;
+  }
 
   @override
   Future<lucent.EventReviewListResponseDto> fetchHistory({
@@ -320,12 +457,21 @@ class _FakeReviewRemoteDataSource extends ReviewRemoteDataSource {
     lastStatus = status;
     lastCursor = cursor;
     lastLimit = limit;
+    if (error != null) {
+      // ignore: only_throw_errors
+      throw error!;
+    }
     return page!;
   }
 
   @override
-  Future<lucent.EventReviewDataDto> fetchReview(String eventId) async =>
-      detail!;
+  Future<lucent.EventReviewDataDto> fetchReview(String eventId) async {
+    if (error != null) {
+      // ignore: only_throw_errors
+      throw error!;
+    }
+    return detail!;
+  }
 }
 
 // ---------------------------------------------------------------------------

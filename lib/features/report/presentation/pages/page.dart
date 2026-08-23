@@ -303,9 +303,15 @@ class ReportPage extends ConsumerWidget {
             onEventTap: (event) => context.push(
               Routes.reviewDetail.replaceAll(':eventId', event.id),
             ),
-            onHistoryLoadMore: (cursor) => ref
-                .read(reviewRepositoryProvider)
-                .fetchHistory(status: historyStatus, cursor: cursor),
+            onHistoryLoadMore: (cursor) async {
+              final result = await ref
+                  .read(reviewRepositoryProvider)
+                  .fetchHistory(status: historyStatus, cursor: cursor)
+                  .run();
+              // Left 重抛，由 ReviewHistorySection 的既有 catch 投影为
+              // 加载更多失败行（widget 不导入 fpdart、不读 code/status）。
+              return result.fold((failure) => throw failure, (page) => page);
+            },
           ),
         ),
       ),

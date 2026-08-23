@@ -1,9 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/data/repositories/lucent.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
+
+import '../helpers/task_either.dart';
 
 void main() {
   test(
@@ -52,8 +56,10 @@ void main() {
         ),
       );
 
-      final dashboard = await repository.fetchDashboard(
-        const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+      final dashboard = await expectTaskRight(
+        repository.fetchDashboard(
+          const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+        ),
       );
 
       expect(dashboard.metrics.single.kind, ReportDataKind.sleep);
@@ -114,8 +120,10 @@ void main() {
         ),
       );
 
-      final dashboard = await repository.fetchDashboard(
-        const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+      final dashboard = await expectTaskRight(
+        repository.fetchDashboard(
+          const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+        ),
       );
 
       expect(dashboard.aiSummaryEnabled, isTrue);
@@ -167,8 +175,10 @@ void main() {
       ),
     );
 
-    final dashboard = await repository.fetchDashboard(
-      const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+    final dashboard = await expectTaskRight(
+      repository.fetchDashboard(
+        const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+      ),
     );
 
     final metric = dashboard.metrics.single;
@@ -205,29 +215,195 @@ void main() {
         ),
       );
 
-      final dashboard = await repository.fetchDashboard(
-        const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+      final dashboard = await expectTaskRight(
+        repository.fetchDashboard(
+          const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+        ),
       );
 
       expect(dashboard.metrics.single.value, '500');
       expect(dashboard.metrics.single.observedMetric, isNull);
     },
   );
+
+  group('LucentReportRepository – failure branches', () {
+    const query = ReportDashboardQuery(range: ReportDashboardRange.last7Days);
+
+    test('network failure maps to Left(network)', () async {
+      final repository = LucentReportRepository(
+        dataSource: _FakeReportRemoteDataSource(
+          _dashboardDto(
+            aiSummaryEnabled: false,
+            metrics: const [],
+            trends: const [],
+            findings: const [],
+            patterns: const [],
+          ),
+          error: DioException(
+            requestOptions: RequestOptions(
+              path: '/api/v1/user/reports/dashboard',
+            ),
+            type: DioExceptionType.connectionTimeout,
+          ),
+        ),
+      );
+
+      final failure = await expectTaskLeft(repository.fetchDashboard(query));
+      expect(failure.kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.connectionTimeout);
+    });
+
+    test(
+      'server business failure keeps Problem Details code and status',
+      () async {
+        final repository = LucentReportRepository(
+          dataSource: _FakeReportRemoteDataSource(
+            _dashboardDto(
+              aiSummaryEnabled: false,
+              metrics: const [],
+              trends: const [],
+              findings: const [],
+              patterns: const [],
+            ),
+            error: DioException(
+              requestOptions: RequestOptions(
+                path: '/api/v1/user/reports/dashboard',
+              ),
+              response: Response(
+                requestOptions: RequestOptions(
+                  path: '/api/v1/user/reports/dashboard',
+                ),
+                statusCode: 404,
+                headers: Headers.fromMap({
+                  Headers.contentTypeHeader: ['application/problem+json'],
+                }),
+                data: <String, Object?>{
+                  'type': 'about:blank',
+                  'title': 'Not Found',
+                  'status': 404,
+                  'detail': '报告不存在',
+                  'code': 'REPORT_NOT_FOUND',
+                },
+              ),
+              type: DioExceptionType.badResponse,
+            ),
+          ),
+        );
+
+        final failure = await expectTaskLeft(repository.fetchDashboard(query));
+        expect(failure.code, 'REPORT_NOT_FOUND');
+        expect(failure.statusCode, 404);
+        expect(failure.kind, LucentFailureKind.business);
+      },
+    );
+
+    test(
+      'empty success response body maps to Left(network/emptyResponse)',
+      () async {
+        final repository = LucentReportRepository(
+          dataSource: _FakeReportRemoteDataSource(
+            _dashboardDto(
+              aiSummaryEnabled: false,
+              metrics: const [],
+              trends: const [],
+              findings: const [],
+              patterns: const [],
+            ),
+            error: LucentFailure.network(
+              message: 'API 返回空响应体（fetchDashboard）',
+              networkErrorCode: NetworkErrorCode.emptyResponse,
+            ),
+          ),
+        );
+
+        final failure = await expectTaskLeft(repository.fetchDashboard(query));
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+      },
+    );
+
+    test(
+      'non problem+json error body keeps FormatException from .run()',
+      () async {
+        final repository = LucentReportRepository(
+          dataSource: _FakeReportRemoteDataSource(
+            _dashboardDto(
+              aiSummaryEnabled: false,
+              metrics: const [],
+              trends: const [],
+              findings: const [],
+              patterns: const [],
+            ),
+            error: DioException(
+              requestOptions: RequestOptions(
+                path: '/api/v1/user/reports/dashboard',
+              ),
+              response: Response(
+                requestOptions: RequestOptions(
+                  path: '/api/v1/user/reports/dashboard',
+                ),
+                statusCode: 500,
+                headers: Headers.fromMap({
+                  Headers.contentTypeHeader: ['text/html'],
+                }),
+                data: '<html>oops</html>',
+              ),
+              type: DioExceptionType.badResponse,
+            ),
+          ),
+        );
+
+        await expectLater(
+          repository.fetchDashboard(query).run(),
+          throwsA(isA<FormatException>()),
+        );
+      },
+    );
+
+    test(
+      'unexpected exception maps to Left(unknown) with cause preserved',
+      () async {
+        final repository = LucentReportRepository(
+          dataSource: _FakeReportRemoteDataSource(
+            _dashboardDto(
+              aiSummaryEnabled: false,
+              metrics: const [],
+              trends: const [],
+              findings: const [],
+              patterns: const [],
+            ),
+            error: StateError('boom'),
+          ),
+        );
+
+        final failure = await expectTaskLeft(repository.fetchDashboard(query));
+        expect(failure.kind, LucentFailureKind.unknown);
+        expect(failure.cause, isA<StateError>());
+      },
+    );
+  });
 }
 
 class _FakeReportRemoteDataSource extends ReportRemoteDataSource {
-  _FakeReportRemoteDataSource(this._dto)
+  _FakeReportRemoteDataSource(this._dto, {this.error})
     : super(
         api: lucent.ReportsApi(Dio(BaseOptions())),
         dio: Dio(BaseOptions()),
       );
 
   final lucent.ReportDashboardResponseDto _dto;
+  Object? error;
 
   @override
   Future<lucent.ReportDashboardResponseDto> fetchDashboard(
     ReportDashboardQuery query,
-  ) async => _dto;
+  ) async {
+    if (error != null) {
+      // ignore: only_throw_errors
+      throw error!;
+    }
+    return _dto;
+  }
 }
 
 lucent.ReportDashboardResponseDto _dashboardDto({

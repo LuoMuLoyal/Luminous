@@ -9,6 +9,7 @@ import 'package:lucent_api/lucent_api.dart'
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -851,29 +852,31 @@ class _FakeReviewRepository implements ReviewRepository {
   ReviewEventStatus? lastHistoryStatus;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async {
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() {
     currentCalls += 1;
-    return current;
+    return TaskEither.right(current);
   }
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
+  }) {
     historyCalls += 1;
     lastHistoryStatus = status;
-    if (throwOnStatus != null && status == throwOnStatus) {
-      throw Exception('history fetch failed for status filter');
-    }
-    return pageResolver?.call(status) ??
-        page ??
-        const ReviewEventPage(items: [], total: 0);
+    return TaskEither.tryCatch(() async {
+      if (throwOnStatus != null && status == throwOnStatus) {
+        throw Exception('history fetch failed for status filter');
+      }
+      return pageResolver?.call(status) ??
+          page ??
+          const ReviewEventPage(items: [], total: 0);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     throw UnimplementedError();
   }
 }
@@ -886,23 +889,29 @@ class _PendingReviewRepository implements ReviewRepository {
   int historyCalls = 0;
 
   @override
-  Future<EventReview?> fetchCurrentReview() {
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() {
     currentCalls += 1;
-    return _pendingCurrent.future;
+    return TaskEither.tryCatch(
+      () => _pendingCurrent.future,
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    );
   }
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
   }) {
     historyCalls += 1;
-    return _pendingHistory.future;
+    return TaskEither.tryCatch(
+      () => _pendingHistory.future,
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    );
   }
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     throw UnimplementedError();
   }
 
@@ -917,22 +926,22 @@ class _PendingReviewRepository implements ReviewRepository {
 
 class _ThrowingReviewRepository implements ReviewRepository {
   @override
-  Future<EventReview?> fetchCurrentReview() async {
-    throw Exception('Test error');
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() {
+    return TaskEither.left(LucentFailure.unknown(message: 'Test error'));
   }
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
-    throw Exception('Test error');
+  }) {
+    return TaskEither.left(LucentFailure.unknown(message: 'Test error'));
   }
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
-    throw Exception('Test error');
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
+    return TaskEither.left(LucentFailure.unknown(message: 'Test error'));
   }
 }
 

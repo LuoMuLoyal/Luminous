@@ -3,7 +3,9 @@ import 'package:flutter/rendering.dart'
     show DebugSemanticsDumpOrder, SemanticsNode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/report/data/providers/review.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
@@ -328,19 +330,18 @@ class _PageReviewRepository implements ReviewRepository {
   final ReviewEventPage page;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async => current;
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() =>
+      TaskEither.right(current);
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
-    return page;
-  }
+  }) => TaskEither.right(page);
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     throw UnimplementedError();
   }
 }

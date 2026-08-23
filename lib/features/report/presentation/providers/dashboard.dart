@@ -38,13 +38,18 @@ Future<ReportDashboard> reportDashboard(
 
   return authGuarded(
     ref: ref,
-    fetch: () => ref
-        .watch(reportRepositoryProvider)
-        .fetchDashboard(query)
-        .timeout(
-          _reportDashboardTimeout,
-          onTimeout: () => throw TimeoutException('report_dashboard_timeout'),
-        ),
+    fetch: () async {
+      final result = await ref
+          .watch(reportRepositoryProvider)
+          .fetchDashboard(query)
+          .run()
+          .timeout(
+            _reportDashboardTimeout,
+            onTimeout: () => throw TimeoutException('report_dashboard_timeout'),
+          );
+      // Left 投影到 AsyncValue.error。
+      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+    },
     signedOutFallback: () async {
       final repo = ref.watch(reportRepositoryProvider);
       final base = await repo.signedOutDashboard;

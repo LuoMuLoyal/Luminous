@@ -1318,29 +1318,31 @@ class E2eReviewRepository implements ReviewRepository {
   int historyCalls = 0;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async {
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() {
     currentCalls += 1;
-    return current;
+    return TaskEither.right(current);
   }
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
+  }) {
     historyCalls += 1;
     final items = page?.items ?? const <ReviewEvent>[];
-    return ReviewEventPage(
-      items: status == null
-          ? items
-          : items.where((event) => event.status == status).toList(),
-      total: status == null ? (page?.total ?? 0) : items.length,
+    return TaskEither.right(
+      ReviewEventPage(
+        items: status == null
+            ? items
+            : items.where((event) => event.status == status).toList(),
+        total: status == null ? (page?.total ?? 0) : items.length,
+      ),
     );
   }
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     throw UnimplementedError('e2e 不需要事件详情回顾');
   }
 }

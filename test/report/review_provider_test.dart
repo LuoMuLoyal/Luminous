@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/report/data/providers/review.dart';
@@ -61,7 +64,7 @@ void main() {
       container.invalidate(reviewCurrentProvider);
       await expectLater(
         container.read(reviewCurrentProvider.future),
-        throwsA(isA<DioException>()),
+        throwsA(isA<LucentFailure>()),
       );
       expect(container.read(reviewLastCurrentProvider), same(firstReview));
 
@@ -253,7 +256,7 @@ void main() {
 
         await expectLater(
           container.read(reviewHistoryProvider.future),
-          throwsA(isA<DioException>()),
+          throwsA(isA<LucentFailure>()),
         );
         // 失败立即出现：repository 只被调用一次，没有自动重试。
         expect(repo.historyCalls, 1);
@@ -473,38 +476,44 @@ class _FakeReviewRepository implements ReviewRepository {
   ReviewEventStatus? lastHistoryStatus;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async {
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() {
     currentCalls += 1;
-    if (error != null) {
-      // ignore: only_throw_errors
-      throw error!;
-    }
-    return current;
+    return TaskEither.tryCatch(() async {
+      if (error != null) {
+        // ignore: only_throw_errors
+        throw error!;
+      }
+      return current;
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
+  }) {
     historyCalls += 1;
     lastHistoryStatus = status;
-    if (error != null) {
-      // ignore: only_throw_errors
-      throw error!;
-    }
-    return page!;
+    return TaskEither.tryCatch(() async {
+      if (error != null) {
+        // ignore: only_throw_errors
+        throw error!;
+      }
+      return page!;
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     detailCalls += 1;
     lastDetailEventId = eventId;
-    if (error != null) {
-      // ignore: only_throw_errors
-      throw error!;
-    }
-    return detail!;
+    return TaskEither.tryCatch(() async {
+      if (error != null) {
+        // ignore: only_throw_errors
+        throw error!;
+      }
+      return detail!;
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }

@@ -3,8 +3,11 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';
@@ -15,22 +18,33 @@ class LucentReportRepository implements ReportRepository {
   final ReportRemoteDataSource dataSource;
 
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
-    final dto = await dataSource.fetchDashboard(query);
-    final findings = dto.findings.map(_mapFinding).toList(growable: false);
+  TaskEither<LucentFailure, ReportDashboard> fetchDashboard(
+    ReportDashboardQuery query,
+  ) {
+    // Repository boundary: every expected recoverable failure (network,
+    // server business failure) is a Left produced via
+    // `LucentErrorMapper.fromObject`; a successful response is a Right. An
+    // empty success response body is a `LucentFailure.network(emptyResponse)`
+    // (datasource `_requireData`, settings / notification precedent). A
+    // non `problem+json` / malformed error body keeps the mapper's
+    // `FormatException`, which propagates from `.run()`.
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.fetchDashboard(query);
+      final findings = dto.findings.map(_mapFinding).toList(growable: false);
 
-    return ReportDashboard(
-      range: _mapRange(dto.range.value),
-      startDate: dto.startDate,
-      endDate: dto.endDate,
-      generatedAt: dto.generatedAt,
-      metrics: dto.metrics.map(_mapMetric).toList(growable: false),
-      trends: dto.trends.map(_mapTrend).toList(growable: false),
-      findings: findings,
-      exportActions: _exportActions,
-      patterns: dto.patterns.map(_mapPattern).toList(growable: false),
-      aiSummaryEnabled: dto.aiSummaryEnabled,
-    );
+      return ReportDashboard(
+        range: _mapRange(dto.range.value),
+        startDate: dto.startDate,
+        endDate: dto.endDate,
+        generatedAt: dto.generatedAt,
+        metrics: dto.metrics.map(_mapMetric).toList(growable: false),
+        trends: dto.trends.map(_mapTrend).toList(growable: false),
+        findings: findings,
+        exportActions: _exportActions,
+        patterns: dto.patterns.map(_mapPattern).toList(growable: false),
+        aiSummaryEnabled: dto.aiSummaryEnabled,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   ReportMetric _mapMetric(lucent.ReportMetricDto dto) {

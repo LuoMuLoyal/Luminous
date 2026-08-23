@@ -58,13 +58,18 @@ Future<EventReview?> reviewCurrent(Ref ref) {
 
   return authGuarded(
     ref: ref,
-    fetch: () => ref
-        .watch(reviewRepositoryProvider)
-        .fetchCurrentReview()
-        .timeout(
-          _reviewTimeout,
-          onTimeout: () => throw TimeoutException('review_current_timeout'),
-        ),
+    fetch: () async {
+      final result = await ref
+          .watch(reviewRepositoryProvider)
+          .fetchCurrentReview()
+          .run()
+          .timeout(
+            _reviewTimeout,
+            onTimeout: () => throw TimeoutException('review_current_timeout'),
+          );
+      // Left 投影到 AsyncValue.error。
+      return result.fold((failure) => throw failure, (value) => value);
+    },
     signedOutFallback: () async => null,
   );
 }
@@ -91,13 +96,18 @@ Future<ReviewEventPage> reviewHistory(Ref ref) {
 
   return authGuarded(
     ref: ref,
-    fetch: () => ref
-        .watch(reviewRepositoryProvider)
-        .fetchHistory(status: status)
-        .timeout(
-          _reviewTimeout,
-          onTimeout: () => throw TimeoutException('review_history_timeout'),
-        ),
+    fetch: () async {
+      final result = await ref
+          .watch(reviewRepositoryProvider)
+          .fetchHistory(status: status)
+          .run()
+          .timeout(
+            _reviewTimeout,
+            onTimeout: () => throw TimeoutException('review_history_timeout'),
+          );
+      // Left 投影到 AsyncValue.error。
+      return result.fold((failure) => throw failure, (value) => value);
+    },
     signedOutFallback: () async => const ReviewEventPage(items: [], total: 0),
   );
 }
@@ -123,12 +133,17 @@ final reviewHistoryStatusProvider =
 Future<EventReview> reviewDetail(Ref ref, String eventId) {
   return authGuarded(
     ref: ref,
-    fetch: () => ref
-        .watch(reviewRepositoryProvider)
-        .fetchReview(eventId)
-        .timeout(
-          _reviewTimeout,
-          onTimeout: () => throw TimeoutException('review_detail_timeout'),
-        ),
+    fetch: () async {
+      final result = await ref
+          .watch(reviewRepositoryProvider)
+          .fetchReview(eventId)
+          .run()
+          .timeout(
+            _reviewTimeout,
+            onTimeout: () => throw TimeoutException('review_detail_timeout'),
+          );
+      // Left 投影到 AsyncValue.error。
+      return result.fold((failure) => throw failure, (value) => value);
+    },
   );
 }

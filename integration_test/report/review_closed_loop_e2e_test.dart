@@ -295,18 +295,18 @@ class E2eLoopReviewRepository implements ReviewRepository {
   late E2eHealthEventLoopStore _store;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async {
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() {
     final active = _store.active;
-    if (active == null) return null;
-    return _activeReview(active);
+    if (active == null) return TaskEither.right(null);
+    return TaskEither.right(_activeReview(active));
   }
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
+  }) {
     final items = _store.ended
         .where(
           (event) =>
@@ -332,11 +332,11 @@ class E2eLoopReviewRepository implements ReviewRepository {
           ),
         )
         .toList();
-    return ReviewEventPage(items: items, total: items.length);
+    return TaskEither.right(ReviewEventPage(items: items, total: items.length));
   }
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     throw UnimplementedError('闭环 e2e 不需要事件详情回顾');
   }
 

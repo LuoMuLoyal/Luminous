@@ -10,12 +10,12 @@
 ///   setUp(() {
 ///     repo = MockReportRepository();
 ///     when(() => repo.fetchDashboard(any())).thenAnswer(
-///       (_) async => MockReportRepository.previewDashboard,
+///       (_) async => TaskEither.right(MockReportRepository.previewDashboard),
 ///     );
 ///   });
 ///
 ///   test('loads dashboard', () async {
-///     final dashboard = await repo.fetchDashboard(ReportDashboardQuery(...));
+///     final dashboard = await repo.fetchDashboard(ReportDashboardQuery(...)).run();
 ///     verify(() => repo.fetchDashboard(any())).called(1);
 ///   });
 /// }

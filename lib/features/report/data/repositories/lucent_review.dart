@@ -1,5 +1,8 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/network/response_body.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/domain/repositories/review.dart';
 
@@ -7,7 +10,8 @@ import 'package:luminous/features/report/domain/repositories/review.dart';
 ///
 /// HTTP Problem Details 由全局错误链处理；当前生成客户端仍处于旧成功
 /// 响应 DTO 阶段，这里暂时解包 `data` 字段；current 端点的 data 可为 null
-///（无事件时空信封）。
+///（无事件时空信封）。空成功响应体按 settings/notification `_requireData`
+/// 先例抛 `LucentFailure.network(emptyResponse)`。
 class ReviewRemoteDataSource {
   ReviewRemoteDataSource({required this.api});
 
@@ -28,15 +32,29 @@ class ReviewRemoteDataSource {
       cursor: cursor,
       limit: limit,
     );
-    return requireData(response.data, operation: 'fetchHistory');
+    return _requireData(response.data, operation: 'fetchHistory');
   }
 
   Future<lucent.EventReviewDataDto> fetchReview(String eventId) async {
     final response = await api.reportsControllerGetEventReviewV1(
       eventId: eventId,
     );
-    final dto = requireData(response.data, operation: 'fetchReview');
+    final dto = _requireData(response.data, operation: 'fetchReview');
     return lucent.EventReviewDataDto.fromJson(dto.toJson());
+  }
+
+  /// Extracts a non-null generated-client payload, throwing
+  /// [LucentFailure.network] (emptyResponse) when the success body is absent
+  /// (settings / notification `_requireData` precedent).
+  T _requireData<T>(T? data, {String? operation}) {
+    if (data == null) {
+      final context = operation == null ? '' : '（$operation）';
+      throw LucentFailure.network(
+        message: 'API 返回空响应体$context',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
+    return data;
   }
 
   /// [ReviewEventStatus.unknown] 是契约外的防御值，不能发给后端。
@@ -51,39 +69,54 @@ class ReviewRemoteDataSource {
 }
 
 /// 调用 Lucent event review read model 并映射为领域实体的实现。
+///
+/// Repository boundary: every expected recoverable failure (network, server
+/// business failure) is a `TaskEither` Left produced via
+/// `LucentErrorMapper.fromObject`; a successful response is a Right. "无事件"
+///（`fetchCurrentReview` 空信封）保持 `Right(null)`；服务端业务失败（如
+/// detail 事件不存在 404 Problem Details）为 Left 保留 code/status，不本地
+/// 猜 status。空成功响应体（datasource `_requireData`）为
+/// `Left(network/emptyResponse)`；非 `problem+json` / 畸形错误体的
+/// `FormatException` 从 `.run()` 直接传播。
 class LucentReviewRepository implements ReviewRepository {
   LucentReviewRepository({required this.dataSource});
 
   final ReviewRemoteDataSource dataSource;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async {
-    final dto = await dataSource.fetchCurrentReview();
-    return dto == null ? null : _mapReview(dto);
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() {
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.fetchCurrentReview();
+      return dto == null ? null : _mapReview(dto);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
-    final dto = await dataSource.fetchHistory(
-      status: status,
-      cursor: cursor,
-      limit: limit,
-    );
-    return ReviewEventPage(
-      items: dto.items.map(_mapEvent).toList(growable: false),
-      total: dto.total.toInt(),
-      nextCursor: dto.nextCursor,
-    );
+  }) {
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.fetchHistory(
+        status: status,
+        cursor: cursor,
+        limit: limit,
+      );
+      return ReviewEventPage(
+        items: dto.items.map(_mapEvent).toList(growable: false),
+        total: dto.total.toInt(),
+        nextCursor: dto.nextCursor,
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
-    final dto = await dataSource.fetchReview(eventId);
-    return _mapReview(dto);
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
+    return TaskEither.tryCatch(() async {
+      final dto = await dataSource.fetchReview(eventId);
+      return _mapReview(dto);
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   EventReview _mapReview(lucent.EventReviewDataDto dto) {

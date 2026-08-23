@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/report/data/providers/review.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
@@ -177,21 +180,20 @@ class _DetailReviewRepository implements ReviewRepository {
   int detailCalls = 0;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async => null;
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() =>
+      TaskEither.right(null);
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
-    return const ReviewEventPage(items: [], total: 0);
-  }
+  }) => TaskEither.right(const ReviewEventPage(items: [], total: 0));
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     detailCalls += 1;
-    return detail;
+    return TaskEither.right(detail);
   }
 }
 
@@ -201,21 +203,23 @@ class _PendingDetailRepository implements ReviewRepository {
   int detailCalls = 0;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async => null;
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() =>
+      TaskEither.right(null);
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
-    return const ReviewEventPage(items: [], total: 0);
-  }
+  }) => TaskEither.right(const ReviewEventPage(items: [], total: 0));
 
   @override
-  Future<EventReview> fetchReview(String eventId) {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     detailCalls += 1;
-    return _pending.future;
+    return TaskEither.tryCatch(
+      () => _pending.future,
+      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    );
   }
 
   void complete(EventReview review) => _pending.complete(review);
@@ -226,24 +230,23 @@ class _FlakyDetailRepository implements ReviewRepository {
   int detailCalls = 0;
 
   @override
-  Future<EventReview?> fetchCurrentReview() async => null;
+  TaskEither<LucentFailure, EventReview?> fetchCurrentReview() =>
+      TaskEither.right(null);
 
   @override
-  Future<ReviewEventPage> fetchHistory({
+  TaskEither<LucentFailure, ReviewEventPage> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int limit = 20,
-  }) async {
-    return const ReviewEventPage(items: [], total: 0);
-  }
+  }) => TaskEither.right(const ReviewEventPage(items: [], total: 0));
 
   @override
-  Future<EventReview> fetchReview(String eventId) async {
+  TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     detailCalls += 1;
     if (detailCalls == 1) {
-      throw Exception('Test error');
+      return TaskEither.left(LucentFailure.unknown(message: 'Test error'));
     }
-    return reviewActive();
+    return TaskEither.right(reviewActive());
   }
 }
 
