@@ -80,6 +80,13 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - `auth/presentation/providers/sessions.dart` `_revokeFailure` 用 `StackTrace.current` 构造 AsyncError（旧代码保留真实堆栈）：LucentFailure.cause 已携带原 DioException，可调试；真实堆栈透传需在 TaskEither Left 上携带 stackTrace（跨任务架构决策），暂缓，清理旧类型时一并评估。
 - `_resolve` 适配器在 `account.dart`/`oauth_login.dart`/`wechat_oauth.dart` 三处重复（4 行同构）：风格级，暂不抽取公共 helper。
 
+## 2026-08-23 scan 迁移审查遗留（错误迁移 Task 4b）
+
+- box_scan AI 流（uploadImage/recognizeMedicine/search 任一 Left → 失败弹窗）无独立 widget 测试：AI 路径涉及真实文件 I/O，按既有排除清单不在 widget 测试覆盖内，仅 repository 层覆盖；如需补需先拆文件 I/O。
+- 两页对 network/business 失败展示同一通用文案（分类仅在日志）：迁移前既有行为；未来可考虑按 kind 区分文案（如 auth 失败引导登录）。
+- box_scan OCR 路径单个候选 search Left 会中断候选循环（不继续其余候选）：迁移前既有行为，可选优化为跳过失败候选。
+- 非 problem+json 错误体导致的 FormatException 从 `.run()` 逃逸时无 repository 层日志（由页面 catch 记录）：mapper 既有行为，页面通用 catch 已吸收，无未处理异常。
+
 ## 审查暂缓项
 
 - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。
