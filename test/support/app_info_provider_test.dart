@@ -1,90 +1,90 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/dio_client.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
+import 'package:luminous/features/support/data/repositories/lucent.dart';
+import 'package:luminous/features/support/domain/entities/app_info.dart';
+import 'package:luminous/features/support/domain/repositories/support.dart';
 
 void main() {
   group('appInfoProvider', () {
-    test('returns app info data DTO', () async {
-      final fakeApi = FakeAppInfoApi(
-        response: AppInfoResponseDto(supportEmail: 'support@lumos.app'),
-      );
-
+    test('returns app info from repository', () async {
       final container = ProviderContainer(
         overrides: [
-          lucentClientProvider.overrideWithValue(
-            _FakeLucentClient(appInfoApi: fakeApi),
-          ),
+          supportRepositoryProvider.overrideWithValue(_MockSupportRepository()),
         ],
       );
       addTearDown(container.dispose);
 
       final result = await container.read(appInfoProvider.future);
 
-      expect(result, isNotNull);
-      expect(result!.supportEmail, equals('support@lumos.app'));
+      final info = result!;
+      expect(info.supportEmail, equals('support@lumos.app'));
+      expect(info.latestVersion, equals('0.2.0'));
     });
 
-    test('throws when response data is null', () async {
-      final fakeApi = FakeAppInfoApi(response: null);
-
+    test('returns null when repository reports no metadata', () async {
       final container = ProviderContainer(
         overrides: [
-          lucentClientProvider.overrideWithValue(
-            _FakeLucentClient(appInfoApi: fakeApi),
+          supportRepositoryProvider.overrideWithValue(_NullSupportRepository()),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final result = await container.read(appInfoProvider.future);
+
+      expect(result, isNull);
+    });
+
+    test('projects repository Left to AsyncValue.error', () async {
+      final container = ProviderContainer(
+        overrides: [
+          supportRepositoryProvider.overrideWithValue(
+            _FailingSupportRepository(),
           ),
         ],
       );
       addTearDown(container.dispose);
 
-      final sub = container.listen(appInfoProvider, (_, __) {});
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+      // Listen to keep the autoDispose provider alive and observe state changes.
+      container.listen(appInfoProvider, (_, __) {}, fireImmediately: true);
 
-      final state = sub.read();
+      // Pump microtasks to let the future settle.
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+
+      final state = container.read(appInfoProvider);
       expect(state.hasError, isTrue);
-      expect(state.error, isA<DioException>());
+      expect(state.error, isA<LucentFailure>());
     });
   });
 }
 
-class FakeAppInfoApi extends AppInfoApi {
-  FakeAppInfoApi({required this.response}) : super(Dio());
-
-  final AppInfoResponseDto? response;
-
+class _MockSupportRepository implements SupportRepository {
   @override
-  Future<Response<AppInfoResponseDto>> appInfoControllerGetAppInfoV1({
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    if (response == null) {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/api/v1/public/app-info'),
-      );
-    }
-    return _response(response!);
+  TaskEither<LucentFailure, AppInfo?> getAppInfo() {
+    return TaskEither.right(
+      const AppInfo(supportEmail: 'support@lumos.app', latestVersion: '0.2.0'),
+    );
   }
 }
 
-class _FakeLucentClient extends LucentClient {
-  _FakeLucentClient({required this.appInfoApi}) : super(LucentApi(dio: Dio()));
-
-  final AppInfoApi appInfoApi;
-
+class _NullSupportRepository implements SupportRepository {
   @override
-  AppInfoApi get appInfo => appInfoApi;
+  TaskEither<LucentFailure, AppInfo?> getAppInfo() {
+    return TaskEither.right(null);
+  }
 }
 
-Response<T> _response<T>(T data) {
-  return Response<T>(
-    data: data,
-    requestOptions: RequestOptions(path: '/api/v1/public/app-info'),
-  );
+class _FailingSupportRepository implements SupportRepository {
+  @override
+  TaskEither<LucentFailure, AppInfo?> getAppInfo() {
+    return TaskEither.left(
+      LucentFailure.network(
+        message: 'Network error',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      ),
+    );
+  }
 }

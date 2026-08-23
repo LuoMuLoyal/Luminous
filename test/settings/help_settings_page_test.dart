@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/settings/presentation/pages/help.dart';
@@ -134,5 +136,7 @@ class _ZhLocaleController extends LocaleController {
 
 class _FakeSupportRepository implements SupportRepository {
   @override
-  Future<AppInfo?> getAppInfo() async => null;
+  TaskEither<LucentFailure, AppInfo?> getAppInfo() {
+    return TaskEither.right(null);
+  }
 }
