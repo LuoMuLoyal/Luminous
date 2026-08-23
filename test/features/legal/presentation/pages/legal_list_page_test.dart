@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
@@ -19,23 +22,36 @@ class _FakeLegalRepository implements LegalRepository {
   final List<LegalDocumentSummary> _summaries;
 
   @override
-  Future<List<LegalDocumentSummary>> findAll() async => _summaries;
+  TaskEither<LucentFailure, List<LegalDocumentSummary>> findAll() {
+    return TaskEither.right(_summaries);
+  }
 
   @override
-  Future<LegalDocument> findOne(LegalDocType docType) async {
-    throw Exception('Not used in list page tests');
+  TaskEither<LucentFailure, LegalDocument> findOne(LegalDocType docType) {
+    throw UnimplementedError('Not used in list page tests');
   }
 }
 
-class _ThrowingLegalRepository implements LegalRepository {
-  _ThrowingLegalRepository(this.error);
-  final Object error;
+class _FailingLegalRepository implements LegalRepository {
+  @override
+  TaskEither<LucentFailure, List<LegalDocumentSummary>> findAll() {
+    return TaskEither.left(
+      LucentFailure.network(
+        message: 'Network error',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      ),
+    );
+  }
 
   @override
-  Future<List<LegalDocumentSummary>> findAll() async => throw error;
-
-  @override
-  Future<LegalDocument> findOne(LegalDocType docType) async => throw error;
+  TaskEither<LucentFailure, LegalDocument> findOne(LegalDocType docType) {
+    return TaskEither.left(
+      LucentFailure.network(
+        message: 'Network error',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      ),
+    );
+  }
 }
 
 void main() {
@@ -46,7 +62,7 @@ void main() {
       Object? error,
     }) async {
       final repo = error != null
-          ? _ThrowingLegalRepository(error)
+          ? _FailingLegalRepository()
           : _FakeLegalRepository(summaries);
 
       await tester.pumpWidget(

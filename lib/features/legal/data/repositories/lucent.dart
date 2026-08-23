@@ -1,10 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/response_body.dart';
+import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/doc_type.dart';
@@ -28,10 +31,25 @@ LegalRepository legalRepository(Ref ref) {
 
 /// Lucent-backed implementation of [LegalRepository].
 ///
-/// Strategy: remote-first. If the API returns 404 (document not found),
-/// falls back to bundled Markdown assets in `assets/legal/`.
-/// Network errors, 500s, and other non-404 exceptions are rethrown so the
-/// UI can display a proper error state with retry.
+/// Strategy: remote-first. If the API returns 404 (document not found), the
+/// repository falls back to the bundled Markdown assets in `assets/legal/`.
+/// This 404 → fallback is the documented product contract for legal/compliance
+/// pages (远程优先 + assets fallback, `plans/2026-07-10-legal-compliance-pages.md`
+/// P2-2): the pages must stay viewable even when the server has not published
+/// a document yet. The fallback is an alternative success path — a Right — and
+/// is observed via [appTalker] ("记录+继续"); it is not a catch-all. Network
+/// errors, 5xx and other 4xx are rethrown into the mapper and become a Left.
+/// In `findAll` a missing bundled asset is skipped with a [appTalker] warning;
+/// in `findOne` a missing bundled asset surfaces as a Left(unknown).
+///
+/// Repository boundary: every expected recoverable failure (network, server
+/// business failure) is a `TaskEither` Left produced via
+/// `LucentErrorMapper.fromObject`; a successful response (including the 404
+/// fallback result and a legal empty list) is a Right. An empty success
+/// response body is a `LucentFailure.network(emptyResponse)` (settings /
+/// notification `_requireData` precedent). Protocol violations (non
+/// `problem+json` error bodies) keep the mapper's `FormatException` which
+/// propagates from `.run()`.
 class LucentLegalRepository implements LegalRepository {
   LucentLegalRepository({required this.api, required this.localeResolver});
 
@@ -39,50 +57,72 @@ class LucentLegalRepository implements LegalRepository {
   final String Function() localeResolver;
 
   @override
-  Future<List<LegalDocumentSummary>> findAll() async {
-    try {
-      final response = await api.legalDocumentsControllerFindAllV1(
-        lang: localeResolver(),
-      );
-      return requireData(response.data, operation: 'findAll').items
-          .map(
-            (item) => LegalDocumentSummary(
-              docType:
-                  LegalDocType.fromPathSegment(item.docType) ??
-                  LegalDocType.terms,
-              title: item.title,
-              updatedAt: item.updatedAt,
-            ),
-          )
-          .toList();
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return _fallbackSummaries();
+  TaskEither<LucentFailure, List<LegalDocumentSummary>> findAll() {
+    return TaskEither.tryCatch(() async {
+      try {
+        final response = await api.legalDocumentsControllerFindAllV1(
+          lang: localeResolver(),
+        );
+        final dto = _requireData(response.data, operation: 'findAll');
+        return dto.items
+            .map(
+              (item) => LegalDocumentSummary(
+                docType:
+                    LegalDocType.fromPathSegment(item.docType) ??
+                    LegalDocType.terms,
+                title: item.title,
+                updatedAt: item.updatedAt,
+              ),
+            )
+            .toList();
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 404) {
+          // 文档化 best-effort 合同:404 回退内置资产（记录+继续）。
+          appTalker.warning('LucentLegalRepository: findAll 404, 回退内置资产');
+          return _fallbackSummaries();
+        }
+        rethrow;
       }
-      rethrow;
-    }
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
-  Future<LegalDocument> findOne(LegalDocType docType) async {
-    try {
-      final response = await api.legalDocumentsControllerFindOneV1(
-        docType: docType.pathSegment,
-        lang: localeResolver(),
-      );
-      final d = requireData(response.data, operation: 'findOne');
-      return LegalDocument(
-        docType: docType,
-        title: d.title,
-        content: d.content,
-        updatedAt: d.updatedAt,
-      );
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return _fallbackDocument(docType);
+  TaskEither<LucentFailure, LegalDocument> findOne(LegalDocType docType) {
+    return TaskEither.tryCatch(() async {
+      try {
+        final response = await api.legalDocumentsControllerFindOneV1(
+          docType: docType.pathSegment,
+          lang: localeResolver(),
+        );
+        final d = _requireData(response.data, operation: 'findOne');
+        return LegalDocument(
+          docType: docType,
+          title: d.title,
+          content: d.content,
+          updatedAt: d.updatedAt,
+        );
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 404) {
+          appTalker.warning('LucentLegalRepository: findOne 404, 回退内置资产');
+          return _fallbackDocument(docType);
+        }
+        rethrow;
       }
-      rethrow;
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  /// Extracts a non-null generated-client payload, throwing
+  /// [LucentFailure.network] (emptyResponse) when the success body is absent
+  /// (settings / notification `_requireData` precedent).
+  T _requireData<T>(T? data, {String? operation}) {
+    if (data == null) {
+      final context = operation == null ? '' : '（$operation）';
+      throw LucentFailure.network(
+        message: 'API 返回空响应体$context',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
     }
+    return data;
   }
 
   // -- Fallback data from bundled assets --

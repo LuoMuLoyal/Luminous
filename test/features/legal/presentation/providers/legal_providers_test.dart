@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/document.dart';
@@ -27,10 +30,10 @@ void main() {
       expect(result[2].title, 'Disclaimer');
     });
 
-    test('propagates error when repository throws', () async {
+    test('projects repository Left to AsyncValue.error', () async {
       final container = ProviderContainer(
         overrides: [
-          legalRepositoryProvider.overrideWithValue(_ThrowingLegalRepository()),
+          legalRepositoryProvider.overrideWithValue(_FailingLegalRepository()),
         ],
       );
       addTearDown(container.dispose);
@@ -47,6 +50,7 @@ void main() {
 
       final state = container.read(legalDocumentsProvider);
       expect(state.hasError, isTrue);
+      expect(state.error, isA<LucentFailure>());
     });
   });
 
@@ -84,13 +88,34 @@ void main() {
       expect(result.title, 'Privacy Policy');
       expect(result.content, contains('Privacy'));
     });
+
+    test('projects repository Left to AsyncValue.error', () async {
+      final container = ProviderContainer(
+        overrides: [
+          legalRepositoryProvider.overrideWithValue(_FailingLegalRepository()),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      container.listen(
+        legalDocumentProvider(LegalDocType.terms),
+        (_, __) {},
+        fireImmediately: true,
+      );
+
+      await Future.delayed(const Duration(milliseconds: 10));
+
+      final state = container.read(legalDocumentProvider(LegalDocType.terms));
+      expect(state.hasError, isTrue);
+      expect(state.error, isA<LucentFailure>());
+    });
   });
 }
 
 class _MockLegalRepository implements LegalRepository {
   @override
-  Future<List<LegalDocumentSummary>> findAll() async {
-    return const [
+  TaskEither<LucentFailure, List<LegalDocumentSummary>> findAll() {
+    return TaskEither.right(const [
       LegalDocumentSummary(
         docType: LegalDocType.terms,
         title: 'Terms of Service',
@@ -106,38 +131,50 @@ class _MockLegalRepository implements LegalRepository {
         title: 'Disclaimer',
         updatedAt: '2026-07-11T00:00:00Z',
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<LegalDocument> findOne(LegalDocType docType) async {
-    return LegalDocument(
-      docType: docType,
-      title: switch (docType) {
-        LegalDocType.terms => 'Terms of Service',
-        LegalDocType.privacy => 'Privacy Policy',
-        LegalDocType.disclaimer => 'Disclaimer',
-        _ => 'Unknown',
-      },
-      content: switch (docType) {
-        LegalDocType.terms => '# Terms of Service\n\nContent.',
-        LegalDocType.privacy => '# Privacy Policy\n\nContent.',
-        LegalDocType.disclaimer => '# Disclaimer\n\nContent.',
-        _ => '# Unknown',
-      },
-      updatedAt: '2026-07-11T00:00:00Z',
+  TaskEither<LucentFailure, LegalDocument> findOne(LegalDocType docType) {
+    return TaskEither.right(
+      LegalDocument(
+        docType: docType,
+        title: switch (docType) {
+          LegalDocType.terms => 'Terms of Service',
+          LegalDocType.privacy => 'Privacy Policy',
+          LegalDocType.disclaimer => 'Disclaimer',
+          _ => 'Unknown',
+        },
+        content: switch (docType) {
+          LegalDocType.terms => '# Terms of Service\n\nContent.',
+          LegalDocType.privacy => '# Privacy Policy\n\nContent.',
+          LegalDocType.disclaimer => '# Disclaimer\n\nContent.',
+          _ => '# Unknown',
+        },
+        updatedAt: '2026-07-11T00:00:00Z',
+      ),
     );
   }
 }
 
-class _ThrowingLegalRepository implements LegalRepository {
+class _FailingLegalRepository implements LegalRepository {
   @override
-  Future<List<LegalDocumentSummary>> findAll() async {
-    throw Exception('Network error');
+  TaskEither<LucentFailure, List<LegalDocumentSummary>> findAll() {
+    return TaskEither.left(
+      LucentFailure.network(
+        message: 'Network error',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      ),
+    );
   }
 
   @override
-  Future<LegalDocument> findOne(LegalDocType docType) async {
-    throw Exception('Network error');
+  TaskEither<LucentFailure, LegalDocument> findOne(LegalDocType docType) {
+    return TaskEither.left(
+      LucentFailure.network(
+        message: 'Network error',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      ),
+    );
   }
 }

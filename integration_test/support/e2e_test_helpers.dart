@@ -1116,8 +1116,8 @@ class E2eLegalRepository implements LegalRepository {
   E2eLegalRepository();
 
   @override
-  Future<List<LegalDocumentSummary>> findAll() async {
-    return const [
+  TaskEither<LucentFailure, List<LegalDocumentSummary>> findAll() {
+    return TaskEither.right(const [
       LegalDocumentSummary(
         docType: LegalDocType.terms,
         title: 'E2E 服务条款',
@@ -1133,16 +1133,18 @@ class E2eLegalRepository implements LegalRepository {
         title: 'E2E 免责声明',
         updatedAt: '2026-07-03',
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<LegalDocument> findOne(LegalDocType docType) async {
-    return LegalDocument(
-      docType: docType,
-      title: 'E2E ${docType.pathSegment}',
-      content: '# E2E ${docType.pathSegment}\n\nThis is a test document.',
-      updatedAt: '2026-07-01',
+  TaskEither<LucentFailure, LegalDocument> findOne(LegalDocType docType) {
+    return TaskEither.right(
+      LegalDocument(
+        docType: docType,
+        title: 'E2E ${docType.pathSegment}',
+        content: '# E2E ${docType.pathSegment}\n\nThis is a test document.',
+        updatedAt: '2026-07-01',
+      ),
     );
   }
 }

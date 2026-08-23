@@ -10,12 +10,15 @@ part 'legal.g.dart';
 @riverpod
 Future<List<LegalDocumentSummary>> legalDocuments(Ref ref) async {
   final repo = ref.watch(legalRepositoryProvider);
-  return repo.findAll();
+  final result = await repo.findAll().run();
+  // Left 投影到 AsyncValue.error（Riverpod 捕获重抛的 failure）。
+  return result.fold((failure) => throw failure, (docs) => docs);
 }
 
 /// Fetches the full content of a specific legal document.
 @riverpod
 Future<LegalDocument> legalDocument(Ref ref, LegalDocType docType) async {
   final repo = ref.watch(legalRepositoryProvider);
-  return repo.findOne(docType);
+  final result = await repo.findOne(docType).run();
+  return result.fold((failure) => throw failure, (doc) => doc);
 }
