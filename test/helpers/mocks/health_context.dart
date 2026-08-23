@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
@@ -54,18 +56,18 @@ class FakeHealthContextRepository implements HealthContextRepository {
   bool reflectCreatedMedicine = false;
 
   @override
-  Future<HealthContextSnapshot> fetchHealthContext() async {
+  TaskEither<LucentFailure, HealthContextSnapshot> fetchHealthContext() {
     // Mirror [createCurrentMedicine]: when the fake reflects created
     // medicines, fetches return a snapshot containing them — so snapshot
     // provider refreshes (e.g. the DataChangeBus re-fetch after an add) flip
     // scan/search surfaces into the「已加入」state in tests.
     final created = createdCurrentMedicine;
     if (reflectCreatedMedicine && created != null) {
-      return testHealthSnapshot(
-        currentMedicines: [_createdMedicineItem(created)],
+      return TaskEither.right(
+        testHealthSnapshot(currentMedicines: [_createdMedicineItem(created)]),
       );
     }
-    return testHealthSnapshot();
+    return TaskEither.right(testHealthSnapshot());
   }
 
   CurrentMedicineItem _createdMedicineItem(CurrentMedicineWriteInput input) {
@@ -87,66 +89,69 @@ class FakeHealthContextRepository implements HealthContextRepository {
   }
 
   @override
-  Future<HealthContextSnapshot> updateProfile(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
     HealthProfileUpdateInput input,
-  ) async => testHealthSnapshot();
+  ) => TaskEither.right(testHealthSnapshot());
 
   @override
-  Future<HealthContextSnapshot> createAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> createAllergy(
     HealthAllergyWriteInput input,
-  ) async => testHealthSnapshot();
+  ) => TaskEither.right(testHealthSnapshot());
 
   @override
-  Future<HealthContextSnapshot> updateAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
-  ) async => testHealthSnapshot();
+  ) => TaskEither.right(testHealthSnapshot());
 
   @override
-  Future<HealthContextSnapshot> deleteAllergy(String id) async =>
-      testHealthSnapshot();
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteAllergy(String id) =>
+      TaskEither.right(testHealthSnapshot());
 
   @override
-  Future<HealthContextSnapshot> createCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCondition(
     HealthConditionWriteInput input,
-  ) async => testHealthSnapshot();
+  ) => TaskEither.right(testHealthSnapshot());
 
   @override
-  Future<HealthContextSnapshot> updateCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCondition(
     String id,
     HealthConditionUpdateInput input,
-  ) async => testHealthSnapshot();
+  ) => TaskEither.right(testHealthSnapshot());
 
   @override
-  Future<HealthContextSnapshot> deleteCondition(String id) async =>
-      testHealthSnapshot();
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCondition(String id) =>
+      TaskEither.right(testHealthSnapshot());
 
   @override
-  Future<HealthContextSnapshot> createCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCurrentMedicine(
     CurrentMedicineWriteInput input,
-  ) async {
-    final gate = createGate;
-    if (gate != null) {
-      await gate.future;
-    }
-    createdCurrentMedicine = input;
-    if (reflectCreatedMedicine) {
-      return testHealthSnapshot(
-        currentMedicines: [_createdMedicineItem(input)],
-      );
-    }
-    return testHealthSnapshot();
+  ) {
+    return TaskEither(() async {
+      final gate = createGate;
+      if (gate != null) {
+        await gate.future;
+      }
+      createdCurrentMedicine = input;
+      if (reflectCreatedMedicine) {
+        return Right(
+          testHealthSnapshot(currentMedicines: [_createdMedicineItem(input)]),
+        );
+      }
+      return Right(testHealthSnapshot());
+    });
   }
 
   @override
-  Future<HealthContextSnapshot> updateCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
-  ) async => testHealthSnapshot();
+  ) => TaskEither.right(testHealthSnapshot());
 
   @override
-  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async =>
-      testHealthSnapshot();
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCurrentMedicine(
+    String id,
+  ) => TaskEither.right(testHealthSnapshot());
 }
 
 /// Test-only in-memory [MedicineRiskCheckRepository] with a configurable

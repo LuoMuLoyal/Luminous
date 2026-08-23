@@ -289,7 +289,11 @@ class _MedicineDetailContent extends ConsumerWidget {
     );
 
     try {
-      final updatedSnapshot = await repository.createCurrentMedicine(input);
+      final result = await repository.createCurrentMedicine(input).run();
+      final updatedSnapshot = result.fold(
+        (failure) => throw failure,
+        (snapshot) => snapshot,
+      );
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.currentMedicines);

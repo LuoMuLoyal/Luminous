@@ -31,7 +31,8 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
-    final snapshot = await healthRepo.fetchHealthContext();
+    final result = await healthRepo.fetchHealthContext().run();
+    final snapshot = result.fold((failure) => throw failure, (value) => value);
     MedicineRiskCheckRecords? riskRecords;
     try {
       riskRecords = await riskCheckRepository.getRecords();

@@ -686,16 +686,21 @@ void main() {
             // Mirror the production provider: re-fetch from the repository when
             // the data change bus bumps these topics (the shared loop emits
             // `currentMedicines` after a successful add).
-            healthContextSnapshotProvider.overrideWith((ref) {
+            healthContextSnapshotProvider.overrideWith((ref) async {
               ref.watch(
                 dataChangeVersionProvider(DataChangeTopic.currentMedicines),
               );
               ref.watch(
                 dataChangeVersionProvider(DataChangeTopic.healthContext),
               );
-              return ref
+              final result = await ref
                   .read(healthContextRepositoryProvider)
-                  .fetchHealthContext();
+                  .fetchHealthContext()
+                  .run();
+              return result.fold(
+                (failure) => throw failure,
+                (snapshot) => snapshot,
+              );
             }),
           ],
         );

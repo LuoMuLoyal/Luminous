@@ -27,7 +27,8 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
 
     try {
       final repository = ref.read(healthContextRepositoryProvider);
-      await repository.updateProfile(input);
+      final result = await repository.updateProfile(input).run();
+      result.fold((failure) => throw failure, (_) {});
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.healthContext);
@@ -75,9 +76,11 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
     try {
       final repository = ref.read(healthContextRepositoryProvider);
       if (id != null && update != null) {
-        await repository.updateAllergy(id, update);
+        final result = await repository.updateAllergy(id, update).run();
+        result.fold((failure) => throw failure, (_) {});
       } else {
-        await repository.createAllergy(create);
+        final result = await repository.createAllergy(create).run();
+        result.fold((failure) => throw failure, (_) {});
       }
       ref
           .read(dataChangeBusProvider.notifier)
@@ -94,7 +97,8 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
 
     try {
       final repository = ref.read(healthContextRepositoryProvider);
-      await repository.deleteAllergy(id);
+      final result = await repository.deleteAllergy(id).run();
+      result.fold((failure) => throw failure, (_) {});
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.healthContext);
@@ -137,9 +141,11 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
     try {
       final repository = ref.read(healthContextRepositoryProvider);
       if (id != null && update != null) {
-        await repository.updateCondition(id, update);
+        final result = await repository.updateCondition(id, update).run();
+        result.fold((failure) => throw failure, (_) {});
       } else {
-        await repository.createCondition(create);
+        final result = await repository.createCondition(create).run();
+        result.fold((failure) => throw failure, (_) {});
       }
       ref
           .read(dataChangeBusProvider.notifier)
@@ -156,7 +162,8 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
 
     try {
       final repository = ref.read(healthContextRepositoryProvider);
-      await repository.deleteCondition(id);
+      final result = await repository.deleteCondition(id).run();
+      result.fold((failure) => throw failure, (_) {});
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.healthContext);
@@ -201,9 +208,11 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
     try {
       final repository = ref.read(healthContextRepositoryProvider);
       if (id != null && update != null) {
-        await repository.updateCurrentMedicine(id, update);
+        final result = await repository.updateCurrentMedicine(id, update).run();
+        result.fold((failure) => throw failure, (_) {});
       } else {
-        await repository.createCurrentMedicine(create);
+        final result = await repository.createCurrentMedicine(create).run();
+        result.fold((failure) => throw failure, (_) {});
       }
       ref
           .read(dataChangeBusProvider.notifier)
@@ -228,7 +237,8 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
 
     try {
       final repository = ref.read(healthContextRepositoryProvider);
-      await repository.deleteCurrentMedicine(id);
+      final result = await repository.deleteCurrentMedicine(id).run();
+      result.fold((failure) => throw failure, (_) {});
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.healthContext);

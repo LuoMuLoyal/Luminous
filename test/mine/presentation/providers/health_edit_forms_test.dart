@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -7,7 +9,7 @@ import 'package:luminous/features/health_context/domain/repositories/snapshot.da
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 
 /// A fake [HealthContextRepository] that returns a fixed snapshot for all
-/// write methods, or throws if [throwOnNext] is set.
+/// write methods, or a Left if [throwOnNext] is set.
 class _FakeHealthContextRepository implements HealthContextRepository {
   _FakeHealthContextRepository(this._snapshot);
 
@@ -17,132 +19,122 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   String? lastMethodCalled;
   List<String> deleteCallIds = [];
 
-  @override
-  Future<HealthContextSnapshot> fetchHealthContext() async => _snapshot;
+  /// Consumes [throwOnNext] and turns it into a Left failure.
+  LucentFailure? _consumeThrowOnNext() {
+    final e = throwOnNext;
+    if (e == null) return null;
+    throwOnNext = null;
+    return LucentFailure.unknown(message: e.toString(), cause: e);
+  }
 
   @override
-  Future<HealthContextSnapshot> updateProfile(
+  TaskEither<LucentFailure, HealthContextSnapshot> fetchHealthContext() =>
+      TaskEither.right(_snapshot);
+
+  @override
+  TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
     HealthProfileUpdateInput input,
-  ) async {
+  ) {
     lastMethodCalled = 'updateProfile';
     callCount++;
-    if (throwOnNext != null) {
-      final e = throwOnNext!;
-      throwOnNext = null;
-      throw e;
-    }
-    return _snapshot;
+    final failure = _consumeThrowOnNext();
+    if (failure != null) return TaskEither.left(failure);
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> createAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> createAllergy(
     HealthAllergyWriteInput input,
-  ) async {
+  ) {
     lastMethodCalled = 'createAllergy';
     callCount++;
-    if (throwOnNext != null) {
-      final e = throwOnNext!;
-      throwOnNext = null;
-      throw e;
-    }
-    return _snapshot;
+    final failure = _consumeThrowOnNext();
+    if (failure != null) return TaskEither.left(failure);
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
-  ) async {
+  ) {
     lastMethodCalled = 'updateAllergy';
     callCount++;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteAllergy(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteAllergy(String id) {
     lastMethodCalled = 'deleteAllergy';
     callCount++;
     deleteCallIds.add(id);
-    if (throwOnNext != null) {
-      final e = throwOnNext!;
-      throwOnNext = null;
-      throw e;
-    }
-    return _snapshot;
+    final failure = _consumeThrowOnNext();
+    if (failure != null) return TaskEither.left(failure);
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> createCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCondition(
     HealthConditionWriteInput input,
-  ) async {
+  ) {
     lastMethodCalled = 'createCondition';
     callCount++;
-    if (throwOnNext != null) {
-      final e = throwOnNext!;
-      throwOnNext = null;
-      throw e;
-    }
-    return _snapshot;
+    final failure = _consumeThrowOnNext();
+    if (failure != null) return TaskEither.left(failure);
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCondition(
     String id,
     HealthConditionUpdateInput input,
-  ) async {
+  ) {
     lastMethodCalled = 'updateCondition';
     callCount++;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteCondition(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCondition(String id) {
     lastMethodCalled = 'deleteCondition';
     callCount++;
     deleteCallIds.add(id);
-    if (throwOnNext != null) {
-      final e = throwOnNext!;
-      throwOnNext = null;
-      throw e;
-    }
-    return _snapshot;
+    final failure = _consumeThrowOnNext();
+    if (failure != null) return TaskEither.left(failure);
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> createCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCurrentMedicine(
     CurrentMedicineWriteInput input,
-  ) async {
+  ) {
     lastMethodCalled = 'createCurrentMedicine';
     callCount++;
-    if (throwOnNext != null) {
-      final e = throwOnNext!;
-      throwOnNext = null;
-      throw e;
-    }
-    return _snapshot;
+    final failure = _consumeThrowOnNext();
+    if (failure != null) return TaskEither.left(failure);
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
-  ) async {
+  ) {
     lastMethodCalled = 'updateCurrentMedicine';
     callCount++;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCurrentMedicine(
+    String id,
+  ) {
     lastMethodCalled = 'deleteCurrentMedicine';
     callCount++;
     deleteCallIds.add(id);
-    if (throwOnNext != null) {
-      final e = throwOnNext!;
-      throwOnNext = null;
-      throw e;
-    }
-    return _snapshot;
+    final failure = _consumeThrowOnNext();
+    if (failure != null) return TaskEither.left(failure);
+    return TaskEither.right(_snapshot);
   }
 }
 

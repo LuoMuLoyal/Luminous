@@ -147,9 +147,15 @@ Future<ProviderContainer> pumpOfflineApp(
         healthContextRepositoryProvider.overrideWithValue(
           healthContextRepository,
         ),
-        healthContextSnapshotProvider.overrideWith(
-          (ref) async => healthContextRepository.fetchHealthContext(),
-        ),
+        healthContextSnapshotProvider.overrideWith((ref) async {
+          final result = await healthContextRepository
+              .fetchHealthContext()
+              .run();
+          return result.fold(
+            (failure) => throw failure,
+            (snapshot) => snapshot,
+          );
+        }),
       ] else ...[
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(_emptyHealthContextSnapshot),
@@ -703,80 +709,71 @@ class E2eHealthContextRepository implements HealthContextRepository {
   CurrentMedicineWriteInput? medicineCreate;
 
   @override
-  Future<HealthContextSnapshot> fetchHealthContext() async {
-    return _emptyHealthContextSnapshot;
-  }
+  TaskEither<LucentFailure, HealthContextSnapshot> fetchHealthContext() =>
+      TaskEither.right(_emptyHealthContextSnapshot);
 
   @override
-  Future<HealthContextSnapshot> updateProfile(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
     HealthProfileUpdateInput input,
-  ) async {
+  ) {
     profileUpdate = input;
-    return _emptyHealthContextSnapshot;
+    return TaskEither.right(_emptyHealthContextSnapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> createAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> createAllergy(
     HealthAllergyWriteInput input,
-  ) async {
+  ) {
     allergyCreate = input;
-    return _emptyHealthContextSnapshot;
+    return TaskEither.right(_emptyHealthContextSnapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
-  ) async {
-    return _emptyHealthContextSnapshot;
-  }
+  ) => TaskEither.right(_emptyHealthContextSnapshot);
 
   @override
-  Future<HealthContextSnapshot> deleteAllergy(String id) async {
-    return _emptyHealthContextSnapshot;
-  }
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteAllergy(String id) =>
+      TaskEither.right(_emptyHealthContextSnapshot);
 
   @override
-  Future<HealthContextSnapshot> createCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCondition(
     HealthConditionWriteInput input,
-  ) async {
+  ) {
     conditionCreate = input;
-    return _emptyHealthContextSnapshot;
+    return TaskEither.right(_emptyHealthContextSnapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCondition(
     String id,
     HealthConditionUpdateInput input,
-  ) async {
-    return _emptyHealthContextSnapshot;
-  }
+  ) => TaskEither.right(_emptyHealthContextSnapshot);
 
   @override
-  Future<HealthContextSnapshot> deleteCondition(String id) async {
-    return _emptyHealthContextSnapshot;
-  }
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCondition(String id) =>
+      TaskEither.right(_emptyHealthContextSnapshot);
 
   @override
-  Future<HealthContextSnapshot> createCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCurrentMedicine(
     CurrentMedicineWriteInput input,
-  ) async {
+  ) {
     medicineCreate = input;
-    return _emptyHealthContextSnapshot;
+    return TaskEither.right(_emptyHealthContextSnapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
-  ) async {
-    return _emptyHealthContextSnapshot;
-  }
+  ) => TaskEither.right(_emptyHealthContextSnapshot);
 
   @override
-  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async {
-    return _emptyHealthContextSnapshot;
-  }
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCurrentMedicine(
+    String id,
+  ) => TaskEither.right(_emptyHealthContextSnapshot);
 }
 
 class E2eRecordRepository implements RecordRepository {
@@ -1156,82 +1153,77 @@ class E2eHealthContextRepositoryWithItems implements HealthContextRepository {
   String? medicineDeleteId;
 
   @override
-  Future<HealthContextSnapshot> fetchHealthContext() async {
-    return _snapshotWithItems;
-  }
+  TaskEither<LucentFailure, HealthContextSnapshot> fetchHealthContext() =>
+      TaskEither.right(_snapshotWithItems);
 
   @override
-  Future<HealthContextSnapshot> updateProfile(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
     HealthProfileUpdateInput input,
-  ) async {
+  ) {
     profileUpdate = input;
-    return _snapshotWithItems;
+    return TaskEither.right(_snapshotWithItems);
   }
 
   @override
-  Future<HealthContextSnapshot> createAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> createAllergy(
     HealthAllergyWriteInput input,
-  ) async {
-    return _snapshotWithItems;
-  }
+  ) => TaskEither.right(_snapshotWithItems);
 
   @override
-  Future<HealthContextSnapshot> updateAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
-  ) async {
+  ) {
     allergyUpdate = input;
-    return _snapshotWithItems;
+    return TaskEither.right(_snapshotWithItems);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteAllergy(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteAllergy(String id) {
     allergyDeleteId = id;
-    return _snapshotWithItems;
+    return TaskEither.right(_snapshotWithItems);
   }
 
   @override
-  Future<HealthContextSnapshot> createCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCondition(
     HealthConditionWriteInput input,
-  ) async {
-    return _snapshotWithItems;
-  }
+  ) => TaskEither.right(_snapshotWithItems);
 
   @override
-  Future<HealthContextSnapshot> updateCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCondition(
     String id,
     HealthConditionUpdateInput input,
-  ) async {
+  ) {
     conditionUpdate = input;
-    return _snapshotWithItems;
+    return TaskEither.right(_snapshotWithItems);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteCondition(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCondition(String id) {
     conditionDeleteId = id;
-    return _snapshotWithItems;
+    return TaskEither.right(_snapshotWithItems);
   }
 
   @override
-  Future<HealthContextSnapshot> createCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCurrentMedicine(
     CurrentMedicineWriteInput input,
-  ) async {
-    return _snapshotWithItems;
-  }
+  ) => TaskEither.right(_snapshotWithItems);
 
   @override
-  Future<HealthContextSnapshot> updateCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
-  ) async {
+  ) {
     medicineUpdate = input;
-    return _snapshotWithItems;
+    return TaskEither.right(_snapshotWithItems);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCurrentMedicine(
+    String id,
+  ) {
     medicineDeleteId = id;
-    return _snapshotWithItems;
+    return TaskEither.right(_snapshotWithItems);
   }
 }
 

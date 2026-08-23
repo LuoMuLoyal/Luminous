@@ -81,12 +81,17 @@ Future<HealthContextSnapshot> healthContextSnapshot(Ref ref) {
 
   return authGuarded(
     ref: ref,
-    fetch: () => ref
-        .watch(healthContextRepositoryProvider)
-        .fetchHealthContext()
-        .timeout(
-          const Duration(seconds: 5),
-          onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
-        ),
+    fetch: () async {
+      final result = await ref
+          .watch(healthContextRepositoryProvider)
+          .fetchHealthContext()
+          .run()
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
+          );
+      // Left 投影到 AsyncValue.error：widget 只消费 provider state。
+      return result.fold((failure) => throw failure, (snapshot) => snapshot);
+    },
   );
 }

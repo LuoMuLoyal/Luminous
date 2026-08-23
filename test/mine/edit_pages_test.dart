@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -381,83 +383,86 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   String? medicineDeleted;
 
   @override
-  Future<HealthContextSnapshot> fetchHealthContext() async => _snapshot;
+  TaskEither<LucentFailure, HealthContextSnapshot> fetchHealthContext() =>
+      TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> updateProfile(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
     HealthProfileUpdateInput input,
-  ) async {
+  ) {
     profileUpdate = input;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> createAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> createAllergy(
     HealthAllergyWriteInput input,
-  ) async {
+  ) {
     allergyCreate = input;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
-  ) async {
+  ) {
     allergyUpdate = input;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteAllergy(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteAllergy(String id) {
     allergyDeleted = id;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> createCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCondition(
     HealthConditionWriteInput input,
-  ) async {
+  ) {
     conditionCreate = input;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCondition(
     String id,
     HealthConditionUpdateInput input,
-  ) async {
+  ) {
     conditionUpdate = input;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteCondition(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCondition(String id) {
     conditionDeleted = id;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> createCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCurrentMedicine(
     CurrentMedicineWriteInput input,
-  ) async {
+  ) {
     medicineCreate = input;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> updateCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
-  ) async {
+  ) {
     medicineUpdate = input;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async {
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCurrentMedicine(
+    String id,
+  ) {
     medicineDeleted = id;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 }
 

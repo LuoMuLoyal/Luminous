@@ -1,8 +1,10 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
@@ -355,55 +357,59 @@ DoseLogItem _doseLog({
 
 class _FakeHealthContextRepository implements HealthContextRepository {
   @override
-  Future<HealthContextSnapshot> fetchHealthContext() async => _snapshot;
+  TaskEither<LucentFailure, HealthContextSnapshot> fetchHealthContext() =>
+      TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> updateProfile(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
     HealthProfileUpdateInput input,
-  ) async => _snapshot;
+  ) => TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> createAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> createAllergy(
     HealthAllergyWriteInput input,
-  ) async => _snapshot;
+  ) => TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> updateAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
-  ) async => _snapshot;
+  ) => TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> deleteAllergy(String id) async => _snapshot;
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteAllergy(String id) =>
+      TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> createCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCondition(
     HealthConditionWriteInput input,
-  ) async => _snapshot;
+  ) => TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> updateCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCondition(
     String id,
     HealthConditionUpdateInput input,
-  ) async => _snapshot;
+  ) => TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> deleteCondition(String id) async => _snapshot;
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCondition(String id) =>
+      TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> createCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCurrentMedicine(
     CurrentMedicineWriteInput input,
-  ) async => _snapshot;
+  ) => TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> updateCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
-  ) async => _snapshot;
+  ) => TaskEither.right(_snapshot);
 
   @override
-  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async =>
-      _snapshot;
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCurrentMedicine(
+    String id,
+  ) => TaskEither.right(_snapshot);
 }
 
 class _FakeDoseLogDataSource extends DoseLogRemoteDataSource {

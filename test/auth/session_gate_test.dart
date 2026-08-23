@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -139,9 +141,9 @@ class _CountingTodayRepository implements TodayRepository {
   int calls = 0;
 
   @override
-  Future<TodayDashboard> fetchDashboard() async {
+  TaskEither<LucentFailure, TodayDashboard> fetchDashboard() {
     calls += 1;
-    return MockTodayRepository.previewDashboard;
+    return TaskEither.right(MockTodayRepository.previewDashboard);
   }
 
   @override
@@ -207,77 +209,61 @@ class _CountingHealthContextRepository implements HealthContextRepository {
   int fetchCalls = 0;
 
   @override
-  Future<HealthContextSnapshot> fetchHealthContext() async {
+  TaskEither<LucentFailure, HealthContextSnapshot> fetchHealthContext() {
     fetchCalls += 1;
-    return _snapshot;
+    return TaskEither.right(_snapshot);
   }
 
   @override
-  Future<HealthContextSnapshot> createAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> createAllergy(
     HealthAllergyWriteInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> createCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCondition(
     HealthConditionWriteInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> createCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> createCurrentMedicine(
     CurrentMedicineWriteInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> deleteAllergy(String id) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteAllergy(String id) =>
+      throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> deleteCondition(String id) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCondition(String id) =>
+      throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async {
-    throw UnimplementedError();
-  }
+  TaskEither<LucentFailure, HealthContextSnapshot> deleteCurrentMedicine(
+    String id,
+  ) => throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> updateAllergy(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> updateCondition(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCondition(
     String id,
     HealthConditionUpdateInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> updateCurrentMedicine(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 
   @override
-  Future<HealthContextSnapshot> updateProfile(
+  TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
     HealthProfileUpdateInput input,
-  ) async {
-    throw UnimplementedError();
-  }
+  ) => throw UnimplementedError();
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
