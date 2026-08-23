@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/src/model/change_security_pin_dto.dart';
 import 'package:lucent_api/src/model/disable_security_pin_dto.dart';
 import 'package:lucent_api/src/model/enable_security_pin_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/security_pin_elevation_response_dto.dart';
 import 'package:lucent_api/src/model/update_user_settings_dto.dart';
 import 'package:lucent_api/src/model/user_settings_response_dto.dart';

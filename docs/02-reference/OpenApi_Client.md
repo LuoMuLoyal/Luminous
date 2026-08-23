@@ -7,7 +7,7 @@ updated: 2026-08-22
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-22
+Last updated: 2026-08-23
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -22,6 +22,8 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
   after the Lucent hard cut.
 - Problem Details and SSE Problem Details are generated as named DTOs with stable string `code`,
   localized `title`/`detail`, optional retry metadata, and stream-only termination `status`.
+- Generated API operation files retain imports for the named `ProblemDetailsDto` used by declared
+  non-2xx responses; this is generated output from Lucent OpenAPI and must not be hand-maintained.
 - Queued endpoints use named async response DTOs whose `jobId` and inline result fields are
   optional; exactly one branch is returned at runtime. They are not generated as mutually required
   `oneOf` fields or numeric envelopes.

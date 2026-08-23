@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/src/model/create_data_export_request_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_data_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_response_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class DataExportApi {
   final Dio _dio;

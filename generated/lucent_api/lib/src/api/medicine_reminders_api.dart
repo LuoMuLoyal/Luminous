@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/src/model/create_medicine_reminder_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_response_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/update_medicine_reminder_dto.dart';
 import 'package:lucent_api/src/model/upsert_medicine_reminder_group_dto.dart';
 

@@ -14,6 +14,7 @@ import 'package:lucent_api/src/model/end_health_event_dto.dart';
 import 'package:lucent_api/src/model/health_event_item_dto.dart';
 import 'package:lucent_api/src/model/health_event_list_response_dto.dart';
 import 'package:lucent_api/src/model/health_event_response_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/upsert_health_event_check_in_dto.dart';
 
 class HealthEventsApi {

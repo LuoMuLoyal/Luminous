@@ -10,6 +10,7 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/notification_preferences_response_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/update_notification_preferences_dto.dart';
 
 class NotificationPreferencesApi {

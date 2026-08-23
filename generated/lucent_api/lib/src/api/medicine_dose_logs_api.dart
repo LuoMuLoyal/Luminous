@@ -13,6 +13,7 @@ import 'package:lucent_api/src/model/create_dose_log_dto.dart';
 import 'package:lucent_api/src/model/dose_log_list_response_dto.dart';
 import 'package:lucent_api/src/model/dose_log_response_dto.dart';
 import 'package:lucent_api/src/model/mark_dose_log_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/update_dose_log_dto.dart';
 
 class MedicineDoseLogsApi {

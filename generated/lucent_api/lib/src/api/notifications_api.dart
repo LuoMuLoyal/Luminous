@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/src/model/create_notification_dto.dart';
 import 'package:lucent_api/src/model/notification_detail_response_dto.dart';
 import 'package:lucent_api/src/model/notification_list_response_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/unread_count_response_dto.dart';
 
 class NotificationsApi {

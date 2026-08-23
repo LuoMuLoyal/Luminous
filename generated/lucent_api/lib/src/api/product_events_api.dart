@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/create_product_event_batch_dto.dart';
 import 'package:lucent_api/src/model/funnel_response_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class ProductEventsApi {
   final Dio _dio;

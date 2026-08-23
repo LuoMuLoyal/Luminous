@@ -21,6 +21,7 @@ import 'package:lucent_api/src/model/o_auth_authorize_dto.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_response_dto.dart';
 import 'package:lucent_api/src/model/o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/o_auth_code_callback_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/qq_o_auth_authorize_dto.dart';
 import 'package:lucent_api/src/model/qq_o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/refresh_dto.dart';

@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/local_capability_response_dto.dart';
 import 'package:lucent_api/src/model/local_capability_state_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_response_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto.dart';

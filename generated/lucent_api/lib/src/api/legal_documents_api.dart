@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/legal_document_detail_response_dto.dart';
 import 'package:lucent_api/src/model/legal_document_list_response_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class LegalDocumentsApi {
   final Dio _dio;

@@ -10,6 +10,7 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/create_file_upload_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class FilesApi {
   final Dio _dio;

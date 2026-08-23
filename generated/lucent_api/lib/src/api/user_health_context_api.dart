@@ -13,6 +13,7 @@ import 'package:lucent_api/src/model/create_current_medicine_dto.dart';
 import 'package:lucent_api/src/model/create_health_context_allergy_dto.dart';
 import 'package:lucent_api/src/model/create_health_context_condition_dto.dart';
 import 'package:lucent_api/src/model/health_context_response_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/update_current_medicine_dto.dart';
 import 'package:lucent_api/src/model/update_health_context_allergy_dto.dart';
 import 'package:lucent_api/src/model/update_health_context_condition_dto.dart';

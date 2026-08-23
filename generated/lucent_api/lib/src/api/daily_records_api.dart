@@ -18,6 +18,7 @@ import 'package:lucent_api/src/model/daily_record_list_response_dto.dart';
 import 'package:lucent_api/src/model/daily_record_response_dto.dart';
 import 'package:lucent_api/src/model/daily_record_summary_response_dto.dart';
 import 'package:lucent_api/src/model/generate_daily_record_candidates_dto.dart';
+import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/update_daily_record_dto.dart';
 
 class DailyRecordsApi {
