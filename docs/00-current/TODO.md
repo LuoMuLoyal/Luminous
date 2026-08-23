@@ -87,6 +87,10 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - box_scan OCR 路径单个候选 search Left 会中断候选循环（不继续其余候选）：迁移前既有行为，可选优化为跳过失败候选。
 - 非 problem+json 错误体导致的 FormatException 从 `.run()` 逃逸时无 repository 层日志（由页面 catch 记录）：mapper 既有行为，页面通用 catch 已吸收，无未处理异常。
 
+## 2026-08-23 legal 迁移审查遗留（错误迁移 Task 5c）
+
+- `legal_list_page_test.dart` `pumpPage` 的 `Object? error` 参数现仅作 null 判定标志（传入值被丢弃）：纯遗留装饰，可改 `bool fail`，非必须。
+
 ## 审查暂缓项
 
 - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。
