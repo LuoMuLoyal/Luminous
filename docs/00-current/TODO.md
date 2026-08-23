@@ -75,6 +75,11 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
 - RetryInterceptor 链级 `retryAfter` 断言缺失：`retryable=false` 已有链级测试证明映射到达策略层，`retryAfter` 延迟优先级仅由 RetryPolicy 单测覆盖；补链级用例需真实计时（易抖），暂缓。
 - 畸形错误体端到端暴露形态：畸形 401/503 body 最终以 `DioException(error: FormatException)` 暴露（dio 归一化既有行为）；Auth/Retry 已保证不崩溃且 401 清 session 语义正确，端到端暴露形态属既有设计，后续任务跟踪。
 
+## 2026-08-23 认证迁移审查遗留（错误迁移 Task 2）
+
+- `auth/presentation/providers/sessions.dart` `_revokeFailure` 用 `StackTrace.current` 构造 AsyncError（旧代码保留真实堆栈）：LucentFailure.cause 已携带原 DioException，可调试；真实堆栈透传需在 TaskEither Left 上携带 stackTrace（跨任务架构决策），暂缓，清理旧类型时一并评估。
+- `_resolve` 适配器在 `account.dart`/`oauth_login.dart`/`wechat_oauth.dart` 三处重复（4 行同构）：风格级，暂不抽取公共 helper。
+
 ## 审查暂缓项
 
 - Toast 同消息重放「有 action ↔ 无 action」切换时 suffix 不重建（已限定为既有已知限制并在 `core/feedback/toast.dart` 注释说明）。验收：可接受或为 Toast 增加重建能力。
