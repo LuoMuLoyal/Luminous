@@ -8,6 +8,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -562,15 +563,15 @@ class _SourceAwareSearchRepository implements MedicineSearchRepository {
   final searchSources = <MedicineSearchSource>[];
 
   @override
-  Future<List<MedicineSearchResult>> search({
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
     required String query,
     required MedicineSearchSource source,
     int page = 1,
     int pageSize = 20,
-  }) async {
+  }) {
     searchSources.add(source);
     if (source == MedicineSearchSource.drugbank) {
-      return const [
+      return TaskEither.right(const [
         MedicineSearchResult(
           id: 'DB01050',
           source: MedicineSearchSource.drugbank,
@@ -580,10 +581,10 @@ class _SourceAwareSearchRepository implements MedicineSearchRepository {
           tags: <String>['approved', 'anti-inflammatory'],
           matchType: MedicineSearchMatchType.name,
         ),
-      ];
+      ]);
     }
 
-    return const [
+    return TaskEither.right(const [
       MedicineSearchResult(
         id: '__mock_cn_ibuprofen__',
         source: MedicineSearchSource.cn,
@@ -593,18 +594,20 @@ class _SourceAwareSearchRepository implements MedicineSearchRepository {
         tags: <String>['解热镇痛', '非处方药'],
         matchType: MedicineSearchMatchType.ingredient,
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<MedicineSearchSafetyPreview?> fetchDetail(
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
     String id,
     MedicineSearchSource source,
-  ) async {
-    return MedicineSearchSafetyPreview(
-      title: id,
-      conditions: const [],
-      checklist: const [],
+  ) {
+    return TaskEither.right(
+      MedicineSearchSafetyPreview(
+        title: id,
+        conditions: const [],
+        checklist: const [],
+      ),
     );
   }
 }
@@ -639,34 +642,44 @@ const _snapshot = HealthContextSnapshot(
 
 class _EmptySearchRepository implements MedicineSearchRepository {
   @override
-  Future<List<MedicineSearchResult>> search({
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
     required String query,
     required MedicineSearchSource source,
     int page = 1,
     int pageSize = 20,
-  }) async => const [];
+  }) => TaskEither.right(const <MedicineSearchResult>[]);
 
   @override
-  Future<MedicineSearchSafetyPreview?> fetchDetail(
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
     String id,
     MedicineSearchSource source,
-  ) async => null;
+  ) => TaskEither.right(null);
 }
 
 class _ErrorSearchRepository implements MedicineSearchRepository {
   @override
-  Future<List<MedicineSearchResult>> search({
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
     required String query,
     required MedicineSearchSource source,
     int page = 1,
     int pageSize = 20,
-  }) async => throw Exception('Search failed');
+  }) => TaskEither.left(
+    LucentFailure.network(
+      message: 'Search failed',
+      networkErrorCode: NetworkErrorCode.connectionError,
+    ),
+  );
 
   @override
-  Future<MedicineSearchSafetyPreview?> fetchDetail(
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
     String id,
     MedicineSearchSource source,
-  ) async => throw Exception('Detail failed');
+  ) => TaskEither.left(
+    LucentFailure.network(
+      message: 'Detail failed',
+      networkErrorCode: NetworkErrorCode.connectionError,
+    ),
+  );
 }
 
 class _FakeMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
@@ -730,18 +743,23 @@ class _HangingSearchRepository implements MedicineSearchRepository {
   final Completer<List<MedicineSearchResult>> _pending;
 
   @override
-  Future<List<MedicineSearchResult>> search({
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
     required String query,
     required MedicineSearchSource source,
     int page = 1,
     int pageSize = 20,
-  }) => _pending.future;
+  }) {
+    return TaskEither(() async {
+      final results = await _pending.future;
+      return Right(results);
+    });
+  }
 
   @override
-  Future<MedicineSearchSafetyPreview?> fetchDetail(
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
     String id,
     MedicineSearchSource source,
-  ) async => null;
+  ) => TaskEither.right(null);
 }
 
 const _clearRiskCheckResult = MedicineRiskCheckResult(
@@ -768,13 +786,13 @@ class _MockMedicineSearchRepository implements MedicineSearchRepository {
   const _MockMedicineSearchRepository();
 
   @override
-  Future<List<MedicineSearchResult>> search({
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
     required String query,
     required MedicineSearchSource source,
     int page = 1,
     int pageSize = 20,
-  }) async {
-    return const [
+  }) {
+    return TaskEither.right(const [
       MedicineSearchResult(
         id: '__mock_cn_ibuprofen__',
         source: MedicineSearchSource.cn,
@@ -793,18 +811,20 @@ class _MockMedicineSearchRepository implements MedicineSearchRepository {
         tags: <String>['示例标签'],
         matchType: MedicineSearchMatchType.ingredient,
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<MedicineSearchSafetyPreview?> fetchDetail(
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
     String id,
     MedicineSearchSource source,
-  ) async {
-    return const MedicineSearchSafetyPreview(
-      title: '[DEMO] Ibuprofen',
-      conditions: ['[DEMO] 安全提示示例'],
-      checklist: ['[DEMO] 已阅读示例说明'],
+  ) {
+    return TaskEither.right(
+      const MedicineSearchSafetyPreview(
+        title: '[DEMO] Ibuprofen',
+        conditions: ['[DEMO] 安全提示示例'],
+        checklist: ['[DEMO] 已阅读示例说明'],
+      ),
     );
   }
 }

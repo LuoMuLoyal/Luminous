@@ -1062,13 +1062,13 @@ class MockMedicineSearchRepository implements MedicineSearchRepository {
   const MockMedicineSearchRepository();
 
   @override
-  Future<List<MedicineSearchResult>> search({
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
     required String query,
     required MedicineSearchSource source,
     int page = 1,
     int pageSize = 20,
-  }) async {
-    return const [
+  }) {
+    return TaskEither.right(const [
       MedicineSearchResult(
         id: '__mock_cn_ibuprofen__',
         source: MedicineSearchSource.cn,
@@ -1087,18 +1087,20 @@ class MockMedicineSearchRepository implements MedicineSearchRepository {
         tags: <String>['示例标签'],
         matchType: MedicineSearchMatchType.ingredient,
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<MedicineSearchSafetyPreview?> fetchDetail(
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
     String id,
     MedicineSearchSource source,
-  ) async {
-    return const MedicineSearchSafetyPreview(
-      title: '[DEMO] Ibuprofen',
-      conditions: ['[DEMO] 安全提示示例'],
-      checklist: ['[DEMO] 已阅读示例说明'],
+  ) {
+    return TaskEither.right(
+      const MedicineSearchSafetyPreview(
+        title: '[DEMO] Ibuprofen',
+        conditions: ['[DEMO] 安全提示示例'],
+        checklist: ['[DEMO] 已阅读示例说明'],
+      ),
     );
   }
 }

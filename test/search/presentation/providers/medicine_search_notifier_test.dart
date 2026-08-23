@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
@@ -11,13 +14,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Fake implementation of [MedicineSearchRepository] for testing
 /// [MedicineSearchNotifier] state transitions.
+///
+/// `*Failure` produces a `TaskEither` Left (repository boundary failure);
+/// `*Throws` makes the task reject with the given object (protocol-exception
+/// shape, e.g. a `FormatException`/`TimeoutException` escaping `.run()`).
 class _FakeSearchRepository implements MedicineSearchRepository {
   _FakeSearchRepository();
 
   List<MedicineSearchResult> searchResults = [];
   MedicineSearchSafetyPreview? detailPreview;
-  Object? searchError;
-  Object? detailError;
+  LucentFailure? searchFailure;
+  LucentFailure? detailFailure;
+  Object? searchThrows;
+  Object? detailThrows;
   Duration searchDelay = Duration.zero;
   Duration detailDelay = Duration.zero;
 
@@ -27,33 +36,43 @@ class _FakeSearchRepository implements MedicineSearchRepository {
   MedicineSearchSource? lastDetailSource;
 
   @override
-  Future<List<MedicineSearchResult>> search({
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
     required String query,
     required MedicineSearchSource source,
     int page = 1,
     int pageSize = 20,
-  }) async {
-    lastSearchQuery = query;
-    lastSearchSource = source;
-    if (searchDelay != Duration.zero) {
-      await Future.delayed(searchDelay);
-    }
-    if (searchError != null) throw searchError!;
-    return searchResults;
+  }) {
+    return TaskEither(() async {
+      lastSearchQuery = query;
+      lastSearchSource = source;
+      if (searchDelay != Duration.zero) {
+        await Future.delayed(searchDelay);
+      }
+      final throws = searchThrows;
+      if (throws != null) throw throws;
+      final failure = searchFailure;
+      if (failure != null) return Left(failure);
+      return Right(searchResults);
+    });
   }
 
   @override
-  Future<MedicineSearchSafetyPreview?> fetchDetail(
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
     String id,
     MedicineSearchSource source,
-  ) async {
-    lastDetailId = id;
-    lastDetailSource = source;
-    if (detailDelay != Duration.zero) {
-      await Future.delayed(detailDelay);
-    }
-    if (detailError != null) throw detailError!;
-    return detailPreview;
+  ) {
+    return TaskEither(() async {
+      lastDetailId = id;
+      lastDetailSource = source;
+      if (detailDelay != Duration.zero) {
+        await Future.delayed(detailDelay);
+      }
+      final throws = detailThrows;
+      if (throws != null) throw throws;
+      final failure = detailFailure;
+      if (failure != null) return Left(failure);
+      return Right(detailPreview);
+    });
   }
 }
 
@@ -149,8 +168,11 @@ void main() {
       },
     );
 
-    test('sets error message when search throws', () async {
-      repo.searchError = Exception('Network error');
+    test('sets error message when search returns a failure Left', () async {
+      repo.searchFailure = LucentFailure.network(
+        message: 'Network request failed.',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      );
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('test');
@@ -165,7 +187,7 @@ void main() {
     test(
       'maps generic Exception to user-friendly message via mapper',
       () async {
-        repo.searchError = Exception('Something went wrong');
+        repo.searchThrows = Exception('Something went wrong');
 
         final notifier = container.read(
           medicineSearchNotifierProvider.notifier,
@@ -342,7 +364,7 @@ void main() {
       // The notifier has a 5s timeout. We'll use a shorter delay but
       // simulate timeout by having the repo throw TimeoutException.
       repo.searchDelay = Duration.zero;
-      repo.searchError = TimeoutException('请求超时，请检查网络后重试。');
+      repo.searchThrows = TimeoutException('请求超时，请检查网络后重试。');
 
       await notifier.updateQuery('test');
       await Future.delayed(const Duration(milliseconds: 450));
@@ -370,6 +392,53 @@ void main() {
     });
   });
 
+  // ── detail preview failure ─────────────────────────────────────
+  group('detail preview failure', () {
+    test('degrades only the preview, keeping the search results', () async {
+      repo.searchResults = [_result('m1')];
+      repo.detailPreview = _preview('Detail m1');
+      repo.detailFailure = LucentFailure.network(
+        message: 'Network request failed.',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      );
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('test');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      final state = container.read(medicineSearchNotifierProvider);
+      expect(state.isSearching, isFalse);
+      expect(state.results, hasLength(1));
+      expect(state.selectedResultId, 'm1');
+      // A detail failure must not fail the search — no preview, no error.
+      expect(state.detailPreview, isNull);
+      expect(state.errorMessage, isNull);
+    });
+
+    test(
+      'degrades only the preview when detail raises a protocol exception',
+      () async {
+        repo.searchResults = [_result('m1')];
+        repo.detailThrows = const FormatException('malformed error body');
+
+        final notifier = container.read(
+          medicineSearchNotifierProvider.notifier,
+        );
+        await notifier.updateQuery('test');
+        await Future.delayed(const Duration(milliseconds: 450));
+
+        final state = container.read(medicineSearchNotifierProvider);
+        expect(state.isSearching, isFalse);
+        expect(state.results, hasLength(1));
+        expect(state.selectedResultId, 'm1');
+        // A thrown FormatException from `run()` must not escape the
+        // fire-and-forget selectResult/_doSearch path — no preview, no error.
+        expect(state.detailPreview, isNull);
+        expect(state.errorMessage, isNull);
+      },
+    );
+  });
+
   // ── recent searches (F-12) ────────────────────────────────────
   group('recent searches', () {
     test('records the trimmed keyword after a successful search', () async {
@@ -395,7 +464,10 @@ void main() {
     });
 
     test('does not record the keyword when the search fails', () async {
-      repo.searchError = Exception('Network error');
+      repo.searchFailure = LucentFailure.network(
+        message: 'Network request failed.',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      );
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('aspirin');

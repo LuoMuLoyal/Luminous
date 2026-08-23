@@ -1,9 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/medicine_search.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
+
+import '../helpers/task_either.dart';
 
 class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   _FakeSearchDataSource();
@@ -86,6 +90,51 @@ MedicineDetailResponseDto _okDetailResponse({
   );
 }
 
+/// A 404 Problem Details body served with `application/problem+json`.
+DioException _problemDetails404({String code = 'MEDICINE_NOT_FOUND'}) {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/medicines/med-1'),
+    type: DioExceptionType.badResponse,
+    response: Response(
+      requestOptions: RequestOptions(path: '/api/v1/medicines/med-1'),
+      statusCode: 404,
+      headers: Headers.fromMap({
+        Headers.contentTypeHeader: ['application/problem+json'],
+      }),
+      data: {
+        'type': 'https://api.lumos.example/problems/$code',
+        'title': 'Not found',
+        'detail': '药品不存在或已下架',
+        'code': code,
+      },
+    ),
+  );
+}
+
+/// A network timeout with no HTTP response.
+DioException _connectionTimeout() {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/medicines'),
+    type: DioExceptionType.connectionTimeout,
+  );
+}
+
+/// A 400 body that is not Problem Details (protocol invariant violation).
+DioException _nonProblemBody400() {
+  return DioException(
+    requestOptions: RequestOptions(path: '/api/v1/medicines'),
+    type: DioExceptionType.badResponse,
+    response: Response(
+      requestOptions: RequestOptions(path: '/api/v1/medicines'),
+      statusCode: 400,
+      headers: Headers.fromMap({
+        Headers.contentTypeHeader: ['application/json'],
+      }),
+      data: {'error': 'oops'},
+    ),
+  );
+}
+
 void main() {
   group('LucentMedicineSearchRepository', () {
     late _FakeSearchDataSource dataSource;
@@ -127,9 +176,8 @@ void main() {
           ),
         ]);
 
-        final results = await repo.search(
-          query: 'asp',
-          source: MedicineSearchSource.cn,
+        final results = await expectTaskRight(
+          repo.search(query: 'asp', source: MedicineSearchSource.cn),
         );
 
         expect(results, hasLength(2));
@@ -143,25 +191,29 @@ void main() {
         expect(results[1].matchType, MedicineSearchMatchType.ingredient);
       });
 
-      test('returns empty list when response data is empty', () async {
-        dataSource.searchResponse = _okSearchResponse([]);
+      test(
+        'returns empty list as a legal Right when no candidates match',
+        () async {
+          dataSource.searchResponse = _okSearchResponse([]);
 
-        final results = await repo.search(
-          query: 'nonexistent',
-          source: MedicineSearchSource.cn,
-        );
+          final results = await expectTaskRight(
+            repo.search(query: 'nonexistent', source: MedicineSearchSource.cn),
+          );
 
-        expect(results, isEmpty);
-      });
+          expect(results, isEmpty);
+        },
+      );
 
       test('passes source, query, page, pageSize to dataSource', () async {
         dataSource.searchResponse = _okSearchResponse();
 
-        await repo.search(
-          query: 'ibuprofen',
-          source: MedicineSearchSource.drugbank,
-          page: 2,
-          pageSize: 50,
+        await expectTaskRight(
+          repo.search(
+            query: 'ibuprofen',
+            source: MedicineSearchSource.drugbank,
+            page: 2,
+            pageSize: 50,
+          ),
         );
 
         expect(dataSource.lastSearchSource, 'drugbank');
@@ -173,7 +225,9 @@ void main() {
       test('passes source name correctly for cn', () async {
         dataSource.searchResponse = _okSearchResponse();
 
-        await repo.search(query: 'test', source: MedicineSearchSource.cn);
+        await expectTaskRight(
+          repo.search(query: 'test', source: MedicineSearchSource.cn),
+        );
 
         expect(dataSource.lastSearchSource, 'cn');
       });
@@ -181,19 +235,12 @@ void main() {
       test('uses default page and pageSize when not specified', () async {
         dataSource.searchResponse = _okSearchResponse();
 
-        await repo.search(query: 'test', source: MedicineSearchSource.cn);
+        await expectTaskRight(
+          repo.search(query: 'test', source: MedicineSearchSource.cn),
+        );
 
         expect(dataSource.lastSearchPage, 1);
         expect(dataSource.lastSearchPageSize, 20);
-      });
-
-      test('propagates dataSource errors', () async {
-        dataSource.searchError = Exception('Network error');
-
-        expect(
-          () => repo.search(query: 'test', source: MedicineSearchSource.cn),
-          throwsException,
-        );
       });
 
       test('maps subtitle to empty string when null', () async {
@@ -210,13 +257,60 @@ void main() {
           ),
         ]);
 
-        final results = await repo.search(
-          query: '',
-          source: MedicineSearchSource.cn,
+        final results = await expectTaskRight(
+          repo.search(query: '', source: MedicineSearchSource.cn),
         );
 
         expect(results.first.subtitle, '');
         expect(results.first.summary, '');
+      });
+    });
+
+    // ─── search failure branches ─────────────────────────────────────
+    group('search failure branches', () {
+      test('404 Problem Details keeps code and status as a Left', () async {
+        dataSource.searchError = _problemDetails404(code: 'MEDICINE_NOT_FOUND');
+
+        final failure = await expectTaskLeft(
+          repo.search(query: 'x', source: MedicineSearchSource.cn),
+        );
+
+        expect(failure.code, 'MEDICINE_NOT_FOUND');
+        expect(failure.statusCode, 404);
+        expect(failure.kind, LucentFailureKind.business);
+      });
+
+      test('network timeout maps to a network connectivity Left', () async {
+        dataSource.searchError = _connectionTimeout();
+
+        final failure = await expectTaskLeft(
+          repo.search(query: 'x', source: MedicineSearchSource.cn),
+        );
+
+        expect(failure.isNetworkConnectivityError, isTrue);
+        expect(failure.kind, LucentFailureKind.network);
+      });
+
+      test(
+        'non-Problem Details error body propagates FormatException from run()',
+        () async {
+          dataSource.searchError = _nonProblemBody400();
+
+          await expectLater(
+            repo.search(query: 'x', source: MedicineSearchSource.cn).run(),
+            throwsA(isA<FormatException>()),
+          );
+        },
+      );
+
+      test('plain unexpected exception maps to a Left(unknown)', () async {
+        dataSource.searchError = Exception('unexpected');
+
+        final failure = await expectTaskLeft(
+          repo.search(query: 'x', source: MedicineSearchSource.cn),
+        );
+
+        expect(failure.kind, LucentFailureKind.unknown);
       });
     });
 
@@ -228,7 +322,9 @@ void main() {
           subtitle: 'Pain reliever\nFever reducer',
         );
 
-        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
+        final result = await expectTaskRight(
+          repo.fetchDetail('med-1', MedicineSearchSource.cn),
+        );
 
         expect(result, isNotNull);
         expect(result!.title, 'Aspirin');
@@ -238,18 +334,12 @@ void main() {
         expect(result.checklist, isEmpty);
       });
 
-      test('returns null when dataSource throws', () async {
-        dataSource.detailError = Exception('Network error');
-
-        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
-
-        expect(result, isNull);
-      });
-
       test('returns empty conditions when subtitle is null', () async {
         dataSource.detailResponse = _okDetailResponse(subtitle: null);
 
-        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
+        final result = await expectTaskRight(
+          repo.fetchDetail('med-1', MedicineSearchSource.cn),
+        );
 
         expect(result, isNotNull);
         expect(result!.conditions, isEmpty);
@@ -258,7 +348,9 @@ void main() {
       test('returns single empty condition when subtitle is empty', () async {
         dataSource.detailResponse = _okDetailResponse(subtitle: '');
 
-        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
+        final result = await expectTaskRight(
+          repo.fetchDetail('med-1', MedicineSearchSource.cn),
+        );
 
         expect(result, isNotNull);
         // ''.split('\n') produces [''] (a list with one empty string)
@@ -269,7 +361,9 @@ void main() {
       test('passes id and source name to dataSource', () async {
         dataSource.detailResponse = _okDetailResponse();
 
-        await repo.fetchDetail('med-42', MedicineSearchSource.drugbank);
+        await expectTaskRight(
+          repo.fetchDetail('med-42', MedicineSearchSource.drugbank),
+        );
 
         expect(dataSource.lastDetailId, 'med-42');
         expect(dataSource.lastDetailSource, 'drugbank');
@@ -280,7 +374,9 @@ void main() {
           subtitle: 'Single line subtitle',
         );
 
-        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
+        final result = await expectTaskRight(
+          repo.fetchDetail('med-1', MedicineSearchSource.cn),
+        );
 
         expect(result, isNotNull);
         expect(result!.conditions, hasLength(1));
@@ -292,10 +388,60 @@ void main() {
           subtitle: 'Line 1\n\nLine 2',
         );
 
-        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
+        final result = await expectTaskRight(
+          repo.fetchDetail('med-1', MedicineSearchSource.cn),
+        );
 
         expect(result, isNotNull);
         expect(result!.conditions, hasLength(3));
+      });
+    });
+
+    // ─── fetchDetail failure branches ────────────────────────────────
+    group('fetchDetail failure branches', () {
+      test('404 Problem Details is a Left, not a swallowed null', () async {
+        dataSource.detailError = _problemDetails404(code: 'MEDICINE_NOT_FOUND');
+
+        final failure = await expectTaskLeft(
+          repo.fetchDetail('med-missing', MedicineSearchSource.cn),
+        );
+
+        expect(failure.code, 'MEDICINE_NOT_FOUND');
+        expect(failure.statusCode, 404);
+        expect(failure.kind, LucentFailureKind.business);
+      });
+
+      test('network timeout maps to a network connectivity Left', () async {
+        dataSource.detailError = _connectionTimeout();
+
+        final failure = await expectTaskLeft(
+          repo.fetchDetail('med-1', MedicineSearchSource.cn),
+        );
+
+        expect(failure.isNetworkConnectivityError, isTrue);
+        expect(failure.kind, LucentFailureKind.network);
+      });
+
+      test(
+        'non-Problem Details error body propagates FormatException from run()',
+        () async {
+          dataSource.detailError = _nonProblemBody400();
+
+          await expectLater(
+            repo.fetchDetail('med-1', MedicineSearchSource.cn).run(),
+            throwsA(isA<FormatException>()),
+          );
+        },
+      );
+
+      test('plain unexpected exception maps to a Left(unknown)', () async {
+        dataSource.detailError = Exception('unexpected');
+
+        final failure = await expectTaskLeft(
+          repo.fetchDetail('med-1', MedicineSearchSource.cn),
+        );
+
+        expect(failure.kind, LucentFailureKind.unknown);
       });
     });
   });

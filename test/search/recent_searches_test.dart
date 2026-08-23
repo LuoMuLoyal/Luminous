@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
@@ -162,13 +164,13 @@ class _MockMedicineSearchRepository implements MedicineSearchRepository {
   const _MockMedicineSearchRepository();
 
   @override
-  Future<List<MedicineSearchResult>> search({
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
     required String query,
     required MedicineSearchSource source,
     int page = 1,
     int pageSize = 20,
-  }) async {
-    return const [
+  }) {
+    return TaskEither.right(const [
       MedicineSearchResult(
         id: '__mock_cn_ibuprofen__',
         source: MedicineSearchSource.cn,
@@ -178,18 +180,20 @@ class _MockMedicineSearchRepository implements MedicineSearchRepository {
         tags: <String>['示例标签'],
         matchType: MedicineSearchMatchType.ingredient,
       ),
-    ];
+    ]);
   }
 
   @override
-  Future<MedicineSearchSafetyPreview?> fetchDetail(
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
     String id,
     MedicineSearchSource source,
-  ) async {
-    return const MedicineSearchSafetyPreview(
-      title: '[DEMO] Ibuprofen',
-      conditions: [],
-      checklist: [],
+  ) {
+    return TaskEither.right(
+      const MedicineSearchSafetyPreview(
+        title: '[DEMO] Ibuprofen',
+        conditions: [],
+        checklist: [],
+      ),
     );
   }
 }
