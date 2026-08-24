@@ -13,7 +13,6 @@ import 'package:luminous/features/settings/presentation/pages/help.dart';
 import 'package:luminous/features/settings/presentation/pages/language.dart';
 import 'package:luminous/features/settings/presentation/pages/notification.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
-import 'package:luminous/features/settings/presentation/pages/security_pin.dart';
 import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/theme.dart';
 
@@ -41,7 +40,6 @@ part 'routes.g.dart';
     TypedGoRoute<SettingsHelpRoute>(path: 'help'),
     TypedGoRoute<SettingsAboutRoute>(path: 'about'),
     TypedGoRoute<SettingsDataStorageRoute>(path: 'data-storage'),
-    TypedGoRoute<SettingsSecurityPinRoute>(path: 'security-pin'),
   ],
 )
 class SettingsRoute extends GoRouteData with $SettingsRoute {
@@ -187,19 +185,6 @@ class SettingsDataStorageRoute extends GoRouteData
     return slidePage(
       key: state.pageKey,
       child: const DataStorageSettingsPage(),
-    );
-  }
-}
-
-class SettingsSecurityPinRoute extends GoRouteData
-    with $SettingsSecurityPinRoute {
-  const SettingsSecurityPinRoute();
-
-  @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(
-      key: state.pageKey,
-      child: const SecurityPinSettingsPage(),
     );
   }
 }

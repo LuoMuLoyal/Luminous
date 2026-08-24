@@ -5,7 +5,6 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/network/security_elevation_token_holder.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 
 import '../helpers/test_helpers.dart';
@@ -20,9 +19,6 @@ void main() {
     final c = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-        securityElevationTokenHolderProvider.overrideWithValue(
-          SecurityElevationTokenHolder(),
-        ),
         lucentClientProvider.overrideWithValue(
           LucentClient(_FakeLucentApi(dataExportApi: fake)),
         ),

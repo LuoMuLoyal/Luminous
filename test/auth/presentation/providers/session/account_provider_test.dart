@@ -217,29 +217,6 @@ class _PasswordNotSetRemote extends _AccountFakeRemote {
   }
 }
 
-class _ElevationTokenInvalidRemote extends _AccountFakeRemote {
-  @override
-  TaskEither<LucentFailure, AuthUser> changeEmail({
-    required String newEmail,
-    required String code,
-    required String password,
-    required AuthUser currentUser,
-  }) {
-    return TaskEither.tryCatch(() async {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/change-email'),
-        type: DioExceptionType.badResponse,
-        response: problemResponse(
-          path: '/change-email',
-          statusCode: 403,
-          code: 'AUTH_ELEVATION_TOKEN_INVALID',
-          detail: 'elevation_token_invalid',
-        ),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-}
-
 class _ForbiddenBusinessRemote extends _AccountFakeRemote {
   @override
   TaskEither<LucentFailure, AuthUser> unlinkIdentity({
@@ -429,7 +406,7 @@ void main() {
     });
 
     test(
-      'does not classify an ordinary forbidden business error as PIN failure',
+      'does not classify an ordinary forbidden business error as elevation failure',
       () async {
         final remote = _ForbiddenBusinessRemote();
         final container = ProviderContainer(
@@ -447,10 +424,6 @@ void main() {
             .unlinkIdentity(identityId: 'id-1', password: 'current-password');
 
         expect(result, isFalse);
-        expect(
-          container.read(authAccountProvider).requiresSecurityElevation,
-          isFalse,
-        );
       },
     );
   });
@@ -558,40 +531,6 @@ void main() {
         expect(
           container.read(authAccountProvider).errorCode,
           'AUTH_PASSWORD_NOT_SET',
-        );
-      },
-    );
-
-    test(
-      'records backend error code for elevation-token failures without retrying PIN elevation',
-      () async {
-        final remote = _ElevationTokenInvalidRemote();
-        final container = ProviderContainer(
-          overrides: [
-            authRepositoryProvider.overrideWithValue(remote),
-            authSessionProvider.overrideWith(
-              () => _SignedInAuthSessionNotifier(),
-            ),
-          ],
-        );
-        addTearDown(container.dispose);
-
-        final result = await container
-            .read(authAccountProvider.notifier)
-            .changeEmail(
-              newEmail: 'expired@example.com',
-              code: '123456',
-              password: 'current-password',
-            );
-
-        expect(result, isFalse);
-        expect(
-          container.read(authAccountProvider).errorCode,
-          'AUTH_ELEVATION_TOKEN_INVALID',
-        );
-        expect(
-          container.read(authAccountProvider).requiresSecurityElevation,
-          isFalse,
         );
       },
     );

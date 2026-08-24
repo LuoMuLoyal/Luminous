@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-22
+updated: 2026-08-24
 ---
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-22 (响应契约硬切完成；P1-2 B1 通知偏好与每周洞察合同)
+Last updated: 2026-08-24 (Task 9 删除 Security PIN / elevation 合同；其余契约保持不变)
 
 ## 基础
 
@@ -88,4 +88,5 @@ Last updated: 2026-08-22 (响应契约硬切完成；P1-2 B1 通知偏好与每�
 - **产品事件漏斗（Task 9/10 合同同步）**：`GET /api/v1/user/product-events/funnel`（admin-only）新增 `FunnelResponseDto`/`FunnelDailyCountsDto`/`FunnelOptionalCountsDto`/`FunnelTotalsDto`/`FunnelWindowDto`；bootstrap `_productEventsModels` 已补全这 5 个模型，生成客户端含 `productEventsControllerGetFunnelV1` 方法（客户端不消费，仅合同完整性）。
 - **就诊摘要公开分享响应**：`GET /user/reports/clinic-summary/shared/{token}` 与 preview/share 的目标成功响应直接返回资源 DTO；迁移前实现存在旧响应形状与生成 DTO 不一致的历史绕行，契约迁移时统一以 OpenAPI 资源 schema 重新生成客户端并移除解包逻辑；四个 section 键合同已改可选，未选键反序列化为 null，占位补齐已删除。
 
-- **历史响应 DTO 形状修复(2026-08-15)**：迁移前的 `NotificationListResponseDto`、`UnreadCountResponseDto`、`ClinicSummaryResponseDto`(新增)、`ClinicSummaryShareResponseDto`、`FunnelResponseDto`、`SecurityPinElevationResponseDto` 曾缺少统一响应体的 `data` 层，导致前端解析失败并触发 Riverpod 自动重试。该条仅记录历史生成物修复；目标契约以 endpoint 资源 schema 为准。
+- **历史响应 DTO 形状修复(2026-08-15)**：迁移前的 `NotificationListResponseDto`、`UnreadCountResponseDto`、`ClinicSummaryResponseDto`(新增)、`ClinicSummaryShareResponseDto`、`FunnelResponseDto` 曾缺少统一响应体的 `data` 层，导致前端解析失败并触发 Riverpod 自动重试。`SecurityPinElevationResponseDto` 已随 Task 9 合同删除被移除。该条仅记录历史生成物修复；目标契约以 endpoint 资源 schema 为准。
+- **Task 9 (2026-08-24) Security PIN / elevation 合同删除**：Lucent 已移除安全 PIN 启用/修改/校验/禁用端点、安全提升 token 流程以及用户设置中的 `securityPin` 字段。Luminous 生成客户端同步删除对应方法与模型；敏感操作统一使用密码再认证（Task 8）。

@@ -74,29 +74,6 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.userSettings);
   }
 
-  // -- Security PIN --
-
-  Future<void> enableSecurityPin(String pin) async {
-    final repo = ref.read(userSettingsRepositoryProvider);
-    final result = await repo.enableSecurityPin(pin).run();
-    final updated = result.fold((failure) => throw failure, (value) => value);
-    state = AsyncData(updated);
-  }
-
-  Future<void> changeSecurityPin(String oldPin, String newPin) async {
-    final repo = ref.read(userSettingsRepositoryProvider);
-    final result = await repo.changeSecurityPin(oldPin, newPin).run();
-    final updated = result.fold((failure) => throw failure, (value) => value);
-    state = AsyncData(updated);
-  }
-
-  Future<void> disableSecurityPin(String pin) async {
-    final repo = ref.read(userSettingsRepositoryProvider);
-    final result = await repo.disableSecurityPin(pin).run();
-    final updated = result.fold((failure) => throw failure, (value) => value);
-    state = AsyncData(updated);
-  }
-
   Future<void> _patch({
     bool? aiSummariesEnabled,
     bool? dataSharingConsent,

@@ -67,19 +67,6 @@ class SettingsPage extends ConsumerWidget {
           onTap: () => pushAuthRequiredRoute(context, Routes.account),
         ),
         SettingsNavigationTile(
-          tileKey: const Key('settings-row-security-pin'),
-          icon: SemanticIcons.statusBlocked,
-          title: l10n.settingsSecurityPinTitle,
-          subtitle: l10n.settingsSecurityPinSubtitle,
-          onTap: () {
-            if (!signedIn) {
-              unawaited(pushAuthRequiredRoute(context, Routes.settings));
-              return;
-            }
-            unawaited(context.push(Routes.settingsSecurityPin));
-          },
-        ),
-        SettingsNavigationTile(
           tileKey: const Key('settings-row-health-profile'),
           icon: SemanticIcons.profileCondition,
           title: l10n.settingsHealthProfileTitle,

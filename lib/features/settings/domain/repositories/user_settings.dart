@@ -26,16 +26,4 @@ abstract interface class UserSettingsRepository {
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
   });
-
-  /// Enables the security PIN.
-  TaskEither<LucentFailure, UserSettings> enableSecurityPin(String pin);
-
-  /// Changes the security PIN.
-  TaskEither<LucentFailure, UserSettings> changeSecurityPin(
-    String oldPin,
-    String newPin,
-  );
-
-  /// Disables the security PIN.
-  TaskEither<LucentFailure, UserSettings> disableSecurityPin(String pin);
 }

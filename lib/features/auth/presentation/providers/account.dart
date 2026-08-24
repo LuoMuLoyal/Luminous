@@ -28,7 +28,6 @@ abstract class AuthAccountState with _$AuthAccountState {
     String? errorCode,
     String? successMessage,
     int? lastCooldownSeconds,
-    @Default(false) bool requiresSecurityElevation,
   }) = _AuthAccountState;
 }
 
@@ -58,7 +57,6 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       errorCode: null,
       successMessage: null,
       lastCooldownSeconds: null,
-      requiresSecurityElevation: false,
     );
     final result = await ref
         .read(authRepositoryProvider)
@@ -79,7 +77,6 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       errorMessage: failure.message,
       errorCode: failure.code,
       successMessage: null,
-      requiresSecurityElevation: false,
     );
     return false;
   }
@@ -133,7 +130,6 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
         errorMessage: 'Not signed in.',
         errorCode: null,
         successMessage: null,
-        requiresSecurityElevation: false,
       );
       return false;
     }
@@ -203,7 +199,6 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       isSubmitting: true,
       errorMessage: null,
       successMessage: null,
-      requiresSecurityElevation: false,
     );
 
     final wechat = ref.read(wechatOAuthServiceProvider);
@@ -308,7 +303,6 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       errorMessage: null,
       errorCode: null,
       successMessage: null,
-      requiresSecurityElevation: false,
     );
     try {
       await action();
@@ -324,35 +318,14 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
 
   bool _fail(Object error) {
     final apiError = LucentErrorMapper.fromObject(error);
-    // Task 8: the backend no longer issues security elevation tokens, so
-    // do not route authentication/403 failures through the PIN elevation retry
-    // path. The old elevation code is kept physically for Task 9 cleanup.
     state = state.copyWith(
       isSubmitting: false,
       isSendingCode: false,
       errorMessage: apiError.message,
       errorCode: apiError.code,
       successMessage: null,
-      requiresSecurityElevation: false,
     );
     return false;
-  }
-
-  /// Retained from the Security PIN elevation flow. With Task 8 the backend
-  /// requires password re-authentication instead of elevation tokens, so this
-  /// always returns false until Task 9 removes the remaining PIN code.
-  // ignore: unused_element
-  bool _isSecurityElevationFailure(LucentFailure error) {
-    if (error.statusCode != 403) {
-      return false;
-    }
-
-    final message = error.message.trim().toLowerCase();
-    // Match the precise target error detail phrases. Avoid broad substring
-    // matches like 'elevation token', which could also match another 403.
-    return message.contains('elevation_token_invalid') ||
-        message.contains('安全验证令牌') ||
-        message.contains('安全提升令牌');
   }
 
   WechatIdentityLinkResult? _failWithResult(Object error) {

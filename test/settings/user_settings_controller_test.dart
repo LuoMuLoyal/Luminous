@@ -569,59 +569,6 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     }
     return _response(patchResponse);
   }
-
-  @override
-  Future<Response<UserSettingsResponseDto>>
-  userSettingsControllerEnableSecurityPinV1({
-    required EnableSecurityPinDto enableSecurityPinDto,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async => _response(_defaultResponse());
-
-  @override
-  Future<Response<SecurityPinElevationResponseDto>>
-  userSettingsControllerVerifySecurityPinV1({
-    required VerifySecurityPinDto verifySecurityPinDto,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async => _response(
-    SecurityPinElevationResponseDto(
-      elevationToken: 'token',
-      expiresAt: '2026-06-12T01:00:00.000Z',
-    ),
-  );
-
-  @override
-  Future<Response<UserSettingsResponseDto>>
-  userSettingsControllerChangeSecurityPinV1({
-    required ChangeSecurityPinDto changeSecurityPinDto,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async => _response(_defaultResponse());
-
-  @override
-  Future<Response<UserSettingsResponseDto>>
-  userSettingsControllerDisableSecurityPinV1({
-    required DisableSecurityPinDto disableSecurityPinDto,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async => _response(_defaultResponse());
 }
 
 class _FakeLucentApi extends LucentApi {

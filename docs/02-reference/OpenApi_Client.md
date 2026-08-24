@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-22
+updated: 2026-08-24
 ---
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-23
+Last updated: 2026-08-24
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -78,6 +78,10 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 - Legacy user-device registration is no longer part of the Lucent contract. Push identity is
   maintained by the JPush SDK through the authenticated user's UUID alias, so the generated
   client and `LucentDioClient` intentionally expose no `UserDevicesApi` or device-registration DTOs.
+- Task 9 (2026-08-24): Lucent removed the Security PIN / elevation endpoints and the
+  `securityPin` field from user settings. The generated client no longer contains the PIN enable /
+  change / verify / disable methods or the `SecurityPinElevationResponseDto` model; Luminous now
+  relies solely on password re-authentication for sensitive operations.
 
 ## Usage Rules
 

@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-21
+updated: 2026-08-24
 ---
 
 # Routing (GoRouter)
 
-Last updated: 2026-08-21
+Last updated: 2026-08-24
 
 本文件是 [[architecture]] 拆分后的子文档。
 
@@ -56,7 +56,7 @@ lib/app/
 ├── router.dart                         # Main entry: shell branches + feature route spread
 └── router/
     ├── router_helpers.dart             # fadePage / slidePage / sidePanelPage transitions
-    ├── router_settings.dart            # /settings + 8 sub-routes
+    ├── router_settings.dart            # /settings + 7 sub-routes
     ├── router_auth.dart                # /login ×3 + /forgot-password + /register
     ├── router_account.dart             # /account ×3
     ├── router_record.dart              # /record/create + /record/:id + /record/:id/edit
@@ -94,6 +94,9 @@ class AppRoutes {
   `AppRoutes.home`.
 - Dead routes must be removed from `AppRoutes` immediately — there is no "placeholder"
   route constant. `medicineReminders` was removed because it had no corresponding page.
+- Task 9 (2026-08-24): removed the `/settings/security-pin` route and its `SettingsSecurityPinRoute`
+  typed route class; the Security PIN / elevation flow is gone from both the settings branch
+  and the main router.
 
 ### Public Preview Routes
 

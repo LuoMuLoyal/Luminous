@@ -56,23 +56,6 @@ class MineAccountSecuritySection extends ConsumerWidget {
               suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => pushAuthRequiredRoute(context, Routes.account),
             ),
-            FTile(
-              key: const Key('mine-security-pin-tile'),
-              prefix: Icon(
-                SemanticIcons.statusBlocked,
-                color: colors.primary,
-                size: Spacing.level5,
-              ),
-              title: Text(l10n.settingsSecurityPinTitle),
-              subtitle: Text(
-                l10n.settingsSecurityPinSubtitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              suffix: const Icon(SemanticIcons.actionNext),
-              onPress: () =>
-                  pushAuthRequiredRoute(context, Routes.settingsSecurityPin),
-            ),
             if (Platform.isIOS || Platform.isAndroid)
               FTile(
                 key: const Key('mine-health-sync-tile'),

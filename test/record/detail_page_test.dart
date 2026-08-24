@@ -230,7 +230,6 @@ class _FakeUserSettingsRepository implements UserSettingsRepository {
           sleepRecords: false,
           currentMedicines: false,
         ),
-        securityPin: const SecurityPinSettings(enabled: false),
       ),
     );
   }
@@ -244,20 +243,6 @@ class _FakeUserSettingsRepository implements UserSettingsRepository {
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
   }) => getSettings();
-
-  @override
-  TaskEither<LucentFailure, UserSettings> enableSecurityPin(String pin) =>
-      getSettings();
-
-  @override
-  TaskEither<LucentFailure, UserSettings> changeSecurityPin(
-    String oldPin,
-    String newPin,
-  ) => getSettings();
-
-  @override
-  TaskEither<LucentFailure, UserSettings> disableSecurityPin(String pin) =>
-      getSettings();
 }
 
 void main() {

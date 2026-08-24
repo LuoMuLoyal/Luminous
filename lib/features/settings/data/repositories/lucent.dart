@@ -71,48 +71,6 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
-  @override
-  TaskEither<LucentFailure, UserSettings> enableSecurityPin(String pin) {
-    return TaskEither.tryCatch(() async {
-      final response = await api.userSettingsControllerEnableSecurityPinV1(
-        enableSecurityPinDto: EnableSecurityPinDto(pin: pin),
-      );
-      return _mapSettings(
-        _requireData(response.data, operation: 'enableSecurityPin'),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-
-  @override
-  TaskEither<LucentFailure, UserSettings> changeSecurityPin(
-    String oldPin,
-    String newPin,
-  ) {
-    return TaskEither.tryCatch(() async {
-      final response = await api.userSettingsControllerChangeSecurityPinV1(
-        changeSecurityPinDto: ChangeSecurityPinDto(
-          oldPin: oldPin,
-          newPin: newPin,
-        ),
-      );
-      return _mapSettings(
-        _requireData(response.data, operation: 'changeSecurityPin'),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-
-  @override
-  TaskEither<LucentFailure, UserSettings> disableSecurityPin(String pin) {
-    return TaskEither.tryCatch(() async {
-      final response = await api.userSettingsControllerDisableSecurityPinV1(
-        disableSecurityPinDto: DisableSecurityPinDto(pin: pin),
-      );
-      return _mapSettings(
-        _requireData(response.data, operation: 'disableSecurityPin'),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-
   /// Extracts a non-null generated-client payload, throwing
   /// [LucentFailure.network] (emptyResponse) when the success body is absent
   /// (auth `_requireBody` / medicine `dose_log_remote` precedent).
@@ -141,10 +99,6 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
         currentMedicines: dto.assistantContext.currentMedicines,
       ),
       updatedAt: dto.updatedAt,
-      // Task 8: the backend replaced the Security PIN object with the
-      // passwordReauthenticationRequired flag. The PIN entity is kept at
-      // `enabled: false` to avoid cascading deletions until Task 9.
-      securityPin: const SecurityPinSettings(enabled: false),
       passwordReauthenticationRequired: dto.passwordReauthenticationRequired,
     );
   }

@@ -17,7 +17,6 @@ import 'package:lucent_api/src/model/assistant_input_message_dto.dart';
 import 'package:lucent_api/src/model/assistant_tool_capability_dto.dart';
 import 'package:lucent_api/src/model/change_email_dto.dart';
 import 'package:lucent_api/src/model/change_password_dto.dart';
-import 'package:lucent_api/src/model/change_security_pin_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_allergy_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_condition_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
@@ -62,14 +61,12 @@ import 'package:lucent_api/src/model/daily_record_summary_response_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_data_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_response_dto.dart';
 import 'package:lucent_api/src/model/delete_account_dto.dart';
-import 'package:lucent_api/src/model/disable_security_pin_dto.dart';
 import 'package:lucent_api/src/model/dose_log_item_dto.dart';
 import 'package:lucent_api/src/model/dose_log_list_response_dto.dart';
 import 'package:lucent_api/src/model/dose_log_response_dto.dart';
 import 'package:lucent_api/src/model/drugbank_drug_interaction_dto.dart';
 import 'package:lucent_api/src/model/drugbank_medicine_detail_dto.dart';
 import 'package:lucent_api/src/model/emergency_contact_dto.dart';
-import 'package:lucent_api/src/model/enable_security_pin_dto.dart';
 import 'package:lucent_api/src/model/end_health_event_dto.dart';
 import 'package:lucent_api/src/model/environment_snapshot_response_dto.dart';
 import 'package:lucent_api/src/model/event_review_check_in_coverage_dto.dart';
@@ -174,7 +171,6 @@ import 'package:lucent_api/src/model/report_trend_dto.dart';
 import 'package:lucent_api/src/model/reset_password_dto.dart';
 import 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
-import 'package:lucent_api/src/model/security_pin_elevation_response_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_api/src/model/set_password_dto.dart';
@@ -239,7 +235,6 @@ import 'package:lucent_api/src/model/user_settings_response_dto.dart';
 import 'package:lucent_api/src/model/uv_indicator_dto.dart';
 import 'package:lucent_api/src/model/verify_email_dto.dart';
 import 'package:lucent_api/src/model/verify_email_response_dto.dart';
-import 'package:lucent_api/src/model/verify_security_pin_dto.dart';
 import 'package:lucent_api/src/model/weibo_o_auth_authorize_dto.dart';
 import 'package:lucent_api/src/model/weibo_o_auth_callback_dto.dart';
 
@@ -338,9 +333,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ChangePasswordDto':
       return ChangePasswordDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ChangeSecurityPinDto':
-      return ChangeSecurityPinDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ClinicSummaryAllergyDto':
       return ClinicSummaryAllergyDto.fromJson(value as Map<String, dynamic>)
@@ -507,9 +499,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'DeleteAccountDto':
       return DeleteAccountDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'DisableSecurityPinDto':
-      return DisableSecurityPinDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'DoseLogItemDto':
       return DoseLogItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -528,9 +517,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'EmergencyContactDto':
       return EmergencyContactDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'EnableSecurityPinDto':
-      return EnableSecurityPinDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'EndHealthEventDto':
       return EndHealthEventDto.fromJson(value as Map<String, dynamic>)
@@ -898,11 +884,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'RunRiskCheckDto':
       return RunRiskCheckDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'SecurityPinElevationResponseDto':
-      return SecurityPinElevationResponseDto.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
     case 'SendVerificationCodeDto':
       return SendVerificationCodeDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1151,9 +1132,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'VerifyEmailResponseDto':
       return VerifyEmailResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'VerifySecurityPinDto':
-      return VerifySecurityPinDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'WeiboOAuthAuthorizeDto':
       return WeiboOAuthAuthorizeDto.fromJson(value as Map<String, dynamic>)

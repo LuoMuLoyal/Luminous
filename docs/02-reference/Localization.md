@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-23
+updated: 2026-08-24
 ---
 
 # Flutter Localization
 
-Last updated: 2026-08-23 (Task 7：auth 片段新增 Better Auth 邮件链接相关文案，包括重置密码页副标题、重置链接发送成功提示、邮箱验证链接提示。)
+Last updated: 2026-08-24 (Task 9：删除 Security PIN / elevation 相关 l10n 键，包括 `authSecurityElevationRequiredToast` 与全部 `settingsSecurityPin*`、`securityElevationDialog*` 键。)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.

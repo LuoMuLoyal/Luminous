@@ -84,7 +84,6 @@ class Routes {
   static const settingsHelp = '/settings/help';
   static const settingsAbout = '/settings/about';
   static const settingsDataStorage = '/settings/data-storage';
-  static const settingsSecurityPin = '/settings/security-pin';
   static const settingsFeatureFlags = '/settings/more/feature-flags';
 
   static const recordCreate = '/record/create';

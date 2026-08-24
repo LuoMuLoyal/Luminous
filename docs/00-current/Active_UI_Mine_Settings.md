@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-21
+updated: 2026-08-24
 ---
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间源 + 失败检测精确匹配 + 会话实体日期注释 + 通知协调器 DND/ID 断言 + scoped preferences 注释；HTTP 403 安全提升失败现在经 LucentFailure 归一化）
+Last updated: 2026-08-24（Task 9 清理：删除 Security PIN / elevation 代码、页面、路由、l10n 与测试；敏感操作统一使用密码再认证。）
 
 ## Mine 根页结构
 
@@ -20,7 +20,7 @@ Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间
 - 健康档案入口使用 Forui `FTileGroup + FTile`，状态通过明确文字表达。
 - `通知与提醒` 分组只承接状态摘要与跳转（提醒设置/免打扰/通知收件箱），收件箱未读数来自真实后端。
 - `AI 与隐私` 分组：`AI 设置` → `/settings/ai`，`报告分享` → `/settings`。
-- `账号与安全` 分组：`账号与安全` → `/account`，`安全 PIN 码` → `/settings/security-pin`。
+- `账号与安全` 分组：`账号与安全` → `/account`。
 - Mine 主卡文案区分 `preview / 缺失关键信息 / 基本就绪` 三种 readiness 语义。
 - Hero 描述文案动态化：根据 `_deriveGaps` 返回的缺失字段类型生成针对性描述（单缺口显示具体说明，多缺口显示汇总）。
 - 缺口检测 5 项：`basicInfo` / `sexAtBirth` / `weight` / `allergy` / `medicine`。`emergencyContact` 为不排期字段（标注延后，填了无业务用途），不再作为 gap 引导用户填写。
@@ -89,7 +89,6 @@ Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间
 - **开关 tile 统一**：删除 `_SettingsSwitchTile`（开关不可键盘聚焦），"隐私报告"行改用标准 `FTile` + `suffix: FSwitch` 模式。
 - **健康档案入口移位**：从"通用"组移至"账号与安全"组，返回栈不再混乱。
 - **通知页权限永久拒绝**：`permanentlyDenied` 态直接调用 `controller.openSystemSettings()` 跳转系统设置，权限卡片新增"去系统设置开启"CTA 文案。
-- **安全 PIN 输入优化**：新增"再次输入确认"步骤，专用 hint（"6 位数字"/"再次输入相同的 PIN 码"），所有输入框添加 `FilteringTextInputFormatter.digitsOnly`。
 - **主题色系预览**：`theme.dart` 新增 `_ThemeFamilyDot` 组件，10 种色系行 prefix 显示对应颜色圆点。
 - **无障碍字号预览**：`accessibility.dart` 字号选项 label 按对应 `scaleFactor` 缩放渲染。
 - **数据导出 loading 优化**：idle 状态使用专用文案"尚未申请"；loading 态 spinner 集成到按钮内部并附带文案。
@@ -139,16 +138,12 @@ Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间
 - **列表懒加载**（2026-07-19 P1-3）：通知列表从 `ListView(shrinkWrap: true)` + for 循环全量渲染改为 `ListView.builder` + 拍平 entries 懒加载。新增 `sealed class _ListEntry`（`_HeaderEntry`/`_ItemEntry`/`_LoadMoreEntry`），`_buildEntries()` 将分组结果拍平为单一列表，`itemBuilder` 用 `switch` 模式匹配按类型渲染，只构建可见区域的行。
 - **列表骨架屏宽度**（2026-07-26）：`loading` 态使用 `StateSkeletonView` + 满宽 `StateSkeletonBlock(height: 64)`，修复原先 96px fallback 的窄骨架条。
 
-## 安全 PIN 码
-
-- 启用 PIN 码需二次输入确认（`confirmPin` 参数校验两次输入一致）。
-- PIN 码替代 2FA / TOTP 双因素认证。
-
 ## 账号与安全
 
 - 退出登录 tile（`ConsumerWidget` + `authSessionProvider`），未登录时使用 `primary` 色而非 `error` 色（登录引导不被渲染成危险操作）。
 - 退出登录接入 `showDangerConfirmationDialog` 二次确认。
-- Task 8 起敏感操作改用账号密码再认证：修改邮箱页表单内嵌「当前密码」字段；解绑三方身份、注销账号、数据导出在动作前调用 `requestPasswordForSensitiveAction` 弹出密码确认弹窗，确认后把密码随请求提交后端；`showSecurityElevationDialog`、`SecurityElevationController`、`SecurityElevationInterceptor` 与 elevation token 机制保留但不再由新流程消费，Task 9 统一删除。
+- Task 8 起敏感操作改用账号密码再认证：修改邮箱页表单内嵌「当前密码」字段；解绑三方身份、注销账号、数据导出在动作前调用 `requestPasswordForSensitiveAction` 弹出密码确认弹窗，确认后把密码随请求提交后端。
+- Task 9 彻底删除 Security PIN 相关代码：`SecurityPinSettings` 实体、`/settings/security-pin` 路由与页面、`SecurityElevationController`、`SecurityElevationTokenHolder`、`SecurityElevationInterceptor`、`security_elevation_interceptor.dart`、PIN 相关 l10n 键及对应测试。
 - 纯页面入口 preflight 是兼容假设：`AuthAccountNotifier` 与认证领域接口保持 UI 无依赖，由页面在确认/表单校验后决定是否发起敏感操作；取消密码确认时不调用后端。
 - 敏感操作收到 `AUTH_PASSWORD_INVALID` / `AUTH_PASSWORD_NOT_SET` 等明确业务码时，`AuthAccountState.errorMessage` 提供本地化提示，页面使用「密码错误」或「请先设置本地密码」引导文案。
 - P1-1 复审的两个 follow-up 已收口：安全 PIN 状态未知时等待设置 future，token 与 dialog 统一使用 `now.isBefore(expiresAt)`，并补充精确到期测试。
@@ -248,7 +243,6 @@ Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间
 ## 2026-07-20 P1 修复
 
 - **用药表单常用值选择器**：`current_medicine_edit.dart` 剂量和给药途径文本框下方新增 `_QuickSelectChip` 快速选择芯片（剂量 4 值 + 途径 4 值），点击直接填入。
-- **PIN 校验行内 error**：`security_pin.dart` 从 toast 改为行内 `error: Text(...)` 显示校验错误。6 个 `ValueNotifier<String?>` 管理各字段错误，`useEffect` 注册 controller listener 自动清除。
 - **帮助页重试 action**：`help.dart` 错误态新增 `actionLabel` + `onAction`（`ref.invalidate` 重载）。
 - **弹层勾选图标占位**：`advanced.dart` + `feature_flags.dart` 的 `suffix` 从条件 null 改为始终渲染 `SettingsSelectionIcon(selected: ...)`，消除选中/未选间布局跳变。
 
@@ -258,7 +252,7 @@ Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间
 - **无引用残留清理**：删除 `health_enum_l10n.dart` 中零引用的 `medicineSourceLabel` 函数；删除 `MineCopyKey.archiveRecordListTitle` 枚举值及 `copy.dart` 对应映射。
 - **SyncBanner 注释修正**：`skeleton_view.dart` 类文档注释从 `SyncBanner` 改为 `MineSyncFailedBanner`。
 - **免打扰 subtitle→details**：`notification.dart` 的 DnD tile 从 `subtitle:` 改为 `details:`，与同组其余 tile 一致。
-- **垂直 padding helper 统一到全部子页**：`dnd.dart`、`sleep_reminder.dart`、`ai.dart`、`accessibility.dart`、`advanced.dart`、`data_storage.dart`、`feature_flags.dart`、`security_pin.dart`、`theme.dart` 共 9 个子页的内联三元表达式替换为 `settingsPageVerticalPadding(context)` 共享函数。
+- **垂直 padding helper 统一到全部子页**：`dnd.dart`、`sleep_reminder.dart`、`ai.dart`、`accessibility.dart`、`advanced.dart`、`data_storage.dart`、`feature_flags.dart`、`theme.dart` 共 8 个子页的内联三元表达式替换为 `settingsPageVerticalPadding(context)` 共享函数。
 - **验证码冷却期禁用**：`change_email.dart` 的 `onSendCode` 在 `lastCooldownSeconds != null`（冷却中）时设为 `null`，防止冷却期间重复点击发送。
 - **助手 provider 硬编码文案清理**：`conversation.dart` 的 `sendError` 从硬编码中文改为 `null`；`LucentApiException` 消息从中文改为英文。
 

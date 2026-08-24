@@ -147,7 +147,6 @@
   "authIdentityUnlinkAction": "解绑",
   "authIdentityUnlinkDisabledAction": "保留",
   "authIdentityUnlinkSuccess": "身份已解绑。",
-  "authSecurityElevationRequiredToast": "请验证安全 PIN",
   "authSensitiveActionPasswordHint": "敏感操作（更换邮箱、解绑身份、导出数据、注销账号）需要输入账号密码确认。",
   "authSensitiveActionPasswordDialogTitle": "密码确认",
   "authSensitiveActionPasswordDialogMessage": "敏感操作需要输入账号密码进行确认。",

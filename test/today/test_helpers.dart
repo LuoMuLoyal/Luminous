@@ -97,7 +97,6 @@ UserSettings userSettings({required bool aiSummariesEnabled}) {
       currentMedicines: true,
     ),
     updatedAt: '2026-06-12T00:00:00.000Z',
-    securityPin: const SecurityPinSettings(enabled: false, lastChangedAt: null),
   );
 }
 

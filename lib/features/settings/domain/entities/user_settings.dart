@@ -20,16 +20,6 @@ class AssistantContextSettings {
   final bool currentMedicines;
 }
 
-/// Security PIN status (read model).
-class SecurityPinSettings {
-  const SecurityPinSettings({required this.enabled, this.lastChangedAt});
-
-  final bool enabled;
-
-  /// ISO-8601 timestamp of last PIN change, null if never set.
-  final String? lastChangedAt;
-}
-
 /// User privacy/AI settings (read model).
 class UserSettings {
   const UserSettings({
@@ -40,7 +30,6 @@ class UserSettings {
     required this.waterTargetCount,
     required this.assistantContext,
     this.updatedAt,
-    required this.securityPin,
     this.passwordReauthenticationRequired = true,
   });
 
@@ -64,13 +53,6 @@ class UserSettings {
 
   /// ISO-8601 timestamp of last update.
   final String? updatedAt;
-
-  /// Security PIN status.
-  ///
-  /// Retained for source compatibility while Task 9 removes PIN code; the
-  /// backend no longer returns this object, so live instances always report
-  /// `enabled: false`.
-  final SecurityPinSettings securityPin;
 
   /// Whether sensitive operations require account password re-authentication.
   final bool passwordReauthenticationRequired;

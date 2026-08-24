@@ -623,7 +623,6 @@ class _FakeUserSettingsController extends UserSettingsController {
         currentMedicines: false,
       ),
       updatedAt: '2026-06-28T00:00:00Z',
-      securityPin: SecurityPinSettings(enabled: false, lastChangedAt: null),
     );
   }
 
@@ -644,10 +643,6 @@ class _FakeUserSettingsController extends UserSettingsController {
           currentMedicines: false,
         ),
         updatedAt: '2026-06-28T00:00:00Z',
-        securityPin: const SecurityPinSettings(
-          enabled: false,
-          lastChangedAt: null,
-        ),
       ),
     );
   }

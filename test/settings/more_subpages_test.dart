@@ -3,21 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';
 import 'package:luminous/features/settings/presentation/pages/data_export.dart';
 import 'package:luminous/features/settings/presentation/pages/feature_flags.dart';
-import 'package:luminous/features/settings/presentation/pages/security_pin.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_forui_app.dart';
-import '../helpers/test_helpers.dart';
 
 // -- Stub controllers --------------------------------------------------
 
@@ -47,8 +44,6 @@ class _StubExportController extends DataExportController {
 }
 
 UserSettings _buildSettings({
-  bool pinEnabled = false,
-  String? lastChangedAt,
   bool aiSummaries = false,
   bool assistantEnabled = true,
   bool assistantMemory = false,
@@ -70,10 +65,6 @@ UserSettings _buildSettings({
       currentMedicines: currentMedicines,
     ),
     updatedAt: '2026-06-12T00:00:00.000Z',
-    securityPin: SecurityPinSettings(
-      enabled: pinEnabled,
-      lastChangedAt: lastChangedAt,
-    ),
   );
 }
 
@@ -147,100 +138,6 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
   }
-
-  // -- SecurityPinSettingsPage -----------------------------------------
-
-  group('SecurityPinSettingsPage', () {
-    testWidgets('renders page title', (tester) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await pumpPageWithSettings(
-        tester,
-        const SecurityPinSettingsPage(),
-        _buildSettings(),
-      );
-
-      expect(find.text(l10n.settingsSecurityPinTitle), findsOneWidget);
-    });
-
-    testWidgets('shows disabled status when PIN not enabled', (tester) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await pumpPageWithSettings(
-        tester,
-        const SecurityPinSettingsPage(),
-        _buildSettings(pinEnabled: false),
-      );
-
-      expect(find.text(l10n.settingsSecurityPinStatusDisabled), findsOneWidget);
-      expect(find.byIcon(SemanticIcons.statusBlocked), findsOneWidget);
-    });
-
-    testWidgets('shows enabled status when PIN is enabled', (tester) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await pumpPageWithSettings(
-        tester,
-        const SecurityPinSettingsPage(),
-        _buildSettings(
-          pinEnabled: true,
-          lastChangedAt: '2026-07-01T10:00:00.000Z',
-        ),
-      );
-
-      expect(find.text(l10n.settingsSecurityPinStatusEnabled), findsOneWidget);
-      expect(find.byIcon(SemanticIcons.safetySafe), findsOneWidget);
-    });
-
-    testWidgets('shows enable section when PIN disabled', (tester) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await pumpPageWithSettings(
-        tester,
-        const SecurityPinSettingsPage(),
-        _buildSettings(),
-      );
-
-      expect(find.text(l10n.settingsSecurityPinEnableSection), findsOneWidget);
-      expect(find.text(l10n.settingsSecurityPinEnableAction), findsOneWidget);
-    });
-
-    testWidgets('shows change and disable sections when PIN enabled', (
-      tester,
-    ) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await pumpPageWithSettings(
-        tester,
-        const SecurityPinSettingsPage(),
-        _buildSettings(pinEnabled: true, lastChangedAt: '2026-07-01'),
-      );
-
-      expect(find.text(l10n.settingsSecurityPinChangeSection), findsOneWidget);
-      expect(find.text(l10n.settingsSecurityPinDisableSection), findsOneWidget);
-      expect(find.text(l10n.settingsSecurityPinChangeAction), findsOneWidget);
-      expect(find.text(l10n.settingsSecurityPinDisableAction), findsOneWidget);
-    });
-
-    testWidgets('shows never changed label when lastChangedAt is null', (
-      tester,
-    ) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await pumpPageWithSettings(
-        tester,
-        const SecurityPinSettingsPage(),
-        _buildSettings(),
-      );
-
-      expect(find.text(l10n.settingsSecurityPinNeverChanged), findsOneWidget);
-    });
-
-    testWidgets('renders description text', (tester) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await pumpPageWithSettings(
-        tester,
-        const SecurityPinSettingsPage(),
-        _buildSettings(),
-      );
-
-      expect(find.text(l10n.settingsSecurityPinDescription), findsOneWidget);
-    });
-  });
 
   // -- FeatureFlagsSettingsPage ----------------------------------------
 
@@ -484,40 +381,6 @@ void main() {
       await pumpPageWithExport(tester, const DataExportPage(), null);
 
       expect(find.text(l10n.settingsExportRequestButton), findsOneWidget);
-    });
-
-    testWidgets('guides users to enable PIN before requesting an export', (
-      tester,
-    ) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-            userSettingsControllerProvider.overrideWith(
-              () => _StubSettingsController(_buildSettings()),
-            ),
-            dataExportControllerProvider.overrideWith(
-              () => _StubExportController(null),
-            ),
-          ],
-          child: const TestForuiApp(home: DataExportPage()),
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
-
-      await tester.tap(find.text(l10n.settingsExportRequestButton));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.text(l10n.settingsSecurityPinExportGuideTitle),
-        findsOneWidget,
-      );
-      expect(
-        find.text(l10n.settingsSecurityPinExportGuideAction),
-        findsOneWidget,
-      );
     });
 
     testWidgets('shows status row with label', (tester) async {

@@ -1080,7 +1080,6 @@ class _ReadyUserSettingsController extends UserSettingsController {
         currentMedicines: true,
       ),
       updatedAt: null,
-      securityPin: SecurityPinSettings(enabled: false, lastChangedAt: null),
     );
   }
 }
