@@ -31,6 +31,7 @@ import 'package:lucent_api/src/model/register_response_dto.dart';
 import 'package:lucent_api/src/model/reset_password_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
+import 'package:lucent_api/src/model/session_list_item_dto.dart';
 import 'package:lucent_api/src/model/verify_email_dto.dart';
 import 'package:lucent_api/src/model/verify_email_response_dto.dart';
 import 'package:lucent_api/src/model/weibo_o_auth_authorize_dto.dart';
@@ -1465,9 +1466,9 @@ class AuthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [List<SessionListItemDto>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> sessionControllerListSessionsV1({
+  Future<Response<List<SessionListItemDto>>> sessionControllerListSessionsV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1491,7 +1492,37 @@ class AuthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    List<SessionListItemDto>? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<List<SessionListItemDto>, SessionListItemDto>(
+              rawData,
+              'List<SessionListItemDto>',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<List<SessionListItemDto>>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// User logout

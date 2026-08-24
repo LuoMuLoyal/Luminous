@@ -47,7 +47,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 127 paths / 268 schemas.
+- Last known Lucent export: 123 paths / 264 schemas.
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
@@ -179,6 +179,12 @@ operations.
 
 - Lucent `pnpm export:openapi`(125 paths / 309 schemas)后执行 `dart run scripts/bootstrap_generated_sources.dart`:`AssistantApi` 新增 `assistantControllerRenameConversationV1`(PATCH,body `RenameConversationDto.title` ≤ 48 字符)与 `assistantControllerDeleteConversationV1`(DELETE,软删除);`AssistantConversationDataDto` / `AssistantConversationSummaryDto` 的 `status` 枚举新增 `deleted`。
 - 既有漂移:`today_analysis_api.dart` 的 recommendations 端点仅注释文案更新(get cold-start onboarding guide cards),无签名变化,与 F-2 无关。
+
+## 2026-08-24 Lucent Task 6 收口后 Luminous 客户端再同步
+
+- Lucent 收敛认证错误映射并清理 PIN/elevation 残留后重新导出 OpenAPI（123 paths / 264 schemas）。
+- `AuthApi.listSessionsV1` 的返回类型由裸 `List<SessionDto>` 修正为分页/列表包装 `List<SessionListItemDto>`；生成客户端新增 `SessionListItemDto`。
+- Security PIN / elevation 相关端点与方法已在生成客户端中移除；敏感操作统一使用密码重新认证。
 
 ## 历史记录：2026-08-14 Clinic summary preview/share 旧响应绕行
 

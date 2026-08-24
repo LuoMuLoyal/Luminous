@@ -228,6 +228,7 @@ export 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 export 'package:lucent_api/src/model/run_risk_check_dto.dart';
 export 'package:lucent_api/src/model/send_verification_code_dto.dart';
 export 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
+export 'package:lucent_api/src/model/session_list_item_dto.dart';
 export 'package:lucent_api/src/model/set_password_dto.dart';
 export 'package:lucent_api/src/model/sex_at_birth.dart';
 export 'package:lucent_api/src/model/sse_problem_details_dto.dart';

@@ -173,6 +173,7 @@ import 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
+import 'package:lucent_api/src/model/session_list_item_dto.dart';
 import 'package:lucent_api/src/model/set_password_dto.dart';
 import 'package:lucent_api/src/model/sse_problem_details_dto.dart';
 import 'package:lucent_api/src/model/stream_assistant_messages_dto.dart';
@@ -891,6 +892,9 @@ ReturnType deserialize<ReturnType, BaseType>(
       return SendVerificationCodeResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'SessionListItemDto':
+      return SessionListItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'SetPasswordDto':
       return SetPasswordDto.fromJson(value as Map<String, dynamic>)
