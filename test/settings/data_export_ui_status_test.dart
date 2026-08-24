@@ -204,7 +204,7 @@ void main() {
 
     test('toDto creates correct DTO', () {
       const input = DataExportRequestInput();
-      final dto = input.toDto();
+      final dto = input.toDto(password: 'export-password');
       expect(dto.kind, CreateDataExportRequestDtoKindEnum.hospital);
       expect(dto.format, CreateDataExportRequestDtoFormatEnum.pdf);
       expect(dto.range, CreateDataExportRequestDtoRangeEnum.last7Days);

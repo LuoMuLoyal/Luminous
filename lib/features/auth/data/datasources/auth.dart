@@ -487,13 +487,13 @@ class LucentAuthRepository implements AuthRepository {
 
   @override
   TaskEither<LucentFailure, void> changePassword({
-    required String oldPassword,
+    required String password,
     required String newPassword,
   }) {
     return TaskEither.tryCatch(() async {
       await _client.account.accountControllerChangePasswordV1(
         changePasswordDto: ChangePasswordDto(
-          oldPassword: oldPassword.trim(),
+          password: password.trim(),
           newPassword: newPassword.trim(),
         ),
       );
@@ -505,6 +505,7 @@ class LucentAuthRepository implements AuthRepository {
   TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
+    required String password,
     required AuthUser currentUser,
   }) {
     return TaskEither.tryCatch(() async {
@@ -512,6 +513,7 @@ class LucentAuthRepository implements AuthRepository {
         changeEmailDto: ChangeEmailDto(
           newEmail: newEmail.trim(),
           code: code.trim(),
+          password: password.trim(),
         ),
       );
       final body = _requireBody(response.data, 'changeEmail');
@@ -541,14 +543,38 @@ class LucentAuthRepository implements AuthRepository {
   @override
   TaskEither<LucentFailure, AuthUser> unlinkIdentity({
     required String identityId,
+    required String password,
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _client.account.accountControllerUnlinkIdentityV1(
         identityId: identityId,
+        unlinkIdentityDto: UnlinkIdentityDto(password: password.trim()),
       );
       return _authUserFromAccount(
         _requireBody(response.data, 'unlinkIdentity'),
       );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  @override
+  TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
+    required CreateDataExportRequestDtoKindEnum kind,
+    required CreateDataExportRequestDtoFormatEnum format,
+    required CreateDataExportRequestDtoRangeEnum range,
+    required String password,
+  }) {
+    return TaskEither.tryCatch(() async {
+      final response = await _client.dataExport
+          .dataExportControllerCreateRequestV1(
+            createDataExportRequestDto: CreateDataExportRequestDto(
+              kind: kind,
+              format: format,
+              range: range,
+              password: password.trim(),
+            ),
+          );
+      final body = _requireBody(response.data, 'requestDataExport');
+      return DataExportRequestDataDto.fromJson(body.toJson());
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 

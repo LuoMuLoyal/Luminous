@@ -20,6 +20,7 @@ import 'package:lucent_api/src/model/o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/o_auth_code_callback_dto.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/set_password_dto.dart';
+import 'package:lucent_api/src/model/unlink_identity_dto.dart';
 import 'package:lucent_api/src/model/update_account_dto.dart';
 
 class AccountApi {
@@ -624,6 +625,7 @@ class AccountApi {
   ///
   /// Parameters:
   /// * [identityId]
+  /// * [unlinkIdentityDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -635,6 +637,7 @@ class AccountApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AccountResponseDto>> accountControllerUnlinkIdentityV1({
     required String identityId,
+    required UnlinkIdentityDto unlinkIdentityDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -652,11 +655,26 @@ class AccountApi {
       method: r'DELETE',
       headers: <String, dynamic>{...?headers},
       extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
       validateStatus: validateStatus,
     );
 
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(unlinkIdentityDto);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
     final _response = await _dio.request<Object>(
       _path,
+      data: _bodyData,
       options: _options,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,

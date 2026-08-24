@@ -17,7 +17,13 @@ part 'change_email_dto.g.dart';
 )
 class ChangeEmailDto {
   /// Returns a new [ChangeEmailDto] instance.
-  ChangeEmailDto({required this.newEmail, required this.code});
+  ChangeEmailDto({
+    required this.newEmail,
+
+    required this.code,
+
+    required this.password,
+  });
 
   /// 新邮箱
   @JsonKey(name: r'newEmail', required: true, includeIfNull: false)
@@ -27,15 +33,20 @@ class ChangeEmailDto {
   @JsonKey(name: r'code', required: true, includeIfNull: false)
   final String code;
 
+  /// 当前密码（敏感操作再认证用）
+  @JsonKey(name: r'password', required: true, includeIfNull: false)
+  final String password;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ChangeEmailDto &&
           other.newEmail == newEmail &&
-          other.code == code;
+          other.code == code &&
+          other.password == password;
 
   @override
-  int get hashCode => newEmail.hashCode + code.hashCode;
+  int get hashCode => newEmail.hashCode + code.hashCode + password.hashCode;
 
   factory ChangeEmailDto.fromJson(Map<String, dynamic> json) =>
       _$ChangeEmailDtoFromJson(json);

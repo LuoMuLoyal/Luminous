@@ -8,7 +8,6 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -26,6 +25,7 @@ abstract class AuthAccountState with _$AuthAccountState {
     @Default(false) bool isSubmitting,
     @Default(false) bool isSendingCode,
     String? errorMessage,
+    String? errorCode,
     String? successMessage,
     int? lastCooldownSeconds,
     @Default(false) bool requiresSecurityElevation,
@@ -55,6 +55,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     state = state.copyWith(
       isSendingCode: true,
       errorMessage: null,
+      errorCode: null,
       successMessage: null,
       lastCooldownSeconds: null,
       requiresSecurityElevation: false,
@@ -70,18 +71,15 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }
 
   bool _failSendCode(LucentFailure failure) {
-    final requiresSecurityElevation = _isSecurityElevationFailure(failure);
-    if (requiresSecurityElevation) {
-      ref.read(securityElevationControllerProvider.notifier).clear();
-    }
     ref
         .read(talkerProvider)
         .error('AuthAccountNotifier.sendVerificationCode: failed: $failure');
     state = state.copyWith(
       isSendingCode: false,
       errorMessage: failure.message,
+      errorCode: failure.code,
       successMessage: null,
-      requiresSecurityElevation: requiresSecurityElevation,
+      requiresSecurityElevation: false,
     );
     return false;
   }
@@ -126,12 +124,14 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   Future<bool> changeEmail({
     required String newEmail,
     required String code,
+    required String password,
   }) async {
     final currentUser = ref.read(authSessionProvider).user;
     if (currentUser == null) {
       state = state.copyWith(
         isSubmitting: false,
         errorMessage: 'Not signed in.',
+        errorCode: null,
         successMessage: null,
         requiresSecurityElevation: false,
       );
@@ -145,6 +145,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
             .changeEmail(
               newEmail: newEmail,
               code: code,
+              password: password,
               currentUser: currentUser,
             ),
       );
@@ -153,14 +154,14 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }
 
   Future<bool> changePassword({
-    required String oldPassword,
+    required String password,
     required String newPassword,
   }) async {
     return _run(() async {
       await _resolve(
         ref
             .read(authRepositoryProvider)
-            .changePassword(oldPassword: oldPassword, newPassword: newPassword),
+            .changePassword(password: password, newPassword: newPassword),
       );
       ref.read(authSessionProvider.notifier).clearLocalSession();
     });
@@ -177,10 +178,15 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     });
   }
 
-  Future<bool> unlinkIdentity({required String identityId}) async {
+  Future<bool> unlinkIdentity({
+    required String identityId,
+    required String password,
+  }) async {
     return _run(() async {
       final user = await _resolve(
-        ref.read(authRepositoryProvider).unlinkIdentity(identityId: identityId),
+        ref
+            .read(authRepositoryProvider)
+            .unlinkIdentity(identityId: identityId, password: password),
       );
       ref.read(authSessionProvider.notifier).applyUser(user);
     });
@@ -300,6 +306,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     state = state.copyWith(
       isSubmitting: true,
       errorMessage: null,
+      errorCode: null,
       successMessage: null,
       requiresSecurityElevation: false,
     );
@@ -317,20 +324,24 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
 
   bool _fail(Object error) {
     final apiError = LucentErrorMapper.fromObject(error);
-    final requiresSecurityElevation = _isSecurityElevationFailure(apiError);
-    if (requiresSecurityElevation) {
-      ref.read(securityElevationControllerProvider.notifier).clear();
-    }
+    // Task 8: the backend no longer issues security elevation tokens, so
+    // do not route authentication/403 failures through the PIN elevation retry
+    // path. The old elevation code is kept physically for Task 9 cleanup.
     state = state.copyWith(
       isSubmitting: false,
       isSendingCode: false,
       errorMessage: apiError.message,
+      errorCode: apiError.code,
       successMessage: null,
-      requiresSecurityElevation: requiresSecurityElevation,
+      requiresSecurityElevation: false,
     );
     return false;
   }
 
+  /// Retained from the Security PIN elevation flow. With Task 8 the backend
+  /// requires password re-authentication instead of elevation tokens, so this
+  /// always returns false until Task 9 removes the remaining PIN code.
+  // ignore: unused_element
   bool _isSecurityElevationFailure(LucentFailure error) {
     if (error.statusCode != 403) {
       return false;

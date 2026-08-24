@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/widgets/common/security_elevation_dialog.dart';
+import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
@@ -175,20 +173,23 @@ class DataExportPage extends ConsumerWidget {
   Future<void> _requestExport(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
 
-    // Security elevation: require PIN verification before creating an export.
-    final elevation = await requestSecurityElevationOrSetup(context, ref);
-    if (!context.mounted) return;
-    if (elevation == SecurityElevationResult.setupRequired) {
-      await context.push(Routes.settingsSecurityPin);
-      return;
-    }
-    if (elevation != SecurityElevationResult.verified) return;
+    // Task 8: require account password re-authentication before creating an
+    // export. OAuth-only users without a local password will receive
+    // AUTH_PASSWORD_NOT_SET from the backend and be prompted to set one.
+    final password = await ref.read(sensitiveActionPasswordPromptProvider)(
+      context,
+      title: l10n.mineSettingExportValue,
+    );
+    if (password == null || !context.mounted) return;
 
     final DataExportRequestDataDto? value;
     try {
       value = await ref
           .read(dataExportControllerProvider.notifier)
-          .requestExport();
+          .requestExport(
+            reportHospitalPdfLast7DaysExportRequest,
+            password: password,
+          );
     } catch (error) {
       if (!context.mounted) return;
       await Toast.show(

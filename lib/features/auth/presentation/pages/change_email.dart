@@ -9,7 +9,6 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
-import 'package:luminous/core/widgets/common/security_elevation_dialog.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_helpers.dart';
@@ -25,6 +24,7 @@ class ChangeEmailPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
     final codeController = useTextEditingController();
 
     final accountState = ref.watch(authAccountProvider);
@@ -57,6 +57,19 @@ class ChangeEmailPage extends HookConsumerWidget {
                       requiredMessage: l10n.authEmailRequiredError,
                       invalidMessage: l10n.authEmailInvalidError,
                     ),
+                  ),
+                  const SizedBox(height: Spacing.level4),
+                  FTextFormField.password(
+                    control: FTextFieldControl.managed(
+                      controller: passwordController,
+                    ),
+                    label: Text(l10n.authCurrentPasswordLabel),
+                    hint: l10n.authPasswordHint,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                        (value == null || value.trim().isEmpty)
+                        ? l10n.authCurrentPasswordRequiredToast
+                        : null,
                   ),
                   const SizedBox(height: Spacing.level4),
                   VerificationCodeField(
@@ -103,15 +116,10 @@ class ChangeEmailPage extends HookConsumerWidget {
                                   false)) {
                                 return;
                               }
-                              final elevated =
-                                  await showSecurityElevationDialog(
-                                    context,
-                                    ref,
-                                  );
-                              if (!elevated || !context.mounted) return;
                               final ok = await accountNotifier.changeEmail(
                                 newEmail: emailController.text,
                                 code: codeController.text,
+                                password: passwordController.text,
                               );
                               if (!ok && context.mounted) {
                                 await showAuthAccountFailureToast(

@@ -96,7 +96,10 @@ void main() {
 
       await container
           .read(dataExportControllerProvider.notifier)
-          .requestExport();
+          .requestExport(
+            reportHospitalPdfLast7DaysExportRequest,
+            password: 'export-password',
+          );
 
       final state = container.read(dataExportControllerProvider).value;
       expect(state, isNotNull);
@@ -115,6 +118,7 @@ void main() {
         fakeApi.lastCreateRequest?.range,
         CreateDataExportRequestDtoRangeEnum.last7Days,
       );
+      expect(fakeApi.lastCreateRequest?.password, 'export-password');
       expect(
         container.read(dataExportRequestInFlightProvider).inFlight,
         isFalse,
@@ -134,6 +138,7 @@ void main() {
               format: CreateDataExportRequestDtoFormatEnum.pdf,
               range: CreateDataExportRequestDtoRangeEnum.last30Days,
             ),
+            password: 'export-password',
           );
 
       expect(
@@ -164,7 +169,10 @@ void main() {
 
       final future = container
           .read(dataExportControllerProvider.notifier)
-          .requestExport(reportMonthlyPdfExportRequest);
+          .requestExport(
+            reportMonthlyPdfExportRequest,
+            password: 'export-password',
+          );
 
       await Future<void>.delayed(const Duration(milliseconds: 10));
 
@@ -195,7 +203,10 @@ void main() {
       expect(
         () => container
             .read(dataExportControllerProvider.notifier)
-            .requestExport(),
+            .requestExport(
+              reportHospitalPdfLast7DaysExportRequest,
+              password: 'export-password',
+            ),
         throwsA(isA<DioException>()),
       );
 
@@ -214,7 +225,10 @@ void main() {
       expect(
         () => container
             .read(dataExportControllerProvider.notifier)
-            .requestExport(),
+            .requestExport(
+              reportHospitalPdfLast7DaysExportRequest,
+              password: 'export-password',
+            ),
         throwsA(isA<DioException>()),
       );
     });
@@ -240,7 +254,10 @@ void main() {
 
         await container
             .read(dataExportControllerProvider.notifier)
-            .requestExport();
+            .requestExport(
+              reportHospitalPdfLast7DaysExportRequest,
+              password: 'export-password',
+            );
 
         final state = container.read(dataExportControllerProvider).value;
         expect(state, isNotNull);
@@ -323,7 +340,10 @@ void main() {
         );
         await container
             .read(dataExportControllerProvider.notifier)
-            .requestExport();
+            .requestExport(
+              reportHospitalPdfLast7DaysExportRequest,
+              password: 'export-password',
+            );
 
         expect(
           container.read(dataExportControllerProvider).value?.status,

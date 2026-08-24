@@ -4,10 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/core/network/security_elevation_token_holder.dart';
-import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -120,7 +117,7 @@ class _FailingAccountRemote extends _AccountFakeRemote {
 
   @override
   TaskEither<LucentFailure, void> changePassword({
-    required String oldPassword,
+    required String password,
     required String newPassword,
   }) {
     return TaskEither.tryCatch(() async {
@@ -159,6 +156,7 @@ class _FailingAccountRemote extends _AccountFakeRemote {
   @override
   TaskEither<LucentFailure, AuthUser> unlinkIdentity({
     required String identityId,
+    required String password,
   }) {
     return TaskEither.tryCatch(() async {
       throw DioException(
@@ -178,6 +176,7 @@ class _FailingAccountRemote extends _AccountFakeRemote {
   TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
+    required String password,
     required AuthUser currentUser,
   }) {
     return TaskEither.tryCatch(() async {
@@ -195,11 +194,35 @@ class _FailingAccountRemote extends _AccountFakeRemote {
   }
 }
 
+class _PasswordNotSetRemote extends _AccountFakeRemote {
+  @override
+  TaskEither<LucentFailure, AuthUser> changeEmail({
+    required String newEmail,
+    required String code,
+    required String password,
+    required AuthUser currentUser,
+  }) {
+    return TaskEither.tryCatch(() async {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/change-email'),
+        type: DioExceptionType.badResponse,
+        response: problemResponse(
+          path: '/change-email',
+          statusCode: 403,
+          code: 'AUTH_PASSWORD_NOT_SET',
+          detail: '账户未设置本地密码',
+        ),
+      );
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+}
+
 class _ElevationTokenInvalidRemote extends _AccountFakeRemote {
   @override
   TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
+    required String password,
     required AuthUser currentUser,
   }) {
     return TaskEither.tryCatch(() async {
@@ -221,6 +244,7 @@ class _ForbiddenBusinessRemote extends _AccountFakeRemote {
   @override
   TaskEither<LucentFailure, AuthUser> unlinkIdentity({
     required String identityId,
+    required String password,
   }) {
     return TaskEither.tryCatch(() async {
       throw DioException(
@@ -420,7 +444,7 @@ void main() {
 
         final result = await container
             .read(authAccountProvider.notifier)
-            .unlinkIdentity(identityId: 'id-1');
+            .unlinkIdentity(identityId: 'id-1', password: 'current-password');
 
         expect(result, isFalse);
         expect(
@@ -449,6 +473,7 @@ void main() {
       final result = await notifier.changeEmail(
         newEmail: 'new@example.com',
         code: '123456',
+        password: 'current-password',
       );
 
       expect(result, isTrue);
@@ -473,6 +498,7 @@ void main() {
       final result = await notifier.changeEmail(
         newEmail: 'new@example.com',
         code: '123456',
+        password: 'current-password',
       );
 
       expect(result, isFalse);
@@ -499,6 +525,7 @@ void main() {
       final result = await notifier.changeEmail(
         newEmail: 'taken@example.com',
         code: '123456',
+        password: 'current-password',
       );
 
       expect(result, isFalse);
@@ -506,42 +533,66 @@ void main() {
     });
 
     test(
-      'marks an invalid elevation token failure for the page to guide PIN verification',
+      'returns false with AUTH_PASSWORD_NOT_SET and exposes the problem code',
       () async {
-        final remote = _ElevationTokenInvalidRemote();
-        final holder = SecurityElevationTokenHolder();
+        final remote = _PasswordNotSetRemote();
         final container = ProviderContainer(
           overrides: [
             authRepositoryProvider.overrideWithValue(remote),
             authSessionProvider.overrideWith(
               () => _SignedInAuthSessionNotifier(),
             ),
-            securityElevationTokenHolderProvider.overrideWithValue(holder),
-            securityElevationControllerProvider.overrideWith(
-              _VerifiedSecurityElevationController.new,
+          ],
+        );
+        addTearDown(container.dispose);
+
+        final result = await container
+            .read(authAccountProvider.notifier)
+            .changeEmail(
+              newEmail: 'new@example.com',
+              code: '123456',
+              password: 'current-password',
+            );
+
+        expect(result, isFalse);
+        expect(
+          container.read(authAccountProvider).errorCode,
+          'AUTH_PASSWORD_NOT_SET',
+        );
+      },
+    );
+
+    test(
+      'records backend error code for elevation-token failures without retrying PIN elevation',
+      () async {
+        final remote = _ElevationTokenInvalidRemote();
+        final container = ProviderContainer(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(remote),
+            authSessionProvider.overrideWith(
+              () => _SignedInAuthSessionNotifier(),
             ),
           ],
         );
         addTearDown(container.dispose);
 
-        final expiresAt = DateTime.now().add(const Duration(minutes: 5));
-        container.read(securityElevationControllerProvider);
-        holder.set('test-elevation-token', expiresAt);
-
         final result = await container
             .read(authAccountProvider.notifier)
-            .changeEmail(newEmail: 'expired@example.com', code: '123456');
+            .changeEmail(
+              newEmail: 'expired@example.com',
+              code: '123456',
+              password: 'current-password',
+            );
 
         expect(result, isFalse);
         expect(
-          container.read(authAccountProvider).requiresSecurityElevation,
-          isTrue,
+          container.read(authAccountProvider).errorCode,
+          'AUTH_ELEVATION_TOKEN_INVALID',
         );
         expect(
-          container.read(securityElevationControllerProvider),
-          isA<SecurityElevationUnverified>(),
+          container.read(authAccountProvider).requiresSecurityElevation,
+          isFalse,
         );
-        expect(holder.token, isNull);
       },
     );
   });
@@ -562,12 +613,12 @@ void main() {
       final notifier = container.read(authAccountProvider.notifier);
 
       final result = await notifier.changePassword(
-        oldPassword: 'old123',
+        password: 'old123',
         newPassword: 'new456',
       );
 
       expect(result, isTrue);
-      expect(remote.changePasswordOldPassword, 'old123');
+      expect(remote.changePasswordPassword, 'old123');
       expect(remote.changePasswordNewPassword, 'new456');
       final session = container.read(authSessionProvider);
       expect(session.isAuthenticated, isFalse);
@@ -588,7 +639,7 @@ void main() {
       final notifier = container.read(authAccountProvider.notifier);
 
       final result = await notifier.changePassword(
-        oldPassword: 'wrong',
+        password: 'wrong',
         newPassword: 'new456',
       );
 
@@ -656,7 +707,10 @@ void main() {
 
       final notifier = container.read(authAccountProvider.notifier);
 
-      final result = await notifier.unlinkIdentity(identityId: 'id-1');
+      final result = await notifier.unlinkIdentity(
+        identityId: 'id-1',
+        password: 'current-password',
+      );
 
       expect(result, isTrue);
       expect(remote.unlinkIdentityId, 'id-1');
@@ -676,7 +730,10 @@ void main() {
 
       final notifier = container.read(authAccountProvider.notifier);
 
-      final result = await notifier.unlinkIdentity(identityId: 'id-1');
+      final result = await notifier.unlinkIdentity(
+        identityId: 'id-1',
+        password: 'current-password',
+      );
 
       expect(result, isFalse);
       expect(container.read(authAccountProvider).errorMessage, isNotNull);
@@ -703,13 +760,4 @@ void main() {
       expect(state.lastCooldownSeconds, isNull);
     });
   });
-}
-
-class _VerifiedSecurityElevationController extends SecurityElevationController {
-  @override
-  SecurityElevationState build() {
-    return SecurityElevationVerified(
-      expiresAt: DateTime.now().add(const Duration(minutes: 5)),
-    );
-  }
 }

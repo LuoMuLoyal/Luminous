@@ -8,7 +8,7 @@ import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/providers/security_elevation.dart';
+import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/utils/export_actions.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
@@ -27,18 +27,6 @@ class _FakeLucentClient extends LucentClient {
 
   @override
   DataExportApi get dataExport => dataExportApi;
-}
-
-/// Elevation is already verified — skips the PIN dialog in the export flow.
-class _VerifiedElevation extends SecurityElevationController {
-  @override
-  SecurityElevationState build() {
-    final expiresAt = DateTime.now().add(const Duration(hours: 1));
-    ref
-        .read(securityElevationTokenHolderProvider)
-        .set('test-elevation-token', expiresAt);
-    return SecurityElevationVerified(expiresAt: expiresAt);
-  }
 }
 
 /// Records export results instead of posting events.
@@ -78,8 +66,8 @@ Future<void> _pumpHarness(
         lucentClientProvider.overrideWithValue(
           _FakeLucentClient(dataExportApi: api),
         ),
-        securityElevationControllerProvider.overrideWith(
-          _VerifiedElevation.new,
+        sensitiveActionPasswordPromptProvider.overrideWithValue(
+          (_, {title, message, label}) async => 'export-password',
         ),
         productEventServiceProvider.overrideWithValue(service),
       ],
@@ -136,7 +124,9 @@ void main() {
     (tester) async {
       when(
         () => api.dataExportControllerCreateRequestV1(
-          createDataExportRequestDto: reportMonthlyPdfExportRequest.toDto(),
+          createDataExportRequestDto: reportMonthlyPdfExportRequest.toDto(
+            password: 'export-password',
+          ),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
@@ -162,7 +152,9 @@ void main() {
     (tester) async {
       when(
         () => api.dataExportControllerCreateRequestV1(
-          createDataExportRequestDto: reportMonthlyPdfExportRequest.toDto(),
+          createDataExportRequestDto: reportMonthlyPdfExportRequest.toDto(
+            password: 'export-password',
+          ),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
@@ -186,7 +178,9 @@ void main() {
     (tester) async {
       when(
         () => api.dataExportControllerCreateRequestV1(
-          createDataExportRequestDto: reportMonthlyPdfExportRequest.toDto(),
+          createDataExportRequestDto: reportMonthlyPdfExportRequest.toDto(
+            password: 'export-password',
+          ),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
@@ -210,7 +204,9 @@ void main() {
   ) async {
     when(
       () => api.dataExportControllerCreateRequestV1(
-        createDataExportRequestDto: reportMonthlyPdfExportRequest.toDto(),
+        createDataExportRequestDto: reportMonthlyPdfExportRequest.toDto(
+          password: 'export-password',
+        ),
       ),
     ).thenThrow(
       DioException(

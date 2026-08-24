@@ -155,7 +155,7 @@ void main() {
     await tester.tap(changePasswordButton);
     await settleE2e(tester);
 
-    expect(remote.changePasswordOldPassword, 'old-password-e2e');
+    expect(remote.changePasswordPassword, 'old-password-e2e');
     expect(remote.changePasswordNewPassword, 'new-password-e2e');
     expect(container.read(authSessionProvider).isAuthenticated, isFalse);
     expect(find.text('邮箱'), findsWidgets);

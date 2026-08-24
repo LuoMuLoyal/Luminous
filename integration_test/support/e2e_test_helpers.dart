@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:lucent_api/lucent_api.dart' show LucentApi, MedicineDoseLogsApi;
+import 'package:lucent_api/lucent_api.dart' hide DailyRecordKind, DoseLogStatus;
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -434,7 +434,7 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   String? changeEmailCode;
   String? updateProfileNickname;
   String? updateProfileAvatar;
-  String? changePasswordOldPassword;
+  String? changePasswordPassword;
   String? changePasswordNewPassword;
   String? deleteAccountPassword;
   String? unlinkIdentityId;
@@ -540,6 +540,7 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
+    required String password,
     required AuthUser currentUser,
   }) {
     changeEmailNewEmail = newEmail;
@@ -576,10 +577,10 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
 
   @override
   TaskEither<LucentFailure, void> changePassword({
-    required String oldPassword,
+    required String password,
     required String newPassword,
   }) {
-    changePasswordOldPassword = oldPassword;
+    changePasswordPassword = password;
     changePasswordNewPassword = newPassword;
     return TaskEither.right(null);
   }
@@ -596,6 +597,7 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   @override
   TaskEither<LucentFailure, AuthUser> unlinkIdentity({
     required String identityId,
+    required String password,
   }) {
     unlinkIdentityId = identityId;
     return TaskEither.right(
@@ -609,6 +611,25 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
         linkedIdentities: const [],
         createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
         updatedAt: DateTime.parse('2026-06-06T03:00:00Z'),
+      ),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
+    required CreateDataExportRequestDtoKindEnum kind,
+    required CreateDataExportRequestDtoFormatEnum format,
+    required CreateDataExportRequestDtoRangeEnum range,
+    required String password,
+  }) {
+    return TaskEither.right(
+      DataExportRequestDataDto(
+        id: 'e2e-export-1',
+        kind: DataExportKind.hospital,
+        format: DataExportFormat.pdf,
+        range: DataExportRange.last7Days,
+        status: DataExportStatus.requested,
+        requestedAt: DateTime.now().toUtc().toIso8601String(),
       ),
     );
   }

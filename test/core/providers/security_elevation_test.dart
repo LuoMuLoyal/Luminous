@@ -83,7 +83,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
         currentMedicines: true,
       ),
       updatedAt: '2026-06-12T00:00:00.000Z',
-      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
+      passwordReauthenticationRequired: false,
     ),
   );
 
@@ -111,7 +111,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
         currentMedicines: true,
       ),
       updatedAt: '2026-06-12T00:00:00.000Z',
-      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
+      passwordReauthenticationRequired: false,
     ),
   );
 
@@ -139,7 +139,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
         currentMedicines: true,
       ),
       updatedAt: '2026-06-12T00:00:00.000Z',
-      securityPin: SecurityPinSettingsDto(enabled: true, lastChangedAt: null),
+      passwordReauthenticationRequired: true,
     ),
   );
 
@@ -167,7 +167,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
         currentMedicines: true,
       ),
       updatedAt: '2026-06-12T00:00:00.000Z',
-      securityPin: SecurityPinSettingsDto(enabled: true, lastChangedAt: null),
+      passwordReauthenticationRequired: true,
     ),
   );
 
@@ -195,7 +195,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
         currentMedicines: true,
       ),
       updatedAt: '2026-06-12T00:00:00.000Z',
-      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
+      passwordReauthenticationRequired: false,
     ),
   );
 }

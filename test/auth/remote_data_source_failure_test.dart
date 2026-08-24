@@ -346,7 +346,7 @@ void main() {
 
         final failure = await _left(
           dataSource.changePassword(
-            oldPassword: 'wrong',
+            password: 'wrong',
             newPassword: 'NewPass456',
           ),
         );

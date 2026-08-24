@@ -204,7 +204,7 @@ void main() {
     await tester.tap(changePasswordButton);
     await tester.pumpAndSettle();
 
-    expect(remote.changePasswordOldPassword, 'old-password');
+    expect(remote.changePasswordPassword, 'old-password');
     expect(remote.changePasswordNewPassword, 'new-password');
     expect(find.text('login-page'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
@@ -248,7 +248,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(remote.changePasswordOldPassword, isNull);
+      expect(remote.changePasswordPassword, isNull);
       expect(remote.changePasswordNewPassword, isNull);
     },
   );
@@ -298,7 +298,7 @@ void main() {
     await tester.tap(find.text(l10n.securityElevationDialogCancel));
     await tester.pumpAndSettle();
 
-    expect(remote.changePasswordOldPassword, isNull);
+    expect(remote.changePasswordPassword, isNull);
     expect(remote.changePasswordNewPassword, isNull);
   });
 

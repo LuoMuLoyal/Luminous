@@ -140,19 +140,26 @@ Future<void> startWechatIdentityLink(
   }
 }
 
-/// Shows the latest account operation error, translating an invalid security
-/// elevation into the action the user needs to take next.
+/// Shows the latest account operation error, translating special problem
+/// codes into the action the user needs to take next.
 Future<void> showAuthAccountFailureToast(
   BuildContext context,
   WidgetRef ref,
   AppLocalizations l10n,
 ) async {
   final state = ref.read(authAccountProvider);
-  final message = state.requiresSecurityElevation
-      ? l10n.authSecurityElevationRequiredToast
-      : state.errorMessage?.isNotEmpty == true
-      ? state.errorMessage
-      : null;
+  final String? message;
+  if (state.errorCode == 'AUTH_PASSWORD_NOT_SET') {
+    message = l10n.authPasswordNotSetToast;
+  } else if (state.errorCode == 'AUTH_ELEVATION_TOKEN_INVALID') {
+    // Legacy Security PIN elevation failures now result in a generic password
+    // prompt. This branch is retained until Task 9 removes the PIN code.
+    message = l10n.authPasswordNotSetToast;
+  } else {
+    message = state.errorMessage?.isNotEmpty == true
+        ? state.errorMessage
+        : null;
+  }
   if (message == null || !context.mounted) return;
   await Toast.show(context, message);
 }

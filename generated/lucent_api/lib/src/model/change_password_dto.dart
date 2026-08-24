@@ -17,11 +17,11 @@ part 'change_password_dto.g.dart';
 )
 class ChangePasswordDto {
   /// Returns a new [ChangePasswordDto] instance.
-  ChangePasswordDto({required this.oldPassword, required this.newPassword});
+  ChangePasswordDto({required this.password, required this.newPassword});
 
-  /// 当前密码
-  @JsonKey(name: r'oldPassword', required: true, includeIfNull: false)
-  final String oldPassword;
+  /// 当前密码（敏感操作再认证用）
+  @JsonKey(name: r'password', required: true, includeIfNull: false)
+  final String password;
 
   /// 新密码（8-32位，需包含大小写字母和数字）
   @JsonKey(name: r'newPassword', required: true, includeIfNull: false)
@@ -31,11 +31,11 @@ class ChangePasswordDto {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ChangePasswordDto &&
-          other.oldPassword == oldPassword &&
+          other.password == password &&
           other.newPassword == newPassword;
 
   @override
-  int get hashCode => oldPassword.hashCode + newPassword.hashCode;
+  int get hashCode => password.hashCode + newPassword.hashCode;
 
   factory ChangePasswordDto.fromJson(Map<String, dynamic> json) =>
       _$ChangePasswordDtoFromJson(json);

@@ -9,8 +9,8 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
-import 'package:luminous/core/widgets/common/security_elevation_dialog.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_helpers.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_sections.dart';
@@ -185,14 +185,13 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 l10n,
                               );
                               if (!confirmed || !context.mounted) return;
-                              final elevated =
-                                  await showSecurityElevationDialog(
-                                    context,
-                                    ref,
-                                  );
-                              if (!elevated || !context.mounted) return;
+                              final password = await ref.read(
+                                sensitiveActionPasswordPromptProvider,
+                              )(context);
+                              if (password == null || !context.mounted) return;
                               final ok = await accountNotifier.unlinkIdentity(
                                 identityId: identity.id,
+                                password: password,
                               );
                               if (!ok && context.mounted) {
                                 await showAuthAccountFailureToast(
@@ -236,11 +235,8 @@ class AccountSettingsPage extends HookConsumerWidget {
                             onChangePassword: () async {
                               final ctx = context;
                               final router = GoRouter.of(ctx);
-                              final elevated =
-                                  await showSecurityElevationDialog(ctx, ref);
-                              if (!elevated || !ctx.mounted) return;
                               final ok = await accountNotifier.changePassword(
-                                oldPassword: oldPasswordController.text,
+                                password: oldPasswordController.text,
                                 newPassword: newPasswordController.text,
                               );
                               if (!ok && ctx.mounted) {

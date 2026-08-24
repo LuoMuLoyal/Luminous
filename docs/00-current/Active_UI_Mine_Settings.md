@@ -112,9 +112,9 @@ Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间
 - 撤销其他设备会话后刷新列表；若服务端标记当前会话，撤销后复用现有登出流程清理本地令牌并返回登录页。
 - 会话列表接口当前生成客户端声明为 `void`，客户端通过既有认证 Dio 解析真实 envelope；未新增生产依赖或后端接口。
 
-### P2-2 B5 导出体验（2026-08-20）
+### P2-2 B5 导出体验（2026-08-20 / Task 8 修订）
 
-- 数据导出页和报告页导出动作在 PIN 未启用时弹出启用引导；确认后跳转 `/settings/security-pin`，取消或验证失败不创建导出请求。
+- 数据导出页和报告页导出动作在创建请求前弹出账号密码确认弹窗；密码验证由后端 `PasswordReauthService` 通过 Better Auth `password.verify` 完成，取消或验证失败不创建导出请求。
 - 导出描述与 FAQ 统一为“就诊报告 PDF”；原始 JSON/CSV 健康数据导出继续保留在 TODO，不以 PDF 代称。
 
 ## 主题
@@ -148,9 +148,9 @@ Last updated: 2026-08-22（增量审查修复：elevation dialog 可注入时间
 
 - 退出登录 tile（`ConsumerWidget` + `authSessionProvider`），未登录时使用 `primary` 色而非 `error` 色（登录引导不被渲染成危险操作）。
 - 退出登录接入 `showDangerConfirmationDialog` 二次确认。
-- 修改邮箱、修改密码、解绑三方身份在各自页面回调中先执行 `showSecurityElevationDialog(context, ref)`；已有有效 elevation token 自动跳过 PIN 对话框，后续请求由 `SecurityElevationInterceptor` 注入请求头。
-- 纯页面入口 preflight 是兼容假设：`AuthAccountNotifier` 与认证领域接口保持 UI 无依赖，由页面在确认/表单校验后决定是否发起敏感操作；取消或未启用 Security PIN 时不调用后端。
-- 敏感操作收到明确的 403/elevation-token-invalid 响应时，`AuthAccountState.requiresSecurityElevation` 提供机器可读状态，页面使用“请验证安全 PIN”引导文案；普通解绑业务 403 不复用该状态。
+- Task 8 起敏感操作改用账号密码再认证：修改邮箱页表单内嵌「当前密码」字段；解绑三方身份、注销账号、数据导出在动作前调用 `requestPasswordForSensitiveAction` 弹出密码确认弹窗，确认后把密码随请求提交后端；`showSecurityElevationDialog`、`SecurityElevationController`、`SecurityElevationInterceptor` 与 elevation token 机制保留但不再由新流程消费，Task 9 统一删除。
+- 纯页面入口 preflight 是兼容假设：`AuthAccountNotifier` 与认证领域接口保持 UI 无依赖，由页面在确认/表单校验后决定是否发起敏感操作；取消密码确认时不调用后端。
+- 敏感操作收到 `AUTH_PASSWORD_INVALID` / `AUTH_PASSWORD_NOT_SET` 等明确业务码时，`AuthAccountState.errorMessage` 提供本地化提示，页面使用「密码错误」或「请先设置本地密码」引导文案。
 - P1-1 复审的两个 follow-up 已收口：安全 PIN 状态未知时等待设置 future，token 与 dialog 统一使用 `now.isBefore(expiresAt)`，并补充精确到期测试。
 - 账号注销支持密码和邮箱验证码两种确认方式（OAuth-only 用户通过验证码注销）。
 - 注销区域顶部显示注销政策提示文字 + ghost 按钮跳转 `/legal/account-cancellation`（2026-07-21 P1）。

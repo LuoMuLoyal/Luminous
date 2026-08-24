@@ -40,8 +40,13 @@ class DataExportRequestInput {
   @override
   int get hashCode => Object.hash(kind, format, range);
 
-  CreateDataExportRequestDto toDto() {
-    return CreateDataExportRequestDto(kind: kind, format: format, range: range);
+  CreateDataExportRequestDto toDto({required String password}) {
+    return CreateDataExportRequestDto(
+      kind: kind,
+      format: format,
+      range: range,
+      password: password,
+    );
   }
 
   bool matches(DataExportRequestDataDto? request) {
@@ -162,9 +167,10 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
     }
   }
 
-  Future<DataExportRequestDataDto?> requestExport([
-    DataExportRequestInput input = reportHospitalPdfLast7DaysExportRequest,
-  ]) async {
+  Future<DataExportRequestDataDto?> requestExport(
+    DataExportRequestInput input, {
+    required String password,
+  }) async {
     final requestInFlight = ref.read(dataExportRequestInFlightProvider);
     if (requestInFlight.inFlight) {
       return state.asData?.value;
@@ -175,7 +181,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
     final api = ref.read(lucentClientProvider).dataExport;
     try {
       final response = await api.dataExportControllerCreateRequestV1(
-        createDataExportRequestDto: input.toDto(),
+        createDataExportRequestDto: input.toDto(password: password),
       );
       final responseData = requireData(
         response.data,

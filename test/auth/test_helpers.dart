@@ -71,12 +71,15 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   String? verifyEmailToken;
   String? changeEmailNewEmail;
   String? changeEmailCode;
+  String? changeEmailPassword;
   String? updateProfileNickname;
   String? updateProfileAvatar;
-  String? changePasswordOldPassword;
+  String? changePasswordPassword;
   String? changePasswordNewPassword;
   String? deleteAccountPassword;
   String? unlinkIdentityId;
+  String? unlinkIdentityPassword;
+  CreateDataExportRequestDto? lastDataExportRequest;
   bool createWechatAuthorizeCalled = false;
   bool createWechatIdentityLinkAuthorizeCalled = false;
   String? wechatAuthorizeCallbackUri;
@@ -236,10 +239,12 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
+    required String password,
     required AuthUser currentUser,
   }) {
     changeEmailNewEmail = newEmail;
     changeEmailCode = code;
+    changeEmailPassword = password;
     return TaskEither.right(
       currentUser.copyWith(email: newEmail, emailVerifiedAt: null),
     );
@@ -267,10 +272,10 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
 
   @override
   TaskEither<LucentFailure, void> changePassword({
-    required String oldPassword,
+    required String password,
     required String newPassword,
   }) {
-    changePasswordOldPassword = oldPassword;
+    changePasswordPassword = password;
     changePasswordNewPassword = newPassword;
     return TaskEither.right(null);
   }
@@ -287,8 +292,10 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   @override
   TaskEither<LucentFailure, AuthUser> unlinkIdentity({
     required String identityId,
+    required String password,
   }) {
     unlinkIdentityId = identityId;
+    unlinkIdentityPassword = password;
     return TaskEither.right(
       AuthUser(
         id: 'user-1',
@@ -299,6 +306,31 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
         hasPassword: true,
         createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+      ),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
+    required CreateDataExportRequestDtoKindEnum kind,
+    required CreateDataExportRequestDtoFormatEnum format,
+    required CreateDataExportRequestDtoRangeEnum range,
+    required String password,
+  }) {
+    lastDataExportRequest = CreateDataExportRequestDto(
+      kind: kind,
+      format: format,
+      range: range,
+      password: password,
+    );
+    return TaskEither.right(
+      DataExportRequestDataDto(
+        id: 'export-1',
+        kind: DataExportKind.hospital,
+        format: DataExportFormat.pdf,
+        range: DataExportRange.last7Days,
+        status: DataExportStatus.requested,
+        requestedAt: DateTime.now().toUtc().toIso8601String(),
       ),
     );
   }

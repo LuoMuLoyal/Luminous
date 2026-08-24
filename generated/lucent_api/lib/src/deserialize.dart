@@ -175,7 +175,6 @@ import 'package:lucent_api/src/model/reset_password_dto.dart';
 import 'package:lucent_api/src/model/risk_check_candidate_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
 import 'package:lucent_api/src/model/security_pin_elevation_response_dto.dart';
-import 'package:lucent_api/src/model/security_pin_settings_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_api/src/model/set_password_dto.dart';
@@ -213,6 +212,7 @@ import 'package:lucent_api/src/model/today_analysis_stream_summary_dto.dart';
 import 'package:lucent_api/src/model/today_recommendation_response_dto.dart';
 import 'package:lucent_api/src/model/today_suggestions_response_dto.dart';
 import 'package:lucent_api/src/model/tokens_dto.dart';
+import 'package:lucent_api/src/model/unlink_identity_dto.dart';
 import 'package:lucent_api/src/model/unread_count_response_dto.dart';
 import 'package:lucent_api/src/model/update_account_dto.dart';
 import 'package:lucent_api/src/model/update_assistant_context_settings_dto.dart';
@@ -903,9 +903,6 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'SecurityPinSettingsDto':
-      return SecurityPinSettingsDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'SendVerificationCodeDto':
       return SendVerificationCodeDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1058,6 +1055,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'TokensDto':
       return TokensDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'UnitSystem':
+    case 'UnlinkIdentityDto':
+      return UnlinkIdentityDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'UnreadCountResponseDto':
       return UnreadCountResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;

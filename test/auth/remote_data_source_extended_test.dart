@@ -896,7 +896,7 @@ void main() {
 
         await _right(
           dataSource.changePassword(
-            oldPassword: 'OldPass123',
+            password: 'OldPass123',
             newPassword: 'NewPass456',
           ),
         );
@@ -909,12 +909,12 @@ void main() {
 
         await _right(
           dataSource.changePassword(
-            oldPassword: '  OldPass123  ',
+            password: '  OldPass123  ',
             newPassword: '  NewPass456  ',
           ),
         );
 
-        expect(adapter.lastBody?['oldPassword'], 'OldPass123');
+        expect(adapter.lastBody?['password'], 'OldPass123');
         expect(adapter.lastBody?['newPassword'], 'NewPass456');
       });
     });
@@ -941,6 +941,7 @@ void main() {
           dataSource.changeEmail(
             newEmail: 'new@example.com',
             code: '123456',
+            password: 'current-password',
             currentUser: currentUser,
           ),
         );
@@ -972,6 +973,7 @@ void main() {
           dataSource.changeEmail(
             newEmail: '  new@example.com  ',
             code: '  123456  ',
+            password: '  current-password  ',
             currentUser: currentUser,
           ),
         );
@@ -1000,6 +1002,7 @@ void main() {
           dataSource.changeEmail(
             newEmail: 'new@example.com',
             code: '123456',
+            password: 'current-password',
             currentUser: currentUser,
           ),
         );
@@ -1028,6 +1031,7 @@ void main() {
           dataSource.changeEmail(
             newEmail: 'new@example.com',
             code: '123456',
+            password: 'current-password',
             currentUser: currentUser,
           ),
         );
@@ -1065,7 +1069,10 @@ void main() {
         adapter.body = _accountDto(linkedIdentities: []);
 
         final user = await _right(
-          dataSource.unlinkIdentity(identityId: 'id-1'),
+          dataSource.unlinkIdentity(
+            identityId: 'id-1',
+            password: 'current-password',
+          ),
         );
 
         expect(user.id, 'u-1');

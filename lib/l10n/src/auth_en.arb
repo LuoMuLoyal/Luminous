@@ -148,6 +148,12 @@
   "authIdentityUnlinkDisabledAction": "Keep",
   "authIdentityUnlinkSuccess": "Identity unlinked.",
   "authSecurityElevationRequiredToast": "Please verify your Security PIN.",
+  "authSensitiveActionPasswordHint": "Sensitive operations (change email, unlink identity, export, delete account) require your account password.",
+  "authSensitiveActionPasswordDialogTitle": "Confirm with password",
+  "authSensitiveActionPasswordDialogMessage": "Sensitive operations require your account password for confirmation.",
+  "authSensitiveActionPasswordDialogLabel": "Account password",
+  "authSensitiveActionPasswordDialogConfirm": "Confirm",
+  "authPasswordNotSetToast": "You haven't set a local password. Please set one in Account settings before this sensitive operation.",
   "authIdentityUnlinkConfirmTitle": "Unlink identity",
   "authIdentityUnlinkConfirmMessage": "Unlink {provider} from this account?",
   "@authIdentityUnlinkConfirmMessage": {

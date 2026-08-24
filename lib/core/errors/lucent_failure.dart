@@ -116,6 +116,8 @@ final class LucentFailure {
 
   bool get isRefreshTokenInvalid => code == 'AUTH_REFRESH_TOKEN_INVALID';
 
+  bool get isPasswordNotSet => code == 'AUTH_PASSWORD_NOT_SET';
+
   bool get isNetworkConnectivityError =>
       networkErrorCode == NetworkErrorCode.connectionTimeout ||
       networkErrorCode == NetworkErrorCode.sendTimeout ||

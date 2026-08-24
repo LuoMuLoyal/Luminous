@@ -11,8 +11,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/providers/security_elevation.dart';
+import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
@@ -27,9 +26,7 @@ import 'package:luminous/features/report/presentation/providers/clinic_summary.d
 import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/export.dart';
 import 'package:luminous/features/report/presentation/widgets/sheets/more_actions.dart';
-import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/test_forui_app.dart';
@@ -259,7 +256,7 @@ void main() {
   });
 
   testWidgets(
-    'PDF and print entries start the export flow with PIN elevation',
+    'PDF and print entries start the export flow with password re-auth',
     (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
@@ -268,31 +265,27 @@ void main() {
         signedIn: true,
         current: reviewActive(),
         history: reviewHistoryPage(const []),
-        overrides: [
-          userSettingsControllerProvider.overrideWith(
-            _FakeUserSettingsController.new,
-          ),
-        ],
       );
-      // 预载设置，让 showSecurityElevationDialog 读到 PIN 已启用（而不是
-      // AsyncLoading 的“未启用”分支），进入验证弹窗。
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(ReportPage)),
-      );
-      await container.read(userSettingsControllerProvider.future);
-      await tester.pump();
 
-      // PDF 入口 → 导出流程的 PIN 验证环节。
+      // PDF 入口 → 导出流程的密码再认证弹窗。
       await tester.tap(find.byKey(const Key('review-more-action')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('more-pdf')));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('more-pdf')), findsNothing);
-      expect(find.text(l10n.securityElevationDialogTitle), findsOneWidget);
-      await tester.tap(find.text(l10n.securityElevationDialogCancel));
+      expect(
+        find.text(l10n.authSensitiveActionPasswordDialogTitle),
+        findsOneWidget,
+      );
+      final cancelButton = find.text(l10n.authCancelAction);
+      await tester.ensureVisible(cancelButton);
+      await tester.tap(cancelButton);
       await tester.pumpAndSettle();
-      expect(find.text(l10n.securityElevationDialogTitle), findsNothing);
+      expect(
+        find.text(l10n.authSensitiveActionPasswordDialogTitle),
+        findsNothing,
+      );
 
       // 打印/下载入口 → 同样的验证环节。
       await tester.tap(find.byKey(const Key('review-more-action')));
@@ -300,50 +293,58 @@ void main() {
       await tester.tap(find.byKey(const Key('more-print')));
       await tester.pumpAndSettle();
 
-      expect(find.text(l10n.securityElevationDialogTitle), findsOneWidget);
-      await tester.tap(find.text(l10n.securityElevationDialogCancel));
+      expect(
+        find.text(l10n.authSensitiveActionPasswordDialogTitle),
+        findsOneWidget,
+      );
+      final printCancelButton = find.text(l10n.authCancelAction);
+      await tester.ensureVisible(printCancelButton);
+      await tester.tap(printCancelButton);
       await tester.pumpAndSettle();
-
-      expect(tester.takeException(), isNull);
+      expect(
+        find.text(l10n.authSensitiveActionPasswordDialogTitle),
+        findsNothing,
+      );
     },
   );
 
-  testWidgets('PDF export failure shows the export failed toast after PIN', (
-    tester,
-  ) async {
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final exportController = _ThrowingDataExportController();
+  testWidgets(
+    'PDF export failure shows the export failed toast after password re-auth',
+    (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      final exportController = _ThrowingDataExportController();
 
-    await pumpPage(
-      tester,
-      signedIn: true,
-      current: reviewActive(),
-      history: reviewHistoryPage(const []),
-      overrides: [
-        // 持有有效 elevation token，直接越过 PIN 弹窗进入导出请求。
-        securityElevationControllerProvider.overrideWith(
-          _VerifiedElevationController.new,
-        ),
-        dataExportControllerProvider.overrideWith(() => exportController),
-      ],
-      withToaster: true,
-    );
+      await pumpPage(
+        tester,
+        signedIn: true,
+        current: reviewActive(),
+        history: reviewHistoryPage(const []),
+        overrides: [
+          // 固定返回密码，越过密码确认弹窗进入导出请求。
+          sensitiveActionPasswordPromptProvider.overrideWithValue(
+            (_, {title, message, label}) async => 'test-password',
+          ),
+          dataExportControllerProvider.overrideWith(() => exportController),
+        ],
+        withToaster: true,
+      );
 
-    await tester.tap(find.byKey(const Key('review-more-action')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('more-pdf')));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('review-more-action')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('more-pdf')));
+      await tester.pumpAndSettle();
 
-    // PDF 入口以 monthly 输入发起导出；请求失败经 Failure 分支弹 toast。
-    expect(exportController.lastInput, reportMonthlyPdfExportRequest);
-    expect(find.textContaining(l10n.reportExportFailedToast), findsOneWidget);
+      // PDF 入口以 monthly 输入发起导出；请求失败经 Failure 分支弹 toast。
+      expect(exportController.lastInput, reportMonthlyPdfExportRequest);
+      expect(find.textContaining(l10n.reportExportFailedToast), findsOneWidget);
 
-    // Toast 自动移除计时器走完，避免测试结束时仍有挂起 Timer。
-    await tester.pump(const Duration(milliseconds: 1900));
-    await tester.pumpAndSettle();
-    expect(find.textContaining(l10n.reportExportFailedToast), findsNothing);
-    expect(tester.takeException(), isNull);
-  });
+      // Toast 自动移除计时器走完，避免测试结束时仍有挂起 Timer。
+      await tester.pump(const Duration(milliseconds: 1900));
+      await tester.pumpAndSettle();
+      expect(find.textContaining(l10n.reportExportFailedToast), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('signed-out PDF entry shows the auth required dialog', (
     tester,
@@ -505,39 +506,6 @@ class _FakeReviewRepository implements ReviewRepository {
   }
 }
 
-class _FakeUserSettingsController extends UserSettingsController {
-  @override
-  Future<UserSettings> build() async {
-    return const UserSettings(
-      aiSummariesEnabled: true,
-      dataSharingConsent: false,
-      assistantEnabled: false,
-      assistantMemoryEnabled: false,
-      waterTargetCount: 8,
-      assistantContext: AssistantContextSettings(
-        healthProfile: false,
-        dailyRecords: false,
-        sleepRecords: false,
-        currentMedicines: false,
-      ),
-      securityPin: SecurityPinSettings(enabled: true),
-    );
-  }
-}
-
-/// 直接持有有效 elevation token，让 `showSecurityElevationDialog` 跳过
-/// PIN 弹窗返回 true，测试聚焦导出请求的 Failure 分支。
-class _VerifiedElevationController extends SecurityElevationController {
-  @override
-  SecurityElevationState build() {
-    final expiresAt = DateTime.now().add(const Duration(minutes: 5));
-    ref
-        .read(securityElevationTokenHolderProvider)
-        .set('test-elevation-token', expiresAt);
-    return SecurityElevationVerified(expiresAt: expiresAt);
-  }
-}
-
 /// 记录输入并抛错的导出控制器，验证 Failure toast 分支。
 class _ThrowingDataExportController extends DataExportController {
   DataExportRequestInput? lastInput;
@@ -546,9 +514,10 @@ class _ThrowingDataExportController extends DataExportController {
   Future<DataExportRequestDataDto?> build() async => null;
 
   @override
-  Future<DataExportRequestDataDto?> requestExport([
-    DataExportRequestInput input = reportHospitalPdfLast7DaysExportRequest,
-  ]) async {
+  Future<DataExportRequestDataDto?> requestExport(
+    DataExportRequestInput input, {
+    required String password,
+  }) async {
     lastInput = input;
     throw Exception('export failed in test');
   }

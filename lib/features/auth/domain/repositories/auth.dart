@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
@@ -108,13 +109,14 @@ abstract interface class AuthRepository {
   });
 
   TaskEither<LucentFailure, void> changePassword({
-    required String oldPassword,
+    required String password,
     required String newPassword,
   });
 
   TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,
     required String code,
+    required String password,
     required AuthUser currentUser,
   });
 
@@ -125,5 +127,13 @@ abstract interface class AuthRepository {
 
   TaskEither<LucentFailure, AuthUser> unlinkIdentity({
     required String identityId,
+    required String password,
+  });
+
+  TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
+    required CreateDataExportRequestDtoKindEnum kind,
+    required CreateDataExportRequestDtoFormatEnum format,
+    required CreateDataExportRequestDtoRangeEnum range,
+    required String password,
   });
 }

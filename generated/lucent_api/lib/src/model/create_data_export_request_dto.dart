@@ -17,7 +17,15 @@ part 'create_data_export_request_dto.g.dart';
 )
 class CreateDataExportRequestDto {
   /// Returns a new [CreateDataExportRequestDto] instance.
-  CreateDataExportRequestDto({this.kind, this.format, this.range});
+  CreateDataExportRequestDto({
+    this.kind,
+
+    this.format,
+
+    this.range,
+
+    required this.password,
+  });
 
   /// Requested export kind.
   @JsonKey(
@@ -47,16 +55,22 @@ class CreateDataExportRequestDto {
   )
   final CreateDataExportRequestDtoRangeEnum? range;
 
+  /// 当前密码（敏感操作再认证用）
+  @JsonKey(name: r'password', required: true, includeIfNull: false)
+  final String password;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is CreateDataExportRequestDto &&
           other.kind == kind &&
           other.format == format &&
-          other.range == range;
+          other.range == range &&
+          other.password == password;
 
   @override
-  int get hashCode => kind.hashCode + format.hashCode + range.hashCode;
+  int get hashCode =>
+      kind.hashCode + format.hashCode + range.hashCode + password.hashCode;
 
   factory CreateDataExportRequestDto.fromJson(Map<String, dynamic> json) =>
       _$CreateDataExportRequestDtoFromJson(json);

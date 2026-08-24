@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/security_pin_settings_dto.dart';
 import 'package:lucent_api/src/model/assistant_context_settings_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -34,7 +33,7 @@ class UserSettingsResponseDto {
 
     required this.updatedAt,
 
-    required this.securityPin,
+    required this.passwordReauthenticationRequired,
   });
 
   /// Allow AI-generated summaries and advice.
@@ -69,9 +68,13 @@ class UserSettingsResponseDto {
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: true)
   final String? updatedAt;
 
-  /// Security PIN status.
-  @JsonKey(name: r'securityPin', required: true, includeIfNull: false)
-  final SecurityPinSettingsDto securityPin;
+  /// Whether sensitive operations require password re-authentication.
+  @JsonKey(
+    name: r'passwordReauthenticationRequired',
+    required: true,
+    includeIfNull: false,
+  )
+  final bool passwordReauthenticationRequired;
 
   @override
   bool operator ==(Object other) =>
@@ -84,7 +87,8 @@ class UserSettingsResponseDto {
           other.waterTargetCount == waterTargetCount &&
           other.assistantContext == assistantContext &&
           other.updatedAt == updatedAt &&
-          other.securityPin == securityPin;
+          other.passwordReauthenticationRequired ==
+              passwordReauthenticationRequired;
 
   @override
   int get hashCode =>
@@ -95,7 +99,7 @@ class UserSettingsResponseDto {
       waterTargetCount.hashCode +
       assistantContext.hashCode +
       (updatedAt == null ? 0 : updatedAt.hashCode) +
-      securityPin.hashCode;
+      passwordReauthenticationRequired.hashCode;
 
   factory UserSettingsResponseDto.fromJson(Map<String, dynamic> json) =>
       _$UserSettingsResponseDtoFromJson(json);

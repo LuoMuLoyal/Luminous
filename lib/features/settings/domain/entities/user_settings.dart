@@ -41,6 +41,7 @@ class UserSettings {
     required this.assistantContext,
     this.updatedAt,
     required this.securityPin,
+    this.passwordReauthenticationRequired = true,
   });
 
   /// Allow AI-generated summaries and advice.
@@ -65,7 +66,14 @@ class UserSettings {
   final String? updatedAt;
 
   /// Security PIN status.
+  ///
+  /// Retained for source compatibility while Task 9 removes PIN code; the
+  /// backend no longer returns this object, so live instances always report
+  /// `enabled: false`.
   final SecurityPinSettings securityPin;
+
+  /// Whether sensitive operations require account password re-authentication.
+  final bool passwordReauthenticationRequired;
 }
 
 /// Partial update for assistant context permissions.

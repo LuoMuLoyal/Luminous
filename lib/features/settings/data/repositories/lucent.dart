@@ -141,10 +141,11 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
         currentMedicines: dto.assistantContext.currentMedicines,
       ),
       updatedAt: dto.updatedAt,
-      securityPin: SecurityPinSettings(
-        enabled: dto.securityPin.enabled,
-        lastChangedAt: dto.securityPin.lastChangedAt,
-      ),
+      // Task 8: the backend replaced the Security PIN object with the
+      // passwordReauthenticationRequired flag. The PIN entity is kept at
+      // `enabled: false` to avoid cascading deletions until Task 9.
+      securityPin: const SecurityPinSettings(enabled: false),
+      passwordReauthenticationRequired: dto.passwordReauthenticationRequired,
     );
   }
 }

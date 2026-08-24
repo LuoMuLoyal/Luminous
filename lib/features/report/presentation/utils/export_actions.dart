@@ -2,16 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/core/widgets/common/security_elevation_dialog.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart';
@@ -48,21 +46,18 @@ Future<void> handleReportExportAction(
   final input = reportExportInputForKind(kind);
   if (input == null) return;
 
-  // 安全提升：创建导出前要求 PIN 验证。
-  final elevation = await requestSecurityElevationOrSetup(context, ref);
-  if (!context.mounted) return;
-  if (elevation == SecurityElevationResult.setupRequired) {
-    await context.push(Routes.settingsSecurityPin);
-    return;
-  }
-  if (elevation != SecurityElevationResult.verified) return;
+  // Task 8: account password re-authentication replaces Security PIN elevation.
+  final password = await ref.read(sensitiveActionPasswordPromptProvider)(
+    context,
+  );
+  if (password == null || !context.mounted) return;
 
   final controller = ref.read(dataExportControllerProvider.notifier);
   final launcher = ref.read(externalUrlLauncherProvider);
 
   final DataExportRequestDataDto? value;
   try {
-    value = await controller.requestExport(input);
+    value = await controller.requestExport(input, password: password);
   } catch (error) {
     // 请求抛错（网络 / 服务端业务失败，LucentFailure；协议 FormatException
     // 逃逸亦在此捕获）：失败不计为 exported，talker 记录 + toast 提示。
