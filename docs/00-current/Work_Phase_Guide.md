@@ -39,11 +39,10 @@ Forui 重构后消除可见 UI 破损和迁移噪声。五个 Tab overflow/文�
 
 ## Phase 4: 架构收敛 ✅ 已完成
 
-- ADR-0006: `riverpod_generator` 引入，provider 声明风格统一。
-- ADR-0007: 网络层职责分离（`AuthInterceptor`/`ErrorInterceptor`/`RetryInterceptor`）。
-- ADR-0008: `Result` 类型与统一错误处理（`AppError`/`runGuarded`）。
-- ADR-0009: Drift 本地持久化基础设施 + cache-first repository 迁移。
-- ADR-0010: `go_router_builder` 类型安全路由全量迁移。
+- ADR-0003: `riverpod_generator` 引入，provider 声明风格统一。
+- ADR-0004: 网络层职责分离（`AuthInterceptor`/`ErrorInterceptor`/`RetryInterceptor`）。
+- ADR-0005: `Result` 类型与统一错误处理（fpdart + LucentFailure）。
+- ADR-0006: Drift 本地持久化基础设施 + cache-first repository 迁移。
 - Repository 接口统一到 `domain/repositories/`，mock 数据移入 `test/helpers/mocks/`。
 - 跨 feature presentation 耦合通过 `DataChangeBus` 解耦。
 - 巨型文件拆分（`suggestion.dart` 952→125 行）。

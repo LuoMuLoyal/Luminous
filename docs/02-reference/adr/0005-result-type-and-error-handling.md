@@ -1,4 +1,4 @@
-# ADR-0008: Result Type and Unified Error Handling
+# ADR-0005: Result 类型与统一错误处理
 
 - **Status**: accepted (amended 2026-08-18; previous self-built Result decision superseded; implemented 2026-08-23)
 - **Date**: 2026-07-10
@@ -55,43 +55,6 @@ the network layer and mapped into `LucentFailure`.
 programming errors, cancellation, and SSE stream termination remain explicit throws or stream
 errors and must not be disguised as an ordinary Left value.
 
-### 2.1 Current foundation status (2026-08-22)
-
-The hard-cut window now contains the target-state `ProblemDetails` parser,
-`LucentFailure.fromProblemDetails`, the narrow transport `RetryPolicy`, the
-`DioException` → `LucentFailure` error chain, and the regenerated direct-resource client wiring.
-The parser rejects the retired `{ code, message, data }` envelope; no legacy/new HTTP response
-fallback was added. The separate repository Result-boundary migration remains a later stage and
-does not reintroduce a second HTTP response contract.
-
-### 2.2 Implementation status (2026-08-23)
-
-The hard cut completed on 2026-08-23 across all features (auth, today, record, medicine, assistant,
-health_context, health_event, report, notification, settings, mine, legal, support, search, scan):
-
-- Every feature repository now exposes `TaskEither<LucentFailure, T>` for expected, recoverable
-  failures; datasources keep `Future`/`Stream` transport responsibility; providers consume
-  `run()` + fold into `AsyncValue`/action state; widgets do not import fpdart or parse
-  `DioException`/Problem Details.
-- The local `Result<T>`, `Success`/`Failure`, `AppError`/`AppErrorKind`, `runGuarded`, and
-  `LucentErrorMapper.toAppError` were deleted (commit `refactor(error): 删除 Luminous 旧错误类型`).
-  No project type alias replaces them; only fpdart `Either`/`TaskEither` are used.
-- The transport boundary is fixed: HTTP errors must be `application/problem+json` Problem Details
-  parsed by `LucentErrorMapper.fromObject`; missing/wrong-typed bodies and non-Problem media types
-  stay `FormatException` (protocol invariants, surfaced from `.run()`); transport failures map to
-  `LucentFailure.network`. `RetryPolicy` retries only idempotent GETs by status/network error and
-  writes only with explicit `retryEnabled=true` plus a non-empty `Idempotency-Key`;
-  `retryable=false` forbids retry, server `retryable=true` never expands the allowed status set,
-  and `Retry-After` accepts only non-negative integer seconds. Token refresh triggers only on
-  `AUTH_TOKEN_EXPIRED`.
-- SSE `event: error` payloads are parsed as `SseProblemDetails` and mapped via
-  `LucentFailure.fromSseProblemDetails` (the `status` field is an SSE error category, never an HTTP
-  status code); malformed payloads stay protocol exceptions; cancellation/disconnects keep Stream
-  semantics and are never disguised as business failures.
-- The only remaining legacy type is `LucentApiException` (retained solely because the WeChat mobile
-  auth client still constructs it for local SDK failures; its mapper branch is the last legacy
-  compat point).
-
 ### 3. Keep the layer responsibilities explicit
 
 ```text
@@ -119,12 +82,6 @@ A catch is permitted only when it has an explicit recovery/degraded contract, st
 an OTel event or metric where applicable, and a test for the user-visible outcome. `rethrow` is
 permitted for programming errors, cancellation, protocol invariants, and intentionally propagated
 stream failures.
-
-### 5. HTTP response contract
-
-The HTTP response shape is defined by Lucent ADR-0012. This ADR does not define a second wire format:
-successful responses use endpoint resource representations, and ordinary HTTP errors use Problem
-Details.
 
 ## Options Considered
 
@@ -159,4 +116,4 @@ not model one-shot actions or composition cleanly.
 - [Lucent ADR-0012: Error Contract and Result Boundary](../../../../Lucent/docs/01-reference/adr/0012-error-contract-and-result-boundary.md)
 - Luminous research: `research/03-技术决策/api-response-error-contract-响应信封与问题详情.md`
 - [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html)
-- [ADR-0007: Network Layer Separation](0007-network-layer-separation.md)
+- [ADR-0004: Network Layer Separation](0004-network-layer-separation.md)

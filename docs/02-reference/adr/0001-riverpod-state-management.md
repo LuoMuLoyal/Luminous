@@ -17,18 +17,12 @@ state, `Provider` for DI, and `FutureProvider`/`StreamProvider` for async data.
 
 ## Options Considered
 
-- Riverpod
-  - Pros: Compile-safe, testable without widget tree, auto-dispose, family/modifier API
-  - Cons: Learning curve for provider scoping
-- Bloc
-  - Pros: Strong separation of events/states, popular in enterprise Flutter
-  - Cons: Boilerplate-heavy, event classes add indirection for simple state
-- Provider
-  - Pros: Simpler API, widely adopted
-  - Cons: No compile-time safety, manual disposal, less powerful for complex state
-- GetX (keep)
-  - Pros: Already in place
-  - Cons: Tight coupling, hard to test, route/DI/snackbar mixing concerns
+| Option | Pros | Cons |
+|--------|------|------|
+| Riverpod | Compile-safe, testable without widget tree, auto-dispose, family/modifier API | Learning curve for provider scoping |
+| Bloc | Strong separation of events/states, popular in enterprise Flutter | Boilerplate-heavy, event classes add indirection for simple state |
+| Provider | Simpler API, widely adopted | No compile-time safety, manual disposal, less powerful for complex state |
+| GetX (keep) | Already in place | Tight coupling, hard to test, route/DI/snackbar mixing concerns |
 
 ## Consequences
 

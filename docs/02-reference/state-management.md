@@ -32,7 +32,7 @@ Repository ← Provider ← (cycle)
 
 ### Provider 声明风格
 
-ADR-0006 引入了 `riverpod_generator`。项目中有两种声明风格，各有适用场景：
+ADR-0003 引入了 `riverpod_generator`。项目中有两种声明风格，各有适用场景：
 
 #### 1. `@riverpod` 注解函数（首选）
 
@@ -305,7 +305,7 @@ snapshot.whenData((data) => ...);
 ### Why Riverpod
 
 See [ADR-0001: Riverpod State Management](adr/0001-riverpod-state-management.md) and
-[ADR-0006: riverpod_generator 与 Auth-Guarded Provider 工厂](adr/0006-riverpod-generator-and-auth-guard.md).
+[ADR-0003: riverpod_generator 与 Auth-Guarded Provider 工厂](adr/0003-riverpod-generator-and-auth-guard.md).
 
 ---
 

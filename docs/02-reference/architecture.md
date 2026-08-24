@@ -193,14 +193,13 @@ migration bridge for any still-unrewritten settings surfaces.
 ### Freezed Immutable Models
 
 Domain entities use the `freezed` package for immutable data classes with union types, JSON
-serialization, and `copyWith`. See [ADR-0003](adr/0003-freezed-immutable-models.md).
+serialization, and `copyWith`.
 
 ### flutter_hooks
 
 Form controllers (`TextEditingController`, `FocusNode`) are managed via `flutter_hooks`
 (`useTextEditingController`, `useFocusNode`) instead of `StatefulWidget` lifecycle. This eliminates
-`initState`/`dispose` boilerplate and reduces widget rebuild scope. See
-[ADR-0004](adr/0004-flutter-hooks-migration.md).
+`initState`/`dispose` boilerplate and reduces widget rebuild scope.
 
 ### Internationalization
 
@@ -209,8 +208,7 @@ User-visible text goes through ARB files + `flutter gen-l10n`. Locale is resolve
 
 ### Melos Monorepo
 
-`melos` manages workspace-level scripts (`melos run daily`, `melos run fullstack`). See
-[ADR-0005](adr/0005-melos-monorepo.md).
+`melos` manages workspace-level scripts (`melos run daily`, `melos run fullstack`).
 
 ### Cross-Feature Import Boundaries
 

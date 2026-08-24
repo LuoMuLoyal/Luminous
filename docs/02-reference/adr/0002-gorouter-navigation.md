@@ -17,19 +17,12 @@ sub-pages. Sub-pages are placed outside the shell so entering them hides the bot
 
 ## Options Considered
 
-- GoRouter + StatefulShellRoute
-  - Pros: Declarative routing, URL-based deep links, built-in tab state preservation, redirect
-     guards
-  - Cons: More upfront setup than ad-hoc push
-- Navigator 2.0 (raw)
-  - Pros: Full flexibility
-  - Cons: Extremely verbose, no built-in shell support
-- Navigator 1.0 (push/pop)
-  - Pros: Simple for small apps
-  - Cons: No deep links, tab state not preserved, URL bar not synced
-- auto_route
-  - Pros: Code generation, type-safe
-  - Cons: Another code-gen dependency, less community adoption than go_router
+| Option | Pros | Cons |
+|--------|------|------|
+| GoRouter + StatefulShellRoute | Declarative routing, URL-based deep links, built-in tab state preservation, redirect guards | More upfront setup than ad-hoc push |
+| Navigator 2.0 (raw) | Full flexibility | Extremely verbose, no built-in shell support |
+| Navigator 1.0 (push/pop) | Simple for small apps | No deep links, tab state not preserved, URL bar not synced |
+| auto_route | Code generation, type-safe | Another code-gen dependency, less community adoption than go_router |
 
 ## Consequences
 
