@@ -3,54 +3,12 @@
 Created: 2026-08-16
 
 > 已决事项见 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md)，其优先于本文件旧「不确定点」表述。
-
 > 来源: `research/02-功能盘点/medicine-用药管理.md`(已审阅;内容以逐功能分析为准改写,速览表/结尾汇总仅作参考)。
 > 执行顺序: 本批共 10 份改造计划,全局顺序见 [`README.md`](README.md);本计划为第 2 位。
 
-## 一、目标与范围
+## 一、剩余改造项
 
-- 范围:`lib/features/medicine/`(presentation/data/domain 全层)+ `lib/features/mine/presentation/pages/current_medicine_edit.dart`;
-  后端 `Lucent/src/modules/medicine-reminders/`、`medicine-dose-logs/`、`medicines/`(含 `risk/` 子目录)。
-- 用药域全链路(档案 currentMedicines → 提醒 → 调度 → 打卡 dose log → 依从 → 风险 → Today 建议)已是真实闭环,
-  本计划不返工,目标两件事:
-  1. 依从性口径统一 P2:后端当日 slot 统计对象(F-5,前端 P1 mapper 已完成);
-  2. 药箱项"停用/归档"语义(F-2,0.1.0 后)。
-- 边界:扫码/搜索与"加入药箱"链路见 scan-search 计划;本地通知网关公共底座见
-  platform-notification-crosscutting 计划保留项(F-2),JPush 密钥与投递落库已由该计划完成(投递三通道见 Lucent ADR-0013;JPush 密钥部署见 Lucent deploy 配置与部署文档);Today 建议卡/漏服规则见 today 计划;队列/Cron 底座见
-  engineering-backend 计划。本计划只覆盖用药模块专属功能点,交叉处引用对应计划。
-
-## 二、保留不动(清单)
-
-以下功能点审计为真实现或行为正确,主线不动:
-
-- F-1 用药主页四区块 dashboard(`MedicinePage` 四区全部由真实 API 组装,降级不伪造)。
-- F-2 药箱管理(currentMedicines 档案增/改/删走 health-context API 真实落库;不补"分组"概念)。
-- F-3 今日计划 slot 打卡(mark API 按槽位真实落库、失败入 pending sync 重放)。
-- F-4 剂量日志(后端 CRUD/mark + 客户端 cache-first + `pending_sync_queue` 离线写队列)。
-- F-6 提醒创建/编辑/启停/删除(多时间槽组操作 + `REMINDER_CHANGED` 事件联动)。
-- F-7 本地通知同步调度(机制说明见下,供跨计划引用)。
-- F-8 后端提醒调度与投递(BullMQ 每分钟 cron → in-app 通知 → `userReminderDelivery` → best-effort JPush)。
-- F-10 风险检查·静态规则引擎(过敏/相互作用/重复成分/食物相互作用 + 覆盖缺口 + 红旗,数据真接 `DrugDataBase/`)。
-- F-11 风险检查·LLM 分析(schema 约束结构化输出,未配置显式 503,stale 如实标记)。
-- F-12 风险检查自动触发(事件 → 标 stale → 5s debounce 自动静态检查)。
-- F-15 快捷操作区(6 入口纯导航,目标路由全部有效;扫码/拍照由 scan-search 计划上浮)。
-- F-20 SMS 提醒通道(灰显"不可用"为诚实降级,保持现状不排期)。
-- F-21 与 Today 建议卡联动(`DOSE_LOG_CHANGED` 驱动建议重算,漏服卡消费 reminder 槽位)。
-
-### F-7 LocalNotificationGateway 本地通知同步调度机制(保留;本节供 mine 计划睡眠提醒引用)
-
-- 现状:`MedicineReminderNotificationCoordinator.resync()`(`medicine/presentation/providers/reminder_notification_coordinator.dart`)
-  取消全部旧通知 → `MedicineReminderNotificationPlanner.plan()` 生成 **7 天 horizon、上限 60 条** 的调度计划 →
-  `LocalNotificationGateway` 逐条调度;`bootstrap.dart` 启动时与设置变更时触发 resync。
-- 受控项:设置页提醒总开关、系统通知权限、声音偏好、提前提醒分钟数、DND 时段、振动开关。
-- 数据来自真实提醒列表(平台审计 platform-capabilities F-2 已确认网关为真实现)。
-- 通知分工已定:同一事件最多一次打扰；前台仅应用内提示，后台本地通知优先，失败或不可达才 JPush，站内信仅保留记录、不再额外弹出。复用本机制的模块(如睡眠提醒)应沿用同一协调器/计划器模式与 resync 触发点。
-
-## 三、改造项(按优先级分组)
-
-### 3.3 P2
-
-**F-5 依从性口径统一 P2 后端统计对象(ObservedMetric 稀疏语义合同;本节为 today/record/report 计划的口径权威来源)**
+### F-5 依从性口径统一 P2 后端统计对象(ObservedMetric 稀疏语义合同;本节为 today/record/report 计划的口径权威来源)
 
 - 统一口径(四方共用;P1 已落地于前端 mapper):分母 = **已到期槽位**(已确认/已跳过/已超时三类),分子 = 已确认槽位;**未确认 ≠ 漏服**,
   漏服语义由 `overdueUnconfirmed` 派生,不落库为 `missed`;未到期槽位不计入分母;无覆盖/无到期槽位显示 `--`。
@@ -63,12 +21,12 @@ Created: 2026-08-16
 - 前后端分工:P1 前端先行(已完成);P2 后端补统计接口后前端切换数据源。
 - 依赖:后端 Active_Product_Loop 已收口该合同；P2 在 0.1.0 前完成。
 
-**F-2 药箱项"停用/归档"语义(可选，0.1.0 后)**
+### F-2 药箱项"停用/归档"语义(可选，0.1.0 后)
 
 - 现状:药箱项只能软删除,短期事件结束后"停药"会丢可见性。
 - 方案:增加停用/归档状态,保留历史不出现在当前用药。涉及 health-context API 与药箱 UI。
 
-## 四、跨计划引用与依赖
+## 二、跨计划引用与依赖
 
 - **引用(他计划拥有)**:F-9 投递落库(已完成,方案与实现见 Lucent ADR-0013);
   队列/Cron 底座(BullMQ Repeatable Job)→ engineering-backend 计划;Today 漏服卡/建议重算细节 → today 计划。
@@ -77,12 +35,12 @@ Created: 2026-08-16
 - **桌面/Web 形态挂起项**(桌面预览面板处置等)不扩展 Flutter 产品面；独立 Next.js + Tauri MVP 于 0.1.0 后启动，本文不展开。
 - 依赖关系:scan-search 的扫码结果"查看详情"真跳转依赖移动端药品详情页(已落地);F-5 P2 后端统计对象依赖合同同步阶段拍板。
 
-## 五、本计划内执行顺序
+## 三、本计划内执行顺序
 
 1. F-5 P2 后端统计对象（0.1.0 前）。
 2. F-2 停用/归档语义（0.1.0 后）。
 
-## 六、已决边界与延期项
+## 四、已决边界与延期项
 
 - `ObservedMetric` 由 Lucent 权威计算，须区分 `observed`、`unknown`、`degraded`、来源和覆盖率；未知不得映射为 0。客户端展示与后端合同均在 0.1.0 前完成。
 - 本地通知展示以稳定通知实例 ID 幂等回写 `local/delivered`；JPush 只作本地失败/不可达回退。

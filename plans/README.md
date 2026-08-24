@@ -34,14 +34,23 @@ YYYY-MM-DD-short-task-name.md
 ## Current Plans
 
 - [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
-  — 中小型到中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门
+  — 中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门
 - [`2026-07-10-legal-compliance-pages.md`](2026-07-10-legal-compliance-pages.md)
+  — 合规/法律页面补全：剩余 P2-1 ICP 备案信息 + About 页增强
 - [`2026-07-29-native-bridging-roadmap.md`](2026-07-29-native-bridging-roadmap.md)
+  — 原生桥接路线图：后台同步、推送通知、健康数据集成、生物识别、应用快捷方式、Live Activity、桌面热键
 - [`2026-08-01-ai-chat-redesign-plan.md`](2026-08-01-ai-chat-redesign-plan.md)
+  — AI 对话页重构剩余：阶段 3 会话删除/重命名（后端接口阻塞）、阶段 6 桌面 split-view
 - [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)
+  — Flutter 3.47 升级：已落地 refactor，测试被上游语义回归阻塞
+- [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)
+  — 产品表面路线：手机核心 + 桌面 SaaS 差异化 + Web 第三客户端（0.1.0 后启动）
 - [`2026-08-17-error-handling-reform-plan.md`](2026-08-17-error-handling-reform-plan.md)
-  — 错误处理硬切：fpdart + LucentFailure + RFC 9457；2026-08-22 已进入冻结新功能的硬切窗口，0.1.0 后遗留工作不再阻塞
-### 功能盘点改造计划(2026-08-16,共 10 份)
+  — 错误处理硬切：fpdart + LucentFailure + RFC 9457；硬切窗口已开启
+- [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md)
+  — 功能盘点改造决策记录（十份计划共享，优先于各计划旧表述）
+
+### 功能盘点改造计划(2026-08-16,共 9 份保留)
 
 来源:`research/02-功能盘点/` 十份调研文档(已审阅;内容以各文档「逐功能分析」为准改写,
 速览表/结尾汇总仅作参考)。跨功能域共用的内容只在顺序靠前的计划里写全,靠后的计划只做引用;
@@ -54,21 +63,21 @@ YYYY-MM-DD-short-task-name.md
 1. [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)
    — 横切基建:F-7 高德天气 API 真实化与 F-6 health_sync 自动同步执行器(均 0.1.0 后);投递三通道落库、JPush 密钥已完成
 2. [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md)
-   — 用药:本批任务全部完成(详情页/i18n/口径 P1/P2 收尾);剩余 F-5 P2 后端统计对象(0.1.0 前)与 F-2 停用/归档(0.1.0 后)
+   — 用药:剩余 F-5 P2 后端统计对象(0.1.0 前)与 F-2 停用/归档(0.1.0 后)
 3. [`2026-08-16-scan-search-remediation-plan.md`](2026-08-16-scan-search-remediation-plan.md)
-   — 扫码/搜索:本批任务全部完成(识别出口接建档闭环、预检即时化、去假置信度、候选去重合并);剩余 F-2 条码等值匹配(0.1.0 后)
+   — 扫码/搜索:本批任务全部完成;剩余 F-2 条码等值匹配(0.1.0 后)
 4. [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md)
-   — 今日建议:0.1.0 前任务已完成(摘要卡接线、触发扩展与升级通知、skip_dose/静默刷新/重试/一键饮水/未读数/真实化等 13 项);剩余 F-8 `remainingCount` 退役(0.1.0 前)与 F-14 环境装配(0.1.0 后)
+   — 今日建议:剩余 F-8 `remainingCount` 退役(0.1.0 前)与 F-14 环境装配(0.1.0 后)
 5. AI 助手改造计划（2026-08-16，实施完毕文件已删）
-   — 本批任务全部完成(P0 三大信任缺口、F-2 会话重命名删除、F-5b 重生/断流补偿、F-9 记忆压缩、F-11/F-16 一致性、F-15 语料分层、P2 批次);剩余 F-14/F-15 来源条元数据后端投影与记忆擦除设置页入口(0.1.0 后)
+   — 剩余 F-14/F-15 来源条元数据后端投影与记忆擦除设置页入口(0.1.0 后)
 6. [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md)
-   — 记录:0.1.0 前任务全部完成(摘要网格接线与饮水 ml 角标、饮水目标读 user-settings、详情页确认入口、静态残留清理、Today 联动验证);剩余 P1-3 餐食分层与 P1-4 vital 时间序列(0.1.0 后)、P2-3/P2-4 桌面高级能力冻结
+   — 记录:剩余 P1-3 餐食分层与 P1-4 vital 时间序列(0.1.0 后)、P2-3/P2-4 桌面高级能力冻结
 7. [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md)
-   — 健康事件与档案:0.1.0 前任务全部完成(历史事件详情接线与触发记录展示、事件专属升级通知与 topic 补全、档案提醒真实化、单位制切换、完成度口径);剩余 H-4 kind 筛选、weightKg 时间序列、conditions 上下文(0.1.0 后)
+   — 健康事件与档案:剩余 H-4 kind 筛选、weightKg 时间序列、conditions 上下文(均 0.1.0 后)
 8. [`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)
-   — 报告:0.1.0 前部分完成——就诊摘要六开关、历史翻页、纵向洞察服务端口径与移除综合评分已落地;剩余 Review 视图装配(R-3)、legacy 重装配 #19/#21/#22 与后端裁剪(R-4)、409 双保险(R-5)、文档漂移(R-6)
+   — 报告:剩余 Review 视图装配(R-3)、legacy 重装配 #19/#21/#22 与后端裁剪(R-4)、409 双保险(R-5)、文档漂移(R-6)
 9. [`2026-08-16-mine-settings-remediation-plan.md`](2026-08-16-mine-settings-remediation-plan.md)
-   — 个人中心与设置:PIN elevation 接线、假开关治理、support 接口清理
+   — 个人中心与设置:剩余 P1-3 图片质量/仅 Wi-Fi 同步(0.1.0 后)
 10. [`2026-08-16-engineering-backend-plan.md`](2026-08-16-engineering-backend-plan.md)
     — 工程与后端平台:基座保留、计划态投入暂缓及触发条件
 
