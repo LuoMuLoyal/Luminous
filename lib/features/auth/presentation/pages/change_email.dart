@@ -119,7 +119,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                               final ok = await accountNotifier.changeEmail(
                                 newEmail: emailController.text,
                                 code: codeController.text,
-                                password: passwordController.text,
+                                password: passwordController.text.trim(),
                               );
                               if (!ok && context.mounted) {
                                 await showAuthAccountFailureToast(

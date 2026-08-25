@@ -151,10 +151,6 @@ Future<void> showAuthAccountFailureToast(
   final String? message;
   if (state.errorCode == 'AUTH_PASSWORD_NOT_SET') {
     message = l10n.authPasswordNotSetToast;
-  } else if (state.errorCode == 'AUTH_ELEVATION_TOKEN_INVALID') {
-    // Legacy Security PIN elevation failures now result in a generic password
-    // prompt. This branch is retained until Task 9 removes the PIN code.
-    message = l10n.authPasswordNotSetToast;
   } else {
     message = state.errorMessage?.isNotEmpty == true
         ? state.errorMessage
