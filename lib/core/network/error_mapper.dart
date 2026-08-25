@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/map_utils.dart';
@@ -17,17 +16,10 @@ abstract final class LucentErrorMapper {
       return error;
     }
 
-    if (error is LucentApiException) {
-      return _fromLegacyLocalException(error);
-    }
-
     if (error is DioException) {
       final embedded = error.error;
       if (embedded is LucentFailure) {
         return embedded;
-      }
-      if (embedded is LucentApiException) {
-        return _fromLegacyLocalException(embedded);
       }
 
       final response = error.response;
@@ -79,39 +71,6 @@ abstract final class LucentErrorMapper {
       traceId: _traceIdFor(error),
       cause: error,
     );
-  }
-
-  /// Transitional adapter for the last legacy construction site of
-  /// [LucentApiException]: the WeChat mobile auth client throws it for local
-  /// SDK failures (not installed / auth cancelled). The HTTP boundary is
-  /// already [LucentFailure]; this branch only projects that retired local
-  /// exception into the current failure type.
-  static LucentFailure _fromLegacyLocalException(LucentApiException error) {
-    final kind = error.isNetworkConnectivityError
-        ? LucentFailureKind.network
-        : _kindForStatus(error.statusCode);
-    return LucentFailure(
-      kind: kind,
-      message: error.message,
-      code: error.code?.toString(),
-      statusCode: error.statusCode,
-      traceId: error.traceId,
-      networkErrorCode: error.networkErrorCode,
-      cause: error,
-    );
-  }
-
-  static LucentFailureKind _kindForStatus(int? statusCode) {
-    if (statusCode == 401 || statusCode == 403) {
-      return LucentFailureKind.authentication;
-    }
-    if (statusCode != null && statusCode >= 500) {
-      return LucentFailureKind.server;
-    }
-    if (statusCode != null && statusCode >= 400) {
-      return LucentFailureKind.business;
-    }
-    return LucentFailureKind.unknown;
   }
 
   static String? _traceIdFor(DioException error) {

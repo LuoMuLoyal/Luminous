@@ -57,8 +57,12 @@ class LucentTodayAiRepository implements TodayAiRepository {
           return event.analysis;
         }
       }
-      // 流结束但无最终结果：本地不变量违规，不当作服务端失败。
-      throw StateError('今日 AI 流式响应已结束，但没有返回最终结果。');
+      // 流结束但无最终结果：服务端未返回有效数据，视为可恢复失败。
+      throw const LucentFailure(
+        kind: LucentFailureKind.business,
+        code: 'AI_EMPTY_RESULT',
+        message: 'Today AI stream ended without a final result.',
+      );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 

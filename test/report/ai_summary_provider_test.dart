@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/repositories/ai_summary.dart';
@@ -245,8 +245,9 @@ void main() {
             path: '/api/v1/user/reports/summary/generate',
           ),
           type: DioExceptionType.badResponse,
-          error: const LucentApiException(
-            code: 403001,
+          error: const LucentFailure(
+            kind: LucentFailureKind.business,
+            code: '403001',
             message: 'AI summaries are disabled.',
             statusCode: 403,
           ),

@@ -90,17 +90,19 @@ class QuickEntryUndoService {
         emitDataChange(DataChangeTopic.dailyRecords);
       case QuickEntryUndoActionType.deleteDoseLog:
         final deleteDoseLog = this.deleteDoseLog;
-        if (deleteDoseLog == null) {
-          throw StateError('Dose log delete undo is not configured.');
-        }
-        await deleteDoseLog(action.doseLogId!);
+        assert(
+          deleteDoseLog != null,
+          'Dose log delete undo is not configured.',
+        );
+        await deleteDoseLog!(action.doseLogId!);
         emitDataChange(DataChangeTopic.doseLogs);
       case QuickEntryUndoActionType.restoreDoseLogStatus:
         final updateDoseLogStatus = this.updateDoseLogStatus;
-        if (updateDoseLogStatus == null) {
-          throw StateError('Dose log status restore undo is not configured.');
-        }
-        await updateDoseLogStatus(action.doseLogId!, action.previousStatus!);
+        assert(
+          updateDoseLogStatus != null,
+          'Dose log status restore undo is not configured.',
+        );
+        await updateDoseLogStatus!(action.doseLogId!, action.previousStatus!);
         emitDataChange(DataChangeTopic.doseLogs);
       case QuickEntryUndoActionType.batch:
         for (final nestedAction in action.actions.reversed) {

@@ -9,7 +9,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
@@ -357,23 +356,12 @@ class AssistantController extends Notifier<AssistantState> {
       return AssistantSendErrorType.server;
     }
     if (error is DioException) {
-      // 运行时链上网络失败经 ErrorInterceptor 携带 LucentFailure 重新抛出；
-      // 遗留 LucentApiException 也一并递归分类（旧拦截器路径的防御完备性）。
+      // 运行时链上网络失败经 ErrorInterceptor 携带 LucentFailure 重新抛出。
       final embedded = error.error;
       if (embedded is LucentFailure) {
         return _classifySendError(embedded);
       }
-      if (embedded is LucentApiException) {
-        return _classifySendError(embedded);
-      }
       return AssistantSendErrorType.unknown;
-    }
-    if (error is LucentApiException) {
-      // 遗留兼容:网络层中断(连接断开/超时)视为流中断,触发 F-3 残句保留。
-      if (error.isNetworkConnectivityError) {
-        return AssistantSendErrorType.streamInterrupted;
-      }
-      return AssistantSendErrorType.server;
     }
     if (error is StateError || error is FormatException) {
       return AssistantSendErrorType.streamInterrupted;
@@ -405,7 +393,7 @@ class AssistantController extends Notifier<AssistantState> {
   Future<void> regenerateLastMessage() async {
     final conversationId = state.conversationId;
     if (conversationId == null || conversationId.isEmpty) {
-      throw StateError('没有可重新生成的持久化会话');
+      throw StateError('No persisted conversation to regenerate.');
     }
     if (state.isSending || state.isLoadingConversation) {
       return;
@@ -697,7 +685,7 @@ class AssistantController extends Notifier<AssistantState> {
     // proposal to confirm.
     final conversationId = state.conversationId;
     if (conversationId == null || conversationId.isEmpty) {
-      throw StateError('无法确认提案：当前没有持久化会话，不存在可确认的挂起提案。');
+      throw StateError('No persisted conversation for proposal confirmation.');
     }
 
     _updateProposalState(
@@ -771,7 +759,9 @@ class AssistantController extends Notifier<AssistantState> {
 
     final userMessage = _precedingUserMessage(messageId);
     if (userMessage == null) {
-      throw StateError('找不到产生该提案的消息');
+      throw StateError(
+        'Could not find the message that produced this proposal.',
+      );
     }
 
     await _sendMessageInternal(userMessage.content, appendUserMessage: false);

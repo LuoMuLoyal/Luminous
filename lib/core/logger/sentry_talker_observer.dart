@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/trace_context.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -49,13 +48,9 @@ class SentryTalkerObserver extends TalkerObserver {
     String? traceId;
     if (error is LucentFailure) {
       traceId = error.traceId;
-    } else if (error is LucentApiException) {
-      traceId = error.traceId;
     } else if (error is DioException) {
       final embedded = error.error;
       if (embedded is LucentFailure) {
-        traceId = embedded.traceId;
-      } else if (embedded is LucentApiException) {
         traceId = embedded.traceId;
       }
     }

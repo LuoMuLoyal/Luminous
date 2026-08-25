@@ -11,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
@@ -1152,7 +1151,11 @@ class _ErrorStreamAssistantRepository
     String? conversationId,
   }) {
     return Stream<AssistantGenerationEvent>.error(
-      const LucentApiException(message: '服务端出现问题', statusCode: 503),
+      const LucentFailure(
+        kind: LucentFailureKind.server,
+        message: 'Server error.',
+        statusCode: 503,
+      ),
     );
   }
 }
@@ -1609,7 +1612,11 @@ class _RetryAwareAssistantRepository
     _attempt += 1;
 
     if (_attempt == 1) {
-      throw const LucentApiException(message: '服务端出现问题', statusCode: 503);
+      throw const LucentFailure(
+        kind: LucentFailureKind.server,
+        message: 'Server error.',
+        statusCode: 503,
+      );
     }
 
     yield const AssistantGenerationChunkEvent('先从最近三天入睡时间波动来看。');

@@ -3,7 +3,6 @@
 // Removing this would force every consumer to add a separate lucent_api import.
 export 'package:lucent_api/lucent_api.dart';
 
-export 'api_exception.dart';
 export 'api_paths.dart';
 export 'base_url.dart';
 export 'client_providers.dart';

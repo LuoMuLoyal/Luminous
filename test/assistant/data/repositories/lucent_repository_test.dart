@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/problem_details.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
@@ -60,7 +59,10 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   Future<lucent.AssistantCapabilitiesResponseDto> getCapabilities() async {
     _maybeThrow();
     if (_capabilities == null) {
-      throw const LucentApiException(message: 'not configured');
+      throw const LucentFailure(
+        kind: LucentFailureKind.unknown,
+        message: 'not configured',
+      );
     }
     return _capabilities;
   }
@@ -85,7 +87,10 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     lastOpenedConversationId = conversationId;
     _maybeThrow();
     if (_openedConversation == null) {
-      throw const LucentApiException(message: 'not found');
+      throw const LucentFailure(
+        kind: LucentFailureKind.unknown,
+        message: 'not found',
+      );
     }
     return _openedConversation;
   }
@@ -1308,7 +1313,10 @@ void main() {
     test('maps datasource failures to Left', () async {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(
-          failureToThrow: const LucentApiException(message: 'delete failed'),
+          failureToThrow: const LucentFailure(
+            kind: LucentFailureKind.business,
+            message: 'delete failed',
+          ),
         ),
       );
       final failure = await expectTaskLeft(repo.deleteConversation('conv-1'));
@@ -1371,14 +1379,16 @@ void main() {
     test('rename failure keeps the original cause on Left', () async {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(
-          failureToThrow: const LucentApiException(message: 'rename failed'),
+          failureToThrow: const LucentFailure(
+            kind: LucentFailureKind.business,
+            message: 'rename failed',
+          ),
         ),
       );
       final failure = await expectTaskLeft(
         repo.renameConversation(conversationId: 'conv-1', title: '新标题'),
       );
       expect(failure.message, 'rename failed');
-      expect(failure.cause, isA<LucentApiException>());
     });
   });
 }

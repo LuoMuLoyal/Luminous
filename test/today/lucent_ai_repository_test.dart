@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
@@ -422,13 +421,14 @@ void main() {
       });
 
       test('propagates stream errors', () async {
-        dataSource.streamError = const LucentApiException(
-          message: 'AI 服务暂时不可用',
+        dataSource.streamError = const LucentFailure(
+          kind: LucentFailureKind.server,
+          message: 'AI service unavailable.',
         );
 
         expect(
           () => repo.generateStream().toList(),
-          throwsA(isA<LucentApiException>()),
+          throwsA(isA<LucentFailure>()),
         );
       });
 
@@ -470,22 +470,24 @@ void main() {
       });
 
       test(
-        'stream ending without a result event becomes an unknown Left',
+        'stream ending without a result event becomes a business Left',
         () async {
           dataSource.streamEvents = [const TodayAiRemoteSummaryEvent('分析中...')];
 
           final failure = await expectTaskLeft(repo.generate());
 
-          expect(failure.kind, LucentFailureKind.unknown);
+          expect(failure.kind, LucentFailureKind.business);
+          expect(failure.code, 'AI_EMPTY_RESULT');
         },
       );
 
-      test('empty stream becomes an unknown Left', () async {
+      test('empty stream becomes a business Left', () async {
         dataSource.streamEvents = [];
 
         final failure = await expectTaskLeft(repo.generate());
 
-        expect(failure.kind, LucentFailureKind.unknown);
+        expect(failure.kind, LucentFailureKind.business);
+        expect(failure.code, 'AI_EMPTY_RESULT');
       });
 
       test('returns analysis immediately when result is first event', () async {

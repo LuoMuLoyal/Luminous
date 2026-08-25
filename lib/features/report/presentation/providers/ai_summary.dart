@@ -1,6 +1,7 @@
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary.dart';
@@ -82,7 +83,11 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
         }
       }
 
-      throw StateError('报告 AI 流式响应已结束，但没有返回最终结果。');
+      throw const LucentFailure(
+        kind: LucentFailureKind.business,
+        code: 'AI_EMPTY_RESULT',
+        message: 'Report AI stream ended without a final result.',
+      );
     } catch (error) {
       ref
           .read(talkerProvider)

@@ -420,7 +420,7 @@ void main() {
         c.read(
           clinicSummaryPreviewProvider(kClinicSummaryDefaultFields).future,
         ),
-        // The error interceptor re-wraps the mapped LucentApiException
+        // The error interceptor re-wraps the mapped LucentFailure
         // inside a DioException, so the provider sees a DioException.
         throwsA(isA<DioException>()),
       );
@@ -538,7 +538,7 @@ void main() {
 
       await expectLater(
         c.read(clinicSummarySharedProvider('abc123').future),
-        // The error interceptor re-wraps the mapped LucentApiException
+        // The error interceptor re-wraps the mapped LucentFailure
         // inside a DioException, so the provider sees a DioException.
         throwsA(isA<DioException>()),
       );

@@ -3,7 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:fluwx/fluwx.dart';
-import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client_base.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_config.dart';
 
@@ -24,7 +25,9 @@ class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
   @override
   Future<String> authorize() async {
     if (!isSupported) {
-      throw const LucentApiException(
+      throw const LucentFailure(
+        kind: LucentFailureKind.business,
+        code: 'WECHAT_SDK_NOT_CONFIGURED',
         message: 'WeChat mobile SDK login is not configured.',
       );
     }
@@ -37,14 +40,20 @@ class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
           : WechatMobileAuthConfig.iosUniversalLink.trim(),
     );
     if (!registered) {
-      throw const LucentApiException(
+      throw const LucentFailure(
+        kind: LucentFailureKind.business,
+        code: 'WECHAT_SDK_REGISTRATION_FAILED',
         message: 'WeChat mobile SDK registration failed.',
       );
     }
 
     final installed = await fluwx.isWeChatInstalled;
     if (!installed) {
-      throw const LucentApiException(message: 'WeChat is not installed.');
+      throw const LucentFailure(
+        kind: LucentFailureKind.business,
+        code: 'WECHAT_NOT_INSTALLED',
+        message: 'WeChat is not installed.',
+      );
     }
 
     final state = _newState();
@@ -63,7 +72,9 @@ class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
 
       final errStr = response.errStr?.trim();
       completer.completeError(
-        LucentApiException(
+        LucentFailure(
+          kind: LucentFailureKind.business,
+          code: 'WECHAT_AUTH_CANCELLED',
           message: errStr != null && errStr.isNotEmpty
               ? errStr
               : 'WeChat authorization was cancelled or failed.',
@@ -77,15 +88,18 @@ class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
         which: NormalAuth(scope: 'snsapi_userinfo', state: state),
       );
       if (!started) {
-        throw const LucentApiException(
+        throw const LucentFailure(
+          kind: LucentFailureKind.business,
+          code: 'WECHAT_AUTH_START_FAILED',
           message: 'Could not start WeChat authorization.',
         );
       }
 
       return await completer.future.timeout(const Duration(minutes: 10));
     } on TimeoutException {
-      throw const LucentApiException(
+      throw LucentFailure.network(
         message: 'WeChat authorization timed out.',
+        networkErrorCode: NetworkErrorCode.connectionTimeout,
       );
     } finally {
       cancelable.cancel();
