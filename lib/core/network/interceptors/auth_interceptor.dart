@@ -286,7 +286,7 @@ class AuthInterceptor extends Interceptor {
         return const _RefreshAuthFailure();
       }
       return const _RefreshTransientFailure();
-    } catch (e, st) {
+    } on Exception catch (e, st) {
       // e.g. session store write failures — still degrade to null rather
       // than letting the original request hang.
       appTalker.error('AuthInterceptor: token refresh failed: $e', st);

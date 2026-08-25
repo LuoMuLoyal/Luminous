@@ -39,14 +39,6 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     return const AuthAccountState();
   }
 
-  /// Resolves a repository [TaskEither] by rethrowing the [LucentFailure]
-  /// on Left so the surrounding try/catch / [_run] projects it into
-  /// action state.
-  Future<T> _resolve<T>(TaskEither<LucentFailure, T> task) async {
-    final either = await task.run();
-    return either.fold((failure) => throw failure, (value) => value);
-  }
-
   Future<bool> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
@@ -96,26 +88,22 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }
 
   Future<bool> verifyEmail({required String token}) async {
-    return _run(() async {
-      await _resolve(
-        ref.read(authRepositoryProvider).verifyEmail(token: token),
-      );
-      final user = await _resolve(
-        ref.read(authRepositoryProvider).fetchAccount(),
-      );
-      ref.read(authSessionProvider.notifier).applyUser(user);
-    });
+    return _run(
+      ref
+          .read(authRepositoryProvider)
+          .verifyEmail(token: token)
+          .flatMap((_) => ref.read(authRepositoryProvider).fetchAccount()),
+      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+    );
   }
 
   Future<bool> updateProfile({String? nickname, String? avatar}) async {
-    return _run(() async {
-      final user = await _resolve(
-        ref
-            .read(authRepositoryProvider)
-            .updateAccountProfile(nickname: nickname, avatar: avatar),
-      );
-      ref.read(authSessionProvider.notifier).applyUser(user);
-    });
+    return _run(
+      ref
+          .read(authRepositoryProvider)
+          .updateAccountProfile(nickname: nickname, avatar: avatar),
+      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+    );
   }
 
   Future<bool> changeEmail({
@@ -134,58 +122,50 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       return false;
     }
 
-    return _run(() async {
-      final user = await _resolve(
-        ref
-            .read(authRepositoryProvider)
-            .changeEmail(
-              newEmail: newEmail,
-              code: code,
-              password: password,
-              currentUser: currentUser,
-            ),
-      );
-      ref.read(authSessionProvider.notifier).applyUser(user);
-    });
+    return _run(
+      ref
+          .read(authRepositoryProvider)
+          .changeEmail(
+            newEmail: newEmail,
+            code: code,
+            password: password,
+            currentUser: currentUser,
+          ),
+      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+    );
   }
 
   Future<bool> changePassword({
     required String password,
     required String newPassword,
   }) async {
-    return _run(() async {
-      await _resolve(
-        ref
-            .read(authRepositoryProvider)
-            .changePassword(password: password, newPassword: newPassword),
-      );
-      ref.read(authSessionProvider.notifier).clearLocalSession();
-    });
+    return _run(
+      ref
+          .read(authRepositoryProvider)
+          .changePassword(password: password, newPassword: newPassword),
+      (_) => ref.read(authSessionProvider.notifier).clearLocalSession(),
+    );
   }
 
   Future<bool> deleteAccount({String? password, String? code}) async {
-    return _run(() async {
-      await _resolve(
-        ref
-            .read(authRepositoryProvider)
-            .deleteAccount(password: password, code: code),
-      );
-      ref.read(authSessionProvider.notifier).clearLocalSession();
-    });
+    return _run(
+      ref
+          .read(authRepositoryProvider)
+          .deleteAccount(password: password, code: code),
+      (_) => ref.read(authSessionProvider.notifier).clearLocalSession(),
+    );
   }
 
   Future<bool> unlinkIdentity({
     required String identityId,
     required String password,
   }) async {
-    return _run(() async {
-      final user = await _resolve(
-        ref
-            .read(authRepositoryProvider)
-            .unlinkIdentity(identityId: identityId, password: password),
-      );
-      ref.read(authSessionProvider.notifier).applyUser(user);
-    });
+    return _run(
+      ref
+          .read(authRepositoryProvider)
+          .unlinkIdentity(identityId: identityId, password: password),
+      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+    );
   }
 
   /// Starts the WeChat identity linking flow.
@@ -208,12 +188,15 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     try {
       final code = await wechat.tryMobileAuth();
       if (code != null) {
-        final user = await _resolve(
-          remote.linkWechatMobileIdentity(code: code),
-        );
-        ref.read(authSessionProvider.notifier).applyUser(user);
-        state = state.copyWith(isSubmitting: false, successMessage: '');
-        return WechatIdentityLinkResult.completed;
+        final result = await remote.linkWechatMobileIdentity(code: code).run();
+        switch (result) {
+          case Left(:final value):
+            throw value;
+          case Right(:final value):
+            ref.read(authSessionProvider.notifier).applyUser(value);
+            state = state.copyWith(isSubmitting: false, successMessage: '');
+            return WechatIdentityLinkResult.completed;
+        }
       }
     } catch (error) {
       ref
@@ -232,15 +215,17 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       try {
         final result = await wechat.tryDesktopAuth(forIdentityLink: true);
         if (result != null) {
-          final user = await _resolve(
-            remote.linkWechatWebIdentity(
-              code: result.code,
-              state: result.state,
-            ),
-          );
-          ref.read(authSessionProvider.notifier).applyUser(user);
-          state = state.copyWith(isSubmitting: false, successMessage: '');
-          return WechatIdentityLinkResult.completed;
+          final linkResult = await remote
+              .linkWechatWebIdentity(code: result.code, state: result.state)
+              .run();
+          switch (linkResult) {
+            case Left(:final value):
+              throw value;
+            case Right(:final value):
+              ref.read(authSessionProvider.notifier).applyUser(value);
+              state = state.copyWith(isSubmitting: false, successMessage: '');
+              return WechatIdentityLinkResult.completed;
+          }
         }
         // Desktop supported but failed (browser or state mismatch)
         state = state.copyWith(isSubmitting: false);
@@ -287,36 +272,41 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     required String code,
     required String state,
   }) async {
-    return _run(() async {
-      final user = await _resolve(
-        ref
-            .read(authRepositoryProvider)
-            .linkWechatWebIdentity(code: code, state: state),
-      );
-      ref.read(authSessionProvider.notifier).applyUser(user);
-    });
+    return _run(
+      ref
+          .read(authRepositoryProvider)
+          .linkWechatWebIdentity(code: code, state: state),
+      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+    );
   }
 
-  Future<bool> _run(Future<void> Function() action) async {
+  /// Runs a [TaskEither] from the repository and applies [onSuccess]
+  /// to the Right value. Left maps directly to error state via [_fail] —
+  /// no throw needed.
+  Future<bool> _run<T>(
+    TaskEither<LucentFailure, T> task,
+    FutureOr<void> Function(T value) onSuccess,
+  ) async {
     state = state.copyWith(
       isSubmitting: true,
       errorMessage: null,
       errorCode: null,
       successMessage: null,
     );
-    try {
-      await action();
-      state = state.copyWith(isSubmitting: false, successMessage: '');
-      return true;
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('AuthAccountNotifier._run: failed: $error');
-      return _fail(error);
+    final result = await task.run();
+    if (result is Left<LucentFailure, T>) {
+      return _fail(result.value);
     }
+    final right = result as Right<LucentFailure, T>;
+    await onSuccess(right.value);
+    state = state.copyWith(isSubmitting: false, successMessage: '');
+    return true;
   }
 
   bool _fail(Object error) {
+    ref
+        .read(talkerProvider)
+        .error('AuthAccountNotifier: action failed: $error');
     final apiError = LucentErrorMapper.fromObject(error);
     state = state.copyWith(
       isSubmitting: false,

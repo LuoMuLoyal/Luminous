@@ -389,28 +389,33 @@ class LucentAuthRepository implements AuthRepository {
   TaskEither<LucentFailure, AuthSession> refreshSession({
     required String refreshToken,
   }) {
-    return TaskEither.tryCatch(() async {
-      final response = await _client.auth.sessionControllerRefreshV1(
-        refreshDto: RefreshDto(refreshToken: refreshToken.trim()),
-      );
-      final tokens = _requireBody(response.data, 'refreshSession');
-      await _sessionStore.write(
-        LucentSessionTokens(
+    // Step 1: refresh tokens (with side-effect: persist to session store).
+    final refreshTokens =
+        TaskEither<LucentFailure, RefreshResponseDto>.tryCatch(() async {
+          final response = await _client.auth.sessionControllerRefreshV1(
+            refreshDto: RefreshDto(refreshToken: refreshToken.trim()),
+          );
+          final tokens = _requireBody(response.data, 'refreshSession');
+          await _sessionStore.write(
+            LucentSessionTokens(
+              accessToken: tokens.accessToken,
+              refreshToken: tokens.refreshToken,
+            ),
+          );
+          return tokens;
+        }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+
+    // Step 2: fetch account and compose the session — no throw inside.
+    return refreshTokens.flatMap(
+      (tokens) => fetchAccount().map(
+        (user) => AuthSession(
+          user: user,
           accessToken: tokens.accessToken,
           refreshToken: tokens.refreshToken,
+          expiresInSeconds: tokens.expiresIn.toInt(),
         ),
-      );
-      final user = switch (await fetchAccount().run()) {
-        Left(:final value) => throw value,
-        Right(:final value) => value,
-      };
-      return AuthSession(
-        user: user,
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-        expiresInSeconds: tokens.expiresIn.toInt(),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+      ),
+    );
   }
 
   @override

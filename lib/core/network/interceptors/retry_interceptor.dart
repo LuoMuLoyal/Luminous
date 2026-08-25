@@ -110,6 +110,7 @@ class RetryInterceptor extends Interceptor {
         response: err.response,
         type: err.type,
         error: failure,
+        message: err.message,
         stackTrace: err.stackTrace,
       );
     } on FormatException {
