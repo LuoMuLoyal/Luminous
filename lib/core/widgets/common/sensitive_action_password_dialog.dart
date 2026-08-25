@@ -80,15 +80,13 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
                 .copyWith(color: colors.mutedForeground),
           ),
           const SizedBox(height: Spacing.level4),
-          TextFormField(
+          FTextFormField.password(
             key: const Key('sensitive-action-password-field'),
-            controller: controller,
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: label ?? l10n.authSensitiveActionPasswordDialogLabel,
-              border: const OutlineInputBorder(),
-            ),
-            onFieldSubmitted: (_) => handleConfirm(),
+            control: FTextFieldControl.managed(controller: controller),
+            label: Text(label ?? l10n.authSensitiveActionPasswordDialogLabel),
+            autofocus: true,
+            textInputAction: TextInputAction.done,
+            onSubmit: (_) => handleConfirm(),
           ),
           if (errorMessage.value != null) ...[
             const SizedBox(height: Spacing.level2),
