@@ -36,7 +36,10 @@ void main() {
       ),
     );
 
-    await tester.enterText(find.byType(EditableText).at(0), 'next@example.com');
+    await tester.enterText(
+      find.byKey(const Key('change-email-field')),
+      'next@example.com',
+    );
     await tester.tap(find.text('发送验证码'));
     await tester.pumpAndSettle();
 
@@ -73,8 +76,14 @@ void main() {
       ),
     );
 
-    await tester.enterText(find.byType(EditableText).at(0), 'next@example.com');
-    await tester.enterText(find.byType(EditableText).at(1), 'current-password');
+    await tester.enterText(
+      find.byKey(const Key('change-email-field')),
+      'next@example.com',
+    );
+    await tester.enterText(
+      find.byKey(const Key('change-email-password-field')),
+      'current-password',
+    );
     await tester.enterText(find.byType(EditableText).at(2), '123456');
     await tester.tap(find.widgetWithText(FButton, '更新邮箱'));
     await tester.pumpAndSettle();

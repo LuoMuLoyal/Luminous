@@ -46,6 +46,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FTextFormField.email(
+                    key: const Key('change-email-field'),
                     control: FTextFieldControl.managed(
                       controller: emailController,
                     ),
@@ -60,6 +61,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                   ),
                   const SizedBox(height: Spacing.level4),
                   FTextFormField.password(
+                    key: const Key('change-email-password-field'),
                     control: FTextFieldControl.managed(
                       controller: passwordController,
                     ),
