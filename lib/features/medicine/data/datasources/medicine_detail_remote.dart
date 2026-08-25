@@ -34,7 +34,7 @@ class MedicineDetailRemoteDataSource {
     final dto = response.data;
     if (dto == null) {
       throw LucentFailure.network(
-        message: '药品详情响应体为空',
+        message: 'Empty medicine detail response body',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }

@@ -38,7 +38,7 @@ class DoseLogRemoteDataSource {
       appTalker.error(
         'DoseLogRemoteDataSource.fetchForDate: items is not a list: $items',
       );
-      throw StateError('用药记录列表格式异常');
+      throw const FormatException('Dose log list items is not a list');
     }
     return items
         .map<DoseLogItem>((d) => _fromJson(_requireItemMap(d)))
@@ -127,7 +127,7 @@ class DoseLogRemoteDataSource {
     final data = coerceToStringMap(response.data);
     if (data == null) {
       throw LucentFailure.network(
-        message: '用药记录响应数据为空',
+        message: 'Empty dose log response body',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
@@ -142,7 +142,7 @@ class DoseLogRemoteDataSource {
       appTalker.error(
         'DoseLogRemoteDataSource._requireItemMap: item is not a map: $item',
       );
-      throw StateError('用药记录项格式异常');
+      throw const FormatException('Dose log item is not a map');
     }
     return map;
   }

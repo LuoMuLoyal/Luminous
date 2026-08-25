@@ -147,7 +147,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
       final body = response.data;
       if (body == null) {
         throw LucentFailure.network(
-          message: '用药提醒组响应体为空',
+          message: 'Empty reminder group response body',
           networkErrorCode: NetworkErrorCode.emptyResponse,
         );
       }
@@ -249,7 +249,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
                 'MedicineReminderRemoteDataSource._responseItems: item is '
                 'not a map: $item',
               );
-              throw StateError('用药提醒项格式异常');
+              throw const FormatException('Reminder item is not a map');
             }
             return map;
           })
@@ -259,14 +259,14 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
       'MedicineReminderRemoteDataSource._responseItems: items is not a '
       'list: $items',
     );
-    throw StateError('用药提醒列表格式异常');
+    throw const FormatException('Reminder items is not a list');
   }
 
   Map<String, dynamic> _responseData(Object? value) {
     final body = coerceToStringMap(value);
     if (body == null) {
       throw LucentFailure.network(
-        message: '用药提醒响应体为空',
+        message: 'Empty reminder response body',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }

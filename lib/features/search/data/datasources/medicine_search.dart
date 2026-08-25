@@ -51,7 +51,7 @@ class MedicineSearchRemoteDataSource {
   T _requireBody<T>(T? body, String operation) {
     if (body == null) {
       throw LucentFailure.network(
-        message: 'API 返回空响应体（$operation）',
+        message: 'Empty response body ($operation)',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }

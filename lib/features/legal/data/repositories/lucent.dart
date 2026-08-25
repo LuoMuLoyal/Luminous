@@ -116,9 +116,9 @@ class LucentLegalRepository implements LegalRepository {
   /// (settings / notification `_requireData` precedent).
   T _requireData<T>(T? data, {String? operation}) {
     if (data == null) {
-      final context = operation == null ? '' : '（$operation）';
+      final context = operation != null ? ' ($operation)' : '';
       throw LucentFailure.network(
-        message: 'API 返回空响应体$context',
+        message: 'Empty response body$context',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }

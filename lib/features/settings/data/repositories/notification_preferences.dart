@@ -70,7 +70,7 @@ class LucentNotificationPreferencesRepository
       final raw = response.data;
       if (raw is! Map<String, dynamic>) {
         throw LucentFailure.network(
-          message: 'API 返回空的通知偏好响应',
+          message: 'Empty notification preferences response',
           networkErrorCode: NetworkErrorCode.emptyResponse,
         );
       }
@@ -83,9 +83,9 @@ class LucentNotificationPreferencesRepository
   /// (auth `_requireBody` / medicine `dose_log_remote` precedent).
   T _requireData<T>(T? data, {String? operation}) {
     if (data == null) {
-      final context = operation == null ? '' : '（$operation）';
+      final context = operation != null ? ' ($operation)' : '';
       throw LucentFailure.network(
-        message: 'API 返回空响应体$context',
+        message: 'Empty response body$context',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }

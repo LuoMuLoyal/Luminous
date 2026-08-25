@@ -28,7 +28,7 @@ class MedicineRiskCheckRemoteDataSource {
     final dto = response.data;
     if (dto == null) {
       throw LucentFailure.network(
-        message: '风险检查记录响应体为空',
+        message: 'Empty risk check records response body',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
@@ -44,7 +44,7 @@ class MedicineRiskCheckRemoteDataSource {
     final resp = response.data;
     if (resp == null) {
       throw LucentFailure.network(
-        message: '风险检查运行结果响应体为空',
+        message: 'Empty risk check run result response body',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
@@ -67,7 +67,7 @@ class MedicineRiskCheckRemoteDataSource {
     final resp = response.data;
     if (resp == null) {
       throw LucentFailure.network(
-        message: '风险检查预检结果响应体为空',
+        message: 'Empty risk check precheck result response body',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }

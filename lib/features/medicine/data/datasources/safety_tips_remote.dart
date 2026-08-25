@@ -21,7 +21,7 @@ class SafetyTipsRemoteDataSource {
     final dto = response.data;
     if (dto == null) {
       throw LucentFailure.network(
-        message: '用药安全提示响应体为空',
+        message: 'Empty safety tips response body',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }

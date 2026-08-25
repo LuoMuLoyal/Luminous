@@ -250,9 +250,9 @@ class DailyRecordRemoteDataSource {
   /// [LucentFailure.network] (emptyResponse) when the success body is absent.
   T _requireData<T>(T? data, {String? operation}) {
     if (data == null) {
-      final context = operation == null ? '' : '（$operation）';
+      final context = operation != null ? ' ($operation)' : '';
       throw LucentFailure.network(
-        message: 'API 返回空响应体$context',
+        message: 'Empty response body$context',
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
