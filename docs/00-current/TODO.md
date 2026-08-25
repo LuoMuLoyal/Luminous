@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-23
+updated: 2026-08-25
 ---
 
 # Luminous TODO
 
-Last updated: 2026-08-23
+Last updated: 2026-08-25
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -49,11 +49,6 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
     同步走到 dismissed 状态后在通知期间 `dispose()`（无障碍分支用 microtask 规避了同样问题）
   - 影响：连续 `Toast.show` 时旧 toast 可能在入场完成前被 dismiss，调试构建可能触发断言
   - 现状：toast 测试通过先完成入场动画规避；生产未复现，暂不处理，后续升级 forui 时留意
-- `formz` 表单校验
-  - 已尝试，发现该校验并不合适后回退
-- `intl.DateFormat` 替代 ISO 字符串
-  - `padLeft` 是线协议格式，DateFormat 不适用
-
 - AI 来源条元数据后端投影（F-14/F-15，0.1.0 后）
   - 现状：来源条组件与前端字段（confidenceNote/sourceVersion）已就绪；Lucent 的 `buildToolDetails` 尚未把摘要工具的 `confidenceNote`/`sourceVersion` 与说明书的批准文号/更新时间投影进 SSE `toolDetails`，前端「数据截至」行与元数据行待数据到达后自动生效
   - 依据：assistant 改造计划 F-14/F-15 P2 子项（实施完毕文件已删）；0.1.0 后按既有顺序恢复
