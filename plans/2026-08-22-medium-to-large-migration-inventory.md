@@ -14,11 +14,10 @@
 
 审查快照：2026-08-22。Luminous 已经有 feature-first 目录、domain repository、生成客户端、Drift 本地数据库、Pending Sync、Sentry 和文档覆盖门禁。当前最明显的规模化债务不是“没有架构”，而是同一架构正在以多种历史方式并存：错误处理仍在硬切、离线写队列仍是字符串注册表、边界规则主要靠文档、Forui 仍有兼容层、构建输入仍是扁平 `.env`，而核心页面/测试存在超大文件。
 
-### 已完成或已有独立计划，不在本计划重复拆解
+### 已有独立计划，不在本计划重复拆解
 
 | 项目 | 当前状态 | 本计划处理方式 |
 | --- | --- | --- |
-| RFC 9457 + `LucentFailure` + fpdart | 已有 [`2026-08-17-error-handling-reform-plan.md`](2026-08-17-error-handling-reform-plan.md)，客户端已具备 Problem Details 解析，但 `AppError`/旧 Result/try-catch 仍有生产引用 | 作为 P0 现有硬切计划执行；本计划只补它与同步/合同门的依赖 |
 | Forui 主迁移 | 2026-07 已完成主设计系统迁移，当前仍有 Material/Forui 兼容树 | 不重做主题；只做兼容层清点、分类、收口和禁止新增旧用法 |
 | Drift 本地持久化 | 已有 6 张表、DAO、WAL、外键、cache-first 和 `SyncWorker`；ADR-0009 明确当前不引入 SQLCipher | 先完善同步协议和数据生命周期；SQLCipher 只在产品数据范围扩大或威胁模型变化时重新评估 |
 | 产品闭环/功能改造计划 | 2026-08-16 十份计划的 0.1.0 前工作已收口，后续项仍按各自计划执行 | 本计划不把产品功能债务伪装成工程迁移 |
@@ -28,40 +27,21 @@
 
 | 优先级 | 迁移项 | 当前证据 | 目标 | 依赖 |
 | --- | --- | --- | --- | --- |
-| P0 | 错误处理硬切 | `LucentFailure` 已存在，但 `AppError`、`runGuarded`、`Result` 和大量 provider/repository catch 仍共存 | repository 用 `Either/TaskEither` 表达可恢复失败；widget 不处理网络 try-catch；异常边界可解释 | 现有错误计划、API 合同 |
-| P0/P1 | OpenAPI/client 跨仓发布门 | 客户端生成依赖 `Lucent/docs/openapi.json`，当前仍需本地顺序执行；CI 主要验证客户端自身 | 合同版本、breaking diff、生成漂移、双仓最小兼容测试自动化 | Lucent Problem Details 硬切 |
-| P1 | 离线同步从字符串队列迁移为版本化命令协议 | `PendingSyncDao` 保存 `entityType/operation/payload` 字符串；`SyncWorker` 用 `Map<String, SyncHandler>` 动态注册 | typed command、payload version、client operation id、幂等/冲突策略、可观测 dead-letter/replay | 错误硬切、后端幂等合同 |
+| P0/P1 | OpenAPI/client 跨仓发布门 | 客户端生成依赖 `Lucent/docs/openapi.json`，当前仍需本地顺序执行；CI 主要验证客户端自身 | 合同版本、breaking diff、生成漂移、双仓最小兼容测试自动化 | — |
+| P1 | 离线同步从字符串队列迁移为版本化命令协议 | `PendingSyncDao` 保存 `entityType/operation/payload` 字符串；`SyncWorker` 用 `Map<String, SyncHandler>` 动态注册 | typed command、payload version、client operation id、幂等/冲突策略、可观测 dead-letter/replay | 后端幂等合同 |
 | P1 | Feature/layer 依赖可执行门禁 | 文档规定 data→data、presentation→presentation 禁止，但没有独立架构检查；跨 feature import 很多 | 规则由脚本/CI 强制，允许的 domain/application 依赖有清单 | 目录规则、生成代码排除规则 |
 | P1 | 构建环境配置分层 | `EnvKey`/`EnvReader` 已类型化，但 `.env` 同时承载本地地址、E2E 凭证、SDK 值和 Sentry；`String.fromEnvironment` 只在编译期读取 | public build config、local dev、E2E、release secret 注入分离；缺失/非法配置在构建前失败 | CI、脚本、Lucent contract |
 | P1/P2 | Forui 兼容层收口 | 代码仍有大量 Material import 和 `Icons.*` 使用，文档明确处于兼容阶段 | 新代码只走 Forui/Lucide；保留的 Material 仅有登记理由和封装 seam | 现有 UI 回归测试 |
-| P2 | Riverpod 状态管理统一 | `@riverpod` 生成 provider 与手写 `NotifierProvider`/`AsyncNotifierProvider` 混用 | 形成“何时生成、何时手写、生命周期、重试和 action state”的明确规则，按收益迁移 | 错误硬切、provider 测试 |
+| P2 | Riverpod 状态管理统一 | `@riverpod` 生成 provider 与手写 `NotifierProvider`/`AsyncNotifierProvider` 混用 | 形成“何时生成、何时手写、生命周期、重试和 action state”的明确规则，按收益迁移 | provider 测试 |
 | P2 | 超大页面/测试文件拆分 | `record/presentation/pages/detail.dart` 约 900 行，多个页面/测试 400–1500+ 行；TODO 已暂缓 | 按 feature/application/presentation seam 拆 deep module，不做无语义的按行切片 | 0.1.0 发布验证、行为快照 |
 | P2 | 测试质量从“全量通过”迁移到分层质量门 | CI 已运行 `flutter test --coverage`，但没有按层的 coverage baseline/ratchet、架构门或合同矩阵 | 关键 domain/repository/provider/UI/集成路径各有门槛，覆盖率只做趋势而非虚假总指标 | API contract、架构检查 |
 | 条件项 | 本地数据库加密 | ADR-0009 明确当前依赖应用沙箱，未引入 SQLCipher | 只有数据范围/威胁模型改变才启动独立安全计划 | 安全评估、平台验证 |
 
-结论：Luminous 当前最应先做的是错误/合同/同步三个公共边界；页面拆分、provider 统一和完整 Forui 收口应在发布验证完成后按触及范围推进。
+结论：Luminous 当前最应先做的是合同/同步两个公共边界；页面拆分、provider 统一和完整 Forui 收口应在发布验证完成后按触及范围推进。
 
 ## 二、执行计划
 
-### Task 1: 完成现有错误处理硬切
-
-**Files:**
-
-- Continue: `plans/2026-08-17-error-handling-reform-plan.md`
-- Modify: `lib/core/errors/`、`lib/core/network/`、all repository implementations under `lib/features/**/data/repositories/`
-- Modify: provider/controller action state under `lib/features/**/presentation/`
-- Test: `test/core/errors/`、`test/core/network/`、feature repository/provider tests
-- Update: `docs/02-reference/adr/0008-result-type-and-error-handling.md`、`docs/02-reference/data-layer.md`
-
-- [ ] 重新盘点 `catch (_)`、空 catch、默认空列表/null、直接 throw、`runGuarded`、旧 `Result` 和 `AppError`；逐项区分可恢复失败、明确降级、编程/协议错误、取消和 SSE 断流。
-- [ ] 先迁移 repository interface，再迁实现、provider、mock 和 widget；repository 返回 `Either/TaskEither`，datasource 保持 `Future/Stream` 传输语义。
-- [ ] cache-first/offline 写入的“本地成功、远程待同步、永久失败”必须成为明确状态，不得被一个通用 `unknown` failure 混淆。
-- [ ] 删除旧 `Result`、`runGuarded`、`AppError` 公共 fallback 和无原因静默 catch；widget 不导入 fpdart，不在页面层解析 Dio。
-- [ ] 运行 `flutter analyze`、`flutter test`、`dart format --set-exit-if-changed lib/ test/ scripts/`、`dart run scripts/check_doc_coverage.dart --verify`。
-
-**完成判据：** repository 接口能从类型上暴露预期失败；每个 provider 有 success/Left/degrade/exception 边界测试；取消和 SSE 断流仍是流语义，不被错误映射吞掉。
-
-### Task 2: 将 OpenAPI/client 同步变成跨仓合同门
+### Task 1: 将 OpenAPI/client 同步变成跨仓合同门
 
 **Files:**
 
@@ -79,7 +59,7 @@
 
 **完成判据：** PR 能自动回答“此 API 改动是否破坏旧客户端”和“生成客户端是否来自当前合同”；不再靠本地手工顺序保证两仓同步。
 
-### Task 3: 将 Pending Sync 迁移为版本化、幂等的离线命令协议
+### Task 2: 将 Pending Sync 迁移为版本化、幂等的离线命令协议
 
 **Files:**
 
@@ -103,7 +83,7 @@
 
 **完成判据：** 离线写入的恢复、冲突、重复、版本升级和永久失败均有显式状态；网络恢复后不会因动态字符串 handler 或旧 payload 造成静默数据丢失。
 
-### Task 4: 将 feature/layer 规则接入可执行架构门禁
+### Task 3: 将 feature/layer 规则接入可执行架构门禁
 
 **Files:**
 
@@ -121,7 +101,7 @@
 
 **完成判据：** 依赖方向从文档约定变成 CI 可执行规则；重构模块时能定位一个清晰 seam，而不是靠全局搜索避免循环依赖。
 
-### Task 5: 分离构建配置、E2E 配置与敏感注入
+### Task 4: 分离构建配置、E2E 配置与敏感注入
 
 **Files:**
 
@@ -139,7 +119,7 @@
 
 **完成判据：** 开发、E2E、CI、release 的配置来源和泄露边界清晰；缺失/非法配置在构建或测试启动前失败，不在运行中静默回退到错误后端。
 
-### Task 6: 收口 Forui/Material 兼容层和图标入口
+### Task 5: 收口 Forui/Material 兼容层和图标入口
 
 **Files:**
 
@@ -157,7 +137,7 @@
 
 **完成判据：** 新 UI 的设计 token、控件和图标来源单一；兼容项可解释、可测试，Forui 迁移不再依赖隐形旧 wrapper。
 
-### Task 7: 统一 Riverpod provider 的职责和生命周期
+### Task 6: 统一 Riverpod provider 的职责和生命周期
 
 **Files:**
 
@@ -173,7 +153,7 @@
 
 **完成判据：** provider 形式由职责和生命周期决定；调用方不需要知道 provider 是生成还是手写，公共接口保持小而稳定。
 
-### Task 8: 按 seam 拆分超大页面、provider 和测试
+### Task 7: 按 seam 拆分超大页面、provider 和测试
 
 **Files:**
 
@@ -191,7 +171,7 @@
 
 **完成判据：** 页面复杂度集中在少数 deep module；测试可通过页面/控制器/纯逻辑的小接口覆盖行为；拆分不增加 cross-feature import。
 
-### Task 9: 建立分层测试质量门，而不是只追总覆盖率
+### Task 8: 建立分层测试质量门，而不是只追总覆盖率
 
 **Files:**
 
@@ -210,13 +190,12 @@
 
 ## 三、推荐顺序与暂停条件
 
-1. 在当前发布验证窗口结束后，完成现有错误处理硬切。
-2. 先把 OpenAPI/client 合同门自动化，保证后续错误/同步改造不会继续漂移。
-3. 将 Pending Sync 命令协议化，并和 Lucent 的幂等写合同对齐。
-4. 把 feature/layer 规则接入 CI，之后再进行 Forui/provider/大文件迁移。
-5. 分离构建配置和 E2E/Release secret 注入。
-6. 按实际触及页面推进 Forui 收口和大文件拆分。
-7. 最后建立按层 coverage/质量 ratchet；SQLCipher 仅在威胁模型变化后启动独立安全计划。
+1. 先把 OpenAPI/client 合同门自动化，保证后续同步改造不会继续漂移。
+2. 将 Pending Sync 命令协议化，并和 Lucent 的幂等写合同对齐。
+3. 把 feature/layer 规则接入 CI，之后再进行 Forui/provider/大文件迁移。
+4. 分离构建配置和 E2E/Release secret 注入。
+5. 按实际触及页面推进 Forui 收口和大文件拆分。
+6. 最后建立按层 coverage/质量 ratchet；SQLCipher 仅在威胁模型变化后启动独立安全计划。
 
 暂停条件：如果某项需要改变产品表面、启动桌面/Web 新路线、引入新的后端合同、改变数据保留/隐私模型或引入平台级加密，先创建独立 ADR 和子计划；不要把高风险决定藏在机械迁移中。
 

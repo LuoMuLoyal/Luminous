@@ -47,8 +47,6 @@ YYYY-MM-DD-short-task-name.md
   — 产品表面路线：手机核心 + 桌面 SaaS 差异化 + Web 第三客户端（0.1.0 后启动）
 - [`2026-08-25-error-handling-and-l10n-remediation-plan.md`](2026-08-25-error-handling-and-l10n-remediation-plan.md)
   — 错误处理收尾与 l10n 消息根治：TaskEither throw 反模式、中文消息残留、StateError 分类、LucentApiException 清除、敏感操作对话框修复
-- [`2026-08-17-error-handling-reform-plan.md`](2026-08-17-error-handling-reform-plan.md)
-  — 错误处理硬切：fpdart + LucentFailure + RFC 9457；硬切窗口已开启
 - [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md)
   — 功能盘点改造决策记录（十份计划共享，优先于各计划旧表述）
 
