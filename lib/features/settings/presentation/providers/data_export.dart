@@ -167,6 +167,12 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
     }
   }
 
+  /// Posts a new data-export request and updates the cached latest state.
+  ///
+  /// Throws on failure (network error, server business error, or protocol
+  /// error). Callers must wrap this call in a try/catch and surface the error
+  /// to the user. The [dataExportRequestInFlightProvider] is always reset in
+  /// the finally block, regardless of success or failure.
   Future<DataExportRequestDataDto?> requestExport(
     DataExportRequestInput input, {
     required String password,
