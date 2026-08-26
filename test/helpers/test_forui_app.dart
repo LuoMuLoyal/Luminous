@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Forui-aware light theme used by tests.
 final FThemeData _foruiLight = appThemeData(
@@ -58,9 +58,10 @@ class TestForuiApp extends StatelessWidget {
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+        fl.GlobalMaterialLocalizations.delegate,
+        fl.GlobalWidgetsLocalizations.delegate,
+        fl.GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: home,
@@ -109,9 +110,10 @@ class TestForuiRouterApp extends StatelessWidget {
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+        fl.GlobalMaterialLocalizations.delegate,
+        fl.GlobalWidgetsLocalizations.delegate,
+        fl.GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: routerConfig,

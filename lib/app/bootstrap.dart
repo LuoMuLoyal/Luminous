@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
@@ -25,6 +24,7 @@ import 'package:luminous/features/medicine/presentation/providers/reminder_deliv
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/features/settings/application/sleep_reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LuminousApp extends ConsumerStatefulWidget {
   const LuminousApp({super.key, this.routerConfig});
@@ -153,9 +153,10 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+        fl.GlobalMaterialLocalizations.delegate,
+        fl.GlobalWidgetsLocalizations.delegate,
+        fl.GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: widget.routerConfig ?? ref.watch(appRouterProvider),

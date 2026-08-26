@@ -1,10 +1,9 @@
 import 'package:flow_ui/flow_ui.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/features/assistant/presentation/widgets/flow_theme_bridge.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_forui_app.dart';
 
@@ -119,7 +118,10 @@ void main() {
       TestForuiApp(
         home: Theme(
           data: ThemeData(
-            extensions: <ThemeExtension<dynamic>>[parentFlowTheme],
+            // FlowTheme extends flutter/material.dart's ThemeExtension,
+            // which is incompatible with material_ui's ThemeExtension at
+            // the type-system level, but compatible at runtime.
+            extensions: [parentFlowTheme] as Iterable<ThemeExtension<dynamic>>,
           ),
           child: Builder(
             builder: (context) => withLuminousFlowTheme(
