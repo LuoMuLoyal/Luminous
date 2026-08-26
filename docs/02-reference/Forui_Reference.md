@@ -2,12 +2,14 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-06
+updated: 2026-08-25
 ---
 
 # Forui 参考（项目版）
 
-> 版本：`forui: 0.25.0`，`forui_hooks: 0.25.0`。
+> 版本：`forui: 0.26.0`，`forui_hooks: 0.26.0`，`material_ui: ^1.0.0`。
+>
+> **0.26.x Breaking Changes**：forui 内部从 `flutter/material.dart` 迁移到 `material_ui` 包；项目代码中与 forui 共享 `ThemeExtension`/`ThemeData`/`ThemeMode`/`InputBorder` 等类型的文件，import 需从 `package:flutter/material.dart` 切换为 `package:material_ui/material_ui.dart`。`localizationsDelegates` 需同时包含 `material_ui` 的 `GlobalMaterialLocalizations.delegates` 和 `flutter_localizations` 的 delegates（用于 `RefreshIndicator` 等 flutter/material widget）。`forui_assets` 包重命名为 `forui_lucide`。
 >
 > **0.25.x Breaking Changes**：`FIconBuilder` 与 `FIcons.iconData(...)` 移除，改用 `FIcon`；`FTooltip.semanticsLabel` 移除（改由触发侧 `semanticsTooltip` 提供）；`FDialogRouteStyle.barrierFilter` / `FDialogStyle.backgroundFilter` / `FModalSheetStyle.barrierFilter` / `FPopoverStyle` 的 filter 改为接收 `BuildContext`；`FDialogRouteStyle.inherit(colors: ...)` / `FModalSheetStyle.inherit(colors: ...)` 移除；`FBreadcrumbItem.collapsed(semanticsLabel: ...)` 改为 `menuSemanticsLabel`；`FAnimatedModalBarrier.filter` 改为接收 `BuildContext`。
 >
