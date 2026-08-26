@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
@@ -15,6 +18,7 @@ import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 导出/分享动作的统一处理（Task 8：从旧 dashboard 页装配提取，供
@@ -47,10 +51,16 @@ Future<void> handleReportExportAction(
   if (input == null) return;
 
   // Task 8: account password re-authentication replaces Security PIN elevation.
-  final password = await ref.read(sensitiveActionPasswordPromptProvider)(
-    context,
-  );
-  if (password == null || !context.mounted) return;
+  // If the server says password re-auth is not required, skip the dialog.
+  final settings = ref.read(userSettingsControllerProvider).value;
+  final requiresPassword = settings?.passwordReauthenticationRequired ?? true;
+  final String? password;
+  if (requiresPassword) {
+    password = await ref.read(sensitiveActionPasswordPromptProvider)(context);
+    if (password == null || !context.mounted) return;
+  } else {
+    password = '';
+  }
 
   final controller = ref.read(dataExportControllerProvider.notifier);
   final launcher = ref.read(externalUrlLauncherProvider);
@@ -70,6 +80,18 @@ Future<void> handleReportExportAction(
           .trackVisitSummaryExported(ProductEventResult.failure),
     );
     if (!context.mounted) return;
+    // S-2: If the user has no local password (OAuth-only), provide an
+    // actionable toast that deep-links to the account settings page.
+    final failure = error is LucentFailure ? error : null;
+    if (failure != null && failure.isPasswordNotSet) {
+      await Toast.showWithAction(
+        context,
+        l10n.authPasswordNotSetToast,
+        l10n.authPasswordNotSetAction,
+        () => context.go(Routes.account),
+      );
+      return;
+    }
     await Toast.show(
       context,
       '${l10n.reportExportFailedToast}: ${userMessageFromError(error, l10n: l10n)}',
