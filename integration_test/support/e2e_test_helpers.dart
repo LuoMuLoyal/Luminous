@@ -438,6 +438,11 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   String? changePasswordNewPassword;
   String? deleteAccountPassword;
   String? unlinkIdentityId;
+
+  /// Set this to a non-null value to enable password validation in
+  /// [requestDataExport]. When set, the fake returns
+  /// `AUTH_PASSWORD_INVALID` if the supplied password doesn't match.
+  String? expectDataExportPassword;
   bool logoutCalled = false;
 
   @override
@@ -622,6 +627,19 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
     required CreateDataExportRequestDtoRangeEnum range,
     required String password,
   }) {
+    // S-4: When expectDataExportPassword is set, validate the password so
+    // E2E tests can assert the bad-password failure path.
+    if (expectDataExportPassword != null &&
+        password != expectDataExportPassword) {
+      return TaskEither.left(
+        const LucentFailure(
+          kind: LucentFailureKind.authentication,
+          message: 'Password is invalid.',
+          code: 'AUTH_PASSWORD_INVALID',
+          statusCode: 403,
+        ),
+      );
+    }
     return TaskEither.right(
       DataExportRequestDataDto(
         id: 'e2e-export-1',
