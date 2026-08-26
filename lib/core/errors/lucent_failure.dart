@@ -116,7 +116,11 @@ final class LucentFailure {
 
   bool get isRefreshTokenInvalid => code == 'AUTH_REFRESH_TOKEN_INVALID';
 
-  bool get isPasswordNotSet => code == 'AUTH_PASSWORD_NOT_SET';
+  /// The backend error code returned when an OAuth-only user has no local
+  /// password and a sensitive action requires password re-authentication.
+  static const kPasswordNotSetCode = 'AUTH_PASSWORD_NOT_SET';
+
+  bool get isPasswordNotSet => code == kPasswordNotSetCode;
 
   bool get isNetworkConnectivityError =>
       networkErrorCode == NetworkErrorCode.connectionTimeout ||

@@ -65,6 +65,9 @@
   "authForgotPasswordSubtitle": "We'll send a reset link to your email",
   "authResetPasswordSubtitle": "Set a new password",
   "authResetPasswordEmailSent": "Reset link sent. Please check your email.",
+  "authResetPasswordMissingTokenTitle": "Invalid reset link",
+  "authResetPasswordMissingTokenMessage": "The reset link is missing required parameters. Please request a new password reset.",
+  "authResetPasswordMissingTokenAction": "Go to forgot password",
   "authEmailVerifyLinkHint": "A verification email has been sent. Please tap the link in the email to complete verification.",
   "authTermsAgreement": "By creating an account, you agree to the {terms} and {privacy}",
   "@authTermsAgreement": {
@@ -153,6 +156,7 @@
   "authSensitiveActionPasswordDialogLabel": "Account password",
   "authSensitiveActionPasswordDialogConfirm": "Confirm",
   "authPasswordNotSetToast": "You haven't set a local password. Please set one in Account settings before this sensitive operation.",
+  "authPasswordNotSetAction": "Go to settings",
   "authIdentityUnlinkConfirmTitle": "Unlink identity",
   "authIdentityUnlinkConfirmMessage": "Unlink {provider} from this account?",
   "@authIdentityUnlinkConfirmMessage": {

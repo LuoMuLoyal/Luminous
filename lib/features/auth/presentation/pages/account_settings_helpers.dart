@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -149,7 +150,7 @@ Future<void> showAuthAccountFailureToast(
 ) async {
   final state = ref.read(authAccountProvider);
   final String? message;
-  if (state.errorCode == 'AUTH_PASSWORD_NOT_SET') {
+  if (state.errorCode == LucentFailure.kPasswordNotSetCode) {
     message = l10n.authPasswordNotSetToast;
   } else {
     message = state.errorMessage?.isNotEmpty == true

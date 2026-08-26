@@ -65,6 +65,9 @@
   "authForgotPasswordSubtitle": "我们将发送重置链接到你的邮箱",
   "authResetPasswordSubtitle": "请设置新密码",
   "authResetPasswordEmailSent": "重置链接已发送，请检查邮箱。",
+  "authResetPasswordMissingTokenTitle": "重置链接无效",
+  "authResetPasswordMissingTokenMessage": "重置链接缺少必要参数，请重新申请重置密码。",
+  "authResetPasswordMissingTokenAction": "前往忘记密码",
   "authEmailVerifyLinkHint": "验证邮件已发送，请点击邮件中的链接完成验证。",
   "authTermsAgreement": "创建即表示同意{terms}与{privacy}",
   "@authTermsAgreement": {
@@ -153,6 +156,7 @@
   "authSensitiveActionPasswordDialogLabel": "账号密码",
   "authSensitiveActionPasswordDialogConfirm": "确认",
   "authPasswordNotSetToast": "你尚未设置本地密码，请先前往账号与安全设置密码后再进行该操作。",
+  "authPasswordNotSetAction": "前往设置",
   "authIdentityUnlinkConfirmTitle": "解绑身份",
   "authIdentityUnlinkConfirmMessage": "确定要解绑 {provider}？",
   "@authIdentityUnlinkConfirmMessage": {
