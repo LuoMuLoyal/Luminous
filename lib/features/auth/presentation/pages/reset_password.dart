@@ -20,13 +20,44 @@ class ResetPasswordPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
+    // S-1: Guard against empty/missing token — the deep link may have been
+    // opened without the ?token= query param. Show an error state instead of
+    // rendering the form, which would only fail at submission time.
+    if (token.isEmpty) {
+      return AuthShell(
+        title: l10n.authResetPasswordMissingTokenTitle,
+        subtitle: l10n.authResetPasswordMissingTokenMessage,
+        logo: const AuthBrandLogo(),
+        leading: const AppBackButton(fallbackRoute: Routes.login),
+        centerTitle: true,
+        form: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.authResetPasswordMissingTokenMessage,
+              style: TypographyToken.level4.body(context),
+            ),
+            const SizedBox(height: Spacing.level6),
+            SizedBox(
+              width: double.infinity,
+              child: FButton(
+                onPress: () => context.go(Routes.forgotPassword),
+                child: Text(l10n.authResetPasswordMissingTokenAction),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final passwordController = useTextEditingController();
     final confirmPasswordController = useTextEditingController();
 
     final state = ref.watch(passwordResetProvider);
     final notifier = ref.read(passwordResetProvider.notifier);
-    final l10n = AppLocalizations.of(context)!;
 
     return AuthShell(
       title: l10n.authResetPasswordAction,
