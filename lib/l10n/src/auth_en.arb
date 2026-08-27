@@ -262,5 +262,6 @@
   "authBrandFeatureAnalysis": "AI trend analysis",
   "authBrandFeatureAnalysisDesc": "Smart health trend detection with early warnings",
   "authBrandFeaturePrivacy": "Privacy first",
-  "authBrandFeaturePrivacyDesc": "End-to-end encryption, your data stays yours"
+  "authBrandFeaturePrivacyDesc": "End-to-end encryption, your data stays yours",
+  "authSessionRestoreTimeout": "Connection timed out. Please check your network and try again."
 }

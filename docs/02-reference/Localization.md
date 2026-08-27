@@ -7,7 +7,7 @@ updated: 2026-08-27
 
 # Flutter Localization
 
-Last updated: 2026-08-27 (新增 `medicineDetailOpenReminderAction` 键。)
+Last updated: 2026-08-27 (新增 `authSessionRestoreTimeout` 键。)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.

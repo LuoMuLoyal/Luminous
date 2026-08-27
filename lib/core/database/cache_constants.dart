@@ -36,6 +36,16 @@ const Duration backgroundRefreshThrottle = Duration(seconds: 30);
 /// the app falls back to cached data.
 const Duration networkTimeoutShort = Duration(seconds: 5);
 
+/// Loading floor timeout: when first load (empty cache) exceeds this
+/// duration, a "loading slow" hint with a retry option is shown instead
+/// of an indefinite skeleton.
+const Duration loadingFloorTimeout = Duration(seconds: 6);
+
+/// Session restore timeout: abandon waiting after this duration and
+/// degrade to a signed-out-with-timeout state so tabs can show fallback
+/// content or error UI instead of an indefinite skeleton.
+const Duration sessionRestoreTimeout = Duration(seconds: 8);
+
 // ── Sync queue ───────────────────────────────────────────────────────
 
 /// Default maximum retry attempts for a pending sync item before it is

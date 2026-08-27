@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 part 'session_state.freezed.dart';
@@ -12,6 +13,7 @@ abstract class AuthSessionState with _$AuthSessionState {
     @Default(false) bool isLoading,
     @Default(false) bool isAuthenticated,
     String? errorMessage,
+    @Default(false) bool isTimeout,
   }) = _AuthSessionState;
 }
 
@@ -22,6 +24,10 @@ extension AuthSessionStateStatus on AuthSessionState {
 
   bool get canAccessProtectedData => !isLoading && isAuthenticated;
 }
+
+/// Timeout duration for session restore. Declared here so that callers
+/// can use the same constant without importing cache_constants directly.
+const Duration kSessionRestoreTimeout = sessionRestoreTimeout;
 
 class AuthRequiredException implements Exception {
   const AuthRequiredException();

@@ -12,6 +12,8 @@ import 'package:luminous/core/auth/session_provider.dart';
 /// Behaviour:
 /// - Session restoring → returns a never-completing [Future] (pending). The
 ///   caller's [AsyncValue] stays in `loading` without flashing an error.
+/// - Session restore timed out → calls [signedOutFallback] if provided;
+///   otherwise throws [AuthRequiredException].
 /// - Confirmed signed out → calls [signedOutFallback] if provided; otherwise
 ///   throws [AuthRequiredException].
 /// - Authenticated → calls [fetch] and returns its result.
@@ -48,6 +50,9 @@ Future<T> authGuarded<T>({
     return pendingAuthSessionResolution<T>();
   }
   if (!session.canAccessProtectedData) {
+    // Session restore timed out — degrade to fallback/error just like a
+    // confirmed sign-out, but callers can check `session.isTimeout` to
+    // show a "network slow" message instead of a login prompt.
     if (signedOutFallback != null) {
       return signedOutFallback();
     }

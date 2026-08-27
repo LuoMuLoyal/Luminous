@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_state.dart';
+import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
@@ -26,7 +29,11 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   }
 
   Future<void> restore() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isTimeout: false,
+    );
     final store = ref.read(lucentSessionStoreProvider);
     final refreshToken = await store.readRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) {
@@ -34,6 +41,27 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
       return;
     }
 
+    // Race the restore against a floor timeout. If the network is too
+    // slow or unreachable, degrade to a timeout state instead of hanging
+    // the UI on an indefinite skeleton.
+    final result = await Future.any([
+      _doRestore(refreshToken, store),
+      Future<AuthSessionState>.delayed(
+        sessionRestoreTimeout,
+        () => const AuthSessionState(
+          isAuthenticated: false,
+          isTimeout: true,
+          errorMessage: 'Session restore timed out',
+        ),
+      ),
+    ]);
+    state = result;
+  }
+
+  Future<AuthSessionState> _doRestore(
+    String refreshToken,
+    LucentSessionStore store,
+  ) async {
     // Attempt a quick restore with the current access token. If that fails
     // with an auth error (expired/invalid access token), fall back to the
     // refresh flow so cold starts don't force the user to log in again.
@@ -43,12 +71,11 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
         .run();
     switch (fetchResult) {
       case Right(:final value):
-        state = AuthSessionState(
+        return AuthSessionState(
           user: value,
           isLoading: false,
           isAuthenticated: true,
         );
-        return;
       case Left(:final value):
         final isAuthError =
             value.statusCode == 401 ||
@@ -60,18 +87,16 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
           // must NOT clear the session store — the token may still be valid
           // and the user should be able to retry once connectivity is restored.
           if (value.isNetworkConnectivityError) {
-            state = AuthSessionState(
+            return AuthSessionState(
               isAuthenticated: false,
               errorMessage: value.message,
             );
-            return;
           }
           await store.clear();
-          state = AuthSessionState(
+          return AuthSessionState(
             isAuthenticated: false,
             errorMessage: value.message,
           );
-          return;
         }
       // Continue with refresh below.
     }
@@ -82,7 +107,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
         .run();
     switch (refreshResult) {
       case Right(:final value):
-        state = AuthSessionState(
+        return AuthSessionState(
           user: value.user,
           isLoading: false,
           isAuthenticated: true,
@@ -97,7 +122,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
         if (!value.isNetworkConnectivityError) {
           await store.clear();
         }
-        state = AuthSessionState(
+        return AuthSessionState(
           isAuthenticated: false,
           errorMessage: value.message,
         );

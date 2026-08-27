@@ -262,5 +262,6 @@
   "authBrandFeatureAnalysis": "AI 趋势分析",
   "authBrandFeatureAnalysisDesc": "智能识别健康趋势，提前预警",
   "authBrandFeaturePrivacy": "隐私优先",
-  "authBrandFeaturePrivacyDesc": "端到端加密，数据完全由你掌控"
+  "authBrandFeaturePrivacyDesc": "端到端加密，数据完全由你掌控",
+  "authSessionRestoreTimeout": "网络连接超时，请检查网络后重试"
 }
