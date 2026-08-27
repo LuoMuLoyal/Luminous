@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-17
+updated: 2026-08-27
 ---
 
 # Active UI — Medicine
 
-Last updated: 2026-08-17 (删除 MedicineSearchDashboard 废弃实体、提取 debounce 常量)
+Last updated: 2026-08-27 (药箱条目点击改为进入药品详情页，药品详情页新增提醒详情入口)
 
 ## 页面结构
 
@@ -39,6 +39,7 @@ Last updated: 2026-08-17 (删除 MedicineSearchDashboard 废弃实体、提取 d
 
 - `_DrugBoxHeader` 展示药品总数 + 管理按钮，不再在 `_DrugBoxContent` 左侧重复显示大字号计数摘要。
 - 药品列表默认显示前 3 种，超过时底部显示"+N 种"可点击跳转药品管理页。
+- 药品条目点击行为：默认跳转药品详情页（`MedicineDetailRoute`，需 `source` + `sourceRefId` 可用且为有效数据源 `cn`/`drugbank`），在详情页底部可再跳转提醒详情页；`source`/`sourceRefId` 不可用时回退到提醒详情页。
 
 ## 通知铃铛
 
@@ -95,6 +96,7 @@ Last updated: 2026-08-17 (删除 MedicineSearchDashboard 废弃实体、提取 d
 - 数据来源：`GET /api/v1/medicines/{id}?source=`（`@Public`，后端 30min 缓存；客户端不缓存）。生成客户端 `medicinesControllerGetDetailV1` 返回 `MedicineDetailResponseDto`，`MedicineDetailMapper` 映射为 `MedicineDetail`（空串 trim 转 null）。
 - 分区渲染用 `FAccordion` + `FAccordionItem`，首分区（CN 适应症 / DrugBank 描述）`initiallyExpanded: true`；空/null 字段分区整体不渲染；整页无可展示分区显示「暂无说明书内容」空态。
 - 加入药箱：`CurrentMedicineWriteInput` + `createCurrentMedicine` + `DataChangeTopic.currentMedicines`，与 search 页链路一致但本入口**不做即时预检**（预检仅在搜索页「加入药箱」）；已添加态显示禁用 outline「已添加」。
+- 提醒详情入口：已加入药箱时底部新增「查看提醒详情」按钮（`medicineDetailOpenReminderAction`），跳转 `MedicineReminderDetailRoute`（携带药箱记录 id）。
 - Reminder 详情药品卡：`sourceRefId` 非空且 `source ∈ {cn, drugbank}` 时包 `FTappable` 跳详情页，否则保持原样。
 - 识别结果（药盒 OCR/AI）「查看说明书」次按钮落地为本详情页；主按钮「加入药箱」复用共享闭环（判重 + 已加入态 + 「查看提醒详情」），见「药品搜索与扫描」节；`/medicine/detail` 为公开路由（未登录可浏览说明书，「加入药箱」未登录走 `showAuthRequiredDialog`）。条码扫码出口改走「扫码结果」sheet，见「药品搜索与扫描」节。
 

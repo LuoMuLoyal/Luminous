@@ -86,6 +86,8 @@ abstract class MedicinePlanItem with _$MedicinePlanItem {
     String? rawSchedule,
     String? rawState,
     String? currentMedicineId,
+    String? source,
+    String? sourceRefId,
   }) = _MedicinePlanItem;
 }
 

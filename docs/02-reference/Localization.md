@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-24
+updated: 2026-08-27
 ---
 
 # Flutter Localization
 
-Last updated: 2026-08-24 (Task 9：删除 Security PIN / elevation 相关 l10n 键，包括 `authSecurityElevationRequiredToast` 与全部 `settingsSecurityPin*`、`securityElevationDialog*` 键。)
+Last updated: 2026-08-27 (新增 `medicineDetailOpenReminderAction` 键。)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -604,3 +604,8 @@ flutter test
 - `assistantComposerPlaceholder` 归属 assistant fragment，复用原 `assistantInputHint` 的中英文值，由 page body 私有 composer host 使用。
 - 确认 `lib/` 与 `test/` 无 active 引用后，删除 obsolete `assistantStreamingLabel`、`assistantScrollToBottom`、`assistantInputHint`；未删除仍在使用的其他 assistant key。
 - 已执行 `dart scripts/arb_tools.dart merge` 与 `flutter gen-l10n`，新 fragment key 已进入生成的 app localization 产物。
+
+## 2026-08-27 药品详情页提醒详情入口键
+
+- 新增 `medicineDetailOpenReminderAction`（zh: 查看提醒详情 / en: View reminder details）到 `lib/l10n/src/medicine_zh.arb` / `medicine_en.arb`（medicine 分片）：药品详情页底部已加入药箱时显示的「查看提醒详情」按钮文案，跳转提醒详情页。
+- 所有权在 medicine 分片；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`。

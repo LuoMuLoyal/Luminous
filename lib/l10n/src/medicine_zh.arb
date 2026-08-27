@@ -693,5 +693,6 @@
   "medicineDetailSectionSynonyms": "同义词",
   "medicineDetailSectionFoodInteractions": "食物相互作用",
   "medicineDetailSectionDrugInteractions": "药物相互作用",
-  "medicineDetailRiskCheckEntry": "查看我的用药风险检查"
+  "medicineDetailRiskCheckEntry": "查看我的用药风险检查",
+  "medicineDetailOpenReminderAction": "查看提醒详情"
 }

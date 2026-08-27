@@ -686,5 +686,6 @@
   "medicineDetailSectionSynonyms": "Synonyms",
   "medicineDetailSectionFoodInteractions": "Food interactions",
   "medicineDetailSectionDrugInteractions": "Drug interactions",
-  "medicineDetailRiskCheckEntry": "Check my medicine risk"
+  "medicineDetailRiskCheckEntry": "Check my medicine risk",
+  "medicineDetailOpenReminderAction": "View reminder details"
 }

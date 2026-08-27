@@ -415,11 +415,23 @@ class _DrugBoxMedicationRow extends StatelessWidget {
     final schedule = _itemSchedule(l10n, item);
     final state = _itemState(l10n, item);
     final currentMedicineId = item.currentMedicineId;
+    final source = item.source;
+    final sourceRefId = item.sourceRefId;
 
     return FTappable(
       onPress: () {
         if (currentMedicineId == null) {
           unawaited(Toast.show(context, l10n.medicineOpenPlanItemToast));
+          return;
+        }
+        // Default: open medicine detail page when source + sourceRefId are
+        // available; otherwise fall back to the reminder detail page.
+        if (source != null &&
+            sourceRefId != null &&
+            (source == 'cn' || source == 'drugbank')) {
+          unawaited(
+            MedicineDetailRoute(source: source, id: sourceRefId).push(context),
+          );
           return;
         }
         if (onOpenReminder != null) {

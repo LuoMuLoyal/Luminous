@@ -146,6 +146,8 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
           rawDosage: m.strengthText ?? '',
           rawSchedule: m.doseText ?? '',
           currentMedicineId: m.id,
+          source: m.source,
+          sourceRefId: m.sourceRefId,
         );
       }).toList();
 

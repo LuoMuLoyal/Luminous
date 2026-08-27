@@ -101,12 +101,20 @@ class _MedicineDetailContent extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final snapshotAsync = ref.watch(healthContextSnapshotProvider);
-    final isAdded = snapshotAsync.maybeWhen(
-      data: (snapshot) => snapshot.currentMedicines.any(
-        (m) => m.isCurrent && m.sourceRefId == detail.id && m.source == source,
-      ),
-      orElse: () => false,
+    // Extract the current-medicine record for this medicine (if any) so we
+    // can both check membership and navigate to the reminder detail page.
+    final currentMedicine = snapshotAsync.maybeWhen(
+      data: (snapshot) {
+        for (final m in snapshot.currentMedicines) {
+          if (m.isCurrent && m.sourceRefId == detail.id && m.source == source) {
+            return m;
+          }
+        }
+        return null;
+      },
+      orElse: () => null,
     );
+    final isAdded = currentMedicine != null;
 
     final sections = source == 'drugbank'
         ? _drugbankSections(l10n)
@@ -161,6 +169,16 @@ class _MedicineDetailContent extends ConsumerWidget {
                       : l10n.medicineSearchAddToBoxAction,
                 ),
               ),
+              if (isAdded) ...[
+                const SizedBox(height: Spacing.level2),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: () => MedicineReminderDetailRoute(
+                    medicineId: currentMedicine.id,
+                  ).push(context),
+                  child: Text(l10n.medicineDetailOpenReminderAction),
+                ),
+              ],
             ],
           ),
         ),
