@@ -2,6 +2,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/elevation.dart';
 import 'package:luminous/core/design/semantic_color_palette.dart';
 import 'package:luminous/core/design/semantic_colors.dart';
+import 'package:luminous/core/design/surface.dart';
 import 'package:material_ui/material_ui.dart';
 
 const AppThemeFamily appDefaultThemeFamily = AppThemeFamily.blue;
@@ -121,11 +122,63 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
 
   final typography = FTypography.inherit(colors: colors, touch: true);
 
+  final scaffoldBackgroundColor = SurfaceTokens.scaffoldBackground(colors);
+  final subtleBorder = SurfaceTokens.containerBorder(colors);
+
   return FThemeData(
     touch: true,
     debugLabel: base.debugLabel,
     colors: colors,
     typography: typography,
+    scaffoldStyle: FScaffoldStyle.inherit(colors: colors, style: base.style)
+        .copyWith(
+          backgroundColor: scaffoldBackgroundColor,
+          sidebarBackgroundColor: scaffoldBackgroundColor,
+        ),
+    // FCard: white background + subtle 1px border, matching FTileGroup.
+    cardStyle:
+        FCardStyle.inherit(
+          colors: colors,
+          typography: typography,
+          style: base.style,
+          touch: true,
+        ).copyWith(
+          decoration: DecorationDelta.value(
+            ShapeDecoration(
+              color: colors.card,
+              shape: RoundedSuperellipseBorder(
+                side: BorderSide(
+                  color: subtleBorder,
+                  width: base.style.borderWidth,
+                ),
+                borderRadius: base.style.borderRadius.lg,
+              ),
+            ),
+          ),
+        ),
+    // FTileGroup: white background + subtle 1px border + lighter divider,
+    // matching FCard for visual consistency.
+    tileGroupStyle:
+        FTileGroupStyle.inherit(
+          colors: colors,
+          typography: typography,
+          style: base.style,
+          hapticFeedback: base.hapticFeedback,
+        ).copyWith(
+          decoration: DecorationDelta.value(
+            ShapeDecoration(
+              color: colors.card,
+              shape: RoundedSuperellipseBorder(
+                side: BorderSide(
+                  color: subtleBorder,
+                  width: base.style.borderWidth,
+                ),
+                borderRadius: base.style.borderRadius.md,
+              ),
+            ),
+          ),
+          dividerColor: FVariants.all(subtleBorder),
+        ),
   );
 }
 
@@ -229,11 +282,24 @@ SemanticColorPalette _fixedPalette({
 
 ThemeData foruiMaterialTheme(FThemeData theme) {
   final material = theme.toApproximateMaterialTheme();
+  // Use the scaffold style's background color (light grey) instead of
+  // colors.background (pure white) so Material Scaffold and FScaffold
+  // stay in sync.
+  final scaffoldBg = theme.scaffoldStyle.backgroundColor;
   return material.copyWith(
-    scaffoldBackgroundColor: theme.colors.background,
-    canvasColor: theme.colors.background,
+    scaffoldBackgroundColor: scaffoldBg,
+    canvasColor: scaffoldBg,
     cardColor: theme.colors.card,
     dividerColor: theme.colors.border,
     shadowColor: ElevationTokens.shadowColor(theme.colors),
+    cardTheme: material.cardTheme.copyWith(
+      shape: RoundedSuperellipseBorder(
+        side: BorderSide(
+          color: SurfaceTokens.containerBorder(theme.colors),
+          width: theme.style.borderWidth,
+        ),
+        borderRadius: theme.style.borderRadius.md,
+      ),
+    ),
   );
 }

@@ -43,7 +43,7 @@ updated: 2026-08-15
 
 ### DesktopTabShell
 
-- 统一 `FHeader.nested` + `maxContentWidth` 约束 + muted 背景 + 可选 RefreshIndicator
+- 统一 `FHeader.nested` + `maxContentWidth` 约束 + scaffold 背景色（`scaffoldStyle.backgroundColor`，淡灰）+ 可选 RefreshIndicator
 - 5 个 Tab 页面全部迁移到 `DesktopTabShell`
 
 ### 键盘快捷键

@@ -4,36 +4,38 @@ import 'package:luminous/core/design/semantic_color.dart';
 
 enum TodayCardTone { emphasis, urgent, warning, soft, neutral }
 
+/// Returns an [FCardStyleDelta] for Today section cards.
+///
+/// Most tones only override the background color, inheriting the global
+/// subtle border (#F0F0F0) from [appThemeData]. Only urgent and warning
+/// tones override the border with a semantic color for visual emphasis
+/// (alert, not separation).
 FCardStyleDelta todayCardStyle(
   BuildContext context, {
   TodayCardTone tone = TodayCardTone.neutral,
 }) {
   final colors = context.theme.colors;
 
-  final (border, background) = switch (tone) {
-    TodayCardTone.urgent => (
-      SemanticColor.destructive.border(context),
-      SemanticColor.destructive.subtle(context),
-    ),
-    TodayCardTone.warning => (
-      SemanticColor.warning.border(context),
-      SemanticColor.warning.subtle(context),
-    ),
-    TodayCardTone.emphasis => (
-      SemanticColor.primary.border(context),
-      colors.card,
-    ),
-    TodayCardTone.soft => (SemanticColor.neutral.border(context), colors.card),
-    TodayCardTone.neutral => (colors.border, colors.card),
-  };
-
-  return .delta(
-    decoration: .shapeDelta(
-      color: background,
-      shape: RoundedSuperellipseBorder(
-        side: BorderSide(color: border),
-        borderRadius: context.theme.style.borderRadius.lg,
+  return switch (tone) {
+    TodayCardTone.urgent => .delta(
+      decoration: .shapeDelta(
+        color: SemanticColor.destructive.subtle(context),
+        shape: RoundedSuperellipseBorder(
+          side: BorderSide(color: SemanticColor.destructive.border(context)),
+          borderRadius: context.theme.style.borderRadius.lg,
+        ),
       ),
     ),
-  );
+    TodayCardTone.warning => .delta(
+      decoration: .shapeDelta(
+        color: SemanticColor.warning.subtle(context),
+        shape: RoundedSuperellipseBorder(
+          side: BorderSide(color: SemanticColor.warning.border(context)),
+          borderRadius: context.theme.style.borderRadius.lg,
+        ),
+      ),
+    ),
+    TodayCardTone.emphasis || TodayCardTone.soft || TodayCardTone.neutral =>
+      .delta(decoration: .shapeDelta(color: colors.card)),
+  };
 }

@@ -30,4 +30,5 @@ export 'semantic_color.dart';
 export 'semantic_color_palette.dart';
 export 'semantic_colors.dart';
 export 'spacing.dart';
+export 'surface.dart';
 export 'typography.dart';

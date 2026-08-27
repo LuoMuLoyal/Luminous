@@ -448,7 +448,7 @@ class _HealthEventCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.card,
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SurfaceTokens.containerBorder(colors)),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: Padding(

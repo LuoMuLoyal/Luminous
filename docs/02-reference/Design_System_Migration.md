@@ -201,6 +201,14 @@ updated: 2026-08-02
 - **验证**：`flutter analyze` 零问题；`flutter test` 全量通过。
 
 
+## Scaffold 背景统一与统一极淡边框（2026-08-27）
+
+- **背景色**：Scaffold 背景从纯白 `#FFFFFF` 改为近白灰 `#FAFAFA`（Tailwind neutral-50），卡片和 TileGroup 保持纯白 `#FFFFFF`，通过色差实现层次分离。`#FAFAFA` 是 Linear、Apple Notes、GitHub 内容区等成熟产品的常用近白背景值。Forui `FTabs` 背景仍为 `colors.muted`（`#F5F5F5`），与 scaffold 背景 `#FAFAFA` 形成微妙层级差。
+- **统一极淡边框**：FCard 和 FTileGroup 统一使用极淡边框 `#F5F5F5`（light）/ `colors.border.withAlpha(0.5)`（dark），在 `#FAFAFA` 背景上几乎不可见但提供一致收口。取代原先不一致的"FCard 无边框 + FTileGroup `#E5E5E5` 深边框"方案。Today 卡片 `todayCardStyle` 的 `emphasis`/`soft`/`neutral` tone 仅覆盖背景色，继承全局极淡边框；`urgent`/`warning` 保留语义色边框。
+- **FTileGroup 增强**：FTileGroup 新增纯白背景（`colors.card`），与 FCard 视觉一致；divider 颜色同步调淡为 `#F5F5F5`。
+- **Material 同步**：`foruiMaterialTheme()` 的 `scaffoldBackgroundColor` / `canvasColor` 读取 `scaffoldStyle.backgroundColor`，`cardColor` 读取 `colors.card`，`cardTheme` 同步极淡边框。
+- **桌面端 sidebar**：保留 `colors.background`（纯白），白色 sidebar vs 灰色内容区形成对比。
+
 相关子文档：
 - [[Design_System_Migration]]
 

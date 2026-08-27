@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-17
+updated: 2026-08-27
 ---
 
 # Design System
@@ -19,6 +19,7 @@ updated: 2026-08-17
 - 根主题为 Forui-led，当前通过 `lib/core/theme/theme.dart` 暴露主题族目录。
 - Forui 0.24.0 移除了除 `neutral` 外的所有预定义颜色方案。`LuminousApp` 现通过 `_familyColorOverride()` 函数在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 来模拟原有 `blue / green / orange / red / rose / slate / violet / yellow / zinc` 主题族的 light/dark 颜色变体，再派生 app 的 `ThemeData`。
 - 在 app 根注入 `FTheme`，替代 earlier green-skewed auth look。
+- **Scaffold 背景色策略（2026-08-27）**：scaffold 背景从纯白（`colors.background` = `#FFFFFF`）改为淡灰（`colors.secondary` = `#F5F5F5`），卡片背景保持纯白（`colors.card`）。通过灰底 vs 白卡的色差实现层次分离，不再依赖边框。`FCard` 默认样式和 `todayCardStyle` 的 neutral/soft/emphasis tone 已去掉边框（`BorderSide.none`）；urgent/warning tone 保留语义色边框（警示而非分隔）。移动端所有 tab 页面的背景色由顶层 `ShellPage` 的 `FScaffold` 统一提供，不再在各页面手动 `DecoratedBox(color: colors.background)`。桌面端 `DesktopTabShell` 内容区背景同样从 `scaffoldStyle.backgroundColor` 取值。桌面端 sidebar 保留纯白背景（`colors.background`），与灰色内容区形成对比。
 
 ## Shell 与页面 chrome
 
