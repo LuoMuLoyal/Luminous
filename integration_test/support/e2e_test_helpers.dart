@@ -629,16 +629,24 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   }) {
     // S-4: When expectDataExportPassword is set, validate the password so
     // E2E tests can assert the bad-password failure path.
-    if (expectDataExportPassword != null &&
-        password != expectDataExportPassword) {
-      return TaskEither.left(
-        const LucentFailure(
-          kind: LucentFailureKind.authentication,
-          message: 'Password is invalid.',
-          code: 'AUTH_PASSWORD_INVALID',
-          statusCode: 403,
-        ),
+    // An empty password when expectDataExportPassword is set is treated as
+    // invalid (AUTH_PASSWORD_INVALID), not silently accepted.
+    if (expectDataExportPassword != null) {
+      assert(
+        password.isNotEmpty,
+        'requestDataExport: password must not be empty when '
+        'expectDataExportPassword is set',
       );
+      if (password != expectDataExportPassword) {
+        return TaskEither.left(
+          const LucentFailure(
+            kind: LucentFailureKind.authentication,
+            message: 'Password is invalid.',
+            code: 'AUTH_PASSWORD_INVALID',
+            statusCode: 403,
+          ),
+        );
+      }
     }
     return TaskEither.right(
       DataExportRequestDataDto(
