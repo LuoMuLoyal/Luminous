@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/app/router.dart';
+import 'package:luminous/core/auth/sensitive_action_password_resolver.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -177,19 +172,11 @@ class DataExportPage extends ConsumerWidget {
   Future<void> _requestExport(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
 
-    // Task 8: require account password re-authentication before creating an
-    // export. OAuth-only users without a local password will receive
-    // AUTH_PASSWORD_NOT_SET from the backend and be prompted to set one.
-    // If the server says password re-auth is not required, skip the dialog.
-    final settings = ref.read(userSettingsControllerProvider).value;
-    final requiresPassword = settings?.passwordReauthenticationRequired ?? true;
-    final String? password;
-    if (requiresPassword) {
-      password = await ref.read(sensitiveActionPasswordPromptProvider)(context);
-      if (password == null || !context.mounted) return;
-    } else {
-      password = '';
-    }
+    // Resolve account password re-authentication, respecting the user's
+    // `passwordReauthenticationRequired` setting. Awaits settings readiness
+    // to avoid forcing the prompt on OAuth-only users while settings load.
+    final password = await resolveSensitiveActionPassword(ref, context);
+    if (password == null || !context.mounted) return;
 
     final DataExportRequestDataDto? value;
     try {
@@ -201,21 +188,11 @@ class DataExportPage extends ConsumerWidget {
           );
     } catch (error) {
       if (!context.mounted) return;
-      // S-2: If the user has no local password (OAuth-only), provide an
-      // actionable toast that deep-links to the account settings page.
-      final failure = error is LucentFailure ? error : null;
-      if (failure != null && failure.isPasswordNotSet) {
-        await Toast.showWithAction(
-          context,
-          l10n.authPasswordNotSetToast,
-          l10n.authPasswordNotSetAction,
-          () => context.go(Routes.account),
-        );
-        return;
-      }
-      await Toast.show(
-        context,
-        '${l10n.mineExportStatusFailed}: ${userMessageFromError(error, l10n: l10n)}',
+      await handleSensitiveActionFailure(
+        context: context,
+        l10n: l10n,
+        error: error,
+        failurePrefix: l10n.mineExportStatusFailed,
       );
       return;
     }
