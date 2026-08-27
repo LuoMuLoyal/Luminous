@@ -53,11 +53,11 @@ class MedicineDetailMapper {
       routeOfElimination: _trimToNull(detail.routeOfElimination),
       volumeOfDistribution: _trimToNull(detail.volumeOfDistribution),
       clearance: _trimToNull(detail.clearance),
-      groups: detail.groups,
-      categories: detail.categories,
-      atcCodes: detail.atcCodes,
-      synonyms: detail.synonyms,
-      foodInteractions: detail.foodInteractions,
+      groups: detail.groups ?? const [],
+      categories: detail.categories ?? const [],
+      atcCodes: detail.atcCodes ?? const [],
+      synonyms: detail.synonyms ?? const [],
+      foodInteractions: detail.foodInteractions ?? const [],
       drugInteractions: (detail.drugInteractions ?? const [])
           .map(
             (item) => MedicineDetailInteraction(

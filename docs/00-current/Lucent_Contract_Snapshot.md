@@ -23,6 +23,7 @@ Last updated: 2026-08-24 (Task 9 删除 Security PIN / elevation 合同；其余
 ## 当前合同变更
 
 - **药品详情 `drugInteractions`**：后端返回 `DrugbankDrugInteractionDto[]`（`drugbankId` + `description`），生成客户端 `MedicineDetailDataDtoDetail.drugInteractions` 为 `List<DrugbankDrugInteractionDto>?`。
+- **药品详情 DrugBank 列表字段可选化**：后端 `DrugbankMedicineDetailDto` 的 `groups`/`categories`/`atcCodes`/`synonyms`/`foodInteractions` 从 `@ApiProperty`（required）改为 `@ApiPropertyOptional(nullable: true)`，类型为 `string[] | null`。CN 药品详情 JSON 不含这些 DrugBank 专有字段，改为可选后生成的 Dart DTO 不再要求 `checked` 校验，`MedicineDetailMapper` 以 `?? const []` 处理 null。
 - **数据导出创建 DTO**：`CreateDataExportRequestDto` 的 `kind`/`format`/`range` 枚举字段不再带 `default`，业务默认值由 `DataExportService` 层兜底；避免生成器生成非法枚举默认构造。
 - **枚举未知值**：生成器开启 `enumUnknownDefaultCase=true`，所有枚举均含 `unknownDefaultOpenApi` fallback。
 - **app-info 扩展**：`AppInfoDataDto` 新增 `latestVersion: string | null` 和 `downloadUrl: string | null` 字段，通过 `LATEST_VERSION` 和 `DOWNLOAD_URL` 环境变量配置。前端 About 页使用 `compareSemver()` 比较本地版本与 `latestVersion`，发现新版本时自动打开 `downloadUrl`。
@@ -61,7 +62,7 @@ Last updated: 2026-08-24 (Task 9 删除 Security PIN / elevation 合同；其余
 
 ## 关键合同细节
 
-- **用药打卡**：`POST /api/v1/user/medicine-dose-logs/mark` 按提醒槽位幂等确认服药；`CreateDoseLogDto` / `DoseLogItemDto` 含 `reminderId` 与 `scheduledTime` 字段。Record 快速用药撤销使用既有 `DELETE /api/v1/user/medicine-dose-logs/{id}` 删除新建 log，或 `PATCH /api/v1/user/medicine-dose-logs/{id}` 恢复旧 status；本次未改变后端合同。前端在药品无附近提醒 slot 时，以当前 `HH:mm` 作为 `scheduledTime` 调用 `mark`，避免只传 `currentMedicineId` 触发 400。
+- **用药打卡**：`POST /api/v1/user/medicine-dose-logs/mark` 按提醒槽位幂等确认服药；`CreateDoseLogDto` / `DoseLogItemDto` 含 `reminderId` 与 `scheduledTime` 字段。Record 快速用药撤销使用既有 `DELETE /api/v1/user/medicine-dose-logs/{id}` 删除新建 log，或 `PATCH /api/v1/user/medicine-dose-logs/{id}` 恢复旧 status。临时打卡（无 `reminderId`）只需 `currentMedicineId`，`scheduledTime` 可选；SyncWorker 重放临时打卡请求不再因缺 `scheduledTime` 被 400 拒绝。
 - **服药稀疏语义**：Lucent Today/Report 以 `reminderId + scheduledFor + scheduledTime` 保持计划槽位独立；`planned` 在消费合同映射为 `unconfirmed`，taken、skipped、overdue-unconfirmed 分开计数。无 reminder 的临时 dose log 独立保存但不进入 adherence 分母；无计划窗口为 unknown。Flutter observed DTO/domain 迁移仍待后续合同阶段。
 - **睡眠 episode 语义**：Lucent daily record payload 支持 `sleepType: nightSleep|nap`、`startedAt`、`endedAt`、`durationMinutes` 和可选 `quality`，旧 `startAt/endAt` 按 nightSleep 读取；Today collector 同时返回 night、nap、all-sleep 总量，重叠 episode 只产生 data-quality warning。Flutter 仍消费旧 scalar 合同，observed DTO/domain 迁移留到下一阶段。
 - **睡眠快速记录**：未新增后端 API 或 DTO。Record 快速睡眠继续使用 daily records `create/delete` 合同；

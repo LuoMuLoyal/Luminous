@@ -51,15 +51,15 @@ class MedicineDetailResponseDtoDetail {
 
     this.clearance,
 
-    required this.groups,
+    this.groups,
 
-    required this.categories,
+    this.categories,
 
-    required this.atcCodes,
+    this.atcCodes,
 
-    required this.synonyms,
+    this.synonyms,
 
-    required this.foodInteractions,
+    this.foodInteractions,
 
     this.drugInteractions,
 
@@ -153,20 +153,20 @@ class MedicineDetailResponseDtoDetail {
   @JsonKey(name: r'clearance', required: false, includeIfNull: false)
   final String? clearance;
 
-  @JsonKey(name: r'groups', required: true, includeIfNull: false)
-  final List<String> groups;
+  @JsonKey(name: r'groups', required: false, includeIfNull: false)
+  final List<String>? groups;
 
-  @JsonKey(name: r'categories', required: true, includeIfNull: false)
-  final List<String> categories;
+  @JsonKey(name: r'categories', required: false, includeIfNull: false)
+  final List<String>? categories;
 
-  @JsonKey(name: r'atcCodes', required: true, includeIfNull: false)
-  final List<String> atcCodes;
+  @JsonKey(name: r'atcCodes', required: false, includeIfNull: false)
+  final List<String>? atcCodes;
 
-  @JsonKey(name: r'synonyms', required: true, includeIfNull: false)
-  final List<String> synonyms;
+  @JsonKey(name: r'synonyms', required: false, includeIfNull: false)
+  final List<String>? synonyms;
 
-  @JsonKey(name: r'foodInteractions', required: true, includeIfNull: false)
-  final List<String> foodInteractions;
+  @JsonKey(name: r'foodInteractions', required: false, includeIfNull: false)
+  final List<String>? foodInteractions;
 
   /// DrugBank interaction entries used for interaction checking.
   @JsonKey(name: r'drugInteractions', required: false, includeIfNull: false)
@@ -309,11 +309,11 @@ class MedicineDetailResponseDtoDetail {
       (routeOfElimination == null ? 0 : routeOfElimination.hashCode) +
       (volumeOfDistribution == null ? 0 : volumeOfDistribution.hashCode) +
       (clearance == null ? 0 : clearance.hashCode) +
-      groups.hashCode +
-      categories.hashCode +
-      atcCodes.hashCode +
-      synonyms.hashCode +
-      foodInteractions.hashCode +
+      (groups == null ? 0 : groups.hashCode) +
+      (categories == null ? 0 : categories.hashCode) +
+      (atcCodes == null ? 0 : atcCodes.hashCode) +
+      (synonyms == null ? 0 : synonyms.hashCode) +
+      (foodInteractions == null ? 0 : foodInteractions.hashCode) +
       (drugInteractions == null ? 0 : drugInteractions.hashCode) +
       (externalIdentifiers == null ? 0 : externalIdentifiers.hashCode) +
       (externalLinks == null ? 0 : externalLinks.hashCode) +
