@@ -25,31 +25,10 @@ class ResetPasswordPage extends HookConsumerWidget {
     // S-1: Guard against empty/missing token — the deep link may have been
     // opened without the ?token= query param. Show an error state instead of
     // rendering the form, which would only fail at submission time.
+    // Extracted to a separate widget so that hooks below are always called
+    // unconditionally (HookWidget rules of hooks).
     if (token.isEmpty) {
-      return AuthShell(
-        title: l10n.authResetPasswordMissingTokenTitle,
-        subtitle: l10n.authResetPasswordMissingTokenMessage,
-        logo: const AuthBrandLogo(),
-        leading: const AppBackButton(fallbackRoute: Routes.login),
-        centerTitle: true,
-        form: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              l10n.authResetPasswordMissingTokenMessage,
-              style: TypographyToken.level4.body(context),
-            ),
-            const SizedBox(height: Spacing.level6),
-            SizedBox(
-              width: double.infinity,
-              child: FButton(
-                onPress: () => context.go(Routes.forgotPassword),
-                child: Text(l10n.authResetPasswordMissingTokenAction),
-              ),
-            ),
-          ],
-        ),
-      );
+      return _MissingTokenView(l10n: l10n);
     }
 
     final formKey = useMemoized(GlobalKey<FormState>.new);
@@ -152,6 +131,44 @@ class ResetPasswordPage extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Error state shown when the reset-password deep link is missing the
+/// `?token=` query parameter. Extracted from [ResetPasswordPage.build] so
+/// that hooks in the main build path are always called unconditionally,
+/// satisfying the rules of hooks for [HookConsumerWidget].
+class _MissingTokenView extends StatelessWidget {
+  const _MissingTokenView({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return AuthShell(
+      title: l10n.authResetPasswordMissingTokenTitle,
+      subtitle: l10n.authResetPasswordMissingTokenMessage,
+      logo: const AuthBrandLogo(),
+      leading: const AppBackButton(fallbackRoute: Routes.login),
+      centerTitle: true,
+      form: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            l10n.authResetPasswordMissingTokenMessage,
+            style: TypographyToken.level4.body(context),
+          ),
+          const SizedBox(height: Spacing.level6),
+          SizedBox(
+            width: double.infinity,
+            child: FButton(
+              onPress: () => context.go(Routes.forgotPassword),
+              child: Text(l10n.authResetPasswordMissingTokenAction),
+            ),
+          ),
+        ],
       ),
     );
   }
