@@ -56,4 +56,38 @@ void main() {
     expect(result.isRight(), isTrue);
     expect(task.run(), completion(isA<Right<LucentFailure, int>>()));
   });
+
+  group('kPasswordNotSetCode', () {
+    test('constant equals the backend error code string', () {
+      expect(LucentFailure.kPasswordNotSetCode, 'AUTH_PASSWORD_NOT_SET');
+    });
+
+    test('isPasswordNotSet returns true when code matches', () {
+      const failure = LucentFailure(
+        kind: LucentFailureKind.authentication,
+        message: 'Password not set',
+        code: LucentFailure.kPasswordNotSetCode,
+        statusCode: 403,
+      );
+      expect(failure.isPasswordNotSet, isTrue);
+    });
+
+    test('isPasswordNotSet returns false for other codes', () {
+      const failure = LucentFailure(
+        kind: LucentFailureKind.authentication,
+        message: 'Invalid password',
+        code: 'AUTH_PASSWORD_INVALID',
+        statusCode: 403,
+      );
+      expect(failure.isPasswordNotSet, isFalse);
+    });
+
+    test('isPasswordNotSet returns false when code is null', () {
+      const failure = LucentFailure(
+        kind: LucentFailureKind.unknown,
+        message: 'Unknown error',
+      );
+      expect(failure.isPasswordNotSet, isFalse);
+    });
+  });
 }
