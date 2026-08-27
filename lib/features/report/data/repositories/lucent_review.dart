@@ -1,6 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/database/cache_constants.dart';
+import 'package:luminous/core/database/daos/review_dao.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
@@ -79,15 +85,36 @@ class ReviewRemoteDataSource {
 /// `Left(network/emptyResponse)`；非 `problem+json` / 畸形错误体的
 /// `FormatException` 从 `.run()` 直接传播。
 class LucentReviewRepository implements ReviewRepository {
-  LucentReviewRepository({required this.dataSource});
+  LucentReviewRepository({required this.dataSource, required this.dao});
 
   final ReviewRemoteDataSource dataSource;
+  final ReviewDao dao;
+
+  DateTime? _lastCurrentRefresh;
+  DateTime? _lastHistoryRefresh;
 
   @override
   TaskEither<LucentFailure, EventReview?> fetchCurrentReview() {
     return TaskEither.tryCatch(() async {
+      // 1. Check cache
+      final cachedJson = await dao.fetchCurrent();
+      if (cachedJson != null) {
+        final dto = lucent.EventReviewDataDto.fromJson(
+          jsonDecode(cachedJson) as Map<String, dynamic>,
+        );
+        final review = _mapReview(dto);
+        // Background refresh (throttled) — best-effort.
+        _refreshCurrentInBackground();
+        return review;
+      }
+
+      // 2. Cache empty → fetch from network.
       final dto = await dataSource.fetchCurrentReview();
-      return dto == null ? null : _mapReview(dto);
+      if (dto != null) {
+        await dao.replaceCurrent(jsonEncode(dto.toJson()));
+        return _mapReview(dto);
+      }
+      return null;
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -98,11 +125,39 @@ class LucentReviewRepository implements ReviewRepository {
     int limit = 20,
   }) {
     return TaskEither.tryCatch(() async {
+      final cacheKey = ReviewDao.historyKey(
+        status: status?.name,
+        cursor: cursor,
+      );
+
+      // 1. Check cache
+      final cachedJson = await dao.fetchHistory(cacheKey);
+      if (cachedJson != null) {
+        final dto = lucent.EventReviewListResponseDto.fromJson(
+          jsonDecode(cachedJson) as Map<String, dynamic>,
+        );
+        final page = ReviewEventPage(
+          items: dto.items.map(_mapEvent).toList(growable: false),
+          total: dto.total.toInt(),
+          nextCursor: dto.nextCursor,
+        );
+        // Background refresh (throttled) — best-effort.
+        _refreshHistoryInBackground(
+          status: status,
+          cursor: cursor,
+          limit: limit,
+          cacheKey: cacheKey,
+        );
+        return page;
+      }
+
+      // 2. Cache empty → fetch from network.
       final dto = await dataSource.fetchHistory(
         status: status,
         cursor: cursor,
         limit: limit,
       );
+      await dao.replaceHistory(cacheKey, jsonEncode(dto.toJson()));
       return ReviewEventPage(
         items: dto.items.map(_mapEvent).toList(growable: false),
         total: dto.total.toInt(),
@@ -117,6 +172,57 @@ class LucentReviewRepository implements ReviewRepository {
       final dto = await dataSource.fetchReview(eventId);
       return _mapReview(dto);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  void _refreshCurrentInBackground() {
+    final now = DateTime.now();
+    if (_lastCurrentRefresh != null &&
+        now.difference(_lastCurrentRefresh!) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastCurrentRefresh = now;
+
+    unawaited(
+      Future(() async {
+        try {
+          final dto = await dataSource.fetchCurrentReview();
+          if (dto != null) {
+            await dao.replaceCurrent(jsonEncode(dto.toJson()));
+          }
+        } catch (e) {
+          appTalker.warning('Review current background refresh failed: $e');
+        }
+      }),
+    );
+  }
+
+  void _refreshHistoryInBackground({
+    required ReviewEventStatus? status,
+    required String? cursor,
+    required int limit,
+    required String cacheKey,
+  }) {
+    final now = DateTime.now();
+    if (_lastHistoryRefresh != null &&
+        now.difference(_lastHistoryRefresh!) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastHistoryRefresh = now;
+
+    unawaited(
+      Future(() async {
+        try {
+          final dto = await dataSource.fetchHistory(
+            status: status,
+            cursor: cursor,
+            limit: limit,
+          );
+          await dao.replaceHistory(cacheKey, jsonEncode(dto.toJson()));
+        } catch (e) {
+          appTalker.warning('Review history background refresh failed: $e');
+        }
+      }),
+    );
   }
 
   EventReview _mapReview(lucent.EventReviewDataDto dto) {

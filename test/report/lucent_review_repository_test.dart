@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/database/daos/review_dao.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/report/data/repositories/lucent_review.dart';
@@ -14,6 +15,7 @@ void main() {
       'maps a full review preserving sections, coverage and sources',
       () async {
         final repository = LucentReviewRepository(
+          dao: _FakeReviewDao(),
           dataSource: _FakeReviewRemoteDataSource(current: _reviewDto()),
         );
 
@@ -88,6 +90,7 @@ void main() {
 
     test('preserves unknown enum values instead of collapsing them', () async {
       final repository = LucentReviewRepository(
+        dao: _FakeReviewDao(),
         dataSource: _FakeReviewRemoteDataSource(
           current: _reviewDto(
             event: lucent.EventReviewEventDto(
@@ -155,6 +158,7 @@ void main() {
 
     test('returns null when the user has no events', () async {
       final repository = LucentReviewRepository(
+        dao: _FakeReviewDao(),
         dataSource: _FakeReviewRemoteDataSource(current: null),
       );
 
@@ -167,6 +171,7 @@ void main() {
       'drops unknown available actions but keeps known ones in order',
       () async {
         final repository = LucentReviewRepository(
+          dao: _FakeReviewDao(),
           dataSource: _FakeReviewRemoteDataSource(
             current: _reviewDto(
               availableActions: [
@@ -191,6 +196,7 @@ void main() {
 
     test('keeps fact code when arguments are not a JSON object', () async {
       final repository = LucentReviewRepository(
+        dao: _FakeReviewDao(),
         dataSource: _FakeReviewRemoteDataSource(
           current: _reviewDto(
             whatHappened: lucent.EventReviewSectionDto(
@@ -214,6 +220,7 @@ void main() {
   group('LucentReviewRepository – history', () {
     test('maps a page of event summaries with total and cursor', () async {
       final repository = LucentReviewRepository(
+        dao: _FakeReviewDao(),
         dataSource: _FakeReviewRemoteDataSource(
           page: lucent.EventReviewListResponseDto(
             items: [
@@ -246,7 +253,10 @@ void main() {
             nextCursor: null,
           ),
         );
-        final repository = LucentReviewRepository(dataSource: dataSource);
+        final repository = LucentReviewRepository(
+          dao: _FakeReviewDao(),
+          dataSource: dataSource,
+        );
 
         await expectTaskRight(
           repository.fetchHistory(
@@ -271,6 +281,7 @@ void main() {
   group('LucentReviewRepository – detail', () {
     test('maps an ended event review with outcome', () async {
       final repository = LucentReviewRepository(
+        dao: _FakeReviewDao(),
         dataSource: _FakeReviewRemoteDataSource(
           detail: _reviewDto(
             event: lucent.EventReviewEventDto(
@@ -300,6 +311,7 @@ void main() {
   group('LucentReviewRepository – failure branches', () {
     test('network failure maps to Left(network)', () async {
       final repository = LucentReviewRepository(
+        dao: _FakeReviewDao(),
         dataSource: _FakeReviewRemoteDataSource(
           current: _reviewDto(),
           error: DioException(
@@ -318,6 +330,7 @@ void main() {
 
     test('detail not-found keeps Problem Details code and status', () async {
       final repository = LucentReviewRepository(
+        dao: _FakeReviewDao(),
         dataSource: _FakeReviewRemoteDataSource(
           error: DioException(
             requestOptions: RequestOptions(
@@ -354,6 +367,7 @@ void main() {
       'empty success response body maps to Left(network/emptyResponse)',
       () async {
         final repository = LucentReviewRepository(
+          dao: _FakeReviewDao(),
           dataSource: _FakeReviewRemoteDataSource(
             page: null,
             error: LucentFailure.network(
@@ -373,6 +387,7 @@ void main() {
       'non problem+json error body keeps FormatException from .run()',
       () async {
         final repository = LucentReviewRepository(
+          dao: _FakeReviewDao(),
           dataSource: _FakeReviewRemoteDataSource(
             error: DioException(
               requestOptions: RequestOptions(
@@ -404,6 +419,7 @@ void main() {
       'unexpected exception maps to Left(unknown) with cause preserved',
       () async {
         final repository = LucentReviewRepository(
+          dao: _FakeReviewDao(),
           dataSource: _FakeReviewRemoteDataSource(
             current: _reviewDto(),
             error: StateError('boom'),
@@ -416,6 +432,30 @@ void main() {
       },
     );
   });
+}
+
+// ---------------------------------------------------------------------------
+// Fake review DAO - returns empty cache so tests exercise the network path
+// ---------------------------------------------------------------------------
+
+class _FakeReviewDao implements ReviewDao {
+  @override
+  Future<String?> fetchCurrent() async => null;
+
+  @override
+  Future<String?> fetchHistory(String cacheKey) async => null;
+
+  @override
+  Future<void> replaceCurrent(String jsonData) async {}
+
+  @override
+  Future<void> replaceHistory(String cacheKey, String jsonData) async {}
+
+  @override
+  Future<void> clear() async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 // ---------------------------------------------------------------------------
