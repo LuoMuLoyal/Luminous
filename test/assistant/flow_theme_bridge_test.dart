@@ -118,9 +118,14 @@ void main() {
       TestForuiApp(
         home: Theme(
           data: ThemeData(
-            // FlowTheme extends flutter/material.dart's ThemeExtension,
-            // which is incompatible with material_ui's ThemeExtension at
-            // the type-system level, but compatible at runtime.
+            // TODO(flow-ui-upgrade): FlowTheme extends flutter/material.dart's
+            // ThemeExtension, which is incompatible with material_ui's
+            // ThemeExtension at the type-system level. The `as` cast below
+            // is a workaround — it works at runtime because both
+            // ThemeExtension types share the same structural shape and the
+            // list is never polymorphically dispatched. Once flow_ui upgrades
+            // to use material_ui's ThemeExtension directly, remove this cast.
+            // See: https://github.com/forus-labs/flow_ui/issues (tracking).
             extensions: [parentFlowTheme] as Iterable<ThemeExtension<dynamic>>,
           ),
           child: Builder(
