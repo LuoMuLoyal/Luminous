@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
@@ -149,13 +150,19 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
           ),
         );
       },
-      // material_ui's GlobalMaterialLocalizations.delegates already covers
-      // Material / Widgets / Cupertino delegates. Do not re-add fl.*
-      // delegates — that double-registers and causes framework warnings.
+      // material_ui's GlobalMaterialLocalizations.delegates covers
+      // material_ui's own MaterialLocalizations type (for forui widgets).
+      // flutter_localizations' fl.* delegates cover Flutter framework's
+      // MaterialLocalizations / WidgetsLocalizations / CupertinoLocalizations
+      // (for widgets like RefreshIndicator, TextField, etc.).
+      // Both sets are needed — they register different interface types.
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
+        fl.GlobalMaterialLocalizations.delegate,
+        fl.GlobalWidgetsLocalizations.delegate,
+        fl.GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: widget.routerConfig ?? ref.watch(appRouterProvider),

@@ -1,3 +1,4 @@
+import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -23,12 +24,18 @@ Widget _toastShell(Widget child) {
       data: theme,
       child: FToaster(child: child ?? const SizedBox.shrink()),
     ),
-    // material_ui's GlobalMaterialLocalizations.delegates covers Material /
-    // Widgets / Cupertino. Do not re-add fl.* delegates.
+    // material_ui's GlobalMaterialLocalizations.delegates covers
+    // material_ui's MaterialLocalizations (for forui widgets).
+    // fl.* delegates cover Flutter framework's MaterialLocalizations /
+    // WidgetsLocalizations / CupertinoLocalizations (RefreshIndicator etc.).
+    // Both sets register different interface types — both are needed.
     localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
       AppLocalizations.delegate,
       FLocalizations.delegate,
       ...GlobalMaterialLocalizations.delegates,
+      fl.GlobalMaterialLocalizations.delegate,
+      fl.GlobalWidgetsLocalizations.delegate,
+      fl.GlobalCupertinoLocalizations.delegate,
     ],
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(body: child),
