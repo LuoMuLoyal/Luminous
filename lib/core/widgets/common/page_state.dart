@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -167,8 +170,9 @@ class PageStateSwitch<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (state) {
-      PageViewStateLoading<T>() =>
-        loadingBuilder?.call() ?? const _DefaultLoadingView(),
+      PageViewStateLoading<T>() => _LoadingTimeoutWrapper(
+        child: loadingBuilder?.call() ?? const _DefaultLoadingView(),
+      ),
       final PageViewStateFatalError<T> error =>
         fatalErrorBuilder?.call(error) ??
             _DefaultFatalErrorView(
@@ -245,6 +249,81 @@ class SignInHintBanner extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Wraps loading content with a floor-timeout hint. After
+/// [loadingFloorTimeout] (6 s), a "loading slow" banner with a retry button
+/// appears above the skeleton so the user is not stuck staring at shimmer
+/// blocks indefinitely.
+class _LoadingTimeoutWrapper extends StatefulWidget {
+  const _LoadingTimeoutWrapper({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_LoadingTimeoutWrapper> createState() => _LoadingTimeoutWrapperState();
+}
+
+class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
+  Timer? _timer;
+  bool _showHint = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(loadingFloorTimeout, () {
+      if (mounted) {
+        setState(() => _showHint = true);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_showHint) {
+      return widget.child;
+    }
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    return Column(
+      children: [
+        Container(
+          key: const Key('loading-slow-hint'),
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.level4,
+            vertical: Spacing.level2,
+          ),
+          color: SemanticColor.warning.subtle(context),
+          child: Row(
+            children: [
+              Icon(
+                SemanticIcons.statusWarning,
+                size: 18,
+                color: SemanticColor.warning.solid(context),
+              ),
+              const SizedBox(width: Spacing.level2),
+              Expanded(
+                child: Text(
+                  l10n.todayLoadingSlowHint,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(child: widget.child),
+      ],
     );
   }
 }
