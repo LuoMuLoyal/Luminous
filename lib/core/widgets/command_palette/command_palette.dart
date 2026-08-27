@@ -79,11 +79,11 @@ class _CommandPaletteState extends State<CommandPalette> {
         onExecute: () => context.go(Routes.medicine),
       ),
       _Command(
-        label: l10n.tabReport,
-        icon: SemanticIcons.tabReport,
-        keywords: ['report', '报告', l10n.tabReport],
+        label: l10n.tabReview,
+        icon: SemanticIcons.tabReview,
+        keywords: ['report', '报告', l10n.tabReview],
         category: l10n.commandPaletteNavigateTo,
-        onExecute: () => context.go(Routes.report),
+        onExecute: () => context.go(Routes.review),
       ),
       _Command(
         label: l10n.tabMine,

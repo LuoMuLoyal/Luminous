@@ -22,7 +22,7 @@ const Map<String, List<String>> fragmentRules = {
   'record': ['record'],
   'medicine': ['medicine', 'scan'],
   'today': ['today'],
-  'report': ['report'],
+  'review': ['review'],
   'settings': ['settings', 'sidebar'],
   'auth': ['auth'],
   'mine': ['mine'],

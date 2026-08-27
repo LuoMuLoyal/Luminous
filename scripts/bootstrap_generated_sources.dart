@@ -484,8 +484,8 @@ const _todayAnalysisModels = [
   'TodayAnalysisStreamResultDto',
   'TodayAnalysisStreamResultDto_data',
   'TodayAnalysisStreamSummaryDto',
-  'ReportMetricDto',
-  'ReportObservedMetricDto',
+  'ReviewMetricDto',
+  'ReviewObservedMetricDto',
   'SuggestionItemDto',
   'SuggestionObservedMetricDto',
 ];

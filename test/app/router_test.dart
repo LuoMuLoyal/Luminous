@@ -9,7 +9,7 @@ import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/notification/presentation/routes.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/routes.dart';
-import 'package:luminous/features/report/presentation/pages/page.dart';
+import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
@@ -126,7 +126,7 @@ void main() {
       '/',
       '/record',
       '/medicine',
-      '/report',
+      '/review',
       '/mine',
     ];
 
@@ -139,7 +139,7 @@ void main() {
 
   group('fifth tab review rename keeps the /report route', () {
     test('/report still resolves to the report shell branch', () {
-      expect(_routeIsInsideShell('/report'), isTrue);
+      expect(_routeIsInsideShell('/review'), isTrue);
     });
 
     testWidgets(
@@ -153,24 +153,24 @@ void main() {
         });
 
         await tester.pumpWidget(
-          _testableRouter(initialLocation: '/report', tester: tester),
+          _testableRouter(initialLocation: '/review', tester: tester),
         );
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 300));
         await tester.pump(const Duration(milliseconds: 300));
 
         // The deep link stays on the shell and selects the report branch
-        // (same branch identity as ShellTab.report).
-        expect(find.byType(ReportPage), findsOneWidget);
+        // (same branch identity as ShellTab.review).
+        expect(find.byType(ReviewPage), findsOneWidget);
         final bottomNav = tester.widget<FBottomNavigationBar>(
           find.byType(FBottomNavigationBar),
         );
-        expect(bottomNav.index, ShellTab.report.index);
+        expect(bottomNav.index, ShellTab.review.index);
 
         // Fifth tab label shows the user-facing task name 回顾 (zh).
         expect(
           find.descendant(
-            of: find.byKey(ShellTab.report.testKey()),
+            of: find.byKey(ShellTab.review.testKey()),
             matching: find.text('回顾'),
           ),
           findsOneWidget,
@@ -206,7 +206,7 @@ void main() {
       '/settings/export',
       '/settings/help',
       '/settings/about',
-      '/report/review/evt-1',
+      '/review/review/evt-1',
       '/assistant',
       '/notifications',
       '/notifications/123',

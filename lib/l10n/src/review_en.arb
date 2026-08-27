@@ -1,0 +1,515 @@
+{
+  "reviewRangePickerTitle": "Select report period",
+  "reviewRangeCustom": "Custom",
+  "reviewGenerateAction": "Generate summary",
+  "reviewContinueRecordAction": "Keep recording",
+  "reviewSyncAction": "Sync",
+  "reviewSnapshotStatus": "Showing the last report snapshot",
+  "reviewSnapshotHint": "Generate or sync to update",
+  "reviewReadinessPreviewBadge": "Preview",
+  "reviewReadinessInsufficientBadge": "Insufficient data",
+  "reviewReadinessReadyBadge": "Ready",
+  "reviewReadinessSignedOutTitle": "Full report is not unlocked yet",
+  "reviewReadinessSignedOutDescription": "Sign in to view the real last 7 days report aggregation.",
+  "reviewReadinessInsufficientTitle": "There is not enough data for a full report yet",
+  "reviewReadinessInsufficientDescription": "Keep recording and the app will fill in trends, summaries, and exportable content.",
+  "reviewReadinessReadyTitle": "Your last 7 days report is ready",
+  "reviewReadinessReadyTitleRange": "Your {range} report is ready",
+  "@reportReadinessReadyTitleRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReadinessReadyDescription": "You can now view the full report, generate a summary, and export it.",
+  "reviewReadinessUpdatedAt": "Currently showing data updated at {time}",
+  "@reportReadinessUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReadinessMissingMetricsHint": "{count} metric(s) still need more data.",
+  "@reportReadinessMissingMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReadinessNeedsAttentionMetricsHint": "{count} metric(s) need improvement.",
+  "@reportReadinessNeedsAttentionMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewScoreHelpTooltip": "A composite score based on your recent records, medication adherence, and vital trends.",
+  "reviewScoreTitle": "Health score",
+  "reviewScoreOutOf": "/ {max}",
+  "@reportScoreOutOf": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewScoreTitlePreview": "Report preview score",
+  "reviewScoreOutOfPreview": "preview / {max}",
+  "@reportScoreOutOfPreview": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewScoreBody": "Preview only until report data is connected",
+  "reviewMetricMedicationTitle": "Medication",
+  "reviewMetricSleepTitle": "Sleep",
+  "reviewMetricWaterTitle": "Water",
+  "reviewMetricOverallTitle": "Overall status",
+  "reviewStatusGood": "Good",
+  "reviewStatusNeedsImprove": "Needs improvement",
+  "reviewStatusStable": "Stable",
+  "reviewTrendSectionTitle": "Health trends",
+  "reviewRangeLast7Days": "Last 7 days",
+  "reviewRangeLast30Days": "Last 30 days",
+  "reviewTrendSleepLabel": "Sleep (h)",
+  "reviewTrendWaterLabel": "Water (L)",
+  "reviewTrendMedicationLabel": "Medication (%)",
+  "reviewTrendDateLabels": "5/19|5/20|5/21|5/22|5/23|5/24|5/25",
+  "reviewViewDetailsAction": "View detailed data",
+  "reviewFindingsSectionTitle": "Key findings",
+  "reviewSuggestionHistorySectionTitle": "Suggestion history",
+  "reviewSuggestionHistoryEmptyTitle": "No proactive suggestions yet",
+  "reviewSuggestionHistoryEmptyBody": "Once the system issues new AI proactive suggestions, the latest review trail will appear here.",
+  "reviewSuggestionHistoryLoadingError": "Failed to load suggestion history, please try again later",
+  "reviewSuggestionHistoryActiveBadge": "Active",
+  "reviewSuggestionHistoryExpiredBadge": "Expired",
+  "reviewSuggestionHistoryDismissedBadge": "Dismissed",
+  "reviewFindingCoffeeTitle": "Caffeine affects sleep",
+  "reviewFindingCoffeeBody": "Sleep duration dropped after afternoon coffee.",
+  "reviewFindingMedicineTitle": "Medication routine is steady",
+  "reviewFindingMedicineBody": "Medication was taken on time for seven consecutive days.",
+  "reviewAiSummaryTitle": "Summary",
+  "reviewAiSummarySubtitle": "Smart analysis based on this week's records",
+  "reviewAiSummarySubtitleLast30Days": "Smart analysis based on the last 30 days of records",
+  "reviewAiSummarySubtitleCustom": "Smart analysis based on the selected period",
+  "reviewAiSummaryDefaultHint": "This week's AI summary has not been generated yet, so the latest report snapshot is shown for now.",
+  "reviewAiSummaryGeneratingHint": "Generating this week's AI summary",
+  "reviewAiSummaryGeneratingHintLast30Days": "Generating the last 30 days AI summary",
+  "reviewAiSummaryGeneratingHintCustom": "Generating the selected period AI summary",
+  "reviewAiSummaryErrorHint": "This week's AI summary could not be generated, so the report snapshot is kept for now.",
+  "reviewAiSummaryDisabledHint": "AI summaries are disabled in settings, so only the report snapshot is shown.",
+  "reviewViewAdviceAction": "View advice",
+  "reviewAiBulletSleep": "Sleep quality was good overall, with slight weekend variation. A steady routine can help energy.",
+  "reviewAiBulletWater": "Water completion was moderate, with a few lower days. Carry water and drink small amounts often.",
+  "reviewAiBulletMedicine": "Medication adherence stayed high. Keep the on-time routine.",
+  "reviewAiBulletDiet": "Meals were mostly balanced, but fruit and vegetable intake could increase.",
+  "reviewExportSectionTitle": "Export summary",
+  "reviewExportHospitalTitle": "For clinic",
+  "reviewExportHospitalSubtitle": "Export health summary",
+  "reviewExportMonthlyTitle": "Monthly report",
+  "reviewExportMonthlySubtitle": "PDF format",
+  "reviewExportPrintTitle": "Print preview",
+  "reviewExportPrintSubtitle": "Paper preview",
+  "reviewExportClinicShareTitle": "Share summary",
+  "reviewExportClinicShareSubtitle": "De-identified health summary",
+  "reviewExportRequestedToast": "Export request submitted.",
+  "reviewExportProcessingToast": "Export is still processing.",
+  "reviewExportUnavailableToast": "This export is temporarily unavailable in the current environment.",
+  "reviewExportReadyToast": "The export file is ready and opening now.",
+  "reviewExportFailedToast": "Export failed.",
+  "reviewExportLinkMissingToast": "The export finished, but the download link is unavailable right now.",
+  "reviewExportOpenFailedToast": "The export finished, but the download link could not be opened.",
+  "reviewPatternSectionTitle": "Health pattern analysis",
+  "reviewPatternDietWaterTitle": "Diet and water",
+  "reviewPatternDietWaterStatus": "Good pairing",
+  "reviewPatternDietWaterBody": "Energy is easier to keep steady when hydration is enough.",
+  "reviewPatternMedicationTitle": "Medication adherence",
+  "reviewPatternMedicationStatus": "Excellent",
+  "reviewPatternMedicationBody": "Taking medicine on time helps maintain health status.",
+  "reviewReferenceNotice": "This report is for reference only and is not diagnosis or treatment advice.",
+  "reviewDataInsufficientTitle": "Insufficient data to generate a full report",
+  "reviewDataInsufficientMessage": "Keep recording health data (water, sleep, symptoms, etc.) and the system will automatically generate trend analysis and AI summaries.",
+  "reviewDataInsufficientMetricsHint": "{count} metric(s) currently lack data. Keep recording to fill them in.",
+  "reviewFindingsEmptyTitle": "No key findings yet",
+  "reviewFindingsEmptyBody": "Keep recording health data and the system will automatically discover notable changes and trends.",
+  "reviewExportInsufficientReason": "Export is unavailable with insufficient data. Please add more records first.",
+  "reviewLockedFeaturesTitle": "Full report stays collapsed for now",
+  "reviewLockedFeaturesSignedOutHint": "Sign in and add enough records to unlock summaries, PDF export, print preview, and deeper pattern analysis.",
+  "reviewLockedFeaturesInsufficientHint": "Add more records to unlock summaries, PDF export, print preview, and deeper pattern analysis.",
+  "reviewErrorTitle": "Report did not load this time",
+  "reviewErrorDescription": "Report data did not load this time. Try syncing again.",
+  "reviewPreviewBannerMessage": "Sign in to view your real weekly report, AI summary, and exports.",
+  "reviewSignedOutInlineHint": "Sign in to view your real weekly report, AI summary, and exports.",
+  "reviewTrendPreviewTitle": "Health trends",
+  "reviewTrendPreviewBody": "Sign in to see trends for water, sleep, and medication adherence.",
+  "reviewFindingsPreviewTitle": "Key findings",
+  "reviewFindingsPreviewBody": "Sign in to see notable changes based on your records.",
+  "reviewSuggestionHistoryPreviewTitle": "Suggestion history",
+  "reviewSuggestionHistoryPreviewBody": "Sign in to review past proactive suggestions.",
+  "reviewExportPreviewTitle": "Export preview",
+  "reviewExportPreviewBody": "Sign in to unlock weekly reports and sharing previews.",
+  "reviewPatternSleepTitle": "Sleep changes",
+  "reviewPatternSleepStatus": "Watch trend",
+  "reviewPatternSleepBody": "Evening caffeine and schedule changes may affect sleep",
+  "reviewStatusInsufficientData": "Insufficient data",
+  "reviewStatusUnknown": "Unknown",
+  "reviewSuggestionHistoryDetailTitle": "Suggestion Detail",
+  "reviewSuggestionHistoryDetailRuleId": "Rule ID",
+  "reviewSuggestionHistoryDetailRuleVersion": "Rule Version",
+  "reviewSuggestionHistoryDetailTriggerType": "Trigger Type",
+  "reviewSuggestionHistoryDetailConfidence": "Confidence",
+  "reviewSuggestionHistoryDetailGeneratedAt": "Generated At",
+  "reviewSuggestionHistoryDetailFeedback": "Your Feedback",
+  "reviewSuggestionHistoryDetailFeedbackAt": "Feedback At",
+  "reviewSuggestionHistoryDetailExpiredAt": "Expired At",
+  "reviewSuggestionHistoryDetailNoFeedback": "Not yet",
+  "reviewSuggestionTypeConfirmedRisk": "Confirmed Risk",
+  "reviewSuggestionTypeCompliance": "Compliance",
+  "reviewSuggestionTypeTrend": "Trend",
+  "reviewSuggestionTypeBehaviorAdvice": "Behavior Advice",
+  "reviewSuggestionTypeCoverage": "Coverage",
+  "reviewSuggestionTriggerTypeEvent": "Event",
+  "reviewSuggestionTriggerTypeTimer": "Timer",
+  "reviewSuggestionConfidenceHigh": "High",
+  "reviewSuggestionConfidenceMedium": "Medium",
+  "reviewSuggestionConfidenceLow": "Low",
+  "reviewClinicSummaryPreviewTitle": "Clinic Summary Preview",
+  "reviewClinicSummaryGeneratedAt": "Generated At",
+  "reviewClinicSummaryDataRange": "Data Range",
+  "reviewClinicSummaryProfileSection": "Profile (De-identified)",
+  "reviewClinicSummaryAllergiesSection": "Allergies",
+  "reviewClinicSummaryConditionsSection": "Conditions",
+  "reviewClinicSummaryMedicinesSection": "Current Medications",
+  "reviewClinicSummaryFindingsSection": "Key Findings",
+"reviewClinicSummaryWaterSection": "Water Intake",
+"reviewClinicSummaryWaterUnit": "ml",
+"reviewClinicSummarySleepSection": "Sleep",
+"reviewClinicSummarySleepUnit": "min",
+"reviewClinicSummaryNotesSection": "Notes",
+"reviewClinicSummaryNotesPrivacyWarning": "Anyone with the share link can read the notes in plain text.",
+  "reviewClinicSummaryDisclaimerSection": "Disclaimer",
+  "reviewClinicSummaryEmpty": "No summary data available to generate",
+  "reviewClinicSummaryDownloadPdf": "Download PDF",
+  "reviewClinicSummaryShare": "Share summary",
+  "reviewClinicSummaryPdfEmpty": "PDF content is empty",
+  "reviewClinicSummaryPdfFailed": "PDF download failed, please try again later",
+  "reviewClinicSummarySharedTitle": "Clinic Summary",
+  "reviewClinicSummarySharedExpired": "Share link has expired or is invalid",
+  "reviewClinicSummarySharedDownloadPdf": "Download PDF",
+  "reviewClinicSummaryProfileNickname": "Nickname",
+  "reviewClinicSummaryProfileAge": "Age",
+  "reviewClinicSummaryProfileSex": "Sex",
+  "reviewClinicSummaryProfileBloodType": "Blood Type",
+  "reviewClinicSummaryNotSet": "Not set",
+  "reviewClinicSummaryLoading": "Generating clinic summary…",
+  "reviewClinicSummaryLoadFailed": "Failed to load clinic summary, please try again later",
+  "reviewClinicSummarySharedNetworkError": "Network connection failed, please check your network and try again",
+  "reviewClinicSummaryFieldSectionTitle": "Include",
+  "reviewClinicSummaryFieldEventOverview": "Event overview",
+  "reviewClinicSummaryFieldSymptomChanges": "Symptom changes",
+  "reviewClinicSummaryFieldMedicationSlots": "Medication slots",
+  "reviewClinicSummaryFieldWater": "Water",
+  "reviewClinicSummaryFieldSleep": "Sleep",
+  "reviewClinicSummaryFieldNotes": "Notes",
+  "reviewClinicSummaryFieldPrivacyHint": "Only selected content appears in the preview, PDF and shared link.",
+  "reviewShareConfirmTitle": "Create share link",
+  "reviewShareConfirmExpiryHint": "The link is valid for {days} days from creation",
+  "@reportShareConfirmExpiryHint": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewShareConfirmNotice": "Anyone with the link can view the selected content.",
+  "reviewShareConfirmAction": "Create share",
+  "reviewShareCreatedTitle": "Share link created",
+  "reviewShareCreatedExpiresAt": "Expires at",
+  "reviewShareCopyAction": "Copy link",
+  "reviewShareCopiedToast": "Link copied",
+  "reviewShareRevokeAction": "Revoke share",
+  "reviewShareRevokedTitle": "Share revoked",
+  "reviewShareRevokedBody": "The link no longer works and cannot be opened.",
+  "reviewShareCreateFailed": "Failed to create the share, please try again later",
+  "reviewShareRevokeFailed": "Failed to revoke the share, please try again later",
+  "reviewShareManagementTitle": "Share management",
+  "reviewShareManagementEmpty": "No shares yet",
+  "reviewShareManagementEmptyHint": "Links created from the visit summary appear here.",
+  "reviewShareManagementLoadFailed": "Failed to load shares, please try again later",
+  "reviewShareCreatedAt": "Created at",
+  "reviewShareExpiresAt": "Expires at",
+  "reviewShareAccessCount": "{count} views",
+  "@reportShareAccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewShareAccessCountLabel": "Views",
+  "reviewShareLastAccessed": "Last accessed",
+  "reviewShareLastAccessedNever": "Not accessed yet",
+  "reviewShareRevokedBadge": "Revoked",
+  "reviewMoreShareManagementTitle": "Share management",
+  "reviewMoreShareManagementSubtitle": "View and revoke shared links",
+  "reviewTrendEmptyTitle": "No trend data yet",
+  "reviewTrendEmptyBody": "Record water, medication, or sleep on at least 2 days to see your health trends.",
+  "reviewExportFailedWithReason": "Export failed: {reason}",
+  "@reportExportFailedWithReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewSectionWhatHappened": "What happened",
+  "reviewReviewSectionKeyChanges": "Key changes",
+  "reviewReviewSectionCompletedActions": "Completed actions",
+  "reviewReviewSectionNextStep": "Next step",
+  "reviewReviewStatusActive": "Ongoing",
+  "reviewReviewStatusEnded": "Ended",
+  "reviewReviewStatusUnknown": "Unknown",
+  "reviewReviewOutcomeLabel": "Outcome",
+  "reviewReviewOutcomeImproved": "Improved",
+  "reviewReviewOutcomeUnchanged": "About the same",
+  "reviewReviewOutcomeWorsened": "Worsened",
+  "reviewReviewOutcomeUnknown": "Unknown",
+  "reviewReviewKindSymptom": "Symptom observation",
+  "reviewReviewKindOther": "Health observation",
+  "reviewReviewKindUnknown": "Health observation",
+  "reviewReviewStartedLabel": "Started {date}",
+  "@reportReviewStartedLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewEndedLabel": "Ended {date}",
+  "@reportReviewEndedLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewMedicineCountLabel": "Linked to {count} medicines",
+  "@reportReviewMedicineCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewCheckInAction": "Confirm today's result",
+  "reviewReviewCheckInDoneToday": "Today confirmed: {outcome}",
+  "@reportReviewCheckInDoneToday": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewEndEventAction": "End observation",
+  "reviewReviewReasonNoObservations": "No observations were recorded during this window.",
+  "reviewReviewReasonInsufficientCoverage": "Some records exist, but not enough to compute a trend.",
+  "reviewReviewReasonNoCompletedActions": "No confirmed doses or check-ins yet.",
+  "reviewReviewReasonUnknown": "This part is unavailable for now.",
+  "reviewReviewWhatHappenedSymptomCount": "{count} symptom records",
+  "@reportReviewWhatHappenedSymptomCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewWhatHappenedCheckInCount": "{count} check-ins",
+  "@reportReviewWhatHappenedCheckInCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewWhatHappenedWindow": "{start} – {end}",
+  "@reportReviewWhatHappenedWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewWindowUntilNow": "now",
+  "reviewReviewDetailTitle": "Event review",
+  "reviewReviewWhatHappenedReasonRecord": "Triggered by record: {title}",
+  "@reportReviewWhatHappenedReasonRecord": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewChangeOutcomeTitle": "Outcome trend",
+  "reviewReviewChangeWaterTitle": "Water",
+  "reviewReviewChangeSleepTitle": "Sleep",
+  "reviewReviewChangeDirectionUp": "Up",
+  "reviewReviewChangeDirectionDown": "Down",
+  "reviewReviewChangeDirectionFlat": "Flat",
+  "reviewReviewChangeDirectionUnknown": "Unknown direction",
+  "reviewReviewChangeOutcomeDetail": "From {from} to {to} across {count} check-ins",
+  "@reportReviewChangeOutcomeDetail": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewChangeNumericDetail": "{from} {unit} → {to} {unit} over {days} days",
+  "@reportReviewChangeNumericDetail": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewChangeUnitMl": "ml",
+  "reviewReviewChangeUnitHour": "h",
+  "reviewReviewDoseSectionTitle": "Medication doses",
+  "reviewReviewDoseConfirmedLabel": "Doses confirmed: {count}",
+  "@reportReviewDoseConfirmedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewDoseSkippedLabel": "Skipped: {count}",
+  "@reportReviewDoseSkippedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewDoseUnconfirmedLabel": "Unconfirmed: {count}",
+  "@reportReviewDoseUnconfirmedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewCheckInSectionTitle": "Check-in records",
+  "reviewReviewCheckInRecordLabel": "{date} · {outcome}",
+  "@reportReviewCheckInRecordLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewMoreCountLabel": "{count} more records",
+  "@reportReviewMoreCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewNextStepCheckInPrompt": "You haven't checked in today yet.",
+  "reviewReviewNextStepCheckInDonePrompt": "Today's result is confirmed.",
+  "reviewReviewNextStepEndedPrompt": "This observation has ended. Outcome: {outcome}",
+  "@reportReviewNextStepEndedPrompt": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewRedFlagSectionTitle": "Medicine safety notes",
+  "reviewReviewRedFlagSevereAllergy": "{medicine} may contain a severe allergen: {label}",
+  "@reportReviewRedFlagSevereAllergy": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewRedFlagInformationGap": "Key medication information is missing for {medicine}",
+  "@reportReviewRedFlagInformationGap": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewRedFlagUnknown": "Safety note for {medicine}",
+  "@reportReviewRedFlagUnknown": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewHistoryTitle": "Past observations",
+  "reviewReviewHistoryEmpty": "No past observations yet.",
+  "reviewReviewHistoryFilterAll": "All",
+  "reviewReviewHistoryLoadFailed": "Couldn't load past observations.",
+  "reviewReviewHistoryLoadMore": "Load more",
+  "reviewReviewHistoryLoadMoreFailed": "Failed to load more.",
+  "reviewReviewNoEventTitle": "No observation in progress",
+  "reviewReviewNoEventDescription": "Start a health observation and this page will review what happened, what changed, what you completed, and what's next.",
+  "reviewReviewStartObservationAction": "Start health observation",
+  "reviewPreviewWhatHappenedTitle": "What happened",
+  "reviewPreviewWhatHappenedBody": "After starting an observation, your symptom records and check-ins will be summarized here.",
+  "reviewPreviewKeyChangesTitle": "What changed",
+  "reviewPreviewKeyChangesBody": "After starting an observation, trends for water, sleep, and outcomes will be shown here.",
+  "reviewPreviewCompletedActionsTitle": "What you completed",
+  "reviewPreviewCompletedActionsBody": "After starting an observation, confirmed medication and check-in counts will be tracked here.",
+  "reviewPreviewNextStepTitle": "What's next",
+  "reviewPreviewNextStepBody": "After starting an observation, next-step prompts and medication safety alerts will appear here.",
+  "reviewPreviewAiSummaryTitle": "AI insights",
+  "reviewPreviewAiSummaryBody": "Sign in and start an observation to generate data-sourced weekly or monthly insight summaries.",
+  "reviewReviewErrorTitle": "Couldn't load the review",
+  "reviewReviewErrorDescription": "Check your connection and try again.",
+  "reviewReviewStaleBanner": "Update failed — showing your last review",
+  "reviewMoreTitle": "More",
+  "reviewMoreVisitSummaryTitle": "Visit summary",
+  "reviewMoreVisitSummarySubtitle": "Use as needed during your visit",
+  "reviewMorePdfTitle": "PDF report",
+  "reviewMorePdfSubtitle": "Monthly summary in PDF format",
+  "reviewMorePrintTitle": "Print / download",
+  "reviewMorePrintSubtitle": "Paper preview or save a PDF",
+  "reviewMoreLegacyTitle": "Legacy report",
+  "reviewMoreLegacySubtitle": "Compatibility view of the previous weekly report"
+}

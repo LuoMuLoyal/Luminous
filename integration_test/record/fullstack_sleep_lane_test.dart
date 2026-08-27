@@ -90,7 +90,7 @@ void main() {
 
     await openShellTab(
       tester,
-      ShellTab.report,
+      ShellTab.review,
       timeout: const Duration(seconds: 15),
     );
     await pumpUntilFound(

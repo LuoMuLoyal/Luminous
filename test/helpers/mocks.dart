@@ -5,17 +5,17 @@
 /// import 'package:luminous/test/helpers/mocks.dart';
 ///
 /// void main() {
-///   late MockReportRepository repo;
+///   late MockReviewDashboardRepository repo;
 ///
 ///   setUp(() {
-///     repo = MockReportRepository();
+///     repo = MockReviewDashboardRepository();
 ///     when(() => repo.fetchDashboard(any())).thenAnswer(
-///       (_) async => TaskEither.right(MockReportRepository.previewDashboard),
+///       (_) async => TaskEither.right(MockReviewDashboardRepository.previewDashboard),
 ///     );
 ///   });
 ///
 ///   test('loads dashboard', () async {
-///     final dashboard = await repo.fetchDashboard(ReportDashboardQuery(...)).run();
+///     final dashboard = await repo.fetchDashboard(ReviewDashboardQuery(...)).run();
 ///     verify(() => repo.fetchDashboard(any())).called(1);
 ///   });
 /// }
@@ -32,7 +32,7 @@ import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
-import 'package:luminous/features/report/domain/repositories/report.dart';
+import 'package:luminous/features/review/domain/repositories/dashboard.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:mocktail/mocktail.dart';
@@ -47,7 +47,8 @@ class MockTodayRepository extends Mock implements TodayRepository {}
 
 class MockRecordRepository extends Mock implements RecordRepository {}
 
-class MockReportRepository extends Mock implements ReportRepository {}
+class MockReviewDashboardRepository extends Mock
+    implements ReviewDashboardRepository {}
 
 class MockMedicineWorkspaceRepository extends Mock
     implements MedicineWorkspaceRepository {}

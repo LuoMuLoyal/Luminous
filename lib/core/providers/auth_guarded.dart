@@ -6,7 +6,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 /// Auth-guard helper for use inside provider functions.
 ///
 /// Encapsulates the auth session check pattern that was previously duplicated
-/// across `mineDashboardProvider`, `reportDashboardProvider`,
+/// across `mineDashboardProvider`, `reviewDashboardProvider`,
 /// `healthContextSnapshotProvider`, `todayDashboardProvider`, etc.
 ///
 /// Behaviour:

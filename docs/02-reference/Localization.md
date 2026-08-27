@@ -7,7 +7,7 @@ updated: 2026-08-27
 
 # Flutter Localization
 
-Last updated: 2026-08-27 (新增 `authSessionRestoreTimeout` 键。)
+Last updated: 2026-08-27 (report→review 全量改名，`tabReport` → `tabReview`，所有 report* 前缀 l10n key 改为 review*。新增 `authSessionRestoreTimeout` 键。)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.

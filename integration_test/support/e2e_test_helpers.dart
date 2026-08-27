@@ -53,14 +53,10 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
-import 'package:luminous/features/report/data/providers/report.dart'
-    show reportRepositoryProvider;
-import 'package:luminous/features/report/data/providers/review.dart'
+import 'package:luminous/features/review/data/providers/review.dart'
     show reviewRepositoryProvider;
-import 'package:luminous/features/report/domain/entities/review.dart';
-import 'package:luminous/features/report/domain/repositories/report.dart'
-    show ReportRepository;
-import 'package:luminous/features/report/domain/repositories/review.dart';
+import 'package:luminous/features/review/domain/entities/review.dart';
+import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart'
     show medicineSearchRepositoryProvider;
 import 'package:luminous/features/search/domain/entities/entities.dart';
@@ -91,12 +87,13 @@ export 'package:luminous/features/record/domain/entities/inputs.dart'
     show dailyRecordNoChange;
 export 'package:luminous/features/record/domain/entities/record.dart'
     show DailyRecordKind;
-export 'package:luminous/features/report/data/providers/report.dart'
-    show reportRepositoryProvider;
+export 'package:luminous/features/review/data/providers/review.dart'
+    show reviewRepositoryProvider;
 export 'package:luminous/features/settings/domain/services/notification_permission.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 
-export '../../test/helpers/feature_mocks.dart' show MockReportRepository;
+export '../../test/helpers/feature_mocks.dart'
+    show MockReviewDashboardRepository;
 
 Future<ProviderContainer> pumpOfflineApp(
   WidgetTester tester, {
@@ -108,7 +105,7 @@ Future<ProviderContainer> pumpOfflineApp(
   NotificationPermissionService? notificationPermissionService,
   DailyRecordRepository? dailyRecordRepository,
   RecordRepository? recordRepository,
-  ReportRepository? reportRepository,
+  ReviewRepository? reportRepository,
   ReviewRepository? reviewRepository,
   MedicineWorkspaceRepository? medicineWorkspaceRepository,
   DoseLogRemoteDataSource? doseLogRemoteDataSource,
@@ -176,7 +173,7 @@ Future<ProviderContainer> pumpOfflineApp(
         ),
       todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
       if (reportRepository != null)
-        reportRepositoryProvider.overrideWithValue(reportRepository),
+        reviewRepositoryProvider.overrideWithValue(reportRepository),
       if (healthEventRepository != null)
         healthEventRepositoryProvider.overrideWithValue(healthEventRepository),
       if (reviewRepository != null)
@@ -336,7 +333,7 @@ ShellTab? _shellTabForLabel(String label) {
     'today' || '今天' || '今日' => ShellTab.today,
     'record' || '记录' => ShellTab.record,
     'medicine' || '用药' => ShellTab.medicine,
-    'report' || '报告' => ShellTab.report,
+    'report' || '报告' => ShellTab.review,
     'mine' || '我的' || 'account' => ShellTab.mine,
     _ => null,
   };

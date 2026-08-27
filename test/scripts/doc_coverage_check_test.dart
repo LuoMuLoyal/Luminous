@@ -572,7 +572,7 @@ updated: 2026-01-01
 rules:
   - name: current
     code:
-      - lib/features/report/**
+      - lib/features/review/**
     docs_required:
       - docs/00-current/Current_State.md
 ''');

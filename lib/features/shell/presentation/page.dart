@@ -143,7 +143,7 @@ class _DesktopSidebar extends ConsumerWidget {
         tabItem(ShellTab.today),
         tabItem(ShellTab.record),
         tabItem(ShellTab.medicine),
-        tabItem(ShellTab.report),
+        tabItem(ShellTab.review),
         tabItem(ShellTab.mine),
       ],
     );

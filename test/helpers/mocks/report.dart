@@ -4,23 +4,23 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/features/report/domain/entities/dashboard.dart';
-import 'package:luminous/features/report/domain/repositories/report.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/domain/repositories/dashboard.dart';
 
-/// Test-only mock implementation of [ReportRepository].
-class MockReportRepository implements ReportRepository {
-  const MockReportRepository();
+/// Test-only mock implementation of [ReviewDashboardRepository].
+class MockReviewDashboardRepository implements ReviewDashboardRepository {
+  const MockReviewDashboardRepository();
 
   @override
-  Future<ReportDashboard> get signedOutDashboard =>
+  Future<ReviewDashboard> get signedOutDashboard =>
       Future.value(_signedOutDashboard);
 
   @override
-  TaskEither<LucentFailure, ReportDashboard> fetchDashboard(
-    ReportDashboardQuery query,
+  TaskEither<LucentFailure, ReviewDashboard> fetchDashboard(
+    ReviewDashboardQuery query,
   ) => TaskEither.right(_dashboardForQuery(query));
 
-  static ReportDashboard _dashboardForQuery(ReportDashboardQuery query) {
+  static ReviewDashboard _dashboardForQuery(ReviewDashboardQuery query) {
     final startDate =
         query.startDate ?? clock.now().subtract(const Duration(days: 7));
     final endDate = query.endDate ?? clock.now();
@@ -38,102 +38,102 @@ class MockReportRepository implements ReportRepository {
     return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
   }
 
-  static final previewDashboard = ReportDashboard(
-    range: ReportDashboardRange.last7Days,
+  static final previewDashboard = ReviewDashboard(
+    range: ReviewDashboardRange.last7Days,
     startDate: _dateOnly(clock.now().subtract(const Duration(days: 7))),
     endDate: _dateOnly(clock.now()),
     generatedAt: clock.now().toIso8601String(),
-    metrics: <ReportMetric>[
-      ReportMetric(
-        kind: ReportDataKind.medication,
+    metrics: <ReviewMetric>[
+      ReviewMetric(
+        kind: ReviewDataKind.medication,
         icon: SemanticIcons.recordMedicine,
         color: SemanticColor.primary,
         value: '--',
         unit: '%',
-        status: ReportStatus.stable,
+        status: ReviewStatus.stable,
         delta: '--',
-        direction: ReportMetricDirection.flat,
+        direction: ReviewMetricDirection.flat,
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
-      ReportMetric(
-        kind: ReportDataKind.sleep,
+      ReviewMetric(
+        kind: ReviewDataKind.sleep,
         icon: SemanticIcons.recordMoon,
         color: SemanticColor.primary,
         value: '--',
         unit: 'h',
-        status: ReportStatus.insufficientData,
+        status: ReviewStatus.insufficientData,
         delta: '--',
-        direction: ReportMetricDirection.flat,
+        direction: ReviewMetricDirection.flat,
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
-      ReportMetric(
-        kind: ReportDataKind.water,
+      ReviewMetric(
+        kind: ReviewDataKind.water,
         icon: SemanticIcons.recordWater,
         color: SemanticColor.primary,
         value: '--',
         unit: 'L',
-        status: ReportStatus.stable,
+        status: ReviewStatus.stable,
         delta: '--',
-        direction: ReportMetricDirection.flat,
+        direction: ReviewMetricDirection.flat,
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
     ],
-    trends: <ReportTrendSeries>[
-      ReportTrendSeries(
-        kind: ReportDataKind.sleep,
+    trends: <ReviewTrendSeries>[
+      ReviewTrendSeries(
+        kind: ReviewDataKind.sleep,
         color: SemanticColor.primary,
         unit: 'h',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
-      ReportTrendSeries(
-        kind: ReportDataKind.water,
+      ReviewTrendSeries(
+        kind: ReviewDataKind.water,
         color: SemanticColor.primary,
         unit: 'L',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
-      ReportTrendSeries(
-        kind: ReportDataKind.medication,
+      ReviewTrendSeries(
+        kind: ReviewDataKind.medication,
         color: SemanticColor.primary,
         unit: '%',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
     ],
-    findings: <ReportFinding>[
-      ReportFinding(
-        kind: ReportInsightKind.general,
+    findings: <ReviewFinding>[
+      ReviewFinding(
+        kind: ReviewInsightKind.general,
         icon: SemanticIcons.reportChart,
         color: SemanticColor.primary,
         title: 'Preparing report',
         body: 'The latest contract-backed report is loading.',
       ),
     ],
-    exportActions: <ReportExportAction>[
-      ReportExportAction(
-        kind: ReportExportKind.hospital,
+    exportActions: <ReviewExportAction>[
+      ReviewExportAction(
+        kind: ReviewExportKind.hospital,
         icon: SemanticIcons.medicineKit,
         color: SemanticColor.primary,
       ),
-      ReportExportAction(
-        kind: ReportExportKind.monthly,
+      ReviewExportAction(
+        kind: ReviewExportKind.monthly,
         icon: FLucideIcons.barChart,
         color: SemanticColor.primary,
       ),
-      ReportExportAction(
-        kind: ReportExportKind.print,
+      ReviewExportAction(
+        kind: ReviewExportKind.print,
         icon: SemanticIcons.actionExport,
         color: SemanticColor.primary,
       ),
     ],
-    patterns: <ReportPatternCard>[
-      ReportPatternCard(
-        kind: ReportInsightKind.general,
+    patterns: <ReviewPatternCard>[
+      ReviewPatternCard(
+        kind: ReviewInsightKind.general,
         icon: SemanticIcons.reportChart,
         color: SemanticColor.primary,
         title: 'Preparing report',
-        status: ReportStatus.stable,
+        status: ReviewStatus.stable,
         body: 'Pattern cards will appear after the latest report loads.',
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
@@ -141,102 +141,102 @@ class MockReportRepository implements ReportRepository {
     aiSummaryEnabled: false,
   );
 
-  static final _signedOutDashboard = ReportDashboard(
-    range: ReportDashboardRange.last7Days,
+  static final _signedOutDashboard = ReviewDashboard(
+    range: ReviewDashboardRange.last7Days,
     startDate: _dateOnly(clock.now().subtract(const Duration(days: 7))),
     endDate: _dateOnly(clock.now()),
     generatedAt: clock.now().toIso8601String(),
-    metrics: <ReportMetric>[
-      ReportMetric(
-        kind: ReportDataKind.medication,
+    metrics: <ReviewMetric>[
+      ReviewMetric(
+        kind: ReviewDataKind.medication,
         icon: SemanticIcons.recordMedicine,
         color: SemanticColor.primary,
         value: '--',
         unit: '%',
-        status: ReportStatus.insufficientData,
+        status: ReviewStatus.insufficientData,
         delta: '--',
-        direction: ReportMetricDirection.flat,
+        direction: ReviewMetricDirection.flat,
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
-      ReportMetric(
-        kind: ReportDataKind.sleep,
+      ReviewMetric(
+        kind: ReviewDataKind.sleep,
         icon: SemanticIcons.recordMoon,
         color: SemanticColor.primary,
         value: '--',
         unit: 'h',
-        status: ReportStatus.insufficientData,
+        status: ReviewStatus.insufficientData,
         delta: '--',
-        direction: ReportMetricDirection.flat,
+        direction: ReviewMetricDirection.flat,
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
-      ReportMetric(
-        kind: ReportDataKind.water,
+      ReviewMetric(
+        kind: ReviewDataKind.water,
         icon: SemanticIcons.recordWater,
         color: SemanticColor.primary,
         value: '--',
         unit: 'L',
-        status: ReportStatus.insufficientData,
+        status: ReviewStatus.insufficientData,
         delta: '--',
-        direction: ReportMetricDirection.flat,
+        direction: ReviewMetricDirection.flat,
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
     ],
-    trends: <ReportTrendSeries>[
-      ReportTrendSeries(
-        kind: ReportDataKind.sleep,
+    trends: <ReviewTrendSeries>[
+      ReviewTrendSeries(
+        kind: ReviewDataKind.sleep,
         color: SemanticColor.primary,
         unit: 'h',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
-      ReportTrendSeries(
-        kind: ReportDataKind.water,
+      ReviewTrendSeries(
+        kind: ReviewDataKind.water,
         color: SemanticColor.primary,
         unit: 'L',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
-      ReportTrendSeries(
-        kind: ReportDataKind.medication,
+      ReviewTrendSeries(
+        kind: ReviewDataKind.medication,
         color: SemanticColor.primary,
         unit: '%',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
     ],
-    findings: <ReportFinding>[
-      ReportFinding(
-        kind: ReportInsightKind.general,
+    findings: <ReviewFinding>[
+      ReviewFinding(
+        kind: ReviewInsightKind.general,
         icon: SemanticIcons.statusBlocked,
         color: SemanticColor.primary,
         title: '登录后解锁报告',
         body: '报告会基于你的真实记录生成最近 7 天的聚合结果。',
       ),
     ],
-    exportActions: <ReportExportAction>[
-      ReportExportAction(
-        kind: ReportExportKind.hospital,
+    exportActions: <ReviewExportAction>[
+      ReviewExportAction(
+        kind: ReviewExportKind.hospital,
         icon: SemanticIcons.medicineKit,
         color: SemanticColor.primary,
       ),
-      ReportExportAction(
-        kind: ReportExportKind.monthly,
+      ReviewExportAction(
+        kind: ReviewExportKind.monthly,
         icon: FLucideIcons.barChart,
         color: SemanticColor.primary,
       ),
-      ReportExportAction(
-        kind: ReportExportKind.print,
+      ReviewExportAction(
+        kind: ReviewExportKind.print,
         icon: SemanticIcons.actionExport,
         color: SemanticColor.primary,
       ),
     ],
-    patterns: <ReportPatternCard>[
-      ReportPatternCard(
-        kind: ReportInsightKind.general,
+    patterns: <ReviewPatternCard>[
+      ReviewPatternCard(
+        kind: ReviewInsightKind.general,
         icon: SemanticIcons.statusBlocked,
         color: SemanticColor.primary,
         title: '等待登录',
-        status: ReportStatus.insufficientData,
+        status: ReviewStatus.insufficientData,
         body: '登录后显示真实模式卡片。',
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),

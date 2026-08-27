@@ -10,7 +10,7 @@ void main() {
       expect(ShellTab.values[0], ShellTab.today);
       expect(ShellTab.values[1], ShellTab.record);
       expect(ShellTab.values[2], ShellTab.medicine);
-      expect(ShellTab.values[3], ShellTab.report);
+      expect(ShellTab.values[3], ShellTab.review);
       expect(ShellTab.values[4], ShellTab.mine);
     });
 
@@ -37,7 +37,7 @@ void main() {
 
       expect(ShellTab.record.testKey().value, 'shell-tab-record');
       expect(ShellTab.medicine.testKey().value, 'shell-tab-medicine');
-      expect(ShellTab.report.testKey().value, 'shell-tab-report');
+      expect(ShellTab.review.testKey().value, 'shell-tab-report');
       expect(ShellTab.mine.testKey().value, 'shell-tab-mine');
     });
 
@@ -64,7 +64,7 @@ void main() {
       expect(ShellTab.today.label(l10n), l10n.tabToday);
       expect(ShellTab.record.label(l10n), l10n.tabRecord);
       expect(ShellTab.medicine.label(l10n), l10n.tabMedicine);
-      expect(ShellTab.report.label(l10n), l10n.tabReport);
+      expect(ShellTab.review.label(l10n), l10n.tabReview);
       expect(ShellTab.mine.label(l10n), l10n.tabMine);
     });
   });
@@ -72,16 +72,16 @@ void main() {
   group('ShellTab.label – fifth tab uses the Review task name', () {
     test('zh label is 回顾', () {
       final zh = lookupAppLocalizations(const Locale('zh'));
-      expect(ShellTab.report.label(zh), '回顾');
+      expect(ShellTab.review.label(zh), '回顾');
     });
 
     test('en label is Review', () {
       final en = lookupAppLocalizations(const Locale('en'));
-      expect(ShellTab.report.label(en), 'Review');
+      expect(ShellTab.review.label(en), 'Review');
     });
 
     test('legacy tab key stays shell-tab-report', () {
-      expect(ShellTab.report.testKey().value, 'shell-tab-report');
+      expect(ShellTab.review.testKey().value, 'shell-tab-report');
     });
   });
 }

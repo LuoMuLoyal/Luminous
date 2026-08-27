@@ -6,7 +6,7 @@ enum ShellTab {
   today(SemanticIcons.tabToday, SemanticIcons.tabToday),
   record(SemanticIcons.tabRecord, SemanticIcons.tabRecord),
   medicine(SemanticIcons.tabMedicine, SemanticIcons.tabMedicine),
-  report(SemanticIcons.tabReport, SemanticIcons.tabReport),
+  review(SemanticIcons.tabReview, SemanticIcons.tabReview),
   mine(SemanticIcons.tabMine, SemanticIcons.tabMine);
 
   const ShellTab(this.icon, this.activeIcon);
@@ -21,7 +21,7 @@ enum ShellTab {
       ShellTab.today => l10n.tabToday,
       ShellTab.record => l10n.tabRecord,
       ShellTab.medicine => l10n.tabMedicine,
-      ShellTab.report => l10n.tabReport,
+      ShellTab.review => l10n.tabReview,
       ShellTab.mine => l10n.tabMine,
     };
   }

@@ -57,7 +57,7 @@ void main() {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/report',
+                  path: '/review',
                   builder: (context, state) =>
                       const SizedBox(key: Key('tab-report')),
                 ),
@@ -111,7 +111,7 @@ void main() {
       expect(find.text(l10n.tabToday), findsOneWidget);
       expect(find.text(l10n.tabRecord), findsOneWidget);
       expect(find.text(l10n.tabMedicine), findsOneWidget);
-      expect(find.text(l10n.tabReport), findsOneWidget);
+      expect(find.text(l10n.tabReview), findsOneWidget);
       expect(find.text(l10n.tabMine), findsOneWidget);
     });
 
@@ -162,7 +162,7 @@ void main() {
       setMobileScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      await tester.tap(find.byKey(ShellTab.report.testKey()));
+      await tester.tap(find.byKey(ShellTab.review.testKey()));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('tab-report')), findsOneWidget);
@@ -199,7 +199,7 @@ void main() {
       expect(find.text(l10n.tabToday), findsOneWidget);
       expect(find.text(l10n.tabRecord), findsOneWidget);
       expect(find.text(l10n.tabMedicine), findsOneWidget);
-      expect(find.text(l10n.tabReport), findsOneWidget);
+      expect(find.text(l10n.tabReview), findsOneWidget);
       expect(find.text(l10n.tabMine), findsOneWidget);
     });
 

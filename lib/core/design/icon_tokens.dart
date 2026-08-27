@@ -13,7 +13,7 @@ abstract final class SemanticIcons {
   static const tabToday = FLucideIcons.house;
   static const tabRecord = FLucideIcons.notebookPen;
   static const tabMedicine = FLucideIcons.pillBottle;
-  static const tabReport = FLucideIcons.chartColumn;
+  static const tabReview = FLucideIcons.chartColumn;
   static const tabMine = FLucideIcons.userRound;
 
   // ================================================================

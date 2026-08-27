@@ -98,7 +98,7 @@ class AppShortcuts extends StatelessWidget {
                 Routes.home,
                 Routes.record,
                 Routes.medicine,
-                Routes.report,
+                Routes.review,
                 Routes.mine,
               ];
               final index = intent.index;

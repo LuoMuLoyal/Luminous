@@ -201,7 +201,7 @@ class DataExportPage extends ConsumerWidget {
       case DataExportUiStatus.completed:
         await Toast.show(context, l10n.mineExportStatusCompleted);
       case DataExportUiStatus.completedLinkMissing:
-        await Toast.show(context, l10n.reportExportLinkMissingToast);
+        await Toast.show(context, l10n.reviewExportLinkMissingToast);
       case DataExportUiStatus.failed:
       case DataExportUiStatus.unavailable:
         await Toast.show(

@@ -11,7 +11,7 @@ void main() {
 
     test('maps named tab actions to root routes', () {
       expect(mapActionToRoute('today'), '/');
-      expect(mapActionToRoute('report'), '/report');
+      expect(mapActionToRoute('report'), '/review');
       expect(mapActionToRoute('assistant'), '/assistant');
       expect(mapActionToRoute('medicine'), '/medicine');
       expect(mapActionToRoute('record'), '/record');
@@ -20,7 +20,7 @@ void main() {
     });
 
     test('passes through absolute routes', () {
-      expect(mapActionToRoute('/report/detail'), '/report/detail');
+      expect(mapActionToRoute('/review/detail'), '/review/detail');
       expect(mapActionToRoute('/medicine/123'), '/medicine/123');
     });
 

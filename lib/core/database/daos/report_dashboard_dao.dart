@@ -8,10 +8,10 @@ part 'report_dashboard_dao.g.dart';
 /// Data access object for the report dashboard cache table.
 ///
 /// Stores JSON-serialized report dashboard DTOs keyed by range + date span.
-@DriftAccessor(tables: [ReportDashboardCacheEntries])
-class ReportDashboardDao extends DatabaseAccessor<AppDatabase>
-    with _$ReportDashboardDaoMixin {
-  ReportDashboardDao(super.db);
+@DriftAccessor(tables: [ReviewDashboardCacheEntries])
+class ReviewDashboardDao extends DatabaseAccessor<AppDatabase>
+    with _$ReviewDashboardDaoMixin {
+  ReviewDashboardDao(super.db);
 
   /// Returns the cached dashboard JSON for the given key, or null.
   Future<String?> fetch(String cacheKey) async {
@@ -24,7 +24,7 @@ class ReportDashboardDao extends DatabaseAccessor<AppDatabase>
   /// Replaces the cached dashboard for the given key.
   Future<void> replace(String cacheKey, String jsonData) async {
     await into(reportDashboardCacheEntries).insertOnConflictUpdate(
-      ReportDashboardCacheEntriesCompanion.insert(
+      ReviewDashboardCacheEntriesCompanion.insert(
         id: cacheKey,
         data: jsonData,
         cachedAt: DateTime.now(),

@@ -61,6 +61,6 @@ ReviewDao reviewDao(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-ReportDashboardDao reportDashboardDao(Ref ref) {
+ReviewDashboardDao reportDashboardDao(Ref ref) {
   return ref.read(appDatabaseProvider).reportDashboardDao;
 }

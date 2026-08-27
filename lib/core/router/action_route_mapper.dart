@@ -4,7 +4,7 @@ import 'package:luminous/app/router.dart';
 ///
 /// Supported tokens:
 /// - `today` -> [Routes.home]
-/// - `report` -> [Routes.report]
+/// - `report` -> [Routes.review]
 /// - `assistant` -> [Routes.assistant]
 /// - `medicine` -> [Routes.medicine]
 /// - `record` -> [Routes.record]
@@ -19,7 +19,7 @@ String? mapActionToRoute(String? action) {
 
   return switch (action) {
     'today' => Routes.home,
-    'report' => Routes.report,
+    'report' => Routes.review,
     'assistant' => Routes.assistant,
     'medicine' => Routes.medicine,
     'record' => Routes.record,

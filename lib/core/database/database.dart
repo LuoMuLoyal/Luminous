@@ -39,7 +39,7 @@ part 'database.g.dart';
     TodaySuggestionCacheEntries,
     PendingSyncItems,
     ReviewCacheEntries,
-    ReportDashboardCacheEntries,
+    ReviewDashboardCacheEntries,
   ],
   daos: [
     DailyRecordDao,
@@ -49,7 +49,7 @@ part 'database.g.dart';
     TodaySuggestionDao,
     PendingSyncDao,
     ReviewDao,
-    ReportDashboardDao,
+    ReviewDashboardDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -62,7 +62,7 @@ class AppDatabase extends _$AppDatabase {
   /// - 1: initial schema (all six tables as first created).
   /// - 2: adds `lastErrorDetails` to [PendingSyncItems] (see [migration]).
   /// - 3: adds [ReviewCacheEntries] table.
-  /// - 4: adds [ReportDashboardCacheEntries] table.
+  /// - 4: adds [ReviewDashboardCacheEntries] table.
   @override
   int get schemaVersion => 4;
 

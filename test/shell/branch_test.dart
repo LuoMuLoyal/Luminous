@@ -33,7 +33,7 @@ void main() {
       expect(ShellBranch.indexForTab(ShellTab.today), 0);
       expect(ShellBranch.indexForTab(ShellTab.record), 1);
       expect(ShellBranch.indexForTab(ShellTab.medicine), 2);
-      expect(ShellBranch.indexForTab(ShellTab.report), 3);
+      expect(ShellBranch.indexForTab(ShellTab.review), 3);
       expect(ShellBranch.indexForTab(ShellTab.mine), 4);
     });
   });
@@ -43,7 +43,7 @@ void main() {
       expect(ShellTab.today.branchIndex, 0);
       expect(ShellTab.record.branchIndex, 1);
       expect(ShellTab.medicine.branchIndex, 2);
-      expect(ShellTab.report.branchIndex, 3);
+      expect(ShellTab.review.branchIndex, 3);
       expect(ShellTab.mine.branchIndex, 4);
     });
 

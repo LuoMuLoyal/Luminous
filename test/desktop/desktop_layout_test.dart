@@ -77,7 +77,7 @@ void main() {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/report',
+                  path: '/review',
                   builder: (context, state) =>
                       const SizedBox(key: Key('tab-report')),
                 ),
@@ -151,7 +151,7 @@ void main() {
       expect(find.text(l10n.tabToday), findsOneWidget);
       expect(find.text(l10n.tabRecord), findsOneWidget);
       expect(find.text(l10n.tabMedicine), findsOneWidget);
-      expect(find.text(l10n.tabReport), findsOneWidget);
+      expect(find.text(l10n.tabReview), findsOneWidget);
       expect(find.text(l10n.tabMine), findsOneWidget);
     });
 
@@ -163,7 +163,7 @@ void main() {
       expect(find.text(l10n.tabToday), findsOneWidget);
       expect(find.text(l10n.tabRecord), findsOneWidget);
       expect(find.text(l10n.tabMedicine), findsOneWidget);
-      expect(find.text(l10n.tabReport), findsOneWidget);
+      expect(find.text(l10n.tabReview), findsOneWidget);
       expect(find.text(l10n.tabMine), findsOneWidget);
     });
 
@@ -211,7 +211,7 @@ void main() {
       expect(find.text(l10n.tabToday), findsOneWidget);
       expect(find.text(l10n.tabRecord), findsOneWidget);
       expect(find.text(l10n.tabMedicine), findsOneWidget);
-      expect(find.text(l10n.tabReport), findsOneWidget);
+      expect(find.text(l10n.tabReview), findsOneWidget);
       expect(find.text(l10n.tabMine), findsOneWidget);
     });
 

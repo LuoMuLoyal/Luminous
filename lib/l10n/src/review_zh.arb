@@ -1,0 +1,522 @@
+{
+  "reviewRangePickerTitle": "选择报告周期",
+  "reviewRangeCustom": "自定义",
+  "reviewGenerateAction": "生成总结",
+  "reviewContinueRecordAction": "继续记录",
+  "reviewSyncAction": "同步",
+  "reviewSnapshotStatus": "当前显示上次报告快照",
+  "reviewSnapshotHint": "点击生成或同步后更新",
+  "reviewReadinessPreviewBadge": "预览",
+  "reviewReadinessInsufficientBadge": "数据不足",
+  "reviewReadinessReadyBadge": "已就绪",
+  "reviewReadinessSignedOutTitle": "暂未解锁完整报告",
+  "reviewReadinessSignedOutDescription": "登录后可查看真实近 7 天聚合。",
+  "reviewReadinessInsufficientTitle": "数据还不足，暂无法生成完整报告",
+  "reviewReadinessInsufficientDescription": "继续记录后，系统会补齐趋势分析、总结和导出内容。",
+  "reviewReadinessReadyTitle": "近 7 天报告已就绪",
+  "reviewReadinessReadyTitleRange": "{range}报告已就绪",
+  "@reportReadinessReadyTitleRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReadinessReadyDescription": "你现在可以查看完整报告、生成总结并导出摘要。",
+  "reviewReadinessUpdatedAt": "当前显示的数据更新于 {time}",
+  "@reportReadinessUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReadinessMissingMetricsHint": "当前还缺 {count} 项指标数据。",
+  "@reportReadinessMissingMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReadinessNeedsAttentionMetricsHint": "{count} 项指标需要改善。",
+  "@reportReadinessNeedsAttentionMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewScoreHelpTooltip": "基于近期记录、用药依从性和生命体征趋势的综合评分。",
+  "reviewScoreTitle": "健康评分",
+  "reviewScoreOutOf": "/ {max}",
+  "@reportScoreOutOf": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewScoreTitlePreview": "报告预览评分",
+  "reviewScoreOutOfPreview": "预览 / {max}",
+  "@reportScoreOutOfPreview": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewScoreBody": "报告数据接入前仅作预览",
+  "reviewMetricMedicationTitle": "用药完成率",
+  "reviewMetricSleepTitle": "睡眠",
+  "reviewMetricWaterTitle": "饮水",
+  "reviewMetricOverallTitle": "总体状态",
+  "reviewStatusGood": "良好",
+  "reviewStatusNeedsImprove": "待改善",
+  "reviewStatusStable": "稳定",
+  "reviewTrendSectionTitle": "健康趋势",
+  "reviewRangeLast7Days": "近 7 天",
+  "reviewRangeLast30Days": "近 30 天",
+  "reviewTrendSleepLabel": "睡眠(小时)",
+  "reviewTrendWaterLabel": "饮水(L)",
+  "reviewTrendMedicationLabel": "用药完成率(%)",
+  "reviewTrendDateLabels": "5/19|5/20|5/21|5/22|5/23|5/24|5/25",
+  "reviewViewDetailsAction": "查看详细数据",
+  "reviewFindingsSectionTitle": "重点发现",
+  "reviewSuggestionHistorySectionTitle": "历史建议回顾",
+  "reviewSuggestionHistoryEmptyTitle": "最近还没有主动建议",
+  "reviewSuggestionHistoryEmptyBody": "当系统产生新的 AI 主动建议后，这里会显示最近的回顾记录。",
+  "reviewSuggestionHistoryLoadingError": "历史建议加载失败，请稍后重试",
+  "reviewSuggestionHistoryActiveBadge": "进行中",
+  "reviewSuggestionHistoryExpiredBadge": "已过期",
+  "reviewSuggestionHistoryDismissedBadge": "已忽略",
+  "reviewFindingCoffeeTitle": "咖啡因影响睡眠",
+  "reviewFindingCoffeeBody": "下午摄入咖啡后睡眠时长下降",
+  "reviewFindingMedicineTitle": "按时用药稳定",
+  "reviewFindingMedicineBody": "连续 7 天按时用药状态良好",
+  "reviewAiSummaryTitle": "总结",
+  "reviewAiSummarySubtitle": "基于本周记录的智能分析",
+  "reviewAiSummarySubtitleLast30Days": "基于近 30 天记录的智能分析",
+  "reviewAiSummarySubtitleCustom": "基于所选时段的智能分析",
+  "reviewAiSummaryDefaultHint": "还没有生成本周 AI 总结，当前先显示最近一次报告快照。",
+  "reviewAiSummaryGeneratingHint": "正在生成本周 AI 总结",
+  "reviewAiSummaryGeneratingHintLast30Days": "正在生成近 30 天 AI 总结",
+  "reviewAiSummaryGeneratingHintCustom": "正在生成所选时段 AI 总结",
+  "reviewAiSummaryErrorHint": "本周 AI 总结生成失败，当前先保留报告快照。",
+  "reviewAiSummaryDisabledHint": "你已在设置中关闭 AI 总结，当前只显示报告快照。",
+  "reviewViewAdviceAction": "查看建议",
+  "reviewAiBulletSleep": "睡眠质量整体良好，周末略有波动，保持规律作息有助于提升精力。",
+  "reviewAiBulletWater": "饮水达成率中等，部分天数偏低，记得随身带水，少量多次补水。",
+  "reviewAiBulletMedicine": "用药达成率较高，继续保持按时服药的好习惯。",
+  "reviewAiBulletDiet": "饮食多为均衡搭配，但水果与蔬菜摄入偏少，可适当增加。",
+  "reviewExportSectionTitle": "导出摘要",
+  "reviewExportHospitalTitle": "给校医院",
+  "reviewExportHospitalSubtitle": "导出健康摘要",
+  "reviewExportMonthlyTitle": "月度报告",
+  "reviewExportMonthlySubtitle": "PDF 格式",
+  "reviewExportPrintTitle": "打印预览",
+  "reviewExportPrintSubtitle": "纸质版预览",
+  "reviewExportClinicShareTitle": "分享摘要",
+  "reviewExportClinicShareSubtitle": "脱敏健康摘要",
+  "reviewExportRequestedToast": "导出请求已提交。",
+  "reviewExportProcessingToast": "导出正在处理中。",
+  "reviewExportUnavailableToast": "当前环境暂时无法生成这个导出文件。",
+  "reviewExportReadyToast": "导出文件已准备好，正在打开。",
+  "reviewExportFailedToast": "导出失败。",
+  "reviewExportLinkMissingToast": "导出已完成，但下载链接暂时不可用。",
+  "reviewExportOpenFailedToast": "导出已完成，但无法打开下载链接。",
+  "reviewPatternSectionTitle": "健康模式分析",
+  "reviewPatternDietWaterTitle": "饮食与饮水",
+  "reviewPatternDietWaterStatus": "良好搭配",
+  "reviewPatternDietWaterBody": "饮水充足时，精力更容易保持稳定",
+  "reviewPatternMedicationTitle": "用药依从性",
+  "reviewPatternMedicationStatus": "表现优秀",
+  "reviewPatternMedicationBody": "按时服药有助于维持健康状态",
+  "reviewReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议。",
+  "reviewDataInsufficientTitle": "数据不足，暂无法生成完整报告",
+  "reviewDataInsufficientMessage": "持续记录健康数据（饮水、睡眠、症状等），系统会自动生成趋势分析和 AI 总结。",
+  "reviewDataInsufficientMetricsHint": "当前有 {count} 项指标数据不足，继续记录即可补齐。",
+  "@reportDataInsufficientMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewFindingsEmptyTitle": "暂无重点发现",
+  "reviewFindingsEmptyBody": "持续记录健康数据后，系统会自动发现值得关注的变化和趋势。",
+  "reviewExportInsufficientReason": "数据不足时暂不支持导出，请先补充记录。",
+  "reviewLockedFeaturesTitle": "完整报告暂未展开",
+  "reviewLockedFeaturesSignedOutHint": "登录并补齐记录后可查看总结、导出 PDF、打印预览和更深入的模式分析。",
+  "reviewLockedFeaturesInsufficientHint": "补齐记录后可生成总结、导出 PDF、打印预览和查看更深入的模式分析。",
+  "reviewErrorTitle": "报告页暂时没有加载出来",
+  "reviewErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次。",
+  "reviewPreviewBannerMessage": "登录后查看你的真实周报、AI 总结和导出结果。",
+  "reviewSignedOutInlineHint": "登录后查看你的真实周报、AI 总结和导出结果。",
+  "reviewTrendPreviewTitle": "健康趋势",
+  "reviewTrendPreviewBody": "登录后查看饮水、睡眠和用药依从趋势。",
+  "reviewFindingsPreviewTitle": "重点发现",
+  "reviewFindingsPreviewBody": "登录后查看基于你记录的重点发现。",
+  "reviewSuggestionHistoryPreviewTitle": "历史建议回顾",
+  "reviewSuggestionHistoryPreviewBody": "登录后查看历史主动建议。",
+  "reviewExportPreviewTitle": "导出预览",
+  "reviewExportPreviewBody": "登录后解锁周报和分享预览。",
+  "reviewPatternSleepTitle": "睡眠变化",
+  "reviewPatternSleepStatus": "持续观察",
+  "reviewPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠",
+  "reviewStatusInsufficientData": "数据不足",
+  "reviewStatusUnknown": "未知",
+  "reviewSuggestionHistoryDetailTitle": "建议详情",
+  "reviewSuggestionHistoryDetailRuleId": "规则 ID",
+  "reviewSuggestionHistoryDetailRuleVersion": "规则版本",
+  "reviewSuggestionHistoryDetailTriggerType": "触发方式",
+  "reviewSuggestionHistoryDetailConfidence": "置信度",
+  "reviewSuggestionHistoryDetailGeneratedAt": "生成时间",
+  "reviewSuggestionHistoryDetailFeedback": "用户反馈",
+  "reviewSuggestionHistoryDetailFeedbackAt": "反馈时间",
+  "reviewSuggestionHistoryDetailExpiredAt": "过期时间",
+  "reviewSuggestionHistoryDetailNoFeedback": "未反馈",
+  "reviewSuggestionTypeConfirmedRisk": "确认风险",
+  "reviewSuggestionTypeCompliance": "依从性",
+  "reviewSuggestionTypeTrend": "趋势",
+  "reviewSuggestionTypeBehaviorAdvice": "行为建议",
+  "reviewSuggestionTypeCoverage": "覆盖率",
+  "reviewSuggestionTriggerTypeEvent": "事件触发",
+  "reviewSuggestionTriggerTypeTimer": "定时触发",
+  "reviewSuggestionConfidenceHigh": "高",
+  "reviewSuggestionConfidenceMedium": "中",
+  "reviewSuggestionConfidenceLow": "低",
+  "reviewClinicSummaryPreviewTitle": "诊所摘要预览",
+  "reviewClinicSummaryGeneratedAt": "生成时间",
+  "reviewClinicSummaryDataRange": "数据范围",
+  "reviewClinicSummaryProfileSection": "个人信息（已脱敏）",
+  "reviewClinicSummaryAllergiesSection": "过敏记录",
+  "reviewClinicSummaryConditionsSection": "疾病记录",
+  "reviewClinicSummaryMedicinesSection": "当前用药",
+  "reviewClinicSummaryFindingsSection": "关键发现",
+"reviewClinicSummaryWaterSection": "饮水记录",
+"reviewClinicSummaryWaterUnit": "ml",
+"reviewClinicSummarySleepSection": "睡眠记录",
+"reviewClinicSummarySleepUnit": "分钟",
+"reviewClinicSummaryNotesSection": "备注",
+"reviewClinicSummaryNotesPrivacyWarning": "创建公开分享链接后，持有链接者可查看备注原文。",
+  "reviewClinicSummaryDisclaimerSection": "免责声明",
+  "reviewClinicSummaryEmpty": "暂无可生成的摘要数据",
+  "reviewClinicSummaryDownloadPdf": "下载 PDF",
+  "reviewClinicSummaryShare": "分享摘要",
+  "reviewClinicSummaryPdfEmpty": "PDF 内容为空",
+  "reviewClinicSummaryPdfFailed": "PDF 下载失败，请稍后再试",
+  "reviewClinicSummarySharedTitle": "诊所摘要",
+  "reviewClinicSummarySharedExpired": "分享链接已过期或失效",
+  "reviewClinicSummarySharedDownloadPdf": "下载 PDF",
+  "reviewClinicSummaryProfileNickname": "昵称",
+  "reviewClinicSummaryProfileAge": "年龄",
+  "reviewClinicSummaryProfileSex": "性别",
+  "reviewClinicSummaryProfileBloodType": "血型",
+  "reviewClinicSummaryNotSet": "未设置",
+  "reviewClinicSummaryLoading": "正在生成诊所摘要…",
+  "reviewClinicSummaryLoadFailed": "诊所摘要加载失败，请稍后重试",
+  "reviewClinicSummarySharedNetworkError": "网络连接失败，请检查网络后重试",
+  "reviewClinicSummaryFieldSectionTitle": "包含的内容",
+  "reviewClinicSummaryFieldEventOverview": "事件概况",
+  "reviewClinicSummaryFieldSymptomChanges": "症状变化",
+  "reviewClinicSummaryFieldMedicationSlots": "用药槽位",
+  "reviewClinicSummaryFieldWater": "饮水",
+  "reviewClinicSummaryFieldSleep": "睡眠",
+  "reviewClinicSummaryFieldNotes": "备注",
+  "reviewClinicSummaryFieldPrivacyHint": "仅所选内容会出现在预览、PDF 与分享链接中。",
+  "reviewShareConfirmTitle": "创建分享链接",
+  "reviewShareConfirmExpiryHint": "链接自创建起 {days} 天内有效",
+  "@reportShareConfirmExpiryHint": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewShareConfirmNotice": "链接持有者可查看：任何获得此链接的人都能打开并看到所选内容。",
+  "reviewShareConfirmAction": "创建分享",
+  "reviewShareCreatedTitle": "分享链接已创建",
+  "reviewShareCreatedExpiresAt": "到期时间",
+  "reviewShareCopyAction": "复制链接",
+  "reviewShareCopiedToast": "链接已复制",
+  "reviewShareRevokeAction": "撤销分享",
+  "reviewShareRevokedTitle": "分享已撤销",
+  "reviewShareRevokedBody": "链接已失效，持有者无法再访问。",
+  "reviewShareCreateFailed": "分享创建失败，请稍后重试",
+  "reviewShareRevokeFailed": "撤销失败，请稍后重试",
+  "reviewShareManagementTitle": "分享管理",
+  "reviewShareManagementEmpty": "还没有分享记录",
+  "reviewShareManagementEmptyHint": "在就诊摘要里创建的分享链接会显示在这里。",
+  "reviewShareManagementLoadFailed": "分享记录加载失败，请稍后重试",
+  "reviewShareCreatedAt": "创建时间",
+  "reviewShareExpiresAt": "到期时间",
+  "reviewShareAccessCount": "访问 {count} 次",
+  "@reportShareAccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewShareAccessCountLabel": "访问次数",
+  "reviewShareLastAccessed": "最近访问",
+  "reviewShareLastAccessedNever": "暂无访问",
+  "reviewShareRevokedBadge": "已撤销",
+  "reviewMoreShareManagementTitle": "分享管理",
+  "reviewMoreShareManagementSubtitle": "查看和撤销分享链接",
+  "reviewTrendEmptyTitle": "暂无趋势数据",
+  "reviewTrendEmptyBody": "连续 2 天记录饮水、用药或睡眠后，这里会显示健康趋势变化。",
+  "reviewExportFailedWithReason": "导出失败：{reason}",
+  "@reportExportFailedWithReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewSectionWhatHappened": "发生了什么",
+  "reviewReviewSectionKeyChanges": "有什么变化",
+  "reviewReviewSectionCompletedActions": "完成了什么",
+  "reviewReviewSectionNextStep": "接下来怎么办",
+  "reviewReviewStatusActive": "进行中",
+  "reviewReviewStatusEnded": "已结束",
+  "reviewReviewStatusUnknown": "未知",
+  "reviewReviewOutcomeLabel": "结果",
+  "reviewReviewOutcomeImproved": "好转",
+  "reviewReviewOutcomeUnchanged": "差不多",
+  "reviewReviewOutcomeWorsened": "加重",
+  "reviewReviewOutcomeUnknown": "未知",
+  "reviewReviewKindSymptom": "症状观察",
+  "reviewReviewKindOther": "健康观察",
+  "reviewReviewKindUnknown": "健康观察",
+  "reviewReviewStartedLabel": "开始于 {date}",
+  "@reportReviewStartedLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewEndedLabel": "结束于 {date}",
+  "@reportReviewEndedLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewMedicineCountLabel": "关联 {count} 种用药",
+  "@reportReviewMedicineCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewCheckInAction": "确认今天结果",
+  "reviewReviewCheckInDoneToday": "今天已确认：{outcome}",
+  "@reportReviewCheckInDoneToday": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewEndEventAction": "结束观察",
+  "reviewReviewReasonNoObservations": "这段时间内还没有观察记录。",
+  "reviewReviewReasonInsufficientCoverage": "有记录但还不足以看出变化趋势。",
+  "reviewReviewReasonNoCompletedActions": "还没有已确认的服药或结果记录。",
+  "reviewReviewReasonUnknown": "暂时无法展示这部分内容。",
+  "reviewReviewWhatHappenedSymptomCount": "记录了 {count} 条症状",
+  "@reportReviewWhatHappenedSymptomCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewWhatHappenedCheckInCount": "确认了 {count} 次结果",
+  "@reportReviewWhatHappenedCheckInCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewWhatHappenedWindow": "{start} – {end}",
+  "@reportReviewWhatHappenedWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewWindowUntilNow": "至今",
+  "reviewReviewDetailTitle": "事件回顾",
+  "reviewReviewWhatHappenedReasonRecord": "由记录触发：{title}",
+  "@reportReviewWhatHappenedReasonRecord": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewChangeOutcomeTitle": "结果变化",
+  "reviewReviewChangeWaterTitle": "饮水",
+  "reviewReviewChangeSleepTitle": "睡眠",
+  "reviewReviewChangeDirectionUp": "上升",
+  "reviewReviewChangeDirectionDown": "下降",
+  "reviewReviewChangeDirectionFlat": "持平",
+  "reviewReviewChangeDirectionUnknown": "方向未知",
+  "reviewReviewChangeOutcomeDetail": "从「{from}」变为「{to}」，共确认 {count} 次",
+  "@reportReviewChangeOutcomeDetail": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewChangeNumericDetail": "{from} {unit} → {to} {unit}，观察 {days} 天",
+  "@reportReviewChangeNumericDetail": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewChangeUnitMl": "毫升",
+  "reviewReviewChangeUnitHour": "小时",
+  "reviewReviewDoseSectionTitle": "服药情况",
+  "reviewReviewDoseConfirmedLabel": "已确认服药 {count} 次",
+  "@reportReviewDoseConfirmedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewDoseSkippedLabel": "跳过 {count} 次",
+  "@reportReviewDoseSkippedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewDoseUnconfirmedLabel": "未确认 {count} 次",
+  "@reportReviewDoseUnconfirmedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewCheckInSectionTitle": "结果确认记录",
+  "reviewReviewCheckInRecordLabel": "{date} · {outcome}",
+  "@reportReviewCheckInRecordLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewMoreCountLabel": "还有 {count} 条记录",
+  "@reportReviewMoreCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewReviewNextStepCheckInPrompt": "今天还没有确认结果，记得打卡。",
+  "reviewReviewNextStepCheckInDonePrompt": "今天的结果已确认。",
+  "reviewReviewNextStepEndedPrompt": "这段观察已结束，结果：{outcome}",
+  "@reportReviewNextStepEndedPrompt": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewRedFlagSectionTitle": "用药安全提醒",
+  "reviewReviewRedFlagSevereAllergy": "「{medicine}」可能含有严重过敏成分「{label}」",
+  "@reportReviewRedFlagSevereAllergy": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewRedFlagInformationGap": "「{medicine}」缺少关键用药信息",
+  "@reportReviewRedFlagInformationGap": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewRedFlagUnknown": "「{medicine}」存在安全提醒",
+  "@reportReviewRedFlagUnknown": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReviewHistoryTitle": "过去的观察",
+  "reviewReviewHistoryEmpty": "还没有已结束的观察。",
+  "reviewReviewHistoryFilterAll": "全部",
+  "reviewReviewHistoryLoadFailed": "历史记录加载失败。",
+  "reviewReviewHistoryLoadMore": "加载更多",
+  "reviewReviewHistoryLoadMoreFailed": "加载更多失败。",
+  "reviewReviewNoEventTitle": "现在没有进行中的观察",
+  "reviewReviewNoEventDescription": "开始一段健康观察后，这里会按「发生了什么、有什么变化、完成了什么、接下来怎么办」帮你回顾整个过程。",
+  "reviewReviewStartObservationAction": "开始健康观察",
+  "reviewPreviewWhatHappenedTitle": "发生了什么",
+  "reviewPreviewWhatHappenedBody": "开始观察后，这里会汇总你的症状记录和结果确认。",
+  "reviewPreviewKeyChangesTitle": "有什么变化",
+  "reviewPreviewKeyChangesBody": "开始观察后，这里会展示饮水、睡眠和结果的变化趋势。",
+  "reviewPreviewCompletedActionsTitle": "完成了什么",
+  "reviewPreviewCompletedActionsBody": "开始观察后，这里会统计已确认的服药和结果打卡。",
+  "reviewPreviewNextStepTitle": "接下来怎么办",
+  "reviewPreviewNextStepBody": "开始观察后，这里会给出下一步提示和用药安全提醒。",
+  "reviewPreviewAiSummaryTitle": "AI 纵向洞察",
+  "reviewPreviewAiSummaryBody": "登录并开始观察后，这里会生成有数据来源的周/月洞察摘要。",
+  "reviewReviewErrorTitle": "回顾暂时加载失败",
+  "reviewReviewErrorDescription": "请检查网络后重试。",
+  "reviewReviewStaleBanner": "更新失败，正在显示上次的回顾内容",
+  "reviewMoreTitle": "更多",
+  "reviewMoreVisitSummaryTitle": "就诊摘要",
+  "reviewMoreVisitSummarySubtitle": "就诊时按需使用",
+  "reviewMorePdfTitle": "PDF 报告",
+  "reviewMorePdfSubtitle": "月度汇总，PDF 格式",
+  "reviewMorePrintTitle": "打印/下载",
+  "reviewMorePrintSubtitle": "纸质版预览或保存 PDF",
+  "reviewMoreLegacyTitle": "历史报告",
+  "reviewMoreLegacySubtitle": "旧版周报视图（兼容）"
+}

@@ -57,7 +57,7 @@ void main() {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/report',
+                  path: '/review',
                   builder: (context, state) =>
                       const SizedBox(key: Key('tab-report')),
                 ),

@@ -19,10 +19,10 @@ import 'package:luminous/features/notification/presentation/routes.dart'
 import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/routes.dart'
     as record_routes;
-import 'package:luminous/features/report/presentation/pages/clinic_summary_shared.dart';
-import 'package:luminous/features/report/presentation/pages/legacy_dashboard_compat.dart';
-import 'package:luminous/features/report/presentation/pages/page.dart';
-import 'package:luminous/features/report/presentation/pages/review_detail.dart';
+import 'package:luminous/features/review/presentation/pages/clinic_summary_shared.dart';
+import 'package:luminous/features/review/presentation/pages/legacy_dashboard_compat.dart';
+import 'package:luminous/features/review/presentation/pages/page.dart';
+import 'package:luminous/features/review/presentation/pages/review_detail.dart';
 import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
     as settings_routes;
@@ -49,11 +49,8 @@ class Routes {
   static const record = '/record';
   static const medicine = '/medicine';
 
-  /// Compatibility route for the fifth tab. The user-facing task name is
-  /// Review (回顾); the `/report` path, `ShellTab.report` enum, feature
-  /// directory, and telemetry keys intentionally stay unchanged until the
-  /// compatibility period ends.
-  static const report = '/report';
+  /// Fifth tab route (Review / 回顾).
+  static const review = '/review';
   static const mine = '/mine';
 
   // -- Non-navigation path references (deep link validation, OAuth URIs) --
@@ -111,15 +108,15 @@ class Routes {
   static const legal = '/legal';
   static const legalDetail = '/legal/:docType';
 
-  static const reportClinicSummaryShared = '/report/clinic-summary/:token';
+  static const reviewClinicSummaryShared = '/review/clinic-summary/:token';
 
   /// Legacy dashboard 兼容页（Task 8）：从 Review 页 More sheet 的
   /// 「历史报告」入口进入，重建旧 dashboard 装配（7/30 天切换、导出卡）。
-  static const reportLegacyDashboard = '/report/legacy';
+  static const reviewLegacyDashboard = '/review/legacy';
 
   /// 单个历史事件的完整回顾详情页（改造项 2 H-6）：从 Review 页历史行
   /// 点入，复用事件头部 + 四段渲染。
-  static const reviewDetail = '/report/review/:eventId';
+  static const reviewDetail = '/review/review/:eventId';
 }
 
 /// Route prefixes that are publicly accessible without authentication.
@@ -131,10 +128,10 @@ class Routes {
 const _publicRoutePrefixes = <String>[
   '/legal',
   '/medicine/detail',
-  '/report/clinic-summary',
-  // Legacy dashboard 兼容页沿用 `/report` 的公开预览语义（未登录显示
+  '/review/clinic-summary',
+  // Legacy dashboard 兼容页沿用 `/review` 的公开预览语义（未登录显示
   // preview 内容 + 登录引导，不重定向到 /login）。
-  '/report/legacy',
+  '/review/legacy',
 ];
 
 /// Top-level routes that can be visited while signed out so the user can
@@ -147,7 +144,7 @@ const _publicRootRoutes = <String>[
   Routes.home,
   Routes.record,
   Routes.medicine,
-  Routes.report,
+  Routes.review,
   Routes.mine,
   Routes.settings,
   Routes.assistant,
@@ -239,9 +236,9 @@ GoRouter appRouter(Ref ref) => GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: Routes.report,
+              path: Routes.review,
               pageBuilder: (context, state) =>
-                  tabFadePage(key: state.pageKey, child: const ReportPage()),
+                  tabFadePage(key: state.pageKey, child: const ReviewPage()),
             ),
           ],
         ),
@@ -270,7 +267,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
     ...legal_routes.$appRoutes,
     // -- public shared clinic summary (deep link, no auth required) --
     GoRoute(
-      path: Routes.reportClinicSummaryShared,
+      path: Routes.reviewClinicSummaryShared,
       pageBuilder: (context, state) {
         final token = state.pathParameters['token'];
         if (token == null) {
@@ -289,7 +286,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
     ),
     // -- legacy dashboard compatibility page (Review More sheet entry) --
     GoRoute(
-      path: Routes.reportLegacyDashboard,
+      path: Routes.reviewLegacyDashboard,
       pageBuilder: (context, state) => slidePage(
         key: state.pageKey,
         child: const LegacyDashboardCompatPage(),
@@ -310,7 +307,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
         }
         return slidePage(
           key: state.pageKey,
-          child: ReportReviewDetailPage(eventId: eventId),
+          child: ReviewDetailPage(eventId: eventId),
         );
       },
     ),
