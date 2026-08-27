@@ -2,49 +2,95 @@
 // Keep this mapper's fallback until the observed metric domain migration lands.
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/database/cache_constants.dart';
+import 'package:luminous/core/database/daos/report_dashboard_dao.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';
 
 class LucentReportRepository implements ReportRepository {
-  LucentReportRepository({required this.dataSource});
+  LucentReportRepository({required this.dataSource, required this.dao});
 
   final ReportRemoteDataSource dataSource;
+  final ReportDashboardDao dao;
+
+  DateTime? _lastRefresh;
 
   @override
   TaskEither<LucentFailure, ReportDashboard> fetchDashboard(
     ReportDashboardQuery query,
   ) {
-    // Repository boundary: every expected recoverable failure (network,
-    // server business failure) is a Left produced via
-    // `LucentErrorMapper.fromObject`; a successful response is a Right. An
-    // empty success response body is a `LucentFailure.network(emptyResponse)`
-    // (datasource `_requireData`, settings / notification precedent). A
-    // non `problem+json` / malformed error body keeps the mapper's
-    // `FormatException`, which propagates from `.run()`.
     return TaskEither.tryCatch(() async {
-      final dto = await dataSource.fetchDashboard(query);
-      final findings = dto.findings.map(_mapFinding).toList(growable: false);
-
-      return ReportDashboard(
-        range: _mapRange(dto.range.value),
-        startDate: dto.startDate,
-        endDate: dto.endDate,
-        generatedAt: dto.generatedAt,
-        metrics: dto.metrics.map(_mapMetric).toList(growable: false),
-        trends: dto.trends.map(_mapTrend).toList(growable: false),
-        findings: findings,
-        exportActions: _exportActions,
-        patterns: dto.patterns.map(_mapPattern).toList(growable: false),
-        aiSummaryEnabled: dto.aiSummaryEnabled,
+      final cacheKey = ReportDashboardDao.cacheKey(
+        range: query.range.name,
+        startDate: query.startDate,
+        endDate: query.endDate,
       );
+
+      // 1. Check cache
+      final cachedJson = await dao.fetch(cacheKey);
+      if (cachedJson != null) {
+        final dto = lucent.ReportDashboardResponseDto.fromJson(
+          jsonDecode(cachedJson) as Map<String, dynamic>,
+        );
+        final dashboard = _mapDto(dto);
+        // Background refresh (throttled) — best-effort.
+        _refreshInBackground(query, cacheKey);
+        return dashboard;
+      }
+
+      // 2. Cache empty → fetch from network.
+      final dto = await dataSource.fetchDashboard(query);
+      await dao.replace(cacheKey, jsonEncode(dto.toJson()));
+      return _mapDto(dto);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  ReportDashboard _mapDto(lucent.ReportDashboardResponseDto dto) {
+    final findings = dto.findings.map(_mapFinding).toList(growable: false);
+
+    return ReportDashboard(
+      range: _mapRange(dto.range.value),
+      startDate: dto.startDate,
+      endDate: dto.endDate,
+      generatedAt: dto.generatedAt,
+      metrics: dto.metrics.map(_mapMetric).toList(growable: false),
+      trends: dto.trends.map(_mapTrend).toList(growable: false),
+      findings: findings,
+      exportActions: _exportActions,
+      patterns: dto.patterns.map(_mapPattern).toList(growable: false),
+      aiSummaryEnabled: dto.aiSummaryEnabled,
+    );
+  }
+
+  void _refreshInBackground(ReportDashboardQuery query, String cacheKey) {
+    final now = DateTime.now();
+    if (_lastRefresh != null &&
+        now.difference(_lastRefresh!) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastRefresh = now;
+
+    unawaited(
+      Future(() async {
+        try {
+          final dto = await dataSource.fetchDashboard(query);
+          await dao.replace(cacheKey, jsonEncode(dto.toJson()));
+        } catch (e) {
+          appTalker.warning('Report dashboard background refresh failed: $e');
+        }
+      }),
+    );
   }
 
   ReportMetric _mapMetric(lucent.ReportMetricDto dto) {

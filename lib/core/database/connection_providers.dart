@@ -3,6 +3,7 @@ import 'package:luminous/core/database/daos/daily_record_dao.dart';
 import 'package:luminous/core/database/daos/health_context_dao.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
+import 'package:luminous/core/database/daos/report_dashboard_dao.dart';
 import 'package:luminous/core/database/daos/review_dao.dart';
 import 'package:luminous/core/database/daos/today_suggestion_dao.dart';
 import 'package:luminous/core/database/database.dart';
@@ -57,4 +58,9 @@ PendingSyncDao pendingSyncDao(Ref ref) {
 @Riverpod(keepAlive: true)
 ReviewDao reviewDao(Ref ref) {
   return ref.read(appDatabaseProvider).reviewDao;
+}
+
+@Riverpod(keepAlive: true)
+ReportDashboardDao reportDashboardDao(Ref ref) {
+  return ref.read(appDatabaseProvider).reportDashboardDao;
 }

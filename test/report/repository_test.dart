@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:luminous/core/database/daos/report_dashboard_dao.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
@@ -14,6 +15,7 @@ void main() {
     'Lucent report repository maps insufficient sleep data into domain state',
     () async {
       final repository = LucentReportRepository(
+        dao: _FakeReportDashboardDao(),
         dataSource: _FakeReportRemoteDataSource(
           _dashboardDto(
             aiSummaryEnabled: false,
@@ -77,6 +79,7 @@ void main() {
     'Lucent report repository uses ai summary mode and truncates summary findings',
     () async {
       final repository = LucentReportRepository(
+        dao: _FakeReportDashboardDao(),
         dataSource: _FakeReportRemoteDataSource(
           _dashboardDto(
             aiSummaryEnabled: true,
@@ -144,6 +147,7 @@ void main() {
 
   test('Lucent report repository prefers generated observed metric', () async {
     final repository = LucentReportRepository(
+      dao: _FakeReportDashboardDao(),
       dataSource: _FakeReportRemoteDataSource(
         _dashboardDto(
           aiSummaryEnabled: false,
@@ -194,6 +198,7 @@ void main() {
     'Lucent report repository keeps scalar fallback when observed metric is absent',
     () async {
       final repository = LucentReportRepository(
+        dao: _FakeReportDashboardDao(),
         dataSource: _FakeReportRemoteDataSource(
           _dashboardDto(
             aiSummaryEnabled: false,
@@ -231,6 +236,7 @@ void main() {
 
     test('network failure maps to Left(network)', () async {
       final repository = LucentReportRepository(
+        dao: _FakeReportDashboardDao(),
         dataSource: _FakeReportRemoteDataSource(
           _dashboardDto(
             aiSummaryEnabled: false,
@@ -257,6 +263,7 @@ void main() {
       'server business failure keeps Problem Details code and status',
       () async {
         final repository = LucentReportRepository(
+          dao: _FakeReportDashboardDao(),
           dataSource: _FakeReportRemoteDataSource(
             _dashboardDto(
               aiSummaryEnabled: false,
@@ -301,6 +308,7 @@ void main() {
       'empty success response body maps to Left(network/emptyResponse)',
       () async {
         final repository = LucentReportRepository(
+          dao: _FakeReportDashboardDao(),
           dataSource: _FakeReportRemoteDataSource(
             _dashboardDto(
               aiSummaryEnabled: false,
@@ -326,6 +334,7 @@ void main() {
       'non problem+json error body keeps FormatException from .run()',
       () async {
         final repository = LucentReportRepository(
+          dao: _FakeReportDashboardDao(),
           dataSource: _FakeReportRemoteDataSource(
             _dashboardDto(
               aiSummaryEnabled: false,
@@ -364,6 +373,7 @@ void main() {
       'unexpected exception maps to Left(unknown) with cause preserved',
       () async {
         final repository = LucentReportRepository(
+          dao: _FakeReportDashboardDao(),
           dataSource: _FakeReportRemoteDataSource(
             _dashboardDto(
               aiSummaryEnabled: false,
@@ -382,6 +392,20 @@ void main() {
       },
     );
   });
+}
+
+class _FakeReportDashboardDao implements ReportDashboardDao {
+  @override
+  Future<String?> fetch(String cacheKey) async => null;
+
+  @override
+  Future<void> replace(String cacheKey, String jsonData) async {}
+
+  @override
+  Future<void> clear() async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class _FakeReportRemoteDataSource extends ReportRemoteDataSource {

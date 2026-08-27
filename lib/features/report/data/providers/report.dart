@@ -1,3 +1,4 @@
+import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/data/repositories/lucent.dart';
@@ -16,5 +17,6 @@ ReportRemoteDataSource reportRemoteDataSource(Ref ref) {
 @riverpod
 ReportRepository reportRepository(Ref ref) {
   final dataSource = ref.watch(reportRemoteDataSourceProvider);
-  return LucentReportRepository(dataSource: dataSource);
+  final dao = ref.watch(reportDashboardDaoProvider);
+  return LucentReportRepository(dataSource: dataSource, dao: dao);
 }

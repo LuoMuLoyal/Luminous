@@ -16,6 +16,7 @@ import 'daos/daily_record_dao.dart';
 import 'daos/health_context_dao.dart';
 import 'daos/medicine_dose_log_dao.dart';
 import 'daos/pending_sync_dao.dart';
+import 'daos/report_dashboard_dao.dart';
 import 'daos/review_dao.dart';
 import 'daos/today_suggestion_dao.dart';
 import 'tables/current_medicines.dart';
@@ -23,6 +24,7 @@ import 'tables/daily_records.dart';
 import 'tables/health_context.dart';
 import 'tables/medicine_dose_logs.dart';
 import 'tables/pending_sync_queue.dart';
+import 'tables/report_dashboards.dart';
 import 'tables/reviews.dart';
 import 'tables/today_suggestions.dart';
 
@@ -37,6 +39,7 @@ part 'database.g.dart';
     TodaySuggestionCacheEntries,
     PendingSyncItems,
     ReviewCacheEntries,
+    ReportDashboardCacheEntries,
   ],
   daos: [
     DailyRecordDao,
@@ -46,6 +49,7 @@ part 'database.g.dart';
     TodaySuggestionDao,
     PendingSyncDao,
     ReviewDao,
+    ReportDashboardDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -58,8 +62,9 @@ class AppDatabase extends _$AppDatabase {
   /// - 1: initial schema (all six tables as first created).
   /// - 2: adds `lastErrorDetails` to [PendingSyncItems] (see [migration]).
   /// - 3: adds [ReviewCacheEntries] table.
+  /// - 4: adds [ReportDashboardCacheEntries] table.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -72,6 +77,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 3) {
         await m.createTable(reviewCacheEntries);
+      }
+      if (from < 4) {
+        await m.createTable(reportDashboardCacheEntries);
       }
       //
       // Version range strategy (if Web and native diverge):
