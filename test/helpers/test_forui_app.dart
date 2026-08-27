@@ -1,4 +1,3 @@
-import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/theme.dart';
@@ -55,13 +54,12 @@ class TestForuiApp extends StatelessWidget {
             ? FToaster(child: child ?? const SizedBox.shrink())
             : child ?? const SizedBox.shrink(),
       ),
+      // material_ui's GlobalMaterialLocalizations.delegates covers Material /
+      // Widgets / Cupertino. Do not re-add fl.* delegates.
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
-        fl.GlobalMaterialLocalizations.delegate,
-        fl.GlobalWidgetsLocalizations.delegate,
-        fl.GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: home,
@@ -107,13 +105,12 @@ class TestForuiRouterApp extends StatelessWidget {
             ? FToaster(child: child ?? const SizedBox.shrink())
             : child ?? const SizedBox.shrink(),
       ),
+      // material_ui's GlobalMaterialLocalizations.delegates covers Material /
+      // Widgets / Cupertino. Do not re-add fl.* delegates.
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
-        fl.GlobalMaterialLocalizations.delegate,
-        fl.GlobalWidgetsLocalizations.delegate,
-        fl.GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: routerConfig,
