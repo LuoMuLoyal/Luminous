@@ -25,11 +25,20 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 事件头部：active 事件显示「进行中」与今日 check-in（`coverage.checkIns.todayCheckIn` 为空且 `availableActions` 含 check-in 时），同时保留「结束观察」入口；ended 事件显示用户确认的 outcome，无 check-in。check-in / 结束 / 开始观察均复用 health_event 的 bottom sheet 与 `ActiveHealthEvent` notifier。
 - 四段按 fixed 顺序渲染；每段独立 available/unknown：unknown 段显示 reasonCode 本地化的简短缺失原因（`no_observations` / `insufficient_coverage` / `no_completed_actions`，未知码折叠为通用文案），不显示 0 分或红色「需关注」状态。fact code：`health_event` / `observed_changes` / `completed_actions` / `active_check_in` / `event_ended`；数值趋势 direction 缺失/未知时如实显示「方向未知」而不伪装「持平」；用药安全提醒（`redFlags`）以 warning 色调结构化展示，无泛化建议文案。
 - 历史：`reviewHistoryProvider` 第一页按事件逐条列出（最近在前），不按月份分组；提供 status 轻量筛选（全部 / 进行中 / 已结束，`reviewHistoryStatusProvider` 驱动重新拉取），**时间范围不是 review list 合同的一部分**（合同只有 status/cursor/limit，旧 dashboard 的 7/30 天切换保留在 legacy 文件、不进主路径）。加载失败只在卡片内显示一行提示 + 轻量 inline 重试（invalidate history provider），不阻塞首屏；筛选切换重取时沿用旧数据不闪骨架（`skipLoadingOnRefresh`）。完成动作段落内的 check-in 日期与 header/history 一致经 `reviewShortDateLabel` 本地化。当首页 `nextCursor` 非空时，卡片底部渲染「加载更多」按钮；点击后通过 `onLoadMore` 回调调用 `reviewRepositoryProvider.fetchHistory(status, cursor)` 请求下一页，追加渲染并防重入；筛选切换或 DataChangeBus 刷新重取首页时自动重置累积列表。
-- 无事件：显示「开始健康观察」入口 + 最近事件历史；完全没有事件时给轻量解释，不自动生成周报。未登录 preview 显示 `SignInHintBanner`，隐藏开始入口。
+- 无事件：显示「开始健康观察」入口 + 5 张预览锁定卡片（发生了什么 / 有什么变化 / 完成了什么 / 接下来怎么办 / AI 纵向洞察）+ 最近事件历史；完全没有事件时给轻量解释，不自动生成周报。未登录 preview 显示 `SignInHintBanner`，隐藏开始入口。
 - 「开始观察」已与 today 对齐：预读 health context snapshot 的当前用药选项与按用户时区当天解析的症状记录选项，随创建请求转发 `reasonRecordId` / `currentMedicineIds`；选项加载失败静默降级为空列表，不阻塞开始观察。创建成功后由 DataChangeBus 自动刷新 review。
 - 状态处理：首载 loading 显示骨架屏；刷新失败但 `reviewLastCurrentProvider` 有数据时继续渲染旧数据 + 轻量 stale 提示条；无缓存的错误显示 `StateErrorView` + 重试。
 - 主路径回归约束（测试锁定）：不构建 `ReportExportSection` / `ReportReadinessSection`（`canShowFullReport` 整页锁所在）；顶栏无 7/30 天范围切换（`ReportTopBar` / `ReportRangeMenu` 仅 legacy 文件）；旧 `reportDashboardProvider` 失败不阻塞 review 渲染。
 - 文案全部走 `report*` l10n 分片（zh/en 齐全），旧 `reportExport*`、诊所摘要等文案保持 Report 口径（Task 8 已将入口移入 More，见「Review More 入口」节）。
+
+## R-3/R-4 装配：AI 总结与建议历史移入 Review 主路径（2026-08-27）
+
+- **R-3 AI 纵向洞察装配**：新建 `review_ai_summary.dart`（`ReviewAiSummarySection`），不再硬依赖 `ReportDashboard` 实体，只接收 `aiSummaryEnabled` 布尔值；`page.dart` 引入 `reportAiSummaryControllerProvider` / `reportAiSummarySelectedRangeProvider` / `userSettingsControllerProvider` 并装配到 `ReviewView`；`section_models.dart` 新增 `buildReviewAiSummaryContent` 函数（旧 `buildReportAiSummaryContent` 委托给它，保持 legacy 兼容）。有事件时在四段之后渲染 AI 总结段落（日/周/月范围切换 + 生成按钮）。
+- **R-4 #22 建议历史移入 Review**：新建 `review_suggestion_history.dart`（`ReviewSuggestionHistorySection`），从旧 `ReportSuggestionHistorySection` 改名而来；`page.dart` 引入 `suggestionHistoryProvider` 并按 title|reason|type 去重取最高生命周期状态（与 legacy 兼容页同一逻辑），装配到 `ReviewView`。有事件时在 AI 总结之后渲染建议历史段落。
+- **空态丰富化**：空态（无事件时）从单张 `_StartObservationCard` 扩展为 5 张 `ReviewPreviewLockedSection` 预览锁定卡片（发生了什么 / 有什么变化 / 完成了什么 / 接下来怎么办 / AI 纵向洞察），与旧 report 页 `dashboard_preview.dart` 的预览风格对齐。
+- **文件重命名**：`preview_empty.dart` → `review_preview_locked.dart`（`ReportPreviewLockedSection` → `ReviewPreviewLockedSection`），`dashboard_preview.dart` 同步更新引用。
+- **l10n**：新增 `reviewPreviewWhatHappenedTitle/Body` 等 10 条（zh + en）。
+- **未完成**：R-4 #19 日/周/月范围切换、#21 图表 observedMetric 口径、R-5 服务端 409、R-6 文档漂移、后端裁剪。
 
 ## Review More 入口（Task 8，导出与就诊摘要已迁入）
 

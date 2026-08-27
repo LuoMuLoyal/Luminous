@@ -131,6 +131,29 @@ ReportAiSummaryContent buildReportAiSummaryContent({
   required ReportAiSummaryRange selectedRange,
   required FColors colors,
 }) {
+  return buildReviewAiSummaryContent(
+    l10n: l10n,
+    aiSummaryEnabled: dashboard.aiSummaryEnabled,
+    canAccessProtectedData: canAccessProtectedData,
+    aiState: aiState,
+    selectedRange: selectedRange,
+    colors: colors,
+  );
+}
+
+/// Review 主路径用的 AI 总结内容构建函数。
+///
+/// 与 [buildReportAiSummaryContent] 的区别：不依赖 [ReportDashboard] 实体，
+/// 只接收 `aiSummaryEnabled` 布尔值，适配 Review 页面不一定有 dashboard
+/// 数据的场景。
+ReportAiSummaryContent buildReviewAiSummaryContent({
+  required AppLocalizations l10n,
+  required bool aiSummaryEnabled,
+  required bool canAccessProtectedData,
+  required ReportAiSummaryCardState aiState,
+  required ReportAiSummaryRange selectedRange,
+  required FColors colors,
+}) {
   if (!canAccessProtectedData) {
     return ReportAiSummaryContent(
       subtitle: l10n.reportSnapshotHint,
@@ -138,7 +161,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
     );
   }
 
-  if (aiSummariesEnabled == false || aiState.isDisabled) {
+  if (!aiSummaryEnabled || aiState.isDisabled) {
     return ReportAiSummaryContent(
       subtitle: l10n.reportSnapshotHint,
       disclaimer: l10n.reportAiSummaryDisabledHint,
@@ -161,7 +184,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
     return ReportAiSummaryContent(
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
       disclaimer: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
-      showGenerateButton: dashboard.aiSummaryEnabled,
+      showGenerateButton: aiSummaryEnabled,
     );
   }
 
@@ -176,7 +199,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
   return ReportAiSummaryContent(
     subtitle: l10n.reportSnapshotHint,
     disclaimer: l10n.reportAiSummaryDefaultHint,
-    showGenerateButton: dashboard.aiSummaryEnabled,
+    showGenerateButton: aiSummaryEnabled,
   );
 }
 

@@ -22,12 +22,17 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/report/data/providers/review.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
+import 'package:luminous/features/report/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/report/presentation/providers/review.dart';
 import 'package:luminous/features/report/presentation/utils/export_actions.dart';
+import 'package:luminous/features/report/presentation/widgets/dialogs/suggestion_history_detail_sheet.dart';
 import 'package:luminous/features/report/presentation/widgets/sheets/more_actions.dart';
 import 'package:luminous/features/report/presentation/widgets/sheets/share_management.dart';
 import 'package:luminous/features/report/presentation/widgets/views/review_view.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
+import 'package:luminous/features/today/data/providers/suggestion.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 第五 Tab 的 Review 页：以健康事件为主单位的回顾首屏。
@@ -243,6 +248,44 @@ class ReportPage extends ConsumerWidget {
     final historyStatus = ref.watch(reviewHistoryStatusProvider);
     final review = currentAsync.asData?.value ?? cachedReview;
 
+    // AI 总结 providers——仅登录用户可见。
+    final aiSummariesEnabled = canAccessProtectedData
+        ? ref.watch(
+            userSettingsControllerProvider.select(
+              (s) => s.asData?.value.aiSummariesEnabled,
+            ),
+          )
+        : null;
+    final aiSummarySelectedRange = canAccessProtectedData
+        ? ref.watch(reportAiSummarySelectedRangeProvider)
+        : null;
+    final aiSummaryState = canAccessProtectedData
+        ? ref.watch(reportAiSummaryControllerProvider(aiSummarySelectedRange!))
+        : null;
+
+    // 建议历史 providers——仅登录用户可见。
+    final suggestionHistoryAsync = canAccessProtectedData
+        ? ref.watch(suggestionHistoryProvider)
+        : null;
+    final suggestionHistory =
+        suggestionHistoryAsync?.asData?.value?.items
+            .fold<Map<String, TodaySuggestionHistoryItem>>({}, (map, item) {
+              final key = '${item.title}|${item.reason}|${item.type.name}';
+              final existing = map[key];
+              if (existing == null ||
+                  _suggestionLifecycleRank(item.lifecycleState) >
+                      _suggestionLifecycleRank(existing.lifecycleState)) {
+                map[key] = item;
+              }
+              return map;
+            })
+            .values
+            .take(3)
+            .toList(growable: false) ??
+        const <TodaySuggestionHistoryItem>[];
+    final isSuggestionHistoryLoading =
+        suggestionHistoryAsync?.isLoading ?? false;
+
     return ShellDeferredContent(
       child: _ReviewOpenedTracker(
         child: _ReportMobileShell(
@@ -290,6 +333,25 @@ class ReportPage extends ConsumerWidget {
                 ref.read(reviewHistoryStatusProvider.notifier).select(status),
             canAccessProtectedData: canAccessProtectedData,
             isPreview: isPreview,
+            aiSummaryState: aiSummaryState,
+            aiSummarySelectedRange: aiSummarySelectedRange,
+            aiSummariesEnabled: aiSummariesEnabled,
+            onAiSummaryRangeChanged: (range) => ref
+                .read(reportAiSummarySelectedRangeProvider.notifier)
+                .setRange(range),
+            onGenerateAiSummary: () async {
+              await ref
+                  .read(
+                    reportAiSummaryControllerProvider(
+                      aiSummarySelectedRange!,
+                    ).notifier,
+                  )
+                  .generate();
+            },
+            suggestionHistory: suggestionHistory,
+            isSuggestionHistoryLoading: isSuggestionHistoryLoading,
+            onSuggestionTap: (item) =>
+                showSuggestionHistoryDetailSheet(context, suggestion: item),
             onRetry: () => ref.invalidate(reviewCurrentProvider),
             onStartObservation: () => _openStart(context, ref),
             onCheckIn: review == null
@@ -449,3 +511,12 @@ class _ReportMobileShell extends StatelessWidget {
     );
   }
 }
+
+int _suggestionLifecycleRank(TodaySuggestionLifecycleState state) =>
+    switch (state) {
+      TodaySuggestionLifecycleState.active => 3,
+      TodaySuggestionLifecycleState.generated => 2,
+      TodaySuggestionLifecycleState.fading => 1,
+      TodaySuggestionLifecycleState.dismissed => 0,
+      TodaySuggestionLifecycleState.expired => -1,
+    };

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// A lightweight preview-locked card used on the Report page when the user is
-/// signed out. It keeps the section visible as a teaser while explicitly telling
-/// the user that the real content becomes available after signing in.
-class ReportPreviewLockedSection extends StatelessWidget {
-  const ReportPreviewLockedSection({
+/// A lightweight preview-locked card used on the Review page when the user is
+/// signed out or has no active observation. It keeps the section visible as a
+/// teaser while explicitly telling the user that the real content becomes
+/// available after starting an observation or signing in.
+class ReviewPreviewLockedSection extends StatelessWidget {
+  const ReviewPreviewLockedSection({
     super.key,
     required this.icon,
     required this.title,

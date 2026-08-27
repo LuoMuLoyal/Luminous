@@ -3,7 +3,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/export.dart';
-import 'package:luminous/features/report/presentation/widgets/sections/preview_empty.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/review_preview_locked.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/trend.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -112,7 +112,7 @@ class ReportDashboardPreview extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: ReportPreviewLockedSection(
+                child: ReviewPreviewLockedSection(
                   key: const Key('report-findings-preview-locked'),
                   icon: SemanticIcons.aiTip,
                   title: l10n.reportFindingsPreviewTitle,
@@ -121,7 +121,7 @@ class ReportDashboardPreview extends StatelessWidget {
               ),
               const SizedBox(width: Spacing.level4),
               Expanded(
-                child: ReportPreviewLockedSection(
+                child: ReviewPreviewLockedSection(
                   key: const Key('report-suggestion-history-preview-locked'),
                   icon: SemanticIcons.reportHistory,
                   title: l10n.reportSuggestionHistoryPreviewTitle,
@@ -131,14 +131,14 @@ class ReportDashboardPreview extends StatelessWidget {
             ],
           )
         else ...[
-          ReportPreviewLockedSection(
+          ReviewPreviewLockedSection(
             key: const Key('report-findings-preview-locked'),
             icon: SemanticIcons.aiTip,
             title: l10n.reportFindingsPreviewTitle,
             body: l10n.reportFindingsPreviewBody,
           ),
           const SizedBox(height: Spacing.level4),
-          ReportPreviewLockedSection(
+          ReviewPreviewLockedSection(
             key: const Key('report-suggestion-history-preview-locked'),
             icon: SemanticIcons.reportHistory,
             title: l10n.reportSuggestionHistoryPreviewTitle,

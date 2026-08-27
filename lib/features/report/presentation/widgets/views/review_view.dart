@@ -3,15 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/completed_actions.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/event_header.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/key_changes.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/next_step.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/review_ai_summary.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/review_history.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/review_preview_locked.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/review_suggestion_history.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/what_happened.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/constrained_action_button.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 事件优先的回顾首屏（移动端约束布局）。
@@ -39,6 +44,14 @@ class ReviewView extends StatelessWidget {
     required this.onCheckIn,
     required this.onEndEvent,
     required this.onSignIn,
+    this.aiSummaryState,
+    this.aiSummarySelectedRange,
+    this.aiSummariesEnabled,
+    this.onAiSummaryRangeChanged,
+    this.onGenerateAiSummary,
+    this.suggestionHistory,
+    this.isSuggestionHistoryLoading = false,
+    this.onSuggestionTap,
     this.onHistoryRetry,
     this.historyStatus,
     this.onHistoryStatusChanged,
@@ -56,6 +69,18 @@ class ReviewView extends StatelessWidget {
   final VoidCallback onCheckIn;
   final VoidCallback onEndEvent;
   final VoidCallback onSignIn;
+
+  /// AI 总结状态与控制回调。缺省时不渲染 AI 总结段落。
+  final ReportAiSummaryCardState? aiSummaryState;
+  final ReportAiSummaryRange? aiSummarySelectedRange;
+  final bool? aiSummariesEnabled;
+  final ValueChanged<ReportAiSummaryRange>? onAiSummaryRangeChanged;
+  final Future<void> Function()? onGenerateAiSummary;
+
+  /// 建议历史数据与回调。缺省时不渲染建议历史段落。
+  final List<TodaySuggestionHistoryItem>? suggestionHistory;
+  final bool isSuggestionHistoryLoading;
+  final ValueChanged<TodaySuggestionHistoryItem>? onSuggestionTap;
 
   /// 历史加载失败时卡片内的轻量重试回调；缺省时不显示重试按钮。
   final VoidCallback? onHistoryRetry;
@@ -100,12 +125,37 @@ class ReviewView extends StatelessWidget {
     final children = <Widget>[
       if (isPreview) SignInHintBanner(onSignIn: onSignIn),
       if (showStaleBanner) const _StaleBanner(key: Key('review-stale-banner')),
-      if (review == null)
+      if (review == null) ...[
         _StartObservationCard(
           onStartObservation: onStartObservation,
           showStartAction: canAccessProtectedData,
-        )
-      else ...[
+        ),
+        ReviewPreviewLockedSection(
+          icon: SemanticIcons.recordSymptom,
+          title: l10n.reviewPreviewWhatHappenedTitle,
+          body: l10n.reviewPreviewWhatHappenedBody,
+        ),
+        ReviewPreviewLockedSection(
+          icon: SemanticIcons.reportTrend,
+          title: l10n.reviewPreviewKeyChangesTitle,
+          body: l10n.reviewPreviewKeyChangesBody,
+        ),
+        ReviewPreviewLockedSection(
+          icon: SemanticIcons.recordClipboard,
+          title: l10n.reviewPreviewCompletedActionsTitle,
+          body: l10n.reviewPreviewCompletedActionsBody,
+        ),
+        ReviewPreviewLockedSection(
+          icon: SemanticIcons.reportInsight,
+          title: l10n.reviewPreviewNextStepTitle,
+          body: l10n.reviewPreviewNextStepBody,
+        ),
+        ReviewPreviewLockedSection(
+          icon: SemanticIcons.aiEntry,
+          title: l10n.reviewPreviewAiSummaryTitle,
+          body: l10n.reviewPreviewAiSummaryBody,
+        ),
+      ] else ...[
         EventHeaderSection(
           event: review.event,
           todayCheckIn: review.coverage.checkIns.todayCheckIn,
@@ -122,6 +172,25 @@ class ReviewView extends StatelessWidget {
         KeyChangesSection(section: review.sections.keyChanges),
         CompletedActionsSection(section: review.sections.completedActions),
         NextStepSection(section: review.sections.nextStep),
+        if (aiSummaryState != null &&
+            aiSummarySelectedRange != null &&
+            aiSummariesEnabled != null)
+          ReviewAiSummarySection(
+            aiSummaryEnabled: aiSummariesEnabled!,
+            canAccessProtectedData: canAccessProtectedData,
+            aiState: aiSummaryState!,
+            selectedRange: aiSummarySelectedRange!,
+            onRangeChanged: onAiSummaryRangeChanged,
+            onGenerate: onGenerateAiSummary,
+            l10n: l10n,
+          ),
+        if (suggestionHistory != null && canAccessProtectedData)
+          ReviewSuggestionHistorySection(
+            suggestions: suggestionHistory!,
+            l10n: l10n,
+            isLoading: isSuggestionHistoryLoading,
+            onSuggestionTap: onSuggestionTap,
+          ),
       ],
       ReviewHistorySection(
         history: historyAsync,

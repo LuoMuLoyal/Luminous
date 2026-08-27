@@ -12,22 +12,18 @@ Created: 2026-08-16
 
 **R-3 周/月纵向洞察生成器(#14，0.1.0 前）**
 
-- 进展:服务端口径与客户端死代码清理已落地(Lucent `9549f48c` 换 prompt/schema 弃权口径与 `coverage/observedPattern/lowRiskAction/disclaimer` 输出、`copy.service.ts` 全 insufficient → abstain;Luminous `eec70285` 删非流式 `generate()`,展示层改三段渲染);**「装配到 Review 日/周/月视图」未完成**(`ReportAiSummarySection` 仍只在 legacy 视图,随 R-4 #19 联动)。
-- 方案:
-  - 保留 SSE + BullMQ + LLM 基础设施,换新 prompt 与输入口径:输出固定为时间范围、覆盖率、有来源的已观察模式(最多一个)与低风险行动(最多一个),允许用户反馈;数据不足直接弃权,不生成泛化长文。
-  - 生成器装配到 Review 的日/周/月视图(与 R-4 legacy 视图改造联动);事件回顾作为专题嵌入,不再统领全部周/月内容。
-- 依赖:vital 趋势数据源见 [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md) 的 vital 基建一节;ObservedMetric/覆盖率口径见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节;本文不重复展开。
-- 分工:服务端换 prompt/schema/输入口径;客户端删死代码 + 装配视图。
+- 进展:服务端口径与客户端死代码清理已落地(Lucent `9549f48c` 换 prompt/schema 弃权口径与 `coverage/observedPattern/lowRiskAction/disclaimer` 输出、`copy.service.ts` 全 insufficient → abstain;Luminous `eec70285` 删非流式 `generate()`,展示层改三段渲染);**客户端装配已完成**(新建 `ReviewAiSummarySection` 装入 Review 主路径,不再依赖 `ReportDashboard` 实体)。
+- 剩余:vital 趋势数据源依赖 record 计划 vital 基建与 medicine 计划 F-5 口径;日/周/月范围切换与趋势图表装配见 R-4 #19。
 
 ### P2（legacy 打包，0.1.0 前）
 
 **R-4 legacy 改造包(#19-#22 打包，0.1.0 前）**
 
-- 进展:#20 已落地(Lucent `912c8efa` 移除 `buildScore` 与 DTO score 输出、Luminous `68d42f47` 移除评分卡与 score 引用);客户端非流式 `generate()` 死代码已随 R-3 删除;#19/#21/#22 与后端端点/缓存桥裁剪未完成。
+- 进展:#20 已落地(Lucent `912c8efa` 移除 `buildScore` 与 DTO score 输出、Luminous `68d42f47` 移除评分卡与 score 引用);客户端非流式 `generate()` 死代码已随 R-3 删除;#22 建议历史已移入 Review 主路径(新建 `ReviewSuggestionHistorySection`);#19/#21 与后端端点/缓存桥裁剪未完成。
 - 方案(打包执行,不删除功能与代码):
   - #19:`legacy_dashboard_compat.dart` 等重新装配为 Review 日/周/月纵向洞察视图(聚合计算逻辑保留,`top_bar.dart` 范围切换改为日/周/月切换);路由 `/report/legacy` 与 domain 侧 `dashboard.dart` 实体/mapper 视装配进度迁移。
   - #21:legacy 图表改按 `observedMetric` 口径输出:unknown 天不绘点、只绘已记录数据,图表旁标注「有记录 N 天 / 范围 M 天」覆盖率;废除 unknown→0(服务端)与 unknown→flat/general(客户端)两处口径。observedMetric 口径定义引用 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节。
-  - #22:建议历史从 legacy 页移入 Review「建议历史」详情视图,数据源 `/today/suggestions/history`,保留 title|reason|type 去重取最高生命周期状态与详情面板。
+  - #22:建议历史已移入 Review「建议历史」段落(新建 `ReviewSuggestionHistorySection`),数据源 `/today/suggestions/history`,保留 title|reason|type 去重取最高生命周期状态与详情面板。
   - 同包清理:后端零消费端点(`summary/generate` 非流式、`summary/generate/async` + `status`、`clinic-summary/export/async` + `status`)下线或降级为不暴露;旧 Redis `createShareLink` 缓存桥清理。先做客户端死代码清理与数据契约拆分,再评估后端裁剪,避免先砍后端影响导出(#17 PDF 依赖 dashboard 聚合)。
 - 依赖:data-export PDF 数据源替代方案须先行确认(见第四节);vital 数据源引用 record 计划 vital 基建一节。
 
@@ -53,7 +49,7 @@ Created: 2026-08-16
 
 ## 三、本计划内执行顺序
 
-1. R-3 纵向洞察生成器(P1,依赖 record 计划 vital 基建与 medicine 计划 F-5 口径就绪;服务端口径与客户端死代码清理已落地,剩余 Review 视图装配)。
+1. R-3 纵向洞察生成器(P1,依赖 record 计划 vital 基建与 medicine 计划 F-5 口径就绪;服务端口径、客户端死代码清理与 Review 视图装配已完成,剩余日/周/月范围切换与趋势图表装配随 R-4 #19)。
 2. R-4 legacy 打包（0.1.0 前）:先确认 data-export PDF 数据源替代方案 → 客户端死代码清理与数据契约拆分(#20 已落地)→ 视图重装配(#19/#21/#22)→ 评估后端裁剪。
 3. R-5 服务端 409 双保险、R-6 文档更新,随 R-3/R-4 附带完成(R-5 为必做项)。
 
