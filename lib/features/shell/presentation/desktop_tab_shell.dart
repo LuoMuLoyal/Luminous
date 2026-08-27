@@ -8,7 +8,7 @@ import 'package:luminous/core/design/design.dart';
 /// Used by [ShellPage] on desktop, providing all tab pages with:
 /// - FHeader.nested (title + suffixes)
 /// - Content area max-width constraint (shared with header for horizontal alignment)
-/// - Content area background color (muted, to distinguish from sidebar)
+/// - Content area background color (scaffold background, to distinguish from sidebar)
 /// - Unified padding
 /// - Optional pull-to-refresh (onRefresh) and scroll position preservation (scrollStorageKey)
 class DesktopTabShell extends StatelessWidget {
@@ -68,9 +68,11 @@ class DesktopTabShell extends StatelessWidget {
       ),
     );
 
+    // Content area background uses the scaffold's background color (light grey)
+    // to match the FScaffold — no need for a separate tint.
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: SemanticColor.neutral.shimmerBase(context),
+        color: context.theme.scaffoldStyle.backgroundColor,
       ),
       // showHeader=false 时顶部 SafeArea 由内容区自行处理
       child: SafeArea(

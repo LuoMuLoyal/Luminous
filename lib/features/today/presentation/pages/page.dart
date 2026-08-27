@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
@@ -52,7 +51,6 @@ class TodayPage extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     // Always watch the provider — when signed out it returns preview data.
     final dashboardAsync = ref.watch(todayDashboardProvider);
@@ -88,10 +86,7 @@ class TodayPage extends ConsumerWidget {
               showHeader: false,
               child: content,
             )
-          : DecoratedBox(
-              decoration: BoxDecoration(color: colors.background),
-              child: SafeArea(bottom: false, child: content),
-            ),
+          : SafeArea(bottom: false, child: content),
     );
   }
 }

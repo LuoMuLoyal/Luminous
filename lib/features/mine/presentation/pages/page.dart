@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -31,7 +30,6 @@ class MinePage extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     final unreadAsync = ref.watch(notificationUnreadCountProvider);
     final hasUnread =
@@ -77,37 +75,32 @@ class MinePage extends ConsumerWidget {
               scrollStorageKey: 'mine-desktop-scroll',
               child: body,
             )
-          : DecoratedBox(
-              decoration: BoxDecoration(color: colors.background),
-              child: SafeArea(
-                bottom: false,
-                child: Column(
-                  children: [
-                    MineTopBar(
-                      onNotificationsTap: () =>
-                          context.push(Routes.notifications),
-                      onSettingsTap: () => context.push(Routes.settings),
-                    ),
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () => _refreshDashboard(ref),
-                        child: ListView(
-                          key: const PageStorageKey<String>(
-                            'mine-mobile-scroll',
-                          ),
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(
-                            Spacing.level4,
-                            Spacing.level4,
-                            Spacing.level4,
-                            Spacing.level10,
-                          ),
-                          children: [body],
+          : SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  MineTopBar(
+                    onNotificationsTap: () =>
+                        context.push(Routes.notifications),
+                    onSettingsTap: () => context.push(Routes.settings),
+                  ),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () => _refreshDashboard(ref),
+                      child: ListView(
+                        key: const PageStorageKey<String>('mine-mobile-scroll'),
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(
+                          Spacing.level4,
+                          Spacing.level4,
+                          Spacing.level4,
+                          Spacing.level10,
                         ),
+                        children: [body],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
     );

@@ -311,39 +311,35 @@ class _MedicineMobileShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: colors.background),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            FHeader.nested(
-              title: Text(l10n.tabMedicine),
-              suffixes: const [
-                _MedicineSafeGuardPill(),
-                _MedicineNotificationButton(),
+    return SafeArea(
+      bottom: false,
+      child: Column(
+        children: [
+          FHeader.nested(
+            title: Text(l10n.tabMedicine),
+            suffixes: const [
+              _MedicineSafeGuardPill(),
+              _MedicineNotificationButton(),
+            ],
+          ),
+          Expanded(
+            child: ListView(
+              key: const PageStorageKey<String>('medicine-mobile-scroll'),
+              padding: const EdgeInsets.fromLTRB(
+                Spacing.level4,
+                Spacing.level4,
+                Spacing.level4,
+                Spacing.level10,
+              ),
+              children: [
+                const _MedicineMobileSearchBar(),
+                const SizedBox(height: Spacing.level4),
+                child,
               ],
             ),
-            Expanded(
-              child: ListView(
-                key: const PageStorageKey<String>('medicine-mobile-scroll'),
-                padding: const EdgeInsets.fromLTRB(
-                  Spacing.level4,
-                  Spacing.level4,
-                  Spacing.level4,
-                  Spacing.level10,
-                ),
-                children: [
-                  const _MedicineMobileSearchBar(),
-                  const SizedBox(height: Spacing.level4),
-                  child,
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
