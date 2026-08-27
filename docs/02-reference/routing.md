@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-24
+updated: 2026-08-27
 ---
 
 # Routing (GoRouter)
 
-Last updated: 2026-08-24
+Last updated: 2026-08-27
 
 本文件是 [[architecture]] 拆分后的子文档。
 
@@ -24,7 +24,7 @@ StatefulShellRoute (preserves tab state)
 ├── ShellBranch 0: /          → Today dashboard
 ├── ShellBranch 1: /record    → Record list
 ├── ShellBranch 2: /medicine  → Medicine workspace
-├── ShellBranch 3: /report    → Review (回顾)
+├── ShellBranch 3: /review     → Review (回顾)
 └── ShellBranch 4: /mine      → Mine/profile
 ```
 
@@ -41,9 +41,9 @@ GoRoute (top-level, no shell)
 ├── /notifications, /notifications/:id
 ├── /login, /login/oauth/*, /register, /forgot-password
 ├── /account, /account/oauth/wechat, /account/change-email
-├── /report/clinic-summary/:token
-├── /report/legacy
-├── /report/review/:eventId
+├── /review/clinic-summary/:token
+├── /review/legacy
+├── /review/review/:eventId
 └── /scan/barcode
 ```
 
@@ -72,16 +72,18 @@ Each feature file exports a list constant (`settingsRoutes`, `authRoutes`, ...) 
 
 ### Route Constants
 
-Route path strings are centralized in `AppRoutes` (defined in `lib/app/router.dart`) to avoid
+Route path strings are centralized in `Routes` (defined in `lib/app/router.dart`) to avoid
 hardcoded strings across the codebase:
 
 ```dart
-class AppRoutes {
+class Routes {
   static const home = '/';
   static const login = '/login';
-  static const forgotPassword = '/forgot-password';
-  static const register = '/register';
-  static const account = '/account';
+  static const review = '/review';  // Fifth tab
+  static const reviewClinicSummaryShared = '/review/clinic-summary/:token';
+  static const reviewLegacyDashboard = '/review/legacy';
+  static const reviewDetail = '/review/review/:eventId';
+  // ... other routes
 }
 ```
 
@@ -102,14 +104,14 @@ class AppRoutes {
 
 The following routes are accessible without signing in so the app can be opened in preview mode:
 
-- `/`, `/record`, `/medicine`, `/report`, `/mine` — the five shell tabs.
-  The fifth tab's user-visible task name is Review (回顾) as of 2026-08-13; `/report` remains a
-  compatibility route and keeps its path, `ShellTab.report` enum, and telemetry keys so existing
-  deep links keep working. The code-layer rename is deferred until after the compatibility period.
+- `/`, `/record`, `/medicine`, `/review`, `/mine` — the five shell tabs.
+  The fifth tab's route path and `ShellTab.review` enum have been renamed from `report` to `review`
+  (2026-08-27). All code-layer references (feature directory, class names, provider names, l10n keys)
+  have been updated accordingly.
 - `/settings`, `/assistant` — standalone pages that render their own sign-in prompts when needed.
-- `/legal`, `/report/clinic-summary` — shared/legal content.
-- `/report/legacy` — legacy dashboard 兼容页（2026-08-13 Review Task 8）：从回顾页 More sheet 的
-  「历史报告」入口 push 进入，沿用 `/report` 的公开预览语义（未登录显示 preview + 登录引导，
+- `/legal`, `/review/clinic-summary` — shared/legal content.
+- `/review/legacy` — legacy dashboard 兼容页（2026-08-13 Review Task 8）：从回顾页 More sheet 的
+  「历史报告」入口 push 进入，沿用 `/review` 的公开预览语义（未登录显示 preview + 登录引导，
   不重定向到 /login）。
 - `/medicine/detail/:source/:id` — 药品详情页（2026-08-16 已加入 `_publicRoutePrefixes`）：后端
   `GET /medicines/:id?source=` 为 `@Public`、页面仅对「加入药箱」做 auth 门控，未登录可浏览说明书；
