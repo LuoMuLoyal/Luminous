@@ -17,36 +17,39 @@ class SuggestionEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level6,
-      ),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              SemanticIcons.aiEntry,
-              size: Spacing.level8,
-              color: context.theme.colors.mutedForeground,
-            ),
-            const SizedBox(height: Spacing.level3),
-            Text(
-              l10n.todaySuggestionEmptyTitle,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: Spacing.level1),
-            Text(
-              l10n.todaySuggestionEmptySubtitle,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
-              textAlign: TextAlign.center,
-            ),
-          ],
+    return FCard(
+      style: todayCardStyle(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level4,
+          vertical: Spacing.level6,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                SemanticIcons.aiEntry,
+                size: Spacing.level8,
+                color: context.theme.colors.mutedForeground,
+              ),
+              const SizedBox(height: Spacing.level3),
+              Text(
+                l10n.todaySuggestionEmptyTitle,
+                style: TypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: Spacing.level1),
+              Text(
+                l10n.todaySuggestionEmptySubtitle,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: context.theme.colors.mutedForeground),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -65,12 +68,8 @@ class SuggestionSkeleton extends StatelessWidget {
     final colors = context.theme.colors;
 
     return SkeletonShimmer(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.card,
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
-          border: Border.all(color: colors.border),
-        ),
+      child: FCard(
+        style: todayCardStyle(context),
         child: Padding(
           padding: const EdgeInsets.all(Spacing.level4),
           child: Column(
@@ -171,35 +170,38 @@ class SuggestionErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level6,
-      ),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              SemanticIcons.statusError,
-              size: Spacing.level8,
-              color: context.theme.colors.mutedForeground,
-            ),
-            const SizedBox(height: Spacing.level3),
-            Text(
-              l10n.todaySuggestionErrorHint,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
-            ),
-            const SizedBox(height: Spacing.level3),
-            FButton(
-              onPress: onRetry,
-              variant: FButtonVariant.secondary,
-              size: FButtonSizeVariant.sm,
-              child: Text(l10n.todaySuggestionRetryAction),
-            ),
-          ],
+    return FCard(
+      style: todayCardStyle(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level4,
+          vertical: Spacing.level6,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                SemanticIcons.statusError,
+                size: Spacing.level8,
+                color: context.theme.colors.mutedForeground,
+              ),
+              const SizedBox(height: Spacing.level3),
+              Text(
+                l10n.todaySuggestionErrorHint,
+                style: TypographyToken.level4
+                    .body(context)
+                    .copyWith(color: context.theme.colors.mutedForeground),
+              ),
+              const SizedBox(height: Spacing.level3),
+              FButton(
+                onPress: onRetry,
+                variant: FButtonVariant.secondary,
+                size: FButtonSizeVariant.sm,
+                child: Text(l10n.todaySuggestionRetryAction),
+              ),
+            ],
+          ),
         ),
       ),
     );
