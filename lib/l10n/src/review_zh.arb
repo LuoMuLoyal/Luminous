@@ -291,7 +291,7 @@
   "reviewReviewKindOther": "健康观察",
   "reviewReviewKindUnknown": "健康观察",
   "reviewReviewStartedLabel": "开始于 {date}",
-  "@reportReviewStartedLabel": {
+  "@reviewReviewStartedLabel": {
     "placeholders": {
       "date": {
         "type": "String"
@@ -299,7 +299,7 @@
     }
   },
   "reviewReviewEndedLabel": "结束于 {date}",
-  "@reportReviewEndedLabel": {
+  "@reviewReviewEndedLabel": {
     "placeholders": {
       "date": {
         "type": "String"
@@ -307,7 +307,7 @@
     }
   },
   "reviewReviewMedicineCountLabel": "关联 {count} 种用药",
-  "@reportReviewMedicineCountLabel": {
+  "@reviewReviewMedicineCountLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -316,7 +316,7 @@
   },
   "reviewReviewCheckInAction": "确认今天结果",
   "reviewReviewCheckInDoneToday": "今天已确认：{outcome}",
-  "@reportReviewCheckInDoneToday": {
+  "@reviewReviewCheckInDoneToday": {
     "placeholders": {
       "outcome": {
         "type": "String"
@@ -329,7 +329,7 @@
   "reviewReviewReasonNoCompletedActions": "还没有已确认的服药或结果记录。",
   "reviewReviewReasonUnknown": "暂时无法展示这部分内容。",
   "reviewReviewWhatHappenedSymptomCount": "记录了 {count} 条症状",
-  "@reportReviewWhatHappenedSymptomCount": {
+  "@reviewReviewWhatHappenedSymptomCount": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -337,7 +337,7 @@
     }
   },
   "reviewReviewWhatHappenedCheckInCount": "确认了 {count} 次结果",
-  "@reportReviewWhatHappenedCheckInCount": {
+  "@reviewReviewWhatHappenedCheckInCount": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -345,7 +345,7 @@
     }
   },
   "reviewReviewWhatHappenedWindow": "{start} – {end}",
-  "@reportReviewWhatHappenedWindow": {
+  "@reviewReviewWhatHappenedWindow": {
     "placeholders": {
       "start": {
         "type": "String"
@@ -358,7 +358,7 @@
   "reviewReviewWindowUntilNow": "至今",
   "reviewReviewDetailTitle": "事件回顾",
   "reviewReviewWhatHappenedReasonRecord": "由记录触发：{title}",
-  "@reportReviewWhatHappenedReasonRecord": {
+  "@reviewReviewWhatHappenedReasonRecord": {
     "placeholders": {
       "title": {
         "type": "String"
@@ -373,7 +373,7 @@
   "reviewReviewChangeDirectionFlat": "持平",
   "reviewReviewChangeDirectionUnknown": "方向未知",
   "reviewReviewChangeOutcomeDetail": "从「{from}」变为「{to}」，共确认 {count} 次",
-  "@reportReviewChangeOutcomeDetail": {
+  "@reviewReviewChangeOutcomeDetail": {
     "placeholders": {
       "from": {
         "type": "String"
@@ -387,7 +387,7 @@
     }
   },
   "reviewReviewChangeNumericDetail": "{from} {unit} → {to} {unit}，观察 {days} 天",
-  "@reportReviewChangeNumericDetail": {
+  "@reviewReviewChangeNumericDetail": {
     "placeholders": {
       "from": {
         "type": "String"
@@ -407,7 +407,7 @@
   "reviewReviewChangeUnitHour": "小时",
   "reviewReviewDoseSectionTitle": "服药情况",
   "reviewReviewDoseConfirmedLabel": "已确认服药 {count} 次",
-  "@reportReviewDoseConfirmedLabel": {
+  "@reviewReviewDoseConfirmedLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -415,7 +415,7 @@
     }
   },
   "reviewReviewDoseSkippedLabel": "跳过 {count} 次",
-  "@reportReviewDoseSkippedLabel": {
+  "@reviewReviewDoseSkippedLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -423,7 +423,7 @@
     }
   },
   "reviewReviewDoseUnconfirmedLabel": "未确认 {count} 次",
-  "@reportReviewDoseUnconfirmedLabel": {
+  "@reviewReviewDoseUnconfirmedLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -432,7 +432,7 @@
   },
   "reviewReviewCheckInSectionTitle": "结果确认记录",
   "reviewReviewCheckInRecordLabel": "{date} · {outcome}",
-  "@reportReviewCheckInRecordLabel": {
+  "@reviewReviewCheckInRecordLabel": {
     "placeholders": {
       "date": {
         "type": "String"
@@ -443,7 +443,7 @@
     }
   },
   "reviewReviewMoreCountLabel": "还有 {count} 条记录",
-  "@reportReviewMoreCountLabel": {
+  "@reviewReviewMoreCountLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -453,7 +453,7 @@
   "reviewReviewNextStepCheckInPrompt": "今天还没有确认结果，记得打卡。",
   "reviewReviewNextStepCheckInDonePrompt": "今天的结果已确认。",
   "reviewReviewNextStepEndedPrompt": "这段观察已结束，结果：{outcome}",
-  "@reportReviewNextStepEndedPrompt": {
+  "@reviewReviewNextStepEndedPrompt": {
     "placeholders": {
       "outcome": {
         "type": "String"
@@ -462,7 +462,7 @@
   },
   "reviewReviewRedFlagSectionTitle": "用药安全提醒",
   "reviewReviewRedFlagSevereAllergy": "「{medicine}」可能含有严重过敏成分「{label}」",
-  "@reportReviewRedFlagSevereAllergy": {
+  "@reviewReviewRedFlagSevereAllergy": {
     "placeholders": {
       "medicine": {
         "type": "String"
@@ -473,7 +473,7 @@
     }
   },
   "reviewReviewRedFlagInformationGap": "「{medicine}」缺少关键用药信息",
-  "@reportReviewRedFlagInformationGap": {
+  "@reviewReviewRedFlagInformationGap": {
     "placeholders": {
       "medicine": {
         "type": "String"
@@ -481,7 +481,7 @@
     }
   },
   "reviewReviewRedFlagUnknown": "「{medicine}」存在安全提醒",
-  "@reportReviewRedFlagUnknown": {
+  "@reviewReviewRedFlagUnknown": {
     "placeholders": {
       "medicine": {
         "type": "String"

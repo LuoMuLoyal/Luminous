@@ -284,7 +284,7 @@
   "reviewReviewKindOther": "Health observation",
   "reviewReviewKindUnknown": "Health observation",
   "reviewReviewStartedLabel": "Started {date}",
-  "@reportReviewStartedLabel": {
+  "@reviewReviewStartedLabel": {
     "placeholders": {
       "date": {
         "type": "String"
@@ -292,7 +292,7 @@
     }
   },
   "reviewReviewEndedLabel": "Ended {date}",
-  "@reportReviewEndedLabel": {
+  "@reviewReviewEndedLabel": {
     "placeholders": {
       "date": {
         "type": "String"
@@ -300,7 +300,7 @@
     }
   },
   "reviewReviewMedicineCountLabel": "Linked to {count} medicines",
-  "@reportReviewMedicineCountLabel": {
+  "@reviewReviewMedicineCountLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -309,7 +309,7 @@
   },
   "reviewReviewCheckInAction": "Confirm today's result",
   "reviewReviewCheckInDoneToday": "Today confirmed: {outcome}",
-  "@reportReviewCheckInDoneToday": {
+  "@reviewReviewCheckInDoneToday": {
     "placeholders": {
       "outcome": {
         "type": "String"
@@ -322,7 +322,7 @@
   "reviewReviewReasonNoCompletedActions": "No confirmed doses or check-ins yet.",
   "reviewReviewReasonUnknown": "This part is unavailable for now.",
   "reviewReviewWhatHappenedSymptomCount": "{count} symptom records",
-  "@reportReviewWhatHappenedSymptomCount": {
+  "@reviewReviewWhatHappenedSymptomCount": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -330,7 +330,7 @@
     }
   },
   "reviewReviewWhatHappenedCheckInCount": "{count} check-ins",
-  "@reportReviewWhatHappenedCheckInCount": {
+  "@reviewReviewWhatHappenedCheckInCount": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -338,7 +338,7 @@
     }
   },
   "reviewReviewWhatHappenedWindow": "{start} – {end}",
-  "@reportReviewWhatHappenedWindow": {
+  "@reviewReviewWhatHappenedWindow": {
     "placeholders": {
       "start": {
         "type": "String"
@@ -351,7 +351,7 @@
   "reviewReviewWindowUntilNow": "now",
   "reviewReviewDetailTitle": "Event review",
   "reviewReviewWhatHappenedReasonRecord": "Triggered by record: {title}",
-  "@reportReviewWhatHappenedReasonRecord": {
+  "@reviewReviewWhatHappenedReasonRecord": {
     "placeholders": {
       "title": {
         "type": "String"
@@ -366,7 +366,7 @@
   "reviewReviewChangeDirectionFlat": "Flat",
   "reviewReviewChangeDirectionUnknown": "Unknown direction",
   "reviewReviewChangeOutcomeDetail": "From {from} to {to} across {count} check-ins",
-  "@reportReviewChangeOutcomeDetail": {
+  "@reviewReviewChangeOutcomeDetail": {
     "placeholders": {
       "from": {
         "type": "String"
@@ -380,7 +380,7 @@
     }
   },
   "reviewReviewChangeNumericDetail": "{from} {unit} → {to} {unit} over {days} days",
-  "@reportReviewChangeNumericDetail": {
+  "@reviewReviewChangeNumericDetail": {
     "placeholders": {
       "from": {
         "type": "String"
@@ -400,7 +400,7 @@
   "reviewReviewChangeUnitHour": "h",
   "reviewReviewDoseSectionTitle": "Medication doses",
   "reviewReviewDoseConfirmedLabel": "Doses confirmed: {count}",
-  "@reportReviewDoseConfirmedLabel": {
+  "@reviewReviewDoseConfirmedLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -408,7 +408,7 @@
     }
   },
   "reviewReviewDoseSkippedLabel": "Skipped: {count}",
-  "@reportReviewDoseSkippedLabel": {
+  "@reviewReviewDoseSkippedLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -416,7 +416,7 @@
     }
   },
   "reviewReviewDoseUnconfirmedLabel": "Unconfirmed: {count}",
-  "@reportReviewDoseUnconfirmedLabel": {
+  "@reviewReviewDoseUnconfirmedLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -425,7 +425,7 @@
   },
   "reviewReviewCheckInSectionTitle": "Check-in records",
   "reviewReviewCheckInRecordLabel": "{date} · {outcome}",
-  "@reportReviewCheckInRecordLabel": {
+  "@reviewReviewCheckInRecordLabel": {
     "placeholders": {
       "date": {
         "type": "String"
@@ -436,7 +436,7 @@
     }
   },
   "reviewReviewMoreCountLabel": "{count} more records",
-  "@reportReviewMoreCountLabel": {
+  "@reviewReviewMoreCountLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -446,7 +446,7 @@
   "reviewReviewNextStepCheckInPrompt": "You haven't checked in today yet.",
   "reviewReviewNextStepCheckInDonePrompt": "Today's result is confirmed.",
   "reviewReviewNextStepEndedPrompt": "This observation has ended. Outcome: {outcome}",
-  "@reportReviewNextStepEndedPrompt": {
+  "@reviewReviewNextStepEndedPrompt": {
     "placeholders": {
       "outcome": {
         "type": "String"
@@ -455,7 +455,7 @@
   },
   "reviewReviewRedFlagSectionTitle": "Medicine safety notes",
   "reviewReviewRedFlagSevereAllergy": "{medicine} may contain a severe allergen: {label}",
-  "@reportReviewRedFlagSevereAllergy": {
+  "@reviewReviewRedFlagSevereAllergy": {
     "placeholders": {
       "medicine": {
         "type": "String"
@@ -466,7 +466,7 @@
     }
   },
   "reviewReviewRedFlagInformationGap": "Key medication information is missing for {medicine}",
-  "@reportReviewRedFlagInformationGap": {
+  "@reviewReviewRedFlagInformationGap": {
     "placeholders": {
       "medicine": {
         "type": "String"
@@ -474,7 +474,7 @@
     }
   },
   "reviewReviewRedFlagUnknown": "Safety note for {medicine}",
-  "@reportReviewRedFlagUnknown": {
+  "@reviewReviewRedFlagUnknown": {
     "placeholders": {
       "medicine": {
         "type": "String"
