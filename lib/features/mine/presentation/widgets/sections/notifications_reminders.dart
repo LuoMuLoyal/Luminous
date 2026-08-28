@@ -55,7 +55,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
               key: const Key('mine-dnd-settings-tile'),
               prefix: const SoftIcon(
                 icon: SemanticIcons.recordSleep,
-                color: SemanticColor.primary,
+                color: SemanticColor.info,
               ),
               title: Text(l10n.settingsNotificationsDndTitle),
               subtitle: Text(
@@ -70,7 +70,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
               key: const Key('mine-notification-inbox-tile'),
               prefix: const SoftIcon(
                 icon: SemanticIcons.actionMessage,
-                color: SemanticColor.primary,
+                color: SemanticColor.neutral,
               ),
               title: Text(l10n.mineNotificationInboxTitle),
               subtitle: Text(

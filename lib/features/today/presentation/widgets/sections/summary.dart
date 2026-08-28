@@ -463,7 +463,7 @@ class _SummaryBullet extends StatelessWidget {
           padding: const EdgeInsets.only(top: Spacing.level1),
           child: Icon(
             item.icon,
-            color: item.color.solid(context),
+            color: item.color.fill(context),
             size: IconSizeTokens.level2,
           ),
         ),
