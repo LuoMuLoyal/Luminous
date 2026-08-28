@@ -392,7 +392,7 @@ class LlmEmptyState extends StatelessWidget {
           children: [
             Icon(
               SemanticIcons.aiEntry,
-              size: IconSizeTokens.level5,
+              size: IconSizeTokens.level6,
               color: context.theme.colors.mutedForeground,
             ),
             const SizedBox(height: Spacing.level4),
@@ -458,7 +458,7 @@ class NeverCheckedState extends StatelessWidget {
           children: [
             Icon(
               SemanticIcons.safetySafe,
-              size: IconSizeTokens.level5,
+              size: IconSizeTokens.level6,
               color: context.theme.colors.mutedForeground,
             ),
             const SizedBox(height: Spacing.level4),
@@ -509,7 +509,7 @@ class LlmUnavailableState extends StatelessWidget {
           children: [
             Icon(
               SemanticIcons.statusSkipped,
-              size: IconSizeTokens.level5,
+              size: IconSizeTokens.level6,
               color: SemanticColor.neutral.solid(context),
             ),
             const SizedBox(height: Spacing.level4),

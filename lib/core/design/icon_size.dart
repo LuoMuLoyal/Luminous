@@ -1,7 +1,7 @@
 /// Icon size token scale.
 ///
-/// 5 levels covering all icon sizes used in the app. Use [level1] (12px)
-/// through [level5] (32px) for all `Icon(size:)` and `iconSize:` values.
+/// 8 levels covering all icon sizes used in the app. Use [level1] (12px)
+/// through [level8] (64px) for all `Icon(size:)` and `iconSize:` values.
 ///
 /// | Level  | px  | Use case                          |
 /// |--------|-----|-----------------------------------|
@@ -9,7 +9,10 @@
 /// | [level2] | 16 | Inline icon, chevron, small action |
 /// | [level3] | 20 | Tile prefix, button icon, default  |
 /// | [level4] | 24 | Section header, empty-state icon   |
-/// | [level5] | 32 | Avatar, hero icon                  |
+/// | [level5] | 28 | Suggestion card icon, medium hero  |
+/// | [level6] | 32 | Avatar, hero icon, large empty-state |
+/// | [level7] | 48 | Category icon, large hero           |
+/// | [level8] | 64 | Account avatar, extra large         |
 abstract final class IconSizeTokens {
   /// 12px — status dot, tiny indicator.
   static const double level1 = 12;
@@ -23,6 +26,15 @@ abstract final class IconSizeTokens {
   /// 24px — section header, empty-state icon.
   static const double level4 = 24;
 
-  /// 32px — avatar, hero icon.
-  static const double level5 = 32;
+  /// 28px — suggestion card icon, medium hero.
+  static const double level5 = 28;
+
+  /// 32px — avatar, hero icon, large empty-state.
+  static const double level6 = 32;
+
+  /// 48px — category icon, large hero.
+  static const double level7 = 48;
+
+  /// 64px — account avatar, extra large.
+  static const double level8 = 64;
 }

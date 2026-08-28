@@ -35,7 +35,7 @@ class AccountHeader extends StatelessWidget {
           size: 64,
           child: const Icon(
             SemanticIcons.profileUser,
-            size: IconSizeTokens.level5,
+            size: IconSizeTokens.level6,
           ),
         ),
         suffix: const Icon(SemanticIcons.actionNext),
