@@ -173,7 +173,7 @@ void main() {
       find.byKey(const Key('health-event-start-submit-error')),
       findsOneWidget,
     );
-    expect(find.byType(TextField), findsOneWidget);
+    expect(find.byType(EditableText), findsOneWidget);
   });
 
   testWidgets(

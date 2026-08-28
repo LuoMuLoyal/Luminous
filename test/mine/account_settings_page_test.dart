@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -279,6 +280,10 @@ void main() {
             ],
           ),
         ),
+        // 敏感操作需要密码二次确认，override 为直接返回固定密码。
+        sensitiveActionPasswordPromptProvider.overrideWithValue(
+          (context, {title, message, label}) async => 'test-password',
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -313,11 +318,14 @@ void main() {
     );
     await tester.tap(unlinkButton);
     await tester.pumpAndSettle();
+    // 确认对话框中的解除绑定按钮（FButton 文案相同，取 last）。
     final confirmUnlinkButton = find
         .widgetWithText(FButton, l10n.authIdentityUnlinkAction)
         .last;
     await tester.tap(confirmUnlinkButton);
     await tester.pumpAndSettle();
+    // sensitiveActionPasswordPromptProvider 已被 override 为直接返回密码，
+    // 不需要手动输入密码对话框。pumpAndSettle 确保 unlink 异步流程完成。
 
     expect(remote.unlinkIdentityId, 'identity-1');
     expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);

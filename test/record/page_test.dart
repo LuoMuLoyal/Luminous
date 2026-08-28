@@ -741,7 +741,7 @@ void main() {
 
     expect(repo.getCalledWith, 'test-id-1');
 
-    final fields = find.byType(TextField);
+    final fields = find.byType(EditableText);
     expect(fields, findsNWidgets(6));
     // Clear the title/value/unit/note fields by key. Date/time and kind fields
     // are kept intact.

@@ -201,6 +201,9 @@ void main() {
 
       await tester.pump();
 
+      await tester.ensureVisible(
+        find.byKey(const Key('review-history-filter-ended')),
+      );
       await tester.tap(find.byKey(const Key('review-history-filter-ended')));
       await tester.pumpAndSettle();
       expect(selected, ReviewEventStatus.ended);
