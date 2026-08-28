@@ -738,13 +738,21 @@ packages:
     source: hosted
     version: "0.26.0"
   forui_lucide:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: forui_lucide
       sha256: "8f866fbf5b36017046d2d76119bd74af2c26525a4c761cacff59d4790ab3875e"
       url: "https://pub.dev"
     source: hosted
     version: "0.26.0"
+  forui_phosphor:
+    dependency: "direct main"
+    description:
+      name: forui_phosphor
+      sha256: d5a455b35de722fd4c86a48f91d2c5d571effd37a1c7b1ce33a318bb58bad1b7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.26.1"
   fpdart:
     dependency: "direct main"
     description:

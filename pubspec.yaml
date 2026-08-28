@@ -79,6 +79,8 @@ dependencies:
   flow_ui: ^0.1.0
   forui: ^0.26.0
   forui_hooks: ^0.26.0
+  forui_lucide: ^0.26.0
+  forui_phosphor: ^0.26.1
   material_ui: ^1.0.0
   timeline_tile: ^2.0.0
   flutter_slidable: ^4.0.3
