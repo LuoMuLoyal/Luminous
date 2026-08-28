@@ -292,38 +292,46 @@ class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
     }
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          key: const Key('loading-slow-hint'),
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level4,
-            vertical: Spacing.level2,
-          ),
-          color: SemanticColor.warning.subtle(context),
-          child: Row(
-            children: [
-              Icon(
-                SemanticIcons.statusWarning,
-                size: 18,
-                color: SemanticColor.warning.solid(context),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final hasBoundedHeight = constraints.maxHeight.isFinite;
+        return Column(
+          mainAxisSize: hasBoundedHeight ? MainAxisSize.max : MainAxisSize.min,
+          children: [
+            Container(
+              key: const Key('loading-slow-hint'),
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: Spacing.level4,
+                vertical: Spacing.level2,
               ),
-              const SizedBox(width: Spacing.level2),
-              Expanded(
-                child: Text(
-                  l10n.todayLoadingSlowHint,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
-                ),
+              color: SemanticColor.warning.subtle(context),
+              child: Row(
+                children: [
+                  Icon(
+                    SemanticIcons.statusWarning,
+                    size: 18,
+                    color: SemanticColor.warning.solid(context),
+                  ),
+                  const SizedBox(width: Spacing.level2),
+                  Expanded(
+                    child: Text(
+                      l10n.todayLoadingSlowHint,
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        widget.child,
-      ],
+            ),
+            if (hasBoundedHeight)
+              Expanded(child: widget.child)
+            else
+              widget.child,
+          ],
+        );
+      },
     );
   }
 }
