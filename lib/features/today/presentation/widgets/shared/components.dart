@@ -35,10 +35,12 @@ class TodayGlyphTile extends StatelessWidget {
       decoration: decoration,
       child: SizedBox.square(
         dimension: size,
-        child: Icon(
-          icon,
-          color: filled ? palette.foreground : palette.solid,
-          size: size * 0.5,
+        child: Center(
+          child: Icon(
+            icon,
+            color: filled ? palette.foreground : palette.solid,
+            size: IconSizeTokens.level3,
+          ),
         ),
       ),
     );
