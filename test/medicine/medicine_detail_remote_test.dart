@@ -81,7 +81,7 @@ void main() {
               'networkErrorCode',
               NetworkErrorCode.emptyResponse,
             )
-            .having((e) => e.message, 'message', contains('响应体为空')),
+            .having((e) => e.message, 'message', contains('Empty')),
       ),
     );
   });

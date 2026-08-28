@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
@@ -558,11 +559,11 @@ void main() {
     );
 
     test(
-      'empty success body maps to a Left(unknown) via requireData',
+      'empty success body maps to a Left(network emptyResponse) via requireData',
       () async {
         // HTTP 200 with a JSON `null` body: the generated client leaves
-        // response.data null, so requireData throws StateError, which maps
-        // to an unknown Left.
+        // response.data null, so requireData throws LucentFailure.network(
+        // emptyResponse), which maps to a network Left.
         final adapter = _JsonAdapter(statusCode: 200, responseBody: null);
         dio.httpClientAdapter = adapter;
 
@@ -571,7 +572,11 @@ void main() {
           ds.fetchSuggestions(language: 'zh-CN'),
         );
 
-        expect(failure.kind, LucentFailureKind.unknown);
+        expect(failure.kind, LucentFailureKind.network);
+        expect(
+          failure.networkErrorCode,
+          NetworkErrorCode.emptyResponse,
+        );
       },
     );
   });

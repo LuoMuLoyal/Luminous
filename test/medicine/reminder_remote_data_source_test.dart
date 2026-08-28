@@ -355,19 +355,19 @@ void main() {
       );
 
       test(
-        'items not a list maps to Left(unknown) keeping the StateError cause',
+        'items not a list maps to Left(unknown) keeping the FormatException cause',
         () async {
           adapter.itemsBodyOverride = <String, Object?>{'items': 'not-a-list'};
 
           final failure = await expectTaskLeft(dataSource.fetchActive());
 
           expect(failure.kind, LucentFailureKind.unknown);
-          expect(failure.cause, isA<StateError>());
+          expect(failure.cause, isA<FormatException>());
         },
       );
 
       test(
-        'item not a map maps to Left(unknown) keeping the StateError cause',
+        'item not a map maps to Left(unknown) keeping the FormatException cause',
         () async {
           adapter.itemsBodyOverride = <String, Object?>{
             'items': <Object?>[42],
@@ -376,7 +376,7 @@ void main() {
           final failure = await expectTaskLeft(dataSource.fetchActive());
 
           expect(failure.kind, LucentFailureKind.unknown);
-          expect(failure.cause, isA<StateError>());
+          expect(failure.cause, isA<FormatException>());
         },
       );
 

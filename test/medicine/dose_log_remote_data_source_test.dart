@@ -89,23 +89,23 @@ void main() {
       adapter.requestAt('DELETE', '/api/v1/user/medicine-dose-logs/dose-1');
     });
 
-    test('fetchForDate throws StateError when items is not a list', () async {
+    test('fetchForDate throws FormatException when items is not a list', () async {
       adapter.getBodyOverride = <String, Object?>{'items': 'not-a-list'};
 
       await expectLater(
         dataSource.fetchForDate('2026-07-10'),
-        throwsA(isA<StateError>()),
+        throwsA(isA<FormatException>()),
       );
     });
 
-    test('fetchForDate throws StateError when an item is not a map', () async {
+    test('fetchForDate throws FormatException when an item is not a map', () async {
       adapter.getBodyOverride = <String, Object?>{
         'items': <Object?>[42],
       };
 
       await expectLater(
         dataSource.fetchForDate('2026-07-10'),
-        throwsA(isA<StateError>()),
+        throwsA(isA<FormatException>()),
       );
     });
 
