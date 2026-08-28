@@ -107,12 +107,10 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
         .map(
           (e) => MapEntry(
             e.key,
-            e.value
-                .where((icon) {
-                  final name = LucideIconBridge.nameOf(icon) ?? '';
-                  return name.contains(q);
-                })
-                .toList(),
+            e.value.where((icon) {
+              final name = LucideIconBridge.nameOf(icon) ?? '';
+              return name.contains(q);
+            }).toList(),
           ),
         )
         .where((e) => e.value.isNotEmpty)
@@ -143,8 +141,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
             // Search field
             FTextField(
               control: FTextFieldControl.managed(
-                onChange: (value) =>
-                    setState(() => _query = value.text),
+                onChange: (value) => setState(() => _query = value.text),
               ),
               hint: 'Search',
               prefixBuilder: (context, style, variants) =>
@@ -273,8 +270,7 @@ class _IconChip extends StatelessWidget {
         child: Icon(
           icon,
           size: IconSizeTokens.level3,
-          color:
-              selected ? colors.primaryForeground : colors.mutedForeground,
+          color: selected ? colors.primaryForeground : colors.mutedForeground,
         ),
       ),
     );

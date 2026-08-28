@@ -42,21 +42,20 @@ class ConnectivityBanner extends ConsumerWidget {
                 child: Text(
                   l10n.authSessionRestoreTimeout,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: warningPalette.foreground,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    color: warningPalette.foreground,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               FButton(
                 variant: FButtonVariant.ghost,
-                onPress: () =>
-                    ref.read(authSessionProvider.notifier).restore(),
+                onPress: () => ref.read(authSessionProvider.notifier).restore(),
                 child: Text(
                   l10n.commonRetry,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: warningPalette.foreground,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: warningPalette.foreground,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],

@@ -63,8 +63,9 @@ class SoftIcon extends StatelessWidget {
       case SoftIconVariant.subtle:
         background = palette.subtle;
       case SoftIconVariant.gradient:
-        background = GradientTokens.semanticFill(palette).colors.first
-            .withValues(alpha: 0.15);
+        background = GradientTokens.semanticFill(
+          palette,
+        ).colors.first.withValues(alpha: 0.15);
       case SoftIconVariant.tint:
         background = palette.muted;
     }
@@ -79,11 +80,7 @@ class SoftIcon extends StatelessWidget {
         color: resolvedColor,
       );
     } else {
-      iconWidget = Icon(
-        icon as IconData,
-        color: resolvedColor,
-        size: iconSize,
-      );
+      iconWidget = Icon(icon as IconData, color: resolvedColor, size: iconSize);
     }
 
     return DecoratedBox(

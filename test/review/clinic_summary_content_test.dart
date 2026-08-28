@@ -261,10 +261,7 @@ void main() {
       expect(find.text('阿莫西林'), findsOneWidget);
       // findings is gated by the `findings` field toggle — deselected
       // sections are absent even when data exists.
-      expect(
-        find.text(l10n_.reviewClinicSummaryFindingsSection),
-        findsNothing,
-      );
+      expect(find.text(l10n_.reviewClinicSummaryFindingsSection), findsNothing);
       expect(find.text('长期服用需监测'), findsNothing);
       // disclaimer is metadata and always stays.
       expect(

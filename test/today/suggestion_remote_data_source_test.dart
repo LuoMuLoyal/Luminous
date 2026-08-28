@@ -573,10 +573,7 @@ void main() {
         );
 
         expect(failure.kind, LucentFailureKind.network);
-        expect(
-          failure.networkErrorCode,
-          NetworkErrorCode.emptyResponse,
-        );
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
       },
     );
   });

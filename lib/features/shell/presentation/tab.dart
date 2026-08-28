@@ -19,8 +19,9 @@ enum ShellTab {
   /// The `review` tab keeps the legacy `shell-tab-report` key for backward
   /// compatibility — it was renamed from "report" to "review" but existing
   /// tests and integration code still reference the old key.
-  ValueKey<String> testKey() =>
-      ValueKey<String>(this == ShellTab.review ? 'shell-tab-report' : 'shell-tab-$name');
+  ValueKey<String> testKey() => ValueKey<String>(
+    this == ShellTab.review ? 'shell-tab-report' : 'shell-tab-$name',
+  );
 
   String label(AppLocalizations l10n) {
     return switch (this) {

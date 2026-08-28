@@ -459,10 +459,7 @@ void main() {
     // filter 按钮在屏幕下方，需要先滚动到可见位置。
     // scrollUntilVisible 可能不工作（嵌套 scrollable），
     // 直接 drag 主 ListView 将内容上移。
-    await tester.drag(
-      find.byType(ListView).first,
-      const Offset(0, -500),
-    );
+    await tester.drag(find.byType(ListView).first, const Offset(0, -500));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
     await tester.tap(
@@ -479,10 +476,7 @@ void main() {
     expect(find.text('已结束的观察'), findsNothing);
 
     // filter 按钮可能已因上次滚动可见，但仍需确保在屏内。
-    await tester.drag(
-      find.byType(ListView).first,
-      const Offset(0, -300),
-    );
+    await tester.drag(find.byType(ListView).first, const Offset(0, -300));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
     await tester.tap(
@@ -521,10 +515,7 @@ void main() {
     expect(reviewRepository.historyCalls, 1);
 
     // filter 按钮在屏幕下方，需要先滚动到可见位置。
-    await tester.drag(
-      find.byType(ListView).first,
-      const Offset(0, -500),
-    );
+    await tester.drag(find.byType(ListView).first, const Offset(0, -500));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
     await tester.tap(

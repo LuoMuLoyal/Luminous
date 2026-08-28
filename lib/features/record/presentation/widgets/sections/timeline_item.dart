@@ -301,7 +301,11 @@ class TimelineCard extends StatelessWidget {
                 ),
               ],
               const SizedBox(width: Spacing.level3),
-              Icon(_trailingIcon(), color: _trailingColor(colors), size: IconSizeTokens.level2),
+              Icon(
+                _trailingIcon(),
+                color: _trailingColor(colors),
+                size: IconSizeTokens.level2,
+              ),
             ],
           ),
         ),

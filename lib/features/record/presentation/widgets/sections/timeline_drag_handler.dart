@@ -48,7 +48,11 @@ class TimelineDragFeedback extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(entry.icon, color: entry.accent.solid(context), size: IconSizeTokens.level2),
+                Icon(
+                  entry.icon,
+                  color: entry.accent.solid(context),
+                  size: IconSizeTokens.level2,
+                ),
                 const SizedBox(width: Spacing.level3),
                 Flexible(
                   child: Text(

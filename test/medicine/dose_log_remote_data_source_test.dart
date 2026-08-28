@@ -89,25 +89,31 @@ void main() {
       adapter.requestAt('DELETE', '/api/v1/user/medicine-dose-logs/dose-1');
     });
 
-    test('fetchForDate throws FormatException when items is not a list', () async {
-      adapter.getBodyOverride = <String, Object?>{'items': 'not-a-list'};
+    test(
+      'fetchForDate throws FormatException when items is not a list',
+      () async {
+        adapter.getBodyOverride = <String, Object?>{'items': 'not-a-list'};
 
-      await expectLater(
-        dataSource.fetchForDate('2026-07-10'),
-        throwsA(isA<FormatException>()),
-      );
-    });
+        await expectLater(
+          dataSource.fetchForDate('2026-07-10'),
+          throwsA(isA<FormatException>()),
+        );
+      },
+    );
 
-    test('fetchForDate throws FormatException when an item is not a map', () async {
-      adapter.getBodyOverride = <String, Object?>{
-        'items': <Object?>[42],
-      };
+    test(
+      'fetchForDate throws FormatException when an item is not a map',
+      () async {
+        adapter.getBodyOverride = <String, Object?>{
+          'items': <Object?>[42],
+        };
 
-      await expectLater(
-        dataSource.fetchForDate('2026-07-10'),
-        throwsA(isA<FormatException>()),
-      );
-    });
+        await expectLater(
+          dataSource.fetchForDate('2026-07-10'),
+          throwsA(isA<FormatException>()),
+        );
+      },
+    );
 
     test('fetchForDate maps an empty success body to a network emptyResponse '
         'failure', () async {

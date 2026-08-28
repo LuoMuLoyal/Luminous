@@ -408,7 +408,11 @@ class _CompactSummaryMetric extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(item.icon, color: item.color.solid(context), size: IconSizeTokens.level3),
+        Icon(
+          item.icon,
+          color: item.color.solid(context),
+          size: IconSizeTokens.level3,
+        ),
         const SizedBox(width: Spacing.level2),
         Flexible(
           child: Column(

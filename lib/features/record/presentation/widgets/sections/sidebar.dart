@@ -504,7 +504,11 @@ class _FilterRow extends StatelessWidget {
               size: IconSizeTokens.level2,
             ),
             const SizedBox(width: Spacing.level3),
-            Icon(filter.icon, color: filter.accent.solid(context), size: IconSizeTokens.level2),
+            Icon(
+              filter.icon,
+              color: filter.accent.solid(context),
+              size: IconSizeTokens.level2,
+            ),
             const SizedBox(width: Spacing.level3),
             Expanded(
               child: Text(
