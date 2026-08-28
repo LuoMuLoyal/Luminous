@@ -32,6 +32,6 @@ ReviewDashboardRemoteDataSource reviewDashboardRemoteDataSource(Ref ref) {
 @riverpod
 ReviewDashboardRepository reviewDashboardRepository(Ref ref) {
   final dataSource = ref.watch(reviewDashboardRemoteDataSourceProvider);
-  final dao = ref.watch(reportDashboardDaoProvider);
+  final dao = ref.watch(reviewDashboardDaoProvider);
   return LucentReviewDashboardRepository(dataSource: dataSource, dao: dao);
 }

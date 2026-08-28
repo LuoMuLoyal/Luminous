@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart';
 
 import '../database.dart';
-import '../tables/report_dashboards.dart';
+import '../tables/review_dashboards.dart';
 
-part 'report_dashboard_dao.g.dart';
+part 'review_dashboard_dao.g.dart';
 
 /// Data access object for the report dashboard cache table.
 ///
@@ -16,14 +16,14 @@ class ReviewDashboardDao extends DatabaseAccessor<AppDatabase>
   /// Returns the cached dashboard JSON for the given key, or null.
   Future<String?> fetch(String cacheKey) async {
     final row = await (select(
-      reportDashboardCacheEntries,
+      reviewDashboardCacheEntries,
     )..where((t) => t.id.equals(cacheKey))).getSingleOrNull();
     return row?.data;
   }
 
   /// Replaces the cached dashboard for the given key.
   Future<void> replace(String cacheKey, String jsonData) async {
-    await into(reportDashboardCacheEntries).insertOnConflictUpdate(
+    await into(reviewDashboardCacheEntries).insertOnConflictUpdate(
       ReviewDashboardCacheEntriesCompanion.insert(
         id: cacheKey,
         data: jsonData,
@@ -45,6 +45,6 @@ class ReviewDashboardDao extends DatabaseAccessor<AppDatabase>
 
   /// Removes all cached dashboard data.
   Future<void> clear() async {
-    await delete(reportDashboardCacheEntries).go();
+    await delete(reviewDashboardCacheEntries).go();
   }
 }
