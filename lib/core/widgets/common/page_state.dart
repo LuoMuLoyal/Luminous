@@ -254,9 +254,8 @@ class SignInHintBanner extends StatelessWidget {
 }
 
 /// Wraps loading content with a floor-timeout hint. After
-/// [loadingFloorTimeout] (6 s), a "loading slow" banner with a retry button
-/// appears above the skeleton so the user is not stuck staring at shimmer
-/// blocks indefinitely.
+/// [loadingFloorTimeout] (6 s), a "loading slow" hint banner appears above
+/// the skeleton so the user knows the app is still working, not frozen.
 class _LoadingTimeoutWrapper extends StatefulWidget {
   const _LoadingTimeoutWrapper({required this.child});
 
