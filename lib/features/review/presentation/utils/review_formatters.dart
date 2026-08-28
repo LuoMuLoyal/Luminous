@@ -115,7 +115,15 @@ bool reviewArgBool(
 
 Map<String, dynamic>? reviewArgMap(Map<String, dynamic> args, String key) {
   final value = args[key];
-  return value is Map<String, dynamic> ? value : null;
+  if (value is Map<String, dynamic>) {
+    return value;
+  }
+  // Dart 泛型不变性：Map<String, Object> 不是 Map<String, dynamic> 的子类型。
+  // JSON 解码或字面量中的嵌套 Map 运行时类型可能不匹配，需手动转换。
+  if (value is Map) {
+    return Map<String, dynamic>.from(value);
+  }
+  return null;
 }
 
 List<Map<String, dynamic>> reviewArgMapList(
@@ -126,5 +134,10 @@ List<Map<String, dynamic>> reviewArgMapList(
   if (value is! List) {
     return const [];
   }
-  return value.whereType<Map<String, dynamic>>().toList(growable: false);
+  // 同 reviewArgMap：whereType<Map<String, dynamic>> 会滤掉
+  // 运行时类型为 Map<String, Object> 的元素，需手动转换。
+  return value
+      .whereType<Map>()
+      .map((e) => Map<String, dynamic>.from(e))
+      .toList(growable: false);
 }
