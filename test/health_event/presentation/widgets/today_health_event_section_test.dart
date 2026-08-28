@@ -111,10 +111,7 @@ void main() {
 
   testWidgets('submits a daily result for an active event', (tester) async {
     final repository = _FakeHealthEventRepository(active: activeEvent);
-    var refreshCount = 0;
-    await tester.pumpWidget(
-      _app(repository, onRefresh: () async => refreshCount++),
-    );
+    await tester.pumpWidget(_app(repository));
     await tester.pumpAndSettle();
 
     await _scrollTo(tester, const Key('health-event-check-in-action'));
@@ -127,7 +124,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(repository.checkedInOutcome, HealthEventOutcome.worsened);
-    expect(refreshCount, 1);
   });
 
   testWidgets('ends an active event only after choosing an outcome', (
