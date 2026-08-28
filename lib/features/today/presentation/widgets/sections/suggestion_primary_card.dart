@@ -138,7 +138,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                       TodayGlyphTile(
                         icon: SuggestionIconMapping.resolve(card.icon),
                         color: colorFor(card.cardTone),
-                        size: Spacing.level8,
+                        size: IconSizeTokens.level6,
                         radius: RadiusTokens.level3,
                         filled: true,
                       ),
@@ -399,7 +399,7 @@ class EvidenceToggleButton extends StatelessWidget {
               duration: DurationTokens.widgetQuick,
               child: Icon(
                 SemanticIcons.actionNext,
-                size: Spacing.level4,
+                size: IconSizeTokens.level2,
                 color: colors.primary,
               ),
             ),

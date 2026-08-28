@@ -39,7 +39,7 @@ class TodayQuickActionsSection extends ConsumerWidget {
             children: [
               for (final action in primaryActions)
                 FTile(
-                  prefix: Icon(action.icon, size: Spacing.level5),
+                  prefix: Icon(action.icon, size: IconSizeTokens.level3),
                   title: Text(action.title),
                   subtitle: Text(action.subtitle),
                   details: action.badge != null
@@ -63,7 +63,7 @@ class TodayQuickActionsSection extends ConsumerWidget {
                   FTile(
                     prefix: Icon(
                       action.icon,
-                      size: Spacing.level5,
+                      size: IconSizeTokens.level3,
                       color: colors.mutedForeground,
                     ),
                     title: Text(action.title),

@@ -367,7 +367,7 @@ class _FeedbackSection extends ConsumerWidget {
                 prefix: Icon(
                   SemanticIcons.actionCopy,
                   color: colors.primary,
-                  size: Spacing.level5,
+                  size: IconSizeTokens.level3,
                 ),
                 title: Text(
                   lastTraceId,
@@ -390,7 +390,7 @@ class _FeedbackSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.actionMessage,
                 color: colors.primary,
-                size: Spacing.level5,
+                size: IconSizeTokens.level3,
               ),
               title: Text(l10n.mineHelpFeedbackTitle),
               subtitle: Text(

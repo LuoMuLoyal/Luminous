@@ -95,7 +95,7 @@ class SearchResultTile extends StatelessWidget {
                           children: [
                             Icon(
                               SemanticIcons.statusDone,
-                              size: Spacing.level4,
+                              size: IconSizeTokens.level2,
                               color: colors.primary,
                             ),
                             const SizedBox(width: Spacing.level2),
@@ -210,7 +210,7 @@ class PreviewPanel extends StatelessWidget {
                     children: [
                       Icon(
                         SemanticIcons.actionSearch,
-                        size: Spacing.level9,
+                        size: IconSizeTokens.level7,
                         color: colors.mutedForeground,
                       ),
                       const SizedBox(height: Spacing.level4),

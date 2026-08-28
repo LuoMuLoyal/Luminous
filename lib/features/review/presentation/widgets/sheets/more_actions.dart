@@ -195,11 +195,11 @@ class _MoreActionTile extends StatelessWidget {
           child: Row(
             children: [
               FAvatar.raw(
-                size: Spacing.level8,
+                size: IconSizeTokens.level6,
                 child: Icon(
                   icon,
                   color: color.solid(context),
-                  size: Spacing.level5,
+                  size: IconSizeTokens.level3,
                 ),
               ),
               const SizedBox(width: Spacing.level4),

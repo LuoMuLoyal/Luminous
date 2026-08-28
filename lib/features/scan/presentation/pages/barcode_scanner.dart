@@ -585,7 +585,7 @@ class _ScanResultSheetState extends ConsumerState<_ScanResultSheet> {
                     children: [
                       Icon(
                         SemanticIcons.statusDone,
-                        size: Spacing.level4,
+                        size: IconSizeTokens.level2,
                         color: colors.primary,
                       ),
                       const SizedBox(width: Spacing.level2),

@@ -83,7 +83,7 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
         children: [
           Icon(
             SemanticIcons.statusDone,
-            size: Spacing.level4,
+            size: IconSizeTokens.level2,
             color: colors.primary,
           ),
           const SizedBox(width: Spacing.level1),
@@ -253,7 +253,7 @@ class AiExplainContent extends StatelessWidget {
                 explanation.aiGenerated
                     ? SemanticIcons.aiGenerated
                     : SemanticIcons.statusInfo,
-                size: Spacing.level4,
+                size: IconSizeTokens.level2,
                 color: explanation.aiGenerated
                     ? colors.primary
                     : colors.mutedForeground,
@@ -315,7 +315,7 @@ class AiExplainUnavailable extends StatelessWidget {
         children: [
           Icon(
             SemanticIcons.statusInfo,
-            size: Spacing.level4,
+            size: IconSizeTokens.level2,
             color: colors.mutedForeground,
           ),
           const SizedBox(width: Spacing.level1),
