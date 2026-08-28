@@ -1,4 +1,5 @@
 import 'package:forui/forui.dart';
+import 'package:forui_phosphor/forui_phosphor.dart';
 
 /// 语义图标注册表
 ///
@@ -48,6 +49,7 @@ abstract final class SemanticIcons {
   static const statusWarning = FLucideIcons.triangleAlert;
   static const statusSuccess = FLucideIcons.circleCheck;
   static const statusInfo = FLucideIcons.info;
+  static const statusInfoCircle = FPhosphorIcons.info;
   static const statusPending = FLucideIcons.clock3;
   static const statusSkipped = FLucideIcons.ban;
   static const statusDone = FLucideIcons.check;
@@ -64,7 +66,7 @@ abstract final class SemanticIcons {
   static const safetySafe = FLucideIcons.shieldCheck;
   static const safetyNeutral = FLucideIcons.shield;
   static const safetyCaution = FLucideIcons.shieldAlert;
-  static const safetyRisk = FLucideIcons.triangleAlert;
+  static const safetyRisk = FPhosphorIcons.warningOctagon;
   static const safetyDanger = FLucideIcons.siren;
 
   // 发现类型
@@ -74,17 +76,16 @@ abstract final class SemanticIcons {
   static const safetyLongTerm = FLucideIcons.hourglass;
   static const safetySpecialGroup = FLucideIcons.baby;
   static const safetySchedulingConflict = FLucideIcons.calendarX2;
-  static const safetyDuplicate = FLucideIcons.copy;
-  static const safetyFoodInteraction = FLucideIcons.utensils;
-  static const safetyLongTermUse = FLucideIcons.hourglass;
+  static const safetyDuplicate = FPhosphorIcons.copySimple;
+  static const safetyFoodInteraction = FPhosphorIcons.bowlSteam;
   static const safetyAlcohol = FLucideIcons.wine;
   static const safetyAllergyShot = FLucideIcons.syringe;
   static const safetyDriving = FLucideIcons.car;
   static const safetyPregnancy = FLucideIcons.heartPulse;
-  static const safetyStorage = FLucideIcons.thermometer;
-  static const safetyTiming = FLucideIcons.clock3;
+  static const safetyStorage = FPhosphorIcons.warehouse;
+  static const safetyTiming = FLucideIcons.calendarClock;
   static const safetyCaffeine = FLucideIcons.coffee;
-  static const safetyFood = FLucideIcons.utensils;
+  static const safetyFood = FPhosphorIcons.bowlFood;
 
   // ================================================================
   // 报告
@@ -101,12 +102,12 @@ abstract final class SemanticIcons {
   // ================================================================
   // 用药执行
   // ================================================================
-  static const medicineDose = FLucideIcons.pill;
+  static const medicineDose = FPhosphorIcons.prescription;
   static const medicineBottle = FLucideIcons.pillBottle;
   static const medicineKit = FLucideIcons.briefcaseMedical;
   static const doseSchedule = FLucideIcons.alarmClockCheck;
-  static const doseSlot = FLucideIcons.clock3;
-  static const doseTaken = FLucideIcons.check;
+  static const doseSlot = FPhosphorIcons.timer;
+  static const doseTaken = FPhosphorIcons.checkCircle;
   static const doseSkipped = FLucideIcons.ban;
   static const dosePending = FLucideIcons.clock3;
   static const dosePlanned = FLucideIcons.calendarClock;
@@ -123,9 +124,9 @@ abstract final class SemanticIcons {
   static const notificationBellRing = FLucideIcons.bellRing;
   static const notificationRead = FLucideIcons.mailMinus;
   static const notificationWarning = FLucideIcons.mailWarning;
-  static const notificationDelivered = FLucideIcons.checkCheck;
+  static const notificationDelivered = FPhosphorIcons.bellRinging;
   static const notificationFailed = FLucideIcons.circleX;
-  static const notificationPending = FLucideIcons.clock3;
+  static const notificationPending = FPhosphorIcons.hourglassMedium;
 
   // ================================================================
   // 操作
