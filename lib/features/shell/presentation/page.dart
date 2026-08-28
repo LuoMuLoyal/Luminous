@@ -11,6 +11,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/theme/preference.dart';
+import 'package:luminous/core/widgets/common/connectivity_banner.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -65,7 +66,13 @@ class ShellPage extends ConsumerWidget {
                 l10n: l10n,
                 onSelectTab: onSelectTab,
               ),
-        child: content,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const ConnectivityBanner(),
+            Expanded(child: content),
+          ],
+        ),
       ),
     );
   }
