@@ -1,5 +1,7 @@
 // The generated contract marks the legacy scalar projection as deprecated.
 // Keep this mapper's fallback until the observed metric domain migration lands.
+// TODO(lint-cleanup): Remove this ignore after observed-metric domain migration
+//   (target: 2026 Q4, see docs/02-logs/migration-log).
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
@@ -43,13 +45,32 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
       // 1. Check cache
       final cachedJson = await dao.fetch(cacheKey);
       if (cachedJson != null) {
-        final dto = lucent.ReportDashboardResponseDto.fromJson(
-          jsonDecode(cachedJson) as Map<String, dynamic>,
-        );
-        final dashboard = _mapDto(dto);
-        // Background refresh (throttled) — best-effort.
-        _refreshInBackground(query, cacheKey);
-        return dashboard;
+        try {
+          final dto = lucent.ReportDashboardResponseDto.fromJson(
+            jsonDecode(cachedJson) as Map<String, dynamic>,
+          );
+          final dashboard = _mapDto(dto);
+          // Background refresh (throttled) — best-effort.
+          _refreshInBackground(query, cacheKey);
+          return dashboard;
+        } on FormatException catch (e, st) {
+          appTalker.warning(
+            'Review dashboard cache parse failed, falling back to network',
+            e,
+            st,
+          );
+          // Fall through to network path below.
+        } catch (e, st) {
+          // Schema evolution (missing fields, type mismatches) throws
+          // TypeError/RangeError — degrade to network instead of surfacing
+          // an "unknown error" to the user.
+          appTalker.warning(
+            'Review dashboard cache parse failed, falling back to network',
+            e,
+            st,
+          );
+          // Fall through to network path below.
+        }
       }
 
       // 2. Cache empty → fetch from network.

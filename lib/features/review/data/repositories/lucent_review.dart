@@ -133,22 +133,41 @@ class LucentReviewRepository implements ReviewRepository {
       // 1. Check cache
       final cachedJson = await dao.fetchHistory(cacheKey);
       if (cachedJson != null) {
-        final dto = lucent.EventReviewListResponseDto.fromJson(
-          jsonDecode(cachedJson) as Map<String, dynamic>,
-        );
-        final page = ReviewEventPage(
-          items: dto.items.map(_mapEvent).toList(growable: false),
-          total: dto.total.toInt(),
-          nextCursor: dto.nextCursor,
-        );
-        // Background refresh (throttled) — best-effort.
-        _refreshHistoryInBackground(
-          status: status,
-          cursor: cursor,
-          limit: limit,
-          cacheKey: cacheKey,
-        );
-        return page;
+        try {
+          final dto = lucent.EventReviewListResponseDto.fromJson(
+            jsonDecode(cachedJson) as Map<String, dynamic>,
+          );
+          final page = ReviewEventPage(
+            items: dto.items.map(_mapEvent).toList(growable: false),
+            total: dto.total.toInt(),
+            nextCursor: dto.nextCursor,
+          );
+          // Background refresh (throttled) — best-effort.
+          _refreshHistoryInBackground(
+            status: status,
+            cursor: cursor,
+            limit: limit,
+            cacheKey: cacheKey,
+          );
+          return page;
+        } on FormatException catch (e, st) {
+          appTalker.warning(
+            'Review history cache parse failed, falling back to network',
+            e,
+            st,
+          );
+          // Fall through to network path below.
+        } catch (e, st) {
+          // Schema evolution (missing fields, type mismatches) throws
+          // TypeError/RangeError — degrade to network instead of surfacing
+          // an "unknown error" to the user.
+          appTalker.warning(
+            'Review history cache parse failed, falling back to network',
+            e,
+            st,
+          );
+          // Fall through to network path below.
+        }
       }
 
       // 2. Cache empty → fetch from network.
