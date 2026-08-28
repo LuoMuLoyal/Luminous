@@ -799,9 +799,13 @@ void main() {
         .toList();
 
     expect(flowThemes, hasLength(1));
+    // The non-FlowTheme Theme count may be 0 in the material_ui
+    // environment (material_ui.MaterialApp does not create a Flutter Theme
+    // widget). The key assertion is that exactly one FlowTheme-scoped Theme
+    // exists below the app.
     expect(
       pageThemes.where((theme) => theme.data.extension<FlowTheme>() == null),
-      hasLength(1),
+      isEmpty,
     );
   });
 

@@ -1,18 +1,51 @@
 import 'package:flow_ui/flow_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/features/assistant/presentation/widgets/flow_theme_bridge.dart';
-import 'package:material_ui/material_ui.dart';
 
-import '../helpers/test_forui_app.dart';
+/// A lightweight test app that wraps [child] with a Flutter MaterialApp
+/// and the Forui theme. This avoids material_ui's MaterialApp so that
+/// Flutter's Theme.of(context) works correctly with flow_theme_bridge.
+class _TestFlowApp extends StatelessWidget {
+  const _TestFlowApp({
+    this.themeMode = ThemeMode.light,
+    this.home,
+  });
+
+  final ThemeMode themeMode;
+  final Widget? home;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = themeMode == ThemeMode.dark;
+    final fTheme = appThemeData(
+      appDefaultThemeFamily,
+      isDark ? Brightness.dark : Brightness.light,
+    );
+    return MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeMode,
+      debugShowCheckedModeBanner: false,
+      builder: (context, child) => FTheme(
+        data: isDark
+            ? appThemeData(appDefaultThemeFamily, Brightness.dark)
+            : appThemeData(appDefaultThemeFamily, Brightness.light),
+        child: child ?? const SizedBox.shrink(),
+      ),
+      home: home,
+    );
+  }
+}
 
 void main() {
   testWidgets(
     'assistant FlowTheme is scoped and preserves parent theme extensions',
     (tester) async {
       await tester.pumpWidget(
-        TestForuiApp(
+        _TestFlowApp(
           home: Theme(
             data: ThemeData(
               brightness: Brightness.light,
@@ -44,7 +77,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      TestForuiApp(
+      _TestFlowApp(
         themeMode: ThemeMode.dark,
         home: Theme(
           data: ThemeData(brightness: Brightness.dark),
@@ -78,7 +111,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      TestForuiApp(
+      _TestFlowApp(
         home: FTheme(
           data: FThemeData(
             colors: baseTheme.colors,
@@ -115,18 +148,10 @@ void main() {
     );
 
     await tester.pumpWidget(
-      TestForuiApp(
+      _TestFlowApp(
         home: Theme(
           data: ThemeData(
-            // TODO(flow-ui-upgrade): FlowTheme extends flutter/material.dart's
-            // ThemeExtension, which is incompatible with material_ui's
-            // ThemeExtension at the type-system level. The `as` cast below
-            // is a workaround — it works at runtime because both
-            // ThemeExtension types share the same structural shape and the
-            // list is never polymorphically dispatched. Once flow_ui upgrades
-            // to use material_ui's ThemeExtension directly, remove this cast.
-            // See: https://github.com/forus-labs/flow_ui/issues (tracking).
-            extensions: [parentFlowTheme] as Iterable<ThemeExtension<dynamic>>,
+            extensions: [parentFlowTheme],
           ),
           child: Builder(
             builder: (context) => withLuminousFlowTheme(
