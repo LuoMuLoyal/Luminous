@@ -12,6 +12,7 @@ import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
+import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
 import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -167,10 +168,15 @@ void main() {
       ProviderScope(
         overrides: [
           scanRepositoryProvider.overrideWithValue(mockRepo),
+          // Bypass the real OcrModelManager so isModelAvailable() returns true
+          // without touching the file system in widget tests.
+          ocrModelManagerProvider.overrideWithValue(
+            const AsyncValue.data(FakeOcrModelManager(modelsAvailable: true)),
+          ),
           // Bypass the real PaddleOcr engine (process-wide native singleton)
           // — the flow is driven by a mock so widget tests never touch the
           // plugin.
-          paddleOcrProvider.overrideWithValue(mockOcr),
+          paddleOcrProvider.overrideWithValue(AsyncValue.data(mockOcr)),
           ...overrides,
         ],
         child: TestForuiRouterApp(routerConfig: router),

@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:luminous/features/scan/domain/repositories/scan.dart';
+import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mocktail/mocktail.dart';
@@ -135,6 +137,7 @@ class FakePaddleOcrNativePlatform extends PaddleOcrNativePlatform {
   Future<Map<String, dynamic>> init({
     required PaddleOcrConfig config,
     required EngineConfig engine,
+    required ModelPaths modelPaths,
   }) async {
     initCalls++;
     if (initError != null) {
@@ -180,3 +183,38 @@ class MockScanRepository extends Mock implements ScanRepository {}
 /// Mock of [PaddleOcrEngine] that never touches the native plugin / singleton.
 /// Use it to override [paddleOcrProvider] in widget tests.
 class MockPaddleOcrEngine extends Mock implements PaddleOcrEngine {}
+
+/// Fake [OcrModelManager] that reports models as always available without
+/// touching the file system. Used in unit tests where [PaddleOcrEngine] needs
+/// a model manager but the real download/storage path is irrelevant.
+class FakeOcrModelManager implements OcrModelManager {
+  const FakeOcrModelManager({this.modelsAvailable = true});
+
+  /// When `true`, [isModelAvailable] returns `false` to simulate
+  /// "models not downloaded" scenarios.
+  final bool modelsAvailable;
+
+  @override
+  bool isModelAvailable() => modelsAvailable;
+
+  @override
+  ({String detPath, String recPath, String configPath}) get modelPaths =>
+      const (
+        detPath: '/fake/det.onnx',
+        recPath: '/fake/rec.onnx',
+        configPath: '/fake/rec.yml',
+      );
+
+  @override
+  Directory get modelDirectory => Directory('/fake/paddle_ocr_models');
+
+  @override
+  Future<void> downloadModels({
+    void Function(double progress)? onProgress,
+  }) async {
+    onProgress?.call(1.0);
+  }
+
+  @override
+  Future<void> deleteModels() async {}
+}

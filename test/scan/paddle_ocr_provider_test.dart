@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
 import 'package:paddle_ocr_native/paddle_ocr_native.dart';
 import 'package:paddle_ocr_native/src/paddle_ocr_platform.dart'
@@ -11,6 +12,7 @@ import '../helpers/mocks/scan.dart';
 
 void main() {
   late FakePaddleOcrNativePlatform fakePlatform;
+  late FakeOcrModelManager fakeModelManager;
 
   setUpAll(() {
     // The PaddleOcr singleton captures PaddleOcrNativePlatform.instance at
@@ -21,10 +23,11 @@ void main() {
   });
 
   setUp(() async {
+    fakeModelManager = const FakeOcrModelManager();
     // Every engine wraps the same process-wide PaddleOcr singleton. Reset its
     // internal initialized flag (by disposing a throwaway engine) and the
     // fake's counters so tests are independent.
-    await PaddleOcrEngine().dispose();
+    await PaddleOcrEngine(fakeModelManager).dispose();
     fakePlatform.initCalls = 0;
     fakePlatform.releaseCalls = 0;
     fakePlatform.initError = null;
@@ -48,7 +51,7 @@ void main() {
 
   group('PaddleOcrEngine', () {
     test('ensureInitialized initialises once and is idempotent', () async {
-      final engine = PaddleOcrEngine();
+      final engine = PaddleOcrEngine(fakeModelManager);
       addTearDown(engine.dispose);
 
       await engine.ensureInitialized();
@@ -59,7 +62,7 @@ void main() {
 
     test('ensureInitialized propagates failure and allows retry', () async {
       fakePlatform.initError = StateError('ABI incompatible');
-      final engine = PaddleOcrEngine();
+      final engine = PaddleOcrEngine(fakeModelManager);
 
       await expectLater(engine.ensureInitialized(), throwsA(isA<StateError>()));
       expect(fakePlatform.initCalls, 1);
@@ -75,7 +78,7 @@ void main() {
       'recognize lazily initialises and maps plugin results to domain',
       () async {
         fakePlatform.recognizeResult = runWith('阿莫西林胶囊', 0.98);
-        final engine = PaddleOcrEngine();
+        final engine = PaddleOcrEngine(fakeModelManager);
         addTearDown(engine.dispose);
 
         final blocks = await engine.recognize('/tmp/box.jpg');
@@ -92,7 +95,7 @@ void main() {
 
     test('recognize returns empty list for empty run', () async {
       fakePlatform.recognizeResult = OcrRunResult.empty;
-      final engine = PaddleOcrEngine();
+      final engine = PaddleOcrEngine(fakeModelManager);
       addTearDown(engine.dispose);
 
       final blocks = await engine.recognize('/tmp/empty.jpg');
@@ -101,7 +104,7 @@ void main() {
     });
 
     test('dispose releases native sessions only when initialized', () async {
-      final engine = PaddleOcrEngine();
+      final engine = PaddleOcrEngine(fakeModelManager);
 
       await engine.dispose();
       expect(fakePlatform.releaseCalls, 0);
@@ -114,14 +117,36 @@ void main() {
       await engine.dispose();
       expect(fakePlatform.releaseCalls, 1);
     });
+
+    test(
+      'ensureInitialized throws OcrModelsNotDownloadedException when models are missing',
+      () async {
+        const noModelsManager = FakeOcrModelManager(modelsAvailable: false);
+        final engine = PaddleOcrEngine(noModelsManager);
+
+        await expectLater(
+          engine.ensureInitialized(),
+          throwsA(isA<OcrModelsNotDownloadedException>()),
+        );
+        expect(fakePlatform.initCalls, 0);
+      },
+    );
   });
 
   group('paddleOcrProvider', () {
     test('provides a shared engine instance and disposes it', () async {
-      final container = ProviderContainer();
+      final container = ProviderContainer(
+        overrides: [
+          ocrModelManagerProvider.overrideWith((ref) async => fakeModelManager),
+        ],
+      );
       addTearDown(container.dispose);
 
-      final engine = container.read(paddleOcrProvider);
+      // FutureProvider — read the AsyncValue, then await it.
+      final asyncEngine = container.read(paddleOcrProvider);
+      expect(asyncEngine, isA<AsyncValue<PaddleOcrEngine>>());
+
+      final engine = await container.read(paddleOcrProvider.future);
       expect(engine, isA<PaddleOcrEngine>());
 
       await engine.ensureInitialized();
