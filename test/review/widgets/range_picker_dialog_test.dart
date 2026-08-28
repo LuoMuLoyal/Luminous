@@ -22,7 +22,7 @@ void main() {
         home: Builder(
           builder: (context) => Scaffold(
             body: ElevatedButton(
-              onPressed: () => showReportRangePickerDialog(
+              onPressed: () => showReviewRangePickerDialog(
                 context,
                 selectedQuery: const ReviewDashboardQuery(
                   range: ReviewDashboardRange.last7Days,
@@ -71,7 +71,7 @@ void main() {
           builder: (context) => Scaffold(
             body: ElevatedButton(
               onPressed: () async {
-                result = await showReportRangePickerDialog(
+                result = await showReviewRangePickerDialog(
                   context,
                   selectedQuery: const ReviewDashboardQuery(
                     range: ReviewDashboardRange.last30Days,
@@ -104,7 +104,7 @@ void main() {
           builder: (context) => Scaffold(
             body: ElevatedButton(
               onPressed: () async {
-                result = await showReportRangePickerDialog(
+                result = await showReviewRangePickerDialog(
                   context,
                   selectedQuery: const ReviewDashboardQuery(
                     range: ReviewDashboardRange.last7Days,
@@ -134,7 +134,7 @@ void main() {
         home: Builder(
           builder: (context) => Scaffold(
             body: ElevatedButton(
-              onPressed: () => showReportRangePickerDialog(
+              onPressed: () => showReviewRangePickerDialog(
                 context,
                 selectedQuery: const ReviewDashboardQuery(
                   range: ReviewDashboardRange.last30Days,
@@ -159,7 +159,7 @@ void main() {
         home: Builder(
           builder: (context) => Scaffold(
             body: ElevatedButton(
-              onPressed: () => showReportRangePickerDialog(
+              onPressed: () => showReviewRangePickerDialog(
                 context,
                 selectedQuery: const ReviewDashboardQuery(
                   range: ReviewDashboardRange.custom,
@@ -189,7 +189,7 @@ void main() {
           home: Builder(
             builder: (context) => Scaffold(
               body: ElevatedButton(
-                onPressed: () => showReportRangePickerDialog(
+                onPressed: () => showReviewRangePickerDialog(
                   context,
                   selectedQuery: const ReviewDashboardQuery(
                     range: ReviewDashboardRange.last7Days,
@@ -224,7 +224,7 @@ void main() {
           home: Builder(
             builder: (context) => Scaffold(
               body: ElevatedButton(
-                onPressed: () => showReportRangePickerDialog(
+                onPressed: () => showReviewRangePickerDialog(
                   context,
                   selectedQuery: ReviewDashboardQuery(
                     range: ReviewDashboardRange.custom,

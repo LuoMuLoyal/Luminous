@@ -59,6 +59,7 @@
   "commonCancel": "Cancel",
   "commonConfirm": "Confirm",
   "commonClose": "Close",
+  "commonRetry": "Retry",
   "desktopWindowMinimize": "Minimize",
   "desktopWindowMaximize": "Maximize",
   "desktopWindowRestore": "Restore",

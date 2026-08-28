@@ -246,21 +246,21 @@ void main() {
   });
 
   group('Predefined export request constants', () {
-    test('reportHospitalPdfLast7DaysExportRequest has correct defaults', () {
-      const input = reportHospitalPdfLast7DaysExportRequest;
+    test('reviewHospitalPdfLast7DaysExportRequest has correct defaults', () {
+      const input = reviewHospitalPdfLast7DaysExportRequest;
       expect(input.kind, CreateDataExportRequestDtoKindEnum.hospital);
       expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
       expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
     });
 
-    test('reportMonthlyPdfExportRequest has monthly kind', () {
-      const input = reportMonthlyPdfExportRequest;
+    test('reviewMonthlyPdfExportRequest has monthly kind', () {
+      const input = reviewMonthlyPdfExportRequest;
       expect(input.kind, CreateDataExportRequestDtoKindEnum.monthly);
       expect(input.range, CreateDataExportRequestDtoRangeEnum.last30Days);
     });
 
-    test('reportPrintPdfExportRequest has print kind', () {
-      const input = reportPrintPdfExportRequest;
+    test('reviewPrintPdfExportRequest has print kind', () {
+      const input = reviewPrintPdfExportRequest;
       expect(input.kind, CreateDataExportRequestDtoKindEnum.print);
     });
   });

@@ -10,7 +10,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// On mobile this opens as a bottom sheet; on desktop as a centered dialog.
 /// Used by [ReviewRangeMenu] when the user selects the "custom" option.
-Future<ReviewDashboardQuery?> showReportCalendarPicker(
+Future<ReviewDashboardQuery?> showReviewCalendarPicker(
   BuildContext context, {
   required ReviewDashboardQuery selectedQuery,
 }) {
@@ -21,7 +21,7 @@ Future<ReviewDashboardQuery?> showReportCalendarPicker(
       : _showCalendarBottomSheet(context, l10n, selectedQuery);
 }
 
-Future<ReviewDashboardQuery?> showReportRangePickerDialog(
+Future<ReviewDashboardQuery?> showReviewRangePickerDialog(
   BuildContext context, {
   required ReviewDashboardQuery selectedQuery,
 }) {
@@ -183,70 +183,73 @@ Future<ReviewDashboardQuery?> _showCalendarBottomSheet(
       : (today.subtract(const Duration(days: 7)), today);
   final rangeController = FDateSelectionController.range(initial: initialRange);
 
-  final picked = await showModalBottomSheet<(DateTime, DateTime)?>(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(RadiusTokens.level4),
+  try {
+    final picked = await showModalBottomSheet<(DateTime, DateTime)?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(RadiusTokens.level4),
+        ),
       ),
-    ),
-    builder: (sheetContext) {
-      return SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 360,
-                child: FCalendar.grid(
-                  control: FGridCalendarControl(
-                    start: DateTime(2020),
-                    end: monthEnd,
-                    today: today,
-                    initial: DateTime(
-                      initialRange.$1.year,
-                      initialRange.$1.month,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.level4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 360,
+                  child: FCalendar.grid(
+                    control: FGridCalendarControl(
+                      start: DateTime(2020),
+                      end: monthEnd,
+                      today: today,
+                      initial: DateTime(
+                        initialRange.$1.year,
+                        initialRange.$1.month,
+                      ),
+                    ),
+                    selectionControl: FDateSelectionControl.managedRange(
+                      controller: rangeController,
                     ),
                   ),
-                  selectionControl: FDateSelectionControl.managedRange(
-                    controller: rangeController,
-                  ),
                 ),
-              ),
-              const SizedBox(height: Spacing.level4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FButton(
-                    variant: FButtonVariant.ghost,
-                    onPress: () => Navigator.of(sheetContext).pop(null),
-                    child: Text(l10n.commonCancel),
-                  ),
-                  const SizedBox(width: Spacing.level3),
-                  FButton(
-                    onPress: () =>
-                        Navigator.of(sheetContext).pop(rangeController.value),
-                    child: Text(l10n.commonConfirm),
-                  ),
-                ],
-              ),
-            ],
+                const SizedBox(height: Spacing.level4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FButton(
+                      variant: FButtonVariant.ghost,
+                      onPress: () => Navigator.of(sheetContext).pop(null),
+                      child: Text(l10n.commonCancel),
+                    ),
+                    const SizedBox(width: Spacing.level3),
+                    FButton(
+                      onPress: () =>
+                          Navigator.of(sheetContext).pop(rangeController.value),
+                      child: Text(l10n.commonConfirm),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-  rangeController.dispose();
+        );
+      },
+    );
 
-  if (picked == null) return null;
-  final clampedEnd = picked.$2.isAfter(today) ? today : picked.$2;
-  return ReviewDashboardQuery(
-    range: ReviewDashboardRange.custom,
-    startDate: picked.$1,
-    endDate: clampedEnd,
-  );
+    if (picked == null) return null;
+    final clampedEnd = picked.$2.isAfter(today) ? today : picked.$2;
+    return ReviewDashboardQuery(
+      range: ReviewDashboardRange.custom,
+      startDate: picked.$1,
+      endDate: clampedEnd,
+    );
+  } finally {
+    rangeController.dispose();
+  }
 }
 
 /// Calendar picker shown as a dialog on desktop.
@@ -263,60 +266,66 @@ Future<ReviewDashboardQuery?> _showCalendarDialog(
       : (today.subtract(const Duration(days: 7)), today);
   final rangeController = FDateSelectionController.range(initial: initialRange);
 
-  final picked = await showFDialog<(DateTime, DateTime)?>(
-    context: context,
-    builder: (calendarContext, style, animation) => DialogShell(
-      maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
-        MediaQuery.sizeOf(context).width,
-      ),
-      padding: const EdgeInsets.all(Spacing.level4),
-      builder: (_) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            height: 360,
-            child: FCalendar.grid(
-              control: FGridCalendarControl(
-                start: DateTime(2020),
-                end: monthEnd,
-                today: today,
-                initial: DateTime(initialRange.$1.year, initialRange.$1.month),
-              ),
-              selectionControl: FDateSelectionControl.managedRange(
-                controller: rangeController,
+  try {
+    final picked = await showFDialog<(DateTime, DateTime)?>(
+      context: context,
+      builder: (calendarContext, style, animation) => DialogShell(
+        maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
+          MediaQuery.sizeOf(context).width,
+        ),
+        padding: const EdgeInsets.all(Spacing.level4),
+        builder: (_) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 360,
+              child: FCalendar.grid(
+                control: FGridCalendarControl(
+                  start: DateTime(2020),
+                  end: monthEnd,
+                  today: today,
+                  initial: DateTime(
+                    initialRange.$1.year,
+                    initialRange.$1.month,
+                  ),
+                ),
+                selectionControl: FDateSelectionControl.managedRange(
+                  controller: rangeController,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: Spacing.level4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FButton(
-                variant: FButtonVariant.ghost,
-                onPress: () => Navigator.of(calendarContext).pop(null),
-                child: Text(l10n.commonCancel),
-              ),
-              const SizedBox(width: Spacing.level3),
-              FButton(
-                onPress: () =>
-                    Navigator.of(calendarContext).pop(rangeController.value),
-                child: Text(l10n.commonConfirm),
-              ),
-            ],
-          ),
-        ],
+            const SizedBox(height: Spacing.level4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: () => Navigator.of(calendarContext).pop(null),
+                  child: Text(l10n.commonCancel),
+                ),
+                const SizedBox(width: Spacing.level3),
+                FButton(
+                  onPress: () =>
+                      Navigator.of(calendarContext).pop(rangeController.value),
+                  child: Text(l10n.commonConfirm),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-  rangeController.dispose();
+    );
 
-  if (picked == null) return null;
-  final clampedEnd = picked.$2.isAfter(today) ? today : picked.$2;
-  return ReviewDashboardQuery(
-    range: ReviewDashboardRange.custom,
-    startDate: picked.$1,
-    endDate: clampedEnd,
-  );
+    if (picked == null) return null;
+    final clampedEnd = picked.$2.isAfter(today) ? today : picked.$2;
+    return ReviewDashboardQuery(
+      range: ReviewDashboardRange.custom,
+      startDate: picked.$1,
+      endDate: clampedEnd,
+    );
+  } finally {
+    rangeController.dispose();
+  }
 }
 
 class _RangeOptionTile extends StatelessWidget {

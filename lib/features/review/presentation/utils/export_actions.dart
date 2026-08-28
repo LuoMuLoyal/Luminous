@@ -42,7 +42,7 @@ Future<void> handleReviewExportAction(
     return;
   }
 
-  final input = reportExportInputForKind(kind);
+  final input = reviewExportInputForKind(kind);
   if (input == null) return;
 
   // Resolve account password re-authentication, respecting the user's

@@ -183,7 +183,7 @@ class DataExportPage extends ConsumerWidget {
       value = await ref
           .read(dataExportControllerProvider.notifier)
           .requestExport(
-            reportHospitalPdfLast7DaysExportRequest,
+            reviewHospitalPdfLast7DaysExportRequest,
             password: password,
           );
     } catch (error) {

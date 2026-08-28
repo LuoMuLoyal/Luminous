@@ -104,10 +104,10 @@ class _ExportCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    final title = reportExportTitle(l10n, action.kind);
-    final subtitle = reportExportCardSubtitle(l10n, action.kind, latestRequest);
+    final title = reviewExportTitle(l10n, action.kind);
+    final subtitle = reviewExportCardSubtitle(l10n, action.kind, latestRequest);
     final enabled = onTap != null;
-    final exportInput = reportExportInputForKind(action.kind);
+    final exportInput = reviewExportInputForKind(action.kind);
     final isClinicShare = action.kind == ReviewExportKind.clinicShare;
     final showProgress = isClinicShare
         ? clinicShareInFlight

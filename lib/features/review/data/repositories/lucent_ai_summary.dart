@@ -17,7 +17,7 @@ ReviewAiSummaryRemoteDataSource reviewAiSummaryRemoteDataSource(Ref ref) {
 }
 
 @riverpod
-ReviewAiSummaryRepository reportAiSummaryRepository(Ref ref) {
+ReviewAiSummaryRepository reviewAiSummaryRepository(Ref ref) {
   final dataSource = ref.watch(reviewAiSummaryRemoteDataSourceProvider);
   return LucentReviewAiSummaryRepository(dataSource: dataSource);
 }

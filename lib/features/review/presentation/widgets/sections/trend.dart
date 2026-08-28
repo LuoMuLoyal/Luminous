@@ -66,7 +66,7 @@ class ReviewTrendSection extends StatelessWidget {
     final parts = <String>[l10n.reviewTrendSectionTitle];
     for (final series in trends) {
       parts.add(
-        '${reportMetricTitle(l10n, series.kind)}: ${series.currentValue}${series.unit}',
+        '${reviewMetricTitle(l10n, series.kind)}: ${series.currentValue}${series.unit}',
       );
     }
     return parts.join(', ');
@@ -93,7 +93,7 @@ class _TrendTabs extends StatelessWidget {
       children: [
         for (final series in trends)
           FTabEntry(
-            label: Text(reportMetricTitle(l10n, series.kind)),
+            label: Text(reviewMetricTitle(l10n, series.kind)),
             child: _SingleTrendChart(
               series: series,
               startDate: startDate,

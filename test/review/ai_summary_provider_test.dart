@@ -140,7 +140,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          reportAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+          reviewAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
         ],
       );
       addTearDown(container.dispose);
@@ -202,7 +202,7 @@ void main() {
             userSettingsControllerProvider.overrideWith(
               EnabledUserSettingsController.new,
             ),
-            reportAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+            reviewAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
           ],
         );
         addTearDown(container.dispose);
@@ -260,7 +260,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          reportAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+          reviewAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
         ],
       );
       addTearDown(container.dispose);
@@ -304,7 +304,7 @@ void main() {
             userSettingsControllerProvider.overrideWith(
               EnabledUserSettingsController.new,
             ),
-            reportAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+            reviewAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
           ],
         );
         addTearDown(container.dispose);
@@ -337,7 +337,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          reportAiSummaryRepositoryProvider.overrideWithValue(successRepo),
+          reviewAiSummaryRepositoryProvider.overrideWithValue(successRepo),
         ],
       );
       addTearDown(container.dispose);

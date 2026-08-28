@@ -348,7 +348,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       // PDF 入口以 monthly 输入发起导出；请求失败经 Failure 分支弹 toast。
-      expect(exportController.lastInput, reportMonthlyPdfExportRequest);
+      expect(exportController.lastInput, reviewMonthlyPdfExportRequest);
       expect(find.textContaining(l10n.reviewExportFailedToast), findsOneWidget);
 
       // Toast 的 1800ms FakeTimer 在 pump 时钟前进后触发移除。

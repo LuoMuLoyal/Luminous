@@ -196,7 +196,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                   ),
                   child: Text(
                     aiState.isLoading
-                        ? reportAiSummaryGeneratingLabel(l10n, selectedRange)
+                        ? reviewAiSummaryGeneratingLabel(l10n, selectedRange)
                         : l10n.reviewGenerateAction,
                   ),
                 ),

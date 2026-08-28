@@ -106,7 +106,7 @@ class _PatternCard extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.level4),
             SkeletonText(
-              text: reportStatusLabel(l10n, pattern.status),
+              text: reviewStatusLabel(l10n, pattern.status),
               style: TypographyToken.level4
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w800),

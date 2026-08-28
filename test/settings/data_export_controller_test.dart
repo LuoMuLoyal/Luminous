@@ -93,7 +93,7 @@ void main() {
       await container
           .read(dataExportControllerProvider.notifier)
           .requestExport(
-            reportHospitalPdfLast7DaysExportRequest,
+            reviewHospitalPdfLast7DaysExportRequest,
             password: 'export-password',
           );
 
@@ -166,7 +166,7 @@ void main() {
       final future = container
           .read(dataExportControllerProvider.notifier)
           .requestExport(
-            reportMonthlyPdfExportRequest,
+            reviewMonthlyPdfExportRequest,
             password: 'export-password',
           );
 
@@ -174,7 +174,7 @@ void main() {
 
       final inFlight = container.read(dataExportRequestInFlightProvider);
       expect(inFlight.inFlight, isTrue);
-      expect(inFlight.input, reportMonthlyPdfExportRequest);
+      expect(inFlight.input, reviewMonthlyPdfExportRequest);
 
       await future;
 
@@ -200,7 +200,7 @@ void main() {
         () => container
             .read(dataExportControllerProvider.notifier)
             .requestExport(
-              reportHospitalPdfLast7DaysExportRequest,
+              reviewHospitalPdfLast7DaysExportRequest,
               password: 'export-password',
             ),
         throwsA(isA<DioException>()),
@@ -222,7 +222,7 @@ void main() {
         () => container
             .read(dataExportControllerProvider.notifier)
             .requestExport(
-              reportHospitalPdfLast7DaysExportRequest,
+              reviewHospitalPdfLast7DaysExportRequest,
               password: 'export-password',
             ),
         throwsA(isA<DioException>()),
@@ -251,7 +251,7 @@ void main() {
         await container
             .read(dataExportControllerProvider.notifier)
             .requestExport(
-              reportHospitalPdfLast7DaysExportRequest,
+              reviewHospitalPdfLast7DaysExportRequest,
               password: 'export-password',
             );
 
@@ -337,7 +337,7 @@ void main() {
         await container
             .read(dataExportControllerProvider.notifier)
             .requestExport(
-              reportHospitalPdfLast7DaysExportRequest,
+              reviewHospitalPdfLast7DaysExportRequest,
               password: 'export-password',
             );
 

@@ -121,15 +121,15 @@ DataExportUiStatus dataExportUiStatusForRequest(
   };
 }
 
-const reportHospitalPdfLast7DaysExportRequest = DataExportRequestInput();
+const reviewHospitalPdfLast7DaysExportRequest = DataExportRequestInput();
 
-const reportMonthlyPdfExportRequest = DataExportRequestInput(
+const reviewMonthlyPdfExportRequest = DataExportRequestInput(
   kind: CreateDataExportRequestDtoKindEnum.monthly,
   format: CreateDataExportRequestDtoFormatEnum.pdf,
   range: CreateDataExportRequestDtoRangeEnum.last30Days,
 );
 
-const reportPrintPdfExportRequest = DataExportRequestInput(
+const reviewPrintPdfExportRequest = DataExportRequestInput(
   kind: CreateDataExportRequestDtoKindEnum.print,
   format: CreateDataExportRequestDtoFormatEnum.pdf,
   range: CreateDataExportRequestDtoRangeEnum.last7Days,

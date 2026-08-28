@@ -110,7 +110,7 @@ class ReviewRangeMenu extends StatelessWidget {
               onPress: () async {
                 await controller.hide();
                 if (!context.mounted) return;
-                final picked = await showReportCalendarPicker(
+                final picked = await showReviewCalendarPicker(
                   context,
                   selectedQuery: selectedQuery,
                 );

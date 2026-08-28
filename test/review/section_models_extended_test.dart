@@ -4,10 +4,10 @@ import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 
 void main() {
-  // ── reportExportInputForKind ──────────────────────────────────
-  group('reportExportInputForKind', () {
+  // ── reviewExportInputForKind ──────────────────────────────────
+  group('reviewExportInputForKind', () {
     test('returns hospital request for hospital kind', () {
-      final input = reportExportInputForKind(ReviewExportKind.hospital);
+      final input = reviewExportInputForKind(ReviewExportKind.hospital);
       expect(input, isNotNull);
       expect(input!.kind, CreateDataExportRequestDtoKindEnum.hospital);
       expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
@@ -15,7 +15,7 @@ void main() {
     });
 
     test('returns monthly request for monthly kind', () {
-      final input = reportExportInputForKind(ReviewExportKind.monthly);
+      final input = reviewExportInputForKind(ReviewExportKind.monthly);
       expect(input, isNotNull);
       expect(input!.kind, CreateDataExportRequestDtoKindEnum.monthly);
       expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
@@ -23,7 +23,7 @@ void main() {
     });
 
     test('returns print request for print kind', () {
-      final input = reportExportInputForKind(ReviewExportKind.print);
+      final input = reviewExportInputForKind(ReviewExportKind.print);
       expect(input, isNotNull);
       expect(input!.kind, CreateDataExportRequestDtoKindEnum.print);
       expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
@@ -31,13 +31,13 @@ void main() {
     });
 
     test('returns null for clinicShare kind', () {
-      final input = reportExportInputForKind(ReviewExportKind.clinicShare);
+      final input = reviewExportInputForKind(ReviewExportKind.clinicShare);
       expect(input, isNull);
     });
 
     test('returns correct request for all enum values', () {
       for (final kind in ReviewExportKind.values) {
-        final input = reportExportInputForKind(kind);
+        final input = reviewExportInputForKind(kind);
         if (kind == ReviewExportKind.clinicShare) {
           expect(input, isNull, reason: 'clinicShare should return null');
         } else {

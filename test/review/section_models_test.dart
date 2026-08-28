@@ -7,85 +7,85 @@ import 'package:luminous/features/review/presentation/widgets/shared/section_mod
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
-  group('reportStatusColor', () {
+  group('reviewStatusColor', () {
     test('statuses map to correct semantic colors', () {
-      expect(reportStatusColor(ReviewStatus.good), SemanticColor.success);
-      expect(reportStatusColor(ReviewStatus.stable), SemanticColor.info);
+      expect(reviewStatusColor(ReviewStatus.good), SemanticColor.success);
+      expect(reviewStatusColor(ReviewStatus.stable), SemanticColor.info);
       expect(
-        reportStatusColor(ReviewStatus.needsAttention),
+        reviewStatusColor(ReviewStatus.needsAttention),
         SemanticColor.warning,
       );
       expect(
-        reportStatusColor(ReviewStatus.insufficientData),
+        reviewStatusColor(ReviewStatus.insufficientData),
         SemanticColor.warning,
       );
-      expect(reportStatusColor(ReviewStatus.unknown), SemanticColor.neutral);
+      expect(reviewStatusColor(ReviewStatus.unknown), SemanticColor.neutral);
     });
   });
 
-  group('reportStatusLabel', () {
+  group('reviewStatusLabel', () {
     test('good returns localized status', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      expect(reportStatusLabel(l10n, ReviewStatus.good), l10n.reviewStatusGood);
+      expect(reviewStatusLabel(l10n, ReviewStatus.good), l10n.reviewStatusGood);
     });
     test('stable returns localized stable', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reportStatusLabel(l10n, ReviewStatus.stable),
+        reviewStatusLabel(l10n, ReviewStatus.stable),
         l10n.reviewStatusStable,
       );
     });
   });
 
-  group('reportMetricTitle', () {
+  group('reviewMetricTitle', () {
     test('medication returns title', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reportMetricTitle(l10n, ReviewDataKind.medication),
+        reviewMetricTitle(l10n, ReviewDataKind.medication),
         l10n.reviewMetricMedicationTitle,
       );
     });
   });
 
-  group('reportExportTitle', () {
+  group('reviewExportTitle', () {
     test('hospital returns title', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reportExportTitle(l10n, ReviewExportKind.hospital),
+        reviewExportTitle(l10n, ReviewExportKind.hospital),
         l10n.reviewExportHospitalTitle,
       );
     });
   });
 
-  group('reportAiSummarySubtitle', () {
+  group('reviewAiSummarySubtitle', () {
     test('last7Days returns subtitle', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reportAiSummarySubtitle(l10n, ReviewAiSummaryRange.last7Days),
+        reviewAiSummarySubtitle(l10n, ReviewAiSummaryRange.last7Days),
         l10n.reviewAiSummarySubtitle,
       );
     });
     test('last30Days returns subtitle', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reportAiSummarySubtitle(l10n, ReviewAiSummaryRange.last30Days),
+        reviewAiSummarySubtitle(l10n, ReviewAiSummaryRange.last30Days),
         l10n.reviewAiSummarySubtitleLast30Days,
       );
     });
   });
 
-  group('reportAiSummaryGeneratingLabel', () {
+  group('reviewAiSummaryGeneratingLabel', () {
     test('last7Days returns generating hint', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reportAiSummaryGeneratingLabel(l10n, ReviewAiSummaryRange.last7Days),
+        reviewAiSummaryGeneratingLabel(l10n, ReviewAiSummaryRange.last7Days),
         l10n.reviewAiSummaryGeneratingHint,
       );
     });
     test('last30Days returns hint', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reportAiSummaryGeneratingLabel(l10n, ReviewAiSummaryRange.last30Days),
+        reviewAiSummaryGeneratingLabel(l10n, ReviewAiSummaryRange.last30Days),
         l10n.reviewAiSummaryGeneratingHintLast30Days,
       );
     });

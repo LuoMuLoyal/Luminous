@@ -10,11 +10,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 // Data export input helper
 // ---------------------------------------------------------------------------
 
-DataExportRequestInput? reportExportInputForKind(ReviewExportKind kind) {
+DataExportRequestInput? reviewExportInputForKind(ReviewExportKind kind) {
   return switch (kind) {
-    ReviewExportKind.monthly => reportMonthlyPdfExportRequest,
-    ReviewExportKind.print => reportPrintPdfExportRequest,
-    ReviewExportKind.hospital => reportHospitalPdfLast7DaysExportRequest,
+    ReviewExportKind.monthly => reviewMonthlyPdfExportRequest,
+    ReviewExportKind.print => reviewPrintPdfExportRequest,
+    ReviewExportKind.hospital => reviewHospitalPdfLast7DaysExportRequest,
     ReviewExportKind.clinicShare => null,
   };
 }
@@ -47,7 +47,7 @@ class ReviewAiSummaryContent {
 // Shared helper functions
 // ---------------------------------------------------------------------------
 
-String reportStatusLabel(AppLocalizations l10n, ReviewStatus status) {
+String reviewStatusLabel(AppLocalizations l10n, ReviewStatus status) {
   return switch (status) {
     ReviewStatus.good => l10n.reviewStatusGood,
     ReviewStatus.stable => l10n.reviewStatusStable,
@@ -57,7 +57,7 @@ String reportStatusLabel(AppLocalizations l10n, ReviewStatus status) {
   };
 }
 
-SemanticColor reportStatusColor(ReviewStatus status) {
+SemanticColor reviewStatusColor(ReviewStatus status) {
   return switch (status) {
     ReviewStatus.good => SemanticColor.success,
     ReviewStatus.stable => SemanticColor.info,
@@ -67,7 +67,7 @@ SemanticColor reportStatusColor(ReviewStatus status) {
   };
 }
 
-String reportMetricTitle(AppLocalizations l10n, ReviewDataKind kind) {
+String reviewMetricTitle(AppLocalizations l10n, ReviewDataKind kind) {
   return switch (kind) {
     ReviewDataKind.medication => l10n.reviewMetricMedicationTitle,
     ReviewDataKind.sleep => l10n.reviewMetricSleepTitle,
@@ -76,7 +76,7 @@ String reportMetricTitle(AppLocalizations l10n, ReviewDataKind kind) {
   };
 }
 
-String reportExportTitle(AppLocalizations l10n, ReviewExportKind kind) {
+String reviewExportTitle(AppLocalizations l10n, ReviewExportKind kind) {
   return switch (kind) {
     ReviewExportKind.hospital => l10n.reviewExportHospitalTitle,
     ReviewExportKind.monthly => l10n.reviewExportMonthlyTitle,
@@ -85,7 +85,7 @@ String reportExportTitle(AppLocalizations l10n, ReviewExportKind kind) {
   };
 }
 
-String reportExportSubtitle(AppLocalizations l10n, ReviewExportKind kind) {
+String reviewExportSubtitle(AppLocalizations l10n, ReviewExportKind kind) {
   return switch (kind) {
     ReviewExportKind.hospital => l10n.reviewExportHospitalSubtitle,
     ReviewExportKind.monthly => l10n.reviewExportMonthlySubtitle,
@@ -94,18 +94,18 @@ String reportExportSubtitle(AppLocalizations l10n, ReviewExportKind kind) {
   };
 }
 
-String reportExportCardSubtitle(
+String reviewExportCardSubtitle(
   AppLocalizations l10n,
   ReviewExportKind kind,
   DataExportRequestDataDto? latestRequest,
 ) {
-  final input = reportExportInputForKind(kind);
+  final input = reviewExportInputForKind(kind);
   if (input == null) {
-    return reportExportSubtitle(l10n, kind);
+    return reviewExportSubtitle(l10n, kind);
   }
   if (input.matches(latestRequest)) {
     return switch (dataExportUiStatusForRequest(latestRequest)) {
-      DataExportUiStatus.idle => reportExportSubtitle(l10n, kind),
+      DataExportUiStatus.idle => reviewExportSubtitle(l10n, kind),
       DataExportUiStatus.requested => l10n.mineExportStatusRequested,
       DataExportUiStatus.processing => l10n.mineExportStatusPending,
       DataExportUiStatus.completed => l10n.mineExportStatusCompleted,
@@ -115,7 +115,7 @@ String reportExportCardSubtitle(
       DataExportUiStatus.unavailable => l10n.mineExportStatusUnavailable,
     };
   }
-  return reportExportSubtitle(l10n, kind);
+  return reviewExportSubtitle(l10n, kind);
 }
 
 // ---------------------------------------------------------------------------
@@ -171,7 +171,7 @@ ReviewAiSummaryContent buildReviewAiSummaryContent({
   final summary = aiState.summary;
   if (summary != null) {
     return ReviewAiSummaryContent(
-      subtitle: reportAiSummarySubtitle(l10n, selectedRange),
+      subtitle: reviewAiSummarySubtitle(l10n, selectedRange),
       summaryText: summary.summary,
       observedPattern: summary.observedPattern?.text,
       lowRiskAction: summary.lowRiskAction?.text,
@@ -182,7 +182,7 @@ ReviewAiSummaryContent buildReviewAiSummaryContent({
 
   if (aiState.status == ReviewAiSummaryCardStatus.error) {
     return ReviewAiSummaryContent(
-      subtitle: reportAiSummarySubtitle(l10n, selectedRange),
+      subtitle: reviewAiSummarySubtitle(l10n, selectedRange),
       disclaimer: aiState.errorMessage ?? l10n.reviewAiSummaryErrorHint,
       showGenerateButton: aiSummaryEnabled,
     );
@@ -190,9 +190,9 @@ ReviewAiSummaryContent buildReviewAiSummaryContent({
 
   if (aiState.status == ReviewAiSummaryCardStatus.loading) {
     return ReviewAiSummaryContent(
-      subtitle: reportAiSummarySubtitle(l10n, selectedRange),
+      subtitle: reviewAiSummarySubtitle(l10n, selectedRange),
       summaryText: aiState.streamingSummary,
-      disclaimer: reportAiSummaryGeneratingLabel(l10n, selectedRange),
+      disclaimer: reviewAiSummaryGeneratingLabel(l10n, selectedRange),
     );
   }
 
@@ -203,7 +203,7 @@ ReviewAiSummaryContent buildReviewAiSummaryContent({
   );
 }
 
-String reportAiSummarySubtitle(
+String reviewAiSummarySubtitle(
   AppLocalizations l10n,
   ReviewAiSummaryRange range,
 ) {
@@ -214,7 +214,7 @@ String reportAiSummarySubtitle(
   };
 }
 
-String reportAiSummaryGeneratingLabel(
+String reviewAiSummaryGeneratingLabel(
   AppLocalizations l10n,
   ReviewAiSummaryRange range,
 ) {

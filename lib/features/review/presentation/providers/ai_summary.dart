@@ -69,7 +69,7 @@ class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
     try {
       await for (final event
           in ref
-              .read(reportAiSummaryRepositoryProvider)
+              .read(reviewAiSummaryRepositoryProvider)
               .generateStream(range, startDate: startDate, endDate: endDate)) {
         switch (event) {
           case ReviewAiGenerationSummaryEvent():
