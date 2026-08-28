@@ -35,6 +35,7 @@ class _MobileMineSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SyncBannerPlaceholder(),
@@ -59,6 +60,7 @@ class _DesktopMineSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SyncBannerPlaceholder(),

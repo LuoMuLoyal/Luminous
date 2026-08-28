@@ -294,6 +294,7 @@ class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           key: const Key('loading-slow-hint'),
@@ -322,7 +323,7 @@ class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
             ],
           ),
         ),
-        Expanded(child: widget.child),
+        widget.child,
       ],
     );
   }
