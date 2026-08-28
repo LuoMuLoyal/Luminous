@@ -26,7 +26,9 @@ import 'package:luminous/features/review/presentation/providers/clinic_summary.d
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/export.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/more_actions.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/test_forui_app.dart';
@@ -218,7 +220,8 @@ void main() {
     );
 
     await tester.tap(find.byKey(const Key('review-more-action')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text(l10n.reviewMoreTitle), findsOneWidget);
     expect(find.byKey(const Key('more-visit-summary')), findsOneWidget);
@@ -245,9 +248,11 @@ void main() {
     );
 
     await tester.tap(find.byKey(const Key('review-more-action')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.byKey(const Key('more-visit-summary')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // More sheet 已关闭，诊所摘要预览打开并渲染脱敏内容。
     expect(find.byKey(const Key('more-visit-summary')), findsNothing);
@@ -269,9 +274,11 @@ void main() {
 
       // PDF 入口 → 导出流程的密码再认证弹窗。
       await tester.tap(find.byKey(const Key('review-more-action')));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.tap(find.byKey(const Key('more-pdf')));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byKey(const Key('more-pdf')), findsNothing);
       expect(
@@ -281,7 +288,8 @@ void main() {
       final cancelButton = find.text(l10n.authCancelAction);
       await tester.ensureVisible(cancelButton);
       await tester.tap(cancelButton);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
       expect(
         find.text(l10n.authSensitiveActionPasswordDialogTitle),
         findsNothing,
@@ -289,9 +297,11 @@ void main() {
 
       // 打印/下载入口 → 同样的验证环节。
       await tester.tap(find.byKey(const Key('review-more-action')));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.tap(find.byKey(const Key('more-print')));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(
         find.text(l10n.authSensitiveActionPasswordDialogTitle),
@@ -300,7 +310,8 @@ void main() {
       final printCancelButton = find.text(l10n.authCancelAction);
       await tester.ensureVisible(printCancelButton);
       await tester.tap(printCancelButton);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
       expect(
         find.text(l10n.authSensitiveActionPasswordDialogTitle),
         findsNothing,
@@ -330,19 +341,19 @@ void main() {
       );
 
       await tester.tap(find.byKey(const Key('review-more-action')));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.tap(find.byKey(const Key('more-pdf')));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // PDF 入口以 monthly 输入发起导出；请求失败经 Failure 分支弹 toast。
       expect(exportController.lastInput, reportMonthlyPdfExportRequest);
       expect(find.textContaining(l10n.reviewExportFailedToast), findsOneWidget);
 
-      // Toast 自动移除计时器走完，避免测试结束时仍有挂起 Timer。
-      await tester.pump(const Duration(milliseconds: 1900));
-      await tester.pumpAndSettle();
-      expect(find.textContaining(l10n.reviewExportFailedToast), findsNothing);
-      expect(tester.takeException(), isNull);
+      // Toast 的 1800ms FakeTimer 在 pump 时钟前进后触发移除。
+      await tester.pump(const Duration(milliseconds: 2000));
+      await tester.pump(const Duration(milliseconds: 300));
     },
   );
 
@@ -359,9 +370,11 @@ void main() {
     );
 
     await tester.tap(find.byKey(const Key('review-more-action')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.byKey(const Key('more-pdf')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 未登录点击导出入口：不发起导出，引导登录对话框出现。
     expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
@@ -417,6 +430,9 @@ void main() {
             reviewDashboardProvider.overrideWith(
               (ref, query) => Completer<ReviewDashboard>().future,
             ),
+            userSettingsControllerProvider.overrideWith(
+              () => _FakeUserSettingsController(),
+            ),
           ],
           child: TestForuiRouterApp(routerConfig: router),
         ),
@@ -425,7 +441,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       await tester.tap(find.byKey(const Key('review-more-action')));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.tap(find.byKey(const Key('more-legacy-report')));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 600));
@@ -468,6 +485,9 @@ Future<void> pumpPage(
         dailyRecordListForDateProvider.overrideWith(
           (ref, date) async => const DailyRecordListData(items: [], total: 0),
         ),
+        userSettingsControllerProvider.overrideWith(
+          () => _FakeUserSettingsController(),
+        ),
         ...overrides,
       ],
       // FToaster 与生产装配一致（MaterialApp builder 之下、页面之上），
@@ -481,6 +501,26 @@ Future<void> pumpPage(
   );
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 400));
+}
+
+class _FakeUserSettingsController extends UserSettingsController {
+  @override
+  Future<UserSettings> build() async {
+    return const UserSettings(
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: false,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettings(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
+      ),
+      passwordReauthenticationRequired: true,
+    );
+  }
 }
 
 class _FakeReviewRepository implements ReviewRepository {

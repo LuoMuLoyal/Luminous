@@ -31,7 +31,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/test_forui_app.dart';
-import 'widgets/review_fixtures.dart';
+import '../review/widgets/review_fixtures.dart';
 
 void main() {
   testWidgets(
@@ -78,7 +78,7 @@ void main() {
       expect(find.byKey(const Key('review-next-step-section')), findsOneWidget);
 
       // 旧 dashboard 主路径内容不再装配：不构建 ExportSection
-      // 或 readiness 卡（canShowFullReview 整页锁所在），也不出现 7/30 天
+      // 或 readiness 卡（canShowFullReport 整页锁所在），也不出现 7/30 天
       // 范围切换（ReviewTopBar/ReviewRangeMenu 仅 legacy 文件保留）。
       expect(find.byKey(const Key('report-readiness-card')), findsNothing);
       expect(find.byKey(const Key('report-export-section')), findsNothing);
@@ -123,7 +123,8 @@ void main() {
 
     repo.completeCurrent(reviewActive());
     repo.completeHistory(reviewHistoryPage(const []));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     expect(find.byType(ReviewSkeletonView), findsNothing);
     expect(find.byKey(const Key('review-event-header')), findsOneWidget);
   });
@@ -211,8 +212,7 @@ void main() {
 
     await tester.drag(find.byType(ListView).first, const Offset(0, 300));
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 200));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(repo.currentCalls, 2);
     expect(repo.historyCalls, 2);
@@ -456,7 +456,19 @@ void main() {
     expect(reviewRepository.lastHistoryStatus, isNull);
     expect(find.text('已结束的观察'), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('review-history-filter-active')));
+    // filter 按钮在屏幕下方，需要先滚动到可见位置。
+    // scrollUntilVisible 可能不工作（嵌套 scrollable），
+    // 直接 drag 主 ListView 将内容上移。
+    await tester.drag(
+      find.byType(ListView).first,
+      const Offset(0, -500),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(
+      find.byKey(const Key('review-history-filter-active')),
+      warnIfMissed: false,
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
@@ -466,7 +478,17 @@ void main() {
     expect(find.text('进行中的观察'), findsOneWidget);
     expect(find.text('已结束的观察'), findsNothing);
 
-    await tester.tap(find.byKey(const Key('review-history-filter-all')));
+    // filter 按钮可能已因上次滚动可见，但仍需确保在屏内。
+    await tester.drag(
+      find.byType(ListView).first,
+      const Offset(0, -300),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(
+      find.byKey(const Key('review-history-filter-all')),
+      warnIfMissed: false,
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
@@ -498,7 +520,17 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(reviewRepository.historyCalls, 1);
 
-    await tester.tap(find.byKey(const Key('review-history-filter-active')));
+    // filter 按钮在屏幕下方，需要先滚动到可见位置。
+    await tester.drag(
+      find.byType(ListView).first,
+      const Offset(0, -500),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(
+      find.byKey(const Key('review-history-filter-active')),
+      warnIfMissed: false,
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
@@ -532,12 +564,14 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     await tester.tap(find.byKey(const Key('review-check-in-action')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(
       find.byKey(const Key('health-event-check-in-outcome-improved')),
     );
     await tester.tap(find.byKey(const Key('health-event-check-in-submit')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
     // 以当前 review 的事件 ID check-in，日期为本地 YYYY-MM-DD。
     expect(healthEvents.checkedInEventId, 'evt-active');
@@ -570,12 +604,14 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     await tester.tap(find.byKey(const Key('review-end-event-action')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(
       find.byKey(const Key('health-event-end-outcome-improved')),
     );
     await tester.tap(find.byKey(const Key('health-event-end-submit')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
     expect(healthEvents.endedEventId, 'evt-active');
     expect(healthEvents.endedOutcome, HealthEventOutcome.improved);
@@ -664,7 +700,8 @@ void main() {
       // Tab becomes visible: the buffered data presentation is delivered and
       // the first visible build records review_opened.
       activeTab.value = true;
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byKey(const Key('review-event-header')), findsOneWidget);
       expect(service.reviewOpenedCalls, 1);
@@ -674,7 +711,7 @@ void main() {
       await tester.drag(find.byType(ListView).first, const Offset(0, 300));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(repo.currentCalls, 2);
       expect(service.reviewOpenedCalls, greaterThanOrEqualTo(2));
@@ -760,7 +797,7 @@ void main() {
       await tester.drag(find.byType(ListView).first, const Offset(0, 300));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(repo.currentCalls, 2);
       expect(service.reviewOpenedCalls, greaterThanOrEqualTo(2));

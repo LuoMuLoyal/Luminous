@@ -11,7 +11,9 @@ import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/utils/export_actions.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/test_forui_app.dart';
@@ -43,6 +45,26 @@ class _RecordingProductEventService extends ProductEventService {
 
 class _MockProductEventsApi extends Mock implements ProductEventsApi {}
 
+class _FakeUserSettingsController extends UserSettingsController {
+  @override
+  Future<UserSettings> build() async {
+    return const UserSettings(
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: false,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettings(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
+      ),
+      passwordReauthenticationRequired: true,
+    );
+  }
+}
+
 DataExportRequestDataDto _request(DataExportStatus status) {
   return DataExportRequestDataDto(
     id: 'req-1',
@@ -70,6 +92,7 @@ Future<void> _pumpHarness(
           (_, {title, message, label}) async => 'export-password',
         ),
         productEventServiceProvider.overrideWithValue(service),
+        userSettingsControllerProvider.overrideWith(() => _FakeUserSettingsController()),
       ],
       child: TestForuiApp(
         locale: const Locale('zh'),
