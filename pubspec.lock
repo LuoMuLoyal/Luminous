@@ -1197,10 +1197,9 @@ packages:
   paddle_ocr_native:
     dependency: "direct main"
     description:
-      name: paddle_ocr_native
-      sha256: "188a45838e00592cead5d5fcb68fa23f6153581ff7d508ad60f57f0de3ced071"
-      url: "https://pub.dev"
-    source: hosted
+      path: "pkgs/paddle_ocr_native-0.1.1"
+      relative: true
+    source: path
     version: "0.1.1"
   path:
     dependency: "direct main"

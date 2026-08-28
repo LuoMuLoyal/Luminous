@@ -51,8 +51,22 @@ android {
         versionName = flutter.versionName
         ndk {
             // arm64-v8a: all modern 64-bit ARM phones (domestic + international)
-            // x86_64:    Android emulators for development
-            abiFilters += listOf("arm64-v8a", "x86_64")
+            // Flutter Gradle plugin overrides this at build time; the
+            // actual filtering is done in packagingOptions below.
+            abiFilters += listOf("arm64-v8a")
+        }
+    }
+
+    packagingOptions {
+        // Flutter Gradle plugin injects all ABIs (arm64-v8a, armeabi-v7a,
+        // x86_64) regardless of abiFilters above. Manually exclude every
+        // .so under lib/x86_64/ and lib/armeabi-v7a/ to strip ~120MB of
+        // duplicate native libraries (OpenCV, ONNX Runtime, ML Kit, etc).
+        jniLibs {
+            excludes += setOf("lib/x86_64/**", "lib/armeabi-v7a/**")
+        }
+        resources {
+            excludes += setOf("lib/x86_64/**", "lib/armeabi-v7a/**")
         }
     }
 

@@ -18,6 +18,7 @@ import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/candidate_merger.dart';
 import 'package:luminous/features/scan/domain/services/medicine_ocr_extractor.dart';
+import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -89,11 +90,34 @@ Future<void> _startPhotoScan(
   }
 
   // Pre-check: verify the OCR engine can initialise before opening the camera.
-  // This catches ABI incompatibility (non-arm64 devices) and model-loading
-  // failures early, instead of letting the user take a photo first.
+  // This catches ABI incompatibility (non-arm64 devices), missing model files,
+  // and model-loading failures early, instead of letting the user take a
+  // photo first.
   if (method == MedicineScanMethod.ocr) {
     final container = ProviderScope.containerOf(context);
-    final ocrEngine = container.read(paddleOcrProvider);
+    final modelManager = await container.read(ocrModelManagerProvider.future);
+
+    if (!modelManager.isModelAvailable()) {
+      if (!context.mounted) return;
+      final shouldDownload = await _showModelDownloadDialog(context, l10n);
+      if (shouldDownload != true || !context.mounted) return;
+
+      // Download models with a progress overlay.
+      _showProcessingOverlay(context, MedicineScanMethod.ocr);
+      try {
+        await modelManager.downloadModels();
+      } catch (e) {
+        appTalker.error('OCR model download failed: $e');
+        if (context.mounted) {
+          _dismissOverlay(context);
+          await _showModelDownloadFailedDialog(context, l10n);
+        }
+        return;
+      }
+      if (context.mounted) _dismissOverlay(context);
+    }
+
+    final ocrEngine = await container.read(paddleOcrProvider.future);
     try {
       await ocrEngine.ensureInitialized();
     } catch (e) {
@@ -150,6 +174,95 @@ Future<void> _startPhotoScan(
       }
     }
   }
+}
+
+/// Shows a dialog prompting the user to download OCR model files (~30MB).
+///
+/// Returns `true` if the user confirms the download, `false` otherwise.
+Future<bool?> _showModelDownloadDialog(
+  BuildContext context,
+  AppLocalizations l10n,
+) async {
+  return showAppDialog<bool>(
+    context: context,
+    scrollable: false,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.scanModelDownloadTitle,
+          style: dialogContext.theme.dialogStyle.titleTextStyle,
+        ),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          l10n.scanModelDownloadMessage,
+          style: dialogContext.theme.dialogStyle.bodyTextStyle,
+        ),
+        const SizedBox(height: Spacing.level5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.scanModelDownloadCancel),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              onPress: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l10n.scanModelDownloadConfirm),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+/// Shows a dialog when OCR model download fails.
+Future<void> _showModelDownloadFailedDialog(
+  BuildContext context,
+  AppLocalizations l10n,
+) async {
+  await showAppDialog<void>(
+    context: context,
+    scrollable: false,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.scanModelDownloadFailedTitle,
+          style: dialogContext.theme.dialogStyle.titleTextStyle,
+        ),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          l10n.scanModelDownloadFailedMessage,
+          style: dialogContext.theme.dialogStyle.bodyTextStyle,
+        ),
+        const SizedBox(height: Spacing.level5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.scanCloseAction),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              onPress: () {
+                Navigator.of(dialogContext).pop();
+                unawaited(showMedicineBoxScanSheet(context));
+              },
+              child: Text(l10n.scanModelDownloadRetry),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 /// Shows a dialog when OCR is unavailable, offering to switch directly to AI
@@ -293,7 +406,7 @@ Future<List<MedicineMatchResult>> _processPhoto(
   final repo = container.read(scanRepositoryProvider);
 
   if (method == MedicineScanMethod.ocr) {
-    final ocrEngine = container.read(paddleOcrProvider);
+    final ocrEngine = await container.read(paddleOcrProvider.future);
     final ocrBlocks = await ocrEngine.recognize(photo.path);
     // 候选先按规范化 query 去重（同一批准文号/药名可能从多个文本块重复
     // 提取），减少重复搜索；搜库结果再按稳定药品 id 合并（F-4）。
