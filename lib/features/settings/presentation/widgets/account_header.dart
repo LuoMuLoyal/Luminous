@@ -32,7 +32,7 @@ class AccountHeader extends StatelessWidget {
         title: Text(displayName),
         subtitle: subtitle.isEmpty ? null : Text(subtitle),
         prefix: FAvatar.raw(
-          size: 64,
+          size: IconSizeTokens.level8,
           child: const Icon(
             SemanticIcons.profileUser,
             size: IconSizeTokens.level6,

@@ -137,7 +137,7 @@ class MasterNavItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 18,
+              size: IconSizeTokens.level2,
               color: selected ? colors.primary : colors.mutedForeground,
             ),
             const SizedBox(width: Spacing.level3),

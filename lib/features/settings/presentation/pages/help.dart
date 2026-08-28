@@ -312,7 +312,7 @@ class _FaqError extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Spacing.level4),
       child: Row(
         children: [
-          Icon(SemanticIcons.statusError, color: colors.error, size: 20),
+          Icon(SemanticIcons.statusError, color: colors.error, size: IconSizeTokens.level3),
           const SizedBox(width: Spacing.level2),
           Expanded(
             child: Text(

@@ -69,7 +69,7 @@ class _CategoryItem extends StatelessWidget {
       child: Column(
         children: [
           FAvatar.raw(
-            size: 48,
+            size: IconSizeTokens.level7,
             style: .delta(
               backgroundColor: category.softColor.fillStrong(context),
             ),

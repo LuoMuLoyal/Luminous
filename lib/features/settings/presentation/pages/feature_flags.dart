@@ -44,7 +44,7 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     children: [
                       Icon(
                         SemanticIcons.recordSymptom,
-                        size: 16,
+                        size: IconSizeTokens.level2,
                         color: context.theme.colors.primary,
                       ),
                       const SizedBox(width: Spacing.level2),

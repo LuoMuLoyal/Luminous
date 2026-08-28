@@ -78,7 +78,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                       subtitle: Text(l10n.settingsAdvancedResetDefaultsHint),
                       suffix: Icon(
                         SemanticIcons.actionReset,
-                        size: 18,
+                        size: IconSizeTokens.level2,
                         color: context.theme.colors.destructive,
                       ),
                       onPress: () async {

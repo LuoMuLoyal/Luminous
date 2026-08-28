@@ -501,10 +501,10 @@ class _FilterRow extends StatelessWidget {
                   ? SemanticIcons.statusSuccess
                   : SemanticIcons.statusPending,
               color: filter.selected ? colors.primary : colors.mutedForeground,
-              size: 18,
+              size: IconSizeTokens.level2,
             ),
             const SizedBox(width: Spacing.level3),
-            Icon(filter.icon, color: filter.accent.solid(context), size: 18),
+            Icon(filter.icon, color: filter.accent.solid(context), size: IconSizeTokens.level2),
             const SizedBox(width: Spacing.level3),
             Expanded(
               child: Text(
