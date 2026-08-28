@@ -13,7 +13,6 @@ import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
-import 'package:material_ui/material_ui.dart' as mui show MaterialApp, ThemeMode;
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
@@ -32,6 +31,9 @@ import 'package:luminous/features/settings/presentation/pages/notification.dart'
 import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/theme.dart';
+import 'package:material_ui/material_ui.dart'
+    as mui
+    show MaterialApp, ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 
 late _FakeSettingsProfileRemoteDataSource _fakeSettingsProfileRemote;
@@ -228,7 +230,9 @@ void main() {
     SharedPreferences.setMockInitialValues(snapshot);
     await _pumpApp(tester);
 
-    final restoredApp = tester.widget<mui.MaterialApp>(find.byType(mui.MaterialApp));
+    final restoredApp = tester.widget<mui.MaterialApp>(
+      find.byType(mui.MaterialApp),
+    );
     expect(restoredApp.themeMode, mui.ThemeMode.dark);
     expect(find.text('深色 · 绿色'), findsOneWidget);
   });

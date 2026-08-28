@@ -9,10 +9,7 @@ import 'package:luminous/features/assistant/presentation/widgets/flow_theme_brid
 /// and the Forui theme. This avoids material_ui's MaterialApp so that
 /// Flutter's Theme.of(context) works correctly with flow_theme_bridge.
 class _TestFlowApp extends StatelessWidget {
-  const _TestFlowApp({
-    this.themeMode = ThemeMode.light,
-    this.home,
-  });
+  const _TestFlowApp({this.themeMode = ThemeMode.light, this.home});
 
   final ThemeMode themeMode;
   final Widget? home;
@@ -20,10 +17,6 @@ class _TestFlowApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = themeMode == ThemeMode.dark;
-    final fTheme = appThemeData(
-      appDefaultThemeFamily,
-      isDark ? Brightness.dark : Brightness.light,
-    );
     return MaterialApp(
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
@@ -150,9 +143,7 @@ void main() {
     await tester.pumpWidget(
       _TestFlowApp(
         home: Theme(
-          data: ThemeData(
-            extensions: [parentFlowTheme],
-          ),
+          data: ThemeData(extensions: [parentFlowTheme]),
           child: Builder(
             builder: (context) => withLuminousFlowTheme(
               context,
