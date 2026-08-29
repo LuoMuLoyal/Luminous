@@ -122,7 +122,8 @@ dependency_overrides:
   # device_info_plus 13.x uses win32 ^6.x, resolving the conflict.
   device_info_plus: ^13.0.0
   # paddle_ocr_native 0.1.1 本地修改版:ONNX 模型文件不再打包进 APK,
-  # 改为按需下载。详见 pkgs/paddle_ocr_native-0.1.1/README.md。
+  # 改为按需下载。模型 manifest 版本: v0.1.1-models (GitHub release tag)。
+  # 详见 pkgs/paddle_ocr_native-0.1.1/README.md。
   paddle_ocr_native:
     path: pkgs/paddle_ocr_native-0.1.1
 
