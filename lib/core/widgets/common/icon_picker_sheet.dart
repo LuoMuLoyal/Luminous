@@ -9,17 +9,25 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// Returns the selected icon as [IconData] (resolved from [FLucideIcons]
 /// via [LucideIconBridge]), or null if the user dismissed the sheet.
 ///
-/// Shows a curated set of ~50 Lucide icons grouped by category, with an
+/// Shows a curated set of ~50 icons grouped by category, with an
 /// optional search field to filter by name. The [currentIcon] parameter
 /// highlights the currently selected icon.
+///
+/// Pass [categories] to override the default curated icon set — this
+/// allows callers to inject a domain-specific or remotely-configured
+/// icon collection without an app update.
 Future<IconData?> showAppIconPicker(
   BuildContext context, {
   IconData? currentIcon,
+  Map<IconPickerCategory, List<IconData>>? categories,
 }) async {
   return showFSheet(
     context: context,
     side: FLayout.btt,
-    builder: (context) => _IconPickerSheet(currentIcon: currentIcon),
+    builder: (context) => _IconPickerSheet(
+      currentIcon: currentIcon,
+      categories: categories ?? defaultIconPickerCategories,
+    ),
   );
 }
 
@@ -43,12 +51,12 @@ enum IconPickerCategory {
       };
 }
 
-/// Curated icon categories for the health-record domain.
+/// Default curated icon categories for the health-record domain.
 ///
-/// TODO(review-w6): This list is currently hardcoded to ~50 icons across 5
-/// categories. Consider making it extensible via feature flag or remote config
-/// so users can access a larger icon set without an app update.
-const _curatedIcons = <IconPickerCategory, List<IconData>>{
+/// Callers can pass a custom [Map] to [showAppIconPicker.categories] to
+/// override this set — e.g. from a remote config or a feature-flagged
+/// expanded icon set.
+const defaultIconPickerCategories = <IconPickerCategory, List<IconData>>{
   IconPickerCategory.food: [
     FLucideIcons.droplets,
     FLucideIcons.utensils,
@@ -109,9 +117,13 @@ const _curatedIcons = <IconPickerCategory, List<IconData>>{
 };
 
 class _IconPickerSheet extends StatefulWidget {
-  const _IconPickerSheet({this.currentIcon});
+  const _IconPickerSheet({
+    required this.categories,
+    this.currentIcon,
+  });
 
   final IconData? currentIcon;
+  final Map<IconPickerCategory, List<IconData>> categories;
 
   @override
   State<_IconPickerSheet> createState() => _IconPickerSheetState();
@@ -121,9 +133,9 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
   String _query = '';
 
   List<MapEntry<IconPickerCategory, List<IconData>>> get _filtered {
-    if (_query.isEmpty) return _curatedIcons.entries.toList();
+    if (_query.isEmpty) return widget.categories.entries.toList();
     final q = _query.toLowerCase();
-    return _curatedIcons.entries
+    return widget.categories.entries
         .map(
           (e) => MapEntry(
             e.key,
