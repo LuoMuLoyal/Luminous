@@ -63,5 +63,12 @@
   "desktopWindowMinimize": "最小化",
   "desktopWindowMaximize": "最大化",
   "desktopWindowRestore": "向下还原",
-  "desktopWindowClose": "关闭窗口"
+  "desktopWindowClose": "关闭窗口",
+  "iconPickerCategoryFood": "饮食",
+  "iconPickerCategoryHealth": "健康",
+  "iconPickerCategoryStatus": "状态",
+  "iconPickerCategoryBody": "身体",
+  "iconPickerCategoryGeneral": "通用",
+  "iconPickerSearchHint": "搜索图标",
+  "iconPickerEmpty": "未找到图标"
 }

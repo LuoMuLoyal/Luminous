@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/lucide_icon_bridge.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// Opens a lightweight icon picker sheet using Forui components.
 ///
@@ -22,10 +23,33 @@ Future<IconData?> showAppIconPicker(
   );
 }
 
+/// Category of curated icons for the health-record domain.
+///
+/// The order here determines the display order in the picker.
+enum IconPickerCategory {
+  food,
+  health,
+  status,
+  body,
+  general;
+
+  /// Returns the localized label for this category.
+  String label(AppLocalizations l10n) => switch (this) {
+        food => l10n.iconPickerCategoryFood,
+        health => l10n.iconPickerCategoryHealth,
+        status => l10n.iconPickerCategoryStatus,
+        body => l10n.iconPickerCategoryBody,
+        general => l10n.iconPickerCategoryGeneral,
+      };
+}
+
 /// Curated icon categories for the health-record domain.
-const _curatedIcons = <String, List<IconData>>{
-  // 饮食
-  '饮食': [
+///
+/// TODO(review-w6): This list is currently hardcoded to ~50 icons across 5
+/// categories. Consider making it extensible via feature flag or remote config
+/// so users can access a larger icon set without an app update.
+const _curatedIcons = <IconPickerCategory, List<IconData>>{
+  IconPickerCategory.food: [
     FLucideIcons.droplets,
     FLucideIcons.utensils,
     FLucideIcons.coffee,
@@ -37,8 +61,7 @@ const _curatedIcons = <String, List<IconData>>{
     FLucideIcons.cake,
     FLucideIcons.milk,
   ],
-  // 健康
-  '健康': [
+  IconPickerCategory.health: [
     FLucideIcons.activity,
     FLucideIcons.heartPulse,
     FLucideIcons.thermometer,
@@ -50,8 +73,7 @@ const _curatedIcons = <String, List<IconData>>{
     FLucideIcons.bandage,
     FLucideIcons.brain,
   ],
-  // 状态
-  '状态': [
+  IconPickerCategory.status: [
     FLucideIcons.smile,
     FLucideIcons.frown,
     FLucideIcons.meh,
@@ -63,8 +85,7 @@ const _curatedIcons = <String, List<IconData>>{
     FLucideIcons.timer,
     FLucideIcons.bell,
   ],
-  // 身体
-  '身体': [
+  IconPickerCategory.body: [
     FLucideIcons.footprints,
     FLucideIcons.bike,
     FLucideIcons.dumbbell,
@@ -73,8 +94,7 @@ const _curatedIcons = <String, List<IconData>>{
     FLucideIcons.eye,
     FLucideIcons.hand,
   ],
-  // 通用
-  '通用': [
+  IconPickerCategory.general: [
     FLucideIcons.fileText,
     FLucideIcons.clipboardList,
     FLucideIcons.notebookPen,
@@ -100,7 +120,7 @@ class _IconPickerSheet extends StatefulWidget {
 class _IconPickerSheetState extends State<_IconPickerSheet> {
   String _query = '';
 
-  List<MapEntry<String, List<IconData>>> get _filtered {
+  List<MapEntry<IconPickerCategory, List<IconData>>> get _filtered {
     if (_query.isEmpty) return _curatedIcons.entries.toList();
     final q = _query.toLowerCase();
     return _curatedIcons.entries
@@ -120,6 +140,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final l10n = AppLocalizations.of(context)!;
     final filtered = _filtered;
 
     return SafeArea(
@@ -143,7 +164,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
               control: FTextFieldControl.managed(
                 onChange: (value) => setState(() => _query = value.text),
               ),
-              hint: 'Search',
+              hint: l10n.iconPickerSearchHint,
               prefixBuilder: (context, style, variants) =>
                   FTextField.prefixIconBuilder(
                     context,
@@ -162,7 +183,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
                   ? Padding(
                       padding: const EdgeInsets.all(Spacing.level6),
                       child: Text(
-                        'No icons found',
+                        l10n.iconPickerEmpty,
                         style: TypographyToken.level3
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
@@ -175,7 +196,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
                       itemBuilder: (context, index) {
                         final entry = filtered[index];
                         return _CategorySection(
-                          label: entry.key,
+                          label: entry.key.label(l10n),
                           icons: entry.value,
                           currentIcon: widget.currentIcon,
                           onSelected: (icon) => Navigator.of(context).pop(icon),
