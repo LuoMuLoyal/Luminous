@@ -79,8 +79,21 @@ class SoftIcon extends StatelessWidget {
         size: iconSize,
         color: resolvedColor,
       );
+    } else if (icon is IconData) {
+      iconWidget = Icon(icon, color: resolvedColor, size: iconSize);
     } else {
-      iconWidget = Icon(icon as IconData, color: resolvedColor, size: iconSize);
+      // duotone=true but icon is not FPhosphorDuotoneIconData, or
+      // duotone=false but icon is not a regular IconData — fail explicitly.
+      assert(
+        false,
+        'SoftIcon: icon must be IconData (when duotone=false) or '
+        'FPhosphorDuotoneIconData (when duotone=true). Got: ${icon.runtimeType}',
+      );
+      iconWidget = Icon(
+        SemanticIcons.actionHelp,
+        color: resolvedColor,
+        size: iconSize,
+      );
     }
 
     return DecoratedBox(
