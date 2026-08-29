@@ -67,7 +67,6 @@ class ShellPage extends ConsumerWidget {
                 onSelectTab: onSelectTab,
               ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             const ConnectivityBanner(),
             Expanded(child: content),
