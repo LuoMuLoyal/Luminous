@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-23
+updated: 2026-08-29
 ---
 
 # Data Layer
@@ -179,6 +179,11 @@ keep features decoupled while sharing data:
 
 ADR-0009 introduced Drift-based local persistence. Repositories for `daily-records`,
 `health-context`, and `dose-logs` follow a cache-first pattern:
+
+- **Schema version**: currently `5`. v5 renames `report_dashboard_cache_entries` →
+  `review_dashboard_cache_entries` (report→review migration). Earlier versions: v1
+  initial schema, v2 adds `lastErrorDetails` to `PendingSyncItems`, v3 adds
+  `ReviewCacheEntries`, v4 adds `ReviewDashboardCacheEntries`.
 
 - **Read**: serve from local cache immediately, trigger a throttled background refresh (30s) from
   the network, and backfill the cache.

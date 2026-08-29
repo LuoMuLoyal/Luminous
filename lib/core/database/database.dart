@@ -63,8 +63,10 @@ class AppDatabase extends _$AppDatabase {
   /// - 2: adds `lastErrorDetails` to [PendingSyncItems] (see [migration]).
   /// - 3: adds [ReviewCacheEntries] table.
   /// - 4: adds [ReviewDashboardCacheEntries] table.
+  /// - 5: renames `report_dashboard_cache_entries` →
+  ///   `review_dashboard_cache_entries` (report→review migration).
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -80,6 +82,16 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 4) {
         await m.createTable(reviewDashboardCacheEntries);
+      }
+      if (from < 5) {
+        // report→review rename: the table was originally created as
+        // `report_dashboard_cache_entries` in v4. Rename it to match the
+        // new DAO/table class name. If the old table doesn't exist (fresh
+        // install at v4), createTable already handled it in the v4 step.
+        await m.renameTable(
+          reviewDashboardCacheEntries,
+          'report_dashboard_cache_entries',
+        );
       }
       //
       // Version range strategy (if Web and native diverge):
