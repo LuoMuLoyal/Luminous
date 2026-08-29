@@ -207,7 +207,7 @@ class _SidebarHeaderContent extends StatelessWidget {
           child: Row(
             children: [
               FAvatar.raw(
-                size: IconSizeTokens.level5,
+                size: IconSizeTokens.level6,
                 child: const Icon(
                   SemanticIcons.profileUser,
                   size: IconSizeTokens.level2,
