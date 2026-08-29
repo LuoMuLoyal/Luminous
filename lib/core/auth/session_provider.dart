@@ -29,10 +29,14 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   }
 
   Future<void> restore() async {
+    // If we're recovering from a timeout, mark as reconnecting so the UI
+    // can distinguish "first cold start" from "retry after timeout".
+    final wasTimeout = state.isTimeout;
     state = state.copyWith(
       isLoading: true,
       errorMessage: null,
       isTimeout: false,
+      isReconnecting: wasTimeout,
     );
     final store = ref.read(lucentSessionStoreProvider);
     final refreshToken = await store.readRefreshToken();

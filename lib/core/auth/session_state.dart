@@ -13,7 +13,18 @@ abstract class AuthSessionState with _$AuthSessionState {
     @Default(false) bool isLoading,
     @Default(false) bool isAuthenticated,
     String? errorMessage,
+
+    /// True when session restore timed out and the user is in a
+    /// "network may recover" state — the UI shows a retry banner
+    /// ([ConnectivityBanner]) and allows manual re-trigger of
+    /// [AuthSessionNotifier.restore].
     @Default(false) bool isTimeout,
+
+    /// True while [AuthSessionNotifier.restore] is actively retrying
+    /// after a timeout. Distinct from [isLoading] (which covers the
+    /// initial cold-start restore) — [isReconnecting] specifically
+    /// signals "recovering from a known timeout state".
+    @Default(false) bool isReconnecting,
   }) = _AuthSessionState;
 }
 
