@@ -21,7 +21,7 @@ class ConnectivityBanner extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final warningPalette = context.theme.colors.semantic.warning;
 
-    return Material(
+    return ColoredBox(
       color: warningPalette.solid,
       child: SafeArea(
         bottom: false,
@@ -41,7 +41,7 @@ class ConnectivityBanner extends ConsumerWidget {
               Expanded(
                 child: Text(
                   l10n.authSessionRestoreTimeout,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  style: context.theme.typography.body.sm.copyWith(
                     color: warningPalette.foreground,
                     fontWeight: FontWeight.w500,
                   ),
@@ -52,7 +52,7 @@ class ConnectivityBanner extends ConsumerWidget {
                 onPress: () => ref.read(authSessionProvider.notifier).restore(),
                 child: Text(
                   l10n.commonRetry,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  style: context.theme.typography.body.sm.copyWith(
                     color: warningPalette.foreground,
                     fontWeight: FontWeight.w600,
                   ),
