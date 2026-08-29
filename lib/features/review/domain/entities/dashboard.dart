@@ -116,6 +116,7 @@ abstract class ReviewTrendSeries with _$ReviewTrendSeries {
     required String unit,
     required List<double> values,
     required String currentValue,
+    ReviewObservedMetric? observedMetric,
   }) = _ReviewTrendSeries;
 }
 

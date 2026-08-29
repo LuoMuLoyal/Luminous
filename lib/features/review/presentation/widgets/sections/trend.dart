@@ -124,8 +124,8 @@ class _SingleTrendChart extends StatelessWidget {
     final colors = context.theme.colors;
     final values = series.values;
 
-    // Empty state for this specific metric.
-    if (values.isEmpty || values.every((v) => v == 0)) {
+    // Empty state: no observed values at all.
+    if (values.isEmpty) {
       return _TrendEmptyState(l10n: l10n);
     }
 
@@ -153,6 +153,12 @@ class _SingleTrendChart extends StatelessWidget {
     final labels = _generateDateLabels(dayCount, context);
     final labelInterval = dayCount <= 7 ? 1.0 : (dayCount / 6).ceilToDouble();
 
+    // Coverage annotation from observedMetric.
+    final om = series.observedMetric;
+    final coverageLabel = om != null && om.expectedCount != null
+        ? l10n.reviewTrendCoverage(om.observedCount, om.expectedCount!)
+        : null;
+
     return FCard(
       child: Container(
         decoration: BoxDecoration(
@@ -164,7 +170,7 @@ class _SingleTrendChart extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Current value summary row
+            // Current value + coverage summary row
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
@@ -178,6 +184,17 @@ class _SingleTrendChart extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                 ),
+                const SizedBox(width: Spacing.level3),
+                if (coverageLabel != null)
+                  Expanded(
+                    child: Text(
+                      coverageLabel,
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
               ],
             ),
             const SizedBox(height: Spacing.level3),
@@ -378,7 +395,5 @@ class _TrendEmptyState extends StatelessWidget {
 /// Checks whether all trend series have no meaningful data (empty values).
 bool _allSeriesEmpty(List<ReviewTrendSeries> trends) {
   if (trends.isEmpty) return true;
-  return trends.every(
-    (series) => series.values.isEmpty || series.values.every((v) => v == 0),
-  );
+  return trends.every((series) => series.values.isEmpty);
 }

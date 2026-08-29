@@ -260,6 +260,17 @@
   "reviewMoreShareManagementSubtitle": "View and revoke shared links",
   "reviewTrendEmptyTitle": "No trend data yet",
   "reviewTrendEmptyBody": "Record water, medication, or sleep on at least 2 days to see your health trends.",
+  "reviewTrendCoverage": "{observed} of {expected} days recorded",
+  "@reviewTrendCoverage": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      },
+      "expected": {
+        "type": "int"
+      }
+    }
+  },
   "reviewExportFailedWithReason": "Export failed: {reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

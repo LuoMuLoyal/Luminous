@@ -267,6 +267,17 @@
   "reviewMoreShareManagementSubtitle": "查看和撤销分享链接",
   "reviewTrendEmptyTitle": "暂无趋势数据",
   "reviewTrendEmptyBody": "连续 2 天记录饮水、用药或睡眠后，这里会显示健康趋势变化。",
+  "reviewTrendCoverage": "有记录 {observed} 天 / 范围 {expected} 天",
+  "@reviewTrendCoverage": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      },
+      "expected": {
+        "type": "int"
+      }
+    }
+  },
   "reviewExportFailedWithReason": "导出失败：{reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

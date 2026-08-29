@@ -23,10 +23,9 @@ Created: 2026-08-16
 
 **R-4 legacy 改造包(#19-#22 打包，0.1.0 前）**
 
-- 进展:#20 已落地(Lucent `912c8efa` 移除 `buildScore` 与 DTO score 输出、Luminous `68d42f47` 移除评分卡与 score 引用);客户端非流式 `generate()` 死代码已随 R-3 删除;#19/#21/#22 与后端端点/缓存桥裁剪未完成。
+- 进展:#20 已落地(Lucent `912c8efa` 移除 `buildScore` 与 DTO score 输出、Luminous `68d42f47` 移除评分卡与 score 引用);客户端非流式 `generate()` 死代码已随 R-3 删除;#21 已落地(observed-only trend values + 覆盖率标注);#19/#22 与后端端点/缓存桥裁剪未完成。
 - 方案(打包执行,不删除功能与代码):
   - #19:`legacy_dashboard_compat.dart` 等重新装配为 Review 日/周/月纵向洞察视图(聚合计算逻辑保留,`top_bar.dart` 范围切换改为日/周/月切换);路由 `/report/legacy` 与 domain 侧 `dashboard.dart` 实体/mapper 视装配进度迁移。
-  - #21:legacy 图表改按 `observedMetric` 口径输出:unknown 天不绘点、只绘已记录数据,图表旁标注「有记录 N 天 / 范围 M 天」覆盖率;废除 unknown→0(服务端)与 unknown→flat/general(客户端)两处口径。observedMetric 口径定义引用 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节。
   - #22:建议历史从 legacy 页移入 Review「建议历史」详情视图,数据源 `/today/suggestions/history`,保留 title|reason|type 去重取最高生命周期状态与详情面板。
   - 同包清理:后端零消费端点(`summary/generate` 非流式、`summary/generate/async` + `status`、`clinic-summary/export/async` + `status`)下线或降级为不暴露;旧 Redis `createShareLink` 缓存桥清理。先做客户端死代码清理与数据契约拆分,再评估后端裁剪,避免先砍后端影响导出(#17 PDF 依赖 dashboard 聚合)。
 - 依赖:data-export PDF 数据源替代方案须先行确认(见第四节);vital 数据源引用 record 计划 vital 基建一节。

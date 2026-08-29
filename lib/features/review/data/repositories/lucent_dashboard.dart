@@ -175,6 +175,9 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
       unit: dto.unit,
       values: dto.values.map((value) => value.toDouble()).toList(),
       currentValue: dto.currentValue,
+      observedMetric: dto.observedMetric == null
+          ? null
+          : _mapObservedMetric(dto.observedMetric!),
     );
   }
 
