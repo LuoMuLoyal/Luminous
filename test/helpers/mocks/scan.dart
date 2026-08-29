@@ -190,7 +190,8 @@ class MockPaddleOcrEngine extends Mock implements PaddleOcrEngine {}
 class FakeOcrModelManager implements OcrModelManager {
   const FakeOcrModelManager({this.modelsAvailable = true});
 
-  /// When `true`, [isModelAvailable] returns `false` to simulate
+  /// When `true` (default), [isModelAvailable] returns `true`, simulating
+  /// "models already downloaded". Set to `false` to simulate
   /// "models not downloaded" scenarios.
   final bool modelsAvailable;
 
