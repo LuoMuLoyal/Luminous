@@ -79,6 +79,16 @@ void main(List<String> args) {
     ..writeln()
     ..writeln('  static const IconData _fallback = FLucideIcons.circleHelp;')
     ..writeln()
+    ..writeln(
+      '  /// Pre-computed reverse map: IconData → kebab-case name.',
+    )
+    ..writeln(
+      '  /// Built once at class initialization to avoid O(N) scan per [nameOf] call.',
+    )
+    ..writeln('  static final Map<IconData, String> _reverseMap = {')
+    ..writeln('    for (final entry in _map.entries) entry.value: entry.key,')
+    ..writeln('  };')
+    ..writeln()
     ..writeln('  /// Resolve a Lucide icon name (kebab-case) to [IconData].')
     ..writeln(
       '  /// Falls back to [FLucideIcons.circleHelp] if the name is unknown.',
@@ -96,12 +106,7 @@ void main(List<String> args) {
     ..writeln(
       '  /// Returns null if the icon is not a known FLucideIcons entry.',
     )
-    ..writeln('  static String? nameOf(IconData icon) {')
-    ..writeln('    for (final entry in _map.entries) {')
-    ..writeln('      if (entry.value == icon) return entry.key;')
-    ..writeln('    }')
-    ..writeln('    return null;')
-    ..writeln('  }')
+    ..writeln('  static String? nameOf(IconData icon) => _reverseMap[icon];')
     ..writeln('}');
 
   final outputPath = 'lib/core/design/lucide_icon_bridge.dart';

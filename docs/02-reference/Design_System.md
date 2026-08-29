@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-27
+updated: 2026-08-29
 ---
 
 # Design System
@@ -68,7 +68,8 @@ updated: 2026-08-27
 - `Spacing` / `RadiusTokens` / `TypographyToken` / `DurationTokens` / `IconSizeTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
-- `IconSizeTokens`（`icon_size.dart`）提供 5 级 icon size：level1=12, level2=16, level3=20, level4=24, level5=32。
+- `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size：level1=12, level2=16, level3=20, level4=24, level5=28, level6=32, level7=48, level8=64。原 level5=32 已拆分为 level5=28（suggestion card）和 level6=32（avatar/hero）。
+- `LucideIconBridge`（`lucide_icon_bridge.dart`，generated）提供 name→IconData 正查 (`resolve`) 和 IconData→name 反查 (`nameOf`)。反查使用预计算 `_reverseMap`（O(1)），而非每次 keystroke O(N) 扫描。
 - `ElevationTokens`（`elevation.dart`）提供 `raised(FColors)` / `glow(Color)` / `shadowColor(FColors)` 方法。
 - `GradientTokens`（`gradient.dart`）提供 `semanticFill(SemanticColorPalette)` / `tintFade(Color, Color)` 两个命名渐变模式；禁止内联 `LinearGradient`，必须走 token。
 - 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名在所有调用点迁移后被移除。

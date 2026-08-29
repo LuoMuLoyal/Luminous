@@ -39,14 +39,10 @@ abstract final class LucideIconBridge {
     'align-center': FLucideIcons.alignCenter,
     'align-end-horizontal': FLucideIcons.alignEndHorizontal,
     'align-end-vertical': FLucideIcons.alignEndVertical,
-    'align-horizontal-distribute-center':
-        FLucideIcons.alignHorizontalDistributeCenter,
-    'align-horizontal-distribute-end':
-        FLucideIcons.alignHorizontalDistributeEnd,
-    'align-horizontal-distribute-start':
-        FLucideIcons.alignHorizontalDistributeStart,
-    'align-horizontal-justify-center':
-        FLucideIcons.alignHorizontalJustifyCenter,
+    'align-horizontal-distribute-center': FLucideIcons.alignHorizontalDistributeCenter,
+    'align-horizontal-distribute-end': FLucideIcons.alignHorizontalDistributeEnd,
+    'align-horizontal-distribute-start': FLucideIcons.alignHorizontalDistributeStart,
+    'align-horizontal-justify-center': FLucideIcons.alignHorizontalJustifyCenter,
     'align-horizontal-justify-end': FLucideIcons.alignHorizontalJustifyEnd,
     'align-horizontal-justify-start': FLucideIcons.alignHorizontalJustifyStart,
     'align-horizontal-space-around': FLucideIcons.alignHorizontalSpaceAround,
@@ -56,11 +52,9 @@ abstract final class LucideIconBridge {
     'align-right': FLucideIcons.alignRight,
     'align-start-horizontal': FLucideIcons.alignStartHorizontal,
     'align-start-vertical': FLucideIcons.alignStartVertical,
-    'align-vertical-distribute-center':
-        FLucideIcons.alignVerticalDistributeCenter,
+    'align-vertical-distribute-center': FLucideIcons.alignVerticalDistributeCenter,
     'align-vertical-distribute-end': FLucideIcons.alignVerticalDistributeEnd,
-    'align-vertical-distribute-start':
-        FLucideIcons.alignVerticalDistributeStart,
+    'align-vertical-distribute-start': FLucideIcons.alignVerticalDistributeStart,
     'align-vertical-justify-center': FLucideIcons.alignVerticalJustifyCenter,
     'align-vertical-justify-end': FLucideIcons.alignVerticalJustifyEnd,
     'align-vertical-justify-start': FLucideIcons.alignVerticalJustifyStart,
@@ -1686,10 +1680,8 @@ abstract final class LucideIconBridge {
     'square-arrow-up': FLucideIcons.squareArrowUp,
     'square-asterisk': FLucideIcons.squareAsterisk,
     'square-bottom-dashed-scissors': FLucideIcons.squareBottomDashedScissors,
-    'square-centerline-dashed-horizontal':
-        FLucideIcons.squareCenterlineDashedHorizontal,
-    'square-centerline-dashed-vertical':
-        FLucideIcons.squareCenterlineDashedVertical,
+    'square-centerline-dashed-horizontal': FLucideIcons.squareCenterlineDashedHorizontal,
+    'square-centerline-dashed-vertical': FLucideIcons.squareCenterlineDashedVertical,
     'square-chart-gantt': FLucideIcons.squareChartGantt,
     'square-check-big': FLucideIcons.squareCheckBig,
     'square-check': FLucideIcons.squareCheck,
@@ -2054,6 +2046,12 @@ abstract final class LucideIconBridge {
 
   static const IconData _fallback = FLucideIcons.circleHelp;
 
+  /// Pre-computed reverse map: IconData → kebab-case name.
+  /// Built once at class initialization to avoid O(N) scan per [nameOf] call.
+  static final Map<IconData, String> _reverseMap = {
+    for (final entry in _map.entries) entry.value: entry.key,
+  };
+
   /// Resolve a Lucide icon name (kebab-case) to [IconData].
   /// Falls back to [FLucideIcons.circleHelp] if the name is unknown.
   static IconData resolve(String name, {IconData? fallback}) {
@@ -2065,10 +2063,5 @@ abstract final class LucideIconBridge {
 
   /// Reverse lookup: find the kebab-case name for an [IconData].
   /// Returns null if the icon is not a known FLucideIcons entry.
-  static String? nameOf(IconData icon) {
-    for (final entry in _map.entries) {
-      if (entry.value == icon) return entry.key;
-    }
-    return null;
-  }
+  static String? nameOf(IconData icon) => _reverseMap[icon];
 }
