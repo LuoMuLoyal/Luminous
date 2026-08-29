@@ -106,8 +106,8 @@ Future<void> _startPhotoScan(
       _showProcessingOverlay(context, MedicineScanMethod.ocr);
       try {
         await modelManager.downloadModels();
-      } catch (e) {
-        appTalker.error('OCR model download failed: $e');
+      } catch (e, st) {
+        appTalker.error('OCR model download failed: $e', e, st);
         if (context.mounted) {
           _dismissOverlay(context);
           await _showModelDownloadFailedDialog(context, l10n);
@@ -120,8 +120,8 @@ Future<void> _startPhotoScan(
     final ocrEngine = await container.read(paddleOcrProvider.future);
     try {
       await ocrEngine.ensureInitialized();
-    } catch (e) {
-      appTalker.warning('OCR engine init failed (ABI pre-check): $e');
+    } catch (e, st) {
+      appTalker.warning('OCR engine init failed (ABI pre-check): $e', e, st);
       if (context.mounted) {
         await _showOcrUnavailableDialog(context, l10n);
       }

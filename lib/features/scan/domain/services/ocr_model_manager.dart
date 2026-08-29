@@ -25,7 +25,10 @@ class OcrModelManager {
   static const recConfigFileName = 'rec_inference.yml';
 
   // GitHub release download URLs for the ONNX model files.
-  // TODO: Replace with a Lucent-backed CDN URL before production release.
+  // TODO(release-blocker): Replace with a Lucent-backed CDN URL before production release.
+  // GitHub Releases are not production-grade: rate limits, CORS, regional
+  // restrictions, and repo visibility changes can all break first-scan.
+  // The URL should point to a Lucent CDN with documented SLO and version pinning.
   static const _modelBaseUrl =
       'https://github.com/flespark/paddle_ocr_native/releases/download/v0.1.1-models';
 
@@ -60,6 +63,7 @@ class OcrModelManager {
     final dir = modelDirectory;
 
     final downloads = <String>[detModelFileName, recModelFileName];
+    final totalSteps = downloads.length + 1; // downloads + config copy
 
     var completed = 0;
     for (final fileName in downloads) {
@@ -68,7 +72,7 @@ class OcrModelManager {
 
       if (file.existsSync() && file.lengthSync() > 0) {
         completed++;
-        onProgress?.call(completed / (downloads.length + 1));
+        onProgress?.call(completed / totalSteps);
         continue;
       }
 
@@ -82,14 +86,14 @@ class OcrModelManager {
           if (total > 0) {
             final fileProgress = received / total;
             final overallProgress =
-                (completed + fileProgress) / (downloads.length + 1);
+                (completed + fileProgress) / totalSteps;
             onProgress?.call(overallProgress);
           }
         },
       );
 
       completed++;
-      onProgress?.call(completed / (downloads.length + 1));
+      onProgress?.call(completed / totalSteps);
     }
 
     // Copy the rec config yml from plugin assets to the model directory.
@@ -101,6 +105,7 @@ class OcrModelManager {
       final data = await rootBundle.load(assetKey);
       await configFile.writeAsBytes(data.buffer.asUint8List());
     }
+    // Only signal 100% after the config copy (the final step) has succeeded.
     onProgress?.call(1.0);
 
     appTalker.info('OCR model download complete');

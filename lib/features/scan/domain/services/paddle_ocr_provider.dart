@@ -103,12 +103,12 @@ class OcrModelsNotDownloadedException implements Exception {
 final paddleOcrProvider = FutureProvider<PaddleOcrEngine>((ref) async {
   final modelManager = await ref.watch(ocrModelManagerProvider.future);
   final engine = PaddleOcrEngine(modelManager);
-  ref.onDispose(() {
-    unawaited(
-      engine.dispose().catchError(
-        (e) => appTalker.warning('PaddleOcrEngine dispose error: $e'),
-      ),
-    );
+  ref.onDispose(() async {
+    try {
+      await engine.dispose();
+    } catch (e, st) {
+      appTalker.warning('PaddleOcrEngine dispose error: $e', e, st);
+    }
   });
   return engine;
 });
