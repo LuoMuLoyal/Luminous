@@ -79,9 +79,7 @@ void main(List<String> args) {
     ..writeln()
     ..writeln('  static const IconData _fallback = FLucideIcons.circleHelp;')
     ..writeln()
-    ..writeln(
-      '  /// Pre-computed reverse map: IconData → kebab-case name.',
-    )
+    ..writeln('  /// Pre-computed reverse map: IconData → kebab-case name.')
     ..writeln(
       '  /// Built once at class initialization to avoid O(N) scan per [nameOf] call.',
     )

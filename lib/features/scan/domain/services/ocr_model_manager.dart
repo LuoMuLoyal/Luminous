@@ -85,8 +85,7 @@ class OcrModelManager {
         onReceiveProgress: (received, total) {
           if (total > 0) {
             final fileProgress = received / total;
-            final overallProgress =
-                (completed + fileProgress) / totalSteps;
+            final overallProgress = (completed + fileProgress) / totalSteps;
             onProgress?.call(overallProgress);
           }
         },

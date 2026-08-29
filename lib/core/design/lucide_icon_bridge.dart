@@ -39,10 +39,14 @@ abstract final class LucideIconBridge {
     'align-center': FLucideIcons.alignCenter,
     'align-end-horizontal': FLucideIcons.alignEndHorizontal,
     'align-end-vertical': FLucideIcons.alignEndVertical,
-    'align-horizontal-distribute-center': FLucideIcons.alignHorizontalDistributeCenter,
-    'align-horizontal-distribute-end': FLucideIcons.alignHorizontalDistributeEnd,
-    'align-horizontal-distribute-start': FLucideIcons.alignHorizontalDistributeStart,
-    'align-horizontal-justify-center': FLucideIcons.alignHorizontalJustifyCenter,
+    'align-horizontal-distribute-center':
+        FLucideIcons.alignHorizontalDistributeCenter,
+    'align-horizontal-distribute-end':
+        FLucideIcons.alignHorizontalDistributeEnd,
+    'align-horizontal-distribute-start':
+        FLucideIcons.alignHorizontalDistributeStart,
+    'align-horizontal-justify-center':
+        FLucideIcons.alignHorizontalJustifyCenter,
     'align-horizontal-justify-end': FLucideIcons.alignHorizontalJustifyEnd,
     'align-horizontal-justify-start': FLucideIcons.alignHorizontalJustifyStart,
     'align-horizontal-space-around': FLucideIcons.alignHorizontalSpaceAround,
@@ -52,9 +56,11 @@ abstract final class LucideIconBridge {
     'align-right': FLucideIcons.alignRight,
     'align-start-horizontal': FLucideIcons.alignStartHorizontal,
     'align-start-vertical': FLucideIcons.alignStartVertical,
-    'align-vertical-distribute-center': FLucideIcons.alignVerticalDistributeCenter,
+    'align-vertical-distribute-center':
+        FLucideIcons.alignVerticalDistributeCenter,
     'align-vertical-distribute-end': FLucideIcons.alignVerticalDistributeEnd,
-    'align-vertical-distribute-start': FLucideIcons.alignVerticalDistributeStart,
+    'align-vertical-distribute-start':
+        FLucideIcons.alignVerticalDistributeStart,
     'align-vertical-justify-center': FLucideIcons.alignVerticalJustifyCenter,
     'align-vertical-justify-end': FLucideIcons.alignVerticalJustifyEnd,
     'align-vertical-justify-start': FLucideIcons.alignVerticalJustifyStart,
@@ -1680,8 +1686,10 @@ abstract final class LucideIconBridge {
     'square-arrow-up': FLucideIcons.squareArrowUp,
     'square-asterisk': FLucideIcons.squareAsterisk,
     'square-bottom-dashed-scissors': FLucideIcons.squareBottomDashedScissors,
-    'square-centerline-dashed-horizontal': FLucideIcons.squareCenterlineDashedHorizontal,
-    'square-centerline-dashed-vertical': FLucideIcons.squareCenterlineDashedVertical,
+    'square-centerline-dashed-horizontal':
+        FLucideIcons.squareCenterlineDashedHorizontal,
+    'square-centerline-dashed-vertical':
+        FLucideIcons.squareCenterlineDashedVertical,
     'square-chart-gantt': FLucideIcons.squareChartGantt,
     'square-check-big': FLucideIcons.squareCheckBig,
     'square-check': FLucideIcons.squareCheck,

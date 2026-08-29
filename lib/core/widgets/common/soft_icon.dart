@@ -80,7 +80,8 @@ class SoftIcon extends StatelessWidget {
         color: resolvedColor,
       );
     } else if (icon is IconData) {
-      iconWidget = Icon(icon, color: resolvedColor, size: iconSize);
+      final IconData iconData = icon as IconData;
+      iconWidget = Icon(iconData, color: resolvedColor, size: iconSize);
     } else {
       // duotone=true but icon is not FPhosphorDuotoneIconData, or
       // duotone=false but icon is not a regular IconData — fail explicitly.

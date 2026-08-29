@@ -43,12 +43,12 @@ enum IconPickerCategory {
 
   /// Returns the localized label for this category.
   String label(AppLocalizations l10n) => switch (this) {
-        food => l10n.iconPickerCategoryFood,
-        health => l10n.iconPickerCategoryHealth,
-        status => l10n.iconPickerCategoryStatus,
-        body => l10n.iconPickerCategoryBody,
-        general => l10n.iconPickerCategoryGeneral,
-      };
+    food => l10n.iconPickerCategoryFood,
+    health => l10n.iconPickerCategoryHealth,
+    status => l10n.iconPickerCategoryStatus,
+    body => l10n.iconPickerCategoryBody,
+    general => l10n.iconPickerCategoryGeneral,
+  };
 }
 
 /// Default curated icon categories for the health-record domain.
@@ -117,10 +117,7 @@ const defaultIconPickerCategories = <IconPickerCategory, List<IconData>>{
 };
 
 class _IconPickerSheet extends StatefulWidget {
-  const _IconPickerSheet({
-    required this.categories,
-    this.currentIcon,
-  });
+  const _IconPickerSheet({required this.categories, this.currentIcon});
 
   final IconData? currentIcon;
   final Map<IconPickerCategory, List<IconData>> categories;
