@@ -85,8 +85,9 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
 Forui-led theming. Details in `docs/02-reference/Design_System.md` and
 `docs/02-reference/Forui_Reference.md`.
 
-- `SemanticColor`, `Spacing`, `RadiusTokens`, `TypographyToken`, `DurationTokens`,
-  `Breakpoints` — design tokens (via barrel `lib/core/design/design.dart`).
+- `SemanticColor`, `Spacing`, `IconSizeTokens` — design tokens；圆角/字体直接取 Forui
+  `context.theme.style.borderRadius.*` / `context.theme.typography.body/display.*`
+  (via barrel `lib/core/design/design.dart`).
 - Prefer Forui primitives directly over new `App*` wrappers.
 - Prefer `FLucideIcons` over Material icons (treat `Icons.*` as migration debt).
 - User-visible text goes through ARB + `flutter gen-l10n` — no hardcoded strings.

@@ -108,7 +108,7 @@ flutter test
 Forui-led theming. Details in `docs/02-reference/Design_System.md` and
 `docs/02-reference/Forui_Reference.md`. Reference in `D:\25080\Documents\VSCodeProject\Lumos\forui-docs`
 
-- `SemanticColor`, `Spacing`, `RadiusTokens`, `TypographyToken` — design tokens.
+- `SemanticColor`, `Spacing`, `IconSizeTokens` — design tokens；圆角/字体直接取 Forui `context.theme.style.borderRadius.*` / `context.theme.typography.body/display.*`。
 - Prefer Forui primitives directly. Don't add thin wrappers that only preset styles;
   existing wrappers (`AppBackButton`, `AppDivider`, etc.) are kept as-is.
 - Prefer `FLucideIcons` over Material icons (treat `Icons.*` as migration debt).
