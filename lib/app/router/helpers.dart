@@ -78,6 +78,7 @@ CustomTransitionPage<T> sidePanelPage<T>({
 
   return CustomTransitionPage<T>(
     key: key,
+    // 侧面板遮罩：固定黑色压暗（系统级 scrim，与主题无关）
     barrierColor: Colors.black.withValues(alpha: 0.4),
     barrierDismissible: true,
     opaque: false,
@@ -85,7 +86,7 @@ CustomTransitionPage<T> sidePanelPage<T>({
       alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
-        child: Material(color: const Color(0x00000000), child: child),
+        child: Material(color: Colors.transparent, child: child),
       ),
     ),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {

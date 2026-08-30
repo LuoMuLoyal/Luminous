@@ -386,6 +386,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          // 相机预览恒为深色：底部引导文字/图标固定白色，不随主题变化
                           Text(
                             _isSearching
                                 ? l10n.scanRecognizingHint

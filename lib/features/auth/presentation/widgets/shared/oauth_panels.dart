@@ -349,6 +349,7 @@ class _OAuthCircleButton extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: Center(
+          // 品牌色圆底上的固定白色图标（品牌标识惯例，不随主题变化）
           child: isLoading
               ? const ColorFiltered(
                   colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
@@ -362,6 +363,7 @@ class _OAuthCircleButton extends StatelessWidget {
                   assetPath,
                   width: 24,
                   height: 24,
+                  // 品牌色圆底上的固定白色图标（品牌标识惯例，不随主题变化）
                   colorFilter: const ColorFilter.mode(
                     Colors.white,
                     BlendMode.srcIn,

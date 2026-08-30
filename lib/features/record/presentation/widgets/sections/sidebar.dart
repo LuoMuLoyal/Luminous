@@ -392,7 +392,7 @@ class _MonthDayCellState extends State<_MonthDayCell> {
                     ? colors.foreground
                     : _isDragHovering
                     ? SemanticColor.primary.border(context)
-                    : const Color(0x00000000),
+                    : Colors.transparent,
                 shape: BoxShape.circle,
                 border: _isDragHovering && !widget.day.selected
                     ? Border.all(

@@ -118,7 +118,10 @@ Future<void> _handleThemeFamilyTap(WidgetRef ref, AppThemeFamily family) async {
   await ref.read(themeControllerProvider.notifier).setFamily(family);
 }
 
-/// Theme family preview color dot, using the family's light theme primary color.
+/// Theme family preview color dot.
+///
+/// The palette is an illustrative approximation (Tailwind 500-series) for
+/// display only — it is not the family's actual theme primary color.
 class _ThemeFamilyDot extends StatelessWidget {
   const _ThemeFamilyDot({required this.family});
 
@@ -126,6 +129,7 @@ class _ThemeFamilyDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 主题族预览示意色（Tailwind 500 系近似值，仅展示用，非主题实际主色）
     final color = switch (family) {
       AppThemeFamily.blue => const Color(0xFF3B82F6),
       AppThemeFamily.green => const Color(0xFF22C55E),

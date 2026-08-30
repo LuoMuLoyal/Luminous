@@ -35,6 +35,7 @@ FlowTheme luminousFlowTheme(BuildContext context) {
       surfaceContainerHigh: colors.secondary,
       surfaceContainerHighest: colors.secondary,
       error: SemanticColor.destructive.solid(context),
+      // Material 桥接层 error 前景：白字红底标准对比，不随主题变化
       onError: Colors.white,
     ),
     typography: FlowTypography.standard.withFontFamily(

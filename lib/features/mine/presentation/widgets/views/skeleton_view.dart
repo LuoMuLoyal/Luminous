@@ -198,7 +198,7 @@ class _ArchivePlaceholder extends StatelessWidget {
                   ),
                   Icon(
                     SemanticIcons.actionNext,
-                    color: Color(0x00000000),
+                    color: Colors.transparent,
                     size: Spacing.level5,
                   ),
                 ],
@@ -234,7 +234,7 @@ class _AiPrivacyPlaceholder extends StatelessWidget {
             InlineSkeletonBlock(height: 14, width: 56),
             Icon(
               SemanticIcons.actionNext,
-              color: Color(0x00000000),
+              color: Colors.transparent,
               size: Spacing.level5,
             ),
           ],
@@ -274,7 +274,7 @@ class _NotificationsRemindersPlaceholder extends StatelessWidget {
                   ),
                   Icon(
                     SemanticIcons.actionNext,
-                    color: Color(0x00000000),
+                    color: Colors.transparent,
                     size: Spacing.level5,
                   ),
                 ],
@@ -317,7 +317,7 @@ class _AccountSecurityPlaceholder extends StatelessWidget {
                   ),
                   Icon(
                     SemanticIcons.actionNext,
-                    color: Color(0x00000000),
+                    color: Colors.transparent,
                     size: Spacing.level5,
                   ),
                 ],

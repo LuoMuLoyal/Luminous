@@ -306,6 +306,7 @@ class _CommandTileState extends State<_CommandTile> {
 Future<void> showCommandPalette(BuildContext context) async {
   await showDialog<void>(
     context: context,
+    // 命令面板遮罩：固定黑色压暗（系统级 scrim，与主题无关）
     barrierColor: Colors.black54,
     builder: (context) => const CommandPalette(),
   );
