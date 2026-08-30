@@ -152,7 +152,7 @@ class _CommandPaletteState extends State<CommandPalette> {
                     vertical: Spacing.level3,
                   ),
                 ),
-                style: TypographyToken.level4.body(context),
+                style: context.theme.typography.body.sm,
                 onSubmitted: (_) => _executeSelected(),
               ),
               Divider(color: theme.colors.border, height: 1),
@@ -163,9 +163,9 @@ class _CommandPaletteState extends State<CommandPalette> {
                   child: Center(
                     child: Text(
                       l10n.commandPaletteEmpty,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: theme.colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
                     ),
                   ),
                 )
@@ -278,20 +278,18 @@ class _CommandTileState extends State<_CommandTile> {
                   children: [
                     Text(
                       widget.command.label,
-                      style: TypographyToken.level4
-                          .body(context)
-                          .copyWith(
-                            color: theme.colors.foreground,
-                            fontWeight: widget.selected
-                                ? FontWeight.w600
-                                : FontWeight.w500,
-                          ),
+                      style: context.theme.typography.body.sm.copyWith(
+                        color: theme.colors.foreground,
+                        fontWeight: widget.selected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
+                      ),
                     ),
                     Text(
                       widget.command.category,
-                      style: TypographyToken.level2
-                          .body(context)
-                          .copyWith(color: theme.colors.mutedForeground),
+                      style: context.theme.typography.body.xs2.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
                     ),
                   ],
                 ),

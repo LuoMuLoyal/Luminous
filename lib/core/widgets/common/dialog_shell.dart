@@ -103,9 +103,9 @@ Future<bool> showDangerConfirmationDialog({
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TypographyToken.level6.body(context)),
+        Text(title, style: context.theme.typography.body.lg),
         const SizedBox(height: Spacing.level3),
-        Text(message, style: TypographyToken.level4.body(context)),
+        Text(message, style: context.theme.typography.body.sm),
         const SizedBox(height: Spacing.level5),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,

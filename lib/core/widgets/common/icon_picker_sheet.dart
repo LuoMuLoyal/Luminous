@@ -193,9 +193,9 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
                       padding: const EdgeInsets.all(Spacing.level6),
                       child: Text(
                         l10n.iconPickerEmpty,
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(color: colors.mutedForeground),
+                        style: context.theme.typography.body.xs.copyWith(
+                          color: colors.mutedForeground,
+                        ),
                       ),
                     )
                   : ListView.builder(
@@ -248,12 +248,10 @@ class _CategorySection extends StatelessWidget {
           ),
           child: Text(
             label,
-            style: TypographyToken.level2
-                .body(context)
-                .copyWith(
-                  color: colors.mutedForeground,
-                  fontWeight: FontWeight.w600,
-                ),
+            style: context.theme.typography.body.xs2.copyWith(
+              color: colors.mutedForeground,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         Wrap(

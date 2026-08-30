@@ -235,9 +235,9 @@ class SignInHintBanner extends StatelessWidget {
           Expanded(
             child: Text(
               message ?? l10n.statePreviewSignInHint,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
           const SizedBox(width: Spacing.level3),
@@ -317,9 +317,9 @@ class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
                   Expanded(
                     child: Text(
                       l10n.todayLoadingSlowHint,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ),
                 ],

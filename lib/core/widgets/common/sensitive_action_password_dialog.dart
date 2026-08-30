@@ -70,14 +70,14 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
         children: [
           Text(
             title ?? l10n.authSensitiveActionPasswordDialogTitle,
-            style: TypographyToken.level6.body(context),
+            style: context.theme.typography.body.lg,
           ),
           const SizedBox(height: Spacing.level2),
           Text(
             message ?? l10n.authSensitiveActionPasswordDialogMessage,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
           const SizedBox(height: Spacing.level4),
           FTextFormField.password(
@@ -92,9 +92,9 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
             const SizedBox(height: Spacing.level2),
             Text(
               errorMessage.value!,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.destructive),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.destructive,
+              ),
             ),
           ],
           const SizedBox(height: Spacing.level5),

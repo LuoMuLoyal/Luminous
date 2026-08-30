@@ -4,7 +4,6 @@ import 'package:forui/forui.dart';
 
 import 'semantic_color.dart';
 import 'spacing.dart';
-import 'typography.dart';
 
 /// 统一 Markdown 渲染样式的唯一入口。
 ///
@@ -17,28 +16,28 @@ import 'typography.dart';
 abstract final class MarkdownStyle {
   /// 正式文档（法律文书 / FAQ）：宽松行距、强标题层级、中性引用。
   ///
-  /// 正文字号 level4 (16px)、行高 1.7；h1/h2/h3 依次递减并带段落间距；
+  /// 正文字号 sm (16px)、行高 1.7；h1/h2/h3 依次递减并带段落间距；
   /// 引用为中性 `SemanticColor.neutral.border` 左条 + `SemanticColor.neutral.solid` 文字。
   static MarkdownStyleSheet legal(BuildContext context) {
     final base = MarkdownStyleSheet.fromTheme(Theme.of(context));
     final colors = context.theme.colors;
     return base.copyWith(
-      p: TypographyToken.level4.body(context).copyWith(height: 1.7),
-      h1: TypographyToken.level7
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w700),
-      h2: TypographyToken.level6
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w600),
-      h3: TypographyToken.level5
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w600),
+      p: context.theme.typography.body.sm.copyWith(height: 1.7),
+      h1: context.theme.typography.body.xl.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
+      h2: context.theme.typography.body.lg.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
+      h3: context.theme.typography.body.md.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
       h1Padding: const EdgeInsets.only(top: Spacing.level6),
       h2Padding: const EdgeInsets.only(top: Spacing.level5),
       h3Padding: const EdgeInsets.only(top: Spacing.level4),
-      blockquote: TypographyToken.level4
-          .body(context)
-          .copyWith(color: SemanticColor.neutral.solid(context)),
+      blockquote: context.theme.typography.body.sm.copyWith(
+        color: SemanticColor.neutral.solid(context),
+      ),
       blockquoteDecoration: BoxDecoration(
         border: Border(
           left: BorderSide(
@@ -48,25 +47,21 @@ abstract final class MarkdownStyle {
         ),
       ),
       blockquotePadding: const EdgeInsets.only(left: Spacing.level3),
-      code: TypographyToken.level3
-          .body(context)
-          .copyWith(
-            fontFamily: 'monospace',
-            color: colors.foreground,
-            backgroundColor: colors.secondary,
-          ),
+      code: context.theme.typography.body.xs.copyWith(
+        fontFamily: 'monospace',
+        color: colors.foreground,
+        backgroundColor: colors.secondary,
+      ),
       codeblockPadding: const EdgeInsets.all(Spacing.level3),
       codeblockDecoration: BoxDecoration(
         color: colors.secondary,
         borderRadius: context.theme.style.borderRadius.sm,
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
-      a: TypographyToken.level4
-          .body(context)
-          .copyWith(
-            color: colors.primary,
-            decoration: TextDecoration.underline,
-          ),
+      a: context.theme.typography.body.sm.copyWith(
+        color: colors.primary,
+        decoration: TextDecoration.underline,
+      ),
       horizontalRuleDecoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: SemanticColor.neutral.border(context)),
@@ -75,11 +70,11 @@ abstract final class MarkdownStyle {
       tableBorder: TableBorder.all(
         color: SemanticColor.neutral.border(context),
       ),
-      tableHead: TypographyToken.level4
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w600),
+      tableHead: context.theme.typography.body.sm.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
       tableHeadCellsDecoration: BoxDecoration(color: colors.secondary),
-      tableBody: TypographyToken.level4.body(context),
+      tableBody: context.theme.typography.body.sm,
       tableCellsPadding: const EdgeInsets.all(Spacing.level2),
     );
   }
@@ -91,8 +86,8 @@ abstract final class MarkdownStyle {
   /// [emphasizeLinks] 为 `true` 时链接加粗（w600）。
   ///
   /// F-4 视觉模板（2026-08-17 扩展）：
-  /// - h1-h6 完整字号阶梯：h1→level6、h2→level5、h3→level4（同正文、加粗区分），
-  ///   h4→level3、h5→level2、h6→level2（h6 再降一档字重收尾）。
+  /// - h1-h6 完整字号阶梯：h1→lg、h2→md、h3→sm（同正文、加粗区分），
+  ///   h4→xs、h5→xs2、h6→xs2（h6 再降一档字重收尾）。
   /// - 列表缩进走 `Spacing` token（level5=20/级），bullet 与文字间距 level2=6。
   /// - 表格列宽 `IntrinsicColumnWidth`：flutter_markdown_plus 检测到该列宽类型时
   ///   自动把表格包进横向 `SingleChildScrollView`，窄屏可横向滚动而不是挤压列。
@@ -109,36 +104,37 @@ abstract final class MarkdownStyle {
     final colors = context.theme.colors;
     final codeBg = background ?? colors.secondary;
     return base.copyWith(
-      p: TypographyToken.level4
-          .body(context)
-          .copyWith(height: 1.6, fontWeight: paragraphWeight),
-      h1: TypographyToken.level6
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w700),
-      h2: TypographyToken.level5
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w600),
-      h3: TypographyToken.level4
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w600),
-      h4: TypographyToken.level3
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w600),
-      h5: TypographyToken.level2
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w600),
-      h6: TypographyToken.level2
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w500),
+      p: context.theme.typography.body.sm.copyWith(
+        height: 1.6,
+        fontWeight: paragraphWeight,
+      ),
+      h1: context.theme.typography.body.lg.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
+      h2: context.theme.typography.body.md.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
+      h3: context.theme.typography.body.sm.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
+      h4: context.theme.typography.body.xs.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
+      h5: context.theme.typography.body.xs2.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
+      h6: context.theme.typography.body.xs2.copyWith(
+        fontWeight: FontWeight.w500,
+      ),
       h1Padding: const EdgeInsets.only(top: Spacing.level5),
       h2Padding: const EdgeInsets.only(top: Spacing.level4),
       h3Padding: const EdgeInsets.only(top: Spacing.level3),
       h4Padding: const EdgeInsets.only(top: Spacing.level3),
       h5Padding: const EdgeInsets.only(top: Spacing.level2),
       h6Padding: const EdgeInsets.only(top: Spacing.level2),
-      blockquote: TypographyToken.level4
-          .body(context)
-          .copyWith(color: SemanticColor.neutral.solid(context)),
+      blockquote: context.theme.typography.body.sm.copyWith(
+        color: SemanticColor.neutral.solid(context),
+      ),
       // 引用块：primary 4px 左侧色条 + primary subtle 底色（大容器/空态级极浅色调，
       // 深浅色自动适配）。带底色后四边都需要 padding，不再只留左侧。
       blockquoteDecoration: BoxDecoration(
@@ -152,31 +148,27 @@ abstract final class MarkdownStyle {
         Spacing.level3,
         Spacing.level2,
       ),
-      listBullet: TypographyToken.level4
-          .body(context)
-          .copyWith(color: colors.primary),
+      listBullet: context.theme.typography.body.sm.copyWith(
+        color: colors.primary,
+      ),
       listIndent: Spacing.level5,
       listBulletPadding: const EdgeInsets.only(right: Spacing.level2),
-      code: TypographyToken.level3
-          .body(context)
-          .copyWith(
-            fontFamily: 'monospace',
-            color: colors.foreground,
-            backgroundColor: codeBg,
-          ),
+      code: context.theme.typography.body.xs.copyWith(
+        fontFamily: 'monospace',
+        color: colors.foreground,
+        backgroundColor: codeBg,
+      ),
       codeblockPadding: const EdgeInsets.all(Spacing.level3),
       codeblockDecoration: BoxDecoration(
         color: codeBg,
         borderRadius: context.theme.style.borderRadius.sm,
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
-      a: TypographyToken.level4
-          .body(context)
-          .copyWith(
-            color: colors.primary,
-            decoration: TextDecoration.underline,
-            fontWeight: emphasizeLinks ? FontWeight.w600 : null,
-          ),
+      a: context.theme.typography.body.sm.copyWith(
+        color: colors.primary,
+        decoration: TextDecoration.underline,
+        fontWeight: emphasizeLinks ? FontWeight.w600 : null,
+      ),
       horizontalRuleDecoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: SemanticColor.neutral.border(context)),
@@ -187,11 +179,11 @@ abstract final class MarkdownStyle {
       ),
       // IntrinsicColumnWidth 触发库内置的横向滚动容器（见上方 doc 注释）。
       tableColumnWidth: const IntrinsicColumnWidth(),
-      tableHead: TypographyToken.level4
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w600),
+      tableHead: context.theme.typography.body.sm.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
       tableHeadCellsDecoration: BoxDecoration(color: colors.secondary),
-      tableBody: TypographyToken.level4.body(context),
+      tableBody: context.theme.typography.body.sm,
       tableCellsPadding: const EdgeInsets.all(Spacing.level2),
     );
   }

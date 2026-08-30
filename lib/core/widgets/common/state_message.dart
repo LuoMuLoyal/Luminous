@@ -72,18 +72,18 @@ class StateMessageView extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 title,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
                 textAlign: TextAlign.center,
               ),
               if (description != null) ...[
                 const SizedBox(height: Spacing.level2),
                 Text(
                   description!,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(color: SemanticColor.neutral.solid(context)),
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],
