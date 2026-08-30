@@ -73,12 +73,12 @@ Future<void> showNoMedicationPrompt(BuildContext context) async {
       children: [
         Text(
           l10n.recordQuickMedicationNoMedicinesTitle,
-          style: TypographyToken.level6.body(context),
+          style: context.theme.typography.body.lg,
         ),
         const SizedBox(height: Spacing.level3),
         Text(
           l10n.recordQuickMedicationNoMedicinesBody,
-          style: TypographyToken.level4.body(context),
+          style: context.theme.typography.body.sm,
         ),
         const SizedBox(height: Spacing.level5),
         Row(
@@ -131,7 +131,7 @@ Future<void> showMedicationSelectionDialog(
           children: [
             Text(
               l10n.recordQuickMedicationSelectTitle,
-              style: TypographyToken.level6.body(dialogContext),
+              style: dialogContext.theme.typography.body.lg,
             ),
             const SizedBox(height: Spacing.level4),
             Wrap(

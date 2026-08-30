@@ -26,9 +26,9 @@ class RecordMobileFilter extends StatelessWidget {
     final header = allSelected
         ? Text(
             l10n.recordFilterMobileTitle,
-            style: TypographyToken.level7
-                .display(context)
-                .copyWith(fontWeight: FontWeight.w800),
+            style: context.theme.typography.display.xl.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           )
         : Row(
             children: [
@@ -38,9 +38,9 @@ class RecordMobileFilter extends StatelessWidget {
                       .map((f) => mobileFilterLabel(l10n, f))
                       .join(' · '),
                 ),
-                style: TypographyToken.level7
-                    .display(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: context.theme.typography.display.xl.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const Spacer(),
               if (onFilterSelected != null)

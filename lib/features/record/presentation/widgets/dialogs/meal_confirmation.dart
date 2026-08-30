@@ -57,7 +57,7 @@ class _MealQuickConfirmationDialogState
       children: [
         Text(
           l10n.recordQuickMealConfirmTitle,
-          style: TypographyToken.level6.body(context),
+          style: context.theme.typography.body.lg,
         ),
         if (image != null) ...[
           const SizedBox(height: Spacing.level4),

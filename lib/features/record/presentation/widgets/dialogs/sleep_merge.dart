@@ -21,15 +21,13 @@ class SleepMergeSummaryRow extends StatelessWidget {
           width: 76,
           child: Text(
             label,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: context.theme.colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
           ),
         ),
         const SizedBox(width: Spacing.level3),
-        Expanded(
-          child: Text(value, style: TypographyToken.level4.body(context)),
-        ),
+        Expanded(child: Text(value, style: context.theme.typography.body.sm)),
       ],
     );
   }

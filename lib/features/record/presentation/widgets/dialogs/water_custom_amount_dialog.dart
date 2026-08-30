@@ -93,12 +93,12 @@ class _WaterCustomAmountBodyState extends State<_WaterCustomAmountBody> {
       children: [
         Text(
           l10n.recordQuickSettingsWaterCustomDialogTitle,
-          style: TypographyToken.level6.body(context),
+          style: context.theme.typography.body.lg,
         ),
         const SizedBox(height: Spacing.level3),
         Text(
           l10n.recordQuickSettingsWaterCustomDialogHint,
-          style: TypographyToken.level4.body(context),
+          style: context.theme.typography.body.sm,
         ),
         const SizedBox(height: Spacing.level4),
         FTextField(

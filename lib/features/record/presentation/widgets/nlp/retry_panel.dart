@@ -33,9 +33,9 @@ class RecordNlpRetryPanel extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.recordNlpFailedCandidatesHint(failedCount),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.foreground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.foreground,
+                ),
               ),
             ),
             const SizedBox(width: Spacing.level3),

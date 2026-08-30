@@ -57,9 +57,9 @@ class TimelineDragFeedback extends StatelessWidget {
                 Flexible(
                   child: Text(
                     label,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.foreground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.foreground,
+                    ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),

@@ -120,9 +120,9 @@ class _SummaryTile extends StatelessWidget {
                   Expanded(
                     child: Text(
                       recordCopy(l10n, item.titleKey),
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                       maxLines: 2,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
@@ -134,20 +134,18 @@ class _SummaryTile extends StatelessWidget {
               if (item.value.isNotEmpty)
                 RichText(
                   text: TextSpan(
-                    style: TypographyToken.level6
-                        .display(context)
-                        .copyWith(
-                          color: colors.foreground,
-                          fontWeight: FontWeight.w700,
-                        ),
+                    style: context.theme.typography.display.lg.copyWith(
+                      color: colors.foreground,
+                      fontWeight: FontWeight.w700,
+                    ),
                     children: [
                       TextSpan(text: item.value),
                       if (unit != null)
                         TextSpan(
                           text: ' $unit',
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: colors.mutedForeground,
+                          ),
                         ),
                     ],
                   ),
@@ -155,17 +153,17 @@ class _SummaryTile extends StatelessWidget {
               else
                 Text(
                   detail ?? '',
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               if (detail != null && item.value.isNotEmpty) ...[
                 const SizedBox(height: Spacing.level1),
                 Text(
                   detail,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: item.accent.solid(context)),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: item.accent.solid(context),
+                  ),
                   maxLines: 2,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,

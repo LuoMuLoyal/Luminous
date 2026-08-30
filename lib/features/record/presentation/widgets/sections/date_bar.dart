@@ -7,13 +7,13 @@ import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Calendar item weekday text font size (compact design, maps to TypographyToken.level2).
+/// Calendar item weekday text font size (compact design, maps to Forui body.xs2).
 double _weekdayFontSize(BuildContext context) =>
-    TypographyToken.level2.body(context).fontSize!;
+    context.theme.typography.body.xs2.fontSize!;
 
-/// Calendar item date number font size (maps to TypographyToken.level3).
+/// Calendar item date number font size (maps to Forui body.xs).
 double _dateFontSize(BuildContext context) =>
-    TypographyToken.level3.body(context).fontSize!;
+    context.theme.typography.body.xs.fontSize!;
 
 class RecordDateBar extends StatelessWidget {
   const RecordDateBar({

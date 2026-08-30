@@ -203,9 +203,9 @@ class _PanelHeader extends StatelessWidget {
         Expanded(
           child: Text(
             l10n.recordQuickSectionTitle,
-            style: TypographyToken.level7
-                .display(context)
-                .copyWith(fontWeight: FontWeight.w800),
+            style: context.theme.typography.display.xl.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
         IconActionButton(
@@ -233,7 +233,7 @@ class _PanelHeader extends StatelessWidget {
         children: [
           Text(
             l10n.recordQuickHelpTooltip,
-            style: TypographyToken.level6.body(dialogContext),
+            style: dialogContext.theme.typography.body.lg,
           ),
           const SizedBox(height: Spacing.level4),
           _HelpLine(text: l10n.recordQuickSettingsMedicationRule),
@@ -274,9 +274,7 @@ class _HelpLine extends StatelessWidget {
             child: Icon(SemanticIcons.statusInfo, size: IconSizeTokens.level2),
           ),
           const SizedBox(width: Spacing.level2),
-          Expanded(
-            child: Text(text, style: TypographyToken.level4.body(context)),
-          ),
+          Expanded(child: Text(text, style: context.theme.typography.body.sm)),
         ],
       ),
     );
@@ -452,9 +450,9 @@ class _QuickRecordTile extends StatelessWidget {
                 const SizedBox(height: Spacing.level2),
                 Text(
                   displayLabel,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -488,12 +486,10 @@ class _QuickBadge extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TypographyToken.level1
-              .body(context)
-              .copyWith(
-                color: context.theme.colors.primaryForeground,
-                fontWeight: FontWeight.w700,
-              ),
+          style: context.theme.typography.body.xs3.copyWith(
+            color: context.theme.colors.primaryForeground,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );
@@ -549,9 +545,9 @@ class _QuickRecordNoteButton extends StatelessWidget {
                 const SizedBox(width: Spacing.level3),
                 Text(
                   label,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

@@ -46,9 +46,9 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
           children: [
             Text(
               l10n.recordImageSectionTitle,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: Spacing.level3),
             Row(
@@ -67,18 +67,18 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         hasAttachment
                             ? l10n.recordImageAttachedLabel
                             : l10n.recordImageEmptyLabel,
-                        style: TypographyToken.level5
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w700),
+                        style: context.theme.typography.body.md.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (fileName != null && fileName.trim().isNotEmpty) ...[
                         const SizedBox(height: Spacing.level1),
                         Text(
                           fileName,
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: colors.mutedForeground,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],

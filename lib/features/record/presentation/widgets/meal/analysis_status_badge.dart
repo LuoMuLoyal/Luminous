@@ -47,19 +47,15 @@ class MealAnalysisStatusBadge extends StatelessWidget {
               Text(
                 text,
                 style: large
-                    ? TypographyToken.level4
-                          .body(context)
-                          .copyWith(
-                            color: foreground,
-                            fontWeight: FontWeight.w600,
-                          )
-                    : TypographyToken.level3
-                          .body(context)
-                          .copyWith(
-                            color: foreground,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0,
-                          ),
+                    ? context.theme.typography.body.sm.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w600,
+                      )
+                    : context.theme.typography.body.xs.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
+                      ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

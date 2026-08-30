@@ -88,9 +88,9 @@ class SleepStructuredFields extends StatelessWidget {
           const SizedBox(height: Spacing.level3),
           Text(
             '${l10n.recordSleepDurationLabel}: ${_formatDuration(durationMinutes, l10n)}',
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: context.theme.colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
           ),
         ],
         const SizedBox(height: Spacing.level3),

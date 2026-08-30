@@ -41,9 +41,9 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordMealAnalysisSectionTitle,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 MealAnalysisStatusBadge(
@@ -57,9 +57,9 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 mealDesc,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (data.recognizedDishes.isNotEmpty) ...[
@@ -113,18 +113,18 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 commentary,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (data.isEstimate) ...[
               const SizedBox(height: Spacing.level4),
               Text(
                 l10n.recordMealAnalysisEstimateDisclaimer,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: context.theme.colors.primary),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: context.theme.colors.primary,
+                ),
               ),
             ],
             if (data.status == 'unconfirmed' && onConfirm != null) ...[
@@ -162,9 +162,9 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: TypographyToken.level5
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w700),
+      style: context.theme.typography.body.md.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
     );
   }
 }
@@ -182,9 +182,9 @@ class _BulletText extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: Spacing.level1),
       child: Text(
         '• $text',
-        style: TypographyToken.level3
-            .body(context)
-            .copyWith(color: colors.mutedForeground),
+        style: context.theme.typography.body.xs.copyWith(
+          color: colors.mutedForeground,
+        ),
       ),
     );
   }

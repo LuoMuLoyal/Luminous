@@ -184,9 +184,9 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                     DateFormat.yMMMM(
                       Localizations.localeOf(context).toString(),
                     ).format(_viewedMonth),
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 _CalendarIconActionButton(
@@ -209,9 +209,9 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                       child: Text(
                         recordCopy(l10n, key),
                         textAlign: TextAlign.center,
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(color: colors.mutedForeground),
+                        style: context.theme.typography.body.xs.copyWith(
+                          color: colors.mutedForeground,
+                        ),
                       ),
                     ),
                   )
@@ -270,9 +270,9 @@ class RecordFilterPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordFilterSectionTitle,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 if (onFilterSelected != null)
@@ -402,20 +402,18 @@ class _MonthDayCellState extends State<_MonthDayCell> {
               child: Center(
                 child: Text(
                   '${widget.day.day}',
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(
-                        color: widget.day.selected
-                            ? colors.background
-                            : _isDragHovering
-                            ? colors.primary
-                            : color,
-                        fontWeight: widget.day.selected
-                            ? FontWeight.w700
-                            : _isDragHovering
-                            ? FontWeight.w700
-                            : FontWeight.w400,
-                      ),
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: widget.day.selected
+                        ? colors.background
+                        : _isDragHovering
+                        ? colors.primary
+                        : color,
+                    fontWeight: widget.day.selected
+                        ? FontWeight.w700
+                        : _isDragHovering
+                        ? FontWeight.w700
+                        : FontWeight.w400,
+                  ),
                 ),
               ),
             ),
@@ -513,9 +511,9 @@ class _FilterRow extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -531,9 +529,9 @@ class _FilterRow extends StatelessWidget {
                   ),
                   child: Text(
                     l10n.recordNotEnabledLabel,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.foreground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.foreground,
+                    ),
                   ),
                 ),
               ),

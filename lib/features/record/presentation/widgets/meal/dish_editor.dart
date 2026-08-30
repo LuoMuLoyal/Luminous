@@ -28,14 +28,14 @@ class MealDishEditorSection extends StatelessWidget {
       children: [
         Text(
           l10n.recordMealAnalysisRecognizedDishes,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.recordMealDishEditorHelperText,
-          style: TypographyToken.level3.body(context),
+          style: context.theme.typography.body.xs,
         ),
         const SizedBox(height: Spacing.level3),
         for (var index = 0; index < dishNames.length; index += 1) ...[

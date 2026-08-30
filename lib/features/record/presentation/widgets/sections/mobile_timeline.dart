@@ -67,9 +67,9 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
             Expanded(
               child: Text(
                 titleText,
-                style: TypographyToken.level7
-                    .display(context)
-                    .copyWith(fontWeight: FontWeight.w800),
+                style: context.theme.typography.display.xl.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
             if (!isToday && widget.onBackToToday != null)
@@ -181,9 +181,9 @@ class _TimelineRow extends StatelessWidget {
             width: 44,
             child: Text(
               entry.time,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -244,9 +244,9 @@ class _TimelineRow extends StatelessWidget {
                         children: [
                           Text(
                             label,
-                            style: TypographyToken.level4
-                                .body(context)
-                                .copyWith(fontWeight: FontWeight.w700),
+                            style: context.theme.typography.body.sm.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -254,9 +254,9 @@ class _TimelineRow extends StatelessWidget {
                             const SizedBox(height: Spacing.level1),
                             Text(
                               subtitle,
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
+                              style: context.theme.typography.body.xs.copyWith(
+                                color: colors.mutedForeground,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -286,8 +286,7 @@ class _TimelineRow extends StatelessWidget {
                                 children: [
                                   Text(
                                     recordCopy(l10n, entry.badgeKey!),
-                                    style: TypographyToken.level3
-                                        .body(context)
+                                    style: context.theme.typography.body.xs
                                         .copyWith(
                                           color: colors.foreground,
                                           fontWeight: FontWeight.w700,
@@ -374,16 +373,16 @@ class _MobileTimelineEmptyState extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 l10n.recordTimelineEmptyTitle,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.recordTimelineEmptyDescription,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: Spacing.level5),

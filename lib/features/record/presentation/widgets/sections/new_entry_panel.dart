@@ -43,9 +43,9 @@ class RecordNewEntryPanel extends StatelessWidget {
           children: [
             Text(
               l10n.recordNewEntrySectionTitle,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: Spacing.level4),
             Column(
@@ -84,9 +84,9 @@ class RecordNewEntryPanel extends StatelessWidget {
           children: [
             Text(
               l10n.recordNewEntrySectionTitle,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: Spacing.level4),
             Wrap(
@@ -133,12 +133,10 @@ class RecordNewEntryPanel extends StatelessWidget {
               child: Flexible(
                 child: Text(
                   l10n.recordNewEntrySectionTitle,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(
-                        color: context.theme.colors.primary,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  style: context.theme.typography.body.md.copyWith(
+                    color: context.theme.colors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -216,12 +214,10 @@ class _DesktopEntryButtonState extends State<_DesktopEntryButton> {
                 Expanded(
                   child: Text(
                     label,
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(
-                          color: colors.foreground,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    style: context.theme.typography.body.sm.copyWith(
+                      color: colors.foreground,
+                      fontWeight: FontWeight.w600,
+                    ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -274,12 +270,10 @@ class _NewEntryChip extends StatelessWidget {
           const SizedBox(width: Spacing.level2),
           Text(
             label,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(
-                  color: action.accent.solid(context),
-                  fontWeight: FontWeight.w600,
-                ),
+            style: context.theme.typography.body.xs.copyWith(
+              color: action.accent.solid(context),
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),

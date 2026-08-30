@@ -498,9 +498,9 @@ class _EditStatusHint extends StatelessWidget {
                 dirty
                     ? l10n.recordEditUnsavedWarning
                     : l10n.recordEditUnsavedHint,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: foreground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: foreground,
+                ),
               ),
             ),
           ],

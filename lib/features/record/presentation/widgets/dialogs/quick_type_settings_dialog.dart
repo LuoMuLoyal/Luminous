@@ -41,7 +41,7 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(label, style: TypographyToken.level6.body(context)),
+        Text(label, style: context.theme.typography.body.lg),
         const SizedBox(height: Spacing.level4),
         if (action.type == RecordEntryType.water)
           _WaterSettings(
@@ -76,7 +76,7 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
         else
           Text(
             _ruleText(l10n, action.type),
-            style: TypographyToken.level4.body(context),
+            style: context.theme.typography.body.sm,
           ),
         const SizedBox(height: Spacing.level5),
         Align(
@@ -318,7 +318,7 @@ class _SymptomSettings extends StatelessWidget {
         const SizedBox(height: Spacing.level3),
         Text(
           l10n.recordQuickSettingsSymptomChoices,
-          style: TypographyToken.level4.body(context),
+          style: context.theme.typography.body.sm,
         ),
         const SizedBox(height: Spacing.level2),
         Material(

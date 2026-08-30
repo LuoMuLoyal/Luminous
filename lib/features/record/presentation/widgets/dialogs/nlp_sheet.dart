@@ -142,16 +142,16 @@ class RecordNlpSheet extends HookConsumerWidget {
             children: [
               Text(
                 l10n.recordNlpResetConfirmTitle,
-                style: TypographyToken.level6
-                    .body(innerContext)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: innerContext.theme.typography.body.lg.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: Spacing.level2),
               Text(
                 l10n.recordNlpResetConfirmBody,
-                style: TypographyToken.level4
-                    .body(innerContext)
-                    .copyWith(color: innerContext.theme.colors.mutedForeground),
+                style: innerContext.theme.typography.body.sm.copyWith(
+                  color: innerContext.theme.colors.mutedForeground,
+                ),
               ),
               const SizedBox(height: Spacing.level4),
               Row(
@@ -214,9 +214,9 @@ class RecordNlpSheet extends HookConsumerWidget {
                 Expanded(
                   child: Text(
                     l10n.recordNlpSheetTitle,
-                    style: TypographyToken.level6
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.body.lg.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 FButton.icon(
@@ -239,9 +239,9 @@ class RecordNlpSheet extends HookConsumerWidget {
                 children: [
                   Text(
                     l10n.recordNlpSheetSubtitle,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level4),
                   FTextField(
@@ -325,9 +325,9 @@ class RecordNlpSheet extends HookConsumerWidget {
                           child: Text(
                             state.errorMessage ??
                                 l10n.recordNlpGenerateFailedToast,
-                            style: TypographyToken.level4
-                                .body(context)
-                                .copyWith(color: colors.destructive),
+                            style: context.theme.typography.body.sm.copyWith(
+                              color: colors.destructive,
+                            ),
                           ),
                         ),
                       ],

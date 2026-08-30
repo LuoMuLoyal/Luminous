@@ -45,9 +45,9 @@ class RecordTimelinePanel extends StatelessWidget {
               children: [
                 Text(
                   l10n.recordTimelineSectionTitle,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 if (selectedDate != null) ...[
                   const SizedBox(width: Spacing.level3),
@@ -55,9 +55,9 @@ class RecordTimelinePanel extends StatelessWidget {
                     DateFormat.yMd(
                       Localizations.localeOf(context).toString(),
                     ).format(selectedDate!),
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.sm.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ],
                 const Spacer(),
@@ -158,9 +158,9 @@ class _TimelineEntryRow extends StatelessWidget {
           width: dense ? 44 : 56,
           child: Text(
             entry.time,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
         ),
         Expanded(
@@ -225,16 +225,16 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 l10n.recordTimelineEmptyTitle,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.recordTimelineEmptyDescription,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: Spacing.level5),

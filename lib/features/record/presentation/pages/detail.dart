@@ -276,8 +276,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                             Flexible(
                               child: Text(
                                 record.title ?? _kindLabel(l10n, record.kind),
-                                style: TypographyToken.level7
-                                    .display(context)
+                                style: context.theme.typography.display.xl
                                     .copyWith(fontWeight: FontWeight.w800),
                               ),
                             ),
@@ -295,9 +294,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                             record.occurredAt,
                             occurredTime: record.occurredTime,
                           ),
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: colors.mutedForeground,
+                          ),
                         ),
                       ],
                     ),
@@ -349,9 +348,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                   Expanded(
                     child: Text(
                       l10n.recordMealAnalysisStatusAnalyzing,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ),
                 ],
@@ -371,9 +370,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     const SizedBox(height: Spacing.level3),
                     Text(
                       mealAnalysis.failureReason!,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ],
                 ],
@@ -394,9 +393,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
               children: [
                 Text(
                   l10n.recordImageSectionTitle,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level4),
                 _RecordDetailImage(attachment: imageAttachment),
@@ -404,9 +403,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                   const SizedBox(height: Spacing.level3),
                   Text(
                     imageAttachment.fileName!,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -427,9 +426,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     Expanded(
                       child: Text(
                         l10n.recordDetailDailyWaterTitle,
-                        style: TypographyToken.level4
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w700),
+                        style: context.theme.typography.body.sm.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                     Text(
@@ -442,9 +441,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                               waterTotalMl,
                               waterTargetMl,
                             ),
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ],
                 ),
@@ -693,9 +692,9 @@ class _DetailRow extends StatelessWidget {
             ),
             child: Text(
               data.label,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
           const SizedBox(width: Spacing.level4),
@@ -703,15 +702,13 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               data.value,
               style: data.highlight
-                  ? TypographyToken.level6
-                        .display(context)
-                        .copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: colors.primary,
-                        )
-                  : TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                  ? context.theme.typography.display.lg.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: colors.primary,
+                    )
+                  : context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
               overflow: TextOverflow.visible,
             ),
           ),
@@ -803,9 +800,9 @@ class _SourceBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level1
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.xs3.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
       ),
     );

@@ -35,23 +35,23 @@ class RecordNlpCandidateReview extends StatelessWidget {
       children: [
         Text(
           l10n.recordNlpCandidatesTitle(state.candidates.length),
-          style: TypographyToken.level7
-              .display(context)
-              .copyWith(fontWeight: FontWeight.w800),
+          style: context.theme.typography.display.xl.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           meta.confirmationHint,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.foreground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.foreground,
+          ),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.recordNlpSelectedCountHint(state.selectedCount),
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         for (var index = 0; index < state.candidates.length; index += 1) ...[
@@ -115,19 +115,17 @@ class _CandidateTile extends StatelessWidget {
                     children: [
                       Text(
                         _kindLabel(l10n, item.kind),
-                        style: TypographyToken.level5
-                            .body(context)
-                            .copyWith(
-                              color: context.theme.colors.primary,
-                              fontWeight: FontWeight.w800,
-                            ),
+                        style: context.theme.typography.body.md.copyWith(
+                          color: context.theme.colors.primary,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                       const SizedBox(height: Spacing.level1),
                       Text(
                         _candidateTitle(l10n, item),
-                        style: TypographyToken.level4
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w700),
+                        style: context.theme.typography.body.sm.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),
@@ -149,17 +147,17 @@ class _CandidateTile extends StatelessWidget {
             const SizedBox(height: Spacing.level2),
             Text(
               item.rationale,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             if (item.lastErrorMessage case final errMsg?) ...[
               const SizedBox(height: Spacing.level2),
               Text(
                 l10n.recordNlpCandidateSaveFailedHint(errMsg),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.destructive),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.destructive,
+                ),
               ),
             ],
           ],

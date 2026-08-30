@@ -106,7 +106,7 @@ Future<SleepQuickEntryStartOptions?> showSleepTypeSelectionDialog(
           children: [
             Text(
               l10n.recordQuickSleepTypeTitle,
-              style: TypographyToken.level6.body(dialogContext),
+              style: dialogContext.theme.typography.body.lg,
             ),
             const SizedBox(height: Spacing.level4),
             Row(
@@ -223,7 +223,7 @@ Future<void> showSleepStartSelectionDialog(
           children: [
             Text(
               l10n.recordQuickSleepSelectStartTitle,
-              style: TypographyToken.level6.body(dialogContext),
+              style: dialogContext.theme.typography.body.lg,
             ),
             const SizedBox(height: Spacing.level4),
             for (final start in openStarts) ...[
@@ -323,12 +323,12 @@ Future<void> showSleepMergeDialog(
           children: [
             Text(
               l10n.recordQuickSleepMergeTitle,
-              style: TypographyToken.level6.body(dialogContext),
+              style: dialogContext.theme.typography.body.lg,
             ),
             const SizedBox(height: Spacing.level3),
             Text(
               l10n.recordQuickSleepMergeBody,
-              style: TypographyToken.level4.body(dialogContext),
+              style: dialogContext.theme.typography.body.sm,
             ),
             const SizedBox(height: Spacing.level4),
             SleepMergeSummaryRow(
