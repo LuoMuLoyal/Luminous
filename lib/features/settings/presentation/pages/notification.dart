@@ -325,6 +325,7 @@ class _PermissionCard extends StatelessWidget {
         null,
       ),
     };
+    final typography = context.theme.typography;
 
     return FCard(
       child: FTile(
@@ -332,7 +333,7 @@ class _PermissionCard extends StatelessWidget {
         prefix: Icon(icon, color: color),
         title: Text(
           title,
-          style: context.theme.typography.body.sm.copyWith(
+          style: typography.body.sm.copyWith(
             color: color,
             fontWeight: FontWeight.w600,
           ),
@@ -346,7 +347,7 @@ class _PermissionCard extends StatelessWidget {
                 children: [
                   Text(
                     ctaLabel,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: color,
                       fontWeight: FontWeight.w600,
                     ),

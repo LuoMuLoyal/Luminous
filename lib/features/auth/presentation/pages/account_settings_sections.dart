@@ -212,6 +212,7 @@ class _LinkedIdentityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final canUnlink = user.hasPassword || user.linkedIdentities.length > 1;
+    final typography = context.theme.typography;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -234,7 +235,7 @@ class _LinkedIdentityTile extends StatelessWidget {
                 children: [
                   Text(
                     identityProviderLabel(identity.provider, l10n),
-                    style: context.theme.typography.body.sm.copyWith(
+                    style: typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -246,7 +247,7 @@ class _LinkedIdentityTile extends StatelessWidget {
                         formatDate(identity.linkedAt),
                       ),
                     ].join(' · '),
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
@@ -518,6 +519,7 @@ class _DangerZoneSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(
@@ -540,7 +542,7 @@ class _DangerZoneSection extends StatelessWidget {
                 const SizedBox(width: Spacing.level2),
                 Text(
                   dangerLabel,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.destructive.solid(context),
                     fontWeight: FontWeight.w600,
                   ),
@@ -550,9 +552,7 @@ class _DangerZoneSection extends StatelessWidget {
             const SizedBox(height: Spacing.level2),
             Text(
               title,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: Spacing.level5),
             for (final child in children) ...[
@@ -581,6 +581,7 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return Row(
       children: [
@@ -589,7 +590,7 @@ class _InfoRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
           ),
@@ -600,9 +601,7 @@ class _InfoRow extends StatelessWidget {
             value,
             textAlign: TextAlign.right,
             overflow: TextOverflow.ellipsis,
-            style: context.theme.typography.body.xs.copyWith(
-              color: colors.foreground,
-            ),
+            style: typography.body.xs.copyWith(color: colors.foreground),
           ),
         ),
       ],

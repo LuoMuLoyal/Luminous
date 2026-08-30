@@ -230,6 +230,7 @@ class _ConversationGroup extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final isCurrent = item.id == currentConversationId;
     final isUntitled = _isUntitled(item);
+    final typography = context.theme.typography;
 
     return FTile(
       key: Key('assistant-recent-conversation-${item.id}'),
@@ -252,7 +253,7 @@ class _ConversationGroup extends StatelessWidget {
                 const SizedBox(width: Spacing.level2),
                 Text(
                   l10n.assistantConversationTapToName,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.primary.solid(context),
                   ),
                 ),
@@ -265,7 +266,7 @@ class _ConversationGroup extends StatelessWidget {
             ),
       subtitle: Text(
         conversationTimestampLabel(context, item),
-        style: context.theme.typography.body.xs2.copyWith(
+        style: typography.body.xs2.copyWith(
           color: SemanticColor.neutral.solid(context),
         ),
       ),
@@ -274,7 +275,7 @@ class _ConversationGroup extends StatelessWidget {
               isClearingConversation
                   ? l10n.assistantClearingConversationLabel
                   : l10n.assistantRecentConversationCurrentLabel,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.primary.solid(context),
               ),
             )

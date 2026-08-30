@@ -138,6 +138,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final detail = widget.detail;
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,14 +147,12 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
         const SizedBox(height: Spacing.level4),
         Text(
           detail.title,
-          style: context.theme.typography.display.xl.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: typography.display.xl.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.level3),
         Text(
           _formatTime(context, detail.createdAt),
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
@@ -163,7 +162,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
             padding: const EdgeInsets.all(Spacing.level4),
             child: Text(
               detail.content,
-              style: context.theme.typography.body.md.copyWith(height: 1.6),
+              style: typography.body.md.copyWith(height: 1.6),
             ),
           ),
         ),

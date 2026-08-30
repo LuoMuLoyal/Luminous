@@ -32,20 +32,19 @@ class AssistantControlsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           l10n.assistantStatusSectionTitle,
-          style: context.theme.typography.body.md.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.assistantEntrySubtitle,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),

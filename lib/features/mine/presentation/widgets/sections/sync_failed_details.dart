@@ -79,28 +79,23 @@ class _SyncFailedDetailsContentState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.mineSyncFailedDetailsTitle,
-          style: context.theme.typography.body.lg,
-        ),
+        Text(l10n.mineSyncFailedDetailsTitle, style: typography.body.lg),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.mineSyncFailedDetailsDescription,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level4),
         if (widget.entries.isEmpty)
-          Text(
-            l10n.mineSyncFailedDetailsEmpty,
-            style: context.theme.typography.body.sm,
-          )
+          Text(l10n.mineSyncFailedDetailsEmpty, style: typography.body.sm)
         else
           for (final entry in widget.entries) ...[
             _SyncFailedEntryCard(entry: entry),
@@ -111,7 +106,7 @@ class _SyncFailedDetailsContentState
           const SizedBox(height: Spacing.level3),
           Text(
             _retryError!,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.destructive.solid(context),
             ),
           ),
@@ -213,6 +208,7 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
     final hasDiagnostics =
         details != null ||
         (widget.entry.lastError != null && widget.entry.lastError!.isNotEmpty);
+    final typography = context.theme.typography;
 
     return Container(
       width: double.infinity,
@@ -249,14 +245,14 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
           const SizedBox(height: Spacing.level2),
           Text(
             l10n.mineSyncFailedDetailsLastError,
-            style: context.theme.typography.body.xs2.copyWith(
+            style: typography.body.xs2.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
           ),
           const SizedBox(height: Spacing.level1),
           Text(
             userMessage,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.destructive.solid(context),
             ),
           ),
@@ -302,6 +298,7 @@ class _DiagnosticsPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,7 +320,7 @@ class _DiagnosticsPanel extends StatelessWidget {
                 const SizedBox(width: Spacing.level1),
                 Text(
                   l10n.mineSyncFailedDetailsDiagnostics,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -364,10 +361,7 @@ class _DiagnosticsPanel extends StatelessWidget {
                 ],
                 if (raw != null && raw!.isNotEmpty) ...[
                   const SizedBox(height: Spacing.level2),
-                  SelectableText(
-                    raw!,
-                    style: context.theme.typography.body.xs2,
-                  ),
+                  SelectableText(raw!, style: typography.body.xs2),
                 ],
               ],
             ),
@@ -397,6 +391,7 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.level1),
       child: Row(
@@ -406,12 +401,12 @@ class _DetailRow extends StatelessWidget {
             width: 92,
             child: Text(
               label,
-              style: context.theme.typography.body.xs2.copyWith(
+              style: typography.body.xs2.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
-          Expanded(child: Text(value, style: context.theme.typography.body.xs)),
+          Expanded(child: Text(value, style: typography.body.xs)),
         ],
       ),
     );

@@ -113,6 +113,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -122,9 +123,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
           children: [
             Text(
               widget.heading,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: Spacing.level4),
             FTextField(
@@ -188,7 +187,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
               Text(
                 _validationError!,
                 key: const Key('health-event-start-validation-error'),
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.destructive.solid(context),
                 ),
               ),
@@ -198,7 +197,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
               Text(
                 _submitError!,
                 key: const Key('health-event-start-submit-error'),
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.destructive.solid(context),
                 ),
               ),
@@ -295,11 +294,12 @@ class _AssociationOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: context.theme.typography.body.xs),
+        Text(label, style: typography.body.xs),
         if (loadFailed) ...[
           const SizedBox(height: Spacing.level2),
           Row(
@@ -307,7 +307,7 @@ class _AssociationOptions extends StatelessWidget {
               Expanded(
                 child: Text(
                   l10n.todayHealthEventOptionsLoadFailed,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.destructive.solid(context),
                   ),
                 ),

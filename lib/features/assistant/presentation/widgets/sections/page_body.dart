@@ -476,6 +476,7 @@ class _AssistantEmptySupportState extends State<_AssistantEmptySupport> {
       l10n.assistantStarterPromptMedicines,
       l10n.assistantStarterPromptWhatToWatch,
     ];
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -483,7 +484,7 @@ class _AssistantEmptySupportState extends State<_AssistantEmptySupport> {
         Text(
           l10n.assistantWelcomeDescription,
           textAlign: TextAlign.center,
-          style: context.theme.typography.body.sm.copyWith(
+          style: typography.body.sm.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
@@ -495,7 +496,7 @@ class _AssistantEmptySupportState extends State<_AssistantEmptySupport> {
             children: [
               Text(
                 l10n.assistantStarterPromptTitle,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -534,6 +535,7 @@ class _AssistantMemoryHintSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
@@ -552,7 +554,7 @@ class _AssistantMemoryHintSection extends StatelessWidget {
               children: [
                 Text(
                   l10n.assistantMemoryHintTitle,
-                  style: context.theme.typography.body.xs2.copyWith(
+                  style: typography.body.xs2.copyWith(
                     color: SemanticColor.neutral.solid(context),
                     fontWeight: FontWeight.w600,
                   ),
@@ -560,7 +562,7 @@ class _AssistantMemoryHintSection extends StatelessWidget {
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.assistantMemoryHintDescription,
-                  style: context.theme.typography.body.xs2.copyWith(
+                  style: typography.body.xs2.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),

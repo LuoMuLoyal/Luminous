@@ -232,19 +232,18 @@ class _StatusRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return Row(
       children: [
         Text(
           label,
-          style: context.theme.typography.body.sm.copyWith(
-            color: colors.foreground,
-          ),
+          style: typography.body.sm.copyWith(color: colors.foreground),
         ),
         const Spacer(),
         Text(
           value,
-          style: context.theme.typography.body.sm.copyWith(
+          style: typography.body.sm.copyWith(
             color: colors.foreground,
             fontWeight: FontWeight.w600,
           ),

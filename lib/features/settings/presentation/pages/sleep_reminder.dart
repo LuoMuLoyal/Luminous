@@ -20,6 +20,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
     final controller = ref.read(
       notificationSettingsControllerProvider.notifier,
     );
+    final typography = context.theme.typography;
 
     return PageScaffold(
       title: l10n.settingsNotificationsSleepReminderTitle,
@@ -98,7 +99,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                           ),
                           child: Text(
                             l10n.settingsNotificationsCrossDayHint,
-                            style: context.theme.typography.body.xs.copyWith(
+                            style: typography.body.xs.copyWith(
                               color: SemanticColor.neutral.solid(context),
                             ),
                           ),
@@ -113,7 +114,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                     ),
                     child: Text(
                       l10n.settingsNotificationsTimeUnset,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),

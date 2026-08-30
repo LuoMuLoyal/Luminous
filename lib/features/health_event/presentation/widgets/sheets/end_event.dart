@@ -44,6 +44,7 @@ class _EndEventSheetState extends State<EndEventSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -53,15 +54,13 @@ class _EndEventSheetState extends State<EndEventSheet> {
           children: [
             Text(
               widget.heading,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
             ),
             if (widget.subtitle != null) ...[
               const SizedBox(height: Spacing.level2),
               Text(
                 widget.subtitle!,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -105,7 +104,7 @@ class _EndEventSheetState extends State<EndEventSheet> {
               Text(
                 _validationError!,
                 key: const Key('health-event-end-validation-error'),
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.destructive.solid(context),
                 ),
               ),
@@ -115,7 +114,7 @@ class _EndEventSheetState extends State<EndEventSheet> {
               Text(
                 _submitError!,
                 key: const Key('health-event-end-submit-error'),
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.destructive.solid(context),
                 ),
               ),

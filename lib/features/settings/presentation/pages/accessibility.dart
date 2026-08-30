@@ -23,6 +23,7 @@ class AccessibilitySettingsPage extends ConsumerWidget {
     final controller = ref.read(
       accessibilitySettingsControllerProvider.notifier,
     );
+    final typography = context.theme.typography;
 
     return PageScaffold(
       title: l10n.settingsAccessibilityTitle,
@@ -47,9 +48,9 @@ class AccessibilitySettingsPage extends ConsumerWidget {
                         key: Key('font-size-row-${option.storageValue}'),
                         title: Text(
                           _fontSizeLabel(l10n, option),
-                          style: context.theme.typography.body.md.copyWith(
+                          style: typography.body.md.copyWith(
                             fontSize:
-                                context.theme.typography.body.md.fontSize! *
+                                typography.body.md.fontSize! *
                                 option.scaleFactor,
                           ),
                         ),

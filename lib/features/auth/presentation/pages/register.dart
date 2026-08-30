@@ -31,6 +31,7 @@ class RegisterPage extends HookConsumerWidget {
     final state = ref.watch(registerFormProvider);
     final notifier = ref.read(registerFormProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return AuthShell(
       title: l10n.authCreateAccountAction,
@@ -159,7 +160,7 @@ class RegisterPage extends HookConsumerWidget {
                 padding: const EdgeInsets.only(top: Spacing.level2),
                 child: Text(
                   l10n.authRegisterTermsRequiredHint,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.destructive.solid(context),
                   ),
                 ),
@@ -221,7 +222,7 @@ class RegisterPage extends HookConsumerWidget {
               children: [
                 Text(
                   l10n.authHaveAccountPrompt,
-                  style: context.theme.typography.body.xs2.copyWith(
+                  style: typography.body.xs2.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -230,10 +231,7 @@ class RegisterPage extends HookConsumerWidget {
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => context.push(Routes.login),
-                  child: Text(
-                    l10n.authSignIn,
-                    style: context.theme.typography.body.xs2,
-                  ),
+                  child: Text(l10n.authSignIn, style: typography.body.xs2),
                 ),
               ],
             ),

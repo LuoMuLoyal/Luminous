@@ -62,6 +62,7 @@ class LoginPage extends HookConsumerWidget {
     final oauthState = ref.watch(oauthLoginProvider);
     final oauthController = ref.read(oauthLoginProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     // ---- navigation helpers ----
 
@@ -529,7 +530,7 @@ class LoginPage extends HookConsumerWidget {
                   children: [
                     Text(
                       l10n.authNeedAccountPrompt,
-                      style: context.theme.typography.body.xs2.copyWith(
+                      style: typography.body.xs2.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
@@ -540,7 +541,7 @@ class LoginPage extends HookConsumerWidget {
                       onPress: () => context.push(Routes.register),
                       child: Text(
                         l10n.authRegisterNowAction,
-                        style: context.theme.typography.body.xs2,
+                        style: typography.body.xs2,
                       ),
                     ),
                   ],
@@ -553,7 +554,7 @@ class LoginPage extends HookConsumerWidget {
                   onPress: () => context.push(Routes.forgotPassword),
                   child: Text(
                     l10n.authForgotPasswordPrompt,
-                    style: context.theme.typography.body.xs2,
+                    style: typography.body.xs2,
                   ),
                 ),
               ],
@@ -572,7 +573,7 @@ class LoginPage extends HookConsumerWidget {
                         .authLoginTermsAgreement('', '')
                         .trimRight()
                         .replaceAll(RegExp(r'\s+(and|与)\s*$'), ''),
-                    style: context.theme.typography.body.xs2.copyWith(
+                    style: typography.body.xs2.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
@@ -583,7 +584,7 @@ class LoginPage extends HookConsumerWidget {
                     onPress: () => context.push('${Routes.legal}/terms'),
                     child: Text(
                       l10n.authTermsOfService,
-                      style: context.theme.typography.body.xs2.copyWith(
+                      style: typography.body.xs2.copyWith(
                         color: SemanticColor.primary.solid(context),
                         fontWeight: FontWeight.w600,
                       ),
@@ -591,7 +592,7 @@ class LoginPage extends HookConsumerWidget {
                   ),
                   Text(
                     l10n.localeName.startsWith('zh') ? '与' : 'and',
-                    style: context.theme.typography.body.xs2.copyWith(
+                    style: typography.body.xs2.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
@@ -602,7 +603,7 @@ class LoginPage extends HookConsumerWidget {
                     onPress: () => context.push('${Routes.legal}/privacy'),
                     child: Text(
                       l10n.authPrivacyPolicy,
-                      style: context.theme.typography.body.xs2.copyWith(
+                      style: typography.body.xs2.copyWith(
                         color: SemanticColor.primary.solid(context),
                         fontWeight: FontWeight.w600,
                       ),

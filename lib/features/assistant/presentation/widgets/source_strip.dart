@@ -30,6 +30,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     if (widget.usedTools.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -61,7 +62,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                   Expanded(
                     child: Text.rich(
                       TextSpan(
-                        style: context.theme.typography.body.xs2.copyWith(
+                        style: typography.body.xs2.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
                         children: _collapsedRowSpans(context, l10n),
@@ -96,7 +97,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                     l10n.assistantSourceLowTrustHint,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: context.theme.typography.body.xs2.copyWith(
+                    style: typography.body.xs2.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),

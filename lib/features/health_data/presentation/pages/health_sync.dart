@@ -22,6 +22,8 @@ class HealthSyncPage extends ConsumerWidget {
     final controller = ref.read(healthSyncControllerProvider.notifier);
     final repo = ref.watch(healthSyncRepositoryProvider);
     final autoSyncAvailability = ref.watch(healthAutoSyncAvailabilityProvider);
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     if (!repo.isPlatformAvailable) {
       return PageScaffold(
@@ -31,7 +33,7 @@ class HealthSyncPage extends ConsumerWidget {
             padding: const EdgeInsets.all(Spacing.level6),
             child: Text(
               l10n.healthSyncNotAvailable,
-              style: context.theme.typography.body.md,
+              style: typography.body.md,
               textAlign: TextAlign.center,
             ),
           ),
@@ -48,7 +50,7 @@ class HealthSyncPage extends ConsumerWidget {
           children: [
             Text(
               l10n.healthSyncDescription,
-              style: context.theme.typography.body.md.copyWith(
+              style: typography.body.md.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -57,7 +59,7 @@ class HealthSyncPage extends ConsumerWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.healthSyncAutoSyncNotConfigured,
-                style: context.theme.typography.body.md.copyWith(
+                style: typography.body.md.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -77,14 +79,12 @@ class HealthSyncPage extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(Spacing.level4),
                 decoration: BoxDecoration(
-                  color: context.theme.colors.error.withValues(alpha: 0.1),
+                  color: colors.error.withValues(alpha: 0.1),
                   borderRadius: context.theme.style.borderRadius.xs,
                 ),
                 child: Text(
                   state.error!,
-                  style: context.theme.typography.body.md.copyWith(
-                    color: context.theme.colors.error,
-                  ),
+                  style: typography.body.md.copyWith(color: colors.error),
                 ),
               ),
               const SizedBox(height: Spacing.level4),
@@ -345,15 +345,14 @@ class _MetricsPreviewSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.healthSyncPreviewTitle,
-          style: context.theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: Spacing.level3),
         FTileGroup(
@@ -370,7 +369,7 @@ class _MetricsPreviewSection extends StatelessWidget {
             padding: const EdgeInsets.only(top: Spacing.level2),
             child: Text(
               l10n.healthSyncPreviewMore(metrics.length - 20),
-              style: context.theme.typography.body.md.copyWith(
+              style: typography.body.md.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),

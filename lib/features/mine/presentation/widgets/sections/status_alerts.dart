@@ -64,6 +64,7 @@ class _StatusAlertRow extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final subtitle = _resolveSubtitle(l10n, card);
     final badge = _resolveBadge(l10n, card);
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -80,7 +81,7 @@ class _StatusAlertRow extends StatelessWidget {
               children: [
                 Text(
                   mineCopy(l10n, card.titleKey),
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -88,7 +89,7 @@ class _StatusAlertRow extends StatelessWidget {
                   const SizedBox(height: Spacing.level1),
                   Text(
                     subtitle,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                     maxLines: 2,
@@ -102,7 +103,7 @@ class _StatusAlertRow extends StatelessWidget {
             const SizedBox(width: Spacing.level2),
             Text(
               badge,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
                 fontWeight: FontWeight.w700,
               ),

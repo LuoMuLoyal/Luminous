@@ -188,6 +188,7 @@ class _PrecheckFindingRow extends StatelessWidget {
 
     final colors = context.theme.colors;
     final color = medicineRiskSeverityColor(finding.severity);
+    final typography = context.theme.typography;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -212,14 +213,14 @@ class _PrecheckFindingRow extends StatelessWidget {
                 children: [
                   Text(
                     medicineRiskFindingTitle(l10n, finding),
-                    style: context.theme.typography.body.md.copyWith(
+                    style: typography.body.md.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     medicineRiskFindingBody(l10n, finding),
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: colors.foreground,
                     ),
                   ),
@@ -280,6 +281,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -304,14 +306,14 @@ class _PrecheckCoverageRow extends StatelessWidget {
                 children: [
                   Text(
                     issue.medicineName,
-                    style: context.theme.typography.body.md.copyWith(
+                    style: typography.body.md.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     medicineRiskCoverageReasonLabel(l10n, issue.reason),
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: colors.foreground,
                     ),
                   ),

@@ -52,6 +52,7 @@ class ProfileEditPage extends HookConsumerWidget {
     final emergencyContactNameController = useTextEditingController();
     final emergencyContactPhoneController = useTextEditingController();
     final initialized = useRef(false);
+    final typography = context.theme.typography;
 
     void initFromSnapshot(HealthProfile profile) {
       if (initialized.value) return;
@@ -220,7 +221,7 @@ class ProfileEditPage extends HookConsumerWidget {
                         const SizedBox(height: Spacing.level5),
                         Text(
                           l10n.mineEditFieldEmergencyContactName,
-                          style: context.theme.typography.body.sm.copyWith(
+                          style: typography.body.sm.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -234,7 +235,7 @@ class ProfileEditPage extends HookConsumerWidget {
                         const SizedBox(height: Spacing.level3),
                         Text(
                           l10n.mineEditFieldEmergencyContactPhone,
-                          style: context.theme.typography.body.sm.copyWith(
+                          style: typography.body.sm.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),

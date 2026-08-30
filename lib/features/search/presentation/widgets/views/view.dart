@@ -355,6 +355,7 @@ class _DesktopSearchPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level6),
@@ -364,7 +365,7 @@ class _DesktopSearchPanel extends StatelessWidget {
             const SizedBox(height: Spacing.level6),
             Text(
               l10n.medicineSearchPageTitle,
-              style: context.theme.typography.display.xl2.copyWith(
+              style: typography.display.xl2.copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -401,7 +402,7 @@ class _DesktopSearchPanel extends StatelessWidget {
             if (state.query.trim().isNotEmpty) ...[
               Text(
                 l10n.medicineSearchResultCount(state.results.length),
-                style: context.theme.typography.body.md.copyWith(
+                style: typography.body.md.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),

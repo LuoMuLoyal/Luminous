@@ -58,6 +58,7 @@ class _Banner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return FCard(
       child: FTappable(
@@ -83,9 +84,7 @@ class _Banner extends StatelessWidget {
               Expanded(
                 child: Text(
                   message,
-                  style: context.theme.typography.body.sm.copyWith(
-                    color: colors.foreground,
-                  ),
+                  style: typography.body.sm.copyWith(color: colors.foreground),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -93,7 +92,7 @@ class _Banner extends StatelessWidget {
               const SizedBox(width: Spacing.level3),
               Text(
                 actionLabel,
-                style: context.theme.typography.body.sm.copyWith(
+                style: typography.body.sm.copyWith(
                   color: SemanticColor.warning.solid(context),
                   fontWeight: FontWeight.w700,
                 ),

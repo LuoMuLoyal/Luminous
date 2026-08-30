@@ -62,6 +62,7 @@ class _ArchiveEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -82,14 +83,14 @@ class _ArchiveEmpty extends StatelessWidget {
                 children: [
                   Text(
                     l10n.mineArchiveEmptyTitle,
-                    style: context.theme.typography.body.sm.copyWith(
+                    style: typography.body.sm.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     l10n.mineArchiveEmptyDescription,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
@@ -118,18 +119,17 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final statusKey = entry.statusKey ?? _derivedStatusKey();
+    final typography = context.theme.typography;
 
     final tile = FTile(
       prefix: SoftIcon(icon: entry.icon, color: entry.accent),
       title: Text(
         mineCopy(l10n, entry.titleKey),
-        style: context.theme.typography.body.md.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+        style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
       ),
       subtitle: Text(
         subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
-        style: context.theme.typography.body.xs.copyWith(
+        style: typography.body.xs.copyWith(
           color: SemanticColor.neutral.solid(context),
         ),
         maxLines: 2,
@@ -139,7 +139,7 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
           ? null
           : Text(
               mineCopy(l10n, statusKey),
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: statusKey == MineCopyKey.archiveNeedsFill
                     ? SemanticColor.warning.solid(context)
                     : SemanticColor.neutral.solid(context),
@@ -375,6 +375,7 @@ class _RecordListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FTappable(
       onPress: onTap,
       child: Padding(
@@ -390,7 +391,7 @@ class _RecordListTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: context.theme.typography.body.sm.copyWith(
+                    style: typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -398,7 +399,7 @@ class _RecordListTile extends StatelessWidget {
                     const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle!,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                       maxLines: 1,

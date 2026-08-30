@@ -22,6 +22,7 @@ class RecentSearches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     if (keywords.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -33,16 +34,14 @@ class RecentSearches extends StatelessWidget {
           children: [
             Text(
               l10n.medicineSearchRecentTitle,
-              style: context.theme.typography.body.sm.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
             ),
             const Spacer(),
             FTappable(
               onPress: onClear,
               child: Text(
                 l10n.medicineSearchClearAction,
-                style: context.theme.typography.body.sm.copyWith(
+                style: typography.body.sm.copyWith(
                   color: SemanticColor.primary.solid(context),
                   fontWeight: FontWeight.w700,
                 ),

@@ -56,6 +56,7 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final tools = capabilities.tools;
+    final typography = context.theme.typography;
 
     return SafeArea(
       child: Padding(
@@ -76,7 +77,7 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.assistantCapabilitiesAction,
-                    style: context.theme.typography.display.xl,
+                    style: typography.display.xl,
                   ),
                 ),
                 FButton.icon(
@@ -89,9 +90,7 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               l10n.assistantCapabilitiesSummaryTitle,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: Spacing.level2),
             _SummaryRow(
@@ -112,14 +111,14 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.assistantCapabilitiesToolsTitle,
-                    style: context.theme.typography.body.md.copyWith(
+                    style: typography.body.md.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
                 Text(
                   '${capabilities.enabledToolCount} / ${tools.length}',
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -154,6 +153,7 @@ class _SummaryRow extends StatelessWidget {
     final value = enabled
         ? l10n.assistantCapabilitiesEnabledValue
         : l10n.assistantCapabilitiesDisabledValue;
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
@@ -167,10 +167,10 @@ class _SummaryRow extends StatelessWidget {
                 : SemanticColor.neutral.solid(context),
           ),
           const SizedBox(width: Spacing.level2),
-          Expanded(child: Text(label, style: context.theme.typography.body.sm)),
+          Expanded(child: Text(label, style: typography.body.sm)),
           Text(
             value,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: enabled
                   ? SemanticColor.primary.solid(context)
                   : SemanticColor.neutral.solid(context),
@@ -194,6 +194,7 @@ class _ToolRow extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final name = localizeToolName(tool.id, context);
     final status = assistantToolStatusText(l10n, tool);
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.level2),
@@ -225,7 +226,7 @@ class _ToolRow extends StatelessWidget {
                   name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: context.theme.typography.body.xs,
+                  style: typography.body.xs,
                 ),
               ),
               const SizedBox(width: Spacing.level2),
@@ -236,7 +237,7 @@ class _ToolRow extends StatelessWidget {
                     status,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: context.theme.typography.body.xs2.copyWith(
+                    style: typography.body.xs2.copyWith(
                       color: tool.enabled
                           ? SemanticColor.primary.solid(context)
                           : SemanticColor.neutral.solid(context),

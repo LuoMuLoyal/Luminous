@@ -52,6 +52,8 @@ class _NotificationListItemWidgetState
     final toggleLabel = widget.item.isRead
         ? l10n.notificationActionMarkUnread
         : l10n.notificationActionMarkRead;
+    final typography = context.theme.typography;
+    final borderRadius = context.theme.style.borderRadius;
 
     // Desktop hover action buttons — replace Slidable drag with explicit
     // buttons that appear on hover. Slidable remains on mobile/touch.
@@ -94,12 +96,11 @@ class _NotificationListItemWidgetState
                             Expanded(
                               child: Text(
                                 widget.item.title,
-                                style: context.theme.typography.body.md
-                                    .copyWith(
-                                      fontWeight: widget.item.isRead
-                                          ? FontWeight.w500
-                                          : FontWeight.w700,
-                                    ),
+                                style: typography.body.md.copyWith(
+                                  fontWeight: widget.item.isRead
+                                      ? FontWeight.w500
+                                      : FontWeight.w700,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -107,7 +108,7 @@ class _NotificationListItemWidgetState
                             const SizedBox(width: Spacing.level2),
                             Text(
                               _formatTime(context, widget.item.createdAt),
-                              style: context.theme.typography.body.xs.copyWith(
+                              style: typography.body.xs.copyWith(
                                 color: SemanticColor.neutral.solid(context),
                               ),
                             ),
@@ -116,7 +117,7 @@ class _NotificationListItemWidgetState
                         const SizedBox(height: Spacing.level1),
                         Text(
                           widget.item.content,
-                          style: context.theme.typography.body.sm.copyWith(
+                          style: typography.body.sm.copyWith(
                             color: SemanticColor.neutral.solid(context),
                             height: 1.4,
                           ),
@@ -174,7 +175,7 @@ class _NotificationListItemWidgetState
             icon: toggleIcon,
             label: toggleLabel,
             spacing: 4,
-            borderRadius: context.theme.style.borderRadius.sm,
+            borderRadius: borderRadius.sm,
           ),
           SlidableAction(
             onPressed: (_) => widget.onDismiss(),
@@ -183,7 +184,7 @@ class _NotificationListItemWidgetState
             icon: SemanticIcons.actionDelete,
             label: l10n.notificationActionDelete,
             spacing: 4,
-            borderRadius: context.theme.style.borderRadius.sm,
+            borderRadius: borderRadius.sm,
           ),
         ],
       ),
@@ -222,7 +223,7 @@ class _NotificationListItemWidgetState
                           Expanded(
                             child: Text(
                               widget.item.title,
-                              style: context.theme.typography.body.md.copyWith(
+                              style: typography.body.md.copyWith(
                                 fontWeight: widget.item.isRead
                                     ? FontWeight.w500
                                     : FontWeight.w700,
@@ -234,7 +235,7 @@ class _NotificationListItemWidgetState
                           const SizedBox(width: Spacing.level2),
                           Text(
                             _formatTime(context, widget.item.createdAt),
-                            style: context.theme.typography.body.xs.copyWith(
+                            style: typography.body.xs.copyWith(
                               color: SemanticColor.neutral.solid(context),
                             ),
                           ),
@@ -243,7 +244,7 @@ class _NotificationListItemWidgetState
                       const SizedBox(height: Spacing.level1),
                       Text(
                         widget.item.content,
-                        style: context.theme.typography.body.sm.copyWith(
+                        style: typography.body.sm.copyWith(
                           color: SemanticColor.neutral.solid(context),
                           height: 1.4,
                         ),

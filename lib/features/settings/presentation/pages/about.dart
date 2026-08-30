@@ -81,6 +81,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
     final appName = pkg?.appName.isNotEmpty == true ? pkg!.appName : 'Luminous';
     final version = pkg?.version ?? '';
     final buildNumber = pkg?.buildNumber ?? '';
+    final typography = context.theme.typography;
 
     // Resolve the subtitle for the check-update tile.
     Widget? checkUpdateSubtitle;
@@ -134,7 +135,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                         children: [
                           Text(
                             appName,
-                            style: context.theme.typography.body.lg.copyWith(
+                            style: typography.body.lg.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -144,7 +145,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                               buildNumber.isNotEmpty
                                   ? '${l10n.settingsAboutVersionLabel(version)} · ${l10n.settingsAboutBuildLabel(buildNumber)}'
                                   : l10n.settingsAboutVersionLabel(version),
-                              style: context.theme.typography.body.xs.copyWith(
+                              style: typography.body.xs.copyWith(
                                 color: SemanticColor.neutral.solid(context),
                               ),
                             ),
@@ -152,7 +153,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                           const SizedBox(height: Spacing.level1),
                           Text(
                             l10n.settingsAboutTagline,
-                            style: context.theme.typography.body.xs.copyWith(
+                            style: typography.body.xs.copyWith(
                               color: SemanticColor.neutral.solid(context),
                             ),
                           ),

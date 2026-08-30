@@ -269,6 +269,7 @@ class _BrandFeatureItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,7 +296,7 @@ class _BrandFeatureItem extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: context.theme.typography.body.md.copyWith(
+                style: typography.body.md.copyWith(
                   color: colors.foreground,
                   fontWeight: FontWeight.w700,
                 ),
@@ -303,7 +304,7 @@ class _BrandFeatureItem extends StatelessWidget {
               const SizedBox(height: Spacing.level1),
               Text(
                 description,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -419,9 +420,7 @@ class _AuthPageHeader extends StatelessWidget {
             child: Text(
               title,
               textAlign: centerTitle ? TextAlign.center : TextAlign.left,
-              style: context.theme.typography.body.xl.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.xl.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           const SizedBox(width: Spacing.level8),
@@ -441,9 +440,7 @@ class _AuthPageHeader extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: context.theme.typography.body.xl.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: typography.body.xl.copyWith(fontWeight: FontWeight.w700),
         ),
         if (subtitle != null) ...[
           const SizedBox(height: Spacing.level2),

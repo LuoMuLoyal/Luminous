@@ -135,6 +135,7 @@ class _MedicineRecognizeDialogState
     final resId = res?.id;
     final boxItem = resId == null ? null : boxByKey['cn:$resId'];
     final alreadyAdded = boxItem != null;
+    final borderRadius = context.theme.style.borderRadius;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -159,7 +160,7 @@ class _MedicineRecognizeDialogState
               Row(
                 children: [
                   ClipRRect(
-                    borderRadius: context.theme.style.borderRadius.xs,
+                    borderRadius: borderRadius.xs,
                     child: Image.file(
                       File(widget.imagePath),
                       width: 60,
@@ -206,7 +207,7 @@ class _MedicineRecognizeDialogState
                   padding: const EdgeInsets.all(Spacing.level4),
                   decoration: BoxDecoration(
                     color: colors.background,
-                    borderRadius: context.theme.style.borderRadius.sm,
+                    borderRadius: borderRadius.sm,
                     border: Border.all(
                       color: SemanticColor.neutral.border(context),
                     ),

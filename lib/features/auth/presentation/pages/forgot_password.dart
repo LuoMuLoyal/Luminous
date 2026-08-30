@@ -24,6 +24,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
     final state = ref.watch(passwordResetProvider);
     final notifier = ref.read(passwordResetProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return AuthShell(
       title: l10n.authResetPasswordAction,
@@ -94,7 +95,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
               children: [
                 Text(
                   l10n.authRememberPasswordPrompt,
-                  style: context.theme.typography.body.xs2.copyWith(
+                  style: typography.body.xs2.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -103,10 +104,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => context.push(Routes.login),
-                  child: Text(
-                    l10n.authSignIn,
-                    style: context.theme.typography.body.xs2,
-                  ),
+                  child: Text(l10n.authSignIn, style: typography.body.xs2),
                 ),
               ],
             ),

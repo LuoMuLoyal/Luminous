@@ -41,8 +41,9 @@ class AuthTermsNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
-    final linkStyle = context.theme.typography.body.xs.copyWith(
+    final linkStyle = typography.body.xs.copyWith(
       color: SemanticColor.primary.solid(context),
       fontWeight: FontWeight.w600,
     );
@@ -66,7 +67,7 @@ class AuthTermsNotice extends StatelessWidget {
           children: [
             Text(
               trimmedLead,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -77,7 +78,7 @@ class AuthTermsNotice extends StatelessWidget {
             ),
             Text(
               connector,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),

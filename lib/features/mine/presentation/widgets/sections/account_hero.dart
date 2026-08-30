@@ -39,6 +39,8 @@ class MineAccountHero extends StatelessWidget {
         : isIncomplete
         ? l10n.mineCompletenessGapAction
         : l10n.mineReadinessManageAction;
+    final typography = context.theme.typography;
+    final borderRadius = context.theme.style.borderRadius;
 
     return FCard(
       key: const Key('mine-account-manage-link'),
@@ -58,7 +60,7 @@ class MineAccountHero extends StatelessWidget {
                     children: [
                       Text(
                         name,
-                        style: context.theme.typography.display.xl.copyWith(
+                        style: typography.display.xl.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -88,14 +90,12 @@ class MineAccountHero extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               title,
-              style: context.theme.typography.body.lg.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               description,
-              style: context.theme.typography.body.sm.copyWith(
+              style: typography.body.sm.copyWith(
                 color: SemanticColor.neutral.solid(context),
                 height: 1.45,
               ),
@@ -105,7 +105,7 @@ class MineAccountHero extends StatelessWidget {
               children: [
                 Text(
                   mineCopy(l10n, dashboard.completion.titleKey),
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -114,11 +114,11 @@ class MineAccountHero extends StatelessWidget {
                   skeleton: InlineSkeletonBlock(
                     height: 22,
                     width: 42,
-                    radius: context.theme.style.borderRadius.xs.topLeft.x,
+                    radius: borderRadius.xs.topLeft.x,
                   ),
                   child: Text(
                     dashboard.completion.percentLabel,
-                    style: context.theme.typography.body.md.copyWith(
+                    style: typography.body.md.copyWith(
                       color: SemanticColor.primary.solid(context),
                       fontWeight: FontWeight.w800,
                     ),
@@ -130,10 +130,10 @@ class MineAccountHero extends StatelessWidget {
             SkeletonSlot(
               skeleton: InlineSkeletonBlock(
                 height: 8,
-                radius: context.theme.style.borderRadius.pill.topLeft.x,
+                radius: borderRadius.pill.topLeft.x,
               ),
               child: ClipRRect(
-                borderRadius: context.theme.style.borderRadius.pill,
+                borderRadius: borderRadius.pill,
                 child: FDeterminateProgress(
                   value: dashboard.completion.progress,
                 ),
@@ -289,15 +289,14 @@ class _StateBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     // Preview badge: secondary variant (grey)
     if (preview) {
       return FBadge(
         variant: FBadgeVariant.secondary,
         child: Text(
           label,
-          style: context.theme.typography.body.xs.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: typography.body.xs.copyWith(fontWeight: FontWeight.w700),
         ),
       );
     }
@@ -310,7 +309,7 @@ class _StateBadge extends StatelessWidget {
         variant: FBadgeVariant.primary,
         child: Text(
           label,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             fontWeight: FontWeight.w700,
             color: SemanticColor.primary.foreground(context),
           ),
@@ -322,7 +321,7 @@ class _StateBadge extends StatelessWidget {
       variant: FBadgeVariant.secondary,
       child: Text(
         label,
-        style: context.theme.typography.body.xs.copyWith(
+        style: typography.body.xs.copyWith(
           fontWeight: FontWeight.w700,
           color: SemanticColor.warning.solid(context),
         ),
