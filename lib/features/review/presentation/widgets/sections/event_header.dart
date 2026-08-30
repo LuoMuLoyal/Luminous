@@ -47,9 +47,9 @@ class EventHeaderSection extends StatelessWidget {
             // 先读标题再读状态/结果（Task 9 a11y 顺序校验）。
             Text(
               event.title,
-              style: TypographyToken.level6
-                  .display(context)
-                  .copyWith(fontWeight: FontWeight.w800),
+              style: context.theme.typography.display.lg.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
             ),
             const SizedBox(height: Spacing.level3),
             Row(
@@ -84,18 +84,18 @@ class EventHeaderSection extends StatelessWidget {
             const SizedBox(height: Spacing.level2),
             Text(
               reviewEventKindLabel(l10n, event.kind),
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               l10n.reviewReviewStartedLabel(
                 reviewShortDateLabel(context, event.startedAt),
               ),
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             if (event.endedAt != null) ...[
               const SizedBox(height: Spacing.level1),
@@ -103,9 +103,9 @@ class EventHeaderSection extends StatelessWidget {
                 l10n.reviewReviewEndedLabel(
                   reviewShortDateLabel(context, event.endedAt!),
                 ),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (event.currentMedicineIds.isNotEmpty) ...[
@@ -114,9 +114,9 @@ class EventHeaderSection extends StatelessWidget {
                 l10n.reviewReviewMedicineCountLabel(
                   event.currentMedicineIds.length,
                 ),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (!isActive && event.outcome != null) ...[
@@ -125,9 +125,9 @@ class EventHeaderSection extends StatelessWidget {
                 children: [
                   Text(
                     l10n.reviewReviewOutcomeLabel,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                   const SizedBox(width: Spacing.level2),
                   _ReviewStatusChip(
@@ -150,9 +150,9 @@ class EventHeaderSection extends StatelessWidget {
                 l10n.reviewReviewCheckInDoneToday(
                   reviewOutcomeLabel(l10n, todayCheckIn!.outcome),
                 ),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
           ],
@@ -197,9 +197,10 @@ class _ReviewStatusChip extends StatelessWidget {
           label,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TypographyToken.level2
-              .body(context)
-              .copyWith(color: color, fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.xs2.copyWith(
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

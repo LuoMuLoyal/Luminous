@@ -225,9 +225,9 @@ class ReviewPeriodPill extends StatelessWidget {
         children: [
           Text(
             _label(l10n),
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w700),
+            style: context.theme.typography.body.sm.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(width: Spacing.level1),
           Icon(

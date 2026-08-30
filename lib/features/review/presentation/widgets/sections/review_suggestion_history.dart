@@ -33,9 +33,9 @@ class ReviewSuggestionHistorySection extends StatelessWidget {
       children: [
         Text(
           l10n.reviewSuggestionHistorySectionTitle,
-          style: TypographyToken.level5
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.md.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         const AppDivider(),
@@ -142,9 +142,10 @@ class _SuggestionBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: color, fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.xs.copyWith(
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );
@@ -181,16 +182,16 @@ class _EmptyView extends StatelessWidget {
               children: [
                 Text(
                   l10n.reviewSuggestionHistoryEmptyTitle,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w800),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.reviewSuggestionHistoryEmptyBody,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),

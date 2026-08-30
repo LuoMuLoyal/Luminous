@@ -41,9 +41,9 @@ class ReviewSectionCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],
@@ -81,9 +81,9 @@ class ReviewUnknownReason extends StatelessWidget {
         Expanded(
           child: Text(
             reason,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
         ),
       ],
@@ -115,9 +115,7 @@ class ReviewFactRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.level2),
-          Expanded(
-            child: Text(text, style: TypographyToken.level3.body(context)),
-          ),
+          Expanded(child: Text(text, style: context.theme.typography.body.xs)),
         ],
       ),
     );

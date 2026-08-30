@@ -110,12 +110,10 @@ class _RedFlagList extends StatelessWidget {
               Expanded(
                 child: Text(
                   l10n.reviewReviewRedFlagSectionTitle,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(
-                        color: warning.solid(context),
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: warning.solid(context),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -126,7 +124,7 @@ class _RedFlagList extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: Spacing.level1),
               child: Text(
                 _redFlagLabel(flag),
-                style: TypographyToken.level3.body(context),
+                style: context.theme.typography.body.xs,
               ),
             ),
         ],

@@ -113,9 +113,9 @@ Future<ReviewDashboardQuery?> _showMobileRangePicker(
                   Expanded(
                     child: Text(
                       l10n.reviewRangePickerTitle,
-                      style: TypographyToken.level5
-                          .body(context)
-                          .copyWith(fontWeight: FontWeight.w600),
+                      style: context.theme.typography.body.md.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   IconButton(

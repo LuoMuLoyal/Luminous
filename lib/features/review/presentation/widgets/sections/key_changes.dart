@@ -163,9 +163,9 @@ class _TrendRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w600),
+                  style: context.theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               DecoratedBox(
@@ -180,12 +180,10 @@ class _TrendRow extends StatelessWidget {
                   ),
                   child: Text(
                     chipLabel,
-                    style: TypographyToken.level2
-                        .body(context)
-                        .copyWith(
-                          color: chipTone.solid(context),
-                          fontWeight: FontWeight.w600,
-                        ),
+                    style: context.theme.typography.body.xs2.copyWith(
+                      color: chipTone.solid(context),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -194,9 +192,9 @@ class _TrendRow extends StatelessWidget {
           const SizedBox(height: Spacing.level1),
           Text(
             detail,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
         ],
       ),

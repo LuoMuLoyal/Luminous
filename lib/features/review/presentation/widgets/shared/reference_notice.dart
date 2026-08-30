@@ -29,12 +29,10 @@ class ReviewReferenceNotice extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.reviewReferenceNotice,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(
-                      color: context.theme.colors.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: context.theme.colors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],

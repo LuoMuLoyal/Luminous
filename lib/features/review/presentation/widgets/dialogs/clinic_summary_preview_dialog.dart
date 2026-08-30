@@ -149,9 +149,9 @@ class _ClinicSummaryPreviewContentState
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.reviewClinicSummaryLoading,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: context.theme.colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
               ),
             ],
           ),
@@ -405,9 +405,9 @@ class _FieldSelectionPanel extends StatelessWidget {
       children: [
         Text(
           l10n.reviewClinicSummaryFieldSectionTitle,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level2),
         for (final field in kClinicSummaryAllFields) ...[
@@ -434,9 +434,9 @@ class _FieldSelectionPanel extends StatelessWidget {
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.reviewClinicSummaryFieldPrivacyHint,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
       ],
     );
@@ -493,9 +493,7 @@ class _FieldToggle extends StatelessWidget {
           onChange: enabled ? onChanged : null,
         ),
         const SizedBox(width: Spacing.level3),
-        Expanded(
-          child: Text(label, style: TypographyToken.level4.body(context)),
-        ),
+        Expanded(child: Text(label, style: context.theme.typography.body.sm)),
       ],
     );
   }
@@ -533,9 +531,9 @@ class _ShareConfirmPanel extends StatelessWidget {
       children: [
         Text(
           l10n.reviewShareConfirmTitle,
-          style: TypographyToken.level6
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.lg.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         _NoticeRow(
@@ -616,9 +614,9 @@ class _ShareCreatedPanel extends StatelessWidget {
       children: [
         Text(
           l10n.reviewShareCreatedTitle,
-          style: TypographyToken.level6
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.lg.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         MetaRow(
@@ -631,9 +629,9 @@ class _ShareCreatedPanel extends StatelessWidget {
             padding: const EdgeInsets.all(Spacing.level4),
             child: Text(
               response.shareUrl,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
         ),
@@ -697,16 +695,16 @@ class _ShareRevokedPanel extends StatelessWidget {
         const SizedBox(height: Spacing.level3),
         Text(
           l10n.reviewShareRevokedTitle,
-          style: TypographyToken.level6
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.lg.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.reviewShareRevokedBody,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level5),
         FButton(
@@ -740,9 +738,7 @@ class _NoticeRow extends StatelessWidget {
           child: Icon(icon, size: 16, color: iconColor),
         ),
         const SizedBox(width: Spacing.level3),
-        Expanded(
-          child: Text(text, style: TypographyToken.level3.body(context)),
-        ),
+        Expanded(child: Text(text, style: context.theme.typography.body.xs)),
       ],
     );
   }
@@ -773,7 +769,7 @@ class _ErrorView extends StatelessWidget {
           const SizedBox(height: Spacing.level3),
           Text(
             message,
-            style: TypographyToken.level4.body(context),
+            style: context.theme.typography.body.sm,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: Spacing.level4),

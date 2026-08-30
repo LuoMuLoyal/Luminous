@@ -39,9 +39,9 @@ class ReviewTrendSection extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.reviewTrendSectionTitle,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             if (showRangePill)
@@ -179,21 +179,19 @@ class _SingleTrendChart extends StatelessWidget {
               children: [
                 Text(
                   '${series.currentValue}${series.unit}',
-                  style: TypographyToken.level7
-                      .display(context)
-                      .copyWith(
-                        color: resolvedColor,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  style: context.theme.typography.display.xl.copyWith(
+                    color: resolvedColor,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(width: Spacing.level3),
                 if (coverageLabel != null)
                   Expanded(
                     child: Text(
                       coverageLabel,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                       textAlign: TextAlign.end,
                     ),
                   ),
@@ -251,9 +249,9 @@ class _SingleTrendChart extends StatelessWidget {
                             padding: const EdgeInsets.only(top: Spacing.level2),
                             child: Text(
                               labels[index],
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
+                              style: context.theme.typography.body.xs.copyWith(
+                                color: colors.mutedForeground,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.clip,
                             ),
@@ -278,12 +276,10 @@ class _SingleTrendChart extends StatelessWidget {
                               : series.currentValue;
                           return LineTooltipItem(
                             '$valueText\n$dateLabel',
-                            TypographyToken.level3
-                                .body(context)
-                                .copyWith(
-                                  color: resolvedColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            context.theme.typography.body.xs.copyWith(
+                              color: resolvedColor,
+                              fontWeight: FontWeight.w600,
+                            ),
                           );
                         }).toList();
                       },
@@ -371,16 +367,16 @@ class _TrendEmptyState extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.reviewTrendEmptyTitle,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.reviewTrendEmptyBody,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],

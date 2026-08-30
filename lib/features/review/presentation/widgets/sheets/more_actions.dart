@@ -99,9 +99,9 @@ class ReviewMoreActionsSheet extends StatelessWidget {
             const Center(child: SheetDragHandle()),
           Text(
             l10n.reviewMoreTitle,
-            style: TypographyToken.level6
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w700),
+            style: context.theme.typography.body.lg.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: Spacing.level3),
           _MoreActionTile(
@@ -210,18 +210,18 @@ class _MoreActionTile extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: TypographyToken.level5
-                          .body(context)
-                          .copyWith(fontWeight: FontWeight.w700),
+                      style: context.theme.typography.body.md.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

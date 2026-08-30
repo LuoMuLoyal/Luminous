@@ -177,9 +177,9 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                 Expanded(
                   child: Text(
                     l10n.reviewReviewHistoryTitle,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],
@@ -201,11 +201,9 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                   Expanded(
                     child: Text(
                       l10n.reviewReviewHistoryLoadFailed,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(
-                            color: context.theme.colors.mutedForeground,
-                          ),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
                     ),
                   ),
                   if (widget.onRetry != null) ...[
@@ -226,9 +224,9 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                 if (allItems.isEmpty) {
                   return Text(
                     l10n.reviewReviewHistoryEmpty,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
                   );
                 }
 
@@ -298,9 +296,9 @@ class _LoadMoreControl extends StatelessWidget {
           Expanded(
             child: Text(
               l10n.reviewReviewHistoryLoadMoreFailed,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
             ),
           )
         else
@@ -348,18 +346,18 @@ class _HistoryEventRow extends StatelessWidget {
               children: [
                 Text(
                   event.title,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w600),
+                  style: context.theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   '${reviewShortDateLabel(context, event.startedAt)} – $endLabel',
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -410,12 +408,10 @@ class _HistoryStatusChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level2
-              .body(context)
-              .copyWith(
-                color: tone.solid(context),
-                fontWeight: FontWeight.w600,
-              ),
+          style: context.theme.typography.body.xs2.copyWith(
+            color: tone.solid(context),
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

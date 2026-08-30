@@ -82,9 +82,9 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
               Expanded(
                 child: Text(
                   suggestion.title,
-                  style: TypographyToken.level6
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.lg.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -103,7 +103,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
           const SizedBox(height: Spacing.level5),
 
           // Reason body.
-          Text(suggestion.reason, style: TypographyToken.level4.body(context)),
+          Text(suggestion.reason, style: context.theme.typography.body.sm),
 
           const SizedBox(height: Spacing.level5),
           const AppDivider(),
@@ -265,9 +265,10 @@ class _LifecycleBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: color, fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.xs.copyWith(
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );

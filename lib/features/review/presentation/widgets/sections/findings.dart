@@ -22,9 +22,9 @@ class ReviewFindingsSection extends StatelessWidget {
       children: [
         Text(
           l10n.reviewFindingsSectionTitle,
-          style: TypographyToken.level5
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.md.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         if (findings.isEmpty)
@@ -76,16 +76,16 @@ class _EmptyFindingsView extends StatelessWidget {
               children: [
                 Text(
                   l10n.reviewFindingsEmptyTitle,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w800),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.reviewFindingsEmptyBody,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -150,17 +150,17 @@ class _FindingCard extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             SkeletonText(
               text: finding.title,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w800),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
               widthFactor: 0.7,
             ),
             const SizedBox(height: Spacing.level3),
             SkeletonText(
               text: finding.body,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.9,

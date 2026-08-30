@@ -67,16 +67,16 @@ class ReviewReadinessSection extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               _title,
-              style: TypographyToken.level6
-                  .display(context)
-                  .copyWith(fontWeight: FontWeight.w800),
+              style: context.theme.typography.display.lg.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               _description,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.sm.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             if (generatedAtLabel.isNotEmpty) ...[
               const SizedBox(height: Spacing.level3),
@@ -93,9 +93,9 @@ class ReviewReadinessSection extends StatelessWidget {
                   Expanded(
                     child: Text(
                       l10n.reviewReadinessUpdatedAt(generatedAtLabel),
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ),
                 ],
@@ -108,9 +108,9 @@ class ReviewReadinessSection extends StatelessWidget {
                   l10n.reviewReadinessMissingMetricsHint(
                     insufficientMetricCount,
                   ),
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
               if (needsAttentionMetricCount > 0) ...[
@@ -119,9 +119,9 @@ class ReviewReadinessSection extends StatelessWidget {
                   l10n.reviewReadinessNeedsAttentionMetricsHint(
                     needsAttentionMetricCount,
                   ),
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ],
@@ -258,12 +258,10 @@ class _StatusBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(
-                color: color.solid(context),
-                fontWeight: FontWeight.w800,
-              ),
+          style: context.theme.typography.body.xs.copyWith(
+            color: color.solid(context),
+            fontWeight: FontWeight.w800,
+          ),
         ),
       ),
     );

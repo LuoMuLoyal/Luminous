@@ -82,9 +82,9 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
             const Center(child: SheetDragHandle()),
           Text(
             l10n.reviewShareManagementTitle,
-            style: TypographyToken.level6
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w700),
+            style: context.theme.typography.body.lg.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: Spacing.level4),
           ...switch (async) {
@@ -120,7 +120,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
                     const SizedBox(height: Spacing.level3),
                     Text(
                       l10n.reviewShareManagementLoadFailed,
-                      style: TypographyToken.level3.body(context),
+                      style: context.theme.typography.body.xs,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: Spacing.level4),
@@ -160,14 +160,14 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.reviewShareManagementEmpty,
-                style: TypographyToken.level4.body(context),
+                style: context.theme.typography.body.sm,
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.reviewShareManagementEmptyHint,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: context.theme.colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -257,12 +257,10 @@ class _ShareRow extends ConsumerWidget {
                       ),
                       child: Text(
                         l10n.reviewShareRevokedBadge,
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(
-                              color: colors.mutedForeground,
-                              fontWeight: FontWeight.w700,
-                            ),
+                        style: context.theme.typography.body.xs.copyWith(
+                          color: colors.mutedForeground,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
@@ -270,9 +268,9 @@ class _ShareRow extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       formatDateTimeFull(share.revokedAt!, locale),
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ),
                 ],

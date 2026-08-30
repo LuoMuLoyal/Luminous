@@ -409,9 +409,9 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
         ),
         title: Text(
           AppLocalizations.of(context)!.reviewLockedFeaturesTitle,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w800),
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
         ),
         subtitle: Text(message),
       ),

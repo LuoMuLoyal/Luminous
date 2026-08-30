@@ -198,9 +198,9 @@ class ClinicSummaryContent extends StatelessWidget {
         const SizedBox(height: Spacing.level2),
         Text(
           dto.disclaimer,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: context.theme.colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
         ),
 
         // Action buttons.
@@ -277,9 +277,9 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: TypographyToken.level4
-          .body(context)
-          .copyWith(fontWeight: FontWeight.w700),
+      style: context.theme.typography.body.sm.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
     );
   }
 }
@@ -310,9 +310,7 @@ class _BulletItem extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.level3),
-          Expanded(
-            child: Text(text, style: TypographyToken.level3.body(context)),
-          ),
+          Expanded(child: Text(text, style: context.theme.typography.body.xs)),
         ],
       ),
     );

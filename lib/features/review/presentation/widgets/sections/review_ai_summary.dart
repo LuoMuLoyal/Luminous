@@ -68,16 +68,16 @@ class ReviewAiSummarySection extends StatelessWidget {
                     children: [
                       Text(
                         l10n.reviewAiSummaryTitle,
-                        style: TypographyToken.level5
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w800),
+                        style: context.theme.typography.body.md.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                       const SizedBox(height: Spacing.level1),
                       Text(
                         content.subtitle,
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(color: colors.mutedForeground),
+                        style: context.theme.typography.body.xs.copyWith(
+                          color: colors.mutedForeground,
+                        ),
                       ),
                       const SizedBox(height: Spacing.level3),
                       Wrap(
@@ -149,9 +149,9 @@ class ReviewAiSummarySection extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
                 child: Text(
                   content.observedPattern!,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ),
               const AppDivider(),
@@ -161,9 +161,9 @@ class ReviewAiSummarySection extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
                 child: Text(
                   content.lowRiskAction!,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ),
               const AppDivider(),
@@ -172,9 +172,9 @@ class ReviewAiSummarySection extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 content.disclaimer!,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (content.showGenerateButton) ...[

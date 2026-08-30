@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
@@ -57,9 +58,9 @@ class CompletedActionsSection extends StatelessWidget {
       children: [
         Text(
           l10n.reviewReviewDoseSectionTitle,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: Spacing.level2),
         ReviewFactRow(
@@ -79,9 +80,9 @@ class CompletedActionsSection extends StatelessWidget {
           const SizedBox(height: Spacing.level2),
           Text(
             l10n.reviewReviewCheckInSectionTitle,
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w600),
+            style: context.theme.typography.body.sm.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: Spacing.level2),
           for (final checkIn in checkIns.take(_maxCheckInRows))
