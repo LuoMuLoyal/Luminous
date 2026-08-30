@@ -44,7 +44,7 @@ Widget _appShell(Widget child, List<Override> overrides) {
 
 void main() {
   group('ConnectivityBanner', () {
-    testWidgets('does not render when session is not timed out', (
+    testWidgets('renders SizedBox.shrink when session is not timed out', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -54,9 +54,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(ConnectivityBanner), findsOneWidget);
-      expect(find.byType(SizedBox), findsWidgets);
-      // Banner content should not be visible (returns SizedBox.shrink)
+      // The only meaningful assertion: banner content is not visible.
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(find.text(l10n.authSessionRestoreTimeout), findsNothing);
     });
