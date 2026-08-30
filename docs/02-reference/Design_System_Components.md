@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-28
+updated: 2026-08-30
 ---
 
 # Design System Components
@@ -15,8 +15,8 @@ updated: 2026-08-28
 ## 组件规范
 
 - pill alpha：`0.12`
-- status pill radius：`RadiusTokens.level3`
-- panel radius：`RadiusTokens.level5`
+- status pill radius：`context.theme.style.borderRadius.sm`
+- panel radius：`context.theme.style.borderRadius.lg`
 - section header fontWeight：`w600`
 - icon badge size：`48px`
 - text action icon：`16px`
@@ -58,7 +58,7 @@ updated: 2026-08-28
 - `lib/core/widgets/common/` 不再保留 `AppSectionSurface`。
 - `IconActionButton`（`core/widgets/common/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，支持 `showBadge` 参数在右上角叠加红色小圆点（用于未读消息提醒等场景）。Mine/Today 等模块的顶栏统一引用 core 版本，不再各自维护同名实现。
 - `settingsPageVerticalPadding(BuildContext)`（`settings/presentation/utils/settings_page_padding.dart`）是设置页面统一的响应式垂直 padding 函数——窄屏（< `Breakpoints.mobile`）返回 `Spacing.level6`，宽屏返回 `Spacing.level7`。设置主页和所有子页统一引用该函数，不再各自手写响应式三元表达式。
-- `SettingsSectionLabel`（`settings/presentation/widgets/shared/settings_section_label.dart`）是设置页面统一的分组标题组件——`TypographyToken.level3` + `w600` 字重 + `mutedForeground` 颜色 + `Spacing.level2` 水平 padding。设置主页和所有子页统一使用该组件，不再各自维护 `_SettingsGroup` 等自定义实现。
+- `SettingsSectionLabel`（`settings/presentation/widgets/shared/settings_section_label.dart`）是设置页面统一的分组标题组件——`context.theme.typography.body.xs` + `w600` 字重 + `SemanticColor.neutral.solid(context)` 颜色 + `Spacing.level2` 水平 padding。设置主页和所有子页统一使用该组件，不再各自维护 `_SettingsGroup` 等自定义实现。
 - `showForuiDatePicker`（`lib/core/widgets/common/date_picker.dart`）是全 App 共享的日历日期选择器工具函数，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
 
 ## 对话框基础设施

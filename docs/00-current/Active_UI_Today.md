@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-22
+updated: 2026-08-30
 ---
 
 # Active UI — Today
@@ -153,7 +153,7 @@ Last updated: 2026-08-21
 - 次级建议加载中渲染 `SecondarySuggestionSkeleton`（2 行骨架占位），消除加载后跳变。
 - `openRoute` 统一改为 `context.push`，保证用户可返回。
 - "未记录"降字重为 w500 + mutedForeground（`isFallback` 标志）。
-- 置信度标签从 `TypographyToken.level1` 升级为 `level2`。
+- 置信度标签从 `context.theme.typography.body.xs3` 升级为 `body.xs2`。
 - observation 骨架行包 `AppSkeletonShimmer`。
 - 次要操作标题改为正常前景色，仅图标保持 muted。
 - `TodayTopBar` 改为 `FHeader.nested`，问候语从 Header 拆分到内容区。

@@ -13,10 +13,8 @@
 - **P0–P3 优先级体系** — 跨项目产品优先级框架，定义于 [[04-archive/product/Product_Brainstorm_2026-07-07]]。P0 为发布前必做项，P1 为首发版本内，P2 为 1.1.0 候选，P3 为 1.2.0+ 候选。
 - **Clinic Summary** — 当前后端对就诊摘要的实现名，含 Redis 24h 分享链接与 PDF；产品名称和边界见 [`01-product/Product_Vision.md`](01-product/Product_Vision.md)。
 - **Security PIN** — Lucent 6 位应用内安全码，替代旧 TOTP 2FA。
-- **SemanticColor** — 二维语义颜色枚举（6 色 × 5 tone），数据/领域层使用，widget 处解析。
-- **Spacing** — 项目间距 token，`level1`–`level12`。
-- **RadiusTokens** — 项目圆角 token，`level0`–`level9` 与 `levelFull`。
-- **TypographyToken** — 字体层级 token，`level1`–`level10` 映射到 Forui `FTypeface`。
+- **SemanticColor** — 二维语义颜色枚举（6 色 × 10 tone），数据/领域层使用，widget 处解析。
+- **Spacing** — 项目间距 token，语义别名 `xs`/`sm`/`md`/`lg`/`xl`/`xl2`… 为主命名（`level1`–`level12` 为向后兼容别名）。
 - **DurationTokens** — 动画时长 token，路由过渡 + widget 动画。
 - **Breakpoints** — 响应式布局断点。
 - **ResponsiveSizing** — 响应式尺寸 helper（卡宽 / sidebar 宽 / grid 列数）。

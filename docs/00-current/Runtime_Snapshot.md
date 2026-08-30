@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-23
+updated: 2026-08-30
 ---
 
 # Luminous Runtime Snapshot
@@ -32,7 +32,7 @@ Last updated: 2026-08-23（错误处理迁移收口：TaskEither 全量落地、
 
 - `LuminousApp` 使用 Forui 引导的根主题，`MaterialApp.router` 从 Forui 派生 light/dark `ThemeData`。
 - Forui 0.24.0 移除了除 `neutral` 外的所有预定义颜色方案（原 `FThemes.blue/green/orange/red/rose/slate/violet/yellow/zinc`）。`lib/core/theme/theme.dart` 通过 `_familyColorOverride()` 函数在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 来模拟原有主题族的颜色变体，保持 App 的主题族选择能力不变。
-- 语义颜色枚举 `SemanticColor`（6 个语义色）× `SemanticColorPalette`（5 个预计算 tone：solid/foreground/muted/subtle/border）。
+- 语义颜色枚举 `SemanticColor`（6 个语义色）× `SemanticColorPalette`（10 个预计算 tone：solid/foreground/muted/subtle/border/shimmerBase/disabled/borderStrong/fill/fillStrong）。
 - `SemanticColors` 通过 `FColors.extensions` 注入 Forui 主题，暗色模式 alpha 自动补偿。
 - 高对比度模式使用 `HighContrastColors` 常量类（`lib/core/design/high_contrast.dart`）。
 
@@ -40,9 +40,10 @@ Last updated: 2026-08-23（错误处理迁移收口：TaskEither 全量落地、
 
 所有 token 位于 `lib/core/design/`，通过 barrel `design.dart` 统一导出。`App*` 前缀已全部移除。
 
-- `Spacing` — `level1..level12`（4/6/10/14/20/28/36/44/56/72/96/128）。
-- `RadiusTokens` — `level0..level9` + `levelFull`。
-- `TypographyToken` — `level1..level10`。
+- `Spacing` — 语义别名 `xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`/`xl5`/`xl6`/`xl7`/`xl8` 为主命名（4/6/10/14/20/28/36/44/56/72/96/128），`level1..level12` 为向后兼容别名。
+- `IconSizeTokens` — 图标尺寸 token，语义别名 `xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4` 为主命名（`level1..level8` 为别名）。
+- 圆角：Forui 原生 `context.theme.style.borderRadius.*`（`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。
+- 字体：Forui 原生 `context.theme.typography.body/display.*`（`xs3`/`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`）。
 - `DurationTokens` — 路由过渡 + widget 动画时长。
 - `Breakpoints` — `mobile`(600) / `tablet`(960) / `desktop`(1200)。
 - `ResponsiveSizing` — 卡宽 / sidebar 宽 / grid 列数 / 可缩放尺寸 helper。

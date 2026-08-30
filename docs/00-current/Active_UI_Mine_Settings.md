@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-24
+updated: 2026-08-30
 ---
 
 # Active UI — Mine / Settings
@@ -217,7 +217,7 @@ Last updated: 2026-08-24（Task 9 清理：删除 Security PIN / elevation 代�
 - 列表页展示 7 种文档类型（条款/隐私/免责/未成年人保护/SDK 列表/权限/账号注销），每项带类型图标 + 标题 + 更新时间。
 - 详情页从滚动 `Markdown` 改为 `MarkdownBody` + `SingleChildScrollView`，支持文本选择（`selectable: true`）。
 - 正文 Markdown 样式走 `MarkdownStyle.legal(context)`（正式文档样式，见 [[Design_System#Markdown 渲染]]，2026-08-03 起统一）。
-- 正文字号从 `TypographyToken.level3`（14px）升级为 `level4`（16px），行高 `1.7`，长文阅读更舒适。
+- 正文字号从 `context.theme.typography.body.xs`（14px）升级为 `body.sm`（16px），行高 `1.7`，长文阅读更舒适。
 - h1/h2/h3 字号升级（level7/level6/level5）并添加段落间距（`h1Padding`/`h2Padding`/`h3Padding`）。
 - 详情页包裹 `ResponsiveContentFrame` 限宽，宽屏不再通栏。
 - 页面标题使用文档名（`doc.title`）替代固定"法律文件"。

@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-25
+updated: 2026-08-30
 ---
 
 # Forui 参考（项目版）
@@ -55,12 +55,12 @@ updated: 2026-08-25
 - **返回按钮**：统一 `lib/core/widgets/common/back_button.dart` 的 `AppBackButton`（保留 App 前缀以避免与 Flutter BackButton 冲突）。
 - **图标**：优先用 Forui 自带的 `FLucideIcons.*`，不再使用 Material `Icons.*`。
 - **字体**：
-  - 正文/默认：`_token.body(context)`
-  - 强调/大标题：`_token.display(context)`
-  - Tab 根页大标题：`TypographyToken.level9.display(context).copyWith(fontWeight: FontWeight.w800)`
-- **间距**：`Spacing.level1`（4）到 `level12`（128）。
-- **圆角**：`RadiusTokens.level0` 到 `level9` 及 `levelFull`。
-- **图标大小**：`IconSizeTokens.level1`（12）到 `level5`（32），不硬编码 `size: N`。
+  - 正文/默认：`context.theme.typography.body.*`
+  - 强调/大标题：`context.theme.typography.display.*`
+  - Tab 根页大标题：`context.theme.typography.display.xl3.copyWith(fontWeight: FontWeight.w800)`
+- **间距**：`Spacing.xs`（4）到 `xl8`（128）。
+- **圆角**：`context.theme.style.borderRadius.xs2`（4）到 `pill`（100），scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`。
+- **图标大小**：`IconSizeTokens.xs`（12）到 `xl4`（64），不硬编码 `size: N`。
 - **动画曲线**：`MotionTokens.entrance` / `exit` / `standard` / `snappy`，不硬编码 `Curves.*`。
 - **动画时长**：`DurationTokens.authPageTransitionIn` 等（与 `MotionTokens` 同在 `motion.dart`）。
 - **阴影**：`ElevationTokens.raised(colors)` / `glow(color)` / `shadowColor(colors)`，不内联 `BoxShadow`。
@@ -141,7 +141,7 @@ FTileGroup(
 )
 ```
 
-- 设置页分组标签：用 `TypographyToken.level4.body(context).copyWith(color: colors.mutedForeground,
+- 设置页分组标签：用 `context.theme.typography.body.sm.copyWith(color: SemanticColor.neutral.solid(context),
    fontWeight: FontWeight.w600)`。
 - 子页瓷砖统一用外层的 `FTileGroup` 边框，内部 `FTile` 不再重复描边。
 

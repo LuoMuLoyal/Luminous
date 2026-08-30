@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: how-to
-updated: 2026-08-02
+updated: 2026-08-30
 ---
 
 # How-To: 新增 Feature 模块
@@ -63,7 +63,7 @@ GoRoute(
 ### 5. 添加设计系统引用
 
 - 使用 Forui 组件优先于自定义 widget
-- 使用 `SemanticColor` / `Spacing` / `TypographyToken` / `RadiusTokens` 设计 token
+- 使用 `SemanticColor` / `Spacing` / `IconSizeTokens` 设计 token；圆角取 `context.theme.style.borderRadius.*`、字体取 `context.theme.typography.body/display.*`
 - 参见 [[../Design_System]] 和 [[../Design_System_Components]]
 
 ### 6. 编写测试

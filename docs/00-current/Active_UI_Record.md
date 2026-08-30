@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-22
+updated: 2026-08-30
 ---
 
 # Active UI — Record
@@ -59,7 +59,7 @@ Last updated: 2026-08-22 (P1-1 摘要网格与饮水角标接入真实 daily-rec
 - 时间线项可点击跳转详情。移动端不再使用骨架屏（loading 时显示 `RecordSkeletonView`，时间线区域 `isLoading` 始终为 false）。
 - 移动端首屏默认展示前 7 条；超过 7 条显示"查看全部记录/收起"切换。
 - 时间线条目按 `occurredTime ?? occurredAt` 倒序排列（最新在最上方），排序在 `LucentRecordRepository` 的原始 `DailyRecordItem` 列表上完成。
-- 移动端图标容器背景使用 `softColor.muted(context)`（tinted background），圆角 `RadiusTokens.level3`，时间标签宽度 44px。
+- 移动端图标容器背景使用 `softColor.muted(context)`（tinted background），圆角 `context.theme.style.borderRadius.sm`，时间标签宽度 44px。
 - **空态**：`entries.isEmpty` 时渲染图标+标题+描述+CTA 结构化空态，CTA 跳 `/record/create?date=<选中日期>`。桌面端额外附"清除筛选"按钮。
 - **桌面端拖拽改日期**：时间线卡片（仅 `recordId != null` 的真实记录）包裹 `Draggable<TimelineDragData>`，可拖拽到日历日期单元格（`DragTarget`）改变记录日期。拖拽时源卡片半透明（opacity 0.4），拖拽预览为紧凑浮动卡片（图标+标题+日历图标）。目标日历日期悬浮高亮（primary 色调背景+边框）。成功后调用 `dailyRecordRepositoryProvider.update()` 更新 `occurredAt`，发射 `DataChangeTopic.dailyRecords` 触发看板刷新，自动导航到新日期，Toast 反馈结果。移动端不启用拖拽。
 - **桌面端 badge 溢出修复（2026-08-13）**：时间线标题行的状态 badge（`entry.badgeKey`）在桌面窄列下横向溢出（RenderFlex overflow，确定性复现并阻断 `-d windows` e2e）；badge 外层与内层文案均改为 `Flexible` 参与收缩 + 单行省略号截断（`timeline_item.dart`）。
@@ -214,7 +214,7 @@ Last updated: 2026-08-22 (P1-1 摘要网格与饮水角标接入真实 daily-rec
 - **locked 筛选策略一致**：`sidebar.dart` 的 `_FilterRow` onTap 增加 `filter.locked` 检查，locked 筛选在桌面端也禁用点击，与移动端一致。
 - **创建页分区标题**：`create.dart` 在 `RecordOccurredAtFields` 前添加"基本信息"标题，在 `DailyRecordFormFields` 前添加"记录内容"标题，字段不再无分区堆叠。
 - **切类型清理不适字段**：`onKindChanged` 新增 `dailyRecordFormRules(newKind)` 检查，不显示的字段（`showValue`/`showTitle`/`showUnit` 为 false 时）自动清空 controller，避免切回时旧内容静默重现。
-- **date_bar 字号 token 化**：`_weekdayFontSize` / `_dateFontSize` 改为 `TypographyToken.level2` / `TypographyToken.level3` 的 `fontSize` 取值。
+- **date_bar 字号 token 化**：`_weekdayFontSize` / `_dateFontSize` 改为 `context.theme.typography.body.xs2` / `body.xs` 的 `fontSize` 取值。
 - **移动端"回到今天"入口**：非今日选中时标题行右侧显示"回到今天"按钮。
 - **移动端筛选空态"清除筛选"**：筛选激活且无结果时空态显示"清除筛选"按钮。
 - **OCR 空结果反馈**：OCR 返回空文本时显示提示图标+文案。
@@ -270,7 +270,7 @@ Last updated: 2026-08-22 (P1-1 摘要网格与饮水角标接入真实 daily-rec
 
 - 桌面端固定 4 列，`minTileWidth: 160px`
 - 图标容器固定 28px，图标 16px
-- 数值字体 `TypographyToken.level6`
+- 数值字体 `context.theme.typography.body.lg`
 
 ## 2026-08-04 全仓库审查修复（Record 模块）
 

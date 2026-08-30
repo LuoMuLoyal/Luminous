@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-30
 ---
 
 # Luminous Architecture
@@ -143,8 +143,9 @@ derives `MaterialApp` light/dark themes from Forui `FThemeData` through
   light/dark theme mapping
 - **Color token** → `lib/core/design/semantic_color.dart` — `SemanticColor` enum used by
   data/domain layers; resolved through the current Forui theme in widgets via `.solid(context)` / `.subtle(context)` / `.muted(context)` / `.border(context)`
-- **Spacing/radius tokens** → `lib/core/design/spacing.dart`, `radius.dart` —
-  Project layout vocabulary (`Spacing`, `RadiusTokens`) mapped to Forui's scale
+- **Spacing/icon-size tokens** → `lib/core/design/spacing.dart`, `icon_size.dart` —
+  Project layout vocabulary (`Spacing`, `IconSizeTokens`) plus Forui-native
+  `style.borderRadius` / `typography` scales
 - **Theme preference** → `lib/core/theme/preference.dart` — Persists both `ThemeMode`
   and `theme.family`
   (`system / light / dark`)
