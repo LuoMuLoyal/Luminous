@@ -101,7 +101,11 @@ class _DrugBoxPlaceholder extends StatelessWidget {
           children: [
             const InlineSkeletonBlock(height: 64, width: 64),
             const SizedBox(width: Spacing.level3),
-            Container(width: 1, height: 64, color: context.theme.colors.border),
+            Container(
+              width: 1,
+              height: 64,
+              color: SemanticColor.neutral.border(context),
+            ),
             const SizedBox(width: Spacing.level3),
             const Expanded(
               child: Column(

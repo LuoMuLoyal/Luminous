@@ -28,7 +28,6 @@ class ReminderDetailInfoTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final firstReminder = reminders.firstOrNull;
 
     return FTileGroup(
@@ -39,7 +38,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
         FTile(
           prefix: Icon(
             SemanticIcons.doseRepeat,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           title: Text(l10n.medicineReminderFrequencyLabel),
@@ -48,13 +47,13 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.mutedForeground),
+            style: TextStyle(color: SemanticColor.neutral.solid(context)),
           ),
         ),
         FTile(
           prefix: Icon(
             SemanticIcons.statusPending,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           title: Text(l10n.medicineReminderTimesLabel),
@@ -65,13 +64,13 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.mutedForeground),
+            style: TextStyle(color: SemanticColor.neutral.solid(context)),
           ),
         ),
         FTile(
           prefix: Icon(
             SemanticIcons.medicineBottle,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           title: Text(l10n.medicineReminderDoseLabel),
@@ -80,13 +79,13 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.mutedForeground),
+            style: TextStyle(color: SemanticColor.neutral.solid(context)),
           ),
         ),
         FTile(
           prefix: Icon(
             SemanticIcons.actionCalendar,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           title: Text(l10n.medicineReminderStartDateLabel),
@@ -95,13 +94,13 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.mutedForeground),
+            style: TextStyle(color: SemanticColor.neutral.solid(context)),
           ),
         ),
         FTile(
           prefix: Icon(
             SemanticIcons.safetySchedulingConflict,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           title: Text(l10n.medicineReminderEndDateLabel),
@@ -110,13 +109,13 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.mutedForeground),
+            style: TextStyle(color: SemanticColor.neutral.solid(context)),
           ),
         ),
         FTile(
           prefix: Icon(
             SemanticIcons.notificationBell,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           title: Text(l10n.medicineReminderMethodLabel),
@@ -127,13 +126,13 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.mutedForeground),
+            style: TextStyle(color: SemanticColor.neutral.solid(context)),
           ),
         ),
         FTile(
           prefix: Icon(
             SemanticIcons.actionMessage,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           title: Text(l10n.medicineReminderSmsLabel),
@@ -142,13 +141,13 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.mutedForeground),
+            style: TextStyle(color: SemanticColor.neutral.solid(context)),
           ),
         ),
         FTile(
           prefix: Icon(
             SemanticIcons.doseVolume,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           title: Text(l10n.medicineReminderSoundLabel),
@@ -157,14 +156,14 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.mutedForeground),
+            style: TextStyle(color: SemanticColor.neutral.solid(context)),
           ),
         ),
         if (hasNote)
           FTile(
             prefix: Icon(
               SemanticIcons.tabRecord,
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
               size: Spacing.level5,
             ),
             title: Text(l10n.medicineReminderNoteLabel),
@@ -177,7 +176,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
               textAlign: TextAlign.right,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: colors.mutedForeground),
+              style: TextStyle(color: SemanticColor.neutral.solid(context)),
             ),
           ),
       ],

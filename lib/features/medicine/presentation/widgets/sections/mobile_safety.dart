@@ -86,7 +86,7 @@ class _SafetyHeader extends StatelessWidget {
             child: Text(
               l10n.medicineSafetyPanelEmptyBody,
               style: context.theme.typography.body.xs.copyWith(
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               textAlign: TextAlign.end,
               maxLines: 2,
@@ -139,13 +139,13 @@ class _LastCheckedLabel extends StatelessWidget {
         Icon(
           SemanticIcons.doseSlot,
           size: IconSizeTokens.level2,
-          color: context.theme.colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
         ),
         const SizedBox(width: Spacing.level1),
         Text(
           l10n.medicineRiskCheckLastUpdated(time),
           style: context.theme.typography.body.xs.copyWith(
-            color: context.theme.colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
       ],
@@ -211,7 +211,7 @@ class _SafetyCard extends StatelessWidget {
                       Text(
                         '+${alertCount - visibleAlerts.length}',
                         style: context.theme.typography.body.xs.copyWith(
-                          color: context.theme.colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                       ),
                   ],
@@ -276,7 +276,7 @@ class _RiskSummary extends StatelessWidget {
               Text(
                 summary.body,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -286,7 +286,7 @@ class _RiskSummary extends StatelessWidget {
         ),
         Icon(
           SemanticIcons.actionNext,
-          color: context.theme.colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
           size: IconSizeTokens.level3,
         ),
       ],
@@ -361,7 +361,7 @@ class _MetricItem extends StatelessWidget {
           Text(
             label,
             style: context.theme.typography.body.xs.copyWith(
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
             textAlign: TextAlign.center,
           ),
@@ -377,7 +377,7 @@ class _MetricDividerWidget extends StatelessWidget {
     return Container(
       width: 1,
       height: Spacing.level6,
-      color: context.theme.colors.border,
+      color: SemanticColor.neutral.border(context),
     );
   }
 }
@@ -464,7 +464,7 @@ class _SafetyEmptyCard extends StatelessWidget {
                 ),
                 child: Icon(
                   SemanticIcons.safetySafe,
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                   size: IconSizeTokens.level4,
                 ),
               ),
@@ -483,7 +483,7 @@ class _SafetyEmptyCard extends StatelessWidget {
                     Text(
                       l10n.medicineSafetyPanelEmptyBody,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: context.theme.colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ],
@@ -491,7 +491,7 @@ class _SafetyEmptyCard extends StatelessWidget {
               ),
               Icon(
                 SemanticIcons.actionNext,
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 size: IconSizeTokens.level3,
               ),
             ],

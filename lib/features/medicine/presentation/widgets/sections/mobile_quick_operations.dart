@@ -99,8 +99,6 @@ class _QuickOperationRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FTappable(
       onPress: operation.onTap,
       child: Padding(
@@ -135,7 +133,7 @@ class _QuickOperationRow extends StatelessWidget {
                   Text(
                     operation.subtitle,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -145,7 +143,7 @@ class _QuickOperationRow extends StatelessWidget {
             ),
             Icon(
               SemanticIcons.actionNext,
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
               size: Spacing.level5,
             ),
           ],

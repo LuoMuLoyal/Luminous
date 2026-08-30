@@ -46,7 +46,7 @@ class RiskCoverageItem extends StatelessWidget {
                 Text(
                   medicineRiskCoverageReasonLabel(l10n, issue.reason),
                   style: context.theme.typography.body.xs.copyWith(
-                    color: context.theme.colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],

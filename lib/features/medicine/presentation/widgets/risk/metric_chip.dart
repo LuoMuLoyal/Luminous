@@ -28,7 +28,9 @@ class RiskMetricCell extends StatelessWidget {
     final content = DecoratedBox(
       decoration: BoxDecoration(
         border: showRightDivider
-            ? Border(right: BorderSide(color: context.theme.colors.border))
+            ? Border(
+                right: BorderSide(color: SemanticColor.neutral.border(context)),
+              )
             : null,
       ),
       child: Padding(
@@ -50,7 +52,7 @@ class RiskMetricCell extends StatelessWidget {
             Text(
               label,
               style: context.theme.typography.body.xs.copyWith(
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               textAlign: TextAlign.center,
               maxLines: 1,

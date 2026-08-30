@@ -23,17 +23,19 @@ class ReminderInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final tile = FTile(
-      prefix: Icon(icon, color: colors.mutedForeground, size: Spacing.level5),
+      prefix: Icon(
+        icon,
+        color: SemanticColor.neutral.solid(context),
+        size: Spacing.level5,
+      ),
       title: Text(label),
       details: Text(
         value,
         textAlign: TextAlign.right,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(color: colors.mutedForeground),
+        style: TextStyle(color: SemanticColor.neutral.solid(context)),
       ),
     );
 
@@ -61,7 +63,6 @@ class ValueActionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return FTappable(
@@ -73,7 +74,11 @@ class ValueActionRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: colors.mutedForeground, size: Spacing.level5),
+            Icon(
+              icon,
+              color: SemanticColor.neutral.solid(context),
+              size: Spacing.level5,
+            ),
             const SizedBox(width: Spacing.level4),
             Expanded(
               child: Text(
@@ -85,7 +90,9 @@ class ValueActionRow extends StatelessWidget {
             Text(
               value,
               textAlign: TextAlign.right,
-              style: typography.body.sm.copyWith(color: colors.mutedForeground),
+              style: typography.body.sm.copyWith(
+                color: SemanticColor.neutral.solid(context),
+              ),
             ),
             const SizedBox(width: Spacing.level2),
             onClear != null
@@ -100,7 +107,7 @@ class ValueActionRow extends StatelessWidget {
                   )
                 : Icon(
                     SemanticIcons.actionNext,
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                     size: Spacing.level5,
                   ),
           ],
@@ -126,7 +133,6 @@ class SwitchRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return Padding(
@@ -138,7 +144,7 @@ class SwitchRow extends StatelessWidget {
         children: [
           Icon(
             SemanticIcons.notificationBellRing,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           const SizedBox(width: Spacing.level4),
@@ -156,7 +162,7 @@ class SwitchRow extends StatelessWidget {
                 Text(
                   subtitle,
                   style: typography.body.sm.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -185,7 +191,6 @@ class UnavailableMethodRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return Opacity(
@@ -197,7 +202,11 @@ class UnavailableMethodRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: colors.mutedForeground, size: Spacing.level5),
+            Icon(
+              icon,
+              color: SemanticColor.neutral.solid(context),
+              size: Spacing.level5,
+            ),
             const SizedBox(width: Spacing.level4),
             Expanded(
               child: Column(
@@ -206,13 +215,13 @@ class UnavailableMethodRow extends StatelessWidget {
                   Text(
                     title,
                     style: typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   Text(
                     subtitle,
                     style: typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ],
@@ -240,7 +249,6 @@ class SoundPreferenceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return Padding(
@@ -252,7 +260,7 @@ class SoundPreferenceRow extends StatelessWidget {
         children: [
           Icon(
             SemanticIcons.doseVolume,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: Spacing.level5,
           ),
           const SizedBox(width: Spacing.level4),
@@ -270,7 +278,7 @@ class SoundPreferenceRow extends StatelessWidget {
                 Text(
                   l10n.medicineReminderSoundLocalHint,
                   style: typography.body.sm.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -305,7 +313,6 @@ class SelectedMedicineRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return Padding(
@@ -335,7 +342,7 @@ class SelectedMedicineRow extends StatelessWidget {
                 Text(
                   medicineDoseText(l10n, medicine),
                   style: typography.body.sm.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

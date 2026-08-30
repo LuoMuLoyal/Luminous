@@ -352,7 +352,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
 
     final shieldIcon = Icon(
       SemanticIcons.safetySafe,
-      color: colors.primary,
+      color: SemanticColor.primary.solid(context),
       size: Spacing.level5,
     );
 
@@ -424,7 +424,7 @@ class _MedicineNotificationButton extends ConsumerWidget {
               child: FBadge.raw(
                 style: .delta(
                   decoration: .shapeDelta(
-                    color: colors.destructive,
+                    color: SemanticColor.destructive.solid(context),
                     shape: const CircleBorder(),
                   ),
                 ),
@@ -458,7 +458,9 @@ class _MedicineMobileSearchBar extends StatelessWidget {
               .shapeDelta(
                 color: colors.background,
                 shape: RoundedSuperellipseBorder(
-                  side: BorderSide(color: colors.border),
+                  side: BorderSide(
+                    color: SemanticColor.neutral.border(context),
+                  ),
                   borderRadius: context.theme.style.borderRadius.lg,
                 ),
               ),
@@ -473,7 +475,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
             const SizedBox(width: Spacing.level2),
             Icon(
               SemanticIcons.actionSearch,
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
               size: Spacing.level5,
             ),
             const SizedBox(width: Spacing.level3),
@@ -481,7 +483,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
               child: Text(
                 l10n.medicineHomeSearchHint,
                 style: context.theme.typography.body.sm.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

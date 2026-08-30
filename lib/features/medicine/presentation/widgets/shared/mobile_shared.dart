@@ -39,9 +39,8 @@ class _DoseActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final foregroundColor = filled
-        ? colors.primaryForeground
+        ? SemanticColor.primary.foreground(context)
         : color.solid(context);
 
     return FButton(

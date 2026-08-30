@@ -131,8 +131,6 @@ class _ReminderDetailBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final reminders = [...data.reminders]..sort(compareReminderTime);
     final isActive = reminders.any((item) => item.isActive);
     final soundPreference =
@@ -169,7 +167,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                       Text(
                         medicineDoseText(l10n, data.medicine),
                         style: context.theme.typography.body.xs.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -233,7 +231,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   SemanticIcons.dosePower,
                   color: isActive
                       ? SemanticColor.primary.solid(context)
-                      : colors.mutedForeground,
+                      : SemanticColor.neutral.solid(context),
                   size: Spacing.level5,
                 ),
                 const SizedBox(width: Spacing.level4),
@@ -253,7 +251,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                             ? l10n.medicineReminderEnabledStatus
                             : l10n.medicineReminderDisabledStatus,
                         style: context.theme.typography.body.sm.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                       ),
                     ],

@@ -145,7 +145,7 @@ class _TodayPlanRow extends StatelessWidget {
                     Text(
                       _itemPlanDetail(),
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                     const SizedBox(height: Spacing.level2),
@@ -165,7 +165,11 @@ class _TodayPlanRow extends StatelessWidget {
                                 shape: RoundedSuperellipseBorder(
                                   borderRadius:
                                       context.theme.style.borderRadius.xs,
-                                  side: BorderSide(color: colors.border),
+                                  side: BorderSide(
+                                    color: SemanticColor.neutral.border(
+                                      context,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -277,8 +281,6 @@ class _TodayPlanEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
       child: Row(
@@ -306,7 +308,7 @@ class _TodayPlanEmpty extends StatelessWidget {
                 Text(
                   l10n.medicineNoMedicineBody,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],

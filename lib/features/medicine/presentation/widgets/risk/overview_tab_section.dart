@@ -33,14 +33,14 @@ class TabHeader extends StatelessWidget {
         Icon(
           SemanticIcons.doseSlot,
           size: IconSizeTokens.level2,
-          color: context.theme.colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
         ),
         const SizedBox(width: Spacing.level1),
         Expanded(
           child: Text(
             l10n.medicineRiskCheckLastUpdated(timeStr),
             style: context.theme.typography.body.xs.copyWith(
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),
@@ -108,7 +108,7 @@ class RiskScoreHero extends StatelessWidget {
                   Text(
                     l10n.medicineRiskScoreTitle,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: context.theme.colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   const SizedBox(height: Spacing.level1),
@@ -250,14 +250,14 @@ class SafeStateCard extends StatelessWidget {
                       result.checkedMedicineCount,
                     ),
                     style: context.theme.typography.body.xs.copyWith(
-                      color: context.theme.colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     l10n.medicineRiskCheckTierSafeDisclaimer,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: context.theme.colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ],
@@ -391,7 +391,7 @@ class LlmEmptyState extends StatelessWidget {
             Icon(
               SemanticIcons.aiEntry,
               size: IconSizeTokens.level6,
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
             const SizedBox(height: Spacing.level4),
             Text(
@@ -405,7 +405,7 @@ class LlmEmptyState extends StatelessWidget {
             Text(
               l10n.medicineRiskCheckLlmEmptyBody,
               style: context.theme.typography.body.xs.copyWith(
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               textAlign: TextAlign.center,
             ),
@@ -457,7 +457,7 @@ class NeverCheckedState extends StatelessWidget {
             Icon(
               SemanticIcons.safetySafe,
               size: IconSizeTokens.level6,
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
             const SizedBox(height: Spacing.level4),
             Text(

@@ -77,14 +77,14 @@ class RiskFindingItem extends StatelessWidget {
                 Text(
                   medicineRiskFindingBody(l10n, finding),
                   style: context.theme.typography.body.xs.copyWith(
-                    color: context.theme.colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskFindingEvidence(l10n, finding),
                   style: context.theme.typography.body.xs.copyWith(
-                    color: context.theme.colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
                 if (recommendation != null && recommendation.isNotEmpty) ...[

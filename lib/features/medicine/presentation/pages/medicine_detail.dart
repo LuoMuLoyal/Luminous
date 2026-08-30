@@ -376,7 +376,6 @@ class _HeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     return FCard(
       child: Padding(
@@ -404,7 +403,7 @@ class _HeaderCard extends StatelessWidget {
               Text(
                 detail.subtitle!,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -446,7 +445,6 @@ class _MetaRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     return Padding(
       padding: const EdgeInsets.only(top: Spacing.level2),
       child: Row(
@@ -457,7 +455,7 @@ class _MetaRow extends StatelessWidget {
             child: Text(
               label,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -550,7 +548,7 @@ class _RiskCheckEntry extends StatelessWidget {
             Icon(
               SemanticIcons.safetyCaution,
               size: Spacing.level4,
-              color: colors.primary,
+              color: SemanticColor.primary.solid(context),
             ),
             const SizedBox(width: Spacing.level2),
             Expanded(
@@ -564,7 +562,7 @@ class _RiskCheckEntry extends StatelessWidget {
             Icon(
               SemanticIcons.actionNext,
               size: Spacing.level4,
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ],
         ),

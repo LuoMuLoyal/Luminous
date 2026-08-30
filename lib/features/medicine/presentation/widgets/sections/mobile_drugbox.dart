@@ -36,7 +36,7 @@ class _DrugBoxSection extends StatelessWidget {
         Text(
           l10n.medicineDrugboxSubtitle,
           style: context.theme.typography.body.xs.copyWith(
-            color: context.theme.colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level3),
@@ -134,7 +134,7 @@ class _DrugBoxHeader extends StatelessWidget {
               Text(
                 l10n.medicineDrugboxTotalPrefix,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -281,8 +281,6 @@ class _DrugBoxMetricItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.level1),
       child: Column(
@@ -300,7 +298,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
                 child: Text(
                   label,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -323,7 +321,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
           SkeletonText(
             text: detail,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -354,8 +352,6 @@ class _DrugBoxEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
       child: Row(
@@ -383,7 +379,7 @@ class _DrugBoxEmpty extends StatelessWidget {
                 Text(
                   l10n.medicineNoMedicineBody,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -408,8 +404,6 @@ class _DrugBoxMedicationRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final name = _itemName(l10n, item);
     final dosage = _itemDosage(l10n, item);
     final schedule = _itemSchedule(l10n, item);
@@ -475,7 +469,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                       SkeletonText(
                         text: '$dosage · ${_compactRouteOrSchedule(schedule)}',
                         style: context.theme.typography.body.xs.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -501,7 +495,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
             const SizedBox(width: Spacing.level2),
             Icon(
               SemanticIcons.actionNext,
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
               size: Spacing.level5,
             ),
           ],
@@ -519,8 +513,6 @@ class _TruncatedFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FTappable(
       onPress: onTap,
       builder: (context, data, _) => Center(
@@ -529,7 +521,7 @@ class _TruncatedFooter extends StatelessWidget {
           child: Text(
             label,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
               fontWeight: FontWeight.w600,
             ),
           ),

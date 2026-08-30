@@ -90,7 +90,7 @@ class _RiskScoreRingState extends State<RiskScoreRing>
                   Text(
                     '/100',
                     style: context.theme.typography.body.xs2.copyWith(
-                      color: context.theme.colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ],

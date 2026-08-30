@@ -16,8 +16,6 @@ class ReminderTodayLogPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final visibleLogs = logs.isEmpty
         ? <DoseLogItem>[]
         : logs.take(3).toList(growable: false);
@@ -43,7 +41,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
                     children: [
                       Icon(
                         SemanticIcons.recordClipboard,
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                         size: Spacing.level5,
                       ),
                       const SizedBox(width: Spacing.level3),
@@ -51,7 +49,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
                         child: Text(
                           l10n.medicineReminderNoTodayLogs,
                           style: context.theme.typography.body.xs.copyWith(
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         ),
                       ),
@@ -74,7 +72,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
             child: Text(
               l10n.medicineReminderLogCountTotal(logs.length),
               style: context.theme.typography.body.xs2.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -99,8 +97,6 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final visibleLogs = (_showAll ? widget.logs : widget.logs.take(5)).toList(
       growable: false,
     );
@@ -127,7 +123,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
                     children: [
                       Icon(
                         SemanticIcons.doseLog,
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                         size: Spacing.level5,
                       ),
                       const SizedBox(width: Spacing.level3),
@@ -135,7 +131,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
                         child: Text(
                           l10n.medicineReminderNoDeliveryLogs,
                           style: context.theme.typography.body.xs.copyWith(
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         ),
                       ),
@@ -180,8 +176,6 @@ class _DeliveryLogRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final color = _deliveryStatusColor(log.status);
     final row = Padding(
       padding: const EdgeInsets.symmetric(
@@ -214,7 +208,7 @@ class _DeliveryLogRow extends StatelessWidget {
                 Text(
                   deliveryChannelLabel(l10n, log.channel),
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -242,8 +236,6 @@ class _TodayLogRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final color = switch (log.status) {
       DoseLogStatus.taken => SemanticColor.success,
       DoseLogStatus.skipped => SemanticColor.neutral,
@@ -282,7 +274,7 @@ class _TodayLogRow extends StatelessWidget {
                 Localizations.localeOf(context),
               ),
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
