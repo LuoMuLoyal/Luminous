@@ -295,7 +295,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                             occurredTime: record.occurredTime,
                           ),
                           style: context.theme.typography.body.xs.copyWith(
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         ),
                       ],
@@ -349,7 +349,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     child: Text(
                       l10n.recordMealAnalysisStatusAnalyzing,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ),
@@ -371,7 +371,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     Text(
                       mealAnalysis.failureReason!,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ],
@@ -404,7 +404,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                   Text(
                     imageAttachment.fileName!,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -442,7 +442,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                               waterTargetMl,
                             ),
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ],
@@ -454,7 +454,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     value: (waterTotalMl / waterTargetMl).clamp(0.0, 1.0),
                     minHeight: 8,
                     backgroundColor: colors.muted,
-                    color: colors.primary,
+                    color: SemanticColor.primary.solid(context),
                   ),
                 ),
               ],
@@ -678,8 +678,6 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
       child: Row(
@@ -693,7 +691,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               data.label,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -704,7 +702,7 @@ class _DetailRow extends StatelessWidget {
               style: data.highlight
                   ? context.theme.typography.display.lg.copyWith(
                       fontWeight: FontWeight.w800,
-                      color: colors.primary,
+                      color: SemanticColor.primary.solid(context),
                     )
                   : context.theme.typography.body.md.copyWith(
                       fontWeight: FontWeight.w700,
@@ -765,7 +763,8 @@ class _KindHeroAvatar extends ConsumerWidget {
         ref.watch(quickEntryPreferencesProvider).asData?.value ??
         const QuickEntryPreferences();
 
-    final accent = action?.accent.solid(context) ?? colors.primary;
+    final accent =
+        action?.accent.solid(context) ?? SemanticColor.primary.solid(context);
     final soft = action?.softColor.subtle(context) ?? colors.secondary;
     final icon = action == null
         ? _kindIconFallback(kind)
@@ -801,7 +800,7 @@ class _SourceBadge extends StatelessWidget {
         child: Text(
           label,
           style: context.theme.typography.body.xs3.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
       ),
@@ -830,7 +829,6 @@ class _RecordDetailImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final imageUrl = attachment.displayUrl;
 
     return ClipRRect(
@@ -845,7 +843,7 @@ class _RecordDetailImage extends StatelessWidget {
               ? Center(
                   child: Icon(
                     SemanticIcons.actionImage,
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                     size: 28,
                   ),
                 )
@@ -855,14 +853,14 @@ class _RecordDetailImage extends StatelessWidget {
                   placeholder: (context, url) => Center(
                     child: Icon(
                       SemanticIcons.actionImage,
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                       size: 28,
                     ),
                   ),
                   errorWidget: (context, url, error) => Center(
                     child: Icon(
                       SemanticIcons.statusUnavailable,
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                       size: 28,
                     ),
                   ),

@@ -339,7 +339,6 @@ class _QuickRecordGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final rows = <List<RecordQuickAction>>[];
     for (var index = 0; index < actions.length; index += 3) {
       rows.add(actions.skip(index).take(3).toList(growable: false));
@@ -370,7 +369,7 @@ class _QuickRecordGrid extends StatelessWidget {
                     height: metrics.dividerHeight,
                     child: AppDivider(
                       axis: Axis.vertical,
-                      color: colors.border,
+                      color: SemanticColor.neutral.border(context),
                     ),
                   ),
               ],
@@ -475,7 +474,7 @@ class _QuickBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.theme.colors.primary,
+        color: SemanticColor.primary.solid(context),
         borderRadius: context.theme.style.borderRadius.pill,
         border: Border.all(color: context.theme.colors.background, width: 1.5),
       ),
@@ -487,7 +486,7 @@ class _QuickBadge extends StatelessWidget {
         child: Text(
           text,
           style: context.theme.typography.body.xs3.copyWith(
-            color: context.theme.colors.primaryForeground,
+            color: SemanticColor.primary.foreground(context),
             fontWeight: FontWeight.w700,
           ),
         ),

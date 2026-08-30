@@ -259,7 +259,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               Text(
                 l10n.recordQuickSettingsSymptomChoices,
                 style: context.theme.typography.body.sm.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
               const SizedBox(height: Spacing.level3),
@@ -300,7 +300,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               Text(
                 l10n.recordQuickSettingsCustomIconHint,
                 style: context.theme.typography.body.sm.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
               const SizedBox(height: Spacing.level3),

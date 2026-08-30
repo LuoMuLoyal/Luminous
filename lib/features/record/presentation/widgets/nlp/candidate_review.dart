@@ -50,7 +50,7 @@ class RecordNlpCandidateReview extends StatelessWidget {
         Text(
           l10n.recordNlpSelectedCountHint(state.selectedCount),
           style: context.theme.typography.body.xs.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level4),
@@ -91,7 +91,6 @@ class _CandidateTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     return FCard(
       child: Padding(
@@ -116,7 +115,7 @@ class _CandidateTile extends StatelessWidget {
                       Text(
                         _kindLabel(l10n, item.kind),
                         style: context.theme.typography.body.md.copyWith(
-                          color: context.theme.colors.primary,
+                          color: SemanticColor.primary.solid(context),
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -148,7 +147,7 @@ class _CandidateTile extends StatelessWidget {
             Text(
               item.rationale,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             if (item.lastErrorMessage case final errMsg?) ...[
@@ -156,7 +155,7 @@ class _CandidateTile extends StatelessWidget {
               Text(
                 l10n.recordNlpCandidateSaveFailedHint(errMsg),
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.destructive,
+                  color: SemanticColor.destructive.solid(context),
                 ),
               ),
             ],

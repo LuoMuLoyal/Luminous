@@ -31,8 +31,6 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final hasAttachment =
         selectedBytes != null ||
         existingAttachment?.objectKey.isNotEmpty == true;
@@ -77,7 +75,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         Text(
                           fileName,
                           style: context.theme.typography.body.xs.copyWith(
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -193,7 +191,7 @@ class _PreviewFallback extends StatelessWidget {
     return Center(
       child: Icon(
         icon,
-        color: context.theme.colors.mutedForeground,
+        color: SemanticColor.neutral.solid(context),
         size: IconSizeTokens.level4,
       ),
     );

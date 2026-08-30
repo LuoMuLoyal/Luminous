@@ -89,7 +89,7 @@ class _SummaryTile extends StatelessWidget {
           decoration: .shapeDelta(
             color: colors.background,
             shape: RoundedSuperellipseBorder(
-              side: BorderSide(color: colors.border),
+              side: BorderSide(color: SemanticColor.neutral.border(context)),
               borderRadius: context.theme.style.borderRadius.sm,
             ),
           ),
@@ -121,7 +121,7 @@ class _SummaryTile extends StatelessWidget {
                     child: Text(
                       recordCopy(l10n, item.titleKey),
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                       maxLines: 2,
                       softWrap: true,
@@ -144,7 +144,7 @@ class _SummaryTile extends StatelessWidget {
                         TextSpan(
                           text: ' $unit',
                           style: context.theme.typography.body.xs.copyWith(
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         ),
                     ],

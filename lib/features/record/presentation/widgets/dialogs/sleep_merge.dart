@@ -22,7 +22,7 @@ class SleepMergeSummaryRow extends StatelessWidget {
           child: Text(
             label,
             style: context.theme.typography.body.xs.copyWith(
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),

@@ -128,9 +128,9 @@ class TimelineCard extends StatelessWidget {
           color: colors.background,
           border: Border(
             left: BorderSide(color: entry.accent.solid(context), width: 3),
-            top: BorderSide(color: colors.border),
-            right: BorderSide(color: colors.border),
-            bottom: BorderSide(color: colors.border),
+            top: BorderSide(color: SemanticColor.neutral.border(context)),
+            right: BorderSide(color: SemanticColor.neutral.border(context)),
+            bottom: BorderSide(color: SemanticColor.neutral.border(context)),
           ),
         ),
         child: Padding(
@@ -164,7 +164,7 @@ class TimelineCard extends StatelessWidget {
                           child: Text(
                             label,
                             style: context.theme.typography.body.xs.copyWith(
-                              color: colors.mutedForeground,
+                              color: SemanticColor.neutral.solid(context),
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -236,7 +236,11 @@ class TimelineCard extends StatelessWidget {
                               TextSpan(
                                 text: ' $unit',
                                 style: context.theme.typography.body.xs
-                                    .copyWith(color: colors.mutedForeground),
+                                    .copyWith(
+                                      color: SemanticColor.neutral.solid(
+                                        context,
+                                      ),
+                                    ),
                               ),
                           ],
                         ),
@@ -247,7 +251,7 @@ class TimelineCard extends StatelessWidget {
                       Text(
                         detail,
                         style: context.theme.typography.body.xs.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                       ),
                     ],
@@ -263,7 +267,9 @@ class TimelineCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: SemanticColor.neutral.subtle(context),
                     borderRadius: context.theme.style.borderRadius.sm,
-                    border: Border.all(color: colors.border),
+                    border: Border.all(
+                      color: SemanticColor.neutral.border(context),
+                    ),
                   ),
                   child: SizedBox(
                     width: 96,
@@ -280,7 +286,7 @@ class TimelineCard extends StatelessWidget {
                             Icon(
                               SemanticIcons.recordMeal,
                               size: 22,
-                              color: colors.mutedForeground,
+                              color: SemanticColor.neutral.solid(context),
                             ),
                             const SizedBox(height: Spacing.level1),
                             Text(
@@ -354,7 +360,7 @@ class TimelineCard extends StatelessWidget {
     if (entry.trailingIcon == SemanticIcons.statusSuccess) {
       return colors.foreground;
     }
-    return colors.mutedForeground;
+    return SemanticColor.neutral.paletteFromColors(colors).solid;
   }
 }
 
@@ -401,16 +407,15 @@ class TimelineImageFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: SemanticColor.neutral.subtle(context),
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Center(
         child: Icon(
           icon,
-          color: colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
           size: IconSizeTokens.level4,
         ),
       ),

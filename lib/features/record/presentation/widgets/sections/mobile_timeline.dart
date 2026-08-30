@@ -182,7 +182,7 @@ class _TimelineRow extends StatelessWidget {
             child: Text(
               entry.time,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -200,8 +200,14 @@ class _TimelineRow extends StatelessWidget {
                 padding: const EdgeInsets.only(right: Spacing.level3),
                 indicatorXY: 0.0,
               ),
-              beforeLineStyle: LineStyle(color: colors.border, thickness: 1),
-              afterLineStyle: LineStyle(color: colors.border, thickness: 1),
+              beforeLineStyle: LineStyle(
+                color: SemanticColor.neutral.border(context),
+                thickness: 1,
+              ),
+              afterLineStyle: LineStyle(
+                color: SemanticColor.neutral.border(context),
+                thickness: 1,
+              ),
               endChild: FTappable(
                 key: Key('record-timeline-entry-index-$index'),
                 onPress: entry.recordId != null
@@ -255,7 +261,7 @@ class _TimelineRow extends StatelessWidget {
                             Text(
                               subtitle,
                               style: context.theme.typography.body.xs.copyWith(
-                                color: colors.mutedForeground,
+                                color: SemanticColor.neutral.solid(context),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -305,7 +311,7 @@ class _TimelineRow extends StatelessWidget {
                     const SizedBox(width: Spacing.level2),
                     Icon(
                       SemanticIcons.actionNext,
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                       size: Spacing.level5,
                     ),
                   ],
@@ -353,8 +359,6 @@ class _MobileTimelineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       child: SizedBox(
         width: double.infinity,
@@ -368,7 +372,7 @@ class _MobileTimelineEmptyState extends StatelessWidget {
               Icon(
                 SemanticIcons.actionAdd,
                 size: Spacing.level8,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level4),
               Text(
@@ -381,7 +385,7 @@ class _MobileTimelineEmptyState extends StatelessWidget {
               Text(
                 l10n.recordTimelineEmptyDescription,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,
               ),

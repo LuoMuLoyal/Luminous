@@ -470,7 +470,9 @@ class _EditStatusHint extends StatelessWidget {
     final colors = context.theme.colors;
     const warning = SemanticColor.warning;
     final background = dirty ? warning.subtle(context) : colors.muted;
-    final foreground = dirty ? warning.solid(context) : colors.mutedForeground;
+    final foreground = dirty
+        ? warning.solid(context)
+        : SemanticColor.neutral.solid(context);
 
     return DecoratedBox(
       decoration: BoxDecoration(

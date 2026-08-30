@@ -115,7 +115,7 @@ class _ReorderList extends StatelessWidget {
             l10n.recordQuickReorderHint,
             key: const ValueKey('record-quick-reorder-hint'),
             style: context.theme.typography.body.sm.copyWith(
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
           const SizedBox(height: Spacing.level3),

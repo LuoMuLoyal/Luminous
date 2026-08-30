@@ -28,8 +28,6 @@ class MealAnalysisSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
@@ -58,7 +56,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               Text(
                 mealDesc,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -114,7 +112,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               Text(
                 commentary,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -123,7 +121,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               Text(
                 l10n.recordMealAnalysisEstimateDisclaimer,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: context.theme.colors.primary,
+                  color: SemanticColor.primary.solid(context),
                 ),
               ),
             ],
@@ -176,14 +174,12 @@ class _BulletText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.level1),
       child: Text(
         '• $text',
         style: context.theme.typography.body.xs.copyWith(
-          color: colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
         ),
       ),
     );

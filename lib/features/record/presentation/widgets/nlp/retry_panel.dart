@@ -27,7 +27,7 @@ class RecordNlpRetryPanel extends StatelessWidget {
           children: [
             Icon(
               SemanticIcons.statusError,
-              color: context.theme.colors.primary,
+              color: SemanticColor.primary.solid(context),
             ),
             const SizedBox(width: Spacing.level3),
             Expanded(

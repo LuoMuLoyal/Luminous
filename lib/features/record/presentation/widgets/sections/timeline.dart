@@ -56,7 +56,7 @@ class RecordTimelinePanel extends StatelessWidget {
                       Localizations.localeOf(context).toString(),
                     ).format(selectedDate!),
                     style: context.theme.typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ],
@@ -149,8 +149,6 @@ class _TimelineEntryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -159,7 +157,7 @@ class _TimelineEntryRow extends StatelessWidget {
           child: Text(
             entry.time,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),
@@ -175,8 +173,14 @@ class _TimelineEntryRow extends StatelessWidget {
               padding: const EdgeInsets.only(right: Spacing.level3),
               indicatorXY: 0.25,
             ),
-            beforeLineStyle: LineStyle(color: colors.border, thickness: 1),
-            afterLineStyle: LineStyle(color: colors.border, thickness: 1),
+            beforeLineStyle: LineStyle(
+              color: SemanticColor.neutral.border(context),
+              thickness: 1,
+            ),
+            afterLineStyle: LineStyle(
+              color: SemanticColor.neutral.border(context),
+              thickness: 1,
+            ),
             endChild: Padding(
               padding: EdgeInsets.only(bottom: isLast ? 0 : Spacing.level4),
               child: TimelineCard(
@@ -208,8 +212,6 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 320),
@@ -220,7 +222,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
               Icon(
                 SemanticIcons.actionAdd,
                 size: Spacing.level8,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level4),
               Text(
@@ -233,7 +235,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
               Text(
                 l10n.recordTimelineEmptyDescription,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,
               ),

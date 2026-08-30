@@ -150,7 +150,7 @@ class RecordNlpSheet extends HookConsumerWidget {
               Text(
                 l10n.recordNlpResetConfirmBody,
                 style: innerContext.theme.typography.body.sm.copyWith(
-                  color: innerContext.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(innerContext),
                 ),
               ),
               const SizedBox(height: Spacing.level4),
@@ -182,7 +182,12 @@ class RecordNlpSheet extends HookConsumerWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        border: Border(top: BorderSide(color: colors.border, width: 1)),
+        border: Border(
+          top: BorderSide(
+            color: SemanticColor.neutral.border(context),
+            width: 1,
+          ),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -195,7 +200,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                 width: Spacing.level10,
                 height: Spacing.level1,
                 decoration: BoxDecoration(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                   borderRadius: context.theme.style.borderRadius.xs2,
                 ),
               ),
@@ -240,7 +245,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                   Text(
                     l10n.recordNlpSheetSubtitle,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   const SizedBox(height: Spacing.level4),
@@ -317,7 +322,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                       children: [
                         Icon(
                           SemanticIcons.statusError,
-                          color: colors.destructive,
+                          color: SemanticColor.destructive.solid(context),
                           size: 18,
                         ),
                         const SizedBox(width: Spacing.level2),
@@ -326,7 +331,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                             state.errorMessage ??
                                 l10n.recordNlpGenerateFailedToast,
                             style: context.theme.typography.body.sm.copyWith(
-                              color: colors.destructive,
+                              color: SemanticColor.destructive.solid(context),
                             ),
                           ),
                         ),
@@ -342,7 +347,12 @@ class RecordNlpSheet extends HookConsumerWidget {
             DecoratedBox(
               decoration: BoxDecoration(
                 color: colors.background,
-                border: Border(top: BorderSide(color: colors.border, width: 1)),
+                border: Border(
+                  top: BorderSide(
+                    color: SemanticColor.neutral.border(context),
+                    width: 1,
+                  ),
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(

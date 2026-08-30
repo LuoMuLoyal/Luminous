@@ -72,7 +72,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
             Text(
               l10n.recordFastEntryDateHint(widget.occurredAt),
               style: context.theme.typography.body.sm.copyWith(
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             const SizedBox(height: Spacing.level4),
@@ -442,7 +442,7 @@ class _QuickChoiceChip extends StatelessWidget {
         const SizedBox(height: Spacing.level1),
         DecoratedBox(
           decoration: BoxDecoration(
-            color: context.theme.colors.primary,
+            color: SemanticColor.primary.solid(context),
             shape: BoxShape.circle,
           ),
           child: const SizedBox(width: 4, height: 4),

@@ -55,13 +55,13 @@ class RecordMobileFilter extends StatelessWidget {
                       Icon(
                         SemanticIcons.actionClose,
                         size: Spacing.level4,
-                        color: context.theme.colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                       const SizedBox(width: Spacing.level1),
                       Text(
                         l10n.recordFilterClearAction,
                         style: TextStyle(
-                          color: context.theme.colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                           fontWeight: FontWeight.w600,
                         ),
                       ),

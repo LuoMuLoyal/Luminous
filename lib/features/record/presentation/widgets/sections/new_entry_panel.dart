@@ -73,8 +73,6 @@ class RecordNewEntryPanel extends StatelessWidget {
   // Mobile layout — Wrap chips (unchanged from original).
   // ---------------------------------------------------------------------------
   Widget _buildMobile(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       key: const Key('record-new-entry-panel'),
       child: Padding(
@@ -115,7 +113,9 @@ class RecordNewEntryPanel extends StatelessWidget {
                     .shapeDelta(
                       color: SemanticColor.neutral.subtle(context),
                       shape: RoundedSuperellipseBorder(
-                        side: BorderSide(color: colors.border),
+                        side: BorderSide(
+                          color: SemanticColor.neutral.border(context),
+                        ),
                         borderRadius: context.theme.style.borderRadius.sm,
                       ),
                     ),
@@ -127,14 +127,14 @@ class RecordNewEntryPanel extends StatelessWidget {
               ),
               prefix: Icon(
                 SemanticIcons.actionAdd,
-                color: context.theme.colors.primary,
+                color: SemanticColor.primary.solid(context),
                 size: 20,
               ),
               child: Flexible(
                 child: Text(
                   l10n.recordNewEntrySectionTitle,
                   style: context.theme.typography.body.md.copyWith(
-                    color: context.theme.colors.primary,
+                    color: SemanticColor.primary.solid(context),
                     fontWeight: FontWeight.w700,
                   ),
                   overflow: TextOverflow.ellipsis,

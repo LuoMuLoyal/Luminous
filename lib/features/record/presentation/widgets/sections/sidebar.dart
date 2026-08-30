@@ -157,7 +157,6 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = widget.l10n;
     final viewedDays = _buildViewedDays();
 
@@ -210,7 +209,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                         recordCopy(l10n, key),
                         textAlign: TextAlign.center,
                         style: context.theme.typography.body.xs.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                       ),
                     ),
@@ -370,9 +369,12 @@ class _MonthDayCellState extends State<_MonthDayCell> {
 
     final color = widget.day.inMonth
         ? colors.foreground
-        : colors.mutedForeground;
+        : SemanticColor.neutral.solid(context);
     final markerColors = widget.day.hasAlert
-        ? [...widget.day.markers.resolveAll(colors), colors.primary]
+        ? [
+            ...widget.day.markers.resolveAll(colors),
+            SemanticColor.primary.solid(context),
+          ]
         : widget.day.markers.resolveAll(colors);
 
     final cellContent = FTappable(
@@ -406,7 +408,7 @@ class _MonthDayCellState extends State<_MonthDayCell> {
                     color: widget.day.selected
                         ? colors.background
                         : _isDragHovering
-                        ? colors.primary
+                        ? SemanticColor.primary.solid(context)
                         : color,
                     fontWeight: widget.day.selected
                         ? FontWeight.w700
@@ -498,7 +500,9 @@ class _FilterRow extends StatelessWidget {
               filter.selected
                   ? SemanticIcons.statusSuccess
                   : SemanticIcons.statusPending,
-              color: filter.selected ? colors.primary : colors.mutedForeground,
+              color: filter.selected
+                  ? SemanticColor.primary.solid(context)
+                  : SemanticColor.neutral.solid(context),
               size: IconSizeTokens.level2,
             ),
             const SizedBox(width: Spacing.level3),

@@ -337,7 +337,7 @@ class _SleepCandidateFields extends StatelessWidget {
           Text(
             '${l10n.recordSleepDurationLabel}: ${_formatDuration(computeSleepDurationMinutes(bedtime, wakeTime) ?? 0, l10n)}',
             style: context.theme.typography.body.xs.copyWith(
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ],
