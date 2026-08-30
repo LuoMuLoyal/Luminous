@@ -72,14 +72,14 @@ class AdvancedSettingsPage extends ConsumerWidget {
                       title: Text(
                         l10n.settingsAdvancedResetDefaults,
                         style: context.theme.typography.body.md.copyWith(
-                          color: context.theme.colors.destructive,
+                          color: SemanticColor.destructive.solid(context),
                         ),
                       ),
                       subtitle: Text(l10n.settingsAdvancedResetDefaultsHint),
                       suffix: Icon(
                         SemanticIcons.actionReset,
                         size: IconSizeTokens.level2,
-                        color: context.theme.colors.destructive,
+                        color: SemanticColor.destructive.solid(context),
                       ),
                       onPress: () async {
                         final confirmed = await showDangerConfirmationDialog(

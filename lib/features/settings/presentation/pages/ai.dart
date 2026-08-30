@@ -124,7 +124,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     child: Text(
                       l10n.settingsAiContextDisabledHint,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: context.theme.colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ),
@@ -210,7 +210,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     return Text(
       text,
       style: context.theme.typography.body.xs.copyWith(
-        color: context.theme.colors.mutedForeground,
+        color: SemanticColor.neutral.solid(context),
       ),
     );
   }

@@ -17,9 +17,6 @@ class AssistantDisclaimerBar extends StatelessWidget {
     if (text.isEmpty) {
       return const SizedBox.shrink();
     }
-
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
       child: Row(
@@ -28,7 +25,7 @@ class AssistantDisclaimerBar extends StatelessWidget {
           Icon(
             SemanticIcons.statusInfo,
             size: 14,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
           const SizedBox(width: Spacing.level2),
           Expanded(
@@ -37,7 +34,7 @@ class AssistantDisclaimerBar extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: context.theme.typography.body.xs2.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),

@@ -17,7 +17,6 @@ class LegalListPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final asyncList = ref.watch(legalDocumentsProvider);
 
     return PageScaffold(
@@ -64,13 +63,13 @@ class LegalListPage extends ConsumerWidget {
                             ),
                           ),
                           style: context.theme.typography.body.xs2.copyWith(
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         )
                       : null,
                   prefix: Icon(
                     _iconForType(doc.docType),
-                    color: colors.primary,
+                    color: SemanticColor.primary.solid(context),
                     size: 20,
                   ),
                   suffix: const Icon(SemanticIcons.actionNext),

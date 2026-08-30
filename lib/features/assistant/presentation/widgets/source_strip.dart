@@ -34,7 +34,6 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
       return const SizedBox.shrink();
     }
 
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
 
     return Column(
@@ -56,14 +55,14 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                   Icon(
                     SemanticIcons.statusInfo,
                     size: 14,
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                   const SizedBox(width: Spacing.level2),
                   Expanded(
                     child: Text.rich(
                       TextSpan(
                         style: context.theme.typography.body.xs2.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                         children: _collapsedRowSpans(context, l10n),
                       ),
@@ -77,7 +76,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                         ? SemanticIcons.actionCollapse
                         : SemanticIcons.actionExpand,
                     size: 14,
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ],
               ),
@@ -98,7 +97,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.theme.typography.body.xs2.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ),
@@ -273,7 +272,7 @@ class _ToolDetailCard extends StatelessWidget {
               Text(
                 l10n.assistantSourceNoDetailsNote,
                 style: typography.body.sm.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               )
             else ...[
@@ -283,7 +282,7 @@ class _ToolDetailCard extends StatelessWidget {
                   child: Text(
                     row,
                     style: typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ),
@@ -293,7 +292,7 @@ class _ToolDetailCard extends StatelessWidget {
                   child: Text(
                     disclaimer,
                     style: typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ),
@@ -378,7 +377,7 @@ class _SourceTierBadge extends StatelessWidget {
       AssistantKnowledgeSourceType.drugbank => (
         l10n.assistantSourceBadgeDrugbank,
         colors.secondary,
-        colors.mutedForeground,
+        SemanticColor.neutral.solid(context),
       ),
       AssistantKnowledgeSourceType.medicalQa => (
         l10n.assistantSourceBadgeMedicalQa,
@@ -391,7 +390,7 @@ class _SourceTierBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         borderRadius: context.theme.style.borderRadius.xs,
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(

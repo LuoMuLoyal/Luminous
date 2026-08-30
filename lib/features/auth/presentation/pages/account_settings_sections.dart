@@ -212,11 +212,10 @@ class _LinkedIdentityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final canUnlink = user.hasPassword || user.linkedIdentities.length > 1;
-    final colors = context.theme.colors;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
         borderRadius: context.theme.style.borderRadius.xs,
       ),
       child: Padding(
@@ -225,7 +224,7 @@ class _LinkedIdentityTile extends StatelessWidget {
           children: [
             Icon(
               SemanticIcons.actionExternalLink,
-              color: colors.primary,
+              color: SemanticColor.primary.solid(context),
               size: 20,
             ),
             const SizedBox(width: Spacing.level3),
@@ -248,7 +247,7 @@ class _LinkedIdentityTile extends StatelessWidget {
                       ),
                     ].join(' · '),
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ],
@@ -519,8 +518,6 @@ class _DangerZoneSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(
@@ -538,13 +535,13 @@ class _DangerZoneSection extends StatelessWidget {
                 Icon(
                   SemanticIcons.statusWarning,
                   size: 16,
-                  color: colors.destructive,
+                  color: SemanticColor.destructive.solid(context),
                 ),
                 const SizedBox(width: Spacing.level2),
                 Text(
                   dangerLabel,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.destructive,
+                    color: SemanticColor.destructive.solid(context),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -587,13 +584,13 @@ class _InfoRow extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(icon, size: 18, color: colors.mutedForeground),
+        Icon(icon, size: 18, color: SemanticColor.neutral.solid(context)),
         const SizedBox(width: Spacing.level3),
         Expanded(
           child: Text(
             label,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),
@@ -620,11 +617,10 @@ class _MutedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     return Text(
       text,
       style: context.theme.typography.body.xs.copyWith(
-        color: colors.mutedForeground,
+        color: SemanticColor.neutral.solid(context),
       ),
     );
   }

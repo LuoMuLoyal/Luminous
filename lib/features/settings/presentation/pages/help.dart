@@ -227,8 +227,6 @@ class _FaqTileState extends State<_FaqTile>
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FTappable(
       onPress: _toggle,
       child: Padding(
@@ -256,7 +254,7 @@ class _FaqTileState extends State<_FaqTile>
                   child: Icon(
                     SemanticIcons.actionNext,
                     size: IconSizeTokens.level3,
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -322,7 +320,7 @@ class _FaqError extends StatelessWidget {
             child: Text(
               l10n.settingsHelpFaqLoadError,
               style: context.theme.typography.body.sm.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -349,7 +347,6 @@ class _FeedbackSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.theme.colors;
     final lastTraceId = ref.watch(lastTraceIdProvider);
 
     // Prefer backend supportEmail; fall back to compile-time env.
@@ -370,7 +367,7 @@ class _FeedbackSection extends ConsumerWidget {
               FTile(
                 prefix: Icon(
                   SemanticIcons.actionCopy,
-                  color: colors.primary,
+                  color: SemanticColor.primary.solid(context),
                   size: IconSizeTokens.level3,
                 ),
                 title: Text(
@@ -393,7 +390,7 @@ class _FeedbackSection extends ConsumerWidget {
             FTile(
               prefix: Icon(
                 SemanticIcons.actionMessage,
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
                 size: IconSizeTokens.level3,
               ),
               title: Text(l10n.mineHelpFeedbackTitle),

@@ -22,8 +22,6 @@ class RecentSearches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     if (keywords.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -45,7 +43,7 @@ class RecentSearches extends StatelessWidget {
               child: Text(
                 l10n.medicineSearchClearAction,
                 style: context.theme.typography.body.sm.copyWith(
-                  color: colors.primary,
+                  color: SemanticColor.primary.solid(context),
                   fontWeight: FontWeight.w700,
                 ),
               ),

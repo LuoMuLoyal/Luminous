@@ -10,14 +10,12 @@ class SettingsSectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.level2),
       child: Text(
         label,
         style: context.theme.typography.body.xs.copyWith(
-          color: colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
           fontWeight: FontWeight.w600,
         ),
       ),

@@ -137,7 +137,6 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final detail = widget.detail;
 
     return Column(
@@ -155,7 +154,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
         Text(
           _formatTime(context, detail.createdAt),
           style: context.theme.typography.body.xs.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level5),

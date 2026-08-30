@@ -49,7 +49,7 @@ class HealthSyncPage extends ConsumerWidget {
             Text(
               l10n.healthSyncDescription,
               style: context.theme.typography.body.md.copyWith(
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             if (autoSyncAvailability ==
@@ -58,7 +58,7 @@ class HealthSyncPage extends ConsumerWidget {
               Text(
                 l10n.healthSyncAutoSyncNotConfigured,
                 style: context.theme.typography.body.md.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -284,7 +284,7 @@ class _SyncResultSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.level4),
       decoration: BoxDecoration(
-        color: colors.primary.withValues(alpha: 0.08),
+        color: SemanticColor.primary.solid(context).withValues(alpha: 0.08),
         borderRadius: context.theme.style.borderRadius.xs,
       ),
       child: Column(
@@ -299,11 +299,11 @@ class _SyncResultSection extends StatelessWidget {
           const SizedBox(height: Spacing.level3),
           _ResultRow(
             label: l10n.healthSyncResultSuccess(result.successCount),
-            color: colors.primary,
+            color: SemanticColor.primary.solid(context),
           ),
           _ResultRow(
             label: l10n.healthSyncResultSkipped(result.skippedCount),
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
           if (result.failedCount > 0)
             _ResultRow(
@@ -371,7 +371,7 @@ class _MetricsPreviewSection extends StatelessWidget {
             child: Text(
               l10n.healthSyncPreviewMore(metrics.length - 20),
               style: context.theme.typography.body.md.copyWith(
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),

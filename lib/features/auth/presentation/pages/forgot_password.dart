@@ -95,7 +95,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 Text(
                   l10n.authRememberPasswordPrompt,
                   style: context.theme.typography.body.xs2.copyWith(
-                    color: context.theme.colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
                 FButton(

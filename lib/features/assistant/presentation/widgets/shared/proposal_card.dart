@@ -41,7 +41,7 @@ class AssistantProposalCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.background,
         borderRadius: context.theme.style.borderRadius.md,
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -53,7 +53,7 @@ class AssistantProposalCard extends StatelessWidget {
                 Icon(
                   proposalIcon(proposal.type),
                   size: 18,
-                  color: colors.primary,
+                  color: SemanticColor.primary.solid(context),
                 ),
                 const SizedBox(width: Spacing.level2),
                 Expanded(
@@ -80,7 +80,7 @@ class AssistantProposalCard extends StatelessWidget {
               Text(
                 reason,
                 style: typography.body.sm.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -101,7 +101,9 @@ class AssistantProposalCard extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 error,
-                style: typography.body.sm.copyWith(color: colors.destructive),
+                style: typography.body.sm.copyWith(
+                  color: SemanticColor.destructive.solid(context),
+                ),
               ),
             ],
             const SizedBox(height: Spacing.level3),
@@ -194,7 +196,7 @@ class _ProposalMetaSection extends StatelessWidget {
                 child: Text(
                   row,
                   style: typography.body.sm.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ),
@@ -211,7 +213,7 @@ class _ProposalMetaSection extends StatelessWidget {
                   child: Text(
                     '• $constraint',
                     style: typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ),
@@ -220,7 +222,9 @@ class _ProposalMetaSection extends StatelessWidget {
               const SizedBox(height: Spacing.level2),
               Text(
                 l10n.assistantProposalExpiredHint,
-                style: typography.body.sm.copyWith(color: colors.destructive),
+                style: typography.body.sm.copyWith(
+                  color: SemanticColor.destructive.solid(context),
+                ),
               ),
             ],
           ],

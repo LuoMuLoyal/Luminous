@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 
 import 'package:luminous/core/design/design.dart';
 
@@ -13,13 +12,12 @@ class SettingsSelectionIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     return Opacity(
       opacity: selected ? 1 : 0,
       child: Icon(
         SemanticIcons.statusDone,
         size: IconSizeTokens.level3,
-        color: colors.primary,
+        color: SemanticColor.primary.solid(context),
       ),
     );
   }

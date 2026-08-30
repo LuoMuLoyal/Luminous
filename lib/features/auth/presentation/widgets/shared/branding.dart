@@ -12,15 +12,16 @@ class AuthBrandLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Image.asset(
       _assetPath,
       width: size,
       height: size,
       fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) =>
-          Icon(SemanticIcons.safetyCaution, color: colors.primary, size: size),
+      errorBuilder: (context, error, stackTrace) => Icon(
+        SemanticIcons.safetyCaution,
+        color: SemanticColor.primary.solid(context),
+        size: size,
+      ),
     );
   }
 }
@@ -39,12 +40,10 @@ class AuthTermsNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final l10n = AppLocalizations.of(context)!;
 
     final linkStyle = context.theme.typography.body.xs.copyWith(
-      color: colors.primary,
+      color: SemanticColor.primary.solid(context),
       fontWeight: FontWeight.w600,
     );
     final String leadText = l10n.authTermsAgreement('', '');
@@ -68,7 +67,7 @@ class AuthTermsNotice extends StatelessWidget {
             Text(
               trimmedLead,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             FButton(
@@ -79,7 +78,7 @@ class AuthTermsNotice extends StatelessWidget {
             Text(
               connector,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             FButton(

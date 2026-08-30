@@ -92,7 +92,7 @@ class _SyncFailedDetailsContentState
         Text(
           l10n.mineSyncFailedDetailsDescription,
           style: context.theme.typography.body.xs.copyWith(
-            color: context.theme.colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level4),
@@ -220,7 +220,7 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
       decoration: BoxDecoration(
         color: colors.muted,
         borderRadius: context.theme.style.borderRadius.sm,
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +250,7 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
           Text(
             l10n.mineSyncFailedDetailsLastError,
             style: context.theme.typography.body.xs2.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
           const SizedBox(height: Spacing.level1),
@@ -318,13 +318,13 @@ class _DiagnosticsPanel extends StatelessWidget {
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
                   size: 18,
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 const SizedBox(width: Spacing.level1),
                 Text(
                   l10n.mineSyncFailedDetailsDiagnostics,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -338,7 +338,7 @@ class _DiagnosticsPanel extends StatelessWidget {
             decoration: BoxDecoration(
               color: colors.background,
               borderRadius: context.theme.style.borderRadius.xs,
-              border: Border.all(color: colors.border),
+              border: Border.all(color: SemanticColor.neutral.border(context)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -407,7 +407,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               label,
               style: context.theme.typography.body.xs2.copyWith(
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),

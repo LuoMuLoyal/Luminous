@@ -179,7 +179,6 @@ class _ConversationGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
     final groupTitle = _groupTitle(l10n, title);
     final hasMenu = onRename != null || onDelete != null;
@@ -195,7 +194,7 @@ class _ConversationGroup extends StatelessWidget {
           child: Text(
             groupTitle,
             style: context.theme.typography.body.xs2.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),
@@ -228,7 +227,6 @@ class _ConversationGroup extends StatelessWidget {
   /// drawer's [onRename] / [onDelete] callbacks. Untitled conversations show a
   /// "tap to name" title that reuses the rename path.
   FTile _buildTile(BuildContext context, AssistantConversationSummary item) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
     final isCurrent = item.id == currentConversationId;
     final isUntitled = _isUntitled(item);
@@ -236,18 +234,26 @@ class _ConversationGroup extends StatelessWidget {
     return FTile(
       key: Key('assistant-recent-conversation-${item.id}'),
       prefix: isCurrent
-          ? Icon(SemanticIcons.statusDone, color: colors.primary, size: 18)
+          ? Icon(
+              SemanticIcons.statusDone,
+              color: SemanticColor.primary.solid(context),
+              size: 18,
+            )
           : null,
       title: isUntitled
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(SemanticIcons.actionEdit, size: 14, color: colors.primary),
+                Icon(
+                  SemanticIcons.actionEdit,
+                  size: 14,
+                  color: SemanticColor.primary.solid(context),
+                ),
                 const SizedBox(width: Spacing.level2),
                 Text(
                   l10n.assistantConversationTapToName,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.primary,
+                    color: SemanticColor.primary.solid(context),
                   ),
                 ),
               ],
@@ -260,7 +266,7 @@ class _ConversationGroup extends StatelessWidget {
       subtitle: Text(
         conversationTimestampLabel(context, item),
         style: context.theme.typography.body.xs2.copyWith(
-          color: colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
         ),
       ),
       suffix: isCurrent
@@ -269,7 +275,7 @@ class _ConversationGroup extends StatelessWidget {
                   ? l10n.assistantClearingConversationLabel
                   : l10n.assistantRecentConversationCurrentLabel,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
               ),
             )
           : null,

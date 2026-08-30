@@ -99,7 +99,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                           child: Text(
                             l10n.settingsNotificationsCrossDayHint,
                             style: context.theme.typography.body.xs.copyWith(
-                              color: context.theme.colors.mutedForeground,
+                              color: SemanticColor.neutral.solid(context),
                             ),
                           ),
                         ),
@@ -114,7 +114,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                     child: Text(
                       l10n.settingsNotificationsTimeUnset,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: context.theme.colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ),

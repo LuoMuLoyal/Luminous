@@ -44,7 +44,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
               key: const Key('mine-account-settings-tile'),
               prefix: Icon(
                 SemanticIcons.profileUser,
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
                 size: Spacing.level5,
               ),
               title: Text(l10n.mineSettingsAccountTitle),
@@ -61,7 +61,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
                 key: const Key('mine-health-sync-tile'),
                 prefix: Icon(
                   SemanticIcons.recordActivity,
-                  color: colors.primary,
+                  color: SemanticColor.primary.solid(context),
                   size: Spacing.level5,
                 ),
                 title: Text(l10n.mineHealthSyncTitle),
@@ -78,13 +78,17 @@ class MineAccountSecuritySection extends ConsumerWidget {
               key: const Key('mine-sign-out-tile'),
               prefix: Icon(
                 SemanticIcons.actionClose,
-                color: signedIn ? colors.error : context.theme.colors.primary,
+                color: signedIn
+                    ? colors.error
+                    : SemanticColor.primary.solid(context),
                 size: Spacing.level5,
               ),
               title: Text(
                 signedIn ? l10n.authSignOut : l10n.authGoLogin,
                 style: context.theme.typography.body.md.copyWith(
-                  color: signedIn ? colors.error : context.theme.colors.primary,
+                  color: signedIn
+                      ? colors.error
+                      : SemanticColor.primary.solid(context),
                 ),
               ),
               enabled: !session.isLoading,

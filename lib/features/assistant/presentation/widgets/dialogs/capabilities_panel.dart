@@ -54,7 +54,6 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
     final tools = capabilities.tools;
 
@@ -121,7 +120,7 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                 Text(
                   '${capabilities.enabledToolCount} / ${tools.length}',
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -151,7 +150,6 @@ class _SummaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
     final value = enabled
         ? l10n.assistantCapabilitiesEnabledValue
@@ -164,14 +162,18 @@ class _SummaryRow extends StatelessWidget {
           Icon(
             enabled ? SemanticIcons.statusSuccess : SemanticIcons.statusBlocked,
             size: 14,
-            color: enabled ? colors.primary : colors.mutedForeground,
+            color: enabled
+                ? SemanticColor.primary.solid(context)
+                : SemanticColor.neutral.solid(context),
           ),
           const SizedBox(width: Spacing.level2),
           Expanded(child: Text(label, style: context.theme.typography.body.sm)),
           Text(
             value,
             style: context.theme.typography.body.xs.copyWith(
-              color: enabled ? colors.primary : colors.mutedForeground,
+              color: enabled
+                  ? SemanticColor.primary.solid(context)
+                  : SemanticColor.neutral.solid(context),
             ),
           ),
         ],
@@ -213,7 +215,9 @@ class _ToolRow extends StatelessWidget {
                     ? SemanticIcons.statusSuccess
                     : SemanticIcons.statusBlocked,
                 size: 14,
-                color: tool.enabled ? colors.primary : colors.mutedForeground,
+                color: tool.enabled
+                    ? SemanticColor.primary.solid(context)
+                    : SemanticColor.neutral.solid(context),
               ),
               const SizedBox(width: Spacing.level2),
               Expanded(
@@ -234,8 +238,8 @@ class _ToolRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: context.theme.typography.body.xs2.copyWith(
                       color: tool.enabled
-                          ? colors.primary
-                          : colors.mutedForeground,
+                          ? SemanticColor.primary.solid(context)
+                          : SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ),

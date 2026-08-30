@@ -502,20 +502,29 @@ class _MethodTile extends StatelessWidget {
         decoration: .shapeDelta(
           color: colors.background,
           shape: RoundedSuperellipseBorder(
-            side: BorderSide(color: colors.border),
+            side: BorderSide(color: SemanticColor.neutral.border(context)),
             borderRadius: context.theme.style.borderRadius.lg,
           ),
         ),
       ),
       child: FTile(
         onPress: onTap,
-        prefix: Icon(icon, color: colors.primary, size: IconSizeTokens.level6),
+        prefix: Icon(
+          icon,
+          color: SemanticColor.primary.solid(context),
+          size: IconSizeTokens.level6,
+        ),
         title: Text(title),
         subtitle: Text(
           subtitle,
-          style: typography.body.sm.copyWith(color: colors.mutedForeground),
+          style: typography.body.sm.copyWith(
+            color: SemanticColor.neutral.solid(context),
+          ),
         ),
-        suffix: Icon(SemanticIcons.actionNext, color: colors.mutedForeground),
+        suffix: Icon(
+          SemanticIcons.actionNext,
+          color: SemanticColor.neutral.solid(context),
+        ),
       ),
     );
   }

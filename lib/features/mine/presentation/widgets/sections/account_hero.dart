@@ -18,7 +18,6 @@ class MineAccountHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     final account = dashboard.account;
     final isPreview = !account.isAuthenticated;
@@ -97,7 +96,7 @@ class MineAccountHero extends StatelessWidget {
             Text(
               description,
               style: context.theme.typography.body.sm.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 height: 1.45,
               ),
             ),
@@ -107,7 +106,7 @@ class MineAccountHero extends StatelessWidget {
                 Text(
                   mineCopy(l10n, dashboard.completion.titleKey),
                   style: context.theme.typography.body.sm.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
                 const SizedBox(width: Spacing.level2),
@@ -120,7 +119,7 @@ class MineAccountHero extends StatelessWidget {
                   child: Text(
                     dashboard.completion.percentLabel,
                     style: context.theme.typography.body.md.copyWith(
-                      color: colors.primary,
+                      color: SemanticColor.primary.solid(context),
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -241,13 +240,13 @@ class _AvatarPlaceholder extends StatelessWidget {
             decoration: BoxDecoration(
               color: colors.secondary,
               shape: BoxShape.circle,
-              border: Border.all(color: colors.border),
+              border: Border.all(color: SemanticColor.neutral.border(context)),
             ),
             child: SizedBox.square(
               dimension: 64,
               child: Icon(
                 SemanticIcons.profileUser,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 size: 32,
               ),
             ),
@@ -257,7 +256,7 @@ class _AvatarPlaceholder extends StatelessWidget {
             bottom: -2,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
                 shape: BoxShape.circle,
                 border: Border.all(color: colors.background, width: 2),
               ),
@@ -265,7 +264,7 @@ class _AvatarPlaceholder extends StatelessWidget {
                 padding: const EdgeInsets.all(Spacing.level1),
                 child: Icon(
                   SemanticIcons.actionEdit,
-                  color: colors.primaryForeground,
+                  color: SemanticColor.primary.foreground(context),
                   size: 12,
                 ),
               ),
@@ -290,8 +289,6 @@ class _StateBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     // Preview badge: secondary variant (grey)
     if (preview) {
       return FBadge(
@@ -315,7 +312,7 @@ class _StateBadge extends StatelessWidget {
           label,
           style: context.theme.typography.body.xs.copyWith(
             fontWeight: FontWeight.w700,
-            color: colors.primaryForeground,
+            color: SemanticColor.primary.foreground(context),
           ),
         ),
       );

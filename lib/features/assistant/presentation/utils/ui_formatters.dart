@@ -124,11 +124,15 @@ String proposalStateText(
 
 Color proposalStateColor(FColors colors, AssistantProposedAction proposal) {
   return switch (proposal.executionState) {
-    AssistantProposalExecutionState.pending => colors.primary,
-    AssistantProposalExecutionState.executing => colors.primary,
+    AssistantProposalExecutionState.pending =>
+      SemanticColor.primary.paletteFromColors(colors).solid,
+    AssistantProposalExecutionState.executing =>
+      SemanticColor.primary.paletteFromColors(colors).solid,
     AssistantProposalExecutionState.confirmed => colors.secondary,
-    AssistantProposalExecutionState.dismissed => colors.mutedForeground,
-    AssistantProposalExecutionState.failed => colors.destructive,
+    AssistantProposalExecutionState.dismissed =>
+      SemanticColor.neutral.paletteFromColors(colors).solid,
+    AssistantProposalExecutionState.failed =>
+      SemanticColor.destructive.paletteFromColors(colors).solid,
   };
 }
 

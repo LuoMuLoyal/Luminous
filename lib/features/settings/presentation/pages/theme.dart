@@ -144,7 +144,10 @@ class _ThemeFamilyDot extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(color: context.theme.colors.border, width: 0.5),
+        border: Border.all(
+          color: SemanticColor.neutral.border(context),
+          width: 0.5,
+        ),
       ),
     );
   }

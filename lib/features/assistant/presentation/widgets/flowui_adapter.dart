@@ -245,7 +245,7 @@ class AssistantFlowUiAdapter {
         Text(
           _formatTimestamp(context, timestamp),
           style: context.theme.typography.body.xs2.copyWith(
-            color: context.theme.colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
       );
@@ -416,7 +416,7 @@ class _ReplacedBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.secondary,
         borderRadius: context.theme.style.borderRadius.xs,
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -427,7 +427,7 @@ class _ReplacedBadge extends StatelessWidget {
           label,
           key: const Key('assistant-replaced-label'),
           style: context.theme.typography.body.xs3.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             height: 1.2,
           ),
         ),

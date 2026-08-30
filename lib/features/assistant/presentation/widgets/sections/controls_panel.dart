@@ -32,8 +32,6 @@ class AssistantControlsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -48,7 +46,7 @@ class AssistantControlsPanel extends StatelessWidget {
         Text(
           l10n.assistantEntrySubtitle,
           style: context.theme.typography.body.xs.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level4),

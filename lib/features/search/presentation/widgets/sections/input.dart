@@ -24,8 +24,6 @@ class SearchInput extends HookWidget {
     // keyword) otherwise fire onChange during build, and the resulting
     // provider update trips Riverpod's "modify while building" assertion.
     final syncing = useRef(false);
-    final colors = context.theme.colors;
-
     useEffect(() {
       if (query != controller.text) {
         syncing.value = true;
@@ -51,7 +49,10 @@ class SearchInput extends HookWidget {
         context,
         style,
         variants,
-        Icon(SemanticIcons.actionSearch, color: colors.mutedForeground),
+        Icon(
+          SemanticIcons.actionSearch,
+          color: SemanticColor.neutral.solid(context),
+        ),
       ),
       suffixBuilder: controller.text.isEmpty
           ? null
@@ -67,7 +68,7 @@ class SearchInput extends HookWidget {
                   padding: const EdgeInsets.all(Spacing.level1),
                   child: Icon(
                     SemanticIcons.notificationFailed,
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ),

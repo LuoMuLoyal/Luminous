@@ -150,7 +150,6 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
 
   void _showCandidatePicker(List<ScanSearchResult> items) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     unawaited(
@@ -216,7 +215,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                               Text(
                                 item.subtitle!,
                                 style: typography.body.sm.copyWith(
-                                  color: colors.mutedForeground,
+                                  color: SemanticColor.neutral.solid(context),
                                 ),
                               ),
                           ],
@@ -369,7 +368,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                     height: _scanFrameHeight,
                     child: CustomPaint(
                       painter: _ScanCornerPainter(
-                        color: colors.primary,
+                        color: SemanticColor.primary.solid(context),
                         strokeWidth: 3,
                         cornerLength: 24,
                       ),
@@ -499,7 +498,6 @@ class _ScanResultSheetState extends ConsumerState<_ScanResultSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
     // While the snapshot is (re)fetching, `boxByKey` is empty; the loading
     // guard below keeps the add button disabled so the sheet cannot offer a
@@ -556,7 +554,7 @@ class _ScanResultSheetState extends ConsumerState<_ScanResultSheet> {
                 Text(
                   widget.item.subtitle!,
                   style: typography.body.sm.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -586,7 +584,7 @@ class _ScanResultSheetState extends ConsumerState<_ScanResultSheet> {
                       Icon(
                         SemanticIcons.statusDone,
                         size: IconSizeTokens.level2,
-                        color: colors.primary,
+                        color: SemanticColor.primary.solid(context),
                       ),
                       const SizedBox(width: Spacing.level2),
                       Text(widget.l10n.medicineSearchAlreadyAddedLabel),

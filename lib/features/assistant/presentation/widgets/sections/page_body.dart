@@ -316,8 +316,6 @@ class _AssistantAboveComposer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -338,7 +336,7 @@ class _AssistantAboveComposer extends StatelessWidget {
                 Text(
                   l10n.assistantOpeningConversationLabel,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -396,8 +394,6 @@ class _AssistantComposerHost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -409,14 +405,14 @@ class _AssistantComposerHost extends StatelessWidget {
                 Icon(
                   SemanticIcons.statusPaused,
                   size: 14,
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 const SizedBox(width: Spacing.level2),
                 Expanded(
                   child: Text(
                     l10n.assistantInputDisabledHint,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ),
@@ -474,8 +470,6 @@ class _AssistantEmptySupportState extends State<_AssistantEmptySupport> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final prompts = <String>[
       l10n.assistantStarterPromptTodaySummary,
       l10n.assistantStarterPromptSleep,
@@ -490,7 +484,7 @@ class _AssistantEmptySupportState extends State<_AssistantEmptySupport> {
           l10n.assistantWelcomeDescription,
           textAlign: TextAlign.center,
           style: context.theme.typography.body.sm.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level6),
@@ -502,7 +496,7 @@ class _AssistantEmptySupportState extends State<_AssistantEmptySupport> {
               Text(
                 l10n.assistantStarterPromptTitle,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
               const SizedBox(height: Spacing.level2),
@@ -539,7 +533,6 @@ class _AssistantMemoryHintSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
@@ -550,7 +543,7 @@ class _AssistantMemoryHintSection extends StatelessWidget {
           Icon(
             SemanticIcons.statusInfo,
             size: 14,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
           const SizedBox(width: Spacing.level2),
           Expanded(
@@ -560,7 +553,7 @@ class _AssistantMemoryHintSection extends StatelessWidget {
                 Text(
                   l10n.assistantMemoryHintTitle,
                   style: context.theme.typography.body.xs2.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -568,7 +561,7 @@ class _AssistantMemoryHintSection extends StatelessWidget {
                 Text(
                   l10n.assistantMemoryHintDescription,
                   style: context.theme.typography.body.xs2.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -591,7 +584,6 @@ class _AssistantDisclaimerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
 
     return Semantics(
@@ -611,7 +603,7 @@ class _AssistantDisclaimerSection extends StatelessWidget {
               Icon(
                 SemanticIcons.statusInfo,
                 size: 14,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(width: Spacing.level2),
               Expanded(
@@ -620,7 +612,7 @@ class _AssistantDisclaimerSection extends StatelessWidget {
                   maxLines: expanded ? null : 1,
                   overflow: expanded ? null : TextOverflow.ellipsis,
                   style: context.theme.typography.body.xs2.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ),
@@ -630,7 +622,7 @@ class _AssistantDisclaimerSection extends StatelessWidget {
                     ? SemanticIcons.actionCollapse
                     : SemanticIcons.actionExpand,
                 size: 14,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ],
           ),

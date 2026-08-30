@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 
 class AssistantToolChip extends StatelessWidget {
   const AssistantToolChip({super.key, required this.label});
@@ -16,11 +17,11 @@ class AssistantToolChip extends StatelessWidget {
         decoration: .shapeDelta(
           color: colors.secondary,
           shape: RoundedSuperellipseBorder(
-            side: BorderSide(color: colors.border),
+            side: BorderSide(color: SemanticColor.neutral.border(context)),
             borderRadius: context.theme.style.borderRadius.pill,
           ),
         ),
-        labelTextStyle: .delta(color: colors.mutedForeground),
+        labelTextStyle: .delta(color: SemanticColor.neutral.solid(context)),
       ),
       child: Text(label),
     );

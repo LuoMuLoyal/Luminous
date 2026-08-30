@@ -45,14 +45,14 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                       Icon(
                         SemanticIcons.recordSymptom,
                         size: IconSizeTokens.level2,
-                        color: context.theme.colors.primary,
+                        color: SemanticColor.primary.solid(context),
                       ),
                       const SizedBox(width: Spacing.level2),
                       Expanded(
                         child: Text(
                           l10n.settingsFeatureFlagsWarning,
                           style: context.theme.typography.body.xs.copyWith(
-                            color: context.theme.colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         ),
                       ),

@@ -52,12 +52,16 @@ class SearchResultTile extends StatelessWidget {
             const SizedBox(height: Spacing.level2),
             Text(
               result.subtitle,
-              style: typography.body.sm.copyWith(color: colors.mutedForeground),
+              style: typography.body.sm.copyWith(
+                color: SemanticColor.neutral.solid(context),
+              ),
             ),
             const SizedBox(height: Spacing.level1),
             Text(
               sourceRefLabel(l10n, result.source, result.id),
-              style: typography.body.xs.copyWith(color: colors.mutedForeground),
+              style: typography.body.xs.copyWith(
+                color: SemanticColor.neutral.solid(context),
+              ),
             ),
             const SizedBox(height: Spacing.level4),
             Text(
@@ -96,7 +100,7 @@ class SearchResultTile extends StatelessWidget {
                             Icon(
                               SemanticIcons.statusDone,
                               size: IconSizeTokens.level2,
-                              color: colors.primary,
+                              color: SemanticColor.primary.solid(context),
                             ),
                             const SizedBox(width: Spacing.level2),
                             Text(l10n.medicineSearchAlreadyAddedLabel),
@@ -148,8 +152,6 @@ class _TagPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FBadge(
       variant: FBadgeVariant.primary,
       style: .delta(
@@ -157,7 +159,7 @@ class _TagPill extends StatelessWidget {
           color: SemanticColor.primary.muted(context),
           borderRadius: context.theme.style.borderRadius.xs,
         ),
-        labelTextStyle: .delta(color: colors.primary),
+        labelTextStyle: .delta(color: SemanticColor.primary.solid(context)),
       ),
       child: Text(label),
     );
@@ -180,7 +182,6 @@ class PreviewPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final preview = state.detailPreview;
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return FCard(
@@ -211,13 +212,13 @@ class PreviewPanel extends StatelessWidget {
                       Icon(
                         SemanticIcons.actionSearch,
                         size: IconSizeTokens.level7,
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                       const SizedBox(height: Spacing.level4),
                       Text(
                         l10n.medicineSearchPreviewEmpty,
                         style: typography.body.md.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -299,7 +300,6 @@ class _NoResultAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return onTap != null
@@ -309,7 +309,7 @@ class _NoResultAction extends StatelessWidget {
               padding: const EdgeInsets.all(Spacing.level3),
               child: Column(
                 children: [
-                  Icon(icon, color: colors.primary),
+                  Icon(icon, color: SemanticColor.primary.solid(context)),
                   const SizedBox(height: Spacing.level2),
                   Text(
                     label,
@@ -324,13 +324,13 @@ class _NoResultAction extends StatelessWidget {
             padding: const EdgeInsets.all(Spacing.level3),
             child: Column(
               children: [
-                Icon(icon, color: colors.mutedForeground),
+                Icon(icon, color: SemanticColor.neutral.solid(context)),
                 const SizedBox(height: Spacing.level2),
                 Text(
                   label,
                   textAlign: TextAlign.center,
                   style: typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],

@@ -17,11 +17,17 @@ FlowTheme luminousFlowTheme(BuildContext context) {
       onPrimary: colors.primaryForeground,
       surface: colors.background,
       onSurface: colors.foreground,
-      onSurfaceVariant: colors.mutedForeground,
-      onSurfaceMuted: colors.mutedForeground.withValues(alpha: 0.5),
-      onSurfaceDisabled: colors.mutedForeground.withValues(alpha: 0.3),
-      outline: colors.border,
-      outlineVariant: colors.border.withValues(alpha: 0.5),
+      onSurfaceVariant: SemanticColor.neutral.solid(context),
+      onSurfaceMuted: SemanticColor.neutral
+          .solid(context)
+          .withValues(alpha: 0.5),
+      onSurfaceDisabled: SemanticColor.neutral
+          .solid(context)
+          .withValues(alpha: 0.3),
+      outline: SemanticColor.neutral.border(context),
+      outlineVariant: SemanticColor.neutral
+          .border(context)
+          .withValues(alpha: 0.5),
       surfaceBright: colors.card,
       surfaceContainerLowest: colors.background,
       surfaceContainerLow: colors.secondary,

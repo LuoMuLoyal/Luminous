@@ -62,7 +62,6 @@ class _StatusAlertRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final subtitle = _resolveSubtitle(l10n, card);
     final badge = _resolveBadge(l10n, card);
 
@@ -90,7 +89,7 @@ class _StatusAlertRow extends StatelessWidget {
                   Text(
                     subtitle,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -104,7 +103,7 @@ class _StatusAlertRow extends StatelessWidget {
             Text(
               badge,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 fontWeight: FontWeight.w700,
               ),
             ),

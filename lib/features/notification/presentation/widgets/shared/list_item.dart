@@ -76,7 +76,7 @@ class _NotificationListItemWidgetState
                           width: 8,
                           height: 8,
                           decoration: BoxDecoration(
-                            color: colors.primary,
+                            color: SemanticColor.primary.solid(context),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -108,7 +108,7 @@ class _NotificationListItemWidgetState
                             Text(
                               _formatTime(context, widget.item.createdAt),
                               style: context.theme.typography.body.xs.copyWith(
-                                color: colors.mutedForeground,
+                                color: SemanticColor.neutral.solid(context),
                               ),
                             ),
                           ],
@@ -117,7 +117,7 @@ class _NotificationListItemWidgetState
                         Text(
                           widget.item.content,
                           style: context.theme.typography.body.sm.copyWith(
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                             height: 1.4,
                           ),
                           maxLines: 2,
@@ -144,7 +144,7 @@ class _NotificationListItemWidgetState
                           const SizedBox(width: Spacing.level2),
                           _HoverActionButton(
                             icon: SemanticIcons.actionDelete,
-                            color: colors.destructive,
+                            color: SemanticColor.destructive.solid(context),
                             tooltip: l10n.notificationActionDelete,
                             onPressed: widget.onDismiss,
                           ),
@@ -178,7 +178,7 @@ class _NotificationListItemWidgetState
           ),
           SlidableAction(
             onPressed: (_) => widget.onDismiss(),
-            backgroundColor: colors.destructive,
+            backgroundColor: SemanticColor.destructive.solid(context),
             foregroundColor: colors.destructiveForeground,
             icon: SemanticIcons.actionDelete,
             label: l10n.notificationActionDelete,
@@ -204,7 +204,7 @@ class _NotificationListItemWidgetState
                         width: 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          color: colors.primary,
+                          color: SemanticColor.primary.solid(context),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -235,7 +235,7 @@ class _NotificationListItemWidgetState
                           Text(
                             _formatTime(context, widget.item.createdAt),
                             style: context.theme.typography.body.xs.copyWith(
-                              color: colors.mutedForeground,
+                              color: SemanticColor.neutral.solid(context),
                             ),
                           ),
                         ],
@@ -244,7 +244,7 @@ class _NotificationListItemWidgetState
                       Text(
                         widget.item.content,
                         style: context.theme.typography.body.sm.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                           height: 1.4,
                         ),
                         maxLines: 2,

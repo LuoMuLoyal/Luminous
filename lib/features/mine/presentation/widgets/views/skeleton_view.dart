@@ -110,7 +110,7 @@ class _SyncBannerPlaceholder extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.background,
         borderRadius: context.theme.style.borderRadius.md,
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: const Padding(
         padding: EdgeInsets.all(Spacing.level4),
@@ -221,7 +221,7 @@ class _AiPrivacyPlaceholder extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.background,
         borderRadius: context.theme.style.borderRadius.md,
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: const Padding(
         padding: EdgeInsets.all(Spacing.level4),

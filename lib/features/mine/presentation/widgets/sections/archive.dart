@@ -62,8 +62,6 @@ class _ArchiveEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -92,7 +90,7 @@ class _ArchiveEmpty extends StatelessWidget {
                   Text(
                     l10n.mineArchiveEmptyDescription,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ],
@@ -119,7 +117,6 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final statusKey = entry.statusKey ?? _derivedStatusKey();
 
     final tile = FTile(
@@ -133,7 +130,7 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
       subtitle: Text(
         subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
         style: context.theme.typography.body.xs.copyWith(
-          color: colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
         ),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
@@ -145,7 +142,7 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
               style: context.theme.typography.body.xs.copyWith(
                 color: statusKey == MineCopyKey.archiveNeedsFill
                     ? SemanticColor.warning.solid(context)
-                    : colors.mutedForeground,
+                    : SemanticColor.neutral.solid(context),
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -378,7 +375,6 @@ class _RecordListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     return FTappable(
       onPress: onTap,
       child: Padding(
@@ -403,7 +399,7 @@ class _RecordListTile extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -416,7 +412,7 @@ class _RecordListTile extends StatelessWidget {
             Icon(
               SemanticIcons.actionNext,
               size: 18,
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ],
         ),

@@ -73,8 +73,6 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final infoAsync = ref.watch(appInfoProvider);
     final supportEmail = infoAsync.asData?.value?.supportEmail;
 
@@ -147,7 +145,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                                   ? '${l10n.settingsAboutVersionLabel(version)} · ${l10n.settingsAboutBuildLabel(buildNumber)}'
                                   : l10n.settingsAboutVersionLabel(version),
                               style: context.theme.typography.body.xs.copyWith(
-                                color: colors.mutedForeground,
+                                color: SemanticColor.neutral.solid(context),
                               ),
                             ),
                           ],
@@ -155,7 +153,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                           Text(
                             l10n.settingsAboutTagline,
                             style: context.theme.typography.body.xs.copyWith(
-                              color: colors.mutedForeground,
+                              color: SemanticColor.neutral.solid(context),
                             ),
                           ),
                         ],
@@ -223,7 +221,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                           height: IconSizeTokens.level3,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         )
                       : const Icon(SemanticIcons.actionRefresh),

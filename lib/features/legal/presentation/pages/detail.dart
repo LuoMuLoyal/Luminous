@@ -75,7 +75,7 @@ class LegalDetailPage extends ConsumerWidget {
                       ),
                     ),
                     style: context.theme.typography.body.xs.copyWith(
-                      color: context.theme.colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ),

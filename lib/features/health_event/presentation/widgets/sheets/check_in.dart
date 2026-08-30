@@ -44,8 +44,6 @@ class _CheckInSheetState extends State<CheckInSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -64,7 +62,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
               Text(
                 widget.subtitle!,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -108,7 +106,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
                 _validationError!,
                 key: const Key('health-event-check-in-validation-error'),
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.destructive,
+                  color: SemanticColor.destructive.solid(context),
                 ),
               ),
             ],
@@ -118,7 +116,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
                 _submitError!,
                 key: const Key('health-event-check-in-submit-error'),
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.destructive,
+                  color: SemanticColor.destructive.solid(context),
                 ),
               ),
             ],

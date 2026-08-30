@@ -172,7 +172,7 @@ class _MedicineRecognizeDialogState
                         child: Icon(
                           SemanticIcons.statusUnavailable,
                           size: IconSizeTokens.level3,
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                       ),
                     ),
@@ -189,7 +189,7 @@ class _MedicineRecognizeDialogState
                         Text(
                           l10n.scanResultSourceLabel(widget.methodLabel),
                           style: typography.body.sm.copyWith(
-                            color: colors.primary,
+                            color: SemanticColor.primary.solid(context),
                           ),
                         ),
                       ],
@@ -207,7 +207,9 @@ class _MedicineRecognizeDialogState
                   decoration: BoxDecoration(
                     color: colors.background,
                     borderRadius: context.theme.style.borderRadius.sm,
-                    border: Border.all(color: colors.border),
+                    border: Border.all(
+                      color: SemanticColor.neutral.border(context),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +229,7 @@ class _MedicineRecognizeDialogState
                             ? l10n.scanResultVerifyHintAi
                             : l10n.scanResultVerifyHintOcr,
                         style: typography.body.sm.copyWith(
-                          color: colors.primary,
+                          color: SemanticColor.primary.solid(context),
                         ),
                       ),
                     ],
@@ -258,13 +260,13 @@ class _MedicineRecognizeDialogState
                               ? SemanticIcons.actionCollapse
                               : SemanticIcons.actionExpand,
                           size: 20,
-                          color: colors.primary,
+                          color: SemanticColor.primary.solid(context),
                         ),
                         const SizedBox(width: 4),
                         Text(
                           l10n.scanResultOtherMatches(sorted.length),
                           style: typography.body.md.copyWith(
-                            color: colors.primary,
+                            color: SemanticColor.primary.solid(context),
                           ),
                         ),
                       ],
@@ -292,7 +294,7 @@ class _MedicineRecognizeDialogState
                                 _selectedIndex == i
                                     ? SemanticIcons.statusSuccess
                                     : SemanticIcons.statusPending,
-                                color: colors.primary,
+                                color: SemanticColor.primary.solid(context),
                                 size: 20,
                               ),
                               const SizedBox(width: Spacing.level3),
@@ -306,7 +308,9 @@ class _MedicineRecognizeDialogState
                                     Text(
                                       _matchTypeLabel(r.matchType, l10n),
                                       style: typography.body.sm.copyWith(
-                                        color: colors.mutedForeground,
+                                        color: SemanticColor.neutral.solid(
+                                          context,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -348,7 +352,7 @@ class _MedicineRecognizeDialogState
                     Icon(
                       SemanticIcons.statusDone,
                       size: IconSizeTokens.level2,
-                      color: colors.primary,
+                      color: SemanticColor.primary.solid(context),
                     ),
                     const SizedBox(width: Spacing.level2),
                     Text(l10n.medicineSearchAlreadyAddedLabel),
@@ -404,7 +408,6 @@ class _MedicineRecognizeDialogState
   }
 
   Widget _infoRow(String label, String value) {
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return Padding(
@@ -415,7 +418,9 @@ class _MedicineRecognizeDialogState
             width: 64,
             child: Text(
               label,
-              style: typography.body.sm.copyWith(color: colors.mutedForeground),
+              style: typography.body.sm.copyWith(
+                color: SemanticColor.neutral.solid(context),
+              ),
             ),
           ),
           Expanded(child: Text(value, style: typography.body.md)),

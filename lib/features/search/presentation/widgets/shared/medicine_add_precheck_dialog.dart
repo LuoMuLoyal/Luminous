@@ -49,7 +49,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
             l10n.medicineSearchPrecheckDescription,
             textAlign: TextAlign.center,
             style: context.theme.typography.body.sm.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
           Flexible(
@@ -248,7 +248,7 @@ class _ScopeRow extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             size: IconSizeTokens.level2,
           ),
           const SizedBox(width: Spacing.level3),
@@ -262,7 +262,7 @@ class _ScopeRow extends StatelessWidget {
           ),
           Icon(
             SemanticIcons.statusDone,
-            color: colors.primary,
+            color: SemanticColor.primary.solid(context),
             size: IconSizeTokens.level2,
           ),
         ],

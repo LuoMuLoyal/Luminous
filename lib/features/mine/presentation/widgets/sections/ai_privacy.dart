@@ -12,8 +12,6 @@ class MineAiPrivacySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Column(
       key: const Key('mine-ai-privacy-section'),
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +25,7 @@ class MineAiPrivacySection extends StatelessWidget {
               key: const Key('mine-ai-settings-tile'),
               prefix: Icon(
                 SemanticIcons.aiEntry,
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
                 size: Spacing.level5,
               ),
               title: Text(l10n.settingsAiTitle),
@@ -43,7 +41,7 @@ class MineAiPrivacySection extends StatelessWidget {
               key: const Key('mine-privacy-report-tile'),
               prefix: Icon(
                 SemanticIcons.actionShare,
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
                 size: Spacing.level5,
               ),
               title: Text(l10n.minePrivacyReportTitle),

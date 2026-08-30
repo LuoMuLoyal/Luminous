@@ -530,7 +530,7 @@ class LoginPage extends HookConsumerWidget {
                     Text(
                       l10n.authNeedAccountPrompt,
                       style: context.theme.typography.body.xs2.copyWith(
-                        color: context.theme.colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                     FButton(
@@ -573,7 +573,7 @@ class LoginPage extends HookConsumerWidget {
                         .trimRight()
                         .replaceAll(RegExp(r'\s+(and|与)\s*$'), ''),
                     style: context.theme.typography.body.xs2.copyWith(
-                      color: context.theme.colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   FButton(
@@ -584,7 +584,7 @@ class LoginPage extends HookConsumerWidget {
                     child: Text(
                       l10n.authTermsOfService,
                       style: context.theme.typography.body.xs2.copyWith(
-                        color: context.theme.colors.primary,
+                        color: SemanticColor.primary.solid(context),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -592,7 +592,7 @@ class LoginPage extends HookConsumerWidget {
                   Text(
                     l10n.localeName.startsWith('zh') ? '与' : 'and',
                     style: context.theme.typography.body.xs2.copyWith(
-                      color: context.theme.colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   FButton(
@@ -603,7 +603,7 @@ class LoginPage extends HookConsumerWidget {
                     child: Text(
                       l10n.authPrivacyPolicy,
                       style: context.theme.typography.body.xs2.copyWith(
-                        color: context.theme.colors.primary,
+                        color: SemanticColor.primary.solid(context),
                         fontWeight: FontWeight.w600,
                       ),
                     ),

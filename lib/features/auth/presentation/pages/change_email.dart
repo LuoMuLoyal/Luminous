@@ -155,7 +155,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                               ? l10n.authNotSignedIn
                               : l10n.authBackHomePrompt,
                           style: context.theme.typography.body.xs.copyWith(
-                            color: context.theme.colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         ),
                       ),

@@ -10,7 +10,6 @@ class DesktopTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return Row(
@@ -19,7 +18,7 @@ class DesktopTabs extends StatelessWidget {
           children: [
             Icon(
               SemanticIcons.profileCondition,
-              color: colors.primary,
+              color: SemanticColor.primary.solid(context),
               size: IconSizeTokens.level3,
             ),
             const SizedBox(width: Spacing.level3),

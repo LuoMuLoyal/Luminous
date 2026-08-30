@@ -30,7 +30,6 @@ class ProfileSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -77,8 +76,8 @@ class ProfileSection extends StatelessWidget {
                         : l10n.authAvatarPreviewInvalid,
                     style: context.theme.typography.body.xs.copyWith(
                       color: url.isEmpty || isValidUrl
-                          ? colors.mutedForeground
-                          : colors.destructive,
+                          ? SemanticColor.neutral.solid(context)
+                          : SemanticColor.destructive.solid(context),
                     ),
                   ),
                 ),

@@ -295,35 +295,33 @@ class _PermissionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final (title, subtitle, icon, color, ctaLabel) = switch (state) {
       NotificationPermissionState.granted => (
         l10n.settingsNotificationsPermissionEnabled,
         l10n.settingsNotificationsPermissionEnabledHint,
         SemanticIcons.statusDone,
-        colors.primary,
+        SemanticColor.primary.solid(context),
         null,
       ),
       NotificationPermissionState.denied => (
         l10n.settingsNotificationsPermissionDisabled,
         l10n.settingsNotificationsPermissionDisabledHint,
         SemanticIcons.statusError,
-        colors.mutedForeground,
+        SemanticColor.neutral.solid(context),
         null,
       ),
       NotificationPermissionState.permanentlyDenied => (
         l10n.settingsNotificationsPermissionPermanentlyDenied,
         l10n.settingsNotificationsPermissionPermanentlyDeniedHint,
         SemanticIcons.statusError,
-        colors.destructive,
+        SemanticColor.destructive.solid(context),
         l10n.settingsNotificationsPermissionOpenSettings,
       ),
       NotificationPermissionState.unsupported => (
         l10n.settingsNotificationsPermissionUnsupported,
         '',
         SemanticIcons.statusError,
-        colors.mutedForeground,
+        SemanticColor.neutral.solid(context),
         null,
       ),
     };

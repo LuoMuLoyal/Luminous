@@ -113,8 +113,6 @@ class _StartEventSheetState extends State<StartEventSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -191,7 +189,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
                 _validationError!,
                 key: const Key('health-event-start-validation-error'),
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.destructive,
+                  color: SemanticColor.destructive.solid(context),
                 ),
               ),
             ],
@@ -201,7 +199,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
                 _submitError!,
                 key: const Key('health-event-start-submit-error'),
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.destructive,
+                  color: SemanticColor.destructive.solid(context),
                 ),
               ),
             ],
@@ -296,7 +294,6 @@ class _AssociationOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
 
     return Column(
@@ -311,7 +308,7 @@ class _AssociationOptions extends StatelessWidget {
                 child: Text(
                   l10n.todayHealthEventOptionsLoadFailed,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.destructive,
+                    color: SemanticColor.destructive.solid(context),
                   ),
                 ),
               ),

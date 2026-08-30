@@ -448,7 +448,7 @@ class _QuickSelectChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: SemanticColor.neutral.subtle(context),
           borderRadius: context.theme.style.borderRadius.md,
-          border: Border.all(color: context.theme.colors.border),
+          border: Border.all(color: SemanticColor.neutral.border(context)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -458,7 +458,7 @@ class _QuickSelectChip extends StatelessWidget {
           child: Text(
             label,
             style: context.theme.typography.body.xs.copyWith(
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),

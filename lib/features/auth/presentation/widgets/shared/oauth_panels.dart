@@ -126,7 +126,6 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
 
     return Column(
@@ -137,17 +136,21 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
           padding: const EdgeInsets.symmetric(vertical: Spacing.level5),
           child: Row(
             children: [
-              Expanded(child: Divider(color: colors.border)),
+              Expanded(
+                child: Divider(color: SemanticColor.neutral.border(context)),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
                 child: Text(
                   l10n.authOrOtherLogin,
                   style: context.theme.typography.body.xs2.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ),
-              Expanded(child: Divider(color: colors.border)),
+              Expanded(
+                child: Divider(color: SemanticColor.neutral.border(context)),
+              ),
             ],
           ),
         ),

@@ -138,14 +138,18 @@ class MasterNavItem extends StatelessWidget {
             Icon(
               icon,
               size: IconSizeTokens.level2,
-              color: selected ? colors.primary : colors.mutedForeground,
+              color: selected
+                  ? SemanticColor.primary.solid(context)
+                  : SemanticColor.neutral.solid(context),
             ),
             const SizedBox(width: Spacing.level3),
             Expanded(
               child: Text(
                 label,
                 style: context.theme.typography.body.sm.copyWith(
-                  color: selected ? colors.foreground : colors.mutedForeground,
+                  color: selected
+                      ? colors.foreground
+                      : SemanticColor.neutral.solid(context),
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
                 ),
               ),
@@ -154,7 +158,7 @@ class MasterNavItem extends StatelessWidget {
               Icon(
                 SemanticIcons.actionNext,
                 size: IconSizeTokens.level2,
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
               ),
           ],
         ),

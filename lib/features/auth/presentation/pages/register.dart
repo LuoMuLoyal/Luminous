@@ -160,7 +160,7 @@ class RegisterPage extends HookConsumerWidget {
                 child: Text(
                   l10n.authRegisterTermsRequiredHint,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: context.theme.colors.destructive,
+                    color: SemanticColor.destructive.solid(context),
                   ),
                 ),
               ),
@@ -222,7 +222,7 @@ class RegisterPage extends HookConsumerWidget {
                 Text(
                   l10n.authHaveAccountPrompt,
                   style: context.theme.typography.body.xs2.copyWith(
-                    color: context.theme.colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
                 FButton(
@@ -292,10 +292,9 @@ class _TermsAgreementTextState extends State<_TermsAgreementText> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final baseStyle = context.theme.typography.body.xs;
     final linkStyle = baseStyle.copyWith(
-      color: colors.primary,
+      color: SemanticColor.primary.solid(context),
       fontWeight: FontWeight.w600,
     );
     final l10n = AppLocalizations.of(context)!;

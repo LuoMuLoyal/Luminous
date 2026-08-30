@@ -167,8 +167,6 @@ class _GroupedNotificationList extends StatelessWidget {
     // the previous `ListView(shrinkWrap: true)` + for-loop which eagerly built
     // every item and defeated the purpose of a scrollable list.
     final entries = _buildEntries();
-    final colors = context.theme.colors;
-
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
@@ -185,7 +183,7 @@ class _GroupedNotificationList extends StatelessWidget {
             child: Text(
               title,
               style: context.theme.typography.body.sm.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 fontWeight: FontWeight.w600,
               ),
             ),

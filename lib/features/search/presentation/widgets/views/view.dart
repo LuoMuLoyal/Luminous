@@ -187,8 +187,6 @@ class _MobileSearchLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     // Keep old results visible during search; only show full loading on first search.
     if (state.isSearching && state.results.isEmpty) {
       return const MedicineSearchLoadingView();
@@ -235,7 +233,7 @@ class _MobileSearchLayout extends StatelessWidget {
           Text(
             l10n.medicineSearchResultCount(state.results.length),
             style: context.theme.typography.body.md.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
           const SizedBox(height: Spacing.level4),
@@ -357,8 +355,6 @@ class _DesktopSearchPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level6),
@@ -406,7 +402,7 @@ class _DesktopSearchPanel extends StatelessWidget {
               Text(
                 l10n.medicineSearchResultCount(state.results.length),
                 style: context.theme.typography.body.md.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
               const SizedBox(height: Spacing.level4),

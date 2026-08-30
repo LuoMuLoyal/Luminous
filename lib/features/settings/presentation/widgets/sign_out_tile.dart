@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Sign-out / login tile shown at the bottom of the settings page.
@@ -29,7 +30,9 @@ class SignOutTile extends StatelessWidget {
             child: Text(
               signedIn ? l10n.authSignOut : l10n.authGoLogin,
               style: context.theme.typography.body.md.copyWith(
-                color: signedIn ? colors.error : context.theme.colors.primary,
+                color: signedIn
+                    ? colors.error
+                    : SemanticColor.primary.solid(context),
               ),
             ),
           ),

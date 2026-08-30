@@ -222,7 +222,7 @@ class _DesktopBrandPanel extends StatelessWidget {
                     Text(
                       l10n.authBrandDescription,
                       style: context.theme.typography.body.md.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                     const SizedBox(height: Spacing.level9),
@@ -283,7 +283,7 @@ class _BrandFeatureItem extends StatelessWidget {
           child: Center(
             child: Icon(
               icon,
-              color: colors.primary,
+              color: SemanticColor.primary.solid(context),
               size: IconSizeTokens.level4,
             ),
           ),
@@ -304,7 +304,7 @@ class _BrandFeatureItem extends StatelessWidget {
               Text(
                 description,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -451,7 +451,7 @@ class _AuthPageHeader extends StatelessWidget {
             subtitle!,
             textAlign: TextAlign.center,
             style: typography.body.md.copyWith(
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ],
