@@ -84,6 +84,9 @@ updated: 2026-08-30
 ## 颜色
 
 - **取色分层职责（2026-08-30 起）**：`background`/`card`/`foreground` 三个基础面色是 Forui 主题系统的"画布层"色，走 `context.theme.colors.*` / `SurfaceTokens.*` 按需取用是合理分层（`SemanticColor` 无对应 tone，不强行映射）；语义色（`mutedForeground`/`primary`/`destructive`/`primaryForeground`/`border`）统一走 `SemanticColor.*`（如 `SemanticColor.neutral.solid(context)`、`SemanticColor.primary.solid/foreground(context)`、`SemanticColor.destructive.solid(context)`、`SemanticColor.neutral.border(context)`）。两者职责不同，不是"双轨制"而是"分层职责"。
+- **主题取法约定（2026-08-30 起）**：同一方法内对同一来源（`context.theme.style.borderRadius` / `context.theme.typography` / `context.theme.colors`）取用 ≥2 次时，在方法顶部提取一次局部变量（`final borderRadius = context.theme.style.borderRadius`、`final typography = context.theme.typography`、`final colors = context.theme.colors`）再使用，避免重复解引用；单次使用保持内联。
+  - `SemanticColor.*.tone(context)`（如 `SemanticColor.neutral.solid(context)`）保持每次调用直接传 `context` 的规范形态，不做变量化。
+  - 自带 `context` 参数的内嵌闭包（如 `FBadge.raw(builder: (context, style) {...})`）内照常直接 `context.theme.*`，不引用外层方法提取的变量，避免取值来源漂移。
 - `RecordTypeColors`（`lib/features/record/domain/entities/record_type_colors.dart`）已删除。
 - 每种记录类型的颜色对现在表示为 `SemanticColor` token，在 widget build 时解析。
 
