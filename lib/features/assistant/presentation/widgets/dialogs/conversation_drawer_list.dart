@@ -194,9 +194,9 @@ class _ConversationGroup extends StatelessWidget {
           ),
           child: Text(
             groupTitle,
-            style: TypographyToken.level2
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs2.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
         ),
         if (hasMenu)
@@ -246,9 +246,9 @@ class _ConversationGroup extends StatelessWidget {
                 const SizedBox(width: Spacing.level2),
                 Text(
                   l10n.assistantConversationTapToName,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.primary),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.primary,
+                  ),
                 ),
               ],
             )
@@ -259,18 +259,18 @@ class _ConversationGroup extends StatelessWidget {
             ),
       subtitle: Text(
         conversationTimestampLabel(context, item),
-        style: TypographyToken.level2
-            .body(context)
-            .copyWith(color: colors.mutedForeground),
+        style: context.theme.typography.body.xs2.copyWith(
+          color: colors.mutedForeground,
+        ),
       ),
       suffix: isCurrent
           ? Text(
               isClearingConversation
                   ? l10n.assistantClearingConversationLabel
                   : l10n.assistantRecentConversationCurrentLabel,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.primary),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.primary,
+              ),
             )
           : null,
       onPress: isOpeningConversation

@@ -41,16 +41,16 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
           Text(
             l10n.medicineSearchPrecheckTitle,
             textAlign: TextAlign.center,
-            style: TypographyToken.level7
-                .display(context)
-                .copyWith(fontWeight: FontWeight.w800),
+            style: context.theme.typography.display.xl.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
           Text(
             l10n.medicineSearchPrecheckDescription,
             textAlign: TextAlign.center,
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.sm.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
           Flexible(
             child: SingleChildScrollView(
@@ -62,9 +62,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                   // Coverage scope section
                   Text(
                     l10n.medicineSearchPrecheckScopeTitle,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w800),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level3),
                   _ScopeRow(
@@ -105,9 +105,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                                 l10n,
                                 result.coverageIssues,
                               ),
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.foreground),
+                              style: context.theme.typography.body.xs.copyWith(
+                                color: colors.foreground,
+                              ),
                             ),
                           ),
                         ],
@@ -118,9 +118,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     const SizedBox(height: Spacing.level5),
                     Text(
                       l10n.medicineRiskCheckFindingsTitle,
-                      style: TypographyToken.level5
-                          .body(context)
-                          .copyWith(fontWeight: FontWeight.w800),
+                      style: context.theme.typography.body.md.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     const SizedBox(height: Spacing.level3),
                     ...result.findings
@@ -138,9 +138,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     const SizedBox(height: Spacing.level4),
                     Text(
                       l10n.medicineRiskCheckCoverageTitle,
-                      style: TypographyToken.level5
-                          .body(context)
-                          .copyWith(fontWeight: FontWeight.w800),
+                      style: context.theme.typography.body.md.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     const SizedBox(height: Spacing.level3),
                     ...result.coverageIssues
@@ -212,16 +212,16 @@ class _PrecheckFindingRow extends StatelessWidget {
                 children: [
                   Text(
                     medicineRiskFindingTitle(l10n, finding),
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w800),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     medicineRiskFindingBody(l10n, finding),
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.foreground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.foreground,
+                    ),
                   ),
                 ],
               ),
@@ -255,9 +255,9 @@ class _ScopeRow extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.foreground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.foreground,
+              ),
             ),
           ),
           Icon(
@@ -304,16 +304,16 @@ class _PrecheckCoverageRow extends StatelessWidget {
                 children: [
                   Text(
                     issue.medicineName,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w800),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     medicineRiskCoverageReasonLabel(l10n, issue.reason),
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.foreground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.foreground,
+                    ),
                   ),
                 ],
               ),

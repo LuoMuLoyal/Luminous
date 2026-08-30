@@ -62,9 +62,9 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                   Expanded(
                     child: Text.rich(
                       TextSpan(
-                        style: TypographyToken.level2
-                            .body(context)
-                            .copyWith(color: colors.mutedForeground),
+                        style: context.theme.typography.body.xs2.copyWith(
+                          color: colors.mutedForeground,
+                        ),
                         children: _collapsedRowSpans(context, l10n),
                       ),
                       maxLines: 1,
@@ -97,9 +97,9 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                     l10n.assistantSourceLowTrustHint,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TypographyToken.level2
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs2.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ),
               ],
@@ -400,9 +400,10 @@ class _SourceTierBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level1
-              .body(context)
-              .copyWith(color: foreground, height: 1.2),
+          style: context.theme.typography.body.xs3.copyWith(
+            color: foreground,
+            height: 1.2,
+          ),
         ),
       ),
     );

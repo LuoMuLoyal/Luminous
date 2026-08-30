@@ -51,11 +51,9 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           l10n.settingsFeatureFlagsWarning,
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(
-                                color: context.theme.colors.mutedForeground,
-                              ),
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
                         ),
                       ),
                     ],
@@ -218,9 +216,9 @@ class _ProviderSheet extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: Spacing.level3),
               child: Text(
                 l10n.settingsFeatureFlagsAiProvider,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             FTileGroup(

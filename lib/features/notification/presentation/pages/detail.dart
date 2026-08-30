@@ -147,16 +147,16 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
         const SizedBox(height: Spacing.level4),
         Text(
           detail.title,
-          style: TypographyToken.level7
-              .display(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.display.xl.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         Text(
           _formatTime(context, detail.createdAt),
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level5),
         FCard(
@@ -164,7 +164,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
             padding: const EdgeInsets.all(Spacing.level4),
             child: Text(
               detail.content,
-              style: TypographyToken.level5.body(context).copyWith(height: 1.6),
+              style: context.theme.typography.body.md.copyWith(height: 1.6),
             ),
           ),
         ),
@@ -324,12 +324,10 @@ class _TypeChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(
-                color: color.solid(context),
-                fontWeight: FontWeight.w600,
-              ),
+          style: context.theme.typography.body.sm.copyWith(
+            color: color.solid(context),
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -416,12 +414,12 @@ class _ActionBar extends StatelessWidget {
           children: [
             Text(
               l10n.notificationDeleteConfirmTitle,
-              style: TypographyToken.level6.body(context),
+              style: context.theme.typography.body.lg,
             ),
             const SizedBox(height: Spacing.level3),
             Text(
               l10n.notificationDeleteConfirmDescription,
-              style: TypographyToken.level4.body(context),
+              style: context.theme.typography.body.sm,
             ),
             const SizedBox(height: Spacing.level5),
             Row(

@@ -142,9 +142,9 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
                 child: Text(
                   l10n.authOrOtherLogin,
-                  style: TypographyToken.level2
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs2.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ),
               Expanded(child: Divider(color: colors.border)),

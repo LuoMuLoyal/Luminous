@@ -158,7 +158,7 @@ class _MissingTokenView extends StatelessWidget {
         children: [
           Text(
             l10n.authResetPasswordMissingTokenMessage,
-            style: TypographyToken.level4.body(context),
+            style: context.theme.typography.body.sm,
           ),
           const SizedBox(height: Spacing.level6),
           SizedBox(

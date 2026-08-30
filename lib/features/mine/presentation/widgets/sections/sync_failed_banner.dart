@@ -83,9 +83,9 @@ class _Banner extends StatelessWidget {
               Expanded(
                 child: Text(
                   message,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(color: colors.foreground),
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: colors.foreground,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -93,12 +93,10 @@ class _Banner extends StatelessWidget {
               const SizedBox(width: Spacing.level3),
               Text(
                 actionLabel,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(
-                      color: SemanticColor.warning.solid(context),
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: context.theme.typography.body.sm.copyWith(
+                  color: SemanticColor.warning.solid(context),
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),

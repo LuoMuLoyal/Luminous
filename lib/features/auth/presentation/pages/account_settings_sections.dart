@@ -235,9 +235,9 @@ class _LinkedIdentityTile extends StatelessWidget {
                 children: [
                   Text(
                     identityProviderLabel(identity.provider, l10n),
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w600),
+                    style: context.theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
@@ -247,9 +247,9 @@ class _LinkedIdentityTile extends StatelessWidget {
                         formatDate(identity.linkedAt),
                       ),
                     ].join(' · '),
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ],
               ),
@@ -493,9 +493,9 @@ class _SectionColumn extends StatelessWidget {
     children: [
       Text(
         title,
-        style: TypographyToken.level5
-            .body(context)
-            .copyWith(fontWeight: FontWeight.w600),
+        style: context.theme.typography.body.md.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
       ),
       const SizedBox(height: Spacing.level5),
       for (final child in children) ...[
@@ -543,21 +543,19 @@ class _DangerZoneSection extends StatelessWidget {
                 const SizedBox(width: Spacing.level2),
                 Text(
                   dangerLabel,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(
-                        color: colors.destructive,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.destructive,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               title,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w600),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: Spacing.level5),
             for (final child in children) ...[
@@ -594,9 +592,9 @@ class _InfoRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
         ),
         const SizedBox(width: Spacing.level4),
@@ -605,9 +603,9 @@ class _InfoRow extends StatelessWidget {
             value,
             textAlign: TextAlign.right,
             overflow: TextOverflow.ellipsis,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.foreground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.foreground,
+            ),
           ),
         ),
       ],
@@ -625,9 +623,9 @@ class _MutedText extends StatelessWidget {
     final colors = context.theme.colors;
     return Text(
       text,
-      style: TypographyToken.level3
-          .body(context)
-          .copyWith(color: colors.mutedForeground),
+      style: context.theme.typography.body.xs.copyWith(
+        color: colors.mutedForeground,
+      ),
     );
   }
 }

@@ -83,13 +83,9 @@ class MineAccountSecuritySection extends ConsumerWidget {
               ),
               title: Text(
                 signedIn ? l10n.authSignOut : l10n.authGoLogin,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(
-                      color: signedIn
-                          ? colors.error
-                          : context.theme.colors.primary,
-                    ),
+                style: context.theme.typography.body.md.copyWith(
+                  color: signedIn ? colors.error : context.theme.colors.primary,
+                ),
               ),
               enabled: !session.isLoading,
               onPress: session.isLoading

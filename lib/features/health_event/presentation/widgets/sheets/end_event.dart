@@ -55,17 +55,17 @@ class _EndEventSheetState extends State<EndEventSheet> {
           children: [
             Text(
               widget.heading,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w600),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             if (widget.subtitle != null) ...[
               const SizedBox(height: Spacing.level2),
               Text(
                 widget.subtitle!,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             const SizedBox(height: Spacing.level4),
@@ -107,9 +107,9 @@ class _EndEventSheetState extends State<EndEventSheet> {
               Text(
                 _validationError!,
                 key: const Key('health-event-end-validation-error'),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.destructive),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.destructive,
+                ),
               ),
             ],
             if (_submitError != null) ...[
@@ -117,9 +117,9 @@ class _EndEventSheetState extends State<EndEventSheet> {
               Text(
                 _submitError!,
                 key: const Key('health-event-end-submit-error'),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.destructive),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.destructive,
+                ),
               ),
             ],
             const SizedBox(height: Spacing.level5),

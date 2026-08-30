@@ -32,7 +32,7 @@ FlowTheme luminousFlowTheme(BuildContext context) {
       onError: Colors.white,
     ),
     typography: FlowTypography.standard.withFontFamily(
-      TypographyToken.level4.body(context).fontFamily ?? 'Figtree',
+      context.theme.typography.body.sm.fontFamily ?? 'Figtree',
     ),
   );
 }

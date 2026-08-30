@@ -220,9 +220,9 @@ class ProfileEditPage extends HookConsumerWidget {
                         const SizedBox(height: Spacing.level5),
                         Text(
                           l10n.mineEditFieldEmergencyContactName,
-                          style: TypographyToken.level4
-                              .body(context)
-                              .copyWith(fontWeight: FontWeight.w600),
+                          style: context.theme.typography.body.sm.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: Spacing.level2),
                         FTextField(
@@ -234,9 +234,9 @@ class ProfileEditPage extends HookConsumerWidget {
                         const SizedBox(height: Spacing.level3),
                         Text(
                           l10n.mineEditFieldEmergencyContactPhone,
-                          style: TypographyToken.level4
-                              .body(context)
-                              .copyWith(fontWeight: FontWeight.w600),
+                          style: context.theme.typography.body.sm.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: Spacing.level2),
                         FTextField(

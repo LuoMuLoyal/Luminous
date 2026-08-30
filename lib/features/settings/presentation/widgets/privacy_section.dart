@@ -169,12 +169,12 @@ class PrivacySection extends ConsumerWidget {
             children: [
               Text(
                 l10n.settingsDataSharingConfirmTitle,
-                style: TypographyToken.level6.body(context),
+                style: context.theme.typography.body.lg,
               ),
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.settingsDataSharingConfirmDescription,
-                style: TypographyToken.level4.body(context),
+                style: context.theme.typography.body.sm,
               ),
               const SizedBox(height: Spacing.level5),
               Row(

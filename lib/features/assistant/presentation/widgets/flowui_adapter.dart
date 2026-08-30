@@ -244,9 +244,9 @@ class AssistantFlowUiAdapter {
       children.add(
         Text(
           _formatTimestamp(context, timestamp),
-          style: TypographyToken.level2
-              .body(context)
-              .copyWith(color: context.theme.colors.mutedForeground),
+          style: context.theme.typography.body.xs2.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
         ),
       );
     }
@@ -372,12 +372,12 @@ class AssistantFlowUiAdapter {
         children: [
           Text(
             l10n.assistantMarkdownLinkConfirmTitle,
-            style: TypographyToken.level6.body(context),
+            style: context.theme.typography.body.lg,
           ),
           const SizedBox(height: Spacing.level3),
           Text(
             l10n.assistantMarkdownLinkConfirmDescription,
-            style: TypographyToken.level4.body(context),
+            style: context.theme.typography.body.sm,
           ),
           const SizedBox(height: Spacing.level5),
           Row(
@@ -426,9 +426,10 @@ class _ReplacedBadge extends StatelessWidget {
         child: Text(
           label,
           key: const Key('assistant-replaced-label'),
-          style: TypographyToken.level1
-              .body(context)
-              .copyWith(color: colors.mutedForeground, height: 1.2),
+          style: context.theme.typography.body.xs3.copyWith(
+            color: colors.mutedForeground,
+            height: 1.2,
+          ),
         ),
       ),
     );

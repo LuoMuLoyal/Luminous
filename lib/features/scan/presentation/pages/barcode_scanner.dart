@@ -392,9 +392,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                                 ? l10n.scanRecognizingHint
                                 : l10n.scanGuideHint,
                             textAlign: TextAlign.center,
-                            style: TypographyToken.level4
-                                .body(context)
-                                .copyWith(color: const Color(0xFFFFFFFF)),
+                            style: context.theme.typography.body.sm.copyWith(
+                              color: const Color(0xFFFFFFFF),
+                            ),
                           ),
                           if (_isSearching) ...[
                             const SizedBox(height: Spacing.level3),

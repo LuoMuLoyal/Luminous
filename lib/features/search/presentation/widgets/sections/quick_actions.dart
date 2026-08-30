@@ -69,9 +69,9 @@ class _QuickActionButton extends StatelessWidget {
               const SizedBox(width: Spacing.level3),
               Text(
                 actionLabel(l10n, action.type),
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),

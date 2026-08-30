@@ -43,9 +43,10 @@ class AuthTermsNotice extends StatelessWidget {
 
     final l10n = AppLocalizations.of(context)!;
 
-    final linkStyle = TypographyToken.level3
-        .body(context)
-        .copyWith(color: colors.primary, fontWeight: FontWeight.w600);
+    final linkStyle = context.theme.typography.body.xs.copyWith(
+      color: colors.primary,
+      fontWeight: FontWeight.w600,
+    );
     final String leadText = l10n.authTermsAgreement('', '');
     final String connector = l10n.localeName.startsWith('zh') ? '与' : ' and ';
     final String termsLabel = l10n.authTermsOfService;
@@ -66,9 +67,9 @@ class AuthTermsNotice extends StatelessWidget {
           children: [
             Text(
               trimmedLead,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             FButton(
               variant: FButtonVariant.ghost,
@@ -77,9 +78,9 @@ class AuthTermsNotice extends StatelessWidget {
             ),
             Text(
               connector,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             FButton(
               variant: FButtonVariant.ghost,

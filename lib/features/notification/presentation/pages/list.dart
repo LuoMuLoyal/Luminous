@@ -184,12 +184,10 @@ class _GroupedNotificationList extends StatelessWidget {
             ),
             child: Text(
               title,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(
-                    color: colors.mutedForeground,
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: context.theme.typography.body.sm.copyWith(
+                color: colors.mutedForeground,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           _ItemEntry(

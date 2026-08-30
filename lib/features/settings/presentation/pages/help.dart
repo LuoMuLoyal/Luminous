@@ -244,9 +244,9 @@ class _FaqTileState extends State<_FaqTile>
                 Expanded(
                   child: Text(
                     widget.item.question,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w600),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 const SizedBox(width: Spacing.level3),
@@ -321,9 +321,9 @@ class _FaqError extends StatelessWidget {
           Expanded(
             child: Text(
               l10n.settingsHelpFaqLoadError,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.sm.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
           FButton(

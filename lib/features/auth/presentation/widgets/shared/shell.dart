@@ -212,20 +212,18 @@ class _DesktopBrandPanel extends StatelessWidget {
                     // Tagline
                     Text(
                       l10n.authBrandTagline,
-                      style: TypographyToken.level9
-                          .display(context)
-                          .copyWith(
-                            color: colors.foreground,
-                            fontWeight: FontWeight.w800,
-                          ),
+                      style: context.theme.typography.display.xl3.copyWith(
+                        color: colors.foreground,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     const SizedBox(height: Spacing.level4),
                     // Description
                     Text(
                       l10n.authBrandDescription,
-                      style: TypographyToken.level5
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.md.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                     const SizedBox(height: Spacing.level9),
                     // Feature list
@@ -297,19 +295,17 @@ class _BrandFeatureItem extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(
-                      color: colors.foreground,
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: context.theme.typography.body.md.copyWith(
+                  color: colors.foreground,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 description,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
           ),
@@ -423,9 +419,9 @@ class _AuthPageHeader extends StatelessWidget {
             child: Text(
               title,
               textAlign: centerTitle ? TextAlign.center : TextAlign.left,
-              style: TypographyToken.level7
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: context.theme.typography.body.xl.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           const SizedBox(width: Spacing.level8),
@@ -445,9 +441,9 @@ class _AuthPageHeader extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: TypographyToken.level7
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.xl.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         if (subtitle != null) ...[
           const SizedBox(height: Spacing.level2),

@@ -124,9 +124,9 @@ class _StartEventSheetState extends State<StartEventSheet> {
           children: [
             Text(
               widget.heading,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w600),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: Spacing.level4),
             FTextField(
@@ -190,9 +190,9 @@ class _StartEventSheetState extends State<StartEventSheet> {
               Text(
                 _validationError!,
                 key: const Key('health-event-start-validation-error'),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.destructive),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.destructive,
+                ),
               ),
             ],
             if (_submitError != null) ...[
@@ -200,9 +200,9 @@ class _StartEventSheetState extends State<StartEventSheet> {
               Text(
                 _submitError!,
                 key: const Key('health-event-start-submit-error'),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.destructive),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.destructive,
+                ),
               ),
             ],
             const SizedBox(height: Spacing.level5),
@@ -302,7 +302,7 @@ class _AssociationOptions extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TypographyToken.level3.body(context)),
+        Text(label, style: context.theme.typography.body.xs),
         if (loadFailed) ...[
           const SizedBox(height: Spacing.level2),
           Row(
@@ -310,9 +310,9 @@ class _AssociationOptions extends StatelessWidget {
               Expanded(
                 child: Text(
                   l10n.todayHealthEventOptionsLoadFailed,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.destructive),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.destructive,
+                  ),
                 ),
               ),
               FButton(

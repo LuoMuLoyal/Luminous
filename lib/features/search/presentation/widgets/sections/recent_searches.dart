@@ -35,21 +35,19 @@ class RecentSearches extends StatelessWidget {
           children: [
             Text(
               l10n.medicineSearchRecentTitle,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: context.theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const Spacer(),
             FTappable(
               onPress: onClear,
               child: Text(
                 l10n.medicineSearchClearAction,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(
-                      color: colors.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: context.theme.typography.body.sm.copyWith(
+                  color: colors.primary,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

@@ -144,14 +144,10 @@ class MasterNavItem extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(
-                      color: selected
-                          ? colors.foreground
-                          : colors.mutedForeground,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                    ),
+                style: context.theme.typography.body.sm.copyWith(
+                  color: selected ? colors.foreground : colors.mutedForeground,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                ),
               ),
             ),
             if (selected)

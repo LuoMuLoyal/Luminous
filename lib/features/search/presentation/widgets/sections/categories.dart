@@ -26,9 +26,9 @@ class Categories extends StatelessWidget {
       children: [
         Text(
           l10n.medicineSearchCategoryTitle,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         Row(
@@ -78,7 +78,7 @@ class _CategoryItem extends StatelessWidget {
           const SizedBox(height: Spacing.level3),
           Text(
             categoryLabel(l10n, category.type),
-            style: TypographyToken.level3.body(context),
+            style: context.theme.typography.body.xs,
             textAlign: TextAlign.center,
           ),
         ],

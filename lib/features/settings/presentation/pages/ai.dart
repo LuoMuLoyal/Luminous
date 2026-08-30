@@ -123,11 +123,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     ),
                     child: Text(
                       l10n.settingsAiContextDisabledHint,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(
-                            color: context.theme.colors.mutedForeground,
-                          ),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
                     ),
                   ),
                 FTileGroup(
@@ -211,9 +209,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
   Widget _privacyNote(BuildContext context, String text) {
     return Text(
       text,
-      style: TypographyToken.level3
-          .body(context)
-          .copyWith(color: context.theme.colors.mutedForeground),
+      style: context.theme.typography.body.xs.copyWith(
+        color: context.theme.colors.mutedForeground,
+      ),
     );
   }
 

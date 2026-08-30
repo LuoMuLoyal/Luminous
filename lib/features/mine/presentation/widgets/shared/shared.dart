@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
-import 'package:luminous/core/design/design.dart';
-
 class MineSectionTitle extends StatelessWidget {
   const MineSectionTitle({super.key, required this.title});
 
@@ -14,9 +12,10 @@ class MineSectionTitle extends StatelessWidget {
 
     return Text(
       title,
-      style: TypographyToken.level6
-          .body(context)
-          .copyWith(color: colors.foreground, fontWeight: FontWeight.w600),
+      style: context.theme.typography.body.lg.copyWith(
+        color: colors.foreground,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 }

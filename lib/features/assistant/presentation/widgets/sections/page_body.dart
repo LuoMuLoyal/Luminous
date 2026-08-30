@@ -337,9 +337,9 @@ class _AssistantAboveComposer extends StatelessWidget {
                 const SizedBox(width: Spacing.level2),
                 Text(
                   l10n.assistantOpeningConversationLabel,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -415,9 +415,9 @@ class _AssistantComposerHost extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.assistantInputDisabledHint,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ),
               ],
@@ -489,9 +489,9 @@ class _AssistantEmptySupportState extends State<_AssistantEmptySupport> {
         Text(
           l10n.assistantWelcomeDescription,
           textAlign: TextAlign.center,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.sm.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level6),
         Align(
@@ -501,9 +501,9 @@ class _AssistantEmptySupportState extends State<_AssistantEmptySupport> {
             children: [
               Text(
                 l10n.assistantStarterPromptTitle,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
               const SizedBox(height: Spacing.level2),
               FlowSuggestionGroup(
@@ -559,19 +559,17 @@ class _AssistantMemoryHintSection extends StatelessWidget {
               children: [
                 Text(
                   l10n.assistantMemoryHintTitle,
-                  style: TypographyToken.level2
-                      .body(context)
-                      .copyWith(
-                        color: colors.mutedForeground,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: context.theme.typography.body.xs2.copyWith(
+                    color: colors.mutedForeground,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.assistantMemoryHintDescription,
-                  style: TypographyToken.level2
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs2.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -621,9 +619,9 @@ class _AssistantDisclaimerSection extends StatelessWidget {
                   l10n.assistantDisclaimerText,
                   maxLines: expanded ? null : 1,
                   overflow: expanded ? null : TextOverflow.ellipsis,
-                  style: TypographyToken.level2
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs2.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ),
               const SizedBox(width: Spacing.level2),

@@ -92,11 +92,9 @@ class DndSettingsPage extends ConsumerWidget {
                           ),
                           child: Text(
                             l10n.settingsNotificationsCrossDayHint,
-                            style: TypographyToken.level3
-                                .body(context)
-                                .copyWith(
-                                  color: context.theme.colors.mutedForeground,
-                                ),
+                            style: context.theme.typography.body.xs.copyWith(
+                              color: context.theme.colors.mutedForeground,
+                            ),
                           ),
                         ),
                     ],
@@ -109,11 +107,9 @@ class DndSettingsPage extends ConsumerWidget {
                     ),
                     child: Text(
                       l10n.settingsNotificationsTimeUnset,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(
-                            color: context.theme.colors.mutedForeground,
-                          ),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
                     ),
                   ),
               ],

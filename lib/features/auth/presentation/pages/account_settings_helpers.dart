@@ -36,9 +36,9 @@ class ProfileSection extends StatelessWidget {
       children: [
         Text(
           l10n.authProfileSectionTitle,
-          style: TypographyToken.level5
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.md.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: Spacing.level5),
         // Avatar preview
@@ -75,13 +75,11 @@ class ProfileSection extends StatelessWidget {
                         : isValidUrl
                         ? l10n.authAvatarPreviewReady
                         : l10n.authAvatarPreviewInvalid,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(
-                          color: url.isEmpty || isValidUrl
-                              ? colors.mutedForeground
-                              : colors.destructive,
-                        ),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: url.isEmpty || isValidUrl
+                          ? colors.mutedForeground
+                          : colors.destructive,
+                    ),
                   ),
                 ),
               ],
@@ -192,16 +190,16 @@ Future<bool> confirmUnlinkIdentity(
       children: [
         Text(
           l10n.authIdentityUnlinkConfirmTitle,
-          style: TypographyToken.level6
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.lg.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         Text(
           l10n.authIdentityUnlinkConfirmMessage(
             identityProviderLabel(identity.provider, l10n),
           ),
-          style: TypographyToken.level4.body(context),
+          style: context.theme.typography.body.sm,
         ),
         const SizedBox(height: Spacing.level6),
         Row(

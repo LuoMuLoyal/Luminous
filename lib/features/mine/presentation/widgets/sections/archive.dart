@@ -84,16 +84,16 @@ class _ArchiveEmpty extends StatelessWidget {
                 children: [
                   Text(
                     l10n.mineArchiveEmptyTitle,
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     l10n.mineArchiveEmptyDescription,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ],
               ),
@@ -126,15 +126,15 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
       prefix: SoftIcon(icon: entry.icon, color: entry.accent),
       title: Text(
         mineCopy(l10n, entry.titleKey),
-        style: TypographyToken.level5
-            .body(context)
-            .copyWith(fontWeight: FontWeight.w700),
+        style: context.theme.typography.body.md.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
       ),
       subtitle: Text(
         subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
-        style: TypographyToken.level3
-            .body(context)
-            .copyWith(color: colors.mutedForeground),
+        style: context.theme.typography.body.xs.copyWith(
+          color: colors.mutedForeground,
+        ),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
@@ -142,14 +142,12 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
           ? null
           : Text(
               mineCopy(l10n, statusKey),
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(
-                    color: statusKey == MineCopyKey.archiveNeedsFill
-                        ? SemanticColor.warning.solid(context)
-                        : colors.mutedForeground,
-                    fontWeight: FontWeight.w700,
-                  ),
+              style: context.theme.typography.body.xs.copyWith(
+                color: statusKey == MineCopyKey.archiveNeedsFill
+                    ? SemanticColor.warning.solid(context)
+                    : colors.mutedForeground,
+                fontWeight: FontWeight.w700,
+              ),
             ),
       suffix: const Icon(SemanticIcons.actionNext),
       onPress: () {
@@ -267,9 +265,9 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
                     Expanded(
                       child: Text(
                         mineCopy(l10n, entry.titleKey),
-                        style: TypographyToken.level6
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w700),
+                        style: context.theme.typography.body.lg.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                     IconButton(
@@ -396,17 +394,17 @@ class _RecordListTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w600),
+                    style: context.theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   if (subtitle != null && subtitle!.isNotEmpty) ...[
                     const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle!,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

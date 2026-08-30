@@ -40,16 +40,16 @@ class AssistantControlsPanel extends StatelessWidget {
       children: [
         Text(
           l10n.assistantStatusSectionTitle,
-          style: TypographyToken.level5
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.md.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.assistantEntrySubtitle,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         FTileGroup(

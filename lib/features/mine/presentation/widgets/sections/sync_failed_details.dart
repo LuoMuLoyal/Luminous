@@ -86,20 +86,20 @@ class _SyncFailedDetailsContentState
       children: [
         Text(
           l10n.mineSyncFailedDetailsTitle,
-          style: TypographyToken.level6.body(context),
+          style: context.theme.typography.body.lg,
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.mineSyncFailedDetailsDescription,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: context.theme.colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         if (widget.entries.isEmpty)
           Text(
             l10n.mineSyncFailedDetailsEmpty,
-            style: TypographyToken.level4.body(context),
+            style: context.theme.typography.body.sm,
           )
         else
           for (final entry in widget.entries) ...[
@@ -111,9 +111,9 @@ class _SyncFailedDetailsContentState
           const SizedBox(height: Spacing.level3),
           Text(
             _retryError!,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: SemanticColor.destructive.solid(context)),
+            style: context.theme.typography.body.xs.copyWith(
+              color: SemanticColor.destructive.solid(context),
+            ),
           ),
         ],
         const SizedBox(height: Spacing.level5),
@@ -249,16 +249,16 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
           const SizedBox(height: Spacing.level2),
           Text(
             l10n.mineSyncFailedDetailsLastError,
-            style: TypographyToken.level2
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs2.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
           const SizedBox(height: Spacing.level1),
           Text(
             userMessage,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: SemanticColor.destructive.solid(context)),
+            style: context.theme.typography.body.xs.copyWith(
+              color: SemanticColor.destructive.solid(context),
+            ),
           ),
           if (hasDiagnostics) ...[
             const SizedBox(height: Spacing.level2),
@@ -323,9 +323,9 @@ class _DiagnosticsPanel extends StatelessWidget {
                 const SizedBox(width: Spacing.level1),
                 Text(
                   l10n.mineSyncFailedDetailsDiagnostics,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -366,7 +366,7 @@ class _DiagnosticsPanel extends StatelessWidget {
                   const SizedBox(height: Spacing.level2),
                   SelectableText(
                     raw!,
-                    style: TypographyToken.level2.body(context),
+                    style: context.theme.typography.body.xs2,
                   ),
                 ],
               ],
@@ -406,14 +406,12 @@ class _DetailRow extends StatelessWidget {
             width: 92,
             child: Text(
               label,
-              style: TypographyToken.level2
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
+              style: context.theme.typography.body.xs2.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
             ),
           ),
-          Expanded(
-            child: Text(value, style: TypographyToken.level3.body(context)),
-          ),
+          Expanded(child: Text(value, style: context.theme.typography.body.xs)),
         ],
       ),
     );

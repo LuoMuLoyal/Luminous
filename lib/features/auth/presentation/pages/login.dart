@@ -529,11 +529,9 @@ class LoginPage extends HookConsumerWidget {
                   children: [
                     Text(
                       l10n.authNeedAccountPrompt,
-                      style: TypographyToken.level2
-                          .body(context)
-                          .copyWith(
-                            color: context.theme.colors.mutedForeground,
-                          ),
+                      style: context.theme.typography.body.xs2.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
                     ),
                     FButton(
                       variant: FButtonVariant.ghost,
@@ -542,7 +540,7 @@ class LoginPage extends HookConsumerWidget {
                       onPress: () => context.push(Routes.register),
                       child: Text(
                         l10n.authRegisterNowAction,
-                        style: TypographyToken.level2.body(context),
+                        style: context.theme.typography.body.xs2,
                       ),
                     ),
                   ],
@@ -555,7 +553,7 @@ class LoginPage extends HookConsumerWidget {
                   onPress: () => context.push(Routes.forgotPassword),
                   child: Text(
                     l10n.authForgotPasswordPrompt,
-                    style: TypographyToken.level2.body(context),
+                    style: context.theme.typography.body.xs2,
                   ),
                 ),
               ],
@@ -574,9 +572,9 @@ class LoginPage extends HookConsumerWidget {
                         .authLoginTermsAgreement('', '')
                         .trimRight()
                         .replaceAll(RegExp(r'\s+(and|与)\s*$'), ''),
-                    style: TypographyToken.level2
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
+                    style: context.theme.typography.body.xs2.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
                   ),
                   FButton(
                     variant: FButtonVariant.ghost,
@@ -585,19 +583,17 @@ class LoginPage extends HookConsumerWidget {
                     onPress: () => context.push('${Routes.legal}/terms'),
                     child: Text(
                       l10n.authTermsOfService,
-                      style: TypographyToken.level2
-                          .body(context)
-                          .copyWith(
-                            color: context.theme.colors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      style: context.theme.typography.body.xs2.copyWith(
+                        color: context.theme.colors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   Text(
                     l10n.localeName.startsWith('zh') ? '与' : 'and',
-                    style: TypographyToken.level2
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
+                    style: context.theme.typography.body.xs2.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
                   ),
                   FButton(
                     variant: FButtonVariant.ghost,
@@ -606,12 +602,10 @@ class LoginPage extends HookConsumerWidget {
                     onPress: () => context.push('${Routes.legal}/privacy'),
                     child: Text(
                       l10n.authPrivacyPolicy,
-                      style: TypographyToken.level2
-                          .body(context)
-                          .copyWith(
-                            color: context.theme.colors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      style: context.theme.typography.body.xs2.copyWith(
+                        color: context.theme.colors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],

@@ -39,9 +39,9 @@ class DataExportPage extends ConsumerWidget {
                 children: [
                   Text(
                     l10n.settingsExportDescription,
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(color: colors.foreground),
+                    style: context.theme.typography.body.sm.copyWith(
+                      color: colors.foreground,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level5),
                   _StatusRow(
@@ -237,16 +237,17 @@ class _StatusRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(color: colors.foreground),
+          style: context.theme.typography.body.sm.copyWith(
+            color: colors.foreground,
+          ),
         ),
         const Spacer(),
         Text(
           value,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(color: colors.foreground, fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.sm.copyWith(
+            color: colors.foreground,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );

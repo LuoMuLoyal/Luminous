@@ -334,9 +334,10 @@ class _PermissionCard extends StatelessWidget {
         prefix: Icon(icon, color: color),
         title: Text(
           title,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(color: color, fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.sm.copyWith(
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         subtitle: subtitle.isEmpty ? null : Text(subtitle),
         suffix: state == NotificationPermissionState.granted
@@ -347,9 +348,10 @@ class _PermissionCard extends StatelessWidget {
                 children: [
                   Text(
                     ctaLabel,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: color, fontWeight: FontWeight.w600),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(width: Spacing.level2),
                   const Icon(SemanticIcons.actionNext),
@@ -388,9 +390,9 @@ class _AdvancePickerSheet extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: Spacing.level3),
               child: Text(
                 l10n.settingsNotificationsAdvance,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             FTileGroup(

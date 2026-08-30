@@ -29,10 +29,7 @@ class AssistantConversationDrawerHeader extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text(
-                title,
-                style: TypographyToken.level7.display(context),
-              ),
+              child: Text(title, style: context.theme.typography.display.xl),
             ),
             if (onNewConversation != null) ...[
               FTooltip(

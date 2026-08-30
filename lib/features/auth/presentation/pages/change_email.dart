@@ -154,11 +154,9 @@ class ChangeEmailPage extends HookConsumerWidget {
                           !isSignedIn
                               ? l10n.authNotSignedIn
                               : l10n.authBackHomePrompt,
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(
-                                color: context.theme.colors.mutedForeground,
-                              ),
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
                         ),
                       ),
                       FButton(

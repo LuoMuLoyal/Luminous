@@ -77,7 +77,7 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.assistantCapabilitiesAction,
-                    style: TypographyToken.level7.display(context),
+                    style: context.theme.typography.display.xl,
                   ),
                 ),
                 FButton.icon(
@@ -90,9 +90,9 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               l10n.assistantCapabilitiesSummaryTitle,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: Spacing.level2),
             _SummaryRow(
@@ -113,16 +113,16 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.assistantCapabilitiesToolsTitle,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 Text(
                   '${capabilities.enabledToolCount} / ${tools.length}',
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -167,16 +167,12 @@ class _SummaryRow extends StatelessWidget {
             color: enabled ? colors.primary : colors.mutedForeground,
           ),
           const SizedBox(width: Spacing.level2),
-          Expanded(
-            child: Text(label, style: TypographyToken.level4.body(context)),
-          ),
+          Expanded(child: Text(label, style: context.theme.typography.body.sm)),
           Text(
             value,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(
-                  color: enabled ? colors.primary : colors.mutedForeground,
-                ),
+            style: context.theme.typography.body.xs.copyWith(
+              color: enabled ? colors.primary : colors.mutedForeground,
+            ),
           ),
         ],
       ),
@@ -225,7 +221,7 @@ class _ToolRow extends StatelessWidget {
                   name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TypographyToken.level3.body(context),
+                  style: context.theme.typography.body.xs,
                 ),
               ),
               const SizedBox(width: Spacing.level2),
@@ -236,13 +232,11 @@ class _ToolRow extends StatelessWidget {
                     status,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TypographyToken.level2
-                        .body(context)
-                        .copyWith(
-                          color: tool.enabled
-                              ? colors.primary
-                              : colors.mutedForeground,
-                        ),
+                    style: context.theme.typography.body.xs2.copyWith(
+                      color: tool.enabled
+                          ? colors.primary
+                          : colors.mutedForeground,
+                    ),
                   ),
                 ),
               ),

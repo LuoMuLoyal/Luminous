@@ -71,9 +71,9 @@ class AdvancedSettingsPage extends ConsumerWidget {
                       key: const Key('advanced-settings-row-reset-defaults'),
                       title: Text(
                         l10n.settingsAdvancedResetDefaults,
-                        style: TypographyToken.level5
-                            .body(context)
-                            .copyWith(color: context.theme.colors.destructive),
+                        style: context.theme.typography.body.md.copyWith(
+                          color: context.theme.colors.destructive,
+                        ),
                       ),
                       subtitle: Text(l10n.settingsAdvancedResetDefaultsHint),
                       suffix: Icon(
@@ -325,9 +325,9 @@ class _EndpointSheetState extends State<_EndpointSheet> {
               padding: const EdgeInsets.only(bottom: Spacing.level3),
               child: Text(
                 widget.l10n.settingsDevApiEndpoint,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             FTileGroup(
@@ -415,9 +415,9 @@ class _LogLevelSheet extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: Spacing.level3),
               child: Text(
                 l10n.settingsDevLogLevel,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             FTileGroup(

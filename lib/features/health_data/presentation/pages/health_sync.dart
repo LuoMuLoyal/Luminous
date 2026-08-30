@@ -31,7 +31,7 @@ class HealthSyncPage extends ConsumerWidget {
             padding: const EdgeInsets.all(Spacing.level6),
             child: Text(
               l10n.healthSyncNotAvailable,
-              style: TypographyToken.level5.body(context),
+              style: context.theme.typography.body.md,
               textAlign: TextAlign.center,
             ),
           ),
@@ -48,18 +48,18 @@ class HealthSyncPage extends ConsumerWidget {
           children: [
             Text(
               l10n.healthSyncDescription,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
+              style: context.theme.typography.body.md.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
             ),
             if (autoSyncAvailability ==
                 HealthAutoSyncAvailability.notConfigured) ...[
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.healthSyncAutoSyncNotConfigured,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(color: context.theme.colors.mutedForeground),
+                style: context.theme.typography.body.md.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
               ),
             ],
             const SizedBox(height: Spacing.level6),
@@ -82,9 +82,9 @@ class HealthSyncPage extends ConsumerWidget {
                 ),
                 child: Text(
                   state.error!,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(color: context.theme.colors.error),
+                  style: context.theme.typography.body.md.copyWith(
+                    color: context.theme.colors.error,
+                  ),
                 ),
               ),
               const SizedBox(height: Spacing.level4),
@@ -174,9 +174,9 @@ class _MetricTypeSection extends StatelessWidget {
       children: [
         Text(
           l10n.healthSyncMetricTypes,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         Wrap(
@@ -234,9 +234,9 @@ class _TimeRangeSection extends StatelessWidget {
       children: [
         Text(
           l10n.healthSyncTimeRange,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         FSelect<HealthSyncTimeRange>.rich(
@@ -292,9 +292,9 @@ class _SyncResultSection extends StatelessWidget {
         children: [
           Text(
             l10n.healthSyncResultTitle,
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w600),
+            style: context.theme.typography.body.sm.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: Spacing.level3),
           _ResultRow(
@@ -330,7 +330,7 @@ class _ResultRow extends StatelessWidget {
         children: [
           Icon(Icons.check_circle, size: Spacing.level4, color: color),
           const SizedBox(width: Spacing.level2),
-          Text(label, style: TypographyToken.level5.body(context)),
+          Text(label, style: context.theme.typography.body.md),
         ],
       ),
     );
@@ -351,9 +351,9 @@ class _MetricsPreviewSection extends StatelessWidget {
       children: [
         Text(
           l10n.healthSyncPreviewTitle,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w600),
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         FTileGroup(
@@ -370,9 +370,9 @@ class _MetricsPreviewSection extends StatelessWidget {
             padding: const EdgeInsets.only(top: Spacing.level2),
             child: Text(
               l10n.healthSyncPreviewMore(metrics.length - 20),
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
+              style: context.theme.typography.body.md.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
             ),
           ),
       ],

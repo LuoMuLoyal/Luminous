@@ -457,9 +457,9 @@ class _QuickSelectChip extends StatelessWidget {
           ),
           child: Text(
             label,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: context.theme.colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
           ),
         ),
       ),

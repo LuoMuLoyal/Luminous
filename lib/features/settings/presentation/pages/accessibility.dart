@@ -47,15 +47,11 @@ class AccessibilitySettingsPage extends ConsumerWidget {
                         key: Key('font-size-row-${option.storageValue}'),
                         title: Text(
                           _fontSizeLabel(l10n, option),
-                          style: TypographyToken.level5
-                              .body(context)
-                              .copyWith(
-                                fontSize:
-                                    TypographyToken.level5
-                                        .body(context)
-                                        .fontSize! *
-                                    option.scaleFactor,
-                              ),
+                          style: context.theme.typography.body.md.copyWith(
+                            fontSize:
+                                context.theme.typography.body.md.fontSize! *
+                                option.scaleFactor,
+                          ),
                         ),
                         suffix: SettingsSelectionIcon(
                           selected: settings.fontSize == option,

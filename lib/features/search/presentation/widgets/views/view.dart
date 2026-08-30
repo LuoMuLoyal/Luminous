@@ -234,9 +234,9 @@ class _MobileSearchLayout extends StatelessWidget {
         if (state.query.trim().isNotEmpty) ...[
           Text(
             l10n.medicineSearchResultCount(state.results.length),
-            style: TypographyToken.level5
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.md.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
           const SizedBox(height: Spacing.level4),
           ...state.results.map(
@@ -368,9 +368,9 @@ class _DesktopSearchPanel extends StatelessWidget {
             const SizedBox(height: Spacing.level6),
             Text(
               l10n.medicineSearchPageTitle,
-              style: TypographyToken.level8
-                  .display(context)
-                  .copyWith(fontWeight: FontWeight.w800),
+              style: context.theme.typography.display.xl2.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
             ),
             const SizedBox(height: Spacing.level4),
             SearchInput(
@@ -405,9 +405,9 @@ class _DesktopSearchPanel extends StatelessWidget {
             if (state.query.trim().isNotEmpty) ...[
               Text(
                 l10n.medicineSearchResultCount(state.results.length),
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.md.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
               const SizedBox(height: Spacing.level4),
               ...state.results.map(

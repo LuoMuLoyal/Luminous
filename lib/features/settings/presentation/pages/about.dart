@@ -136,9 +136,9 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                         children: [
                           Text(
                             appName,
-                            style: TypographyToken.level6
-                                .body(context)
-                                .copyWith(fontWeight: FontWeight.w600),
+                            style: context.theme.typography.body.lg.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           if (version.isNotEmpty) ...[
                             const SizedBox(height: Spacing.level1),
@@ -146,17 +146,17 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                               buildNumber.isNotEmpty
                                   ? '${l10n.settingsAboutVersionLabel(version)} · ${l10n.settingsAboutBuildLabel(buildNumber)}'
                                   : l10n.settingsAboutVersionLabel(version),
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
+                              style: context.theme.typography.body.xs.copyWith(
+                                color: colors.mutedForeground,
+                              ),
                             ),
                           ],
                           const SizedBox(height: Spacing.level1),
                           Text(
                             l10n.settingsAboutTagline,
-                            style: TypographyToken.level3
-                                .body(context)
-                                .copyWith(color: colors.mutedForeground),
+                            style: context.theme.typography.body.xs.copyWith(
+                              color: colors.mutedForeground,
+                            ),
                           ),
                         ],
                       ),

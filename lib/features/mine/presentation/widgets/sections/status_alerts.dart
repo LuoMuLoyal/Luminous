@@ -81,17 +81,17 @@ class _StatusAlertRow extends StatelessWidget {
               children: [
                 Text(
                   mineCopy(l10n, card.titleKey),
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: Spacing.level1),
                   Text(
                     subtitle,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -103,12 +103,10 @@ class _StatusAlertRow extends StatelessWidget {
             const SizedBox(width: Spacing.level2),
             Text(
               badge,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(
-                    color: colors.mutedForeground,
-                    fontWeight: FontWeight.w700,
-                  ),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ],

@@ -435,10 +435,7 @@ class _RenameConversationDialogState extends State<_RenameConversationDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.dialogTitle,
-              style: TypographyToken.level6.body(context),
-            ),
+            Text(widget.dialogTitle, style: context.theme.typography.body.lg),
             const SizedBox(height: Spacing.level4),
             FTextField(
               key: const Key('assistant-conversation-rename-field'),

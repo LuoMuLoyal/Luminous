@@ -63,9 +63,9 @@ class LegalListPage extends ConsumerWidget {
                               Localizations.localeOf(context),
                             ),
                           ),
-                          style: TypographyToken.level2
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
+                          style: context.theme.typography.body.xs2.copyWith(
+                            color: colors.mutedForeground,
+                          ),
                         )
                       : null,
                   prefix: Icon(

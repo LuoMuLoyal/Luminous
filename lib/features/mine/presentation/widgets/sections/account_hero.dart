@@ -59,9 +59,9 @@ class MineAccountHero extends StatelessWidget {
                     children: [
                       Text(
                         name,
-                        style: TypographyToken.level7
-                            .display(context)
-                            .copyWith(fontWeight: FontWeight.w800),
+                        style: context.theme.typography.display.xl.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: Spacing.level2),
@@ -89,25 +89,26 @@ class MineAccountHero extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               title,
-              style: TypographyToken.level6
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: context.theme.typography.body.lg.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               description,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground, height: 1.45),
+              style: context.theme.typography.body.sm.copyWith(
+                color: colors.mutedForeground,
+                height: 1.45,
+              ),
             ),
             const SizedBox(height: Spacing.level4),
             Row(
               children: [
                 Text(
                   mineCopy(l10n, dashboard.completion.titleKey),
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
                 const SizedBox(width: Spacing.level2),
                 SkeletonSlot(
@@ -118,12 +119,10 @@ class MineAccountHero extends StatelessWidget {
                   ),
                   child: Text(
                     dashboard.completion.percentLabel,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(
-                          color: colors.primary,
-                          fontWeight: FontWeight.w800,
-                        ),
+                    style: context.theme.typography.body.md.copyWith(
+                      color: colors.primary,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],
@@ -299,9 +298,9 @@ class _StateBadge extends StatelessWidget {
         variant: FBadgeVariant.secondary,
         child: Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.xs.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
       );
     }
@@ -314,12 +313,10 @@ class _StateBadge extends StatelessWidget {
         variant: FBadgeVariant.primary,
         child: Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(
-                fontWeight: FontWeight.w700,
-                color: colors.primaryForeground,
-              ),
+          style: context.theme.typography.body.xs.copyWith(
+            fontWeight: FontWeight.w700,
+            color: colors.primaryForeground,
+          ),
         ),
       );
     }
@@ -328,12 +325,10 @@ class _StateBadge extends StatelessWidget {
       variant: FBadgeVariant.secondary,
       child: Text(
         label,
-        style: TypographyToken.level3
-            .body(context)
-            .copyWith(
-              fontWeight: FontWeight.w700,
-              color: SemanticColor.warning.solid(context),
-            ),
+        style: context.theme.typography.body.xs.copyWith(
+          fontWeight: FontWeight.w700,
+          color: SemanticColor.warning.solid(context),
+        ),
       ),
     );
   }

@@ -94,8 +94,7 @@ class _NotificationListItemWidgetState
                             Expanded(
                               child: Text(
                                 widget.item.title,
-                                style: TypographyToken.level5
-                                    .body(context)
+                                style: context.theme.typography.body.md
                                     .copyWith(
                                       fontWeight: widget.item.isRead
                                           ? FontWeight.w500
@@ -108,21 +107,19 @@ class _NotificationListItemWidgetState
                             const SizedBox(width: Spacing.level2),
                             Text(
                               _formatTime(context, widget.item.createdAt),
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
+                              style: context.theme.typography.body.xs.copyWith(
+                                color: colors.mutedForeground,
+                              ),
                             ),
                           ],
                         ),
                         const SizedBox(height: Spacing.level1),
                         Text(
                           widget.item.content,
-                          style: TypographyToken.level4
-                              .body(context)
-                              .copyWith(
-                                color: colors.mutedForeground,
-                                height: 1.4,
-                              ),
+                          style: context.theme.typography.body.sm.copyWith(
+                            color: colors.mutedForeground,
+                            height: 1.4,
+                          ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -225,13 +222,11 @@ class _NotificationListItemWidgetState
                           Expanded(
                             child: Text(
                               widget.item.title,
-                              style: TypographyToken.level5
-                                  .body(context)
-                                  .copyWith(
-                                    fontWeight: widget.item.isRead
-                                        ? FontWeight.w500
-                                        : FontWeight.w700,
-                                  ),
+                              style: context.theme.typography.body.md.copyWith(
+                                fontWeight: widget.item.isRead
+                                    ? FontWeight.w500
+                                    : FontWeight.w700,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -239,21 +234,19 @@ class _NotificationListItemWidgetState
                           const SizedBox(width: Spacing.level2),
                           Text(
                             _formatTime(context, widget.item.createdAt),
-                            style: TypographyToken.level3
-                                .body(context)
-                                .copyWith(color: colors.mutedForeground),
+                            style: context.theme.typography.body.xs.copyWith(
+                              color: colors.mutedForeground,
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: Spacing.level1),
                       Text(
                         widget.item.content,
-                        style: TypographyToken.level4
-                            .body(context)
-                            .copyWith(
-                              color: colors.mutedForeground,
-                              height: 1.4,
-                            ),
+                        style: context.theme.typography.body.sm.copyWith(
+                          color: colors.mutedForeground,
+                          height: 1.4,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),

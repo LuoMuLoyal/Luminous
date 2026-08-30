@@ -16,12 +16,10 @@ class SettingsSectionLabel extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: Spacing.level2),
       child: Text(
         label,
-        style: TypographyToken.level3
-            .body(context)
-            .copyWith(
-              color: colors.mutedForeground,
-              fontWeight: FontWeight.w600,
-            ),
+        style: context.theme.typography.body.xs.copyWith(
+          color: colors.mutedForeground,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

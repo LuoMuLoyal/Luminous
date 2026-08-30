@@ -94,9 +94,9 @@ class ForgotPasswordPage extends HookConsumerWidget {
               children: [
                 Text(
                   l10n.authRememberPasswordPrompt,
-                  style: TypographyToken.level2
-                      .body(context)
-                      .copyWith(color: context.theme.colors.mutedForeground),
+                  style: context.theme.typography.body.xs2.copyWith(
+                    color: context.theme.colors.mutedForeground,
+                  ),
                 ),
                 FButton(
                   variant: FButtonVariant.ghost,
@@ -105,7 +105,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                   onPress: () => context.push(Routes.login),
                   child: Text(
                     l10n.authSignIn,
-                    style: TypographyToken.level2.body(context),
+                    style: context.theme.typography.body.xs2,
                   ),
                 ),
               ],
