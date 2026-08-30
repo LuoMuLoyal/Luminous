@@ -9,7 +9,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';

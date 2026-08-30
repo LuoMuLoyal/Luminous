@@ -10,12 +10,12 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_helpers.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

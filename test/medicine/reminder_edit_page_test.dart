@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/edit.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
 import 'package:luminous/l10n/app_localizations.dart';

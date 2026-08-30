@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -18,7 +19,6 @@ import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dar
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// The main body of the assistant page. It watches the assistant controller

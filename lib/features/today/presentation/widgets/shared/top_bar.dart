@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
 import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
