@@ -87,13 +87,11 @@ class TintedStatusBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(
-                color: resolvedColor,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0,
-              ),
+          style: context.theme.typography.body.xs.copyWith(
+            color: resolvedColor,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0,
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

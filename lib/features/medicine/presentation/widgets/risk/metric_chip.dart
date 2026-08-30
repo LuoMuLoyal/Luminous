@@ -40,20 +40,18 @@ class RiskMetricCell extends StatelessWidget {
           children: [
             Text(
               value,
-              style: TypographyToken.level7
-                  .display(context)
-                  .copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
-                    color: color?.solid(context),
-                  ),
+              style: context.theme.typography.display.xl.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0,
+                color: color?.solid(context),
+              ),
             ),
             const SizedBox(height: Spacing.level1),
             Text(
               label,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

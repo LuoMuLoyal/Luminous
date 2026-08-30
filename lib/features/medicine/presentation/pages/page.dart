@@ -382,12 +382,10 @@ class _MedicineSafeGuardPill extends StatelessWidget {
               prefix: shieldIcon,
               child: Text(
                 l10n.medicineSafetyGuardLabel,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(
-                      color: colors.foreground,
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: context.theme.typography.body.sm.copyWith(
+                  color: colors.foreground,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
     );
@@ -482,9 +480,9 @@ class _MedicineMobileSearchBar extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.medicineHomeSearchHint,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.sm.copyWith(
+                  color: colors.mutedForeground,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

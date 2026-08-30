@@ -37,9 +37,9 @@ class FindingsTabSection extends StatelessWidget {
       children: [
         Text(
           l10n.medicineRiskCheckFindingsTitle,
-          style: TypographyToken.level6
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w800),
+          style: context.theme.typography.body.lg.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         for (var i = 0; i < visibleCount; i += 1)

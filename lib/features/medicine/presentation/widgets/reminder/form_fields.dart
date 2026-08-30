@@ -114,9 +114,9 @@ class TimePickerRow extends StatelessWidget {
       children: [
         Text(
           l10n.medicineReminderTimesLabel,
-          style: TypographyToken.level5
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w700),
+          style: context.theme.typography.body.md.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         Wrap(

@@ -66,9 +66,10 @@ class _SafetyHeader extends StatelessWidget {
         Expanded(
           child: Text(
             l10n.medicineSafetyPanelTitle,
-            style: TypographyToken.level7
-                .display(context)
-                .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
+            style: context.theme.typography.display.xl.copyWith(
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -84,9 +85,9 @@ class _SafetyHeader extends StatelessWidget {
           Flexible(
             child: Text(
               l10n.medicineSafetyPanelEmptyBody,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
               textAlign: TextAlign.end,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -122,9 +123,9 @@ class _LastCheckedLabel extends StatelessWidget {
           const SizedBox(width: Spacing.level1),
           Text(
             l10n.medicineRiskCheckStale,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: SemanticColor.warning.solid(context)),
+            style: context.theme.typography.body.xs.copyWith(
+              color: SemanticColor.warning.solid(context),
+            ),
           ),
         ],
       );
@@ -143,9 +144,9 @@ class _LastCheckedLabel extends StatelessWidget {
         const SizedBox(width: Spacing.level1),
         Text(
           l10n.medicineRiskCheckLastUpdated(time),
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: context.theme.colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
         ),
       ],
     );
@@ -209,11 +210,9 @@ class _SafetyCard extends StatelessWidget {
                     if (alertCount > visibleAlerts.length)
                       Text(
                         '+${alertCount - visibleAlerts.length}',
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(
-                              color: context.theme.colors.mutedForeground,
-                            ),
+                        style: context.theme.typography.body.xs.copyWith(
+                          color: context.theme.colors.mutedForeground,
+                        ),
                       ),
                   ],
                 ),
@@ -269,16 +268,16 @@ class _RiskSummary extends StatelessWidget {
             children: [
               Text(
                 summary.title,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w800),
+                style: context.theme.typography.body.sm.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 summary.body,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: context.theme.colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -353,16 +352,17 @@ class _MetricItem extends StatelessWidget {
         children: [
           Text(
             value,
-            style: TypographyToken.level7
-                .display(context)
-                .copyWith(fontWeight: FontWeight.w800, letterSpacing: 0),
+            style: context.theme.typography.display.xl.copyWith(
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0,
+            ),
           ),
           const SizedBox(height: Spacing.level1),
           Text(
             label,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: context.theme.colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -401,9 +401,9 @@ class _AlertChip extends StatelessWidget {
         Expanded(
           child: Text(
             medicineAlertTitle(l10n, alert),
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w600),
+            style: context.theme.typography.body.xs.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -424,9 +424,9 @@ class _AlertChip extends StatelessWidget {
             alert.color == SemanticColor.destructive
                 ? l10n.medicineRiskCheckSeverityHigh
                 : l10n.medicineRiskCheckSeverityMedium,
-            style: TypographyToken.level1
-                .body(context)
-                .copyWith(color: alert.color.solid(context)),
+            style: context.theme.typography.body.xs3.copyWith(
+              color: alert.color.solid(context),
+            ),
           ),
         ),
       ],
@@ -475,18 +475,16 @@ class _SafetyEmptyCard extends StatelessWidget {
                   children: [
                     Text(
                       l10n.medicineSafetyPanelEmptyTitle,
-                      style: TypographyToken.level4
-                          .body(context)
-                          .copyWith(fontWeight: FontWeight.w700),
+                      style: context.theme.typography.body.sm.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const SizedBox(height: Spacing.level1),
                     Text(
                       l10n.medicineSafetyPanelEmptyBody,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(
-                            color: context.theme.colors.mutedForeground,
-                          ),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
                     ),
                   ],
                 ),

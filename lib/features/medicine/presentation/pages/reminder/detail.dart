@@ -159,18 +159,18 @@ class _ReminderDetailBody extends ConsumerWidget {
                     children: [
                       Text(
                         data.medicine.displayName,
-                        style: TypographyToken.level5
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w800),
+                        style: context.theme.typography.body.md.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: Spacing.level1),
                       Text(
                         medicineDoseText(l10n, data.medicine),
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(color: colors.mutedForeground),
+                        style: context.theme.typography.body.xs.copyWith(
+                          color: colors.mutedForeground,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -203,13 +203,11 @@ class _ReminderDetailBody extends ConsumerWidget {
                               isActive
                                   ? l10n.medicineReminderEnabledStatus
                                   : l10n.medicineReminderDisabledStatus,
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(
-                                    color: foreground,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0,
-                                  ),
+                              style: context.theme.typography.body.xs.copyWith(
+                                color: foreground,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

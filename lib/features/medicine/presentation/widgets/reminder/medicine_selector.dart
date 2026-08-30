@@ -21,7 +21,7 @@ class MedicineSelectorPrompt extends StatelessWidget {
           children: [
             Text(
               l10n.medicineReminderSelectMedicineHint,
-              style: TypographyToken.level4.body(context),
+              style: context.theme.typography.body.sm,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.level4),

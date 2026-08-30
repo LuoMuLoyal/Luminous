@@ -27,16 +27,17 @@ class _DrugBoxSection extends StatelessWidget {
       children: [
         Text(
           l10n.medicineDrugboxTitle,
-          style: TypographyToken.level7
-              .display(context)
-              .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
+          style: context.theme.typography.display.xl.copyWith(
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0,
+          ),
         ),
         const SizedBox(height: Spacing.level1),
         Text(
           l10n.medicineDrugboxSubtitle,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: context.theme.colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         FCard(
@@ -122,18 +123,19 @@ class _DrugBoxHeader extends StatelessWidget {
             children: [
               Text(
                 l10n.medicineDrugboxTotal(count),
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w800, letterSpacing: 0),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.medicineDrugboxTotalPrefix,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
           ),
@@ -297,9 +299,9 @@ class _DrugBoxMetricItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -309,12 +311,10 @@ class _DrugBoxMetricItem extends StatelessWidget {
           const SizedBox(height: Spacing.level1),
           SkeletonText(
             text: value,
-            style: TypographyToken.level5
-                .body(context)
-                .copyWith(
-                  color: color.fillStrong(context),
-                  fontWeight: FontWeight.w800,
-                ),
+            style: context.theme.typography.body.md.copyWith(
+              color: color.fillStrong(context),
+              fontWeight: FontWeight.w800,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.76,
@@ -322,9 +322,9 @@ class _DrugBoxMetricItem extends StatelessWidget {
           const SizedBox(height: Spacing.level1),
           SkeletonText(
             text: detail,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.88,
@@ -375,16 +375,16 @@ class _DrugBoxEmpty extends StatelessWidget {
               children: [
                 Text(
                   l10n.medicineNoMedicineTitle,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.medicineNoMedicineBody,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -459,9 +459,9 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                 children: [
                   SkeletonText(
                     text: name,
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w800),
+                    style: context.theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.72,
@@ -474,9 +474,9 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                     children: [
                       SkeletonText(
                         text: '$dosage · ${_compactRouteOrSchedule(schedule)}',
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(color: colors.mutedForeground),
+                        style: context.theme.typography.body.xs.copyWith(
+                          color: colors.mutedForeground,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         widthFactor: 0.66,
@@ -528,12 +528,10 @@ class _TruncatedFooter extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
           child: Text(
             label,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(
-                  color: colors.mutedForeground,
-                  fontWeight: FontWeight.w600,
-                ),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),

@@ -53,12 +53,10 @@ class RiskRedFlagItem extends StatelessWidget {
                         Expanded(
                           child: Text(
                             redFlagAlertCopy(l10n, alert),
-                            style: TypographyToken.level4
-                                .body(context)
-                                .copyWith(
-                                  color: context.theme.colors.foreground,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                            style: context.theme.typography.body.sm.copyWith(
+                              color: context.theme.colors.foreground,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ],
@@ -76,13 +74,9 @@ class RiskRedFlagItem extends StatelessWidget {
                         Expanded(
                           child: Text(
                             redFlagActionCopy(l10n, alert),
-                            style: TypographyToken.level3
-                                .body(context)
-                                .copyWith(
-                                  color: SemanticColor.destructive.solid(
-                                    context,
-                                  ),
-                                ),
+                            style: context.theme.typography.body.xs.copyWith(
+                              color: SemanticColor.destructive.solid(context),
+                            ),
                           ),
                         ),
                       ],
@@ -116,9 +110,9 @@ class RiskRedFlagSection extends StatelessWidget {
       children: [
         Text(
           l10n.medicineRiskCheckRedFlagBannerTitle,
-          style: TypographyToken.level6
-              .body(context)
-              .copyWith(fontWeight: FontWeight.w800),
+          style: context.theme.typography.body.lg.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         for (var i = 0; i < alerts.length; i += 1) ...[

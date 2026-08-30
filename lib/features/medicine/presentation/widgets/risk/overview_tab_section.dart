@@ -39,9 +39,9 @@ class TabHeader extends StatelessWidget {
         Expanded(
           child: Text(
             l10n.medicineRiskCheckLastUpdated(timeStr),
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: context.theme.colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
           ),
         ),
         if (isRunning)
@@ -107,27 +107,25 @@ class RiskScoreHero extends StatelessWidget {
                 children: [
                   Text(
                     l10n.medicineRiskScoreTitle,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     medicineRiskLevelLabel(l10n, riskLevel),
-                    style: TypographyToken.level7
-                        .display(context)
-                        .copyWith(
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0,
-                          color: palette.solid,
-                        ),
+                    style: context.theme.typography.display.xl.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
+                      color: palette.solid,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level2),
                   Text(
                     medicineRiskLevelDescription(l10n, riskLevel, findingCount),
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: context.theme.colors.foreground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: context.theme.colors.foreground,
+                    ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -242,25 +240,25 @@ class SafeStateCard extends StatelessWidget {
                 children: [
                   Text(
                     l10n.medicineRiskCheckTierConfirmedSafe,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w800),
+                    style: context.theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     l10n.medicineRiskCheckTierSafeBody(
                       result.checkedMedicineCount,
                     ),
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     l10n.medicineRiskCheckTierSafeDisclaimer,
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
                   ),
                 ],
               ),
@@ -308,18 +306,18 @@ class OverallRecommendationCard extends StatelessWidget {
                 const SizedBox(width: Spacing.level2),
                 Text(
                   l10n.medicineRiskOverallRecommendation,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w800),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: Spacing.level3),
             Text(
               text,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: context.theme.colors.foreground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: context.theme.colors.foreground,
+              ),
             ),
           ],
         ),
@@ -357,9 +355,9 @@ class StaleBanner extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.medicineRiskCheckStaleBanner,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: context.theme.colors.foreground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: context.theme.colors.foreground,
+                ),
               ),
             ),
           ],
@@ -398,17 +396,17 @@ class LlmEmptyState extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               l10n.medicineRiskCheckLlmEmptyTitle,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w800),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               l10n.medicineRiskCheckLlmEmptyBody,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.level5),
@@ -464,9 +462,9 @@ class NeverCheckedState extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               l10n.medicineRiskCheckNeverChecked,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w800),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.level5),
@@ -515,9 +513,9 @@ class LlmUnavailableState extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               l10n.medicineRiskCheckLlmUnavailable,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w800),
+              style: context.theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

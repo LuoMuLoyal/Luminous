@@ -390,9 +390,9 @@ class _HeaderCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     detail.name,
-                    style: TypographyToken.level6
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w800),
+                    style: context.theme.typography.body.lg.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 const SizedBox(width: Spacing.level2),
@@ -403,9 +403,9 @@ class _HeaderCard extends StatelessWidget {
               const SizedBox(height: Spacing.level2),
               Text(
                 detail.subtitle!,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (source == 'cn') ...[
@@ -456,15 +456,13 @@ class _MetaRow extends StatelessWidget {
             width: Spacing.level8,
             child: Text(
               label,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
           const SizedBox(width: Spacing.level3),
-          Expanded(
-            child: Text(value, style: TypographyToken.level3.body(context)),
-          ),
+          Expanded(child: Text(value, style: context.theme.typography.body.xs)),
         ],
       ),
     );
@@ -523,9 +521,9 @@ class _ReferenceNotice extends StatelessWidget {
           Expanded(
             child: Text(
               l10n.medicineReferenceNoticeTitle,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.foreground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.foreground,
+              ),
             ),
           ),
         ],
@@ -558,9 +556,9 @@ class _RiskCheckEntry extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.medicineDetailRiskCheckEntry,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.foreground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: colors.foreground,
+                ),
               ),
             ),
             Icon(

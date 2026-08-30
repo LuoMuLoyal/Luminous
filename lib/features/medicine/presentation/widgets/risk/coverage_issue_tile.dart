@@ -38,16 +38,16 @@ class RiskCoverageItem extends StatelessWidget {
               children: [
                 Text(
                   issue.medicineName,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w800),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskCoverageReasonLabel(l10n, issue.reason),
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: context.theme.colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: context.theme.colors.mutedForeground,
+                  ),
                 ),
               ],
             ),

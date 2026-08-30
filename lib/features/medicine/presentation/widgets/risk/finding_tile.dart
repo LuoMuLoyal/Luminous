@@ -69,23 +69,23 @@ class RiskFindingItem extends StatelessWidget {
               children: [
                 Text(
                   medicineRiskFindingTitle(l10n, finding),
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w800),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskFindingBody(l10n, finding),
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: context.theme.colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: context.theme.colors.mutedForeground,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskFindingEvidence(l10n, finding),
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: context.theme.colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: context.theme.colors.mutedForeground,
+                  ),
                 ),
                 if (recommendation != null && recommendation.isNotEmpty) ...[
                   const SizedBox(height: Spacing.level2),
@@ -152,13 +152,11 @@ class _SeverityPill extends StatelessWidget {
             const SizedBox(width: Spacing.level1),
             Text(
               label,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(
-                    color: resolvedColor,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
-                  ),
+              style: context.theme.typography.body.xs.copyWith(
+                color: resolvedColor,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -191,13 +189,11 @@ class _ContextPill extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(
-                color: resolvedColor,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0,
-              ),
+          style: context.theme.typography.body.xs.copyWith(
+            color: resolvedColor,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0,
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -226,12 +222,10 @@ class _RecommendationLine extends StatelessWidget {
         Expanded(
           child: Text(
             text,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(
-                  color: color.solid(context),
-                  fontWeight: FontWeight.w600,
-                ),
+            style: context.theme.typography.body.xs.copyWith(
+              color: color.solid(context),
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],

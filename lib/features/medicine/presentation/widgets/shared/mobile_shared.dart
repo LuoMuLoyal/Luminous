@@ -52,9 +52,10 @@ class _DoseActionButton extends StatelessWidget {
       prefix: Icon(icon, size: Spacing.level4, color: foregroundColor),
       child: Text(
         label,
-        style: TypographyToken.level4
-            .body(context)
-            .copyWith(fontWeight: FontWeight.w700, color: foregroundColor),
+        style: context.theme.typography.body.sm.copyWith(
+          fontWeight: FontWeight.w700,
+          color: foregroundColor,
+        ),
       ),
     );
   }

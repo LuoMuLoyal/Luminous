@@ -81,19 +81,17 @@ class _RiskScoreRingState extends State<RiskScoreRing>
                 children: [
                   Text(
                     '${widget.score}',
-                    style: TypographyToken.level8
-                        .display(context)
-                        .copyWith(
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0,
-                          color: palette.solid,
-                        ),
+                    style: context.theme.typography.display.xl2.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
+                      color: palette.solid,
+                    ),
                   ),
                   Text(
                     '/100',
-                    style: TypographyToken.level2
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
+                    style: context.theme.typography.body.xs2.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
                   ),
                 ],
               ),

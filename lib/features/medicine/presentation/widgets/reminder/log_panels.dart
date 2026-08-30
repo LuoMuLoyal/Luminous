@@ -29,9 +29,9 @@ class ReminderTodayLogPanel extends StatelessWidget {
           padding: const EdgeInsets.only(left: Spacing.level2),
           child: Text(
             l10n.medicineReminderTodayLogsTitle,
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w800),
+            style: context.theme.typography.body.sm.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
         const SizedBox(height: Spacing.level3),
@@ -50,9 +50,9 @@ class ReminderTodayLogPanel extends StatelessWidget {
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoTodayLogs,
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: colors.mutedForeground,
+                          ),
                         ),
                       ),
                     ],
@@ -73,9 +73,9 @@ class ReminderTodayLogPanel extends StatelessWidget {
             padding: const EdgeInsets.only(top: Spacing.level2),
             child: Text(
               l10n.medicineReminderLogCountTotal(logs.length),
-              style: TypographyToken.level2
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs2.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
       ],
@@ -113,9 +113,9 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
           padding: const EdgeInsets.only(left: Spacing.level2),
           child: Text(
             l10n.medicineReminderDeliveryLogsTitle,
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w800),
+            style: context.theme.typography.body.sm.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
         const SizedBox(height: Spacing.level3),
@@ -134,9 +134,9 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoDeliveryLogs,
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: colors.mutedForeground,
+                          ),
                         ),
                       ),
                     ],
@@ -206,16 +206,16 @@ class _DeliveryLogRow extends StatelessWidget {
                     log.scheduledFor,
                     Localizations.localeOf(context),
                   ),
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   deliveryChannelLabel(l10n, log.channel),
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -281,9 +281,9 @@ class _TodayLogRow extends StatelessWidget {
                 log.scheduledFor,
                 Localizations.localeOf(context),
               ),
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
           TintedStatusBadge(color: color, label: label),

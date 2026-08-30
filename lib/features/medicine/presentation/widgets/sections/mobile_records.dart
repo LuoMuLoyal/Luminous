@@ -38,9 +38,10 @@ class _MedicineRecordsSectionState extends State<_MedicineRecordsSection> {
       children: [
         Text(
           l10n.medicineTodayPlanTitle,
-          style: TypographyToken.level7
-              .display(context)
-              .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
+          style: context.theme.typography.display.xl.copyWith(
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0,
+          ),
         ),
         const SizedBox(height: Spacing.level3),
         FCard(
@@ -134,18 +135,18 @@ class _TodayPlanRow extends StatelessWidget {
                   children: [
                     Text(
                       _itemName(l10n, item),
-                      style: TypographyToken.level4
-                          .body(context)
-                          .copyWith(fontWeight: FontWeight.w800),
+                      style: context.theme.typography.body.sm.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: Spacing.level1),
                     Text(
                       _itemPlanDetail(),
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                     const SizedBox(height: Spacing.level2),
                     Wrap(
@@ -170,12 +171,10 @@ class _TodayPlanRow extends StatelessWidget {
                             ),
                             child: Text(
                               _slotSummary(),
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(
-                                    color: colors.foreground,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              style: context.theme.typography.body.xs.copyWith(
+                                color: colors.foreground,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                       ],
@@ -299,16 +298,16 @@ class _TodayPlanEmpty extends StatelessWidget {
               children: [
                 Text(
                   l10n.medicineTodayPlanEmpty,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style: context.theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.medicineNoMedicineBody,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
