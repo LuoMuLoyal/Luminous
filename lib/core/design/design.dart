@@ -8,7 +8,6 @@
 //   icon_size.dart         — icon size tokens (IconSizeTokens)
 //   layout_scale.dart      — layout scale helpers
 //   motion.dart            — motion tokens (MotionTokens, DurationTokens)
-//   radius.dart            — radius tokens (RadiusTokens)
 //   responsive_sizing.dart — responsive sizing utilities
 //   semantic_color*.dart   — semantic color system (SemanticColor,
 //                            SemanticColorPalette, SemanticColors)
@@ -24,7 +23,6 @@ export 'icon_tokens.dart';
 export 'layout_scale.dart';
 export 'markdown_style.dart';
 export 'motion.dart';
-export 'radius.dart';
 export 'responsive_sizing.dart';
 export 'semantic_color.dart';
 export 'semantic_color_palette.dart';

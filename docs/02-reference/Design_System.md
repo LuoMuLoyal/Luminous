@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-29
+updated: 2026-08-30
 ---
 
 # Design System
@@ -50,7 +50,7 @@ updated: 2026-08-29
   - 后重新引入为 `ElevationTokens`（`lib/core/design/elevation.dart`），提供 `raised` / `glow` / `shadowColor` 三个方法，暗色模式 alpha 自动补偿。
 - 所有 `App*` 前缀已移除（2026-07-09）：
   - `AppSpacingTokens` → `Spacing`
-  - `AppRadiusTokens` → `RadiusTokens`（避免与 Flutter `Radius` 冲突）
+  - `AppRadiusTokens` → `RadiusTokens`（避免与 Flutter `Radius` 冲突；`RadiusTokens` 已于 2026-08-30 退役，圆角统一走 `context.theme.style.borderRadius.*`）
   - `AppTypographyToken` → `TypographyToken`
   - `AppAnimationDurations` → `DurationTokens`（`abstract final class`，避免与 Flutter `Durations` 冲突；现位于 `motion.dart`）
   - `AppBreakpoints` → `Breakpoints`
@@ -65,7 +65,8 @@ updated: 2026-08-29
 ## 命名
 
 - 所有 token 类名无 `App` 前缀，通过 barrel `design.dart` 统一导出。
-- `Spacing` / `RadiusTokens` / `TypographyToken` / `DurationTokens` / `IconSizeTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
+- `Spacing` / `TypographyToken` / `DurationTokens` / `IconSizeTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
+- 圆角（2026-08-30 起）：`RadiusTokens` 已退役，统一使用 Forui `context.theme.style.borderRadius.*`（`FBorderRadius` scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。需要裸 `double` 时用 `.xxx.topLeft.x`，需要 `Radius` 时用 `.xxx.topLeft`。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
 - `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size：level1=12, level2=16, level3=20, level4=24, level5=28, level6=32, level7=48, level8=64。原 level5=32 已拆分为 level5=28（suggestion card）和 level6=32（avatar/hero）。
@@ -109,7 +110,7 @@ updated: 2026-08-29
   - 表格：`tableColumnWidth: IntrinsicColumnWidth` —— flutter_markdown_plus 检测到该列宽类型时自动把表格包进横向 `SingleChildScrollView`，窄屏可横向滚动而不是挤压列；表头 `colors.secondary` 背景 + `colors.border` 边框不变。
   - **代码块限制（已记录）**：flutter_markdown_plus 把 `pre` 硬编码为横向 ScrollView，样式表无折行开关；折行会破坏代码缩进，故保持库默认横向滚动，不硬造自定义 builder。
 - 链接契约（F-4，仅助手消息气泡）：链接默认不自动跳转；点击先弹确认对话框（`assistantMarkdownLink*` 文案，取消复用 `commonCancel`），确认后经 `ExternalUrlLauncher` 打开；仅放行 http/https 方案。表格列数 / 链接域白名单硬校验规则未定，暂不做。
-- 两套均基于 `TypographyToken` / `Spacing` / `RadiusTokens` / `SemanticColor` 与 Forui `FColors` 解析，深浅色自动适配；代码块/行内代码/表格/分割线/链接统一接入主题 token。
+- 两套均基于 `TypographyToken` / `Spacing` / `SemanticColor` 与 Forui `FColors` 解析（圆角走 `context.theme.style.borderRadius.*`），深浅色自动适配；代码块/行内代码/表格/分割线/链接统一接入主题 token。
 - 全部 6 处渲染点已迁移：legal 2 处（`legal/detail.dart`、`settings/help.dart`）+ ai 4 处（`assistant/flowui_adapter.dart` 的 `FlowMessage` custom part、`today/summary.dart`、`today/suggestion_interactive.dart`、`report/ai_summary.dart`）。
 
 
