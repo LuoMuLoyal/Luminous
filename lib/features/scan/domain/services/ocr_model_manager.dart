@@ -25,10 +25,10 @@ class OcrModelManager {
   static const recConfigFileName = 'rec_inference.yml';
 
   // GitHub release download URLs for the ONNX model files.
-  // TODO(release-blocker): Replace with a Lucent-backed CDN URL before production release.
-  // GitHub Releases are not production-grade: rate limits, CORS, regional
-  // restrictions, and repo visibility changes can all break first-scan.
-  // The URL should point to a Lucent CDN with documented SLO and version pinning.
+  // Decision: GitHub Releases is the permanent model distribution channel for
+  // this plugin. The repo is public, the release tag is pinned, and the total
+  // download size (~30MB) is small enough that GitHub's rate limits are not a
+  // concern for first-scan traffic. No CDN migration is planned.
   static const _modelBaseUrl =
       'https://github.com/flespark/paddle_ocr_native/releases/download/v0.1.1-models';
 
@@ -98,14 +98,23 @@ class OcrModelManager {
     // Copy the rec config yml from plugin assets to the model directory.
     final configPath = '${dir.path}/$recConfigFileName';
     final configFile = File(configPath);
-    if (!configFile.existsSync()) {
-      const assetKey =
-          'packages/paddle_ocr_native/assets/models/rec/inference.yml';
-      final data = await rootBundle.load(assetKey);
-      await configFile.writeAsBytes(data.buffer.asUint8List());
+    try {
+      if (!configFile.existsSync()) {
+        const assetKey =
+            'packages/paddle_ocr_native/assets/models/rec/inference.yml';
+        final data = await rootBundle.load(assetKey);
+        await configFile.writeAsBytes(data.buffer.asUint8List());
+      }
+      // Signal 100% after the config copy (the final step) has succeeded.
+      // If config already exists, the model set is still complete, so 1.0
+      // is appropriate.
+      onProgress?.call(1.0);
+    } catch (e, st) {
+      // Progress stays at 2/3 on failure; the caller's catch block handles
+      // the error UI. Re-throw so the caller can show the failure dialog.
+      appTalker.error('OCR config copy failed', e, st);
+      rethrow;
     }
-    // Only signal 100% after the config copy (the final step) has succeeded.
-    onProgress?.call(1.0);
 
     appTalker.info('OCR model download complete');
   }
