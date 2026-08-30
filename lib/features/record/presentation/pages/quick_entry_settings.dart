@@ -30,6 +30,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
         ref.watch(quickEntryPreferencesProvider).asData?.value ??
         const QuickEntryPreferences();
     final controller = ref.read(quickEntryPreferencesProvider.notifier);
+    final typography = context.theme.typography;
 
     return PageScaffold(
       title: l10n.recordQuickSettingsTitle,
@@ -258,7 +259,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.recordQuickSettingsSymptomChoices,
-                style: context.theme.typography.body.sm.copyWith(
+                style: typography.body.sm.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -299,7 +300,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.recordQuickSettingsCustomIconHint,
-                style: context.theme.typography.body.sm.copyWith(
+                style: typography.body.sm.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),

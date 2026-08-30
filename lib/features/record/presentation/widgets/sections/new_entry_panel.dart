@@ -73,6 +73,7 @@ class RecordNewEntryPanel extends StatelessWidget {
   // Mobile layout — Wrap chips (unchanged from original).
   // ---------------------------------------------------------------------------
   Widget _buildMobile(BuildContext context) {
+    final typography = context.theme.typography;
     return FCard(
       key: const Key('record-new-entry-panel'),
       child: Padding(
@@ -82,9 +83,7 @@ class RecordNewEntryPanel extends StatelessWidget {
           children: [
             Text(
               l10n.recordNewEntrySectionTitle,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: Spacing.level4),
             Wrap(
@@ -133,7 +132,7 @@ class RecordNewEntryPanel extends StatelessWidget {
               child: Flexible(
                 child: Text(
                   l10n.recordNewEntrySectionTitle,
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     color: SemanticColor.primary.solid(context),
                     fontWeight: FontWeight.w700,
                   ),

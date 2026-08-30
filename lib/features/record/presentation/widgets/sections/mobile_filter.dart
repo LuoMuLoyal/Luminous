@@ -21,14 +21,13 @@ class RecordMobileFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     final allSelected = filters.every((filter) => filter.selected);
     final activeFilter = filters.where((f) => f.selected && !f.locked).toList();
+    final typography = context.theme.typography;
 
     // Header: title or active-filter indicator.
     final header = allSelected
         ? Text(
             l10n.recordFilterMobileTitle,
-            style: context.theme.typography.display.xl.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: typography.display.xl.copyWith(fontWeight: FontWeight.w800),
           )
         : Row(
             children: [
@@ -38,7 +37,7 @@ class RecordMobileFilter extends StatelessWidget {
                       .map((f) => mobileFilterLabel(l10n, f))
                       .join(' · '),
                 ),
-                style: context.theme.typography.display.xl.copyWith(
+                style: typography.display.xl.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),

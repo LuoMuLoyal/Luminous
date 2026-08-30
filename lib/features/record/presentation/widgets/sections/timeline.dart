@@ -34,6 +34,7 @@ class RecordTimelinePanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
     return FCard(
       key: const Key('record-timeline'),
       child: Padding(
@@ -45,7 +46,7 @@ class RecordTimelinePanel extends StatelessWidget {
               children: [
                 Text(
                   l10n.recordTimelineSectionTitle,
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -55,7 +56,7 @@ class RecordTimelinePanel extends StatelessWidget {
                     DateFormat.yMd(
                       Localizations.localeOf(context).toString(),
                     ).format(selectedDate!),
-                    style: context.theme.typography.body.sm.copyWith(
+                    style: typography.body.sm.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
@@ -212,6 +213,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 320),
@@ -227,14 +229,12 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 l10n.recordTimelineEmptyTitle,
-                style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.recordTimelineEmptyDescription,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,

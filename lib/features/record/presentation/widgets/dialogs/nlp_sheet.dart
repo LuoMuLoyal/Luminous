@@ -35,6 +35,7 @@ class RecordNlpSheet extends HookConsumerWidget {
 
     final state = ref.watch(recordNlpControllerProvider);
     final controller = useTextEditingController(text: state.draft);
+    final typography = context.theme.typography;
 
     ref.listen<RecordNlpState>(recordNlpControllerProvider, (previous, next) {
       final msg = next.errorMessage;
@@ -219,7 +220,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                 Expanded(
                   child: Text(
                     l10n.recordNlpSheetTitle,
-                    style: context.theme.typography.body.lg.copyWith(
+                    style: typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -244,7 +245,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                 children: [
                   Text(
                     l10n.recordNlpSheetSubtitle,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
@@ -330,7 +331,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                           child: Text(
                             state.errorMessage ??
                                 l10n.recordNlpGenerateFailedToast,
-                            style: context.theme.typography.body.sm.copyWith(
+                            style: typography.body.sm.copyWith(
                               color: SemanticColor.destructive.solid(context),
                             ),
                           ),

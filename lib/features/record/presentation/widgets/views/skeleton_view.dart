@@ -100,25 +100,26 @@ class _DateBarPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final borderRadius = context.theme.style.borderRadius;
     return Row(
       children: [
         InlineSkeletonBlock(
           height: 40,
           width: 40,
-          radius: context.theme.style.borderRadius.pill.topLeft.x,
+          radius: borderRadius.pill.topLeft.x,
         ),
         const SizedBox(width: Spacing.level2),
         Expanded(
           child: InlineSkeletonBlock(
             height: 44,
-            radius: context.theme.style.borderRadius.pill.topLeft.x,
+            radius: borderRadius.pill.topLeft.x,
           ),
         ),
         const SizedBox(width: Spacing.level2),
         InlineSkeletonBlock(
           height: 40,
           width: 40,
-          radius: context.theme.style.borderRadius.pill.topLeft.x,
+          radius: borderRadius.pill.topLeft.x,
         ),
       ],
     );

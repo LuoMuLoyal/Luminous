@@ -120,9 +120,11 @@ class TimelineCard extends StatelessWidget {
     final detail =
         entry.rawDetail ??
         (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
+    final typography = context.theme.typography;
+    final borderRadius = context.theme.style.borderRadius;
 
     return ClipRRect(
-      borderRadius: context.theme.style.borderRadius.sm,
+      borderRadius: borderRadius.sm,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
@@ -143,7 +145,7 @@ class TimelineCard extends StatelessWidget {
                 height: 38,
                 decoration: BoxDecoration(
                   color: entry.softColor.muted(context),
-                  borderRadius: context.theme.style.borderRadius.sm,
+                  borderRadius: borderRadius.sm,
                 ),
                 child: Center(
                   child: Icon(
@@ -163,7 +165,7 @@ class TimelineCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             label,
-                            style: context.theme.typography.body.xs.copyWith(
+                            style: typography.body.xs.copyWith(
                               color: SemanticColor.neutral.solid(context),
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -226,7 +228,7 @@ class TimelineCard extends StatelessWidget {
                       const SizedBox(height: Spacing.level2),
                       Text.rich(
                         TextSpan(
-                          style: context.theme.typography.body.sm.copyWith(
+                          style: typography.body.sm.copyWith(
                             color: colors.foreground,
                             fontWeight: FontWeight.w700,
                           ),
@@ -235,12 +237,9 @@ class TimelineCard extends StatelessWidget {
                             if (unit != null)
                               TextSpan(
                                 text: ' $unit',
-                                style: context.theme.typography.body.xs
-                                    .copyWith(
-                                      color: SemanticColor.neutral.solid(
-                                        context,
-                                      ),
-                                    ),
+                                style: typography.body.xs.copyWith(
+                                  color: SemanticColor.neutral.solid(context),
+                                ),
                               ),
                           ],
                         ),
@@ -250,7 +249,7 @@ class TimelineCard extends StatelessWidget {
                       const SizedBox(height: Spacing.level2),
                       Text(
                         detail,
-                        style: context.theme.typography.body.xs.copyWith(
+                        style: typography.body.xs.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
                       ),
@@ -266,7 +265,7 @@ class TimelineCard extends StatelessWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: SemanticColor.neutral.subtle(context),
-                    borderRadius: context.theme.style.borderRadius.sm,
+                    borderRadius: borderRadius.sm,
                     border: Border.all(
                       color: SemanticColor.neutral.border(context),
                     ),
@@ -291,7 +290,7 @@ class TimelineCard extends StatelessWidget {
                             const SizedBox(height: Spacing.level1),
                             Text(
                               recordCopy(l10n, entry.imagePlaceholderKey!),
-                              style: context.theme.typography.body.xs.copyWith(
+                              style: typography.body.xs.copyWith(
                                 color: colors.foreground,
                               ),
                               textAlign: TextAlign.center,

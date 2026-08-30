@@ -87,18 +87,19 @@ class _WaterCustomAmountBodyState extends State<_WaterCustomAmountBody> {
   @override
   Widget build(BuildContext context) {
     final l10n = widget.l10n;
+    final typography = context.theme.typography;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           l10n.recordQuickSettingsWaterCustomDialogTitle,
-          style: context.theme.typography.body.lg,
+          style: typography.body.lg,
         ),
         const SizedBox(height: Spacing.level3),
         Text(
           l10n.recordQuickSettingsWaterCustomDialogHint,
-          style: context.theme.typography.body.sm,
+          style: typography.body.sm,
         ),
         const SizedBox(height: Spacing.level4),
         FTextField(

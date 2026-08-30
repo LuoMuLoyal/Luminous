@@ -81,6 +81,8 @@ class _SummaryTile extends StatelessWidget {
     final detail = item.detailKey == null
         ? null
         : recordCopy(l10n, item.detailKey!);
+    final typography = context.theme.typography;
+    final borderRadius = context.theme.style.borderRadius;
 
     return FTappable(
       onPress: onTap == null ? null : () => onTap!(item.type),
@@ -90,7 +92,7 @@ class _SummaryTile extends StatelessWidget {
             color: colors.background,
             shape: RoundedSuperellipseBorder(
               side: BorderSide(color: SemanticColor.neutral.border(context)),
-              borderRadius: context.theme.style.borderRadius.sm,
+              borderRadius: borderRadius.sm,
             ),
           ),
         ),
@@ -106,7 +108,7 @@ class _SummaryTile extends StatelessWidget {
                     height: 28,
                     decoration: BoxDecoration(
                       color: item.softColor.solid(context),
-                      borderRadius: context.theme.style.borderRadius.md,
+                      borderRadius: borderRadius.md,
                     ),
                     child: Center(
                       child: Icon(
@@ -120,7 +122,7 @@ class _SummaryTile extends StatelessWidget {
                   Expanded(
                     child: Text(
                       recordCopy(l10n, item.titleKey),
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                       maxLines: 2,
@@ -134,7 +136,7 @@ class _SummaryTile extends StatelessWidget {
               if (item.value.isNotEmpty)
                 RichText(
                   text: TextSpan(
-                    style: context.theme.typography.display.lg.copyWith(
+                    style: typography.display.lg.copyWith(
                       color: colors.foreground,
                       fontWeight: FontWeight.w700,
                     ),
@@ -143,7 +145,7 @@ class _SummaryTile extends StatelessWidget {
                       if (unit != null)
                         TextSpan(
                           text: ' $unit',
-                          style: context.theme.typography.body.xs.copyWith(
+                          style: typography.body.xs.copyWith(
                             color: SemanticColor.neutral.solid(context),
                           ),
                         ),
@@ -153,7 +155,7 @@ class _SummaryTile extends StatelessWidget {
               else
                 Text(
                   detail ?? '',
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -161,7 +163,7 @@ class _SummaryTile extends StatelessWidget {
                 const SizedBox(height: Spacing.level1),
                 Text(
                   detail,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: item.accent.solid(context),
                   ),
                   maxLines: 2,

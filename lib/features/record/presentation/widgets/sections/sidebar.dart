@@ -169,6 +169,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
       RecordCopyKey.weekdayFri,
       RecordCopyKey.weekdaySat,
     ];
+    final typography = context.theme.typography;
 
     return FCard(
       key: const Key('record-calendar-panel'),
@@ -183,7 +184,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                     DateFormat.yMMMM(
                       Localizations.localeOf(context).toString(),
                     ).format(_viewedMonth),
-                    style: context.theme.typography.body.md.copyWith(
+                    style: typography.body.md.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -208,7 +209,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                       child: Text(
                         recordCopy(l10n, key),
                         textAlign: TextAlign.center,
-                        style: context.theme.typography.body.xs.copyWith(
+                        style: typography.body.xs.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
                       ),
@@ -489,6 +490,7 @@ class _FilterRow extends StatelessWidget {
     final colors = context.theme.colors;
 
     final label = recordCopy(l10n, filter.titleKey);
+    final typography = context.theme.typography;
 
     return FTappable(
       onPress: onTap,
@@ -515,9 +517,7 @@ class _FilterRow extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -533,7 +533,7 @@ class _FilterRow extends StatelessWidget {
                   ),
                   child: Text(
                     l10n.recordNotEnabledLabel,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: colors.foreground,
                     ),
                   ),

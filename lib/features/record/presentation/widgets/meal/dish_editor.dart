@@ -22,21 +22,17 @@ class MealDishEditorSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           l10n.recordMealAnalysisRecognizedDishes,
-          style: context.theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.level2),
-        Text(
-          l10n.recordMealDishEditorHelperText,
-          style: context.theme.typography.body.xs,
-        ),
+        Text(l10n.recordMealDishEditorHelperText, style: typography.body.xs),
         const SizedBox(height: Spacing.level3),
         for (var index = 0; index < dishNames.length; index += 1) ...[
           Row(

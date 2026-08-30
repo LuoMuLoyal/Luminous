@@ -168,6 +168,7 @@ class _TimelineRow extends StatelessWidget {
         unit == null ? value : '$value $unit',
       if (detail != null && detail.isNotEmpty) detail,
     ].join(' · ');
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -181,7 +182,7 @@ class _TimelineRow extends StatelessWidget {
             width: 44,
             child: Text(
               entry.time,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
               maxLines: 1,
@@ -250,7 +251,7 @@ class _TimelineRow extends StatelessWidget {
                         children: [
                           Text(
                             label,
-                            style: context.theme.typography.body.sm.copyWith(
+                            style: typography.body.sm.copyWith(
                               fontWeight: FontWeight.w700,
                             ),
                             maxLines: 1,
@@ -260,7 +261,7 @@ class _TimelineRow extends StatelessWidget {
                             const SizedBox(height: Spacing.level1),
                             Text(
                               subtitle,
-                              style: context.theme.typography.body.xs.copyWith(
+                              style: typography.body.xs.copyWith(
                                 color: SemanticColor.neutral.solid(context),
                               ),
                               maxLines: 1,
@@ -359,6 +360,7 @@ class _MobileTimelineEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FCard(
       child: SizedBox(
         width: double.infinity,
@@ -377,14 +379,12 @@ class _MobileTimelineEmptyState extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 l10n.recordTimelineEmptyTitle,
-                style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.recordTimelineEmptyDescription,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,

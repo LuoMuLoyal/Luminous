@@ -35,6 +35,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
         selectedBytes != null ||
         existingAttachment?.objectKey.isNotEmpty == true;
     final fileName = selectedFileName ?? existingAttachment?.fileName;
+    final typography = context.theme.typography;
 
     return FCard(
       child: Padding(
@@ -44,9 +45,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
           children: [
             Text(
               l10n.recordImageSectionTitle,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: Spacing.level3),
             Row(
@@ -65,7 +64,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         hasAttachment
                             ? l10n.recordImageAttachedLabel
                             : l10n.recordImageEmptyLabel,
-                        style: context.theme.typography.body.md.copyWith(
+                        style: typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -74,7 +73,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         const SizedBox(height: Spacing.level1),
                         Text(
                           fileName,
-                          style: context.theme.typography.body.xs.copyWith(
+                          style: typography.body.xs.copyWith(
                             color: SemanticColor.neutral.solid(context),
                           ),
                           overflow: TextOverflow.ellipsis,

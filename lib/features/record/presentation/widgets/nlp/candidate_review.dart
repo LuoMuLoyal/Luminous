@@ -28,6 +28,7 @@ class RecordNlpCandidateReview extends StatelessWidget {
     final colors = context.theme.colors;
 
     final meta = state.resultMeta;
+    final typography = context.theme.typography;
     if (meta == null) return const SizedBox.shrink();
 
     return Column(
@@ -35,21 +36,17 @@ class RecordNlpCandidateReview extends StatelessWidget {
       children: [
         Text(
           l10n.recordNlpCandidatesTitle(state.candidates.length),
-          style: context.theme.typography.display.xl.copyWith(
-            fontWeight: FontWeight.w800,
-          ),
+          style: typography.display.xl.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           meta.confirmationHint,
-          style: context.theme.typography.body.xs.copyWith(
-            color: colors.foreground,
-          ),
+          style: typography.body.xs.copyWith(color: colors.foreground),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.recordNlpSelectedCountHint(state.selectedCount),
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
@@ -91,6 +88,7 @@ class _CandidateTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return FCard(
       child: Padding(
@@ -114,7 +112,7 @@ class _CandidateTile extends StatelessWidget {
                     children: [
                       Text(
                         _kindLabel(l10n, item.kind),
-                        style: context.theme.typography.body.md.copyWith(
+                        style: typography.body.md.copyWith(
                           color: SemanticColor.primary.solid(context),
                           fontWeight: FontWeight.w800,
                         ),
@@ -122,7 +120,7 @@ class _CandidateTile extends StatelessWidget {
                       const SizedBox(height: Spacing.level1),
                       Text(
                         _candidateTitle(l10n, item),
-                        style: context.theme.typography.body.sm.copyWith(
+                        style: typography.body.sm.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -146,7 +144,7 @@ class _CandidateTile extends StatelessWidget {
             const SizedBox(height: Spacing.level2),
             Text(
               item.rationale,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -154,7 +152,7 @@ class _CandidateTile extends StatelessWidget {
               const SizedBox(height: Spacing.level2),
               Text(
                 l10n.recordNlpCandidateSaveFailedHint(errMsg),
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.destructive.solid(context),
                 ),
               ),

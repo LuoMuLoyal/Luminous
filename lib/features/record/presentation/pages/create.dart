@@ -68,6 +68,7 @@ class RecordCreatePage extends HookConsumerWidget {
     final sleepDeepMinutes = useState<int?>(null);
     final sleepLightMinutes = useState<int?>(null);
     final sleepRemMinutes = useState<int?>(null);
+    final typography = context.theme.typography;
 
     // Apply kind defaults (initState equivalent)
     useEffect(() {
@@ -406,7 +407,7 @@ class RecordCreatePage extends HookConsumerWidget {
                   children: [
                     Text(
                       l10n.recordCreateSectionBasicTitle,
-                      style: context.theme.typography.body.md.copyWith(
+                      style: typography.body.md.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -426,7 +427,7 @@ class RecordCreatePage extends HookConsumerWidget {
                     const SizedBox(height: Spacing.level5),
                     Text(
                       l10n.recordCreateSectionDetailsTitle,
-                      style: context.theme.typography.body.md.copyWith(
+                      style: typography.body.md.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),

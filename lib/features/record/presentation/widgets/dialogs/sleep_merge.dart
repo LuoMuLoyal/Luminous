@@ -14,6 +14,7 @@ class SleepMergeSummaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -21,13 +22,13 @@ class SleepMergeSummaryRow extends StatelessWidget {
           width: 76,
           child: Text(
             label,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),
         const SizedBox(width: Spacing.level3),
-        Expanded(child: Text(value, style: context.theme.typography.body.sm)),
+        Expanded(child: Text(value, style: typography.body.sm)),
       ],
     );
   }

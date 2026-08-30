@@ -36,12 +36,13 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
         ref.watch(quickEntryPreferencesProvider).asData?.value ??
         const QuickEntryPreferences();
     final label = recordCopy(l10n, action.titleKey);
+    final typography = context.theme.typography;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(label, style: context.theme.typography.body.lg),
+        Text(label, style: typography.body.lg),
         const SizedBox(height: Spacing.level4),
         if (action.type == RecordEntryType.water)
           _WaterSettings(
@@ -74,10 +75,7 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
             l10n: l10n,
           )
         else
-          Text(
-            _ruleText(l10n, action.type),
-            style: context.theme.typography.body.sm,
-          ),
+          Text(_ruleText(l10n, action.type), style: typography.body.sm),
         const SizedBox(height: Spacing.level5),
         Align(
           alignment: Alignment.centerRight,

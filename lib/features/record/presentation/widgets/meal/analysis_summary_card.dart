@@ -28,6 +28,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
@@ -39,7 +40,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordMealAnalysisSectionTitle,
-                    style: context.theme.typography.body.md.copyWith(
+                    style: typography.body.md.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -55,7 +56,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 mealDesc,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -111,7 +112,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 commentary,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -120,7 +121,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 l10n.recordMealAnalysisEstimateDisclaimer,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.primary.solid(context),
                 ),
               ),

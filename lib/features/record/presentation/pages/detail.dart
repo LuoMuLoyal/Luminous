@@ -212,6 +212,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
 
     // Aggregate today's water in ml for the progress card (ml units only).
     var waterTotalMl = 0;
+    final typography = context.theme.typography;
     for (final item in dayItems) {
       if (item.kind == DailyRecordKind.water && item.unit == 'ml') {
         final value = int.tryParse(item.value ?? '');
@@ -276,8 +277,9 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                             Flexible(
                               child: Text(
                                 record.title ?? _kindLabel(l10n, record.kind),
-                                style: context.theme.typography.display.xl
-                                    .copyWith(fontWeight: FontWeight.w800),
+                                style: typography.display.xl.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
                             if (_nonEmpty(record.source) != null) ...[
@@ -294,7 +296,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                             record.occurredAt,
                             occurredTime: record.occurredTime,
                           ),
-                          style: context.theme.typography.body.xs.copyWith(
+                          style: typography.body.xs.copyWith(
                             color: SemanticColor.neutral.solid(context),
                           ),
                         ),
@@ -348,7 +350,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                   Expanded(
                     child: Text(
                       l10n.recordMealAnalysisStatusAnalyzing,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
@@ -370,7 +372,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     const SizedBox(height: Spacing.level3),
                     Text(
                       mealAnalysis.failureReason!,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
@@ -393,7 +395,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
               children: [
                 Text(
                   l10n.recordImageSectionTitle,
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -403,7 +405,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                   const SizedBox(height: Spacing.level3),
                   Text(
                     imageAttachment.fileName!,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -426,7 +428,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     Expanded(
                       child: Text(
                         l10n.recordDetailDailyWaterTitle,
-                        style: context.theme.typography.body.sm.copyWith(
+                        style: typography.body.sm.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -441,7 +443,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                               waterTotalMl,
                               waterTargetMl,
                             ),
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
@@ -678,6 +680,7 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
       child: Row(
@@ -690,7 +693,7 @@ class _DetailRow extends StatelessWidget {
             ),
             child: Text(
               data.label,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -700,13 +703,11 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               data.value,
               style: data.highlight
-                  ? context.theme.typography.display.lg.copyWith(
+                  ? typography.display.lg.copyWith(
                       fontWeight: FontWeight.w800,
                       color: SemanticColor.primary.solid(context),
                     )
-                  : context.theme.typography.body.md.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                  : typography.body.md.copyWith(fontWeight: FontWeight.w700),
               overflow: TextOverflow.visible,
             ),
           ),
