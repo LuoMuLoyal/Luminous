@@ -280,7 +280,7 @@ class _BrandFeatureItem extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: SemanticColor.primary.subtle(context),
-            borderRadius: BorderRadius.circular(RadiusTokens.level4),
+            borderRadius: context.theme.style.borderRadius.md,
           ),
           child: Center(
             child: Icon(

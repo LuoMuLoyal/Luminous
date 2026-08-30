@@ -32,9 +32,9 @@ Future<void> showAssistantCapabilitiesSheet(
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
+    shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
-        top: Radius.circular(RadiusTokens.level4),
+        top: context.theme.style.borderRadius.md.topLeft,
       ),
     ),
     builder: (context) => FractionallySizedBox(
@@ -203,7 +203,7 @@ class _ToolRow extends StatelessWidget {
         key: Key('assistant-capability-tool-${tool.id}'),
         decoration: BoxDecoration(
           color: colors.secondary,
-          borderRadius: BorderRadius.circular(RadiusTokens.level3),
+          borderRadius: context.theme.style.borderRadius.sm,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(

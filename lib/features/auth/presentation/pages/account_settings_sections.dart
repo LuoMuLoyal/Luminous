@@ -217,7 +217,7 @@ class _LinkedIdentityTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        borderRadius: context.theme.style.borderRadius.xs,
       ),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -526,7 +526,7 @@ class _DangerZoneSection extends StatelessWidget {
         border: Border.all(
           color: SemanticColor.destructive.borderStrong(context),
         ),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),

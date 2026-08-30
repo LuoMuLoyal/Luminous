@@ -447,7 +447,7 @@ class _QuickSelectChip extends StatelessWidget {
       builder: (context, data, child) => DecoratedBox(
         decoration: BoxDecoration(
           color: SemanticColor.neutral.subtle(context),
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          borderRadius: context.theme.style.borderRadius.md,
           border: Border.all(color: context.theme.colors.border),
         ),
         child: Padding(

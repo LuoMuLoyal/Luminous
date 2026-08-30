@@ -219,7 +219,7 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
       padding: const EdgeInsets.all(Spacing.level4),
       decoration: BoxDecoration(
         color: colors.muted,
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
         border: Border.all(color: colors.border),
       ),
       child: Column(
@@ -337,7 +337,7 @@ class _DiagnosticsPanel extends StatelessWidget {
             padding: const EdgeInsets.all(Spacing.level3),
             decoration: BoxDecoration(
               color: colors.background,
-              borderRadius: BorderRadius.circular(RadiusTokens.level2),
+              borderRadius: context.theme.style.borderRadius.xs,
               border: Border.all(color: colors.border),
             ),
             child: Column(

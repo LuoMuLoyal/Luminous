@@ -257,7 +257,7 @@ class _ToolDetailCard extends StatelessWidget {
       key: Key('assistant-source-tool-$tool'),
       decoration: BoxDecoration(
         color: colors.secondary,
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level3),
@@ -390,7 +390,7 @@ class _SourceTierBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        borderRadius: context.theme.style.borderRadius.xs,
         border: Border.all(color: colors.border),
       ),
       child: Padding(

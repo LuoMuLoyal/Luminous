@@ -177,7 +177,7 @@ class _NotificationListItemWidgetState
             icon: toggleIcon,
             label: toggleLabel,
             spacing: 4,
-            borderRadius: BorderRadius.circular(RadiusTokens.level3),
+            borderRadius: context.theme.style.borderRadius.sm,
           ),
           SlidableAction(
             onPressed: (_) => widget.onDismiss(),
@@ -186,7 +186,7 @@ class _NotificationListItemWidgetState
             icon: SemanticIcons.actionDelete,
             label: l10n.notificationActionDelete,
             spacing: 4,
-            borderRadius: BorderRadius.circular(RadiusTokens.level3),
+            borderRadius: context.theme.style.borderRadius.sm,
           ),
         ],
       ),

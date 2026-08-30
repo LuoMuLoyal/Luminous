@@ -159,7 +159,7 @@ class _MedicineRecognizeDialogState
               Row(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                    borderRadius: context.theme.style.borderRadius.xs,
                     child: Image.file(
                       File(widget.imagePath),
                       width: 60,
@@ -206,7 +206,7 @@ class _MedicineRecognizeDialogState
                   padding: const EdgeInsets.all(Spacing.level4),
                   decoration: BoxDecoration(
                     color: colors.background,
-                    borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                    borderRadius: context.theme.style.borderRadius.sm,
                     border: Border.all(color: colors.border),
                   ),
                   child: Column(

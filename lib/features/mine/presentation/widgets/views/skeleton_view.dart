@@ -109,7 +109,7 @@ class _SyncBannerPlaceholder extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        borderRadius: context.theme.style.borderRadius.md,
         border: Border.all(color: colors.border),
       ),
       child: const Padding(
@@ -133,36 +133,36 @@ class _AccountHeroPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const InlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
         Row(
           children: [
-            InlineSkeletonCircle(size: 64),
-            SizedBox(width: Spacing.level5),
+            const InlineSkeletonCircle(size: 64),
+            const SizedBox(width: Spacing.level5),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      InlineSkeletonBlock(height: 28, widthFactor: 0.45),
-                      SizedBox(width: Spacing.level3),
+                      const InlineSkeletonBlock(height: 28, widthFactor: 0.45),
+                      const SizedBox(width: Spacing.level3),
                       InlineSkeletonBlock(
                         height: 18,
                         width: 56,
-                        radius: RadiusTokens.levelFull,
+                        radius: context.theme.style.borderRadius.pill.topLeft.x,
                       ),
                     ],
                   ),
-                  SizedBox(height: Spacing.level2),
-                  InlineSkeletonBlock(height: 14, widthFactor: 0.65),
+                  const SizedBox(height: Spacing.level2),
+                  const InlineSkeletonBlock(height: 14, widthFactor: 0.65),
                 ],
               ),
             ),
           ],
         ),
-        SizedBox(height: Spacing.level4),
-        InlineSkeletonBlock(height: 14, widthFactor: 0.55),
+        const SizedBox(height: Spacing.level4),
+        const InlineSkeletonBlock(height: 14, widthFactor: 0.55),
       ],
     );
   }
@@ -220,7 +220,7 @@ class _AiPrivacyPlaceholder extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        borderRadius: context.theme.style.borderRadius.md,
         border: Border.all(color: colors.border),
       ),
       child: const Padding(

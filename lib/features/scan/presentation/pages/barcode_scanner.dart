@@ -355,7 +355,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                           height: _scanFrameHeight,
                           decoration: BoxDecoration(
                             color: const Color(0xFFFF0000),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: context.theme.style.borderRadius.md,
                           ),
                         ),
                       ),

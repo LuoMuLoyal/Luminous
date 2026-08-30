@@ -40,7 +40,7 @@ class AssistantProposalCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        borderRadius: context.theme.style.borderRadius.md,
         border: Border.all(color: colors.border),
       ),
       child: Padding(
@@ -181,7 +181,7 @@ class _ProposalMetaSection extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.secondary,
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level3),

@@ -78,7 +78,7 @@ class HealthSyncPage extends ConsumerWidget {
                 padding: const EdgeInsets.all(Spacing.level4),
                 decoration: BoxDecoration(
                   color: context.theme.colors.error.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                  borderRadius: context.theme.style.borderRadius.xs,
                 ),
                 child: Text(
                   state.error!,
@@ -285,7 +285,7 @@ class _SyncResultSection extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.level4),
       decoration: BoxDecoration(
         color: colors.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        borderRadius: context.theme.style.borderRadius.xs,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

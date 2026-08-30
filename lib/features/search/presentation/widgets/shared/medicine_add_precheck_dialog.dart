@@ -85,9 +85,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                       padding: const EdgeInsets.all(Spacing.level3),
                       decoration: BoxDecoration(
                         color: SemanticColor.neutral.muted(context),
-                        borderRadius: BorderRadius.circular(
-                          RadiusTokens.level3,
-                        ),
+                        borderRadius: context.theme.style.borderRadius.sm,
                         border: Border.all(
                           color: SemanticColor.neutral.border(context),
                         ),
@@ -194,7 +192,7 @@ class _PrecheckFindingRow extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.muted(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
         border: Border.all(color: color.border(context)),
       ),
       child: Padding(
@@ -286,7 +284,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: SemanticColor.neutral.muted(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(

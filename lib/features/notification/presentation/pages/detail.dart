@@ -315,7 +315,7 @@ class _TypeChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.muted(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        borderRadius: context.theme.style.borderRadius.xs,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(

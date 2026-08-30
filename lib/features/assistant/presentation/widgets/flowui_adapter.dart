@@ -415,7 +415,7 @@ class _ReplacedBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.secondary,
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        borderRadius: context.theme.style.borderRadius.xs,
         border: Border.all(color: colors.border),
       ),
       child: Padding(

@@ -65,7 +65,7 @@ class _Banner extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: SemanticColor.warning.subtle(context),
-            borderRadius: BorderRadius.circular(RadiusTokens.level3),
+            borderRadius: context.theme.style.borderRadius.sm,
             border: Border.all(color: SemanticColor.warning.border(context)),
           ),
           padding: const EdgeInsets.symmetric(

@@ -111,10 +111,10 @@ class MineAccountHero extends StatelessWidget {
                 ),
                 const SizedBox(width: Spacing.level2),
                 SkeletonSlot(
-                  skeleton: const InlineSkeletonBlock(
+                  skeleton: InlineSkeletonBlock(
                     height: 22,
                     width: 42,
-                    radius: RadiusTokens.level2,
+                    radius: context.theme.style.borderRadius.xs.topLeft.x,
                   ),
                   child: Text(
                     dashboard.completion.percentLabel,
@@ -130,12 +130,12 @@ class MineAccountHero extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.level2),
             SkeletonSlot(
-              skeleton: const InlineSkeletonBlock(
+              skeleton: InlineSkeletonBlock(
                 height: 8,
-                radius: RadiusTokens.levelFull,
+                radius: context.theme.style.borderRadius.pill.topLeft.x,
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+                borderRadius: context.theme.style.borderRadius.pill,
                 child: FDeterminateProgress(
                   value: dashboard.completion.progress,
                 ),

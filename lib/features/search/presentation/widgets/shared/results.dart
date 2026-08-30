@@ -133,7 +133,7 @@ class _SourceBadge extends StatelessWidget {
       variant: FBadgeVariant.primary,
       style: .delta(
         decoration: .boxDelta(
-          borderRadius: BorderRadius.circular(RadiusTokens.level2),
+          borderRadius: context.theme.style.borderRadius.xs,
         ),
       ),
       child: Text(sourceLabel(l10n, source)),
@@ -155,7 +155,7 @@ class _TagPill extends StatelessWidget {
       style: .delta(
         decoration: .boxDelta(
           color: SemanticColor.primary.muted(context),
-          borderRadius: BorderRadius.circular(RadiusTokens.level2),
+          borderRadius: context.theme.style.borderRadius.xs,
         ),
         labelTextStyle: .delta(color: colors.primary),
       ),
