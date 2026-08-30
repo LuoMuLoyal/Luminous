@@ -111,7 +111,6 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final card = widget.card;
-    final colors = context.theme.colors;
     final cardTone = mapTone(card.cardTone);
     final isFading =
         card.lifecycleState == TodaySuggestionLifecycleState.fading;
@@ -165,7 +164,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                   Text(
                     card.reason,
                     style: context.theme.typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -374,8 +373,6 @@ class EvidenceToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FTappable(
       onPress: onTap,
       child: Padding(
@@ -388,7 +385,7 @@ class EvidenceToggleButton extends StatelessWidget {
                   ? l10n.todaySuggestionHideEvidence
                   : l10n.todaySuggestionShowEvidence,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -399,7 +396,7 @@ class EvidenceToggleButton extends StatelessWidget {
               child: Icon(
                 SemanticIcons.actionNext,
                 size: IconSizeTokens.level2,
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
               ),
             ),
           ],
@@ -422,15 +419,13 @@ class SuggestionMetaBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: context.theme.typography.body.xs.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -450,15 +445,13 @@ class EvidenceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: context.theme.typography.body.xs.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -481,8 +474,6 @@ class EvidenceItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -491,7 +482,7 @@ class EvidenceItemRow extends StatelessWidget {
           child: Text(
             label,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),
@@ -519,8 +510,6 @@ class WaterProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Row(
       children: [
         Expanded(
@@ -533,7 +522,7 @@ class WaterProgressBar extends StatelessWidget {
         Text(
           '${(progress * 100).round()}%',
           style: context.theme.typography.body.xs2.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
             fontWeight: FontWeight.w600,
           ),
         ),

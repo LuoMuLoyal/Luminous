@@ -31,7 +31,7 @@ class SuggestionEmptyState extends StatelessWidget {
               Icon(
                 SemanticIcons.aiEntry,
                 size: IconSizeTokens.level6,
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level3),
               Text(
@@ -44,7 +44,7 @@ class SuggestionEmptyState extends StatelessWidget {
               Text(
                 l10n.todaySuggestionEmptySubtitle,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -178,13 +178,13 @@ class SuggestionErrorState extends StatelessWidget {
               Icon(
                 SemanticIcons.statusError,
                 size: IconSizeTokens.level6,
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.todaySuggestionErrorHint,
                 style: context.theme.typography.body.sm.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
               const SizedBox(height: Spacing.level3),
@@ -219,7 +219,6 @@ class SuggestionMaterializationNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final message = switch (status) {
       TodaySuggestionMaterializationStatus.pending =>
         l10n.todaySuggestionLoadingHint,
@@ -245,7 +244,7 @@ class SuggestionMaterializationNotice extends StatelessWidget {
               message,
               textAlign: TextAlign.center,
               style: context.theme.typography.body.xs2.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -289,13 +288,13 @@ class SecondarySuggestionErrorState extends StatelessWidget {
               Icon(
                 SemanticIcons.statusError,
                 size: IconSizeTokens.level4,
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level2),
               Text(
                 l10n.todaySuggestionSecondaryErrorHint,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
               const SizedBox(height: Spacing.level2),

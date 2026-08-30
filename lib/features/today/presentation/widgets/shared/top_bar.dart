@@ -118,7 +118,7 @@ class _NotificationButton extends ConsumerWidget {
                   child: FBadge.raw(
                     style: .delta(
                       decoration: .shapeDelta(
-                        color: colors.destructive,
+                        color: SemanticColor.destructive.solid(context),
                         shape: const CircleBorder(),
                       ),
                     ),

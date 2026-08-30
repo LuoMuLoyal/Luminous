@@ -98,7 +98,6 @@ class _MobileTodayDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     // Each section carries its own bottom spacing so that the
     // conditional banner slot (SignInHintBanner or SizedBox.shrink)
@@ -122,7 +121,7 @@ class _MobileTodayDashboard extends StatelessWidget {
         child: Text(
           greetingSubtitle(l10n, dashboard),
           style: context.theme.typography.body.sm.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
       ),
@@ -206,7 +205,7 @@ class _HealthEventSection extends ConsumerWidget {
                 child: Text(
                   l10n.todayHealthEventReadFailed,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: context.theme.colors.destructive,
+                    color: SemanticColor.destructive.solid(context),
                   ),
                 ),
               ),
@@ -484,7 +483,7 @@ class _HealthEventActionRow extends StatelessWidget {
         Text(
           subtitle,
           style: context.theme.typography.body.xs.copyWith(
-            color: context.theme.colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level4),
@@ -509,7 +508,6 @@ class _ActiveHealthEventContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -520,7 +518,7 @@ class _ActiveHealthEventContent extends StatelessWidget {
               ? l10n.todayHealthEventCheckInDone
               : l10n.todayHealthEventCheckInSubtitle,
           style: context.theme.typography.body.xs.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level4),
@@ -563,7 +561,6 @@ class _DesktopTodayDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     // Fixed list — always same item count to keep indices stable.
     // The banner slot uses Padding so SizedBox.shrink is truly zero-height.
@@ -572,7 +569,7 @@ class _DesktopTodayDashboard extends StatelessWidget {
       Text(
         greetingSubtitle(l10n, dashboard),
         style: context.theme.typography.body.sm.copyWith(
-          color: colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
         ),
       ),
       // Preview banner slot — SizedBox.shrink has zero height when hidden

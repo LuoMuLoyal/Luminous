@@ -62,7 +62,6 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final canAccessProtectedData = ref.watch(
       authSessionProvider.select((s) => s.canAccessProtectedData),
     );
@@ -131,7 +130,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 Text(
                   l10n.todaySummaryFallbackNarrative,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -211,7 +210,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                         child: Text(
                           footer,
                           style: context.theme.typography.body.xs.copyWith(
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         ),
                       ),
@@ -304,7 +303,6 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final message = switch (status) {
       TodayAiAnalysisMaterializationStatus.pending =>
         l10n.todayAnalysisPendingHint,
@@ -326,7 +324,7 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
               message,
               textAlign: TextAlign.center,
               style: context.theme.typography.body.xs2.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -359,8 +357,6 @@ class _AiExpandButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FTappable(
       onPress: onTap,
       child: Padding(
@@ -373,7 +369,7 @@ class _AiExpandButton extends StatelessWidget {
                   ? l10n.todaySuggestionHideEvidence
                   : l10n.todaySuggestionShowEvidence,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -384,7 +380,7 @@ class _AiExpandButton extends StatelessWidget {
               child: Icon(
                 SemanticIcons.actionNext,
                 size: IconSizeTokens.level2,
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
               ),
             ),
           ],
@@ -401,8 +397,6 @@ class _CompactSummaryMetric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -421,7 +415,7 @@ class _CompactSummaryMetric extends StatelessWidget {
               Text(
                 item.label,
                 style: context.theme.typography.body.xs2.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -434,8 +428,10 @@ class _CompactSummaryMetric extends StatelessWidget {
                       ? FontWeight.w500
                       : FontWeight.w700,
                   color: item.isDegraded
-                      ? colors.destructive
-                      : (item.isFallback ? colors.mutedForeground : null),
+                      ? SemanticColor.destructive.solid(context)
+                      : (item.isFallback
+                            ? SemanticColor.neutral.solid(context)
+                            : null),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -455,8 +451,6 @@ class _SummaryBullet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -473,7 +467,7 @@ class _SummaryBullet extends StatelessWidget {
           child: Text(
             item.text,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),

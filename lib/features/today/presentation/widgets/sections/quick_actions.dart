@@ -19,7 +19,6 @@ class TodayQuickActionsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final actions = buildQuickActionItems(
       l10n,
       dashboard,
@@ -68,7 +67,7 @@ class TodayQuickActionsSection extends ConsumerWidget {
                     prefix: Icon(
                       action.icon,
                       size: IconSizeTokens.level3,
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                     title: Text(action.title),
                     subtitle: Text(action.subtitle),

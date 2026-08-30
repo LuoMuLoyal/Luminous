@@ -263,7 +263,6 @@ class _SidebarFooter extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = context.theme;
     final themePref = ref
         .watch(themeControllerProvider)
         .maybeWhen(data: (p) => p, orElse: () => const ThemePreference());
@@ -303,7 +302,7 @@ class _SidebarFooter extends ConsumerWidget {
                   top: Spacing.level3,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: theme.colors.destructive,
+                      color: SemanticColor.destructive.solid(context),
                       shape: BoxShape.circle,
                     ),
                     child: const SizedBox.square(dimension: Spacing.level2),

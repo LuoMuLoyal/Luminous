@@ -116,7 +116,7 @@ class _TodaySkeletonViewState extends State<TodaySkeletonView> {
               child: Text(
                 l10n.todayLoadingSlowHint,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ),

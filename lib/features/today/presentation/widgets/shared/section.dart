@@ -20,11 +20,9 @@ class TodaySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final foreground = onAction == null
-        ? colors.mutedForeground
-        : colors.primary;
+        ? SemanticColor.neutral.solid(context)
+        : SemanticColor.primary.solid(context);
     final actionText = Text(
       actionLabel ?? '',
       style: TextStyle(
@@ -59,7 +57,7 @@ class TodaySection extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: context.theme.typography.body.xs2.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ],

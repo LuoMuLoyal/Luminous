@@ -96,7 +96,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: index == 3
                               ? palette.solid
-                              : context.theme.colors.primary,
+                              : SemanticColor.primary.solid(context),
                           borderRadius: context.theme.style.borderRadius.pill,
                         ),
                         child: const SizedBox(height: Spacing.level1),

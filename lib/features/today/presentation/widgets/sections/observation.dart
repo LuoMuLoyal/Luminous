@@ -23,7 +23,6 @@ class TodayObservationSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final suggestionAsync = ref.watch(todaySuggestionProvider);
     final fallback = _fallbackObservations(context, l10n);
 
@@ -49,7 +48,7 @@ class TodayObservationSection extends ConsumerWidget {
                 child: Text(
                   l10n.todayObservationEmptyState,
                   style: context.theme.typography.body.sm.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               );
@@ -60,7 +59,11 @@ class TodayObservationSection extends ConsumerWidget {
                 for (var i = 0; i < items.length; i++) ...[
                   _ObservationTile(item: items[i]),
                   if (i < items.length - 1)
-                    Divider(height: 1, thickness: 1, color: colors.border),
+                    Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: SemanticColor.neutral.border(context),
+                    ),
                 ],
               ],
             );
@@ -156,7 +159,6 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
 
     return FTappable(
@@ -174,7 +176,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
               child: Icon(
                 widget.item.icon,
                 size: IconSizeTokens.level3,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             const SizedBox(width: Spacing.level3),
@@ -192,7 +194,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                   Text(
                     widget.item.subtitle,
                     style: context.theme.typography.body.xs2.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -219,7 +221,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                 child: Icon(
                   SemanticIcons.actionNext,
                   size: IconSizeTokens.level2,
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -230,7 +232,6 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
   }
 
   Widget _buildSuppressButton(BuildContext context, AppLocalizations l10n) {
-    final colors = context.theme.colors;
     if (_submitted) {
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -238,13 +239,13 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
           Icon(
             SemanticIcons.statusDone,
             size: IconSizeTokens.level2,
-            color: colors.primary,
+            color: SemanticColor.primary.solid(context),
           ),
           const SizedBox(width: Spacing.level1),
           Text(
             l10n.todaySuggestionFeedbackSubmitted,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.primary,
+              color: SemanticColor.primary.solid(context),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -265,7 +266,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
             )
           : Text(
               l10n.todaySuggestionSuppressAction,
-              style: TextStyle(color: colors.mutedForeground),
+              style: TextStyle(color: SemanticColor.neutral.solid(context)),
             ),
     );
   }
@@ -342,13 +343,15 @@ class _ObservationErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     return Padding(
       padding: const EdgeInsets.all(Spacing.level4),
       child: Row(
         children: [
-          Icon(SemanticIcons.statusError, color: colors.destructive),
+          Icon(
+            SemanticIcons.statusError,
+            color: SemanticColor.destructive.solid(context),
+          ),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(

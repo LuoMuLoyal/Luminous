@@ -66,8 +66,6 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final ordered = [
       TodaySuggestionFeedback.accepted,
       TodaySuggestionFeedback.later,
@@ -84,13 +82,13 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
           Icon(
             SemanticIcons.statusDone,
             size: IconSizeTokens.level2,
-            color: colors.primary,
+            color: SemanticColor.primary.solid(context),
           ),
           const SizedBox(width: Spacing.level1),
           Text(
             l10n.todaySuggestionFeedbackSubmitted,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.primary,
+              color: SemanticColor.primary.solid(context),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -113,7 +111,7 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
               style:
                   option == TodaySuggestionFeedback.notApplicable ||
                       option == TodaySuggestionFeedback.suppress
-                  ? TextStyle(color: colors.mutedForeground)
+                  ? TextStyle(color: SemanticColor.neutral.solid(context))
                   : null,
             ),
           ),
@@ -201,7 +199,7 @@ class _SuggestionAiExplainButtonState
           Text(
             l10n.todaySuggestionAiExplainLoading,
             style: context.theme.typography.body.xs.copyWith(
-              color: context.theme.colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ],
@@ -236,8 +234,6 @@ class AiExplainContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Container(
       padding: const EdgeInsets.all(Spacing.level3),
       decoration: BoxDecoration(
@@ -256,8 +252,8 @@ class AiExplainContent extends StatelessWidget {
                     : SemanticIcons.statusInfo,
                 size: IconSizeTokens.level2,
                 color: explanation.aiGenerated
-                    ? colors.primary
-                    : colors.mutedForeground,
+                    ? SemanticColor.primary.solid(context)
+                    : SemanticColor.neutral.solid(context),
               ),
               const SizedBox(width: Spacing.level1),
               Text(
@@ -266,8 +262,8 @@ class AiExplainContent extends StatelessWidget {
                     : l10n.todaySuggestionRuleBasedLabel,
                 style: context.theme.typography.body.xs.copyWith(
                   color: explanation.aiGenerated
-                      ? colors.primary
-                      : colors.mutedForeground,
+                      ? SemanticColor.primary.solid(context)
+                      : SemanticColor.neutral.solid(context),
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -286,7 +282,7 @@ class AiExplainContent extends StatelessWidget {
               selectable: true,
               styleSheet: MarkdownStyle.ai(context).copyWith(
                 p: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ),
@@ -305,8 +301,6 @@ class AiExplainUnavailable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
       child: Row(
@@ -315,14 +309,14 @@ class AiExplainUnavailable extends StatelessWidget {
           Icon(
             SemanticIcons.statusInfo,
             size: IconSizeTokens.level2,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
           const SizedBox(width: Spacing.level1),
           Flexible(
             child: Text(
               l10n.todaySuggestionAiExplainMaxRetry,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),

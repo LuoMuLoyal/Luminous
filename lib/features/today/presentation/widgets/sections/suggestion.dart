@@ -93,8 +93,6 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
         if (items.isEmpty) return const SizedBox.shrink();
 
         final visible = items.take(2).toList();
-        final colors = context.theme.colors;
-
         return TodaySection(
           title: l10n.todaySecondarySuggestionSectionTitle,
           child: Column(
@@ -134,7 +132,11 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                                 Text(
                                   visible[index].reason,
                                   style: context.theme.typography.body.xs
-                                      .copyWith(color: colors.mutedForeground),
+                                      .copyWith(
+                                        color: SemanticColor.neutral.solid(
+                                          context,
+                                        ),
+                                      ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -145,7 +147,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                           Icon(
                             SemanticIcons.actionNext,
                             size: IconSizeTokens.level2,
-                            color: colors.mutedForeground,
+                            color: SemanticColor.neutral.solid(context),
                           ),
                         ],
                       ),
