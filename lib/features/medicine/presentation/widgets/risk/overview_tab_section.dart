@@ -83,13 +83,12 @@ class RiskScoreHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = medicineRiskLevelColor(riskLevel).palette(context);
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return DecoratedBox(
       decoration: ShapeDecoration(
-        gradient: GradientTokens.tintFade(
-          palette.muted,
-          context.theme.colors.background,
-        ),
+        gradient: GradientTokens.tintFade(palette.muted, colors.background),
         shape: RoundedSuperellipseBorder(
           borderRadius: context.theme.style.borderRadius.lg,
           side: BorderSide(color: palette.border),
@@ -107,14 +106,14 @@ class RiskScoreHero extends StatelessWidget {
                 children: [
                   Text(
                     l10n.medicineRiskScoreTitle,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     medicineRiskLevelLabel(l10n, riskLevel),
-                    style: context.theme.typography.display.xl.copyWith(
+                    style: typography.display.xl.copyWith(
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0,
                       color: palette.solid,
@@ -123,8 +122,8 @@ class RiskScoreHero extends StatelessWidget {
                   const SizedBox(height: Spacing.level2),
                   Text(
                     medicineRiskLevelDescription(l10n, riskLevel, findingCount),
-                    style: context.theme.typography.body.xs.copyWith(
-                      color: context.theme.colors.foreground,
+                    style: typography.body.xs.copyWith(
+                      color: colors.foreground,
                     ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -209,6 +208,7 @@ class SafeStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return DecoratedBox(
       decoration: ShapeDecoration(
         color: SemanticColor.success.subtle(context),
@@ -240,7 +240,7 @@ class SafeStateCard extends StatelessWidget {
                 children: [
                   Text(
                     l10n.medicineRiskCheckTierConfirmedSafe,
-                    style: context.theme.typography.body.md.copyWith(
+                    style: typography.body.md.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -249,14 +249,14 @@ class SafeStateCard extends StatelessWidget {
                     l10n.medicineRiskCheckTierSafeBody(
                       result.checkedMedicineCount,
                     ),
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     l10n.medicineRiskCheckTierSafeDisclaimer,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
@@ -283,6 +283,7 @@ class OverallRecommendationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return DecoratedBox(
       decoration: ShapeDecoration(
         color: SemanticColor.primary.subtle(context),
@@ -306,7 +307,7 @@ class OverallRecommendationCard extends StatelessWidget {
                 const SizedBox(width: Spacing.level2),
                 Text(
                   l10n.medicineRiskOverallRecommendation,
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -315,7 +316,7 @@ class OverallRecommendationCard extends StatelessWidget {
             const SizedBox(height: Spacing.level3),
             Text(
               text,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: context.theme.colors.foreground,
               ),
             ),
@@ -382,6 +383,7 @@ class LlmEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Padding(
       padding: const EdgeInsets.all(Spacing.level6),
       child: Center(
@@ -396,15 +398,13 @@ class LlmEmptyState extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               l10n.medicineRiskCheckLlmEmptyTitle,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w800),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               l10n.medicineRiskCheckLlmEmptyBody,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
               textAlign: TextAlign.center,

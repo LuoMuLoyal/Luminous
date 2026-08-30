@@ -118,6 +118,7 @@ class _TodayPlanRow extends StatelessWidget {
     final canMark =
         onMarkDose != null && takenRequest != null && skippedRequest != null;
     final hasReminder = item.currentMedicineId != null;
+    final typography = context.theme.typography;
 
     final rowContent = Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
@@ -135,7 +136,7 @@ class _TodayPlanRow extends StatelessWidget {
                   children: [
                     Text(
                       _itemName(l10n, item),
-                      style: context.theme.typography.body.sm.copyWith(
+                      style: typography.body.sm.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                       maxLines: 1,
@@ -144,7 +145,7 @@ class _TodayPlanRow extends StatelessWidget {
                     const SizedBox(height: Spacing.level1),
                     Text(
                       _itemPlanDetail(),
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
@@ -175,7 +176,7 @@ class _TodayPlanRow extends StatelessWidget {
                             ),
                             child: Text(
                               _slotSummary(),
-                              style: context.theme.typography.body.xs.copyWith(
+                              style: typography.body.xs.copyWith(
                                 color: colors.foreground,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -281,6 +282,7 @@ class _TodayPlanEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
       child: Row(
@@ -300,14 +302,14 @@ class _TodayPlanEmpty extends StatelessWidget {
               children: [
                 Text(
                   l10n.medicineTodayPlanEmpty,
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.medicineNoMedicineBody,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),

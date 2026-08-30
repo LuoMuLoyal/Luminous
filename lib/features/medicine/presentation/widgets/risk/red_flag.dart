@@ -15,12 +15,12 @@ class RiskRedFlagItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+    final borderRadius = context.theme.style.borderRadius;
     return DecoratedBox(
       decoration: ShapeDecoration(
         color: SemanticColor.destructive.subtle(context),
-        shape: RoundedSuperellipseBorder(
-          borderRadius: context.theme.style.borderRadius.md,
-        ),
+        shape: RoundedSuperellipseBorder(borderRadius: borderRadius.md),
       ),
       child: IntrinsicHeight(
         child: Row(
@@ -32,7 +32,7 @@ class RiskRedFlagItem extends StatelessWidget {
               decoration: ShapeDecoration(
                 color: SemanticColor.destructive.solid(context),
                 shape: RoundedSuperellipseBorder(
-                  borderRadius: context.theme.style.borderRadius.pill,
+                  borderRadius: borderRadius.pill,
                 ),
               ),
             ),
@@ -53,7 +53,7 @@ class RiskRedFlagItem extends StatelessWidget {
                         Expanded(
                           child: Text(
                             redFlagAlertCopy(l10n, alert),
-                            style: context.theme.typography.body.sm.copyWith(
+                            style: typography.body.sm.copyWith(
                               color: context.theme.colors.foreground,
                               fontWeight: FontWeight.w700,
                             ),
@@ -74,7 +74,7 @@ class RiskRedFlagItem extends StatelessWidget {
                         Expanded(
                           child: Text(
                             redFlagActionCopy(l10n, alert),
-                            style: context.theme.typography.body.xs.copyWith(
+                            style: typography.body.xs.copyWith(
                               color: SemanticColor.destructive.solid(context),
                             ),
                           ),

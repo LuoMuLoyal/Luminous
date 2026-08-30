@@ -61,12 +61,13 @@ class _SafetyHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Row(
       children: [
         Expanded(
           child: Text(
             l10n.medicineSafetyPanelTitle,
-            style: context.theme.typography.display.xl.copyWith(
+            style: typography.display.xl.copyWith(
               fontWeight: FontWeight.w600,
               letterSpacing: 0,
             ),
@@ -85,7 +86,7 @@ class _SafetyHeader extends StatelessWidget {
           Flexible(
             child: Text(
               l10n.medicineSafetyPanelEmptyBody,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
               textAlign: TextAlign.end,
@@ -111,6 +112,7 @@ class _LastCheckedLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     if (isStale) {
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -123,7 +125,7 @@ class _LastCheckedLabel extends StatelessWidget {
           const SizedBox(width: Spacing.level1),
           Text(
             l10n.medicineRiskCheckStale,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.warning.solid(context),
             ),
           ),
@@ -144,7 +146,7 @@ class _LastCheckedLabel extends StatelessWidget {
         const SizedBox(width: Spacing.level1),
         Text(
           l10n.medicineRiskCheckLastUpdated(time),
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
@@ -244,6 +246,7 @@ class _RiskSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = _riskLevelPalette(riskLevel);
     final summary = _SafetySummary.fromResult(l10n, result, riskLevel);
+    final typography = context.theme.typography;
 
     return Row(
       children: [
@@ -268,14 +271,12 @@ class _RiskSummary extends StatelessWidget {
             children: [
               Text(
                 summary.title,
-                style: context.theme.typography.body.sm.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+                style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 summary.body,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
                 maxLines: 2,
@@ -347,12 +348,13 @@ class _MetricItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Expanded(
       child: Column(
         children: [
           Text(
             value,
-            style: context.theme.typography.display.xl.copyWith(
+            style: typography.display.xl.copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: 0,
             ),
@@ -360,7 +362,7 @@ class _MetricItem extends StatelessWidget {
           const SizedBox(height: Spacing.level1),
           Text(
             label,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
             textAlign: TextAlign.center,
@@ -390,6 +392,7 @@ class _AlertChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Row(
       children: [
         Icon(
@@ -401,9 +404,7 @@ class _AlertChip extends StatelessWidget {
         Expanded(
           child: Text(
             medicineAlertTitle(l10n, alert),
-            style: context.theme.typography.body.xs.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: typography.body.xs.copyWith(fontWeight: FontWeight.w600),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -424,7 +425,7 @@ class _AlertChip extends StatelessWidget {
             alert.color == SemanticColor.destructive
                 ? l10n.medicineRiskCheckSeverityHigh
                 : l10n.medicineRiskCheckSeverityMedium,
-            style: context.theme.typography.body.xs3.copyWith(
+            style: typography.body.xs3.copyWith(
               color: alert.color.solid(context),
             ),
           ),
@@ -441,6 +442,7 @@ class _SafetyEmptyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FTappable(
       onPress: () => context.push(Routes.medicineRiskCheck),
       child: DecoratedBox(
@@ -475,14 +477,14 @@ class _SafetyEmptyCard extends StatelessWidget {
                   children: [
                     Text(
                       l10n.medicineSafetyPanelEmptyTitle,
-                      style: context.theme.typography.body.sm.copyWith(
+                      style: typography.body.sm.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: Spacing.level1),
                     Text(
                       l10n.medicineSafetyPanelEmptyBody,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),

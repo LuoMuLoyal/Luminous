@@ -20,6 +20,7 @@ class _DrugBoxSection extends StatelessWidget {
     final items = workspace.plan.items
         .where((item) => item.currentMedicineId != null)
         .toList(growable: false);
+    final typography = context.theme.typography;
 
     return Column(
       key: const Key('medicine-current-medications'),
@@ -27,7 +28,7 @@ class _DrugBoxSection extends StatelessWidget {
       children: [
         Text(
           l10n.medicineDrugboxTitle,
-          style: context.theme.typography.display.xl.copyWith(
+          style: typography.display.xl.copyWith(
             fontWeight: FontWeight.w600,
             letterSpacing: 0,
           ),
@@ -35,7 +36,7 @@ class _DrugBoxSection extends StatelessWidget {
         const SizedBox(height: Spacing.level1),
         Text(
           l10n.medicineDrugboxSubtitle,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
@@ -98,6 +99,7 @@ class _DrugBoxHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return Row(
       children: [
@@ -123,7 +125,7 @@ class _DrugBoxHeader extends StatelessWidget {
             children: [
               Text(
                 l10n.medicineDrugboxTotal(count),
-                style: context.theme.typography.body.md.copyWith(
+                style: typography.body.md.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0,
                 ),
@@ -133,7 +135,7 @@ class _DrugBoxHeader extends StatelessWidget {
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.medicineDrugboxTotalPrefix,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -281,6 +283,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.level1),
       child: Column(
@@ -297,7 +300,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                   maxLines: 1,
@@ -309,7 +312,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
           const SizedBox(height: Spacing.level1),
           SkeletonText(
             text: value,
-            style: context.theme.typography.body.md.copyWith(
+            style: typography.body.md.copyWith(
               color: color.fillStrong(context),
               fontWeight: FontWeight.w800,
             ),
@@ -320,7 +323,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
           const SizedBox(height: Spacing.level1),
           SkeletonText(
             text: detail,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
             maxLines: 1,
@@ -352,6 +355,7 @@ class _DrugBoxEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
       child: Row(
@@ -371,14 +375,14 @@ class _DrugBoxEmpty extends StatelessWidget {
               children: [
                 Text(
                   l10n.medicineNoMedicineTitle,
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.medicineNoMedicineBody,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -411,6 +415,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
     final currentMedicineId = item.currentMedicineId;
     final source = item.source;
     final sourceRefId = item.sourceRefId;
+    final typography = context.theme.typography;
 
     return FTappable(
       onPress: () {
@@ -453,7 +458,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                 children: [
                   SkeletonText(
                     text: name,
-                    style: context.theme.typography.body.sm.copyWith(
+                    style: typography.body.sm.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                     maxLines: 1,
@@ -468,7 +473,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                     children: [
                       SkeletonText(
                         text: '$dosage · ${_compactRouteOrSchedule(schedule)}',
-                        style: context.theme.typography.body.xs.copyWith(
+                        style: typography.body.xs.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
                         maxLines: 1,

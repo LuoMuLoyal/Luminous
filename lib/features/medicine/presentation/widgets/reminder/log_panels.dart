@@ -19,6 +19,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
     final visibleLogs = logs.isEmpty
         ? <DoseLogItem>[]
         : logs.take(3).toList(growable: false);
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,9 +28,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
           padding: const EdgeInsets.only(left: Spacing.level2),
           child: Text(
             l10n.medicineReminderTodayLogsTitle,
-            style: context.theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(height: Spacing.level3),
@@ -48,7 +47,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoTodayLogs,
-                          style: context.theme.typography.body.xs.copyWith(
+                          style: typography.body.xs.copyWith(
                             color: SemanticColor.neutral.solid(context),
                           ),
                         ),
@@ -71,7 +70,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
             padding: const EdgeInsets.only(top: Spacing.level2),
             child: Text(
               l10n.medicineReminderLogCountTotal(logs.length),
-              style: context.theme.typography.body.xs2.copyWith(
+              style: typography.body.xs2.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -101,6 +100,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
       growable: false,
     );
     final hasMore = widget.logs.length > 5;
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,9 +109,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
           padding: const EdgeInsets.only(left: Spacing.level2),
           child: Text(
             l10n.medicineReminderDeliveryLogsTitle,
-            style: context.theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(height: Spacing.level3),
@@ -130,7 +128,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoDeliveryLogs,
-                          style: context.theme.typography.body.xs.copyWith(
+                          style: typography.body.xs.copyWith(
                             color: SemanticColor.neutral.solid(context),
                           ),
                         ),
@@ -177,6 +175,7 @@ class _DeliveryLogRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final color = _deliveryStatusColor(log.status);
+    final typography = context.theme.typography;
     final row = Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.level4,
@@ -200,14 +199,14 @@ class _DeliveryLogRow extends StatelessWidget {
                     log.scheduledFor,
                     Localizations.localeOf(context),
                   ),
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   deliveryChannelLabel(l10n, log.channel),
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),

@@ -29,6 +29,7 @@ class RiskFindingItem extends StatelessWidget {
     final color = medicineRiskSeverityColor(finding.severity);
     final contextLabel = medicineRiskContextLabel(l10n, finding.context);
     final recommendation = finding.recommendation?.trim();
+    final typography = context.theme.typography;
 
     final tile = Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
@@ -69,21 +70,21 @@ class RiskFindingItem extends StatelessWidget {
               children: [
                 Text(
                   medicineRiskFindingTitle(l10n, finding),
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskFindingBody(l10n, finding),
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskFindingEvidence(l10n, finding),
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),

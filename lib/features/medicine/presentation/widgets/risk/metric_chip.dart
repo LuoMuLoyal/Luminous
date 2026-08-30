@@ -25,6 +25,7 @@ class RiskMetricCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     final content = DecoratedBox(
       decoration: BoxDecoration(
         border: showRightDivider
@@ -42,7 +43,7 @@ class RiskMetricCell extends StatelessWidget {
           children: [
             Text(
               value,
-              style: context.theme.typography.display.xl.copyWith(
+              style: typography.display.xl.copyWith(
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0,
                 color: color?.solid(context),
@@ -51,7 +52,7 @@ class RiskMetricCell extends StatelessWidget {
             const SizedBox(height: Spacing.level1),
             Text(
               label,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
               textAlign: TextAlign.center,

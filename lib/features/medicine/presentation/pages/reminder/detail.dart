@@ -142,6 +142,7 @@ class _ReminderDetailBody extends ConsumerWidget {
     final canOpenDetail =
         data.medicine.sourceRefId != null &&
         (data.medicine.source == 'cn' || data.medicine.source == 'drugbank');
+    final typography = context.theme.typography;
 
     final Widget medicineCard = FCard(
       child: Column(
@@ -157,7 +158,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                     children: [
                       Text(
                         data.medicine.displayName,
-                        style: context.theme.typography.body.md.copyWith(
+                        style: typography.body.md.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                         maxLines: 1,
@@ -166,7 +167,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                       const SizedBox(height: Spacing.level1),
                       Text(
                         medicineDoseText(l10n, data.medicine),
-                        style: context.theme.typography.body.xs.copyWith(
+                        style: typography.body.xs.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
                         maxLines: 1,
@@ -241,7 +242,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                     children: [
                       Text(
                         l10n.medicineReminderToggleActiveLabel,
-                        style: context.theme.typography.body.sm.copyWith(
+                        style: typography.body.sm.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -250,7 +251,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                         isActive
                             ? l10n.medicineReminderEnabledStatus
                             : l10n.medicineReminderDisabledStatus,
-                        style: context.theme.typography.body.sm.copyWith(
+                        style: typography.body.sm.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
                       ),

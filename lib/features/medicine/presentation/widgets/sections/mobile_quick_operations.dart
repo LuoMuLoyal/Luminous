@@ -99,6 +99,7 @@ class _QuickOperationRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FTappable(
       onPress: operation.onTap,
       child: Padding(
@@ -123,7 +124,7 @@ class _QuickOperationRow extends StatelessWidget {
                 children: [
                   Text(
                     operation.title,
-                    style: context.theme.typography.body.sm.copyWith(
+                    style: typography.body.sm.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                     maxLines: 1,
@@ -132,7 +133,7 @@ class _QuickOperationRow extends StatelessWidget {
                   const SizedBox(height: Spacing.level1),
                   Text(
                     operation.subtitle,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                     maxLines: 1,
