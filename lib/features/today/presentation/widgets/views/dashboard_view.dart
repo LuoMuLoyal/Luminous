@@ -121,9 +121,9 @@ class _MobileTodayDashboard extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: Spacing.level5),
         child: Text(
           greetingSubtitle(l10n, dashboard),
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.sm.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
       ),
       Padding(
@@ -205,9 +205,9 @@ class _HealthEventSection extends ConsumerWidget {
               Expanded(
                 child: Text(
                   l10n.todayHealthEventReadFailed,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: context.theme.colors.destructive),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: context.theme.colors.destructive,
+                  ),
                 ),
               ),
               FButton(
@@ -479,13 +479,13 @@ class _HealthEventActionRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TypographyToken.level5.body(context)),
+        Text(title, style: context.theme.typography.body.md),
         const SizedBox(height: Spacing.level2),
         Text(
           subtitle,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: context.theme.colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         FButton(key: actionKey, onPress: onPress, child: Text(actionLabel)),
@@ -513,15 +513,15 @@ class _ActiveHealthEventContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(event.title, style: TypographyToken.level5.body(context)),
+        Text(event.title, style: context.theme.typography.body.md),
         const SizedBox(height: Spacing.level2),
         Text(
           onCheckIn == null
               ? l10n.todayHealthEventCheckInDone
               : l10n.todayHealthEventCheckInSubtitle,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.mutedForeground,
+          ),
         ),
         const SizedBox(height: Spacing.level4),
         Wrap(
@@ -571,9 +571,9 @@ class _DesktopTodayDashboard extends StatelessWidget {
       // 问候语从 Header 拆分，放到内容区
       Text(
         greetingSubtitle(l10n, dashboard),
-        style: TypographyToken.level4
-            .body(context)
-            .copyWith(color: colors.mutedForeground),
+        style: context.theme.typography.body.sm.copyWith(
+          color: colors.mutedForeground,
+        ),
       ),
       // Preview banner slot — SizedBox.shrink has zero height when hidden
       if (isPreview)

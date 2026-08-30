@@ -127,15 +127,13 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                               children: [
                                 Text(
                                   visible[index].title,
-                                  style: TypographyToken.level5
-                                      .body(context)
+                                  style: context.theme.typography.body.md
                                       .copyWith(fontWeight: FontWeight.w700),
                                 ),
                                 const SizedBox(height: Spacing.level1),
                                 Text(
                                   visible[index].reason,
-                                  style: TypographyToken.level3
-                                      .body(context)
+                                  style: context.theme.typography.body.xs
                                       .copyWith(color: colors.mutedForeground),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,

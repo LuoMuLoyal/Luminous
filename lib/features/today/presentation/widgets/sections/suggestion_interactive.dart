@@ -89,9 +89,10 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
           const SizedBox(width: Spacing.level1),
           Text(
             l10n.todaySuggestionFeedbackSubmitted,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       );
@@ -199,9 +200,9 @@ class _SuggestionAiExplainButtonState
           const SizedBox(width: Spacing.level2),
           Text(
             l10n.todaySuggestionAiExplainLoading,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: context.theme.colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
           ),
         ],
       ),
@@ -263,14 +264,12 @@ class AiExplainContent extends StatelessWidget {
                 explanation.aiGenerated
                     ? l10n.todaySuggestionAiLabel
                     : l10n.todaySuggestionRuleBasedLabel,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(
-                      color: explanation.aiGenerated
-                          ? colors.primary
-                          : colors.mutedForeground,
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: explanation.aiGenerated
+                      ? colors.primary
+                      : colors.mutedForeground,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),
@@ -286,9 +285,9 @@ class AiExplainContent extends StatelessWidget {
               data: explanation.boundary,
               selectable: true,
               styleSheet: MarkdownStyle.ai(context).copyWith(
-                p: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                p: context.theme.typography.body.xs.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ),
           ],
@@ -322,9 +321,9 @@ class AiExplainUnavailable extends StatelessWidget {
           Flexible(
             child: Text(
               l10n.todaySuggestionAiExplainMaxRetry,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
         ],

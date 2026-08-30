@@ -36,16 +36,16 @@ class SuggestionEmptyState extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.todaySuggestionEmptyTitle,
-                style: TypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.todaySuggestionEmptySubtitle,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: context.theme.colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -183,9 +183,9 @@ class SuggestionErrorState extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.todaySuggestionErrorHint,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(color: context.theme.colors.mutedForeground),
+                style: context.theme.typography.body.sm.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
               ),
               const SizedBox(height: Spacing.level3),
               FButton(
@@ -244,9 +244,9 @@ class SuggestionMaterializationNotice extends StatelessWidget {
             child: Text(
               message,
               textAlign: TextAlign.center,
-              style: TypographyToken.level2
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs2.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
           if (status == TodaySuggestionMaterializationStatus.failed &&
@@ -294,9 +294,9 @@ class SecondarySuggestionErrorState extends StatelessWidget {
               const SizedBox(height: Spacing.level2),
               Text(
                 l10n.todaySuggestionSecondaryErrorHint,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: context.theme.colors.mutedForeground),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
               ),
               const SizedBox(height: Spacing.level2),
               FButton(

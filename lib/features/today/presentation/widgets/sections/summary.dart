@@ -130,12 +130,10 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
               ] else if (!isPreview) ...[
                 Text(
                   l10n.todaySummaryFallbackNarrative,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(
-                        color: colors.mutedForeground,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
               if (showRuleBasedLabel) ...[
@@ -212,9 +210,9 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                         padding: const EdgeInsets.only(top: Spacing.level1),
                         child: Text(
                           footer,
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: colors.mutedForeground,
+                          ),
                         ),
                       ),
                   ],
@@ -327,9 +325,9 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
             child: Text(
               message,
               textAlign: TextAlign.center,
-              style: TypographyToken.level2
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+              style: context.theme.typography.body.xs2.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
           ),
           if (status == TodayAiAnalysisMaterializationStatus.failed &&
@@ -374,9 +372,10 @@ class _AiExpandButton extends StatelessWidget {
               isCollapse
                   ? l10n.todaySuggestionHideEvidence
                   : l10n.todaySuggestionShowEvidence,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.primary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(width: Spacing.level1),
             AnimatedRotation(
@@ -421,25 +420,23 @@ class _CompactSummaryMetric extends StatelessWidget {
             children: [
               Text(
                 item.label,
-                style: TypographyToken.level2
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                style: context.theme.typography.body.xs2.copyWith(
+                  color: colors.mutedForeground,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 item.value,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(
-                      fontWeight: item.isDegraded || item.isFallback
-                          ? FontWeight.w500
-                          : FontWeight.w700,
-                      color: item.isDegraded
-                          ? colors.destructive
-                          : (item.isFallback ? colors.mutedForeground : null),
-                    ),
+                style: context.theme.typography.body.sm.copyWith(
+                  fontWeight: item.isDegraded || item.isFallback
+                      ? FontWeight.w500
+                      : FontWeight.w700,
+                  color: item.isDegraded
+                      ? colors.destructive
+                      : (item.isFallback ? colors.mutedForeground : null),
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -475,9 +472,9 @@ class _SummaryBullet extends StatelessWidget {
         Expanded(
           child: Text(
             item.text,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
         ),
       ],

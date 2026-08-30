@@ -157,19 +157,17 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                   const SizedBox(height: Spacing.level4),
                   Text(
                     card.title,
-                    style: TypographyToken.level7
-                        .display(context)
-                        .copyWith(fontWeight: FontWeight.w700),
+                    style: context.theme.typography.display.xl.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level2),
                   Text(
                     card.reason,
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(
-                          color: colors.mutedForeground,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    style: context.theme.typography.body.sm.copyWith(
+                      color: colors.mutedForeground,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   if (card.secondaryActions != null &&
                       card.secondaryActions!.isNotEmpty) ...[
@@ -389,9 +387,10 @@ class EvidenceToggleButton extends StatelessWidget {
               expanded
                   ? l10n.todaySuggestionHideEvidence
                   : l10n.todaySuggestionShowEvidence,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
+              style: context.theme.typography.body.xs.copyWith(
+                color: colors.primary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(width: Spacing.level1),
             AnimatedRotation(
@@ -430,15 +429,13 @@ class SuggestionMetaBlock extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(
-                color: colors.mutedForeground,
-                fontWeight: FontWeight.w700,
-              ),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.mutedForeground,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level1),
-        Text(value, style: TypographyToken.level4.body(context)),
+        Text(value, style: context.theme.typography.body.sm),
       ],
     );
   }
@@ -460,12 +457,10 @@ class EvidenceList extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(
-                color: colors.mutedForeground,
-                fontWeight: FontWeight.w700,
-              ),
+          style: context.theme.typography.body.xs.copyWith(
+            color: colors.mutedForeground,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: Spacing.level2),
         for (var i = 0; i < evidence.length; i++) ...[
@@ -495,9 +490,9 @@ class EvidenceItemRow extends StatelessWidget {
           flex: 5,
           child: Text(
             label,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
         ),
         const SizedBox(width: Spacing.level3),
@@ -505,9 +500,9 @@ class EvidenceItemRow extends StatelessWidget {
           flex: 7,
           child: Text(
             value,
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w600),
+            style: context.theme.typography.body.sm.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
             textAlign: TextAlign.end,
           ),
         ),
@@ -537,12 +532,10 @@ class WaterProgressBar extends StatelessWidget {
         const SizedBox(width: Spacing.level2),
         Text(
           '${(progress * 100).round()}%',
-          style: TypographyToken.level2
-              .body(context)
-              .copyWith(
-                color: colors.mutedForeground,
-                fontWeight: FontWeight.w600,
-              ),
+          style: context.theme.typography.body.xs2.copyWith(
+            color: colors.mutedForeground,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );

@@ -47,12 +47,10 @@ class TodaySection extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TypographyToken.level7
-                        .display(context)
-                        .copyWith(
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0,
-                        ),
+                    style: context.theme.typography.display.xl.copyWith(
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -60,9 +58,9 @@ class TodaySection extends StatelessWidget {
                     const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle!,
-                      style: TypographyToken.level2
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                      style: context.theme.typography.body.xs2.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ],
                 ],

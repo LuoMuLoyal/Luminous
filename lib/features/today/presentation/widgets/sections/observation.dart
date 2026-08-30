@@ -48,9 +48,9 @@ class TodayObservationSection extends ConsumerWidget {
                 padding: const EdgeInsets.all(Spacing.level4),
                 child: Text(
                   l10n.todayObservationEmptyState,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               );
             }
@@ -184,16 +184,16 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                 children: [
                   Text(
                     widget.item.title,
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w600),
+                    style: context.theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     widget.item.subtitle,
-                    style: TypographyToken.level2
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                    style: context.theme.typography.body.xs2.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -243,9 +243,10 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
           const SizedBox(width: Spacing.level1),
           Text(
             l10n.todaySuggestionFeedbackSubmitted,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
+            style: context.theme.typography.body.xs.copyWith(
+              color: colors.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       );
@@ -352,9 +353,9 @@ class _ObservationErrorState extends StatelessWidget {
           Expanded(
             child: Text(
               l10n.todayObservationErrorTitle,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: context.theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           FButton(
@@ -416,9 +417,9 @@ class _ConfidenceBadge extends StatelessWidget {
       variant: variant,
       child: Text(
         label,
-        style: TypographyToken.level3
-            .body(context)
-            .copyWith(fontWeight: FontWeight.w600),
+        style: context.theme.typography.body.xs.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
