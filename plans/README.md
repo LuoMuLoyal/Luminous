@@ -32,6 +32,8 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
+- [2026-08-30-doc-governance-evolution.md](2026-08-30-doc-governance-evolution.md)
+  — 文档治理演进：从变更门禁到结果合规（生成器 + diff 校验、就近原则、custom_lint 实时规则、叙事文档降级）
 
 - [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
   — 中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门

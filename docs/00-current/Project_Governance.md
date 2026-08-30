@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-15
+updated: 2026-08-30
 ---
 
 # Project Governance
 
-Last updated: 2026-08-15 (当前发布表面与未来大屏候选)
+Last updated: 2026-08-30 (review 改名落地同步与文档治理)
 
 ## 维护模式
 
@@ -36,14 +36,14 @@ Last updated: 2026-08-15 (当前发布表面与未来大屏候选)
 ## 产品表面
 
 - 移动端是当前产品表面。
-- 底部 tab 保留 `today / record / medicine / report / mine` 五个运行时入口；产品方向将 `report` 的用户任务和名称改为“回顾”，代码尚未迁移。
+- 底部 tab 保留 `today / record / medicine / review / mine` 五个运行时入口；`report` 的用户任务和名称改为“回顾”（review），代码已于 2026-08-27 完成迁移（`lib/features/review/`、`Routes.review`，`/report` 保留为兼容路由）。
 - 现有 Flutter Web 应用保持当前维护边界；未来 Web 产品可能承担大屏纵向洞察，Next.js 是候选实现而非已定方案，完成独立调研前不扩展认证产品壳或追求功能对等。
 - `Luminous-site` 当前是竞赛/营销首页，不做签入式报告预览。
 - 现有 Flutter 桌面端保留，当前只维护共享代码回归；这不是永久放弃桌面产品。未来桌面产品初步考虑用 Tauri 2 承载 Web 大屏体验，但用户任务、数据边界和技术路线尚未决策。
 
 ## 文档治理
 
-- `docs/doc-map.yaml` + `scripts/check_doc_coverage.dart`：阻断模式（pre-commit 实际启用，只评估暂存文件）——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于每日检查（保持警告模式，不阻断）；`SKIP_DOC_CHECK=1` 可旁路。
+- `docs/doc-map.yaml` + `scripts/check_doc_coverage.dart`：阻断模式（pre-commit 实际启用，只评估暂存文件）——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于每日检查（保持警告模式，不阻断）；`SKIP_DOC_CHECK=1` 可旁路。feature 改名/新增时须同步对应规则的 `code` glob（report → review 改名后曾漏改，2026-08-30 修复）；治理机制演进方向见 `plans/2026-08-30-doc-governance-evolution.md`（结果合规 + 单一事实源，逐步替代变更门禁）。
 - `dart run scripts/check_doc_coverage.dart --verify`：校验 doc-map 引用存在、文档链接完整、front-matter 完整、90 天新鲜度（`status: frozen` 豁免）、活跃文档阅读入口（doc-map 规则或文档链接）、`lib/features/*` 覆盖完整性；已接入每日检查（阻断式）。
 - `scripts/check_doc_links.dart --changed`：pre-commit 只检查变更文档的外链；变更集含文档删除/重命名时全量扫描以捕获指向已删文档的入链。
 - 迁移日志条目描述变更范围与验证结论，不写需要持续同步的精确数字（如测试总数）。

@@ -65,7 +65,7 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
   - `presentation/` — pages, widgets, controllers, providers
 - New code goes only under `lib/features/`, `lib/core/`, or `lib/shared/`. **Do not**
   add to legacy `lib/pages/`, `lib/stores/`, `lib/viewmodels/`, `lib/components/`.
-- The five tabs are `today / record / medicine / report / mine`.
+- The five tabs are `today / record / medicine / review / mine`.
 
 ## State Management
 
@@ -77,7 +77,7 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
 
 - `GoRouter` with `StatefulShellRoute` for bottom tabs. Use typed routes
   (`@TypedGoRoute` + `go_router_builder`).
-- Tab roots: `/`, `/record`, `/medicine`, `/report`, `/mine`.
+- Tab roots: `/`, `/record`, `/medicine`, `/review`, `/mine`.
 - Sub-pages are top-level full-screen routes outside the shell.
 
 ## Design System

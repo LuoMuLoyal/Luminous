@@ -100,7 +100,7 @@ flutter test
 ## Routing
 
 - `GoRouter` with `StatefulShellRoute` for bottom tabs.
-- Tab roots: `/`, `/record`, `/medicine`, `/report`, `/mine`.
+- Tab roots: `/`, `/record`, `/medicine`, `/review`, `/mine`.
 - Sub-pages are top-level full-screen routes outside the shell.
 
 ## Design System

@@ -275,11 +275,11 @@ rules:
       - docs/00-current/Active_UI_Medicine.md
 
   # ──────────────────────────────────────────────
-  # Report Feature
+  # Review Feature（2026-08-27 由 report 改名）
   # ──────────────────────────────────────────────
-  - name: report
+  - name: review
     code:
-      - lib/features/report/**
+      - lib/features/review/**
     docs_required:
       - docs/03-logs/migration-log/*.md
     docs_any_of:
