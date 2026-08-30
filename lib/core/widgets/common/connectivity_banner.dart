@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -10,6 +10,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// the user understands the app is waiting, not permanently signed out.
 ///
 /// Tapping "Retry" re-triggers [AuthSessionNotifier.restore].
+///
+/// Layout note: uses only Flutter framework widgets (`flutter/widgets.dart`)
+/// plus Forui's `FButton`. No `Material` ancestor or `flutter/material.dart`
+/// import — the background color comes from `ColoredBox` with the semantic
+/// warning palette.
 class ConnectivityBanner extends ConsumerWidget {
   const ConnectivityBanner({super.key});
 
