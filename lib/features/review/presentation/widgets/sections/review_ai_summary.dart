@@ -76,7 +76,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                       Text(
                         content.subtitle,
                         style: context.theme.typography.body.xs.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                       ),
                       const SizedBox(height: Spacing.level3),
@@ -150,7 +150,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                 child: Text(
                   content.observedPattern!,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ),
@@ -162,7 +162,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                 child: Text(
                   content.lowRiskAction!,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ),
@@ -173,7 +173,7 @@ class ReviewAiSummarySection extends StatelessWidget {
               Text(
                 content.disclaimer!,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],

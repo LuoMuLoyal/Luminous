@@ -221,8 +221,6 @@ class _StaleBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -239,7 +237,7 @@ class _StaleBanner extends StatelessWidget {
             child: Icon(
               SemanticIcons.statusInfo,
               size: IconSizeTokens.level2,
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
           const SizedBox(width: Spacing.level2),
@@ -247,7 +245,7 @@ class _StaleBanner extends StatelessWidget {
             child: Text(
               l10n.reviewReviewStaleBanner,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -274,8 +272,6 @@ class _StartObservationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return FCard(
       key: const Key('review-no-event-card'),
       child: Padding(
@@ -293,7 +289,7 @@ class _StartObservationCard extends StatelessWidget {
             Text(
               l10n.reviewReviewNoEventDescription,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             if (showStartAction) ...[

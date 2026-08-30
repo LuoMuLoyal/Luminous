@@ -204,8 +204,6 @@ class ReviewPeriodPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return FButton(
       onPress: onTap,
       variant: FButtonVariant.outline,
@@ -233,7 +231,7 @@ class ReviewPeriodPill extends StatelessWidget {
           Icon(
             SemanticIcons.actionExpand,
             size: 16,
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ],
       ),

@@ -190,7 +190,7 @@ class _EmptyView extends StatelessWidget {
                 Text(
                   l10n.reviewSuggestionHistoryEmptyBody,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],

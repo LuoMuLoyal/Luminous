@@ -166,7 +166,7 @@ class _SingleTrendChart extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.background,
           borderRadius: context.theme.style.borderRadius.md,
-          border: Border.all(color: colors.border),
+          border: Border.all(color: SemanticColor.neutral.border(context)),
         ),
         padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
@@ -190,7 +190,7 @@ class _SingleTrendChart extends StatelessWidget {
                     child: Text(
                       coverageLabel,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                       textAlign: TextAlign.end,
                     ),
@@ -214,8 +214,10 @@ class _SingleTrendChart extends StatelessWidget {
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
-                    getDrawingHorizontalLine: (_) =>
-                        FlLine(color: colors.border, strokeWidth: 0.5),
+                    getDrawingHorizontalLine: (_) => FlLine(
+                      color: SemanticColor.neutral.border(context),
+                      strokeWidth: 0.5,
+                    ),
                     horizontalInterval: dataSpan < 0.001 ? 1.0 : dataSpan / 4,
                   ),
                   borderData: FlBorderData(show: false),
@@ -250,7 +252,7 @@ class _SingleTrendChart extends StatelessWidget {
                             child: Text(
                               labels[index],
                               style: context.theme.typography.body.xs.copyWith(
-                                color: colors.mutedForeground,
+                                color: SemanticColor.neutral.solid(context),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.clip,
@@ -346,8 +348,6 @@ class _TrendEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       child: SizedBox(
         width: double.infinity,
@@ -362,7 +362,7 @@ class _TrendEmptyState extends StatelessWidget {
               Icon(
                 SemanticIcons.reportChart,
                 size: Spacing.level8,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level3),
               Text(
@@ -375,7 +375,7 @@ class _TrendEmptyState extends StatelessWidget {
               Text(
                 l10n.reviewTrendEmptyBody,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,
               ),

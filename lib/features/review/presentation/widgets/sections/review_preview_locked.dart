@@ -20,15 +20,17 @@ class ReviewPreviewLockedSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, color: colors.primary, size: Spacing.level5),
+            Icon(
+              icon,
+              color: SemanticColor.primary.solid(context),
+              size: Spacing.level5,
+            ),
             const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
@@ -44,7 +46,7 @@ class ReviewPreviewLockedSection extends StatelessWidget {
                   Text(
                     body,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ],

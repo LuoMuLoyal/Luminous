@@ -63,8 +63,6 @@ class _PatternCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -118,7 +116,7 @@ class _PatternCard extends StatelessWidget {
             SkeletonText(
               text: pattern.body,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

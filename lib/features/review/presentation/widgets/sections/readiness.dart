@@ -39,8 +39,6 @@ class ReviewReadinessSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       key: const Key('report-readiness-card'),
       child: Padding(
@@ -75,7 +73,7 @@ class ReviewReadinessSection extends StatelessWidget {
             Text(
               _description,
               style: context.theme.typography.body.sm.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             if (generatedAtLabel.isNotEmpty) ...[
@@ -85,7 +83,7 @@ class ReviewReadinessSection extends StatelessWidget {
                   ExcludeSemantics(
                     child: Icon(
                       SemanticIcons.statusPending,
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                       size: Spacing.level5,
                     ),
                   ),
@@ -94,7 +92,7 @@ class ReviewReadinessSection extends StatelessWidget {
                     child: Text(
                       l10n.reviewReadinessUpdatedAt(generatedAtLabel),
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ),
@@ -109,7 +107,7 @@ class ReviewReadinessSection extends StatelessWidget {
                     insufficientMetricCount,
                   ),
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -120,7 +118,7 @@ class ReviewReadinessSection extends StatelessWidget {
                     needsAttentionMetricCount,
                   ),
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],

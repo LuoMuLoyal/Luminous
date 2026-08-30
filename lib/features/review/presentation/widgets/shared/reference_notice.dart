@@ -22,7 +22,7 @@ class ReviewReferenceNotice extends StatelessWidget {
           children: [
             Icon(
               SemanticIcons.statusWarning,
-              color: context.theme.colors.primary,
+              color: SemanticColor.primary.solid(context),
               size: Spacing.level5,
             ),
             const SizedBox(width: Spacing.level3),
@@ -30,7 +30,7 @@ class ReviewReferenceNotice extends StatelessWidget {
               child: Text(
                 l10n.reviewReferenceNotice,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: context.theme.colors.primary,
+                  color: SemanticColor.primary.solid(context),
                   fontWeight: FontWeight.w600,
                 ),
               ),

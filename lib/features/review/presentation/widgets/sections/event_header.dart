@@ -31,8 +31,6 @@ class EventHeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final isActive = event.status == ReviewEventStatus.active;
     final canCheckIn = isActive && showCheckInAction && todayCheckIn == null;
 
@@ -85,7 +83,7 @@ class EventHeaderSection extends StatelessWidget {
             Text(
               reviewEventKindLabel(l10n, event.kind),
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             const SizedBox(height: Spacing.level2),
@@ -94,7 +92,7 @@ class EventHeaderSection extends StatelessWidget {
                 reviewShortDateLabel(context, event.startedAt),
               ),
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
             if (event.endedAt != null) ...[
@@ -104,7 +102,7 @@ class EventHeaderSection extends StatelessWidget {
                   reviewShortDateLabel(context, event.endedAt!),
                 ),
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -115,7 +113,7 @@ class EventHeaderSection extends StatelessWidget {
                   event.currentMedicineIds.length,
                 ),
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -126,7 +124,7 @@ class EventHeaderSection extends StatelessWidget {
                   Text(
                     l10n.reviewReviewOutcomeLabel,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   const SizedBox(width: Spacing.level2),
@@ -151,7 +149,7 @@ class EventHeaderSection extends StatelessWidget {
                   reviewOutcomeLabel(l10n, todayCheckIn!.outcome),
                 ),
                 style: context.theme.typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],

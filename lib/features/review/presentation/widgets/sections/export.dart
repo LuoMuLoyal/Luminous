@@ -36,8 +36,6 @@ class ReviewExportSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,7 +50,7 @@ class ReviewExportSection extends StatelessWidget {
           Text(
             l10n.reviewExportInsufficientReason,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ],
@@ -102,8 +100,6 @@ class _ExportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final title = reviewExportTitle(l10n, action.kind);
     final subtitle = reviewExportCardSubtitle(l10n, action.kind, latestRequest);
     final enabled = onTap != null;
@@ -162,7 +158,7 @@ class _ExportCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -172,7 +168,7 @@ class _ExportCard extends StatelessWidget {
               ),
               Icon(
                 trailingIcon,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 size: IconSizeTokens.level3,
               ),
             ],

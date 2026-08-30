@@ -150,7 +150,7 @@ class _ClinicSummaryPreviewContentState
               Text(
                 l10n.reviewClinicSummaryLoading,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
               ),
             ],
@@ -397,8 +397,6 @@ class _FieldSelectionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,7 +433,7 @@ class _FieldSelectionPanel extends StatelessWidget {
         Text(
           l10n.reviewClinicSummaryFieldPrivacyHint,
           style: context.theme.typography.body.xs.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
       ],
@@ -523,8 +521,6 @@ class _ShareConfirmPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -538,7 +534,7 @@ class _ShareConfirmPanel extends StatelessWidget {
         const SizedBox(height: Spacing.level4),
         _NoticeRow(
           icon: SemanticIcons.safetyTiming,
-          iconColor: colors.mutedForeground,
+          iconColor: SemanticColor.neutral.solid(context),
           text: l10n.reviewShareConfirmExpiryHint(7),
         ),
         const SizedBox(height: Spacing.level3),
@@ -605,7 +601,6 @@ class _ShareCreatedPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final locale = Localizations.localeOf(context);
 
     return Column(
@@ -630,7 +625,7 @@ class _ShareCreatedPanel extends StatelessWidget {
             child: Text(
               response.shareUrl,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -681,8 +676,6 @@ class _ShareRevokedPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -690,7 +683,7 @@ class _ShareRevokedPanel extends StatelessWidget {
         Icon(
           SemanticIcons.statusWarning,
           size: 28,
-          color: colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
         ),
         const SizedBox(height: Spacing.level3),
         Text(
@@ -703,7 +696,7 @@ class _ShareRevokedPanel extends StatelessWidget {
         Text(
           l10n.reviewShareRevokedBody,
           style: context.theme.typography.body.xs.copyWith(
-            color: colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
         const SizedBox(height: Spacing.level5),

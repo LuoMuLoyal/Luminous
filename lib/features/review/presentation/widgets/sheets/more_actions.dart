@@ -181,8 +181,6 @@ class _MoreActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FButton.raw(
       onPress: onTap,
       variant: FButtonVariant.ghost,
@@ -220,7 +218,7 @@ class _MoreActionTile extends StatelessWidget {
                     Text(
                       subtitle,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -230,7 +228,7 @@ class _MoreActionTile extends StatelessWidget {
               ),
               Icon(
                 SemanticIcons.actionNext,
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 size: IconSizeTokens.level3,
               ),
             ],

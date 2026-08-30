@@ -20,8 +20,6 @@ class ReviewSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
@@ -34,7 +32,7 @@ class ReviewSectionCard extends StatelessWidget {
                   child: Icon(
                     icon,
                     size: Spacing.level5,
-                    color: colors.primary,
+                    color: SemanticColor.primary.solid(context),
                   ),
                 ),
                 const SizedBox(width: Spacing.level3),
@@ -67,22 +65,20 @@ class ReviewUnknownReason extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(
           SemanticIcons.statusInfo,
           size: Spacing.level4,
-          color: colors.mutedForeground,
+          color: SemanticColor.neutral.solid(context),
         ),
         const SizedBox(width: Spacing.level2),
         Expanded(
           child: Text(
             reason,
             style: context.theme.typography.body.xs.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
         ),
@@ -100,8 +96,6 @@ class ReviewFactRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.level2),
       child: Row(
@@ -111,7 +105,7 @@ class ReviewFactRow extends StatelessWidget {
             child: Icon(
               icon,
               size: Spacing.level4,
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
             ),
           ),
           const SizedBox(width: Spacing.level2),

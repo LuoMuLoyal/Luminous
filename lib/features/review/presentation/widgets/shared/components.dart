@@ -15,8 +15,6 @@ class MetaRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
       child: Row(
@@ -27,7 +25,7 @@ class MetaRow extends StatelessWidget {
             child: Text(
               label,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -76,7 +74,9 @@ class ReviewMetricTrack extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: color.border(context),
                         borderRadius: context.theme.style.borderRadius.pill,
-                        border: Border.all(color: context.theme.colors.border),
+                        border: Border.all(
+                          color: SemanticColor.neutral.border(context),
+                        ),
                       ),
                       child: const SizedBox(width: Spacing.level1),
                     ),

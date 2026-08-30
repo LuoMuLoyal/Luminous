@@ -341,7 +341,6 @@ class _RangeOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final typography = context.theme.typography;
 
     return FTappable(
@@ -354,7 +353,7 @@ class _RangeOptionTile extends StatelessWidget {
             if (selected)
               Icon(
                 SemanticIcons.statusDone,
-                color: colors.primary,
+                color: SemanticColor.primary.solid(context),
                 size: IconSizeTokens.level3,
               ),
           ],

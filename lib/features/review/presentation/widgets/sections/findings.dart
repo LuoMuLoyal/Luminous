@@ -84,7 +84,7 @@ class _EmptyFindingsView extends StatelessWidget {
                 Text(
                   l10n.reviewFindingsEmptyBody,
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],
@@ -103,8 +103,6 @@ class _FindingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final palette = finding.color.palette(context);
 
     return FCard(
@@ -159,7 +157,7 @@ class _FindingCard extends StatelessWidget {
             SkeletonText(
               text: finding.body,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,

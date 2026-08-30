@@ -199,7 +199,7 @@ class ClinicSummaryContent extends StatelessWidget {
         Text(
           dto.disclaimer,
           style: context.theme.typography.body.xs.copyWith(
-            color: context.theme.colors.mutedForeground,
+            color: SemanticColor.neutral.solid(context),
           ),
         ),
 
@@ -291,8 +291,6 @@ class _BulletItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
       child: Row(
@@ -304,7 +302,7 @@ class _BulletItem extends StatelessWidget {
               width: 6,
               height: 6,
               decoration: BoxDecoration(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 shape: BoxShape.circle,
               ),
             ),

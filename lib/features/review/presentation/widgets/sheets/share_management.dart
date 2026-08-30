@@ -155,7 +155,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
               Icon(
                 SemanticIcons.safetyNeutral,
                 size: 28,
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level3),
               Text(
@@ -166,7 +166,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
               Text(
                 l10n.reviewShareManagementEmptyHint,
                 style: context.theme.typography.body.xs.copyWith(
-                  color: context.theme.colors.mutedForeground,
+                  color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -229,7 +229,6 @@ class _ShareRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
-    final colors = context.theme.colors;
     final revoked = share.revokedAt != null;
 
     return FCard(
@@ -258,7 +257,7 @@ class _ShareRow extends ConsumerWidget {
                       child: Text(
                         l10n.reviewShareRevokedBadge,
                         style: context.theme.typography.body.xs.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -269,7 +268,7 @@ class _ShareRow extends ConsumerWidget {
                     child: Text(
                       formatDateTimeFull(share.revokedAt!, locale),
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ),

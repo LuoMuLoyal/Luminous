@@ -170,7 +170,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                   child: Icon(
                     SemanticIcons.reportHistory,
                     size: Spacing.level5,
-                    color: context.theme.colors.primary,
+                    color: SemanticColor.primary.solid(context),
                   ),
                 ),
                 const SizedBox(width: Spacing.level3),
@@ -202,7 +202,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                     child: Text(
                       l10n.reviewReviewHistoryLoadFailed,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: context.theme.colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ),
@@ -225,7 +225,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                   return Text(
                     l10n.reviewReviewHistoryEmpty,
                     style: context.theme.typography.body.xs.copyWith(
-                      color: context.theme.colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   );
                 }
@@ -297,7 +297,7 @@ class _LoadMoreControl extends StatelessWidget {
             child: Text(
               l10n.reviewReviewHistoryLoadMoreFailed,
               style: context.theme.typography.body.xs.copyWith(
-                color: context.theme.colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           )
@@ -328,8 +328,6 @@ class _HistoryEventRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final isActive = event.status == ReviewEventStatus.active;
     final endLabel = event.endedAt != null
         ? reviewShortDateLabel(context, event.endedAt!)
@@ -356,7 +354,7 @@ class _HistoryEventRow extends StatelessWidget {
                 Text(
                   '${reviewShortDateLabel(context, event.startedAt)} – $endLabel',
                   style: context.theme.typography.body.xs.copyWith(
-                    color: colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                 ),
               ],

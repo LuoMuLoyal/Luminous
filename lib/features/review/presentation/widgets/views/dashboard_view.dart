@@ -396,14 +396,12 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FCard(
       child: FTile(
         prefix: FAvatar.raw(
           child: Icon(
             SemanticIcons.statusBlocked,
-            color: colors.primary,
+            color: SemanticColor.primary.solid(context),
             size: Spacing.level4,
           ),
         ),
