@@ -34,7 +34,6 @@ class MedicinePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
@@ -90,13 +89,10 @@ class MedicinePage extends ConsumerWidget {
                   ],
                 ),
               )
-            : DecoratedBox(
-                decoration: BoxDecoration(color: colors.background),
-                child: SafeArea(
-                  bottom: false,
-                  child: MedicineErrorView(
-                    onRetry: () => ref.invalidate(medicineWorkspaceProvider),
-                  ),
+            : SafeArea(
+                bottom: false,
+                child: MedicineErrorView(
+                  onRetry: () => ref.invalidate(medicineWorkspaceProvider),
                 ),
               ),
         emptyInsufficientBuilder: (empty) => isDesktop

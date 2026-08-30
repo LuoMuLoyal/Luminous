@@ -33,24 +33,22 @@ YYYY-MM-DD-short-task-name.md
 
 ## Current Plans
 
+- [`2026-08-30-design-system-unification-and-token-deriving.md`](2026-08-30-design-system-unification-and-token-deriving.md)
+  — 设计系统统一与 Token 去代理化：退役 `RadiusTokens`/`TypographyToken` 纯代理层，统一全部 `context.theme.colors.*` 取法（mutedForeground/primary/destructive/border 等），清理 `BorderRadius.circular`+`Colors.black/white`+`Color(0xFF...)` 硬编码，`Spacing`/`IconSizeTokens` 增加语义别名，6 个 Phase
 - [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
   — 中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门
 - [`2026-07-10-legal-compliance-pages.md`](2026-07-10-legal-compliance-pages.md)
   — 合规/法律页面补全：剩余 P2-1 ICP 备案信息 + About 页增强
 - [`2026-07-29-native-bridging-roadmap.md`](2026-07-29-native-bridging-roadmap.md)
   — 原生桥接路线图：后台同步、推送通知、健康数据集成、生物识别、应用快捷方式、Live Activity、桌面热键
-- [`2026-08-01-ai-chat-redesign-plan.md`](2026-08-01-ai-chat-redesign-plan.md)
-  — AI 对话页重构剩余：阶段 3 会话删除/重命名（后端接口阻塞）、阶段 6 桌面 split-view
 - [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)
   — Flutter 3.47 升级：已落地 refactor，测试被上游语义回归阻塞
 - [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)
   — 产品表面路线：手机核心 + 桌面 SaaS 差异化 + Web 第三客户端（0.1.0 后启动）
-- [`2026-08-25-error-handling-and-l10n-remediation-plan.md`](2026-08-25-error-handling-and-l10n-remediation-plan.md)
-  — 错误处理收尾与 l10n 消息根治：TaskEither throw 反模式、中文消息残留、StateError 分类、LucentApiException 清除、敏感操作对话框修复
 - [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md)
   — 功能盘点改造决策记录（十份计划共享，优先于各计划旧表述）
 
-### 功能盘点改造计划(2026-08-16,共 9 份保留)
+### 功能盘点改造计划(2026-08-16,共 8 份保留)
 
 来源:`research/02-功能盘点/` 十份调研文档(已审阅;内容以各文档「逐功能分析」为准改写,
 速览表/结尾汇总仅作参考)。跨功能域共用的内容只在顺序靠前的计划里写全,靠后的计划只做引用;
@@ -75,7 +73,7 @@ YYYY-MM-DD-short-task-name.md
 7. [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md)
    — 健康事件与档案:剩余 H-4 kind 筛选、weightKg 时间序列、conditions 上下文(均 0.1.0 后)
 8. [`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)
-   — 报告:剩余 Review 视图装配(R-3)、legacy 重装配 #19/#21/#22 与后端裁剪(R-4)、409 双保险(R-5)、文档漂移(R-6)
+   — 报告:R-3/R-4 已完成;剩余 409 双保险(R-5)与文档漂移(R-6)
 9. [`2026-08-16-mine-settings-remediation-plan.md`](2026-08-16-mine-settings-remediation-plan.md)
    — 个人中心与设置:剩余 P1-3 图片质量/仅 Wi-Fi 同步(0.1.0 后)
 10. [`2026-08-16-engineering-backend-plan.md`](2026-08-16-engineering-backend-plan.md)
