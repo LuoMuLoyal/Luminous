@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 
@@ -75,7 +76,7 @@ class TintedStatusBadge extends StatelessWidget {
       decoration: ShapeDecoration(
         color: color.muted(context),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.level2),
+          borderRadius: context.theme.style.borderRadius.xs,
           side: BorderSide(color: color.border(context)),
         ),
       ),

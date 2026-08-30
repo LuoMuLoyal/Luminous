@@ -185,7 +185,7 @@ class _SafetyCard extends StatelessWidget {
         decoration: ShapeDecoration(
           color: palette.subtle(context),
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(RadiusTokens.level4),
+            borderRadius: context.theme.style.borderRadius.md,
             side: BorderSide(color: palette.border(context)),
           ),
         ),
@@ -417,7 +417,7 @@ class _AlertChip extends StatelessWidget {
           decoration: ShapeDecoration(
             color: alert.color.muted(context),
             shape: RoundedSuperellipseBorder(
-              borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+              borderRadius: context.theme.style.borderRadius.pill,
             ),
           ),
           child: Text(
@@ -447,7 +447,7 @@ class _SafetyEmptyCard extends StatelessWidget {
         decoration: ShapeDecoration(
           color: SemanticColor.neutral.subtle(context),
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(RadiusTokens.level4),
+            borderRadius: context.theme.style.borderRadius.md,
             side: BorderSide(color: SemanticColor.neutral.border(context)),
           ),
         ),

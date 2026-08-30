@@ -120,11 +120,11 @@ class _DrugBoxPlaceholder extends StatelessWidget {
         const SizedBox(height: Spacing.level3),
         const AppDivider(),
         const SizedBox(height: Spacing.level3),
-        const Row(
+        Row(
           children: [
-            InlineSkeletonCircle(size: 32),
-            SizedBox(width: Spacing.level3),
-            Expanded(
+            const InlineSkeletonCircle(size: 32),
+            const SizedBox(width: Spacing.level3),
+            const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -137,7 +137,7 @@ class _DrugBoxPlaceholder extends StatelessWidget {
             InlineSkeletonBlock(
               height: 32,
               width: 72,
-              radius: RadiusTokens.levelFull,
+              radius: context.theme.style.borderRadius.pill.topLeft.x,
             ),
           ],
         ),
@@ -194,9 +194,7 @@ class _QuickOperationsPlaceholder extends StatelessWidget {
       children: [
         for (var i = 0; i < 4; i += 1) ...[
           if (i > 0) const SizedBox(width: Spacing.level3),
-          const Expanded(
-            child: InlineSkeletonBlock(height: 80, radius: RadiusTokens.level4),
-          ),
+          const Expanded(child: InlineSkeletonBlock(height: 80)),
         ],
       ],
     );
@@ -220,11 +218,11 @@ class _RecordsPlaceholder extends StatelessWidget {
         const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 3; i += 1) ...[
           if (i > 0) const SizedBox(height: Spacing.level4),
-          const Row(
+          Row(
             children: [
-              InlineSkeletonCircle(size: 40),
-              SizedBox(width: Spacing.level3),
-              Expanded(
+              const InlineSkeletonCircle(size: 40),
+              const SizedBox(width: Spacing.level3),
+              const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -234,11 +232,11 @@ class _RecordsPlaceholder extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.level3),
               InlineSkeletonBlock(
                 height: 28,
                 width: 56,
-                radius: RadiusTokens.levelFull,
+                radius: context.theme.style.borderRadius.pill.topLeft.x,
               ),
             ],
           ),

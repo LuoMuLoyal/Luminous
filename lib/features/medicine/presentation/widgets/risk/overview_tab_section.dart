@@ -91,7 +91,7 @@ class RiskScoreHero extends StatelessWidget {
           context.theme.colors.background,
         ),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.level5),
+          borderRadius: context.theme.style.borderRadius.lg,
           side: BorderSide(color: palette.border),
         ),
       ),
@@ -162,7 +162,7 @@ class MetricGrid extends StatelessWidget {
       decoration: ShapeDecoration(
         color: SemanticColor.neutral.subtle(context),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          borderRadius: context.theme.style.borderRadius.md,
         ),
       ),
       child: IntrinsicHeight(
@@ -215,7 +215,7 @@ class SafeStateCard extends StatelessWidget {
       decoration: ShapeDecoration(
         color: SemanticColor.success.subtle(context),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          borderRadius: context.theme.style.borderRadius.md,
         ),
       ),
       child: Padding(
@@ -289,7 +289,7 @@ class OverallRecommendationCard extends StatelessWidget {
       decoration: ShapeDecoration(
         color: SemanticColor.primary.subtle(context),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          borderRadius: context.theme.style.borderRadius.md,
           side: BorderSide(color: SemanticColor.primary.border(context)),
         ),
       ),
@@ -340,7 +340,7 @@ class StaleBanner extends StatelessWidget {
       decoration: ShapeDecoration(
         color: SemanticColor.warning.subtle(context),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          borderRadius: context.theme.style.borderRadius.md,
           side: BorderSide(color: SemanticColor.warning.border(context)),
         ),
       ),

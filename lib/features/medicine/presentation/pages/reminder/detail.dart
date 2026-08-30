@@ -188,9 +188,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                       decoration: ShapeDecoration(
                         color: pillColor.muted(context),
                         shape: RoundedSuperellipseBorder(
-                          borderRadius: BorderRadius.circular(
-                            RadiusTokens.level2,
-                          ),
+                          borderRadius: context.theme.style.borderRadius.xs,
                         ),
                       ),
                       child: Padding(

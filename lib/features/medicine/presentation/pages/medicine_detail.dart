@@ -483,7 +483,7 @@ class _SourceBadge extends StatelessWidget {
       variant: FBadgeVariant.primary,
       style: .delta(
         decoration: .boxDelta(
-          borderRadius: BorderRadius.circular(RadiusTokens.level2),
+          borderRadius: context.theme.style.borderRadius.xs,
         ),
       ),
       child: Text(
@@ -510,7 +510,7 @@ class _ReferenceNotice extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: SemanticColor.info.muted(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        borderRadius: context.theme.style.borderRadius.xs,
       ),
       child: Row(
         children: [

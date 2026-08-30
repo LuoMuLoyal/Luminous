@@ -162,9 +162,8 @@ class _TodayPlanRow extends StatelessWidget {
                               decoration: .shapeDelta(
                                 color: SemanticColor.neutral.muted(context),
                                 shape: RoundedSuperellipseBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    RadiusTokens.level2,
-                                  ),
+                                  borderRadius:
+                                      context.theme.style.borderRadius.xs,
                                   side: BorderSide(color: colors.border),
                                 ),
                               ),

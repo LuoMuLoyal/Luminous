@@ -105,7 +105,7 @@ class _DrugBoxHeader extends StatelessWidget {
           height: Spacing.level7,
           decoration: BoxDecoration(
             color: SemanticColor.primary.muted(context),
-            borderRadius: BorderRadius.circular(RadiusTokens.level4),
+            borderRadius: context.theme.style.borderRadius.md,
           ),
           child: Center(
             child: Icon(
@@ -482,10 +482,11 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                         widthFactor: 0.66,
                       ),
                       SkeletonSlot(
-                        skeleton: const InlineSkeletonBlock(
+                        skeleton: InlineSkeletonBlock(
                           height: 22,
                           width: 54,
-                          radius: RadiusTokens.levelFull,
+                          radius:
+                              context.theme.style.borderRadius.pill.topLeft.x,
                         ),
                         child: TintedStatusBadge(
                           color: item.stateColor,

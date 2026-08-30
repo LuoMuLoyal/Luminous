@@ -41,7 +41,7 @@ class RiskFindingItem extends StatelessWidget {
             decoration: ShapeDecoration(
               color: color.solid(context),
               shape: RoundedSuperellipseBorder(
-                borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+                borderRadius: context.theme.style.borderRadius.pill,
               ),
             ),
           ),
@@ -137,7 +137,7 @@ class _SeverityPill extends StatelessWidget {
       decoration: ShapeDecoration(
         color: color.muted(context),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+          borderRadius: context.theme.style.borderRadius.pill,
         ),
       ),
       child: Padding(
@@ -181,7 +181,7 @@ class _ContextPill extends StatelessWidget {
       decoration: ShapeDecoration(
         color: SemanticColor.neutral.muted(context),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+          borderRadius: context.theme.style.borderRadius.pill,
         ),
       ),
       child: Padding(

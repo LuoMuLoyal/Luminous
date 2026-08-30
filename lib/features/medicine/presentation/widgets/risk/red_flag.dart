@@ -19,7 +19,7 @@ class RiskRedFlagItem extends StatelessWidget {
       decoration: ShapeDecoration(
         color: SemanticColor.destructive.subtle(context),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          borderRadius: context.theme.style.borderRadius.md,
         ),
       ),
       child: IntrinsicHeight(
@@ -32,7 +32,7 @@ class RiskRedFlagItem extends StatelessWidget {
               decoration: ShapeDecoration(
                 color: SemanticColor.destructive.solid(context),
                 shape: RoundedSuperellipseBorder(
-                  borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+                  borderRadius: context.theme.style.borderRadius.pill,
                 ),
               ),
             ),
