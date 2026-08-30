@@ -158,9 +158,10 @@ void main() {
         .toList();
 
     expect(icons, hasLength(3));
-    for (final icon in icons) {
-      expect(icon.color, SemanticColor.primary);
-    }
+    // Each tile uses a distinct semantic color to convey its category.
+    expect(icons[0].color, SemanticColor.primary);
+    expect(icons[1].color, SemanticColor.info);
+    expect(icons[2].color, SemanticColor.neutral);
   });
 
   testWidgets('Mine notifications section routes to settings, dnd, and inbox', (
