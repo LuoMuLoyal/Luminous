@@ -1,5 +1,5 @@
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/utils/date_format_utils.dart';
+import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 abstract final class AuthMapper {

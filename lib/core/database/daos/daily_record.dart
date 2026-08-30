@@ -5,7 +5,7 @@ import 'package:drift/drift.dart';
 import '../database.dart';
 import '../tables/daily_records.dart';
 
-part 'daily_record_dao.g.dart';
+part 'daily_record.g.dart';
 
 /// Data access object for the daily records cache table.
 ///

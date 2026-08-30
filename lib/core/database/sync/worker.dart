@@ -10,7 +10,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 
 import '../connection_providers.dart';
-import '../daos/pending_sync_dao.dart';
+import '../daos/pending_sync.dart';
 
 part 'worker.g.dart';
 

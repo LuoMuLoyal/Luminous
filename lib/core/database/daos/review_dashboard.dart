@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 import '../database.dart';
 import '../tables/review_dashboards.dart';
 
-part 'review_dashboard_dao.g.dart';
+part 'review_dashboard.g.dart';
 
 /// Data access object for the report dashboard cache table.
 ///

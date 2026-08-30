@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/utils/date_format_utils.dart';
+import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/widgets/common/skeleton.dart';
 import 'package:luminous/core/widgets/common/state_message.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';

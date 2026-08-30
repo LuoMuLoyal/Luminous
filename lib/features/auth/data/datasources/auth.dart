@@ -5,7 +5,7 @@ import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/session_store.dart';
-import 'package:luminous/core/utils/date_format_utils.dart';
+import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/features/auth/data/mappers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';

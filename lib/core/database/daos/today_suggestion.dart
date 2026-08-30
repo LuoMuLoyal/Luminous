@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 import '../database.dart';
 import '../tables/today_suggestions.dart';
 
-part 'today_suggestion_dao.g.dart';
+part 'today_suggestion.g.dart';
 
 /// Data access object for the today suggestion cache.
 ///

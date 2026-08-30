@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/database/daos/daily_record_dao.dart';
-import 'package:luminous/core/database/daos/pending_sync_dao.dart';
+import 'package:luminous/core/database/daos/daily_record.dart';
+import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/error_code.dart';

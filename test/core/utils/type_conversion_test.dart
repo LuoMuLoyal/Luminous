@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/utils/type_conversion_utils.dart';
+import 'package:luminous/core/utils/type_conversion.dart';
 
 void main() {
   group('asMap', () {

@@ -1,4 +1,4 @@
-import 'package:luminous/core/utils/type_conversion_utils.dart';
+import 'package:luminous/core/utils/type_conversion.dart';
 import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 
 MealAnalysisViewData? parseMealAnalysisViewData(Map<String, dynamic>? payload) {

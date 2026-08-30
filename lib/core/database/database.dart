@@ -11,14 +11,14 @@ import 'connection.dart'
     if (dart.library.io) 'connection_io.dart'
     if (dart.library.js_interop) 'connection_web.dart'
     as conn;
-import 'daos/current_medicine_dao.dart';
-import 'daos/daily_record_dao.dart';
-import 'daos/health_context_dao.dart';
-import 'daos/medicine_dose_log_dao.dart';
-import 'daos/pending_sync_dao.dart';
-import 'daos/review_dao.dart';
-import 'daos/review_dashboard_dao.dart';
-import 'daos/today_suggestion_dao.dart';
+import 'daos/current_medicine.dart';
+import 'daos/daily_record.dart';
+import 'daos/health_context.dart';
+import 'daos/medicine_dose_log.dart';
+import 'daos/pending_sync.dart';
+import 'daos/review.dart';
+import 'daos/review_dashboard.dart';
+import 'daos/today_suggestion.dart';
 import 'tables/current_medicines.dart';
 import 'tables/daily_records.dart';
 import 'tables/health_context.dart';

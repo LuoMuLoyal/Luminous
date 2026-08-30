@@ -5,7 +5,7 @@ import 'package:drift/drift.dart';
 import '../database.dart';
 import '../tables/medicine_dose_logs.dart';
 
-part 'medicine_dose_log_dao.g.dart';
+part 'medicine_dose_log.g.dart';
 
 /// Data access object for the medicine dose logs cache table.
 @DriftAccessor(tables: [MedicineDoseLogCacheEntries])

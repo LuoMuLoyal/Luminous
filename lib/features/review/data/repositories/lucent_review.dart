@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/cache_constants.dart';
-import 'package:luminous/core/database/daos/review_dao.dart';
+import 'package:luminous/core/database/daos/review.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_code.dart';

@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
-import 'package:luminous/core/database/daos/pending_sync_dao.dart';
+import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockProductEventsApi extends Mock implements ProductEventsApi {}

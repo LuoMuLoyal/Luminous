@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/today_suggestion_dao.dart';
+import 'package:luminous/core/database/daos/today_suggestion.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';

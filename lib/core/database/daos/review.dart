@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 import '../database.dart';
 import '../tables/reviews.dart';
 
-part 'review_dao.g.dart';
+part 'review.g.dart';
 
 /// Data access object for the review cache table.
 ///

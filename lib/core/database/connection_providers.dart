@@ -1,11 +1,11 @@
-import 'package:luminous/core/database/daos/current_medicine_dao.dart';
-import 'package:luminous/core/database/daos/daily_record_dao.dart';
-import 'package:luminous/core/database/daos/health_context_dao.dart';
-import 'package:luminous/core/database/daos/medicine_dose_log_dao.dart';
-import 'package:luminous/core/database/daos/pending_sync_dao.dart';
-import 'package:luminous/core/database/daos/review_dao.dart';
-import 'package:luminous/core/database/daos/review_dashboard_dao.dart';
-import 'package:luminous/core/database/daos/today_suggestion_dao.dart';
+import 'package:luminous/core/database/daos/current_medicine.dart';
+import 'package:luminous/core/database/daos/daily_record.dart';
+import 'package:luminous/core/database/daos/health_context.dart';
+import 'package:luminous/core/database/daos/medicine_dose_log.dart';
+import 'package:luminous/core/database/daos/pending_sync.dart';
+import 'package:luminous/core/database/daos/review.dart';
+import 'package:luminous/core/database/daos/review_dashboard.dart';
+import 'package:luminous/core/database/daos/today_suggestion.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

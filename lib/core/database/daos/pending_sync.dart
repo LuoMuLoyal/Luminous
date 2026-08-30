@@ -8,7 +8,7 @@ import '../database.dart';
 import '../models/pending_sync_error_details.dart';
 import '../tables/pending_sync_queue.dart';
 
-part 'pending_sync_dao.g.dart';
+part 'pending_sync.g.dart';
 
 /// Exponential backoff for [retryCount]: [syncBackoffBase] * 2^retryCount,
 /// capped at [syncBackoffMax].

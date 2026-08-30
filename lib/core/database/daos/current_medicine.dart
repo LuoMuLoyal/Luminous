@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 import '../database.dart';
 import '../tables/current_medicines.dart';
 
-part 'current_medicine_dao.g.dart';
+part 'current_medicine.g.dart';
 
 /// Data access object for the current medicines cache.
 ///

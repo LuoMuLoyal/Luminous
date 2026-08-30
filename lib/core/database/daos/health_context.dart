@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 import '../database.dart';
 import '../tables/health_context.dart';
 
-part 'health_context_dao.g.dart';
+part 'health_context.g.dart';
 
 /// Data access object for the health context cache.
 ///
