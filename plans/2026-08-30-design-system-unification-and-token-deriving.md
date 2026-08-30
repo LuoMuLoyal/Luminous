@@ -11,34 +11,37 @@
 
 ## 审计数据快照
 
-以下数据来自 2026-08-30 的全量 `grep` 扫描，仅作计划参考，执行时以实际扫描为准。
+以下数据来自 2026-08-30 的全量 `rg -c` 扫描，仅作计划参考，执行时以实际扫描为准。
 
 ### 取法次数总览
 
 | 扫描项 | 取法次数 | 说明 |
 |--------|---------|------|
 | `Spacing.level*` | 2,129 | design 层间距 token，使用最广泛 |
-| `SemanticColor.*` | 344 | design 层语义颜色系统 |
-| `context.theme.colors.*`（直接取 Forui） | 122 | 绕过 design 层直接取 Forui 原生颜色 |
-| `RadiusTokens.*` | 152 | design 层圆角 token |
+| `TypographyToken.*` | 583 | design 层字体 token（退役目标） |
+| `SemanticColor.*` | 338 | design 层语义颜色系统 |
+| `context.theme.colors.*`（直接取 Forui） | 121 | 绕过 design 层直接取 Forui 原生颜色 |
+| `RadiusTokens.*` | 152 | design 层圆角 token（退役目标） |
 | `IconSizeTokens.*` | 120 | design 层图标尺寸 token |
 | `BorderRadius.circular(数字)` | 117 | 绕过 RadiusTokens 硬编码圆角 |
-| `context.theme.style.*` | 9 | 绕过 RadiusTokens 直接取 Forui borderRadius |
-| `Colors.black/white` 硬编码 | 5 | 违反 Forui-first 原则 |
-| `Color(0xFF...)` 硬编码 | 52 | 含 design 层定义 + 业务层违规 |
+| `context.theme.style.borderRadius.*` | 9 | 直接取 Forui borderRadius（已是目标态） |
+| `Colors.black/white` 硬编码 | 6 | 违反 Forui-first 原则 |
+| `Color(0x...)` 硬编码 | 58 | 含 design 层定义 + 业务层违规 |
 
-### `context.theme.colors.*` 122 次拆分
+### `context.theme.colors.*` 121 次拆分
 
-直接取 Forui 原生色的 122 次中，主要取的属性为：
+直接取 Forui 原生色的 121 次中（仅统计 `context.theme.colors.` 前缀），主要取的属性为：
 
 | Forui 原生属性 | 次数 | 语义等价物 | 说明 |
 |--------------|------|-----------|------|
-| `mutedForeground` | ~40+ | `SemanticColor.neutral.solid` | 次要文字颜色，取法最多 |
-| `primary` | ~15 | `SemanticColor.primary.solid` | 品牌色，两种写法并存 |
-| `destructive` | ~8 | `SemanticColor.destructive.solid` | 错误/危险色 |
-| `border` | ~5 | `SemanticColor.neutral.border` | 边框色 |
-| `background` | ~3 | 无直接等价（`SurfaceTokens.scaffoldBackground`） | 背景色 |
-| `primaryForeground` | ~2 | `SemanticColor.primary.foreground` | 品牌色前景 |
+| `mutedForeground` | 73 | `SemanticColor.neutral.solid` | 次要文字颜色，取法最多 |
+| `primary`（非 `primaryForeground`） | 18 | `SemanticColor.primary.solid` | 品牌色，两种写法并存 |
+| `border` | 9 | `SemanticColor.neutral.border` | 边框色 |
+| `background` | 6 | 无直接等价（`SurfaceTokens.scaffoldBackground`） | 背景色，属分层职责不迁移 |
+| `destructive` | 4 | `SemanticColor.destructive.solid` | 错误/危险色 |
+| `primaryForeground` | 1 | `SemanticColor.primary.foreground` | 品牌色前景 |
+
+> 注意：`colors.mutedForeground` 还以 `final colors = context.theme.colors;` 局部变量前缀形式出现于更多文件中（总计 ~369 处 `.mutedForeground` 引用含 `markdown_style.dart` 等非 `context.theme.colors.` 前缀写法）。Phase 3 迁移时需同时扫描 `colors.mutedForeground` 局部变量模式。
 
 ### `level*` 跨维度语义不一致
 
@@ -75,14 +78,19 @@
 | `level8` | 26 | `xl3` |
 | `level9` / `levelFull` | 100 | `pill` |
 
-Forui 的 `FBorderRadius` 返回的是 `BorderRadius` 对象（`.all(.circular(n))`），比自定义 `double` 常量更直接可用——不需要再包一层 `BorderRadius.circular(RadiusTokens.level3)`，直接 `context.theme.style.borderRadius.sm` 即可。
+Forui 的 `FBorderRadius` 属性返回的是 `BorderRadius` 对象（`BorderRadius.all(Radius.circular(n))`），比自定义 `double` 常量更直接可用——不需要再包一层 `BorderRadius.circular(RadiusTokens.level3)`，直接 `context.theme.style.borderRadius.sm` 即可。但裸 `double` 用法需要 `.topLeft.x` 多层访问（详见退役路径 step 2）。
 
 **退役路径**：
 1. 全局替换 `BorderRadius.circular(RadiusTokens.levelN)` → `context.theme.style.borderRadius.xxx`
-2. 全局替换 `RadiusTokens.levelN` 裸 `double` 用法 → `context.theme.style.borderRadius.xxx.x`（取 `BorderRadius` 的 `x` 属性获取 `double`）
-3. 删除 `lib/core/design/radius.dart`
-4. 从 `lib/core/design/design.dart` 移除 `export 'radius.dart'`
-5. 更新 `docs/02-reference/Design_System.md` 中对 `RadiusTokens` 的引用
+2. 全局替换 `RadiusTokens.levelN` 裸 `double` 用法（约 39 处，模式多样）→ 按上下文分别处理：
+   - 若需要 `BorderRadius` 值：直接用 `context.theme.style.borderRadius.xxx`
+   - 若需要 `Radius` 值：用 `context.theme.style.borderRadius.xxx.topLeft`（`BorderRadius.topLeft` 返回 `Radius`）
+   - 若需要裸 `double`：用 `context.theme.style.borderRadius.xxx.topLeft.x`（`Radius.x` 返回 `double`）
+   - **注意**：`FBorderRadius.xxx` 返回 `BorderRadius` 对象，`BorderRadius` **没有** `.x` 属性。要取裸 `double` 需 `.topLeft.x`（或 `.topRight.x` / `.bottomLeft.x` / `.bottomRight.x`，四角值相同）
+3. 同步处理 `lib/core/design/markdown_style.dart` 中的 `BorderRadius.circular(RadiusTokens.level2/level3)` 引用
+4. 删除 `lib/core/design/radius.dart`
+5. 从 `lib/core/design/design.dart` 移除 `export 'radius.dart'`
+6. 更新 `docs/02-reference/Design_System.md` 中对 `RadiusTokens` 的引用
 
 #### 2. `TypographyToken` → 退役，改用 `context.theme.typography`
 
@@ -109,7 +117,9 @@ Forui 还提供了 `xl5`~`xl8`（60~108px），自定义 token 截断了这些�
 3. 全局替换 `TypographyToken.levelN.resolve(typography)` → `typography.body.xxx` / `typography.display.xxx`
 4. 删除 `lib/core/design/typography.dart`
 5. 从 `lib/core/design/design.dart` 移除 `export 'typography.dart'`
-6. 更新 `docs/02-reference/Design_System.md` 中对 `TypographyToken` 的引用
+6. 更新 `docs/02-reference/Design_System.md` 中对 `TypographyToken` 的引用（含 Markdown 渲染段落中对 `TypographyToken` 的引用）
+
+> **注意**：上表中的 px 值为 touch theme 默认值。`FTypeface` 在 desktop theme 下 fontSize 不同（如 `xs3` touch=10、desktop=8）。但 `TypographyToken` 的 `resolve()` 也是在运行时从当前主题取值，所以退役后 `context.theme.typography.body.xxx` 同样运行时适配，不会有视觉变化。映射的是 API 属性名（`levelN` → `xs3/xs2/...`），不是固定像素值。
 
 ### 保留（Forui 无等价物，真实增值层）
 
@@ -179,7 +189,7 @@ abstract final class IconSizeTokens {
 
 ### 问题 1：颜色取用双轨制 — `context.theme.colors.*` vs `SemanticColor.*`
 
-**现状**：两种取法并存且混用于同一文件。`context.theme.colors.*` 取的 Forui 原生属性主要是 `mutedForeground`（~40+ 次，最多）、`primary`（~15 次）、`destructive`（~8 次）、`border`（~5 次）、`background`（~3 次）、`primaryForeground`（~2 次）。
+**现状**：两种取法并存且混用于同一文件。`context.theme.colors.*` 取的 Forui 原生属性主要是 `mutedForeground`（73 次，最多）、`primary`（18 次）、`border`（9 次）、`background`（6 次）、`destructive`（4 次）、`primaryForeground`（1 次）。
 
 **根因**：
 - `SemanticColor.neutral.solid` 虽映射到 `mutedForeground`，但"neutral"语义不直观——开发者写次要文字时自然取 `colors.mutedForeground`。
@@ -245,21 +255,21 @@ abstract final class IconSizeTokens {
 
 **处理**：退役 `RadiusTokens` 后，这 9 处已经是目标态（直接取 Forui `FBorderRadius`），无需修改。但需确认这 9 处与退役后的统一取法一致——即全项目统一用 `context.theme.style.borderRadius.*`。
 
-### 问题 4：`Colors.black/white` 硬编码（5 处）
+### 问题 4：`Colors.black/white` 硬编码（6 处）
 
-**现状**：5 处 `Colors.black` / `Colors.white` 硬编码，违反 Forui-first 原则。
+**现状**：6 处 `Colors.black` / `Colors.white` 硬编码，违反 Forui-first 原则。
 
 **修复方案**：逐一审计，替换为语义等价物：
 - `Colors.black` → `context.theme.colors.foreground`（暗色模式为白色，亮色模式为黑色）或具体 `SemanticColor` 的 `solid`/`fillStrong`
 - `Colors.white` → `context.theme.colors.background`（亮色模式为白色，暗色模式为深色）
 - 例外：barcode scanner 扫描框颜色等硬件交互场景可能需要保持硬编码
 
-### 问题 5：`Color(0xFF...)` 硬编码（52 处）
+### 问题 5：`Color(0x...)` 硬编码（58 处）
 
-**现状**：52 处 `Color(0xFF...)` 硬编码。其中大部分是合法的（`theme.dart` 主题族定义、OAuth 品牌色、barcode scanner 扫描框颜色），但需逐个审计确认。
+**现状**：58 处 `Color(0x...)` 硬编码。其中大部分是合法的（`theme.dart` 主题族定义、OAuth 品牌色、barcode scanner 扫描框颜色），但需逐个审计确认。
 
 **修复方案**：
-1. 扫描全部 52 处，分类为"合法硬编码"（主题定义、品牌色、硬件交互）和"违规硬编码"（widget 层面应该走 token 的）
+1. 扫描全部 58 处，分类为"合法硬编码"（主题定义、品牌色、硬件交互）和"违规硬编码"（widget 层面应该走 token 的）
 2. 违规项替换为 `SemanticColor` 或 Forui 原生色
 3. 合法项添加注释说明为何硬编码
 
@@ -270,18 +280,19 @@ abstract final class IconSizeTokens {
 - [ ] 1.1 扫描全部 `RadiusTokens` 引用和 `BorderRadius.circular` 硬编码，生成完整文件清单
 - [ ] 1.2 按文件逐个替换（按 feature 迁移：today → record → medicine → report → mine → settings → search → scan → review → core）：
   - `BorderRadius.circular(RadiusTokens.levelN)` → `context.theme.style.borderRadius.xxx`
-  - `RadiusTokens.levelN`（裸 `double` 用法）→ `context.theme.style.borderRadius.xxx.x`
+  - `RadiusTokens.levelN`（裸 `double` 用法，约 39 处）→ 按上下文用 `context.theme.style.borderRadius.xxx`（需 `BorderRadius` 时）或 `.xxx.topLeft.x`（需裸 `double` 时）
   - `BorderRadius.circular(硬编码数字)` → `context.theme.style.borderRadius.xxx`
 - [ ] 1.3 确认 9 处 `context.theme.style.borderRadius.*` 直接取 Forui 的代码已是目标态，无需修改
 - [ ] 1.4 删除 `lib/core/design/radius.dart`
 - [ ] 1.5 从 `lib/core/design/design.dart` 移除 `export 'radius.dart'`
 - [ ] 1.6 更新 `docs/02-reference/Design_System.md` 中 `RadiusTokens` 相关段落
-- [ ] 1.7 `flutter analyze` + `flutter test` 验证
+- [ ] 1.7 同步处理 `lib/core/design/markdown_style.dart` 中的 `RadiusTokens` 引用（`BorderRadius.circular(RadiusTokens.level2/level3)`）和 `colors.mutedForeground` / `colors.border` 直接取法
+- [ ] 1.8 `flutter analyze` + `flutter test` 验证
 
 ### Phase 2: `TypographyToken` 退役
 
 - [ ] 2.1 扫描全部 `TypographyToken` 引用，生成完整文件清单
-- [ ] 2.2 特别处理 `lib/core/design/markdown_style.dart`——该文件大量使用 `TypographyToken` 定义 Markdown 渲染样式，退役时需同步迁移到 `context.theme.typography.body/display.*`
+- [ ] 2.2 特别处理 `lib/core/design/markdown_style.dart`——该文件大量使用 `TypographyToken` 定义 Markdown 渲染样式（legal 和 ai 两套预置的标题阶梯、正文、行高等），退役时需同步迁移到 `context.theme.typography.body/display.*`。注意该文件还使用了 `RadiusTokens` 和 `colors.mutedForeground` / `colors.border` 直接取法，需在对应 Phase 中一并处理
 - [ ] 2.3 按文件逐个替换（按 feature 迁移）：
   - `TypographyToken.levelN.body(context)` → `context.theme.typography.body.xxx`
   - `TypographyToken.levelN.display(context)` → `context.theme.typography.display.xxx`
@@ -294,11 +305,11 @@ abstract final class IconSizeTokens {
 ### Phase 3: 颜色取用统一（`context.theme.colors.*` → `SemanticColor.*`）
 
 - [ ] 3.1 确认 `SemanticColor.neutral.solid` 已映射到 `fColors.mutedForeground`（在 `theme.dart` 的 `_semanticColorsFor` 中已确认）
-- [ ] 3.2 全局替换 `context.theme.colors.mutedForeground`（~40+ 次）→ `SemanticColor.neutral.solid(context)`
-- [ ] 3.3 全局替换 `context.theme.colors.primary`（~15 次）→ `SemanticColor.primary.solid(context)`
-- [ ] 3.4 全局替换 `context.theme.colors.destructive`（~8 次）→ `SemanticColor.destructive.solid(context)`
-- [ ] 3.5 全局替换 `context.theme.colors.primaryForeground`（~2 次）→ `SemanticColor.primary.foreground(context)`
-- [ ] 3.6 全局替换 `context.theme.colors.border`（~5 次）→ `SemanticColor.neutral.border(context)`
+- [ ] 3.2 全局替换 `context.theme.colors.mutedForeground`（73 次）→ `SemanticColor.neutral.solid(context)`；同时扫描 `colors.mutedForeground` 局部变量模式（总计 ~369 处 `.mutedForeground` 引用含非 `context.theme.colors.` 前缀写法）
+- [ ] 3.3 全局替换 `context.theme.colors.primary`（18 次，注意排除 `primaryForeground`）→ `SemanticColor.primary.solid(context)`
+- [ ] 3.4 全局替换 `context.theme.colors.destructive`（4 次）→ `SemanticColor.destructive.solid(context)`
+- [ ] 3.5 全局替换 `context.theme.colors.primaryForeground`（1 次）→ `SemanticColor.primary.foreground(context)`
+- [ ] 3.6 全局替换 `context.theme.colors.border`（9 次）→ `SemanticColor.neutral.border(context)`
 - [ ] 3.7 文档明确：`background`/`card`/`foreground` 三个基础面色走 `context.theme.colors.*` / `SurfaceTokens.*` 是合理的分层职责，不是双轨制
 - [ ] 3.8 验证视觉无变化
 - [ ] 3.9 `flutter analyze` + `flutter test` 验证
@@ -313,8 +324,8 @@ abstract final class IconSizeTokens {
 
 ### Phase 5: `Colors.black/white` + `Color(0xFF...)` 硬编码清理
 
-- [ ] 5.1 扫描全部 5 处 `Colors.black` / `Colors.white`，逐一替换为语义等价物（`context.theme.colors.foreground` / `context.theme.colors.background` 等），例外场景（barcode scanner 等硬件交互）保留并注释
-- [ ] 5.2 扫描全部 52 处 `Color(0xFF...)`，分类为"合法硬编码"（主题定义、品牌色、硬件交互）和"违规硬编码"
+- [ ] 5.1 扫描全部 6 处 `Colors.black` / `Colors.white`，逐一替换为语义等价物（`context.theme.colors.foreground` / `context.theme.colors.background` 等），例外场景（barcode scanner 等硬件交互）保留并注释
+- [ ] 5.2 扫描全部 58 处 `Color(0x...)`，分类为"合法硬编码"（主题定义、品牌色、硬件交互）和"违规硬编码"
 - [ ] 5.3 违规硬编码替换为 `SemanticColor` 或 Forui 原生色
 - [ ] 5.4 合法硬编码添加注释说明原因
 - [ ] 5.5 `flutter analyze` + `flutter test` 验证
@@ -323,14 +334,20 @@ abstract final class IconSizeTokens {
 
 - [ ] 6.1 更新 `docs/02-reference/Design_System.md`：移除 `RadiusTokens` / `TypographyToken` 段落，更新 Token 清单和命名段落
 - [ ] 6.2 更新 `AGENTS.md` 中 `Design System` 段落（移除 `RadiusTokens` / `TypographyToken` 引用）
-- [ ] 6.3 追加迁移日志到 `docs/03-logs/migration-log/2026-08-30.md`
+- [ ] 6.3 追加迁移日志到 `docs/03-logs/migration-log/2026-08-30.md`（注意：该文件已存在，必须追加，不能覆盖）
 - [ ] 6.4 运行 `dart run scripts/check_doc_coverage.dart --warning-only` 确认文档覆盖
 
 ## 风险与注意事项
 
 1. **`context.theme` 依赖**：退役后，圆角和字体不再是无上下文的 `const double`，而是需要 `BuildContext` 来访问 `context.theme.style.borderRadius.xxx`。在 `const` 上下文中（如 `const BoxDecoration(borderRadius: ...)`）无法直接使用。这些位置需要改用运行时构造（`BoxDecoration(borderRadius: context.theme.style.borderRadius.sm)`），或保持 `BorderRadius.circular(8)` 硬编码（如果确实在 `const` 上下文中且性能敏感）。实际审计发现绝大多数 `BorderRadius.circular` 用法已经在 `build()` 方法体内，不是 `const` 上下文。
 
-2. **`RadiusTokens` 裸 `double` 用法**：部分代码用 `RadiusTokens.level3` 作为 `double` 值（不是 `BorderRadius.circular(RadiusTokens.level3)`），例如 `borderRadius: BorderRadius.only(topLeft: Radius.circular(RadiusTokens.level3))`。这些需要替换为 `context.theme.style.borderRadius.sm.x`（`FBorderRadius` 的属性是 `BorderRadius` 对象，其 `.x` 属性是 `Radius`，`.x.topLeft` 等可取 `double`）。或者使用 `context.theme.style.borderRadius.sm.x.x` 取裸 `double`。
+   特别注意 `lib/core/widgets/common/skeleton.dart` 中有 `this.radius = RadiusTokens.levelN` 作为构造函数默认参数——这些是 `const` 上下文中的默认值，不能直接替换为 `context.theme.style.borderRadius.xxx`（需要 `BuildContext`）。这类位置需要改为 `null` 默认值 + `build()` 内运行时 fallback，或保持硬编码。
+
+2. **`RadiusTokens` 裸 `double` 用法**（约 39 处）：部分代码用 `RadiusTokens.level3` 作为 `double` 值（不是 `BorderRadius.circular(RadiusTokens.level3)`），例如 `radius: RadiusTokens.level4`（构造函数参数）、`Radius.circular(RadiusTokens.level3)` 等。这些需要按上下文分别处理：
+   - 需要 `BorderRadius`：直接用 `context.theme.style.borderRadius.xxx`
+   - 需要 `Radius`：用 `context.theme.style.borderRadius.xxx.topLeft`（`BorderRadius.topLeft` 返回 `Radius`）
+   - 需要裸 `double`：用 `context.theme.style.borderRadius.xxx.topLeft.x`（`Radius.x` 返回 `double`）
+   - **API 注意**：`FBorderRadius.xxx` 返回 `BorderRadius` 对象，`BorderRadius` **没有** `.x` 属性。之前的 `.xxx.x` / `.xxx.x.x` 写法是错误的，正确路径是 `.xxx.topLeft.x`。
 
 3. **`TypographyToken` 在 `const` 上下文**：与圆角类似，`TypographyToken.level4.body(context)` 本身已经需要 `BuildContext`，所以退役不会引入新的上下文依赖。
 
@@ -342,7 +359,7 @@ abstract final class IconSizeTokens {
 
 7. **`background`/`card`/`foreground` 不强行映射**：这三个 Forui 基础面色与 `SemanticColor` 语义不同——基础面色是"画布层"色，语义色是"语义层"色。两者并存是分层职责，不是双轨制。文档需明确这一边界。
 
-8. **`Color(0xFF...)` 合法性判断**：`theme.dart` 中主题族颜色定义（`_ColorOverride` 中的 `Color(0xFF1447E6)` 等）、OAuth 品牌色、barcode scanner 扫描框颜色属于合法硬编码，不应替换。widget 层面的颜色硬编码属于违规，应替换为 token。
+8. **`Color(0x...)` 合法性判断**：`theme.dart` 中主题族颜色定义（`_ColorOverride` 中的 `Color(0xFF1447E6)` 等）、OAuth 品牌色、barcode scanner 扫描框颜色属于合法硬编码，不应替换。widget 层面的颜色硬编码属于违规，应替换为 token。
 
 ## 不建议做的
 

@@ -33,6 +33,8 @@ YYYY-MM-DD-short-task-name.md
 
 ## Current Plans
 
+- [`2026-08-30-module-boundary-hygiene-audit.md`](2026-08-30-module-boundary-hygiene-audit.md)
+  — 模块边界卫生审计与修复：提取 `required_dialog` 到 `core/`（40 处深引用），测试归位到 `lib/features/*/tests/`，补 README；**不为 feature 建 barrel**（Flutter 移动端深引用更优：tree-shaking 精确 + 保留 deferred 加载粒度）
 - [`2026-08-30-design-system-unification-and-token-deriving.md`](2026-08-30-design-system-unification-and-token-deriving.md)
   — 设计系统统一与 Token 去代理化：退役 `RadiusTokens`/`TypographyToken` 纯代理层，统一全部 `context.theme.colors.*` 取法（mutedForeground/primary/destructive/border 等），清理 `BorderRadius.circular`+`Colors.black/white`+`Color(0xFF...)` 硬编码，`Spacing`/`IconSizeTokens` 增加语义别名，6 个 Phase
 - [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
