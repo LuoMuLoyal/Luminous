@@ -33,6 +33,7 @@ class TodaySection extends StatelessWidget {
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +46,7 @@ class TodaySection extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: context.theme.typography.display.xl.copyWith(
+                    style: typography.display.xl.copyWith(
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0,
                     ),
@@ -56,7 +57,7 @@ class TodaySection extends StatelessWidget {
                     const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle!,
-                      style: context.theme.typography.body.xs2.copyWith(
+                      style: typography.body.xs2.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),

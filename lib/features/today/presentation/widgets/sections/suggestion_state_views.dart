@@ -17,6 +17,7 @@ class SuggestionEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FCard(
       style: todayCardStyle(context),
       child: Padding(
@@ -36,14 +37,12 @@ class SuggestionEmptyState extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.todaySuggestionEmptyTitle,
-                style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.todaySuggestionEmptySubtitle,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,
@@ -66,6 +65,7 @@ class SuggestionSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final borderRadius = context.theme.style.borderRadius;
 
     return SkeletonShimmer(
       child: FCard(
@@ -81,7 +81,7 @@ class SuggestionSkeleton extends StatelessWidget {
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary,
-                      borderRadius: context.theme.style.borderRadius.sm,
+                      borderRadius: borderRadius.sm,
                     ),
                     child: const SizedBox.square(dimension: Spacing.level7),
                   ),
@@ -94,7 +94,7 @@ class SuggestionSkeleton extends StatelessWidget {
                           height: 16,
                           decoration: BoxDecoration(
                             color: colors.secondary,
-                            borderRadius: context.theme.style.borderRadius.xs,
+                            borderRadius: borderRadius.xs,
                           ),
                         ),
                         const SizedBox(height: Spacing.level2),
@@ -103,7 +103,7 @@ class SuggestionSkeleton extends StatelessWidget {
                           width: 120,
                           decoration: BoxDecoration(
                             color: colors.secondary,
-                            borderRadius: context.theme.style.borderRadius.xs,
+                            borderRadius: borderRadius.xs,
                           ),
                         ),
                       ],
@@ -117,7 +117,7 @@ class SuggestionSkeleton extends StatelessWidget {
                 height: 14,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: context.theme.style.borderRadius.xs,
+                  borderRadius: borderRadius.xs,
                 ),
               ),
               const SizedBox(height: Spacing.level2),
@@ -126,7 +126,7 @@ class SuggestionSkeleton extends StatelessWidget {
                 width: 200,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: context.theme.style.borderRadius.xs,
+                  borderRadius: borderRadius.xs,
                 ),
               ),
               const SizedBox(height: Spacing.level5),
@@ -137,7 +137,7 @@ class SuggestionSkeleton extends StatelessWidget {
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary,
-                      borderRadius: context.theme.style.borderRadius.pill,
+                      borderRadius: borderRadius.pill,
                     ),
                     child: const SizedBox(width: 80, height: 32),
                   ),
@@ -322,6 +322,7 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final borderRadius = context.theme.style.borderRadius;
 
     return TodaySection(
       title: AppLocalizations.of(context)!.todaySecondarySuggestionSectionTitle,
@@ -339,7 +340,7 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
                       DecoratedBox(
                         decoration: BoxDecoration(
                           color: colors.secondary,
-                          borderRadius: context.theme.style.borderRadius.sm,
+                          borderRadius: borderRadius.sm,
                         ),
                         child: const SizedBox.square(dimension: Spacing.level7),
                       ),
@@ -352,8 +353,7 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
                               height: 14,
                               decoration: BoxDecoration(
                                 color: colors.secondary,
-                                borderRadius:
-                                    context.theme.style.borderRadius.xs,
+                                borderRadius: borderRadius.xs,
                               ),
                             ),
                             const SizedBox(height: Spacing.level2),
@@ -362,8 +362,7 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
                               width: 140,
                               decoration: BoxDecoration(
                                 color: colors.secondary,
-                                borderRadius:
-                                    context.theme.style.borderRadius.xs,
+                                borderRadius: borderRadius.xs,
                               ),
                             ),
                           ],

@@ -114,6 +114,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
     final cardTone = mapTone(card.cardTone);
     final isFading =
         card.lifecycleState == TodaySuggestionLifecycleState.fading;
+    final typography = context.theme.typography;
 
     return _SuggestionImpressionTracker(
       ruleCode: card.ruleId,
@@ -156,14 +157,14 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                   const SizedBox(height: Spacing.level4),
                   Text(
                     card.title,
-                    style: context.theme.typography.display.xl.copyWith(
+                    style: typography.display.xl.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: Spacing.level2),
                   Text(
                     card.reason,
-                    style: context.theme.typography.body.sm.copyWith(
+                    style: typography.body.sm.copyWith(
                       color: SemanticColor.neutral.solid(context),
                       fontWeight: FontWeight.w600,
                     ),
@@ -419,18 +420,19 @@ class SuggestionMetaBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
             fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: Spacing.level1),
-        Text(value, style: context.theme.typography.body.sm),
+        Text(value, style: typography.body.sm),
       ],
     );
   }
@@ -474,6 +476,7 @@ class EvidenceItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -481,7 +484,7 @@ class EvidenceItemRow extends StatelessWidget {
           flex: 5,
           child: Text(
             label,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
           ),
@@ -491,9 +494,7 @@ class EvidenceItemRow extends StatelessWidget {
           flex: 7,
           child: Text(
             value,
-            style: context.theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
             textAlign: TextAlign.end,
           ),
         ),

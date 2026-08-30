@@ -86,6 +86,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final suggestionAsync = ref.watch(todaySuggestionProvider);
+    final typography = context.theme.typography;
 
     return suggestionAsync.when(
       data: (bundle) {
@@ -125,18 +126,16 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                               children: [
                                 Text(
                                   visible[index].title,
-                                  style: context.theme.typography.body.md
-                                      .copyWith(fontWeight: FontWeight.w700),
+                                  style: typography.body.md.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                                 const SizedBox(height: Spacing.level1),
                                 Text(
                                   visible[index].reason,
-                                  style: context.theme.typography.body.xs
-                                      .copyWith(
-                                        color: SemanticColor.neutral.solid(
-                                          context,
-                                        ),
-                                      ),
+                                  style: typography.body.xs.copyWith(
+                                    color: SemanticColor.neutral.solid(context),
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),

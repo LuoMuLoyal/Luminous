@@ -62,6 +62,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
     final canAccessProtectedData = ref.watch(
       authSessionProvider.select((s) => s.canAccessProtectedData),
     );
@@ -129,7 +130,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
               ] else if (!isPreview) ...[
                 Text(
                   l10n.todaySummaryFallbackNarrative,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                     fontWeight: FontWeight.w500,
                   ),
@@ -209,7 +210,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                         padding: const EdgeInsets.only(top: Spacing.level1),
                         child: Text(
                           footer,
-                          style: context.theme.typography.body.xs.copyWith(
+                          style: typography.body.xs.copyWith(
                             color: SemanticColor.neutral.solid(context),
                           ),
                         ),
@@ -397,6 +398,7 @@ class _CompactSummaryMetric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -414,7 +416,7 @@ class _CompactSummaryMetric extends StatelessWidget {
             children: [
               Text(
                 item.label,
-                style: context.theme.typography.body.xs2.copyWith(
+                style: typography.body.xs2.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
                 maxLines: 1,
@@ -423,7 +425,7 @@ class _CompactSummaryMetric extends StatelessWidget {
               const SizedBox(height: Spacing.level1),
               Text(
                 item.value,
-                style: context.theme.typography.body.sm.copyWith(
+                style: typography.body.sm.copyWith(
                   fontWeight: item.isDegraded || item.isFallback
                       ? FontWeight.w500
                       : FontWeight.w700,

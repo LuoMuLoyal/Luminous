@@ -64,11 +64,12 @@ class TodayMiniTrendChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = color.palette(context);
     final tickCount = points.isEmpty ? 7 : points.length;
+    final borderRadius = context.theme.style.borderRadius;
 
     return DecoratedBox(
       decoration: BoxDecoration(
         color: palette.subtle,
-        borderRadius: context.theme.style.borderRadius.sm,
+        borderRadius: borderRadius.sm,
       ),
       child: SizedBox(
         height: height,
@@ -97,7 +98,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                           color: index == 3
                               ? palette.solid
                               : SemanticColor.primary.solid(context),
-                          borderRadius: context.theme.style.borderRadius.pill,
+                          borderRadius: borderRadius.pill,
                         ),
                         child: const SizedBox(height: Spacing.level1),
                       ),

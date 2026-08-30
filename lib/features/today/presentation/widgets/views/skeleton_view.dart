@@ -181,6 +181,7 @@ class _RecordHintPlaceholder extends StatelessWidget {
 class _PrimarySuggestionPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final borderRadius = context.theme.style.borderRadius;
     return InlineSkeletonSection(
       children: [
         const Row(
@@ -204,13 +205,13 @@ class _PrimarySuggestionPlaceholder extends StatelessWidget {
             InlineSkeletonBlock(
               height: 32,
               width: 80,
-              radius: context.theme.style.borderRadius.pill.topLeft.x,
+              radius: borderRadius.pill.topLeft.x,
             ),
             const SizedBox(width: Spacing.level3),
             InlineSkeletonBlock(
               height: 32,
               width: 80,
-              radius: context.theme.style.borderRadius.pill.topLeft.x,
+              radius: borderRadius.pill.topLeft.x,
             ),
           ],
         ),

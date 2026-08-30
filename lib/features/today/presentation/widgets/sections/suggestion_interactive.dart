@@ -234,6 +234,7 @@ class AiExplainContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
     return Container(
       padding: const EdgeInsets.all(Spacing.level3),
       decoration: BoxDecoration(
@@ -260,7 +261,7 @@ class AiExplainContent extends StatelessWidget {
                 explanation.aiGenerated
                     ? l10n.todaySuggestionAiLabel
                     : l10n.todaySuggestionRuleBasedLabel,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: explanation.aiGenerated
                       ? SemanticColor.primary.solid(context)
                       : SemanticColor.neutral.solid(context),
@@ -281,7 +282,7 @@ class AiExplainContent extends StatelessWidget {
               data: explanation.boundary,
               selectable: true,
               styleSheet: MarkdownStyle.ai(context).copyWith(
-                p: context.theme.typography.body.xs.copyWith(
+                p: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),

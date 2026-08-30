@@ -15,6 +15,7 @@ FCardStyleDelta todayCardStyle(
   TodayCardTone tone = TodayCardTone.neutral,
 }) {
   final colors = context.theme.colors;
+  final borderRadius = context.theme.style.borderRadius;
 
   return switch (tone) {
     TodayCardTone.urgent => .delta(
@@ -22,7 +23,7 @@ FCardStyleDelta todayCardStyle(
         color: SemanticColor.destructive.subtle(context),
         shape: RoundedSuperellipseBorder(
           side: BorderSide(color: SemanticColor.destructive.border(context)),
-          borderRadius: context.theme.style.borderRadius.lg,
+          borderRadius: borderRadius.lg,
         ),
       ),
     ),
@@ -31,7 +32,7 @@ FCardStyleDelta todayCardStyle(
         color: SemanticColor.warning.subtle(context),
         shape: RoundedSuperellipseBorder(
           side: BorderSide(color: SemanticColor.warning.border(context)),
-          borderRadius: context.theme.style.borderRadius.lg,
+          borderRadius: borderRadius.lg,
         ),
       ),
     ),

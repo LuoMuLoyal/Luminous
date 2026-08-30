@@ -160,6 +160,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return FTappable(
       onPress: widget.item.onPress,
@@ -186,14 +187,14 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                 children: [
                   Text(
                     widget.item.title,
-                    style: context.theme.typography.body.sm.copyWith(
+                    style: typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: Spacing.level1),
                   Text(
                     widget.item.subtitle,
-                    style: context.theme.typography.body.xs2.copyWith(
+                    style: typography.body.xs2.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                     maxLines: 2,
@@ -298,13 +299,14 @@ class _ObservationSkeletonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final borderRadius = context.theme.style.borderRadius;
 
     return Row(
       children: [
         DecoratedBox(
           decoration: BoxDecoration(
             color: colors.secondary,
-            borderRadius: context.theme.style.borderRadius.pill,
+            borderRadius: borderRadius.pill,
           ),
           child: const SizedBox.square(dimension: Spacing.level6),
         ),
@@ -316,7 +318,7 @@ class _ObservationSkeletonRow extends StatelessWidget {
                 height: 14,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: context.theme.style.borderRadius.xs,
+                  borderRadius: borderRadius.xs,
                 ),
               ),
               const SizedBox(height: Spacing.level2),
@@ -324,7 +326,7 @@ class _ObservationSkeletonRow extends StatelessWidget {
                 height: 12,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: context.theme.style.borderRadius.xs,
+                  borderRadius: borderRadius.xs,
                 ),
               ),
             ],

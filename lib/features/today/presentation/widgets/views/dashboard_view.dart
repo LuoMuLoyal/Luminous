@@ -475,14 +475,15 @@ class _HealthEventActionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: context.theme.typography.body.md),
+        Text(title, style: typography.body.md),
         const SizedBox(height: Spacing.level2),
         Text(
           subtitle,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
@@ -508,16 +509,17 @@ class _ActiveHealthEventContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(event.title, style: context.theme.typography.body.md),
+        Text(event.title, style: typography.body.md),
         const SizedBox(height: Spacing.level2),
         Text(
           onCheckIn == null
               ? l10n.todayHealthEventCheckInDone
               : l10n.todayHealthEventCheckInSubtitle,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
