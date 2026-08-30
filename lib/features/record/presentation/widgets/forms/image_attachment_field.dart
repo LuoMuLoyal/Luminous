@@ -153,7 +153,7 @@ class _AttachmentPreview extends StatelessWidget {
     final imageUrl = existingAttachment?.displayUrl;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(RadiusTokens.level3),
+      borderRadius: context.theme.style.borderRadius.sm,
       child: SizedBox(
         width: width,
         height: height,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 
@@ -74,7 +75,7 @@ class _DesktopRecordSkeleton extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InlineSkeletonBlock(height: 120, radius: RadiusTokens.level4),
+              InlineSkeletonBlock(height: 120),
               SizedBox(height: Spacing.level4),
               _TimelinePlaceholder(itemCount: 6),
             ],
@@ -86,9 +87,7 @@ class _DesktopRecordSkeleton extends StatelessWidget {
           width: ResponsiveSizing.sidebarWidth(context),
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InlineSkeletonBlock(height: 200, radius: RadiusTokens.level4),
-            ],
+            children: [InlineSkeletonBlock(height: 200)],
           ),
         ),
       ],
@@ -101,25 +100,25 @@ class _DateBarPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
         InlineSkeletonBlock(
           height: 40,
           width: 40,
-          radius: RadiusTokens.levelFull,
+          radius: context.theme.style.borderRadius.pill.topLeft.x,
         ),
-        SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.level2),
         Expanded(
           child: InlineSkeletonBlock(
             height: 44,
-            radius: RadiusTokens.levelFull,
+            radius: context.theme.style.borderRadius.pill.topLeft.x,
           ),
         ),
-        SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.level2),
         InlineSkeletonBlock(
           height: 40,
           width: 40,
-          radius: RadiusTokens.levelFull,
+          radius: context.theme.style.borderRadius.pill.topLeft.x,
         ),
       ],
     );
@@ -131,7 +130,7 @@ class _AiInputPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const InlineSkeletonBlock(height: 52, radius: RadiusTokens.level4);
+    return const InlineSkeletonBlock(height: 52);
   }
 }
 
@@ -144,9 +143,7 @@ class _QuickEntryPlaceholder extends StatelessWidget {
       children: [
         for (var i = 0; i < 4; i += 1) ...[
           if (i > 0) const SizedBox(width: Spacing.level3),
-          const Expanded(
-            child: InlineSkeletonBlock(height: 72, radius: RadiusTokens.level4),
-          ),
+          const Expanded(child: InlineSkeletonBlock(height: 72)),
         ],
       ],
     );
@@ -163,10 +160,10 @@ class _FilterPlaceholder extends StatelessWidget {
       runSpacing: Spacing.level3,
       children: List.generate(
         5,
-        (_) => const InlineSkeletonBlock(
+        (_) => InlineSkeletonBlock(
           height: 36,
           width: 72,
-          radius: RadiusTokens.levelFull,
+          radius: context.theme.style.borderRadius.pill.topLeft.x,
         ),
       ),
     );

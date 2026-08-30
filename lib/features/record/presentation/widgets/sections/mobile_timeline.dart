@@ -227,9 +227,7 @@ class _TimelineRow extends StatelessWidget {
                       height: Spacing.level8,
                       decoration: BoxDecoration(
                         color: entry.softColor.muted(context),
-                        borderRadius: BorderRadius.circular(
-                          RadiusTokens.level3,
-                        ),
+                        borderRadius: context.theme.style.borderRadius.sm,
                       ),
                       child: Center(
                         child: Icon(
@@ -274,9 +272,8 @@ class _TimelineRow extends StatelessWidget {
                             decoration: ShapeDecoration(
                               color: colors.secondary,
                               shape: RoundedSuperellipseBorder(
-                                borderRadius: BorderRadius.circular(
-                                  RadiusTokens.level2,
-                                ),
+                                borderRadius:
+                                    context.theme.style.borderRadius.xs,
                               ),
                             ),
                             child: Padding(

@@ -478,7 +478,7 @@ class _QuickBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.theme.colors.primary,
-        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+        borderRadius: context.theme.style.borderRadius.pill,
         border: Border.all(color: context.theme.colors.background, width: 1.5),
       ),
       child: Padding(

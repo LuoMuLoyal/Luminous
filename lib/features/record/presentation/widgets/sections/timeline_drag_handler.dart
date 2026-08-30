@@ -34,7 +34,7 @@ class TimelineDragFeedback extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.background,
-            borderRadius: BorderRadius.circular(RadiusTokens.level4),
+            borderRadius: context.theme.style.borderRadius.md,
             border: Border.all(
               color: SemanticColor.primary.borderStrong(context),
             ),

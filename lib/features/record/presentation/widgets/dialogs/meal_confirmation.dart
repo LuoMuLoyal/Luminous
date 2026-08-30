@@ -62,7 +62,7 @@ class _MealQuickConfirmationDialogState
         if (image != null) ...[
           const SizedBox(height: Spacing.level4),
           ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusTokens.level3),
+            borderRadius: context.theme.style.borderRadius.sm,
             child: AspectRatio(
               aspectRatio: 4 / 3,
               child: Image.memory(image.bytes, fit: BoxFit.cover),

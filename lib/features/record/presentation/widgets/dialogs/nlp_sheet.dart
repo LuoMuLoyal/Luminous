@@ -196,7 +196,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                 height: Spacing.level1,
                 decoration: BoxDecoration(
                   color: colors.mutedForeground,
-                  borderRadius: BorderRadius.circular(RadiusTokens.level1),
+                  borderRadius: context.theme.style.borderRadius.xs2,
                 ),
               ),
             ),

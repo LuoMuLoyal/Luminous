@@ -188,7 +188,7 @@ class _DesktopEntryButtonState extends State<_DesktopEntryButton> {
             color: _isHovered
                 ? SemanticColor.neutral.subtle(context)
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(RadiusTokens.level3),
+            borderRadius: context.theme.style.borderRadius.sm,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(

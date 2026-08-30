@@ -122,7 +122,7 @@ class TimelineCard extends StatelessWidget {
         (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(RadiusTokens.level3),
+      borderRadius: context.theme.style.borderRadius.sm,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
@@ -143,7 +143,7 @@ class TimelineCard extends StatelessWidget {
                 height: 38,
                 decoration: BoxDecoration(
                   color: entry.softColor.muted(context),
-                  borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                  borderRadius: context.theme.style.borderRadius.sm,
                 ),
                 child: Center(
                   child: Icon(
@@ -180,9 +180,8 @@ class TimelineCard extends StatelessWidget {
                                   decoration: ShapeDecoration(
                                     color: colors.secondary,
                                     shape: RoundedSuperellipseBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        RadiusTokens.level2,
-                                      ),
+                                      borderRadius:
+                                          context.theme.style.borderRadius.xs,
                                     ),
                                   ),
                                   child: Padding(
@@ -263,7 +262,7 @@ class TimelineCard extends StatelessWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: SemanticColor.neutral.subtle(context),
-                    borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                    borderRadius: context.theme.style.borderRadius.sm,
                     border: Border.all(color: colors.border),
                   ),
                   child: SizedBox(
@@ -372,7 +371,7 @@ class TimelineImageThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(RadiusTokens.level3),
+      borderRadius: context.theme.style.borderRadius.sm,
       child: SizedBox(
         width: 96,
         height: 72,

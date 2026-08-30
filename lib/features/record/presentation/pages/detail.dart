@@ -450,7 +450,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                 ),
                 const SizedBox(height: Spacing.level4),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: context.theme.style.borderRadius.xs2,
                   child: LinearProgressIndicator(
                     value: (waterTotalMl / waterTargetMl).clamp(0.0, 1.0),
                     minHeight: 8,
@@ -794,7 +794,7 @@ class _SourceBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.muted,
-        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+        borderRadius: context.theme.style.borderRadius.pill,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -837,7 +837,7 @@ class _RecordDetailImage extends StatelessWidget {
     final imageUrl = attachment.displayUrl;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(RadiusTokens.level3),
+      borderRadius: context.theme.style.borderRadius.sm,
       child: AspectRatio(
         aspectRatio: 16 / 9,
         child: DecoratedBox(

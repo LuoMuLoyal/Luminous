@@ -252,7 +252,7 @@ class RecordEditPage extends HookConsumerWidget {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: context.theme.colors.secondary,
-                    borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                    borderRadius: context.theme.style.borderRadius.sm,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(Spacing.level4),
@@ -475,7 +475,7 @@ class _EditStatusHint extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        borderRadius: context.theme.style.borderRadius.xs,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(

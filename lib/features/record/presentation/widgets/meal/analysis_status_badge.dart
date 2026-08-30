@@ -31,7 +31,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
         decoration: ShapeDecoration(
           color: palette.muted,
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(RadiusTokens.level2),
+            borderRadius: context.theme.style.borderRadius.xs,
           ),
         ),
         child: Padding(

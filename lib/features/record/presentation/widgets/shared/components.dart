@@ -33,7 +33,7 @@ class RecordHeaderActionChip extends StatelessWidget {
                   .all(
                     .shapeDelta(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: context.theme.style.borderRadius.md,
                       ),
                     ),
                   ),
@@ -196,8 +196,8 @@ class RecordBarChart extends StatelessWidget {
                   toY: e.value.clamp(0.0, 1.0),
                   color: color.fillStrong(context),
                   width: 12,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(RadiusTokens.level1),
+                  borderRadius: BorderRadius.vertical(
+                    top: context.theme.style.borderRadius.xs2.topLeft,
                   ),
                 ),
               ],

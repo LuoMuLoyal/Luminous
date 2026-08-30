@@ -106,7 +106,7 @@ class _SummaryTile extends StatelessWidget {
                     height: 28,
                     decoration: BoxDecoration(
                       color: item.softColor.solid(context),
-                      borderRadius: BorderRadius.circular(RadiusTokens.level4),
+                      borderRadius: context.theme.style.borderRadius.md,
                     ),
                     child: Center(
                       child: Icon(
