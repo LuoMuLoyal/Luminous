@@ -206,6 +206,7 @@ void validateCommitMessage(String commitMsgPath) {
   final trimmedHeader = header.trim();
 
   // Parse: type(scope)!: subject  or  type: subject
+  // scope group (group 3) is captured but may be absent — checked below.
   final match = RegExp(
     r'^([a-z]+)(\(([^)]+)\))?!?: (.+)$',
   ).firstMatch(trimmedHeader);
@@ -221,6 +222,7 @@ void validateCommitMessage(String commitMsgPath) {
   }
 
   final type = match.group(1)!;
+  final scope = match.group(3);
   final subject = match.group(4)!;
   final errors = <String>[];
 
@@ -229,6 +231,14 @@ void validateCommitMessage(String commitMsgPath) {
     errors.add(
       'Invalid commit type: "$type". '
       'Valid types: ${_validCommitTypes.join(', ')}',
+    );
+  }
+
+  // scope-empty: [2, 'never'] — scope is mandatory, matching Lucent's
+  // commitlint config. This catches bare `type: subject` commits.
+  if (scope == null || scope.trim().isEmpty) {
+    errors.add(
+      'Commit scope must not be empty. Expected: type(scope): subject',
     );
   }
 
@@ -249,10 +259,10 @@ void validateCommitMessage(String commitMsgPath) {
     );
   }
 
-  // header-max-length
-  if (trimmedHeader.length > 200) {
+  // header-max-length — aligned with Lucent's commitlint (120).
+  if (trimmedHeader.length > 120) {
     errors.add(
-      'Commit header exceeds 200 characters (current: ${trimmedHeader.length}).',
+      'Commit header exceeds 120 characters (current: ${trimmedHeader.length}).',
     );
   }
 

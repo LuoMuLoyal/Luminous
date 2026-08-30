@@ -40,7 +40,8 @@ dart run scripts/install_git_hooks.dart
 This sets `core.hooksPath` to `.githooks/`. The hooks are kept lightweight to
 avoid slowing down your workflow:
 
-- **`commit-msg`**: validates Conventional Commits format (type, scope, subject).
+- **`commit-msg`**: validates Conventional Commits format — type enum,
+  scope must not be empty, subject length ≤ 100, header length ≤ 120.
 - **`pre-commit`**: runs `dart format` on staged `.dart` files and `flutter analyze`.
 - **`pre-push`**: runs `flutter analyze` and `dart format --set-exit-if-changed`.
 
