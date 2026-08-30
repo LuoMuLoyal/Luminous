@@ -7,7 +7,7 @@ import 'semantic_colors.dart';
 /// Semantic color token used by domain/data layers to stay theme-agnostic.
 ///
 /// Replaces the former `AppColors` enum. The actual [SemanticColorPalette]
-/// (5 pre-computed tones) is resolved in the presentation layer against the
+/// (10 pre-computed tones) is resolved in the presentation layer against the
 /// current Forui theme.
 ///
 /// The [neutral] variant covers entities that previously used `AppColors.secondary`,
