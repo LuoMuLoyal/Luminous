@@ -14,7 +14,7 @@ import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/review_dashboard.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';

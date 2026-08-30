@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router/helpers.dart';
+import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
 import 'package:luminous/features/auth/presentation/pages/change_email.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password.dart';

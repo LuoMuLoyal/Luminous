@@ -29,7 +29,7 @@ design 层集中存放全部设计 token（颜色/间距/图标/圆角/字体/�
 | `layout_scale.dart` | `LayoutScale`（值对象）+ `LayoutScaleResolver`（按屏宽解析 + 对话框宽度） |
 | `responsive_sizing.dart` | `ResponsiveSizing`：卡宽/侧栏宽/网格列数/按宽高缩放 |
 | `high_contrast.dart` | `HighContrastColors`：高对比度无障碍覆盖色 |
-| `icon_tokens.dart` | `SemanticIcons`：语义图标注册表（`{域}{语义}` 命名，如 `safetyCaution`） |
+| `semantic_icons.dart` | `SemanticIcons`：语义图标注册表（`{域}{语义}` 命名，如 `safetyCaution`） |
 | `markdown_style.dart` | `MarkdownStyle`：`legal` / `ai` 两套 Markdown 样式工厂 |
 | `lucide_icon_bridge.dart` | `LucideIconBridge`：kebab-case 图标名 ↔ `FLucideIcons`（**生成文件**，由 `scripts/generate_lucide_bridge.dart` 生成，**不在 barrel 内**，按需直接 import） |
 
@@ -67,5 +67,5 @@ design 层集中存放全部设计 token（颜色/间距/图标/圆角/字体/�
   每次调用直接传 `context`，不做变量化。
 - 自带 `context` 参数的内嵌闭包（如 `FBadge.raw(builder: (context, style) {...})`）内照常
   直接 `context.theme.*`，不引用外层方法提取的变量，避免取值来源漂移。
-- 业务代码引用图标走 `SemanticIcons`（`lib/core/design/icon_tokens.dart`），不直接散用
+- 业务代码引用图标走 `SemanticIcons`（`lib/core/design/semantic_icons.dart`），不直接散用
   `FLucideIcons`；`Icons.*` 视为迁移债。

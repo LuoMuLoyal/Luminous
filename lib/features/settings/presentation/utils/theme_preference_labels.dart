@@ -1,5 +1,5 @@
+import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
-import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 String themeModeLabel(

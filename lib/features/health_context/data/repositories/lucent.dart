@@ -11,7 +11,7 @@ import 'package:luminous/core/database/daos/health_context.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';

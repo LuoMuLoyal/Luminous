@@ -7,7 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/auth/sensitive_action_password_resolver.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
-import 'package:luminous/core/theme/theme.dart';
+import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';

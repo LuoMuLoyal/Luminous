@@ -8,7 +8,7 @@ import 'package:luminous/core/database/daos/medicine_dose_log.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';

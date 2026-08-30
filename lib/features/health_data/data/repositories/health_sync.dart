@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/health_data/data/datasources/health_platform.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';

@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart'
     hide DailyRecordKind, DailyRecordAttachmentKind;
 import 'package:luminous/core/network/error_code.dart';

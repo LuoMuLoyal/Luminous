@@ -8,7 +8,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/utils/date_format.dart';

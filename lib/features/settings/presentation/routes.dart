@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router/helpers.dart';
+import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/features/settings/presentation/pages/about.dart';
 import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';

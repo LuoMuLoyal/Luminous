@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/soft_icon.dart';

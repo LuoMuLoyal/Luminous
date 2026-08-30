@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/settings/data/providers/profile.dart';
 

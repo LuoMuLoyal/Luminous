@@ -13,7 +13,7 @@ import 'package:forui/forui.dart';
 /// Dark mode derives both tokens from Forui's color system (lerped / alpha-based)
 /// so they adapt automatically to any theme family.
 ///
-/// See: `appThemeData()` and `foruiMaterialTheme()` in `lib/core/theme/theme.dart`.
+/// See: `appThemeData()` and `foruiMaterialTheme()` in `lib/core/theme/family.dart`.
 abstract final class SurfaceTokens {
   /// The scaffold (page-level) background color.
   ///

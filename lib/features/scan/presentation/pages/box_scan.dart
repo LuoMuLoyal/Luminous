@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';

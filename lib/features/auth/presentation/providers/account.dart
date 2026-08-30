@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';

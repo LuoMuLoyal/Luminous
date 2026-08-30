@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';

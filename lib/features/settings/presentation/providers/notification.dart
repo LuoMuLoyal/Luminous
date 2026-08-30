@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';

@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/utils/string.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';

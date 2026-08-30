@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 

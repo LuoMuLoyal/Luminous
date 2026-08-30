@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:luminous/core/database/models/pending_sync_error_details.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -44,7 +44,7 @@ updated: 2026-08-30
 
 ## 项目级使用约定
 
-- **根主题**：`lib/core/theme/theme.dart` 维护 Luminous 可选的主题族目录。Forui 0.24.0 移除了除 `neutral` 外的所有
+- **根主题**：`lib/core/theme/family.dart` 维护 Luminous 可选的主题族目录。Forui 0.24.0 移除了除 `neutral` 外的所有
    预定义颜色方案（原 `FThemes.blue / green / orange / red / rose / slate / violet / yellow / zinc`），
    现通过 `_familyColorOverride()` 函数在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 来
    模拟原有主题族的颜色变体；`lib/app/bootstrap.dart` 根据持久化的 `theme.family` + `theme.mode` 派生 `ThemeData`，

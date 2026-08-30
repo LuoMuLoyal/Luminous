@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 

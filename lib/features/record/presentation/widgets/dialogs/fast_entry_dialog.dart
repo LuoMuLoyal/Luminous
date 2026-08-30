@@ -6,7 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
 import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';

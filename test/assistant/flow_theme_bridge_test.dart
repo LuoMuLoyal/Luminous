@@ -2,7 +2,7 @@ import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/theme/theme.dart';
+import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/features/assistant/presentation/widgets/flow_theme_bridge.dart';
 
 /// A lightweight test app that wraps [child] with a Flutter MaterialApp

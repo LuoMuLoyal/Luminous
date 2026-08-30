@@ -2,7 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/review/data/repositories/lucent_ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';

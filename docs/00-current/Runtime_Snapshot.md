@@ -31,7 +31,7 @@ Last updated: 2026-08-23（错误处理迁移收口：TaskEither 全量落地、
 ## 主题与设计系统
 
 - `LuminousApp` 使用 Forui 引导的根主题，`MaterialApp.router` 从 Forui 派生 light/dark `ThemeData`。
-- Forui 0.24.0 移除了除 `neutral` 外的所有预定义颜色方案（原 `FThemes.blue/green/orange/red/rose/slate/violet/yellow/zinc`）。`lib/core/theme/theme.dart` 通过 `_familyColorOverride()` 函数在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 来模拟原有主题族的颜色变体，保持 App 的主题族选择能力不变。
+- Forui 0.24.0 移除了除 `neutral` 外的所有预定义颜色方案（原 `FThemes.blue/green/orange/red/rose/slate/violet/yellow/zinc`）。`lib/core/theme/family.dart` 通过 `_familyColorOverride()` 函数在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 来模拟原有主题族的颜色变体，保持 App 的主题族选择能力不变。
 - 语义颜色枚举 `SemanticColor`（6 个语义色）× `SemanticColorPalette`（10 个预计算 tone：solid/foreground/muted/subtle/border/shimmerBase/disabled/borderStrong/fill/fillStrong）。
 - `SemanticColors` 通过 `FColors.extensions` 注入 Forui 主题，暗色模式 alpha 自动补偿。
 - 高对比度模式使用 `HighContrastColors` 常量类（`lib/core/design/high_contrast.dart`）。

@@ -1,4 +1,4 @@
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';

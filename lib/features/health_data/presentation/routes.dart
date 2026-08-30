@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router/helpers.dart';
+import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/features/health_data/presentation/pages/health_sync.dart';
 
 part 'routes.g.dart';

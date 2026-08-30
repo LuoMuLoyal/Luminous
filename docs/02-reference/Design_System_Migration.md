@@ -185,7 +185,7 @@ updated: 2026-08-02
 
 ## Forui 0.24.x 升级（2026-07-21）
 
-- **`FThemes` 移除**：Forui 0.24.0 移除了除 `neutral` 外的所有预定义颜色方案。`lib/core/theme/theme.dart` 新增 `_familyColorOverride()` 函数，在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 模拟原有 `blue / green / orange / red / rose / slate / violet / yellow / zinc` 主题族。颜色值取自 Forui 0.23.x 预定义方案。
+- **`FThemes` 移除**：Forui 0.24.0 移除了除 `neutral` 外的所有预定义颜色方案。`lib/core/theme/family.dart` 新增 `_familyColorOverride()` 函数，在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 模拟原有 `blue / green / orange / red / rose / slate / violet / yellow / zinc` 主题族。颜色值取自 Forui 0.23.x 预定义方案。
 - **`FCard.raw` / `FDialog.raw` 移除**：API 合并到 `FCard` / `FDialog`。约 60 个文件的 `FCard.raw(` 批量替换为 `FCard(`，`AppDialogShell` 中的 `FDialog.raw` 替换为 `FDialog`。
 - **`FDialog` 构造函数重构**：从声明式（`title`/`body`/`actions`）改为 `builder: (context, style) => ...` 模式。调用方需自行用 `Column` + `Row` 构建布局，通过 `style.titleTextStyle` / `style.bodyTextStyle` 或 `dialogContext.theme.dialogStyle.titleTextStyle` / `bodyTextStyle` 获取文本样式。简单对话框优先迁移到 `showAppDialog`。
 - **`FDateSelectionControl.lifted` → `liftedSingle`**：API 从 `selected`/`select` 回调改为 `value`/`onChange`/`toggleable` 参数。

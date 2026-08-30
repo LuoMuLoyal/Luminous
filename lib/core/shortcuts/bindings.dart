@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/shortcuts/intents.dart';
-import 'package:luminous/core/widgets/command_palette/command_palette.dart';
+import 'package:luminous/core/widgets/common/command_palette.dart';
 
 /// Wraps the app with global keyboard shortcuts and actions.
 ///

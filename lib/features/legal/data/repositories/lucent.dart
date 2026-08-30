@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/error_mapper.dart';

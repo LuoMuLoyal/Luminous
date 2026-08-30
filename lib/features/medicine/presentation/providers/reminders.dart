@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/errors/user_message.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';

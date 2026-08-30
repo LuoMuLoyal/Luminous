@@ -7,7 +7,7 @@ import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/sensitive_action_password_resolver.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';

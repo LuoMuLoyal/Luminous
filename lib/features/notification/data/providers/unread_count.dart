@@ -1,5 +1,5 @@
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

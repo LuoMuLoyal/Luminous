@@ -7,7 +7,7 @@ import 'package:forui/forui.dart';
 
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';

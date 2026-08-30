@@ -3,7 +3,7 @@ import 'package:luminous/core/logger/sentry_talker_observer.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 
-part 'logger.g.dart';
+part 'log_level.g.dart';
 
 /// Application log severity levels.
 ///

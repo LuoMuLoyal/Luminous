@@ -139,7 +139,7 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 derives `MaterialApp` light/dark themes from Forui `FThemeData` through
 `toApproximateMaterialTheme()`.
 
-- **Root theme** → `lib/core/theme/theme.dart` — Owns the app-level Forui theme-family catalog and stock
+- **Root theme** → `lib/core/theme/family.dart` — Owns the app-level Forui theme-family catalog and stock
   light/dark theme mapping
 - **Color token** → `lib/core/design/semantic_color.dart` — `SemanticColor` enum used by
   data/domain layers; resolved through the current Forui theme in widgets via `.solid(context)` / `.subtle(context)` / `.muted(context)` / `.border(context)`

@@ -1,7 +1,7 @@
 import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/theme.dart';
+import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
