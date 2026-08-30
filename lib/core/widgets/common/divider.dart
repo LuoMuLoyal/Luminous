@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 
 /// Project-wide unified divider.
 ///
@@ -30,7 +31,7 @@ class AppDivider extends StatelessWidget {
     return FDivider(
       axis: axis,
       style: FDividerStyleDelta.delta(
-        color: color ?? context.theme.colors.border,
+        color: color ?? SemanticColor.neutral.border(context),
         padding: const EdgeInsetsGeometryDelta.value(EdgeInsets.zero),
         width: width,
       ),

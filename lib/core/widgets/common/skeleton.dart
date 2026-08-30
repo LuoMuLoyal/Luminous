@@ -17,7 +17,7 @@ class StateSkeletonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: context.theme.colors.border,
+      baseColor: SemanticColor.neutral.border(context),
       highlightColor: context.theme.colors.background,
       child: ListView.separated(
         padding: padding,
@@ -171,7 +171,7 @@ class SkeletonShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: context.theme.colors.border,
+      baseColor: SemanticColor.neutral.border(context),
       highlightColor: context.theme.colors.background,
       child: child,
     );
@@ -269,7 +269,7 @@ class InlineSkeletonSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.background,
         borderRadius: context.theme.style.borderRadius.md,
-        border: Border.all(color: colors.border),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),

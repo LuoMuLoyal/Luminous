@@ -42,7 +42,7 @@ class IconActionButton extends StatelessWidget {
               child: FBadge.raw(
                 style: .delta(
                   decoration: .shapeDelta(
-                    color: colors.destructive,
+                    color: SemanticColor.destructive.solid(context),
                     shape: CircleBorder(
                       side: BorderSide(color: colors.background, width: 2),
                     ),

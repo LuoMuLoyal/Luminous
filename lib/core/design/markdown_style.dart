@@ -59,7 +59,7 @@ abstract final class MarkdownStyle {
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       a: context.theme.typography.body.sm.copyWith(
-        color: colors.primary,
+        color: SemanticColor.primary.solid(context),
         decoration: TextDecoration.underline,
       ),
       horizontalRuleDecoration: BoxDecoration(
@@ -139,7 +139,12 @@ abstract final class MarkdownStyle {
       // 深浅色自动适配）。带底色后四边都需要 padding，不再只留左侧。
       blockquoteDecoration: BoxDecoration(
         color: SemanticColor.primary.subtle(context),
-        border: Border(left: BorderSide(color: colors.primary, width: 4)),
+        border: Border(
+          left: BorderSide(
+            color: SemanticColor.primary.solid(context),
+            width: 4,
+          ),
+        ),
         borderRadius: context.theme.style.borderRadius.xs,
       ),
       blockquotePadding: const EdgeInsets.fromLTRB(
@@ -149,7 +154,7 @@ abstract final class MarkdownStyle {
         Spacing.level2,
       ),
       listBullet: context.theme.typography.body.sm.copyWith(
-        color: colors.primary,
+        color: SemanticColor.primary.solid(context),
       ),
       listIndent: Spacing.level5,
       listBulletPadding: const EdgeInsets.only(right: Spacing.level2),
@@ -165,7 +170,7 @@ abstract final class MarkdownStyle {
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       a: context.theme.typography.body.sm.copyWith(
-        color: colors.primary,
+        color: SemanticColor.primary.solid(context),
         decoration: TextDecoration.underline,
         fontWeight: emphasizeLinks ? FontWeight.w600 : null,
       ),

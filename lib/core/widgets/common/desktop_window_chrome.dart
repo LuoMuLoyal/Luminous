@@ -111,7 +111,7 @@ class _WindowControlButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final iconColor = theme.colors.mutedForeground;
+    final iconColor = SemanticColor.neutral.solid(context);
 
     return Padding(
       padding: const EdgeInsets.only(right: 4, top: 2),
@@ -140,7 +140,7 @@ class _WindowControlButtons extends StatelessWidget {
             icon: SemanticIcons.actionClose,
             tooltip: l10n.desktopWindowClose,
             iconColor: iconColor,
-            hoverColor: theme.colors.destructive,
+            hoverColor: SemanticColor.destructive.solid(context),
             hoverIconColor: theme.colors.background,
             onPressed: onClose,
           ),

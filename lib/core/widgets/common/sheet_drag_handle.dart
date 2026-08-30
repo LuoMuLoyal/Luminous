@@ -8,8 +8,6 @@ class SheetDragHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -18,7 +16,7 @@ class SheetDragHandle extends StatelessWidget {
           width: 36,
           height: 4,
           decoration: BoxDecoration(
-            color: colors.border,
+            color: SemanticColor.neutral.border(context),
             borderRadius: context.theme.style.borderRadius.pill,
           ),
         ),

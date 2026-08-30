@@ -144,7 +144,7 @@ class _CommandPaletteState extends State<CommandPalette> {
                   prefixIcon: Icon(
                     SemanticIcons.actionSearch,
                     size: 18,
-                    color: theme.colors.mutedForeground,
+                    color: SemanticColor.neutral.solid(context),
                   ),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(
@@ -155,7 +155,7 @@ class _CommandPaletteState extends State<CommandPalette> {
                 style: context.theme.typography.body.sm,
                 onSubmitted: (_) => _executeSelected(),
               ),
-              Divider(color: theme.colors.border, height: 1),
+              Divider(color: SemanticColor.neutral.border(context), height: 1),
               // Results list.
               if (_filtered.isEmpty)
                 Padding(
@@ -164,7 +164,7 @@ class _CommandPaletteState extends State<CommandPalette> {
                     child: Text(
                       l10n.commandPaletteEmpty,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: theme.colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ),
@@ -267,8 +267,8 @@ class _CommandTileState extends State<_CommandTile> {
                 widget.command.icon,
                 size: 18,
                 color: widget.selected
-                    ? theme.colors.primary
-                    : theme.colors.mutedForeground,
+                    ? SemanticColor.primary.solid(context)
+                    : SemanticColor.neutral.solid(context),
               ),
               const SizedBox(width: Spacing.level3),
               Expanded(
@@ -288,7 +288,7 @@ class _CommandTileState extends State<_CommandTile> {
                     Text(
                       widget.command.category,
                       style: context.theme.typography.body.xs2.copyWith(
-                        color: theme.colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ],

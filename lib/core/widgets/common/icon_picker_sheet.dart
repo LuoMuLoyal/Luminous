@@ -148,7 +148,6 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
     final filtered = _filtered;
 
@@ -163,7 +162,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
               width: Spacing.level7,
               height: Spacing.level1,
               decoration: BoxDecoration(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
                 borderRadius: context.theme.style.borderRadius.pill,
               ),
             ),
@@ -181,7 +180,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
                     variants,
                     Icon(
                       SemanticIcons.actionSearch,
-                      color: colors.mutedForeground,
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
             ),
@@ -194,7 +193,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
                       child: Text(
                         l10n.iconPickerEmpty,
                         style: context.theme.typography.body.xs.copyWith(
-                          color: colors.mutedForeground,
+                          color: SemanticColor.neutral.solid(context),
                         ),
                       ),
                     )
@@ -235,8 +234,6 @@ class _CategorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -249,7 +246,7 @@ class _CategorySection extends StatelessWidget {
           child: Text(
             label,
             style: context.theme.typography.body.xs2.copyWith(
-              color: colors.mutedForeground,
+              color: SemanticColor.neutral.solid(context),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -292,13 +289,17 @@ class _IconChip extends StatelessWidget {
         width: Spacing.level8,
         height: Spacing.level8,
         decoration: BoxDecoration(
-          color: selected ? colors.primary : colors.secondary,
+          color: selected
+              ? SemanticColor.primary.solid(context)
+              : colors.secondary,
           borderRadius: context.theme.style.borderRadius.sm,
         ),
         child: Icon(
           icon,
           size: IconSizeTokens.level3,
-          color: selected ? colors.primaryForeground : colors.mutedForeground,
+          color: selected
+              ? SemanticColor.primary.foreground(context)
+              : SemanticColor.neutral.solid(context),
         ),
       ),
     );

@@ -83,6 +83,7 @@ updated: 2026-08-30
 
 ## 颜色
 
+- **取色分层职责（2026-08-30 起）**：`background`/`card`/`foreground` 三个基础面色是 Forui 主题系统的"画布层"色，走 `context.theme.colors.*` / `SurfaceTokens.*` 按需取用是合理分层（`SemanticColor` 无对应 tone，不强行映射）；语义色（`mutedForeground`/`primary`/`destructive`/`primaryForeground`/`border`）统一走 `SemanticColor.*`（如 `SemanticColor.neutral.solid(context)`、`SemanticColor.primary.solid/foreground(context)`、`SemanticColor.destructive.solid(context)`、`SemanticColor.neutral.border(context)`）。两者职责不同，不是"双轨制"而是"分层职责"。
 - `RecordTypeColors`（`lib/features/record/domain/entities/record_type_colors.dart`）已删除。
 - 每种记录类型的颜色对现在表示为 `SemanticColor` token，在 widget build 时解析。
 
@@ -102,13 +103,13 @@ updated: 2026-08-30
 
 - `lib/core/design/markdown_style.dart` 为全 App Markdown 渲染样式的唯一入口（`MarkdownStyle` 抽象类），所有 `MarkdownBody` 调用点禁止本地 `fromTheme(...).copyWith(...)` 漂移。
 - 两套预置：
-  - `MarkdownStyle.legal(context)` — 正式文档（法律文书详情、帮助页 FAQ）：正文 sm (16px) / 行高 1.7、h1-h3 强层级递减、中性 `colors.border` 引用左条。
-  - `MarkdownStyle.ai(context, {background, paragraphWeight, emphasizeLinks})` — AI 生成内容（聊天气泡、Today 摘要/建议、报告总结）：正文 sm / 行高 1.6、`colors.primary` 引用左条与列表 bullet、代码块圆角 + 等宽字体 + 主题背景；`background` 传入气泡/容器底色使代码背景自适配，`paragraphWeight` 支持摘要 w600 / 报告总结 w700 覆盖。
+  - `MarkdownStyle.legal(context)` — 正式文档（法律文书详情、帮助页 FAQ）：正文 sm (16px) / 行高 1.7、h1-h3 强层级递减、中性 `SemanticColor.neutral.border(context)` 引用左条。
+  - `MarkdownStyle.ai(context, {background, paragraphWeight, emphasizeLinks})` — AI 生成内容（聊天气泡、Today 摘要/建议、报告总结）：正文 sm / 行高 1.6、`SemanticColor.primary.solid(context)` 引用左条与列表 bullet、代码块圆角 + 等宽字体 + 主题背景；`background` 传入气泡/容器底色使代码背景自适配，`paragraphWeight` 支持摘要 w600 / 报告总结 w700 覆盖。
 - F-4 扩展（2026-08-17，仅 `MarkdownStyle.ai`）：
   - 标题完整字号阶梯 h1-h6：h1→lg (w700)、h2→md、h3→sm（同正文、加粗区分）、h4→xs、h5→xs2、h6→xs2（降一档字重收尾），各带递减 `*Padding`。
   - 列表缩进走 `Spacing` token（level5=20/级），bullet 与文字间距 `listBulletPadding` level2=6。
   - 引用块：primary 4px 左侧色条 + `SemanticColor.primary.subtle` 底色（深浅色自动适配），四边 padding。
-  - 表格：`tableColumnWidth: IntrinsicColumnWidth` —— flutter_markdown_plus 检测到该列宽类型时自动把表格包进横向 `SingleChildScrollView`，窄屏可横向滚动而不是挤压列；表头 `colors.secondary` 背景 + `colors.border` 边框不变。
+  - 表格：`tableColumnWidth: IntrinsicColumnWidth` —— flutter_markdown_plus 检测到该列宽类型时自动把表格包进横向 `SingleChildScrollView`，窄屏可横向滚动而不是挤压列；表头 `colors.secondary` 背景 + `SemanticColor.neutral.border(context)` 边框不变。
   - **代码块限制（已记录）**：flutter_markdown_plus 把 `pre` 硬编码为横向 ScrollView，样式表无折行开关；折行会破坏代码缩进，故保持库默认横向滚动，不硬造自定义 builder。
 - 链接契约（F-4，仅助手消息气泡）：链接默认不自动跳转；点击先弹确认对话框（`assistantMarkdownLink*` 文案，取消复用 `commonCancel`），确认后经 `ExternalUrlLauncher` 打开；仅放行 http/https 方案。表格列数 / 链接域白名单硬校验规则未定，暂不做。
 - 两套均基于 `Spacing` / `SemanticColor` 与 Forui `FColors` / `context.theme.typography.body/display.*` 解析（圆角走 `context.theme.style.borderRadius.*`），深浅色自动适配；代码块/行内代码/表格/分割线/链接统一接入主题 token。

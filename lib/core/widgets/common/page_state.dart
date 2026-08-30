@@ -230,13 +230,17 @@ class SignInHintBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(SemanticIcons.statusBlocked, color: colors.primary, size: 20),
+          Icon(
+            SemanticIcons.statusBlocked,
+            color: SemanticColor.primary.solid(context),
+            size: 20,
+          ),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(
               message ?? l10n.statePreviewSignInHint,
               style: context.theme.typography.body.xs.copyWith(
-                color: colors.mutedForeground,
+                color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
@@ -291,7 +295,6 @@ class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
       return widget.child;
     }
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     return LayoutBuilder(
       builder: (context, constraints) {
         final hasBoundedHeight = constraints.maxHeight.isFinite;
@@ -318,7 +321,7 @@ class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
                     child: Text(
                       l10n.todayLoadingSlowHint,
                       style: context.theme.typography.body.xs.copyWith(
-                        color: colors.mutedForeground,
+                        color: SemanticColor.neutral.solid(context),
                       ),
                     ),
                   ),
