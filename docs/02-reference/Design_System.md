@@ -65,16 +65,16 @@ updated: 2026-08-30
 ## 命名
 
 - 所有 token 类名无 `App` 前缀，通过 barrel `design.dart` 统一导出。
-- `Spacing` / `DurationTokens` / `IconSizeTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
+- `Spacing` / `IconSizeTokens`（2026-08-30 起）以语义别名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）为主命名，`level*` 保留为向后兼容别名；`DurationTokens` / `Breakpoints` / `ResponsiveSizing` 仍暴露 `level*` 主命名。
 - 字体（2026-08-30 起）：`TypographyToken` 已退役，统一使用 Forui `context.theme.typography.body/display.*`（`FTypeface` scale：`xs3`/`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`，touch 主题下对应 10/12/14/16/18/20/22/30/36/48px）。
 - 圆角（2026-08-30 起）：`RadiusTokens` 已退役，统一使用 Forui `context.theme.style.borderRadius.*`（`FBorderRadius` scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。需要裸 `double` 时用 `.xxx.topLeft.x`，需要 `Radius` 时用 `.xxx.topLeft`。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
-- `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size：level1=12, level2=16, level3=20, level4=24, level5=28, level6=32, level7=48, level8=64。原 level5=32 已拆分为 level5=28（suggestion card）和 level6=32（avatar/hero）。
+- `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size：xs=12, sm=16, md=20, lg=24, xl=28, xl2=32, xl3=48, xl4=64（`level1`~`level8` 为等价别名）。原 level5=32 已拆分为 xl=28（suggestion card）和 xl2=32（avatar/hero）。
 - `LucideIconBridge`（`lucide_icon_bridge.dart`，generated）提供 name→IconData 正查 (`resolve`) 和 IconData→name 反查 (`nameOf`)。反查使用预计算 `_reverseMap`（O(1)），而非每次 keystroke O(N) 扫描。
 - `ElevationTokens`（`elevation.dart`）提供 `raised(FColors)` / `glow(Color)` / `shadowColor(FColors)` 方法。
 - `GradientTokens`（`gradient.dart`）提供 `semanticFill(SemanticColorPalette)` / `tintFade(Color, Color)` 两个命名渐变模式；禁止内联 `LinearGradient`，必须走 token。
-- 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名在所有调用点迁移后被移除。
+- 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名曾在所有调用点迁移后被移除；2026-08-30 起 `Spacing` / `IconSizeTokens` 重新引入语义名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）作为主命名，`level*` 保留为向后兼容别名。
 
 ## 主题偏好
 
@@ -89,8 +89,8 @@ updated: 2026-08-30
 
 ## 间距与布局
 
-- 间距使用 `Spacing` token（level1=4, level2=6, level3=10, level4=14, level5=20, level6=28, level7=36, level8=44,
-   level9=56, level10=72, level11=96, level12=128）。
+- 间距使用 `Spacing` token（xs=4, sm=6, md=10, lg=14, xl=20, xl2=28, xl3=36, xl4=44,
+   xl5=56, xl6=72, xl7=96, xl8=128；`level1`~`level12` 为等价别名）。
 - 硬编码像素值正被项目范围地替换为 token 引用，即使这些 token 值本身在向 Forui 靠拢。
 - 断点引用 `Breakpoints` 常量；不出现硬编码 `600`。
 - 响应式尺寸 helper 位于 `lib/core/design/responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart
