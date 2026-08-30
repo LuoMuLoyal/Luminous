@@ -104,17 +104,6 @@ Future<void> pushAuthRequiredRoute(BuildContext context, String route) async { .
 
 ## 三、修复计划
 
-### Phase 1: P0 — 提取 `required_dialog` 到 `core/`（零风险，高收益）
-
-`required_dialog.dart` 的核心 UI 组件已经在 `core/widgets/auth/required_dialog.dart`。只需把 auth 路由检查函数也移到 `core/`。
-
-- [ ] 1.1 将 `pushAuthRequiredRoute` 函数从 `features/auth/presentation/widgets/shared/required_dialog.dart` 移到 `core/widgets/auth/required_dialog.dart`
-- [ ] 1.2 确认 `pushAuthRequiredRoute` 对 auth 路由（`LoginRoute`）的依赖——如果 `LoginRoute` 在 `features/auth/presentation/routes.dart`，考虑用回调注入或将路由常量提取到 `core/`
-- [ ] 1.3 在 `core/widgets/auth/required_dialog.dart` 中补全 `pushAuthRequiredRoute`
-- [ ] 1.4 全局替换 `import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart'` → `import 'package:luminous/core/widgets/auth/required_dialog.dart'`（~40 处）
-- [ ] 1.5 删除 `features/auth/presentation/widgets/shared/required_dialog.dart`（如果已无其他内容）
-- [ ] 1.6 `flutter analyze` 验证
-
 ### Phase 2: P2 — 测试归位
 
 将 `test/` 下的测试文件移到对应 feature 的 `tests/` 子目录：
