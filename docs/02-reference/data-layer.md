@@ -181,9 +181,13 @@ ADR-0009 introduced Drift-based local persistence. Repositories for `daily-recor
 `health-context`, and `dose-logs` follow a cache-first pattern:
 
 - **Schema version**: currently `5`. v5 renames `report_dashboard_cache_entries` →
-  `review_dashboard_cache_entries` (report→review migration). Earlier versions: v1
-  initial schema, v2 adds `lastErrorDetails` to `PendingSyncItems`, v3 adds
-  `ReviewCacheEntries`, v4 adds `ReviewDashboardCacheEntries`.
+  `review_dashboard_cache_entries` (report→review migration). The rename is defensive:
+  it queries `sqlite_master` to check if the old table name exists before issuing
+  `ALTER TABLE ... RENAME TO ...`, so users who first installed at v4 after the
+  `ReviewDashboardCacheEntries` class rename (d607145) — and therefore already have
+  the `review_dashboard_cache_entries` SQL table name — skip the rename cleanly.
+  Earlier versions: v1 initial schema, v2 adds `lastErrorDetails` to `PendingSyncItems`,
+  v3 adds `ReviewCacheEntries`, v4 adds `ReviewDashboardCacheEntries`.
 
 - **Read**: serve from local cache immediately, trigger a throttled background refresh (30s) from
   the network, and backfill the cache.

@@ -85,13 +85,24 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 5) {
         // report→review rename: the table was originally created as
-        // `report_dashboard_cache_entries` in v4. Rename it to match the
-        // new DAO/table class name. If the old table doesn't exist (fresh
-        // install at v4), createTable already handled it in the v4 step.
-        await m.renameTable(
-          reviewDashboardCacheEntries,
-          'report_dashboard_cache_entries',
-        );
+        // `report_dashboard_cache_entries` in v4 (pre-d607145). After
+        // d607145 the v4 step itself uses the new class name
+        // `ReviewDashboardCacheEntries`, so users who hit v4 after that
+        // commit already have `review_dashboard_cache_entries`.
+        //
+        // Make the rename defensive: only attempt the ALTER TABLE if the
+        // old table name still exists. Users who upgraded through v4
+        // post-d607145 will skip this step cleanly.
+        final oldExists = await customSelect(
+          'SELECT 1 FROM sqlite_master '
+          "WHERE type='table' AND name='report_dashboard_cache_entries'",
+        ).getSingleOrNull();
+        if (oldExists != null) {
+          await m.renameTable(
+            reviewDashboardCacheEntries,
+            'report_dashboard_cache_entries',
+          );
+        }
       }
       //
       // Version range strategy (if Web and native diverge):
