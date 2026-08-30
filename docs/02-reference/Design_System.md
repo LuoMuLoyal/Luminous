@@ -51,7 +51,7 @@ updated: 2026-08-30
 - 所有 `App*` 前缀已移除（2026-07-09）：
   - `AppSpacingTokens` → `Spacing`
   - `AppRadiusTokens` → `RadiusTokens`（避免与 Flutter `Radius` 冲突；`RadiusTokens` 已于 2026-08-30 退役，圆角统一走 `context.theme.style.borderRadius.*`）
-  - `AppTypographyToken` → `TypographyToken`
+  - `AppTypographyToken` → `TypographyToken`（`TypographyToken` 已于 2026-08-30 退役，字体统一走 `context.theme.typography.body/display.*`）
   - `AppAnimationDurations` → `DurationTokens`（`abstract final class`，避免与 Flutter `Durations` 冲突；现位于 `motion.dart`）
   - `AppBreakpoints` → `Breakpoints`
   - `AppResponsiveSizing` → `ResponsiveSizing`
@@ -65,7 +65,8 @@ updated: 2026-08-30
 ## 命名
 
 - 所有 token 类名无 `App` 前缀，通过 barrel `design.dart` 统一导出。
-- `Spacing` / `TypographyToken` / `DurationTokens` / `IconSizeTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
+- `Spacing` / `DurationTokens` / `IconSizeTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
+- 字体（2026-08-30 起）：`TypographyToken` 已退役，统一使用 Forui `context.theme.typography.body/display.*`（`FTypeface` scale：`xs3`/`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`，touch 主题下对应 10/12/14/16/18/20/22/30/36/48px）。
 - 圆角（2026-08-30 起）：`RadiusTokens` 已退役，统一使用 Forui `context.theme.style.borderRadius.*`（`FBorderRadius` scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。需要裸 `double` 时用 `.xxx.topLeft.x`，需要 `Radius` 时用 `.xxx.topLeft`。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
@@ -101,16 +102,16 @@ updated: 2026-08-30
 
 - `lib/core/design/markdown_style.dart` 为全 App Markdown 渲染样式的唯一入口（`MarkdownStyle` 抽象类），所有 `MarkdownBody` 调用点禁止本地 `fromTheme(...).copyWith(...)` 漂移。
 - 两套预置：
-  - `MarkdownStyle.legal(context)` — 正式文档（法律文书详情、帮助页 FAQ）：正文 level4 (16px) / 行高 1.7、h1-h3 强层级递减、中性 `colors.border` 引用左条。
-  - `MarkdownStyle.ai(context, {background, paragraphWeight, emphasizeLinks})` — AI 生成内容（聊天气泡、Today 摘要/建议、报告总结）：正文 level4 / 行高 1.6、`colors.primary` 引用左条与列表 bullet、代码块圆角 + 等宽字体 + 主题背景；`background` 传入气泡/容器底色使代码背景自适配，`paragraphWeight` 支持摘要 w600 / 报告总结 w700 覆盖。
+  - `MarkdownStyle.legal(context)` — 正式文档（法律文书详情、帮助页 FAQ）：正文 sm (16px) / 行高 1.7、h1-h3 强层级递减、中性 `colors.border` 引用左条。
+  - `MarkdownStyle.ai(context, {background, paragraphWeight, emphasizeLinks})` — AI 生成内容（聊天气泡、Today 摘要/建议、报告总结）：正文 sm / 行高 1.6、`colors.primary` 引用左条与列表 bullet、代码块圆角 + 等宽字体 + 主题背景；`background` 传入气泡/容器底色使代码背景自适配，`paragraphWeight` 支持摘要 w600 / 报告总结 w700 覆盖。
 - F-4 扩展（2026-08-17，仅 `MarkdownStyle.ai`）：
-  - 标题完整字号阶梯 h1-h6：h1→level6 (w700)、h2→level5、h3→level4（同正文、加粗区分）、h4→level3、h5→level2、h6→level2（降一档字重收尾），各带递减 `*Padding`。
+  - 标题完整字号阶梯 h1-h6：h1→lg (w700)、h2→md、h3→sm（同正文、加粗区分）、h4→xs、h5→xs2、h6→xs2（降一档字重收尾），各带递减 `*Padding`。
   - 列表缩进走 `Spacing` token（level5=20/级），bullet 与文字间距 `listBulletPadding` level2=6。
   - 引用块：primary 4px 左侧色条 + `SemanticColor.primary.subtle` 底色（深浅色自动适配），四边 padding。
   - 表格：`tableColumnWidth: IntrinsicColumnWidth` —— flutter_markdown_plus 检测到该列宽类型时自动把表格包进横向 `SingleChildScrollView`，窄屏可横向滚动而不是挤压列；表头 `colors.secondary` 背景 + `colors.border` 边框不变。
   - **代码块限制（已记录）**：flutter_markdown_plus 把 `pre` 硬编码为横向 ScrollView，样式表无折行开关；折行会破坏代码缩进，故保持库默认横向滚动，不硬造自定义 builder。
 - 链接契约（F-4，仅助手消息气泡）：链接默认不自动跳转；点击先弹确认对话框（`assistantMarkdownLink*` 文案，取消复用 `commonCancel`），确认后经 `ExternalUrlLauncher` 打开；仅放行 http/https 方案。表格列数 / 链接域白名单硬校验规则未定，暂不做。
-- 两套均基于 `TypographyToken` / `Spacing` / `SemanticColor` 与 Forui `FColors` 解析（圆角走 `context.theme.style.borderRadius.*`），深浅色自动适配；代码块/行内代码/表格/分割线/链接统一接入主题 token。
+- 两套均基于 `Spacing` / `SemanticColor` 与 Forui `FColors` / `context.theme.typography.body/display.*` 解析（圆角走 `context.theme.style.borderRadius.*`），深浅色自动适配；代码块/行内代码/表格/分割线/链接统一接入主题 token。
 - 全部 6 处渲染点已迁移：legal 2 处（`legal/detail.dart`、`settings/help.dart`）+ ai 4 处（`assistant/flowui_adapter.dart` 的 `FlowMessage` custom part、`today/summary.dart`、`today/suggestion_interactive.dart`、`report/ai_summary.dart`）。
 
 

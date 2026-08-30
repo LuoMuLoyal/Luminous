@@ -60,10 +60,10 @@ void main() {
     expect(sheet.h5?.fontSize, sheet.h6?.fontSize);
     expect(sheet.h5?.fontWeight, FontWeight.w600);
     expect(sheet.h6?.fontWeight, FontWeight.w500);
-    // 与 TypographyToken 阶梯一致：h4→level3 (14)、h5/h6→level2 (12)。
-    expect(sheet.h4?.fontSize, TypographyToken.level3.body(context).fontSize);
-    expect(sheet.h5?.fontSize, TypographyToken.level2.body(context).fontSize);
-    expect(sheet.h6?.fontSize, TypographyToken.level2.body(context).fontSize);
+    // 与 Forui 阶梯一致：h4→xs (14)、h5/h6→xs2 (12)。
+    expect(sheet.h4?.fontSize, context.theme.typography.body.xs.fontSize);
+    expect(sheet.h5?.fontSize, context.theme.typography.body.xs2.fontSize);
+    expect(sheet.h6?.fontSize, context.theme.typography.body.xs2.fontSize);
   });
 
   testWidgets('ai 样式：列表缩进走 token、表格用 IntrinsicColumnWidth 支持窄屏横向滚动', (

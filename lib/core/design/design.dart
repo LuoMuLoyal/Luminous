@@ -12,7 +12,6 @@
 //   semantic_color*.dart   — semantic color system (SemanticColor,
 //                            SemanticColorPalette, SemanticColors)
 //   spacing.dart           — spacing tokens (Spacing)
-//   typography.dart        — typography tokens (TypographyToken)
 
 export 'breakpoints.dart';
 export 'elevation.dart';
@@ -29,4 +28,3 @@ export 'semantic_color_palette.dart';
 export 'semantic_colors.dart';
 export 'spacing.dart';
 export 'surface.dart';
-export 'typography.dart';
