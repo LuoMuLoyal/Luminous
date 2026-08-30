@@ -129,9 +129,9 @@ class _PatternCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: SkeletonSlot(
-                    skeleton: const InlineSkeletonBlock(
+                    skeleton: InlineSkeletonBlock(
                       height: 22,
-                      radius: RadiusTokens.level2,
+                      radius: context.theme.style.borderRadius.xs.topLeft.x,
                     ),
                     child: ReviewMetricTrack(
                       values: pattern.sparkline,

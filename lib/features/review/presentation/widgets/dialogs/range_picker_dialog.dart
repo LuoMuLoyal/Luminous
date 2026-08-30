@@ -96,9 +96,9 @@ Future<ReviewDashboardQuery?> _showMobileRangePicker(
   return showModalBottomSheet<ReviewDashboardQuery>(
     context: context,
     isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
+    shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
-        top: Radius.circular(RadiusTokens.level4),
+        top: context.theme.style.borderRadius.md.topLeft,
       ),
     ),
     builder: (sheetContext) {
@@ -187,9 +187,9 @@ Future<ReviewDashboardQuery?> _showCalendarBottomSheet(
     final picked = await showModalBottomSheet<(DateTime, DateTime)?>(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(RadiusTokens.level4),
+          top: context.theme.style.borderRadius.md.topLeft,
         ),
       ),
       builder: (sheetContext) {

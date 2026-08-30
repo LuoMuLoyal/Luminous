@@ -14,7 +14,7 @@ class ReviewReferenceNotice extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: SemanticColor.primary.muted(context),
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          borderRadius: context.theme.style.borderRadius.md,
           border: Border.all(color: SemanticColor.primary.border(context)),
         ),
         padding: const EdgeInsets.all(Spacing.level4),

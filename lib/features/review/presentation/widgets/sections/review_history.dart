@@ -401,7 +401,7 @@ class _HistoryStatusChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: tone.muted(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+        borderRadius: context.theme.style.borderRadius.pill,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(

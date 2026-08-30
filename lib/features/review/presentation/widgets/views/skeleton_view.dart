@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 
@@ -131,11 +132,7 @@ class _MetricsGridPlaceholder extends StatelessWidget {
       crossAxisSpacing: Spacing.level3,
       mainAxisSpacing: Spacing.level3,
       childAspectRatio: 1.55,
-      children: List.generate(
-        4,
-        (_) =>
-            const InlineSkeletonBlock(height: 96, radius: RadiusTokens.level4),
-      ),
+      children: List.generate(4, (_) => const InlineSkeletonBlock(height: 96)),
     );
   }
 }
@@ -161,12 +158,12 @@ class _TrendPlaceholder extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
             4,
-            (_) => const Padding(
-              padding: EdgeInsets.symmetric(horizontal: Spacing.level2),
+            (_) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.level2),
               child: InlineSkeletonBlock(
                 height: 8,
                 width: 24,
-                radius: RadiusTokens.levelFull,
+                radius: context.theme.style.borderRadius.pill.topLeft.x,
               ),
             ),
           ),
@@ -218,26 +215,26 @@ class _AiSummaryPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const InlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
-        Row(
+        const Row(
           children: [
             InlineSkeletonCircle(size: 32),
             SizedBox(width: Spacing.level3),
             Expanded(child: InlineSkeletonBlock(height: 18)),
           ],
         ),
-        SizedBox(height: Spacing.level4),
-        InlineSkeletonBlock(height: 16, widthFactor: 0.92),
-        SizedBox(height: Spacing.level2),
-        InlineSkeletonBlock(height: 16, widthFactor: 0.84),
-        SizedBox(height: Spacing.level2),
-        InlineSkeletonBlock(height: 16, widthFactor: 0.78),
-        SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.level4),
+        const InlineSkeletonBlock(height: 16, widthFactor: 0.92),
+        const SizedBox(height: Spacing.level2),
+        const InlineSkeletonBlock(height: 16, widthFactor: 0.84),
+        const SizedBox(height: Spacing.level2),
+        const InlineSkeletonBlock(height: 16, widthFactor: 0.78),
+        const SizedBox(height: Spacing.level3),
         InlineSkeletonBlock(
           height: 36,
           widthFactor: 0.5,
-          radius: RadiusTokens.levelFull,
+          radius: context.theme.style.borderRadius.pill.topLeft.x,
         ),
       ],
     );
@@ -257,12 +254,7 @@ class _ExportPlaceholder extends StatelessWidget {
           children: [
             for (var i = 0; i < 3; i += 1) ...[
               if (i > 0) const SizedBox(width: Spacing.level3),
-              const Expanded(
-                child: InlineSkeletonBlock(
-                  height: 80,
-                  radius: RadiusTokens.level4,
-                ),
-              ),
+              const Expanded(child: InlineSkeletonBlock(height: 80)),
             ],
           ],
         ),

@@ -227,7 +227,7 @@ class _StaleBanner extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: SemanticColor.info.subtle(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.level3,

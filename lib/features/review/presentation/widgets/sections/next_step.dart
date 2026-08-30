@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
@@ -89,7 +90,7 @@ class _RedFlagList extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: warning.subtle(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       padding: const EdgeInsets.all(Spacing.level3),
       child: Column(

@@ -59,7 +59,7 @@ class _EmptyFindingsView extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.level5),
       decoration: BoxDecoration(
         color: SemanticColor.neutral.subtle(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

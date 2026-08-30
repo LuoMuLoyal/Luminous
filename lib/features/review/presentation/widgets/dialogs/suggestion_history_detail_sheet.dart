@@ -36,9 +36,9 @@ Future<void> showSuggestionHistoryDetailSheet(
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
+    shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
-        top: Radius.circular(RadiusTokens.level4),
+        top: context.theme.style.borderRadius.md.topLeft,
       ),
     ),
     builder: (_) => SafeArea(
@@ -254,7 +254,7 @@ class _LifecycleBadge extends StatelessWidget {
         decoration: .shapeDelta(
           color: semanticColor.muted(context),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+            borderRadius: context.theme.style.borderRadius.pill,
           ),
         ),
       ),

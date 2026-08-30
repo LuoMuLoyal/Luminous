@@ -171,7 +171,7 @@ class _TrendRow extends StatelessWidget {
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: chipTone.muted(context),
-                  borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+                  borderRadius: context.theme.style.borderRadius.pill,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(

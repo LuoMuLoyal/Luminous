@@ -127,7 +127,7 @@ class _SuggestionBadge extends StatelessWidget {
         decoration: .shapeDelta(
           color: semanticColor.muted(context),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+            borderRadius: context.theme.style.borderRadius.pill,
           ),
         ),
       ),
@@ -160,7 +160,7 @@ class _EmptyView extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.level5),
       decoration: BoxDecoration(
         color: SemanticColor.neutral.subtle(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

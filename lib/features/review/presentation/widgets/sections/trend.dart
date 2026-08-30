@@ -165,7 +165,7 @@ class _SingleTrendChart extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          borderRadius: context.theme.style.borderRadius.md,
           border: Border.all(color: colors.border),
         ),
         padding: const EdgeInsets.all(Spacing.level4),

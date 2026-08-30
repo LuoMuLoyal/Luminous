@@ -186,7 +186,7 @@ class _ReviewStatusChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+        borderRadius: context.theme.style.borderRadius.pill,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(

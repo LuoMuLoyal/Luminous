@@ -48,9 +48,9 @@ Future<void> showClinicSummaryPreviewDialog(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
+    shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
-        top: Radius.circular(RadiusTokens.level4),
+        top: context.theme.style.borderRadius.md.topLeft,
       ),
     ),
     builder: (_) => SafeArea(

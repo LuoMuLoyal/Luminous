@@ -77,9 +77,7 @@ class ReviewMetricTrack extends StatelessWidget {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: color.border(context),
-                        borderRadius: BorderRadius.circular(
-                          RadiusTokens.levelFull,
-                        ),
+                        borderRadius: context.theme.style.borderRadius.pill,
                         border: Border.all(color: context.theme.colors.border),
                       ),
                       child: const SizedBox(width: Spacing.level1),
