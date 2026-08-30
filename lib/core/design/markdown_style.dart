@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
 
-import 'radius.dart';
 import 'semantic_color.dart';
 import 'spacing.dart';
 import 'typography.dart';
@@ -19,7 +18,7 @@ abstract final class MarkdownStyle {
   /// 正式文档（法律文书 / FAQ）：宽松行距、强标题层级、中性引用。
   ///
   /// 正文字号 level4 (16px)、行高 1.7；h1/h2/h3 依次递减并带段落间距；
-  /// 引用为中性 `colors.border` 左条 + muted 文字。
+  /// 引用为中性 `SemanticColor.neutral.border` 左条 + `SemanticColor.neutral.solid` 文字。
   static MarkdownStyleSheet legal(BuildContext context) {
     final base = MarkdownStyleSheet.fromTheme(Theme.of(context));
     final colors = context.theme.colors;
@@ -39,9 +38,14 @@ abstract final class MarkdownStyle {
       h3Padding: const EdgeInsets.only(top: Spacing.level4),
       blockquote: TypographyToken.level4
           .body(context)
-          .copyWith(color: colors.mutedForeground),
+          .copyWith(color: SemanticColor.neutral.solid(context)),
       blockquoteDecoration: BoxDecoration(
-        border: Border(left: BorderSide(color: colors.border, width: 4)),
+        border: Border(
+          left: BorderSide(
+            color: SemanticColor.neutral.border(context),
+            width: 4,
+          ),
+        ),
       ),
       blockquotePadding: const EdgeInsets.only(left: Spacing.level3),
       code: TypographyToken.level3
@@ -54,8 +58,8 @@ abstract final class MarkdownStyle {
       codeblockPadding: const EdgeInsets.all(Spacing.level3),
       codeblockDecoration: BoxDecoration(
         color: colors.secondary,
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
-        border: Border.all(color: colors.border),
+        borderRadius: context.theme.style.borderRadius.sm,
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       a: TypographyToken.level4
           .body(context)
@@ -64,9 +68,13 @@ abstract final class MarkdownStyle {
             decoration: TextDecoration.underline,
           ),
       horizontalRuleDecoration: BoxDecoration(
-        border: Border(top: BorderSide(color: colors.border)),
+        border: Border(
+          top: BorderSide(color: SemanticColor.neutral.border(context)),
+        ),
       ),
-      tableBorder: TableBorder.all(color: colors.border),
+      tableBorder: TableBorder.all(
+        color: SemanticColor.neutral.border(context),
+      ),
       tableHead: TypographyToken.level4
           .body(context)
           .copyWith(fontWeight: FontWeight.w600),
@@ -130,13 +138,13 @@ abstract final class MarkdownStyle {
       h6Padding: const EdgeInsets.only(top: Spacing.level2),
       blockquote: TypographyToken.level4
           .body(context)
-          .copyWith(color: colors.mutedForeground),
+          .copyWith(color: SemanticColor.neutral.solid(context)),
       // 引用块：primary 4px 左侧色条 + primary subtle 底色（大容器/空态级极浅色调，
       // 深浅色自动适配）。带底色后四边都需要 padding，不再只留左侧。
       blockquoteDecoration: BoxDecoration(
         color: SemanticColor.primary.subtle(context),
         border: Border(left: BorderSide(color: colors.primary, width: 4)),
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+        borderRadius: context.theme.style.borderRadius.xs,
       ),
       blockquotePadding: const EdgeInsets.fromLTRB(
         Spacing.level3,
@@ -159,8 +167,8 @@ abstract final class MarkdownStyle {
       codeblockPadding: const EdgeInsets.all(Spacing.level3),
       codeblockDecoration: BoxDecoration(
         color: codeBg,
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
-        border: Border.all(color: colors.border),
+        borderRadius: context.theme.style.borderRadius.sm,
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       a: TypographyToken.level4
           .body(context)
@@ -170,9 +178,13 @@ abstract final class MarkdownStyle {
             fontWeight: emphasizeLinks ? FontWeight.w600 : null,
           ),
       horizontalRuleDecoration: BoxDecoration(
-        border: Border(top: BorderSide(color: colors.border)),
+        border: Border(
+          top: BorderSide(color: SemanticColor.neutral.border(context)),
+        ),
       ),
-      tableBorder: TableBorder.all(color: colors.border),
+      tableBorder: TableBorder.all(
+        color: SemanticColor.neutral.border(context),
+      ),
       // IntrinsicColumnWidth 触发库内置的横向滚动容器（见上方 doc 注释）。
       tableColumnWidth: const IntrinsicColumnWidth(),
       tableHead: TypographyToken.level4

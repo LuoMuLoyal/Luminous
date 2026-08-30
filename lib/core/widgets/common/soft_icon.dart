@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:forui_phosphor/forui_phosphor.dart';
 import 'package:luminous/core/design/design.dart';
 
@@ -89,7 +90,7 @@ class SoftIcon extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        borderRadius: context.theme.style.borderRadius.md,
       ),
       child: SizedBox.square(
         dimension: size,

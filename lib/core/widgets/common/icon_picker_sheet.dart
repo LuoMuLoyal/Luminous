@@ -164,7 +164,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
               height: Spacing.level1,
               decoration: BoxDecoration(
                 color: colors.mutedForeground,
-                borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+                borderRadius: context.theme.style.borderRadius.pill,
               ),
             ),
             const SizedBox(height: Spacing.level4),
@@ -295,7 +295,7 @@ class _IconChip extends StatelessWidget {
         height: Spacing.level8,
         decoration: BoxDecoration(
           color: selected ? colors.primary : colors.secondary,
-          borderRadius: BorderRadius.circular(RadiusTokens.level3),
+          borderRadius: context.theme.style.borderRadius.sm,
         ),
         child: Icon(
           icon,

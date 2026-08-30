@@ -19,7 +19,7 @@ class SheetDragHandle extends StatelessWidget {
           height: 4,
           decoration: BoxDecoration(
             color: colors.border,
-            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+            borderRadius: context.theme.style.borderRadius.pill,
           ),
         ),
         const SizedBox(height: Spacing.level4),

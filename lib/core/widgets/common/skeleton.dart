@@ -117,7 +117,7 @@ class SkeletonText extends StatelessWidget {
     this.width,
     this.widthFactor = 0.72,
     this.height,
-    this.radius = RadiusTokens.level1,
+    this.radius,
     this.isLoading,
   }) : assert(widthFactor > 0 && widthFactor <= 1);
 
@@ -129,11 +129,13 @@ class SkeletonText extends StatelessWidget {
   final double? width;
   final double widthFactor;
   final double? height;
-  final double radius;
+  final double? radius;
   final bool? isLoading;
 
   @override
   Widget build(BuildContext context) {
+    final radius =
+        this.radius ?? context.theme.style.borderRadius.xs2.topLeft.x;
     final textWidget = Text(
       text,
       style: style,
@@ -183,7 +185,7 @@ class InlineSkeletonBlock extends StatelessWidget {
     required this.height,
     this.width,
     this.widthFactor = 1,
-    this.radius = RadiusTokens.level4,
+    this.radius,
     this.fallbackWidth = 96,
   }) : assert(widthFactor > 0 && widthFactor <= 1),
        assert(fallbackWidth > 0);
@@ -191,12 +193,13 @@ class InlineSkeletonBlock extends StatelessWidget {
   final double height;
   final double? width;
   final double widthFactor;
-  final double radius;
+  final double? radius;
   final double fallbackWidth;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final radius = this.radius ?? context.theme.style.borderRadius.md.topLeft.x;
 
     final block = DecoratedBox(
       decoration: BoxDecoration(
@@ -265,7 +268,7 @@ class InlineSkeletonSection extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        borderRadius: context.theme.style.borderRadius.md,
         border: Border.all(color: colors.border),
       ),
       child: Padding(
@@ -283,12 +286,12 @@ class InlineSkeletonSection extends StatelessWidget {
 class StateSkeletonBlock {
   const StateSkeletonBlock({
     required this.height,
-    this.radius = RadiusTokens.level5,
+    this.radius,
     this.widthFactor = 1,
   }) : assert(widthFactor > 0 && widthFactor <= 1);
 
   final double height;
-  final double radius;
+  final double? radius;
   final double widthFactor;
 }
 
@@ -307,7 +310,9 @@ class _SkeletonBlock extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(data.radius),
+          borderRadius: BorderRadius.circular(
+            data.radius ?? context.theme.style.borderRadius.lg.topLeft.x,
+          ),
         ),
         child: SizedBox(height: data.height),
       ),

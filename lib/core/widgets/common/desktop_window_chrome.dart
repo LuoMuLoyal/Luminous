@@ -197,7 +197,7 @@ class _WindowButtonState extends State<_WindowButton> {
             height: 28,
             decoration: BoxDecoration(
               color: _isHovered ? effectiveHoverColor : Colors.transparent,
-              borderRadius: BorderRadius.circular(RadiusTokens.level1),
+              borderRadius: context.theme.style.borderRadius.xs2,
             ),
             child: Center(
               child: Icon(

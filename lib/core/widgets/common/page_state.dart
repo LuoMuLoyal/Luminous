@@ -221,7 +221,7 @@ class SignInHintBanner extends StatelessWidget {
       key: const Key('sign-in-hint-banner'),
       decoration: BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        borderRadius: context.theme.style.borderRadius.md,
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       padding: const EdgeInsets.symmetric(
