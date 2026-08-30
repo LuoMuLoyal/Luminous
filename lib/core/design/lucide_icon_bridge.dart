@@ -2056,6 +2056,9 @@ abstract final class LucideIconBridge {
 
   /// Pre-computed reverse map: IconData → kebab-case name.
   /// Built once at class initialization to avoid O(N) scan per [nameOf] call.
+  ///
+  /// Lazily initialized on first [nameOf] call — constructs a ~2030-entry
+  /// map in a single pass. Subsequent calls are O(1) hash lookups.
   static final Map<IconData, String> _reverseMap = {
     for (final entry in _map.entries) entry.value: entry.key,
   };
