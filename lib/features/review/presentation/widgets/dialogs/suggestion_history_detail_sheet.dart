@@ -63,6 +63,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
+    final typography = context.theme.typography;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(Spacing.level5),
@@ -82,7 +83,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
               Expanded(
                 child: Text(
                   suggestion.title,
-                  style: context.theme.typography.body.lg.copyWith(
+                  style: typography.body.lg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -103,7 +104,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
           const SizedBox(height: Spacing.level5),
 
           // Reason body.
-          Text(suggestion.reason, style: context.theme.typography.body.sm),
+          Text(suggestion.reason, style: typography.body.sm),
 
           const SizedBox(height: Spacing.level5),
           const AppDivider(),

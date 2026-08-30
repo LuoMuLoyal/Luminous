@@ -272,6 +272,7 @@ class _StartObservationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
     return FCard(
       key: const Key('review-no-event-card'),
       child: Padding(
@@ -281,14 +282,12 @@ class _StartObservationCard extends StatelessWidget {
           children: [
             Text(
               l10n.reviewReviewNoEventTitle,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               l10n.reviewReviewNoEventDescription,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),

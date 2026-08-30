@@ -181,6 +181,7 @@ class _MoreActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FButton.raw(
       onPress: onTap,
       variant: FButtonVariant.ghost,
@@ -208,7 +209,7 @@ class _MoreActionTile extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: context.theme.typography.body.md.copyWith(
+                      style: typography.body.md.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
@@ -217,7 +218,7 @@ class _MoreActionTile extends StatelessWidget {
                     const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                       maxLines: 1,

@@ -85,6 +85,7 @@ class _RedFlagList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const warning = SemanticColor.warning;
+    final typography = context.theme.typography;
 
     return Container(
       width: double.infinity,
@@ -110,7 +111,7 @@ class _RedFlagList extends StatelessWidget {
               Expanded(
                 child: Text(
                   l10n.reviewReviewRedFlagSectionTitle,
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: warning.solid(context),
                     fontWeight: FontWeight.w600,
                   ),
@@ -122,10 +123,7 @@ class _RedFlagList extends StatelessWidget {
           for (final flag in redFlags)
             Padding(
               padding: const EdgeInsets.only(bottom: Spacing.level1),
-              child: Text(
-                _redFlagLabel(flag),
-                style: context.theme.typography.body.xs,
-              ),
+              child: Text(_redFlagLabel(flag), style: typography.body.xs),
             ),
         ],
       ),

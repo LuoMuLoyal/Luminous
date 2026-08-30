@@ -156,6 +156,7 @@ class _EmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return Container(
       padding: const EdgeInsets.all(Spacing.level5),
@@ -178,14 +179,14 @@ class _EmptyView extends StatelessWidget {
               children: [
                 Text(
                   l10n.reviewSuggestionHistoryEmptyTitle,
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.reviewSuggestionHistoryEmptyBody,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),

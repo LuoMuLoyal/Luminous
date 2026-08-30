@@ -43,6 +43,7 @@ class ReviewAiSummarySection extends StatelessWidget {
       selectedRange: selectedRange,
       colors: colors,
     );
+    final typography = context.theme.typography;
 
     return FCard(
       child: Padding(
@@ -68,14 +69,14 @@ class ReviewAiSummarySection extends StatelessWidget {
                     children: [
                       Text(
                         l10n.reviewAiSummaryTitle,
-                        style: context.theme.typography.body.md.copyWith(
+                        style: typography.body.md.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                       ),
                       const SizedBox(height: Spacing.level1),
                       Text(
                         content.subtitle,
-                        style: context.theme.typography.body.xs.copyWith(
+                        style: typography.body.xs.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
                       ),
@@ -149,7 +150,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
                 child: Text(
                   content.observedPattern!,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -161,7 +162,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
                 child: Text(
                   content.lowRiskAction!,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -172,7 +173,7 @@ class ReviewAiSummarySection extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 content.disclaimer!,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),

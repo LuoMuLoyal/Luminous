@@ -39,6 +39,7 @@ class ReviewReadinessSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FCard(
       key: const Key('report-readiness-card'),
       child: Padding(
@@ -65,14 +66,14 @@ class ReviewReadinessSection extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             Text(
               _title,
-              style: context.theme.typography.display.lg.copyWith(
+              style: typography.display.lg.copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
             const SizedBox(height: Spacing.level2),
             Text(
               _description,
-              style: context.theme.typography.body.sm.copyWith(
+              style: typography.body.sm.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -91,7 +92,7 @@ class ReviewReadinessSection extends StatelessWidget {
                   Expanded(
                     child: Text(
                       l10n.reviewReadinessUpdatedAt(generatedAtLabel),
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
@@ -106,7 +107,7 @@ class ReviewReadinessSection extends StatelessWidget {
                   l10n.reviewReadinessMissingMetricsHint(
                     insufficientMetricCount,
                   ),
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -117,7 +118,7 @@ class ReviewReadinessSection extends StatelessWidget {
                   l10n.reviewReadinessNeedsAttentionMetricsHint(
                     needsAttentionMetricCount,
                   ),
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),

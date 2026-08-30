@@ -71,6 +71,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final async = ref.watch(clinicSummaryShareListProvider);
+    final typography = context.theme.typography;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(Spacing.level5),
@@ -82,9 +83,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
             const Center(child: SheetDragHandle()),
           Text(
             l10n.reviewShareManagementTitle,
-            style: context.theme.typography.body.lg.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: Spacing.level4),
           ...switch (async) {
@@ -120,7 +119,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
                     const SizedBox(height: Spacing.level3),
                     Text(
                       l10n.reviewShareManagementLoadFailed,
-                      style: context.theme.typography.body.xs,
+                      style: typography.body.xs,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: Spacing.level4),
@@ -145,6 +144,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
     AppLocalizations l10n,
     List<ClinicSummaryShareListItemDto> shares,
   ) {
+    final typography = context.theme.typography;
     if (shares.isEmpty) {
       return [
         Padding(
@@ -158,14 +158,11 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
                 color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level3),
-              Text(
-                l10n.reviewShareManagementEmpty,
-                style: context.theme.typography.body.sm,
-              ),
+              Text(l10n.reviewShareManagementEmpty, style: typography.body.sm),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.reviewShareManagementEmptyHint,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,

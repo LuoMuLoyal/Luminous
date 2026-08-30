@@ -33,6 +33,7 @@ class EventHeaderSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final isActive = event.status == ReviewEventStatus.active;
     final canCheckIn = isActive && showCheckInAction && todayCheckIn == null;
+    final typography = context.theme.typography;
 
     return FCard(
       key: const Key('review-event-header'),
@@ -45,7 +46,7 @@ class EventHeaderSection extends StatelessWidget {
             // 先读标题再读状态/结果（Task 9 a11y 顺序校验）。
             Text(
               event.title,
-              style: context.theme.typography.display.lg.copyWith(
+              style: typography.display.lg.copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -82,7 +83,7 @@ class EventHeaderSection extends StatelessWidget {
             const SizedBox(height: Spacing.level2),
             Text(
               reviewEventKindLabel(l10n, event.kind),
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -91,7 +92,7 @@ class EventHeaderSection extends StatelessWidget {
               l10n.reviewReviewStartedLabel(
                 reviewShortDateLabel(context, event.startedAt),
               ),
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -101,7 +102,7 @@ class EventHeaderSection extends StatelessWidget {
                 l10n.reviewReviewEndedLabel(
                   reviewShortDateLabel(context, event.endedAt!),
                 ),
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -112,7 +113,7 @@ class EventHeaderSection extends StatelessWidget {
                 l10n.reviewReviewMedicineCountLabel(
                   event.currentMedicineIds.length,
                 ),
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -123,7 +124,7 @@ class EventHeaderSection extends StatelessWidget {
                 children: [
                   Text(
                     l10n.reviewReviewOutcomeLabel,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
@@ -148,7 +149,7 @@ class EventHeaderSection extends StatelessWidget {
                 l10n.reviewReviewCheckInDoneToday(
                   reviewOutcomeLabel(l10n, todayCheckIn!.outcome),
                 ),
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),

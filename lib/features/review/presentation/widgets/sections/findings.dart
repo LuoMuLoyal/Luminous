@@ -54,6 +54,7 @@ class _EmptyFindingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
     return Container(
       padding: const EdgeInsets.all(Spacing.level5),
@@ -76,14 +77,14 @@ class _EmptyFindingsView extends StatelessWidget {
               children: [
                 Text(
                   l10n.reviewFindingsEmptyTitle,
-                  style: context.theme.typography.body.md.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.reviewFindingsEmptyBody,
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
@@ -104,6 +105,7 @@ class _FindingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = finding.color.palette(context);
+    final typography = context.theme.typography;
 
     return FCard(
       style: .delta(
@@ -148,15 +150,13 @@ class _FindingCard extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             SkeletonText(
               text: finding.title,
-              style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w800),
               widthFactor: 0.7,
             ),
             const SizedBox(height: Spacing.level3),
             SkeletonText(
               text: finding.body,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
               maxLines: 3,

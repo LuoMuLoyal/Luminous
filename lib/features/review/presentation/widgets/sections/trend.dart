@@ -123,6 +123,7 @@ class _SingleTrendChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final values = series.values;
+    final typography = context.theme.typography;
 
     // Empty state: no observed values at all.
     if (values.isEmpty) {
@@ -179,7 +180,7 @@ class _SingleTrendChart extends StatelessWidget {
               children: [
                 Text(
                   '${series.currentValue}${series.unit}',
-                  style: context.theme.typography.display.xl.copyWith(
+                  style: typography.display.xl.copyWith(
                     color: resolvedColor,
                     fontWeight: FontWeight.w700,
                   ),
@@ -189,7 +190,7 @@ class _SingleTrendChart extends StatelessWidget {
                   Expanded(
                     child: Text(
                       coverageLabel,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                       textAlign: TextAlign.end,
@@ -251,7 +252,7 @@ class _SingleTrendChart extends StatelessWidget {
                             padding: const EdgeInsets.only(top: Spacing.level2),
                             child: Text(
                               labels[index],
-                              style: context.theme.typography.body.xs.copyWith(
+                              style: typography.body.xs.copyWith(
                                 color: SemanticColor.neutral.solid(context),
                               ),
                               maxLines: 1,
@@ -278,7 +279,7 @@ class _SingleTrendChart extends StatelessWidget {
                               : series.currentValue;
                           return LineTooltipItem(
                             '$valueText\n$dateLabel',
-                            context.theme.typography.body.xs.copyWith(
+                            typography.body.xs.copyWith(
                               color: resolvedColor,
                               fontWeight: FontWeight.w600,
                             ),
@@ -348,6 +349,7 @@ class _TrendEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return FCard(
       child: SizedBox(
         width: double.infinity,
@@ -367,14 +369,12 @@ class _TrendEmptyState extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Text(
                 l10n.reviewTrendEmptyTitle,
-                style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: Spacing.level1),
               Text(
                 l10n.reviewTrendEmptyBody,
-                style: context.theme.typography.body.xs.copyWith(
+                style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
                 textAlign: TextAlign.center,

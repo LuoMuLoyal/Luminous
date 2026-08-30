@@ -36,20 +36,19 @@ class ReviewExportSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.reviewExportSectionTitle,
-          style: context.theme.typography.body.md.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         if (isDataInsufficient) ...[
           const SizedBox(height: Spacing.level2),
           Text(
             l10n.reviewExportInsufficientReason,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
           ),
@@ -116,6 +115,7 @@ class _ExportCard extends StatelessWidget {
         : enabled && !anyInFlight
         ? SemanticIcons.actionNext
         : SemanticIcons.statusBlocked;
+    final typography = context.theme.typography;
 
     return FButton.raw(
       onPress: !enabled || anyInFlight
@@ -148,7 +148,7 @@ class _ExportCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: context.theme.typography.body.md.copyWith(
+                      style: typography.body.md.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
@@ -157,7 +157,7 @@ class _ExportCard extends StatelessWidget {
                     const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                       maxLines: 1,

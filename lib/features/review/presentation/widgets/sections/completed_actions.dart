@@ -52,15 +52,14 @@ class CompletedActionsSection extends StatelessWidget {
     final confirmed = reviewArgInt(doseSlots, 'confirmed');
     final skipped = reviewArgInt(doseSlots, 'skipped');
     final unconfirmed = reviewArgInt(doseSlots, 'unconfirmed');
+    final typography = context.theme.typography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.reviewReviewDoseSectionTitle,
-          style: context.theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: Spacing.level2),
         ReviewFactRow(
@@ -80,9 +79,7 @@ class CompletedActionsSection extends StatelessWidget {
           const SizedBox(height: Spacing.level2),
           Text(
             l10n.reviewReviewCheckInSectionTitle,
-            style: context.theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: Spacing.level2),
           for (final checkIn in checkIns.take(_maxCheckInRows))

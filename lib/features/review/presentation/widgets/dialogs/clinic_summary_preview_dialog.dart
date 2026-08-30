@@ -397,15 +397,14 @@ class _FieldSelectionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.reviewClinicSummaryFieldSectionTitle,
-          style: context.theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.level2),
         for (final field in kClinicSummaryAllFields) ...[
@@ -432,7 +431,7 @@ class _FieldSelectionPanel extends StatelessWidget {
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.reviewClinicSummaryFieldPrivacyHint,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
@@ -602,6 +601,7 @@ class _ShareCreatedPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
+    final typography = context.theme.typography;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -609,9 +609,7 @@ class _ShareCreatedPanel extends StatelessWidget {
       children: [
         Text(
           l10n.reviewShareCreatedTitle,
-          style: context.theme.typography.body.lg.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.level3),
         MetaRow(
@@ -624,7 +622,7 @@ class _ShareCreatedPanel extends StatelessWidget {
             padding: const EdgeInsets.all(Spacing.level4),
             child: Text(
               response.shareUrl,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -676,6 +674,7 @@ class _ShareRevokedPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -688,14 +687,12 @@ class _ShareRevokedPanel extends StatelessWidget {
         const SizedBox(height: Spacing.level3),
         Text(
           l10n.reviewShareRevokedTitle,
-          style: context.theme.typography.body.lg.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.level2),
         Text(
           l10n.reviewShareRevokedBody,
-          style: context.theme.typography.body.xs.copyWith(
+          style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),

@@ -156,6 +156,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
 
     return FCard(
       key: const Key('review-history-section'),
@@ -177,7 +178,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                 Expanded(
                   child: Text(
                     l10n.reviewReviewHistoryTitle,
-                    style: context.theme.typography.body.md.copyWith(
+                    style: typography.body.md.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -201,7 +202,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                   Expanded(
                     child: Text(
                       l10n.reviewReviewHistoryLoadFailed,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
@@ -224,7 +225,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                 if (allItems.isEmpty) {
                   return Text(
                     l10n.reviewReviewHistoryEmpty,
-                    style: context.theme.typography.body.xs.copyWith(
+                    style: typography.body.xs.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   );
@@ -332,6 +333,7 @@ class _HistoryEventRow extends StatelessWidget {
     final endLabel = event.endedAt != null
         ? reviewShortDateLabel(context, event.endedAt!)
         : l10n.reviewReviewWindowUntilNow;
+    final typography = context.theme.typography;
 
     final row = Padding(
       key: Key('review-history-item-${event.id}'),
@@ -344,7 +346,7 @@ class _HistoryEventRow extends StatelessWidget {
               children: [
                 Text(
                   event.title,
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
@@ -353,7 +355,7 @@ class _HistoryEventRow extends StatelessWidget {
                 const SizedBox(height: Spacing.level1),
                 Text(
                   '${reviewShortDateLabel(context, event.startedAt)} – $endLabel',
-                  style: context.theme.typography.body.xs.copyWith(
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
