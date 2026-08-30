@@ -81,7 +81,7 @@ class SuggestionSkeleton extends StatelessWidget {
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary,
-                      borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                      borderRadius: context.theme.style.borderRadius.sm,
                     ),
                     child: const SizedBox.square(dimension: Spacing.level7),
                   ),
@@ -94,9 +94,7 @@ class SuggestionSkeleton extends StatelessWidget {
                           height: 16,
                           decoration: BoxDecoration(
                             color: colors.secondary,
-                            borderRadius: BorderRadius.circular(
-                              RadiusTokens.level2,
-                            ),
+                            borderRadius: context.theme.style.borderRadius.xs,
                           ),
                         ),
                         const SizedBox(height: Spacing.level2),
@@ -105,9 +103,7 @@ class SuggestionSkeleton extends StatelessWidget {
                           width: 120,
                           decoration: BoxDecoration(
                             color: colors.secondary,
-                            borderRadius: BorderRadius.circular(
-                              RadiusTokens.level2,
-                            ),
+                            borderRadius: context.theme.style.borderRadius.xs,
                           ),
                         ),
                       ],
@@ -121,7 +117,7 @@ class SuggestionSkeleton extends StatelessWidget {
                 height: 14,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                  borderRadius: context.theme.style.borderRadius.xs,
                 ),
               ),
               const SizedBox(height: Spacing.level2),
@@ -130,7 +126,7 @@ class SuggestionSkeleton extends StatelessWidget {
                 width: 200,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                  borderRadius: context.theme.style.borderRadius.xs,
                 ),
               ),
               const SizedBox(height: Spacing.level5),
@@ -141,9 +137,7 @@ class SuggestionSkeleton extends StatelessWidget {
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary,
-                      borderRadius: BorderRadius.circular(
-                        RadiusTokens.levelFull,
-                      ),
+                      borderRadius: context.theme.style.borderRadius.pill,
                     ),
                     child: const SizedBox(width: 80, height: 32),
                   ),
@@ -346,9 +340,7 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
                       DecoratedBox(
                         decoration: BoxDecoration(
                           color: colors.secondary,
-                          borderRadius: BorderRadius.circular(
-                            RadiusTokens.level3,
-                          ),
+                          borderRadius: context.theme.style.borderRadius.sm,
                         ),
                         child: const SizedBox.square(dimension: Spacing.level7),
                       ),
@@ -361,9 +353,8 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
                               height: 14,
                               decoration: BoxDecoration(
                                 color: colors.secondary,
-                                borderRadius: BorderRadius.circular(
-                                  RadiusTokens.level2,
-                                ),
+                                borderRadius:
+                                    context.theme.style.borderRadius.xs,
                               ),
                             ),
                             const SizedBox(height: Spacing.level2),
@@ -372,9 +363,8 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
                               width: 140,
                               decoration: BoxDecoration(
                                 color: colors.secondary,
-                                borderRadius: BorderRadius.circular(
-                                  RadiusTokens.level2,
-                                ),
+                                borderRadius:
+                                    context.theme.style.borderRadius.xs,
                               ),
                             ),
                           ],

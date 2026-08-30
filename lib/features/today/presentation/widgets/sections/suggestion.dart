@@ -117,7 +117,8 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                             ),
                             color: colorFor(visible[index].cardTone),
                             size: IconSizeTokens.level5,
-                            radius: RadiusTokens.level3,
+                            radius:
+                                context.theme.style.borderRadius.sm.topLeft.x,
                           ),
                           const SizedBox(width: Spacing.level3),
                           Expanded(

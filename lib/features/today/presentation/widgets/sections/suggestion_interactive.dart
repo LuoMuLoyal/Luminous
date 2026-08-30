@@ -241,7 +241,7 @@ class AiExplainContent extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.level3),
       decoration: BoxDecoration(
         color: SemanticColor.primary.subtle(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
         border: Border.all(color: SemanticColor.primary.muted(context)),
       ),
       child: Column(

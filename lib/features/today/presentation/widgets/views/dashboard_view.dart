@@ -449,7 +449,7 @@ class _HealthEventCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.card,
         border: Border.all(color: SurfaceTokens.containerBorder(colors)),
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),

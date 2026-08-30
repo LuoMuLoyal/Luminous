@@ -139,7 +139,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                         icon: SuggestionIconMapping.resolve(card.icon),
                         color: colorFor(card.cardTone),
                         size: IconSizeTokens.level6,
-                        radius: RadiusTokens.level3,
+                        radius: context.theme.style.borderRadius.sm.topLeft.x,
                         filled: true,
                       ),
                       const Spacer(),
@@ -530,7 +530,7 @@ class WaterProgressBar extends StatelessWidget {
       children: [
         Expanded(
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+            borderRadius: context.theme.style.borderRadius.pill,
             child: FDeterminateProgress(value: progress),
           ),
         ),

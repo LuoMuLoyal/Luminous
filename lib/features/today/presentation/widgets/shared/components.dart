@@ -8,14 +8,14 @@ class TodayGlyphTile extends StatelessWidget {
     required this.icon,
     required this.color,
     this.size = Spacing.level8 + Spacing.level2,
-    this.radius = RadiusTokens.level3,
+    this.radius,
     this.filled = false,
   });
 
   final IconData icon;
   final SemanticColor color;
   final double size;
-  final double radius;
+  final double? radius;
 
   /// When `true`, uses [GradientTokens.semanticFill] for a rich, visually
   /// weighted fill (primary suggestion cards). When `false`, uses
@@ -24,6 +24,7 @@ class TodayGlyphTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radius = this.radius ?? context.theme.style.borderRadius.sm.topLeft.x;
     final palette = color.palette(context);
     final decoration = BoxDecoration(
       gradient: filled ? GradientTokens.semanticFill(palette) : null,
@@ -67,7 +68,7 @@ class TodayMiniTrendChart extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: palette.subtle,
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: SizedBox(
         height: height,
@@ -96,9 +97,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                           color: index == 3
                               ? palette.solid
                               : context.theme.colors.primary,
-                          borderRadius: BorderRadius.circular(
-                            RadiusTokens.levelFull,
-                          ),
+                          borderRadius: context.theme.style.borderRadius.pill,
                         ),
                         child: const SizedBox(height: Spacing.level1),
                       ),

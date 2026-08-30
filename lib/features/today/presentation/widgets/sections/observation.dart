@@ -302,7 +302,7 @@ class _ObservationSkeletonRow extends StatelessWidget {
         DecoratedBox(
           decoration: BoxDecoration(
             color: colors.secondary,
-            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+            borderRadius: context.theme.style.borderRadius.pill,
           ),
           child: const SizedBox.square(dimension: Spacing.level6),
         ),
@@ -314,7 +314,7 @@ class _ObservationSkeletonRow extends StatelessWidget {
                 height: 14,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                  borderRadius: context.theme.style.borderRadius.xs,
                 ),
               ),
               const SizedBox(height: Spacing.level2),
@@ -322,7 +322,7 @@ class _ObservationSkeletonRow extends StatelessWidget {
                 height: 12,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                  borderRadius: context.theme.style.borderRadius.xs,
                 ),
               ),
             ],

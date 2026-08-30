@@ -181,9 +181,9 @@ class _RecordHintPlaceholder extends StatelessWidget {
 class _PrimarySuggestionPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const InlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
-        Row(
+        const Row(
           children: [
             InlineSkeletonCircle(size: 40),
             SizedBox(width: Spacing.level3),
@@ -192,25 +192,25 @@ class _PrimarySuggestionPlaceholder extends StatelessWidget {
             InlineSkeletonBlock(height: 14, width: 72),
           ],
         ),
-        SizedBox(height: Spacing.level4),
-        InlineSkeletonBlock(height: 16, widthFactor: 0.92),
-        SizedBox(height: Spacing.level2),
-        InlineSkeletonBlock(height: 16, widthFactor: 0.78),
-        SizedBox(height: Spacing.level2),
-        InlineSkeletonBlock(height: 16, widthFactor: 0.84),
-        SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.level4),
+        const InlineSkeletonBlock(height: 16, widthFactor: 0.92),
+        const SizedBox(height: Spacing.level2),
+        const InlineSkeletonBlock(height: 16, widthFactor: 0.78),
+        const SizedBox(height: Spacing.level2),
+        const InlineSkeletonBlock(height: 16, widthFactor: 0.84),
+        const SizedBox(height: Spacing.level4),
         Row(
           children: [
             InlineSkeletonBlock(
               height: 32,
               width: 80,
-              radius: RadiusTokens.levelFull,
+              radius: context.theme.style.borderRadius.pill.topLeft.x,
             ),
-            SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.level3),
             InlineSkeletonBlock(
               height: 32,
               width: 80,
-              radius: RadiusTokens.levelFull,
+              radius: context.theme.style.borderRadius.pill.topLeft.x,
             ),
           ],
         ),
@@ -259,26 +259,11 @@ class _SummaryPlaceholder extends StatelessWidget {
         SizedBox(height: Spacing.level4),
         Row(
           children: [
-            Expanded(
-              child: InlineSkeletonBlock(
-                height: 56,
-                radius: RadiusTokens.level4,
-              ),
-            ),
+            Expanded(child: InlineSkeletonBlock(height: 56)),
             SizedBox(width: Spacing.level3),
-            Expanded(
-              child: InlineSkeletonBlock(
-                height: 56,
-                radius: RadiusTokens.level4,
-              ),
-            ),
+            Expanded(child: InlineSkeletonBlock(height: 56)),
             SizedBox(width: Spacing.level3),
-            Expanded(
-              child: InlineSkeletonBlock(
-                height: 56,
-                radius: RadiusTokens.level4,
-              ),
-            ),
+            Expanded(child: InlineSkeletonBlock(height: 56)),
           ],
         ),
       ],
@@ -320,19 +305,19 @@ class _ObservationPlaceholder extends StatelessWidget {
 class _HealthEventPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const InlineSkeletonSection(
-      key: Key('today-health-event-skeleton'),
+    return InlineSkeletonSection(
+      key: const Key('today-health-event-skeleton'),
       children: [
-        InlineSkeletonBlock(height: 18, widthFactor: 0.3),
-        SizedBox(height: Spacing.level4),
-        InlineSkeletonBlock(height: 16, widthFactor: 0.8),
-        SizedBox(height: Spacing.level3),
-        InlineSkeletonBlock(height: 14, widthFactor: 0.62),
-        SizedBox(height: Spacing.level4),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.3),
+        const SizedBox(height: Spacing.level4),
+        const InlineSkeletonBlock(height: 16, widthFactor: 0.8),
+        const SizedBox(height: Spacing.level3),
+        const InlineSkeletonBlock(height: 14, widthFactor: 0.62),
+        const SizedBox(height: Spacing.level4),
         InlineSkeletonBlock(
           height: 36,
           width: 112,
-          radius: RadiusTokens.levelFull,
+          radius: context.theme.style.borderRadius.pill.topLeft.x,
         ),
       ],
     );
@@ -346,9 +331,7 @@ class _QuickActionsPlaceholder extends StatelessWidget {
       children: [
         for (var i = 0; i < 4; i += 1) ...[
           if (i > 0) const SizedBox(width: Spacing.level3),
-          const Expanded(
-            child: InlineSkeletonBlock(height: 80, radius: RadiusTokens.level4),
-          ),
+          const Expanded(child: InlineSkeletonBlock(height: 80)),
         ],
       ],
     );
