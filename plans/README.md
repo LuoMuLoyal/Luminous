@@ -33,8 +33,6 @@ YYYY-MM-DD-short-task-name.md
 
 ## Current Plans
 
-- [`2026-08-30-module-boundary-hygiene-audit.md`](2026-08-30-module-boundary-hygiene-audit.md)
-  — 模块边界卫生审计与修复：提取 `required_dialog` 到 `core/`（40 处深引用），测试归位到 `lib/features/*/tests/`，补 README；**不为 feature 建 barrel**（Flutter 移动端深引用更优：tree-shaking 精确 + 保留 deferred 加载粒度）
 - [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
   — 中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门
 - [`2026-07-10-legal-compliance-pages.md`](2026-07-10-legal-compliance-pages.md)
