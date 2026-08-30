@@ -21,6 +21,7 @@ class ConnectivityBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
+    final typography = context.theme.typography;
     if (!session.isTimeout) return const SizedBox.shrink();
 
     final l10n = AppLocalizations.of(context)!;
@@ -46,7 +47,7 @@ class ConnectivityBanner extends ConsumerWidget {
               Expanded(
                 child: Text(
                   l10n.authSessionRestoreTimeout,
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: warningPalette.foreground,
                     fontWeight: FontWeight.w500,
                   ),
@@ -57,7 +58,7 @@ class ConnectivityBanner extends ConsumerWidget {
                 onPress: () => ref.read(authSessionProvider.notifier).restore(),
                 child: Text(
                   l10n.commonRetry,
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: warningPalette.foreground,
                     fontWeight: FontWeight.w600,
                   ),

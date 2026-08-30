@@ -51,6 +51,7 @@ class StateMessageView extends StatelessWidget {
       StateTone.warning => SemanticColor.destructive,
       StateTone.danger => SemanticColor.destructive,
     };
+    final typography = context.theme.typography;
 
     Widget message = FCard(
       child: Padding(
@@ -72,16 +73,14 @@ class StateMessageView extends StatelessWidget {
               const SizedBox(height: Spacing.level4),
               Text(
                 title,
-                style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
               if (description != null) ...[
                 const SizedBox(height: Spacing.level2),
                 Text(
                   description!,
-                  style: context.theme.typography.body.sm.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                   textAlign: TextAlign.center,

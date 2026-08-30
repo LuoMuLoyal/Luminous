@@ -51,6 +51,7 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final controller = useTextEditingController();
     final errorMessage = useState<String?>(null);
+    final typography = context.theme.typography;
     Future<void> handleConfirm() async {
       final value = controller.text.trim();
       if (value.isEmpty) {
@@ -68,12 +69,12 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
         children: [
           Text(
             title ?? l10n.authSensitiveActionPasswordDialogTitle,
-            style: context.theme.typography.body.lg,
+            style: typography.body.lg,
           ),
           const SizedBox(height: Spacing.level2),
           Text(
             message ?? l10n.authSensitiveActionPasswordDialogMessage,
-            style: context.theme.typography.body.xs.copyWith(
+            style: typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
           ),
@@ -90,7 +91,7 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
             const SizedBox(height: Spacing.level2),
             Text(
               errorMessage.value!,
-              style: context.theme.typography.body.xs.copyWith(
+              style: typography.body.xs.copyWith(
                 color: SemanticColor.destructive.solid(context),
               ),
             ),

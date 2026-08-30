@@ -121,6 +121,7 @@ class _CommandPaletteState extends State<CommandPalette> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = context.theme;
+    final typography = context.theme.typography;
 
     return Dialog(
       backgroundColor: theme.colors.background,
@@ -152,7 +153,7 @@ class _CommandPaletteState extends State<CommandPalette> {
                     vertical: Spacing.level3,
                   ),
                 ),
-                style: context.theme.typography.body.sm,
+                style: typography.body.sm,
                 onSubmitted: (_) => _executeSelected(),
               ),
               Divider(color: SemanticColor.neutral.border(context), height: 1),
@@ -163,7 +164,7 @@ class _CommandPaletteState extends State<CommandPalette> {
                   child: Center(
                     child: Text(
                       l10n.commandPaletteEmpty,
-                      style: context.theme.typography.body.xs.copyWith(
+                      style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
@@ -233,6 +234,7 @@ class _CommandTileState extends State<_CommandTile> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final typography = context.theme.typography;
 
     return Focus(
       autofocus: widget.selected,
@@ -278,7 +280,7 @@ class _CommandTileState extends State<_CommandTile> {
                   children: [
                     Text(
                       widget.command.label,
-                      style: context.theme.typography.body.sm.copyWith(
+                      style: typography.body.sm.copyWith(
                         color: theme.colors.foreground,
                         fontWeight: widget.selected
                             ? FontWeight.w600
@@ -287,7 +289,7 @@ class _CommandTileState extends State<_CommandTile> {
                     ),
                     Text(
                       widget.command.category,
-                      style: context.theme.typography.body.xs2.copyWith(
+                      style: typography.body.xs2.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
