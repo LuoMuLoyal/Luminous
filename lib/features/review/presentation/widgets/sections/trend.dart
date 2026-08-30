@@ -155,8 +155,10 @@ class _SingleTrendChart extends StatelessWidget {
 
     // Coverage annotation from observedMetric.
     final om = series.observedMetric;
-    final coverageLabel = om != null && om.expectedCount != null
-        ? l10n.reviewTrendCoverage(om.observedCount, om.expectedCount!)
+    final coverageLabel = om != null
+        ? om.expectedCount != null
+              ? l10n.reviewTrendCoverage(om.observedCount, om.expectedCount!)
+              : l10n.reviewTrendCoveragePartial(om.observedCount)
         : null;
 
     return FCard(
@@ -392,7 +394,11 @@ class _TrendEmptyState extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // Helpers
 
-/// Checks whether all trend series have no meaningful data (empty values).
+/// Checks whether all trend series have no observed data.
+///
+/// "Empty" is strictly defined as `values.isEmpty` — since unknown days are
+/// no longer zero-filled, a series with no observed data points has an
+/// empty values list.
 bool _allSeriesEmpty(List<ReviewTrendSeries> trends) {
   if (trends.isEmpty) return true;
   return trends.every((series) => series.values.isEmpty);

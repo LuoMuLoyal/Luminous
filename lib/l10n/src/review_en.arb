@@ -271,6 +271,14 @@
       }
     }
   },
+  "reviewTrendCoveragePartial": "{observed} days recorded",
+  "@reviewTrendCoveragePartial": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      }
+    }
+  },
   "reviewExportFailedWithReason": "Export failed: {reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

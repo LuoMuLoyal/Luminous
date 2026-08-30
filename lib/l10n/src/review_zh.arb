@@ -278,6 +278,14 @@
       }
     }
   },
+  "reviewTrendCoveragePartial": "已记录 {observed} 天",
+  "@reviewTrendCoveragePartial": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      }
+    }
+  },
   "reviewExportFailedWithReason": "导出失败：{reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {
