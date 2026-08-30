@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
@@ -39,7 +39,7 @@ void main() {
   setUpAll(initializeDateFormatting);
 
   group('proposalStateColor', () {
-    final colors = FTheme.neutral.light.touch.colors;
+    final colors = appThemeData(appDefaultThemeFamily, Brightness.light).colors;
     test('pending → primary', () {
       expect(
         proposalStateColor(colors, _p(AssistantProposalExecutionState.pending)),
