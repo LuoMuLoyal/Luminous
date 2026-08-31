@@ -71,8 +71,9 @@ flutter run \
 
 ## Verification Expectations
 
-改动 AI workflow 文档或 `lib/core/ai/` 时：
+改动 AI workflow 文档或 `lib/core/ai/` 时:
 
 - `flutter test test/core/ai`
 - `flutter analyze`
+- 改动 token / 路由 / feature 目录结构后运行 `dart run scripts/generate_docs.dart` 再生成清单(见 AGENTS.md Commands;`--check` 已接入 run_daily_checks 与 CI)
 - 追加 `docs/logs/migration-log/YYYY-MM-DD.md` 条目
