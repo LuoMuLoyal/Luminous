@@ -32,9 +32,6 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
-- [2026-08-30-directory-structure-cleanup.md](2026-08-30-directory-structure-cleanup.md)
-  — 目录结构整理：文件命名治理（去类型后缀 / 去 feature 前缀 / 纯类型词 / 单文件子目录）与裸文件分组，含 review 新旧视图链退役决策
-
 - [2026-08-30-doc-governance-evolution.md](2026-08-30-doc-governance-evolution.md)
   — 文档治理演进 v2：文档面审计先行（四问法、现状叙事与快照文档裁决、front-matter 精简、docs 目录去编号重建）+ 结果合规（生成器 + generated region + diff 校验、正文路径校验、custom_lint、doc-map 退役；Lucent 对齐另行立项）
 
