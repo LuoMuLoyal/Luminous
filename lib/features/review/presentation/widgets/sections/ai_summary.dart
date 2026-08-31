@@ -4,16 +4,18 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
-import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// AI 纵向洞察段落：展示 AI 生成的周/月洞察摘要。
+///
+/// 从旧 `ReviewAiSummarySection` 改名而来，不再硬依赖 `ReviewDashboard`
+/// 实体——只接收 `aiSummaryEnabled` 布尔值即可，适配 Review 主路径。
 class ReviewAiSummarySection extends StatelessWidget {
   const ReviewAiSummarySection({
     super.key,
-    required this.dashboard,
+    required this.aiSummaryEnabled,
     required this.canAccessProtectedData,
-    required this.aiSummariesEnabled,
     required this.aiState,
     required this.selectedRange,
     this.onRangeChanged,
@@ -21,9 +23,8 @@ class ReviewAiSummarySection extends StatelessWidget {
     required this.l10n,
   });
 
-  final ReviewDashboard dashboard;
+  final bool aiSummaryEnabled;
   final bool canAccessProtectedData;
-  final bool? aiSummariesEnabled;
   final ReviewAiSummaryCardState aiState;
   final ReviewAiSummaryRange selectedRange;
   final ValueChanged<ReviewAiSummaryRange>? onRangeChanged;
@@ -34,11 +35,10 @@ class ReviewAiSummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    final content = buildReviewAiSummaryContentFromDashboard(
+    final content = buildReviewAiSummaryContent(
       l10n: l10n,
-      dashboard: dashboard,
+      aiSummaryEnabled: aiSummaryEnabled,
       canAccessProtectedData: canAccessProtectedData,
-      aiSummariesEnabled: aiSummariesEnabled,
       aiState: aiState,
       selectedRange: selectedRange,
       colors: colors,
@@ -87,7 +87,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           FSelectGroup<ReviewAiSummaryRange>(
-                            key: const Key('report-ai-summary-range-toggle'),
+                            key: const Key('review-ai-summary-range-toggle'),
                             control: onRangeChanged == null
                                 ? FMultiValueControl.lifted(
                                     value: {selectedRange},
@@ -183,7 +183,7 @@ class ReviewAiSummarySection extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: FButton(
-                  key: const Key('report-ai-summary-generate-action'),
+                  key: const Key('review-ai-summary-generate-action'),
                   onPress: aiState.isLoading || onGenerate == null
                       ? null
                       : () async {

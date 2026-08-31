@@ -7,6 +7,10 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// 建议历史段落：从 Today 域的建议历史数据源拉取，按 title|reason|type
+/// 去重取最高生命周期状态。
+///
+/// 从旧 `ReviewSuggestionHistorySection` 改名而来，装配到 Review 主路径。
 class ReviewSuggestionHistorySection extends StatelessWidget {
   const ReviewSuggestionHistorySection({
     super.key,
@@ -24,7 +28,7 @@ class ReviewSuggestionHistorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      key: const Key('report-suggestion-history-section'),
+      key: const Key('review-suggestion-history-section'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -46,7 +50,7 @@ class ReviewSuggestionHistorySection extends StatelessWidget {
             children: [
               for (final suggestion in suggestions)
                 FTile(
-                  key: Key('report-suggestion-${suggestion.id}'),
+                  key: Key('review-suggestion-${suggestion.id}'),
                   prefix: FAvatar.raw(
                     child: Icon(_iconForType(suggestion.type), size: 18),
                   ),

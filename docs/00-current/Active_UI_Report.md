@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-21
+updated: 2026-08-30
 ---
 
 # Active UI — Report
@@ -17,7 +17,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 实体保留契约语义：四个 section 各自 available/unknown；unknown 段的 reasonCode 已知码按原文保留，未知码在生成 DTO 反序列化层被折叠为 `unknown_default_open_api` 占位符；coverage 的 state/coverage/sources 未知值映射为显式 `unknown` 成员而非空列表或 0；available actions 保留客户端可渲染项。
 - 展示层 provider：`reviewCurrentProvider`（keepAlive，优先 active 事件）、`reviewHistoryProvider`（缓存第一页，watch `reviewHistoryStatusProvider` 按 status 过滤重建重取）、`reviewDetailProvider`（autoDispose family，按事件 ID 隔离）与 `reviewLastCurrentProvider`（通过 `ref.listen` 只采纳被接受的 AsyncData，失败时保留最后一次成功数据，登出/会话失效的 null 数据会清空缓存；`ref.invalidate` 即重试）。
 - 自动刷新覆盖：`reviewCurrentProvider` watch `dailyRecords` / `doseLogs` / `healthEvents` 三个 `DataChangeTopic`；`reviewHistoryProvider` watch `healthEvents`。health_event 的 create / end（含 outcome 确认）/ checkIn 在服务端确认成功后发射 `healthEvents`。
-- Task 6 起 `/report` 主内容切换为事件优先的 `ReviewView`（见下节）；Task 7 起旧 dashboard 主路径引用移除并收尾：`dashboard_view.dart`、sections、`top_bar.dart`（7/30 天范围切换）等 legacy 文件保留代码但不再从 `page.dart` 装配，文件头已加 LEGACY 标注；Task 8 已把导出/就诊摘要迁入 More（见「Review More 入口」节），旧 dashboard 仅经 `/report/legacy` 兼容页可达，删除评估留待兼容期结束（`skeleton_view.dart` 仍被 ReviewView 的骨架屏复用，非 legacy）。
+- Task 6 起 `/report` 主内容切换为事件优先的 `ReviewView`（见下节）；Task 7 起旧 dashboard 主路径引用移除并收尾：`views/legacy/dashboard_view.dart`、sections（旧链独占段落移入 `sections/legacy/`，`export`/`trend` 移入 `sections/preview/`）、`top_bar.dart`（7/30 天范围切换）等 legacy 文件保留代码但不再从 `page.dart` 装配，文件头已加 LEGACY 标注；Task 8 已把导出/就诊摘要迁入 More（见「Review More 入口」节），旧 dashboard 仅经 `/report/legacy` 兼容页可达，删除评估留待兼容期结束（`skeleton_view.dart` 仍被 ReviewView 的骨架屏复用，非 legacy）。
 
 ## Review 事件优先视图（Task 6，主内容已切换）
 
@@ -33,8 +33,8 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 ## R-3/R-4 装配：AI 总结与建议历史移入 Review 主路径（2026-08-27）
 
-- **R-3 AI 纵向洞察装配**：新建 `review_ai_summary.dart`（`ReviewAiSummarySection`），不再硬依赖 `ReportDashboard` 实体，只接收 `aiSummaryEnabled` 布尔值；`page.dart` 引入 `reportAiSummaryControllerProvider` / `reportAiSummarySelectedRangeProvider` / `userSettingsControllerProvider` 并装配到 `ReviewView`；`section_models.dart` 新增 `buildReviewAiSummaryContent` 函数（旧 `buildReportAiSummaryContent` 委托给它，保持 legacy 兼容）。有事件时在四段之后渲染 AI 总结段落（日/周/月范围切换 + 生成按钮）。
-- **R-4 #22 建议历史移入 Review**：新建 `review_suggestion_history.dart`（`ReviewSuggestionHistorySection`），从旧 `ReportSuggestionHistorySection` 改名而来；`page.dart` 引入 `suggestionHistoryProvider` 并按 title|reason|type 去重取最高生命周期状态（与 legacy 兼容页同一逻辑），装配到 `ReviewView`。有事件时在 AI 总结之后渲染建议历史段落。
+- **R-3 AI 纵向洞察装配**：新建 `review_ai_summary.dart`（`ReviewAiSummarySection`，批次 1d 后位于 `sections/ai_summary.dart`），不再硬依赖 `ReportDashboard` 实体，只接收 `aiSummaryEnabled` 布尔值；`page.dart` 引入 `reportAiSummaryControllerProvider` / `reportAiSummarySelectedRangeProvider` / `userSettingsControllerProvider` 并装配到 `ReviewView`；`section_models.dart` 新增 `buildReviewAiSummaryContent` 函数（旧 `buildReportAiSummaryContent` 委托给它，保持 legacy 兼容）。有事件时在四段之后渲染 AI 总结段落（日/周/月范围切换 + 生成按钮）。
+- **R-4 #22 建议历史移入 Review**：新建 `review_suggestion_history.dart`（`ReviewSuggestionHistorySection`，批次 1d 后位于 `sections/suggestion_history.dart`），从旧 `ReportSuggestionHistorySection` 改名而来；`page.dart` 引入 `suggestionHistoryProvider` 并按 title|reason|type 去重取最高生命周期状态（与 legacy 兼容页同一逻辑），装配到 `ReviewView`。有事件时在 AI 总结之后渲染建议历史段落。
 - **空态丰富化**：空态（无事件时）从单张 `_StartObservationCard` 扩展为 5 张 `ReviewPreviewLockedSection` 预览锁定卡片（发生了什么 / 有什么变化 / 完成了什么 / 接下来怎么办 / AI 纵向洞察），与旧 report 页 `dashboard_preview.dart` 的预览风格对齐。
 - **文件重命名**：`preview_empty.dart` → `review_preview_locked.dart`（`ReportPreviewLockedSection` → `ReviewPreviewLockedSection`），`dashboard_preview.dart` 同步更新引用。
 - **l10n**：新增 `reviewPreviewWhatHappenedTitle/Body` 等 10 条（zh + en）。
@@ -71,7 +71,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 - 第五 Tab 用户任务为 **Review（回顾）**：底部导航/侧栏标签与页内文案均为「回顾/Review」；`/report` 路由路径、`features/report` 目录、`ShellTab.report` 枚举与 telemetry key 保留不动，**`/report` 是兼容路由**（深链与既有行为不变），代码层重命名留待兼容期结束后评估。
 - **桌面/Web 未做功能对等**：ReviewView 与 legacy 兼容页均为移动端约束布局，桌面窗口渲染同一布局，不新增桌面专属 breakpoint/sidebar；完整认证 Web 与桌面端保持冻结，不继续功能对等、发行或产品化。
-- **旧 dashboard 代码尚未删除**：`dashboard_view.dart` 及 sections、`top_bar.dart` 等 legacy 文件保留原样（文件头带 LEGACY 标注），仅经「更多 → 历史报告」（`/report/legacy` 兼容页）可达；`skeleton_view.dart` 仍被 ReviewView 骨架屏复用，非 legacy。删除评估留待兼容期结束。
+- **旧 dashboard 代码尚未删除**：`views/legacy/dashboard_view.dart` 及 sections、`top_bar.dart` 等 legacy 文件保留原样（文件头带 LEGACY 标注），仅经「更多 → 历史报告」（`/report/legacy` 兼容页）可达；`skeleton_view.dart` 仍被 ReviewView 骨架屏复用，非 legacy。删除评估留待兼容期结束。
 - 全量验证（Task 10，2026-08-13）：`dart run scripts/bootstrap_generated_sources.dart`（无生成物漂移）、`flutter analyze`（无问题）、`flutter test` 全量 **3067 passed / 1 skipped**（跳过为既有）、`dart run scripts/run_daily_checks.dart`、`dart run scripts/check_doc_coverage.dart --warning-only`、`dart run scripts/check_doc_links.dart` 全部通过；桌面 e2e（`report_e2e` 6 + `shell_navigation` 4 + `review_closed_loop` 1 = **11 用例**）此前已 `-d windows` 实跑全绿，Task 10 未重复执行（环境为 Windows 桌面，移动视口限制见迁移日志，未伪造运行结果）；`git diff --check` 无空白错误。
 - 保留的文档化限制：red flag 为用户级静态检查结果、不与事件药物对齐；`doseLogSources` capped 判定；changes 趋势为首末比较简化口径；`buildCurrent` 双重读取为低优先级遗留项；旧 dashboard 删除评估留待兼容期结束。
 
@@ -100,7 +100,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 ## 页面结构（旧 dashboard，代码保留但已不装配）
 
-> Task 6 起 `/report` 主内容已切换为 ReviewView（见「Review 事件优先视图」节）。Task 7 已收尾主路径：以下 dashboard 页面结构描述的是仍保留在仓库中的 legacy 视图代码（`dashboard_view.dart` 及其 sections、`top_bar.dart` 未删除，文件头带 LEGACY 标注；`skeleton_view.dart` 除外——它仍被 ReviewView 骨架屏复用）。Task 8 起该视图仅经 More → 历史报告（`/report/legacy` 兼容页）可达，删除评估留待兼容期结束。
+> Task 6 起 `/report` 主内容已切换为 ReviewView（见「Review 事件优先视图」节）。Task 7 已收尾主路径：以下 dashboard 页面结构描述的是仍保留在仓库中的 legacy 视图代码（`views/legacy/dashboard_view.dart` 及其 sections、`top_bar.dart` 未删除，文件头带 LEGACY 标注；`skeleton_view.dart` 除外——它仍被 ReviewView 骨架屏复用）。Task 8 起该视图仅经 More → 历史报告（`/report/legacy` 兼容页）可达，删除评估留待兼容期结束。
 
 - Lucent-backed report dashboard，真实 medication / water / sleep 聚合。
 - 用户可选范围：`last_7_days` / `last_30_days` / `custom`（Forui `FCalendar.grid` 日期范围选择器）。
@@ -228,8 +228,8 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 ## 2026-07-20 P2 报告模块打磨
 
-- **装饰图标 ExcludeSemantics**：`readiness.dart` 的状态头像图标和时钟图标包裹 `ExcludeSemantics`，避免屏幕阅读器重复朗读相邻文字。
-- **就绪卡"生成总结"loading**：`readiness.dart` 的 `_PrimaryAction` ready 状态新增 `isGenerating` 参数，生成中禁用按钮 + 显示 `FCircularProgress`。`dashboard_view.dart` 传入 `isGenerating: aiSummaryState.status == ReportAiSummaryCardStatus.loading`。
+- **装饰图标 ExcludeSemantics**：`sections/legacy/readiness.dart` 的状态头像图标和时钟图标包裹 `ExcludeSemantics`，避免屏幕阅读器重复朗读相邻文字。
+- **就绪卡"生成总结"loading**：`sections/legacy/readiness.dart` 的 `_PrimaryAction` ready 状态新增 `isGenerating` 参数，生成中禁用按钮 + 显示 `FCircularProgress`。`views/legacy/dashboard_view.dart` 传入 `isGenerating: aiSummaryState.status == ReportAiSummaryCardStatus.loading`。
 - **emptyInsufficientBuilder 死代码删除**：`page.dart` 移除不可达的 `emptyInsufficientBuilder` 分支。
 - **R-4 #20 移除综合评分**：`score_hero.dart` 整文件删除，`ReportHealthScore` 实体删除，`ReportReadinessSection.scoreSummary` 参数删除，`_ScoreHeroPlaceholder` 重命名为 `_ReadinessPlaceholder`。
 - **导出卡禁用态 chevron 修复**：`export.dart` 的 `_ExportCard` trailing 图标在 `requestInFlight.inFlight` 时显示 `lock` 而非 `chevronRight`，正确表达“其他导出进行中”的禁用语义。

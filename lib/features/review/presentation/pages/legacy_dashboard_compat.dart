@@ -27,7 +27,7 @@ import 'package:luminous/features/review/presentation/utils/export_actions.dart'
 import 'package:luminous/features/review/presentation/utils/ui_formatters.dart';
 import 'package:luminous/features/review/presentation/widgets/dialogs/suggestion_history_detail_sheet.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/top_bar.dart';
-import 'package:luminous/features/review/presentation/widgets/views/dashboard_view.dart';
+import 'package:luminous/features/review/presentation/widgets/views/legacy/dashboard_view.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';

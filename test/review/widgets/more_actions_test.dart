@@ -24,7 +24,7 @@ import 'package:luminous/features/review/presentation/pages/legacy_dashboard_com
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/review/presentation/providers/clinic_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/export.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/preview/export.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/more_actions.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
