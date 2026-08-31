@@ -103,5 +103,3 @@ docs/assets
 # Windows null-device artifact (Bash writes to "nul" as a file)
 nul
 
-reference
-
