@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/icon_action_button.dart';
+import 'package:luminous/core/widgets/common/control/icon_action_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';

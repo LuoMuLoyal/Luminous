@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:integration_test/integration_test.dart';
-import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/core/widgets/common/control/back_button.dart';
 
 import '../support/e2e_test_helpers.dart';
 

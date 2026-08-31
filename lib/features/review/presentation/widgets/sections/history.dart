@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/divider.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';

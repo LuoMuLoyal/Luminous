@@ -8,7 +8,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';

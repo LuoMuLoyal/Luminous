@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/quick_type_settings_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';

@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/router/routes.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// A lightweight widget that shows the auth-required dialog in a post-frame

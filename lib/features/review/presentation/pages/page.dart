@@ -11,7 +11,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/check_in.dart';

@@ -11,7 +11,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart';

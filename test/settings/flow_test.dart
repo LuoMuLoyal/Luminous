@@ -10,7 +10,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/divider.dart';
-import 'package:luminous/core/widgets/common/soft_icon.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/core/widgets/common/control/soft_icon.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';

@@ -13,7 +13,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/candidate_merger.dart';

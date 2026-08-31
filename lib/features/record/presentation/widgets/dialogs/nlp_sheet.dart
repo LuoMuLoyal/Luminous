@@ -5,7 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/candidate_review.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/retry_panel.dart';

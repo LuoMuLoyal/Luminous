@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/widgets/common/sensitive_action_password_dialog.dart';
+import 'package:luminous/core/widgets/common/dialog/sensitive_action_password_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/test_forui_app.dart';

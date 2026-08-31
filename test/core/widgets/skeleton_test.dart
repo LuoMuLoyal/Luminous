@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/widgets/common/skeleton.dart';
+import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../helpers/test_forui_app.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/desktop_hover.dart';
+import 'package:luminous/core/widgets/common/control/desktop_hover.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';
 

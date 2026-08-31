@@ -7,7 +7,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/soft_icon.dart';
+import 'package:luminous/core/widgets/common/control/soft_icon.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';

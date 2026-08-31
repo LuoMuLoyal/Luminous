@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-30
+updated: 2026-08-31
 ---
 
 # Active UI — Mine / Settings
@@ -196,7 +196,7 @@ Last updated: 2026-08-24（Task 9 清理：删除 Security PIN / elevation 代�
 
 ### 表单输入细化（2026-07-19 追加）
 
-- **IconActionButton 统一**：`mine/top_bar.dart` 的同名实现合并到 `core/widgets/common/icon_action_button.dart`，扩展 `showBadge` 参数支持红色小圆点未读提醒。
+- **IconActionButton 统一**：`mine/top_bar.dart` 的同名实现合并到 `core/widgets/common/control/icon_action_button.dart`，扩展 `showBadge` 参数支持红色小圆点未读提醒。
 - **Mine 移动端底色**：从 `SemanticColor.neutral.muted` 改为 `colors.background`，与 today tab 一致。
 - **缺口徽章 "+N"**：`gapCount > 2` 时显示 `mineReadinessGapMore`（"还有 N 项"）。
 - **身高解析**：`profile_edit.dart` 从 `int.tryParse` 改为 `num.tryParse`，接受小数身高。
@@ -208,7 +208,7 @@ Last updated: 2026-08-24（Task 9 清理：删除 Security PIN / elevation 代�
 - **用药来源隐藏**：移除 `source` 下拉和 `sourceRefId` 文本框，`source` 固定为 `manual`，不再暴露 drugbank/cn 等内部概念。
 - **日期选择器**：condition 的 `diagnosedAt` 和 medicine 的 `startedAt` 改为 `FDateField.calendar`。
 - **用药骨架**：`MineEditFormLoading` 的 `blockHeights` 改为 6 块，与用药表单实际字段数一致。
-- **共享日期选择器**：新增 `lib/core/widgets/common/date_picker.dart`（`showForuiDatePicker`），供全 App 统一使用。
+- **共享日期选择器**：新增 `lib/core/widgets/common/control/date_picker.dart`（`showForuiDatePicker`），供全 App 统一使用。
 - **通知加载态**：`notifications_reminders.dart` 的 `orElse` 从 `placeholderNoData` 改为 `mineNotificationInboxLoadingSummary`（"加载中…"）。
 
 ## 法律文档

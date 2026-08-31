@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_meal.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_medication.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_sleep.dart';

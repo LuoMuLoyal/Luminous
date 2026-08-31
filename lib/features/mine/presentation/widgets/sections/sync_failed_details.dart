@@ -9,7 +9,7 @@ import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/mine/presentation/mappers/sync_error_user_message.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

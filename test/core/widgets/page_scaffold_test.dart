@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 
 import '../../helpers/test_forui_app.dart';

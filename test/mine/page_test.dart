@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/widgets/common/soft_icon.dart';
+import 'package:luminous/core/widgets/common/control/soft_icon.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';

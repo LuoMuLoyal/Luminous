@@ -14,7 +14,7 @@ import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_storage.dart';

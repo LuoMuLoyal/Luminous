@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-30
+updated: 2026-08-31
 ---
 
 # Design System Components
@@ -42,7 +42,7 @@ updated: 2026-08-30
 
 ## 对话框
 
-- 共享对话框 helper：`showAppDialog` / `DialogShell`（`lib/core/widgets/common/dialog_shell.dart`）。`showAppDialog` 支持 `barrierDismissible` 参数（默认 `true`），需要不可点击遮罩关闭的场景（如扫码处理遮罩）传 `false`。
+- 共享对话框 helper：`showAppDialog` / `DialogShell`（`lib/core/widgets/common/dialog/dialog_shell.dart`）。`showAppDialog` 支持 `barrierDismissible` 参数（默认 `true`），需要不可点击遮罩关闭的场景（如扫码处理遮罩）传 `false`。
 - `RecordNlpDialog` 与 `MedicineAddPrecheckDialog` 已使用它。
 - `SecurityElevationDialog` / `showSecurityElevationDialog`（`lib/core/widgets/common/security_elevation_dialog.dart`）负责敏感操作的 PIN elevation 前置交互：复用 `SecurityElevationController` 与 token holder，持有有效 token 时跳过，过期或无效时清理并重新进入 PIN 验证；它不负责执行具体业务请求。
 - **Forui 0.24.x**：`FCard.raw` / `FDialog.raw` 已移除，API 合并到 `FCard` / `FDialog`。`FDialog` 构造函数从声明式改为 `builder` 模式，调用方需自行用 `Column` + `Row` 构建布局。
@@ -56,10 +56,10 @@ updated: 2026-08-30
 - `StateErrorView`（`state_message.dart`）使用 `LayoutBuilder` 检测父级是否有界高度——无界时 fallback 到 `SizedBox(height: 320)`，使 `SingleChildScrollView` 在 `SliverList` 或无 `Scaffold` 的测试环境中不会因 `Viewport` 获得无界高度而崩溃。
 - `_LoadingTimeoutWrapper`（`page_state.dart`）同样使用 `LayoutBuilder` 检测——有限高度时用 `Expanded(child: widget.child)` 填充；无界高度时用 `mainAxisSize: MainAxisSize.min` 不强制 `Expanded`，避免子 widget 内部的 `Expanded` 在无界 `Column` 中触发 `RenderFlex` 异常。
 - `lib/core/widgets/common/` 不再保留 `AppSectionSurface`。
-- `IconActionButton`（`core/widgets/common/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，支持 `showBadge` 参数在右上角叠加红色小圆点（用于未读消息提醒等场景）。Mine/Today 等模块的顶栏统一引用 core 版本，不再各自维护同名实现。
+- `IconActionButton`（`core/widgets/common/control/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，支持 `showBadge` 参数在右上角叠加红色小圆点（用于未读消息提醒等场景）。Mine/Today 等模块的顶栏统一引用 core 版本，不再各自维护同名实现。
 - `settingsPageVerticalPadding(BuildContext)`（`settings/presentation/utils/settings_page_padding.dart`）是设置页面统一的响应式垂直 padding 函数——窄屏（< `Breakpoints.mobile`）返回 `Spacing.level6`，宽屏返回 `Spacing.level7`。设置主页和所有子页统一引用该函数，不再各自手写响应式三元表达式。
 - `SettingsSectionLabel`（`settings/presentation/widgets/shared/settings_section_label.dart`）是设置页面统一的分组标题组件——`context.theme.typography.body.xs` + `w600` 字重 + `SemanticColor.neutral.solid(context)` 颜色 + `Spacing.level2` 水平 padding。设置主页和所有子页统一使用该组件，不再各自维护 `_SettingsGroup` 等自定义实现。
-- `showForuiDatePicker`（`lib/core/widgets/common/date_picker.dart`）是全 App 共享的日历日期选择器工具函数，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
+- `showForuiDatePicker`（`lib/core/widgets/common/control/date_picker.dart`）是全 App 共享的日历日期选择器工具函数，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
 
 ## 对话框基础设施
 

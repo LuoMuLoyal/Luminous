@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/tokens/lucide_icon_bridge.dart';
-import 'package:luminous/core/widgets/common/icon_picker_sheet.dart';
+import 'package:luminous/core/widgets/common/dialog/icon_picker_sheet.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';

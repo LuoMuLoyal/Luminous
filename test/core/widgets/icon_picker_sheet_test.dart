@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/icon_picker_sheet.dart';
+import 'package:luminous/core/widgets/common/dialog/icon_picker_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/test_forui_app.dart';

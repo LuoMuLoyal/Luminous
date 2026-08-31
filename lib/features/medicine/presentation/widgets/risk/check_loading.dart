@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/skeleton.dart';
+import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 
 /// Skeleton placeholder matching the new FTabs-based risk-check page layout.
 ///
