@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_detail_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
 import 'package:mocktail/mocktail.dart';

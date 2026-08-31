@@ -5,7 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';

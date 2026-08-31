@@ -1,4 +1,4 @@
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_detail_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

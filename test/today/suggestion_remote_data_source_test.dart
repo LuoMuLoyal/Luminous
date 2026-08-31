@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 

@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/core/network/response_body.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/response_body.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/suggestion.dart';
 

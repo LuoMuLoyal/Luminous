@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_renaming_method_parameters
 
 import 'package:dio/dio.dart';
-import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 
 /// Error interceptor: maps `DioException` → `LucentFailure`.
 ///

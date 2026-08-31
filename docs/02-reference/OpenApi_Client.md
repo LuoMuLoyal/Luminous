@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-24
+updated: 2026-08-31
 ---
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-24
+Last updated: 2026-08-31
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -41,7 +41,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 
 - Generated OpenAPI source from the `Luminous` repo root: local export `../Lucent/docs/openapi.json`
 - Generated Dart package scaffold: `generated/lucent_api/`
-- Network wrapper: `lib/core/network/dio_client.dart`
+- Network wrapper: `lib/core/network/client/dio_client.dart`
 - Public Flutter API exports: `lib/core/network/api.dart`
 - Contract drift verifier: `scripts/verify_lucent_openapi_sync.dart`
 
@@ -104,7 +104,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 - Today AI REST reads/generation/refresh use the generated OpenAPI transport and consume endpoint
   resource representations directly, including explicit nullable and `oneOf` response models.
   Today AI streaming, Report AI summary, and assistant streaming continue to use manual Dio + SSE
-  parsing in `lib/core/network/sse.dart`; SSE `error` events use strict Problem Details and map to
+  parsing in `lib/core/network/client/sse.dart`; SSE `error` events use strict Problem Details and map to
   `LucentFailure`, with stream termination status kept separate from HTTP status.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.

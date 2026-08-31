@@ -11,7 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';

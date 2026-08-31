@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';

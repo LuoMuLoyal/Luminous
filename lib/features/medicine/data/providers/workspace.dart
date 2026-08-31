@@ -1,4 +1,4 @@
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';

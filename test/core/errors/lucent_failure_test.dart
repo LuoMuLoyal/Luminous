@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/problem_details.dart';
+import 'package:luminous/core/network/contract/problem_details.dart';
 
 void main() {
   test('maps Problem Details into a business LucentFailure', () {

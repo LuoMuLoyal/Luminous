@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/network/session_store.dart';
+import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 

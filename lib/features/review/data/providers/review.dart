@@ -1,5 +1,5 @@
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
 import 'package:luminous/features/review/data/repositories/lucent_dashboard.dart';
 import 'package:luminous/features/review/data/repositories/lucent_review.dart';

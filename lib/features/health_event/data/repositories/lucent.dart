@@ -3,8 +3,8 @@ import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as api;
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/error_code.dart';
-import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 

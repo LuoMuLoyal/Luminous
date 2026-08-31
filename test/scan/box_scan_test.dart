@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';

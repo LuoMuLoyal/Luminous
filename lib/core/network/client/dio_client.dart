@@ -2,11 +2,11 @@
 
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/interceptors/auth_interceptor.dart';
-import 'package:luminous/core/network/interceptors/error_interceptor.dart';
-import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
-import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
-import 'package:luminous/core/network/session_store.dart';
+import 'package:luminous/core/network/client/interceptors/auth_interceptor.dart';
+import 'package:luminous/core/network/client/interceptors/error_interceptor.dart';
+import 'package:luminous/core/network/client/interceptors/retry_interceptor.dart';
+import 'package:luminous/core/network/client/interceptors/trace_interceptor.dart';
+import 'package:luminous/core/network/client/session_store.dart';
 import 'package:sentry/sentry.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 

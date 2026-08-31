@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 
 // ignore_for_file: prefer_initializing_formals
 

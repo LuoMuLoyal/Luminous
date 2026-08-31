@@ -3,10 +3,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:luminous/core/config/developer_settings.dart';
 import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/network/base_url.dart';
-import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/network/session_store.dart';
-import 'package:luminous/core/network/trace_context.dart';
+import 'package:luminous/core/network/client/base_url.dart';
+import 'package:luminous/core/network/client/dio_client.dart';
+import 'package:luminous/core/network/client/session_store.dart';
+import 'package:luminous/core/network/client/trace_context.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'client_providers.g.dart';

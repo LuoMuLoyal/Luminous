@@ -2,7 +2,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
+import 'package:luminous/core/network/client/interceptors/trace_interceptor.dart';
 
 void main() {
   group('TraceInterceptor.onRequest', () {

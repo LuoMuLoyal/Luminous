@@ -4,11 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
-import 'package:luminous/core/network/session_store.dart';
-import 'package:luminous/core/network/trace_context.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
+import 'package:luminous/core/network/client/dio_client.dart';
+import 'package:luminous/core/network/client/interceptors/trace_interceptor.dart';
+import 'package:luminous/core/network/client/session_store.dart';
+import 'package:luminous/core/network/client/trace_context.dart';
 
 /// In-memory session store for testing.
 class _MemoryStore implements LucentSessionStore {

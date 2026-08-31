@@ -2,8 +2,8 @@
 
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/contract/response_body.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/response_body.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 
 /// Remote data source that fetches and writes health-context data to Lucent.

@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-24
+updated: 2026-08-31
 ---
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-24 (Task 9 删除 Security PIN / elevation 合同；其余契约保持不变)
+Last updated: 2026-08-31 (Task 9 删除 Security PIN / elevation 合同；其余契约保持不变)
 
 ## 基础
 
@@ -82,7 +82,7 @@ Last updated: 2026-08-24 (Task 9 删除 Security PIN / elevation 合同；其余
 - **SSE 流**：Today AI 分析 `/api/v1/user/today-analysis/generate/stream`、Report AI 摘要 `/api/v1/user/reports/summary/generate/stream`、Assistant `/api/v1/user/assistant/chat/stream`。通过 `LucentSseClient` + Dio 直接消费，不经过 Retrofit；`error` 事件使用严格的 SSE Problem Details（`type/title/detail/code/status`，可选 `retryable/retryAfter`），不再接受 `{message, code, statusCode}`。
 - **Today 摘要展示**：后端返回 `TodayDashboard` 的饮水、用药、生命体征等数据，前端 `view_models.dart` 组装摘要指标和五个快捷入口；合同不返回可直接渲染的 UI 条目数组。AI 摘要正文通过上述 Today AI SSE 按需生成。
 - **公开路由**：`/legal` 和 `/reports/clinic-summary/shared/:token` 为公开访问（`@Public()` 装饰器）。
-- **API 路径常量**：`core/network/api_paths.dart`（`LucentApiPaths`）集中管理所有 `/api/v1/...` 路径字符串。
+- **API 路径常量**：`core/network/contract/api_paths.dart`（`LucentApiPaths`）集中管理所有 `/api/v1/...` 路径字符串。
 - **用药风险检查**：`GET /api/v1/medicines/risk-check` 获取最新 static + llm 检查记录；`POST /api/v1/medicines/risk-check` 触发检查（body: `{ type: 'static' | 'llm' }`）。body 另支持候选预检：`{ type: 'static', candidate: { source: 'cn' | 'drugbank', id } }`——服务端就「当前药箱 + 待加药品」即时运行静态检查、**不落库**（candidate 仅 type=static 允许；候选资料解析失败报错）。后端 `MedicineRiskCheckListener` 监听健康上下文/提醒变更事件自动 mark stale + debounce 静态检查。前端通过 `MedicineRiskCheckRemoteDataSource`（`data/datasources/risk_check_remote.dart`）封装 `LucentClient.medicines` API 调用 + `MedicineRiskCheckMapper` DTO 映射（预检走 `runPrecheck` → `precheckToDto` 构造 candidate），repository 仅作薄包装委托。
 
 - **产品事件**：`POST /api/v1/user/product-events`（批量 1..50，白名单属性，clientEventId 幂等）。客户端 `LucentClient.productEvents` getter 用共享 Dio 直接构造 `ProductEventsApi`（生成端 `LucentApi` 尚无 getter，等下次全量客户端再生成补齐）。

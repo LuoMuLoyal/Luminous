@@ -4,8 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/interceptors/error_interceptor.dart';
-import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
+import 'package:luminous/core/network/client/interceptors/error_interceptor.dart';
+import 'package:luminous/core/network/client/interceptors/retry_interceptor.dart';
 
 // ── Mock adapter (same pattern as auth_interceptor_test) ───────
 

@@ -1,6 +1,6 @@
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/features/review/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';

@@ -1,5 +1,5 @@
-import 'package:luminous/core/network/error_code.dart';
-import 'package:luminous/core/network/problem_details.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/contract/problem_details.dart';
 
 enum LucentFailureKind { network, authentication, business, server, unknown }
 

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/daos/review.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/review/data/repositories/lucent_review.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 

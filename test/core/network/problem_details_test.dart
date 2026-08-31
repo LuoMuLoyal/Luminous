@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/problem_details.dart';
+import 'package:luminous/core/network/contract/problem_details.dart';
 
 void main() {
   group('ProblemDetails.fromJson', () {

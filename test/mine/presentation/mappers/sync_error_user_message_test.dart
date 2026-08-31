@@ -4,7 +4,7 @@ import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/network_error_l10n.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/mine/presentation/mappers/sync_error_user_message.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

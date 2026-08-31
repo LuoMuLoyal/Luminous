@@ -4,9 +4,9 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/interceptors/auth_interceptor.dart';
-import 'package:luminous/core/network/interceptors/error_interceptor.dart';
-import 'package:luminous/core/network/session_store.dart';
+import 'package:luminous/core/network/client/interceptors/auth_interceptor.dart';
+import 'package:luminous/core/network/client/interceptors/error_interceptor.dart';
+import 'package:luminous/core/network/client/session_store.dart';
 
 // ── In-memory session store ────────────────────────────────────
 

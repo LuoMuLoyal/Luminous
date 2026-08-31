@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart' hide DoseLogStatus;
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

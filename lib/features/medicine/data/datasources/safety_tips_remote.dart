@@ -2,7 +2,7 @@
 // 应在移动端药品详情页内以经过审核的内容卡片形式重做，勿直接复用本链路。
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 
 /// Remote data source for medicine safety tips.

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_event/data/providers/health_event.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';

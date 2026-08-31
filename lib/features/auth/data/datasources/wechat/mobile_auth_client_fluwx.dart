@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client_base.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_config.dart';
 

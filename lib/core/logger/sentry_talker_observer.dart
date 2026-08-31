@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/trace_context.dart';
+import 'package:luminous/core/network/client/trace_context.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

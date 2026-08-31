@@ -1,7 +1,7 @@
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/network_error_l10n.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Problem Details code for a Lucent 400 validation failure.

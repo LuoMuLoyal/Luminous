@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
-import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
+import 'package:luminous/core/network/client/interceptors/trace_interceptor.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/contract/problem_details.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/problem_details.dart';
 
 abstract final class LucentErrorMapper {
   /// Converts a transport error into the target application failure type.

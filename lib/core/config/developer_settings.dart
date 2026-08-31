@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/base_url.dart';
+import 'package:luminous/core/network/client/base_url.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker;
 

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/client/sse.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/sse.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 
 sealed class ReviewAiRemoteEvent {

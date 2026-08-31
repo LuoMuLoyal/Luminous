@@ -10,7 +10,7 @@ import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';

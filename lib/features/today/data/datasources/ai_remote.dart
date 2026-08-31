@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/client/sse.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/sse.dart';
 
 sealed class TodayAiRemoteEvent {
   const TodayAiRemoteEvent();

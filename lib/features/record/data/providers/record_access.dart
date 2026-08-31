@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';

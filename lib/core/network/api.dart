@@ -3,17 +3,17 @@
 // Removing this would force every consumer to add a separate lucent_api import.
 export 'package:lucent_api/lucent_api.dart';
 
-export 'api_paths.dart';
-export 'base_url.dart';
-export 'client_providers.dart';
-export 'dio_client.dart';
-export 'error_mapper.dart';
-export 'interceptors/auth_interceptor.dart';
-export 'interceptors/error_interceptor.dart';
-export 'interceptors/retry_interceptor.dart';
-export 'interceptors/trace_interceptor.dart';
-export 'problem_details.dart';
-export 'response_body.dart';
-export 'result_code.dart';
-export 'retry_policy.dart';
-export 'session_store.dart';
+export 'client/base_url.dart';
+export 'client/client_providers.dart';
+export 'client/dio_client.dart';
+export 'client/interceptors/auth_interceptor.dart';
+export 'client/interceptors/error_interceptor.dart';
+export 'client/interceptors/retry_interceptor.dart';
+export 'client/interceptors/trace_interceptor.dart';
+export 'client/retry_policy.dart';
+export 'client/session_store.dart';
+export 'contract/api_paths.dart';
+export 'contract/error_mapper.dart';
+export 'contract/problem_details.dart';
+export 'contract/response_body.dart';
+export 'contract/result_code.dart';

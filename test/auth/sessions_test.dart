@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_paths.dart';
+import 'package:luminous/core/network/contract/api_paths.dart';
 import 'package:luminous/features/auth/data/providers/sessions.dart';
 import 'package:luminous/features/auth/data/repositories/sessions.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';

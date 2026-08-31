@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-29
+updated: 2026-08-31
 ---
 
 # Data Layer
@@ -17,6 +17,8 @@ updated: 2026-08-29
 
 ### Network Stack
 
+`core/network/` 按职责分两组：`client/`（HTTP 执行栈：Dio client、providers、session、SSE、base URL、重试、trace、interceptors）与 `contract/`（响应与错误合同：api_paths、response_body、problem_details、error_code、result_code、error_mapper）；根下仅留 barrel `api.dart` 与纯工具 `map_utils.dart`。
+
 ```
 Widget
   → Riverpod Provider
@@ -26,30 +28,30 @@ Widget
           → Lucent REST API
 ```
 
-- `lib/core/network/dio_client.dart`: `LucentDioClient` — configured Dio instance with auth/error/retry
+- `lib/core/network/client/dio_client.dart`: `LucentDioClient` — configured Dio instance with auth/error/retry
   interceptors, base URL, timeout.
-- `lib/core/network/session_store.dart`: `LucentSessionStore` — token storage (secure storage on
+- `lib/core/network/client/session_store.dart`: `LucentSessionStore` — token storage (secure storage on
   mobile, fallback on desktop/web).
 - `lib/core/network/api.dart`: Barrel export re-exporting the generated API client and all network
   layer files. Features use `ref.watch(lucentClientProvider).medicines` etc. to access typed API
   methods.
-- `lib/core/network/error_mapper.dart`: `LucentErrorMapper.fromObject()` is the single source of
+- `lib/core/network/contract/error_mapper.dart`: `LucentErrorMapper.fromObject()` is the single source of
   truth for `DioException` → `LucentFailure` mapping. HTTP errors require
   `application/problem+json` and strict Problem Details parsing (missing body, wrong media type,
   and field-type mismatches stay `FormatException` — protocol invariants, never business
   `LucentFailure`); transport failures receive client-only network metadata and trace correlation.
-  `lib/core/network/interceptors/error_interceptor.dart` delegates to it and re-wraps the mapped
+  `lib/core/network/client/interceptors/error_interceptor.dart` delegates to it and re-wraps the mapped
   failure into a rejected `DioException`. The legacy `LucentApiException` compat branch is retained
   only for the WeChat mobile auth client's local SDK failures.
-- `lib/core/network/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
+- `lib/core/network/client/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
   optional reconnect and capped exponential backoff (1s, 2s, 4s, ... clamped to 60s) so raising
   `maxReconnects` later cannot produce unbounded delays. An empty stream response surfaces as
   `LucentFailure.network(emptyStreamResponse)`.
-- `lib/core/network/response_body.dart`: `requireData(response, operation: 'apiName')` guards
+- `lib/core/network/contract/response_body.dart`: `requireData(response, operation: 'apiName')` guards
   success responses — an empty/non-object body throws so the repository boundary maps it to
   `LucentFailure.network(emptyResponse)` instead of a bare `!` crash. The retired
   `{ code, message, data }` envelope is not interpreted anywhere.
-- `lib/core/network/interceptors/auth_interceptor.dart`: token injection + 401 refresh + retry +
+- `lib/core/network/client/interceptors/auth_interceptor.dart`: token injection + 401 refresh + retry +
   session clear. Refresh outcomes are typed (`_RefreshOutcome`): the refresh token being rejected
   (Problem Details 401/403) is an auth failure that clears the session and notifies the auth layer,
   while network/timeout/5xx/empty-body failures are transient and keep the session. **Only

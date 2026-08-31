@@ -26,7 +26,7 @@
 /// interaction verification (`verify`) or fine-grained stub control.
 library;
 
-import 'package:luminous/core/network/session_store.dart';
+import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';

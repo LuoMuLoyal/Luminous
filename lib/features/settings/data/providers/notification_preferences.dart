@@ -1,4 +1,4 @@
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/settings/data/repositories/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/repositories/notification_preferences.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -8,7 +8,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';

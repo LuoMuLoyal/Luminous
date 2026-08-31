@@ -6,9 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/network/error_code.dart';
-import 'package:luminous/core/network/session_store.dart';
+import 'package:luminous/core/network/client/dio_client.dart';
+import 'package:luminous/core/network/client/session_store.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 

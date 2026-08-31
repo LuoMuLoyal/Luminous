@@ -1,4 +1,4 @@
-import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/auth/data/repositories/sessions.dart';
 import 'package:luminous/features/auth/domain/repositories/sessions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

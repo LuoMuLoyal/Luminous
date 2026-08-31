@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/client_providers.dart';
-import 'package:luminous/core/network/response_body.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
+import 'package:luminous/core/network/contract/response_body.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 
 class DataExportRequestInFlightState {

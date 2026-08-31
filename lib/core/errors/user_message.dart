@@ -12,7 +12,7 @@ library;
 
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/network_error_l10n.dart';
-import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Returns a user-facing message for [error].

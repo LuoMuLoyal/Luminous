@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/problem_details.dart';
-import 'package:luminous/core/network/retry_policy.dart';
+import 'package:luminous/core/network/client/retry_policy.dart';
+import 'package:luminous/core/network/contract/problem_details.dart';
 
 void main() {
   const policy = RetryPolicy();

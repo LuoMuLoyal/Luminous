@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/api_paths.dart';
-import 'package:luminous/core/network/error_code.dart';
-import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/core/network/contract/api_paths.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/repositories/notification_preferences.dart';
 

@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_initializing_formals, avoid_renaming_method_parameters
 
 import 'package:dio/dio.dart';
-import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/core/network/retry_policy.dart';
+import 'package:luminous/core/network/client/retry_policy.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 
 /// Retry interceptor: automatically retries 5xx / timeout errors with
 /// exponential backoff.

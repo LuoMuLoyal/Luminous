@@ -1,4 +1,4 @@
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Maps a [NetworkErrorCode] to a localized user-facing string.

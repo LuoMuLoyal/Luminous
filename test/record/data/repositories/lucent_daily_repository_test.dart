@@ -5,7 +5,7 @@ import 'package:luminous/core/database/daos/daily_record.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
 import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
