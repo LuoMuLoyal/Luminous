@@ -112,10 +112,6 @@ how-to 5、README、_MOC、Glossary)、AI 指令四件套、plans 索引。ADR �
 
 ## 5. Phase 1 — 指令单一来源(约半天)
 
-- [ ] 1.1 `AGENTS.md` 唯一规则源;`CLAUDE.md`、`GEMINI.md`、
-      `.github/copilot-instructions.md` 各改为 `@AGENTS.md` 一行引用 + ≤2 行工具专属说明
-- [ ] 1.2 验收:除 AGENTS.md 外仓库内无第二份规则正文副本
-
 ## 6. Phase 2 — docs 去编号重建 + 生成化 + feature README(约 2–3 天)
 
 - [ ] 2.1 docs 重建:按 §2.2 执行——`git mv` 平移存活文档(保留历史)→ `_MOC.md`

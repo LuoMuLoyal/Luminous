@@ -43,11 +43,14 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
 ## Commands
 
 ```powershell
+flutter pub get                                  # 拉取依赖
 flutter analyze                                  # 最快反馈
 flutter test                                     # 单元/Widget 测试
 flutter test test/path/to_test.dart              # 单个测试文件
 flutter test integration_test                    # 全部 E2E
 flutter test integration_test/<scenario>_e2e_test.dart   # 单个 E2E 场景
+dart scripts/arb_tools.dart merge                # 分片 ARB 合并(l10n 变更后)
+flutter gen-l10n                                 # ARB 合并后生成 Dart 本地化代码
 dart run scripts/bootstrap_generated_sources.dart        # 生成物准备(全新 clone/ARB/契约变更后必跑)
 dart run scripts/run_daily_checks.dart           # 仓库安全级检查(analyze+test+文档)
 dart run scripts/run_fullstack_checks.dart       # 全栈检查(需 Lucent 运行时)
@@ -64,6 +67,9 @@ dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(-
   - `data/` — repositories, data sources, providers, mappers, utils
   - `domain/` — entities, repository interfaces, services, constants
   - `presentation/` — pages, widgets, controllers, providers, utils, models, services
+- New code goes only under `lib/features/`, `lib/core/`, or `lib/shared/`. **Do not**
+  add to legacy `lib/pages/`, `lib/stores/`, `lib/viewmodels/`, `lib/components/`.
+- The five tabs are `today / record / medicine / review / mine`.
 
 ### Cross-Feature Import Rules
 
@@ -109,10 +115,12 @@ dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(-
 
 - Riverpod `Notifier` + `NotifierProvider`; `@freezed` for immutable state.
 - `ref.watch()` for reading, `ref.read()` for callbacks.
+- Prefer `ref.watch(provider.select(...))` to slice state and avoid unnecessary rebuilds.
 
 ## Routing
 
-- `GoRouter` with `StatefulShellRoute` for bottom tabs.
+- `GoRouter` with `StatefulShellRoute` for bottom tabs. Use typed routes
+  (`@TypedGoRoute` + `go_router_builder`).
 - Tab roots: `/`, `/record`, `/medicine`, `/review`, `/mine`.
 - Sub-pages are top-level full-screen routes outside the shell.
 
@@ -121,12 +129,18 @@ dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(-
 Forui-led theming. Details in `docs/02-reference/Design_System.md` and
 `docs/02-reference/Forui_Reference.md`. Reference in `D:\25080\Documents\VSCodeProject\Lumos\forui-docs`
 
-- `SemanticColor`, `Spacing`, `IconSizeTokens` — design tokens；圆角/字体直接取 Forui `context.theme.style.borderRadius.*` / `context.theme.typography.body/display.*`。
+- `SemanticColor`, `Spacing`, `IconSizeTokens` — design tokens；圆角/字体直接取 Forui `context.theme.style.borderRadius.*` / `context.theme.typography.body/display.*`(via barrel `lib/core/design/design.dart`)。
 - Prefer Forui primitives directly. Don't add thin wrappers that only preset styles;
   existing wrappers (`AppBackButton`, `AppDivider`, etc.) are kept as-is.
 - Prefer `FLucideIcons` over Material icons (treat `Icons.*` as migration debt).
 - Evaluate `forui_hooks` before writing manual controller plumbing.
 - Use Forui CLI (`dart run forui style create`) for custom styling scaffolds.
+- User-visible text goes through ARB + `flutter gen-l10n` — no hardcoded strings.
+- Page-level error states use `AppStateErrorView` / `AppStateMessageView`, never
+  hand-written error views.
+- Loading states use shimmer skeletons (`AppSkeletonShimmer`), never
+  `CircularProgressIndicator` or plain colored blocks.
+- Lightweight feedback uses `AppToast`, not page-level `SnackBar`.
 
 ## Testing
 
@@ -171,3 +185,14 @@ Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
 - Source: `Lucent/docs/openapi.json`.
 - Regenerate: `pnpm export:openapi` in Lucent → `dart run scripts/bootstrap_generated_sources.dart` in Luminous.
 - Tracked boundary: `generated/lucent_api/lib/api/**` except `**/*.g.dart`.
+
+## Non-Negotiable Boundaries
+
+- This is a Flutter + Riverpod + GoRouter + Forui project.
+- Lucent owns shipping assistant/report AI backends; `lib/core/ai/` is an
+  experiment seam, not the place to replace current Lucent production flows by default.
+- Fix the requested problem directly — do not loosen lint rules or refactor nearby
+  working code.
+- Do not touch unrelated dirty or untracked files in sibling projects.
+- Do not hand-edit generated files (`lib/l10n/app_localizations*.dart`,
+  `generated/lucent_api/**`, merged `app_*.arb`).
