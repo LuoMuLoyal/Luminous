@@ -95,7 +95,7 @@ Future<void> main(List<String> args) async {
 /// Scans [file] for broken wikilinks and relative markdown links.
 ///
 /// Returns human-readable problem strings prefixed with the display path
-/// (e.g. `docs/00-current/TODO.md: [[Missing]] — no matching file`). Shared
+/// (e.g. `docs/TODO.md: [[Missing]] — no matching file`). Shared
 /// with the `--verify` mode of check_doc_coverage.dart so both tools resolve
 /// links identically.
 List<String> checkDocFileLinks(VaultIndex vault, File file) {
@@ -265,7 +265,7 @@ class VaultIndex {
   final Directory docsDir;
   final List<File> markdownFiles = <File>[];
 
-  /// Lowercased vault-relative path (e.g. `00-current/current_state.md`).
+  /// Lowercased vault-relative path (e.g. `reference/adr/0002-gorouter-navigation.md`).
   final Set<String> _allLowerPaths = <String>{};
 
   /// Lowercased basename (with extension) -> vault-relative paths.

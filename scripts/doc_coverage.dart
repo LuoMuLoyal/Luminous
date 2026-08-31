@@ -371,7 +371,7 @@ class DocFreshnessReport {
 }
 
 /// Analyzes doc freshness from front-matter. [contentByPath] maps a display
-/// path (e.g. `docs/00-current/TODO.md`) to file content.
+/// path (e.g. `docs/TODO.md`) to file content.
 ///
 /// Docs marked `status: frozen` are intentionally exempt from the freshness
 /// checks (they are skipped along with every other non-`active` status);

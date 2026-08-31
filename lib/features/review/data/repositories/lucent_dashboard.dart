@@ -1,7 +1,7 @@
 // The generated contract marks the legacy scalar projection as deprecated.
 // Keep this mapper's fallback until the observed metric domain migration lands.
 // TODO(lint-cleanup): Remove this ignore after observed-metric domain migration
-//   (target: 2026 Q4, see docs/02-logs/migration-log).
+//   (target: 2026 Q4, see docs/logs/migration-log).
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
