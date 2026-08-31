@@ -20,11 +20,11 @@ Last updated: 2026-08-13
 
 ## 页面索引
 
-- [[00-current/Active_UI_Today]] — Today
-- [[00-current/Active_UI_Record]] — Record
-- [[00-current/Active_UI_Medicine]] — Medicine
-- [[00-current/Active_UI_Report]] — Report / Review（第五 Tab 用户任务已改为「回顾/Review」，`/report` 保留为兼容路由，含 Clinic Summary legacy）
-- [[00-current/Active_UI_Mine_Settings]] — Mine / Settings
+- [[Active_UI_Today]] — Today
+- [[Active_UI_Record]] — Record
+- [[Active_UI_Medicine]] — Medicine
+- [[Active_UI_Report]] — Report / Review（第五 Tab 用户任务已改为「回顾/Review」，`/report` 保留为兼容路由，含 Clinic Summary legacy）
+- [[Active_UI_Mine_Settings]] — Mine / Settings
 
 ## 2026-08-13 更新（Review Experience 收口）
 

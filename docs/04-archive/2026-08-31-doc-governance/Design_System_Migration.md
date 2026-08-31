@@ -131,7 +131,7 @@ updated: 2026-08-31
 
 ## Auth 迁移模式
 
-- auth 迁移有自己的可复用实现笔记：[[02-reference/Auth_Forui_Migration_Pattern]]。
+- auth 迁移有自己的可复用实现笔记：[[Auth_Forui_Migration_Pattern]]。
 - 该文档捕获要向前复制的稳定模式，并明确记录 auth-only 强制主题覆盖与单色 logo filter 曾被尝试但拒绝。
 
 ## 剩余 bridge 消费者

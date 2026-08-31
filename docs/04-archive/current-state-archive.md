@@ -1,7 +1,7 @@
 # Luminous Current State — 历史归档
 
-> 本文件保存从 `[[00-current/Current_State]]` 移出的旧 completed baselines 与 audit remediation，供考古使用。
-> 当前状态仍请以 `[[00-current/Current_State]]` 为准。
+> 本文件保存从 `[[Current_State]]` 移出的旧 completed baselines 与 audit remediation，供考古使用。
+> 当前状态仍请以 `[[Current_State]]` 为准。
 
 ## Completed Baselines
 
@@ -227,7 +227,7 @@ migrated to `flutter_hooks`:
 
 ## 2026-07-06 ~ 07-09 Completed Baselines
 
-以下条目从 `[[00-current/Current_State]]` 移出，保留历史细节供考古。
+以下条目从 `[[Current_State]]` 移出，保留历史细节供考古。
 
 ### Today 根页主动建议重构
 

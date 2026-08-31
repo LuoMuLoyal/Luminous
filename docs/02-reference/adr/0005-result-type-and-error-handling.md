@@ -113,7 +113,7 @@ not model one-shot actions or composition cleanly.
 
 ## References
 
-- [Lucent ADR-0012: Error Contract and Result Boundary](../../../../Lucent/docs/01-reference/adr/0012-error-contract-and-result-boundary.md)
+- [Lucent ADR-0012: Error Contract and Result Boundary](../../../../Lucent/docs/reference/adr/0012-error-contract-and-result-boundary.md)
 - Luminous research: `research/03-技术决策/api-response-error-contract-响应信封与问题详情.md`
 - [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html)
 - [ADR-0004: Network Layer Separation](0004-network-layer-separation.md)

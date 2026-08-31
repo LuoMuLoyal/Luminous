@@ -110,13 +110,6 @@ how-to 5、README、_MOC、Glossary)、AI 指令四件套、plans 索引。ADR �
 硬目标:存活文档面篇数较审计前 **-50%**(ADR、迁移日志、生成物、archive/ 均不计);
 被归档/被下沉断言 100% 有承接(golden/widget 测试、生成物、feature README)。
 
-- [ ] 0.1 逐篇四问审计,产出审计表(§11)
-- [ ] 0.2 00-current 与 02-reference 按预置方向逐篇裁决
-- [ ] 0.3 先改检查器:`check_doc_coverage.dart` 的目录 scope、`_collectVaultLinkedPaths`
-      的 `03-logs/`/`04-archive/` 前缀豁免、front-matter 校验(去 quadrant/audience)、
-      `git_hook.dart`/`run_daily_checks.dart`/`tooling_workflows.dart` 路径
-- [ ] 0.4 AGENTS.md 文档规则段(90+ 行)按审计结果同步缩减
-
 ## 5. Phase 1 — 指令单一来源(约半天)
 
 - [ ] 1.1 `AGENTS.md` 唯一规则源;`CLAUDE.md`、`GEMINI.md`、
@@ -214,8 +207,62 @@ how-to 5、README、_MOC、Glossary)、AI 指令四件套、plans 索引。ADR �
 - 回滚:各 Phase 独立 commit 可单独 revert;新规则均以 warn 起步;归档操作均保留
   git 历史可回溯,复位只需从 archive/ 迁回。
 
-## 11. 审计表(Phase 0 填充)
+## 11. 审计表(Phase 0 已填充)
+
+基线 44 篇(排除 adr/9、migration-log、04-archive)。裁决为 归档 16(Phase 0 执行)、
+并入后归档 6(Phase 2 吸收内容后执行)、存活 22(-50% 达标)。与预置方向的差异:
+Tab_Blueprint 预设"生成化"不成立(断言是语义边界)改判并入;Active_UI_Report 的
+golden 承接机制已变为 zh/light 断言矩阵(review_golden_test);Localization 实际 611 行。
+存量矛盾(改写时处理):存活篇中 "ADR-0009" 实指 adr/0006(data-layer、routing、
+Product_AI_Design 需改);state-management 与 Design_System_Components 残留已删除的
+Security Elevation 段;Glossary "Security PIN" 词条失效;how-to 两篇指示直编生成物
+app_*.arb 并引用陈旧 tool/ 路径,必须重写;architecture.md Melos 段陈旧;
+copilot-instructions 版本快照与验证路径陈旧(Phase 1 指针化消除)。
 
 | 文档 | 读者 | 读完做什么 | 断言承接 | 裁决 |
 | --- | --- | --- | --- | --- |
-| (Phase 0 逐篇填充) | | | | |
+| README.md (53) | 全体/AI | 找入口 | 治理规则与 AGENTS 重复 | 重写为唯一索引 |
+| _MOC.md (61) | Obsidian | 按区域跳转 | 无(纯索引) | 归档 |
+| Glossary.md (31) | 全体 | 统一术语 | 无(可接受) | 保留→reference/(清理 Security PIN) |
+| 00-current/Active_Mobile_UI.md (40) | 前端/AI | 五 Tab 汇总入口 | test/app、test/shell | 归档 |
+| 00-current/Active_UI_Today.md (222) | 前端/AI | Today 现状约束 | test/today/*、test/assistant/* | 归档(数值细节下沉 today README) |
+| 00-current/Active_UI_Record.md (316) | 前端/AI | Record 现状+Sparse 边界 | test/record/*、integration_test/record/* | 归档(时间线交互下沉 record README) |
+| 00-current/Active_UI_Medicine.md (252) | 前端/AI | Medicine 现状 | test/medicine/*、generated client | 归档 |
+| 00-current/Active_UI_Report.md (281) | 前端/AI | Review 现状+回归约束 | test/review/review_golden_test 断言矩阵(路径已陈旧 report→review) | 归档 |
+| 00-current/Active_UI_Mine_Settings.md (293) | 前端/AI | Mine/Settings 现状 | test/mine/*、test/settings/* | 归档(Hero 清单为投影丢弃) |
+| 00-current/Current_State.md (63) | 入口 | 拿基线与索引 | 无 | 归档(索引并入 README) |
+| 00-current/Desktop_UI.md (154) | 桌面/AI | 断点/快捷键/布局 | test/desktop/*、breakpoints_test、ADR-0008 | 归档(快捷键已有测试承接) |
+| 00-current/Lucent_Contract_Snapshot.md (93) | 前端 | 知合同变更 | verify_lucent_openapi_sync + generated | 归档 |
+| 00-current/Mock_Or_Deferred.md (74) | 前端/AI | 知 mock/延后面 | test/helpers/mocks + AGENTS Testing | 归档(Deferred 注释约定入 AGENTS,延后清单入 TODO) |
+| 00-current/Next_Plan.md (72) | 前端/AI | 下一步顺序 | 无(计划性) | 归档(用药安全后续等入 TODO) |
+| 00-current/Project_Governance.md (62) | 新成员/AI | 治理机制 | 三个检查脚本 | 保留→explanation/(吸收 Work_Phase_Guide) |
+| 00-current/Runtime_Snapshot.md (242) | 前端/AI | 技术栈速查 | pubspec + network/errors 测试 | 归档 |
+| 00-current/TODO.md (126) | 前端 | 跟踪延后项 | AGENTS 关闭即删 | 保留→docs 根(硬生命周期) |
+| 00-current/Work_Phase_Guide.md (126) | 前端/AI | P0-P3 定义+发布清单 | 无(清单性) | 并入 Project_Governance 后归档 |
+| Product_Vision.md (110) | 全体 | 理解定位 | 无(产品性) | 保留→product/ |
+| Product_MVP_Scope.md (103) | 产品/前端 | 0.1.0 边界 | review_golden_test 部分 | 保留→product/(吸收 AI_Design) |
+| Product_Information_Architecture.md (157) | 产品/前端 | 五 Tab 职责 | 无直接测试 | 保留→product/(吸收 Tab_Blueprint 语义) |
+| Product_AI_Design.md (58) | 产品/AI | AI 做/不做边界 | 无(红线清单) | 并入 Product_MVP_Scope 后归档 |
+| Product_Safety_Privacy.md (72) | 产品/前端 | 安全/隐私/事件白名单 | product_event_service_test | 保留→product/ |
+| Product_Tab_Component_Blueprint.md (225) | 产品/前端 | 五 Tab 组件清单 | 仅 review 禁放被锁定 | 并入 IA+feature README 后归档 |
+| AI_Development_Workflow.md (147) | AI 开发者 | MCP/seam/flag/CI env | test/core/ai/* | 保留→explanation/ 瘦身(删陈旧指令) |
+| architecture.md (238) | 新成员/AI | 目录与分层 | 可脚本枚举 | 保留→reference/ 瘦身(删 Melos 段) |
+| architecture-upgrade-analysis.md (154) | (当时) | 一次性审查 | 无(已腐烂) | 归档 |
+| Auth_Forui_Migration_Pattern.md (133) | 迁移者 | 复用迁移模式 | 无(迁移已完成) | 归档 |
+| data-layer.md (217) | 前端/AI | 网络栈/错误映射 | test/core/network/* | 保留→reference/ 瘦身(ADR-0009→0006) |
+| Design_System.md (124) | 前端/AI | token 体系 | test/core/design/* | 保留→reference/ 瘦身(token 段生成) |
+| Design_System_Components.md (132) | 前端/AI | 组件规范 | test/core/widgets/* | 并入 Design_System 后归档 |
+| Design_System_Migration.md (214) | (迁移者) | 迁移进度 | rg 断言已过期 | 归档 |
+| Forui_Reference.md (253) | 前端/AI | 版本差异+本地约定 | 无(外部库) | 保留→reference/ 瘦身 |
+| Localization.md (611) | 前端/AI | l10n 工作流+键所有权 | lib/l10n/src 分片为真相 | 保留→reference/ 瘦身+生成区块 |
+| OpenApi_Client.md (192) | 前端 | 客户端合同规则 | openapi.json+verify 脚本 | 保留→reference/ 瘦身(吸收 Guardrails Contracts 段) |
+| Project_Guardrails.md (144) | 前端/AI | 避错清单 | 与 AGENTS 重复 | 并入 AGENTS+OpenApi_Client 后归档 |
+| routing.md (150) | 前端/AI | 路由清单与约定 | router.g.dart + router_test | 生成化(路由索引)+瘦身(ADR-0009→0006) |
+| state-management.md (318) | 前端/AI | Riverpod 约定+Bus | 无直接测试(约定性) | 保留→reference/ 瘦身(删 Security 段) |
+| how-to/add-localization.md (69) | 前端/AI | 加新文案 | ARB merge 流程 | 保留→howto/ 重写(纠正直编生成物矛盾) |
+| how-to/add-new-feature.md (90) | 前端/AI | 新建 feature | 分层树=AGENTS 重复 | 保留→howto/ 重写(纠正 ARB/test 路径) |
+| how-to/README.md (19) | 导航 | 找指南 | 无 | 并入 docs/README 后归档 |
+| how-to/regenerate-api-client.md (75) | 前端/AI | 再生成客户端 | bootstrap/verify 脚本 | 保留→howto/(对齐 bootstrap 机制描述) |
+| how-to/run-tests.md (70) | 前端/AI | 跑测试与检查 | 脚本存在 | 并入 AGENTS Commands 后归档 |
+| MigrationLog.md (78) | 全体 | 查变更 | migration-log/ 目录 | 保留→logs/ 瘦身(目录即索引,删过期日期列表) |
+| adr/* (9 篇) | 新成员 | 决策存档 | — | 存量只读保留(0005 跨仓链接已修复) |

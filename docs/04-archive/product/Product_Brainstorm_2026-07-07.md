@@ -226,5 +226,5 @@
 - [[Product_Insights]] — 每日总结、每周趋势与主动提醒
 - [[Product_Safety_Privacy]] — 用药安全与 AI 隐私边界
 - [[Product_Information_Architecture]] — 信息架构与竞赛叙事
-- [[00-current/Next_Plan]] — 下一步实现顺序
-- [[00-current/Work_Phase_Guide]] — 阶段总纲
+- [[Next_Plan]] — 下一步实现顺序
+- [[Work_Phase_Guide]] — 阶段总纲

@@ -13,9 +13,9 @@ import 'tooling_support.dart';
 /// `--verify` runs a full governance check on the whole docs tree (mirroring
 /// Lucent's `check-docs-updated.ts --verify`): doc-map references exist, doc
 /// links resolve, front-matter completeness, 90-day freshness (`status: frozen`
-/// exempt), doc readership (every `status: active` reference/explanation doc
-/// must be listed in doc-map or linked from another doc), and `lib/features/*`
-/// doc-map coverage. Exit(1) on any problem.
+/// exempt), doc readership (every `status: active` doc outside standing
+/// channels must be listed in doc-map or linked from another doc), and
+/// `lib/features/*` doc-map coverage. Exit(1) on any problem.
 ///
 /// `SKIP_DOC_CHECK=1` bypasses the blocking coverage path only — it does not
 /// apply to `--verify` (or `--warning-only`). `git commit --no-verify` bypasses
@@ -225,6 +225,10 @@ Map<String, String> _collectDocContents(Directory repoRoot) {
     final relative = file.path
         .replaceAll('\\', '/')
         .substring(docsBase.length + 1);
+    if (relative.startsWith('04-archive/') || relative.startsWith('archive/')) {
+      // Historical records are exempt from freshness advisories.
+      continue;
+    }
     contents['docs/$relative'] = file.readAsStringSync();
   }
   return contents;
@@ -334,7 +338,7 @@ Future<void> _runVerify(ToolContext context) async {
   problems.addAll(
     findDocsMissingFrontMatter(activeDocs, contentByPath).map(
       (path) =>
-          '$path: missing/incomplete front-matter (need status / owner / quadrant / updated)',
+          '$path: missing/incomplete front-matter (need status / owner / updated)',
     ),
   );
 

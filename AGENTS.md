@@ -16,17 +16,18 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
   - Entries describe change scope and verification conclusions; do not write exact
     numbers that must stay in sync on later edits (e.g. total test counts).
     （日志条目描述变更范围与验证结论，不写需要持续同步的精确数字（如测试总数）。）
-- **Current state**: UI/data/runtime changes go into the relevant `docs/00-current/*.md`
-  sub-file, not into `Current_State.md` (index only).
+- **No handwritten "current state" narratives**: UI/data/runtime snapshots are not docs.
+  Assertions live in golden/widget tests; per-feature constraints live in that feature's
+  `README.md`. Do not create new `Active_*` / `*_Snapshot` style docs.
+  （冻结新增手写"现状叙事"文档：断言进测试，约束进 feature README。）
 - **Closing a TODO**: delete the line from `docs/00-current/TODO.md`.
 - **Finishing a plan**: delete the entire section from `plans/*.md`.
 - **Doc lifecycle**: active docs older than 90 days without updates, or unreferenced by
   `doc-map.yaml` / doc links, are flagged by `dart run scripts/check_doc_coverage.dart --verify`
   — review, update, or archive them to `docs/04-archive/`. Docs marked `status: frozen` are
   exempt from the 90-day freshness checks.
-- **Front-matter**: every active doc in `00-current/*.md`, `01-product/*.md`, `02-reference/*.md`,
-  and `02-reference/how-to/*.md` must carry YAML front-matter (`status: active|frozen` /
-  `owner: frontend` / `quadrant: reference|explanation|how-to` / `updated: YYYY-MM-DD`);
+- **Front-matter**: every active content doc must carry YAML front-matter
+  (`status: active|frozen` / `owner: frontend` / `updated: YYYY-MM-DD`);
   `--verify` flags missing blocks, stale `updated`, and `status: stale` docs not yet archived.
   `status: frozen` marks a doc intentionally frozen (desktop/Web-freeze, feature-freeze) —
   exempt from the freshness checks but still must carry valid front-matter; `status: stale`
@@ -42,9 +43,18 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
 ## Commands
 
 ```powershell
-flutter analyze
-flutter test
+flutter analyze                                  # 最快反馈
+flutter test                                     # 单元/Widget 测试
+flutter test test/path/to_test.dart              # 单个测试文件
+flutter test integration_test                    # 全部 E2E
+flutter test integration_test/<scenario>_e2e_test.dart   # 单个 E2E 场景
+dart run scripts/bootstrap_generated_sources.dart        # 生成物准备(全新 clone/ARB/契约变更后必跑)
+dart run scripts/run_daily_checks.dart           # 仓库安全级检查(analyze+test+文档)
+dart run scripts/run_fullstack_checks.dart       # 全栈检查(需 Lucent 运行时)
+dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(--verify 全量治理)
 ```
+
+窄命令迭代，收尾前跑宽检查(`run_daily_checks.dart`)。
 
 ## Architecture
 
@@ -122,6 +132,14 @@ Forui-led theming. Details in `docs/02-reference/Design_System.md` and
 
 - Unit/widget: `flutter test`. Integration: `integration_test/`.
 - Mock repositories: `Mock*Repository`. Test helpers: `test/helpers/`.
+- Tests never launch real device capabilities; inject platform-interface fakes
+  (e.g. `PermissionHandlerPlatform`, `MobileScannerPlatform`, `PaddleOcrNativePlatform`).
+- **Deferred marker**: still-useful deferred code keeps a comment marker and a TODO entry —
+  never fake success in production paths:
+  ```dart
+  // Deferred by Product Brainstorm P0/P1: keep this code because the capability is useful,
+  // but do not surface it until the matching contract/product job is ready.
+  ```
 
 ## Data Layer
 

@@ -2,14 +2,14 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-25
+updated: 2026-08-31
 ---
 
 # Luminous TODO
 
-Last updated: 2026-08-25
+Last updated: 2026-08-31
 
-本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
+本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
 ## 产品闭环（程序已收口，仅剩延后项）
 
@@ -124,3 +124,12 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
 - 当前边界之外更深的药品安全规则覆盖与更清晰的 unsupported / low-confidence wording
 - Environment-driven Today 或 Mine 建议
 - 真实药品条码/OCR/拍照/处方识别流程
+
+## 2026-08-31 文档治理归并（Mock_Or_Deferred / Next_Plan 承接）
+
+- 用药安全后续（原 Next_Plan）：Allergy severity null-handling（`severity == null` 但 `reaction == 'anaphylaxis'`）；CN 来源药品对 interaction checker 不可见；Avoid-tier 升级策略（结构化 `avoid` 结论保持低于 red-flag）；跨语言重复匹配（「对乙酰氨基酚」vs "paracetamol"）；DrugBank 同义词过度泛化（不同 NSAIDs 共享同义词）
+- 通知通道边界：真实 FCM/APNs 厂商直推与真实 SMS 投递均不启动（JPush 条件回退已实现：本地通知优先，能力上报后仅本地不可达/未确认时后台 JPush；提醒投递历史 in_app/local/push 三通道已落库，SMS 通道仍无）
+- 独立 More tab 或通用 utility hub：不启动
+- 未明确批准的付费或需要资质的外部服务：不启动
+- 轻量心情记录连线：延后但保留
+- 导出生命周期刻意轻量：无页内请求历史列表、无显式重试队列、clinic share link 无应用内链接管理（只能重新生成）

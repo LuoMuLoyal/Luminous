@@ -325,6 +325,13 @@ RegExp _globToRegExp(String pattern) {
 
 enum _RuleSection { code, docsRequired, anyOf, info }
 
+/// 低频稳定叙事(explanation/、product/)只要求携带 `updated`,不做 90 天
+/// 陈旧告警(它们按设计只减不增)。`status: stale` 标记仍会被报告。
+const List<String> stalenessExemptPatterns = [
+  'docs/explanation/**',
+  'docs/product/**',
+];
+
 /// Days after which an `status: active` doc is considered stale.
 const int staleDocThresholdDays = 90;
 
@@ -404,6 +411,11 @@ DocFreshnessReport analyzeDocFreshness({
     if (updatedMs == null) {
       return;
     }
+    if (stalenessExemptPatterns.any(
+      (pattern) => _matchesPattern(path, pattern),
+    )) {
+      return;
+    }
     if (todayMs - updatedMs >
         staleThresholdDays * Duration.millisecondsPerDay) {
       staleActive.add(path);
@@ -418,28 +430,43 @@ DocFreshnessReport analyzeDocFreshness({
 
 // --- Verify mode (mirrors Lucent's doc-coverage-lib) --------------------
 
-/// Active docs that MUST stay fresh — everything outside 04-archive and the
-/// migration logs.
+/// Active docs that MUST stay fresh — everything outside the archive and the
+/// migration logs. Includes both the legacy numbered layout (00-current,
+/// 01-product, ...) and the de-numbered target layout (explanation/, product,
+/// reference/, howto/, logs/) so the Phase-2 rebuild only removes old entries.
 const List<String> activeDocPatterns = [
   'docs/README.md',
+  'docs/TODO.md',
   'docs/00-current/*.md',
   'docs/01-product/*.md',
   'docs/02-reference/*.md',
   'docs/02-reference/adr/*.md',
   'docs/02-reference/how-to/*.md',
   'docs/03-logs/MigrationLog.md',
+  'docs/explanation/**/*.md',
+  'docs/product/**/*.md',
+  'docs/reference/*.md',
+  'docs/reference/adr/*.md',
+  'docs/howto/*.md',
+  'docs/logs/MigrationLog.md',
 ];
 
 bool isActiveDoc(String path) =>
     activeDocPatterns.any((pattern) => _matchesPattern(path, pattern));
 
-/// Content docs that MUST carry front-matter (status / owner / quadrant /
-/// updated). ADRs are exempt — they keep their conventional bare format.
+/// Content docs that MUST carry front-matter (status / owner / updated).
+/// ADRs are exempt — they keep their conventional bare format. Generated
+/// docs (reference/generated/) are exempt — they carry no hand-written
+/// metadata.
 const List<String> frontMatterRequiredPatterns = [
   'docs/00-current/*.md',
   'docs/01-product/*.md',
   'docs/02-reference/*.md',
   'docs/02-reference/how-to/*.md',
+  'docs/explanation/**/*.md',
+  'docs/product/**/*.md',
+  'docs/reference/*.md',
+  'docs/howto/*.md',
 ];
 
 bool isFrontMatterRequired(String path) => frontMatterRequiredPatterns.any(
@@ -474,7 +501,6 @@ List<String> findDocsMissingFrontMatter(
         final frontMatter = parseFrontMatter(content);
         return frontMatter['status'] == null ||
             frontMatter['owner'] == null ||
-            frontMatter['quadrant'] == null ||
             frontMatter['updated'] == null;
       })
       .toList(growable: false);
@@ -527,22 +553,28 @@ List<String> findDocMapGlobOrphans(
 }
 
 /// Docs with a standing reader channel (README nav / subdir READMEs) —
-/// exempt from the readership check.
+/// exempt from the readership check. Includes the legacy and target layouts.
 const List<String> exemptUnreferencedPatterns = [
   'docs/02-reference/adr/**',
   'docs/02-reference/how-to/**',
+  'docs/reference/adr/**',
+  'docs/reference/generated/**',
+  'docs/howto/**',
+  'docs/03-logs/**',
+  'docs/logs/**',
 ];
 
-/// Active docs subject to the readership rule: `status: active` with
-/// `quadrant: reference|explanation`. Migration logs, READMEs, ADR/how-to
-/// (standing channels) and frozen docs are not subjects.
+/// Active docs subject to the readership rule: every `status: active` doc
+/// outside the standing channels (READMEs, ADR/how-to, generated and log
+/// trees) must be listed in doc-map or linked from another doc.
+/// Selection is path-based — no front-matter `quadrant` involvement.
 List<String> readershipSubjectPaths(
   List<String> activeDocs,
   Map<String, String> contentByPath,
 ) {
   return activeDocs
       .where((path) {
-        if (path.endsWith('/README.md')) {
+        if (path.endsWith('/README.md') || path == 'docs/README.md') {
           return false;
         }
         if (exemptUnreferencedPatterns.any(
@@ -558,12 +590,7 @@ List<String> readershipSubjectPaths(
         if (isFrozenDoc(content)) {
           return false;
         }
-        final frontMatter = parseFrontMatter(content);
-        if (frontMatter['status'] != 'active') {
-          return false;
-        }
-        final quadrant = frontMatter['quadrant'];
-        return quadrant == 'reference' || quadrant == 'explanation';
+        return parseFrontMatter(content)['status'] == 'active';
       })
       .toList(growable: false);
 }

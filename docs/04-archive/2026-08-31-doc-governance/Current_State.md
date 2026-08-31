@@ -29,35 +29,35 @@ Sparse Record Semantics 的后端已提供统一 observed metric OpenAPI 合同�
 
 ### 项目治理与规划
 
-- [[00-current/Project_Governance]] — 维护模式、架构、测试工具链、仓库布局、产品表面、文档治理
-- [[00-current/Work_Phase_Guide]] — 阶段总纲（Phase 1-6）
-- [[00-current/Next_Plan]] — 下一步实现顺序
-- [[00-current/TODO]] — 延后与门控事项
+- [[Project_Governance]] — 维护模式、架构、测试工具链、仓库布局、产品表面、文档治理
+- [[Work_Phase_Guide]] — 阶段总纲（Phase 1-6）
+- [[Next_Plan]] — 下一步实现顺序
+- [[TODO]] — 延后与门控事项
 
 ### 技术快照
 
-- [[00-current/Runtime_Snapshot]] — 运行时快照（技术栈、主题设计系统、Token、网络层、测试结构）
-- [[00-current/Lucent_Contract_Snapshot]] — Lucent API 合同快照
+- [[Runtime_Snapshot]] — 运行时快照（技术栈、主题设计系统、Token、网络层、测试结构）
+- [[Lucent_Contract_Snapshot]] — Lucent API 合同快照
 
 ### UI 页面状态
 
-- [[00-current/Active_Mobile_UI]] — 移动 UI 总览与启动流程
-- [[00-current/Desktop_UI]] — 现有 Flutter 桌面端 UI 事实（当前不产品化；未来大屏方向另行研究）
-- [[00-current/Active_UI_Today]] — Today 页面
-- [[00-current/Active_UI_Record]] — Record 页面
-- [[00-current/Active_UI_Medicine]] — Medicine 页面
-- [[00-current/Active_UI_Report]] — Report 页面（含 Clinic Summary）
-- [[00-current/Active_UI_Mine_Settings]] — Mine / Settings 页面
+- [[Active_Mobile_UI]] — 移动 UI 总览与启动流程
+- [[Desktop_UI]] — 现有 Flutter 桌面端 UI 事实（当前不产品化；未来大屏方向另行研究）
+- [[Active_UI_Today]] — Today 页面
+- [[Active_UI_Record]] — Record 页面
+- [[Active_UI_Medicine]] — Medicine 页面
+- [[Active_UI_Report]] — Report 页面（含 Clinic Summary）
+- [[Active_UI_Mine_Settings]] — Mine / Settings 页面
 
 ### 边界
 
-- [[00-current/Mock_Or_Deferred]] — Mock 与延后能力
-- [[04-archive/Removed_From_Active_Scope]] — 已移出活跃范围的功能
+- [[Mock_Or_Deferred]] — Mock 与延后能力
+- [[Removed_From_Active_Scope]] — 已移出活跃范围的功能
 
 ## 相关文档
 
-- 产品方向：[[01-product/Product_Vision]]
-- 避错清单：[[02-reference/Project_Guardrails]]
+- 产品方向：[[Product_Vision]]
+- 避错清单：[[Project_Guardrails]]
 - 操作指南：[[02-reference/how-to/README]]
-- 变更日志：[[03-logs/MigrationLog]]
-- 历史归档：[[04-archive/current-state-archive]]
+- 变更日志：[[MigrationLog]]
+- 历史归档：[[current-state-archive]]

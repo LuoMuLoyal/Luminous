@@ -9,14 +9,14 @@ updated: 2026-08-16
 
 Last updated: 2026-08-16
 
-本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
-产品优先级以 [[01-product/Product_Vision]] 和仓库根目录 `CONTEXT.md` 为准；ADR-0011 与历史 brainstorm 只用于追溯已经完成的事件闭环。
+本文件只记录下一步实现顺序。当前事实见 [[Current_State]]；变更历史见 [[MigrationLog]]。
+产品优先级以 [[Product_Vision]] 和仓库根目录 `CONTEXT.md` 为准；ADR-0011 与历史 brainstorm 只用于追溯已经完成的事件闭环。
 
 ## 当前目标
 
 产品闭环程序（`Health Event Contract`、`Proactive Suggestion Runtime`、`Sparse Record Semantics`、`Review Experience`、`Visit Summary and Product Measurement`）已全部实施完毕，计划文件已删（实施完毕文件已删）：健康事件跨前后端合同、主动重算、Today 只读物化、统一稀疏数据语义、事件优先回顾主路径与可撤销分享、字段级隐私、隐私克制的闭环测量（客户端四个成功边界事件 + 服务端权威事件 + 管理员漏斗）均已落地并通过全量验证。
 
-当前目标转为 **0.1.0 发布验证**（按仓库根 `ROADMAP.md`「Current Release → 0.1.0」）：只修阻断集成/发布的缺陷，跑完整移动端与全栈发布门禁。长期阶段排序见 [[00-current/Work_Phase_Guide]]。
+当前目标转为 **0.1.0 发布验证**（按仓库根 `ROADMAP.md`「Current Release → 0.1.0」）：只修阻断集成/发布的缺陷，跑完整移动端与全栈发布门禁。长期阶段排序见 [[Work_Phase_Guide]]。
 
 ## 立即下一步
 
@@ -27,7 +27,7 @@ Last updated: 2026-08-16
    - 手机端是当前首发与用户验证表面，不再写成永久唯一产品表面
    - 桌面端和 Web 端不做机械功能对等；“大屏阅读、比较和理解纵向健康信息”的用户任务及 Next.js + Tauri 2 候选路线等待独立调研
    - `Luminous-website` 是竞赛/营销表面，不是签入式产品壳
-3. **延后项按优先级推进**（见 [[00-current/TODO]] 与 ROADMAP P2/P3）：AI 会话重命名与删除、就诊摘要模板化、症状-用药关联时间线等
+3. **延后项按优先级推进**（见 [[TODO]] 与 ROADMAP P2/P3）：AI 会话重命名与删除、就诊摘要模板化、症状-用药关联时间线等
 4. **完成 2026-08-16 十份功能改造计划后启动错误处理硬切**
    - 先完成并删除十份计划，再冻结新功能，按 ADR-0008 与 Lucent ADR-0012 执行 RFC 9457 + `LucentFailure` + fpdart 的双仓集中迁移
    - 该任务在当前 0.1.0 发布验证期间不启动；启动前必须重新盘点错误处理并确认跨仓 OpenAPI 发布顺序

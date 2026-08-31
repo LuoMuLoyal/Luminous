@@ -65,10 +65,6 @@ rules:
       - docs/02-reference/routing.md
       - docs/02-reference/architecture.md
       - docs/02-reference/adr/0002-gorouter-navigation.md
-      - docs/00-current/Active_Mobile_UI.md
-      - docs/00-current/Desktop_UI.md
-    docs_info:
-      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 网络层与 API 客户端
@@ -83,9 +79,6 @@ rules:
       - docs/02-reference/data-layer.md
       - docs/02-reference/OpenApi_Client.md
       - docs/02-reference/adr/0004-network-layer-separation.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
-    docs_info:
-      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 设计系统与主题
@@ -100,8 +93,6 @@ rules:
       - docs/02-reference/Design_System.md
       - docs/02-reference/Design_System_Components.md
       - docs/02-reference/Forui_Reference.md
-    docs_info:
-      - docs/02-reference/Design_System_Migration.md
 
   # ──────────────────────────────────────────────
   # Core — 本地持久化（Drift）
@@ -114,8 +105,6 @@ rules:
     docs_any_of:
       - docs/02-reference/data-layer.md
       - docs/02-reference/adr/0006-local-persistence-drift.md
-    docs_info:
-      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 错误处理与 Result 类型
@@ -127,8 +116,6 @@ rules:
       - docs/03-logs/migration-log/*.md
     docs_any_of:
       - docs/02-reference/adr/0005-result-type-and-error-handling.md
-    docs_info:
-      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — Provider 与状态管理
@@ -151,8 +138,6 @@ rules:
       - lib/core/config/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_info:
-      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 国际化与 ARB
@@ -178,8 +163,6 @@ rules:
       - lib/core/notifications/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_info:
-      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 共享 Widget
@@ -200,8 +183,6 @@ rules:
       - lib/core/utils/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_info:
-      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — AI 运行时实验 seam
@@ -224,8 +205,6 @@ rules:
       - docs/03-logs/migration-log/*.md
     docs_any_of:
       - docs/01-product/Product_Safety_Privacy.md
-    docs_info:
-      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Auth Feature
@@ -236,9 +215,7 @@ rules:
     docs_required:
       - docs/03-logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/Auth_Forui_Migration_Pattern.md
       - docs/02-reference/Localization.md
-      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Today Feature
@@ -249,7 +226,6 @@ rules:
     docs_required:
       - docs/03-logs/migration-log/*.md
     docs_any_of:
-      - docs/00-current/Active_UI_Today.md
       - docs/01-product/Product_AI_Design.md
 
   # ──────────────────────────────────────────────
@@ -260,8 +236,6 @@ rules:
       - lib/features/record/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_any_of:
-      - docs/00-current/Active_UI_Record.md
 
   # ──────────────────────────────────────────────
   # Medicine Feature
@@ -271,8 +245,6 @@ rules:
       - lib/features/medicine/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_any_of:
-      - docs/00-current/Active_UI_Medicine.md
 
   # ──────────────────────────────────────────────
   # Review Feature（2026-08-27 由 report 改名）
@@ -282,8 +254,6 @@ rules:
       - lib/features/review/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_any_of:
-      - docs/00-current/Active_UI_Report.md
 
   # ──────────────────────────────────────────────
   # Mine Feature
@@ -293,8 +263,6 @@ rules:
       - lib/features/mine/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_any_of:
-      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Settings Feature
@@ -304,8 +272,6 @@ rules:
       - lib/features/settings/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_any_of:
-      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Health Context Feature
@@ -315,8 +281,6 @@ rules:
       - lib/features/health_context/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_info:
-      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Health Data Feature（健康指标实体/同步）
@@ -328,8 +292,6 @@ rules:
       - docs/03-logs/migration-log/*.md
     docs_any_of:
       - docs/02-reference/data-layer.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
-      - docs/00-current/Active_UI_Record.md
 
   # ──────────────────────────────────────────────
   # Health Event Feature（健康事件数据）
@@ -341,7 +303,6 @@ rules:
       - docs/03-logs/migration-log/*.md
     docs_any_of:
       - docs/02-reference/data-layer.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Notification Feature
@@ -351,8 +312,6 @@ rules:
       - lib/features/notification/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_info:
-      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Assistant Feature
@@ -363,11 +322,8 @@ rules:
     docs_required:
       - docs/03-logs/migration-log/*.md
     docs_any_of:
-      - docs/00-current/Active_UI_Today.md
       - docs/01-product/Product_AI_Design.md
       - docs/02-reference/AI_Development_Workflow.md
-    docs_info:
-      - docs/00-current/Mock_Or_Deferred.md
 
   # ──────────────────────────────────────────────
   # Legal Feature
@@ -377,8 +333,6 @@ rules:
       - lib/features/legal/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_info:
-      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Search Feature
@@ -388,8 +342,6 @@ rules:
       - lib/features/search/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_info:
-      - docs/00-current/Active_UI_Medicine.md
 
   # ──────────────────────────────────────────────
   # Scan Feature（药品拍照/条码识别）
@@ -399,10 +351,6 @@ rules:
       - lib/features/scan/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_any_of:
-      - docs/00-current/Mock_Or_Deferred.md
-    docs_info:
-      - docs/00-current/Active_UI_Medicine.md
 
   # ──────────────────────────────────────────────
   # Support Feature（帮助/关于元数据）
@@ -412,5 +360,3 @@ rules:
       - lib/features/support/**
     docs_required:
       - docs/03-logs/migration-log/*.md
-    docs_info:
-      - docs/00-current/Active_UI_Mine_Settings.md
