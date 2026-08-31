@@ -10,7 +10,7 @@ updated: 2026-08-31
 Last updated: 2026-08-31
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
-code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
+code plus a freshly exported local `../Lucent/docs/reference/generated/openapi.json`, not from prose.
 
 ## Response Contract Target
 
@@ -39,7 +39,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 
 ## Files
 
-- Generated OpenAPI source from the `Luminous` repo root: local export `../Lucent/docs/openapi.json`
+- Generated OpenAPI source from the `Luminous` repo root: local export `../Lucent/docs/reference/generated/openapi.json`
 - Generated Dart package scaffold: `generated/lucent_api/`
 - Network wrapper: `lib/core/network/client/dio_client.dart`
 - Public Flutter API exports: `lib/core/network/api.dart`
@@ -90,7 +90,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 - Generated DTOs stay in data-layer response mapping.
 - Read-side contract drift must be fixed at the Lucent OpenAPI export first. Do not bypass an
   existing generated read API with handwritten Dio GET parsing unless
-  `../Lucent/docs/openapi.json` has been freshly exported,
+  `../Lucent/docs/reference/generated/openapi.json` has been freshly exported,
   `dart run scripts/bootstrap_generated_sources.dart` has been attempted, and the exported contract
   still lacks the required fields.
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps
@@ -156,7 +156,7 @@ For CI-only contract-path verification without re-exporting from a sibling works
 
 ```bash
 dart run scripts/verify_lucent_openapi_sync.dart \
-  --openapi /absolute/path/to/Lucent/docs/openapi.json
+  --openapi /absolute/path/to/Lucent/docs/reference/generated/openapi.json
 ```
 
 `verify_lucent_openapi_sync.dart` verifies that the target OpenAPI file is readable JSON, the

@@ -61,7 +61,7 @@ AI 总结、报告摘要和诊所/药师摘要都必须遵守最小必要原则�
 - 客户端只上报四个事件：`suggestion_impression`（surface=today + 白名单规则码，session 去重）、`review_opened`（surface=review，session 去重）、`visit_summary_previewed` / `visit_summary_exported`（surface=more，success/failure 边界）。
 - 上报内容仅含 name/surface/result/eventStatus(健康事件专用)/suggestionRuleCode(7 个白名单码)/appVersion/platform/occurredAt/clientEventId，无 metadata、无自由文本；离线事件入队本地 pending-sync 队列重试，clientEventId 幂等。载荷由封闭 sealed union（`lib/core/analytics/product_event.dart`）结构上限定，无法表达症状、标题、备注、记录值、PDF URL 或分享 token。
 - 服务端权威事件（health_event_*、suggestion_actioned、visit_summary_share_*）由服务端记录，客户端不得上报；share 创建/打开/撤销不落客户端事件。
-- 管理员漏斗（`GET /api/v1/user/product-events/funnel`）只输出核心/optional 计数，无 userId、规则码或健康内容；原始事件保留 90 天（见 `Lucent/docs/01-reference/data-retention.md`）。
+- 管理员漏斗（`GET /api/v1/user/product-events/funnel`）只输出核心/optional 计数，无 userId、规则码或健康内容；原始事件保留 90 天（见 `Lucent/docs/reference/data-retention.md`）。
 - 客户端不上报失败绝不打断用户主流程（fire-and-forget + 队列重试）；上报日志只含事件名与错误信息，不含载荷内容。
 
 ## 分享与字段级隐私 UX（2026-08-14）

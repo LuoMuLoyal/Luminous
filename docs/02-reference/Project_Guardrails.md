@@ -34,7 +34,7 @@ This replaces the long historical error audit as the current quick-read checklis
 
 ## Contracts
 
-- Do not hand-maintain API prose. Lucent controller/DTO code plus `Lucent/docs/openapi.json` is the
+- Do not hand-maintain API prose. Lucent controller/DTO code plus `Lucent/docs/reference/generated/openapi.json` is the
    contract.
 - After exporting Lucent OpenAPI, run `dart run scripts/bootstrap_generated_sources.dart`; the
    repository-owned filtered generator keeps the generated package on the project SDK constraint.

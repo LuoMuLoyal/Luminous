@@ -9,8 +9,8 @@ updated: 2026-08-16
 
 ## 前置
 
-- `../Lucent/docs/openapi.json` 已存在（在 Lucent 运行 `pnpm export:openapi` 生成）
-- 如需从 Lucent 导出，参见 `Lucent/docs/01-reference/how-to/sync-openapi-client.md`
+- `../Lucent/docs/reference/generated/openapi.json` 已存在（在 Lucent 运行 `pnpm export:openapi` 生成）
+- 如需从 Lucent 导出，参见 `Lucent/docs/howto/sync-openapi-client.md`
 
 ## 步骤
 
@@ -46,7 +46,7 @@ bootstrap 内部按三个阶段完成全量再生，无需再手工调用 openap
   不拷贝，仓库跟踪的 SDK 约束（与根 pubspec 一致的 Dart 3.12）保持不变。
 
 此脚本会：
-1. 使用 `@openapitools/openapi-generator-cli` 的 `dart-dio` 读取 `../Lucent/docs/openapi.json`，生成客户端和 JSON-serializable 模型
+1. 使用 `@openapitools/openapi-generator-cli` 的 `dart-dio` 读取 `../Lucent/docs/reference/generated/openapi.json`，生成客户端和 JSON-serializable 模型
 2. 运行 `build_runner` 生成 `.g.dart` 文件
 
 ### 3. 验证
@@ -67,7 +67,7 @@ flutter test                # 测试通过
 
 ```bash
 dart run scripts/verify_lucent_openapi_sync.dart \
-  --openapi /absolute/path/to/Lucent/docs/openapi.json
+  --openapi /absolute/path/to/Lucent/docs/reference/generated/openapi.json
 ```
 
 ## 详细参考

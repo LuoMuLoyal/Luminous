@@ -182,7 +182,7 @@ Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
 
 ## OpenAPI Client
 
-- Source: `Lucent/docs/openapi.json`.
+- Source: `Lucent/docs/reference/generated/openapi.json`.
 - Regenerate: `pnpm export:openapi` in Lucent → `dart run scripts/bootstrap_generated_sources.dart` in Luminous.
 - Tracked boundary: `generated/lucent_api/lib/api/**` except `**/*.g.dart`.
 

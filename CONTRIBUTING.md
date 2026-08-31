@@ -278,7 +278,7 @@ Rules:
 ## OpenAPI Client
 
 The API contract source of truth is **Lucent controller/DTO code plus a freshly exported local
-`Lucent/docs/openapi.json`**. When the backend API changes:
+`Lucent/docs/reference/generated/openapi.json`**. When the backend API changes:
 
 1. In `Lucent`: `pnpm export:openapi`
 2. In `Luminous`: `dart run scripts/bootstrap_generated_sources.dart`

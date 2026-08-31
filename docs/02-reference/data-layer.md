@@ -64,7 +64,7 @@ Widget
 
 ### Generated API Client
 
-`generated/lucent_api/` is auto-generated from `../Lucent/docs/openapi.json` via
+`generated/lucent_api/` is auto-generated from `../Lucent/docs/reference/generated/openapi.json` via
 `@openapitools/openapi-generator-cli` (generator `dart-dio`, `serializationLibrary=json_serializable`,
 `enumUnknownDefaultCase=true`). Regenerate with:
 
@@ -72,7 +72,7 @@ Widget
 cd ../Lucent
 pnpm export:openapi
 cd ../Luminous
-openapi-generator-cli generate -i ../Lucent/docs/openapi.json -g dart-dio -o generated/lucent_api -c openapi_gen_config.json
+openapi-generator-cli generate -i ../Lucent/docs/reference/generated/openapi.json -g dart-dio -o generated/lucent_api -c openapi_gen_config.json
 dart run scripts/bootstrap_generated_sources.dart
 ```
 

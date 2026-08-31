@@ -124,14 +124,21 @@ File resolveRequiredOpenApiFile(
     return file;
   }
 
-  final defaultFile = File(
-    '${defaultLucentRoot.path}${Platform.pathSeparator}docs'
-    '${Platform.pathSeparator}openapi.json',
-  ).absolute;
-  if (!defaultFile.existsSync()) {
-    throw StateError('Lucent OpenAPI file not found: ${defaultFile.path}');
+  // Lucent's generated artifact moved to docs/reference/generated/ in the
+  // 2026-08-31 governance rebuild; fall back for checkouts of either layout.
+  const candidates = [
+    ['docs', 'reference', 'generated', 'openapi.json'],
+    ['docs', 'openapi.json'],
+  ];
+  for (final segments in candidates) {
+    final file = File(
+      '${defaultLucentRoot.path}${Platform.pathSeparator}${segments.join(Platform.pathSeparator)}',
+    ).absolute;
+    if (file.existsSync()) return file;
   }
-  return defaultFile;
+  throw StateError(
+    'Lucent OpenAPI file not found under: ${defaultLucentRoot.path}/docs',
+  );
 }
 
 Future<List<String>> captureCommandLines(
