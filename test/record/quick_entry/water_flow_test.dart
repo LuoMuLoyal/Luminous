@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
 import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
-import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 

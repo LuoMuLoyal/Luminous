@@ -10,8 +10,8 @@ import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
 import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
+import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Executes a one-tap water quick-entry from the Today quick-actions surface.

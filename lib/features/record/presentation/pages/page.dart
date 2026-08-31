@@ -16,7 +16,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/application/orchestrators/nlp_flow.dart';
 import 'package:luminous/features/record/application/usecases/change_record_date.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry.dart';
-import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';

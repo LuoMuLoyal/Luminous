@@ -15,8 +15,8 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
+import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/presentation/quick_entry/medication_flow.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

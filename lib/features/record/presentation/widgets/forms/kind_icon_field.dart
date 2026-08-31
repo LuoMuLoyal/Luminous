@@ -4,7 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/tokens/lucide_icon_bridge.dart';
 import 'package:luminous/core/widgets/common/dialog/icon_picker_sheet.dart';
-import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';

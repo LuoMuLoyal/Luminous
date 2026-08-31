@@ -7,7 +7,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/control/icon_action_button.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
-import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';

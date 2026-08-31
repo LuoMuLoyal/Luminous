@@ -134,17 +134,17 @@
 (例:`2026-08-30-doc-governance-evolution.md` 引用了 `core/design/{spacing,icon_size,semantic_color*}.dart`)。
 
 - [x] **0. 决策** — 确认 D1 / D2 / D3。
-- [ ] **1a. core 数据与工具改名** — 2.1-B 全部(daos × 8、utils × 3),同步 `test/core/...` 对应改名。
-- [ ] **1b. core 命名重复与扁平化** — 2.1-A(logger / theme / shortcuts / icon_tokens)+ 2.1-D
+- [x] **1a. core 数据与工具改名** — 2.1-B 全部(daos × 8、utils × 3),同步 `test/core/...` 对应改名。
+- [x] **1b. core 命名重复与扁平化** — 2.1-A(logger / theme / shortcuts / icon_tokens)+ 2.1-D
       (router/helpers、command_palette)。
-- [ ] **1c. features 去前缀** — 2.1-C(medicine_detail、review_detail、mine_edit_form_loading、
+- [x] **1c. features 去前缀** — 2.1-C(medicine_detail、review_detail、mine_edit_form_loading、
       review_preview_locked、review_history)+ search `view.dart` + record `constants.dart`。
-- [ ] **1d. review 新旧链** — 按 D1 结论执行,新链去前缀,sections 按 detail/history 归组。
-- [ ] **2. core/design 分组** — 2.3 含三胞胎改名;`design.dart` 留根更新 export。
-- [ ] **3. core/widgets/common 分组** — 2.3;`state_views.dart` 留根。
-- [ ] **4. core/network 分组** — 2.3;`api.dart` 留根。
-- [ ] **5. 错层归位** — 2.4 两处。
-- [ ] **6. 收尾验证** — 见第五节 DoD;本计划完成段落删除(AGENTS: Finishing a plan)。
+- [x] **1d. review 新旧链** — 按 D1 结论执行,新链去前缀,sections 按 detail/history 归组。
+- [x] **2. core/design 分组** — 2.3 含三胞胎改名;`design.dart` 留根更新 export。
+- [x] **3. core/widgets/common 分组** — 2.3;`state_views.dart` 留根。
+- [x] **4. core/network 分组** — 2.3;`api.dart` 留根。
+- [x] **5. 错层归位** — 2.4 两处。
+- [x] **6. 收尾验证** — 见第五节 DoD;本计划完成段落删除(AGENTS: Finishing a plan)。
 
 ## 五、完成定义(DoD)
 

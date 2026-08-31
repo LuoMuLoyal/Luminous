@@ -10,7 +10,7 @@ import 'package:luminous/core/design/tokens/lucide_icon_bridge.dart';
 import 'package:luminous/core/widgets/common/dialog/icon_picker_sheet.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/settings/utils/version_check.dart';
+import 'package:luminous/features/settings/domain/services/version_check.dart';
 
 void main() {
   group('compareSemver', () {

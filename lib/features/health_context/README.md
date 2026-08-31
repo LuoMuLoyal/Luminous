@@ -70,7 +70,7 @@ Left 投影为 `AsyncValue.error`）。
   `data/providers/today_suggestion.dart`
 - **medicine** — `data/providers/workspace.dart`、`data/repositories/lucent_workspace.dart`
   （依赖 repository 接口）、reminder 表单/列表（form_body / rows / edit / reminders /
-  reminder_formatters）、`medicine_detail.dart`
+  reminder_formatters）、`pages/detail.dart`
 - **mine** — 档案编辑页（profile_edit / allergy_edit / condition_edit /
   current_medicine_edit）、`health_edit_forms.dart`、`health_enum_l10n.dart`、
   `sections/archive.dart`（含 unit_conversion）、`data/repositories/lucent.dart`

@@ -91,6 +91,9 @@ flutter test
 5. **Keep business words and implementation qualifiers** (`session`, `lucent`, `remote`, `mock`).
 6. **Class names are unaffected** — only file names change.
 7. **Test files mirror source** with `_test.dart` suffix.
+8. **Directory file-count cap** — a directory holding more than 10 direct source files
+   (generated files excluded) should be split into subdirectories; exemptions must be
+   recorded in the migration log.
 
 ## State Management
 
