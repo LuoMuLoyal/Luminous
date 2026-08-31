@@ -52,7 +52,8 @@ flutter test integration_test/<scenario>_e2e_test.dart   # 单个 E2E 场景
 dart scripts/arb_tools.dart merge                # 分片 ARB 合并(l10n 变更后)
 flutter gen-l10n                                 # ARB 合并后生成 Dart 本地化代码
 dart run scripts/bootstrap_generated_sources.dart        # 生成物准备(全新 clone/ARB/契约变更后必跑)
-dart run scripts/run_daily_checks.dart           # 仓库安全级检查(analyze+test+文档)
+dart run scripts/generate_docs.dart               # 再生成 reference/generated 清单(token/路由/feature 变更后)
+dart run scripts/run_daily_checks.dart           # 仓库安全级检查(analyze+test+文档+生成文档新鲜度)
 dart run scripts/run_fullstack_checks.dart       # 全栈检查(需 Lucent 运行时)
 dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(--verify 全量治理)
 ```
@@ -195,4 +196,8 @@ Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
   working code.
 - Do not touch unrelated dirty or untracked files in sibling projects.
 - Do not hand-edit generated files (`lib/l10n/app_localizations*.dart`,
-  `generated/lucent_api/**`, merged `app_*.arb`).
+`generated/lucent_api/**`, merged `app_*.arb`, `docs/reference/generated/**`).
+- Generated docs follow the region convention: generators rewrite only the
+`<!-- gen:<name>:start/end -->` block; content outside the region is handwritten
+and never overwritten. Regenerate with `dart run scripts/generate_docs.dart`.
+Stale generated docs fail `run_daily_checks` and CI.

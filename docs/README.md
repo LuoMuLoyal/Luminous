@@ -22,6 +22,7 @@ docs/ 的唯一索引:只回答「去哪找什么」。阅读规则与文档规�
 - [[OpenApi_Client]] — API 客户端合同规则(reference/)
 - [[Glossary]] — 术语表(reference/)
 - [[reference/adr/README|ADR]] — 架构决策记录,存量只读(reference/adr/)
+- generated/ — 机器生成清单(design tokens / routes / features),禁手编,变更由 CI diff 校验(reference/generated/)
 
 - [[add-new-feature]] — 新建 feature(howto/)
 - [[add-localization]] — 新增文案(howto/)

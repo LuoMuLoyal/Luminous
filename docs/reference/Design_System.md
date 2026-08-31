@@ -64,7 +64,7 @@ updated: 2026-08-31
 - 圆角（2026-08-30 起）：`RadiusTokens` 已退役，统一使用 Forui `context.theme.style.borderRadius.*`（`FBorderRadius` scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。需要裸 `double` 时用 `.xxx.topLeft.x`，需要 `Radius` 时用 `.xxx.topLeft`。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
-- `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size：xs=12, sm=16, md=20, lg=24, xl=28, xl2=32, xl3=48, xl4=64（`level1`~`level8` 为等价别名）。原 level5=32 已拆分为 xl=28（suggestion card）和 xl2=32（avatar/hero）。
+- `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size（`xs`~`xl4`，`level1`~`level8` 为等价别名；全量值见生成的 [token 清单](generated/design-tokens.md)）。原 level5=32 已拆分为 xl=28（suggestion card）和 xl2=32（avatar/hero）。
 - `LucideIconBridge`（`lucide_icon_bridge.dart`，generated）提供 name→IconData 正查 (`resolve`) 和 IconData→name 反查 (`nameOf`)。反查使用预计算 `_reverseMap`（O(1)），而非每次 keystroke O(N) 扫描。
 - `ElevationTokens`（`elevation.dart`）提供 `raised(FColors)` / `glow(Color)` / `shadowColor(FColors)` 方法。
 - `GradientTokens`（`gradient.dart`）提供 `semanticFill(SemanticColorPalette)` / `tintFade(Color, Color)` 两个命名渐变模式；禁止内联 `LinearGradient`，必须走 token。
@@ -86,8 +86,7 @@ updated: 2026-08-31
 
 ## 间距与布局
 
-- 间距使用 `Spacing` token（xs=4, sm=6, md=10, lg=14, xl=20, xl2=28, xl3=36, xl4=44,
-   xl5=56, xl6=72, xl7=96, xl8=128；`level1`~`level12` 为等价别名）。
+- 间距使用 `Spacing` token（语义别名 `xs`~`xl8` 为主命名，`level1`~`level12` 为等价别名；全量值见生成的 [token 清单](generated/design-tokens.md)）。
 - 硬编码像素值正被项目范围地替换为 token 引用，即使这些 token 值本身在向 Forui 靠拢。
 - 断点引用 `Breakpoints` 常量；不出现硬编码 `600`。
 - 响应式尺寸 helper 位于 `lib/core/design/layout/responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart

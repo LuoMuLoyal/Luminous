@@ -55,6 +55,9 @@ jobs:
       - name: Compile drift web worker
         run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
+      - name: Verify generated docs
+        run: dart run scripts/generate_docs.dart --check
+
       - name: Analyze
         run: flutter analyze
 

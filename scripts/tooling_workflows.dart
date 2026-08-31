@@ -34,6 +34,16 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   );
   stdout.writeln('');
 
+  // Generated reference docs (design tokens / routes / features) must be
+  // fresh — regenerating must produce no diff.
+  await runLoggedCommand(
+    'dart',
+    ['run', 'scripts/generate_docs.dart', '--check'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run scripts/generate_docs.dart --check',
+  );
+  stdout.writeln('');
+
   await bootstrapGeneratedSources(context, openApiPath: openApiPath);
   stdout.writeln('');
 
