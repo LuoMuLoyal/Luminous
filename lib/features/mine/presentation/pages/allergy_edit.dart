@@ -19,7 +19,7 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/features/mine/presentation/utils/health_enum_l10n.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/mine_edit_form_loading.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/edit_form_loading.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AllergyEditPage extends HookConsumerWidget {

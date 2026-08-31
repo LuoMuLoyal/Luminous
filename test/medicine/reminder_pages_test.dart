@@ -19,7 +19,7 @@ import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
-import 'package:luminous/features/medicine/presentation/pages/medicine_detail.dart';
+import 'package:luminous/features/medicine/presentation/pages/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/edit.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';

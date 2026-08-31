@@ -13,7 +13,7 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
-import 'package:luminous/features/medicine/presentation/pages/medicine_detail.dart';
+import 'package:luminous/features/medicine/presentation/pages/detail.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

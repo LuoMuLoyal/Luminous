@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/completed_actions.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/key_changes.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/next_step.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/review_history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/what_happened.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

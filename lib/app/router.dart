@@ -20,9 +20,9 @@ import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/routes.dart'
     as record_routes;
 import 'package:luminous/features/review/presentation/pages/clinic_summary_shared.dart';
+import 'package:luminous/features/review/presentation/pages/detail.dart';
 import 'package:luminous/features/review/presentation/pages/legacy_dashboard_compat.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
-import 'package:luminous/features/review/presentation/pages/review_detail.dart';
 import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
     as settings_routes;

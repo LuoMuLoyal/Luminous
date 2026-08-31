@@ -5,7 +5,7 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/add_to_box.dart';
-import 'package:luminous/features/search/presentation/widgets/views/view.dart';
+import 'package:luminous/features/search/presentation/widgets/views/content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SearchPage extends ConsumerWidget {

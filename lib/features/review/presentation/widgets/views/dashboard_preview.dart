@@ -3,7 +3,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/export.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/review_preview_locked.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/preview_locked.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/trend.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/l10n/app_localizations.dart';

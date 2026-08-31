@@ -13,7 +13,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
-import 'package:luminous/features/review/presentation/pages/review_detail.dart';
+import 'package:luminous/features/review/presentation/pages/detail.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
