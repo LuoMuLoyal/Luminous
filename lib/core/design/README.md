@@ -6,7 +6,7 @@ design 层集中存放全部设计 token（颜色/间距/图标/圆角/字体/�
 是 Forui-led 主题体系在代码侧的"执行层"。业务代码一律通过本层取 token，不在 widget 内
 内联裸数值或临时 `LinearGradient`。圆角与字体不在此层定义，直接取 Forui 主题（见下）。
 
-与 `docs/02-reference/Design_System.md` 互补：本 README 面向**代码阅读者**（文件清单、
+与 `docs/reference/Design_System.md` 互补：本 README 面向**代码阅读者**（文件清单、
 类名、取法）；该文档面向**架构理解者**（token 演进历史、主题族策略、Shell chrome 决策）。
 
 ## 目录文件清单

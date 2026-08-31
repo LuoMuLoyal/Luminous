@@ -195,7 +195,7 @@ features/{feature}/
   refactor nearby working code.
 
 For the full architecture reference, see
-[docs/02-reference/architecture.md](docs/02-reference/architecture.md).
+[architecture](docs/reference/architecture.md).
 
 ---
 
@@ -258,11 +258,11 @@ After every code change, update the following:
 
 | Change type                         | Target                                    | Action             |
 | ----------------------------------- | ----------------------------------------- | ------------------ |
-| Any frontend code change            | `docs/03-logs/migration-log/YYYY-MM-DD.md`| Append entry       |
-| Current UI/data/runtime state change| `docs/00-current/Current_State.md`        | Add/update item    |
-| Closing a TODO item                 | `docs/00-current/TODO.md`                 | Delete the line    |
+| Any frontend code change            | `docs/logs/migration-log/YYYY-MM-DD.md`  | Append entry       |
+| Current UI/data/runtime state change| feature `README.md` + tests              | Assert, no narrative |
+| Closing a TODO item                 | `docs/TODO.md`                           | Delete the line    |
 | Finishing a plan section            | `plans/*.md`                              | Delete section     |
-| Visible text / l10n change          | `docs/02-reference/Localization.md`       | Sync update        |
+| Visible text / l10n change          | `docs/reference/Localization.md`         | Sync update        |
 
 Rules:
 

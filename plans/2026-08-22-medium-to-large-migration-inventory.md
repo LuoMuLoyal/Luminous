@@ -48,7 +48,7 @@
 - Modify: `../Lucent/scripts/contract/export-openapi.ts`、`../Lucent/.github/workflows/lucent-ci.yml`
 - Modify: `scripts/bootstrap_generated_sources.dart`、`scripts/verify_lucent_openapi_sync.dart`
 - Modify: `.github/workflows/luminous-ci.yml`、`scripts/tooling_workflows.dart`
-- Inspect/Update: `generated/lucent_api/`、`docs/00-current/Lucent_Contract_Snapshot.md`、`docs/02-reference/how-to/regenerate-api-client.md`
+- Inspect/Update: `generated/lucent_api/`、`docs/archive/2026-08-31-doc-governance/Lucent_Contract_Snapshot.md`(已归档,合同事实由 verify 脚本与 generated 承接)、`docs/howto/regenerate-api-client.md`
 - Test: new contract version, breaking-change and generated-drift tests
 
 - [ ] 在 Lucent 导出 OpenAPI 时生成可追踪的 contract version/commit metadata；客户端构建输入必须能报告自己消费的合同版本。
@@ -90,7 +90,7 @@
 - Create: `scripts/check_architecture_boundaries.dart`
 - Create: `test/scripts/architecture_boundary_check_test.dart`
 - Modify: `.github/workflows/luminous-ci.yml`、`scripts/tooling_workflows.dart`
-- Update: `docs/02-reference/architecture.md`、`docs/02-reference/Project_Guardrails.md`、`docs/00-current/Project_Governance.md`
+- Update: `docs/reference/architecture.md`、`docs/explanation/Project_Governance.md`(原 Project_Guardrails 已并入 AGENTS 与 OpenApi_Client,归档于 `docs/archive/2026-08-31-doc-governance/`)
 - Inspect: `lib/features/**/data/`、`domain/`、`application/`、`presentation/`
 
 - [ ] 解析 import 的 package path，排除 `generated/`、`*.g.dart`、`*.freezed.dart` 和明确的 platform conditional export。
@@ -108,7 +108,7 @@
 - Modify: `lib/core/config/env_keys.dart`、`lib/core/config/env_reader.dart`
 - Modify: `.env.example`、`README.md`、`scripts/run_fullstack_checks.dart`、`scripts/run_daily_checks.dart`、`scripts/tooling_workflows.dart`
 - Modify: `.github/workflows/luminous-ci.yml`、`.github/workflows/luminous-cd.yml`
-- Update: `README.md`、`docs/02-reference/how-to/run-tests.md`、`docs/02-reference/Project_Guardrails.md`
+- Update: `AGENTS.md`(run-tests 已并入其 Commands 段;原 how-to/run-tests.md 归档于 `docs/archive/2026-08-31-doc-governance/run-tests.md`)
 - Test: `test/core/config/`、script tests and CI dry-run validation
 
 - [ ] 将变量分为 public runtime/build configuration、local developer configuration、E2E credentials、release secrets；E2E email/password 不再和普通 `.env` 示例混为一组。
@@ -126,7 +126,7 @@
 - Modify: `lib/app/bootstrap.dart`、`lib/app/router.dart`、`lib/core/theme/theme.dart`
 - Modify: `lib/core/widgets/`、`lib/core/feedback/`、`lib/core/design/`
 - Modify: feature presentation files with direct `package:flutter/material.dart` or legacy `Icons.*`
-- Update: `docs/02-reference/Design_System.md`、`docs/02-reference/Design_System_Components.md`、`docs/02-reference/Design_System_Migration.md`
+- Update: `docs/reference/Design_System.md`(原 Design_System_Components/Design_System_Migration 已并入或归档于 `docs/archive/2026-08-31-doc-governance/`)
 - Test: affected widget tests, golden/semantics tests where available, architecture check for new legacy imports
 
 - [ ] 先生成保留清单：root `MaterialApp.router`、ThemeData interoperability、第三方组件必需 Material、平台 API 和真正需要的 picker/dialog 分别标注原因；不要用正则把所有 Material 类型替换成 Forui。
@@ -141,7 +141,7 @@
 
 **Files:**
 
-- Update: `docs/02-reference/state-management.md`、ADR-0006 and relevant provider guidance
+- Update: `docs/reference/state-management.md`、ADR-0006 and relevant provider guidance
 - Inspect/Modify: `lib/features/**/data/providers/`、`lib/features/**/presentation/providers/`、`lib/core/providers/`
 - Test: affected provider/controller tests
 
@@ -161,7 +161,7 @@
 - Next batch: `lib/features/record/presentation/widgets/sections/quick_entry_panel.dart`、`lib/features/record/presentation/pages/edit.dart`
 - Later batch: `lib/features/report/presentation/pages/page.dart`、`lib/features/settings/presentation/pages/page.dart`、`lib/features/assistant/presentation/providers/conversation.dart`
 - Tests: matching `test/record/`、`test/report/`、`test/settings/`、`test/assistant/`
-- Update: `docs/00-current/TODO.md`、`docs/02-reference/architecture.md`
+- Update: `docs/TODO.md`、`docs/reference/architecture.md`
 
 - [ ] 先为每个文件画出状态 ownership、IO/use case、view model、sections、dialogs 和 navigation seam；不按固定行数机械切文件。
 - [ ] 把远程/本地编排移到 application/provider，把纯映射/格式化移到 domain 或 feature-local pure service，页面只保留布局、事件触发和生命周期所需逻辑。
@@ -177,7 +177,7 @@
 
 - Modify: `.github/workflows/luminous-ci.yml`、`scripts/tooling_workflows.dart`
 - Create: test/coverage baseline and ratchet helper under `scripts/`
-- Update: `docs/02-reference/how-to/run-tests.md`、`docs/00-current/Project_Governance.md`
+- Update: `AGENTS.md`(测试命令已并入)、`docs/explanation/Project_Governance.md`
 - Test: script tests and representative feature suites
 
 - [ ] 先保存当前 coverage baseline，按 domain pure logic、repository/data、provider/application、widget/integration 分层，不凭空设一个总百分比。
@@ -229,4 +229,4 @@ dart run scripts/run_fullstack_checks.dart
 flutter test integration_test
 ```
 
-计划执行过程中只更新相关当前状态文档和当天 `docs/03-logs/migration-log/YYYY-MM-DD.md`；执行完的计划文件按 Luminous 规则删除，不在计划中留下完成标记。
+计划执行过程中只更新相关活跃文档和当天 `docs/logs/migration-log/YYYY-MM-DD.md`；执行完的计划文件按 Luminous 规则删除，不在计划中留下完成标记。

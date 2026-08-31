@@ -12,7 +12,7 @@
 # - 旁路：SKIP_DOC_CHECK=1
 #
 # glob 规则：* 匹配单层路径，** 匹配多层路径。
-# 归档文档（04-archive/）不参与覆盖映射（历史可追溯，不强制同步）。
+# 归档文档（archive/）不参与覆盖映射（历史可追溯，不强制同步）。
 # 活跃文档 front-matter 中的 status/updated 由 stale 检查消费；status: frozen 豁免新鲜度。
 # 每个 lib/features/* 目录都必须被至少一条规则的 code glob 覆盖
 # （--verify 校验，豁免列表见 doc_coverage.dart 的 exemptFeaturePatterns）。
@@ -43,13 +43,12 @@ rules:
       - GEMINI.md
       - docs/doc-map.yaml
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/Project_Guardrails.md
-      - docs/02-reference/AI_Development_Workflow.md
-      - docs/00-current/Project_Governance.md
+      - docs/explanation/AI_Development_Workflow.md
+      - docs/explanation/Project_Governance.md
     docs_info:
-      - docs/00-current/TODO.md
+      - docs/TODO.md
 
   # ──────────────────────────────────────────────
   # App Shell、路由、桌面外壳
@@ -60,11 +59,11 @@ rules:
       - lib/core/router/**
       - lib/features/shell/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/routing.md
-      - docs/02-reference/architecture.md
-      - docs/02-reference/adr/0002-gorouter-navigation.md
+      - docs/reference/routing.md
+      - docs/reference/architecture.md
+      - docs/reference/adr/0002-gorouter-navigation.md
 
   # ──────────────────────────────────────────────
   # Core — 网络层与 API 客户端
@@ -74,11 +73,11 @@ rules:
       - lib/core/network/**
       - generated/lucent_api/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/data-layer.md
-      - docs/02-reference/OpenApi_Client.md
-      - docs/02-reference/adr/0004-network-layer-separation.md
+      - docs/reference/data-layer.md
+      - docs/reference/OpenApi_Client.md
+      - docs/reference/adr/0004-network-layer-separation.md
 
   # ──────────────────────────────────────────────
   # Core — 设计系统与主题
@@ -88,11 +87,10 @@ rules:
       - lib/core/design/**
       - lib/core/theme/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/Design_System.md
-      - docs/02-reference/Design_System_Components.md
-      - docs/02-reference/Forui_Reference.md
+      - docs/reference/Design_System.md
+      - docs/reference/Forui_Reference.md
 
   # ──────────────────────────────────────────────
   # Core — 本地持久化（Drift）
@@ -101,10 +99,10 @@ rules:
     code:
       - lib/core/database/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/data-layer.md
-      - docs/02-reference/adr/0006-local-persistence-drift.md
+      - docs/reference/data-layer.md
+      - docs/reference/adr/0006-local-persistence-drift.md
 
   # ──────────────────────────────────────────────
   # Core — 错误处理与 Result 类型
@@ -113,9 +111,9 @@ rules:
     code:
       - lib/core/errors/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/adr/0005-result-type-and-error-handling.md
+      - docs/reference/adr/0005-result-type-and-error-handling.md
 
   # ──────────────────────────────────────────────
   # Core — Provider 与状态管理
@@ -124,11 +122,11 @@ rules:
     code:
       - lib/core/providers/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/state-management.md
-      - docs/02-reference/adr/0001-riverpod-state-management.md
-      - docs/02-reference/adr/0003-riverpod-generator-and-auth-guard.md
+      - docs/reference/state-management.md
+      - docs/reference/adr/0001-riverpod-state-management.md
+      - docs/reference/adr/0003-riverpod-generator-and-auth-guard.md
 
   # ──────────────────────────────────────────────
   # Core — 配置与环境变量
@@ -137,7 +135,7 @@ rules:
     code:
       - lib/core/config/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Core — 国际化与 ARB
@@ -148,11 +146,11 @@ rules:
       - lib/l10n/**
       - scripts/arb_tools.dart
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/Localization.md
+      - docs/reference/Localization.md
     docs_info:
-      - docs/02-reference/how-to/add-localization.md
+      - docs/howto/add-localization.md
 
   # ──────────────────────────────────────────────
   # Core — 反馈与通知基础设施
@@ -162,7 +160,7 @@ rules:
       - lib/core/feedback/**
       - lib/core/notifications/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Core — 共享 Widget
@@ -171,9 +169,9 @@ rules:
     code:
       - lib/core/widgets/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/Design_System_Components.md
+      - docs/reference/Design_System.md
 
   # ──────────────────────────────────────────────
   # Core — 工具函数
@@ -182,7 +180,7 @@ rules:
     code:
       - lib/core/utils/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Core — AI 运行时实验 seam
@@ -191,9 +189,9 @@ rules:
     code:
       - lib/core/ai/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/AI_Development_Workflow.md
+      - docs/explanation/AI_Development_Workflow.md
 
   # ──────────────────────────────────────────────
   # Core — 产品测量（产品事件）
@@ -202,9 +200,9 @@ rules:
     code:
       - lib/core/analytics/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/01-product/Product_Safety_Privacy.md
+      - docs/product/Product_Safety_Privacy.md
 
   # ──────────────────────────────────────────────
   # Auth Feature
@@ -213,9 +211,9 @@ rules:
     code:
       - lib/features/auth/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/Localization.md
+      - docs/reference/Localization.md
 
   # ──────────────────────────────────────────────
   # Today Feature
@@ -224,9 +222,9 @@ rules:
     code:
       - lib/features/today/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/01-product/Product_AI_Design.md
+      - docs/product/Product_MVP_Scope.md
 
   # ──────────────────────────────────────────────
   # Record Feature
@@ -235,7 +233,7 @@ rules:
     code:
       - lib/features/record/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Medicine Feature
@@ -244,7 +242,7 @@ rules:
     code:
       - lib/features/medicine/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Review Feature（2026-08-27 由 report 改名）
@@ -253,7 +251,7 @@ rules:
     code:
       - lib/features/review/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Mine Feature
@@ -262,7 +260,7 @@ rules:
     code:
       - lib/features/mine/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Settings Feature
@@ -271,7 +269,7 @@ rules:
     code:
       - lib/features/settings/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Health Context Feature
@@ -280,7 +278,7 @@ rules:
     code:
       - lib/features/health_context/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Health Data Feature（健康指标实体/同步）
@@ -289,9 +287,9 @@ rules:
     code:
       - lib/features/health_data/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/data-layer.md
+      - docs/reference/data-layer.md
 
   # ──────────────────────────────────────────────
   # Health Event Feature（健康事件数据）
@@ -300,9 +298,9 @@ rules:
     code:
       - lib/features/health_event/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/data-layer.md
+      - docs/reference/data-layer.md
 
   # ──────────────────────────────────────────────
   # Notification Feature
@@ -311,7 +309,7 @@ rules:
     code:
       - lib/features/notification/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Assistant Feature
@@ -320,10 +318,10 @@ rules:
     code:
       - lib/features/assistant/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/01-product/Product_AI_Design.md
-      - docs/02-reference/AI_Development_Workflow.md
+      - docs/product/Product_MVP_Scope.md
+      - docs/explanation/AI_Development_Workflow.md
 
   # ──────────────────────────────────────────────
   # Legal Feature
@@ -332,7 +330,7 @@ rules:
     code:
       - lib/features/legal/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Search Feature
@@ -341,7 +339,7 @@ rules:
     code:
       - lib/features/search/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Scan Feature（药品拍照/条码识别）
@@ -350,7 +348,7 @@ rules:
     code:
       - lib/features/scan/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Support Feature（帮助/关于元数据）
@@ -359,4 +357,4 @@ rules:
     code:
       - lib/features/support/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md

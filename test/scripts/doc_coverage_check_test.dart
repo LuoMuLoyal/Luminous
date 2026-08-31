@@ -14,8 +14,8 @@ rules:
       - lib/features/auth/**
       - lib/app/router.dart
     docs_required:
-      - docs/00-current/Current_State.md
-      - docs/02-reference/routing.md
+      - docs/explanation/Project_Governance.md
+      - docs/reference/routing.md
 ''');
 
       expect(config.rules, hasLength(1));
@@ -27,8 +27,8 @@ rules:
       expect(
         config.rules.single.requiredDocs,
         equals([
-          'docs/00-current/Current_State.md',
-          'docs/02-reference/routing.md',
+          'docs/explanation/Project_Governance.md',
+          'docs/reference/routing.md',
         ]),
       );
       expect(config.rules.single.anyOfDocs, isEmpty);
@@ -42,25 +42,23 @@ rules:
     code:
       - lib/core/network/**
     docs_required:
-      - docs/03-logs/migration-log/*.md
+      - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/02-reference/data-layer.md
-      - docs/02-reference/OpenApi_Client.md
+      - docs/reference/data-layer.md
+      - docs/reference/OpenApi_Client.md
     docs_info:
-      - docs/00-current/Runtime_Snapshot.md
+      - docs/TODO.md
 ''');
 
       expect(config.rules, hasLength(1));
       expect(config.rules.single.requiredDocs, [
-        'docs/03-logs/migration-log/*.md',
+        'docs/logs/migration-log/*.md',
       ]);
       expect(config.rules.single.anyOfDocs, [
-        'docs/02-reference/data-layer.md',
-        'docs/02-reference/OpenApi_Client.md',
+        'docs/reference/data-layer.md',
+        'docs/reference/OpenApi_Client.md',
       ]);
-      expect(config.rules.single.infoDocs, [
-        'docs/00-current/Runtime_Snapshot.md',
-      ]);
+      expect(config.rules.single.infoDocs, ['docs/TODO.md']);
     });
   });
 
@@ -71,8 +69,8 @@ rules:
           name: 'auth',
           codePatterns: ['lib/features/auth/**'],
           requiredDocs: [
-            'docs/00-current/Current_State.md',
-            'docs/02-reference/Localization.md',
+            'docs/explanation/Project_Governance.md',
+            'docs/reference/Localization.md',
           ],
         ),
       ]);
@@ -80,13 +78,13 @@ rules:
       final report = buildDocCoverageReport(
         config: config,
         changedFiles: ['lib/features/auth/presentation/login_page.dart'],
-        documentedFiles: ['docs/00-current/Current_State.md'],
+        documentedFiles: ['docs/explanation/Project_Governance.md'],
       );
 
       expect(report.hasWarnings, isTrue);
       expect(report.matchedRules, hasLength(1));
       expect(report.matchedRules.single.missingRequired, [
-        'docs/02-reference/Localization.md',
+        'docs/reference/Localization.md',
       ]);
     });
 
@@ -95,10 +93,10 @@ rules:
         DocCoverageRule(
           name: 'record',
           codePatterns: ['lib/features/record/**'],
-          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+          requiredDocs: ['docs/logs/migration-log/*.md'],
           anyOfDocs: [
-            'docs/00-current/Active_UI_Record.md',
-            'docs/00-current/Active_Mobile_UI.md',
+            'docs/reference/routing.md',
+            'docs/reference/state-management.md',
           ],
         ),
       ]);
@@ -106,14 +104,14 @@ rules:
       final report = buildDocCoverageReport(
         config: config,
         changedFiles: ['lib/features/record/presentation/page.dart'],
-        documentedFiles: ['docs/03-logs/migration-log/2026-08-02.md'],
+        documentedFiles: ['docs/logs/migration-log/2026-08-02.md'],
       );
 
       expect(report.hasWarnings, isTrue);
       expect(report.matchedRules.single.missingRequired, isEmpty);
       expect(report.matchedRules.single.missingAnyOf, [
-        'docs/00-current/Active_UI_Record.md',
-        'docs/00-current/Active_Mobile_UI.md',
+        'docs/reference/routing.md',
+        'docs/reference/state-management.md',
       ]);
     });
 
@@ -122,10 +120,10 @@ rules:
         DocCoverageRule(
           name: 'record',
           codePatterns: ['lib/features/record/**'],
-          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+          requiredDocs: ['docs/logs/migration-log/*.md'],
           anyOfDocs: [
-            'docs/00-current/Active_UI_Record.md',
-            'docs/00-current/Active_Mobile_UI.md',
+            'docs/reference/routing.md',
+            'docs/reference/state-management.md',
           ],
         ),
       ]);
@@ -134,8 +132,8 @@ rules:
         config: config,
         changedFiles: ['lib/features/record/presentation/page.dart'],
         documentedFiles: [
-          'docs/03-logs/migration-log/2026-08-02.md',
-          'docs/00-current/Active_UI_Record.md',
+          'docs/logs/migration-log/2026-08-02.md',
+          'docs/reference/routing.md',
         ],
       );
 
@@ -148,22 +146,20 @@ rules:
         DocCoverageRule(
           name: 'core-config',
           codePatterns: ['lib/core/config/**'],
-          requiredDocs: ['docs/03-logs/migration-log/*.md'],
-          infoDocs: ['docs/00-current/Runtime_Snapshot.md'],
+          requiredDocs: ['docs/logs/migration-log/*.md'],
+          infoDocs: ['docs/TODO.md'],
         ),
       ]);
 
       final report = buildDocCoverageReport(
         config: config,
         changedFiles: ['lib/core/config/feature_flags.dart'],
-        documentedFiles: ['docs/03-logs/migration-log/2026-08-02.md'],
+        documentedFiles: ['docs/logs/migration-log/2026-08-02.md'],
       );
 
       expect(report.hasWarnings, isFalse);
       expect(report.hasInfos, isTrue);
-      expect(report.matchedRules.single.missingInfo, [
-        'docs/00-current/Runtime_Snapshot.md',
-      ]);
+      expect(report.matchedRules.single.missingInfo, ['docs/TODO.md']);
     });
 
     test('ignores doc-only changes', () {
@@ -171,14 +167,14 @@ rules:
         DocCoverageRule(
           name: 'routing',
           codePatterns: ['lib/app/router.dart'],
-          requiredDocs: ['docs/02-reference/routing.md'],
+          requiredDocs: ['docs/reference/routing.md'],
         ),
       ]);
 
       final report = buildDocCoverageReport(
         config: config,
-        changedFiles: ['docs/02-reference/routing.md'],
-        documentedFiles: ['docs/02-reference/routing.md'],
+        changedFiles: ['docs/reference/routing.md'],
+        documentedFiles: ['docs/reference/routing.md'],
       );
 
       expect(report.hasWarnings, isFalse);
@@ -192,7 +188,7 @@ rules:
         DocCoverageMatch(
           ruleName: 'auth',
           touchedCodeFiles: ['lib/features/auth/presentation/login_page.dart'],
-          missingRequired: ['docs/00-current/Current_State.md'],
+          missingRequired: ['docs/explanation/Project_Governance.md'],
           missingAnyOf: [],
           missingInfo: [],
         ),
@@ -202,7 +198,7 @@ rules:
 
       expect(output, contains('Documentation coverage warnings'));
       expect(output, contains('auth'));
-      expect(output, contains('docs/00-current/Current_State.md'));
+      expect(output, contains('docs/explanation/Project_Governance.md'));
       expect(output, contains('Required docs not updated'));
     });
 
@@ -212,8 +208,8 @@ rules:
           ruleName: 'record',
           touchedCodeFiles: ['lib/features/record/presentation/page.dart'],
           missingRequired: [],
-          missingAnyOf: ['docs/00-current/Active_UI_Record.md'],
-          missingInfo: ['docs/00-current/Runtime_Snapshot.md'],
+          missingAnyOf: ['docs/reference/routing.md'],
+          missingInfo: ['docs/TODO.md'],
         ),
       ]);
 
@@ -229,7 +225,7 @@ rules:
     test('flags active docs whose updated is older than the threshold', () {
       final report = analyzeDocFreshness(
         contentByPath: {
-          'docs/00-current/TODO.md': '''
+          'docs/TODO.md': '''
 ---
 status: active
 owner: frontend
@@ -243,7 +239,7 @@ updated: 2026-01-01
         today: '2026-08-02',
       );
 
-      expect(report.staleActiveDocs, ['docs/00-current/TODO.md']);
+      expect(report.staleActiveDocs, ['docs/TODO.md']);
       expect(report.staleStatusDocs, isEmpty);
       expect(report.hasWarnings, isTrue);
     });
@@ -251,7 +247,7 @@ updated: 2026-01-01
     test('keeps recently updated active docs fresh', () {
       final report = analyzeDocFreshness(
         contentByPath: {
-          'docs/00-current/TODO.md': '''
+          'docs/TODO.md': '''
 ---
 status: active
 owner: frontend
@@ -272,7 +268,7 @@ updated: 2026-08-02
     test('reports docs marked status stale for archiving', () {
       final report = analyzeDocFreshness(
         contentByPath: {
-          'docs/00-current/Removed.md': '''
+          'docs/reference/Removed.md': '''
 ---
 status: stale
 owner: frontend
@@ -286,14 +282,14 @@ updated: 2026-07-01
         today: '2026-08-02',
       );
 
-      expect(report.staleStatusDocs, ['docs/00-current/Removed.md']);
+      expect(report.staleStatusDocs, ['docs/reference/Removed.md']);
       expect(report.hasWarnings, isTrue);
     });
 
     test('ignores docs without front-matter', () {
       final report = analyzeDocFreshness(
         contentByPath: {
-          'docs/03-logs/migration-log/2026-08-02.md': '# 2026-08-02 迁移日志\n',
+          'docs/logs/migration-log/2026-08-02.md': '# 2026-08-02 迁移日志\n',
         },
         today: '2026-08-02',
       );
@@ -314,7 +310,7 @@ updated: 2026-01-01
 # Doc
 ''';
       final report = analyzeDocFreshness(
-        contentByPath: {'docs/00-current/Desktop_UI.md': frozenDoc},
+        contentByPath: {'docs/reference/Forui_Reference.md': frozenDoc},
         today: '2026-08-02',
       );
 
@@ -335,11 +331,11 @@ updated: 2026-01-01
 # Doc
 ''';
       final report = analyzeDocFreshness(
-        contentByPath: {'docs/00-current/Desktop_UI.md': activeDoc},
+        contentByPath: {'docs/reference/Forui_Reference.md': activeDoc},
         today: '2026-08-02',
       );
 
-      expect(report.staleActiveDocs, ['docs/00-current/Desktop_UI.md']);
+      expect(report.staleActiveDocs, ['docs/reference/Forui_Reference.md']);
       expect(report.hasWarnings, isTrue);
     });
   });
@@ -362,23 +358,20 @@ updated: 2026-01-01
   group('findDocsMissingFrontMatter', () {
     test('flags required docs without complete front-matter', () {
       final missing = findDocsMissingFrontMatter(
-        ['docs/00-current/TODO.md', 'docs/02-reference/routing.md'],
+        ['docs/TODO.md', 'docs/reference/routing.md'],
         {
-          'docs/00-current/TODO.md': '# TODO\n',
-          'docs/02-reference/routing.md': _frontMatter(
-            status: 'active',
-            quadrant: 'reference',
-          ),
+          'docs/TODO.md': _frontMatter(status: 'active', quadrant: 'reference'),
+          'docs/reference/routing.md': '# Routing\n',
         },
       );
 
-      expect(missing, ['docs/00-current/TODO.md']);
+      expect(missing, ['docs/reference/routing.md']);
     });
 
     test('exempts ADRs from the front-matter requirement', () {
       final missing = findDocsMissingFrontMatter(
-        ['docs/02-reference/adr/0001-x.md'],
-        {'docs/02-reference/adr/0001-x.md': '# ADR\n'},
+        ['docs/reference/adr/0001-x.md'],
+        {'docs/reference/adr/0001-x.md': '# ADR\n'},
       );
 
       expect(missing, isEmpty);
@@ -391,14 +384,14 @@ updated: 2026-01-01
         DocCoverageRule(
           name: 'auth',
           codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/03-logs/migration-log/*.md'],
-          anyOfDocs: ['docs/00-current/Missing.md'],
+          requiredDocs: ['docs/logs/migration-log/*.md'],
+          anyOfDocs: ['docs/reference/Missing.md'],
         ),
       ]);
 
-      final orphans = findDocMapOrphans(config, ['docs/00-current/TODO.md']);
+      final orphans = findDocMapOrphans(config, ['docs/TODO.md']);
 
-      expect(orphans, ['auth: "docs/00-current/Missing.md" does not exist']);
+      expect(orphans, ['auth: "docs/reference/Missing.md" does not exist']);
     });
 
     test('skips glob patterns', () {
@@ -406,7 +399,7 @@ updated: 2026-01-01
         DocCoverageRule(
           name: 'auth',
           codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+          requiredDocs: ['docs/logs/migration-log/*.md'],
         ),
       ]);
 
@@ -420,62 +413,54 @@ updated: 2026-01-01
         DocCoverageRule(
           name: 'auth',
           codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/02-reference/how-to/*.md'],
+          requiredDocs: ['docs/howto/*.md'],
         ),
       ]);
 
-      final orphans = findDocMapGlobOrphans(config, [
-        'docs/00-current/TODO.md',
-      ]);
+      final orphans = findDocMapGlobOrphans(config, ['docs/TODO.md']);
 
       expect(orphans, [
-        'auth: glob "docs/02-reference/how-to/*.md" matches no existing file',
+        'auth: glob "docs/howto/*.md" matches no existing file',
       ]);
     });
   });
 
   group('readershipSubjectPaths', () {
     final contentByPath = <String, String>{
-      'docs/00-current/TODO.md': _frontMatter(
-        status: 'active',
-        quadrant: 'reference',
-      ),
-      'docs/01-product/Product_Vision.md': _frontMatter(
+      'docs/TODO.md': _frontMatter(status: 'active', quadrant: 'reference'),
+      'docs/product/Product_Vision.md': _frontMatter(
         status: 'active',
         quadrant: 'explanation',
       ),
-      'docs/02-reference/how-to/run-tests.md': _frontMatter(
+      'docs/howto/add-localization.md': _frontMatter(
         status: 'active',
         quadrant: 'how-to',
       ),
-      'docs/00-current/Desktop_UI.md': _frontMatter(
+      'docs/reference/Forui_Reference.md': _frontMatter(
         status: 'frozen',
         quadrant: 'reference',
       ),
-      'docs/02-reference/adr/0001-x.md': '# ADR\n',
+      'docs/reference/adr/0001-x.md': '# ADR\n',
     };
 
     test('includes active reference/explanation docs', () {
       final subjects = readershipSubjectPaths([
-        'docs/00-current/TODO.md',
-        'docs/01-product/Product_Vision.md',
+        'docs/TODO.md',
+        'docs/product/Product_Vision.md',
       ], contentByPath);
 
       expect(
         subjects,
-        containsAll([
-          'docs/00-current/TODO.md',
-          'docs/01-product/Product_Vision.md',
-        ]),
+        containsAll(['docs/TODO.md', 'docs/product/Product_Vision.md']),
       );
     });
 
     test('excludes frozen, how-to, ADR and README docs', () {
       final subjects = readershipSubjectPaths([
-        'docs/00-current/Desktop_UI.md',
-        'docs/02-reference/how-to/run-tests.md',
-        'docs/02-reference/adr/0001-x.md',
-        'docs/02-reference/how-to/README.md',
+        'docs/reference/Forui_Reference.md',
+        'docs/howto/add-localization.md',
+        'docs/reference/adr/0001-x.md',
+        'docs/howto/README.md',
       ], contentByPath);
 
       expect(subjects, isEmpty);
@@ -488,20 +473,20 @@ updated: 2026-01-01
         DocCoverageRule(
           name: 'record',
           codePatterns: ['lib/features/record/**'],
-          requiredDocs: ['docs/00-current/Active_UI_Record.md'],
+          requiredDocs: ['docs/reference/routing.md'],
         ),
       ]);
 
       final unreferenced = findUnreferencedActiveDocs(
         config: config,
         subjectPaths: [
-          'docs/00-current/Active_UI_Record.md',
-          'docs/00-current/Desktop_UI.md',
+          'docs/reference/routing.md',
+          'docs/reference/Forui_Reference.md',
         ],
-        linkedPaths: <String>{'docs/00-current/Active_UI_Record.md'},
+        linkedPaths: <String>{'docs/reference/routing.md'},
       );
 
-      expect(unreferenced, ['docs/00-current/Desktop_UI.md']);
+      expect(unreferenced, ['docs/reference/Forui_Reference.md']);
     });
 
     test('doc-map listing satisfies the reference requirement', () {
@@ -509,13 +494,13 @@ updated: 2026-01-01
         DocCoverageRule(
           name: 'app-shell',
           codePatterns: ['lib/features/shell/**'],
-          requiredDocs: ['docs/00-current/Desktop_UI.md'],
+          requiredDocs: ['docs/reference/Forui_Reference.md'],
         ),
       ]);
 
       final unreferenced = findUnreferencedActiveDocs(
         config: config,
-        subjectPaths: ['docs/00-current/Desktop_UI.md'],
+        subjectPaths: ['docs/reference/Forui_Reference.md'],
         linkedPaths: <String>{},
       );
 
@@ -529,7 +514,7 @@ updated: 2026-01-01
         DocCoverageRule(
           name: 'auth',
           codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+          requiredDocs: ['docs/logs/migration-log/*.md'],
         ),
       ];
 
@@ -544,7 +529,7 @@ updated: 2026-01-01
         DocCoverageRule(
           name: 'auth',
           codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+          requiredDocs: ['docs/logs/migration-log/*.md'],
         ),
       ];
 
@@ -574,14 +559,14 @@ rules:
     code:
       - lib/features/review/**
     docs_required:
-      - docs/00-current/Current_State.md
+      - docs/explanation/Project_Governance.md
 ''');
 
       final config = loadDocCoverageConfig(configFile);
 
       expect(config.rules.single.name, 'current');
       expect(config.rules.single.requiredDocs, [
-        'docs/00-current/Current_State.md',
+        'docs/explanation/Project_Governance.md',
       ]);
     });
   });

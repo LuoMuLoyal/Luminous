@@ -225,7 +225,7 @@ Map<String, String> _collectDocContents(Directory repoRoot) {
     final relative = file.path
         .replaceAll('\\', '/')
         .substring(docsBase.length + 1);
-    if (relative.startsWith('04-archive/') || relative.startsWith('archive/')) {
+    if (relative.startsWith('archive/')) {
       // Historical records are exempt from freshness advisories.
       continue;
     }
@@ -247,15 +247,15 @@ List<String> _collectDocPaths(Directory docsDir) {
       .toList(growable: false);
 }
 
-/// Vault-relative paths (`00-current/TODO.md`) of every doc linked from a
-/// navigational doc. Migration logs and 04-archive are historical records,
+/// Vault-relative paths (`TODO.md`) of every doc linked from a
+/// navigational doc. Migration logs and archive/ are historical records,
 /// not standing reader channels, so their links do not count.
 Set<String> _collectVaultLinkedPaths(VaultIndex vault) {
   final linked = <String>{};
   for (final file in vault.markdownFiles) {
     final relative = vault.relativePath(file);
-    if (relative.startsWith('03-logs/migration-log/') ||
-        relative.startsWith('04-archive/')) {
+    if (relative.startsWith('logs/migration-log/') ||
+        relative.startsWith('archive/')) {
       continue;
     }
     final content = file.readAsStringSync();
@@ -343,7 +343,7 @@ Future<void> _runVerify(ToolContext context) async {
   );
 
   // (d) Freshness — front-matter `updated` staleness and `status: stale`
-  // archiving, scoped to active docs (04-archive and migration logs are not
+  // archiving, scoped to active docs (archive/ and migration logs are not
   // active, so an archived doc is never told to archive itself). `status:
   // frozen` docs are exempt via [isFrozenDoc].
   final freshness = analyzeDocFreshness(
@@ -359,7 +359,7 @@ Future<void> _runVerify(ToolContext context) async {
   );
   problems.addAll(
     freshness.staleStatusDocs.map(
-      (path) => '$path: status=stale but not archived — move to 04-archive/',
+      (path) => '$path: status=stale but not archived — move to docs/archive/',
     ),
   );
 

@@ -48,4 +48,4 @@ dart scripts/arb_tools.dart split    # app_zh.arb → src/ (re-split, rarely nee
 1. Add a new fragment pair: `src/{name}_zh.arb` and `src/{name}_en.arb`.
 2. Add the fragment name and its key prefix(es) to `fragmentRules` in `scripts/arb_tools.dart`.
 3. Run `dart scripts/arb_tools.dart merge && flutter gen-l10n`.
-4. Update `docs/02-reference/Localization.md` with the new fragment ownership.
+4. Update `docs/reference/Localization.md` with the new fragment ownership.

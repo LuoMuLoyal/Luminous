@@ -11,7 +11,7 @@ Created: 2026-08-16
 
 本计划覆盖后端平台与工程基础设施域:`Lucent/src/admin/`、`src/mail/`、`src/modules/files/`、`src/llm-runtime/`、`src/common/queue/`、`src/common/metrics/`、`src/modules/product-events/`、`src/modules/testing-support/`、`Lucent/deploy/`,以及客户端埋点 `Luminous/lib/core/analytics/` 与四份计划态投入(Worker 分离、rnacos 热配置、SaaS 模块、Node monorepo 合并)、Flutter 3.47 升级、桌面 SaaS 路线。
 
-评估基准:`Luminous/docs/01-product/Product_Vision.md`——手机端是当前首发与验证表面;平台/工程能力按"对 C 端真实用户的支撑作用"与"投入是否与单产品 0.1.0 前阶段匹配"两条线审判。
+评估基准:`Luminous/docs/product/Product_Vision.md`——手机端是当前首发与验证表面;平台/工程能力按"对 C 端真实用户的支撑作用"与"投入是否与单产品 0.1.0 前阶段匹配"两条线审判。
 
 核心结论:已实现的工程底座(F-1~F-7、F-10)全部为真实现、保留不动,本计划几乎不产生代码改造;所有计划态投入(F-11~F-14)统一判定为「阶段错配、暂缓启用」,本计划的主要产出是**写清各自的启用触发条件**;F-15 走保守跟进;F-16 保留方向、暂缓执行。
 

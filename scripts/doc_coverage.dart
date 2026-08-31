@@ -431,18 +431,12 @@ DocFreshnessReport analyzeDocFreshness({
 // --- Verify mode (mirrors Lucent's doc-coverage-lib) --------------------
 
 /// Active docs that MUST stay fresh — everything outside the archive and the
-/// migration logs. Includes both the legacy numbered layout (00-current,
-/// 01-product, ...) and the de-numbered target layout (explanation/, product,
-/// reference/, howto/, logs/) so the Phase-2 rebuild only removes old entries.
+/// migration logs. Paths follow the de-numbered layout (explanation/,
+/// product/, reference/, howto/, logs/) introduced by the 2026-08-31
+/// governance rebuild.
 const List<String> activeDocPatterns = [
   'docs/README.md',
   'docs/TODO.md',
-  'docs/00-current/*.md',
-  'docs/01-product/*.md',
-  'docs/02-reference/*.md',
-  'docs/02-reference/adr/*.md',
-  'docs/02-reference/how-to/*.md',
-  'docs/03-logs/MigrationLog.md',
   'docs/explanation/**/*.md',
   'docs/product/**/*.md',
   'docs/reference/*.md',
@@ -459,10 +453,6 @@ bool isActiveDoc(String path) =>
 /// docs (reference/generated/) are exempt — they carry no hand-written
 /// metadata.
 const List<String> frontMatterRequiredPatterns = [
-  'docs/00-current/*.md',
-  'docs/01-product/*.md',
-  'docs/02-reference/*.md',
-  'docs/02-reference/how-to/*.md',
   'docs/explanation/**/*.md',
   'docs/product/**/*.md',
   'docs/reference/*.md',
@@ -553,14 +543,11 @@ List<String> findDocMapGlobOrphans(
 }
 
 /// Docs with a standing reader channel (README nav / subdir READMEs) —
-/// exempt from the readership check. Includes the legacy and target layouts.
+/// exempt from the readership check.
 const List<String> exemptUnreferencedPatterns = [
-  'docs/02-reference/adr/**',
-  'docs/02-reference/how-to/**',
   'docs/reference/adr/**',
   'docs/reference/generated/**',
   'docs/howto/**',
-  'docs/03-logs/**',
   'docs/logs/**',
 ];
 

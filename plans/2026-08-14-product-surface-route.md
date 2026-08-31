@@ -4,7 +4,7 @@ Created: 2026-08-14
 Updated: 2026-08-16
 
 > 状态:方向已决策(ADR-0012 accepted),0.1.0 后启动执行。背景源于产品定位讨论:项目从大学竞赛产物转向正式产品。
-> 权威决策:`docs/02-reference/adr/0012-desktop-independent-web-product-route.md`(accepted)。
+> 权威决策:`docs/reference/adr/0008-desktop-independent-web-product-route.md`(accepted)。
 > 相关讨论草稿见 `plans/adr-015-luminous-desktop-deprecation-and-monorepo-evolution.md`(临时草稿,非正式 ADR,2026-08-14 讨论记录);
 > 配套后端计划见 `Lucent/plans/2026-08-14-saas-modules-and-node-monorepo.md`。
 > 本文档为方向性计划;具体执行细节在执行前按任务拆分子计划。
@@ -70,9 +70,9 @@ Updated: 2026-08-16
 
 ## 五、文档同步(发布前完成)
 
-- [ ] `docs/00-current/Project_Governance.md` 产品表面一节:桌面端由「冻结」改写为「SaaS 差异化定位」
-- [ ] `docs/00-current/Desktop_UI.md`:状态由 `frozen` 改为记录桌面端新定位与工作台方向
-- [ ] `docs/00-current/Next_Plan.md`:「不要现在开始」清单更新,标注 SaaS/web 路线与依赖
+- [ ] `docs/explanation/Project_Governance.md` 产品表面一节:桌面端由「冻结」改写为「SaaS 差异化定位」
+- [ ] 桌面端新定位落点(原 `Desktop_UI.md` 已归档于 `docs/archive/2026-08-31-doc-governance/`,执行时以 feature README 与测试承接)
+- [ ] 延后清单更新落点(原 `Next_Plan.md` 已归档,现由 `docs/TODO.md` 承接)
 - [ ] 迁移日志:追加本计划修订条目(范围:方向计划,无代码变更)
 
 ## 六、执行顺序

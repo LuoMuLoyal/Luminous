@@ -18,18 +18,18 @@ Current version: **0.1.0-dev**
 
 ## AI Workflow
 
-- Repo AI-development reference: `docs/02-reference/AI_Development_Workflow.md`
+- Repo AI-development reference: `docs/explanation/AI_Development_Workflow.md`
 - Editor-assistant entry: `.github/copilot-instructions.md`
 - Agent entries: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`
 - MCP entry for compatible clients: `.cursor/mcp.json`
 - VS Code project setting enables the Dart/Flutter MCP server: `.vscode/settings.json`
 - Experimental app-side AI runtime seam lives in `lib/core/ai/` and is kept
   separate from Lucent-backed production assistant/report flows.
-- Runtime seam flags are documented in `docs/02-reference/AI_Development_Workflow.md`
+- Runtime seam flags are documented in `docs/explanation/AI_Development_Workflow.md`
 
 ## Baseline
 
-- Tabs: `today / record / medicine / report / mine`（产品方向将用户可见 `report` 改为“回顾”，运行时代码尚未迁移）
+- Tabs: `today / record / medicine / review / mine`
 - Design tokens: color / type / spacing / radius / breakpoints / animation
 - UI framework: [Forui](https://forui.dev)（2026-07 从 Material Design 全量迁移）
 - API client: `generated/lucent_api`
@@ -106,54 +106,35 @@ If you want shorter full-stack commands, copy `.env.example` to `.env`, fill in 
 - `scripts/run_fullstack_checks.dart` now prefers `.env` via `--dart-define-from-file` when that file exists, and still falls back to `.env.fullstack-e2e` for older local setups.
 - Shared repo hooks live in `.githooks/`. After cloning, run `dart run scripts/install_git_hooks.dart` once to point `core.hooksPath` at that folder. Hooks are kept lightweight: `commit-msg` validates Conventional Commits format; `pre-commit` formats staged Dart files and runs `flutter analyze`; `pre-push` runs `flutter analyze` and `dart format --set-exit-if-changed` (full test suite runs in CI).
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a local Android emulator plus a Lucent test runtime started from `../Lucent`, including test database state and cross-repo orchestration.
-- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, first run `pnpm export:openapi` in `../Lucent` to materialize `Lucent/docs/openapi.json`, then run `dart run scripts/bootstrap_generated_sources.dart` in `Luminous`. `dart run scripts/verify_lucent_openapi_sync.dart` remains the lightweight gate for verifying the target OpenAPI path and generated-client layout.
+- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, first run `pnpm export:openapi` in `../Lucent` to materialize `Lucent/docs/reference/generated/openapi.json`, then run `dart run scripts/bootstrap_generated_sources.dart` in `Luminous`. `dart run scripts/verify_lucent_openapi_sync.dart` remains the lightweight gate for verifying the target OpenAPI path and generated-client layout.
 - Hosted CI is self-contained: it bootstraps generated sources (l10n, build_runner, generated API client .g.dart) from tracked files without checking out Lucent. OpenAPI contract sync remains a local maintenance step (`dart run scripts/verify_lucent_openapi_sync.dart`).
 
 ## Docs
 
 Start with [docs/README.md](docs/README.md).
 
-Key shared backend contract docs live in `../Lucent/docs/01-reference/contracts/`:
+Key shared backend contract docs:
 
-- [reminder-contract](../Lucent/docs/01-reference/contracts/reminder-contract.md)
-- [environment-contract](../Lucent/docs/01-reference/contracts/environment-contract.md)
-- [data-sources](../Lucent/docs/01-reference/contracts/data-sources.md)
-- [data-sources-cn-products](../Lucent/docs/01-reference/contracts/data-sources-cn-products.md)
-- [data-sources-drugbank](../Lucent/docs/01-reference/contracts/data-sources-drugbank.md)
-- [data-sources-medical-qa](../Lucent/docs/01-reference/contracts/data-sources-medical-qa.md)
-- [data-sources-food-composition](../Lucent/docs/01-reference/contracts/data-sources-food-composition.md)
-- [assistant-contract](../Lucent/docs/01-reference/contracts/assistant-contract.md)
-- [assistant-capabilities](../Lucent/docs/01-reference/contracts/assistant-capabilities.md)
-- [assistant-rollout](../Lucent/docs/01-reference/contracts/assistant-rollout.md)
-- [assistant-safety](../Lucent/docs/01-reference/contracts/assistant-safety.md)
-- [mine-settings-contract](../Lucent/docs/01-reference/contracts/mine-settings-contract.md)
-- [support-resources-contract](../Lucent/docs/01-reference/contracts/support-resources-contract.md)
-- [app-info-contract](../Lucent/docs/01-reference/contracts/app-info-contract.md)
-- [data-export-contract](../Lucent/docs/01-reference/contracts/data-export-contract.md)
+- [assistant-safety](../Lucent/docs/reference/assistant-safety.md) — AI 助手安全边界（Lucent reference/ 存活）。
+- 其余历史合同文档（reminder/environment/data-sources 系列、assistant-capabilities/rollout、
+  mine-settings/app-info/data-export/support-resources）已归档于 `../Lucent/docs/archive/`；
+  现行合同事实以 Lucent controller/DTO 代码与测试为准。
 
 Key frontend docs:
 
-- [docs/README.md](docs/README.md) — Vault home / navigation map
-- [docs/00-current/Current_State.md](docs/00-current/Current_State.md) — Current implementation state
-- [docs/00-current/Next_Plan.md](docs/00-current/Next_Plan.md) — Next work ordering
-- [docs/00-current/TODO.md](docs/00-current/TODO.md) — Deferred follow-up items
-- [docs/01-product/Product_Vision.md](docs/01-product/Product_Vision.md)
-- [docs/01-product/Product_MVP_Scope.md](docs/01-product/Product_MVP_Scope.md)
-- [docs/01-product/Product_AI_Design.md](docs/01-product/Product_AI_Design.md)
-- [docs/01-product/Product_Insights.md](docs/01-product/Product_Insights.md)
-- [docs/01-product/Product_Safety_Privacy.md](docs/01-product/Product_Safety_Privacy.md)
-- [docs/01-product/Product_Information_Architecture.md](docs/01-product/Product_Information_Architecture.md)
-- [docs/01-product/MVP_Demo_Baseline.md](docs/01-product/MVP_Demo_Baseline.md)
-- [docs/01-product/MVP_Demo_Script.md](docs/01-product/MVP_Demo_Script.md)
-- [docs/02-reference/architecture.md](docs/02-reference/architecture.md) — Unified Flutter architecture
-- [docs/02-reference/state-management.md](docs/02-reference/state-management.md)
-- [docs/02-reference/routing.md](docs/02-reference/routing.md)
-- [docs/02-reference/data-layer.md](docs/02-reference/data-layer.md)
-- [docs/02-reference/adr/](docs/02-reference/adr/) — Architecture Decision Records
-- [docs/02-reference/Design_System.md](docs/02-reference/Design_System.md)
-- [docs/02-reference/Design_System_Components.md](docs/02-reference/Design_System_Components.md)
-- [docs/02-reference/Design_System_Migration.md](docs/02-reference/Design_System_Migration.md)
-- [docs/02-reference/Project_Guardrails.md](docs/02-reference/Project_Guardrails.md)
-- [docs/02-reference/OpenApi_Client.md](docs/02-reference/OpenApi_Client.md)
-- [docs/02-reference/Localization.md](docs/02-reference/Localization.md)
-- [docs/03-logs/MigrationLog.md](docs/03-logs/MigrationLog.md) — Change history index
+- [docs/README.md](docs/README.md) — docs 唯一索引
+- [docs/TODO.md](docs/TODO.md) — Deferred follow-up items
+- [docs/product/Product_Vision.md](docs/product/Product_Vision.md)
+- [docs/product/Product_MVP_Scope.md](docs/product/Product_MVP_Scope.md)
+- [docs/product/Product_Safety_Privacy.md](docs/product/Product_Safety_Privacy.md)
+- [docs/product/Product_Information_Architecture.md](docs/product/Product_Information_Architecture.md)
+- [docs/reference/architecture.md](docs/reference/architecture.md) — Unified Flutter architecture
+- [docs/reference/state-management.md](docs/reference/state-management.md)
+- [docs/reference/routing.md](docs/reference/routing.md)
+- [docs/reference/data-layer.md](docs/reference/data-layer.md)
+- [docs/reference/adr/](docs/reference/adr/) — Architecture Decision Records
+- [docs/reference/Design_System.md](docs/reference/Design_System.md)
+- [docs/reference/Forui_Reference.md](docs/reference/Forui_Reference.md)
+- [docs/reference/OpenApi_Client.md](docs/reference/OpenApi_Client.md)
+- [docs/reference/Localization.md](docs/reference/Localization.md)
+- [docs/logs/MigrationLog.md](docs/logs/MigrationLog.md) — Change history index

@@ -7,7 +7,7 @@ today 是五 tab shell 的**第一个 tab**（路由 `Routes.home`，即 `/`，�
 数据的**展示聚合层**。它本身不持有领域数据，而是编排其他 feature 的 domain/repository 与
 共享 provider 拼出 `TodayDashboard` 和建议流。
 
-UI 行为细节见 `docs/00-current/Active_UI_Today.md`；本 README 只讲结构与聚合模式。
+UI 行为细节以代码与 `flutter test` 为准；本 README 只讲结构与聚合模式。
 
 ## 目录结构
 

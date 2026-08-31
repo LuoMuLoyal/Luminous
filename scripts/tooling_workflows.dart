@@ -372,7 +372,7 @@ Future<void> _checkMigrationLogOverwrite(ToolContext context) async {
     '--diff-filter=M',
   ], workingDirectory: context.repoRoot);
 
-  final logPattern = RegExp(r'^docs/(?:03-logs|logs)/migration-log/.+\.md$');
+  final logPattern = RegExp(r'^docs/logs/migration-log/.+\.md$');
   final logFiles = stagedModified
       .where((f) => logPattern.hasMatch(f.replaceAll('\\', '/')))
       .toList();

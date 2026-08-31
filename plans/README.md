@@ -1,7 +1,7 @@
 # Luminous Plans
 
 Use this directory for active, repo-local execution plans that are too detailed for
-`docs/00-current/Next_Plan.md`.
+`docs/TODO.md`.
 
 ## What Goes Here
 
@@ -11,9 +11,9 @@ Use this directory for active, repo-local execution plans that are too detailed 
 
 ## What Does Not Go Here
 
-- current product facts: put those in `docs/00-current/Current_State.md`
-- next work ordering for the repo as a whole: put that in `docs/00-current/Next_Plan.md`
-- historical change logs: put those in `docs/03-logs/migration-log/YYYY-MM-DD.md`
+- current product facts: no narrative docs — assert in tests, constrain in feature READMEs
+- next work ordering for the repo as a whole: put that in `docs/TODO.md`
+- historical change logs: put those in `docs/logs/migration-log/YYYY-MM-DD.md`
 - completed plans that no longer drive work
 
 ## Naming
@@ -52,7 +52,7 @@ YYYY-MM-DD-short-task-name.md
 
 来源:`research/02-功能盘点/` 十份调研文档(已审阅;内容以各文档「逐功能分析」为准改写,
 速览表/结尾汇总仅作参考)。跨功能域共用的内容只在顺序靠前的计划里写全,靠后的计划只做引用;
-桌面/Web 产品方向以已接受的 ADR-0012 为准：Flutter Desktop 与 PC Flutter Web 停止产品扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动。各计划末尾的「已决边界与延期项」记录对应范围。
+桌面/Web 产品方向以已接受的 ADR-0008 为准：Flutter Desktop 与 PC Flutter Web 停止产品扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动。各计划末尾的「已决边界与延期项」记录对应范围。
 
 已确定事项以 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md) 为准；它优先于各计划中尚未清理的旧「不确定点」表述。2026-08-22 起，十份计划的 0.1.0 前工作视为完成并进入响应契约硬切窗口；保留的 0.1.0 后工作继续执行，但不与本次契约迁移混合。
 

@@ -3,7 +3,7 @@
 > 创建日期：2026-07-29
 > 状态：规划中，尚未开始执行
 > 涉及仓库：Luminous（部分需 Lucent 后端配合）
-> 完成后删除本文件，将稳定决策更新到 `docs/02-reference/architecture.md` 及相关文档。
+> 完成后删除本文件，将稳定决策更新到 `docs/reference/architecture.md` 及相关文档。
 
 ---
 
@@ -563,9 +563,9 @@ iOS Live Activity 需要单独的 Widget Extension target，增加了项目复�
 
 | 文档 | 更新内容 |
 |------|---------|
-| `docs/02-reference/architecture.md` | 新增 `health_data` feature、后台同步模块、推送模块 |
-| `docs/00-current/Active_*.md` | 更新各 feature 的当前状态 |
-| `docs/03-logs/migration-log/YYYY-MM-DD.md` | 追加迁移日志条目 |
+| `docs/reference/architecture.md` | 新增 `health_data` feature、后台同步模块、推送模块 |
+| `lib/features/*/README.md` | 更新各 feature 的当前约束 |
+| `docs/logs/migration-log/YYYY-MM-DD.md` | 追加迁移日志条目 |
 | `pubspec.yaml` | 新增依赖 |
 | `AGENTS.md` | 如有新的 feature 目录约定需更新 |
 | Lucent `docs/environment.md` | FCM/APNs 配置项（Phase 2） |

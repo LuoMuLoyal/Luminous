@@ -9,16 +9,12 @@ void main() {
     test('keeps vault markdown paths only, in vault-relative form', () {
       expect(
         filterChangedDocs([
-          'docs/00-current/TODO.md',
-          'docs/03-logs/migration-log/2026-08-14.md',
+          'docs/TODO.md',
+          'docs/logs/migration-log/2026-08-14.md',
           'lib/features/auth/login_page.dart',
           'docs/README.md',
         ]),
-        [
-          '00-current/TODO.md',
-          '03-logs/migration-log/2026-08-14.md',
-          'README.md',
-        ],
+        ['TODO.md', 'logs/migration-log/2026-08-14.md', 'README.md'],
       );
     });
 

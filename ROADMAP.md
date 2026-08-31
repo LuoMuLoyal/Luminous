@@ -73,7 +73,7 @@ separately after user-value research.
 - Real medicine barcode / OCR / prescription recognition flow
 - Push notification delivery (pending Lucent FCM/APNs)
 - Deferred polish: AI session rename/delete, Markdown template upgrade,
-  visit-summary templating, symptom-medicine timeline (see `docs/00-current/TODO.md`)
+  visit-summary templating, symptom-medicine timeline (see `docs/TODO.md`)
 - Long-term companion gap: ordinary food, water, sleep, and mood records can
   enter context but do not yet consistently trigger proactive analysis; a new
   coverage-aware daily / weekly / monthly insight contract is still required
@@ -91,8 +91,8 @@ distribution, and productization are not current release commitments.
 ## Directions
 
 Current priorities follow
-[Product Vision](docs/01-product/Product_Vision.md) and
-[Product Context](CONTEXT.md). [ADR-0011](docs/02-reference/adr/0011-event-led-sparse-record-product-loop.md)
+[Product Vision](docs/product/Product_Vision.md) and
+[Product Context](CONTEXT.md). [ADR-0007](docs/reference/adr/0007-event-led-sparse-record-product-loop.md)
 is retained as the superseded historical decision for the already implemented
 event-loop program.
 
@@ -113,7 +113,7 @@ and Measurement — revocable field-level-privacy shares, problem-oriented
 summary, privacy-minimal product events with the core loop measured separately
 from exports, admin funnel) are both shipped and verified. The plan files have
 been deleted (实施完毕文件已删); remaining work is tracked in
-[`docs/00-current/TODO.md`](docs/00-current/TODO.md) and the P2/P3 sections
+[`docs/TODO.md`](docs/TODO.md) and the P2/P3 sections
 below. Completion of this program is an implementation fact, not evidence that
 users want an event-centred product.
 
@@ -191,8 +191,8 @@ the full `flutter analyze` + `flutter test` + `dart run scripts/run_daily_checks
 gate before publish.
 
 Current product direction and rationale: see
-[Product Vision](docs/01-product/Product_Vision.md),
-[MVP Scope](docs/01-product/Product_MVP_Scope.md), and
+[Product Vision](docs/product/Product_Vision.md),
+[MVP Scope](docs/product/Product_MVP_Scope.md), and
 [Product Context](CONTEXT.md).
 
 ## Contributing

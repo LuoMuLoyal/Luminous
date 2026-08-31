@@ -39,7 +39,7 @@ F-9 不扩展 Flutter Desktop/PC Flutter Web 产品面；独立 Next.js + Tauri 
   - 城市来源改为用户手动选择(免定位权限),客户端需提供城市选择入口并持久化选择。
   - 消费面:注册为 AI 助手工具(Lucent 侧 tool.service 增加 environment 工具);可选作为记录上下文快照写入;**不做 Today 主卡**。
   - 模块代码与 Luminous 侧环境相关死字符串保留，0.1.0 后随真实数据源装配。
-  - 同步修正 `docs/00-current/Mock_Or_Deferred.md` 中环境上下文连线条目的延后表述。
+  - 同步修正环境上下文连线的延后表述（原 Mock_Or_Deferred 文档已归档于 `docs/archive/2026-08-31-doc-governance/`，现由 `docs/TODO.md` 承接延后清单）。
 - 前后端分工:Lucent——API 客户端、Redis 缓存、snapshot service 重写、助手工具注册;Luminous——城市选择 UI 与持久化、可选记录上下文快照接线;死字符串不删不接。
 - 依赖:高德开放平台 key(运维);助手工具消费面与 assistant 计划(第 5 位)、记录上下文快照与 record 计划(第 6 位)衔接。
 

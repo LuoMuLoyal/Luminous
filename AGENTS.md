@@ -9,7 +9,7 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
 
 ### Standing rules
 
-- **Migration log**: append a dated entry to `docs/03-logs/migration-log/YYYY-MM-DD.md`.
+- **Migration log**: append a dated entry to `docs/logs/migration-log/YYYY-MM-DD.md`.
   **Never overwrite** an existing entry — always append new sections below existing content.
   The pre-commit hook blocks commits where a staged migration-log file has more than 5 deleted
   lines (indicating overwrite rather than append).
@@ -20,11 +20,11 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
   Assertions live in golden/widget tests; per-feature constraints live in that feature's
   `README.md`. Do not create new `Active_*` / `*_Snapshot` style docs.
   （冻结新增手写"现状叙事"文档：断言进测试，约束进 feature README。）
-- **Closing a TODO**: delete the line from `docs/00-current/TODO.md`.
+- **Closing a TODO**: delete the line from `docs/TODO.md`.
 - **Finishing a plan**: delete the entire section from `plans/*.md`.
 - **Doc lifecycle**: active docs older than 90 days without updates, or unreferenced by
   `doc-map.yaml` / doc links, are flagged by `dart run scripts/check_doc_coverage.dart --verify`
-  — review, update, or archive them to `docs/04-archive/`. Docs marked `status: frozen` are
+  — review, update, or archive them to `docs/archive/`. Docs marked `status: frozen` are
   exempt from the 90-day freshness checks.
 - **Front-matter**: every active content doc must carry YAML front-matter
   (`status: active|frozen` / `owner: frontend` / `updated: YYYY-MM-DD`);
@@ -32,7 +32,7 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
   `status: frozen` marks a doc intentionally frozen (desktop/Web-freeze, feature-freeze) —
   exempt from the freshness checks but still must carry valid front-matter; `status: stale`
   means the doc should be archived, not frozen.
-- **Visible text/l10n change**: sync `docs/02-reference/Localization.md`.
+- **Visible text/l10n change**: sync `docs/reference/Localization.md`.
 - Completed items are **deleted** outright — no markers.
 
 ## Stack
@@ -126,8 +126,8 @@ dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(-
 
 ## Design System
 
-Forui-led theming. Details in `docs/02-reference/Design_System.md` and
-`docs/02-reference/Forui_Reference.md`. Reference in `D:\25080\Documents\VSCodeProject\Lumos\forui-docs`
+Forui-led theming. Details in `docs/reference/Design_System.md` and
+`docs/reference/Forui_Reference.md`. Reference in `D:\25080\Documents\VSCodeProject\Lumos\forui-docs`
 
 - `SemanticColor`, `Spacing`, `IconSizeTokens` — design tokens；圆角/字体直接取 Forui `context.theme.style.borderRadius.*` / `context.theme.typography.body/display.*`(via barrel `lib/core/design/design.dart`)。
 - Prefer Forui primitives directly. Don't add thin wrappers that only preset styles;
