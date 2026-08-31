@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-31
 ---
 
 # Design System Migration
@@ -196,7 +196,7 @@ updated: 2026-08-02
 ## Forui 0.25.x 升级（2026-08-06）
 
 - **版本**：`forui: ^0.25.0`，`forui_hooks: ^0.25.0`（要求 Flutter ≥ 3.44.0-0）。8 项 breaking 对项目零命中，`flutter analyze` 一次通过。
-- **图标桥接重生成**：`forui_assets` 升至 0.25.0（Lucide 1.28.0）。`scripts/generate_lucide_bridge.dart` 的默认路径原硬编码 `forui_assets-0.24.0` 会读到旧缓存，已改为动态解析 pub 缓存中最新版本；重新生成 `lib/core/design/lucide_icon_bridge.dart`（1991 → 2003 条，`circle-euro-sign` 改名 `circle-euro`）。
+- **图标桥接重生成**：`forui_assets` 升至 0.25.0（Lucide 1.28.0）。`scripts/generate_lucide_bridge.dart` 的默认路径原硬编码 `forui_assets-0.24.0` 会读到旧缓存，已改为动态解析 pub 缓存中最新版本；重新生成 `lib/core/design/tokens/lucide_icon_bridge.dart`（1991 → 2003 条，`circle-euro-sign` 改名 `circle-euro`）。
 - **toast 测试恢复**：`test/core/feedback/app_toast_test.dart` 新增 FToaster 行为测试；`TODO.md` 删除 FToaster 债务条目。
 - **验证**：`flutter analyze` 零问题；`flutter test` 全量通过。
 

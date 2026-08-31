@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-30
+updated: 2026-08-31
 ---
 
 # Design System
@@ -47,7 +47,7 @@ updated: 2026-08-30
 - `AppShadowTokens` 也已删除且未替换：
   - 其 level1/level2 值先内联，后从 `app_toast.dart`、`app_state_views.dart`、`today_components.dart` 完全移除，
      以匹配更平的 Forui-first 视觉方向。
-  - 后重新引入为 `ElevationTokens`（`lib/core/design/elevation.dart`），提供 `raised` / `glow` / `shadowColor` 三个方法，暗色模式 alpha 自动补偿。
+  - 后重新引入为 `ElevationTokens`（`lib/core/design/tokens/elevation.dart`），提供 `raised` / `glow` / `shadowColor` 三个方法，暗色模式 alpha 自动补偿。
 - 所有 `App*` 前缀已移除（2026-07-09）：
   - `AppSpacingTokens` → `Spacing`
   - `AppRadiusTokens` → `RadiusTokens`（避免与 Flutter `Radius` 冲突；`RadiusTokens` 已于 2026-08-30 退役，圆角统一走 `context.theme.style.borderRadius.*`）
@@ -56,7 +56,7 @@ updated: 2026-08-30
   - `AppBreakpoints` → `Breakpoints`
   - `AppResponsiveSizing` → `ResponsiveSizing`
   - `AppLayoutScale` → `LayoutScale`（值对象）+ `AppLayoutTokens` → `LayoutScaleResolver`（静态工具）
-- `lib/core/design/semantic_color.dart` 中 `SemanticColor` enum：
+- `lib/core/design/color/semantic_color.dart` 中 `SemanticColor` enum：
   - 6 个语义色：`primary`、`success`、`warning`、`info`、`destructive`、`neutral`
   - 每个 `SemanticColor` 解析为 `SemanticColorPalette`（10 个预计算 tone：`solid`/`foreground`/`muted`/`subtle`/`border`/`shimmerBase`/`disabled`/`borderStrong`/`fill`/`fillStrong`）
   - `SemanticColors` 通过 `FColors.extensions` 注入，暗色模式 alpha 自动补偿
@@ -96,15 +96,15 @@ updated: 2026-08-30
    xl5=56, xl6=72, xl7=96, xl8=128；`level1`~`level12` 为等价别名）。
 - 硬编码像素值正被项目范围地替换为 token 引用，即使这些 token 值本身在向 Forui 靠拢。
 - 断点引用 `Breakpoints` 常量；不出现硬编码 `600`。
-- 响应式尺寸 helper 位于 `lib/core/design/responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart
+- 响应式尺寸 helper 位于 `lib/core/design/layout/responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart
    尺寸。
-- 对话框宽度 token 位于 `lib/core/design/layout_scale.dart`：`LayoutScaleResolver.dialogMaxWidth` (360)、
+- 对话框宽度 token 位于 `lib/core/design/layout/layout_scale.dart`：`LayoutScaleResolver.dialogMaxWidth` (360)、
   `wideDialogMaxWidth` (420)、`dialogStandardMaxWidth` (440)。快速记录选择/确认类弹窗统一使用
   `dialogStandardMaxWidth`，避免 `maxWidth: 440` 硬编码分散在多处。
 
 ## Markdown 渲染（2026-08-03 起，2026-08-17 F-4 扩展）
 
-- `lib/core/design/markdown_style.dart` 为全 App Markdown 渲染样式的唯一入口（`MarkdownStyle` 抽象类），所有 `MarkdownBody` 调用点禁止本地 `fromTheme(...).copyWith(...)` 漂移。
+- `lib/core/design/tokens/markdown_style.dart` 为全 App Markdown 渲染样式的唯一入口（`MarkdownStyle` 抽象类），所有 `MarkdownBody` 调用点禁止本地 `fromTheme(...).copyWith(...)` 漂移。
 - 两套预置：
   - `MarkdownStyle.legal(context)` — 正式文档（法律文书详情、帮助页 FAQ）：正文 sm (16px) / 行高 1.7、h1-h3 强层级递减、中性 `SemanticColor.neutral.border(context)` 引用左条。
   - `MarkdownStyle.ai(context, {background, paragraphWeight, emphasizeLinks})` — AI 生成内容（聊天气泡、Today 摘要/建议、报告总结）：正文 sm / 行高 1.6、`SemanticColor.primary.solid(context)` 引用左条与列表 bullet、代码块圆角 + 等宽字体 + 主题背景；`background` 传入气泡/容器底色使代码背景自适配，`paragraphWeight` 支持摘要 w600 / 报告总结 w700 覆盖。

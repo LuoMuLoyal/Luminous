@@ -11,27 +11,27 @@ design 层集中存放全部设计 token（颜色/间距/图标/圆角/字体/�
 
 ## 目录文件清单
 
-17 个文件，全部扁平放置。唯一入口是 barrel `design.dart`：
+16 个文件，按 `color/`、`tokens/`、`layout/` 三组分组，barrel `design.dart` 留在根：
 
 | 文件 | 内容 |
 |---|---|
-| `design.dart` | barrel — 导出其余 15 个文件 |
-| `spacing.dart` | `Spacing`：12 级间距 token |
-| `icon_size.dart` | `IconSizeTokens`：8 级图标尺寸 token |
-| `semantic_color.dart` | `SemanticColor` enum（6 色）+ `SemanticColorResolution` 解析扩展 |
-| `semantic_color_palette.dart` | `SemanticColorPalette`：单个语义色的 10 tone 值对象 |
-| `semantic_colors.dart` | `SemanticColors`：`ThemeExtension`，注入 `FColors.extensions`，提供 `colors.semantic` 访问 |
-| `surface.dart` | `SurfaceTokens`：scaffold 背景 / 容器边框 |
-| `elevation.dart` | `ElevationTokens`：`raised` / `glow` / `shadowColor` |
-| `gradient.dart` | `GradientTokens`：`semanticFill` / `tintFade` 两个命名渐变 |
-| `motion.dart` | `MotionTokens`（4 条 curve）+ `DurationTokens`（时长） |
-| `breakpoints.dart` | `Breakpoints`：响应式断点常量 |
-| `layout_scale.dart` | `LayoutScale`（值对象）+ `LayoutScaleResolver`（按屏宽解析 + 对话框宽度） |
-| `responsive_sizing.dart` | `ResponsiveSizing`：卡宽/侧栏宽/网格列数/按宽高缩放 |
-| `high_contrast.dart` | `HighContrastColors`：高对比度无障碍覆盖色 |
-| `semantic_icons.dart` | `SemanticIcons`：语义图标注册表（`{域}{语义}` 命名，如 `safetyCaution`） |
-| `markdown_style.dart` | `MarkdownStyle`：`legal` / `ai` 两套 Markdown 样式工厂 |
-| `lucide_icon_bridge.dart` | `LucideIconBridge`：kebab-case 图标名 ↔ `FLucideIcons`（**生成文件**，由 `scripts/generate_lucide_bridge.dart` 生成，**不在 barrel 内**，按需直接 import） |
+| `design.dart` | barrel（根）— 导出其余 15 个文件 |
+| `color/semantic_color.dart` | `SemanticColor` enum（6 色）+ `SemanticColorResolution` 解析扩展 |
+| `color/palette.dart` | `SemanticColorPalette`：单个语义色的 10 tone 值对象 |
+| `color/theme_extension.dart` | `SemanticColors`：`ThemeExtension`，注入 `FColors.extensions`，提供 `colors.semantic` 访问 |
+| `color/high_contrast.dart` | `HighContrastColors`：高对比度无障碍覆盖色 |
+| `tokens/spacing.dart` | `Spacing`：12 级间距 token |
+| `tokens/icon_size.dart` | `IconSizeTokens`：8 级图标尺寸 token |
+| `tokens/semantic_icons.dart` | `SemanticIcons`：语义图标注册表（`{域}{语义}` 命名，如 `safetyCaution`） |
+| `tokens/breakpoints.dart` | `Breakpoints`：响应式断点常量 |
+| `tokens/elevation.dart` | `ElevationTokens`：`raised` / `glow` / `shadowColor` |
+| `tokens/motion.dart` | `MotionTokens`（4 条 curve）+ `DurationTokens`（时长） |
+| `tokens/markdown_style.dart` | `MarkdownStyle`：`legal` / `ai` 两套 Markdown 样式工厂 |
+| `tokens/lucide_icon_bridge.dart` | `LucideIconBridge`：kebab-case 图标名 ↔ `FLucideIcons`（**生成文件**，由 `scripts/generate_lucide_bridge.dart` 生成，**不在 barrel 内**，按需直接 import） |
+| `layout/gradient.dart` | `GradientTokens`：`semanticFill` / `tintFade` 两个命名渐变 |
+| `layout/layout_scale.dart` | `LayoutScale`（值对象）+ `LayoutScaleResolver`（按屏宽解析 + 对话框宽度） |
+| `layout/responsive_sizing.dart` | `ResponsiveSizing`：卡宽/侧栏宽/网格列数/按宽高缩放 |
+| `layout/surface.dart` | `SurfaceTokens`：scaffold 背景 / 容器边框 |
 
 ## Token 体系概览
 
@@ -67,5 +67,5 @@ design 层集中存放全部设计 token（颜色/间距/图标/圆角/字体/�
   每次调用直接传 `context`，不做变量化。
 - 自带 `context` 参数的内嵌闭包（如 `FBadge.raw(builder: (context, style) {...})`）内照常
   直接 `context.theme.*`，不引用外层方法提取的变量，避免取值来源漂移。
-- 业务代码引用图标走 `SemanticIcons`（`lib/core/design/semantic_icons.dart`），不直接散用
+- 业务代码引用图标走 `SemanticIcons`（`lib/core/design/tokens/semantic_icons.dart`），不直接散用
   `FLucideIcons`；`Icons.*` 视为迁移债。

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/breakpoints.dart';
-import 'package:luminous/core/design/spacing.dart';
+import 'package:luminous/core/design/tokens/breakpoints.dart';
+import 'package:luminous/core/design/tokens/spacing.dart';
 
 /// Responsive layout scale resolved from the current screen width.
 ///

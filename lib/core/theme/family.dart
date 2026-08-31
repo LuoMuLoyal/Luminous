@@ -1,8 +1,8 @@
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/elevation.dart';
-import 'package:luminous/core/design/semantic_color_palette.dart';
-import 'package:luminous/core/design/semantic_colors.dart';
-import 'package:luminous/core/design/surface.dart';
+import 'package:luminous/core/design/color/palette.dart';
+import 'package:luminous/core/design/color/theme_extension.dart';
+import 'package:luminous/core/design/layout/surface.dart';
+import 'package:luminous/core/design/tokens/elevation.dart';
 import 'package:material_ui/material_ui.dart';
 
 const AppThemeFamily appDefaultThemeFamily = AppThemeFamily.blue;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:luminous/core/design/semantic_color_palette.dart';
+import 'package:luminous/core/design/color/palette.dart';
 
 /// Gradient token system.
 ///

@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-30
+updated: 2026-08-31
 ---
 
 # Active UI — Record
@@ -277,7 +277,7 @@ Last updated: 2026-08-22 (P1-1 摘要网格与饮水角标接入真实 daily-rec
 ### 常量与 token 统一
 
 - 新增 `lib/features/record/presentation/constants.dart`，定义 `kCalendarMinYear = 2000` 与 `kCalendarMinDate`，替换 `record/presentation/pages/page.dart` 中日历选择器硬编码 `DateTime(2000)`。
-- 快速记录/确认弹窗中 7 处硬编码 `maxWidth: 440` 统一改为 `LayoutScaleResolver.dialogStandardMaxWidth`（`lib/core/design/layout_scale.dart`），涉及 medication/sleep/meal/quick-entry 与水杯自定义量等弹窗。
+- 快速记录/确认弹窗中 7 处硬编码 `maxWidth: 440` 统一改为 `LayoutScaleResolver.dialogStandardMaxWidth`（`lib/core/design/layout/layout_scale.dart`），涉及 medication/sleep/meal/quick-entry 与水杯自定义量等弹窗。
 
 ### 异常日志补齐
 

@@ -8,7 +8,7 @@ import 'package:lucent_api/lucent_api.dart' hide DailyRecordKind, DoseLogStatus;
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client_providers.dart'
     show

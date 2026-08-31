@@ -1,4 +1,4 @@
-// Generates lib/core/design/lucide_icon_bridge.dart from forui_lucide.
+// Generates lib/core/design/tokens/lucide_icon_bridge.dart from forui_lucide.
 //
 // Parses forui_lucide/lib/src/assets.g.dart to build a kebab-case → FLucideIcons
 // mapping so that icon names from elk_icon_picker can be resolved to IconData.
@@ -107,7 +107,7 @@ void main(List<String> args) {
     ..writeln('  static String? nameOf(IconData icon) => _reverseMap[icon];')
     ..writeln('}');
 
-  final outputPath = 'lib/core/design/lucide_icon_bridge.dart';
+  final outputPath = 'lib/core/design/tokens/lucide_icon_bridge.dart';
   File(outputPath).writeAsStringSync(out.toString());
 
   stdout.writeln('Generated $outputPath with ${entries.length} entries.');

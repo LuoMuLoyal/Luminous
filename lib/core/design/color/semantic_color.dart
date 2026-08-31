@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
-import 'semantic_color_palette.dart';
-import 'semantic_colors.dart';
+import 'palette.dart';
+import 'theme_extension.dart';
 
 /// Semantic color token used by domain/data layers to stay theme-agnostic.
 ///

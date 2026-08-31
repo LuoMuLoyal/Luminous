@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
 
-import 'semantic_color.dart';
-import 'spacing.dart';
+import 'package:luminous/core/design/color/semantic_color.dart';
+import 'package:luminous/core/design/tokens/spacing.dart';
 
 /// 统一 Markdown 渲染样式的唯一入口。
 ///

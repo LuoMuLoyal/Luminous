@@ -1,6 +1,6 @@
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/color/semantic_color.dart';
 
 part 'dashboard.freezed.dart';
 

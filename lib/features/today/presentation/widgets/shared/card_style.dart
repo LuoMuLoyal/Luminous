@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/color/semantic_color.dart';
 
 enum TodayCardTone { emphasis, urgent, warning, soft, neutral }
 
