@@ -12,6 +12,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/check_in.dart';
@@ -20,12 +21,16 @@ import 'package:luminous/features/health_event/presentation/widgets/sheets/start
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
+import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
+import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/utils/export_actions.dart';
+import 'package:luminous/features/review/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/features/review/presentation/widgets/dialogs/suggestion_history_detail_sheet.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/suggestion_history.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/more_actions.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/share_management.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
@@ -52,9 +57,14 @@ class ReviewPage extends ConsumerWidget {
   Future<void> _refresh(WidgetRef ref) async {
     ref.invalidate(reviewCurrentProvider);
     ref.invalidate(reviewHistoryProvider);
+    // 建议历史是 fetch 型数据源，纳入下拉刷新；AI 总结卡是用户触发的
+    // 生成结果（生成成本高），保持独立生命周期——invalidate 会清掉已
+    // 生成的摘要迫使用户重新生成，不纳入刷新范围（有意取舍）。
+    ref.invalidate(suggestionHistoryProvider);
     await Future.wait([
       ref.read(reviewCurrentProvider.future).then((_) {}, onError: (_) {}),
       ref.read(reviewHistoryProvider.future).then((_) {}, onError: (_) {}),
+      ref.read(suggestionHistoryProvider.future).then((_) {}, onError: (_) {}),
     ]);
   }
 
@@ -236,6 +246,36 @@ class ReviewPage extends ConsumerWidget {
     );
   }
 
+  /// AI 总结范围切换：7/30 天直接生效；「自定义」先弹日历选区间，取消则
+  /// 保持原范围（不产生“选了自定义却无区间”的死路）。选中的区间写入
+  /// [reviewDashboardSelectedQueryProvider]——该 provider 同时是 legacy
+  /// 报表的日期状态，主路径不装配 legacy 报表，写入无副作用；AI 生成请求
+  /// 从这里读取自定义区间的起止日期。
+  Future<void> _changeAiSummaryRange(
+    BuildContext context,
+    WidgetRef ref,
+    ReviewAiSummaryRange range,
+  ) async {
+    if (range != ReviewAiSummaryRange.custom) {
+      ref.read(reviewAiSummarySelectedRangeProvider.notifier).setRange(range);
+      return;
+    }
+    final picked = await showReviewCalendarPicker(
+      context,
+      selectedQuery: ref.read(reviewDashboardSelectedQueryProvider),
+    );
+    if (picked == null || !context.mounted) return;
+    final startDate = picked.startDate;
+    final endDate = picked.endDate;
+    if (startDate == null || endDate == null) return;
+    ref
+        .read(reviewDashboardSelectedQueryProvider.notifier)
+        .setCustomRange(startDate, endDate);
+    ref
+        .read(reviewAiSummarySelectedRangeProvider.notifier)
+        .setRange(ReviewAiSummaryRange.custom);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
@@ -263,26 +303,16 @@ class ReviewPage extends ConsumerWidget {
         ? ref.watch(reviewAiSummaryControllerProvider(aiSummarySelectedRange!))
         : null;
 
-    // 建议历史 providers——仅登录用户可见。
+    // 建议历史 providers——仅登录用户可见。去重与截断展示由 section 承担，
+    // 这里传去重后的全量列表。
     final suggestionHistoryAsync = canAccessProtectedData
         ? ref.watch(suggestionHistoryProvider)
         : null;
-    final suggestionHistory =
-        suggestionHistoryAsync?.asData?.value?.items
-            .fold<Map<String, TodaySuggestionHistoryItem>>({}, (map, item) {
-              final key = '${item.title}|${item.reason}|${item.type.name}';
-              final existing = map[key];
-              if (existing == null ||
-                  _suggestionLifecycleRank(item.lifecycleState) >
-                      _suggestionLifecycleRank(existing.lifecycleState)) {
-                map[key] = item;
-              }
-              return map;
-            })
-            .values
-            .take(3)
-            .toList(growable: false) ??
-        const <TodaySuggestionHistoryItem>[];
+    final suggestionHistory = canAccessProtectedData
+        ? dedupeTodaySuggestions(
+            suggestionHistoryAsync?.asData?.value?.items ?? const [],
+          )
+        : const <TodaySuggestionHistoryItem>[];
     final isSuggestionHistoryLoading =
         suggestionHistoryAsync?.isLoading ?? false;
 
@@ -336,9 +366,8 @@ class ReviewPage extends ConsumerWidget {
             aiSummaryState: aiSummaryState,
             aiSummarySelectedRange: aiSummarySelectedRange,
             aiSummariesEnabled: aiSummariesEnabled,
-            onAiSummaryRangeChanged: (range) => ref
-                .read(reviewAiSummarySelectedRangeProvider.notifier)
-                .setRange(range),
+            onAiSummaryRangeChanged: (range) =>
+                unawaited(_changeAiSummaryRange(context, ref, range)),
             onGenerateAiSummary: () async {
               await ref
                   .read(
@@ -487,16 +516,21 @@ class _ReportMobileShell extends StatelessWidget {
               sortKey: const OrdinalSortKey(0),
               child: RefreshIndicator(
                 onRefresh: onRefresh,
-                child: ListView(
-                  key: const PageStorageKey<String>('report-mobile-scroll'),
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(
-                    Spacing.level4,
-                    Spacing.level4,
-                    Spacing.level4,
-                    Spacing.level10,
+                // 桌面/平板端约束内容最大宽度，消除宽屏全宽长条；padding
+                // 交由 ListView 自身管理，避免双重水平边距。
+                child: ResponsiveContentFrame(
+                  padding: EdgeInsets.zero,
+                  child: ListView(
+                    key: const PageStorageKey<String>('report-mobile-scroll'),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      Spacing.level4,
+                      Spacing.level4,
+                      Spacing.level4,
+                      Spacing.level10,
+                    ),
+                    children: [child],
                   ),
-                  children: [child],
                 ),
               ),
             ),
@@ -506,12 +540,3 @@ class _ReportMobileShell extends StatelessWidget {
     );
   }
 }
-
-int _suggestionLifecycleRank(TodaySuggestionLifecycleState state) =>
-    switch (state) {
-      TodaySuggestionLifecycleState.active => 3,
-      TodaySuggestionLifecycleState.generated => 2,
-      TodaySuggestionLifecycleState.fading => 1,
-      TodaySuggestionLifecycleState.dismissed => 0,
-      TodaySuggestionLifecycleState.expired => -1,
-    };

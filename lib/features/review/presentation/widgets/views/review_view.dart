@@ -26,7 +26,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// 2. active —— 事件头部提供今日 check-in + 四段；
 /// 3. ended —— 事件头部展示 outcome + 四段；
 /// 4. partial —— 个别段落 unknown，只显示简短缺失原因，无分数/红色告警；
-/// 5. no-event —— 开始观察入口 + 最近事件历史，无事件时轻量解释，不生成周报；
+/// 5. no-event —— 开始观察入口 + 聚合预告卡（五段内容要点），无事件时轻量解释，不生成周报；
 /// 6. error-with-cache —— 刷新失败但保留上次成功数据，顶部轻量提示；
 ///    无缓存的错误在 [StateErrorView] 中给出重试。
 ///
@@ -77,7 +77,9 @@ class ReviewView extends StatelessWidget {
   final ValueChanged<ReviewAiSummaryRange>? onAiSummaryRangeChanged;
   final Future<void> Function()? onGenerateAiSummary;
 
-  /// 建议历史数据与回调。缺省时不渲染建议历史段落。
+  /// 建议历史数据（调用方已按 title|reason|type 去重、保留生命周期最高
+  /// 状态的全量列表）与回调；卡内默认展示前 3 条，超出时提供「查看全部」。
+  /// 缺省时不渲染建议历史段落。
   final List<TodaySuggestionHistoryItem>? suggestionHistory;
   final bool isSuggestionHistoryLoading;
   final ValueChanged<TodaySuggestionHistoryItem>? onSuggestionTap;
@@ -130,30 +132,35 @@ class ReviewView extends StatelessWidget {
           onStartObservation: onStartObservation,
           showStartAction: canAccessProtectedData,
         ),
-        ReviewPreviewLockedSection(
-          icon: SemanticIcons.recordSymptom,
-          title: l10n.reviewPreviewWhatHappenedTitle,
-          body: l10n.reviewPreviewWhatHappenedBody,
-        ),
-        ReviewPreviewLockedSection(
-          icon: SemanticIcons.reportTrend,
-          title: l10n.reviewPreviewKeyChangesTitle,
-          body: l10n.reviewPreviewKeyChangesBody,
-        ),
-        ReviewPreviewLockedSection(
-          icon: SemanticIcons.recordClipboard,
-          title: l10n.reviewPreviewCompletedActionsTitle,
-          body: l10n.reviewPreviewCompletedActionsBody,
-        ),
-        ReviewPreviewLockedSection(
-          icon: SemanticIcons.reportInsight,
-          title: l10n.reviewPreviewNextStepTitle,
-          body: l10n.reviewPreviewNextStepBody,
-        ),
-        ReviewPreviewLockedSection(
-          icon: SemanticIcons.aiEntry,
-          title: l10n.reviewPreviewAiSummaryTitle,
-          body: l10n.reviewPreviewAiSummaryBody,
+        ReviewPreviewOverviewSection(
+          key: const Key('review-preview-overview-card'),
+          items: [
+            (
+              SemanticIcons.recordSymptom,
+              l10n.reviewPreviewWhatHappenedTitle,
+              l10n.reviewPreviewWhatHappenedBody,
+            ),
+            (
+              SemanticIcons.reportTrend,
+              l10n.reviewPreviewKeyChangesTitle,
+              l10n.reviewPreviewKeyChangesBody,
+            ),
+            (
+              SemanticIcons.recordClipboard,
+              l10n.reviewPreviewCompletedActionsTitle,
+              l10n.reviewPreviewCompletedActionsBody,
+            ),
+            (
+              SemanticIcons.reportInsight,
+              l10n.reviewPreviewNextStepTitle,
+              l10n.reviewPreviewNextStepBody,
+            ),
+            (
+              SemanticIcons.aiEntry,
+              l10n.reviewPreviewAiSummaryTitle,
+              l10n.reviewPreviewAiSummaryBody,
+            ),
+          ],
         ),
       ] else ...[
         EventHeaderSection(

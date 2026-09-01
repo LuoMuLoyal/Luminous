@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -427,10 +429,10 @@ void main() {
       expect(find.text(l10n.reviewReviewHistoryFilterAll), findsOneWidget);
       expect(find.text(l10n.reviewReviewStatusActive), findsOneWidget);
       expect(find.text(l10n.reviewReviewStatusEnded), findsOneWidget);
-      // 默认选中「全部」：all 按钮 primary，其余 outline。
-      expect(_filterButtonVariant(tester, 'all'), FButtonVariant.primary);
-      expect(_filterButtonVariant(tester, 'active'), FButtonVariant.outline);
-      expect(_filterButtonVariant(tester, 'ended'), FButtonVariant.outline);
+      // 默认选中「全部」：all chip 选中，其余未选中。
+      expect(_filterChipSelected(tester, 'all'), isTrue);
+      expect(_filterChipSelected(tester, 'active'), isFalse);
+      expect(_filterChipSelected(tester, 'ended'), isFalse);
     });
 
     testWidgets('marks the selected filter as primary', (tester) async {
@@ -444,9 +446,9 @@ void main() {
         ),
       );
 
-      expect(_filterButtonVariant(tester, 'ended'), FButtonVariant.primary);
-      expect(_filterButtonVariant(tester, 'all'), FButtonVariant.outline);
-      expect(_filterButtonVariant(tester, 'active'), FButtonVariant.outline);
+      expect(_filterChipSelected(tester, 'ended'), isTrue);
+      expect(_filterChipSelected(tester, 'all'), isFalse);
+      expect(_filterChipSelected(tester, 'active'), isFalse);
     });
 
     testWidgets('tapping a filter emits the selected status', (tester) async {
@@ -504,74 +506,22 @@ void main() {
 
       await tester.tap(find.byKey(const Key('review-history-item-evt-1')));
       await tester.pumpAndSettle();
-      // 不可点时整行不应被包成 FTappable，也不应抛错或触发任何动作。
-      expect(find.byType(FTappable), findsNothing);
+      // 不可点时历史行不应被包成 FTappable（筛选行自己的 chip 除外），
+      // 也不应抛错或触发任何动作。
+      expect(
+        find.ancestor(
+          of: find.byKey(const Key('review-history-item-evt-1')),
+          matching: find.byType(FTappable),
+        ),
+        findsNothing,
+      );
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('shows load-more button when nextCursor is present', (
+    testWidgets('auto-loads the next page when the trigger becomes visible', (
       tester,
     ) async {
-      await pumpSection(
-        tester,
-        ReviewHistorySection(
-          history: const AsyncValue<ReviewEventPage>.data(
-            ReviewEventPage(
-              items: [
-                ReviewEvent(
-                  id: 'evt-1',
-                  kind: ReviewEventKind.symptom,
-                  title: '头痛观察',
-                  status: ReviewEventStatus.ended,
-                  startedAt: '2026-08-01T00:00:00.000Z',
-                  endedAt: '2026-08-10T00:00:00.000Z',
-                  outcome: ReviewEventOutcome.improved,
-                  currentMedicineIds: [],
-                ),
-              ],
-              total: 25,
-              nextCursor: 'cursor-abc',
-            ),
-          ),
-          onLoadMore: (_) async => const ReviewEventPage(items: [], total: 25),
-        ),
-      );
-
-      expect(find.byKey(const Key('review-history-load-more')), findsOneWidget);
-    });
-
-    testWidgets('does not show load-more when nextCursor is null', (
-      tester,
-    ) async {
-      await pumpSection(
-        tester,
-        ReviewHistorySection(
-          history: AsyncValue<ReviewEventPage>.data(
-            reviewHistoryPage([reviewEventItem(id: 'evt-1', title: '头痛观察')]),
-          ),
-          onLoadMore: (_) async => const ReviewEventPage(items: [], total: 1),
-        ),
-      );
-
-      expect(find.byKey(const Key('review-history-load-more')), findsNothing);
-    });
-
-    testWidgets('does not show load-more without onLoadMore callback', (
-      tester,
-    ) async {
-      await pumpSection(
-        tester,
-        const ReviewHistorySection(
-          history: AsyncValue<ReviewEventPage>.data(
-            ReviewEventPage(items: [], total: 25, nextCursor: 'cursor-abc'),
-          ),
-        ),
-      );
-
-      expect(find.byKey(const Key('review-history-load-more')), findsNothing);
-    });
-
-    testWidgets('appends next page items on load-more tap', (tester) async {
+      final secondPage = Completer<ReviewEventPage>();
       await pumpSection(
         tester,
         ReviewHistorySection(
@@ -595,27 +545,68 @@ void main() {
           ),
           onLoadMore: (cursor) async {
             expect(cursor, 'cursor-1');
-            return ReviewEventPage(
-              items: [reviewEventItem(id: 'evt-2', title: '嗓子疼观察')],
-              total: 3,
-            );
+            return secondPage.future;
           },
         ),
       );
 
-      expect(find.text('头痛观察'), findsOneWidget);
+      // 触发器在首帧被绘制（SingleChildScrollView 下始终可见），帧末
+      // 自动发起加载；下一页未返回前不出现追加内容。
+      await tester.pump();
       expect(find.text('嗓子疼观察'), findsNothing);
 
-      await tester.tap(find.byKey(const Key('review-history-load-more')));
+      secondPage.complete(
+        ReviewEventPage(
+          items: [reviewEventItem(id: 'evt-2', title: '嗓子疼观察')],
+          total: 3,
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('头痛观察'), findsOneWidget);
       expect(find.text('嗓子疼观察'), findsOneWidget);
-      // 下一页无 nextCursor，加载更多按钮消失。
-      expect(find.byKey(const Key('review-history-load-more')), findsNothing);
+      // 下一页无 nextCursor，触发器移除，不再继续加载。
+      expect(find.text(l10n.reviewReviewHistoryLoadMoreFailed), findsNothing);
     });
 
-    testWidgets('shows retry after load-more failure', (tester) async {
+    testWidgets('does not auto-load when nextCursor is null', (tester) async {
+      var loadMoreCalled = false;
+      await pumpSection(
+        tester,
+        ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.data(
+            reviewHistoryPage([reviewEventItem(id: 'evt-1', title: '头痛观察')]),
+          ),
+          onLoadMore: (_) async {
+            loadMoreCalled = true;
+            return const ReviewEventPage(items: [], total: 1);
+          },
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      // 无 nextCursor：不渲染触发器，也不发起加载。
+      expect(loadMoreCalled, isFalse);
+    });
+
+    testWidgets('does not auto-load without onLoadMore callback', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        const ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.data(
+            ReviewEventPage(items: [], total: 25, nextCursor: 'cursor-abc'),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.reviewReviewHistoryLoadMoreFailed), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('shows manual retry after auto-load failure', (tester) async {
       await pumpSection(
         tester,
         ReviewHistorySection(
@@ -641,14 +632,16 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byKey(const Key('review-history-load-more')));
+      // 首帧自动触发加载，失败后转为错误行 + 手动重试（不自动重试，
+      // 避免错误循环）。
       await tester.pumpAndSettle();
 
       expect(find.text(l10n.reviewReviewHistoryLoadMoreFailed), findsOneWidget);
-      // 按钮文案变为重试。
-      final retryButton = find.byKey(const Key('review-history-load-more'));
+      // 重试按钮使用独立 key（自动触发器无按钮）。
+      final retryButton = find.byKey(
+        const Key('review-history-load-more-retry'),
+      );
       expect(retryButton, findsOneWidget);
-      // FButton 内部包装 child 为 Content，用 find.text 验证文案。
       expect(
         find.descendant(
           of: retryButton,
@@ -686,8 +679,12 @@ void main() {
                 ),
               ),
               selectedStatus: status,
-              onLoadMore: (_) async => ReviewEventPage(
-                items: [reviewEventItem(id: 'evt-2', title: '嗓子疼观察')],
+              onLoadMore: (cursor) async => ReviewEventPage(
+                // cursor-1（切换前）返回 evt-2；切换重置后触发器自动重载
+                // cursor-2 返回空页，避免把切换前的追加内容又拉回来。
+                items: cursor == 'cursor-1'
+                    ? [reviewEventItem(id: 'evt-2', title: '嗓子疼观察')]
+                    : const [],
                 total: 3,
               ),
             );
@@ -695,8 +692,7 @@ void main() {
         ),
       );
 
-      // 加载第二页。
-      await tester.tap(find.byKey(const Key('review-history-load-more')));
+      // 加载第二页（滚动到底自动触发）。
       await tester.pumpAndSettle();
       expect(find.text('嗓子疼观察'), findsOneWidget);
 
@@ -713,10 +709,10 @@ void main() {
   });
 }
 
-/// 读取历史筛选按钮当前使用的 [FButtonVariant]。
-FButtonVariant _filterButtonVariant(WidgetTester tester, String key) {
-  final button = tester.widget<FButton>(
+/// 读取历史筛选 chip 的选中态（Semantics.selected）。
+bool _filterChipSelected(WidgetTester tester, String key) {
+  final semantics = tester.widget<Semantics>(
     find.byKey(Key('review-history-filter-$key')),
   );
-  return button.variant;
+  return semantics.properties.selected!;
 }

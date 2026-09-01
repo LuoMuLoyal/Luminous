@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -17,9 +18,10 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// [reviewHistoryStatusProvider] 驱动重新拉取。时间范围**不是** review
 /// list 合同的一部分（合同只有 status/cursor/limit），不提供日期过滤。
 ///
-/// 翻页：当首页 [ReviewEventPage.nextCursor] 非空时，卡片底部渲染「加载更多」
-/// 按钮；点击后通过 [onLoadMore] 回调请求下一页，追加渲染并防重入。筛选切换
-/// 或 DataChangeBus 刷新时重置为第一页。
+/// 翻页：当首页 [ReviewEventPage.nextCursor] 非空时滚动到底自动加载下一页
+/// （列表惰性绘制保证触发器被 paint 即“接近末尾”信号）；加载失败改为
+/// 错误行 + 手动重试（不自动重试，避免错误循环）。追加渲染并防重入，
+/// 筛选切换或 DataChangeBus 刷新时重置为第一页。
 class ReviewHistorySection extends ConsumerStatefulWidget {
   const ReviewHistorySection({
     super.key,
@@ -46,7 +48,7 @@ class ReviewHistorySection extends ConsumerStatefulWidget {
   final ValueChanged<ReviewEvent>? onEventTap;
 
   /// 加载更多回调；传入当前页的 nextCursor，返回下一页。
-  /// 为 null 时不显示「加载更多」按钮（测试/独立使用场景）。
+  /// 为 null 时不渲染自动翻页触发器（测试/独立使用场景）。
   final Future<ReviewEventPage> Function(String cursor)? onLoadMore;
 
   @override
@@ -252,11 +254,17 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                     ],
                     if (canLoadMore) ...[
                       const SizedBox(height: Spacing.level3),
-                      _LoadMoreControl(
-                        loading: _loadingMore,
-                        hasError: _loadMoreError != null,
-                        onLoad: _loadMore,
-                      ),
+                      if (_loadingMore)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: Spacing.level2,
+                          ),
+                          child: Center(child: FProgress()),
+                        )
+                      else if (_loadMoreError != null)
+                        _LoadMoreErrorRow(onRetry: _loadMore)
+                      else
+                        _AutoLoadMoreTrigger(onVisible: _loadMore),
                     ],
                   ],
                 );
@@ -269,49 +277,80 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
   }
 }
 
-class _LoadMoreControl extends StatelessWidget {
-  const _LoadMoreControl({
-    required this.loading,
-    required this.hasError,
-    required this.onLoad,
-  });
+/// 滚动到底自动翻页触发器。
+///
+/// ListView/SliverList 只会 build/layout/paint 视口（含 cacheExtent）内
+/// 的子项——本触发器被 paint 即说明用户已滚到接近列表末尾，此时触发加载。
+/// 正确性由 [_ReviewHistorySectionState._loadMore] 的防重入与迟到请求
+/// 校验保证；加载中触发器被替换为进度条，不会连续重复触发。加载完成后
+/// 若触发器仍在视口内会继续拉取下一页，直到 cursor 为 null（触发器从树
+/// 中移除）。
+class _AutoLoadMoreTrigger extends SingleChildRenderObjectWidget {
+  const _AutoLoadMoreTrigger({required this.onVisible})
+    : super(child: const SizedBox.shrink());
 
-  final bool loading;
-  final bool hasError;
-  final VoidCallback onLoad;
+  final VoidCallback onVisible;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderAutoLoadMoreTrigger(onVisible);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    covariant _RenderAutoLoadMoreTrigger renderObject,
+  ) {
+    renderObject.onVisible = onVisible;
+  }
+}
+
+class _RenderAutoLoadMoreTrigger extends RenderProxyBox {
+  _RenderAutoLoadMoreTrigger(this.onVisible);
+
+  VoidCallback onVisible;
+
+  /// 同一帧只调度一次回调（paint 可能在一帧内多次发生）。
+  bool _scheduled = false;
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    super.paint(context, offset);
+    if (_scheduled) return;
+    _scheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scheduled = false;
+      // 加载中/筛选切换时触发器可能已从树中移除。
+      if (attached) onVisible();
+    });
+  }
+}
+
+/// 加载更多失败行：错误提示 + 手动重试（失败后不自动重试，避免错误循环）。
+class _LoadMoreErrorRow extends StatelessWidget {
+  const _LoadMoreErrorRow({required this.onRetry});
+
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
-    if (loading) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: Spacing.level2),
-        child: Center(child: FProgress()),
-      );
-    }
-
     return Row(
       children: [
-        if (hasError)
-          Expanded(
-            child: Text(
-              l10n.reviewReviewHistoryLoadMoreFailed,
-              style: context.theme.typography.body.xs.copyWith(
-                color: SemanticColor.neutral.solid(context),
-              ),
+        Expanded(
+          child: Text(
+            l10n.reviewReviewHistoryLoadMoreFailed,
+            style: context.theme.typography.body.xs.copyWith(
+              color: SemanticColor.neutral.solid(context),
             ),
-          )
-        else
-          const Spacer(),
+          ),
+        ),
+        const SizedBox(width: Spacing.level3),
         FButton(
-          key: const Key('review-history-load-more'),
+          key: const Key('review-history-load-more-retry'),
           variant: FButtonVariant.outline,
           size: FButtonSizeVariant.sm,
-          onPress: onLoad,
-          child: Text(
-            hasError ? l10n.todayRetryAction : l10n.reviewReviewHistoryLoadMore,
-          ),
+          onPress: onRetry,
+          child: Text(l10n.todayRetryAction),
         ),
       ],
     );
@@ -378,6 +417,17 @@ class _HistoryEventRow extends StatelessWidget {
                 ReviewEventOutcome.unknown => SemanticColor.neutral,
               },
             ),
+          // 可点入详情的行右侧补 chevron 指向性；只读行不加，避免暗示可点。
+          if (onTap != null) ...[
+            const SizedBox(width: Spacing.level2),
+            ExcludeSemantics(
+              child: Icon(
+                SemanticIcons.actionNext,
+                size: IconSizeTokens.level2,
+                color: SemanticColor.neutral.solid(context),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -420,6 +470,8 @@ class _HistoryStatusChip extends StatelessWidget {
 
 /// 历史的 status 轻量筛选行：全部 / 进行中 / 已结束。
 ///
+/// pill chip 风格（选中 primary muted 底），与 AI 范围切换、建议徽标共用
+/// 同一套 pill 视觉语言；旧实现为 FButton outline/primary，按钮意象偏重。
 /// 只做合同内的 status 过滤；时间范围不属于 review list 合同。
 class _StatusFilterRow extends StatelessWidget {
   const _StatusFilterRow({
@@ -445,16 +497,38 @@ class _StatusFilterRow extends StatelessWidget {
       runSpacing: Spacing.level2,
       children: [
         for (final (key, status, label) in options)
-          FButton(
+          Semantics(
             key: Key('review-history-filter-$key'),
-            variant: status == selectedStatus
-                ? FButtonVariant.primary
-                : FButtonVariant.outline,
-            size: FButtonSizeVariant.sm,
-            onPress: onStatusChanged == null
-                ? null
-                : () => onStatusChanged!(status),
-            child: Text(label),
+            selected: status == selectedStatus,
+            button: true,
+            child: FTappable(
+              onPress: onStatusChanged == null
+                  ? null
+                  : () => onStatusChanged!(status),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: status == selectedStatus
+                      ? SemanticColor.primary.muted(context)
+                      : SemanticColor.neutral.muted(context),
+                  borderRadius: context.theme.style.borderRadius.pill,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.level3,
+                    vertical: Spacing.level2,
+                  ),
+                  child: Text(
+                    label,
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: status == selectedStatus
+                          ? SemanticColor.primary.solid(context)
+                          : SemanticColor.neutral.solid(context),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
       ],
     );

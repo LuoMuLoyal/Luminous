@@ -70,7 +70,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                       Text(
                         l10n.reviewAiSummaryTitle,
                         style: typography.body.md.copyWith(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: Spacing.level1),
@@ -81,45 +81,10 @@ class ReviewAiSummarySection extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: Spacing.level3),
-                      Wrap(
-                        spacing: Spacing.level3,
-                        runSpacing: Spacing.level3,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          FSelectGroup<ReviewAiSummaryRange>(
-                            key: const Key('review-ai-summary-range-toggle'),
-                            control: onRangeChanged == null
-                                ? FMultiValueControl.lifted(
-                                    value: {selectedRange},
-                                    onChange: (_) {},
-                                  )
-                                : FMultiValueControl.lifted(
-                                    value: {selectedRange},
-                                    onChange: (selection) {
-                                      final next = selection
-                                          .where((v) => v != selectedRange)
-                                          .firstOrNull;
-                                      if (next != null) {
-                                        onRangeChanged!(next);
-                                      }
-                                    },
-                                  ),
-                            children: [
-                              FSelectGroupItemMixin.radio(
-                                value: ReviewAiSummaryRange.last7Days,
-                                label: Text(l10n.reviewRangeLast7Days),
-                              ),
-                              FSelectGroupItemMixin.radio(
-                                value: ReviewAiSummaryRange.last30Days,
-                                label: Text(l10n.reviewRangeLast30Days),
-                              ),
-                              FSelectGroupItemMixin.radio(
-                                value: ReviewAiSummaryRange.custom,
-                                label: Text(l10n.reviewRangeCustom),
-                              ),
-                            ],
-                          ),
-                        ],
+                      _RangeChipRow(
+                        selectedRange: selectedRange,
+                        onRangeChanged: onRangeChanged,
+                        l10n: l10n,
                       ),
                     ],
                   ),
@@ -204,6 +169,86 @@ class ReviewAiSummarySection extends StatelessWidget {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// AI 范围切换 chip 行：7 天 / 30 天 / 自定义。
+///
+/// 旧实现用 FSelectGroup radio hack 模拟单选切换（视觉是带圆点的选项
+/// 列表），收敛为 pill chip 行；选中态 primary muted 底 + primary solid
+/// 文字，与历史筛选行、建议徽标共用同一套 pill 视觉语言。语义层补充
+/// selected 标记，读屏可感知当前选中范围。
+class _RangeChipRow extends StatelessWidget {
+  const _RangeChipRow({
+    required this.selectedRange,
+    required this.onRangeChanged,
+    required this.l10n,
+  });
+
+  final ReviewAiSummaryRange selectedRange;
+  final ValueChanged<ReviewAiSummaryRange>? onRangeChanged;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      key: const Key('review-ai-summary-range-toggle'),
+      spacing: Spacing.level2,
+      runSpacing: Spacing.level2,
+      children: [
+        for (final (range, label) in <(ReviewAiSummaryRange, String)>[
+          (ReviewAiSummaryRange.last7Days, l10n.reviewRangeLast7Days),
+          (ReviewAiSummaryRange.last30Days, l10n.reviewRangeLast30Days),
+          (ReviewAiSummaryRange.custom, l10n.reviewRangeCustom),
+        ])
+          _RangeChip(
+            label: label,
+            selected: range == selectedRange,
+            onPress: onRangeChanged == null
+                ? null
+                : () => onRangeChanged!(range),
+          ),
+      ],
+    );
+  }
+}
+
+class _RangeChip extends StatelessWidget {
+  const _RangeChip({required this.label, required this.selected, this.onPress});
+
+  final String label;
+  final bool selected;
+  final VoidCallback? onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final tone = selected ? SemanticColor.primary : SemanticColor.neutral;
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: FTappable(
+        onPress: onPress,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: tone.muted(context),
+            borderRadius: context.theme.style.borderRadius.pill,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.level3,
+              vertical: Spacing.level2,
+            ),
+            child: Text(
+              label,
+              style: context.theme.typography.body.xs.copyWith(
+                color: tone.solid(context),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -2,16 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// 建议历史段落：从 Today 域的建议历史数据源拉取，按 title|reason|type
-/// 去重取最高生命周期状态。
+/// 按 title|reason|type 去重建议历史,保留生命周期状态最高的条目。
 ///
-/// 从旧 `ReviewSuggestionHistorySection` 改名而来，装配到 Review 主路径。
-class ReviewSuggestionHistorySection extends StatelessWidget {
+/// 从页面装配层下沉而来:去重归组是本 section 的展示职责,页面只传
+/// 数据源原始列表。
+List<TodaySuggestionHistoryItem> dedupeTodaySuggestions(
+  List<TodaySuggestionHistoryItem> items,
+) {
+  final map = <String, TodaySuggestionHistoryItem>{};
+  for (final item in items) {
+    final key = '${item.title}|${item.reason}|${item.type.name}';
+    final existing = map[key];
+    if (existing == null ||
+        _suggestionLifecycleRank(item.lifecycleState) >
+            _suggestionLifecycleRank(existing.lifecycleState)) {
+      map[key] = item;
+    }
+  }
+  return map.values.toList(growable: false);
+}
+
+int _suggestionLifecycleRank(TodaySuggestionLifecycleState state) =>
+    switch (state) {
+      TodaySuggestionLifecycleState.active => 3,
+      TodaySuggestionLifecycleState.generated => 2,
+      TodaySuggestionLifecycleState.fading => 1,
+      TodaySuggestionLifecycleState.dismissed => 0,
+      TodaySuggestionLifecycleState.expired => -1,
+    };
+
+/// 建议历史卡:数据来自 Today 域的建议历史数据源。
+///
+/// 卡内默认只显示前 [_visibleLimit] 条;数据源超出时标题行提供
+/// 「查看全部 / 收起」就地展开,不再像旧版那样在页面装配层硬编码 take(3)
+/// 截断、导致超出部分永远不可见。
+///
+/// 从旧 `ReviewSuggestionHistorySection` 改名而来,装配到 Review 主路径。
+class ReviewSuggestionHistorySection extends StatefulWidget {
   const ReviewSuggestionHistorySection({
     super.key,
     required this.suggestions,
@@ -20,62 +51,112 @@ class ReviewSuggestionHistorySection extends StatelessWidget {
     this.onSuggestionTap,
   });
 
+  /// 已去重的全量建议列表;卡内按 [_visibleLimit] 截断展示。
   final List<TodaySuggestionHistoryItem> suggestions;
   final AppLocalizations l10n;
   final bool isLoading;
   final ValueChanged<TodaySuggestionHistoryItem>? onSuggestionTap;
 
   @override
+  State<ReviewSuggestionHistorySection> createState() =>
+      _ReviewSuggestionHistorySectionState();
+}
+
+class _ReviewSuggestionHistorySectionState
+    extends State<ReviewSuggestionHistorySection> {
+  static const _visibleLimit = 3;
+
+  bool _showAll = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
+    final l10n = widget.l10n;
+    final typography = context.theme.typography;
+    final hasMore = widget.suggestions.length > _visibleLimit;
+    final visibleSuggestions = _showAll || !hasMore
+        ? widget.suggestions
+        : widget.suggestions.take(_visibleLimit).toList(growable: false);
+
+    return FCard(
       key: const Key('review-suggestion-history-section'),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.reviewSuggestionHistorySectionTitle,
-          style: context.theme.typography.body.md.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: Spacing.level3),
-        const AppDivider(),
-        const SizedBox(height: Spacing.level4),
-        if (isLoading)
-          const _LoadingList()
-        else if (suggestions.isEmpty)
-          _EmptyView(l10n: l10n)
-        else
-          FTileGroup(
-            divider: FItemDivider.full,
-            children: [
-              for (final suggestion in suggestions)
-                FTile(
-                  key: Key('review-suggestion-${suggestion.id}'),
-                  prefix: FAvatar.raw(
-                    child: Icon(_iconForType(suggestion.type), size: 18),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ExcludeSemantics(
+                  child: Icon(
+                    SemanticIcons.reportHistory,
+                    size: Spacing.level5,
+                    color: SemanticColor.primary.solid(context),
                   ),
-                  title: Text(
-                    suggestion.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    suggestion.reason,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  details: Text(_formatTime(context, suggestion.generatedAt)),
-                  suffix: _SuggestionBadge(
-                    lifecycleState: suggestion.lifecycleState,
-                    l10n: l10n,
-                  ),
-                  onPress: onSuggestionTap == null
-                      ? null
-                      : () => onSuggestionTap!(suggestion),
                 ),
-            ],
-          ),
-      ],
+                const SizedBox(width: Spacing.level3),
+                Expanded(
+                  child: Text(
+                    l10n.reviewSuggestionHistorySectionTitle,
+                    style: typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (hasMore)
+                  FButton(
+                    key: const Key('review-suggestion-history-toggle'),
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.sm,
+                    onPress: () => setState(() => _showAll = !_showAll),
+                    child: Text(
+                      _showAll
+                          ? l10n.reviewSuggestionHistoryCollapse
+                          : l10n.reviewSuggestionHistoryViewAll,
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: Spacing.level3),
+            if (widget.isLoading)
+              const _LoadingList()
+            else if (visibleSuggestions.isEmpty)
+              _EmptyView(l10n: l10n)
+            else
+              FTileGroup(
+                divider: FItemDivider.full,
+                children: [
+                  for (final suggestion in visibleSuggestions)
+                    FTile(
+                      key: Key('review-suggestion-${suggestion.id}'),
+                      prefix: FAvatar.raw(
+                        child: Icon(_iconForType(suggestion.type), size: 18),
+                      ),
+                      title: Text(
+                        suggestion.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        suggestion.reason,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      details: Text(
+                        _formatTime(context, suggestion.generatedAt),
+                      ),
+                      suffix: _SuggestionBadge(
+                        lifecycleState: suggestion.lifecycleState,
+                        l10n: l10n,
+                      ),
+                      onPress: widget.onSuggestionTap == null
+                          ? null
+                          : () => widget.onSuggestionTap!(suggestion),
+                    ),
+                ],
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -184,7 +265,7 @@ class _EmptyView extends StatelessWidget {
                 Text(
                   l10n.reviewSuggestionHistoryEmptyTitle,
                   style: typography.body.md.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: Spacing.level1),
