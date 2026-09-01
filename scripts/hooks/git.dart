@@ -1,98 +1,67 @@
 import 'dart:io';
 
-import 'bootstrap_generated_sources.dart';
-import 'tooling_support.dart';
+import '../support.dart';
 
-Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
+Future<void> main(List<String> args) async {
+  final context = ToolContext.fromScript(Platform.script);
+  if (args.isEmpty) {
+    stderr.writeln(
+      'Usage: dart run scripts/hooks/git.dart <install|pre-commit|commit-msg|pre-push> [args]',
+    );
+    exitCode = 64;
+    return;
+  }
+
+  try {
+    switch (args.first) {
+      case 'install':
+        await _installHooks(context);
+      case 'pre-commit':
+        await runPreCommitChecks(context);
+      case 'pre-push':
+        await runPrePushChecks(context);
+      case 'commit-msg':
+        if (args.length < 2) {
+          stderr.writeln(
+            'commit-msg hook requires a commit message file path argument.',
+          );
+          exitCode = 64;
+          return;
+        }
+        validateCommitMessage(args[1]);
+      default:
+        stderr.writeln('Unsupported git hook: ${args.first}');
+        exitCode = 64;
+    }
+  } on ProcessException catch (error) {
+    stderr.writeln(error.message);
+    exitCode = error.errorCode;
+  } on StateError catch (error) {
+    stderr.writeln(error.message);
+    exitCode = 1;
+  }
+}
+
+Future<void> _installHooks(ToolContext context) async {
+  final gitDir = Directory(
+    '${context.repoRoot.path}${Platform.pathSeparator}.git',
+  );
+
+  if (!gitDir.existsSync()) {
+    stderr.writeln('Git repository not found at ${context.repoRoot.path}');
+    exitCode = 1;
+    return;
+  }
+
   await runLoggedCommand(
-    'dart',
-    ['run', 'scripts/check_doc_coverage.dart', '--warning-only'],
+    'git',
+    ['-C', context.repoRoot.path, 'config', 'core.hooksPath', '.githooks'],
     workingDirectory: context.repoRoot,
-    stepName: 'dart run scripts/check_doc_coverage.dart --warning-only',
+    stepName: 'Configure core.hooksPath',
   );
   stdout.writeln('');
-
-  // Full-tree governance check (doc-map references, link integrity,
-  // front-matter, freshness, readership, feature coverage). Blocking —
-  // daily checks keep the per-rule coverage report advisory above, but
-  // structural doc-governance problems fail the run.
-  await runLoggedCommand(
-    'dart',
-    ['run', 'scripts/check_doc_coverage.dart', '--verify'],
-    workingDirectory: context.repoRoot,
-    stepName: 'dart run scripts/check_doc_coverage.dart --verify',
-  );
-  stdout.writeln('');
-
-  // Wikilink / relative-link integrity for the docs vault (blocks on
-  // broken links).
-  await runLoggedCommand(
-    'dart',
-    ['run', 'scripts/check_doc_links.dart'],
-    workingDirectory: context.repoRoot,
-    stepName: 'dart run scripts/check_doc_links.dart',
-  );
-  stdout.writeln('');
-
-  // Generated reference docs (design tokens / routes / features) must be
-  // fresh — regenerating must produce no diff.
-  await runLoggedCommand(
-    'dart',
-    ['run', 'scripts/generate_docs.dart', '--check'],
-    workingDirectory: context.repoRoot,
-    stepName: 'dart run scripts/generate_docs.dart --check',
-  );
-  stdout.writeln('');
-
-  await bootstrapGeneratedSources(context, openApiPath: openApiPath);
-  stdout.writeln('');
-
-  await runLoggedCommand(
-    'flutter',
-    ['analyze'],
-    workingDirectory: context.repoRoot,
-    stepName: 'flutter analyze',
-  );
-  stdout.writeln('');
-
-  // Custom lint rules (observation) — per-rule summary only.
-  await runLoggedCommand(
-    'dart',
-    ['run', 'bin/luminous_lints.dart', '--quiet'],
-    workingDirectory: Directory(
-      '${context.repoRoot.path}${Platform.pathSeparator}'
-      'tool${Platform.pathSeparator}luminous_lints',
-    ),
-    stepName: 'luminous_lints (observation)',
-  );
-  stdout.writeln('');
-
-  await runLoggedCommand(
-    'dart',
-    ['format', '--set-exit-if-changed', 'lib/', 'test/', 'scripts/'],
-    workingDirectory: context.repoRoot,
-    stepName: 'dart format --set-exit-if-changed',
-  );
-  stdout.writeln('');
-
-  await runLoggedCommand(
-    'flutter',
-    ['test', '--coverage'],
-    workingDirectory: context.repoRoot,
-    stepName: 'flutter test --coverage',
-  );
-  stdout.writeln('');
-
-  await runLoggedCommand(
-    'dart',
-    [
-      'run',
-      'scripts/verify_lucent_openapi_sync.dart',
-      if (openApiPath != null) '--openapi=$openApiPath',
-    ],
-    workingDirectory: context.repoRoot,
-    stepName: 'dart run scripts/verify_lucent_openapi_sync.dart',
-  );
+  stdout.writeln('Configured core.hooksPath to .githooks');
+  stdout.writeln('Git hooks are now shared from .githooks/');
 }
 
 Future<void> runPrePushChecks(ToolContext context) async {
@@ -118,9 +87,9 @@ Future<void> runPrePushChecks(ToolContext context) async {
   // fresh — regenerating must produce no diff.
   await runLoggedCommand(
     'dart',
-    ['run', 'scripts/generate_docs.dart', '--check'],
+    ['run', 'scripts/docs/generate.dart', '--check'],
     workingDirectory: context.repoRoot,
-    stepName: 'dart run scripts/generate_docs.dart --check',
+    stepName: 'dart run scripts/docs/generate.dart --check',
   );
   stdout.writeln('');
 
@@ -128,9 +97,9 @@ Future<void> runPrePushChecks(ToolContext context) async {
   // front-matter, freshness, readership, README budget).
   await runLoggedCommand(
     'dart',
-    ['run', 'scripts/check_doc_coverage.dart', '--verify'],
+    ['run', 'scripts/docs/verify.dart', '--verify'],
     workingDirectory: context.repoRoot,
-    stepName: 'dart run scripts/check_doc_coverage.dart --verify',
+    stepName: 'dart run scripts/docs/verify.dart --verify',
   );
   stdout.writeln('');
 
@@ -173,13 +142,13 @@ Future<void> runPreCommitChecks(ToolContext context) async {
   // Bypass with SKIP_DOC_CHECK=1 or `git commit --no-verify`.
   await runLoggedCommand(
     'dart',
-    ['run', 'scripts/check_doc_coverage.dart', '--staged', '--warning-only'],
+    ['run', 'scripts/docs/verify.dart', '--staged', '--warning-only'],
     workingDirectory: context.repoRoot,
     stepName: 'doc-check (report-only)',
   );
   stdout.writeln('');
 
-  // ── Wikilink integrity (blocking) ──────────────────────────────────
+  // ── Link integrity (blocking) ──────────────────────────────────
   // Broken doc links fail the commit regardless of SKIP_DOC_CHECK.
   // --changed scopes the scan to the git change set (full vault fallback
   // when the change set deletes/renames docs) for fast commit feedback.
@@ -189,7 +158,7 @@ Future<void> runPreCommitChecks(ToolContext context) async {
   // already breaks links, so the scan cannot be narrower.
   await runLoggedCommand(
     'dart',
-    ['run', 'scripts/check_doc_links.dart', '--changed'],
+    ['run', 'scripts/docs/links.dart', '--changed'],
     workingDirectory: context.repoRoot,
     stepName: 'doc-links check (changed)',
   );
@@ -344,84 +313,6 @@ void validateCommitMessage(String commitMsgPath) {
   stdout.writeln('✓ $trimmedHeader');
 }
 
-class FullstackOptions {
-  const FullstackOptions({
-    this.deviceId = 'emulator-5554',
-    this.baseUrl = 'http://10.0.2.2:3000',
-    this.email = 'fullstack-record-lane@example.com',
-    this.password = 'RecordLane123',
-    this.recordDate = '2026-06-12',
-    this.defineFile,
-  });
-
-  final String deviceId;
-  final String baseUrl;
-  final String email;
-  final String password;
-  final String recordDate;
-  final String? defineFile;
-}
-
-Future<void> runFullstackChecks(
-  ToolContext context,
-  FullstackOptions options,
-) async {
-  final activeDefineFile = _resolveActiveDefineFile(
-    context.repoRoot,
-    options.defineFile,
-  );
-  final healthUri = Uri.parse('http://127.0.0.1:3000/api/v1/health');
-  const tests = <String>[
-    'integration_test/auth/fullstack_auth_smoke_test.dart',
-    'integration_test/record/fullstack_record_lane_test.dart',
-    'integration_test/record/fullstack_sleep_lane_test.dart',
-    'integration_test/record/fullstack_quick_choice_time_lane_test.dart',
-    'integration_test/app/fullstack_today_report_lane_test.dart',
-  ];
-
-  await runLoggedCommand(
-    'pnpm',
-    ['--dir', context.lucentRoot.path, 'test:runtime:stop'],
-    workingDirectory: context.repoRoot,
-    stepName: 'Start Lucent test runtime',
-  );
-  await runLoggedCommand('pnpm', [
-    '--dir',
-    context.lucentRoot.path,
-    'test:runtime:start',
-  ], workingDirectory: context.repoRoot);
-  stdout.writeln('');
-
-  stdout.writeln('==> Verify Lucent health');
-  await waitForHttpOk(healthUri, timeout: const Duration(seconds: 30));
-  stdout.writeln('');
-
-  final commonArgs = <String>['-d', options.deviceId];
-  if (activeDefineFile != null) {
-    stdout.writeln('==> Use dart defines from $activeDefineFile');
-    commonArgs.add('--dart-define-from-file=$activeDefineFile');
-  } else {
-    commonArgs.addAll([
-      '--dart-define=LUCENT_BASE_URL=${options.baseUrl}',
-      '--dart-define=E2E_LUCENT_BASE_URL=${options.baseUrl}',
-      '--dart-define=E2E_TEST_EMAIL=${options.email}',
-      '--dart-define=E2E_TEST_PASSWORD=${options.password}',
-      '--dart-define=E2E_RECORD_DATE=${options.recordDate}',
-    ]);
-  }
-  stdout.writeln('');
-
-  for (final testFile in tests) {
-    await runLoggedCommand(
-      'flutter',
-      ['test', testFile, ...commonArgs],
-      workingDirectory: context.repoRoot,
-      stepName: 'flutter test $testFile',
-    );
-    stdout.writeln('');
-  }
-}
-
 /// Max deletion lines allowed in a staged migration-log file before blocking.
 const _migrationLogMaxDeletions = 5;
 
@@ -485,28 +376,4 @@ Future<List<String>> _listStagedDartFiles(ToolContext context) async {
   ], workingDirectory: context.repoRoot);
 
   return lines.where((line) => line.endsWith('.dart')).toList(growable: false);
-}
-
-String? _resolveActiveDefineFile(
-  Directory repoRoot,
-  String? explicitDefineFile,
-) {
-  final trimmed = explicitDefineFile?.trim();
-  if (trimmed != null && trimmed.isNotEmpty) {
-    final file = resolveExistingFile(trimmed, repoRoot: repoRoot);
-    if (!file.existsSync()) {
-      throw StateError('Dart define file not found: ${file.path}');
-    }
-    return file.path;
-  }
-
-  final defaultFiles = <String>['.env', '.env.fullstack-e2e'];
-  for (final name in defaultFiles) {
-    final file = File('${repoRoot.path}${Platform.pathSeparator}$name');
-    if (file.existsSync()) {
-      return file.path;
-    }
-  }
-
-  return null;
 }

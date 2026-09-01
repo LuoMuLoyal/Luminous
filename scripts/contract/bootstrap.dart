@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'tooling_support.dart';
+import '../support.dart';
 
 Future<void> main(List<String> args) async {
   final context = ToolContext.fromScript(Platform.script);
@@ -453,7 +453,7 @@ class _ParsedArgs {
 }
 
 const _usage = '''
-Usage: dart run scripts/bootstrap_generated_sources.dart [options]
+Usage: dart run scripts/contract/bootstrap.dart [options]
 
 Options:
   --openapi <path>        Use an explicit Lucent OpenAPI file path.

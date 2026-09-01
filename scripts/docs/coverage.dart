@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'tooling_support.dart';
+import '../support.dart';
 
 class DocCoverageConfig {
   const DocCoverageConfig(this.rules);

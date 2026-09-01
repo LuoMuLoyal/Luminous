@@ -17,7 +17,7 @@
 
 - [ ] `flutter analyze` passes
 - [ ] `flutter test` passes
-- [ ] `dart run tool/run_daily_checks.dart` passes (if applicable)
+- [ ] `dart run scripts/workflows/daily.dart` passes (if applicable)
 - [ ] ARB files changed → ran `flutter gen-l10n`
 - [ ] Lucent API changed → ran `cd generated/lucent_api && dart run build_runner build`
 - [ ] No hardcoded user-visible strings (all text through ARB / l10n)

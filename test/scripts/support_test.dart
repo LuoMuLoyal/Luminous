@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../scripts/tooling_support.dart';
+import '../../scripts/support.dart';
 
 void main() {
   group('resolveRequiredOpenApiFile', () {

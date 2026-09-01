@@ -34,7 +34,7 @@ flutter test
 After cloning, install the shared git hooks once:
 
 ```bash
-dart run scripts/install_git_hooks.dart
+dart run scripts/hooks/git.dart install
 ```
 
 This sets `core.hooksPath` to `.githooks/`. The hooks are kept lightweight to
@@ -45,7 +45,7 @@ avoid slowing down your workflow:
 - **`pre-commit`**: runs `dart format` on staged `.dart` files and `flutter analyze`.
 - **`pre-push`**: runs `flutter analyze` and `dart format --set-exit-if-changed`.
 
-For a full local check, run `dart run scripts/run_daily_checks.dart`.
+For a full local check, run `dart run scripts/workflows/daily.dart`.
 
 ---
 
@@ -111,7 +111,7 @@ The `pre-push` hook runs `flutter analyze` and `dart format --set-exit-if-change
 For a full local check:
 
 ```bash
-dart run scripts/run_daily_checks.dart
+dart run scripts/workflows/daily.dart
 ```
 
 If you changed ARB files:
@@ -119,7 +119,7 @@ If you changed ARB files:
 ```bash
 # CRITICAL: Never edit app_zh.arb / app_en.arb directly.
 # Edit fragment files in lib/l10n/src/ instead, then:
-dart scripts/arb_tools.dart merge
+dart scripts/l10n/arb_tools.dart merge
 flutter gen-l10n
 ```
 
@@ -130,7 +130,7 @@ If Lucent API code changed (cross-repo):
 pnpm export:openapi
 
 # In Luminous:
-dart run scripts/bootstrap_generated_sources.dart
+dart run scripts/contract/bootstrap.dart
 ```
 
 ---
@@ -241,13 +241,13 @@ flutter test integration_test/settings/settings_preferences_e2e_test.dart
 Requires a local Android emulator + running Lucent test runtime:
 
 ```bash
-dart run tool/run_fullstack_checks.dart
+dart run scripts/workflows/fullstack.dart
 ```
 
 ### Daily Checks
 
 ```bash
-dart run scripts/run_daily_checks.dart
+dart run scripts/workflows/daily.dart
 ```
 
 ---
@@ -281,7 +281,7 @@ The API contract source of truth is **Lucent controller/DTO code plus a freshly 
 `Lucent/docs/reference/generated/openapi.json`**. When the backend API changes:
 
 1. In `Lucent`: `pnpm export:openapi`
-2. In `Luminous`: `dart run scripts/bootstrap_generated_sources.dart`
+2. In `Luminous`: `dart run scripts/contract/bootstrap.dart`
 
 Never hand-edit `generated/lucent_api/`. The generator handles enum defaults and
 nullable map entries natively. Commit the regenerated non-`.g.dart`
@@ -290,7 +290,7 @@ nullable map entries natively. Commit the regenerated non-`.g.dart`
 Verify contract sync:
 
 ```bash
-dart run scripts/verify_lucent_openapi_sync.dart
+dart run scripts/contract/verify_openapi.dart
 ```
 
 ---
@@ -303,7 +303,7 @@ dart run scripts/verify_lucent_openapi_sync.dart
    ```bash
    flutter analyze
    flutter test
-   dart run scripts/run_daily_checks.dart
+   dart run scripts/workflows/daily.dart
    ```
 4. Update documentation per the rules above.
 5. Open a PR using the [template](.github/pull_request_template.md).

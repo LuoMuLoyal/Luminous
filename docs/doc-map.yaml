@@ -1,6 +1,6 @@
 # Luminous 文档覆盖映射
 #
-# scripts/check_doc_coverage.dart 读取本文件（唯一事实源）：
+# scripts/docs/verify.dart 读取本文件（唯一事实源）：
 # - docs_required：必改文档，全部命中才满足（通常只有迁移日志）
 # - docs_any_of：  至少命中其一（按变更性质选择）
 # - docs_info：    仅建议，缺失不警告
@@ -15,7 +15,7 @@
 # 归档文档（archive/）不参与覆盖映射（历史可追溯，不强制同步）。
 # 活跃文档 front-matter 中的 status/updated 由 stale 检查消费；status: frozen 豁免新鲜度。
 # 每个 lib/features/* 目录都必须被至少一条规则的 code glob 覆盖
-# （--verify 校验，豁免列表见 doc_coverage.dart 的 exemptFeaturePatterns）。
+# （--verify 校验，豁免列表见 docs/coverage.dart 的 exemptFeaturePatterns）。
 # 迁移日志条目约定：描述变更范围与验证结论，不写需要持续同步的精确数字（如测试总数），见 AGENTS.md。
 
 rules:
@@ -24,15 +24,14 @@ rules:
   # ──────────────────────────────────────────────
   - name: docs-tooling
     code:
-      - scripts/check_doc_coverage.dart
-      - scripts/check_doc_links.dart
-      - scripts/doc_coverage.dart
-      - scripts/tooling_workflows.dart
-      - scripts/tooling_support.dart
-      - scripts/git_hook.dart
-      - scripts/run_daily_checks.dart
-      - scripts/run_fullstack_checks.dart
-      - scripts/verify_lucent_openapi_sync.dart
+      - scripts/docs/verify.dart
+      - scripts/docs/links.dart
+      - scripts/docs/coverage.dart
+      - scripts/support.dart
+      - scripts/hooks/git.dart
+      - scripts/workflows/daily.dart
+      - scripts/workflows/fullstack.dart
+      - scripts/contract/verify_openapi.dart
       - .github/workflows/**
       - .github/copilot-instructions.md
       - .cursor/mcp.json
@@ -45,8 +44,8 @@ rules:
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/explanation/AI_Development_Workflow.md
-      - docs/explanation/Project_Governance.md
+      - docs/explanation/ai-development-workflow.md
+      - docs/explanation/project-governance.md
     docs_info:
       - docs/TODO.md
 
@@ -76,7 +75,7 @@ rules:
       - docs/logs/migration-log/*.md
     docs_any_of:
       - docs/reference/data-layer.md
-      - docs/reference/OpenApi_Client.md
+      - docs/reference/openapi-client.md
       - docs/reference/adr/0004-network-layer-separation.md
 
   # ──────────────────────────────────────────────
@@ -89,8 +88,8 @@ rules:
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/reference/Design_System.md
-      - docs/reference/Forui_Reference.md
+      - docs/reference/design-system.md
+      - docs/reference/forui-reference.md
 
   # ──────────────────────────────────────────────
   # Core — 本地持久化（Drift）
@@ -144,11 +143,11 @@ rules:
     code:
       - lib/core/i18n/**
       - lib/l10n/**
-      - scripts/arb_tools.dart
+      - scripts/l10n/arb_tools.dart
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/reference/Localization.md
+      - docs/reference/localization.md
     docs_info:
       - docs/howto/add-localization.md
 
@@ -171,7 +170,7 @@ rules:
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/reference/Design_System.md
+      - docs/reference/design-system.md
 
   # ──────────────────────────────────────────────
   # Core — 工具函数
@@ -191,7 +190,7 @@ rules:
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/explanation/AI_Development_Workflow.md
+      - docs/explanation/ai-development-workflow.md
 
   # ──────────────────────────────────────────────
   # Core — 产品测量（产品事件）
@@ -202,7 +201,7 @@ rules:
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/product/Product_Safety_Privacy.md
+      - docs/product/product-safety-privacy.md
 
   # ──────────────────────────────────────────────
   # Auth Feature
@@ -213,7 +212,7 @@ rules:
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/reference/Localization.md
+      - docs/reference/localization.md
 
   # ──────────────────────────────────────────────
   # Today Feature
@@ -224,7 +223,7 @@ rules:
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/product/Product_MVP_Scope.md
+      - docs/product/product-mvp-scope.md
 
   # ──────────────────────────────────────────────
   # Record Feature
@@ -320,8 +319,8 @@ rules:
     docs_required:
       - docs/logs/migration-log/*.md
     docs_any_of:
-      - docs/product/Product_MVP_Scope.md
-      - docs/explanation/AI_Development_Workflow.md
+      - docs/product/product-mvp-scope.md
+      - docs/explanation/ai-development-workflow.md
 
   # ──────────────────────────────────────────────
   # Legal Feature

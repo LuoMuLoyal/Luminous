@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'tooling_support.dart';
+import '../support.dart';
 
-/// Wikilink & relative-link integrity check for the Luminous docs vault.
+/// Relative-link integrity check for the Luminous docs vault.
 ///
 /// Scans `docs/**/*.md` (excluding `.obsidian/`) for:
-/// - Obsidian wikilinks `[[path|alias]]` / `[[path]]` (with or without `.md`)
 /// - Markdown links `[text](path)` (relative links; external URLs skipped)
+/// - Obsidian wikilinks, which are **retired** — any occurrence is reported
+///   so the format does not creep back in
 /// - Repo-relative path references (`lib/**`, `docs/**`, `plans/**`) found in
 ///   doc bodies, validated for existence against the repo root (see
 ///   [extractRepoPathTokens] for the extraction rules)
@@ -17,8 +18,8 @@ import 'tooling_support.dart';
 /// with code 1.
 ///
 /// Usage:
-///   dart run scripts/check_doc_links.dart            # full vault scan
-///   dart run scripts/check_doc_links.dart --changed  # only changed docs
+///   dart run scripts/docs/links.dart            # full vault scan
+///   dart run scripts/docs/links.dart --changed  # only changed docs
 ///
 /// `--changed` reads the git change set (staged + unstaged + untracked) and
 /// checks only the outgoing links of the changed docs. When the change set
@@ -44,8 +45,8 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  final scriptFile = File.fromUri(Platform.script);
-  final repoRoot = scriptFile.parent.parent.absolute;
+  final context = ToolContext.fromScript(Platform.script);
+  final repoRoot = context.repoRoot;
   final docsDir = Directory('${repoRoot.path}${Platform.pathSeparator}docs');
   if (!docsDir.existsSync()) {
     stderr.writeln('Docs vault not found: ${docsDir.path}');
@@ -54,7 +55,7 @@ Future<void> main(List<String> args) async {
   }
 
   final vault = VaultIndex(docsDir);
-  var filesToCheck = vault.markdownFiles;
+  var filesToCheck = vault.checkableMarkdownFiles;
 
   if (changedOnly) {
     try {
@@ -96,12 +97,11 @@ Future<void> main(List<String> args) async {
   );
 }
 
-/// Scans [file] for broken wikilinks, relative markdown links, and missing
-/// repo-relative path references (`lib/`, `docs/`, `plans/` tokens).
+/// Scans [file] for retired wikilinks, broken relative markdown links, and
+/// missing repo-relative path references (`lib/`, `docs/`, `plans/` tokens).
 ///
-/// Returns human-readable problem strings prefixed with the display path
-/// (e.g. `docs/TODO.md: [[Missing]] — no matching file`). Shared
-/// with the `--verify` mode of check_doc_coverage.dart so both tools resolve
+/// Returns human-readable problem strings prefixed with the display path.
+/// Shared with the `--verify` mode of verify.dart so both tools resolve
 /// links identically.
 ///
 /// [repoRoot] is the base for repo-relative path existence checks; defaults
@@ -137,11 +137,13 @@ List<String> checkDocFileLinks(
     // Inline code (`...`) is literal text — never a link.
     final scanLine = stripInlineCode(line);
 
+    // Wikilinks are retired (2026-09-01 format unification): any occurrence
+    // in a checked doc is reported so the format does not creep back in.
     for (final link in extractWikilinks(scanLine)) {
-      final resolved = vault.resolveWikilink(link.target, fromFile: file);
-      if (resolved == null) {
-        problems.add('docs/$relative: [[${link.raw}]] — no matching file');
-      }
+      problems.add(
+        'docs/$relative: [[${link.raw}]] — wikilinks are retired; '
+        'use a relative markdown link',
+      );
     }
 
     for (final link in extractMarkdownLinks(scanLine)) {
@@ -535,6 +537,13 @@ class VaultIndex {
   final Directory docsDir;
   final List<File> markdownFiles = <File>[];
 
+  /// Markdown files whose outgoing links are checked. Archive entries are
+  /// historical snapshots — their wikilinks are never rewritten and are
+  /// exempt from integrity checking.
+  List<File> get checkableMarkdownFiles => markdownFiles
+      .where((file) => !relativePath(file).startsWith('archive/'))
+      .toList(growable: false);
+
   /// Repository root — the docs vault's parent directory. Base for
   /// repo-relative path references (`lib/`, `docs/`, `plans/`) found in doc
   /// bodies.
@@ -542,13 +551,6 @@ class VaultIndex {
 
   /// Lowercased vault-relative path (e.g. `reference/adr/0002-gorouter-navigation.md`).
   final Set<String> _allLowerPaths = <String>{};
-
-  /// Lowercased basename (with extension) -> vault-relative paths.
-  final Map<String, List<String>> _basenameIndex = <String, List<String>>{};
-
-  /// Lowercased basename without extension -> vault-relative paths.
-  final Map<String, List<String>> _basenameNoExtIndex =
-      <String, List<String>>{};
 
   void _indexDir(Directory dir, Directory vaultRoot) {
     for (final entity in dir.listSync()) {
@@ -564,12 +566,6 @@ class VaultIndex {
         if (entity.path.endsWith('.md')) {
           markdownFiles.add(entity);
         }
-        final basename = lower.split('/').last;
-        _basenameIndex.putIfAbsent(basename, () => <String>[]).add(relative);
-        final withoutExt = _stripExtension(basename);
-        _basenameNoExtIndex
-            .putIfAbsent(withoutExt, () => <String>[])
-            .add(relative);
       }
     }
   }
@@ -577,63 +573,6 @@ class VaultIndex {
   String relativePath(File file) {
     final base = docsDir.path.replaceAll('\\', '/');
     return file.path.replaceAll('\\', '/').substring(base.length + 1);
-  }
-
-  String? resolveWikilink(String target, {required File fromFile}) {
-    var clean = target.trim();
-    // Strip a heading anchor: [[file#section]].
-    final hashIndex = clean.indexOf('#');
-    if (hashIndex >= 0) {
-      clean = clean.substring(0, hashIndex).trim();
-    }
-    if (clean.isEmpty) {
-      return null;
-    }
-
-    if (clean.startsWith('../') || clean.startsWith('./')) {
-      // Relative wikilink: resolved from the containing file's directory.
-      final fromDir = fromFile.parent.path.replaceAll('\\', '/');
-      final normalized = _normalizePath('$fromDir/$clean');
-      final base = docsDir.path.replaceAll('\\', '/');
-      if (!normalized.startsWith('$base/')) {
-        return null;
-      }
-      final relative = normalized.substring(base.length + 1);
-      final candidates = <String>{
-        relative,
-        if (!relative.endsWith('.md')) '$relative.md',
-      };
-      for (final candidate in candidates) {
-        if (_allLowerPaths.contains(candidate.toLowerCase())) {
-          return candidate;
-        }
-      }
-      return null;
-    }
-
-    if (clean.contains('/')) {
-      // Path-style: resolved from the vault root.
-      final candidates = <String>{
-        clean,
-        if (!clean.endsWith('.md')) '$clean.md',
-      };
-      for (final candidate in candidates) {
-        if (_allLowerPaths.contains(candidate.toLowerCase())) {
-          return candidate;
-        }
-      }
-      return null;
-    }
-
-    // Short name: match by basename, case-insensitively, with or without
-    // extension. Obsidian tolerates case differences.
-    final matches =
-        _basenameIndex[clean.toLowerCase()] ??
-        _basenameNoExtIndex[_stripExtension(clean.toLowerCase())];
-    if (matches != null && matches.isNotEmpty) {
-      return matches.first;
-    }
-    return null;
   }
 
   String? resolveRelativeLink(String url, {required File fromFile}) {
@@ -677,14 +616,6 @@ class VaultIndex {
   }
 }
 
-String _stripExtension(String basename) {
-  final dot = basename.lastIndexOf('.');
-  if (dot <= 0) {
-    return basename;
-  }
-  return basename.substring(0, dot);
-}
-
 String _normalizePath(String path) {
   final parts = <String>[];
   for (final segment in path.split('/')) {
@@ -705,7 +636,7 @@ String _normalizePath(String path) {
 }
 
 const _usage = '''
-Usage: dart run scripts/check_doc_links.dart [--changed] [--help]
+Usage: dart run scripts/docs/links.dart [--changed] [--help]
 
 Scans docs/**/*.md for wikilinks ([[path|alias]]), relative markdown links,
 and repo-relative path references (lib/, docs/, plans/ tokens in inline code

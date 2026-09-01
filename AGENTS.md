@@ -2,7 +2,7 @@
 
 ## Documentation Rules
 
-After every code change, run `dart run scripts/check_doc_coverage.dart --warning-only`.
+After every code change, run `dart run scripts/docs/verify.dart --warning-only`.
 It reads `docs/doc-map.yaml` and prints a per-rule report of which docs each touched code
 area expects. The pre-commit hook runs the same tool in **report-only** mode — the old
 "code staged but no docs/ staged → commit blocked" gate is retired (two-week observation
@@ -27,7 +27,7 @@ check in pre-commit still blocks.
 - **Closing a TODO**: delete the line from `docs/TODO.md`.
 - **Finishing a plan**: delete the entire section from `plans/*.md`.
 - **Doc lifecycle**: active docs older than 90 days without updates, or unreferenced by
-  `doc-map.yaml` / doc links, are flagged by `dart run scripts/check_doc_coverage.dart --verify`
+  `doc-map.yaml` / doc links, are flagged by `dart run scripts/docs/verify.dart --verify`
   — review, update, or archive them to `docs/archive/`. Docs marked `status: frozen` are
   exempt from the 90-day freshness checks.
 - **Front-matter**: every active content doc must carry YAML front-matter
@@ -36,7 +36,7 @@ check in pre-commit still blocks.
   `status: frozen` marks a doc intentionally frozen (desktop/Web-freeze, feature-freeze) —
   exempt from the freshness checks but still must carry valid front-matter; `status: stale`
   means the doc should be archived, not frozen.
-- **Visible text/l10n change**: sync `docs/reference/Localization.md`.
+- **Visible text/l10n change**: sync `docs/reference/localization.md`.
 - Completed items are **deleted** outright — no markers.
 
 ## Stack
@@ -53,17 +53,17 @@ flutter test                                     # 单元/Widget 测试
 flutter test test/path/to_test.dart              # 单个测试文件
 flutter test integration_test                    # 全部 E2E
 flutter test integration_test/<scenario>_e2e_test.dart   # 单个 E2E 场景
-dart scripts/arb_tools.dart merge                # 分片 ARB 合并(l10n 变更后)
+dart scripts/l10n/arb_tools.dart merge                # 分片 ARB 合并(l10n 变更后)
 flutter gen-l10n                                 # ARB 合并后生成 Dart 本地化代码
-dart run scripts/bootstrap_generated_sources.dart        # 生成物准备(全新 clone/ARB/契约变更后必跑)
-dart run scripts/generate_docs.dart               # 再生成 reference/generated 清单(token/路由/feature 变更后)
-dart run scripts/run_daily_checks.dart           # 仓库安全级检查(analyze+test+文档+生成文档新鲜度)
-dart run scripts/run_fullstack_checks.dart       # 全栈检查(需 Lucent 运行时)
-dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(--verify 全量治理)
+dart run scripts/contract/bootstrap.dart        # 生成物准备(全新 clone/ARB/契约变更后必跑)
+dart run scripts/docs/generate.dart               # 再生成 reference/generated 清单(token/路由/feature 变更后)
+dart run scripts/workflows/daily.dart           # 仓库安全级检查(analyze+test+文档+生成文档新鲜度)
+dart run scripts/workflows/fullstack.dart       # 全栈检查(需 Lucent 运行时)
+dart run scripts/docs/verify.dart --warning-only   # 文档覆盖报告(--verify 全量治理)
 Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Location   # 七条自定义规则扫描(warn 观察模式)
 ```
 
-窄命令迭代，收尾前跑宽检查(`run_daily_checks.dart`)。
+窄命令迭代，收尾前跑宽检查(`scripts/workflows/daily.dart`)。
 
 ## Architecture
 
@@ -135,8 +135,8 @@ feature 间消费 domain/provider 公共接缝是 sanctioned 形态，规则不�
 
 ## Design System
 
-Forui-led theming. Details in `docs/reference/Design_System.md` and
-`docs/reference/Forui_Reference.md`. Reference in `D:\25080\Documents\VSCodeProject\Lumos\forui-docs`
+Forui-led theming. Details in `docs/reference/design-system.md` and
+`docs/reference/forui-reference.md`. Reference in `D:\25080\Documents\VSCodeProject\Lumos\forui-docs`
 
 - `SemanticColor`, `Spacing`, `IconSizeTokens` — design tokens；圆角/字体直接取 Forui `context.theme.style.borderRadius.*` / `context.theme.typography.body/display.*`(via barrel `lib/core/design/design.dart`)。
 - Prefer Forui primitives directly. Don't add thin wrappers that only preset styles;
@@ -190,18 +190,18 @@ them directly**.
 Correct workflow when adding or modifying any user-visible string:
 
 1. Edit the fragment file(s) in `lib/l10n/src/`
-2. Run `dart scripts/arb_tools.dart merge` to regenerate `app_zh.arb` / `app_en.arb`
+2. Run `dart scripts/l10n/arb_tools.dart merge` to regenerate `app_zh.arb` / `app_en.arb`
 3. Run `flutter gen-l10n` to regenerate Dart localization code
 
 Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
 
-- Run `dart run scripts/bootstrap_generated_sources.dart` after fresh clone or
+- Run `dart run scripts/contract/bootstrap.dart` after fresh clone or
   ARB / contract changes (includes the merge + gen-l10n + build_runner above).
 
 ## OpenAPI Client
 
 - Source: `Lucent/docs/reference/generated/openapi.json`.
-- Regenerate: `pnpm export:openapi` in Lucent → `dart run scripts/bootstrap_generated_sources.dart` in Luminous.
+- Regenerate: `pnpm export:openapi` in Lucent → `dart run scripts/contract/bootstrap.dart` in Luminous.
 - Tracked boundary: `generated/lucent_api/lib/api/**` except `**/*.g.dart`.
 
 ## Non-Negotiable Boundaries
@@ -216,5 +216,5 @@ Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
 `generated/lucent_api/**`, merged `app_*.arb`, `docs/reference/generated/**`).
 - Generated docs follow the region convention: generators rewrite only the
 `<!-- gen:<name>:start/end -->` block; content outside the region is handwritten
-and never overwritten. Regenerate with `dart run scripts/generate_docs.dart`.
-Stale generated docs fail `run_daily_checks` and CI.
+and never overwritten. Regenerate with `dart run scripts/docs/generate.dart`.
+Stale generated docs fail `scripts/workflows/daily.dart` and CI.

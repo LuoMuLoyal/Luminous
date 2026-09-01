@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'check_doc_links.dart';
-import 'doc_coverage.dart';
-import 'tooling_support.dart';
+import 'links.dart';
+import 'coverage.dart';
+import '../support.dart';
 
 /// Documentation coverage check for Luminous.
 ///
@@ -192,7 +192,7 @@ class _ParsedArgs {
 }
 
 const _usage = '''
-Usage: dart run scripts/check_doc_coverage.dart [options]
+Usage: dart run scripts/docs/verify.dart [options]
 
 By default this script blocks (exit 1) when code files are staged/changed
 but no docs/ files are included.
@@ -275,12 +275,6 @@ Set<String> _collectVaultLinkedPaths(VaultIndex vault) {
         continue;
       }
       final scanLine = stripInlineCode(line);
-      for (final link in extractWikilinks(scanLine)) {
-        final resolved = vault.resolveWikilink(link.target, fromFile: file);
-        if (resolved != null && resolved != relative) {
-          linked.add('docs/$resolved');
-        }
-      }
       for (final link in extractMarkdownLinks(scanLine)) {
         final url = link.url ?? link.target;
         if (isExternalUrl(url) || url.startsWith('#')) {
@@ -324,9 +318,10 @@ Future<void> _runVerify(ToolContext context) async {
   problems.addAll(findDocMapGlobOrphans(config, availableDocs));
 
   // (b) Link integrity — wikilinks and relative links must resolve
-  // (same resolution semantics as check_doc_links.dart).
+  // (same resolution semantics as links.dart). Archive snapshots are exempt
+  // from outgoing-link checks (see VaultIndex.checkableMarkdownFiles).
   final vault = VaultIndex(docsDir);
-  for (final file in vault.markdownFiles) {
+  for (final file in vault.checkableMarkdownFiles) {
     problems.addAll(checkDocFileLinks(vault, file));
   }
 

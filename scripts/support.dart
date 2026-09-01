@@ -10,8 +10,21 @@ class ToolContext {
 
   factory ToolContext.fromScript(Uri scriptUri) {
     final scriptFile = File.fromUri(scriptUri);
-    final repoRoot = scriptFile.parent.parent.absolute;
-    final workspaceRoot = repoRoot.parent.absolute;
+    // Walk up from the script location to the repo root (pubspec.yaml), so
+    // scripts nested in subdirectories (docs/, contract/, workflows/, ...)
+    // resolve correctly.
+    var dir = scriptFile.parent.absolute;
+    while (!File(
+      '${dir.path}${Platform.pathSeparator}pubspec.yaml',
+    ).existsSync()) {
+      final parent = dir.parent.absolute;
+      if (parent.path == dir.path) {
+        throw StateError('pubspec.yaml not found above ${scriptFile.path}');
+      }
+      dir = parent;
+    }
+    final repoRoot = dir;
+    final workspaceRoot = repoRoot.parent;
     final lucentRoot = Directory(
       '${workspaceRoot.path}${Platform.pathSeparator}Lucent',
     );

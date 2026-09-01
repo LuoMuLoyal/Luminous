@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../scripts/check_doc_links.dart';
+import '../../scripts/docs/links.dart';
 
 void main() {
   group('filterChangedDocs', () {
@@ -69,7 +69,7 @@ void main() {
   });
 
   group('checkDocFileLinks', () {
-    test('reports broken wikilinks and relative links', () {
+    test('reports retired wikilinks and broken relative links', () {
       final vault = _createVault({
         'a.md': '# A\nSee [[missing]] and [gone](gone.md).\n',
       });
@@ -77,13 +77,13 @@ void main() {
       final problems = checkDocFileLinks(vault, vault.markdownFiles.single);
 
       expect(problems, hasLength(2));
-      expect(problems[0], contains('[[missing]]'));
+      expect(problems[0], contains('retired'));
       expect(problems[1], contains('gone.md'));
     });
 
-    test('resolves wikilinks and relative links inside the vault', () {
+    test('resolves relative links inside the vault', () {
       final vault = _createVault({
-        'a.md': '# A\nSee [[b]] and [b](b.md).\n',
+        'a.md': '# A\nSee [b](b.md).\n',
         'b.md': '# B\n',
       });
       final aFile = vault.markdownFiles.firstWhere(

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../scripts/check_doc_coverage.dart';
-import '../../scripts/doc_coverage.dart';
+import '../../scripts/docs/coverage.dart';
+import '../../scripts/docs/verify.dart';
 
 void main() {
   group('parseDocCoverageConfig', () {

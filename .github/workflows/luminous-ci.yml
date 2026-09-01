@@ -40,10 +40,10 @@ jobs:
           restore-keys: pub-${{ runner.os }}-
 
       - name: Merge ARB fragments
-        run: dart scripts/arb_tools.dart merge
+        run: dart scripts/l10n/arb_tools.dart merge
 
       - name: Bootstrap generated sources
-        run: dart run scripts/bootstrap_generated_sources.dart --skip-client
+        run: dart run scripts/contract/bootstrap.dart --skip-client
 
       - name: Build generated API client
         run: |
@@ -56,7 +56,7 @@ jobs:
         run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
       - name: Verify generated docs
-        run: dart run scripts/generate_docs.dart --check
+        run: dart run scripts/docs/generate.dart --check
 
       - name: Analyze
         run: flutter analyze
