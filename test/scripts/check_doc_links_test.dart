@@ -109,6 +109,149 @@ void main() {
       expect(checkDocFileLinks(vault, vault.markdownFiles.single), isEmpty);
     });
   });
+
+  group('checkDocFileLinks repo path existence', () {
+    test(
+      'reports missing lib/docs/plans tokens from inline code and prose',
+      () {
+        final (vault, _) = _createRepo(
+          docsFiles: {
+            'a.md':
+                'See `lib/features/auth/login.dart` twice: '
+                '`lib/features/auth/login.dart`, plus docs/missing/ref.md.\n',
+          },
+        );
+
+        final problems = checkDocFileLinks(vault, vault.markdownFiles.single);
+
+        // The inline token is reported once despite appearing twice; the
+        // plain-text token keeps its trailing sentence period stripped.
+        expect(problems, hasLength(2));
+        expect(
+          problems[0],
+          'docs/a.md: path lib/features/auth/login.dart not found',
+        );
+        expect(problems[1], 'docs/a.md: path docs/missing/ref.md not found');
+      },
+    );
+
+    test('passes for existing file, directory and anchored references', () {
+      final (vault, _) = _createRepo(
+        docsFiles: {
+          'a.md':
+              '`lib/app/router.dart`, `lib/features/`, `lib/core` and '
+              'plain docs/README.md, plus `docs/TODO.md#top`.\n',
+          'README.md': '# Docs\n',
+          'TODO.md': '# TODO\n',
+        },
+        repoFiles: {
+          'lib/app/router.dart': 'void main() {}\n',
+          'lib/core/config.dart': '',
+          'lib/features/auth/auth.dart': '',
+        },
+      );
+      final aFile = vault.markdownFiles.firstWhere(
+        (file) => vault.relativePath(file) == 'a.md',
+      );
+
+      final problems = checkDocFileLinks(vault, aFile);
+
+      expect(problems, isEmpty);
+    });
+
+    test(
+      'skips URLs, globs, placeholders, ellipsis, commands, bare prefixes',
+      () {
+        final (vault, _) = _createRepo(
+          docsFiles: {
+            'a.md':
+                '`https://example.com/docs/x.md` and a plain URL tail at '
+                'https://github.com/org/repo/blob/main/lib/a.dart; also '
+                '`lib/features/**`, `lib/features/<feature>/`, `lib/foo...`, '
+                '`docs/`, `lib` and the command `dart run scripts/x.dart`.\n',
+          },
+        );
+
+        expect(checkDocFileLinks(vault, vault.markdownFiles.single), isEmpty);
+      },
+    );
+
+    test('honors the explicit exemption list (slash optional)', () {
+      final (vault, _) = _createRepo(
+        docsFiles: {
+          'a.md':
+              'Legacy `lib/pages/`, `lib/stores/` trees; the `docs/tests` '
+              'option; template `docs/logs/migration-log/YYYY-MM-DD.md`; '
+              'renamed `lib/pages` and '
+              '`lib/features/auth/presentation/providers/shared/'
+              'auth_form_mixin.dart`.\n',
+        },
+      );
+
+      expect(checkDocFileLinks(vault, vault.markdownFiles.single), isEmpty);
+    });
+
+    test('skips path tokens inside code fences', () {
+      final (vault, _) = _createRepo(
+        docsFiles: {'a.md': '# A\n```\nlib/missing/inside_fence.dart\n```\n'},
+      );
+
+      expect(checkDocFileLinks(vault, vault.markdownFiles.single), isEmpty);
+    });
+
+    test('sub-paths of larger references are not repo-relative tokens', () {
+      final (vault, _) = _createRepo(
+        docsFiles: {
+          'a.md':
+              'Lucent sibling doc: ../../../../Lucent/docs/other-ref.md '
+              '(plain text, no backticks).\n',
+        },
+      );
+
+      // `docs/other-ref.md` is preceded by `/` inside the larger reference
+      // and must not be validated as a repo-relative path.
+      expect(checkDocFileLinks(vault, vault.markdownFiles.single), isEmpty);
+    });
+
+    test('markdown link targets stay under vault-relative link semantics', () {
+      final (vault, _) = _createRepo(
+        docsFiles: {
+          'sub/a.md': 'See [x](docs/vault.md).\n',
+          // Exists vault-relative (docs/sub/docs/vault.md) but not at the
+          // repo root — the link check owns this target, not the path check.
+          'sub/docs/vault.md': '# V\n',
+        },
+      );
+      final aFile = vault.markdownFiles.firstWhere(
+        (file) => vault.relativePath(file) == 'sub/a.md',
+      );
+
+      expect(checkDocFileLinks(vault, aFile), isEmpty);
+    });
+
+    test('archive and migration-log keep link checks but skip path checks', () {
+      final (vault, _) = _createRepo(
+        docsFiles: {
+          'archive/old.md': '`lib/definitely/missing.dart`\n',
+          'logs/migration-log/2026-01-01.md': '`lib/definitely/missing.dart`\n',
+          // The standing ledger index is NOT scoped out.
+          'logs/MigrationLog.md': '`lib/definitely/missing.dart`\n',
+        },
+      );
+      File? fileFor(String relative) => vault.markdownFiles
+          .where((file) => vault.relativePath(file) == relative)
+          .firstOrNull;
+
+      expect(checkDocFileLinks(vault, fileFor('archive/old.md')!), isEmpty);
+      expect(
+        checkDocFileLinks(vault, fileFor('logs/migration-log/2026-01-01.md')!),
+        isEmpty,
+      );
+      expect(checkDocFileLinks(vault, fileFor('logs/MigrationLog.md')!), [
+        'docs/logs/MigrationLog.md: path lib/definitely/missing.dart not found',
+      ]);
+    });
+  });
 }
 
 /// Creates a temp vault with the given file name -> content map.
@@ -127,6 +270,42 @@ VaultIndex _createVault(Map<String, String> files) {
       ..writeAsStringSync(content);
   });
   return VaultIndex(tempRoot);
+}
+
+/// Creates a temp repo root containing a `docs/` vault with [docsFiles] and
+/// additional repo files ([repoFiles], e.g. `lib/...`), for repo-path
+/// existence tests. Returns the vault index and the repo root.
+(VaultIndex, Directory) _createRepo({
+  required Map<String, String> docsFiles,
+  Map<String, String> repoFiles = const {},
+}) {
+  final tempRoot = Directory.systemTemp.createTempSync(
+    'luminous-doc-repo-path-test-',
+  );
+  addTearDown(() {
+    if (tempRoot.existsSync()) {
+      tempRoot.deleteSync(recursive: true);
+    }
+  });
+  void writeAll(Map<String, String> files) {
+    files.forEach((name, content) {
+      File(
+          '${tempRoot.path}${Platform.pathSeparator}'
+          '${name.replaceAll('/', Platform.pathSeparator)}',
+        )
+        ..createSync(recursive: true)
+        ..writeAsStringSync(content);
+    });
+  }
+
+  writeAll({
+    for (final entry in docsFiles.entries) 'docs/${entry.key}': entry.value,
+  });
+  writeAll(repoFiles);
+  return (
+    VaultIndex(Directory('${tempRoot.path}${Platform.pathSeparator}docs')),
+    tempRoot,
+  );
 }
 
 /// Creates a temp git repo with [files] committed, for change-set tests.

@@ -14,8 +14,10 @@ import 'tooling_support.dart';
 /// Lucent's `check-docs-updated.ts --verify`): doc-map references exist, doc
 /// links resolve, front-matter completeness, 90-day freshness (`status: frozen`
 /// exempt), doc readership (every `status: active` doc outside standing
-/// channels must be listed in doc-map or linked from another doc), and
-/// `lib/features/*` doc-map coverage. Exit(1) on any problem.
+/// channels must be listed in doc-map or linked from another doc),
+/// `lib/features/*` doc-map coverage, and the module README line budget
+/// (`lib/features/*/README.md` and `lib/core/*/README.md` at most
+/// [maxModuleReadmeLines] lines). Exit(1) on any problem.
 ///
 /// `SKIP_DOC_CHECK=1` bypasses the blocking coverage path only — it does not
 /// apply to `--verify` (or `--warning-only`). `git commit --no-verify` bypasses
@@ -201,7 +203,9 @@ Options:
   --verify            Verify doc-map references, doc link integrity,
                       front-matter metadata, stale active docs, doc
                       readership, and feature-dir coverage (every
-                      lib/features/* dir must be matched by a doc-map rule).
+                      lib/features/* dir must be matched by a doc-map rule),
+                      plus the module README line budget (lib/features/*/
+                      README.md and lib/core/*/README.md at most 60 lines).
                       Docs marked 'status: frozen' are exempt from the
                       freshness checks; exit(1) on problems.
   --config <path>     Use an explicit doc coverage config path.
@@ -398,6 +402,15 @@ Future<void> _runVerify(ToolContext context) async {
     );
   }
 
+  // (g) Module README budget — lib/features/*/README.md and
+  // lib/core/*/README.md must stay within [maxModuleReadmeLines]. Missing
+  // READMEs are owned by the generated feature inventory, not this check.
+  problems.addAll(
+    findOverlongModuleReadmes(
+      Directory('${context.repoRoot.path}${Platform.pathSeparator}lib'),
+    ),
+  );
+
   if (problems.isNotEmpty) {
     stderr.writeln('Doc verification failed:');
     for (final problem in problems) {
@@ -408,8 +421,62 @@ Future<void> _runVerify(ToolContext context) async {
   }
   stdout.writeln(
     'Doc verification passed (doc-map references, link integrity, '
-    'front-matter, freshness, readership, feature coverage).',
+    'front-matter, freshness, readership, feature coverage, '
+    'module README budget).',
   );
+}
+
+/// Max line budget for per-module READMEs. Enforced by `--verify`; a README
+/// that outgrows the budget should split module detail into docs/ or code
+/// comments instead of growing indefinitely.
+const int maxModuleReadmeLines = 60;
+
+/// Counts lines in [content]. A trailing newline terminates the last line
+/// rather than starting an empty one; blank lines inside the file count.
+int countDocLines(String content) {
+  final lines = content.split(RegExp(r'\r?\n'));
+  if (lines.isNotEmpty && lines.last.isEmpty) {
+    lines.removeLast();
+  }
+  return lines.length;
+}
+
+/// Module READMEs under `lib/features/*/README.md` and
+/// `lib/core/*/README.md` (exactly one level deep) whose line count exceeds
+/// [maxLines]. Missing READMEs are out of scope — the generated feature
+/// inventory owns that assertion. Results are sorted by display path.
+List<String> findOverlongModuleReadmes(
+  Directory libDir, {
+  int maxLines = maxModuleReadmeLines,
+}) {
+  final overlong = <String>[];
+  for (final group in const ['features', 'core']) {
+    final groupDir = Directory('${libDir.path}${Platform.pathSeparator}$group');
+    if (!groupDir.existsSync()) {
+      continue;
+    }
+    final libBase = libDir.path.replaceAll('\\', '/');
+    for (final entity in groupDir.listSync()) {
+      if (entity is! Directory) {
+        continue;
+      }
+      final readme = File('${entity.path}${Platform.pathSeparator}README.md');
+      if (!readme.existsSync()) {
+        continue;
+      }
+      final lineCount = countDocLines(readme.readAsStringSync());
+      if (lineCount > maxLines) {
+        final displayPath =
+            'lib/'
+            '${readme.path.replaceAll('\\', '/').substring(libBase.length + 1)}';
+        overlong.add(
+          '$displayPath: $lineCount lines — exceeds the '
+          '$maxLines-line module README budget',
+        );
+      }
+    }
+  }
+  return overlong..sort();
 }
 
 String _todayIso() {

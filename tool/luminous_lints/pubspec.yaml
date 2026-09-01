@@ -1,0 +1,27 @@
+name: luminous_lints
+description: >-
+  In-house analyzer plugin for the Luminous app. Encodes the recurring code
+  issues found in historical review reports as seven analysis rules
+  (layered imports, navigation, Iterable.firstWhere, response data
+  unwrapping, empty catches, enum switch exhaustiveness, raw date parsing).
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+
+# `analyzer` must move in lockstep with the Dart SDK bundled by Flutter
+# 3.47.1 (Dart 3.13.1 ships analyzer 14.1.0-dev; the published equivalent is
+# 14.1.0). The analysis server loads plugin packages in-process, so the
+# analyzer version here has to match the one inside the analysis server.
+# analysis_server_plugin 0.3.20 pins exactly that version.
+dependencies:
+  analysis_server_plugin: 0.3.20
+  analyzer: 14.1.0
+  meta: ^1.16.0
+
+dev_dependencies:
+  analyzer_testing: 0.3.4
+  lints: ^6.0.0
+  test: ^1.26.1
+  test_reflective_loader: ^0.4.0

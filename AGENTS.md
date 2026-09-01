@@ -56,6 +56,7 @@ dart run scripts/generate_docs.dart               # 再生成 reference/generate
 dart run scripts/run_daily_checks.dart           # 仓库安全级检查(analyze+test+文档+生成文档新鲜度)
 dart run scripts/run_fullstack_checks.dart       # 全栈检查(需 Lucent 运行时)
 dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(--verify 全量治理)
+Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Location   # 七条自定义规则扫描(warn 观察模式)
 ```
 
 窄命令迭代，收尾前跑宽检查(`run_daily_checks.dart`)。
@@ -81,6 +82,9 @@ dart run scripts/check_doc_coverage.dart --warning-only   # 文档覆盖报告(-
    snapshot hub (`healthContextSnapshotProvider`), or the DataChangeBus.
 3. **application → domain allowed** — the `application/` layer may import other features'
    `domain/` layer (interfaces + entities) for cross-feature orchestration.
+
+这三条禁令由 `layered_import` 规则在 `lib/` 上扫描(见 Testing 一节的七规则 CLI)。
+feature 间消费 domain/provider 公共接缝是 sanctioned 形态，规则不报。
 
 ## Barrel Exports
 
@@ -149,6 +153,15 @@ Forui-led theming. Details in `docs/reference/Design_System.md` and
 - Mock repositories: `Mock*Repository`. Test helpers: `test/helpers/`.
 - Tests never launch real device capabilities; inject platform-interface fakes
   (e.g. `PermissionHandlerPlatform`, `MobileScannerPlatform`, `PaddleOcrNativePlatform`).
+- **七条自定义规则(`tool/luminous_lints`)**：扫描命令见 Commands(默认 warn 观察模式,
+  永远 exit 0;`--fatal` 才作门禁)。观察期收敛后按计划逐条转 error。规则包自身测试
+  `cd tool/luminous_lints && dart test`。当前未接入 IDE 插件(依赖图 analyzer 版本与
+  analysis server 不一致,接入待主包升级后重评)。
+- `analysis_options.yaml` 中 `avoid_print` / `unawaited_futures` / `discarded_futures` /
+  `use_build_context_synchronously` 以 **error 级**生效(基线 0 违规);豁免必须在
+  代码行内附理由注释。
+- **测试承接约定**：UI 现状断言一律写 golden/widget 测试,不写进文档；e2e 不硬编码
+  内部 ID。
 - **Deferred marker**: still-useful deferred code keeps a comment marker and a TODO entry —
   never fake success in production paths:
   ```dart

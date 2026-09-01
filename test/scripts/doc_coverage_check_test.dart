@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../scripts/check_doc_coverage.dart';
 import '../../scripts/doc_coverage.dart';
 
 void main() {
@@ -570,6 +571,44 @@ rules:
       ]);
     });
   });
+  group('findOverlongModuleReadmes', () {
+    test('flags module READMEs beyond the 60-line budget', () {
+      final libDir = _createLibDir({
+        'features/record/README.md': _readmeOfLines(61),
+        'core/network/README.md': _readmeOfLines(75),
+      });
+
+      final problems = findOverlongModuleReadmes(libDir);
+
+      expect(problems, hasLength(2));
+      expect(problems[0], contains('lib/core/network/README.md: 75 lines'));
+      expect(problems[1], contains('lib/features/record/README.md: 61 lines'));
+      expect(problems[1], contains('60-line module README budget'));
+    });
+
+    test('accepts READMEs at or under the budget', () {
+      final libDir = _createLibDir({
+        'features/record/README.md': _readmeOfLines(60),
+        'core/network/README.md': _readmeOfLines(1),
+        'core/empty/README.md': '',
+      });
+
+      expect(findOverlongModuleReadmes(libDir), isEmpty);
+    });
+
+    test('ignores missing READMEs and non-module README locations', () {
+      final libDir = _createLibDir({
+        // features/ without a README — out of scope for this assertion.
+        'features/no_readme/.gitkeep': '',
+        // Nested README deeper than one level — not a module README.
+        'features/nested/deep/README.md': _readmeOfLines(100),
+        // Outside features/ and core/ entirely.
+        'theme/README.md': _readmeOfLines(100),
+      });
+
+      expect(findOverlongModuleReadmes(libDir), isEmpty);
+    });
+  });
 }
 
 /// Builds a YAML front-matter block with the given status and quadrant.
@@ -584,3 +623,35 @@ updated: 2026-08-01
 
 # Doc
 ''';
+
+/// Creates a temp `lib/` directory containing [readmes] keyed by
+/// lib-relative paths (e.g. `features/record/README.md`).
+Directory _createLibDir(Map<String, String> readmes) {
+  final tempRoot = Directory.systemTemp.createTempSync(
+    'luminous-readme-budget-test-',
+  );
+  addTearDown(() {
+    if (tempRoot.existsSync()) {
+      tempRoot.deleteSync(recursive: true);
+    }
+  });
+  final libDir = Directory('${tempRoot.path}${Platform.pathSeparator}lib')
+    ..createSync(recursive: true);
+  readmes.forEach((relative, content) {
+    File(
+        '${libDir.path}${Platform.pathSeparator}'
+        '${relative.replaceAll('/', Platform.pathSeparator)}',
+      )
+      ..createSync(recursive: true)
+      ..writeAsStringSync(content);
+  });
+  return libDir;
+}
+
+/// A README body with exactly [count] lines (trailing newline terminated).
+String _readmeOfLines(int count) {
+  if (count <= 0) {
+    return '';
+  }
+  return '${List.generate(count, (index) => 'line ${index + 1}').join('\n')}\n';
+}
