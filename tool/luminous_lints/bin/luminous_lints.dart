@@ -8,11 +8,12 @@
 // tree from the plugin package's own dependency context.
 //
 // Usage (from tool/luminous_lints/):
-//   dart run bin/luminous_lints.dart [--fatal] [<target-dir>]
+//   dart run bin/luminous_lints.dart [--fatal] [--quiet] [<target-dir>]
 //
 // Default target is the host app's `lib/` directory. Without `--fatal` the
 // driver always exits 0 (observation mode); `--fatal` exits 1 when any finding
-// is reported (for future gate integration).
+// is reported (for future gate integration). `--quiet` prints only the
+// per-rule summary (used by pre-push / daily checks to keep output short).
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
@@ -40,6 +41,7 @@ const Map<String, String> _ruleCopy = {
 
 void main(List<String> args) async {
   final fatal = args.contains('--fatal');
+  final quiet = args.contains('--quiet');
   final targetArg = args.where((a) => !a.startsWith('-')).firstOrNull;
   final scriptDir = File(Platform.script.toFilePath()).parent.path;
   final target = targetArg ?? '$scriptDir/../../../lib';
@@ -92,12 +94,14 @@ void main(List<String> args) async {
     if (byPath != 0) return byPath;
     return a.line.compareTo(b.line);
   });
-  for (final finding in findings) {
-    final rel = _relativize(finding.filePath);
-    stdout.writeln(
-      '$rel:${finding.line}:${finding.column} '
-      '[${finding.rule}] ${finding.message}',
-    );
+  if (!quiet) {
+    for (final finding in findings) {
+      final rel = _relativize(finding.filePath);
+      stdout.writeln(
+        '$rel:${finding.line}:${finding.column} '
+        '[${finding.rule}] ${finding.message}',
+      );
+    }
   }
 
   final byRule = <String, int>{};

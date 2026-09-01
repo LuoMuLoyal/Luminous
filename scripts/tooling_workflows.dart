@@ -55,6 +55,18 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   );
   stdout.writeln('');
 
+  // Custom lint rules (observation) — per-rule summary only.
+  await runLoggedCommand(
+    'dart',
+    ['run', 'bin/luminous_lints.dart', '--quiet'],
+    workingDirectory: Directory(
+      '${context.repoRoot.path}${Platform.pathSeparator}'
+      'tool${Platform.pathSeparator}luminous_lints',
+    ),
+    stepName: 'luminous_lints (observation)',
+  );
+  stdout.writeln('');
+
   await runLoggedCommand(
     'dart',
     ['format', '--set-exit-if-changed', 'lib/', 'test/', 'scripts/'],
@@ -100,6 +112,47 @@ Future<void> runPrePushChecks(ToolContext context) async {
     workingDirectory: context.repoRoot,
     stepName: 'dart format --set-exit-if-changed',
   );
+  stdout.writeln('');
+
+  // Generated reference docs (design tokens / routes / features) must be
+  // fresh — regenerating must produce no diff.
+  await runLoggedCommand(
+    'dart',
+    ['run', 'scripts/generate_docs.dart', '--check'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run scripts/generate_docs.dart --check',
+  );
+  stdout.writeln('');
+
+  // Structural docs governance (doc-map references, link integrity,
+  // front-matter, freshness, readership, README budget).
+  await runLoggedCommand(
+    'dart',
+    ['run', 'scripts/check_doc_coverage.dart', '--verify'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run scripts/check_doc_coverage.dart --verify',
+  );
+  stdout.writeln('');
+
+  await runLoggedCommand(
+    'flutter',
+    ['test'],
+    workingDirectory: context.repoRoot,
+    stepName: 'flutter test',
+  );
+  stdout.writeln('');
+
+  // Custom lint rules — observation mode (always exit 0); --quiet keeps
+  // the output to the per-rule summary.
+  await runLoggedCommand(
+    'dart',
+    ['run', 'bin/luminous_lints.dart', '--quiet'],
+    workingDirectory: Directory(
+      '${context.repoRoot.path}${Platform.pathSeparator}'
+      'tool${Platform.pathSeparator}luminous_lints',
+    ),
+    stepName: 'luminous_lints (observation)',
+  );
 }
 
 Future<void> runPreCommitChecks(ToolContext context) async {
@@ -111,15 +164,18 @@ Future<void> runPreCommitChecks(ToolContext context) async {
     await _checkMigrationLogOverwrite(context);
   }
 
-  // ── Documentation check (blocking) ─────────────────────────────
-  // Code files staged but no docs/ file staged → exit(1), so a real
-  // commit is blocked. Only staged files are evaluated (--staged).
-  // Bypass entirely with SKIP_DOC_CHECK=1 or `git commit --no-verify`.
+  // ── Documentation check (report-only, observation) ──────────────
+  // Phase 4 of the doc-governance plan retired the "code staged but no
+  // docs/ file staged → exit(1)" pre-commit gate: the per-rule doc-touch
+  // mapping now runs as a report (--warning-only), while --verify
+  // (pre-push / daily) keeps the structural guarantees. After a two-week
+  // observation window the mapping is removed entirely (see docs/TODO.md).
+  // Bypass with SKIP_DOC_CHECK=1 or `git commit --no-verify`.
   await runLoggedCommand(
     'dart',
-    ['run', 'scripts/check_doc_coverage.dart', '--staged'],
+    ['run', 'scripts/check_doc_coverage.dart', '--staged', '--warning-only'],
     workingDirectory: context.repoRoot,
-    stepName: 'doc-check (blocking)',
+    stepName: 'doc-check (report-only)',
   );
   stdout.writeln('');
 

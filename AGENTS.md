@@ -4,8 +4,12 @@
 
 After every code change, run `dart run scripts/check_doc_coverage.dart --warning-only`.
 It reads `docs/doc-map.yaml` and prints a per-rule report of which docs each touched code
-area expects. The pre-commit hook runs the same tool in **blocking** mode: code files
-staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHECK=1`.
+area expects. The pre-commit hook runs the same tool in **report-only** mode — the old
+"code staged but no docs/ staged → commit blocked" gate is retired (two-week observation
+before the mapping is removed entirely; tracked in `docs/TODO.md`). Structural
+guarantees live in `--verify` (pre-push / daily): doc-map references, link integrity,
+front-matter, 90-day freshness, readership, README budget. The migration-log overwrite
+check in pre-commit still blocks.
 
 ### Standing rules
 
