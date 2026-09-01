@@ -32,8 +32,8 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
-- [2026-08-31-doc-governance-overhaul-plan.md](2026-08-31-doc-governance-overhaul-plan.md)
-  — 文档治理改进计划：四问审计先行（现状叙事/快照文档裁决、front-matter 精简、docs 去编号重建）+ 可执行约束（generated region 生成器 + diff 校验、正文路径校验、custom_lint、doc-map 退役）；接替 2026-08-30 doc-governance-evolution v2 的未执行设计，与 Lucent 同日计划共享方法论
+- 文档治理改进计划（2026-08-31，实施完毕文件已删）
+  — 四问审计与归档、docs 去编号重建、feature/core README 全量、可执行约束（七规则 CLI 包 + analysis_options 收紧 + 正文路径校验 + README ≤60 断言）与 doc-map 退役全部落地；两周观察期、七规则收敛与 IDE 插件集成等遗留项见 `docs/TODO.md`「2026-08-31 文档治理遗留」
 
 - [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
   — 中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门
