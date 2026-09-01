@@ -9,8 +9,8 @@ updated: 2026-08-31
 ## 前置
 
 - 分层规则、文件命名、状态管理约定见仓库根 `AGENTS.md`
-- 目录结构约定见 [[architecture]]
-- 涉及 Lucent API 时确认合同已导出，见 [[OpenApi_Client]]
+- 目录结构约定见 [Architecture](../reference/architecture.md)
+- 涉及 Lucent API 时确认合同已导出，见 [OpenAPI Client](../reference/openapi-client.md)
 
 ## 步骤
 
@@ -22,10 +22,10 @@ updated: 2026-08-31
 
 ### 2. 注册 ARB 分片
 
-1. 在 `scripts/arb_tools.dart` 的 `fragmentRules` 中加一行：
+1. 在 `scripts/l10n/arb_tools.dart` 的 `fragmentRules` 中加一行：
    `'{feature}': ['{feature}'],`
 2. 新建 `lib/l10n/src/{feature}_zh.arb` / `{feature}_en.arb` 分片对
-3. 生成：`dart scripts/arb_tools.dart merge` + `flutter gen-l10n`
+3. 生成：`dart scripts/l10n/arb_tools.dart merge` + `flutter gen-l10n`
 
 不要直接编辑 `lib/l10n/app_zh.arb` / `app_en.arb`（合并生成物）。
 
@@ -66,7 +66,7 @@ import 'package:luminous/features/{feature}/presentation/routes.dart'
 
 - Forui 组件优先于自定义 widget；`SemanticColor` / `Spacing` /
   `IconSizeTokens` 经 barrel `lib/core/design/design.dart` 引用
-- 参见 [[Design_System]]
+- 参见 [Design System](../reference/design-system.md)
 
 ### 5. 编写测试
 
@@ -78,7 +78,7 @@ import 'package:luminous/features/{feature}/presentation/routes.dart'
 ### 6. 验证
 
 ```bash
-dart run scripts/bootstrap_generated_sources.dart   # 生成物正常
+dart run scripts/contract/bootstrap.dart   # 生成物正常
 flutter analyze                                     # 无分析错误
 flutter test test/{feature}/                        # feature 测试通过
 ```

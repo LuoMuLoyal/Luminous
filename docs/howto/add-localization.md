@@ -8,7 +8,7 @@ updated: 2026-08-31
 
 ## 前置
 
-- 阅读 [[Localization]] 了解完整规则
+- 阅读 [Localization](../reference/localization.md) 了解完整规则
 
 ## 步骤
 
@@ -40,7 +40,7 @@ health_sync）。在对应分片的 zh / en 文件中同时添加：
 在 Luminous 根目录：
 
 ```bash
-dart scripts/arb_tools.dart merge   # lib/l10n/src/ → app_{zh,en}.arb
+dart scripts/l10n/arb_tools.dart merge   # lib/l10n/src/ → app_{zh,en}.arb
 flutter gen-l10n                    # app_*.arb → Dart 本地化代码
 ```
 
@@ -63,7 +63,7 @@ flutter analyze   # 无分析错误
 
 - 用户可见文案不得硬编码在页面或 widget 中
 - zh / en 两个分片必须同步添加
-- 新 feature 模块：在 `scripts/arb_tools.dart` 的 `fragmentRules` 中加一行，
+- 新 feature 模块：在 `scripts/l10n/arb_tools.dart` 的 `fragmentRules` 中加一行，
   并新建 `{name}_zh.arb` / `{name}_en.arb` 分片对
 - 生成物 `lib/l10n/app_localizations*.dart` 已 git-ignore，不要手工编辑；
-  本地验证通过 `dart run scripts/bootstrap_generated_sources.dart` 再生
+  本地验证通过 `dart run scripts/contract/bootstrap.dart` 再生

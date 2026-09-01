@@ -6,11 +6,11 @@ updated: 2026-08-31
 
 # State Management (Riverpod)
 
-本文件是 [[architecture]] 拆分后的子文档。
+本文件是 [Architecture](architecture.md) 拆分后的子文档。
 
 相关子文档：
-- [[routing]]
-- [[data-layer]]
+- [Routing](routing.md)
+- [Data Layer](data-layer.md)
 
 ## State Management (Riverpod)
 
@@ -86,7 +86,7 @@ Future<MyDetail> myDetail(Ref ref, String id) async {
 - 默认 `autoDispose`；需要跨页面保持状态时使用 `@Riverpod(keepAlive: true)`。
 - 文件需添加 `part 'my_file.g.dart';` 和 `import 'package:riverpod_annotation/riverpod_annotation.dart';`。
 - repository 失败统一按 `run()` + fold 消费（Left 抛出 → `AsyncValue.error`）；widget 不导入
-  fpdart、不解析 `DioException`/Problem Details（见 [[data-layer#Repository Failure Boundary]] 与
+  fpdart、不解析 `DioException`/Problem Details（见 [Data Layer](data-layer.md#repository-failure-boundary) 与
   ADR-0005）。
 
 #### 2. 手写 `NotifierProvider` / `AsyncNotifierProvider`（Notifier 类）
@@ -212,7 +212,7 @@ class NlpFlow {
 ```
 
 The application layer may import other features' **domain** layer for cross-feature
-orchestration. See [[architecture#Cross-Feature Import Boundaries]].
+orchestration. See [Architecture](architecture.md#cross-feature-import-boundaries).
 
 ### Cross-Feature Data Refresh (Invalidation Bus)
 

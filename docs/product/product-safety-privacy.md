@@ -6,12 +6,12 @@ updated: 2026-08-31
 
 # Product Safety And Privacy
 
-本文件是 [[Product_Vision]] 拆分后的子文档。
+本文件是 [Product Vision](product-vision.md) 拆分后的子文档。
 
 相关子文档：
-- [[Product_MVP_Scope]]
-- [[archive/product/Product_Insights]]
-- [[Product_Information_Architecture]]
+- [Product Mvp Scope](product-mvp-scope.md)
+- [Product_Insights](../archive/product/Product_Insights.md)
+- [Product Information Architecture](product-information-architecture.md)
 
 ## 用药安全边界
 

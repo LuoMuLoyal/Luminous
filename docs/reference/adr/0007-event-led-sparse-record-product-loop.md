@@ -2,7 +2,7 @@
 
 - **Status**: superseded
 - **Date**: 2026-08-07
-- **Superseded**: 2026-08-15 by the long-term health companion direction in [`Product_Vision.md`](../../product/Product_Vision.md)
+- **Superseded**: 2026-08-15 by the long-term health companion direction in [`product-vision.md`](../../product/product-vision.md)
 - **Deciders**: LuoMuLoyal
 
 > 本 ADR 保留事件闭环重构的历史决策与已经实施的运行时事实。其"事件为回顾主单位"和"手机端永久唯一核心产品"不再代表当前产品方向：健康事件现为平级专题，日/周/月纵向洞察升为核心；手机端承担当前首发，桌面/Web 等待独立用户任务与技术路线研究。
@@ -40,4 +40,4 @@ Luminous 采用"健康事件期切入、日常轻量维护"的产品闭环，并
 - 既有 Report、桌面端和 Web 代码不会删除，但沉没成本不再决定产品优先级。
 - 服药、饮水、睡眠和缺失数据必须在 Today、建议、回顾和导出之间使用同一语义。
 - 产品验证从"功能数量、导出次数、记录连续天数"转向事件开始/结束、建议处理、结果确认和回顾使用。
-- 产品领域术语以 [`../../product/Product_Vision.md`](../../product/Product_Vision.md) 为准，实施拆分以 `Luminous/plans/2026-08-07-product-loop-program.md`（实施完毕文件已删，2026-08-14 收口）为准。
+- 产品领域术语以 [`../../product/product-vision.md`](../../product/product-vision.md) 为准，实施拆分以 `Luminous/plans/2026-08-07-product-loop-program.md`（实施完毕文件已删，2026-08-14 收口）为准。

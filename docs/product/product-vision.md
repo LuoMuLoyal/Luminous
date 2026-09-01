@@ -10,10 +10,10 @@ updated: 2026-08-31
 
 详细内容：
 
-- [[Product_MVP_Scope]]
-- [[archive/product/Product_Insights]]
-- [[Product_Safety_Privacy]]
-- [[Product_Information_Architecture]]
+- [Product Mvp Scope](product-mvp-scope.md)
+- [Product_Insights](../archive/product/Product_Insights.md)
+- [Product Safety Privacy](product-safety-privacy.md)
+- [Product Information Architecture](product-information-architecture.md)
 
 ## 一句话定位
 

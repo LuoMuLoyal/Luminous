@@ -6,7 +6,7 @@ updated: 2026-08-31
 
 # Design System
 
-本文档是设计系统总览：根主题、Token、组件基线与通用组件约定。历史迁移记录见 [[Design_System_Migration]]（已归档）。
+本文档是设计系统总览：根主题、Token、组件基线与通用组件约定。历史迁移记录见 [Design_System_Migration](../archive/2026-08-31-doc-governance/Design_System_Migration.md)（已归档）。
 
 ## 根主题
 

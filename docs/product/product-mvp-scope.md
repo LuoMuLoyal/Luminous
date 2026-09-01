@@ -6,12 +6,12 @@ updated: 2026-08-31
 
 # Product MVP Scope
 
-本文件是 [[Product_Vision]] 拆分后的子文档。
+本文件是 [Product Vision](product-vision.md) 拆分后的子文档。
 
 相关子文档：
-- [[archive/product/Product_Insights]]
-- [[Product_Safety_Privacy]]
-- [[Product_Information_Architecture]]
+- [Product_Insights](../archive/product/Product_Insights.md)
+- [Product Safety Privacy](product-safety-privacy.md)
+- [Product Information Architecture](product-information-architecture.md)
 
 ## MVP 范围
 
@@ -93,7 +93,7 @@ AI 做：
 
 AI 不做（与上方 MVP 不包含同源）：疾病判断、药量调整、漏服后自动改服药时间、自动处方。
 
-原 AI 实现层约定（Assistant 数据源、SSE、DTO、缓存策略）不随本节并入，见归档 [[archive/2026-08-31-doc-governance/Product_AI_Design]]。
+原 AI 实现层约定（Assistant 数据源、SSE、DTO、缓存策略）不随本节并入，见归档 [Product_AI_Design](../archive/2026-08-31-doc-governance/Product_AI_Design.md)。
 
 ## 1.0 关键边界
 

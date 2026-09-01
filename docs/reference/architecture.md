@@ -10,9 +10,9 @@ updated: 2026-08-31
 
 子文档：
 
-- [[state-management]]
-- [[routing]]
-- [[data-layer]]
+- [State Management](state-management.md)
+- [Routing](routing.md)
+- [Data Layer](data-layer.md)
 
 ## Directory Architecture
 
@@ -212,7 +212,7 @@ Form controllers (`TextEditingController`, `FocusNode`) are managed via `flutter
 ### Internationalization
 
 User-visible text goes through ARB fragment files + `flutter gen-l10n`. Locale is resolved via
-`AcceptLanguageResolver`. See [[Localization]].
+`AcceptLanguageResolver`. See [Localization](localization.md).
 
 ### Cross-Feature Import Boundaries
 

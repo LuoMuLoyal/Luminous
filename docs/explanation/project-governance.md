@@ -64,10 +64,10 @@ updated: 2026-08-31
 ```powershell
 flutter analyze
 flutter test
-dart run scripts/run_daily_checks.dart
+dart run scripts/workflows/daily.dart
 ```
 
-- 需要真实端到端信心时运行 `dart run scripts/run_fullstack_checks.dart`。
+- 需要真实端到端信心时运行 `dart run scripts/workflows/fullstack.dart`。
 - 发布前检查：
   - 文档与发布材料不把产品闭环方向写成已实现能力。
   - 活跃 `plans/` 中没有已完成但未删除的计划。
@@ -79,16 +79,16 @@ dart run scripts/run_daily_checks.dart
 
 ## 文档治理
 
-- `docs/doc-map.yaml` + `scripts/check_doc_coverage.dart`：阻断模式（pre-commit 实际启用，只评估暂存文件）——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于每日检查（保持警告模式，不阻断）；`SKIP_DOC_CHECK=1` 可旁路。feature 改名/新增时须同步对应规则的 `code` glob。
-- `dart run scripts/check_doc_coverage.dart --verify`：校验 doc-map 引用存在、文档链接完整、front-matter 完整、90 天新鲜度（`status: frozen` 豁免）、活跃文档阅读入口（doc-map 规则或文档链接）、`lib/features/*` 覆盖完整性；已接入每日检查（阻断式）。
-- `scripts/check_doc_links.dart --changed`：pre-commit 只检查变更文档的外链；变更集含文档删除/重命名时全量扫描以捕获指向已删文档的入链。
+- `docs/doc-map.yaml` + `scripts/docs/verify.dart`：阻断模式（pre-commit 实际启用，只评估暂存文件）——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于每日检查（保持警告模式，不阻断）；`SKIP_DOC_CHECK=1` 可旁路。feature 改名/新增时须同步对应规则的 `code` glob。
+- `dart run scripts/docs/verify.dart --verify`：校验 doc-map 引用存在、文档链接完整、front-matter 完整、90 天新鲜度（`status: frozen` 豁免）、活跃文档阅读入口（doc-map 规则或文档链接）、`lib/features/*` 覆盖完整性；已接入每日检查（阻断式）。
+- `scripts/docs/links.dart --changed`：pre-commit 只检查变更文档的外链；变更集含文档删除/重命名时全量扫描以捕获指向已删文档的入链。
 - 迁移日志条目描述变更范围与验证结论，不写需要持续同步的精确数字（如测试总数）。
-- `scripts/verify_lucent_openapi_sync.dart` 校验 Lucent OpenAPI JSON 与生成客户端 `generated/lucent_api/` 布局（入口文件与 Today Analysis API 关键端点存在）。
-- ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`，通过 `scripts/arb_tools.dart` 合并。**绝对不要直接编辑 `app_zh.arb` / `app_en.arb`**。
+- `scripts/contract/verify_openapi.dart` 校验 Lucent OpenAPI JSON 与生成客户端 `generated/lucent_api/` 布局（入口文件与 Today Analysis API 关键端点存在）。
+- ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`，通过 `scripts/l10n/arb_tools.dart` 合并。**绝对不要直接编辑 `app_zh.arb` / `app_en.arb`**。
 - `lib/l10n/AGENTS.md` 是 l10n 目录的专用规则文件。
 
 ## CI/CD
 
 - `luminous-cd.yml` 在 Flutter Web 构建前校验 secrets 存在性：`LUCENT_BASE_URL` 必填非空，防止空字符串注入 `--dart-define`。
 - `luminous-cd.yml` 的 Flutter Web 发布构建为纯 dart2js + canvaskit（不用 `--wasm`：wasm 默认渲染器 skwasm 在移动浏览器有布局 bug），服务移动 web 主战场（安卓 Chrome / 鸿蒙过渡）；桌面/大屏 Web 冻结，不扩展构建形态。
-- 环境变量明细见 [AI_Development_Workflow](AI_Development_Workflow.md)。
+- 环境变量明细见 [AI_Development_Workflow](ai-development-workflow.md)。

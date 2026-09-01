@@ -42,7 +42,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 - Generated Dart package scaffold: `generated/lucent_api/`
 - Network wrapper: `lib/core/network/client/dio_client.dart`
 - Public Flutter API exports: `lib/core/network/api.dart`
-- Contract drift verifier: `scripts/verify_lucent_openapi_sync.dart`
+- Contract drift verifier: `scripts/contract/verify_openapi.dart`
 
 ## Current Generated Baseline
 
@@ -63,7 +63,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
   `startedAtISO|id` cursor), `reportsControllerGetEventReviewV1` (foreign/missing → 404). The 14
   generated `EventReview*Dto` models mirror Lucent's read-model shape; domain mapping preserves
   section state / reasonCode / coverage / sources instead of collapsing unknown values.
-- `scripts/bootstrap_generated_sources.dart` regenerates the filtered client as two
+- `scripts/contract/bootstrap.dart` regenerates the filtered client as two
   openapi-generator passes (TodayAnalysis and Reports) because the 7.x CLI accepts only a single
   `apis` value per run; outputs are merged into `generated/lucent_api/` and formatted.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay
@@ -86,7 +86,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 - Read-side contract drift must be fixed at the Lucent OpenAPI export first. Do not bypass an
   existing generated read API with handwritten Dio GET parsing unless
   `../Lucent/docs/reference/generated/openapi.json` has been freshly exported,
-  `dart run scripts/bootstrap_generated_sources.dart` has been attempted, and the exported contract
+  `dart run scripts/contract/bootstrap.dart` has been attempted, and the exported contract
   still lacks the required fields.
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps
   instead of generated write DTOs.
@@ -107,7 +107,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 - `AUTH_TOKEN_EXPIRED` triggers refresh and retry.
 - Dio errors are unwrapped through `LucentErrorMapper`.
 - Do not run ad-hoc OpenAPI generator commands (`openapi-generator-cli` / `npx`) for normal work;
-  `dart run scripts/bootstrap_generated_sources.dart` is the single regeneration entry (see
+  `dart run scripts/contract/bootstrap.dart` is the single regeneration entry (see
   Regenerate below).
 
 ## Regenerate
@@ -121,7 +121,7 @@ pnpm export:openapi
 
 # 2. Run the repository-owned filtered generator and generated-source bootstrap
 cd ../Luminous
-dart run scripts/bootstrap_generated_sources.dart
+dart run scripts/contract/bootstrap.dart
 ```
 
 Example config (`openapi_gen_config.json`):
@@ -152,11 +152,11 @@ flutter test
 For CI-only contract-path verification without re-exporting from a sibling workspace layout, run:
 
 ```bash
-dart run scripts/verify_lucent_openapi_sync.dart \
+dart run scripts/contract/verify_openapi.dart \
   --openapi /absolute/path/to/Lucent/docs/reference/generated/openapi.json
 ```
 
-`verify_lucent_openapi_sync.dart` verifies that the target OpenAPI file is readable JSON, the
+`scripts/contract/verify_openapi.dart` verifies that the target OpenAPI file is readable JSON, the
 generated client layout exists, and the generated `TodayAnalysisApi` exposes the GET and refresh
 operations.
 
@@ -168,13 +168,13 @@ operations.
 - Flutter generated sources in the main app (`*.g.dart`, `*.freezed.dart`,
   `lib/l10n/app_localizations*.dart`) are also local-only and ignored.
 - CI and local validation now regenerate these artifacts before analyze/test via
-  `dart run scripts/bootstrap_generated_sources.dart`.
+  `dart run scripts/contract/bootstrap.dart`.
 - The `dart-dio` generator still produces Markdown doc stubs and package test stubs; these are
   tracked by the project baseline and regenerated alongside the rest of the package.
 
 ## 2026-08-17 F-2 会话重命名与删除客户端面
 
-- Lucent `pnpm export:openapi`(125 paths / 309 schemas)后执行 `dart run scripts/bootstrap_generated_sources.dart`:`AssistantApi` 新增 `assistantControllerRenameConversationV1`(PATCH,body `RenameConversationDto.title` ≤ 48 字符)与 `assistantControllerDeleteConversationV1`(DELETE,软删除);`AssistantConversationDataDto` / `AssistantConversationSummaryDto` 的 `status` 枚举新增 `deleted`。
+- Lucent `pnpm export:openapi`(125 paths / 309 schemas)后执行 `dart run scripts/contract/bootstrap.dart`:`AssistantApi` 新增 `assistantControllerRenameConversationV1`(PATCH,body `RenameConversationDto.title` ≤ 48 字符)与 `assistantControllerDeleteConversationV1`(DELETE,软删除);`AssistantConversationDataDto` / `AssistantConversationSummaryDto` 的 `status` 枚举新增 `deleted`。
 - 既有漂移:`today_analysis_api.dart` 的 recommendations 端点仅注释文案更新(get cold-start onboarding guide cards),无签名变化,与 F-2 无关。
 
 ## 2026-08-24 Lucent Task 6 收口后 Luminous 客户端再同步

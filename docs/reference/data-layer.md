@@ -6,11 +6,11 @@ updated: 2026-08-31
 
 # Data Layer
 
-本文件是 [[architecture]] 拆分后的子文档。
+本文件是 [Architecture](architecture.md) 拆分后的子文档。
 
 相关子文档：
-- [[state-management]]
-- [[routing]]
+- [State Management](state-management.md)
+- [Routing](routing.md)
 
 ## Data Layer
 
@@ -72,10 +72,10 @@ cd ../Lucent
 pnpm export:openapi
 cd ../Luminous
 openapi-generator-cli generate -i ../Lucent/docs/reference/generated/openapi.json -g dart-dio -o generated/lucent_api -c openapi_gen_config.json
-dart run scripts/bootstrap_generated_sources.dart
+dart run scripts/contract/bootstrap.dart
 ```
 
-`bootstrap_generated_sources.dart` runs `flutter pub get`, `dart pub get` in the generated package,
+`scripts/contract/bootstrap.dart` runs `flutter pub get`, `dart pub get` in the generated package,
 `build_runner` for both the generated package and the root app, and `flutter gen-l10n`.
 Do not use ad-hoc `npx` / `build_runner` commands.
 
@@ -167,15 +167,14 @@ keep features decoupled while sharing data:
 1. **Invalidation Bus** (`lib/core/providers/data_change_bus.dart`) — a version-counter event bus for
    cross-feature write-path refresh. When a feature mutates shared data, it emits a topic
    (`DataChangeTopic.dailyRecords`, `healthContext`, etc.); dashboard providers that `ref.watch` the
-   topic's version automatically rebuild. See [[state-management#Cross-Feature Data Refresh
-   (Invalidation Bus)]].
+   topic's version automatically rebuild. See [State Management](state-management.md#cross-feature-data-refresh-invalidation-bus).
 
 2. **Shared Read-Only Snapshot Hub** — `healthContextSnapshotProvider`
    (`health_context/data/providers/health_context.dart`) is the single keepAlive, `authGuarded`
    entry point for the user's health context. Any feature needing allergies, conditions, or current
    medicines reads from this provider rather than fetching independently. It watches the
    invalidation bus for `healthContext` and `currentMedicines` topics, so consumers always get
-   fresh data without manual refresh calls. See [[state-management#Shared Read-Only Snapshot Hub]].
+   fresh data without manual refresh calls. See [State Management](state-management.md#shared-read-only-snapshot-hub).
 
 ### Offline / Cache-First Strategy
 

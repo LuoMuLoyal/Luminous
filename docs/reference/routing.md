@@ -6,11 +6,11 @@ updated: 2026-08-31
 
 # Routing (GoRouter)
 
-本文件是 [[architecture]] 拆分后的子文档。
+本文件是 [Architecture](architecture.md) 拆分后的子文档。
 
 相关子文档：
-- [[state-management]]
-- [[data-layer]]
+- [State Management](state-management.md)
+- [Data Layer](data-layer.md)
 
 ## Routing (GoRouter)
 

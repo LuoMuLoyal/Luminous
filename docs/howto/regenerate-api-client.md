@@ -23,7 +23,7 @@ pnpm export:openapi
 ### 2. 主入口：bootstrap 脚本（Luminous 侧）
 
 ```bash
-dart run scripts/bootstrap_generated_sources.dart
+dart run scripts/contract/bootstrap.dart
 ```
 
 脚本内部按阶段完成全量再生，无需手工调用 openapi-generator-cli：
@@ -58,7 +58,7 @@ dart run scripts/bootstrap_generated_sources.dart
 
 底层生成器为 `@openapitools/openapi-generator-cli` 的 `dart-dio`
 （配置文件 `openapi_gen_config.json`）。**主入口始终是 bootstrap 脚本**，
-仅在排查生成问题时阅读 `scripts/bootstrap_generated_sources.dart` 中的
+仅在排查生成问题时阅读 `scripts/contract/bootstrap.dart` 中的
 `_generateFullApiClient` / `_generateFilteredApiClient` /
 `_generateSupportingFiles`，不要手工执行 generate 命令。
 
@@ -79,10 +79,10 @@ flutter test       # 测试通过
 ## 仅验证合同同步（不实际再生）
 
 ```bash
-dart run scripts/verify_lucent_openapi_sync.dart
+dart run scripts/contract/verify_openapi.dart
 # 可选 --openapi <path> 指定 Lucent 合同路径（默认同样自动解析）
 ```
 
 ## 详细参考
 
-- [[OpenApi_Client]] — 生成物边界、使用规则、常见问题
+- [OpenAPI Client](../reference/openapi-client.md) — 生成物边界、使用规则、常见问题

@@ -6,18 +6,18 @@ updated: 2026-08-31
 
 # Product Information Architecture
 
-本文件是 [[Product_Vision]] 拆分后的子文档。
+本文件是 [Product Vision](product-vision.md) 拆分后的子文档。
 
 相关子文档：
-- [[Product_MVP_Scope]]
-- [[archive/product/Product_Insights]]
-- [[Product_Safety_Privacy]]
+- [Product Mvp Scope](product-mvp-scope.md)
+- [Product_Insights](../archive/product/Product_Insights.md)
+- [Product Safety Privacy](product-safety-privacy.md)
 
 ## 信息架构建议
 
 > 当前五个底部 Tab 是已经运行的产品结构，不等于长期产品层级已经定案。健康伙伴定位修正后，是否继续保留 `today / record / medicine / review / mine`、Assistant 是否需要一级入口、纵向洞察如何承载，等待用户价值调研完成后另行讨论。本轮不增删或重命名 Tab，也不再用现有 Tab 数量证明用药高于其他健康维度。
 
-五 Tab 组件级蓝图的语义边界已并入本节；具体组件清单、尺寸数值与逐页组件树不在此复制，由各 feature README（与代码同址）承接，原始蓝图见归档 [[archive/2026-08-31-doc-governance/Product_Tab_Component_Blueprint]]。
+五 Tab 组件级蓝图的语义边界已并入本节；具体组件清单、尺寸数值与逐页组件树不在此复制，由各 feature README（与代码同址）承接，原始蓝图见归档 [Product_Tab_Component_Blueprint](../archive/2026-08-31-doc-governance/Product_Tab_Component_Blueprint.md)。
 
 以下内容暂作为现行结构说明，不作为最终信息架构决策：
 

@@ -49,7 +49,7 @@ ADR-0001 确立了 Riverpod 作为唯一状态管理方案。经过两个月的�
 ## Consequences
 
 - 新增 `riverpod_generator` + `riverpod_annotation` 到 `dev_dependencies`（`build_runner` 已存在）。
-- `bootstrap_generated_sources.dart` 需增加 riverpod codegen 步骤。
+- `scripts/contract/bootstrap.dart` 需增加 riverpod codegen 步骤。
 - 存量 provider 不强制一次性迁移；新代码必须使用注解形式，触碰旧文件时逐步迁移。
 - `authGuarded` 工厂消除至少 5 处重复 auth guard 逻辑。
 - 受保护的 dashboard provider 通过 `dataChangeVersionProvider` 监听跨 feature 数据变更，实现自动刷新。
