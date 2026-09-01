@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-31
+updated: 2026-09-01
 ---
 
 # Luminous TODO
 
-Last updated: 2026-08-31
+Last updated: 2026-09-01
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -139,4 +139,3 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
 - doc-map 退役两周观察期：pre-commit 已降级 report-only；观察确认 `check_doc_coverage.dart --verify`（结构）+ `check_doc_links.dart`（正文路径）覆盖原 doc-touch 保护价值后，移除 `check_doc_coverage.dart` 的映射检查、pre-commit 的 `--staged` 报告步骤与 `docs/doc-map.yaml` 本体
 - 七规则观察期收敛（`tool/luminous_lints`，warn 观察基线 245 处：no_direct_navigator 113、layered_import 64、no_bang_on_response_data 37、enum_parse_unknown_branch 20、no_raw_datetime_parse 8、first_where_requires_or_else 3、empty_catch_requires_comment 0）：各规则清零后按计划逐条转 error（`--fatal` 门禁接入 pre-push）
 - 七规则 IDE 插件集成：主包依赖图 freezed 钉 analyzer 12.x，而 analysis server 要求插件与其内置 analyzer 一致（14.1.0）；主包升级兼容 analyzer 14 后在 `analysis_options.yaml` 的 `plugins:` 接入 `luminous_lints`（当前仅 CLI 观察）
-- Lucent 跨仓修复待重做：2026-08-31 提交 f7320697 被并行会话 reset 丢弃（README Product_Vision、howto sync-openapi-client OpenApi_Client、glossary Product_Brainstorm 三处指向归档的路径修正）；待 Lucent 仓稳定后重做
