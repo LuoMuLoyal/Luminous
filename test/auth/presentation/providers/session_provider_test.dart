@@ -241,6 +241,87 @@ void main() {
     );
   });
 
+  group('AuthSessionNotifier — restore reconnecting semantics (08-30 S-4)', () {
+    test('cold start: isReconnecting stays false while restoring', () async {
+      sessionStore.tokens = const LucentSessionTokens(
+        accessToken: 'valid-token',
+        refreshToken: 'refresh-token',
+      );
+      final gate = Completer<void>();
+      remote.fetchAccountGate = gate;
+
+      final restoring = container.read(authSessionProvider.notifier).restore();
+      final duringRestore = container.read(authSessionProvider);
+      expect(duringRestore.isLoading, isTrue);
+      expect(duringRestore.isTimeout, isFalse);
+      expect(duringRestore.isReconnecting, isFalse);
+
+      gate.complete();
+      await restoring;
+      expect(container.read(authSessionProvider).isAuthenticated, isTrue);
+      expect(container.read(authSessionProvider).isReconnecting, isFalse);
+    });
+
+    test('retry after timeout: isReconnecting is set during restore', () async {
+      // Test-only seeding: isTimeout 只能由 8s 真实恢复超时路径产生，
+      // 单测不能等真实超时，故通过 protected state setter 播种
+      // 「retry after timeout」前置态。
+      // ignore: invalid_use_of_protected_member
+      container
+          .read(authSessionProvider.notifier)
+          .state = const AuthSessionState(
+        isTimeout: true,
+        errorMessage: 'Session restore timed out',
+      );
+
+      sessionStore.tokens = const LucentSessionTokens(
+        accessToken: 'valid-token',
+        refreshToken: 'refresh-token',
+      );
+      final gate = Completer<void>();
+      remote.fetchAccountGate = gate;
+
+      final restoring = container.read(authSessionProvider.notifier).restore();
+      final duringRestore = container.read(authSessionProvider);
+      expect(duringRestore.isReconnecting, isTrue);
+      expect(duringRestore.isTimeout, isFalse);
+      expect(duringRestore.isLoading, isTrue);
+
+      gate.complete();
+      await restoring;
+      final finalState = container.read(authSessionProvider);
+      expect(finalState.isAuthenticated, isTrue);
+      expect(finalState.isReconnecting, isFalse);
+    });
+
+    test(
+      'manual restore without prior timeout: isReconnecting stays false',
+      () async {
+        sessionStore.tokens = const LucentSessionTokens(
+          accessToken: 'valid-token',
+          refreshToken: 'refresh-token',
+        );
+        // 第一次 restore 正常完成，isTimeout 保持 false。
+        await container.read(authSessionProvider.notifier).restore();
+        expect(container.read(authSessionProvider).isAuthenticated, isTrue);
+
+        // 随后手动再次 restore（如用户主动重试），不应被标记为重连。
+        final gate = Completer<void>();
+        remote.fetchAccountGate = gate;
+        final restoring = container
+            .read(authSessionProvider.notifier)
+            .restore();
+        final duringRestore = container.read(authSessionProvider);
+        expect(duringRestore.isReconnecting, isFalse);
+        expect(duringRestore.isLoading, isTrue);
+
+        gate.complete();
+        await restoring;
+        expect(container.read(authSessionProvider).isReconnecting, isFalse);
+      },
+    );
+  });
+
   group('AuthSessionNotifier — applySession', () {
     test('sets authenticated state with user from session', () async {
       final session = testSession(
@@ -384,8 +465,23 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
   bool refreshSessionShouldFail = false;
   bool refreshSessionCalled = false;
 
+  /// 非空时 fetchAccount 在此 gate 上挂起，供测试在 restore 进行中
+  /// 检查中间状态(isReconnecting / isLoading)。
+  Completer<void>? fetchAccountGate;
+
   @override
   TaskEither<LucentFailure, AuthUser> fetchAccount() {
+    final gate = fetchAccountGate;
+    if (gate != null) {
+      return TaskEither(() async {
+        await gate.future;
+        return _fetchAccountInner().run();
+      });
+    }
+    return _fetchAccountInner();
+  }
+
+  TaskEither<LucentFailure, AuthUser> _fetchAccountInner() {
     if (!fetchAccountShouldFail) {
       return TaskEither.right(
         AuthUser(
