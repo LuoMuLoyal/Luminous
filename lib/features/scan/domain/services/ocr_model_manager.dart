@@ -63,7 +63,10 @@ class OcrModelManager {
     final dir = modelDirectory;
 
     final downloads = <String>[detModelFileName, recModelFileName];
-    final totalSteps = downloads.length + 1; // downloads + config copy
+    // +1 for the config copy step that follows the download loop
+    // (当前为 det + rec 两个下载 + 1 次 config 拷贝;新增下载项时
+    // totalSteps 随 downloads.length 自动增长,只有拷贝步数是常数)。
+    final totalSteps = downloads.length + 1;
 
     var completed = 0;
     for (final fileName in downloads) {
