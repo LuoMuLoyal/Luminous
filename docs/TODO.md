@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-09-01
+updated: 2026-09-02
 ---
 
 # Luminous TODO
 
-Last updated: 2026-09-01
+Last updated: 2026-09-02
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -90,6 +90,35 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
 
 - `NetworkErrorCode.invalidSsePayload` 运行时已无产生点（枚举 + l10n + pending sync 序列化保留以兼容历史持久化行）：若未来清理 legacy pending-sync 数据后可评估移除。
 - `_ErrorSseAdapter` 测试辅助类在 assistant/today/report 三个测试文件各复制一份（沿用每文件自带惯例）：可选收敛到 test/helpers/。
+
+## 2026-09-02 代码审查遗留（08-30 / 09-01 review）
+
+- range_picker_dialog 结果返回路径的 no_direct_navigator 豁免（09-01 审查 #3）
+  - 现状：11 处 `Navigator.of(dialogContext).pop(value)` 是
+    `showModalBottomSheet` / `showFDialog` 结果返回的惯用法（await 拿值），功能正确；
+    `no_direct_navigator` 在观察模式下命中但暂不 block（白名单仅 core/router 与 shell）
+  - 方案：lint 接入 CI（`--fatal`）前重构为弹层关闭专用封装，或把 dialog 结果返回路径
+    加入 lint 白名单并附 `// allowed: dialog result return path` 注释；
+    白名单不应扩大到普通导航
+
+- archive 归档文档的 auth_form_mixin 旧路径与退役 wikilink（09-01 审查 #4，经维护者决定保留豁免）
+  - 现状：`docs/archive/2026-08-31-doc-governance/` 下 Design_System_Components.md 与
+    Project_Guardrails.md 仍引用 `providers/shared/auth_form_mixin.dart` 旧路径（实际文件
+    已迁至 `.../shared/form_mixin.dart`）；Design_System_Components.md 还含指向
+    Design_System 与 Design_System_Migration 的两个退役 wikilink（09ca01f8 迁移遗留）；
+    `scripts/docs/links.dart` 的 `exemptRepoPaths` 豁免条目保留
+  - 方案：下次触碰该归档目录时一并修正两处旧路径、把 wikilink 改为相对 markdown 链接，
+    然后从 `exemptRepoPaths` 删除豁免条目（注意：归档文档进入变更集即触发 links check
+    全量扫描，须一次性清干净）
+
+- trend 图表零值与无数据的视觉区分（08-30 审查 W-1）
+  - 现状：unknown 天不再补零后，用户主动记录的合法零值贴 X 轴，与「无数据」视觉难区分；
+    `ReviewTrendSection` 仅由 legacy preview/dashboard_view 装配；若把
+    `observedMetric == null` 纳入空态判定，会在旧后端 scalar 兼容路径（observedMetric
+    可空）误伤有数据的曲线
+  - 方案：先确认 backend 对 zero-value 与 no-observation 的表达口径，再决定空态判定与
+    图例文案（走 l10n + 同步 localization.md），并补 widget test 锁定
+    `values:[0,0,0]` + observedMetric(observedCount=3) 不走空态
 
 ## 审查暂缓项
 

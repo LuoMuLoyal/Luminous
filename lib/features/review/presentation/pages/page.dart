@@ -9,6 +9,8 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
@@ -61,10 +63,32 @@ class ReviewPage extends ConsumerWidget {
     // 生成结果（生成成本高），保持独立生命周期——invalidate 会清掉已
     // 生成的摘要迫使用户重新生成，不纳入刷新范围（有意取舍）。
     ref.invalidate(suggestionHistoryProvider);
+    // 失败处理约定：page 层刷新不做 toast 也不重试——三个 provider 的
+    // 失败已由各自 AsyncValue.error 承接并投影到对应 section 的错误视图；
+    // 这里仅把异常落日志，避免下拉刷新在 500/断网时完全静默不可观测。
+    final talker = ref.read(talkerProvider);
     await Future.wait([
-      ref.read(reviewCurrentProvider.future).then((_) {}, onError: (_) {}),
-      ref.read(reviewHistoryProvider.future).then((_) {}, onError: (_) {}),
-      ref.read(suggestionHistoryProvider.future).then((_) {}, onError: (_) {}),
+      ref
+          .read(reviewCurrentProvider.future)
+          .then(
+            (_) {},
+            onError: (Object e, StackTrace st) =>
+                talker.error('reviewCurrent refresh failed', e, st),
+          ),
+      ref
+          .read(reviewHistoryProvider.future)
+          .then(
+            (_) {},
+            onError: (Object e, StackTrace st) =>
+                talker.error('reviewHistory refresh failed', e, st),
+          ),
+      ref
+          .read(suggestionHistoryProvider.future)
+          .then(
+            (_) {},
+            onError: (Object e, StackTrace st) =>
+                talker.error('suggestionHistory refresh failed', e, st),
+          ),
     ]);
   }
 
@@ -151,9 +175,13 @@ class ReviewPage extends ConsumerWidget {
       final userTimezone = await readUserTimezone(
         ref,
       ).timeout(const Duration(seconds: 2));
-      final today = DateTime.parse(
+      // localDateKey 返回 `yyyy-MM-dd` 日期键；不再裸用 DateTime.parse——
+      // FormatException 会被外层 catch 整体吞掉、丢掉已读到的选项数据，
+      // 改为可空解析并在 null 时与 catch 同口径降级为空选项列表。
+      final today = parseDateTimeOrNull(
         localDateKey(DateTime.now(), timeZoneName: userTimezone),
       );
+      if (today == null) return const [];
       final records = await ref
           .read(dailyRecordListForDateProvider(today).future)
           .timeout(const Duration(seconds: 2));
