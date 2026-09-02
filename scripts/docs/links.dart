@@ -343,7 +343,8 @@ const List<String> exemptRepoPaths = [
   // itself (Design_System.md).
   'lib/features/record/domain/entities/record_type_colors.dart',
   // Stale rename lag: the file now lives at .../shared/form_mixin.dart;
-  // exempt until the doc catches up.
+  // exempt until the doc catches up. 活动文档(design-system.md)已修正,
+  // 仅剩 docs/archive 两份归档文档未随迁移(见 docs/TODO.md)。
   'lib/features/auth/presentation/providers/shared/auth_form_mixin.dart',
 ];
 

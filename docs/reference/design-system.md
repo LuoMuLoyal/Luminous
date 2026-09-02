@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-08-31
+updated: 2026-09-02
 ---
 
 # Design System
@@ -136,7 +136,7 @@ updated: 2026-08-31
 
 - auth 页面（login/register/forgot-password/change-email/account-settings）直接组合 `FButton` / `FTabs` / `FToast` / `FDialog`；`auth_shell.dart` 仅保留为薄 page-shell/card 布局 helper。
 - 主表单页模式：`Form` + `GlobalKey<FormState>` + `FTextFormField.email/password` + `AutovalidateMode.onUserInteraction`。
-- 表单验证经 `AuthValidationMixin` 与 `CooldownTimerMixin` 共享（`lib/features/auth/presentation/providers/shared/auth_form_mixin.dart`），`RegisterFormNotifier` / `PasswordResetNotifier` / `LoginFormNotifier` 均使用；email 校验委托 `email_validator` package，auth provider 内不保留手写 email regex。
+- 表单验证经 `AuthValidationMixin` 与 `CooldownTimerMixin` 共享（`lib/features/auth/presentation/providers/shared/form_mixin.dart`），`RegisterFormNotifier` / `PasswordResetNotifier` / `LoginFormNotifier` 均使用；email 校验委托 `email_validator` package，auth provider 内不保留手写 email regex。
 - register form 带真实 Forui `FCheckbox` terms/privacy consent gate，用户接受前禁用账户创建。
 - account settings 页面按 `FTabs` 分为 overview/profile/email/identity 与 password/delete-account 两个 pane，各 pane 渲染在单个外层 `FCard` 内。
 

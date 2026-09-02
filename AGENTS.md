@@ -173,6 +173,28 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
   // but do not surface it until the matching contract/product job is ready.
   ```
 
+### Custom Lint Rules(`tool/luminous_lints`)
+
+七条规则的一句话清单(默认 warn 观察模式,`--fatal` 才作门禁;规则细节见
+`tool/luminous_lints/lib/src/`):
+
+- `no_direct_navigator` — 直接使用 Material `Navigator.*`(GoRouter 是唯一导航入口)。
+  白名单仅 `lib/core/router/` 与 `lib/features/shell/`;弹层内部的 `pop(value)` 结果
+  返回是既有惯用法,lint 接入 CI 前单独评估(见 `docs/TODO.md`)。
+- `first_where_requires_or_else` — 无 `orElse` 的 `firstWhere` 在无匹配时抛
+  `StateError`;提供 `orElse` 即通过。
+- `no_bang_on_response_data` — data 层 `!` 强解包(典型 `response.data!`),坏 payload
+  必须映射为 domain failure;仅扫描含 `/data/` 的路径,presentation 层不适用。
+- `empty_catch_requires_comment` — 空 catch 块静默吞错;块内有注释、日志或 rethrow
+  即通过。注意 `onError: (_) {}` 形态不在覆盖内,评审时需人工把关。
+- `enum_parse_unknown_branch` — enum switch **语句**缺 fallback 分支(新枚举值与未知
+  服务端载荷必须 fail safe);Dart 3 switch 表达式豁免(编译器保证穷尽)。
+- `no_raw_datetime_parse` — 裸 `DateTime.parse` 在畸形输入上抛 `FormatException`;
+  改用 `parseDateTimeOrNull` / `parseDateTimeOrEpoch`(`lib/core/utils/date_format.dart`)。
+- `layered_import` — 跨 feature 的 data→data 与 presentation→presentation 禁令
+  (与上文 Cross-Feature Import Rules 一一对应);feature 间消费 domain/provider
+  公共接缝是 sanctioned 形态,规则不报。
+
 ## Data Layer
 
 - Repository pattern: `domain/repositories/` interfaces, `data/repositories/` implements.

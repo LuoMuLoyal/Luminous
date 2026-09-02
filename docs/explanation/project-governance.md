@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-08-31
+updated: 2026-09-02
 ---
 
 # Project Governance
@@ -82,6 +82,7 @@ dart run scripts/workflows/daily.dart
 - `docs/doc-map.yaml` + `scripts/docs/verify.dart`：阻断模式（pre-commit 实际启用，只评估暂存文件）——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于每日检查（保持警告模式，不阻断）；`SKIP_DOC_CHECK=1` 可旁路。feature 改名/新增时须同步对应规则的 `code` glob。
 - `dart run scripts/docs/verify.dart --verify`：校验 doc-map 引用存在、文档链接完整、front-matter 完整、90 天新鲜度（`status: frozen` 豁免）、活跃文档阅读入口（doc-map 规则或文档链接）、`lib/features/*` 覆盖完整性；已接入每日检查（阻断式）。
 - `scripts/docs/links.dart --changed`：pre-commit 只检查变更文档的外链；变更集含文档删除/重命名时全量扫描以捕获指向已删文档的入链。
+- 七条自定义 lint 规则（`tool/luminous_lints`）的规则清单与豁免路径以 `AGENTS.md` 的 "Custom Lint Rules" 一节为准；`links.dart` 的 `exemptRepoPaths` 豁免面保持最小——当前仅剩 archive 归档文档的 `auth_form_mixin` 旧路径一条，待归档文档下次触碰时随路径与退役 wikilink 一并修正后删除（见 `docs/TODO.md`）。
 - 迁移日志条目描述变更范围与验证结论，不写需要持续同步的精确数字（如测试总数）。
 - `scripts/contract/verify_openapi.dart` 校验 Lucent OpenAPI JSON 与生成客户端 `generated/lucent_api/` 布局（入口文件与 Today Analysis API 关键端点存在）。
 - ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`，通过 `scripts/l10n/arb_tools.dart` 合并。**绝对不要直接编辑 `app_zh.arb` / `app_en.arb`**。
