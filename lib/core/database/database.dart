@@ -93,6 +93,11 @@ class AppDatabase extends _$AppDatabase {
         // Make the rename defensive: only attempt the ALTER TABLE if the
         // old table name still exists. Users who upgraded through v4
         // post-d607145 will skip this step cleanly.
+        //
+        // TODO(cleanup): remove this defensive sqlite_master check once
+        // every release in the field is v5+;它是 d607145 后「no such table」
+        // 启动崩溃的临时兜底,全量用户升到 v5 后即为死代码。移除前勿在
+        // v6 提前删除——未升级的小部分用户仍依赖此保护(见审查 S-1)。
         final oldExists = await customSelect(
           'SELECT 1 FROM sqlite_master '
           "WHERE type='table' AND name='report_dashboard_cache_entries'",
