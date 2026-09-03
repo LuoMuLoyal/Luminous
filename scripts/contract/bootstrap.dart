@@ -94,6 +94,18 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
     );
   }
 
+  // 生成前清空 tracked client 的 lib 旧产物:openapi 再生成只做合并拷贝,若合同
+  // 侧删除/重命名了 schema 或 endpoint,旧版生成的 api/model/supporting 文件会
+  // 残留(如按参数/属性命名的空 model),随后 build_runner 在畸形文件上解析失败。
+  // lib 下全部是生成物(lucent_api.dart、src/api、src/model、src/auth 及由
+  // build_runner 落盘的 *.g.dart),整树删除后由下面的拷贝步骤重建精确镜像。
+  final generatedLib = Directory(
+    '${generatedClientRoot.path}${Platform.pathSeparator}lib',
+  );
+  if (generatedLib.existsSync()) {
+    await generatedLib.delete(recursive: true);
+  }
+
   final filteredOutputs = <Directory>[];
   final supportingOutput = await Directory.systemTemp.createTemp(
     'luminous-openapi-supporting-',
@@ -182,6 +194,7 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
     stepName:
         'dart run build_runner build --delete-conflicting-outputs '
         '(generated/lucent_api)',
+    maxRetries: 1,
   );
   stdout.writeln('');
 
@@ -380,6 +393,7 @@ Future<void> _buildAppCodegen(ToolContext context) async {
     ['run', 'build_runner', 'build', '--delete-conflicting-outputs'],
     workingDirectory: context.repoRoot,
     stepName: 'dart run build_runner build --delete-conflicting-outputs',
+    maxRetries: 1,
   );
 }
 

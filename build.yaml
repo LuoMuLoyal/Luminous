@@ -3,3 +3,8 @@ targets:
     sources:
       exclude:
         - generated/lucent_api/**
+        # Independent analyzer-plugin package (own pubspec + .dart_tool); kept
+        # out of the app's analysis context (see analysis_options.yaml) and out
+        # of build_runner's source set, where source_gen/drift_dev could not
+        # resolve its `package:test` annotations and failed the whole build.
+        - tool/luminous_lints/**

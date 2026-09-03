@@ -46,29 +46,46 @@ Future<void> runLoggedCommand(
   required Directory workingDirectory,
   String? stepName,
   Map<String, String>? environment,
+  int maxRetries = 0,
 }) async {
   if (stepName != null) {
     stdout.writeln('==> $stepName');
   }
   stdout.writeln('$executable ${arguments.join(' ')}');
 
-  final process = await Process.start(
-    executable,
-    arguments,
-    workingDirectory: workingDirectory.path,
-    environment: environment,
-    runInShell: true,
-    mode: ProcessStartMode.inheritStdio,
-  );
-
-  final exitCode = await process.exitCode;
-  if (exitCode != 0) {
-    throw ProcessException(
+  var attempt = 0;
+  while (true) {
+    attempt += 1;
+    final process = await Process.start(
       executable,
       arguments,
-      'Command failed with exit code $exitCode.',
-      exitCode,
+      workingDirectory: workingDirectory.path,
+      environment: environment,
+      runInShell: true,
+      mode: ProcessStartMode.inheritStdio,
     );
+
+    final exitCode = await process.exitCode;
+    if (exitCode == 0) return;
+
+    if (attempt > maxRetries) {
+      throw ProcessException(
+        executable,
+        arguments,
+        'Command failed with exit code $exitCode.',
+        exitCode,
+      );
+    }
+
+    // Transient failures (e.g. Windows file-lock contention during
+    // build_runner hooks / format) recover on a rerun; a deterministic
+    // failure simply fails the retry too and still surfaces below.
+    stdout.writeln(
+      '[warn] $executable ${arguments.join(' ')} exited with code '
+      '$exitCode (attempt $attempt of ${maxRetries + 1}); retrying.',
+    );
+    await Future<void>.delayed(const Duration(seconds: 3));
+    stdout.writeln('$executable ${arguments.join(' ')}');
   }
 }
 
