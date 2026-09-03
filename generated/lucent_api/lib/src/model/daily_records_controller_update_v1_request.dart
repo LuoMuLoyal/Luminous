@@ -51,7 +51,7 @@ class DailyRecordsControllerUpdateV1Request {
 
   /// Date in YYYY-MM-DD format.
   @JsonKey(name: r'occurredAt', required: false, includeIfNull: false)
-  final DateTime? occurredAt;
+  final String? occurredAt;
 
   /// Time in HH:mm 24-hour format. Use null to clear.
   @JsonKey(name: r'occurredTime', required: false, includeIfNull: false)

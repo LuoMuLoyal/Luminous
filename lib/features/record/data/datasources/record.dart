@@ -36,7 +36,7 @@ class DailyRecordRemoteDataSource {
     int pageSize = 50,
   }) async {
     final response = await api.dailyRecordsControllerListV1(
-      date: DateTime.parse(date),
+      date: date,
       kind: kind,
       page: page,
       pageSize: pageSize,

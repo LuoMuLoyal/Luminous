@@ -432,7 +432,7 @@ class DailyRecordsApi {
   /// Returns a [Future] containing a [Response] with a [DailyRecordListResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DailyRecordListResponseDto>> dailyRecordsControllerListV1({
-    required DateTime date,
+    required String date,
     String? kind,
     int? page,
     int? pageSize,

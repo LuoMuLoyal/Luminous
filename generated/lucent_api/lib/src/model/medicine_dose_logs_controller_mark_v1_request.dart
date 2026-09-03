@@ -58,7 +58,7 @@ class MedicineDoseLogsControllerMarkV1Request {
 
   /// Scheduled date YYYY-MM-DD.
   @JsonKey(name: r'scheduledFor', required: true, includeIfNull: false)
-  final DateTime scheduledFor;
+  final String scheduledFor;
 
   /// Scheduled slot time in HH:mm for slot-aware marks.
   @JsonKey(name: r'scheduledTime', required: false, includeIfNull: false)
