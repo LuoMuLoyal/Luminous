@@ -47,8 +47,8 @@ class LucentNotificationPreferencesRepository
               data: patch.toJson(),
             )
           : await api.notificationPreferencesControllerPatchV1(
-              updateNotificationPreferencesDto:
-                  UpdateNotificationPreferencesDto(
+              notificationPreferencesControllerPatchV1Request:
+                  NotificationPreferencesControllerPatchV1Request(
                     healthAlertsEnabled: patch.healthAlertsEnabled,
                     weeklyInsightEnabled: patch.weeklyInsightEnabled,
                     waterRemindersEnabled: patch.waterRemindersEnabled,

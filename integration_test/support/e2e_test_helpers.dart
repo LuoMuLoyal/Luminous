@@ -619,9 +619,9 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
 
   @override
   TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
-    required CreateDataExportRequestDtoKindEnum kind,
-    required CreateDataExportRequestDtoFormatEnum format,
-    required CreateDataExportRequestDtoRangeEnum range,
+    required DataExportControllerCreateRequestV1RequestKindEnum kind,
+    required DataExportControllerCreateRequestV1RequestFormatEnum format,
+    required DataExportControllerCreateRequestV1RequestRangeEnum range,
     required String password,
   }) {
     // S-4: When expectDataExportPassword is set, validate the password so

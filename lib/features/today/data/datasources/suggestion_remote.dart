@@ -51,9 +51,10 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     return TaskEither.tryCatch(() async {
       final response = await api.todaySuggestionControllerSubmitFeedbackV1(
         id: id,
-        suggestionFeedbackDto: SuggestionFeedbackDto(
-          feedback: _mapFeedbackToDto(feedback),
-        ),
+        todaySuggestionControllerSubmitFeedbackV1Request:
+            TodaySuggestionControllerSubmitFeedbackV1Request(
+              feedback: _mapFeedbackToDto(feedback),
+            ),
       );
       final data = requireData(response.data, operation: 'submitFeedback');
       return TodaySuggestionFeedbackResult(
@@ -252,17 +253,18 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     };
   }
 
-  SuggestionFeedbackDtoFeedbackEnum _mapFeedbackToDto(
-    TodaySuggestionFeedback feedback,
-  ) {
+  TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum
+  _mapFeedbackToDto(TodaySuggestionFeedback feedback) {
     return switch (feedback) {
       TodaySuggestionFeedback.accepted =>
-        SuggestionFeedbackDtoFeedbackEnum.accepted,
-      TodaySuggestionFeedback.later => SuggestionFeedbackDtoFeedbackEnum.later,
+        TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum.accepted,
+      TodaySuggestionFeedback.later =>
+        TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum.later,
       TodaySuggestionFeedback.notApplicable =>
-        SuggestionFeedbackDtoFeedbackEnum.notApplicable,
+        TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum
+            .notApplicable,
       TodaySuggestionFeedback.suppress =>
-        SuggestionFeedbackDtoFeedbackEnum.suppress,
+        TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum.suppress,
     };
   }
 }

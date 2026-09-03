@@ -104,15 +104,15 @@ void main() {
       expect(fakeApi.createCallCount, 1);
       expect(
         fakeApi.lastCreateRequest?.kind,
-        CreateDataExportRequestDtoKindEnum.hospital,
+        DataExportControllerCreateRequestV1RequestKindEnum.hospital,
       );
       expect(
         fakeApi.lastCreateRequest?.format,
-        CreateDataExportRequestDtoFormatEnum.pdf,
+        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
       );
       expect(
         fakeApi.lastCreateRequest?.range,
-        CreateDataExportRequestDtoRangeEnum.last7Days,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
       );
       expect(fakeApi.lastCreateRequest?.password, 'export-password');
       expect(
@@ -130,24 +130,25 @@ void main() {
           .read(dataExportControllerProvider.notifier)
           .requestExport(
             const DataExportRequestInput(
-              kind: CreateDataExportRequestDtoKindEnum.monthly,
-              format: CreateDataExportRequestDtoFormatEnum.pdf,
-              range: CreateDataExportRequestDtoRangeEnum.last30Days,
+              kind: DataExportControllerCreateRequestV1RequestKindEnum.monthly,
+              format: DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+              range: DataExportControllerCreateRequestV1RequestRangeEnum
+                  .last30Days,
             ),
             password: 'export-password',
           );
 
       expect(
         fakeApi.lastCreateRequest?.kind,
-        CreateDataExportRequestDtoKindEnum.monthly,
+        DataExportControllerCreateRequestV1RequestKindEnum.monthly,
       );
       expect(
         fakeApi.lastCreateRequest?.format,
-        CreateDataExportRequestDtoFormatEnum.pdf,
+        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
       );
       expect(
         fakeApi.lastCreateRequest?.range,
-        CreateDataExportRequestDtoRangeEnum.last30Days,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last30Days,
       );
     });
 
@@ -467,7 +468,7 @@ class _FakeDataExportApi implements DataExportApi {
   DataExportRequestResponseDto createResponse = _buildCreateResponse();
   bool createReturnsNull = false;
   DioException? createException;
-  CreateDataExportRequestDto? lastCreateRequest;
+  DataExportControllerCreateRequestV1Request? lastCreateRequest;
   Duration createDelay;
 
   @override
@@ -504,7 +505,8 @@ class _FakeDataExportApi implements DataExportApi {
   @override
   Future<Response<DataExportRequestResponseDto>>
   dataExportControllerCreateRequestV1({
-    required CreateDataExportRequestDto createDataExportRequestDto,
+    required DataExportControllerCreateRequestV1Request
+    dataExportControllerCreateRequestV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -513,7 +515,7 @@ class _FakeDataExportApi implements DataExportApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     createCallCount++;
-    lastCreateRequest = createDataExportRequestDto;
+    lastCreateRequest = dataExportControllerCreateRequestV1Request;
     if (createException != null) {
       throw createException!;
     }

@@ -95,8 +95,8 @@ class _ClinicSummaryPreviewContentState
 
   /// The current field-level privacy selection. Defaults to every field
   /// except the free-text notes (notes are off by default).
-  List<ClinicSummaryRequestDtoSelectedFieldsEnum> _selectedFields =
-      kClinicSummaryDefaultFields;
+  List<ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>
+  _selectedFields = kClinicSummaryDefaultFields;
 
   /// Active share flow step, or null when showing the summary content.
   _ShareStep? _shareStep;
@@ -127,12 +127,18 @@ class _ClinicSummaryPreviewContentState
         if (next.hasValue) {
           _previewMeasured = true;
           unawaited(
-            service.trackVisitSummaryPreviewed(ProductEventResult.success),
+            service.trackVisitSummaryPreviewed(
+              ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+                  .success,
+            ),
           );
         } else if (next.hasError) {
           _previewMeasured = true;
           unawaited(
-            service.trackVisitSummaryPreviewed(ProductEventResult.failure),
+            service.trackVisitSummaryPreviewed(
+              ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+                  .failure,
+            ),
           );
         }
       },
@@ -195,7 +201,9 @@ class _ClinicSummaryPreviewContentState
 
   // ── Field selection ─────────────────────────────────────────────────────
 
-  void _updateSelection(List<ClinicSummaryRequestDtoSelectedFieldsEnum> next) {
+  void _updateSelection(
+    List<ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum> next,
+  ) {
     // Empty selection is impossible: the panel disables the last remaining
     // toggle, and this guard keeps the state consistent either way.
     if (next.isEmpty) return;
@@ -217,7 +225,7 @@ class _ClinicSummaryPreviewContentState
         shareSubject: l10n.reviewExportClinicShareTitle,
         // 预览 PDF 是 POST 接口，请求体携带字段选择——未选择的字段不会
         // 出现在 PDF 里（与服务端 preview/share 同一过滤视图）。
-        postBody: ClinicSummaryRequestDto(
+        postBody: ReportsControllerPreviewClinicSummaryV1Request(
           selectedFields: _selectedFields,
         ).toJson(),
       );
@@ -227,8 +235,10 @@ class _ClinicSummaryPreviewContentState
       unawaited(
         service.trackVisitSummaryExported(
           result == PdfDownloadResult.success
-              ? ProductEventResult.success
-              : ProductEventResult.failure,
+              ? ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+                    .success
+              : ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+                    .failure,
         ),
       );
       if (mounted) {
@@ -276,9 +286,10 @@ class _ClinicSummaryPreviewContentState
       // 提示失败，字段选择保持可重试（widget 不读 code/status）。
       final api = ref.read(lucentClientProvider).reports;
       final response = await api.reportsControllerShareClinicSummaryV1(
-        clinicSummaryRequestDto: ClinicSummaryRequestDto(
-          selectedFields: _selectedFields,
-        ),
+        reportsControllerPreviewClinicSummaryV1Request:
+            ReportsControllerPreviewClinicSummaryV1Request(
+              selectedFields: _selectedFields,
+            ),
       );
       final value = response.data!;
       // The share list is cached (keepAlive) — invalidate it so the
@@ -356,7 +367,8 @@ class _ClinicSummaryPreviewContentState
       _ShareStep.confirm => _ShareConfirmPanel(
         isCreating: _isCreatingShare,
         hasNotes: _selectedFields.contains(
-          ClinicSummaryRequestDtoSelectedFieldsEnum.notes,
+          ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+              .notes,
         ),
         onCancel: _closeShareFlow,
         onConfirm: _createShare,
@@ -385,14 +397,18 @@ class _FieldSelectionPanel extends StatelessWidget {
     required this.onChanged,
   });
 
-  final List<ClinicSummaryRequestDtoSelectedFieldsEnum> selectedFields;
+  final List<ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>
+  selectedFields;
 
   /// Whether the toggles can be changed. Disabled once the share link is
   /// created/revoked, so the preview cannot silently change behind the
   /// shown link.
   final bool enabled;
 
-  final ValueChanged<List<ClinicSummaryRequestDtoSelectedFieldsEnum>> onChanged;
+  final ValueChanged<
+    List<ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>
+  >
+  onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -441,22 +457,26 @@ class _FieldSelectionPanel extends StatelessWidget {
 
   String _fieldLabel(
     AppLocalizations l10n,
-    ClinicSummaryRequestDtoSelectedFieldsEnum field,
+    ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum field,
   ) {
     return switch (field) {
-      ClinicSummaryRequestDtoSelectedFieldsEnum.eventOverview =>
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .eventOverview =>
         l10n.reviewClinicSummaryFieldEventOverview,
-      ClinicSummaryRequestDtoSelectedFieldsEnum.symptomChanges =>
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .symptomChanges =>
         l10n.reviewClinicSummaryFieldSymptomChanges,
-      ClinicSummaryRequestDtoSelectedFieldsEnum.medicationSlots =>
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .medicationSlots =>
         l10n.reviewClinicSummaryFieldMedicationSlots,
-      ClinicSummaryRequestDtoSelectedFieldsEnum.water =>
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.water =>
         l10n.reviewClinicSummaryFieldWater,
-      ClinicSummaryRequestDtoSelectedFieldsEnum.sleep =>
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.sleep =>
         l10n.reviewClinicSummaryFieldSleep,
-      ClinicSummaryRequestDtoSelectedFieldsEnum.notes =>
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.notes =>
         l10n.reviewClinicSummaryFieldNotes,
-      ClinicSummaryRequestDtoSelectedFieldsEnum.unknownDefaultOpenApi =>
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .unknownDefaultOpenApi =>
         field.value,
     };
   }

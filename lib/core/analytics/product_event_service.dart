@@ -21,19 +21,32 @@ part 'product_event_service.g.dart';
 /// Pending-sync entity type for queued product events.
 const String kProductEventSyncEntityType = 'product_event';
 
-/// Maps the running platform to the API [UserDevicePlatform] enum.
+/// Maps the running platform to the API platform enum (currently inlined as
+/// [ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum]).
 ///
 /// Uses [defaultTargetPlatform] instead of `dart:io` so it compiles and runs
 /// on every target including web and tests.
-UserDevicePlatform resolveUserDevicePlatform() {
-  if (kIsWeb) return UserDevicePlatform.web;
+ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+resolveUserDevicePlatform() {
+  if (kIsWeb) {
+    return ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+        .web;
+  }
   return switch (defaultTargetPlatform) {
-    TargetPlatform.iOS => UserDevicePlatform.ios,
-    TargetPlatform.android => UserDevicePlatform.android,
-    TargetPlatform.windows => UserDevicePlatform.windows,
-    TargetPlatform.macOS => UserDevicePlatform.macos,
-    TargetPlatform.linux => UserDevicePlatform.linux,
-    _ => UserDevicePlatform.other,
+    TargetPlatform.iOS =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.ios,
+    TargetPlatform.android =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+          .android,
+    TargetPlatform.windows =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+          .windows,
+    TargetPlatform.macOS =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.macos,
+    TargetPlatform.linux =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.linux,
+    _ =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.other,
   };
 }
 
@@ -51,16 +64,16 @@ String _generateEventId() {
 
 /// Records privacy-minimal product events at their actual success boundaries.
 ///
-/// Flow: builds the [CreateProductEventDto] (appVersion / platform /
-/// occurredAt / clientEventId) → attempts `POST /user/product-events` via the
-/// generated API; on a [DioException] (offline / network / server error) the
-/// event is enqueued into the pending-sync queue under
+/// Flow: builds the request event (appVersion / platform / occurredAt /
+/// clientEventId) → attempts `POST /user/product-events` via the generated
+/// API; on a [DioException] (offline / network / server error) the event is
+/// enqueued into the pending-sync queue under
 /// [kProductEventSyncEntityType] for later replay. Replays reuse the SAME
-/// [CreateProductEventDto.clientEventId], so server-side idempotency prevents
-/// double counting.
+/// clientEventId, so server-side idempotency prevents double counting.
 ///
-/// The queued payload is `dto.toJson()` — exactly the allowlisted attribute
-/// keys, nothing else (no free text, no record values, no metadata).
+/// The queued payload is the event's `toJson()` — exactly the allowlisted
+/// attribute keys, nothing else (no free text, no record values, no
+/// metadata).
 ///
 /// Event reporting is fire-and-forget: failures never propagate to callers
 /// and never break the UI.
@@ -70,7 +83,9 @@ class ProductEventService {
     this.pendingSyncDao,
     this.syncWorker,
     Future<String> Function()? versionLoader,
-    UserDevicePlatform Function()? platformResolver,
+    ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+    Function()?
+    platformResolver,
     DateTime Function()? clock,
     String Function()? eventIdGenerator,
   }) : _versionLoader = versionLoader ?? _loadAppVersion,
@@ -87,7 +102,9 @@ class ProductEventService {
   final SyncWorker? syncWorker;
 
   final Future<String> Function() _versionLoader;
-  final UserDevicePlatform Function() _platformResolver;
+  final ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+  Function()
+  _platformResolver;
   final DateTime Function() _clock;
   final String Function() _eventIdGenerator;
 
@@ -122,25 +139,32 @@ class ProductEventService {
 
   /// Tracks a visit summary preview attempt — one event per server response
   /// (success or failure), no dedupe.
-  Future<void> trackVisitSummaryPreviewed(ProductEventResult result) async {
+  Future<void> trackVisitSummaryPreviewed(
+    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+  ) async {
     await _record(VisitSummaryPreviewedEvent(result: result));
   }
 
   /// Tracks a visit summary export attempt — one event per server response
   /// (success or failure), no dedupe.
-  Future<void> trackVisitSummaryExported(ProductEventResult result) async {
+  Future<void> trackVisitSummaryExported(
+    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+  ) async {
     await _record(VisitSummaryExportedEvent(result: result));
   }
 
   Future<void> _record(ProductEvent event) async {
     try {
-      final dto = await _buildDto(event);
+      final eventPayload = await _buildEvent(event);
       try {
         await api.productEventsControllerRecordBatchV1(
-          createProductEventBatchDto: CreateProductEventBatchDto(events: [dto]),
+          productEventsControllerRecordBatchV1Request:
+              ProductEventsControllerRecordBatchV1Request(
+                events: [eventPayload],
+              ),
         );
       } on DioException catch (error) {
-        await _enqueue(dto);
+        await _enqueue(eventPayload);
         appTalker.warning(
           'ProductEventService: ${event.name} failed, queued for sync: '
           '$error',
@@ -155,7 +179,9 @@ class ProductEventService {
     }
   }
 
-  Future<CreateProductEventDto> _buildDto(ProductEvent event) async {
+  Future<ProductEventsControllerRecordBatchV1RequestEventsInner> _buildEvent(
+    ProductEvent event,
+  ) async {
     final version = await _versionLoader();
     return event.toDto(
       appVersion: version,
@@ -167,16 +193,18 @@ class ProductEventService {
 
   /// Enqueues the failed event into the pending-sync queue.
   ///
-  /// The payload is the DTO's own JSON — only allowlisted attribute keys.
-  /// The same DTO (and therefore the same [clientEventId]) is replayed on
+  /// The payload is the event's own JSON — only allowlisted attribute keys.
+  /// The same event (and therefore the same clientEventId) is replayed on
   /// retry, making retries idempotent.
-  Future<void> _enqueue(CreateProductEventDto dto) async {
+  Future<void> _enqueue(
+    ProductEventsControllerRecordBatchV1RequestEventsInner event,
+  ) async {
     final dao = pendingSyncDao;
     if (dao == null) return;
     await dao.enqueue(
       entityType: kProductEventSyncEntityType,
       operation: 'create',
-      payload: jsonEncode(dto.toJson()),
+      payload: jsonEncode(event.toJson()),
     );
     unawaited(syncWorker?.flush());
   }
@@ -186,8 +214,9 @@ class ProductEventService {
 ///
 /// Registers the pending-sync replay handler for
 /// [kProductEventSyncEntityType]: decodes the queued payload back into a
-/// [CreateProductEventDto] and re-posts it via the generated API. Decoding
-/// round-trips the clientEventId, so retries stay idempotent.
+/// [ProductEventsControllerRecordBatchV1RequestEventsInner] and re-posts it
+/// via the generated API. Decoding round-trips the clientEventId, so retries
+/// stay idempotent.
 @Riverpod(keepAlive: true)
 ProductEventService productEventService(Ref ref) {
   final pendingSyncDao = ref.watch(pendingSyncDaoProvider);
@@ -197,9 +226,14 @@ ProductEventService productEventService(Ref ref) {
   syncWorker.registerHandler(kProductEventSyncEntityType, (entry) async {
     final payload = jsonDecode(entry.payload) as Map<String, dynamic>;
     await api.productEventsControllerRecordBatchV1(
-      createProductEventBatchDto: CreateProductEventBatchDto(
-        events: [CreateProductEventDto.fromJson(payload)],
-      ),
+      productEventsControllerRecordBatchV1Request:
+          ProductEventsControllerRecordBatchV1Request(
+            events: [
+              ProductEventsControllerRecordBatchV1RequestEventsInner.fromJson(
+                payload,
+              ),
+            ],
+          ),
     );
   });
 

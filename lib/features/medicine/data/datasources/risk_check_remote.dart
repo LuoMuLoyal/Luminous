@@ -39,7 +39,7 @@ class MedicineRiskCheckRemoteDataSource {
   Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
     final dto = mapper.checkTypeToDto(type);
     final response = await api.medicinesControllerRunRiskCheckV1(
-      runRiskCheckDto: dto,
+      medicinesControllerRunRiskCheckV1Request: dto,
     );
     final resp = response.data;
     if (resp == null) {
@@ -62,7 +62,7 @@ class MedicineRiskCheckRemoteDataSource {
   }) async {
     final dto = mapper.precheckToDto(source: source, sourceRefId: sourceRefId);
     final response = await api.medicinesControllerRunRiskCheckV1(
-      runRiskCheckDto: dto,
+      medicinesControllerRunRiskCheckV1Request: dto,
     );
     final resp = response.data;
     if (resp == null) {

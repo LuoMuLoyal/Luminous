@@ -103,7 +103,10 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
 
   @override
   Stream<AssistantRemoteEvent> streamMessages({
-    required List<lucent.AssistantInputMessageDto> messages,
+    required List<
+      lucent.AssistantControllerStreamMessagesV1RequestMessagesInner
+    >
+    messages,
     String? conversationId,
   }) {
     lastStreamConversationId = conversationId;

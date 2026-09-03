@@ -66,7 +66,10 @@ Future<void> handleReviewExportAction(
     unawaited(
       ref
           .read(productEventServiceProvider)
-          .trackVisitSummaryExported(ProductEventResult.failure),
+          .trackVisitSummaryExported(
+            ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+                .failure,
+          ),
     );
     if (!context.mounted) return;
     await handleSensitiveActionFailure(
@@ -86,11 +89,13 @@ Future<void> handleReviewExportAction(
   final exported = switch (uiStatus) {
     DataExportUiStatus.idle ||
     DataExportUiStatus.failed ||
-    DataExportUiStatus.unavailable => ProductEventResult.failure,
+    DataExportUiStatus.unavailable =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum.failure,
     DataExportUiStatus.requested ||
     DataExportUiStatus.processing ||
     DataExportUiStatus.completed ||
-    DataExportUiStatus.completedLinkMissing => ProductEventResult.success,
+    DataExportUiStatus.completedLinkMissing =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum.success,
   };
   unawaited(
     ref.read(productEventServiceProvider).trackVisitSummaryExported(exported),

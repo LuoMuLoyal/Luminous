@@ -79,7 +79,7 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   String? deleteAccountPassword;
   String? unlinkIdentityId;
   String? unlinkIdentityPassword;
-  CreateDataExportRequestDto? lastDataExportRequest;
+  DataExportControllerCreateRequestV1Request? lastDataExportRequest;
   bool createWechatAuthorizeCalled = false;
   bool createWechatIdentityLinkAuthorizeCalled = false;
   String? wechatAuthorizeCallbackUri;
@@ -312,12 +312,12 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
 
   @override
   TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
-    required CreateDataExportRequestDtoKindEnum kind,
-    required CreateDataExportRequestDtoFormatEnum format,
-    required CreateDataExportRequestDtoRangeEnum range,
+    required DataExportControllerCreateRequestV1RequestKindEnum kind,
+    required DataExportControllerCreateRequestV1RequestFormatEnum format,
+    required DataExportControllerCreateRequestV1RequestRangeEnum range,
     required String password,
   }) {
-    lastDataExportRequest = CreateDataExportRequestDto(
+    lastDataExportRequest = DataExportControllerCreateRequestV1Request(
       kind: kind,
       format: format,
       range: range,

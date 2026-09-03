@@ -244,7 +244,12 @@ void main() {
       expect(request.body, containsPair('currentMedicineId', 'med-1'));
       expect(request.body, containsPair('label', '阿托伐他汀钙片'));
       expect(request.body, containsPair('daysOfWeek', [1, 2, 3]));
-      expect(request.body, containsPair('startDate', '2026-06-10'));
+      // The regenerated upsert contract types startDate/endDate as DateTime,
+      // so the date-only domain value is serialized as ISO-8601 local midnight.
+      expect(
+        request.body,
+        containsPair('startDate', '2026-06-10T00:00:00.000'),
+      );
       expect(request.body!.containsKey('endDate'), isFalse);
       expect(request.body, containsPair('isActive', true));
       expect(request.body, containsPair('note', '饭后服用'));

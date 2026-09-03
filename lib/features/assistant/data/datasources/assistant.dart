@@ -89,7 +89,8 @@ class AssistantRemoteDataSource {
   }) async {
     final response = await api.assistantControllerRenameConversationV1(
       conversationId: conversationId,
-      renameConversationDto: lucent.RenameConversationDto(title: title),
+      assistantControllerRenameConversationV1Request:
+          lucent.AssistantControllerRenameConversationV1Request(title: title),
     );
     final responseDto = _requireData(
       response.data,
@@ -116,19 +117,27 @@ class AssistantRemoteDataSource {
   }) async {
     final response = await api.assistantControllerConfirmProposalV1(
       conversationId: conversationId,
-      confirmAssistantProposalDto: lucent.ConfirmAssistantProposalDto(
-        proposalIds: proposalIds,
-        decision: decision == 'approved'
-            ? lucent.ConfirmAssistantProposalDtoDecisionEnum.approved
-            : lucent.ConfirmAssistantProposalDtoDecisionEnum.rejected,
-        note: note,
-      ),
+      assistantControllerConfirmProposalV1Request:
+          lucent.AssistantControllerConfirmProposalV1Request(
+            proposalIds: proposalIds,
+            decision: decision == 'approved'
+                ? lucent
+                      .AssistantControllerConfirmProposalV1RequestDecisionEnum
+                      .approved
+                : lucent
+                      .AssistantControllerConfirmProposalV1RequestDecisionEnum
+                      .rejected,
+            note: note,
+          ),
     );
     return response.data?.finalContent;
   }
 
   Stream<AssistantRemoteEvent> streamMessages({
-    required List<lucent.AssistantInputMessageDto> messages,
+    required List<
+      lucent.AssistantControllerStreamMessagesV1RequestMessagesInner
+    >
+    messages,
     String? conversationId,
   }) async* {
     final sse = LucentSseClient(dio: dio);

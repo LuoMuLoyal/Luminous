@@ -523,7 +523,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
   UserSettingsResponseDto patchResponse = _defaultResponse();
   bool patchReturnsNull = false;
   DioException? patchException;
-  UpdateUserSettingsDto? lastPatchDto;
+  UserSettingsControllerUpdateSettingsV1Request? lastPatchDto;
 
   @override
   Future<Response<UserSettingsResponseDto>>
@@ -550,7 +550,8 @@ class _FakeUserSettingsApi implements UserSettingsApi {
   @override
   Future<Response<UserSettingsResponseDto>>
   userSettingsControllerUpdateSettingsV1({
-    required UpdateUserSettingsDto updateUserSettingsDto,
+    required UserSettingsControllerUpdateSettingsV1Request
+    userSettingsControllerUpdateSettingsV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -559,7 +560,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     patchCallCount++;
-    lastPatchDto = updateUserSettingsDto;
+    lastPatchDto = userSettingsControllerUpdateSettingsV1Request;
     if (patchException != null) {
       throw patchException!;
     }

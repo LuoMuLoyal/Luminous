@@ -27,27 +27,35 @@ const Set<String> kAllowlistedSuggestionRuleCodes = {
 /// Server-authoritative events (health_event_*, suggestion_actioned,
 /// visit_summary_share_*) are deliberately NOT representable here — the
 /// server emits those after successful transactions.
+///
+/// The event name/surface/result/platform enums are the request-scoped enums
+/// the current contract inlines into
+/// [ProductEventsControllerRecordBatchV1RequestEventsInner] (the previously
+/// standalone `ProductEventName` / `ProductEventSurface` /
+/// `ProductEventResult` / `UserDevicePlatform` model enums were merged into
+/// that type; members and wire values are unchanged).
 sealed class ProductEvent {
   const ProductEvent();
 
   /// Fixed event name from the API contract.
-  ProductEventName get name;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum get name;
 
   /// Fixed in-app surface for this event kind.
-  ProductEventSurface get surface;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum get surface;
 
   /// Non-lifecycle events report success/failure semantics; impression and
   /// review_opened always carry `success` (the event itself was recorded).
-  ProductEventResult get result;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum get result;
 
-  /// Internal serialization to the API DTO.
+  /// Internal serialization to the API request event type.
   ///
-  /// The DTO's `toJson` emits exactly the allowlisted attribute keys; queue
+  /// The event's `toJson` emits exactly the allowlisted attribute keys; queue
   /// payloads are built from that JSON so offline replays never carry extra
   /// fields.
-  CreateProductEventDto toDto({
+  ProductEventsControllerRecordBatchV1RequestEventsInner toDto({
     required String appVersion,
-    required UserDevicePlatform platform,
+    required ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+    platform,
     required String occurredAt,
     required String clientEventId,
   });
@@ -61,22 +69,28 @@ final class SuggestionImpressionEvent extends ProductEvent {
   final String suggestionRuleCode;
 
   @override
-  ProductEventName get name => ProductEventName.suggestionImpression;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum get name =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum
+          .suggestionImpression;
 
   @override
-  ProductEventSurface get surface => ProductEventSurface.today;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum
+  get surface =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum.today;
 
   @override
-  ProductEventResult get result => ProductEventResult.success;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum get result =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum.success;
 
   @override
-  CreateProductEventDto toDto({
+  ProductEventsControllerRecordBatchV1RequestEventsInner toDto({
     required String appVersion,
-    required UserDevicePlatform platform,
+    required ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+    platform,
     required String occurredAt,
     required String clientEventId,
   }) {
-    return CreateProductEventDto(
+    return ProductEventsControllerRecordBatchV1RequestEventsInner(
       name: name,
       surface: surface,
       result: result,
@@ -95,22 +109,28 @@ final class ReviewOpenedEvent extends ProductEvent {
   const ReviewOpenedEvent();
 
   @override
-  ProductEventName get name => ProductEventName.reviewOpened;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum get name =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum
+          .reviewOpened;
 
   @override
-  ProductEventSurface get surface => ProductEventSurface.review;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum
+  get surface =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum.review;
 
   @override
-  ProductEventResult get result => ProductEventResult.success;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum get result =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum.success;
 
   @override
-  CreateProductEventDto toDto({
+  ProductEventsControllerRecordBatchV1RequestEventsInner toDto({
     required String appVersion,
-    required UserDevicePlatform platform,
+    required ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+    platform,
     required String occurredAt,
     required String clientEventId,
   }) {
-    return CreateProductEventDto(
+    return ProductEventsControllerRecordBatchV1RequestEventsInner(
       name: name,
       surface: surface,
       result: result,
@@ -129,22 +149,27 @@ final class VisitSummaryPreviewedEvent extends ProductEvent {
   /// `success` after a successful server preview response, `failure` after
   /// any error — a failed preview never counts as previewed.
   @override
-  final ProductEventResult result;
+  final ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result;
 
   @override
-  ProductEventName get name => ProductEventName.visitSummaryPreviewed;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum get name =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum
+          .visitSummaryPreviewed;
 
   @override
-  ProductEventSurface get surface => ProductEventSurface.more;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum
+  get surface =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum.more;
 
   @override
-  CreateProductEventDto toDto({
+  ProductEventsControllerRecordBatchV1RequestEventsInner toDto({
     required String appVersion,
-    required UserDevicePlatform platform,
+    required ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+    platform,
     required String occurredAt,
     required String clientEventId,
   }) {
-    return CreateProductEventDto(
+    return ProductEventsControllerRecordBatchV1RequestEventsInner(
       name: name,
       surface: surface,
       result: result,
@@ -164,22 +189,27 @@ final class VisitSummaryExportedEvent extends ProductEvent {
   /// `success` only after a successful server response — failures are
   /// recorded with `failure` and never count as exported.
   @override
-  final ProductEventResult result;
+  final ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result;
 
   @override
-  ProductEventName get name => ProductEventName.visitSummaryExported;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum get name =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum
+          .visitSummaryExported;
 
   @override
-  ProductEventSurface get surface => ProductEventSurface.more;
+  ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum
+  get surface =>
+      ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum.more;
 
   @override
-  CreateProductEventDto toDto({
+  ProductEventsControllerRecordBatchV1RequestEventsInner toDto({
     required String appVersion,
-    required UserDevicePlatform platform,
+    required ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+    platform,
     required String occurredAt,
     required String clientEventId,
   }) {
-    return CreateProductEventDto(
+    return ProductEventsControllerRecordBatchV1RequestEventsInner(
       name: name,
       surface: surface,
       result: result,

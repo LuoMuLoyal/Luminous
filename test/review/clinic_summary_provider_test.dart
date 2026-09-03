@@ -192,10 +192,12 @@ Response<ClinicSummaryShareListResponseDto> _shareListResponse(
 void main() {
   late _MockReportsApi reportsApi;
   late _FakeLucentClient client;
-  late List<ClinicSummaryRequestDto> previewRequests;
+  late List<ReportsControllerPreviewClinicSummaryV1Request> previewRequests;
 
   setUpAll(() {
-    registerFallbackValue(ClinicSummaryRequestDto(selectedFields: []));
+    registerFallbackValue(
+      ReportsControllerPreviewClinicSummaryV1Request(selectedFields: []),
+    );
   });
 
   setUp(() {
@@ -623,12 +625,15 @@ void main() {
     addTearDown(dioClient.dispose);
     when(
       () => reportsApi.reportsControllerPreviewClinicSummaryV1(
-        clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+        reportsControllerPreviewClinicSummaryV1Request: any(
+          named: 'reportsControllerPreviewClinicSummaryV1Request',
+        ),
       ),
     ).thenAnswer((invocation) async {
       previewRequests.add(
-        invocation.namedArguments[#clinicSummaryRequestDto]
-            as ClinicSummaryRequestDto,
+        invocation
+                .namedArguments[#reportsControllerPreviewClinicSummaryV1Request]
+            as ReportsControllerPreviewClinicSummaryV1Request,
       );
       if (previewError != null) throw previewError;
       return Response<ClinicSummaryResponseDto>(
@@ -681,7 +686,10 @@ void main() {
 
       await openDialog(tester, client: client, service: service);
 
-      expect(service.previewResults, [ProductEventResult.success]);
+      expect(service.previewResults, [
+        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+            .success,
+      ]);
       expect(service.exportResults, isEmpty);
       // The preview content is actually presented.
       expect(find.text('本摘要仅供参考，不构成医疗建议'), findsOneWidget);
@@ -702,7 +710,10 @@ void main() {
         ),
       );
 
-      expect(service.previewResults, [ProductEventResult.failure]);
+      expect(service.previewResults, [
+        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+            .failure,
+      ]);
       expect(service.exportResults, isEmpty);
     });
 
@@ -732,8 +743,14 @@ void main() {
       await tester.tap(pdfButton);
       await tester.pumpAndSettle();
 
-      expect(service.previewResults, [ProductEventResult.success]);
-      expect(service.exportResults, [ProductEventResult.failure]);
+      expect(service.previewResults, [
+        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+            .success,
+      ]);
+      expect(service.exportResults, [
+        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+            .failure,
+      ]);
       // The PDF failure toast auto-dismisses; drain its timer.
       await tester.pump(const Duration(milliseconds: 1900));
       await tester.pumpAndSettle();
@@ -810,7 +827,10 @@ void main() {
         ]);
 
         // Toggling re-fetches but does not re-measure the presentation.
-        expect(service.previewResults, [ProductEventResult.success]);
+        expect(service.previewResults, [
+          ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+              .success,
+        ]);
       },
     );
 
@@ -940,7 +960,9 @@ void main() {
         );
         when(
           () => reportsApi.reportsControllerShareClinicSummaryV1(
-            clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+            reportsControllerPreviewClinicSummaryV1Request: any(
+              named: 'reportsControllerPreviewClinicSummaryV1Request',
+            ),
           ),
         ).thenAnswer(
           (_) async => Response<ClinicSummaryShareResponseDto>(
@@ -981,12 +1003,12 @@ void main() {
         final shareRequest =
             verify(
                   () => reportsApi.reportsControllerShareClinicSummaryV1(
-                    clinicSummaryRequestDto: captureAny(
-                      named: 'clinicSummaryRequestDto',
+                    reportsControllerPreviewClinicSummaryV1Request: captureAny(
+                      named: 'reportsControllerPreviewClinicSummaryV1Request',
                     ),
                   ),
                 ).captured.single
-                as ClinicSummaryRequestDto;
+                as ReportsControllerPreviewClinicSummaryV1Request;
         expect(shareRequest.selectedFields?.map((e) => e.value), [
           'event_overview',
           'symptom_changes',
@@ -1046,7 +1068,9 @@ void main() {
         await openDialog(tester, client: client, service: service);
         when(
           () => reportsApi.reportsControllerShareClinicSummaryV1(
-            clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+            reportsControllerPreviewClinicSummaryV1Request: any(
+              named: 'reportsControllerPreviewClinicSummaryV1Request',
+            ),
           ),
         ).thenAnswer(
           (_) async => Response<ClinicSummaryShareResponseDto>(
@@ -1110,7 +1134,9 @@ void main() {
         await openDialog(tester, client: client, service: service);
         when(
           () => reportsApi.reportsControllerShareClinicSummaryV1(
-            clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+            reportsControllerPreviewClinicSummaryV1Request: any(
+              named: 'reportsControllerPreviewClinicSummaryV1Request',
+            ),
           ),
         ).thenAnswer(
           (_) async => Response<ClinicSummaryShareResponseDto>(
@@ -1196,16 +1222,22 @@ class _MemSessionStore implements LucentSessionStore {
 class _RecordingProductEventService extends ProductEventService {
   _RecordingProductEventService() : super(api: _MockProductEventsApi());
 
-  final List<ProductEventResult> previewResults = [];
-  final List<ProductEventResult> exportResults = [];
+  final List<ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum>
+  previewResults = [];
+  final List<ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum>
+  exportResults = [];
 
   @override
-  Future<void> trackVisitSummaryPreviewed(ProductEventResult result) async {
+  Future<void> trackVisitSummaryPreviewed(
+    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+  ) async {
     previewResults.add(result);
   }
 
   @override
-  Future<void> trackVisitSummaryExported(ProductEventResult result) async {
+  Future<void> trackVisitSummaryExported(
+    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+  ) async {
     exportResults.add(result);
   }
 }

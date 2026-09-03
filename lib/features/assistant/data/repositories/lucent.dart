@@ -120,12 +120,18 @@ class LucentAssistantRepository implements AssistantRepository {
   }) async* {
     final requestMessages = messages
         .map(
-          (message) => lucent.AssistantInputMessageDto(
+          (
+            message,
+          ) => lucent.AssistantControllerStreamMessagesV1RequestMessagesInner(
             role: switch (message.role) {
               AssistantMessageRole.user =>
-                lucent.AssistantInputMessageDtoRoleEnum.user,
+                lucent
+                    .AssistantControllerStreamMessagesV1RequestMessagesInnerRoleEnum
+                    .user,
               AssistantMessageRole.assistant =>
-                lucent.AssistantInputMessageDtoRoleEnum.assistant,
+                lucent
+                    .AssistantControllerStreamMessagesV1RequestMessagesInnerRoleEnum
+                    .assistant,
             },
             content: message.content,
           ),

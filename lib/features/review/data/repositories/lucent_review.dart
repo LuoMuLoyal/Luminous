@@ -63,12 +63,13 @@ class ReviewRemoteDataSource {
     return data;
   }
 
-  /// [ReviewEventStatus.unknown] 是契约外的防御值，不能发给后端。
-  lucent.HealthEventStatus? _apiStatus(ReviewEventStatus? status) {
+  /// [ReviewEventStatus.unknown] 是契约外的防御值，不能发给后端。返回
+  /// 后端查询参数所需的 wire 字符串（查询参数现为 String，非枚举）。
+  String? _apiStatus(ReviewEventStatus? status) {
     return switch (status) {
       null => null,
-      ReviewEventStatus.active => lucent.HealthEventStatus.active,
-      ReviewEventStatus.ended => lucent.HealthEventStatus.ended,
+      ReviewEventStatus.active => lucent.HealthEventStatus.active.value,
+      ReviewEventStatus.ended => lucent.HealthEventStatus.ended.value,
       ReviewEventStatus.unknown => null,
     };
   }

@@ -381,11 +381,11 @@ void main() {
     test('maps static and llm', () {
       expect(
         mapper.checkTypeToDto(MedicineRiskCheckType.static_).type,
-        RunRiskCheckDtoTypeEnum.static_,
+        MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
       );
       expect(
         mapper.checkTypeToDto(MedicineRiskCheckType.llm).type,
-        RunRiskCheckDtoTypeEnum.llm,
+        MedicinesControllerRunRiskCheckV1RequestTypeEnum.llm,
       );
     });
   });
@@ -397,9 +397,15 @@ void main() {
         sourceRefId: '__mock_cn_ibuprofen__',
       );
 
-      expect(dto.type, RunRiskCheckDtoTypeEnum.static_);
+      expect(
+        dto.type,
+        MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+      );
       expect(dto.candidate, isNotNull);
-      expect(dto.candidate!.source_, RiskCheckCandidateDtoSource_Enum.cn);
+      expect(
+        dto.candidate!.source_,
+        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.cn,
+      );
       expect(dto.candidate!.id, '__mock_cn_ibuprofen__');
     });
 
@@ -409,8 +415,14 @@ void main() {
         sourceRefId: 'DB01050',
       );
 
-      expect(dto.type, RunRiskCheckDtoTypeEnum.static_);
-      expect(dto.candidate!.source_, RiskCheckCandidateDtoSource_Enum.drugbank);
+      expect(
+        dto.type,
+        MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+      );
+      expect(
+        dto.candidate!.source_,
+        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.drugbank,
+      );
       expect(dto.candidate!.id, 'DB01050');
     });
 
@@ -419,7 +431,8 @@ void main() {
 
       expect(
         dto.candidate!.source_,
-        RiskCheckCandidateDtoSource_Enum.unknownDefaultOpenApi,
+        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum
+            .unknownDefaultOpenApi,
       );
     });
   });

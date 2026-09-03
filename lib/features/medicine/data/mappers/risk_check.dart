@@ -90,11 +90,15 @@ class MedicineRiskCheckMapper {
     );
   }
 
-  RunRiskCheckDto checkTypeToDto(MedicineRiskCheckType type) {
-    return RunRiskCheckDto(
+  MedicinesControllerRunRiskCheckV1Request checkTypeToDto(
+    MedicineRiskCheckType type,
+  ) {
+    return MedicinesControllerRunRiskCheckV1Request(
       type: switch (type) {
-        MedicineRiskCheckType.static_ => RunRiskCheckDtoTypeEnum.static_,
-        MedicineRiskCheckType.llm => RunRiskCheckDtoTypeEnum.llm,
+        MedicineRiskCheckType.static_ =>
+          MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+        MedicineRiskCheckType.llm =>
+          MedicinesControllerRunRiskCheckV1RequestTypeEnum.llm,
       },
     );
   }
@@ -102,13 +106,13 @@ class MedicineRiskCheckMapper {
   /// Builds the static precheck request DTO for a candidate medicine from a
   /// trusted drug-library source ('cn' / 'drugbank'). The server checks the
   /// current box plus this candidate without persisting a record.
-  RunRiskCheckDto precheckToDto({
+  MedicinesControllerRunRiskCheckV1Request precheckToDto({
     required String source,
     required String sourceRefId,
   }) {
-    return RunRiskCheckDto(
-      type: RunRiskCheckDtoTypeEnum.static_,
-      candidate: RiskCheckCandidateDto(
+    return MedicinesControllerRunRiskCheckV1Request(
+      type: MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+      candidate: MedicinesControllerRunRiskCheckV1RequestCandidate(
         source_: _mapCandidateSource(source),
         id: sourceRefId,
       ),
@@ -161,13 +165,17 @@ class MedicineRiskCheckMapper {
     };
   }
 
-  RiskCheckCandidateDtoSource_Enum _mapCandidateSource(String source) {
+  MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum
+  _mapCandidateSource(String source) {
     return switch (source) {
-      'cn' => RiskCheckCandidateDtoSource_Enum.cn,
-      'drugbank' => RiskCheckCandidateDtoSource_Enum.drugbank,
+      'cn' => MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.cn,
+      'drugbank' =>
+        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.drugbank,
       // Unknown sources are rejected by the server; the precheck failure path
       // is non-blocking by design.
-      _ => RiskCheckCandidateDtoSource_Enum.unknownDefaultOpenApi,
+      _ =>
+        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum
+            .unknownDefaultOpenApi,
     };
   }
 

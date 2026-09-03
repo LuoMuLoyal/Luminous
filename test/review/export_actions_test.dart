@@ -35,10 +35,13 @@ class _FakeLucentClient extends LucentClient {
 class _RecordingProductEventService extends ProductEventService {
   _RecordingProductEventService() : super(api: _MockProductEventsApi());
 
-  final List<ProductEventResult> exportResults = [];
+  final List<ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum>
+  exportResults = [];
 
   @override
-  Future<void> trackVisitSummaryExported(ProductEventResult result) async {
+  Future<void> trackVisitSummaryExported(
+    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+  ) async {
     exportResults.add(result);
   }
 }
@@ -149,9 +152,8 @@ void main() {
     (tester) async {
       when(
         () => api.dataExportControllerCreateRequestV1(
-          createDataExportRequestDto: reviewMonthlyPdfExportRequest.toDto(
-            password: 'export-password',
-          ),
+          dataExportControllerCreateRequestV1Request:
+              reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
@@ -168,7 +170,10 @@ void main() {
 
       // HTTP 200 alone must not count as exported — the request itself is in
       // a failed state, so the event records failure.
-      expect(service.exportResults, [ProductEventResult.failure]);
+      expect(service.exportResults, [
+        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+            .failure,
+      ]);
     },
   );
 
@@ -177,9 +182,8 @@ void main() {
     (tester) async {
       when(
         () => api.dataExportControllerCreateRequestV1(
-          createDataExportRequestDto: reviewMonthlyPdfExportRequest.toDto(
-            password: 'export-password',
-          ),
+          dataExportControllerCreateRequestV1Request:
+              reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
@@ -194,7 +198,10 @@ void main() {
       await _pumpHarness(tester, api: api, service: service);
       await _tapExport(tester);
 
-      expect(service.exportResults, [ProductEventResult.success]);
+      expect(service.exportResults, [
+        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+            .success,
+      ]);
     },
   );
 
@@ -203,9 +210,8 @@ void main() {
     (tester) async {
       when(
         () => api.dataExportControllerCreateRequestV1(
-          createDataExportRequestDto: reviewMonthlyPdfExportRequest.toDto(
-            password: 'export-password',
-          ),
+          dataExportControllerCreateRequestV1Request:
+              reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
@@ -220,7 +226,10 @@ void main() {
       await _pumpHarness(tester, api: api, service: service);
       await _tapExport(tester);
 
-      expect(service.exportResults, [ProductEventResult.failure]);
+      expect(service.exportResults, [
+        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+            .failure,
+      ]);
     },
   );
 
@@ -229,9 +238,8 @@ void main() {
   ) async {
     when(
       () => api.dataExportControllerCreateRequestV1(
-        createDataExportRequestDto: reviewMonthlyPdfExportRequest.toDto(
-          password: 'export-password',
-        ),
+        dataExportControllerCreateRequestV1Request:
+            reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
       ),
     ).thenThrow(
       DioException(
@@ -243,6 +251,8 @@ void main() {
     await _pumpHarness(tester, api: api, service: service);
     await _tapExport(tester);
 
-    expect(service.exportResults, [ProductEventResult.failure]);
+    expect(service.exportResults, [
+      ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum.failure,
+    ]);
   });
 }

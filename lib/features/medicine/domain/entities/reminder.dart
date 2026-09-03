@@ -54,8 +54,8 @@ class MedicineReminderSlotUpsertInput {
 /// transaction. Slots carrying an [id] are updated, slots without one are
 /// created, and existing group slots missing from [slots] are soft-deleted
 /// server-side. Serialization happens in the datasource, which maps this
-/// input onto the generated `UpsertMedicineReminderGroupDto` (null and
-/// empty-string optional fields are omitted from the wire payload).
+/// input onto the generated `MedicineRemindersControllerUpsertGroupV1Request`
+/// (null and empty-string optional fields are omitted from the wire payload).
 class MedicineReminderGroupUpsertInput {
   const MedicineReminderGroupUpsertInput({
     required this.currentMedicineId,

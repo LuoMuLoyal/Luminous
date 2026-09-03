@@ -213,7 +213,8 @@ class FakeNotificationsApi implements NotificationsApi {
   @override
   Future<Response<NotificationListResponseDto>>
   notificationsControllerCreateV1({
-    required CreateNotificationDto createNotificationDto,
+    required NotificationsControllerCreateV1Request
+    notificationsControllerCreateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,

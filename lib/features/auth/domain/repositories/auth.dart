@@ -131,9 +131,9 @@ abstract interface class AuthRepository {
   });
 
   TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
-    required CreateDataExportRequestDtoKindEnum kind,
-    required CreateDataExportRequestDtoFormatEnum format,
-    required CreateDataExportRequestDtoRangeEnum range,
+    required DataExportControllerCreateRequestV1RequestKindEnum kind,
+    required DataExportControllerCreateRequestV1RequestFormatEnum format,
+    required DataExportControllerCreateRequestV1RequestRangeEnum range,
     required String password,
   });
 }

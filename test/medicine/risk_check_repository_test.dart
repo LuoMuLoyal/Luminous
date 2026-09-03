@@ -98,7 +98,9 @@ void main() {
       remoteDataSource: dataSource,
     );
     registerFallbackValue(
-      RunRiskCheckDto(type: RunRiskCheckDtoTypeEnum.static_),
+      MedicinesControllerRunRiskCheckV1Request(
+        type: MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+      ),
     );
   });
 
@@ -149,7 +151,9 @@ void main() {
     test('maps record response to domain', () async {
       when(
         () => api.medicinesControllerRunRiskCheckV1(
-          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          medicinesControllerRunRiskCheckV1Request: any(
+            named: 'medicinesControllerRunRiskCheckV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -158,7 +162,9 @@ void main() {
       expect(record.checkType, MedicineRiskCheckType.static_);
       verify(
         () => api.medicinesControllerRunRiskCheckV1(
-          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          medicinesControllerRunRiskCheckV1Request: any(
+            named: 'medicinesControllerRunRiskCheckV1Request',
+          ),
         ),
       ).called(1);
     });
@@ -166,7 +172,9 @@ void main() {
     test('maps llm check type to request dto', () async {
       when(
         () => api.medicinesControllerRunRiskCheckV1(
-          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          medicinesControllerRunRiskCheckV1Request: any(
+            named: 'medicinesControllerRunRiskCheckV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -175,17 +183,24 @@ void main() {
       final captured =
           verify(
                 () => api.medicinesControllerRunRiskCheckV1(
-                  runRiskCheckDto: captureAny(named: 'runRiskCheckDto'),
+                  medicinesControllerRunRiskCheckV1Request: captureAny(
+                    named: 'medicinesControllerRunRiskCheckV1Request',
+                  ),
                 ),
               ).captured.single
-              as RunRiskCheckDto;
-      expect(captured.type, RunRiskCheckDtoTypeEnum.llm);
+              as MedicinesControllerRunRiskCheckV1Request;
+      expect(
+        captured.type,
+        MedicinesControllerRunRiskCheckV1RequestTypeEnum.llm,
+      );
     });
 
     test('throws empty response error when run result is null', () async {
       when(
         () => api.medicinesControllerRunRiskCheckV1(
-          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          medicinesControllerRunRiskCheckV1Request: any(
+            named: 'medicinesControllerRunRiskCheckV1Request',
+          ),
         ),
       ).thenAnswer(
         (_) async => Response<MedicineRiskCheckRecordResponseDto>(
@@ -216,7 +231,9 @@ void main() {
       () async {
         when(
           () => api.medicinesControllerRunRiskCheckV1(
-            runRiskCheckDto: any(named: 'runRiskCheckDto'),
+            medicinesControllerRunRiskCheckV1Request: any(
+              named: 'medicinesControllerRunRiskCheckV1Request',
+            ),
           ),
         ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -228,15 +245,20 @@ void main() {
         final captured =
             verify(
                   () => api.medicinesControllerRunRiskCheckV1(
-                    runRiskCheckDto: captureAny(named: 'runRiskCheckDto'),
+                    medicinesControllerRunRiskCheckV1Request: captureAny(
+                      named: 'medicinesControllerRunRiskCheckV1Request',
+                    ),
                   ),
                 ).captured.single
-                as RunRiskCheckDto;
-        expect(captured.type, RunRiskCheckDtoTypeEnum.static_);
+                as MedicinesControllerRunRiskCheckV1Request;
+        expect(
+          captured.type,
+          MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+        );
         expect(captured.candidate, isNotNull);
         expect(
           captured.candidate!.source_,
-          RiskCheckCandidateDtoSource_Enum.cn,
+          MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.cn,
         );
         expect(captured.candidate!.id, '__mock_cn_ibuprofen__');
         expect(result.currentMedicineCount, 2);
@@ -248,7 +270,9 @@ void main() {
     test('maps drugbank candidate source', () async {
       when(
         () => api.medicinesControllerRunRiskCheckV1(
-          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          medicinesControllerRunRiskCheckV1Request: any(
+            named: 'medicinesControllerRunRiskCheckV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -257,13 +281,15 @@ void main() {
       final captured =
           verify(
                 () => api.medicinesControllerRunRiskCheckV1(
-                  runRiskCheckDto: captureAny(named: 'runRiskCheckDto'),
+                  medicinesControllerRunRiskCheckV1Request: captureAny(
+                    named: 'medicinesControllerRunRiskCheckV1Request',
+                  ),
                 ),
               ).captured.single
-              as RunRiskCheckDto;
+              as MedicinesControllerRunRiskCheckV1Request;
       expect(
         captured.candidate!.source_,
-        RiskCheckCandidateDtoSource_Enum.drugbank,
+        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.drugbank,
       );
       expect(captured.candidate!.id, 'DB01050');
     });
@@ -271,7 +297,9 @@ void main() {
     test('throws empty response error when precheck result is null', () async {
       when(
         () => api.medicinesControllerRunRiskCheckV1(
-          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          medicinesControllerRunRiskCheckV1Request: any(
+            named: 'medicinesControllerRunRiskCheckV1Request',
+          ),
         ),
       ).thenAnswer(
         (_) async => Response<MedicineRiskCheckRecordResponseDto>(
@@ -311,7 +339,9 @@ void main() {
     test('runCheck delegates to the data source', () async {
       when(
         () => api.medicinesControllerRunRiskCheckV1(
-          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          medicinesControllerRunRiskCheckV1Request: any(
+            named: 'medicinesControllerRunRiskCheckV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -325,7 +355,9 @@ void main() {
     test('runPrecheck delegates to the data source', () async {
       when(
         () => api.medicinesControllerRunRiskCheckV1(
-          runRiskCheckDto: any(named: 'runRiskCheckDto'),
+          medicinesControllerRunRiskCheckV1Request: any(
+            named: 'medicinesControllerRunRiskCheckV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 

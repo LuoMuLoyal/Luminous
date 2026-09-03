@@ -12,22 +12,23 @@ import '../../../helpers/task_either.dart';
 
 class _MockHealthEventsApi extends Mock implements api.HealthEventsApi {}
 
-class _CreateHealthEventDtoFake extends Fake
-    implements api.CreateHealthEventDto {}
+class _HealthEventsControllerCreateV1RequestFake extends Fake
+    implements api.HealthEventsControllerCreateV1Request {}
 
-class _UpsertHealthEventCheckInDtoFake extends Fake
-    implements api.UpsertHealthEventCheckInDto {}
+class _HealthEventsControllerUpsertCheckInV1RequestFake extends Fake
+    implements api.HealthEventsControllerUpsertCheckInV1Request {}
 
-class _EndHealthEventDtoFake extends Fake implements api.EndHealthEventDto {}
+class _HealthEventsControllerEndV1RequestFake extends Fake
+    implements api.HealthEventsControllerEndV1Request {}
 
 void main() {
   late _MockHealthEventsApi healthEventsApi;
   late LucentHealthEventRepository repository;
 
   setUpAll(() {
-    registerFallbackValue(_CreateHealthEventDtoFake());
-    registerFallbackValue(_UpsertHealthEventCheckInDtoFake());
-    registerFallbackValue(_EndHealthEventDtoFake());
+    registerFallbackValue(_HealthEventsControllerCreateV1RequestFake());
+    registerFallbackValue(_HealthEventsControllerUpsertCheckInV1RequestFake());
+    registerFallbackValue(_HealthEventsControllerEndV1RequestFake());
   });
 
   setUp(() {
@@ -178,22 +179,26 @@ void main() {
     test('maps successful writes, detail, and history responses', () async {
       when(
         () => healthEventsApi.healthEventsControllerCreateV1(
-          createHealthEventDto: any(named: 'createHealthEventDto'),
+          healthEventsControllerCreateV1Request: any(
+            named: 'healthEventsControllerCreateV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _eventResponse(_eventDto()));
       when(
         () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          upsertHealthEventCheckInDto: any(
-            named: 'upsertHealthEventCheckInDto',
+          healthEventsControllerUpsertCheckInV1Request: any(
+            named: 'healthEventsControllerUpsertCheckInV1Request',
           ),
         ),
       ).thenAnswer((_) async => _eventResponse(_eventDto()));
       when(
         () => healthEventsApi.healthEventsControllerEndV1(
           id: any(named: 'id'),
-          endHealthEventDto: any(named: 'endHealthEventDto'),
+          healthEventsControllerEndV1Request: any(
+            named: 'healthEventsControllerEndV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _eventResponse(_eventDto()));
 
@@ -225,28 +230,30 @@ void main() {
       final createCall =
           verify(
                 () => healthEventsApi.healthEventsControllerCreateV1(
-                  createHealthEventDto: captureAny(
-                    named: 'createHealthEventDto',
+                  healthEventsControllerCreateV1Request: captureAny(
+                    named: 'healthEventsControllerCreateV1Request',
                   ),
                 ),
               ).captured.single
-              as api.CreateHealthEventDto;
+              as api.HealthEventsControllerCreateV1Request;
       expect(createCall.title, 'Cold observation');
       expect(createCall.reasonRecordId, 'record-1');
       expect(createCall.currentMedicineIds, ['medicine-1']);
       verify(
         () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
           id: 'event-1',
-          date: '2026-08-09',
-          upsertHealthEventCheckInDto: captureAny(
-            named: 'upsertHealthEventCheckInDto',
+          date: DateTime.parse('2026-08-09'),
+          healthEventsControllerUpsertCheckInV1Request: captureAny(
+            named: 'healthEventsControllerUpsertCheckInV1Request',
           ),
         ),
       ).called(1);
       verify(
         () => healthEventsApi.healthEventsControllerEndV1(
           id: 'event-1',
-          endHealthEventDto: captureAny(named: 'endHealthEventDto'),
+          healthEventsControllerEndV1Request: captureAny(
+            named: 'healthEventsControllerEndV1Request',
+          ),
         ),
       ).called(1);
     });
@@ -255,22 +262,26 @@ void main() {
         'StateError cause (protocol invariant)', () async {
       when(
         () => healthEventsApi.healthEventsControllerCreateV1(
-          createHealthEventDto: any(named: 'createHealthEventDto'),
+          healthEventsControllerCreateV1Request: any(
+            named: 'healthEventsControllerCreateV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
       when(
         () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          upsertHealthEventCheckInDto: any(
-            named: 'upsertHealthEventCheckInDto',
+          healthEventsControllerUpsertCheckInV1Request: any(
+            named: 'healthEventsControllerUpsertCheckInV1Request',
           ),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
       when(
         () => healthEventsApi.healthEventsControllerEndV1(
           id: any(named: 'id'),
-          endHealthEventDto: any(named: 'endHealthEventDto'),
+          healthEventsControllerEndV1Request: any(
+            named: 'healthEventsControllerEndV1Request',
+          ),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
 
@@ -298,8 +309,8 @@ void main() {
         () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          upsertHealthEventCheckInDto: any(
-            named: 'upsertHealthEventCheckInDto',
+          healthEventsControllerUpsertCheckInV1Request: any(
+            named: 'healthEventsControllerUpsertCheckInV1Request',
           ),
         ),
       ).thenAnswer(
@@ -324,7 +335,9 @@ void main() {
       when(
         () => healthEventsApi.healthEventsControllerEndV1(
           id: any(named: 'id'),
-          endHealthEventDto: any(named: 'endHealthEventDto'),
+          healthEventsControllerEndV1Request: any(
+            named: 'healthEventsControllerEndV1Request',
+          ),
         ),
       ).thenAnswer(
         (_) async => _eventResponse(
@@ -350,22 +363,26 @@ void main() {
         final problem = _problemDetails(404, code: 'EVENT_NOT_FOUND');
         when(
           () => healthEventsApi.healthEventsControllerCreateV1(
-            createHealthEventDto: any(named: 'createHealthEventDto'),
+            healthEventsControllerCreateV1Request: any(
+              named: 'healthEventsControllerCreateV1Request',
+            ),
           ),
         ).thenThrow(problem);
         when(
           () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
             id: any(named: 'id'),
             date: any(named: 'date'),
-            upsertHealthEventCheckInDto: any(
-              named: 'upsertHealthEventCheckInDto',
+            healthEventsControllerUpsertCheckInV1Request: any(
+              named: 'healthEventsControllerUpsertCheckInV1Request',
             ),
           ),
         ).thenThrow(problem);
         when(
           () => healthEventsApi.healthEventsControllerEndV1(
             id: any(named: 'id'),
-            endHealthEventDto: any(named: 'endHealthEventDto'),
+            healthEventsControllerEndV1Request: any(
+              named: 'healthEventsControllerEndV1Request',
+            ),
           ),
         ).thenThrow(problem);
 
@@ -392,7 +409,9 @@ void main() {
     test('network failure on writes maps to Left(network)', () async {
       when(
         () => healthEventsApi.healthEventsControllerCreateV1(
-          createHealthEventDto: any(named: 'createHealthEventDto'),
+          healthEventsControllerCreateV1Request: any(
+            named: 'healthEventsControllerCreateV1Request',
+          ),
         ),
       ).thenThrow(_connectionTimeout());
 
@@ -408,7 +427,9 @@ void main() {
       () async {
         when(
           () => healthEventsApi.healthEventsControllerCreateV1(
-            createHealthEventDto: any(named: 'createHealthEventDto'),
+            healthEventsControllerCreateV1Request: any(
+              named: 'healthEventsControllerCreateV1Request',
+            ),
           ),
         ).thenThrow(_nonProblemBody400());
 

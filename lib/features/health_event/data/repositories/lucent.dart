@@ -94,13 +94,14 @@ class LucentHealthEventRepository implements HealthEventRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _api.healthEventsControllerCreateV1(
-        createHealthEventDto: api.CreateHealthEventDto(
-          title: title,
-          reasonRecordId: reasonRecordId,
-          currentMedicineIds: currentMedicineIds.isEmpty
-              ? null
-              : List<String>.of(currentMedicineIds),
-        ),
+        healthEventsControllerCreateV1Request:
+            api.HealthEventsControllerCreateV1Request(
+              title: title,
+              reasonRecordId: reasonRecordId,
+              currentMedicineIds: currentMedicineIds.isEmpty
+                  ? null
+                  : List<String>.of(currentMedicineIds),
+            ),
       );
       final dto = response.data;
       return _mapRequired(
@@ -118,10 +119,11 @@ class LucentHealthEventRepository implements HealthEventRepository {
     return TaskEither.tryCatch(() async {
       final response = await _api.healthEventsControllerUpsertCheckInV1(
         id: eventId,
-        date: date,
-        upsertHealthEventCheckInDto: api.UpsertHealthEventCheckInDto(
-          outcome: _toApiOutcome(outcome),
-        ),
+        date: DateTime.parse(date),
+        healthEventsControllerUpsertCheckInV1Request:
+            api.HealthEventsControllerUpsertCheckInV1Request(
+              outcome: _toCheckInApiOutcome(outcome),
+            ),
       );
       final dto = response.data;
       return _mapRequired(
@@ -138,9 +140,10 @@ class LucentHealthEventRepository implements HealthEventRepository {
     return TaskEither.tryCatch(() async {
       final response = await _api.healthEventsControllerEndV1(
         id: eventId,
-        endHealthEventDto: api.EndHealthEventDto(
-          outcome: _toApiOutcome(outcome),
-        ),
+        healthEventsControllerEndV1Request:
+            api.HealthEventsControllerEndV1Request(
+              outcome: _toEndApiOutcome(outcome),
+            ),
       );
       final dto = response.data;
       return _mapRequired(
@@ -249,11 +252,28 @@ class LucentHealthEventRepository implements HealthEventRepository {
     throw StateError('Unknown health event outcome: $value');
   }
 
-  api.HealthEventOutcome _toApiOutcome(HealthEventOutcome value) {
+  api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum
+  _toCheckInApiOutcome(HealthEventOutcome value) {
     return switch (value) {
-      HealthEventOutcome.improved => api.HealthEventOutcome.improved,
-      HealthEventOutcome.unchanged => api.HealthEventOutcome.unchanged,
-      HealthEventOutcome.worsened => api.HealthEventOutcome.worsened,
+      HealthEventOutcome.improved =>
+        api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum.improved,
+      HealthEventOutcome.unchanged =>
+        api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum.unchanged,
+      HealthEventOutcome.worsened =>
+        api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum.worsened,
+    };
+  }
+
+  api.HealthEventsControllerEndV1RequestOutcomeEnum _toEndApiOutcome(
+    HealthEventOutcome value,
+  ) {
+    return switch (value) {
+      HealthEventOutcome.improved =>
+        api.HealthEventsControllerEndV1RequestOutcomeEnum.improved,
+      HealthEventOutcome.unchanged =>
+        api.HealthEventsControllerEndV1RequestOutcomeEnum.unchanged,
+      HealthEventOutcome.worsened =>
+        api.HealthEventsControllerEndV1RequestOutcomeEnum.worsened,
     };
   }
 

@@ -19,14 +19,14 @@ class DataExportRequestInFlightState {
 
 class DataExportRequestInput {
   const DataExportRequestInput({
-    this.kind = CreateDataExportRequestDtoKindEnum.hospital,
-    this.format = CreateDataExportRequestDtoFormatEnum.pdf,
-    this.range = CreateDataExportRequestDtoRangeEnum.last7Days,
+    this.kind = DataExportControllerCreateRequestV1RequestKindEnum.hospital,
+    this.format = DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+    this.range = DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
   });
 
-  final CreateDataExportRequestDtoKindEnum kind;
-  final CreateDataExportRequestDtoFormatEnum format;
-  final CreateDataExportRequestDtoRangeEnum range;
+  final DataExportControllerCreateRequestV1RequestKindEnum kind;
+  final DataExportControllerCreateRequestV1RequestFormatEnum format;
+  final DataExportControllerCreateRequestV1RequestRangeEnum range;
 
   @override
   bool operator ==(Object other) {
@@ -40,8 +40,8 @@ class DataExportRequestInput {
   @override
   int get hashCode => Object.hash(kind, format, range);
 
-  CreateDataExportRequestDto toDto({required String password}) {
-    return CreateDataExportRequestDto(
+  DataExportControllerCreateRequestV1Request toDto({required String password}) {
+    return DataExportControllerCreateRequestV1Request(
       kind: kind,
       format: format,
       range: range,
@@ -59,33 +59,44 @@ class DataExportRequestInput {
         request.range == _rangeToResponse(range);
   }
 
-  DataExportKind _kindToResponse(CreateDataExportRequestDtoKindEnum value) {
+  DataExportKind _kindToResponse(
+    DataExportControllerCreateRequestV1RequestKindEnum value,
+  ) {
     return switch (value) {
-      CreateDataExportRequestDtoKindEnum.hospital => DataExportKind.hospital,
-      CreateDataExportRequestDtoKindEnum.monthly => DataExportKind.monthly,
-      CreateDataExportRequestDtoKindEnum.print => DataExportKind.print,
-      CreateDataExportRequestDtoKindEnum.unknownDefaultOpenApi =>
+      DataExportControllerCreateRequestV1RequestKindEnum.hospital =>
+        DataExportKind.hospital,
+      DataExportControllerCreateRequestV1RequestKindEnum.monthly =>
+        DataExportKind.monthly,
+      DataExportControllerCreateRequestV1RequestKindEnum.print =>
+        DataExportKind.print,
+      DataExportControllerCreateRequestV1RequestKindEnum
+          .unknownDefaultOpenApi =>
         DataExportKind.unknownDefaultOpenApi,
     };
   }
 
   DataExportFormat _formatToResponse(
-    CreateDataExportRequestDtoFormatEnum value,
+    DataExportControllerCreateRequestV1RequestFormatEnum value,
   ) {
     return switch (value) {
-      CreateDataExportRequestDtoFormatEnum.pdf => DataExportFormat.pdf,
-      CreateDataExportRequestDtoFormatEnum.unknownDefaultOpenApi =>
+      DataExportControllerCreateRequestV1RequestFormatEnum.pdf =>
+        DataExportFormat.pdf,
+      DataExportControllerCreateRequestV1RequestFormatEnum
+          .unknownDefaultOpenApi =>
         DataExportFormat.unknownDefaultOpenApi,
     };
   }
 
-  DataExportRange _rangeToResponse(CreateDataExportRequestDtoRangeEnum value) {
+  DataExportRange _rangeToResponse(
+    DataExportControllerCreateRequestV1RequestRangeEnum value,
+  ) {
     return switch (value) {
-      CreateDataExportRequestDtoRangeEnum.last7Days =>
+      DataExportControllerCreateRequestV1RequestRangeEnum.last7Days =>
         DataExportRange.last7Days,
-      CreateDataExportRequestDtoRangeEnum.last30Days =>
+      DataExportControllerCreateRequestV1RequestRangeEnum.last30Days =>
         DataExportRange.last30Days,
-      CreateDataExportRequestDtoRangeEnum.unknownDefaultOpenApi =>
+      DataExportControllerCreateRequestV1RequestRangeEnum
+          .unknownDefaultOpenApi =>
         DataExportRange.unknownDefaultOpenApi,
     };
   }
@@ -124,15 +135,15 @@ DataExportUiStatus dataExportUiStatusForRequest(
 const reviewHospitalPdfLast7DaysExportRequest = DataExportRequestInput();
 
 const reviewMonthlyPdfExportRequest = DataExportRequestInput(
-  kind: CreateDataExportRequestDtoKindEnum.monthly,
-  format: CreateDataExportRequestDtoFormatEnum.pdf,
-  range: CreateDataExportRequestDtoRangeEnum.last30Days,
+  kind: DataExportControllerCreateRequestV1RequestKindEnum.monthly,
+  format: DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+  range: DataExportControllerCreateRequestV1RequestRangeEnum.last30Days,
 );
 
 const reviewPrintPdfExportRequest = DataExportRequestInput(
-  kind: CreateDataExportRequestDtoKindEnum.print,
-  format: CreateDataExportRequestDtoFormatEnum.pdf,
-  range: CreateDataExportRequestDtoRangeEnum.last7Days,
+  kind: DataExportControllerCreateRequestV1RequestKindEnum.print,
+  format: DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+  range: DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
 );
 
 /// Controller for the data-export feature.
@@ -187,7 +198,9 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
     final api = ref.read(lucentClientProvider).dataExport;
     try {
       final response = await api.dataExportControllerCreateRequestV1(
-        createDataExportRequestDto: input.toDto(password: password),
+        dataExportControllerCreateRequestV1Request: input.toDto(
+          password: password,
+        ),
       );
       final responseData = requireData(
         response.data,

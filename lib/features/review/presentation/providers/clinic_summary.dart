@@ -5,26 +5,34 @@ import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 
 /// All six selectable clinic summary fields, in display order.
-const kClinicSummaryAllFields = <ClinicSummaryRequestDtoSelectedFieldsEnum>[
-  ClinicSummaryRequestDtoSelectedFieldsEnum.eventOverview,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.symptomChanges,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.medicationSlots,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.water,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.sleep,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.notes,
-];
+const kClinicSummaryAllFields =
+    <ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>[
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .eventOverview,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .symptomChanges,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .medicationSlots,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.water,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.sleep,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.notes,
+    ];
 
 /// Default field selection: every field except the free-text notes.
 ///
 /// Notes stay off by default (privacy): the user must opt in to include the
 /// free-text notes in the preview / PDF / share.
-const kClinicSummaryDefaultFields = <ClinicSummaryRequestDtoSelectedFieldsEnum>[
-  ClinicSummaryRequestDtoSelectedFieldsEnum.eventOverview,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.symptomChanges,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.medicationSlots,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.water,
-  ClinicSummaryRequestDtoSelectedFieldsEnum.sleep,
-];
+const kClinicSummaryDefaultFields =
+    <ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>[
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .eventOverview,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .symptomChanges,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+          .medicationSlots,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.water,
+      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.sleep,
+    ];
 
 /// Fetches the authenticated user's de-identified clinic summary preview.
 ///
@@ -35,7 +43,7 @@ const kClinicSummaryDefaultFields = <ClinicSummaryRequestDtoSelectedFieldsEnum>[
 final clinicSummaryPreviewProvider = FutureProvider.autoDispose
     .family<
       ClinicSummaryResponseDto,
-      List<ClinicSummaryRequestDtoSelectedFieldsEnum>
+      List<ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>
     >((ref, selectedFields) async {
       return authGuarded(
         ref: ref,
@@ -46,13 +54,15 @@ final clinicSummaryPreviewProvider = FutureProvider.autoDispose
 
 Future<ClinicSummaryResponseDto> _fetchPreview(
   Ref ref,
-  List<ClinicSummaryRequestDtoSelectedFieldsEnum> selectedFields,
+  List<ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>
+  selectedFields,
 ) async {
   final api = ref.watch(lucentClientProvider).reports;
   final response = await api.reportsControllerPreviewClinicSummaryV1(
-    clinicSummaryRequestDto: ClinicSummaryRequestDto(
-      selectedFields: selectedFields,
-    ),
+    reportsControllerPreviewClinicSummaryV1Request:
+        ReportsControllerPreviewClinicSummaryV1Request(
+          selectedFields: selectedFields,
+        ),
   );
   return response.data!;
 }

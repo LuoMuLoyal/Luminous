@@ -36,13 +36,8 @@ class DailyRecordRemoteDataSource {
     int pageSize = 50,
   }) async {
     final response = await api.dailyRecordsControllerListV1(
-      date: date,
-      kind: kind != null
-          ? lucent.DailyRecordKind.values.firstWhere(
-              (k) => k.value == kind,
-              orElse: () => lucent.DailyRecordKind.unknownDefaultOpenApi,
-            )
-          : null,
+      date: DateTime.parse(date),
+      kind: kind,
       page: page,
       pageSize: pageSize,
     );
@@ -79,11 +74,12 @@ class DailyRecordRemoteDataSource {
     DailyRecordImageUploadInput input,
   ) async {
     final presignResponse = await api.dailyRecordsControllerCreateImageUploadV1(
-      createDailyRecordImageUploadDto: lucent.CreateDailyRecordImageUploadDto(
-        contentType: input.contentType,
-        sizeBytes: input.sizeBytes,
-        fileName: input.fileName,
-      ),
+      dailyRecordsControllerCreateImageUploadV1Request:
+          lucent.DailyRecordsControllerCreateImageUploadV1Request(
+            contentType: input.contentType,
+            sizeBytes: input.sizeBytes,
+            fileName: input.fileName,
+          ),
     );
     final upload = _requireData(presignResponse.data, operation: 'uploadImage');
     final headers = _coerceToStringMap(upload.headers);
@@ -120,10 +116,11 @@ class DailyRecordRemoteDataSource {
     required String occurredAt,
   }) async {
     final response = await api.dailyRecordsControllerGenerateCandidatesV1(
-      generateDailyRecordCandidatesDto: lucent.GenerateDailyRecordCandidatesDto(
-        text: text,
-        occurredAt: occurredAt,
-      ),
+      dailyRecordsControllerGenerateCandidatesV1Request:
+          lucent.DailyRecordsControllerGenerateCandidatesV1Request(
+            text: text,
+            occurredAt: DateTime.parse(occurredAt),
+          ),
     );
     final dto = _requireData(response.data, operation: 'generateCandidates');
     return DailyRecordCandidateResult(

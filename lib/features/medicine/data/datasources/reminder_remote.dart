@@ -121,28 +121,30 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     MedicineReminderGroupUpsertInput input,
   ) {
     // 消费再生契约的生成 API 方法（PUT /api/v1/user/medicine-reminders/group），
-    // 请求/响应均走生成 DTO（UpsertMedicineReminderGroupDto /
+    // 请求/响应均走生成 DTO（MedicineRemindersControllerUpsertGroupV1Request /
     // MedicineReminderListResponseDto），与 openapi.json 对齐。
     return TaskEither.tryCatch(() async {
       final response = await api.medicineRemindersControllerUpsertGroupV1(
-        upsertMedicineReminderGroupDto: UpsertMedicineReminderGroupDto(
-          currentMedicineId: input.currentMedicineId,
-          label: _nonEmptyOrNull(input.label),
-          daysOfWeek: input.daysOfWeek,
-          startDate: _nonEmptyOrNull(input.startDate),
-          endDate: _nonEmptyOrNull(input.endDate),
-          isActive: input.isActive,
-          note: _nonEmptyOrNull(input.note),
-          slots: input.slots
-              .map(
-                (slot) => UpsertReminderSlotDto(
-                  id: slot.id,
-                  scheduledHour: slot.scheduledHour,
-                  scheduledMinute: slot.scheduledMinute,
-                ),
-              )
-              .toList(growable: false),
-        ),
+        medicineRemindersControllerUpsertGroupV1Request:
+            MedicineRemindersControllerUpsertGroupV1Request(
+              currentMedicineId: input.currentMedicineId,
+              label: _nonEmptyOrNull(input.label),
+              daysOfWeek: input.daysOfWeek,
+              startDate: _dateOnlyOrNull(input.startDate),
+              endDate: _dateOnlyOrNull(input.endDate),
+              isActive: input.isActive,
+              note: _nonEmptyOrNull(input.note),
+              slots: input.slots
+                  .map(
+                    (slot) =>
+                        MedicineRemindersControllerUpsertGroupV1RequestSlotsInner(
+                          id: slot.id,
+                          scheduledHour: slot.scheduledHour,
+                          scheduledMinute: slot.scheduledMinute,
+                        ),
+                  )
+                  .toList(growable: false),
+            ),
       );
       final body = response.data;
       if (body == null) {
@@ -281,5 +283,13 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
   String? _nonEmptyOrNull(String? value) {
     if (value == null || value.isEmpty) return null;
     return value;
+  }
+
+  /// Parses a date-only 'YYYY-MM-DD' domain value into the [DateTime] the
+  /// regenerated reminder contract expects; null/empty/unparseable values stay
+  /// null so the key is omitted from the wire payload.
+  DateTime? _dateOnlyOrNull(String? value) {
+    if (value == null || value.isEmpty) return null;
+    return DateTime.tryParse(value);
   }
 }

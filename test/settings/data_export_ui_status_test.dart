@@ -151,9 +151,18 @@ void main() {
   group('DataExportRequestInput', () {
     test('default values are hospital/pdf/last7Days', () {
       const input = DataExportRequestInput();
-      expect(input.kind, CreateDataExportRequestDtoKindEnum.hospital);
-      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
+      expect(
+        input.kind,
+        DataExportControllerCreateRequestV1RequestKindEnum.hospital,
+      );
+      expect(
+        input.format,
+        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+      );
+      expect(
+        input.range,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+      );
     });
 
     test('equality works correctly', () {
@@ -166,7 +175,7 @@ void main() {
     test('different inputs are not equal', () {
       const a = DataExportRequestInput();
       const b = DataExportRequestInput(
-        kind: CreateDataExportRequestDtoKindEnum.monthly,
+        kind: DataExportControllerCreateRequestV1RequestKindEnum.monthly,
       );
       expect(a == b, isFalse);
     });
@@ -205,9 +214,18 @@ void main() {
     test('toDto creates correct DTO', () {
       const input = DataExportRequestInput();
       final dto = input.toDto(password: 'export-password');
-      expect(dto.kind, CreateDataExportRequestDtoKindEnum.hospital);
-      expect(dto.format, CreateDataExportRequestDtoFormatEnum.pdf);
-      expect(dto.range, CreateDataExportRequestDtoRangeEnum.last7Days);
+      expect(
+        dto.kind,
+        DataExportControllerCreateRequestV1RequestKindEnum.hospital,
+      );
+      expect(
+        dto.format,
+        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+      );
+      expect(
+        dto.range,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+      );
     });
   });
 
@@ -237,7 +255,7 @@ void main() {
       const state = DataExportRequestInFlightState(
         inFlight: true,
         input: DataExportRequestInput(
-          kind: CreateDataExportRequestDtoKindEnum.monthly,
+          kind: DataExportControllerCreateRequestV1RequestKindEnum.monthly,
         ),
       );
       const other = DataExportRequestInput();
@@ -248,20 +266,38 @@ void main() {
   group('Predefined export request constants', () {
     test('reviewHospitalPdfLast7DaysExportRequest has correct defaults', () {
       const input = reviewHospitalPdfLast7DaysExportRequest;
-      expect(input.kind, CreateDataExportRequestDtoKindEnum.hospital);
-      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
+      expect(
+        input.kind,
+        DataExportControllerCreateRequestV1RequestKindEnum.hospital,
+      );
+      expect(
+        input.format,
+        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+      );
+      expect(
+        input.range,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+      );
     });
 
     test('reviewMonthlyPdfExportRequest has monthly kind', () {
       const input = reviewMonthlyPdfExportRequest;
-      expect(input.kind, CreateDataExportRequestDtoKindEnum.monthly);
-      expect(input.range, CreateDataExportRequestDtoRangeEnum.last30Days);
+      expect(
+        input.kind,
+        DataExportControllerCreateRequestV1RequestKindEnum.monthly,
+      );
+      expect(
+        input.range,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last30Days,
+      );
     });
 
     test('reviewPrintPdfExportRequest has print kind', () {
       const input = reviewPrintPdfExportRequest;
-      expect(input.kind, CreateDataExportRequestDtoKindEnum.print);
+      expect(
+        input.kind,
+        DataExportControllerCreateRequestV1RequestKindEnum.print,
+      );
     });
   });
 }

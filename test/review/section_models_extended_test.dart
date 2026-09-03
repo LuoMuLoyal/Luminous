@@ -9,25 +9,52 @@ void main() {
     test('returns hospital request for hospital kind', () {
       final input = reviewExportInputForKind(ReviewExportKind.hospital);
       expect(input, isNotNull);
-      expect(input!.kind, CreateDataExportRequestDtoKindEnum.hospital);
-      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
+      expect(
+        input!.kind,
+        DataExportControllerCreateRequestV1RequestKindEnum.hospital,
+      );
+      expect(
+        input.format,
+        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+      );
+      expect(
+        input.range,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+      );
     });
 
     test('returns monthly request for monthly kind', () {
       final input = reviewExportInputForKind(ReviewExportKind.monthly);
       expect(input, isNotNull);
-      expect(input!.kind, CreateDataExportRequestDtoKindEnum.monthly);
-      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeEnum.last30Days);
+      expect(
+        input!.kind,
+        DataExportControllerCreateRequestV1RequestKindEnum.monthly,
+      );
+      expect(
+        input.format,
+        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+      );
+      expect(
+        input.range,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last30Days,
+      );
     });
 
     test('returns print request for print kind', () {
       final input = reviewExportInputForKind(ReviewExportKind.print);
       expect(input, isNotNull);
-      expect(input!.kind, CreateDataExportRequestDtoKindEnum.print);
-      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
+      expect(
+        input!.kind,
+        DataExportControllerCreateRequestV1RequestKindEnum.print,
+      );
+      expect(
+        input.format,
+        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+      );
+      expect(
+        input.range,
+        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+      );
     });
 
     test('returns null for clinicShare kind', () {
