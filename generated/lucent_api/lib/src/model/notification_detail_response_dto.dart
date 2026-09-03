@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/user_notification_type.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -27,15 +26,15 @@ class NotificationDetailResponseDto {
 
     required this.content,
 
-    this.action,
+    required this.action,
 
-    this.actionPayload,
+    required this.actionPayload,
 
     required this.isRead,
 
     required this.createdAt,
 
-    this.readAt,
+    required this.readAt,
   });
 
   /// Unique notification identifier.
@@ -46,9 +45,10 @@ class NotificationDetailResponseDto {
     name: r'type',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: UserNotificationType.unknownDefaultOpenApi,
+    unknownEnumValue:
+        NotificationDetailResponseDtoTypeEnum.unknownDefaultOpenApi,
   )
-  final UserNotificationType type;
+  final NotificationDetailResponseDtoTypeEnum type;
 
   /// Notification title.
   @JsonKey(name: r'title', required: true, includeIfNull: false)
@@ -58,12 +58,10 @@ class NotificationDetailResponseDto {
   @JsonKey(name: r'content', required: true, includeIfNull: false)
   final String content;
 
-  /// Action route target for the frontend.
-  @JsonKey(name: r'action', required: false, includeIfNull: false)
+  @JsonKey(name: r'action', required: true, includeIfNull: true)
   final String? action;
 
-  /// Extra payload for the action.
-  @JsonKey(name: r'actionPayload', required: false, includeIfNull: false)
+  @JsonKey(name: r'actionPayload', required: true, includeIfNull: true)
   final Object? actionPayload;
 
   /// Whether the notification has been read.
@@ -74,8 +72,7 @@ class NotificationDetailResponseDto {
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
   final String createdAt;
 
-  /// ISO-8601 timestamp when the notification was read.
-  @JsonKey(name: r'readAt', required: false, includeIfNull: false)
+  @JsonKey(name: r'readAt', required: true, includeIfNull: true)
   final String? readAt;
 
   @override
@@ -113,4 +110,36 @@ class NotificationDetailResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum NotificationDetailResponseDtoTypeEnum {
+  @JsonValue(r'ai_today_summary')
+  aiTodaySummary(r'ai_today_summary'),
+  @JsonValue(r'ai_weekly_insight')
+  aiWeeklyInsight(r'ai_weekly_insight'),
+  @JsonValue(r'ai_proactive_suggestion')
+  aiProactiveSuggestion(r'ai_proactive_suggestion'),
+  @JsonValue(r'medicine_missed_dose')
+  medicineMissedDose(r'medicine_missed_dose'),
+  @JsonValue(r'password_changed')
+  passwordChanged(r'password_changed'),
+  @JsonValue(r'report_generated')
+  reportGenerated(r'report_generated'),
+  @JsonValue(r'medicine_reminder')
+  medicineReminder(r'medicine_reminder'),
+  @JsonValue(r'system_announcement')
+  systemAnnouncement(r'system_announcement'),
+  @JsonValue(r'oauth_login')
+  oauthLogin(r'oauth_login'),
+  @JsonValue(r'identity_linked')
+  identityLinked(r'identity_linked'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const NotificationDetailResponseDtoTypeEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

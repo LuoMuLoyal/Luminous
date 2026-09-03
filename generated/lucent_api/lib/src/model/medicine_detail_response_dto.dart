@@ -30,9 +30,11 @@ class MedicineDetailResponseDto {
     required this.detail,
   });
 
+  /// Medicine id in the selected source.
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
+  /// Knowledge source.
   @JsonKey(
     name: r'source',
     required: true,
@@ -42,6 +44,7 @@ class MedicineDetailResponseDto {
   )
   final MedicineDetailResponseDtoSource_Enum source_;
 
+  /// Display name.
   @JsonKey(name: r'name', required: true, includeIfNull: false)
   final String name;
 
@@ -80,6 +83,7 @@ class MedicineDetailResponseDto {
   }
 }
 
+/// Knowledge source.
 enum MedicineDetailResponseDtoSource_Enum {
   @JsonValue(r'drugbank')
   drugbank(r'drugbank'),

@@ -3,11 +3,8 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/health_event_outcome.dart';
-import 'package:lucent_api/src/model/health_event_status.dart';
-import 'package:lucent_api/src/model/health_event_kind.dart';
-import 'package:lucent_api/src/model/health_event_check_in_response_dto.dart';
-import 'package:lucent_api/src/model/health_event_coverage_dto.dart';
+import 'package:lucent_api/src/model/health_event_response_dto_coverage.dart';
+import 'package:lucent_api/src/model/health_event_response_dto_check_in.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -50,9 +47,9 @@ class HealthEventResponseDto {
     name: r'kind',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: HealthEventKind.unknownDefaultOpenApi,
+    unknownEnumValue: HealthEventResponseDtoKindEnum.unknownDefaultOpenApi,
   )
-  final HealthEventKind kind;
+  final HealthEventResponseDtoKindEnum kind;
 
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
@@ -64,9 +61,9 @@ class HealthEventResponseDto {
     name: r'status',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: HealthEventStatus.unknownDefaultOpenApi,
+    unknownEnumValue: HealthEventResponseDtoStatusEnum.unknownDefaultOpenApi,
   )
-  final HealthEventStatus status;
+  final HealthEventResponseDtoStatusEnum status;
 
   /// Start time in ISO 8601 format.
   @JsonKey(name: r'startedAt', required: true, includeIfNull: false)
@@ -80,9 +77,9 @@ class HealthEventResponseDto {
     name: r'outcome',
     required: true,
     includeIfNull: true,
-    unknownEnumValue: HealthEventOutcome.unknownDefaultOpenApi,
+    unknownEnumValue: HealthEventResponseDtoOutcomeEnum.unknownDefaultOpenApi,
   )
-  final HealthEventOutcome? outcome;
+  final HealthEventResponseDtoOutcomeEnum? outcome;
 
   @JsonKey(name: r'reasonRecordId', required: true, includeIfNull: true)
   final String? reasonRecordId;
@@ -91,10 +88,10 @@ class HealthEventResponseDto {
   final List<String> currentMedicineIds;
 
   @JsonKey(name: r'checkIn', required: true, includeIfNull: true)
-  final HealthEventCheckInResponseDto? checkIn;
+  final HealthEventResponseDtoCheckIn? checkIn;
 
   @JsonKey(name: r'coverage', required: true, includeIfNull: false)
-  final HealthEventCoverageDto coverage;
+  final HealthEventResponseDtoCoverage coverage;
 
   @override
   bool operator ==(Object other) =>
@@ -135,4 +132,54 @@ class HealthEventResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum HealthEventResponseDtoKindEnum {
+  @JsonValue(r'symptom')
+  symptom(r'symptom'),
+  @JsonValue(r'other')
+  other(r'other'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const HealthEventResponseDtoKindEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum HealthEventResponseDtoStatusEnum {
+  @JsonValue(r'active')
+  active(r'active'),
+  @JsonValue(r'ended')
+  ended(r'ended'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const HealthEventResponseDtoStatusEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum HealthEventResponseDtoOutcomeEnum {
+  @JsonValue(r'improved')
+  improved(r'improved'),
+  @JsonValue(r'unchanged')
+  unchanged(r'unchanged'),
+  @JsonValue(r'worsened')
+  worsened(r'worsened'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const HealthEventResponseDtoOutcomeEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

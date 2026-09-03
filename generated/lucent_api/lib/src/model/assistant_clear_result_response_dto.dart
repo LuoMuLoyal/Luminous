@@ -27,7 +27,6 @@ class AssistantClearResultResponseDto {
   @JsonKey(name: r'cleared', required: true, includeIfNull: false)
   final bool cleared;
 
-  /// The archived conversation id, or null when none existed.
   @JsonKey(name: r'archivedConversationId', required: true, includeIfNull: true)
   final String? archivedConversationId;
 

@@ -3,9 +3,9 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/drugbank_drug_interaction_dto.dart';
-import 'package:lucent_api/src/model/drugbank_medicine_detail_dto.dart';
-import 'package:lucent_api/src/model/cn_medicine_detail_dto.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_dto_detail_one_of_drug_interactions_inner.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_dto_detail_one_of.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_dto_detail_one_of1.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -23,225 +23,219 @@ class MedicineDetailResponseDtoDetail {
   MedicineDetailResponseDtoDetail({
     required this.kind,
 
-    this.drugType,
+    required this.drugType,
 
-    this.state,
+    required this.state,
 
-    this.description,
+    required this.description,
 
-    this.indication,
+    required this.indication,
 
-    this.mechanismOfAction,
+    required this.mechanismOfAction,
 
-    this.pharmacodynamics,
+    required this.pharmacodynamics,
 
-    this.toxicity,
+    required this.toxicity,
 
-    this.metabolism,
+    required this.metabolism,
 
-    this.absorption,
+    required this.absorption,
 
-    this.halfLife,
+    required this.halfLife,
 
-    this.proteinBinding,
+    required this.proteinBinding,
 
-    this.routeOfElimination,
+    required this.routeOfElimination,
 
-    this.volumeOfDistribution,
+    required this.volumeOfDistribution,
 
-    this.clearance,
+    required this.clearance,
 
-    this.groups,
+    required this.groups,
 
-    this.categories,
+    required this.categories,
 
-    this.atcCodes,
+    required this.atcCodes,
 
-    this.synonyms,
+    required this.synonyms,
 
-    this.foodInteractions,
+    required this.foodInteractions,
 
-    this.drugInteractions,
+    required this.drugInteractions,
 
-    this.externalIdentifiers,
+    required this.externalIdentifiers,
 
-    this.externalLinks,
+    required this.externalLinks,
 
-    this.approvalNumber,
+    required this.approvalNumber,
 
-    this.manufacturer,
+    required this.manufacturer,
 
-    this.packageSpec,
+    required this.packageSpec,
 
-    this.brandName,
+    required this.brandName,
 
-    this.ingredients,
+    required this.ingredients,
 
-    this.properties,
+    required this.properties,
 
-    this.indications,
+    required this.indications,
 
-    this.dosage,
+    required this.dosage,
 
-    this.adverseReactions,
+    required this.adverseReactions,
 
-    this.contraindications,
+    required this.contraindications,
 
-    this.precautions,
+    required this.precautions,
 
-    this.pharmacologyToxicology,
+    required this.pharmacologyToxicology,
 
-    this.pharmacokinetics,
+    required this.pharmacokinetics,
 
-    this.overdose,
+    required this.overdose,
 
-    this.storage,
+    required this.storage,
 
-    this.validityPeriod,
+    required this.validityPeriod,
 
-    this.barcode,
+    required this.barcode,
 
-    this.nationalDrugCode,
+    required this.nationalDrugCode,
 
-    this.sourceUrl,
+    required this.sourceUrl,
 
-    this.imageUrl,
+    required this.imageUrl,
   });
 
   @JsonKey(name: r'kind', required: true, includeIfNull: false)
   final String kind;
 
-  @JsonKey(name: r'drugType', required: false, includeIfNull: false)
+  @JsonKey(name: r'drugType', required: true, includeIfNull: true)
   final String? drugType;
 
-  @JsonKey(name: r'state', required: false, includeIfNull: false)
+  @JsonKey(name: r'state', required: true, includeIfNull: true)
   final String? state;
 
-  @JsonKey(name: r'description', required: false, includeIfNull: false)
+  @JsonKey(name: r'description', required: true, includeIfNull: true)
   final String? description;
 
-  @JsonKey(name: r'indication', required: false, includeIfNull: false)
+  @JsonKey(name: r'indication', required: true, includeIfNull: true)
   final String? indication;
 
-  @JsonKey(name: r'mechanismOfAction', required: false, includeIfNull: false)
+  @JsonKey(name: r'mechanismOfAction', required: true, includeIfNull: true)
   final String? mechanismOfAction;
 
-  @JsonKey(name: r'pharmacodynamics', required: false, includeIfNull: false)
+  @JsonKey(name: r'pharmacodynamics', required: true, includeIfNull: true)
   final String? pharmacodynamics;
 
-  @JsonKey(name: r'toxicity', required: false, includeIfNull: false)
+  @JsonKey(name: r'toxicity', required: true, includeIfNull: true)
   final String? toxicity;
 
-  @JsonKey(name: r'metabolism', required: false, includeIfNull: false)
+  @JsonKey(name: r'metabolism', required: true, includeIfNull: true)
   final String? metabolism;
 
-  @JsonKey(name: r'absorption', required: false, includeIfNull: false)
+  @JsonKey(name: r'absorption', required: true, includeIfNull: true)
   final String? absorption;
 
-  @JsonKey(name: r'halfLife', required: false, includeIfNull: false)
+  @JsonKey(name: r'halfLife', required: true, includeIfNull: true)
   final String? halfLife;
 
-  @JsonKey(name: r'proteinBinding', required: false, includeIfNull: false)
+  @JsonKey(name: r'proteinBinding', required: true, includeIfNull: true)
   final String? proteinBinding;
 
-  @JsonKey(name: r'routeOfElimination', required: false, includeIfNull: false)
+  @JsonKey(name: r'routeOfElimination', required: true, includeIfNull: true)
   final String? routeOfElimination;
 
-  @JsonKey(name: r'volumeOfDistribution', required: false, includeIfNull: false)
+  @JsonKey(name: r'volumeOfDistribution', required: true, includeIfNull: true)
   final String? volumeOfDistribution;
 
-  @JsonKey(name: r'clearance', required: false, includeIfNull: false)
+  @JsonKey(name: r'clearance', required: true, includeIfNull: true)
   final String? clearance;
 
-  @JsonKey(name: r'groups', required: false, includeIfNull: false)
+  @JsonKey(name: r'groups', required: true, includeIfNull: true)
   final List<String>? groups;
 
-  @JsonKey(name: r'categories', required: false, includeIfNull: false)
+  @JsonKey(name: r'categories', required: true, includeIfNull: true)
   final List<String>? categories;
 
-  @JsonKey(name: r'atcCodes', required: false, includeIfNull: false)
+  @JsonKey(name: r'atcCodes', required: true, includeIfNull: true)
   final List<String>? atcCodes;
 
-  @JsonKey(name: r'synonyms', required: false, includeIfNull: false)
+  @JsonKey(name: r'synonyms', required: true, includeIfNull: true)
   final List<String>? synonyms;
 
-  @JsonKey(name: r'foodInteractions', required: false, includeIfNull: false)
+  @JsonKey(name: r'foodInteractions', required: true, includeIfNull: true)
   final List<String>? foodInteractions;
 
-  /// DrugBank interaction entries used for interaction checking.
-  @JsonKey(name: r'drugInteractions', required: false, includeIfNull: false)
-  final List<DrugbankDrugInteractionDto>? drugInteractions;
+  @JsonKey(name: r'drugInteractions', required: true, includeIfNull: true)
+  final List<MedicineDetailResponseDtoDetailOneOfDrugInteractionsInner>?
+  drugInteractions;
 
-  /// Raw source external identifier payload.
-  @JsonKey(name: r'externalIdentifiers', required: false, includeIfNull: false)
-  final Map<String, Object>? externalIdentifiers;
+  @JsonKey(name: r'externalIdentifiers', required: true, includeIfNull: true)
+  final Object? externalIdentifiers;
 
-  /// Raw source external link payload.
-  @JsonKey(name: r'externalLinks', required: false, includeIfNull: false)
-  final Map<String, Object>? externalLinks;
+  @JsonKey(name: r'externalLinks', required: true, includeIfNull: true)
+  final Object? externalLinks;
 
-  @JsonKey(name: r'approvalNumber', required: false, includeIfNull: false)
+  @JsonKey(name: r'approvalNumber', required: true, includeIfNull: true)
   final String? approvalNumber;
 
-  @JsonKey(name: r'manufacturer', required: false, includeIfNull: false)
+  @JsonKey(name: r'manufacturer', required: true, includeIfNull: true)
   final String? manufacturer;
 
-  @JsonKey(name: r'packageSpec', required: false, includeIfNull: false)
+  @JsonKey(name: r'packageSpec', required: true, includeIfNull: true)
   final String? packageSpec;
 
-  @JsonKey(name: r'brandName', required: false, includeIfNull: false)
+  @JsonKey(name: r'brandName', required: true, includeIfNull: true)
   final String? brandName;
 
-  @JsonKey(name: r'ingredients', required: false, includeIfNull: false)
+  @JsonKey(name: r'ingredients', required: true, includeIfNull: true)
   final String? ingredients;
 
-  @JsonKey(name: r'properties', required: false, includeIfNull: false)
+  @JsonKey(name: r'properties', required: true, includeIfNull: true)
   final String? properties;
 
-  @JsonKey(name: r'indications', required: false, includeIfNull: false)
+  @JsonKey(name: r'indications', required: true, includeIfNull: true)
   final String? indications;
 
-  @JsonKey(name: r'dosage', required: false, includeIfNull: false)
+  @JsonKey(name: r'dosage', required: true, includeIfNull: true)
   final String? dosage;
 
-  @JsonKey(name: r'adverseReactions', required: false, includeIfNull: false)
+  @JsonKey(name: r'adverseReactions', required: true, includeIfNull: true)
   final String? adverseReactions;
 
-  @JsonKey(name: r'contraindications', required: false, includeIfNull: false)
+  @JsonKey(name: r'contraindications', required: true, includeIfNull: true)
   final String? contraindications;
 
-  @JsonKey(name: r'precautions', required: false, includeIfNull: false)
+  @JsonKey(name: r'precautions', required: true, includeIfNull: true)
   final String? precautions;
 
-  @JsonKey(
-    name: r'pharmacologyToxicology',
-    required: false,
-    includeIfNull: false,
-  )
+  @JsonKey(name: r'pharmacologyToxicology', required: true, includeIfNull: true)
   final String? pharmacologyToxicology;
 
-  @JsonKey(name: r'pharmacokinetics', required: false, includeIfNull: false)
+  @JsonKey(name: r'pharmacokinetics', required: true, includeIfNull: true)
   final String? pharmacokinetics;
 
-  @JsonKey(name: r'overdose', required: false, includeIfNull: false)
+  @JsonKey(name: r'overdose', required: true, includeIfNull: true)
   final String? overdose;
 
-  @JsonKey(name: r'storage', required: false, includeIfNull: false)
+  @JsonKey(name: r'storage', required: true, includeIfNull: true)
   final String? storage;
 
-  @JsonKey(name: r'validityPeriod', required: false, includeIfNull: false)
+  @JsonKey(name: r'validityPeriod', required: true, includeIfNull: true)
   final String? validityPeriod;
 
-  @JsonKey(name: r'barcode', required: false, includeIfNull: false)
+  @JsonKey(name: r'barcode', required: true, includeIfNull: true)
   final String? barcode;
 
-  @JsonKey(name: r'nationalDrugCode', required: false, includeIfNull: false)
+  @JsonKey(name: r'nationalDrugCode', required: true, includeIfNull: true)
   final String? nationalDrugCode;
 
-  @JsonKey(name: r'sourceUrl', required: false, includeIfNull: false)
+  @JsonKey(name: r'sourceUrl', required: true, includeIfNull: true)
   final String? sourceUrl;
 
-  @JsonKey(name: r'imageUrl', required: false, includeIfNull: false)
+  @JsonKey(name: r'imageUrl', required: true, includeIfNull: true)
   final String? imageUrl;
 
   @override

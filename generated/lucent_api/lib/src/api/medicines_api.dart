@@ -13,7 +13,7 @@ import 'package:lucent_api/src/model/medicine_detail_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_recognition_async_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_safety_tip_response_dto_inner.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
 import 'package:lucent_api/src/model/medicines_controller_recognize_v1_request.dart';
 import 'package:lucent_api/src/model/medicines_controller_run_risk_check_v1_request.dart';
@@ -194,9 +194,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [List<MedicineSafetyTipResponseDto>] as data
+  /// Returns a [Future] containing a [Response] with a [List<MedicineSafetyTipResponseDtoInner>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<List<MedicineSafetyTipResponseDto>>>
+  Future<Response<List<MedicineSafetyTipResponseDtoInner>>>
   medicinesControllerGetSafetyTipsV1({
     List<String>? exclude,
     CancelToken? cancelToken,
@@ -227,16 +227,20 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    List<MedicineSafetyTipResponseDto>? _responseData;
+    List<MedicineSafetyTipResponseDtoInner>? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              List<MedicineSafetyTipResponseDto>,
-              MedicineSafetyTipResponseDto
-            >(rawData, 'List<MedicineSafetyTipResponseDto>', growable: true);
+              List<MedicineSafetyTipResponseDtoInner>,
+              MedicineSafetyTipResponseDtoInner
+            >(
+              rawData,
+              'List<MedicineSafetyTipResponseDtoInner>',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -247,7 +251,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<List<MedicineSafetyTipResponseDto>>(
+    return Response<List<MedicineSafetyTipResponseDtoInner>>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

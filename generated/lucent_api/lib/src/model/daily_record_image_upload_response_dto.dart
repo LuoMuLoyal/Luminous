@@ -50,19 +50,21 @@ class DailyRecordImageUploadResponseDto {
 
   /// Headers that must be sent with the PUT upload.
   @JsonKey(name: r'headers', required: true, includeIfNull: false)
-  final Object headers;
+  final Map<String, String> headers;
 
   /// Optional public/CDN URL when a public base URL is configured.
-  @JsonKey(name: r'publicUrl', required: true, includeIfNull: false)
-  final Object publicUrl;
+  @JsonKey(name: r'publicUrl', required: true, includeIfNull: true)
+  final String? publicUrl;
 
   /// Signed URL expiry timestamp (ISO 8601).
   @JsonKey(name: r'expiresAt', required: true, includeIfNull: false)
   final String expiresAt;
 
   /// Maximum accepted upload size in bytes.
+  // minimum: -9007199254740991
+  // maximum: 9007199254740991
   @JsonKey(name: r'maxSizeBytes', required: true, includeIfNull: false)
-  final num maxSizeBytes;
+  final int maxSizeBytes;
 
   @override
   bool operator ==(Object other) =>
@@ -84,7 +86,7 @@ class DailyRecordImageUploadResponseDto {
       objectKey.hashCode +
       uploadUrl.hashCode +
       headers.hashCode +
-      publicUrl.hashCode +
+      (publicUrl == null ? 0 : publicUrl.hashCode) +
       expiresAt.hashCode +
       maxSizeBytes.hashCode;
 

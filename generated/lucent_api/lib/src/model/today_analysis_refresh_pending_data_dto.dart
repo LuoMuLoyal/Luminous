@@ -23,14 +23,8 @@ class TodayAnalysisRefreshPendingDataDto {
     required this.jobId,
   });
 
-  @JsonKey(
-    name: r'status',
-    required: true,
-    includeIfNull: false,
-    unknownEnumValue:
-        TodayAnalysisRefreshPendingDataDtoStatusEnum.unknownDefaultOpenApi,
-  )
-  final TodayAnalysisRefreshPendingDataDtoStatusEnum status;
+  @JsonKey(name: r'status', required: true, includeIfNull: false)
+  final String status;
 
   @JsonKey(name: r'jobId', required: true, includeIfNull: false)
   final String jobId;
@@ -56,18 +50,4 @@ class TodayAnalysisRefreshPendingDataDto {
   String toString() {
     return toJson().toString();
   }
-}
-
-enum TodayAnalysisRefreshPendingDataDtoStatusEnum {
-  @JsonValue(r'pending')
-  pending(r'pending'),
-  @JsonValue(r'unknown_default_open_api')
-  unknownDefaultOpenApi(r'unknown_default_open_api');
-
-  const TodayAnalysisRefreshPendingDataDtoStatusEnum(this.value);
-
-  final String value;
-
-  @override
-  String toString() => value;
 }

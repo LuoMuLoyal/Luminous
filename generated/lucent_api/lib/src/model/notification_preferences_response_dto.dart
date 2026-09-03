@@ -47,11 +47,15 @@ class NotificationPreferencesResponseDto {
   @JsonKey(name: r'sleepReminderEnabled', required: true, includeIfNull: false)
   final bool sleepReminderEnabled;
 
+  // minimum: -9007199254740991
+  // maximum: 9007199254740991
   @JsonKey(name: r'sleepBedtimeMinutes', required: true, includeIfNull: true)
-  final num? sleepBedtimeMinutes;
+  final int? sleepBedtimeMinutes;
 
+  // minimum: -9007199254740991
+  // maximum: 9007199254740991
   @JsonKey(name: r'sleepWakeTimeMinutes', required: true, includeIfNull: true)
-  final num? sleepWakeTimeMinutes;
+  final int? sleepWakeTimeMinutes;
 
   /// Whether the user has a persisted preference row.
   @JsonKey(name: r'configured', required: true, includeIfNull: false)

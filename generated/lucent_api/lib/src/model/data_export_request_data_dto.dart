@@ -3,10 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/data_export_kind.dart';
-import 'package:lucent_api/src/model/data_export_status.dart';
-import 'package:lucent_api/src/model/data_export_format.dart';
-import 'package:lucent_api/src/model/data_export_range.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -34,15 +30,15 @@ class DataExportRequestDataDto {
 
     required this.requestedAt,
 
-    this.completedAt,
+    required this.completedAt,
 
-    this.downloadUrl,
+    required this.downloadUrl,
 
-    this.fileName,
+    required this.fileName,
 
-    this.fileSizeBytes,
+    required this.fileSizeBytes,
 
-    this.errorMessage,
+    required this.errorMessage,
   });
 
   /// Unique request identifier.
@@ -53,51 +49,51 @@ class DataExportRequestDataDto {
     name: r'kind',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: DataExportKind.unknownDefaultOpenApi,
+    unknownEnumValue: DataExportRequestDataDtoKindEnum.unknownDefaultOpenApi,
   )
-  final DataExportKind kind;
+  final DataExportRequestDataDtoKindEnum kind;
 
   @JsonKey(
     name: r'format',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: DataExportFormat.unknownDefaultOpenApi,
+    unknownEnumValue: DataExportRequestDataDtoFormatEnum.unknownDefaultOpenApi,
   )
-  final DataExportFormat format;
+  final DataExportRequestDataDtoFormatEnum format;
 
   @JsonKey(
     name: r'range',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: DataExportRange.unknownDefaultOpenApi,
+    unknownEnumValue: DataExportRequestDataDtoRangeEnum.unknownDefaultOpenApi,
   )
-  final DataExportRange range;
+  final DataExportRequestDataDtoRangeEnum range;
 
   @JsonKey(
     name: r'status',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: DataExportStatus.unknownDefaultOpenApi,
+    unknownEnumValue: DataExportRequestDataDtoStatusEnum.unknownDefaultOpenApi,
   )
-  final DataExportStatus status;
+  final DataExportRequestDataDtoStatusEnum status;
 
   /// ISO-8601 timestamp when the request was created.
   @JsonKey(name: r'requestedAt', required: true, includeIfNull: false)
   final String requestedAt;
 
-  @JsonKey(name: r'completedAt', required: false, includeIfNull: false)
+  @JsonKey(name: r'completedAt', required: true, includeIfNull: true)
   final String? completedAt;
 
-  @JsonKey(name: r'downloadUrl', required: false, includeIfNull: false)
+  @JsonKey(name: r'downloadUrl', required: true, includeIfNull: true)
   final String? downloadUrl;
 
-  @JsonKey(name: r'fileName', required: false, includeIfNull: false)
+  @JsonKey(name: r'fileName', required: true, includeIfNull: true)
   final String? fileName;
 
-  @JsonKey(name: r'fileSizeBytes', required: false, includeIfNull: false)
+  @JsonKey(name: r'fileSizeBytes', required: true, includeIfNull: true)
   final num? fileSizeBytes;
 
-  @JsonKey(name: r'errorMessage', required: false, includeIfNull: false)
+  @JsonKey(name: r'errorMessage', required: true, includeIfNull: true)
   final String? errorMessage;
 
   @override
@@ -139,4 +135,74 @@ class DataExportRequestDataDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum DataExportRequestDataDtoKindEnum {
+  @JsonValue(r'hospital')
+  hospital(r'hospital'),
+  @JsonValue(r'monthly')
+  monthly(r'monthly'),
+  @JsonValue(r'print')
+  print(r'print'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const DataExportRequestDataDtoKindEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum DataExportRequestDataDtoFormatEnum {
+  @JsonValue(r'pdf')
+  pdf(r'pdf'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const DataExportRequestDataDtoFormatEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum DataExportRequestDataDtoRangeEnum {
+  @JsonValue(r'last_7_days')
+  last7Days(r'last_7_days'),
+  @JsonValue(r'last_30_days')
+  last30Days(r'last_30_days'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const DataExportRequestDataDtoRangeEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum DataExportRequestDataDtoStatusEnum {
+  @JsonValue(r'requested')
+  requested(r'requested'),
+  @JsonValue(r'processing')
+  processing(r'processing'),
+  @JsonValue(r'completed')
+  completed(r'completed'),
+  @JsonValue(r'failed')
+  failed(r'failed'),
+  @JsonValue(r'unavailable')
+  unavailable(r'unavailable'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const DataExportRequestDataDtoStatusEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

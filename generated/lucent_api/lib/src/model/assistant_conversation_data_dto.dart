@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/assistant_conversation_message_dto.dart';
+import 'package:lucent_api/src/model/assistant_conversation_data_dto_messages_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -38,7 +38,6 @@ class AssistantConversationDataDto {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
-  /// Optional server-derived conversation title.
   @JsonKey(name: r'title', required: true, includeIfNull: true)
   final String? title;
 
@@ -54,9 +53,8 @@ class AssistantConversationDataDto {
 
   /// Persisted messages in chronological order.
   @JsonKey(name: r'messages', required: true, includeIfNull: false)
-  final List<AssistantConversationMessageDto> messages;
+  final List<AssistantConversationDataDtoMessagesInner> messages;
 
-  /// ISO-8601 timestamp of the latest conversation activity.
   @JsonKey(name: r'lastMessageAt', required: true, includeIfNull: true)
   final String? lastMessageAt;
 

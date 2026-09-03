@@ -32,10 +32,9 @@ class NotificationsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [NotificationListResponseDto] as data
+  /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationListResponseDto>>
-  notificationsControllerCreateV1({
+  Future<Response<void>> notificationsControllerCreateV1({
     required NotificationsControllerCreateV1Request
     notificationsControllerCreateV1Request,
     CancelToken? cancelToken,
@@ -76,36 +75,7 @@ class NotificationsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    NotificationListResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<
-              NotificationListResponseDto,
-              NotificationListResponseDto
-            >(rawData, 'NotificationListResponseDto', growable: true);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<NotificationListResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
+    return _response;
   }
 
   /// List user notifications

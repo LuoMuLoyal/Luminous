@@ -3,8 +3,8 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/medicine_search_item_dto.dart';
-import 'package:lucent_api/src/model/medicine_pagination_dto.dart';
+import 'package:lucent_api/src/model/medicine_search_response_dto_pagination.dart';
+import 'package:lucent_api/src/model/medicine_search_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,11 +21,12 @@ class MedicineSearchResponseDto {
   /// Returns a new [MedicineSearchResponseDto] instance.
   MedicineSearchResponseDto({required this.items, required this.pagination});
 
+  /// Matched medicine items.
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<MedicineSearchItemDto> items;
+  final List<MedicineSearchResponseDtoItemsInner> items;
 
   @JsonKey(name: r'pagination', required: true, includeIfNull: false)
-  final MedicinePaginationDto pagination;
+  final MedicineSearchResponseDtoPagination pagination;
 
   @override
   bool operator ==(Object other) =>

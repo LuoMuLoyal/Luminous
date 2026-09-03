@@ -3,8 +3,8 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/user_full_dto.dart';
-import 'package:lucent_api/src/model/tokens_dto.dart';
+import 'package:lucent_api/src/model/login_response_dto_user.dart';
+import 'package:lucent_api/src/model/register_response_dto_tokens.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -22,10 +22,10 @@ class LoginResponseDto {
   LoginResponseDto({required this.user, required this.tokens});
 
   @JsonKey(name: r'user', required: true, includeIfNull: false)
-  final UserFullDto user;
+  final LoginResponseDtoUser user;
 
   @JsonKey(name: r'tokens', required: true, includeIfNull: false)
-  final TokensDto tokens;
+  final RegisterResponseDtoTokens tokens;
 
   @override
   bool operator ==(Object other) =>

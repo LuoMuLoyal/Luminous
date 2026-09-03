@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/dose_log_status.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,23 +20,23 @@ class DoseLogResponseDto {
   DoseLogResponseDto({
     required this.id,
 
-    this.healthEventId,
+    required this.healthEventId,
 
-    this.currentMedicineId,
+    required this.currentMedicineId,
 
-    this.reminderId,
+    required this.reminderId,
 
     required this.status,
 
     required this.scheduledFor,
 
-    this.scheduledTime,
+    required this.scheduledTime,
 
-    this.doseText,
+    required this.doseText,
 
-    this.note,
+    required this.note,
 
-    this.source_,
+    required this.source_,
 
     required this.createdAt,
 
@@ -48,45 +47,39 @@ class DoseLogResponseDto {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
-  /// Linked health event id.
-  @JsonKey(name: r'healthEventId', required: false, includeIfNull: false)
+  @JsonKey(name: r'healthEventId', required: true, includeIfNull: true)
   final String? healthEventId;
 
-  /// Linked current medicine id.
-  @JsonKey(name: r'currentMedicineId', required: false, includeIfNull: false)
-  final Object? currentMedicineId;
+  @JsonKey(name: r'currentMedicineId', required: true, includeIfNull: true)
+  final String? currentMedicineId;
 
-  /// Linked reminder id for slot-aware logs.
-  @JsonKey(name: r'reminderId', required: false, includeIfNull: false)
-  final Object? reminderId;
+  @JsonKey(name: r'reminderId', required: true, includeIfNull: true)
+  final String? reminderId;
 
+  /// Dose log status.
   @JsonKey(
     name: r'status',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: DoseLogStatus.unknownDefaultOpenApi,
+    unknownEnumValue: DoseLogResponseDtoStatusEnum.unknownDefaultOpenApi,
   )
-  final DoseLogStatus status;
+  final DoseLogResponseDtoStatusEnum status;
 
   /// Scheduled date in YYYY-MM-DD format.
   @JsonKey(name: r'scheduledFor', required: true, includeIfNull: false)
   final String scheduledFor;
 
-  /// Scheduled slot time in HH:mm format.
-  @JsonKey(name: r'scheduledTime', required: false, includeIfNull: false)
-  final Object? scheduledTime;
+  @JsonKey(name: r'scheduledTime', required: true, includeIfNull: true)
+  final String? scheduledTime;
 
-  /// Dose text.
-  @JsonKey(name: r'doseText', required: false, includeIfNull: false)
-  final Object? doseText;
+  @JsonKey(name: r'doseText', required: true, includeIfNull: true)
+  final String? doseText;
 
-  /// Free-text note.
-  @JsonKey(name: r'note', required: false, includeIfNull: false)
-  final Object? note;
+  @JsonKey(name: r'note', required: true, includeIfNull: true)
+  final String? note;
 
-  /// Source.
-  @JsonKey(name: r'source', required: false, includeIfNull: false)
-  final Object? source_;
+  @JsonKey(name: r'source', required: true, includeIfNull: true)
+  final String? source_;
 
   /// Created at (ISO 8601).
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
@@ -117,14 +110,14 @@ class DoseLogResponseDto {
   int get hashCode =>
       id.hashCode +
       (healthEventId == null ? 0 : healthEventId.hashCode) +
-      currentMedicineId.hashCode +
-      reminderId.hashCode +
+      (currentMedicineId == null ? 0 : currentMedicineId.hashCode) +
+      (reminderId == null ? 0 : reminderId.hashCode) +
       status.hashCode +
       scheduledFor.hashCode +
-      scheduledTime.hashCode +
-      doseText.hashCode +
-      note.hashCode +
-      source_.hashCode +
+      (scheduledTime == null ? 0 : scheduledTime.hashCode) +
+      (doseText == null ? 0 : doseText.hashCode) +
+      (note == null ? 0 : note.hashCode) +
+      (source_ == null ? 0 : source_.hashCode) +
       createdAt.hashCode +
       updatedAt.hashCode;
 
@@ -137,4 +130,25 @@ class DoseLogResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+/// Dose log status.
+enum DoseLogResponseDtoStatusEnum {
+  @JsonValue(r'taken')
+  taken(r'taken'),
+  @JsonValue(r'skipped')
+  skipped(r'skipped'),
+  @JsonValue(r'missed')
+  missed(r'missed'),
+  @JsonValue(r'planned')
+  planned(r'planned'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const DoseLogResponseDtoStatusEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

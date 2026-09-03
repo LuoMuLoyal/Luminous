@@ -30,7 +30,7 @@ import 'package:lucent_api/src/model/refresh_response_dto.dart';
 import 'package:lucent_api/src/model/register_response_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_api/src/model/session_controller_logout_v1_request.dart';
-import 'package:lucent_api/src/model/session_list_item_dto.dart';
+import 'package:lucent_api/src/model/session_list_item_dto_inner.dart';
 import 'package:lucent_api/src/model/verify_email_response_dto.dart';
 
 class AuthApi {
@@ -1478,9 +1478,10 @@ class AuthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [List<SessionListItemDto>] as data
+  /// Returns a [Future] containing a [Response] with a [List<SessionListItemDtoInner>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<List<SessionListItemDto>>> sessionControllerListSessionsV1({
+  Future<Response<List<SessionListItemDtoInner>>>
+  sessionControllerListSessionsV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1504,15 +1505,15 @@ class AuthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    List<SessionListItemDto>? _responseData;
+    List<SessionListItemDtoInner>? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<List<SessionListItemDto>, SessionListItemDto>(
+          : deserialize<List<SessionListItemDtoInner>, SessionListItemDtoInner>(
               rawData,
-              'List<SessionListItemDto>',
+              'List<SessionListItemDtoInner>',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -1525,7 +1526,7 @@ class AuthApi {
       );
     }
 
-    return Response<List<SessionListItemDto>>(
+    return Response<List<SessionListItemDtoInner>>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

@@ -3,11 +3,11 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/user_health_summary_dto.dart';
-import 'package:lucent_api/src/model/user_health_profile_dto.dart';
-import 'package:lucent_api/src/model/user_current_medicine_item_dto.dart';
-import 'package:lucent_api/src/model/user_allergy_item_dto.dart';
-import 'package:lucent_api/src/model/user_condition_item_dto.dart';
+import 'package:lucent_api/src/model/health_context_response_dto_allergies_inner.dart';
+import 'package:lucent_api/src/model/health_context_response_dto_conditions_inner.dart';
+import 'package:lucent_api/src/model/health_context_response_dto_current_medicines_inner.dart';
+import 'package:lucent_api/src/model/health_context_response_dto_summary.dart';
+import 'package:lucent_api/src/model/health_context_response_dto_profile.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -35,19 +35,19 @@ class HealthContextResponseDto {
   });
 
   @JsonKey(name: r'summary', required: true, includeIfNull: false)
-  final UserHealthSummaryDto summary;
+  final HealthContextResponseDtoSummary summary;
 
   @JsonKey(name: r'profile', required: true, includeIfNull: false)
-  final UserHealthProfileDto profile;
+  final HealthContextResponseDtoProfile profile;
 
   @JsonKey(name: r'allergies', required: true, includeIfNull: false)
-  final List<UserAllergyItemDto> allergies;
+  final List<HealthContextResponseDtoAllergiesInner> allergies;
 
   @JsonKey(name: r'conditions', required: true, includeIfNull: false)
-  final List<UserConditionItemDto> conditions;
+  final List<HealthContextResponseDtoConditionsInner> conditions;
 
   @JsonKey(name: r'currentMedicines', required: true, includeIfNull: false)
-  final List<UserCurrentMedicineItemDto> currentMedicines;
+  final List<HealthContextResponseDtoCurrentMedicinesInner> currentMedicines;
 
   @override
   bool operator ==(Object other) =>

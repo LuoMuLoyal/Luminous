@@ -3,10 +3,10 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/report_metric_dto.dart';
-import 'package:lucent_api/src/model/report_pattern_dto.dart';
-import 'package:lucent_api/src/model/report_finding_dto.dart';
-import 'package:lucent_api/src/model/report_trend_dto.dart';
+import 'package:lucent_api/src/model/report_dashboard_response_dto_patterns_inner.dart';
+import 'package:lucent_api/src/model/report_dashboard_response_dto_findings_inner.dart';
+import 'package:lucent_api/src/model/report_dashboard_response_dto_metrics_inner.dart';
+import 'package:lucent_api/src/model/report_dashboard_response_dto_trends_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -59,16 +59,16 @@ class ReportDashboardResponseDto {
   final String generatedAt;
 
   @JsonKey(name: r'metrics', required: true, includeIfNull: false)
-  final List<ReportMetricDto> metrics;
+  final List<ReportDashboardResponseDtoMetricsInner> metrics;
 
   @JsonKey(name: r'trends', required: true, includeIfNull: false)
-  final List<ReportTrendDto> trends;
+  final List<ReportDashboardResponseDtoTrendsInner> trends;
 
   @JsonKey(name: r'findings', required: true, includeIfNull: false)
-  final List<ReportFindingDto> findings;
+  final List<ReportDashboardResponseDtoFindingsInner> findings;
 
   @JsonKey(name: r'patterns', required: true, includeIfNull: false)
-  final List<ReportPatternDto> patterns;
+  final List<ReportDashboardResponseDtoPatternsInner> patterns;
 
   @JsonKey(name: r'aiSummaryEnabled', required: true, includeIfNull: false)
   final bool aiSummaryEnabled;

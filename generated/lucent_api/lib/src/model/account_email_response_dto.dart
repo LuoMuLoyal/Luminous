@@ -23,9 +23,8 @@ class AccountEmailResponseDto {
   @JsonKey(name: r'email', required: true, includeIfNull: false)
   final String email;
 
-  /// Email verification time in ISO 8601.
-  @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: false)
-  final String emailVerifiedAt;
+  @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: true)
+  final String? emailVerifiedAt;
 
   @override
   bool operator ==(Object other) =>
@@ -35,7 +34,8 @@ class AccountEmailResponseDto {
           other.emailVerifiedAt == emailVerifiedAt;
 
   @override
-  int get hashCode => email.hashCode + emailVerifiedAt.hashCode;
+  int get hashCode =>
+      email.hashCode + (emailVerifiedAt == null ? 0 : emailVerifiedAt.hashCode);
 
   factory AccountEmailResponseDto.fromJson(Map<String, dynamic> json) =>
       _$AccountEmailResponseDtoFromJson(json);

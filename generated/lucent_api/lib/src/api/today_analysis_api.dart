@@ -9,12 +9,12 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/today_analysis_controller_generate_async_v1202_response.dart';
+import 'package:lucent_api/src/model/today_analysis_async_status_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_controller_generate_v1200_response.dart';
-import 'package:lucent_api/src/model/today_analysis_controller_refresh_v1201_response.dart';
 import 'package:lucent_api/src/model/today_analysis_controller_refresh_v1_request.dart';
 import 'package:lucent_api/src/model/today_analysis_read_response_dto.dart';
-import 'package:lucent_api/src/model/today_recommendation_response_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_refresh_ready_data_dto.dart';
+import 'package:lucent_api/src/model/today_recommendation_response_dto_inner.dart';
 
 class TodayAnalysisApi {
   final Dio _dio;
@@ -33,9 +33,9 @@ class TodayAnalysisApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [TodayAnalysisControllerGenerateAsyncV1202Response] as data
+  /// Returns a [Future] containing a [Response] with a [TodayAnalysisAsyncStatusDataDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<TodayAnalysisControllerGenerateAsyncV1202Response>>
+  Future<Response<TodayAnalysisAsyncStatusDataDto>>
   todayAnalysisControllerGenerateAsyncV1({
     required TodayAnalysisControllerRefreshV1Request
     todayAnalysisControllerRefreshV1Request,
@@ -77,20 +77,16 @@ class TodayAnalysisApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    TodayAnalysisControllerGenerateAsyncV1202Response? _responseData;
+    TodayAnalysisAsyncStatusDataDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              TodayAnalysisControllerGenerateAsyncV1202Response,
-              TodayAnalysisControllerGenerateAsyncV1202Response
-            >(
-              rawData,
-              'TodayAnalysisControllerGenerateAsyncV1202Response',
-              growable: true,
-            );
+              TodayAnalysisAsyncStatusDataDto,
+              TodayAnalysisAsyncStatusDataDto
+            >(rawData, 'TodayAnalysisAsyncStatusDataDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -101,7 +97,7 @@ class TodayAnalysisApi {
       );
     }
 
-    return Response<TodayAnalysisControllerGenerateAsyncV1202Response>(
+    return Response<TodayAnalysisAsyncStatusDataDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -349,9 +345,9 @@ class TodayAnalysisApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [List<TodayRecommendationResponseDto>] as data
+  /// Returns a [Future] containing a [Response] with a [List<TodayRecommendationResponseDtoInner>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<List<TodayRecommendationResponseDto>>>
+  Future<Response<List<TodayRecommendationResponseDtoInner>>>
   todayAnalysisControllerGetRecommendationsV1({
     List<String>? exclude,
     CancelToken? cancelToken,
@@ -382,16 +378,20 @@ class TodayAnalysisApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    List<TodayRecommendationResponseDto>? _responseData;
+    List<TodayRecommendationResponseDtoInner>? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              List<TodayRecommendationResponseDto>,
-              TodayRecommendationResponseDto
-            >(rawData, 'List<TodayRecommendationResponseDto>', growable: true);
+              List<TodayRecommendationResponseDtoInner>,
+              TodayRecommendationResponseDtoInner
+            >(
+              rawData,
+              'List<TodayRecommendationResponseDtoInner>',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -402,7 +402,7 @@ class TodayAnalysisApi {
       );
     }
 
-    return Response<List<TodayRecommendationResponseDto>>(
+    return Response<List<TodayRecommendationResponseDtoInner>>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -500,9 +500,9 @@ class TodayAnalysisApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [TodayAnalysisControllerRefreshV1201Response] as data
+  /// Returns a [Future] containing a [Response] with a [TodayAnalysisRefreshReadyDataDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<TodayAnalysisControllerRefreshV1201Response>>
+  Future<Response<TodayAnalysisRefreshReadyDataDto>>
   todayAnalysisControllerRefreshV1({
     required TodayAnalysisControllerRefreshV1Request
     todayAnalysisControllerRefreshV1Request,
@@ -544,20 +544,16 @@ class TodayAnalysisApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    TodayAnalysisControllerRefreshV1201Response? _responseData;
+    TodayAnalysisRefreshReadyDataDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              TodayAnalysisControllerRefreshV1201Response,
-              TodayAnalysisControllerRefreshV1201Response
-            >(
-              rawData,
-              'TodayAnalysisControllerRefreshV1201Response',
-              growable: true,
-            );
+              TodayAnalysisRefreshReadyDataDto,
+              TodayAnalysisRefreshReadyDataDto
+            >(rawData, 'TodayAnalysisRefreshReadyDataDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -568,7 +564,7 @@ class TodayAnalysisApi {
       );
     }
 
-    return Response<TodayAnalysisControllerRefreshV1201Response>(
+    return Response<TodayAnalysisRefreshReadyDataDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

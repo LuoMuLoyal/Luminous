@@ -3,14 +3,14 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_note_entry_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_allergy_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_sleep_entry_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_condition_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_medicine_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_water_entry_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto_coverage.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto_profile.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto_current_medicines_inner.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto_note_entries_inner.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto_sleep_entries_inner.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto_allergies_inner.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto_conditions_inner.dart';
+import 'package:lucent_api/src/model/clinic_summary_response_dto_water_entries_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -80,27 +80,26 @@ class ClinicSummaryResponseDto {
   final List<String> selectedFields;
 
   @JsonKey(name: r'coverage', required: true, includeIfNull: false)
-  final ClinicSummaryCoverageDto coverage;
+  final ClinicSummaryResponseDtoCoverage coverage;
 
   /// Legacy range label (last_7_days | last_30_days | custom | event); kept as a compatibility alias of scopeLabel.
   @JsonKey(name: r'dataRange', required: true, includeIfNull: false)
   final String dataRange;
 
-  /// De-identified profile. Optional: omitted when the section is deselected via selectedFields.
   @JsonKey(name: r'profile', required: false, includeIfNull: false)
-  final ClinicSummaryProfileDto? profile;
+  final ClinicSummaryResponseDtoProfile? profile;
 
   /// Active allergies. Optional: omitted when the section is deselected.
   @JsonKey(name: r'allergies', required: false, includeIfNull: false)
-  final List<ClinicSummaryAllergyDto>? allergies;
+  final List<ClinicSummaryResponseDtoAllergiesInner>? allergies;
 
   /// Active conditions. Optional: omitted when the section is deselected.
   @JsonKey(name: r'conditions', required: false, includeIfNull: false)
-  final List<ClinicSummaryConditionDto>? conditions;
+  final List<ClinicSummaryResponseDtoConditionsInner>? conditions;
 
   /// Current medicines. Optional: omitted when the section is deselected.
   @JsonKey(name: r'currentMedicines', required: false, includeIfNull: false)
-  final List<ClinicSummaryMedicineDto>? currentMedicines;
+  final List<ClinicSummaryResponseDtoCurrentMedicinesInner>? currentMedicines;
 
   /// Structured facts and change codes reused from the event review (e.g. health_event, observed_changes, no_completed_actions, active_check_in). `insufficient_coverage` is the fixed 资料不足 statement — no generic AI conclusions are ever added. Controlled by the `event_overview` field toggle (R-2): omitted when the field is deselected.
   @JsonKey(name: r'findings', required: false, includeIfNull: false)
@@ -108,15 +107,15 @@ class ClinicSummaryResponseDto {
 
   /// Daily water intake facts (only records with a parsable ml value). Controlled by the `water` field toggle (R-2): omitted when the field is deselected.
   @JsonKey(name: r'waterEntries', required: false, includeIfNull: false)
-  final List<ClinicSummaryWaterEntryDto>? waterEntries;
+  final List<ClinicSummaryResponseDtoWaterEntriesInner>? waterEntries;
 
   /// Daily sleep duration facts (only records with a positive duration). Controlled by the `sleep` field toggle (R-2): omitted when the field is deselected.
   @JsonKey(name: r'sleepEntries', required: false, includeIfNull: false)
-  final List<ClinicSummarySleepEntryDto>? sleepEntries;
+  final List<ClinicSummaryResponseDtoSleepEntriesInner>? sleepEntries;
 
   /// Free-text note records (date, kind, original text). Controlled by the `notes` field toggle (R-2): omitted when the field is deselected. Defaults to off — the user must explicitly opt in.
   @JsonKey(name: r'noteEntries', required: false, includeIfNull: false)
-  final List<ClinicSummaryNoteEntryDto>? noteEntries;
+  final List<ClinicSummaryResponseDtoNoteEntriesInner>? noteEntries;
 
   /// Disclaimer text
   @JsonKey(name: r'disclaimer', required: true, includeIfNull: false)

@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/suggestion_history_item_dto.dart';
+import 'package:lucent_api/src/model/suggestion_history_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -30,7 +30,7 @@ class SuggestionHistoryResponseDto {
 
   /// Suggestion history items
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<SuggestionHistoryItemDto> items;
+  final List<SuggestionHistoryResponseDtoItemsInner> items;
 
   /// Total count of matching items
   @JsonKey(name: r'total', required: true, includeIfNull: false)

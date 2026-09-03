@@ -20,23 +20,23 @@ class MedicineReminderResponseDto {
   MedicineReminderResponseDto({
     required this.id,
 
-    this.currentMedicineId,
+    required this.currentMedicineId,
 
-    this.label,
+    required this.label,
 
     required this.scheduledHour,
 
     required this.scheduledMinute,
 
-    this.daysOfWeek,
+    required this.daysOfWeek,
 
-    this.startDate,
+    required this.startDate,
 
-    this.endDate,
+    required this.endDate,
 
     required this.isActive,
 
-    this.note,
+    required this.note,
 
     required this.createdAt,
 
@@ -47,12 +47,10 @@ class MedicineReminderResponseDto {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
-  /// Linked current medicine id.
-  @JsonKey(name: r'currentMedicineId', required: false, includeIfNull: false)
+  @JsonKey(name: r'currentMedicineId', required: true, includeIfNull: true)
   final String? currentMedicineId;
 
-  /// Reminder label.
-  @JsonKey(name: r'label', required: false, includeIfNull: false)
+  @JsonKey(name: r'label', required: true, includeIfNull: true)
   final String? label;
 
   /// Scheduled local hour, 0-23.
@@ -63,24 +61,20 @@ class MedicineReminderResponseDto {
   @JsonKey(name: r'scheduledMinute', required: true, includeIfNull: false)
   final num scheduledMinute;
 
-  /// Weekday numbers 0-6. Null means every day.
-  @JsonKey(name: r'daysOfWeek', required: false, includeIfNull: false)
+  @JsonKey(name: r'daysOfWeek', required: true, includeIfNull: true)
   final List<num>? daysOfWeek;
 
-  /// Date in YYYY-MM-DD format when the reminder starts.
-  @JsonKey(name: r'startDate', required: false, includeIfNull: false)
+  @JsonKey(name: r'startDate', required: true, includeIfNull: true)
   final String? startDate;
 
-  /// Date in YYYY-MM-DD format when the reminder ends.
-  @JsonKey(name: r'endDate', required: false, includeIfNull: false)
+  @JsonKey(name: r'endDate', required: true, includeIfNull: true)
   final String? endDate;
 
   /// Whether this reminder is active.
   @JsonKey(name: r'isActive', required: true, includeIfNull: false)
   final bool isActive;
 
-  /// User note.
-  @JsonKey(name: r'note', required: false, includeIfNull: false)
+  @JsonKey(name: r'note', required: true, includeIfNull: true)
   final String? note;
 
   /// Created at (ISO 8601).

@@ -3,8 +3,8 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/assistant_tool_capability_dto.dart';
-import 'package:lucent_api/src/model/assistant_context_settings_dto.dart';
+import 'package:lucent_api/src/model/assistant_capabilities_response_dto_tools_inner.dart';
+import 'package:lucent_api/src/model/assistant_capabilities_response_dto_assistant_context.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -63,9 +63,8 @@ class AssistantCapabilitiesResponseDto {
   )
   final bool assistantMemoryEnabled;
 
-  /// Fine-grained assistant context permissions from user settings.
   @JsonKey(name: r'assistantContext', required: true, includeIfNull: false)
-  final AssistantContextSettingsDto assistantContext;
+  final AssistantCapabilitiesResponseDtoAssistantContext assistantContext;
 
   /// Whether the configured chat model role exists server-side.
   @JsonKey(name: r'chatModelConfigured', required: true, includeIfNull: false)
@@ -101,9 +100,8 @@ class AssistantCapabilitiesResponseDto {
 
   /// Tool-by-tool capability breakdown after combining system state and user permissions.
   @JsonKey(name: r'tools', required: true, includeIfNull: false)
-  final List<AssistantToolCapabilityDto> tools;
+  final List<AssistantCapabilitiesResponseDtoToolsInner> tools;
 
-  /// ISO-8601 timestamp of the latest related settings update.
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: true)
   final String? updatedAt;
 

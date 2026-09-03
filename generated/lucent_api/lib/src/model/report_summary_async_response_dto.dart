@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/report_summary_data_dto.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_dto_result.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -24,9 +24,8 @@ class ReportSummaryAsyncResponseDto {
   @JsonKey(name: r'jobId', required: false, includeIfNull: false)
   final String? jobId;
 
-  /// Inline report summary resource when queue processing is unavailable.
   @JsonKey(name: r'result', required: false, includeIfNull: false)
-  final ReportSummaryDataDto? result;
+  final ReportSummaryAsyncResponseDtoResult? result;
 
   @override
   bool operator ==(Object other) =>

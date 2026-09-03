@@ -3,8 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/daily_record_kind.dart';
-import 'package:lucent_api/src/model/daily_record_attachment_dto.dart';
+import 'package:lucent_api/src/model/daily_record_list_response_dto_items_inner_attachments_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -24,35 +23,35 @@ class DailyRecordResponseDto {
 
     required this.kind,
 
-    this.healthEventId,
+    required this.healthEventId,
 
     required this.occurredAt,
 
-    this.occurredTime,
+    required this.occurredTime,
 
-    this.title,
+    required this.title,
 
-    this.value,
+    required this.value,
 
-    this.unit,
+    required this.unit,
 
-    this.note,
+    required this.note,
 
-    this.source_,
+    required this.source_,
 
-    this.payload,
+    required this.payload,
 
-    this.mealAnalysisStatus,
+    required this.mealAnalysisStatus,
 
-    this.mealAnalysisCoverage,
+    required this.mealAnalysisCoverage,
 
-    this.mealAnalysisUpdatedAt,
+    required this.mealAnalysisUpdatedAt,
 
-    this.mealAnalysisFailureReason,
+    required this.mealAnalysisFailureReason,
 
-    this.mealShortDescription,
+    required this.mealShortDescription,
 
-    this.mealTopFoods,
+    required this.mealTopFoods,
 
     required this.attachments,
 
@@ -69,12 +68,12 @@ class DailyRecordResponseDto {
     name: r'kind',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: DailyRecordKind.unknownDefaultOpenApi,
+    unknownEnumValue: DailyRecordResponseDtoKindEnum.unknownDefaultOpenApi,
   )
-  final DailyRecordKind kind;
+  final DailyRecordResponseDtoKindEnum kind;
 
   /// Linked health event id.
-  @JsonKey(name: r'healthEventId', required: false, includeIfNull: false)
+  @JsonKey(name: r'healthEventId', required: true, includeIfNull: true)
   final String? healthEventId;
 
   /// Date in YYYY-MM-DD format.
@@ -82,67 +81,63 @@ class DailyRecordResponseDto {
   final String occurredAt;
 
   /// Time in HH:mm 24-hour format when available.
-  @JsonKey(name: r'occurredTime', required: false, includeIfNull: false)
+  @JsonKey(name: r'occurredTime', required: true, includeIfNull: true)
   final String? occurredTime;
 
   /// Short label.
-  @JsonKey(name: r'title', required: false, includeIfNull: false)
+  @JsonKey(name: r'title', required: true, includeIfNull: true)
   final String? title;
 
   /// Measured value.
-  @JsonKey(name: r'value', required: false, includeIfNull: false)
+  @JsonKey(name: r'value', required: true, includeIfNull: true)
   final String? value;
 
   /// Unit label.
-  @JsonKey(name: r'unit', required: false, includeIfNull: false)
+  @JsonKey(name: r'unit', required: true, includeIfNull: true)
   final String? unit;
 
   /// Free-text note.
-  @JsonKey(name: r'note', required: false, includeIfNull: false)
+  @JsonKey(name: r'note', required: true, includeIfNull: true)
   final String? note;
 
   /// Source.
-  @JsonKey(name: r'source', required: false, includeIfNull: false)
+  @JsonKey(name: r'source', required: true, includeIfNull: true)
   final String? source_;
 
   /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality?, deepMinutes?, lightMinutes?, remMinutes? }. For vital: { vitalType, value, unit, secondaryValue?, secondaryUnit? }. For activity: { activityType, value, unit }.
-  @JsonKey(name: r'payload', required: false, includeIfNull: false)
+  @JsonKey(name: r'payload', required: true, includeIfNull: true)
   final Map<String, Object>? payload;
 
   /// Meal analysis status for meal records.
-  @JsonKey(name: r'mealAnalysisStatus', required: false, includeIfNull: false)
+  @JsonKey(name: r'mealAnalysisStatus', required: true, includeIfNull: true)
   final String? mealAnalysisStatus;
 
   /// Meal analysis coverage for meal records.
-  @JsonKey(name: r'mealAnalysisCoverage', required: false, includeIfNull: false)
+  @JsonKey(name: r'mealAnalysisCoverage', required: true, includeIfNull: true)
   final String? mealAnalysisCoverage;
 
   /// Meal analysis updated timestamp (ISO 8601).
-  @JsonKey(
-    name: r'mealAnalysisUpdatedAt',
-    required: false,
-    includeIfNull: false,
-  )
+  @JsonKey(name: r'mealAnalysisUpdatedAt', required: true, includeIfNull: true)
   final String? mealAnalysisUpdatedAt;
 
   /// Display-safe meal analysis failure reason.
   @JsonKey(
     name: r'mealAnalysisFailureReason',
-    required: false,
-    includeIfNull: false,
+    required: true,
+    includeIfNull: true,
   )
   final String? mealAnalysisFailureReason;
 
   /// Short meal description for list reads.
-  @JsonKey(name: r'mealShortDescription', required: false, includeIfNull: false)
+  @JsonKey(name: r'mealShortDescription', required: true, includeIfNull: true)
   final String? mealShortDescription;
 
   /// Top recognized foods for list reads.
-  @JsonKey(name: r'mealTopFoods', required: false, includeIfNull: false)
-  final List<String>? mealTopFoods;
+  @JsonKey(name: r'mealTopFoods', required: true, includeIfNull: false)
+  final List<String> mealTopFoods;
 
   @JsonKey(name: r'attachments', required: true, includeIfNull: false)
-  final List<DailyRecordAttachmentDto> attachments;
+  final List<DailyRecordListResponseDtoItemsInnerAttachmentsInner> attachments;
 
   /// Created at (ISO 8601).
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
@@ -211,4 +206,32 @@ class DailyRecordResponseDto {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum DailyRecordResponseDtoKindEnum {
+  @JsonValue(r'water')
+  water(r'water'),
+  @JsonValue(r'meal')
+  meal(r'meal'),
+  @JsonValue(r'vital')
+  vital(r'vital'),
+  @JsonValue(r'mood')
+  mood(r'mood'),
+  @JsonValue(r'symptom')
+  symptom(r'symptom'),
+  @JsonValue(r'activity')
+  activity(r'activity'),
+  @JsonValue(r'note')
+  note(r'note'),
+  @JsonValue(r'sleep')
+  sleep(r'sleep'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const DailyRecordResponseDtoKindEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

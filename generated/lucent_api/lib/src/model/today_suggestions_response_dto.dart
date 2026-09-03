@@ -3,7 +3,8 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/suggestion_item_dto.dart';
+import 'package:lucent_api/src/model/today_suggestions_response_dto_primary.dart';
+import 'package:lucent_api/src/model/today_suggestions_response_dto_secondary_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -42,21 +43,20 @@ class TodaySuggestionsResponseDto {
   @JsonKey(name: r'generatedAt', required: true, includeIfNull: false)
   final String generatedAt;
 
-  /// Primary suggestion card (highest priority)
   @JsonKey(name: r'primary', required: false, includeIfNull: false)
-  final SuggestionItemDto? primary;
+  final TodaySuggestionsResponseDtoPrimary? primary;
 
   /// Secondary suggestion cards (max 2)
   @JsonKey(name: r'secondary', required: false, includeIfNull: false)
-  final List<SuggestionItemDto>? secondary;
+  final List<TodaySuggestionsResponseDtoSecondaryInner>? secondary;
 
   /// Low-confidence observations
   @JsonKey(name: r'observations', required: false, includeIfNull: false)
-  final List<SuggestionItemDto>? observations;
+  final List<TodaySuggestionsResponseDtoSecondaryInner>? observations;
 
   /// When true, one or more suggestion rules threw an error during evaluation — the returned list may be incomplete.
   @JsonKey(name: r'degraded', required: false, includeIfNull: false)
-  final Object? degraded;
+  final bool? degraded;
 
   /// Current background materialization state
   @JsonKey(
@@ -73,11 +73,9 @@ class TodaySuggestionsResponseDto {
   @JsonKey(name: r'sourceVersion', required: true, includeIfNull: false)
   final num sourceVersion;
 
-  /// When the last successful materialization completed
   @JsonKey(name: r'computedAt', required: true, includeIfNull: true)
   final String? computedAt;
 
-  /// Suggested client polling delay in seconds
   @JsonKey(name: r'retryAfterSeconds', required: true, includeIfNull: true)
   final num? retryAfterSeconds;
 

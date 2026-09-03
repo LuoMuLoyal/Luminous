@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/assistant_context_settings_dto.dart';
+import 'package:lucent_api/src/model/user_settings_response_dto_assistant_context.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -60,11 +60,9 @@ class UserSettingsResponseDto {
   @JsonKey(name: r'waterTargetCount', required: true, includeIfNull: false)
   final num waterTargetCount;
 
-  /// Fine-grained assistant context permissions.
   @JsonKey(name: r'assistantContext', required: true, includeIfNull: false)
-  final AssistantContextSettingsDto assistantContext;
+  final UserSettingsResponseDtoAssistantContext assistantContext;
 
-  /// ISO-8601 timestamp of last update.
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: true)
   final String? updatedAt;
 

@@ -9,8 +9,8 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/health_event_item_dto.dart';
 import 'package:lucent_api/src/model/health_event_list_response_dto.dart';
+import 'package:lucent_api/src/model/health_event_nullable_response_dto.dart';
 import 'package:lucent_api/src/model/health_event_response_dto.dart';
 import 'package:lucent_api/src/model/health_events_controller_create_v1_request.dart';
 import 'package:lucent_api/src/model/health_events_controller_end_v1_request.dart';
@@ -34,9 +34,10 @@ class HealthEventsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthEventItemDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthEventNullableResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthEventItemDto>> healthEventsControllerActiveV1({
+  Future<Response<HealthEventNullableResponseDto>>
+  healthEventsControllerActiveV1({
     DateTime? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -64,17 +65,16 @@ class HealthEventsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthEventItemDto? _responseData;
+    HealthEventNullableResponseDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthEventItemDto, HealthEventItemDto>(
-              rawData,
-              'HealthEventItemDto',
-              growable: true,
-            );
+          : deserialize<
+              HealthEventNullableResponseDto,
+              HealthEventNullableResponseDto
+            >(rawData, 'HealthEventNullableResponseDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -85,7 +85,7 @@ class HealthEventsApi {
       );
     }
 
-    return Response<HealthEventItemDto>(
+    return Response<HealthEventNullableResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

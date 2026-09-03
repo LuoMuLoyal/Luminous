@@ -3,10 +3,10 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/event_review_source_timestamps_dto.dart';
-import 'package:lucent_api/src/model/event_review_coverage_summary_dto.dart';
-import 'package:lucent_api/src/model/event_review_event_dto.dart';
-import 'package:lucent_api/src/model/event_review_sections_dto.dart';
+import 'package:lucent_api/src/model/event_review_data_dto_source_timestamps.dart';
+import 'package:lucent_api/src/model/event_review_data_dto_event.dart';
+import 'package:lucent_api/src/model/event_review_data_dto_sections.dart';
+import 'package:lucent_api/src/model/event_review_data_dto_coverage.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -36,16 +36,16 @@ class EventReviewResponseDto {
   });
 
   @JsonKey(name: r'event', required: true, includeIfNull: false)
-  final EventReviewEventDto event;
+  final EventReviewDataDtoEvent event;
 
   @JsonKey(name: r'sections', required: true, includeIfNull: false)
-  final EventReviewSectionsDto sections;
+  final EventReviewDataDtoSections sections;
 
   @JsonKey(name: r'coverage', required: true, includeIfNull: false)
-  final EventReviewCoverageSummaryDto coverage;
+  final EventReviewDataDtoCoverage coverage;
 
   @JsonKey(name: r'sourceTimestamps', required: true, includeIfNull: false)
-  final EventReviewSourceTimestampsDto sourceTimestamps;
+  final EventReviewDataDtoSourceTimestamps sourceTimestamps;
 
   /// Actions the user can take from this review, mapped by the client.
   @JsonKey(name: r'availableActions', required: true, includeIfNull: false)

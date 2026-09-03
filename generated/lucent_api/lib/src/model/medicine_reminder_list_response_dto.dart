@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/medicine_reminder_item_dto.dart';
+import 'package:lucent_api/src/model/medicine_reminder_list_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -20,8 +20,9 @@ class MedicineReminderListResponseDto {
   /// Returns a new [MedicineReminderListResponseDto] instance.
   MedicineReminderListResponseDto({required this.items});
 
+  /// Medicine reminders.
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<MedicineReminderItemDto> items;
+  final List<MedicineReminderListResponseDtoItemsInner> items;
 
   @override
   bool operator ==(Object other) =>

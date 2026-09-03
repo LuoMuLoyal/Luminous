@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/notification_list_item_dto.dart';
+import 'package:lucent_api/src/model/notification_list_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,7 +21,7 @@ class NotificationListResponseDto {
   NotificationListResponseDto({required this.items, required this.total});
 
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<NotificationListItemDto> items;
+  final List<NotificationListResponseDtoItemsInner> items;
 
   /// Total count of notifications for the user.
   @JsonKey(name: r'total', required: true, includeIfNull: false)

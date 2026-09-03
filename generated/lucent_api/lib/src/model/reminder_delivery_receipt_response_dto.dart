@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/reminder_delivery_item_dto.dart';
+import 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto_item.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,7 +21,7 @@ class ReminderDeliveryReceiptResponseDto {
   ReminderDeliveryReceiptResponseDto({required this.item});
 
   @JsonKey(name: r'item', required: true, includeIfNull: false)
-  final ReminderDeliveryItemDto item;
+  final ReminderDeliveryReceiptResponseDtoItem item;
 
   @override
   bool operator ==(Object other) =>

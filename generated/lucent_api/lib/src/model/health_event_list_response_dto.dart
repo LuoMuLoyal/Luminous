@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/health_event_item_dto.dart';
+import 'package:lucent_api/src/model/health_event_list_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,10 +21,12 @@ class HealthEventListResponseDto {
   HealthEventListResponseDto({required this.items, required this.total});
 
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<HealthEventItemDto> items;
+  final List<HealthEventListResponseDtoItemsInner> items;
 
+  // minimum: -9007199254740991
+  // maximum: 9007199254740991
   @JsonKey(name: r'total', required: true, includeIfNull: false)
-  final num total;
+  final int total;
 
   @override
   bool operator ==(Object other) =>

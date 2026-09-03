@@ -3,10 +3,10 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/funnel_window_dto.dart';
-import 'package:lucent_api/src/model/funnel_daily_counts_dto.dart';
-import 'package:lucent_api/src/model/funnel_optional_counts_dto.dart';
-import 'package:lucent_api/src/model/funnel_totals_dto.dart';
+import 'package:lucent_api/src/model/funnel_response_dto_daily_inner.dart';
+import 'package:lucent_api/src/model/funnel_response_dto_optional.dart';
+import 'package:lucent_api/src/model/funnel_response_dto_totals.dart';
+import 'package:lucent_api/src/model/funnel_response_dto_window.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -33,18 +33,16 @@ class FunnelResponseDto {
 
   /// Per-UTC-day core funnel counts, ascending by date; empty when detailsSuppressed is true.
   @JsonKey(name: r'daily', required: true, includeIfNull: false)
-  final List<FunnelDailyCountsDto> daily;
+  final List<FunnelResponseDtoDailyInner> daily;
 
-  /// Window totals of the optional visit-summary events.
   @JsonKey(name: r'optional', required: true, includeIfNull: false)
-  final FunnelOptionalCountsDto optional;
+  final FunnelResponseDtoOptional optional;
 
-  /// Window totals of the core funnel (same breakdown as daily).
   @JsonKey(name: r'totals', required: true, includeIfNull: false)
-  final FunnelTotalsDto totals;
+  final FunnelResponseDtoTotals totals;
 
   @JsonKey(name: r'window', required: true, includeIfNull: false)
-  final FunnelWindowDto window;
+  final FunnelResponseDtoWindow window;
 
   @override
   bool operator ==(Object other) =>

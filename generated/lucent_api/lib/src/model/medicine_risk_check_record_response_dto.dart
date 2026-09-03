@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/medicine_risk_check_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto_static_result.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -34,6 +34,7 @@ class MedicineRiskCheckRecordResponseDto {
     required this.updatedAt,
   });
 
+  /// Type of risk check.
   @JsonKey(
     name: r'checkType',
     required: true,
@@ -44,13 +45,13 @@ class MedicineRiskCheckRecordResponseDto {
   final MedicineRiskCheckRecordResponseDtoCheckTypeEnum checkType;
 
   @JsonKey(name: r'result', required: true, includeIfNull: false)
-  final MedicineRiskCheckResponseDto result;
+  final MedicineRiskCheckRecordsResponseDtoStaticResult result;
 
-  // minimum: 0
-  // maximum: 100
+  /// Persisted risk score (0-100).
   @JsonKey(name: r'riskScore', required: true, includeIfNull: false)
   final num riskScore;
 
+  /// Persisted risk level.
   @JsonKey(
     name: r'riskLevel',
     required: true,
@@ -60,12 +61,15 @@ class MedicineRiskCheckRecordResponseDto {
   )
   final MedicineRiskCheckRecordResponseDtoRiskLevelEnum riskLevel;
 
+  /// Whether the record is stale.
   @JsonKey(name: r'stale', required: true, includeIfNull: false)
   final bool stale;
 
+  /// Created at (ISO 8601).
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
   final DateTime createdAt;
 
+  /// Updated at (ISO 8601).
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: false)
   final DateTime updatedAt;
 
@@ -104,6 +108,7 @@ class MedicineRiskCheckRecordResponseDto {
   }
 }
 
+/// Type of risk check.
 enum MedicineRiskCheckRecordResponseDtoCheckTypeEnum {
   @JsonValue(r'static')
   static_(r'static'),
@@ -120,6 +125,7 @@ enum MedicineRiskCheckRecordResponseDtoCheckTypeEnum {
   String toString() => value;
 }
 
+/// Persisted risk level.
 enum MedicineRiskCheckRecordResponseDtoRiskLevelEnum {
   @JsonValue(r'safe')
   safe(r'safe'),

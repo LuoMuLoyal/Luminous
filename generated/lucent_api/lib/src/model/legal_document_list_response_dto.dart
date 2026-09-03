@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/legal_document_list_item_dto.dart';
+import 'package:lucent_api/src/model/legal_document_list_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,7 +21,7 @@ class LegalDocumentListResponseDto {
   LegalDocumentListResponseDto({required this.items, required this.updatedAt});
 
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<LegalDocumentListItemDto> items;
+  final List<LegalDocumentListResponseDtoItemsInner> items;
 
   /// ISO-8601 timestamp of the most recent document update.
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: false)

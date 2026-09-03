@@ -3,9 +3,9 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/report_low_risk_action_dto.dart';
-import 'package:lucent_api/src/model/report_coverage_dto.dart';
-import 'package:lucent_api/src/model/report_observed_pattern_dto.dart';
+import 'package:lucent_api/src/model/report_summary_response_dto_coverage.dart';
+import 'package:lucent_api/src/model/report_summary_response_dto_observed_pattern.dart';
+import 'package:lucent_api/src/model/report_summary_response_dto_low_risk_action.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -33,9 +33,9 @@ class ReportSummaryResponseDto {
 
     required this.coverage,
 
-    this.observedPattern,
+    required this.observedPattern,
 
-    this.lowRiskAction,
+    required this.lowRiskAction,
 
     required this.disclaimer,
   });
@@ -61,15 +61,13 @@ class ReportSummaryResponseDto {
   final String summary;
 
   @JsonKey(name: r'coverage', required: true, includeIfNull: false)
-  final ReportCoverageDto coverage;
+  final ReportSummaryResponseDtoCoverage coverage;
 
-  /// At most one source-backed observed pattern. Null when data is insufficient.
-  @JsonKey(name: r'observedPattern', required: false, includeIfNull: false)
-  final ReportObservedPatternDto? observedPattern;
+  @JsonKey(name: r'observedPattern', required: true, includeIfNull: true)
+  final ReportSummaryResponseDtoObservedPattern? observedPattern;
 
-  /// At most one low-risk action. Null when no action is warranted.
-  @JsonKey(name: r'lowRiskAction', required: false, includeIfNull: false)
-  final ReportLowRiskActionDto? lowRiskAction;
+  @JsonKey(name: r'lowRiskAction', required: true, includeIfNull: true)
+  final ReportSummaryResponseDtoLowRiskAction? lowRiskAction;
 
   @JsonKey(name: r'disclaimer', required: true, includeIfNull: false)
   final String disclaimer;

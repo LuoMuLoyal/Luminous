@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_read_response_dto_analysis.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -33,7 +33,7 @@ class TodayAnalysisReadDataDto {
   });
 
   @JsonKey(name: r'analysis', required: true, includeIfNull: true)
-  final TodayAnalysisDataDto? analysis;
+  final TodayAnalysisReadResponseDtoAnalysis? analysis;
 
   @JsonKey(
     name: r'status',

@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/daily_record_candidate_item_dto.dart';
+import 'package:lucent_api/src/model/daily_record_candidate_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -41,7 +41,7 @@ class DailyRecordCandidateResponseDto {
   final String confirmationHint;
 
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<DailyRecordCandidateItemDto> items;
+  final List<DailyRecordCandidateResponseDtoItemsInner> items;
 
   @override
   bool operator ==(Object other) =>

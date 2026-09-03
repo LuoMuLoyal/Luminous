@@ -4,9 +4,10 @@
 
 // ignore_for_file: unused_element
 import 'package:lucent_api/src/model/today_analysis_read_data_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_read_response_dto_analysis.dart';
+import 'package:lucent_api/src/model/today_analysis_read_response_dto_analysis_bullets_inner.dart';
+import 'package:lucent_api/src/model/today_analysis_read_response_dto_analysis_metrics_inner.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_metric_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -66,7 +67,7 @@ class TodayAnalysisControllerGenerateV1200Response {
   final String summary;
 
   @JsonKey(name: r'bullets', required: true, includeIfNull: false)
-  final List<TodayAnalysisBulletDto> bullets;
+  final List<TodayAnalysisReadResponseDtoAnalysisBulletsInner> bullets;
 
   @JsonKey(name: r'actionLabel', required: true, includeIfNull: false)
   final String actionLabel;
@@ -81,10 +82,10 @@ class TodayAnalysisControllerGenerateV1200Response {
   final bool aiGenerated;
 
   @JsonKey(name: r'metrics', required: false, includeIfNull: false)
-  final List<TodayAnalysisMetricDto>? metrics;
+  final List<TodayAnalysisReadResponseDtoAnalysisMetricsInner>? metrics;
 
   @JsonKey(name: r'analysis', required: true, includeIfNull: true)
-  final TodayAnalysisDataDto? analysis;
+  final TodayAnalysisReadResponseDtoAnalysis? analysis;
 
   @JsonKey(
     name: r'status',

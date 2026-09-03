@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/clinic_summary_share_scope_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_response_dto_scope.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -49,7 +49,7 @@ class ClinicSummaryShareResponseDto {
   final String expiresAt;
 
   @JsonKey(name: r'scope', required: false, includeIfNull: false)
-  final ClinicSummaryShareScopeDto? scope;
+  final ClinicSummaryShareResponseDtoScope? scope;
 
   /// Share fields the link may expose
   @JsonKey(name: r'selectedFields', required: false, includeIfNull: false)

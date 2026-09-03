@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/daily_record_item_dto.dart';
+import 'package:lucent_api/src/model/daily_record_list_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,11 +21,13 @@ class DailyRecordListResponseDto {
   DailyRecordListResponseDto({required this.items, required this.total});
 
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<DailyRecordItemDto> items;
+  final List<DailyRecordListResponseDtoItemsInner> items;
 
   /// Total records for the date (before pagination).
+  // minimum: -9007199254740991
+  // maximum: 9007199254740991
   @JsonKey(name: r'total', required: true, includeIfNull: false)
-  final num total;
+  final int total;
 
   @override
   bool operator ==(Object other) =>

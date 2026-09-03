@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/event_review_event_dto.dart';
+import 'package:lucent_api/src/model/event_review_data_dto_event.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -27,13 +27,12 @@ class EventReviewListResponseDto {
   });
 
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<EventReviewEventDto> items;
+  final List<EventReviewDataDtoEvent> items;
 
   /// Total matching events for the filter.
   @JsonKey(name: r'total', required: true, includeIfNull: false)
   final num total;
 
-  /// Cursor for the next page (last item startedAt in ISO 8601), or null on the last page.
   @JsonKey(name: r'nextCursor', required: true, includeIfNull: true)
   final String? nextCursor;
 

@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/clinic_summary_share_list_item_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_list_response_dto_items_inner.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -22,7 +22,7 @@ class ClinicSummaryShareListResponseDto {
 
   /// The caller shares, newest first (createdAt desc); revoked shares stay listed.
   @JsonKey(name: r'items', required: true, includeIfNull: false)
-  final List<ClinicSummaryShareListItemDto> items;
+  final List<ClinicSummaryShareListResponseDtoItemsInner> items;
 
   @override
   bool operator ==(Object other) =>
