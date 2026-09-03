@@ -10,7 +10,7 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/update_user_settings_dto.dart';
+import 'package:lucent_api/src/model/user_settings_controller_update_settings_v1_request.dart';
 import 'package:lucent_api/src/model/user_settings_response_dto.dart';
 
 class UserSettingsApi {
@@ -93,7 +93,7 @@ class UserSettingsApi {
   ///
   ///
   /// Parameters:
-  /// * [updateUserSettingsDto]
+  /// * [userSettingsControllerUpdateSettingsV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -105,7 +105,8 @@ class UserSettingsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<UserSettingsResponseDto>>
   userSettingsControllerUpdateSettingsV1({
-    required UpdateUserSettingsDto updateUserSettingsDto,
+    required UserSettingsControllerUpdateSettingsV1Request
+    userSettingsControllerUpdateSettingsV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -125,7 +126,7 @@ class UserSettingsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateUserSettingsDto);
+      _bodyData = jsonEncode(userSettingsControllerUpdateSettingsV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

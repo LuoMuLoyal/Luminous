@@ -44,7 +44,7 @@ class ReportTrendDto {
   @JsonKey(name: r'currentValue', required: true, includeIfNull: false)
   final String currentValue;
 
-  /// Observed values only — unknown days are omitted, not zero-filled.
+  /// Observed values only — unknown days are omitted, not zero-filled. BREAKING (since 2026-08-29): values.length no longer matches the date window length; use observedMetric.observedCount/expectedCount to align dates.
   @JsonKey(name: r'values', required: true, includeIfNull: false)
   final List<num> values;
 

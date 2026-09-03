@@ -81,19 +81,12 @@ enum EventReviewSectionDtoStateEnum {
 
 /// Fixed reason code when state is unknown: no_observations (window has no observations), no_completed_actions (no confirmed doses or check-ins), insufficient_coverage (observations exist but no trend is computable).
 enum EventReviewSectionDtoReasonCodeEnum {
-  /// Fixed reason code when state is unknown: no_observations (window has no observations), no_completed_actions (no confirmed doses or check-ins), insufficient_coverage (observations exist but no trend is computable).
   @JsonValue(r'no_observations')
   noObservations(r'no_observations'),
-
-  /// Fixed reason code when state is unknown: no_observations (window has no observations), no_completed_actions (no confirmed doses or check-ins), insufficient_coverage (observations exist but no trend is computable).
   @JsonValue(r'no_completed_actions')
   noCompletedActions(r'no_completed_actions'),
-
-  /// Fixed reason code when state is unknown: no_observations (window has no observations), no_completed_actions (no confirmed doses or check-ins), insufficient_coverage (observations exist but no trend is computable).
   @JsonValue(r'insufficient_coverage')
   insufficientCoverage(r'insufficient_coverage'),
-
-  /// Fixed reason code when state is unknown: no_observations (window has no observations), no_completed_actions (no confirmed doses or check-ins), insufficient_coverage (observations exist but no trend is computable).
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_file_upload_dto.dart';
+import 'package:lucent_api/src/model/files_controller_create_upload_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class FilesApi {
@@ -21,7 +21,7 @@ class FilesApi {
   ///
   ///
   /// Parameters:
-  /// * [createFileUploadDto]
+  /// * [filesControllerCreateUploadV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -32,7 +32,8 @@ class FilesApi {
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
   Future<Response<void>> filesControllerCreateUploadV1({
-    required CreateFileUploadDto createFileUploadDto,
+    required FilesControllerCreateUploadV1Request
+    filesControllerCreateUploadV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -52,7 +53,7 @@ class FilesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createFileUploadDto);
+      _bodyData = jsonEncode(filesControllerCreateUploadV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

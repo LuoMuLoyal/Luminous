@@ -102,23 +102,14 @@ enum SuggestionFeedbackResponseDtoFeedbackEnum {
 
 /// Effect applied by the feedback engine
 enum SuggestionFeedbackResponseDtoAppliedEffectEnum {
-  /// Effect applied by the feedback engine
   @JsonValue(r'boosted_type')
   boostedType(r'boosted_type'),
-
-  /// Effect applied by the feedback engine
   @JsonValue(r'delayed_until')
   delayedUntil(r'delayed_until'),
-
-  /// Effect applied by the feedback engine
   @JsonValue(r'suppressed_type')
   suppressedType(r'suppressed_type'),
-
-  /// Effect applied by the feedback engine
   @JsonValue(r'noted')
   noted(r'noted'),
-
-  /// Effect applied by the feedback engine
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

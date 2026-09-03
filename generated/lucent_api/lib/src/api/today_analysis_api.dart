@@ -9,10 +9,10 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/generate_today_analysis_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_controller_generate_async_v1202_response.dart';
 import 'package:lucent_api/src/model/today_analysis_controller_generate_v1200_response.dart';
 import 'package:lucent_api/src/model/today_analysis_controller_refresh_v1201_response.dart';
+import 'package:lucent_api/src/model/today_analysis_controller_refresh_v1_request.dart';
 import 'package:lucent_api/src/model/today_analysis_read_response_dto.dart';
 import 'package:lucent_api/src/model/today_recommendation_response_dto.dart';
 
@@ -25,7 +25,7 @@ class TodayAnalysisApi {
   ///
   ///
   /// Parameters:
-  /// * [generateTodayAnalysisDto]
+  /// * [todayAnalysisControllerRefreshV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -37,7 +37,8 @@ class TodayAnalysisApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<TodayAnalysisControllerGenerateAsyncV1202Response>>
   todayAnalysisControllerGenerateAsyncV1({
-    required GenerateTodayAnalysisDto generateTodayAnalysisDto,
+    required TodayAnalysisControllerRefreshV1Request
+    todayAnalysisControllerRefreshV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -57,7 +58,7 @@ class TodayAnalysisApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(generateTodayAnalysisDto);
+      _bodyData = jsonEncode(todayAnalysisControllerRefreshV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -164,7 +165,7 @@ class TodayAnalysisApi {
   ///
   ///
   /// Parameters:
-  /// * [generateTodayAnalysisDto]
+  /// * [todayAnalysisControllerRefreshV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -175,7 +176,8 @@ class TodayAnalysisApi {
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<String>> todayAnalysisControllerGenerateStreamV1({
-    required GenerateTodayAnalysisDto generateTodayAnalysisDto,
+    required TodayAnalysisControllerRefreshV1Request
+    todayAnalysisControllerRefreshV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -195,7 +197,7 @@ class TodayAnalysisApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(generateTodayAnalysisDto);
+      _bodyData = jsonEncode(todayAnalysisControllerRefreshV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -247,7 +249,7 @@ class TodayAnalysisApi {
   ///
   ///
   /// Parameters:
-  /// * [generateTodayAnalysisDto]
+  /// * [todayAnalysisControllerRefreshV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -259,7 +261,8 @@ class TodayAnalysisApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<TodayAnalysisControllerGenerateV1200Response>>
   todayAnalysisControllerGenerateV1({
-    required GenerateTodayAnalysisDto generateTodayAnalysisDto,
+    required TodayAnalysisControllerRefreshV1Request
+    todayAnalysisControllerRefreshV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -279,7 +282,7 @@ class TodayAnalysisApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(generateTodayAnalysisDto);
+      _bodyData = jsonEncode(todayAnalysisControllerRefreshV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -489,7 +492,7 @@ class TodayAnalysisApi {
   ///
   ///
   /// Parameters:
-  /// * [generateTodayAnalysisDto]
+  /// * [todayAnalysisControllerRefreshV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -501,7 +504,8 @@ class TodayAnalysisApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<TodayAnalysisControllerRefreshV1201Response>>
   todayAnalysisControllerRefreshV1({
-    required GenerateTodayAnalysisDto generateTodayAnalysisDto,
+    required TodayAnalysisControllerRefreshV1Request
+    todayAnalysisControllerRefreshV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -521,7 +525,7 @@ class TodayAnalysisApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(generateTodayAnalysisDto);
+      _bodyData = jsonEncode(todayAnalysisControllerRefreshV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

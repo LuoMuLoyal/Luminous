@@ -9,9 +9,9 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_notification_dto.dart';
 import 'package:lucent_api/src/model/notification_detail_response_dto.dart';
 import 'package:lucent_api/src/model/notification_list_response_dto.dart';
+import 'package:lucent_api/src/model/notifications_controller_create_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/unread_count_response_dto.dart';
 
@@ -24,7 +24,7 @@ class NotificationsApi {
   ///
   ///
   /// Parameters:
-  /// * [createNotificationDto]
+  /// * [notificationsControllerCreateV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -36,7 +36,8 @@ class NotificationsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<NotificationListResponseDto>>
   notificationsControllerCreateV1({
-    required CreateNotificationDto createNotificationDto,
+    required NotificationsControllerCreateV1Request
+    notificationsControllerCreateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -56,7 +57,7 @@ class NotificationsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createNotificationDto);
+      _bodyData = jsonEncode(notificationsControllerCreateV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

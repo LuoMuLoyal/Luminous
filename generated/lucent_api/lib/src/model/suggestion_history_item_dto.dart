@@ -189,27 +189,16 @@ class SuggestionHistoryItemDto {
 
 /// Suggestion type
 enum SuggestionHistoryItemDtoTypeEnum {
-  /// Suggestion type
   @JsonValue(r'confirmed_risk')
   confirmedRisk(r'confirmed_risk'),
-
-  /// Suggestion type
   @JsonValue(r'compliance')
   compliance(r'compliance'),
-
-  /// Suggestion type
   @JsonValue(r'trend')
   trend(r'trend'),
-
-  /// Suggestion type
   @JsonValue(r'behavior_advice')
   behaviorAdvice(r'behavior_advice'),
-
-  /// Suggestion type
   @JsonValue(r'coverage')
   coverage(r'coverage'),
-
-  /// Suggestion type
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
@@ -223,15 +212,10 @@ enum SuggestionHistoryItemDtoTypeEnum {
 
 /// Trigger type
 enum SuggestionHistoryItemDtoTriggerTypeEnum {
-  /// Trigger type
   @JsonValue(r'event')
   event(r'event'),
-
-  /// Trigger type
   @JsonValue(r'timer')
   timer(r'timer'),
-
-  /// Trigger type
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
@@ -245,27 +229,16 @@ enum SuggestionHistoryItemDtoTriggerTypeEnum {
 
 /// Lifecycle state
 enum SuggestionHistoryItemDtoLifecycleStateEnum {
-  /// Lifecycle state
   @JsonValue(r'generated')
   generated(r'generated'),
-
-  /// Lifecycle state
   @JsonValue(r'active')
   active(r'active'),
-
-  /// Lifecycle state
   @JsonValue(r'fading')
   fading(r'fading'),
-
-  /// Lifecycle state
   @JsonValue(r'expired')
   expired(r'expired'),
-
-  /// Lifecycle state
   @JsonValue(r'dismissed')
   dismissed(r'dismissed'),
-
-  /// Lifecycle state
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
@@ -279,19 +252,12 @@ enum SuggestionHistoryItemDtoLifecycleStateEnum {
 
 /// Confidence level
 enum SuggestionHistoryItemDtoConfidenceEnum {
-  /// Confidence level
   @JsonValue(r'high')
   high(r'high'),
-
-  /// Confidence level
   @JsonValue(r'medium')
   medium(r'medium'),
-
-  /// Confidence level
   @JsonValue(r'low')
   low(r'low'),
-
-  /// Confidence level
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
@@ -305,23 +271,14 @@ enum SuggestionHistoryItemDtoConfidenceEnum {
 
 /// User feedback, if any
 enum SuggestionHistoryItemDtoFeedbackEnum {
-  /// User feedback, if any
   @JsonValue(r'accepted')
   accepted(r'accepted'),
-
-  /// User feedback, if any
   @JsonValue(r'later')
   later(r'later'),
-
-  /// User feedback, if any
   @JsonValue(r'not_applicable')
   notApplicable(r'not_applicable'),
-
-  /// User feedback, if any
   @JsonValue(r'suppress')
   suppress(r'suppress'),
-
-  /// User feedback, if any
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

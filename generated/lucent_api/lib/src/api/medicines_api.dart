@@ -15,8 +15,8 @@ import 'package:lucent_api/src/model/medicine_risk_check_record_response_dto.dar
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
-import 'package:lucent_api/src/model/recognize_medicine_dto.dart';
-import 'package:lucent_api/src/model/run_risk_check_dto.dart';
+import 'package:lucent_api/src/model/medicines_controller_recognize_v1_request.dart';
+import 'package:lucent_api/src/model/medicines_controller_run_risk_check_v1_request.dart';
 
 class MedicinesApi {
   final Dio _dio;
@@ -28,7 +28,7 @@ class MedicinesApi {
   ///
   /// Parameters:
   /// * [id] - Medicine id in the selected source
-  /// * [source_] - Knowledge source selector.
+  /// * [source_]
   /// * [xBypassCache] - Set to true/1/no-cache to bypass medicines read cache for this request only.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -41,7 +41,7 @@ class MedicinesApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<MedicineDetailResponseDto>> medicinesControllerGetDetailV1({
     required String id,
-    String? source_ = 'drugbank',
+    String? source_,
     String? xBypassCache,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -263,7 +263,7 @@ class MedicinesApi {
   ///
   ///
   /// Parameters:
-  /// * [recognizeMedicineDto]
+  /// * [medicinesControllerRecognizeV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -275,7 +275,8 @@ class MedicinesApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<MedicineRecognitionAsyncResponseDto>>
   medicinesControllerRecognizeAsyncV1({
-    required RecognizeMedicineDto recognizeMedicineDto,
+    required MedicinesControllerRecognizeV1Request
+    medicinesControllerRecognizeV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -295,7 +296,7 @@ class MedicinesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(recognizeMedicineDto);
+      _bodyData = jsonEncode(medicinesControllerRecognizeV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -397,7 +398,7 @@ class MedicinesApi {
   ///
   ///
   /// Parameters:
-  /// * [recognizeMedicineDto]
+  /// * [medicinesControllerRecognizeV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -408,7 +409,8 @@ class MedicinesApi {
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
   Future<Response<void>> medicinesControllerRecognizeV1({
-    required RecognizeMedicineDto recognizeMedicineDto,
+    required MedicinesControllerRecognizeV1Request
+    medicinesControllerRecognizeV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -428,7 +430,7 @@ class MedicinesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(recognizeMedicineDto);
+      _bodyData = jsonEncode(medicinesControllerRecognizeV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -454,7 +456,7 @@ class MedicinesApi {
   ///
   ///
   /// Parameters:
-  /// * [runRiskCheckDto]
+  /// * [medicinesControllerRunRiskCheckV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -466,7 +468,8 @@ class MedicinesApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<MedicineRiskCheckRecordResponseDto>>
   medicinesControllerRunRiskCheckV1({
-    required RunRiskCheckDto runRiskCheckDto,
+    required MedicinesControllerRunRiskCheckV1Request
+    medicinesControllerRunRiskCheckV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -486,7 +489,7 @@ class MedicinesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(runRiskCheckDto);
+      _bodyData = jsonEncode(medicinesControllerRunRiskCheckV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -541,10 +544,10 @@ class MedicinesApi {
   ///
   ///
   /// Parameters:
-  /// * [source_] - Knowledge source selector.
-  /// * [q] - Search keyword.
-  /// * [page] - Page number, 1-based.
-  /// * [pageSize] - Page size.
+  /// * [source_]
+  /// * [q]
+  /// * [page]
+  /// * [pageSize]
   /// * [xBypassCache] - Set to true/1/no-cache to bypass medicines read cache for this request only.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -556,10 +559,10 @@ class MedicinesApi {
   /// Returns a [Future] containing a [Response] with a [MedicineSearchResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<MedicineSearchResponseDto>> medicinesControllerSearchV1({
-    String? source_ = 'drugbank',
+    String? source_,
     String? q,
-    num? page = 1,
-    num? pageSize = 20,
+    int? page = 1,
+    int? pageSize = 20,
     String? xBypassCache,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,

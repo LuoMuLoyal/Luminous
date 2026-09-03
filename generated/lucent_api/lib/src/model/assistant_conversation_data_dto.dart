@@ -103,19 +103,12 @@ class AssistantConversationDataDto {
 
 /// Current conversation status.
 enum AssistantConversationDataDtoStatusEnum {
-  /// Current conversation status.
   @JsonValue(r'active')
   active(r'active'),
-
-  /// Current conversation status.
   @JsonValue(r'archived')
   archived(r'archived'),
-
-  /// Current conversation status.
   @JsonValue(r'deleted')
   deleted(r'deleted'),
-
-  /// Current conversation status.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

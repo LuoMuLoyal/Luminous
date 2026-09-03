@@ -22,7 +22,7 @@ class LegalDocumentsApi {
   ///
   ///
   /// Parameters:
-  /// * [lang] - Content language: 'zh' or 'en'. Default: 'zh'.
+  /// * [lang]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -98,7 +98,7 @@ class LegalDocumentsApi {
   ///
   /// Parameters:
   /// * [docType]
-  /// * [lang] - Content language: 'zh' or 'en'. Default: 'zh'.
+  /// * [lang]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request

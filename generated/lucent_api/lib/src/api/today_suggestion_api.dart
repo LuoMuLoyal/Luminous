@@ -11,9 +11,9 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/suggestion_explanation_async_response_dto.dart';
 import 'package:lucent_api/src/model/suggestion_explanation_response_dto.dart';
-import 'package:lucent_api/src/model/suggestion_feedback_dto.dart';
 import 'package:lucent_api/src/model/suggestion_feedback_response_dto.dart';
 import 'package:lucent_api/src/model/suggestion_history_response_dto.dart';
+import 'package:lucent_api/src/model/today_suggestion_controller_submit_feedback_v1_request.dart';
 import 'package:lucent_api/src/model/today_suggestions_response_dto.dart';
 
 class TodaySuggestionApi {
@@ -418,7 +418,7 @@ class TodaySuggestionApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [suggestionFeedbackDto]
+  /// * [todaySuggestionControllerSubmitFeedbackV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -431,7 +431,8 @@ class TodaySuggestionApi {
   Future<Response<SuggestionFeedbackResponseDto>>
   todaySuggestionControllerSubmitFeedbackV1({
     required String id,
-    required SuggestionFeedbackDto suggestionFeedbackDto,
+    required TodaySuggestionControllerSubmitFeedbackV1Request
+    todaySuggestionControllerSubmitFeedbackV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -456,7 +457,7 @@ class TodaySuggestionApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(suggestionFeedbackDto);
+      _bodyData = jsonEncode(todaySuggestionControllerSubmitFeedbackV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

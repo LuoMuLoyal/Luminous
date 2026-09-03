@@ -109,15 +109,10 @@ class MedicineSearchItemDto {
 
 /// Knowledge source.
 enum MedicineSearchItemDtoSource_Enum {
-  /// Knowledge source.
   @JsonValue(r'drugbank')
   drugbank(r'drugbank'),
-
-  /// Knowledge source.
   @JsonValue(r'cn')
   cn(r'cn'),
-
-  /// Knowledge source.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

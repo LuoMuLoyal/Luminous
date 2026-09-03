@@ -219,27 +219,16 @@ class SuggestionItemDto {
 
 /// Suggestion type
 enum SuggestionItemDtoTypeEnum {
-  /// Suggestion type
   @JsonValue(r'confirmed_risk')
   confirmedRisk(r'confirmed_risk'),
-
-  /// Suggestion type
   @JsonValue(r'compliance')
   compliance(r'compliance'),
-
-  /// Suggestion type
   @JsonValue(r'trend')
   trend(r'trend'),
-
-  /// Suggestion type
   @JsonValue(r'behavior_advice')
   behaviorAdvice(r'behavior_advice'),
-
-  /// Suggestion type
   @JsonValue(r'coverage')
   coverage(r'coverage'),
-
-  /// Suggestion type
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
@@ -253,27 +242,16 @@ enum SuggestionItemDtoTypeEnum {
 
 /// Visual tone hint
 enum SuggestionItemDtoCardToneEnum {
-  /// Visual tone hint
   @JsonValue(r'urgent')
   urgent(r'urgent'),
-
-  /// Visual tone hint
   @JsonValue(r'warning')
   warning(r'warning'),
-
-  /// Visual tone hint
   @JsonValue(r'emphasis')
   emphasis(r'emphasis'),
-
-  /// Visual tone hint
   @JsonValue(r'soft')
   soft(r'soft'),
-
-  /// Visual tone hint
   @JsonValue(r'neutral')
   neutral(r'neutral'),
-
-  /// Visual tone hint
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
@@ -287,19 +265,12 @@ enum SuggestionItemDtoCardToneEnum {
 
 /// Confidence level
 enum SuggestionItemDtoConfidenceEnum {
-  /// Confidence level
   @JsonValue(r'high')
   high(r'high'),
-
-  /// Confidence level
   @JsonValue(r'medium')
   medium(r'medium'),
-
-  /// Confidence level
   @JsonValue(r'low')
   low(r'low'),
-
-  /// Confidence level
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
@@ -313,15 +284,10 @@ enum SuggestionItemDtoConfidenceEnum {
 
 /// Trigger type
 enum SuggestionItemDtoTriggerTypeEnum {
-  /// Trigger type
   @JsonValue(r'event')
   event(r'event'),
-
-  /// Trigger type
   @JsonValue(r'timer')
   timer(r'timer'),
-
-  /// Trigger type
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
@@ -335,27 +301,16 @@ enum SuggestionItemDtoTriggerTypeEnum {
 
 /// Lifecycle state
 enum SuggestionItemDtoLifecycleStateEnum {
-  /// Lifecycle state
   @JsonValue(r'generated')
   generated(r'generated'),
-
-  /// Lifecycle state
   @JsonValue(r'active')
   active(r'active'),
-
-  /// Lifecycle state
   @JsonValue(r'fading')
   fading(r'fading'),
-
-  /// Lifecycle state
   @JsonValue(r'expired')
   expired(r'expired'),
-
-  /// Lifecycle state
   @JsonValue(r'dismissed')
   dismissed(r'dismissed'),
-
-  /// Lifecycle state
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

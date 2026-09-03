@@ -9,12 +9,12 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_dose_log_dto.dart';
 import 'package:lucent_api/src/model/dose_log_list_response_dto.dart';
 import 'package:lucent_api/src/model/dose_log_response_dto.dart';
-import 'package:lucent_api/src/model/mark_dose_log_dto.dart';
+import 'package:lucent_api/src/model/medicine_dose_logs_controller_create_v1_request.dart';
+import 'package:lucent_api/src/model/medicine_dose_logs_controller_mark_v1_request.dart';
+import 'package:lucent_api/src/model/medicine_dose_logs_controller_update_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/update_dose_log_dto.dart';
 
 class MedicineDoseLogsApi {
   final Dio _dio;
@@ -25,7 +25,7 @@ class MedicineDoseLogsApi {
   ///
   ///
   /// Parameters:
-  /// * [createDoseLogDto]
+  /// * [medicineDoseLogsControllerCreateV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -36,7 +36,8 @@ class MedicineDoseLogsApi {
   /// Returns a [Future] containing a [Response] with a [DoseLogResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerCreateV1({
-    required CreateDoseLogDto createDoseLogDto,
+    required MedicineDoseLogsControllerCreateV1Request
+    medicineDoseLogsControllerCreateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -56,7 +57,7 @@ class MedicineDoseLogsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createDoseLogDto);
+      _bodyData = jsonEncode(medicineDoseLogsControllerCreateV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -242,7 +243,7 @@ class MedicineDoseLogsApi {
   ///
   ///
   /// Parameters:
-  /// * [markDoseLogDto]
+  /// * [medicineDoseLogsControllerMarkV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -253,7 +254,8 @@ class MedicineDoseLogsApi {
   /// Returns a [Future] containing a [Response] with a [DoseLogResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerMarkV1({
-    required MarkDoseLogDto markDoseLogDto,
+    required MedicineDoseLogsControllerMarkV1Request
+    medicineDoseLogsControllerMarkV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -273,7 +275,7 @@ class MedicineDoseLogsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(markDoseLogDto);
+      _bodyData = jsonEncode(medicineDoseLogsControllerMarkV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -330,7 +332,7 @@ class MedicineDoseLogsApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [updateDoseLogDto]
+  /// * [medicineDoseLogsControllerUpdateV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -342,7 +344,8 @@ class MedicineDoseLogsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerUpdateV1({
     required String id,
-    required UpdateDoseLogDto updateDoseLogDto,
+    required MedicineDoseLogsControllerUpdateV1Request
+    medicineDoseLogsControllerUpdateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -367,7 +370,7 @@ class MedicineDoseLogsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateDoseLogDto);
+      _bodyData = jsonEncode(medicineDoseLogsControllerUpdateV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

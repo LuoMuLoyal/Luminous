@@ -38,6 +38,7 @@ class ReportObservedMetricDto {
   @JsonKey(name: r'value', required: true, includeIfNull: true)
   final num? value;
 
+  /// Whether at least one observation exists. See coverage for the proportion of observed vs expected days.
   @JsonKey(
     name: r'state',
     required: true,
@@ -104,6 +105,7 @@ class ReportObservedMetricDto {
   }
 }
 
+/// Whether at least one observation exists. See coverage for the proportion of observed vs expected days.
 enum ReportObservedMetricDtoStateEnum {
   @JsonValue(r'observed')
   observed(r'observed'),

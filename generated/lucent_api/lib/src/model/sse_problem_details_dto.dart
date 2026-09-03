@@ -118,27 +118,16 @@ class SseProblemDetailsDto {
 
 /// Why the stream ended; this is not an HTTP status code.
 enum SseProblemDetailsDtoStatusEnum {
-  /// Why the stream ended; this is not an HTTP status code.
   @JsonValue(r'client_error')
   clientError(r'client_error'),
-
-  /// Why the stream ended; this is not an HTTP status code.
   @JsonValue(r'server_error')
   serverError(r'server_error'),
-
-  /// Why the stream ended; this is not an HTTP status code.
   @JsonValue(r'cancelled')
   cancelled(r'cancelled'),
-
-  /// Why the stream ended; this is not an HTTP status code.
   @JsonValue(r'server_shutdown')
   serverShutdown(r'server_shutdown'),
-
-  /// Why the stream ended; this is not an HTTP status code.
   @JsonValue(r'unknown')
   unknown(r'unknown'),
-
-  /// Why the stream ended; this is not an HTTP status code.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

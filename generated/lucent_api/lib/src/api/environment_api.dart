@@ -20,8 +20,8 @@ class EnvironmentApi {
   ///
   ///
   /// Parameters:
-  /// * [lat] - Approximate latitude.
-  /// * [lon] - Approximate longitude.
+  /// * [lat]
+  /// * [lon]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request

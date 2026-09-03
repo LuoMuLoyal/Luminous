@@ -13,12 +13,12 @@ import 'package:lucent_api/src/model/assistant_capabilities_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_memory_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_result_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_confirm_result_response_dto.dart';
+import 'package:lucent_api/src/model/assistant_controller_confirm_proposal_v1_request.dart';
+import 'package:lucent_api/src/model/assistant_controller_rename_conversation_v1_request.dart';
+import 'package:lucent_api/src/model/assistant_controller_stream_messages_v1_request.dart';
 import 'package:lucent_api/src/model/assistant_conversation_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_summary_dto.dart';
-import 'package:lucent_api/src/model/confirm_assistant_proposal_dto.dart';
-import 'package:lucent_api/src/model/rename_conversation_dto.dart';
-import 'package:lucent_api/src/model/stream_assistant_messages_dto.dart';
 
 class AssistantApi {
   final Dio _dio;
@@ -170,7 +170,7 @@ class AssistantApi {
   ///
   /// Parameters:
   /// * [conversationId]
-  /// * [confirmAssistantProposalDto]
+  /// * [assistantControllerConfirmProposalV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -183,7 +183,8 @@ class AssistantApi {
   Future<Response<AssistantConfirmResultResponseDto>>
   assistantControllerConfirmProposalV1({
     required String conversationId,
-    required ConfirmAssistantProposalDto confirmAssistantProposalDto,
+    required AssistantControllerConfirmProposalV1Request
+    assistantControllerConfirmProposalV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -210,7 +211,7 @@ class AssistantApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(confirmAssistantProposalDto);
+      _bodyData = jsonEncode(assistantControllerConfirmProposalV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -707,7 +708,7 @@ class AssistantApi {
   ///
   /// Parameters:
   /// * [conversationId]
-  /// * [renameConversationDto]
+  /// * [assistantControllerRenameConversationV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -720,7 +721,8 @@ class AssistantApi {
   Future<Response<AssistantConversationResponseDto>>
   assistantControllerRenameConversationV1({
     required String conversationId,
-    required RenameConversationDto renameConversationDto,
+    required AssistantControllerRenameConversationV1Request
+    assistantControllerRenameConversationV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -746,7 +748,7 @@ class AssistantApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(renameConversationDto);
+      _bodyData = jsonEncode(assistantControllerRenameConversationV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -801,7 +803,7 @@ class AssistantApi {
   ///
   ///
   /// Parameters:
-  /// * [streamAssistantMessagesDto]
+  /// * [assistantControllerStreamMessagesV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -812,7 +814,8 @@ class AssistantApi {
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<String>> assistantControllerStreamMessagesV1({
-    required StreamAssistantMessagesDto streamAssistantMessagesDto,
+    required AssistantControllerStreamMessagesV1Request
+    assistantControllerStreamMessagesV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -832,7 +835,7 @@ class AssistantApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(streamAssistantMessagesDto);
+      _bodyData = jsonEncode(assistantControllerStreamMessagesV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

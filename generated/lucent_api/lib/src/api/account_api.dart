@@ -9,19 +9,19 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
+import 'package:lucent_api/src/model/account_controller_change_email_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_change_password_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_delete_account_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_set_password_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_unlink_identity_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_update_account_v1_request.dart';
 import 'package:lucent_api/src/model/account_email_response_dto.dart';
 import 'package:lucent_api/src/model/account_response_dto.dart';
-import 'package:lucent_api/src/model/change_email_dto.dart';
-import 'package:lucent_api/src/model/change_password_dto.dart';
-import 'package:lucent_api/src/model/delete_account_dto.dart';
-import 'package:lucent_api/src/model/o_auth_authorize_dto.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_response_dto.dart';
-import 'package:lucent_api/src/model/o_auth_callback_dto.dart';
-import 'package:lucent_api/src/model/o_auth_code_callback_dto.dart';
+import 'package:lucent_api/src/model/o_auth_controller_create_wechat_web_authorize_url_v1_request.dart';
+import 'package:lucent_api/src/model/o_auth_controller_login_with_wechat_mobile_v1_request.dart';
+import 'package:lucent_api/src/model/o_auth_controller_login_with_wechat_web_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/set_password_dto.dart';
-import 'package:lucent_api/src/model/unlink_identity_dto.dart';
-import 'package:lucent_api/src/model/update_account_dto.dart';
 
 class AccountApi {
   final Dio _dio;
@@ -32,7 +32,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [changeEmailDto]
+  /// * [accountControllerChangeEmailV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -43,7 +43,8 @@ class AccountApi {
   /// Returns a [Future] containing a [Response] with a [AccountEmailResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AccountEmailResponseDto>> accountControllerChangeEmailV1({
-    required ChangeEmailDto changeEmailDto,
+    required AccountControllerChangeEmailV1Request
+    accountControllerChangeEmailV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -63,7 +64,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(changeEmailDto);
+      _bodyData = jsonEncode(accountControllerChangeEmailV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -119,7 +120,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [changePasswordDto]
+  /// * [accountControllerChangePasswordV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -130,7 +131,8 @@ class AccountApi {
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
   Future<Response<void>> accountControllerChangePasswordV1({
-    required ChangePasswordDto changePasswordDto,
+    required AccountControllerChangePasswordV1Request
+    accountControllerChangePasswordV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -150,7 +152,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(changePasswordDto);
+      _bodyData = jsonEncode(accountControllerChangePasswordV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -176,7 +178,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthAuthorizeDto]
+  /// * [oAuthControllerCreateWechatWebAuthorizeUrlV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -188,7 +190,8 @@ class AccountApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<OAuthAuthorizeResponseDto>>
   accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1({
-    OAuthAuthorizeDto? oAuthAuthorizeDto,
+    required OAuthControllerCreateWechatWebAuthorizeUrlV1Request
+    oAuthControllerCreateWechatWebAuthorizeUrlV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -208,7 +211,9 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(oAuthAuthorizeDto);
+      _bodyData = jsonEncode(
+        oAuthControllerCreateWechatWebAuthorizeUrlV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -264,7 +269,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [deleteAccountDto]
+  /// * [accountControllerDeleteAccountV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -275,7 +280,8 @@ class AccountApi {
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
   Future<Response<void>> accountControllerDeleteAccountV1({
-    required DeleteAccountDto deleteAccountDto,
+    required AccountControllerDeleteAccountV1Request
+    accountControllerDeleteAccountV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -295,7 +301,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(deleteAccountDto);
+      _bodyData = jsonEncode(accountControllerDeleteAccountV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -391,7 +397,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthCodeCallbackDto]
+  /// * [oAuthControllerLoginWithWechatMobileV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -403,7 +409,8 @@ class AccountApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AccountResponseDto>>
   accountControllerLinkWechatMobileIdentityV1({
-    required OAuthCodeCallbackDto oAuthCodeCallbackDto,
+    required OAuthControllerLoginWithWechatMobileV1Request
+    oAuthControllerLoginWithWechatMobileV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -423,7 +430,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(oAuthCodeCallbackDto);
+      _bodyData = jsonEncode(oAuthControllerLoginWithWechatMobileV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -479,7 +486,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthCallbackDto]
+  /// * [oAuthControllerLoginWithWechatWebV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -491,7 +498,8 @@ class AccountApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AccountResponseDto>>
   accountControllerLinkWechatWebIdentityV1({
-    required OAuthCallbackDto oAuthCallbackDto,
+    required OAuthControllerLoginWithWechatWebV1Request
+    oAuthControllerLoginWithWechatWebV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -511,7 +519,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(oAuthCallbackDto);
+      _bodyData = jsonEncode(oAuthControllerLoginWithWechatWebV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -567,7 +575,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [setPasswordDto]
+  /// * [accountControllerSetPasswordV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -578,7 +586,8 @@ class AccountApi {
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
   Future<Response<void>> accountControllerSetPasswordV1({
-    required SetPasswordDto setPasswordDto,
+    required AccountControllerSetPasswordV1Request
+    accountControllerSetPasswordV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -598,7 +607,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(setPasswordDto);
+      _bodyData = jsonEncode(accountControllerSetPasswordV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -625,7 +634,7 @@ class AccountApi {
   ///
   /// Parameters:
   /// * [identityId]
-  /// * [unlinkIdentityDto]
+  /// * [accountControllerUnlinkIdentityV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -637,7 +646,8 @@ class AccountApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AccountResponseDto>> accountControllerUnlinkIdentityV1({
     required String identityId,
-    required UnlinkIdentityDto unlinkIdentityDto,
+    required AccountControllerUnlinkIdentityV1Request
+    accountControllerUnlinkIdentityV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -662,7 +672,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(unlinkIdentityDto);
+      _bodyData = jsonEncode(accountControllerUnlinkIdentityV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -718,7 +728,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [updateAccountDto]
+  /// * [accountControllerUpdateAccountV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -729,7 +739,8 @@ class AccountApi {
   /// Returns a [Future] containing a [Response] with a [AccountResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AccountResponseDto>> accountControllerUpdateAccountV1({
-    required UpdateAccountDto updateAccountDto,
+    required AccountControllerUpdateAccountV1Request
+    accountControllerUpdateAccountV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -749,7 +760,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateAccountDto);
+      _bodyData = jsonEncode(accountControllerUpdateAccountV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

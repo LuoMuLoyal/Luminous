@@ -79,15 +79,10 @@ class AssistantConversationMessageDto {
 
 /// Persisted conversation role visible to the client.
 enum AssistantConversationMessageDtoRoleEnum {
-  /// Persisted conversation role visible to the client.
   @JsonValue(r'user')
   user(r'user'),
-
-  /// Persisted conversation role visible to the client.
   @JsonValue(r'assistant')
   assistant(r'assistant'),
-
-  /// Persisted conversation role visible to the client.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

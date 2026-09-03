@@ -9,12 +9,12 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_medicine_reminder_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_reminders_controller_create_v1_request.dart';
+import 'package:lucent_api/src/model/medicine_reminders_controller_update_v1_request.dart';
+import 'package:lucent_api/src/model/medicine_reminders_controller_upsert_group_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/update_medicine_reminder_dto.dart';
-import 'package:lucent_api/src/model/upsert_medicine_reminder_group_dto.dart';
 
 class MedicineRemindersApi {
   final Dio _dio;
@@ -25,7 +25,7 @@ class MedicineRemindersApi {
   ///
   ///
   /// Parameters:
-  /// * [createMedicineReminderDto]
+  /// * [medicineRemindersControllerCreateV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -37,7 +37,8 @@ class MedicineRemindersApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<MedicineReminderResponseDto>>
   medicineRemindersControllerCreateV1({
-    required CreateMedicineReminderDto createMedicineReminderDto,
+    required MedicineRemindersControllerCreateV1Request
+    medicineRemindersControllerCreateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -57,7 +58,7 @@ class MedicineRemindersApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createMedicineReminderDto);
+      _bodyData = jsonEncode(medicineRemindersControllerCreateV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -237,7 +238,7 @@ class MedicineRemindersApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [updateMedicineReminderDto]
+  /// * [medicineRemindersControllerUpdateV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -250,7 +251,8 @@ class MedicineRemindersApi {
   Future<Response<MedicineReminderResponseDto>>
   medicineRemindersControllerUpdateV1({
     required String id,
-    required UpdateMedicineReminderDto updateMedicineReminderDto,
+    required MedicineRemindersControllerUpdateV1Request
+    medicineRemindersControllerUpdateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -275,7 +277,7 @@ class MedicineRemindersApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateMedicineReminderDto);
+      _bodyData = jsonEncode(medicineRemindersControllerUpdateV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -330,7 +332,7 @@ class MedicineRemindersApi {
   ///
   ///
   /// Parameters:
-  /// * [upsertMedicineReminderGroupDto]
+  /// * [medicineRemindersControllerUpsertGroupV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -342,7 +344,8 @@ class MedicineRemindersApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<MedicineReminderListResponseDto>>
   medicineRemindersControllerUpsertGroupV1({
-    required UpsertMedicineReminderGroupDto upsertMedicineReminderGroupDto,
+    required MedicineRemindersControllerUpsertGroupV1Request
+    medicineRemindersControllerUpsertGroupV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -362,7 +365,7 @@ class MedicineRemindersApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(upsertMedicineReminderGroupDto);
+      _bodyData = jsonEncode(medicineRemindersControllerUpsertGroupV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

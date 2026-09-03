@@ -122,19 +122,12 @@ enum ClinicSummaryCoverageEntryDtoStateEnum {
 
 /// 'none' when the source has no observations; 'partial' when observations exist but sufficiency is not assessed.
 enum ClinicSummaryCoverageEntryDtoCoverageEnum {
-  /// 'none' when the source has no observations; 'partial' when observations exist but sufficiency is not assessed.
   @JsonValue(r'sufficient')
   sufficient(r'sufficient'),
-
-  /// 'none' when the source has no observations; 'partial' when observations exist but sufficiency is not assessed.
   @JsonValue(r'partial')
   partial(r'partial'),
-
-  /// 'none' when the source has no observations; 'partial' when observations exist but sufficiency is not assessed.
   @JsonValue(r'none')
   none(r'none'),
-
-  /// 'none' when the source has no observations; 'partial' when observations exist but sufficiency is not assessed.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

@@ -9,15 +9,15 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_current_medicine_dto.dart';
-import 'package:lucent_api/src/model/create_health_context_allergy_dto.dart';
-import 'package:lucent_api/src/model/create_health_context_condition_dto.dart';
 import 'package:lucent_api/src/model/health_context_response_dto.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/update_current_medicine_dto.dart';
-import 'package:lucent_api/src/model/update_health_context_allergy_dto.dart';
-import 'package:lucent_api/src/model/update_health_context_condition_dto.dart';
-import 'package:lucent_api/src/model/update_health_context_profile_dto.dart';
+import 'package:lucent_api/src/model/user_health_context_controller_create_allergy_v1_request.dart';
+import 'package:lucent_api/src/model/user_health_context_controller_create_condition_v1_request.dart';
+import 'package:lucent_api/src/model/user_health_context_controller_create_current_medicine_v1_request.dart';
+import 'package:lucent_api/src/model/user_health_context_controller_update_allergy_v1_request.dart';
+import 'package:lucent_api/src/model/user_health_context_controller_update_condition_v1_request.dart';
+import 'package:lucent_api/src/model/user_health_context_controller_update_current_medicine_v1_request.dart';
+import 'package:lucent_api/src/model/user_health_context_controller_update_user_health_context_profile_v1_request.dart';
 
 class UserHealthContextApi {
   final Dio _dio;
@@ -28,7 +28,7 @@ class UserHealthContextApi {
   ///
   ///
   /// Parameters:
-  /// * [createHealthContextAllergyDto]
+  /// * [userHealthContextControllerCreateAllergyV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -40,7 +40,8 @@ class UserHealthContextApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthContextResponseDto>>
   userHealthContextControllerCreateAllergyV1({
-    required CreateHealthContextAllergyDto createHealthContextAllergyDto,
+    required UserHealthContextControllerCreateAllergyV1Request
+    userHealthContextControllerCreateAllergyV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -60,7 +61,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createHealthContextAllergyDto);
+      _bodyData = jsonEncode(userHealthContextControllerCreateAllergyV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -116,7 +117,7 @@ class UserHealthContextApi {
   ///
   ///
   /// Parameters:
-  /// * [createHealthContextConditionDto]
+  /// * [userHealthContextControllerCreateConditionV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -128,7 +129,8 @@ class UserHealthContextApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthContextResponseDto>>
   userHealthContextControllerCreateConditionV1({
-    required CreateHealthContextConditionDto createHealthContextConditionDto,
+    required UserHealthContextControllerCreateConditionV1Request
+    userHealthContextControllerCreateConditionV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -148,7 +150,9 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createHealthContextConditionDto);
+      _bodyData = jsonEncode(
+        userHealthContextControllerCreateConditionV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -204,7 +208,7 @@ class UserHealthContextApi {
   ///
   ///
   /// Parameters:
-  /// * [createCurrentMedicineDto]
+  /// * [userHealthContextControllerCreateCurrentMedicineV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -216,7 +220,8 @@ class UserHealthContextApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthContextResponseDto>>
   userHealthContextControllerCreateCurrentMedicineV1({
-    required CreateCurrentMedicineDto createCurrentMedicineDto,
+    required UserHealthContextControllerCreateCurrentMedicineV1Request
+    userHealthContextControllerCreateCurrentMedicineV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -236,7 +241,9 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createCurrentMedicineDto);
+      _bodyData = jsonEncode(
+        userHealthContextControllerCreateCurrentMedicineV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -599,7 +606,7 @@ class UserHealthContextApi {
   ///
   /// Parameters:
   /// * [id] - Allergy id
-  /// * [updateHealthContextAllergyDto]
+  /// * [userHealthContextControllerUpdateAllergyV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -612,7 +619,8 @@ class UserHealthContextApi {
   Future<Response<HealthContextResponseDto>>
   userHealthContextControllerUpdateAllergyV1({
     required String id,
-    required UpdateHealthContextAllergyDto updateHealthContextAllergyDto,
+    required UserHealthContextControllerUpdateAllergyV1Request
+    userHealthContextControllerUpdateAllergyV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -637,7 +645,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateHealthContextAllergyDto);
+      _bodyData = jsonEncode(userHealthContextControllerUpdateAllergyV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -694,7 +702,7 @@ class UserHealthContextApi {
   ///
   /// Parameters:
   /// * [id] - Condition id
-  /// * [updateHealthContextConditionDto]
+  /// * [userHealthContextControllerUpdateConditionV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -707,7 +715,8 @@ class UserHealthContextApi {
   Future<Response<HealthContextResponseDto>>
   userHealthContextControllerUpdateConditionV1({
     required String id,
-    required UpdateHealthContextConditionDto updateHealthContextConditionDto,
+    required UserHealthContextControllerUpdateConditionV1Request
+    userHealthContextControllerUpdateConditionV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -732,7 +741,9 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateHealthContextConditionDto);
+      _bodyData = jsonEncode(
+        userHealthContextControllerUpdateConditionV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -789,7 +800,7 @@ class UserHealthContextApi {
   ///
   /// Parameters:
   /// * [id] - Current medicine id
-  /// * [updateCurrentMedicineDto]
+  /// * [userHealthContextControllerUpdateCurrentMedicineV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -802,7 +813,8 @@ class UserHealthContextApi {
   Future<Response<HealthContextResponseDto>>
   userHealthContextControllerUpdateCurrentMedicineV1({
     required String id,
-    required UpdateCurrentMedicineDto updateCurrentMedicineDto,
+    required UserHealthContextControllerUpdateCurrentMedicineV1Request
+    userHealthContextControllerUpdateCurrentMedicineV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -828,7 +840,9 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateCurrentMedicineDto);
+      _bodyData = jsonEncode(
+        userHealthContextControllerUpdateCurrentMedicineV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -884,7 +898,7 @@ class UserHealthContextApi {
   ///
   ///
   /// Parameters:
-  /// * [updateHealthContextProfileDto]
+  /// * [userHealthContextControllerUpdateUserHealthContextProfileV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -896,7 +910,8 @@ class UserHealthContextApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthContextResponseDto>>
   userHealthContextControllerUpdateUserHealthContextProfileV1({
-    required UpdateHealthContextProfileDto updateHealthContextProfileDto,
+    required UserHealthContextControllerUpdateUserHealthContextProfileV1Request
+    userHealthContextControllerUpdateUserHealthContextProfileV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -916,7 +931,9 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateHealthContextProfileDto);
+      _bodyData = jsonEncode(
+        userHealthContextControllerUpdateUserHealthContextProfileV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

@@ -9,9 +9,9 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_product_event_batch_dto.dart';
 import 'package:lucent_api/src/model/funnel_response_dto.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
+import 'package:lucent_api/src/model/product_events_controller_record_batch_v1_request.dart';
 
 class ProductEventsApi {
   final Dio _dio;
@@ -22,8 +22,8 @@ class ProductEventsApi {
   /// Internal admin surface (JWT email must match ADMIN_EMAIL; regular users get 403). Aggregates the core product loop per UTC calendar day — event started → suggestion impression/actioned → event ended/outcome → review opened — plus optional visit-summary events separately. Counts only: the response carries no health content, rule codes, user ids or per-user detail. Per-day details are suppressed below the small-sample threshold.
   ///
   /// Parameters:
-  /// * [dateFrom] - Window start (inclusive), ISO 8601 date (YYYY-MM-DD) or datetime; the UTC calendar day is used.
-  /// * [dateTo] - Window end (inclusive), ISO 8601 date (YYYY-MM-DD) or datetime; the UTC calendar day is used.
+  /// * [dateFrom]
+  /// * [dateTo]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -102,7 +102,7 @@ class ProductEventsApi {
   /// Write-only ingestion for product measurement. userId always comes from the session — a client-supplied userId is rejected by the whitelist. Raw events are retained 90 days, then deleted.
   ///
   /// Parameters:
-  /// * [createProductEventBatchDto]
+  /// * [productEventsControllerRecordBatchV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -113,7 +113,8 @@ class ProductEventsApi {
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
   Future<Response<void>> productEventsControllerRecordBatchV1({
-    required CreateProductEventBatchDto createProductEventBatchDto,
+    required ProductEventsControllerRecordBatchV1Request
+    productEventsControllerRecordBatchV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -133,7 +134,7 @@ class ProductEventsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createProductEventBatchDto);
+      _bodyData = jsonEncode(productEventsControllerRecordBatchV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

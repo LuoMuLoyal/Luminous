@@ -49,19 +49,12 @@ class LocalCapabilityResponseDto {
 
 /// Persisted local scheduling capability state.
 enum LocalCapabilityResponseDtoStateEnum {
-  /// Persisted local scheduling capability state.
   @JsonValue(r'active')
   active(r'active'),
-
-  /// Persisted local scheduling capability state.
   @JsonValue(r'unavailable')
   unavailable(r'unavailable'),
-
-  /// Persisted local scheduling capability state.
   @JsonValue(r'disabled')
   disabled(r'disabled'),
-
-  /// Persisted local scheduling capability state.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

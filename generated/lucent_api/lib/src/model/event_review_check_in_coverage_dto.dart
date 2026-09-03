@@ -146,19 +146,12 @@ enum EventReviewCheckInCoverageDtoStateEnum {
 
 /// 'none' when no check-ins exist; 'partial' when check-ins exist but sufficiency is not yet assessed by the section services.
 enum EventReviewCheckInCoverageDtoCoverageEnum {
-  /// 'none' when no check-ins exist; 'partial' when check-ins exist but sufficiency is not yet assessed by the section services.
   @JsonValue(r'sufficient')
   sufficient(r'sufficient'),
-
-  /// 'none' when no check-ins exist; 'partial' when check-ins exist but sufficiency is not yet assessed by the section services.
   @JsonValue(r'partial')
   partial(r'partial'),
-
-  /// 'none' when no check-ins exist; 'partial' when check-ins exist but sufficiency is not yet assessed by the section services.
   @JsonValue(r'none')
   none(r'none'),
-
-  /// 'none' when no check-ins exist; 'partial' when check-ins exist but sufficiency is not yet assessed by the section services.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

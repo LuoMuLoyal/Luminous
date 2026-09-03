@@ -122,19 +122,12 @@ enum EventReviewObservedSourceDtoStateEnum {
 
 /// The skeleton emits 'none' or 'partial'; sufficiency assessment lands with the section services.
 enum EventReviewObservedSourceDtoCoverageEnum {
-  /// The skeleton emits 'none' or 'partial'; sufficiency assessment lands with the section services.
   @JsonValue(r'sufficient')
   sufficient(r'sufficient'),
-
-  /// The skeleton emits 'none' or 'partial'; sufficiency assessment lands with the section services.
   @JsonValue(r'partial')
   partial(r'partial'),
-
-  /// The skeleton emits 'none' or 'partial'; sufficiency assessment lands with the section services.
   @JsonValue(r'none')
   none(r'none'),
-
-  /// The skeleton emits 'none' or 'partial'; sufficiency assessment lands with the section services.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

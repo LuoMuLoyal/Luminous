@@ -9,9 +9,9 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
+import 'package:lucent_api/src/model/notification_preferences_controller_patch_v1_request.dart';
 import 'package:lucent_api/src/model/notification_preferences_response_dto.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/update_notification_preferences_dto.dart';
 
 class NotificationPreferencesApi {
   final Dio _dio;
@@ -92,7 +92,7 @@ class NotificationPreferencesApi {
   ///
   ///
   /// Parameters:
-  /// * [updateNotificationPreferencesDto]
+  /// * [notificationPreferencesControllerPatchV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -104,7 +104,8 @@ class NotificationPreferencesApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<NotificationPreferencesResponseDto>>
   notificationPreferencesControllerPatchV1({
-    required UpdateNotificationPreferencesDto updateNotificationPreferencesDto,
+    required NotificationPreferencesControllerPatchV1Request
+    notificationPreferencesControllerPatchV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -124,7 +125,7 @@ class NotificationPreferencesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateNotificationPreferencesDto);
+      _bodyData = jsonEncode(notificationPreferencesControllerPatchV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

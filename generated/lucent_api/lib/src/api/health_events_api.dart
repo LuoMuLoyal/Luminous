@@ -9,13 +9,13 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_health_event_dto.dart';
-import 'package:lucent_api/src/model/end_health_event_dto.dart';
 import 'package:lucent_api/src/model/health_event_item_dto.dart';
 import 'package:lucent_api/src/model/health_event_list_response_dto.dart';
 import 'package:lucent_api/src/model/health_event_response_dto.dart';
+import 'package:lucent_api/src/model/health_events_controller_create_v1_request.dart';
+import 'package:lucent_api/src/model/health_events_controller_end_v1_request.dart';
+import 'package:lucent_api/src/model/health_events_controller_upsert_check_in_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/upsert_health_event_check_in_dto.dart';
 
 class HealthEventsApi {
   final Dio _dio;
@@ -26,7 +26,7 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [date] - Calendar date used to select the check-in in YYYY-MM-DD format.
+  /// * [date]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -37,7 +37,7 @@ class HealthEventsApi {
   /// Returns a [Future] containing a [Response] with a [HealthEventItemDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthEventItemDto>> healthEventsControllerActiveV1({
-    String? date,
+    DateTime? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -101,7 +101,7 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [createHealthEventDto]
+  /// * [healthEventsControllerCreateV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -112,7 +112,8 @@ class HealthEventsApi {
   /// Returns a [Future] containing a [Response] with a [HealthEventResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthEventResponseDto>> healthEventsControllerCreateV1({
-    required CreateHealthEventDto createHealthEventDto,
+    required HealthEventsControllerCreateV1Request
+    healthEventsControllerCreateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -132,7 +133,7 @@ class HealthEventsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createHealthEventDto);
+      _bodyData = jsonEncode(healthEventsControllerCreateV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -189,7 +190,7 @@ class HealthEventsApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [endHealthEventDto]
+  /// * [healthEventsControllerEndV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -201,7 +202,8 @@ class HealthEventsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthEventResponseDto>> healthEventsControllerEndV1({
     required String id,
-    required EndHealthEventDto endHealthEventDto,
+    required HealthEventsControllerEndV1Request
+    healthEventsControllerEndV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -226,7 +228,7 @@ class HealthEventsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(endHealthEventDto);
+      _bodyData = jsonEncode(healthEventsControllerEndV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -283,7 +285,7 @@ class HealthEventsApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [date] - Calendar date used to select the check-in in YYYY-MM-DD format.
+  /// * [date]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -295,7 +297,7 @@ class HealthEventsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthEventResponseDto>> healthEventsControllerGetV1({
     required String id,
-    String? date,
+    DateTime? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -364,7 +366,7 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [date] - Calendar date used to select the check-in in YYYY-MM-DD format.
+  /// * [date]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -375,7 +377,7 @@ class HealthEventsApi {
   /// Returns a [Future] containing a [Response] with a [HealthEventListResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthEventListResponseDto>> healthEventsControllerListV1({
-    String? date,
+    DateTime? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -441,7 +443,7 @@ class HealthEventsApi {
   /// Parameters:
   /// * [id]
   /// * [date]
-  /// * [upsertHealthEventCheckInDto]
+  /// * [healthEventsControllerUpsertCheckInV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -454,8 +456,9 @@ class HealthEventsApi {
   Future<Response<HealthEventResponseDto>>
   healthEventsControllerUpsertCheckInV1({
     required String id,
-    required String date,
-    required UpsertHealthEventCheckInDto upsertHealthEventCheckInDto,
+    required DateTime date,
+    required HealthEventsControllerUpsertCheckInV1Request
+    healthEventsControllerUpsertCheckInV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -487,7 +490,7 @@ class HealthEventsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(upsertHealthEventCheckInDto);
+      _bodyData = jsonEncode(healthEventsControllerUpsertCheckInV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

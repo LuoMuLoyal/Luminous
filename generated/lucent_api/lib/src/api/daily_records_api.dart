@@ -9,17 +9,16 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_daily_record_dto.dart';
-import 'package:lucent_api/src/model/create_daily_record_image_upload_dto.dart';
 import 'package:lucent_api/src/model/daily_record_candidate_response_dto.dart';
 import 'package:lucent_api/src/model/daily_record_image_upload_response_dto.dart';
-import 'package:lucent_api/src/model/daily_record_kind.dart';
 import 'package:lucent_api/src/model/daily_record_list_response_dto.dart';
 import 'package:lucent_api/src/model/daily_record_response_dto.dart';
 import 'package:lucent_api/src/model/daily_record_summary_response_dto.dart';
-import 'package:lucent_api/src/model/generate_daily_record_candidates_dto.dart';
+import 'package:lucent_api/src/model/daily_records_controller_create_image_upload_v1_request.dart';
+import 'package:lucent_api/src/model/daily_records_controller_create_v1_request.dart';
+import 'package:lucent_api/src/model/daily_records_controller_generate_candidates_v1_request.dart';
+import 'package:lucent_api/src/model/daily_records_controller_update_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/update_daily_record_dto.dart';
 
 class DailyRecordsApi {
   final Dio _dio;
@@ -30,7 +29,7 @@ class DailyRecordsApi {
   ///
   ///
   /// Parameters:
-  /// * [createDailyRecordImageUploadDto]
+  /// * [dailyRecordsControllerCreateImageUploadV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -42,7 +41,8 @@ class DailyRecordsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DailyRecordImageUploadResponseDto>>
   dailyRecordsControllerCreateImageUploadV1({
-    required CreateDailyRecordImageUploadDto createDailyRecordImageUploadDto,
+    required DailyRecordsControllerCreateImageUploadV1Request
+    dailyRecordsControllerCreateImageUploadV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -63,7 +63,7 @@ class DailyRecordsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createDailyRecordImageUploadDto);
+      _bodyData = jsonEncode(dailyRecordsControllerCreateImageUploadV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -118,7 +118,7 @@ class DailyRecordsApi {
   ///
   ///
   /// Parameters:
-  /// * [createDailyRecordDto]
+  /// * [dailyRecordsControllerCreateV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -129,7 +129,8 @@ class DailyRecordsApi {
   /// Returns a [Future] containing a [Response] with a [DailyRecordResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DailyRecordResponseDto>> dailyRecordsControllerCreateV1({
-    required CreateDailyRecordDto createDailyRecordDto,
+    required DailyRecordsControllerCreateV1Request
+    dailyRecordsControllerCreateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -149,7 +150,7 @@ class DailyRecordsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createDailyRecordDto);
+      _bodyData = jsonEncode(dailyRecordsControllerCreateV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -252,7 +253,7 @@ class DailyRecordsApi {
   ///
   ///
   /// Parameters:
-  /// * [generateDailyRecordCandidatesDto]
+  /// * [dailyRecordsControllerGenerateCandidatesV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -264,7 +265,8 @@ class DailyRecordsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DailyRecordCandidateResponseDto>>
   dailyRecordsControllerGenerateCandidatesV1({
-    required GenerateDailyRecordCandidatesDto generateDailyRecordCandidatesDto,
+    required DailyRecordsControllerGenerateCandidatesV1Request
+    dailyRecordsControllerGenerateCandidatesV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -284,7 +286,7 @@ class DailyRecordsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(generateDailyRecordCandidatesDto);
+      _bodyData = jsonEncode(dailyRecordsControllerGenerateCandidatesV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -416,10 +418,10 @@ class DailyRecordsApi {
   ///
   ///
   /// Parameters:
-  /// * [date] - Date in YYYY-MM-DD format.
+  /// * [date]
   /// * [kind]
-  /// * [page] - Page number (1-based).
-  /// * [pageSize] - Page size (1-100).
+  /// * [page]
+  /// * [pageSize]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -430,10 +432,10 @@ class DailyRecordsApi {
   /// Returns a [Future] containing a [Response] with a [DailyRecordListResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DailyRecordListResponseDto>> dailyRecordsControllerListV1({
-    required String date,
-    DailyRecordKind? kind,
-    num? page = 1,
-    num? pageSize = 50,
+    required DateTime date,
+    String? kind,
+    int? page,
+    int? pageSize,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -578,7 +580,7 @@ class DailyRecordsApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [updateDailyRecordDto]
+  /// * [dailyRecordsControllerUpdateV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -590,7 +592,8 @@ class DailyRecordsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DailyRecordResponseDto>> dailyRecordsControllerUpdateV1({
     required String id,
-    required UpdateDailyRecordDto updateDailyRecordDto,
+    required DailyRecordsControllerUpdateV1Request
+    dailyRecordsControllerUpdateV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -615,7 +618,7 @@ class DailyRecordsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(updateDailyRecordDto);
+      _bodyData = jsonEncode(dailyRecordsControllerUpdateV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

@@ -10,10 +10,10 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/local_capability_response_dto.dart';
-import 'package:lucent_api/src/model/local_capability_state_dto.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
+import 'package:lucent_api/src/model/reminder_deliveries_controller_record_receipt_v1_request.dart';
+import 'package:lucent_api/src/model/reminder_deliveries_controller_report_local_capability_v1_request.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_response_dto.dart';
-import 'package:lucent_api/src/model/reminder_delivery_receipt_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto.dart';
 
 class ReminderDeliveriesApi {
@@ -105,7 +105,7 @@ class ReminderDeliveriesApi {
   ///
   ///
   /// Parameters:
-  /// * [reminderDeliveryReceiptDto]
+  /// * [reminderDeliveriesControllerRecordReceiptV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -117,7 +117,8 @@ class ReminderDeliveriesApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<ReminderDeliveryReceiptResponseDto>>
   reminderDeliveriesControllerRecordReceiptV1({
-    required ReminderDeliveryReceiptDto reminderDeliveryReceiptDto,
+    required ReminderDeliveriesControllerRecordReceiptV1Request
+    reminderDeliveriesControllerRecordReceiptV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -137,7 +138,9 @@ class ReminderDeliveriesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reminderDeliveryReceiptDto);
+      _bodyData = jsonEncode(
+        reminderDeliveriesControllerRecordReceiptV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -192,7 +195,7 @@ class ReminderDeliveriesApi {
   ///
   ///
   /// Parameters:
-  /// * [localCapabilityStateDto]
+  /// * [reminderDeliveriesControllerReportLocalCapabilityV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -204,7 +207,8 @@ class ReminderDeliveriesApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<LocalCapabilityResponseDto>>
   reminderDeliveriesControllerReportLocalCapabilityV1({
-    required LocalCapabilityStateDto localCapabilityStateDto,
+    required ReminderDeliveriesControllerReportLocalCapabilityV1Request
+    reminderDeliveriesControllerReportLocalCapabilityV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -224,7 +228,9 @@ class ReminderDeliveriesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(localCapabilityStateDto);
+      _bodyData = jsonEncode(
+        reminderDeliveriesControllerReportLocalCapabilityV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

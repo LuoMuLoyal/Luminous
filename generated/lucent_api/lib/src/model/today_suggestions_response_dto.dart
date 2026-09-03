@@ -120,27 +120,16 @@ class TodaySuggestionsResponseDto {
 
 /// Current background materialization state
 enum TodaySuggestionsResponseDtoMaterializationStatusEnum {
-  /// Current background materialization state
   @JsonValue(r'empty')
   empty(r'empty'),
-
-  /// Current background materialization state
   @JsonValue(r'pending')
   pending(r'pending'),
-
-  /// Current background materialization state
   @JsonValue(r'ready')
   ready(r'ready'),
-
-  /// Current background materialization state
   @JsonValue(r'stale')
   stale(r'stale'),
-
-  /// Current background materialization state
   @JsonValue(r'failed')
   failed(r'failed'),
-
-  /// Current background materialization state
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

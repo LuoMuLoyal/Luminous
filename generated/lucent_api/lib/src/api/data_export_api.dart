@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/create_data_export_request_dto.dart';
+import 'package:lucent_api/src/model/data_export_controller_create_request_v1_request.dart';
 import 'package:lucent_api/src/model/data_export_request_data_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_response_dto.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
@@ -23,7 +23,7 @@ class DataExportApi {
   ///
   ///
   /// Parameters:
-  /// * [createDataExportRequestDto]
+  /// * [dataExportControllerCreateRequestV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -35,7 +35,8 @@ class DataExportApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DataExportRequestResponseDto>>
   dataExportControllerCreateRequestV1({
-    required CreateDataExportRequestDto createDataExportRequestDto,
+    required DataExportControllerCreateRequestV1Request
+    dataExportControllerCreateRequestV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -55,7 +56,7 @@ class DataExportApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(createDataExportRequestDto);
+      _bodyData = jsonEncode(dataExportControllerCreateRequestV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
