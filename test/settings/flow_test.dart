@@ -395,7 +395,7 @@ class _FakeSettingsProfileRemoteDataSource
     lastTimezone = timezone;
     lastUnitSystem = unitSystem;
     return HealthContextResponseDto(
-      summary: UserHealthSummaryDto(
+      summary: HealthContextResponseDtoSummary(
         age: null,
         onboardingCompleted: false,
         activeAllergyCount: 0,
@@ -403,9 +403,10 @@ class _FakeSettingsProfileRemoteDataSource
         currentMedicineCount: 0,
         missingCoreProfileFields: [],
       ),
-      profile: UserHealthProfileDto(
+      profile: HealthContextResponseDtoProfile(
         birthDate: null,
-        sexAtBirth: SexAtBirth.unknownDefaultOpenApi,
+        sexAtBirth:
+            HealthContextResponseDtoProfileSexAtBirthEnum.unknownDefaultOpenApi,
         heightCm: null,
         weightKg: null,
         bloodType: null,
@@ -416,8 +417,11 @@ class _FakeSettingsProfileRemoteDataSource
             ? null
             : timezone as String?,
         unitSystem: identical(unitSystem, settingsProfileNoChange)
-            ? UnitSystem.unknownDefaultOpenApi
-            : (unitSystem as UnitSystem?) ?? UnitSystem.unknownDefaultOpenApi,
+            ? HealthContextResponseDtoProfileUnitSystemEnum
+                  .unknownDefaultOpenApi
+            : (unitSystem as HealthContextResponseDtoProfileUnitSystemEnum?) ??
+                  HealthContextResponseDtoProfileUnitSystemEnum
+                      .unknownDefaultOpenApi,
         onboardingCompletedAt: null,
         emergencyContact: null,
         extras: const <String, Object>{},

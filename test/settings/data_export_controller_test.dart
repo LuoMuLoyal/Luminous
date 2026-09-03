@@ -37,7 +37,7 @@ void main() {
 
       expect(state, isNotNull);
       expect(state!.id, 'req-1');
-      expect(state.status, DataExportStatus.completed);
+      expect(state.status, DataExportRequestDataDtoStatusEnum.completed);
       expect(state.downloadUrl, 'https://example.com/export.csv');
       expect(fakeApi.getLatestCallCount, 1);
     });
@@ -87,7 +87,7 @@ void main() {
 
       fakeApi.createResponse = _buildCreateResponse(
         id: 'req-2',
-        status: DataExportStatus.requested,
+        status: DataExportRequestDataDtoStatusEnum.requested,
       );
 
       await container
@@ -100,7 +100,7 @@ void main() {
       final state = container.read(dataExportControllerProvider).value;
       expect(state, isNotNull);
       expect(state!.id, 'req-2');
-      expect(state.status, DataExportStatus.requested);
+      expect(state.status, DataExportRequestDataDtoStatusEnum.requested);
       expect(fakeApi.createCallCount, 1);
       expect(
         fakeApi.lastCreateRequest?.kind,
@@ -246,7 +246,7 @@ void main() {
         fakeApi.latestReturnsNullData = false;
         fakeApi.createResponse = _buildCreateResponse(
           id: 'req-first',
-          status: DataExportStatus.processing,
+          status: DataExportRequestDataDtoStatusEnum.processing,
         );
 
         await container
@@ -259,7 +259,7 @@ void main() {
         final state = container.read(dataExportControllerProvider).value;
         expect(state, isNotNull);
         expect(state!.id, 'req-first');
-        expect(state.status, DataExportStatus.processing);
+        expect(state.status, DataExportRequestDataDtoStatusEnum.processing);
       },
     );
   });
@@ -274,7 +274,7 @@ void main() {
       // Simulate a new request appearing on the server.
       fakeApi.latestResponse = _buildLatestResponse(
         id: 'req-3',
-        status: DataExportStatus.processing,
+        status: DataExportRequestDataDtoStatusEnum.processing,
       );
 
       await container.read(dataExportControllerProvider.notifier).refresh();
@@ -282,7 +282,7 @@ void main() {
       final state = container.read(dataExportControllerProvider).value;
       expect(state, isNotNull);
       expect(state!.id, 'req-3');
-      expect(state.status, DataExportStatus.processing);
+      expect(state.status, DataExportRequestDataDtoStatusEnum.processing);
       expect(fakeApi.getLatestCallCount, 2);
     });
 
@@ -333,7 +333,7 @@ void main() {
         // Step 1: Submit export request.
         fakeApi.createResponse = _buildCreateResponse(
           id: 'req-4',
-          status: DataExportStatus.requested,
+          status: DataExportRequestDataDtoStatusEnum.requested,
         );
         await container
             .read(dataExportControllerProvider.notifier)
@@ -344,30 +344,33 @@ void main() {
 
         expect(
           container.read(dataExportControllerProvider).value?.status,
-          DataExportStatus.requested,
+          DataExportRequestDataDtoStatusEnum.requested,
         );
 
         // Step 2: Server transitions to processing; refresh picks it up.
         fakeApi.latestResponse = _buildLatestResponse(
           id: 'req-4',
-          status: DataExportStatus.processing,
+          status: DataExportRequestDataDtoStatusEnum.processing,
         );
         await container.read(dataExportControllerProvider.notifier).refresh();
 
         expect(
           container.read(dataExportControllerProvider).value?.status,
-          DataExportStatus.processing,
+          DataExportRequestDataDtoStatusEnum.processing,
         );
 
         // Step 3: Server completes; refresh picks it up.
         fakeApi.latestResponse = _buildLatestResponse(
           id: 'req-4',
-          status: DataExportStatus.completed,
+          status: DataExportRequestDataDtoStatusEnum.completed,
         );
         await container.read(dataExportControllerProvider.notifier).refresh();
 
         final finalState = container.read(dataExportControllerProvider).value;
-        expect(finalState?.status, DataExportStatus.completed);
+        expect(
+          finalState?.status,
+          DataExportRequestDataDtoStatusEnum.completed,
+        );
         expect(fakeApi.createCallCount, 1);
         expect(fakeApi.getLatestCallCount, 3); // build + 2 refreshes
       },
@@ -380,13 +383,16 @@ void main() {
       () {
         final request = DataExportRequestDataDto(
           id: 'req-link-missing',
-          kind: DataExportKind.hospital,
-          format: DataExportFormat.pdf,
-          range: DataExportRange.last7Days,
-          status: DataExportStatus.completed,
+          kind: DataExportRequestDataDtoKindEnum.hospital,
+          format: DataExportRequestDataDtoFormatEnum.pdf,
+          range: DataExportRequestDataDtoRangeEnum.last7Days,
+          status: DataExportRequestDataDtoStatusEnum.completed,
           requestedAt: '2026-06-12T00:00:00.000Z',
           completedAt: '2026-06-12T00:01:00.000Z',
           downloadUrl: '',
+          fileName: null,
+          fileSizeBytes: null,
+          errorMessage: null,
         );
 
         expect(
@@ -410,28 +416,38 @@ Response<T> _response<T>(T data) => Response<T>(
 
 DataExportRequestDataDto _buildRequestData({
   String id = 'req-1',
-  DataExportStatus status = DataExportStatus.completed,
+  DataExportRequestDataDtoStatusEnum status =
+      DataExportRequestDataDtoStatusEnum.completed,
 }) {
   return DataExportRequestDataDto(
     id: id,
-    kind: DataExportKind.hospital,
-    format: DataExportFormat.pdf,
-    range: DataExportRange.last7Days,
+    kind: DataExportRequestDataDtoKindEnum.hospital,
+    format: DataExportRequestDataDtoFormatEnum.pdf,
+    range: DataExportRequestDataDtoRangeEnum.last7Days,
     status: status,
     requestedAt: '2026-06-12T00:00:00.000Z',
-    completedAt: status == DataExportStatus.completed
+    completedAt: status == DataExportRequestDataDtoStatusEnum.completed
         ? '2026-06-12T00:01:00.000Z'
         : null,
-    downloadUrl: status == DataExportStatus.completed
+    downloadUrl: status == DataExportRequestDataDtoStatusEnum.completed
         ? 'https://example.com/export.csv'
         : null,
-    errorMessage: status == DataExportStatus.failed ? 'Export failed' : null,
+    errorMessage: status == DataExportRequestDataDtoStatusEnum.failed
+        ? 'Export failed'
+        : null,
+    fileName: status == DataExportRequestDataDtoStatusEnum.completed
+        ? 'export.csv'
+        : null,
+    fileSizeBytes: status == DataExportRequestDataDtoStatusEnum.completed
+        ? 1024
+        : null,
   );
 }
 
 DataExportRequestResponseDto _buildCreateResponse({
   String id = 'req-2',
-  DataExportStatus status = DataExportStatus.requested,
+  DataExportRequestDataDtoStatusEnum status =
+      DataExportRequestDataDtoStatusEnum.requested,
 }) {
   return DataExportRequestResponseDto.fromJson(
     _buildRequestData(id: id, status: status).toJson(),
@@ -440,7 +456,8 @@ DataExportRequestResponseDto _buildCreateResponse({
 
 DataExportRequestDataDto _buildLatestResponse({
   String id = 'req-1',
-  DataExportStatus status = DataExportStatus.completed,
+  DataExportRequestDataDtoStatusEnum status =
+      DataExportRequestDataDtoStatusEnum.completed,
 }) {
   return _buildRequestData(id: id, status: status);
 }

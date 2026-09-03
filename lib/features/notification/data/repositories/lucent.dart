@@ -122,7 +122,7 @@ class LucentNotificationRepository implements NotificationRepository {
     return data;
   }
 
-  NotificationItem _mapItem(NotificationListItemDto dto) {
+  NotificationItem _mapItem(NotificationListResponseDtoItemsInner dto) {
     return NotificationItem(
       id: dto.id,
       type: NotificationType.fromJson(dto.type.value),

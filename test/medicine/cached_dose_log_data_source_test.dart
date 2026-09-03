@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/lucent_api.dart' hide DoseLogStatus;
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/database.dart';

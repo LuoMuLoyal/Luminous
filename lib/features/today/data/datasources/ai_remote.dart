@@ -19,7 +19,7 @@ class TodayAiRemoteSummaryEvent extends TodayAiRemoteEvent {
 class TodayAiRemoteResultEvent extends TodayAiRemoteEvent {
   const TodayAiRemoteResultEvent(this.dto);
 
-  final lucent.TodayAnalysisDataDto dto;
+  final lucent.TodayAnalysisReadResponseDtoAnalysis dto;
 }
 
 class TodayAiRemoteDataSource {
@@ -82,7 +82,7 @@ class TodayAiRemoteDataSource {
     if (status == 'ready' || status == null) {
       final analysisMap = status == null ? data : analysisJson;
       final analysis = analysisMap is Map<String, dynamic>
-          ? lucent.TodayAnalysisDataDto.fromJson(analysisMap)
+          ? lucent.TodayAnalysisReadResponseDtoAnalysis.fromJson(analysisMap)
           : null;
       return lucent.TodayAnalysisReadDataDto(
         status: lucent.TodayAnalysisReadDataDtoStatusEnum.ready,
@@ -96,7 +96,7 @@ class TodayAiRemoteDataSource {
 
     final readStatus = _mapReadStatus(status);
     final analysis = analysisJson is Map<String, dynamic>
-        ? lucent.TodayAnalysisDataDto.fromJson(analysisJson)
+        ? lucent.TodayAnalysisReadResponseDtoAnalysis.fromJson(analysisJson)
         : null;
     return lucent.TodayAnalysisReadDataDto(
       status: readStatus,
@@ -138,7 +138,7 @@ class TodayAiRemoteDataSource {
         case 'result':
           final json = requireMap(event.data);
           yield TodayAiRemoteResultEvent(
-            lucent.TodayAnalysisDataDto.fromJson(json),
+            lucent.TodayAnalysisReadResponseDtoAnalysis.fromJson(json),
           );
         case 'error':
           throw mapSseStreamError(event.data);

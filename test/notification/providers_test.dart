@@ -79,7 +79,7 @@ class FakeNotificationsApi implements NotificationsApi {
   });
 
   int unreadCount;
-  List<NotificationListItemDto> notifications;
+  List<NotificationListResponseDtoItemsInner> notifications;
   NotificationDetailResponseDto? detail;
   bool shouldThrow;
   DioException? error;
@@ -162,11 +162,14 @@ class FakeNotificationsApi implements NotificationsApi {
       detail ??
           NotificationDetailResponseDto(
             id: id,
-            type: UserNotificationType.medicineReminder,
+            type: NotificationDetailResponseDtoTypeEnum.medicineReminder,
             title: '',
             content: '',
+            action: null,
+            actionPayload: null,
             isRead: false,
             createdAt: '2026-06-10T08:00:00.000Z',
+            readAt: null,
           ),
     );
   }
@@ -244,11 +247,14 @@ class FakeNotificationsApi implements NotificationsApi {
       detail ??
           NotificationDetailResponseDto(
             id: id,
-            type: UserNotificationType.medicineReminder,
+            type: NotificationDetailResponseDtoTypeEnum.medicineReminder,
             title: '',
             content: '',
+            action: null,
+            actionPayload: null,
             isRead: true,
             createdAt: '2026-06-10T08:00:00.000Z',
+            readAt: null,
           ),
     );
   }
@@ -272,11 +278,14 @@ class FakeNotificationsApi implements NotificationsApi {
       detail ??
           NotificationDetailResponseDto(
             id: id,
-            type: UserNotificationType.medicineReminder,
+            type: NotificationDetailResponseDtoTypeEnum.medicineReminder,
             title: '',
             content: '',
+            action: null,
+            actionPayload: null,
             isRead: false,
             createdAt: '2026-06-10T08:00:00.000Z',
+            readAt: null,
           ),
     );
   }
@@ -297,17 +306,19 @@ class _FakeLucentClient extends LucentClient {
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
-NotificationListItemDto _item({
+NotificationListResponseDtoItemsInner _item({
   required String id,
   String title = 'Title',
   String content = 'Content',
   bool isRead = false,
 }) {
-  return NotificationListItemDto(
+  return NotificationListResponseDtoItemsInner(
     id: id,
-    type: UserNotificationType.medicineReminder,
+    type: NotificationListResponseDtoItemsInnerTypeEnum.medicineReminder,
     title: title,
     content: content,
+    action: null,
+    actionPayload: null,
     isRead: isRead,
     createdAt: '2026-06-10T08:00:00.000Z',
   );
@@ -502,9 +513,11 @@ void main() {
       final api = FakeNotificationsApi(
         detail: NotificationDetailResponseDto(
           id: 'notif-1',
-          type: UserNotificationType.medicineReminder,
+          type: NotificationDetailResponseDtoTypeEnum.medicineReminder,
           title: 'Missed dose',
           content: 'You missed a dose.',
+          action: null,
+          actionPayload: null,
           isRead: false,
           createdAt: '2026-06-10T08:00:00.000Z',
           readAt: null,

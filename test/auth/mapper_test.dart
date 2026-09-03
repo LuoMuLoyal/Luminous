@@ -15,7 +15,7 @@ LoginResponseDto _loginData({
   String updatedAt = '2026-06-10T08:00:00.000Z',
 }) {
   return LoginResponseDto(
-    user: UserFullDto(
+    user: LoginResponseDtoUser(
       id: userId,
       email: email,
       nickname: nickname ?? email.split('@').first,
@@ -25,7 +25,7 @@ LoginResponseDto _loginData({
       createdAt: createdAt,
       updatedAt: updatedAt,
     ),
-    tokens: TokensDto(
+    tokens: RegisterResponseDtoTokens(
       accessToken: accessToken,
       refreshToken: refreshToken,
       expiresIn: 3600,

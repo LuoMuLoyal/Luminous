@@ -76,12 +76,12 @@ void main() {
         final response = _response(
           LegalDocumentListResponseDto(
             items: [
-              LegalDocumentListItemDto(
+              LegalDocumentListResponseDtoItemsInner(
                 docType: 'terms',
                 title: '服务条款',
                 updatedAt: '2026-07-01T00:00:00Z',
               ),
-              LegalDocumentListItemDto(
+              LegalDocumentListResponseDtoItemsInner(
                 docType: 'privacy',
                 title: '隐私政策',
                 updatedAt: '2026-07-02T00:00:00Z',
@@ -109,7 +109,7 @@ void main() {
         final response = _response(
           LegalDocumentListResponseDto(
             items: [
-              LegalDocumentListItemDto(
+              LegalDocumentListResponseDtoItemsInner(
                 docType: 'unknown-type',
                 title: 'Unknown',
                 updatedAt: '',

@@ -563,11 +563,11 @@ class _ThrowingDataExportController extends DataExportController {
   }
 }
 
-ClinicSummaryCoverageEntryDto _coverageEntry() {
-  return ClinicSummaryCoverageEntryDto(
-    state: ClinicSummaryCoverageEntryDtoStateEnum.observed,
-    coverage: ClinicSummaryCoverageEntryDtoCoverageEnum.none,
-    sources: const [ClinicSummaryCoverageEntryDtoSourcesEnum.manual],
+ClinicSummaryResponseDtoCoverageCheckIns _checkInsCoverage() {
+  return ClinicSummaryResponseDtoCoverageCheckIns(
+    state: ClinicSummaryResponseDtoCoverageCheckInsStateEnum.observed,
+    coverage: ClinicSummaryResponseDtoCoverageCheckInsCoverageEnum.none,
+    sources: const [ClinicSummaryResponseDtoCoverageCheckInsSourcesEnum.manual],
     observedCount: 0,
     expectedCount: null,
     windowStart: null,
@@ -575,12 +575,36 @@ ClinicSummaryCoverageEntryDto _coverageEntry() {
   );
 }
 
-ClinicSummaryCoverageDto _coverage() {
-  return ClinicSummaryCoverageDto(
-    checkIns: _coverageEntry(),
-    water: _coverageEntry(),
-    dose: _coverageEntry(),
-    sleep: _coverageEntry(),
+ClinicSummaryResponseDtoCoverageWater _waterCoverage() {
+  return ClinicSummaryResponseDtoCoverageWater(
+    state: ClinicSummaryResponseDtoCoverageWaterStateEnum.observed,
+    coverage: ClinicSummaryResponseDtoCoverageWaterCoverageEnum.none,
+    sources: const [ClinicSummaryResponseDtoCoverageWaterSourcesEnum.manual],
+    observedCount: 0,
+    expectedCount: null,
+    windowStart: null,
+    windowEnd: null,
+  );
+}
+
+ClinicSummaryResponseDtoCoverageSleep _sleepCoverage() {
+  return ClinicSummaryResponseDtoCoverageSleep(
+    state: ClinicSummaryResponseDtoCoverageSleepStateEnum.observed,
+    coverage: ClinicSummaryResponseDtoCoverageSleepCoverageEnum.none,
+    sources: const [ClinicSummaryResponseDtoCoverageSleepSourcesEnum.manual],
+    observedCount: 0,
+    expectedCount: null,
+    windowStart: null,
+    windowEnd: null,
+  );
+}
+
+ClinicSummaryResponseDtoCoverage _coverage() {
+  return ClinicSummaryResponseDtoCoverage(
+    checkIns: _checkInsCoverage(),
+    water: _waterCoverage(),
+    dose: _checkInsCoverage(),
+    sleep: _sleepCoverage(),
   );
 }
 
@@ -593,15 +617,15 @@ ClinicSummaryResponseDto _clinicDto() {
     selectedFields: const [],
     coverage: _coverage(),
     dataRange: 'last_7_days',
-    profile: ClinicSummaryProfileDto(
+    profile: ClinicSummaryResponseDtoProfile(
       nickname: 'Lumi',
       age: 30,
       sexAtBirth: 'male',
       bloodType: 'A',
     ),
-    allergies: const <ClinicSummaryAllergyDto>[],
-    conditions: const <ClinicSummaryConditionDto>[],
-    currentMedicines: const <ClinicSummaryMedicineDto>[],
+    allergies: const <ClinicSummaryResponseDtoAllergiesInner>[],
+    conditions: const <ClinicSummaryResponseDtoConditionsInner>[],
+    currentMedicines: const <ClinicSummaryResponseDtoCurrentMedicinesInner>[],
     findings: const [],
     disclaimer: '本摘要仅供参考，不构成医疗建议',
   );

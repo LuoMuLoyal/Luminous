@@ -262,7 +262,7 @@ void main() {
           aiSummariesEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: false,
-          assistantContext: AssistantContextSettingsDto(
+          assistantContext: UserSettingsResponseDtoAssistantContext(
             healthProfile: true,
             dailyRecords: true,
             sleepRecords: true,
@@ -293,7 +293,7 @@ void main() {
           dataSharingConsent: true,
           assistantEnabled: true,
           assistantMemoryEnabled: true,
-          assistantContext: AssistantContextSettingsDto(
+          assistantContext: UserSettingsResponseDtoAssistantContext(
             healthProfile: true,
             dailyRecords: true,
             sleepRecords: true,
@@ -329,7 +329,7 @@ void main() {
           aiSummariesEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: true,
-          assistantContext: AssistantContextSettingsDto(
+          assistantContext: UserSettingsResponseDtoAssistantContext(
             healthProfile: false,
             dailyRecords: true,
             sleepRecords: false,
@@ -465,7 +465,7 @@ UserSettingsResponseDto _buildResponse({
   bool dataSharingConsent = false,
   bool assistantEnabled = true,
   bool assistantMemoryEnabled = false,
-  AssistantContextSettingsDto? assistantContext,
+  UserSettingsResponseDtoAssistantContext? assistantContext,
 }) {
   return UserSettingsResponseDto(
     aiSummariesEnabled: aiSummariesEnabled,
@@ -475,7 +475,7 @@ UserSettingsResponseDto _buildResponse({
     waterTargetCount: 8,
     assistantContext:
         assistantContext ??
-        AssistantContextSettingsDto(
+        UserSettingsResponseDtoAssistantContext(
           healthProfile: true,
           dailyRecords: true,
           sleepRecords: true,
@@ -502,7 +502,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     assistantEnabled: true,
     assistantMemoryEnabled: false,
     waterTargetCount: 8,
-    assistantContext: AssistantContextSettingsDto(
+    assistantContext: UserSettingsResponseDtoAssistantContext(
       healthProfile: true,
       dailyRecords: true,
       sleepRecords: true,

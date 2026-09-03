@@ -68,14 +68,19 @@ class _FakeUserSettingsController extends UserSettingsController {
   }
 }
 
-DataExportRequestDataDto _request(DataExportStatus status) {
+DataExportRequestDataDto _request(DataExportRequestDataDtoStatusEnum status) {
   return DataExportRequestDataDto(
     id: 'req-1',
-    kind: DataExportKind.monthly,
-    format: DataExportFormat.pdf,
-    range: DataExportRange.last30Days,
+    kind: DataExportRequestDataDtoKindEnum.monthly,
+    format: DataExportRequestDataDtoFormatEnum.pdf,
+    range: DataExportRequestDataDtoRangeEnum.last30Days,
     status: status,
     requestedAt: '2026-08-14T08:00:00Z',
+    completedAt: null,
+    downloadUrl: null,
+    fileName: null,
+    fileSizeBytes: null,
+    errorMessage: null,
   );
 }
 
@@ -140,7 +145,7 @@ void main() {
     // return a benign response so those reads never throw.
     when(() => api.dataExportControllerGetLatestRequestV1()).thenAnswer(
       (_) async => Response<DataExportRequestDataDto>(
-        data: _request(DataExportStatus.completed),
+        data: _request(DataExportRequestDataDtoStatusEnum.completed),
         requestOptions: RequestOptions(path: '/data-export-requests/latest'),
         statusCode: 200,
       ),
@@ -158,7 +163,7 @@ void main() {
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
           data: DataExportRequestResponseDto.fromJson(
-            _request(DataExportStatus.failed).toJson(),
+            _request(DataExportRequestDataDtoStatusEnum.failed).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -188,7 +193,7 @@ void main() {
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
           data: DataExportRequestResponseDto.fromJson(
-            _request(DataExportStatus.completed).toJson(),
+            _request(DataExportRequestDataDtoStatusEnum.completed).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -216,7 +221,7 @@ void main() {
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponseDto>(
           data: DataExportRequestResponseDto.fromJson(
-            _request(DataExportStatus.unavailable).toJson(),
+            _request(DataExportRequestDataDtoStatusEnum.unavailable).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,

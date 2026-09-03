@@ -357,6 +357,7 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
     return <String, Object?>{
       'id': 'record-1',
       'kind': 'meal',
+      'healthEventId': null,
       'occurredAt': '2026-06-06',
       'occurredTime': '09:45',
       'title': 'Record',

@@ -24,13 +24,13 @@ class _FakeLucentClient extends LucentClient {
   ReportsApi get reports => reportsApi;
 }
 
-ClinicSummaryShareListItemDto _shareItem({
+ClinicSummaryShareListResponseDtoItemsInner _shareItem({
   String id = 'share-1',
   String? revokedAt,
   int accessCount = 3,
   String? lastAccessedAt = '2026-07-03T09:00:00',
 }) {
-  return ClinicSummaryShareListItemDto(
+  return ClinicSummaryShareListResponseDtoItemsInner(
     id: id,
     createdAt: '2026-07-01T08:00:00',
     expiresAt: '2026-07-08T08:00:00',
@@ -38,7 +38,7 @@ ClinicSummaryShareListItemDto _shareItem({
     accessCount: accessCount,
     firstAccessedAt: lastAccessedAt,
     lastAccessedAt: lastAccessedAt,
-    scope: ClinicSummaryShareScopeDto(
+    scope: ClinicSummaryShareResponseDtoScope(
       eventId: null,
       dateFrom: '2026-06-02',
       dateTo: '2026-07-01',
@@ -48,7 +48,7 @@ ClinicSummaryShareListItemDto _shareItem({
 }
 
 Response<ClinicSummaryShareListResponseDto> _shareListResponse(
-  List<ClinicSummaryShareListItemDto> items,
+  List<ClinicSummaryShareListResponseDtoItemsInner> items,
 ) {
   return Response<ClinicSummaryShareListResponseDto>(
     data: ClinicSummaryShareListResponseDto(items: items),
@@ -68,7 +68,7 @@ void main() {
 
   Future<void> pumpSheet(
     WidgetTester tester, {
-    required List<ClinicSummaryShareListItemDto> items,
+    required List<ClinicSummaryShareListResponseDtoItemsInner> items,
     Future<Response<ClinicSummaryShareListResponseDto>> Function()? listHandler,
   }) async {
     when(

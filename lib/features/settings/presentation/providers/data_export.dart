@@ -59,45 +59,45 @@ class DataExportRequestInput {
         request.range == _rangeToResponse(range);
   }
 
-  DataExportKind _kindToResponse(
+  DataExportRequestDataDtoKindEnum _kindToResponse(
     DataExportControllerCreateRequestV1RequestKindEnum value,
   ) {
     return switch (value) {
       DataExportControllerCreateRequestV1RequestKindEnum.hospital =>
-        DataExportKind.hospital,
+        DataExportRequestDataDtoKindEnum.hospital,
       DataExportControllerCreateRequestV1RequestKindEnum.monthly =>
-        DataExportKind.monthly,
+        DataExportRequestDataDtoKindEnum.monthly,
       DataExportControllerCreateRequestV1RequestKindEnum.print =>
-        DataExportKind.print,
+        DataExportRequestDataDtoKindEnum.print,
       DataExportControllerCreateRequestV1RequestKindEnum
           .unknownDefaultOpenApi =>
-        DataExportKind.unknownDefaultOpenApi,
+        DataExportRequestDataDtoKindEnum.unknownDefaultOpenApi,
     };
   }
 
-  DataExportFormat _formatToResponse(
+  DataExportRequestDataDtoFormatEnum _formatToResponse(
     DataExportControllerCreateRequestV1RequestFormatEnum value,
   ) {
     return switch (value) {
       DataExportControllerCreateRequestV1RequestFormatEnum.pdf =>
-        DataExportFormat.pdf,
+        DataExportRequestDataDtoFormatEnum.pdf,
       DataExportControllerCreateRequestV1RequestFormatEnum
           .unknownDefaultOpenApi =>
-        DataExportFormat.unknownDefaultOpenApi,
+        DataExportRequestDataDtoFormatEnum.unknownDefaultOpenApi,
     };
   }
 
-  DataExportRange _rangeToResponse(
+  DataExportRequestDataDtoRangeEnum _rangeToResponse(
     DataExportControllerCreateRequestV1RequestRangeEnum value,
   ) {
     return switch (value) {
       DataExportControllerCreateRequestV1RequestRangeEnum.last7Days =>
-        DataExportRange.last7Days,
+        DataExportRequestDataDtoRangeEnum.last7Days,
       DataExportControllerCreateRequestV1RequestRangeEnum.last30Days =>
-        DataExportRange.last30Days,
+        DataExportRequestDataDtoRangeEnum.last30Days,
       DataExportControllerCreateRequestV1RequestRangeEnum
           .unknownDefaultOpenApi =>
-        DataExportRange.unknownDefaultOpenApi,
+        DataExportRequestDataDtoRangeEnum.unknownDefaultOpenApi,
     };
   }
 }
@@ -120,15 +120,19 @@ DataExportUiStatus dataExportUiStatusForRequest(
   }
 
   return switch (request.status) {
-    DataExportStatus.requested => DataExportUiStatus.requested,
-    DataExportStatus.processing => DataExportUiStatus.processing,
-    DataExportStatus.completed =>
+    DataExportRequestDataDtoStatusEnum.requested =>
+      DataExportUiStatus.requested,
+    DataExportRequestDataDtoStatusEnum.processing =>
+      DataExportUiStatus.processing,
+    DataExportRequestDataDtoStatusEnum.completed =>
       request.downloadUrl?.isNotEmpty != true
           ? DataExportUiStatus.completedLinkMissing
           : DataExportUiStatus.completed,
-    DataExportStatus.failed => DataExportUiStatus.failed,
-    DataExportStatus.unavailable => DataExportUiStatus.unavailable,
-    DataExportStatus.unknownDefaultOpenApi => DataExportUiStatus.failed,
+    DataExportRequestDataDtoStatusEnum.failed => DataExportUiStatus.failed,
+    DataExportRequestDataDtoStatusEnum.unavailable =>
+      DataExportUiStatus.unavailable,
+    DataExportRequestDataDtoStatusEnum.unknownDefaultOpenApi =>
+      DataExportUiStatus.failed,
   };
 }
 

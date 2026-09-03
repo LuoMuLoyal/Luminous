@@ -5,8 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/api.dart'
-    hide DailyRecordKind, DailyRecordAttachmentKind;
+import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -17,12 +16,20 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 ///
 /// Transport only: returns plain `Future` and throws `DioException` /
 /// `LucentFailure`; the repository boundary (`LucentDailyRecordRepository`)
-/// maps every failure via `LucentErrorMapper.fromObject`. An empty success
-/// body is a `LucentFailure.network(emptyResponse)` (today `ai_remote` /
-/// medicine `dose_log_remote` precedent — never a transport exception); a
+/// maps every failure via `LucentErrorMapper.fromObject`. Reads, presign and
+/// candidate generation go through the typed generated [lucent.DailyRecordsApi]
+/// (responses carry typed DTOs again after the Lucent contract fix). An empty
+/// success body is a `LucentFailure.network(emptyResponse)` (today `ai_remote`
+/// / medicine `dose_log_remote` precedent — never a transport exception); a
 /// structurally malformed body or a delete status other than 204 is a thrown
 /// protocol exception (logged via [appTalker] for diagnosability) that
 /// surfaces as a `Left(unknown)` at the repository boundary.
+///
+/// Raw [Dio] is kept only where the typed client cannot express the call:
+/// the direct object-storage PUT ([uploadImage]), the partial create/PATCH
+/// writes ([create] / [update] send only changed keys with null-means-clear
+/// semantics the generated all-optional request DTO cannot distinguish from
+/// "unchanged"), and [delete] whose 204 invariant needs the raw status code.
 class DailyRecordRemoteDataSource {
   DailyRecordRemoteDataSource({required this.api, required this.dio});
 
@@ -57,7 +64,9 @@ class DailyRecordRemoteDataSource {
             (_, s) => DailyRecordSummary(
               kind: _parseKind(s.kind.value),
               count: s.count,
-              latest: s.latest != null ? _toItem(s.latest!) : null,
+              latest: s.latest != null
+                  ? _toItem(_canonicalLatest(s.latest!))
+                  : null,
             ),
           )
           .toList(),
@@ -67,7 +76,7 @@ class DailyRecordRemoteDataSource {
   Future<DailyRecordItem> get(String id) async {
     final response = await api.dailyRecordsControllerGetV1(id: id);
     final dto = _requireData(response.data, operation: 'get');
-    return _toItem(lucent.DailyRecordItemDto.fromJson(dto.toJson()));
+    return _toItem(_canonicalResponse(dto));
   }
 
   Future<DailyRecordAttachmentInput> uploadImage(
@@ -82,7 +91,7 @@ class DailyRecordRemoteDataSource {
           ),
     );
     final upload = _requireData(presignResponse.data, operation: 'uploadImage');
-    final headers = _coerceToStringMap(upload.headers);
+    final headers = upload.headers;
 
     await dio.put<Object>(
       upload.uploadUrl,
@@ -221,7 +230,7 @@ class DailyRecordRemoteDataSource {
     }
   }
 
-  Future<lucent.DailyRecordItemDto> _write(
+  Future<lucent.DailyRecordListResponseDtoItemsInner> _write(
     String method,
     String path,
     Map<String, dynamic>? payload,
@@ -240,7 +249,10 @@ class DailyRecordRemoteDataSource {
       );
     }
 
-    return lucent.DailyRecordItemDto.fromJson(body);
+    // Create/update resolve to the same record resource shape as the list
+    // item; the list-item DTO is the canonical record shape used to map into
+    // the domain entity.
+    return lucent.DailyRecordListResponseDtoItemsInner.fromJson(body);
   }
 
   /// Extracts a non-null generated-client payload, throwing
@@ -256,7 +268,11 @@ class DailyRecordRemoteDataSource {
     return data;
   }
 
-  DailyRecordItem _toItem(lucent.DailyRecordItemDto item) {
+  /// Re-typed as the canonical list-item DTO. The contract splits the record
+  /// resource into per-endpoint classes that share one JSON shape (see
+  /// [lucent.DailyRecordListResponseDtoItemsInner]), so summary/detail payloads
+  /// are normalized to it before mapping.
+  DailyRecordItem _toItem(lucent.DailyRecordListResponseDtoItemsInner item) {
     return DailyRecordItem(
       id: item.id,
       kind: _parseKind(item.kind.value),
@@ -275,14 +291,32 @@ class DailyRecordRemoteDataSource {
         item.mealAnalysisFailureReason,
       ),
       mealShortDescription: _asStringOrNull(item.mealShortDescription),
-      mealTopFoods: item.mealTopFoods ?? const <String>[],
+      mealTopFoods: item.mealTopFoods,
       attachments: item.attachments.map(_toAttachment).toList(),
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
     );
   }
 
-  DailyRecordAttachment _toAttachment(lucent.DailyRecordAttachmentDto item) {
+  /// Normalizes the summary `latest` record payload to the canonical list-item
+  /// DTO (identical JSON shape).
+  lucent.DailyRecordListResponseDtoItemsInner _canonicalLatest(
+    lucent.DailyRecordSummaryResponseDtoSummariesInnerLatest item,
+  ) {
+    return lucent.DailyRecordListResponseDtoItemsInner.fromJson(item.toJson());
+  }
+
+  /// Normalizes the get/create/update resource payload to the canonical
+  /// list-item DTO (identical JSON shape).
+  lucent.DailyRecordListResponseDtoItemsInner _canonicalResponse(
+    lucent.DailyRecordResponseDto item,
+  ) {
+    return lucent.DailyRecordListResponseDtoItemsInner.fromJson(item.toJson());
+  }
+
+  DailyRecordAttachment _toAttachment(
+    lucent.DailyRecordListResponseDtoItemsInnerAttachmentsInner item,
+  ) {
     return DailyRecordAttachment(
       id: item.id,
       kind: _parseAttachmentKind(item.kind.value),
@@ -300,7 +334,7 @@ class DailyRecordRemoteDataSource {
   }
 
   DailyRecordCandidateItem _toCandidateItem(
-    lucent.DailyRecordCandidateItemDto item,
+    lucent.DailyRecordCandidateResponseDtoItemsInner item,
   ) {
     return DailyRecordCandidateItem(
       kind: _parseKind(item.kind.value),
@@ -364,12 +398,6 @@ class DailyRecordRemoteDataSource {
     if (value is Map<String, dynamic>) return value;
     if (value is Map) return value.map((k, v) => MapEntry(k.toString(), v));
     return null;
-  }
-
-  Map<String, String> _coerceToStringMap(Object? value) {
-    final map = coerceToStringMap(value);
-    if (map == null) return const <String, String>{};
-    return map.map((key, value) => MapEntry(key, value.toString()));
   }
 
   String? _asStringOrNull(Object? value) {

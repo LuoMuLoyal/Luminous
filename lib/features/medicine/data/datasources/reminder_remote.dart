@@ -206,7 +206,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     );
   }
 
-  MedicineReminderItem _fromDto(MedicineReminderItemDto dto) {
+  MedicineReminderItem _fromDto(MedicineReminderListResponseDtoItemsInner dto) {
     return MedicineReminderItem(
       id: dto.id,
       currentMedicineId: dto.currentMedicineId,

@@ -177,7 +177,7 @@ HealthContextResponseDto _buildDto({
   int currentMedicineCount = 0,
 }) {
   return HealthContextResponseDto(
-    summary: UserHealthSummaryDto(
+    summary: HealthContextResponseDtoSummary(
       age: age,
       onboardingCompleted: onboardingCompleted,
       activeAllergyCount: activeAllergyCount,
@@ -185,15 +185,15 @@ HealthContextResponseDto _buildDto({
       currentMedicineCount: currentMedicineCount,
       missingCoreProfileFields: [],
     ),
-    profile: UserHealthProfileDto(
+    profile: HealthContextResponseDtoProfile(
       birthDate: null,
-      sexAtBirth: SexAtBirth.unknown,
+      sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.unknown,
       heightCm: null,
       weightKg: null,
       bloodType: null,
       locale: null,
       timezone: null,
-      unitSystem: UnitSystem.metric,
+      unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
       onboardingCompletedAt: null,
       emergencyContact: null,
       extras: {},
@@ -661,7 +661,7 @@ void main() {
   group('cache JSON round-trip', () {
     test('snapshot with allergies survives cache round-trip', () async {
       dataSource.createAllergyResult = HealthContextResponseDto(
-        summary: UserHealthSummaryDto(
+        summary: HealthContextResponseDtoSummary(
           age: 30,
           onboardingCompleted: true,
           activeAllergyCount: 1,
@@ -669,26 +669,26 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: UserHealthProfileDto(
+        profile: HealthContextResponseDtoProfile(
           birthDate: null,
-          sexAtBirth: SexAtBirth.unknown,
+          sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           bloodType: null,
           locale: null,
           timezone: null,
-          unitSystem: UnitSystem.metric,
+          unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           emergencyContact: null,
           extras: {},
         ),
         allergies: [
-          UserAllergyItemDto(
+          HealthContextResponseDtoAllergiesInner(
             id: 'allergy-1',
-            kind: UserAllergyKind.food,
+            kind: HealthContextResponseDtoAllergiesInnerKindEnum.food,
             label: 'Peanuts',
             reaction: null,
-            severity: UserAllergySeverity.severe,
+            severity: HealthContextResponseDtoAllergiesInnerSeverityEnum.severe,
             isActive: true,
             note: null,
             extras: null,
@@ -723,7 +723,7 @@ void main() {
 
     test('snapshot with conditions survives cache round-trip', () async {
       dataSource.createConditionResult = HealthContextResponseDto(
-        summary: UserHealthSummaryDto(
+        summary: HealthContextResponseDtoSummary(
           age: null,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -731,25 +731,25 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: UserHealthProfileDto(
+        profile: HealthContextResponseDtoProfile(
           birthDate: null,
-          sexAtBirth: SexAtBirth.unknown,
+          sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           bloodType: null,
           locale: null,
           timezone: null,
-          unitSystem: UnitSystem.metric,
+          unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           emergencyContact: null,
           extras: {},
         ),
         allergies: [],
         conditions: [
-          UserConditionItemDto(
+          HealthContextResponseDtoConditionsInner(
             id: 'cond-1',
             label: 'Hypertension',
-            status: UserConditionStatus.active,
+            status: HealthContextResponseDtoConditionsInnerStatusEnum.active,
             diagnosedAt: '2026-01-01',
             resolvedAt: null,
             note: 'Under treatment',
@@ -779,7 +779,7 @@ void main() {
 
     test('snapshot with currentMedicines survives cache round-trip', () async {
       dataSource.createCurrentMedicineResult = HealthContextResponseDto(
-        summary: UserHealthSummaryDto(
+        summary: HealthContextResponseDtoSummary(
           age: null,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -787,15 +787,15 @@ void main() {
           currentMedicineCount: 1,
           missingCoreProfileFields: [],
         ),
-        profile: UserHealthProfileDto(
+        profile: HealthContextResponseDtoProfile(
           birthDate: null,
-          sexAtBirth: SexAtBirth.unknown,
+          sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           bloodType: null,
           locale: null,
           timezone: null,
-          unitSystem: UnitSystem.metric,
+          unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           emergencyContact: null,
           extras: {},
@@ -803,9 +803,10 @@ void main() {
         allergies: [],
         conditions: [],
         currentMedicines: [
-          UserCurrentMedicineItemDto(
+          HealthContextResponseDtoCurrentMedicinesInner(
             id: 'med-1',
-            source_: MedicineSource.cn,
+            source_:
+                HealthContextResponseDtoCurrentMedicinesInnerSource_Enum.cn,
             sourceRefId: 'ref-1',
             displayName: 'Aspirin',
             strengthText: '100mg',
@@ -843,7 +844,7 @@ void main() {
 
     test('snapshot with profile extras survives cache round-trip', () async {
       dataSource.updateProfileResult = HealthContextResponseDto(
-        summary: UserHealthSummaryDto(
+        summary: HealthContextResponseDtoSummary(
           age: 35,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -851,15 +852,15 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: UserHealthProfileDto(
+        profile: HealthContextResponseDtoProfile(
           birthDate: '1991-05-15',
-          sexAtBirth: SexAtBirth.female,
+          sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.female,
           heightCm: 165.0,
           weightKg: null,
           bloodType: 'A+',
           locale: 'zh-CN',
           timezone: 'Asia/Shanghai',
-          unitSystem: UnitSystem.metric,
+          unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
           onboardingCompletedAt: '2026-07-11T08:00:00.000Z',
           emergencyContact: null,
           extras: {'customKey': 'customValue'},

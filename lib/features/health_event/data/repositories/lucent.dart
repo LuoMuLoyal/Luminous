@@ -23,11 +23,20 @@ import 'package:luminous/features/health_event/domain/repositories/health_event.
 /// not a catch-all — other 4xx/5xx and network errors are rethrown into the
 /// mapper and become a Left.
 ///
+/// Transport goes through the typed generated [api.HealthEventsApi] again
+/// after the Lucent contract fix. The history list item DTO is the canonical
+/// event shape; the per-endpoint detail/active DTOs share its JSON shape and
+/// are normalized into it before mapping (same pattern as the record
+/// datasource and the pre-raw-Dio typed usage).
+///
 /// Protocol invariants (kept as recorded `StateError`, mapped to
 /// `Left(unknown)` with the cause preserved, scan/medicine pattern): a
-/// write/detail response missing the event body (`_mapRequired`), an unknown
-/// enum value (`_mapStatus` / `_mapOutcome`), and a non-string optional field
-/// (`_asString`). Protocol violations on error bodies (non `problem+json`)
+/// write/detail response missing the event body (`_mapRequired`), and an
+/// unknown enum value (`_mapStatus` / `_mapOutcome` / `_mapCheckInOutcome`).
+/// Structurally malformed payloads fail the generated client's checked
+/// deserialization and surface here as a `CheckedFromJsonException` /
+/// `DioException` (unknown) that the mapper turns into a `Left(unknown)`
+/// keeping the cause. Protocol violations on error bodies (non `problem+json`)
 /// keep the mapper's `FormatException` which propagates from `.run()`.
 class LucentHealthEventRepository implements HealthEventRepository {
   LucentHealthEventRepository({required api.HealthEventsApi apiClient})
@@ -40,7 +49,10 @@ class LucentHealthEventRepository implements HealthEventRepository {
     return TaskEither.tryCatch(() async {
       try {
         final response = await _api.healthEventsControllerActiveV1();
-        return _mapNullable(response.data);
+        final dto = response.data;
+        // 200 with an empty / JSON-null body: no active event — a normal
+        // business state, mapped to Right(null).
+        return dto == null ? null : _map(_canonicalNullable(dto));
       } on DioException catch (error) {
         if (error.response?.statusCode == 404) {
           // 文档化语义：无活动事件是正常业务状态（"未配置可选数据保持
@@ -61,9 +73,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
       try {
         final response = await _api.healthEventsControllerGetV1(id: eventId);
         final dto = response.data;
-        return dto == null
-            ? null
-            : _mapRequired(api.HealthEventItemDto.fromJson(dto.toJson()));
+        return dto == null ? null : _map(_canonical(dto));
       } on DioException catch (error) {
         if (error.response?.statusCode == 404) {
           // 文档化语义：查询不存在的事件详情是正常业务状态 → Right(null)。
@@ -103,10 +113,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
                   : List<String>.of(currentMedicineIds),
             ),
       );
-      final dto = response.data;
-      return _mapRequired(
-        dto == null ? null : api.HealthEventItemDto.fromJson(dto.toJson()),
-      );
+      return _mapRequired(response.data);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -125,10 +132,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
               outcome: _toCheckInApiOutcome(outcome),
             ),
       );
-      final dto = response.data;
-      return _mapRequired(
-        dto == null ? null : api.HealthEventItemDto.fromJson(dto.toJson()),
-      );
+      return _mapRequired(response.data);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -145,10 +149,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
               outcome: _toEndApiOutcome(outcome),
             ),
       );
-      final dto = response.data;
-      return _mapRequired(
-        dto == null ? null : api.HealthEventItemDto.fromJson(dto.toJson()),
-      );
+      return _mapRequired(response.data);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -166,90 +167,122 @@ class LucentHealthEventRepository implements HealthEventRepository {
     return data;
   }
 
-  HealthEvent? _mapNullable(api.HealthEventItemDto? dto) {
-    return dto == null ? null : _map(dto);
-  }
-
   /// Protocol invariant: a write/detail response without event data is not a
   /// valid success. Kept as a recorded [StateError]; the repository boundary
   /// maps it to `Left(unknown)` with the cause preserved.
-  HealthEvent _mapRequired(api.HealthEventItemDto? dto) {
+  HealthEvent _mapRequired(api.HealthEventResponseDto? dto) {
     if (dto == null) {
       appTalker.error('LucentHealthEventRepository: 响应缺少事件数据（协议不变量）');
       throw StateError('Health event response did not include event data.');
     }
-    return _map(dto);
+    return _map(_canonical(dto));
   }
 
-  HealthEvent _map(api.HealthEventItemDto dto) {
+  /// Normalizes a per-endpoint event DTO to the canonical list-item DTO
+  /// (identical JSON shape).
+  api.HealthEventListResponseDtoItemsInner _canonical(
+    api.HealthEventResponseDto dto,
+  ) {
+    return api.HealthEventListResponseDtoItemsInner.fromJson(dto.toJson());
+  }
+
+  /// Normalizes the nullable active-event DTO to the canonical list-item DTO
+  /// (identical JSON shape).
+  api.HealthEventListResponseDtoItemsInner _canonicalNullable(
+    api.HealthEventNullableResponseDto dto,
+  ) {
+    return api.HealthEventListResponseDtoItemsInner.fromJson(dto.toJson());
+  }
+
+  HealthEvent _map(api.HealthEventListResponseDtoItemsInner dto) {
     return HealthEvent(
       id: dto.id,
       title: dto.title,
       status: _mapStatus(dto.status),
       startedAt: dto.startedAt,
-      endedAt: _asString(dto.endedAt, 'endedAt'),
-      outcome: _mapNullableOutcome(dto.outcome),
-      reasonRecordId: _asString(dto.reasonRecordId, 'reasonRecordId'),
+      endedAt: dto.endedAt,
+      outcome: dto.outcome == null ? null : _mapOutcome(dto.outcome!),
+      reasonRecordId: dto.reasonRecordId,
       currentMedicineIds: List<String>.unmodifiable(dto.currentMedicineIds),
       checkIn: dto.checkIn == null ? null : _mapCheckIn(dto.checkIn!),
       coverage: HealthEventCoverage(
-        checkInCount: dto.coverage.checkInCount.toInt(),
-        firstCheckInDate: _asString(
-          dto.coverage.firstCheckInDate,
-          'coverage.firstCheckInDate',
-        ),
-        lastCheckInDate: _asString(
-          dto.coverage.lastCheckInDate,
-          'coverage.lastCheckInDate',
-        ),
+        checkInCount: dto.coverage.checkInCount,
+        firstCheckInDate: dto.coverage.firstCheckInDate,
+        lastCheckInDate: dto.coverage.lastCheckInDate,
       ),
     );
   }
 
-  HealthEventCheckIn _mapCheckIn(api.HealthEventCheckInResponseDto dto) {
+  HealthEventCheckIn _mapCheckIn(api.HealthEventResponseDtoCheckIn dto) {
     return HealthEventCheckIn(
       id: dto.id,
       eventId: dto.eventId,
       date: dto.date,
-      outcome: _mapOutcome(dto.outcome),
+      outcome: _mapCheckInOutcome(dto.outcome),
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
     );
   }
 
-  HealthEventStatus _mapStatus(api.HealthEventStatus value) {
+  HealthEventStatus _mapStatus(
+    api.HealthEventListResponseDtoItemsInnerStatusEnum value,
+  ) {
     return switch (value) {
-      api.HealthEventStatus.active => HealthEventStatus.active,
-      api.HealthEventStatus.ended => HealthEventStatus.ended,
-      api.HealthEventStatus.unknownDefaultOpenApi => _unknownStatus(value),
+      api.HealthEventListResponseDtoItemsInnerStatusEnum.active =>
+        HealthEventStatus.active,
+      api.HealthEventListResponseDtoItemsInnerStatusEnum.ended =>
+        HealthEventStatus.ended,
+      api
+          .HealthEventListResponseDtoItemsInnerStatusEnum
+          .unknownDefaultOpenApi =>
+        _unknownStatus(value.value),
     };
   }
 
   /// 协议不变量：未知状态枚举，记录后保持抛 `StateError` →
   /// `Left(unknown)`（cause 保留）。
-  Never _unknownStatus(api.HealthEventStatus value) {
+  Never _unknownStatus(String value) {
     appTalker.error('LucentHealthEventRepository: 未知健康事件状态 $value');
     throw StateError('Unknown health event status: $value');
   }
 
-  HealthEventOutcome? _mapNullableOutcome(api.HealthEventOutcome? value) {
-    return value == null ? null : _mapOutcome(value);
-  }
-
-  HealthEventOutcome _mapOutcome(api.HealthEventOutcome value) {
+  HealthEventOutcome _mapOutcome(
+    api.HealthEventListResponseDtoItemsInnerOutcomeEnum value,
+  ) {
     return switch (value) {
-      api.HealthEventOutcome.improved => HealthEventOutcome.improved,
-      api.HealthEventOutcome.unchanged => HealthEventOutcome.unchanged,
-      api.HealthEventOutcome.worsened => HealthEventOutcome.worsened,
-      api.HealthEventOutcome.unknownDefaultOpenApi => _unknownOutcome(value),
+      api.HealthEventListResponseDtoItemsInnerOutcomeEnum.improved =>
+        HealthEventOutcome.improved,
+      api.HealthEventListResponseDtoItemsInnerOutcomeEnum.unchanged =>
+        HealthEventOutcome.unchanged,
+      api.HealthEventListResponseDtoItemsInnerOutcomeEnum.worsened =>
+        HealthEventOutcome.worsened,
+      api
+          .HealthEventListResponseDtoItemsInnerOutcomeEnum
+          .unknownDefaultOpenApi =>
+        _unknownOutcome(value.value),
     };
   }
 
   /// 协议不变量：未知结果枚举，记录后保持抛 `StateError` →
   /// `Left(unknown)`（cause 保留）。
-  Never _unknownOutcome(api.HealthEventOutcome value) {
+  Never _unknownOutcome(String value) {
     appTalker.error('LucentHealthEventRepository: 未知健康事件结果 $value');
     throw StateError('Unknown health event outcome: $value');
+  }
+
+  HealthEventOutcome _mapCheckInOutcome(
+    api.HealthEventResponseDtoCheckInOutcomeEnum value,
+  ) {
+    return switch (value) {
+      api.HealthEventResponseDtoCheckInOutcomeEnum.improved =>
+        HealthEventOutcome.improved,
+      api.HealthEventResponseDtoCheckInOutcomeEnum.unchanged =>
+        HealthEventOutcome.unchanged,
+      api.HealthEventResponseDtoCheckInOutcomeEnum.worsened =>
+        HealthEventOutcome.worsened,
+      api.HealthEventResponseDtoCheckInOutcomeEnum.unknownDefaultOpenApi =>
+        _unknownOutcome(value.value),
+    };
   }
 
   api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum
@@ -275,15 +308,5 @@ class LucentHealthEventRepository implements HealthEventRepository {
       HealthEventOutcome.worsened =>
         api.HealthEventsControllerEndV1RequestOutcomeEnum.worsened,
     };
-  }
-
-  String? _asString(Object? value, String fieldName) {
-    if (value == null || value is String) return value as String?;
-    // 协议不变量：字段类型不符，记录后保持抛 StateError →
-    // Left(unknown)（cause 保留）。
-    appTalker.error(
-      'LucentHealthEventRepository: 字段 "$fieldName" 不是字符串: $value',
-    );
-    throw StateError('Health event field "$fieldName" was not a string.');
   }
 }

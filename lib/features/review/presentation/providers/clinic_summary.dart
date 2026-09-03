@@ -88,13 +88,13 @@ final clinicSummarySharedProvider = FutureProvider.autoDispose
 final clinicSummaryShareListProvider =
     AsyncNotifierProvider<
       ClinicSummaryShareList,
-      List<ClinicSummaryShareListItemDto>
+      List<ClinicSummaryShareListResponseDtoItemsInner>
     >(ClinicSummaryShareList.new);
 
 class ClinicSummaryShareList
-    extends AsyncNotifier<List<ClinicSummaryShareListItemDto>> {
+    extends AsyncNotifier<List<ClinicSummaryShareListResponseDtoItemsInner>> {
   @override
-  Future<List<ClinicSummaryShareListItemDto>> build() {
+  Future<List<ClinicSummaryShareListResponseDtoItemsInner>> build() {
     return authGuarded(
       ref: ref,
       fetch: () async {

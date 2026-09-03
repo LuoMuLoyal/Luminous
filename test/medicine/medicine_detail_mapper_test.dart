@@ -9,7 +9,8 @@ MedicineDetailResponseDtoDetail _detail({
   List<String> atcCodes = const [],
   List<String> synonyms = const [],
   List<String> foodInteractions = const [],
-  List<DrugbankDrugInteractionDto>? drugInteractions,
+  List<MedicineDetailResponseDtoDetailOneOfDrugInteractionsInner>?
+  drugInteractions,
   String? approvalNumber,
   String? manufacturer,
   String? packageSpec,
@@ -31,7 +32,21 @@ MedicineDetailResponseDtoDetail _detail({
   String? description,
   String? indication,
   String? mechanismOfAction,
+  String? pharmacodynamics,
+  String? toxicity,
+  String? metabolism,
+  String? absorption,
   String? halfLife,
+  String? proteinBinding,
+  String? routeOfElimination,
+  String? volumeOfDistribution,
+  String? clearance,
+  Object? externalIdentifiers,
+  Object? externalLinks,
+  String? barcode,
+  String? nationalDrugCode,
+  String? sourceUrl,
+  String? imageUrl,
 }) {
   return MedicineDetailResponseDtoDetail(
     kind: kind,
@@ -62,7 +77,21 @@ MedicineDetailResponseDtoDetail _detail({
     description: description,
     indication: indication,
     mechanismOfAction: mechanismOfAction,
+    pharmacodynamics: pharmacodynamics,
+    toxicity: toxicity,
+    metabolism: metabolism,
+    absorption: absorption,
     halfLife: halfLife,
+    proteinBinding: proteinBinding,
+    routeOfElimination: routeOfElimination,
+    volumeOfDistribution: volumeOfDistribution,
+    clearance: clearance,
+    externalIdentifiers: externalIdentifiers,
+    externalLinks: externalLinks,
+    barcode: barcode,
+    nationalDrugCode: nationalDrugCode,
+    sourceUrl: sourceUrl,
+    imageUrl: imageUrl,
   );
 }
 
@@ -117,7 +146,7 @@ void main() {
           description: 'A nonsteroidal anti-inflammatory drug.',
           halfLife: '2 hours',
           drugInteractions: [
-            DrugbankDrugInteractionDto(
+            MedicineDetailResponseDtoDetailOneOfDrugInteractionsInner(
               drugbankId: 'DB00795',
               description: 'May increase bleeding risk.',
             ),

@@ -117,7 +117,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     );
   }
 
-  ReviewMetric _mapMetric(lucent.ReportMetricDto dto) {
+  ReviewMetric _mapMetric(lucent.ReportDashboardResponseDtoMetricsInner dto) {
     final kind = _mapDataKind(dto.kind.value);
     return ReviewMetric(
       kind: kind,
@@ -135,7 +135,9 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     );
   }
 
-  ReviewObservedMetric _mapObservedMetric(lucent.ReportObservedMetricDto dto) {
+  ReviewObservedMetric _mapObservedMetric(
+    lucent.ReportDashboardResponseDtoMetricsInnerObservedMetric dto,
+  ) {
     return ReviewObservedMetric(
       value: dto.value?.toDouble(),
       state: switch (dto.state.value) {
@@ -156,7 +158,8 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   }
 
   ReviewObservedMetricSource _mapObservedSource(
-    lucent.ReportObservedMetricDtoSourcesEnum source,
+    lucent.ReportDashboardResponseDtoMetricsInnerObservedMetricSourcesEnum
+    source,
   ) {
     return switch (source.value) {
       'manual' => ReviewObservedMetricSource.manual,
@@ -167,7 +170,9 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     };
   }
 
-  ReviewTrendSeries _mapTrend(lucent.ReportTrendDto dto) {
+  ReviewTrendSeries _mapTrend(
+    lucent.ReportDashboardResponseDtoTrendsInner dto,
+  ) {
     final kind = _mapDataKind(dto.kind.value);
     return ReviewTrendSeries(
       kind: kind,
@@ -181,7 +186,9 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     );
   }
 
-  ReviewFinding _mapFinding(lucent.ReportFindingDto dto) {
+  ReviewFinding _mapFinding(
+    lucent.ReportDashboardResponseDtoFindingsInner dto,
+  ) {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewFinding(
       kind: kind,
@@ -192,7 +199,9 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     );
   }
 
-  ReviewPatternCard _mapPattern(lucent.ReportPatternDto dto) {
+  ReviewPatternCard _mapPattern(
+    lucent.ReportDashboardResponseDtoPatternsInner dto,
+  ) {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewPatternCard(
       kind: kind,

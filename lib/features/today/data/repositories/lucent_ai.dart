@@ -107,7 +107,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   TodayAiAnalysis _mapAnalysis(
-    lucent.TodayAnalysisDataDto dto, {
+    lucent.TodayAnalysisReadResponseDtoAnalysis dto, {
     TodayAiAnalysisMaterializationStatus materializationStatus =
         TodayAiAnalysisMaterializationStatus.ready,
     DateTime? computedAt,
@@ -128,7 +128,9 @@ class LucentTodayAiRepository implements TodayAiRepository {
     );
   }
 
-  TodayAiAnalysisBullet _mapBullet(lucent.TodayAnalysisBulletDto dto) {
+  TodayAiAnalysisBullet _mapBullet(
+    lucent.TodayAnalysisReadResponseDtoAnalysisBulletsInner dto,
+  ) {
     return TodayAiAnalysisBullet(
       kind: switch (dto.kind.value) {
         'medication' => TodayAiAnalysisBulletKind.medication,

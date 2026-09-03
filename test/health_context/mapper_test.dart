@@ -2,14 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 
-UserHealthSummaryDto _s({
+HealthContextResponseDtoSummary _s({
   Object? age,
   bool ob = false,
   num ac = 0,
   num cc = 0,
   num mc = 0,
 }) {
-  return UserHealthSummaryDto(
+  return HealthContextResponseDtoSummary(
     age: age is num ? age : null,
     onboardingCompleted: ob,
     activeAllergyCount: ac,
@@ -19,12 +19,13 @@ UserHealthSummaryDto _s({
   );
 }
 
-UserHealthProfileDto _p({
+HealthContextResponseDtoProfile _p({
   Object? h,
   Object? bd,
-  SexAtBirth sx = SexAtBirth.male,
+  HealthContextResponseDtoProfileSexAtBirthEnum sx =
+      HealthContextResponseDtoProfileSexAtBirthEnum.male,
 }) {
-  return UserHealthProfileDto(
+  return HealthContextResponseDtoProfile(
     heightCm: h as num?,
     birthDate: bd as String?,
     sexAtBirth: sx,
@@ -32,7 +33,7 @@ UserHealthProfileDto _p({
     bloodType: null,
     locale: null,
     timezone: null,
-    unitSystem: UnitSystem.metric,
+    unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
     onboardingCompletedAt: null,
     emergencyContact: null,
     extras: null,
@@ -73,7 +74,11 @@ void main() {
     test('maps fields', () {
       final dto = HealthContextResponseDto(
         summary: _s(),
-        profile: _p(h: 175, bd: '1990-01-15', sx: SexAtBirth.male),
+        profile: _p(
+          h: 175,
+          bd: '1990-01-15',
+          sx: HealthContextResponseDtoProfileSexAtBirthEnum.male,
+        ),
         allergies: const [],
         conditions: const [],
         currentMedicines: const [],
@@ -103,12 +108,12 @@ void main() {
         summary: _s(),
         profile: _p(),
         allergies: [
-          UserAllergyItemDto(
+          HealthContextResponseDtoAllergiesInner(
             id: 'a1',
-            kind: UserAllergyKind.drug,
+            kind: HealthContextResponseDtoAllergiesInnerKindEnum.drug,
             label: 'Penicillin',
             reaction: null,
-            severity: UserAllergySeverity.mild,
+            severity: HealthContextResponseDtoAllergiesInnerSeverityEnum.mild,
             isActive: true,
             note: null,
             extras: null,
@@ -140,14 +145,17 @@ void main() {
     test('complete dto', () {
       final dto = HealthContextResponseDto(
         summary: _s(age: 42),
-        profile: _p(h: 165, sx: SexAtBirth.female),
+        profile: _p(
+          h: 165,
+          sx: HealthContextResponseDtoProfileSexAtBirthEnum.female,
+        ),
         allergies: [
-          UserAllergyItemDto(
+          HealthContextResponseDtoAllergiesInner(
             id: 'a1',
-            kind: UserAllergyKind.drug,
+            kind: HealthContextResponseDtoAllergiesInnerKindEnum.drug,
             label: 'P',
             reaction: null,
-            severity: UserAllergySeverity.mild,
+            severity: HealthContextResponseDtoAllergiesInnerSeverityEnum.mild,
             isActive: true,
             note: null,
             extras: null,
@@ -157,10 +165,10 @@ void main() {
           ),
         ],
         conditions: [
-          UserConditionItemDto(
+          HealthContextResponseDtoConditionsInner(
             id: 'c1',
             label: 'H',
-            status: UserConditionStatus.active,
+            status: HealthContextResponseDtoConditionsInnerStatusEnum.active,
             diagnosedAt: null,
             resolvedAt: null,
             note: null,
@@ -170,9 +178,10 @@ void main() {
           ),
         ],
         currentMedicines: [
-          UserCurrentMedicineItemDto(
+          HealthContextResponseDtoCurrentMedicinesInner(
             id: 'm1',
-            source_: MedicineSource.manual,
+            source_:
+                HealthContextResponseDtoCurrentMedicinesInnerSource_Enum.manual,
             sourceRefId: null,
             displayName: 'Aspirin',
             strengthText: null,

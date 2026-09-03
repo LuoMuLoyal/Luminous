@@ -68,8 +68,10 @@ class ReviewRemoteDataSource {
   String? _apiStatus(ReviewEventStatus? status) {
     return switch (status) {
       null => null,
-      ReviewEventStatus.active => lucent.HealthEventStatus.active.value,
-      ReviewEventStatus.ended => lucent.HealthEventStatus.ended.value,
+      ReviewEventStatus.active =>
+        lucent.EventReviewDataDtoEventStatusEnum.active.value,
+      ReviewEventStatus.ended =>
+        lucent.EventReviewDataDtoEventStatusEnum.ended.value,
       ReviewEventStatus.unknown => null,
     };
   }
@@ -272,7 +274,7 @@ class LucentReviewRepository implements ReviewRepository {
     );
   }
 
-  ReviewEvent _mapEvent(lucent.EventReviewEventDto dto) {
+  ReviewEvent _mapEvent(lucent.EventReviewDataDtoEvent dto) {
     return ReviewEvent(
       id: dto.id,
       kind: _mapKind(dto.kind),
@@ -285,14 +287,16 @@ class LucentReviewRepository implements ReviewRepository {
     );
   }
 
-  ReviewSection _mapSection(lucent.EventReviewSectionDto dto) {
+  ReviewSection _mapSection(lucent.EventReviewDataDtoSectionsWhatHappened dto) {
     return ReviewSection(
       state: switch (dto.state) {
-        lucent.EventReviewSectionDtoStateEnum.available =>
+        lucent.EventReviewDataDtoSectionsWhatHappenedStateEnum.available =>
           ReviewSectionState.available,
-        lucent.EventReviewSectionDtoStateEnum.unknown =>
+        lucent.EventReviewDataDtoSectionsWhatHappenedStateEnum.unknown =>
           ReviewSectionState.unknown,
-        lucent.EventReviewSectionDtoStateEnum.unknownDefaultOpenApi =>
+        lucent
+            .EventReviewDataDtoSectionsWhatHappenedStateEnum
+            .unknownDefaultOpenApi =>
           ReviewSectionState.unknown,
       },
       // 原因码按原文保留；未知码在生成 DTO 反序列化层已被折叠为
@@ -302,19 +306,19 @@ class LucentReviewRepository implements ReviewRepository {
     );
   }
 
-  ReviewSectionFacts _mapFacts(lucent.EventReviewSectionFactsDto dto) {
-    final rawArguments = dto.arguments;
-    // 契约声明 arguments 为 object；防御非 map 值时保留 code 并降级为空
-    // 参数表，而不是让整个 section 失败。拷贝为不可变 map，防止 mapper
-    // 上游引用后续被修改。
-    final arguments = rawArguments is Map<String, dynamic>
-        ? Map<String, dynamic>.unmodifiable(rawArguments)
-        : <String, dynamic>{};
-    return ReviewSectionFacts(code: dto.code, arguments: arguments);
+  ReviewSectionFacts _mapFacts(
+    lucent.EventReviewDataDtoSectionsWhatHappenedFacts dto,
+  ) {
+    // 契约声明 arguments 为 object；生成 DTO 反序列化为 Map<String, Object>。
+    // 拷贝一份 Map<String, dynamic>，防止上游引用后续被修改。
+    return ReviewSectionFacts(
+      code: dto.code,
+      arguments: Map<String, dynamic>.from(dto.arguments),
+    );
   }
 
   ReviewCheckInCoverage _mapCheckInCoverage(
-    lucent.EventReviewCheckInCoverageDto dto,
+    lucent.EventReviewDataDtoCoverageCheckIns dto,
   ) {
     return ReviewCheckInCoverage(
       state: _mapCoverageState(dto.state.value),
@@ -335,7 +339,7 @@ class LucentReviewRepository implements ReviewRepository {
   }
 
   ReviewObservedCoverage _mapObservedCoverage(
-    lucent.EventReviewObservedSourceDto dto,
+    lucent.EventReviewDataDtoCoverageDailyRecords dto,
   ) {
     return ReviewObservedCoverage(
       state: _mapCoverageState(dto.state.value),
@@ -350,37 +354,65 @@ class LucentReviewRepository implements ReviewRepository {
     );
   }
 
-  ReviewTodayCheckIn _mapTodayCheckIn(lucent.EventReviewTodayCheckInDto dto) {
+  ReviewTodayCheckIn _mapTodayCheckIn(
+    lucent.EventReviewDataDtoCoverageCheckInsTodayCheckIn dto,
+  ) {
     return ReviewTodayCheckIn(
       date: dto.date,
-      outcome: _mapOutcome(dto.outcome),
+      outcome: switch (dto.outcome) {
+        lucent
+            .EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum
+            .improved =>
+          ReviewEventOutcome.improved,
+        lucent
+            .EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum
+            .unchanged =>
+          ReviewEventOutcome.unchanged,
+        lucent
+            .EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum
+            .worsened =>
+          ReviewEventOutcome.worsened,
+        lucent
+            .EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum
+            .unknownDefaultOpenApi =>
+          ReviewEventOutcome.unknown,
+      },
       updatedAt: dto.updatedAt,
     );
   }
 
-  ReviewEventKind _mapKind(lucent.HealthEventKind kind) {
+  ReviewEventKind _mapKind(lucent.EventReviewDataDtoEventKindEnum kind) {
     return switch (kind) {
-      lucent.HealthEventKind.symptom => ReviewEventKind.symptom,
-      lucent.HealthEventKind.other => ReviewEventKind.other,
-      lucent.HealthEventKind.unknownDefaultOpenApi => ReviewEventKind.unknown,
+      lucent.EventReviewDataDtoEventKindEnum.symptom => ReviewEventKind.symptom,
+      lucent.EventReviewDataDtoEventKindEnum.other => ReviewEventKind.other,
+      lucent.EventReviewDataDtoEventKindEnum.unknownDefaultOpenApi =>
+        ReviewEventKind.unknown,
     };
   }
 
-  ReviewEventStatus _mapStatus(lucent.HealthEventStatus status) {
+  ReviewEventStatus _mapStatus(
+    lucent.EventReviewDataDtoEventStatusEnum status,
+  ) {
     return switch (status) {
-      lucent.HealthEventStatus.active => ReviewEventStatus.active,
-      lucent.HealthEventStatus.ended => ReviewEventStatus.ended,
-      lucent.HealthEventStatus.unknownDefaultOpenApi =>
+      lucent.EventReviewDataDtoEventStatusEnum.active =>
+        ReviewEventStatus.active,
+      lucent.EventReviewDataDtoEventStatusEnum.ended => ReviewEventStatus.ended,
+      lucent.EventReviewDataDtoEventStatusEnum.unknownDefaultOpenApi =>
         ReviewEventStatus.unknown,
     };
   }
 
-  ReviewEventOutcome _mapOutcome(lucent.HealthEventOutcome outcome) {
+  ReviewEventOutcome _mapOutcome(
+    lucent.EventReviewDataDtoEventOutcomeEnum outcome,
+  ) {
     return switch (outcome) {
-      lucent.HealthEventOutcome.improved => ReviewEventOutcome.improved,
-      lucent.HealthEventOutcome.unchanged => ReviewEventOutcome.unchanged,
-      lucent.HealthEventOutcome.worsened => ReviewEventOutcome.worsened,
-      lucent.HealthEventOutcome.unknownDefaultOpenApi =>
+      lucent.EventReviewDataDtoEventOutcomeEnum.improved =>
+        ReviewEventOutcome.improved,
+      lucent.EventReviewDataDtoEventOutcomeEnum.unchanged =>
+        ReviewEventOutcome.unchanged,
+      lucent.EventReviewDataDtoEventOutcomeEnum.worsened =>
+        ReviewEventOutcome.worsened,
+      lucent.EventReviewDataDtoEventOutcomeEnum.unknownDefaultOpenApi =>
         ReviewEventOutcome.unknown,
     };
   }

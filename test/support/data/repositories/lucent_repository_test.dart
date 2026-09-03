@@ -94,7 +94,16 @@ void main() {
     });
 
     test('keeps unconfigured (all-null) fields as a Right AppInfo', () async {
-      final response = _response(AppInfoResponseDto());
+      // 未配置（env 驱动字段全空）是合法 Right，不转失败；字段为 zod 响应
+      // 必填（nullable）参数，未配置时服务端回 null。
+      final response = _response(
+        AppInfoResponseDto(
+          supportEmail: null,
+          minClientVersion: null,
+          latestVersion: null,
+          downloadUrl: null,
+        ),
+      );
 
       when(
         () => api.appInfoControllerGetAppInfoV1(),

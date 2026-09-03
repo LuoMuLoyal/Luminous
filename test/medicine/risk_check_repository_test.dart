@@ -13,9 +13,11 @@ import '../helpers/task_either.dart';
 
 class _MockMedicinesApi extends Mock implements MedicinesApi {}
 
-MedicineRiskCheckResponseDto _response() {
-  return MedicineRiskCheckResponseDto(
-    overallRiskLevel: MedicineRiskCheckResponseDtoOverallRiskLevelEnum.safe,
+MedicineRiskCheckRecordsResponseDtoStaticResult _response() {
+  return MedicineRiskCheckRecordsResponseDtoStaticResult(
+    overallRiskLevel:
+        MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
+            .safe,
     overallRiskScore: 0,
     currentMedicineCount: 2,
     checkedMedicineCount: 2,
@@ -109,7 +111,9 @@ void main() {
       when(() => api.medicinesControllerGetRiskCheckV1()).thenAnswer(
         (_) async => _apiResponse(
           MedicineRiskCheckRecordsResponseDto(
-            static_: MedicineRiskCheckRecordDto.fromJson(_record().toJson()),
+            static_: MedicineRiskCheckRecordsResponseDtoStatic.fromJson(
+              _record().toJson(),
+            ),
             llm: null,
           ),
         ),

@@ -10,7 +10,7 @@ abstract final class AuthMapper {
   static AuthSession toSessionFromRegister(RegisterResponseDto data) {
     final user = data.user;
     final tokens = data.tokens;
-    // UserBriefDto 不携带 updatedAt,注册场景沿用 createdAt 作为占位。
+    // RegisterResponseDtoUser 不携带 updatedAt,注册场景沿用 createdAt 作为占位。
     return AuthSession(
       user: AuthUser(
         id: user.id,
@@ -28,8 +28,8 @@ abstract final class AuthMapper {
   }
 
   static AuthSession _toSession({
-    required UserFullDto user,
-    required TokensDto tokens,
+    required LoginResponseDtoUser user,
+    required RegisterResponseDtoTokens tokens,
   }) {
     return AuthSession(
       user: AuthUser(

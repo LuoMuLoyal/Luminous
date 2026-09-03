@@ -40,7 +40,7 @@ void main() {
     test('maps generated event response into domain data', () async {
       when(
         () => healthEventsApi.healthEventsControllerActiveV1(),
-      ).thenAnswer((_) async => _activeResponse(_eventDto()));
+      ).thenAnswer((_) async => _activeResponse(_nullableEvent(_eventJson())));
 
       final event = await expectTaskRight(repository.fetchActive());
 
@@ -91,10 +91,11 @@ void main() {
 
     test('maps a non-string field in the response to Left(unknown) keeping the '
         'cause (protocol invariant)', () async {
-      final malformed = _eventDto().toJson()..['endedAt'] = 123;
+      final malformed = _eventJson()..['endedAt'] = 123;
       when(() => healthEventsApi.healthEventsControllerActiveV1()).thenAnswer(
-        (_) async =>
-            _activeResponse(api.HealthEventItemDto.fromJson(malformed)),
+        (_) async => _activeResponse(
+          api.HealthEventNullableResponseDto.fromJson(malformed),
+        ),
       );
 
       final failure = await expectTaskLeft(repository.fetchActive());
@@ -107,7 +108,7 @@ void main() {
     test('maps detail response into domain data', () async {
       when(
         () => healthEventsApi.healthEventsControllerGetV1(id: 'event-1'),
-      ).thenAnswer((_) async => _eventResponse(_eventDto()));
+      ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
 
       final detail = await expectTaskRight(repository.fetchById('event-1'));
       expect(detail?.title, 'Cold observation');
@@ -127,7 +128,7 @@ void main() {
     test('maps history response into domain data', () async {
       when(
         () => healthEventsApi.healthEventsControllerListV1(),
-      ).thenAnswer((_) async => _listResponse([_eventDto()]));
+      ).thenAnswer((_) async => _listResponse([_listEvent(_eventJson())]));
 
       final history = await expectTaskRight(repository.fetchHistory());
       expect(history.single.id, 'event-1');
@@ -183,7 +184,7 @@ void main() {
             named: 'healthEventsControllerCreateV1Request',
           ),
         ),
-      ).thenAnswer((_) async => _eventResponse(_eventDto()));
+      ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
       when(
         () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
           id: any(named: 'id'),
@@ -192,7 +193,7 @@ void main() {
             named: 'healthEventsControllerUpsertCheckInV1Request',
           ),
         ),
-      ).thenAnswer((_) async => _eventResponse(_eventDto()));
+      ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
       when(
         () => healthEventsApi.healthEventsControllerEndV1(
           id: any(named: 'id'),
@@ -200,7 +201,7 @@ void main() {
             named: 'healthEventsControllerEndV1Request',
           ),
         ),
-      ).thenAnswer((_) async => _eventResponse(_eventDto()));
+      ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
 
       final created = await expectTaskRight(
         repository.create(
@@ -239,23 +240,37 @@ void main() {
       expect(createCall.title, 'Cold observation');
       expect(createCall.reasonRecordId, 'record-1');
       expect(createCall.currentMedicineIds, ['medicine-1']);
-      verify(
-        () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
-          id: 'event-1',
-          date: DateTime.parse('2026-08-09'),
-          healthEventsControllerUpsertCheckInV1Request: captureAny(
-            named: 'healthEventsControllerUpsertCheckInV1Request',
-          ),
-        ),
-      ).called(1);
-      verify(
-        () => healthEventsApi.healthEventsControllerEndV1(
-          id: 'event-1',
-          healthEventsControllerEndV1Request: captureAny(
-            named: 'healthEventsControllerEndV1Request',
-          ),
-        ),
-      ).called(1);
+
+      final checkInCall =
+          verify(
+                () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+                  id: 'event-1',
+                  date: DateTime.parse('2026-08-09'),
+                  healthEventsControllerUpsertCheckInV1Request: captureAny(
+                    named: 'healthEventsControllerUpsertCheckInV1Request',
+                  ),
+                ),
+              ).captured.single
+              as api.HealthEventsControllerUpsertCheckInV1Request;
+      expect(
+        checkInCall.outcome,
+        api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum.improved,
+      );
+
+      final endCall =
+          verify(
+                () => healthEventsApi.healthEventsControllerEndV1(
+                  id: 'event-1',
+                  healthEventsControllerEndV1Request: captureAny(
+                    named: 'healthEventsControllerEndV1Request',
+                  ),
+                ),
+              ).captured.single
+              as api.HealthEventsControllerEndV1Request;
+      expect(
+        endCall.outcome,
+        api.HealthEventsControllerEndV1RequestOutcomeEnum.unchanged,
+      );
     });
 
     test('rejects missing write response data as Left(unknown) keeping the '
@@ -315,7 +330,7 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => _eventResponse(
-          _eventDto(status: api.HealthEventStatus.unknownDefaultOpenApi),
+          _responseEvent(_eventJson(status: 'unknown-status')),
         ),
       );
 
@@ -341,9 +356,7 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => _eventResponse(
-          _eventDto(
-            checkInOutcome: api.HealthEventOutcome.unknownDefaultOpenApi,
-          ),
+          _responseEvent(_eventJson(checkInOutcome: 'unknown-outcome')),
         ),
       );
 
@@ -442,8 +455,10 @@ void main() {
   });
 }
 
-Response<api.HealthEventItemDto> _activeResponse(api.HealthEventItemDto? data) {
-  return Response<api.HealthEventItemDto>(
+Response<api.HealthEventNullableResponseDto> _activeResponse(
+  api.HealthEventNullableResponseDto? data,
+) {
+  return Response<api.HealthEventNullableResponseDto>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events/active'),
     statusCode: 200,
     data: data,
@@ -451,12 +466,12 @@ Response<api.HealthEventItemDto> _activeResponse(api.HealthEventItemDto? data) {
 }
 
 Response<api.HealthEventResponseDto> _eventResponse(
-  api.HealthEventItemDto data,
+  api.HealthEventResponseDto data,
 ) {
   return Response<api.HealthEventResponseDto>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
     statusCode: 200,
-    data: api.HealthEventResponseDto.fromJson(data.toJson()),
+    data: data,
   );
 }
 
@@ -468,7 +483,7 @@ Response<api.HealthEventResponseDto> _emptyEventResponse() {
 }
 
 Response<api.HealthEventListResponseDto> _listResponse(
-  List<api.HealthEventItemDto> items,
+  List<api.HealthEventListResponseDtoItemsInner> items,
 ) {
   return Response<api.HealthEventListResponseDto>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
@@ -484,36 +499,48 @@ Response<api.HealthEventListResponseDto> _emptyListResponse() {
   );
 }
 
-api.HealthEventItemDto _eventDto({
+api.HealthEventNullableResponseDto _nullableEvent(Map<String, Object?> json) {
+  return api.HealthEventNullableResponseDto.fromJson(json);
+}
+
+api.HealthEventResponseDto _responseEvent(Map<String, Object?> json) {
+  return api.HealthEventResponseDto.fromJson(json);
+}
+
+api.HealthEventListResponseDtoItemsInner _listEvent(Map<String, Object?> json) {
+  return api.HealthEventListResponseDtoItemsInner.fromJson(json);
+}
+
+Map<String, Object?> _eventJson({
   String? endedAt,
   String? reasonRecordId,
-  api.HealthEventStatus status = api.HealthEventStatus.active,
-  api.HealthEventOutcome checkInOutcome = api.HealthEventOutcome.improved,
+  String status = 'active',
+  String checkInOutcome = 'improved',
 }) {
-  return api.HealthEventItemDto(
-    kind: api.HealthEventKind.symptom,
-    id: 'event-1',
-    title: 'Cold observation',
-    status: status,
-    startedAt: '2026-08-08T16:00:00.000Z',
-    endedAt: endedAt,
-    outcome: api.HealthEventOutcome.improved,
-    reasonRecordId: reasonRecordId,
-    currentMedicineIds: const ['medicine-1'],
-    checkIn: api.HealthEventCheckInResponseDto(
-      id: 'check-in-1',
-      eventId: 'event-1',
-      date: '2026-08-09',
-      outcome: checkInOutcome,
-      createdAt: '2026-08-09T01:00:00.000Z',
-      updatedAt: '2026-08-09T01:00:00.000Z',
-    ),
-    coverage: api.HealthEventCoverageDto(
-      checkInCount: 3,
-      firstCheckInDate: '2026-08-07',
-      lastCheckInDate: '2026-08-09',
-    ),
-  );
+  return <String, Object?>{
+    'kind': 'symptom',
+    'id': 'event-1',
+    'title': 'Cold observation',
+    'status': status,
+    'startedAt': '2026-08-08T16:00:00.000Z',
+    'endedAt': endedAt,
+    'outcome': 'improved',
+    'reasonRecordId': reasonRecordId,
+    'currentMedicineIds': <String>['medicine-1'],
+    'checkIn': <String, Object?>{
+      'id': 'check-in-1',
+      'eventId': 'event-1',
+      'date': '2026-08-09',
+      'outcome': checkInOutcome,
+      'createdAt': '2026-08-09T01:00:00.000Z',
+      'updatedAt': '2026-08-09T01:00:00.000Z',
+    },
+    'coverage': <String, Object?>{
+      'checkInCount': 3,
+      'firstCheckInDate': '2026-08-07',
+      'lastCheckInDate': '2026-08-09',
+    },
+  };
 }
 
 DioException _dioException(int statusCode) {

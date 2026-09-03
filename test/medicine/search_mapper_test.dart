@@ -9,9 +9,9 @@ void main() {
       final mapper = MedicineSearchMapper();
 
       final result = mapper.dtoToResult(
-        MedicineSearchItemDto(
+        MedicineSearchResponseDtoItemsInner(
           id: 'cn_1',
-          source_: MedicineSearchItemDtoSource_Enum.cn,
+          source_: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
           name: '硫酸镁注射液',
           subtitle: '10ml:2.5g · 杭州民生药业股份有限公司',
           summary: '用于妊娠高血压、先兆子痫和子痫等。',
@@ -34,9 +34,9 @@ void main() {
       final mapper = MedicineSearchMapper();
 
       final result = mapper.dtoToResult(
-        MedicineSearchItemDto(
+        MedicineSearchResponseDtoItemsInner(
           id: 'DB01050',
-          source_: MedicineSearchItemDtoSource_Enum.drugbank,
+          source_: MedicineSearchResponseDtoItemsInnerSource_Enum.drugbank,
           name: 'Ibuprofen',
           subtitle: 'Small molecule',
           summary: 'A nonsteroidal anti-inflammatory drug.',

@@ -50,31 +50,72 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   }
 }
 
-MedicineSearchResponseDto _defaultData([List<MedicineSearchItemDto>? items]) =>
-    MedicineSearchResponseDto(
-      items: items ?? [],
-      pagination: MedicinePaginationDto(
-        page: 1,
-        pageSize: 20,
-        total: 0,
-        totalPages: 0,
-      ),
-    );
+MedicineSearchResponseDto _defaultData([
+  List<MedicineSearchResponseDtoItemsInner>? items,
+]) => MedicineSearchResponseDto(
+  items: items ?? [],
+  pagination: MedicineSearchResponseDtoPagination(
+    page: 1,
+    pageSize: 20,
+    total: 0,
+    totalPages: 0,
+  ),
+);
 
 MedicineSearchResponseDto _okSearchResponse([
-  List<MedicineSearchItemDto>? items,
+  List<MedicineSearchResponseDtoItemsInner>? items,
 ]) {
   return _defaultData(items);
 }
 
+// The zod-merged detail model requires every oneOf branch field at the
+// constructor; search's `fetchDetail` never inspects `detail`, so only
+// `kind`/list fields carry meaningful values and the rest stay null.
 MedicineDetailResponseDtoDetail _minimalDetail() =>
     MedicineDetailResponseDtoDetail(
       kind: '',
+      drugType: null,
+      state: null,
+      description: null,
+      indication: null,
+      mechanismOfAction: null,
+      pharmacodynamics: null,
+      toxicity: null,
+      metabolism: null,
+      absorption: null,
+      halfLife: null,
+      proteinBinding: null,
+      routeOfElimination: null,
+      volumeOfDistribution: null,
+      clearance: null,
       groups: [],
       categories: [],
       atcCodes: [],
       synonyms: [],
       foodInteractions: [],
+      drugInteractions: null,
+      externalIdentifiers: null,
+      externalLinks: null,
+      approvalNumber: null,
+      manufacturer: null,
+      packageSpec: null,
+      brandName: null,
+      ingredients: null,
+      properties: null,
+      indications: null,
+      dosage: null,
+      adverseReactions: null,
+      contraindications: null,
+      precautions: null,
+      pharmacologyToxicology: null,
+      pharmacokinetics: null,
+      overdose: null,
+      storage: null,
+      validityPeriod: null,
+      barcode: null,
+      nationalDrugCode: null,
+      sourceUrl: null,
+      imageUrl: null,
     );
 
 MedicineDetailResponseDto _okDetailResponse({
@@ -154,9 +195,9 @@ void main() {
     group('search', () {
       test('returns mapped results on success', () async {
         dataSource.searchResponse = _okSearchResponse([
-          MedicineSearchItemDto(
+          MedicineSearchResponseDtoItemsInner(
             id: 'med-1',
-            source_: MedicineSearchItemDtoSource_Enum.cn,
+            source_: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
             name: 'Aspirin',
             subtitle: 'Pain reliever',
             summary: 'NSAID',
@@ -164,9 +205,9 @@ void main() {
             imageUrl: null,
             matchedBy: ['name'],
           ),
-          MedicineSearchItemDto(
+          MedicineSearchResponseDtoItemsInner(
             id: 'med-2',
-            source_: MedicineSearchItemDtoSource_Enum.drugbank,
+            source_: MedicineSearchResponseDtoItemsInnerSource_Enum.drugbank,
             name: 'Ibuprofen',
             subtitle: 'NSAID',
             summary: 'Anti-inflammatory',
@@ -245,9 +286,9 @@ void main() {
 
       test('maps subtitle to empty string when null', () async {
         dataSource.searchResponse = _okSearchResponse([
-          MedicineSearchItemDto(
+          MedicineSearchResponseDtoItemsInner(
             id: 'med-1',
-            source_: MedicineSearchItemDtoSource_Enum.cn,
+            source_: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
             name: 'Test',
             subtitle: null,
             summary: null,

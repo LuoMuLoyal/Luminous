@@ -225,11 +225,13 @@ class LucentAssistantRepository implements AssistantRepository {
               id:
                   tool.name ==
                       lucent
-                          .AssistantToolCapabilityDtoNameEnum
+                          .AssistantCapabilitiesResponseDtoToolsInnerNameEnum
                           .unknownDefaultOpenApi
                   ? ''
                   : tool.name.value,
-              requiredContextSources: tool.requiredContextSources,
+              requiredContextSources: tool.requiredContextSources
+                  .map((source) => source.value)
+                  .toList(growable: false),
               permittedByUser: tool.permittedByUser,
               enabled: tool.enabled,
               implemented: tool.implemented,
@@ -258,7 +260,7 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   AssistantConversationSummary _mapConversationSummary(
-    lucent.AssistantConversationSummaryDto dto,
+    lucent.AssistantConversationSummaryDtoInner dto,
   ) {
     return AssistantConversationSummary(
       id: dto.id,
@@ -271,15 +273,17 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   AssistantMessage _mapConversationMessage(
-    lucent.AssistantConversationMessageDto dto,
+    lucent.AssistantConversationDataDtoMessagesInner dto,
   ) {
     return AssistantMessage(
       role: switch (dto.role) {
-        lucent.AssistantConversationMessageDtoRoleEnum.user =>
+        lucent.AssistantConversationDataDtoMessagesInnerRoleEnum.user =>
           AssistantMessageRole.user,
-        lucent.AssistantConversationMessageDtoRoleEnum.assistant =>
+        lucent.AssistantConversationDataDtoMessagesInnerRoleEnum.assistant =>
           AssistantMessageRole.assistant,
-        lucent.AssistantConversationMessageDtoRoleEnum.unknownDefaultOpenApi =>
+        lucent
+            .AssistantConversationDataDtoMessagesInnerRoleEnum
+            .unknownDefaultOpenApi =>
           AssistantMessageRole.assistant,
       },
       content: dto.content,

@@ -67,6 +67,8 @@ void main() {
             'water': {'trackedDays': 3, 'totalDays': 7},
             'sleep': {'trackedDays': 0, 'totalDays': 7},
           },
+          'observedPattern': null,
+          'lowRiskAction': null,
           'disclaimer': '仅基于近 7 天数据。',
         }),
         _sseEvent('done', null),
@@ -289,6 +291,8 @@ void main() {
           'water': {'trackedDays': 3, 'totalDays': 7},
           'sleep': {'trackedDays': 0, 'totalDays': 7},
         },
+        'observedPattern': null,
+        'lowRiskAction': null,
         'disclaimer': '仅基于近 7 天数据。',
       };
       final sseText = [

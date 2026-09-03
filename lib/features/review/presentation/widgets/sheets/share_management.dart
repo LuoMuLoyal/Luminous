@@ -142,7 +142,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
 
   List<Widget> _shareList(
     AppLocalizations l10n,
-    List<ClinicSummaryShareListItemDto> shares,
+    List<ClinicSummaryShareListResponseDtoItemsInner> shares,
   ) {
     final typography = context.theme.typography;
     if (shares.isEmpty) {
@@ -218,7 +218,7 @@ class _ShareRow extends ConsumerWidget {
     required this.onRevoke,
   });
 
-  final ClinicSummaryShareListItemDto share;
+  final ClinicSummaryShareListResponseDtoItemsInner share;
   final bool isRevoking;
   final VoidCallback onRevoke;
 

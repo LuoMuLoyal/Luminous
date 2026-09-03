@@ -90,9 +90,9 @@ void main() {
   group('LucentScanRepository.search', () {
     test('returns response data from API', () async {
       final items = [
-        MedicineSearchItemDto(
+        MedicineSearchResponseDtoItemsInner(
           id: 'med-1',
-          source_: MedicineSearchItemDtoSource_Enum.cn,
+          source_: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
           name: '阿莫西林胶囊',
           subtitle: '抗生素',
           summary: '用于敏感菌所致感染',
@@ -103,7 +103,7 @@ void main() {
       ];
       final searchDto = MedicineSearchResponseDto(
         items: items,
-        pagination: MedicinePaginationDto(
+        pagination: MedicineSearchResponseDtoPagination(
           page: 1,
           pageSize: 20,
           total: 1,
@@ -142,7 +142,7 @@ void main() {
       () async {
         final emptyResponse = MedicineSearchResponseDto(
           items: [],
-          pagination: MedicinePaginationDto(
+          pagination: MedicineSearchResponseDtoPagination(
             page: 1,
             pageSize: 20,
             total: 0,

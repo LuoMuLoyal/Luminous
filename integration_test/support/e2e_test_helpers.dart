@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:lucent_api/lucent_api.dart' hide DailyRecordKind, DoseLogStatus;
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -648,11 +648,18 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
     return TaskEither.right(
       DataExportRequestDataDto(
         id: 'e2e-export-1',
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
-        status: DataExportStatus.requested,
+        kind: DataExportRequestDataDtoKindEnum.hospital,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.requested,
         requestedAt: DateTime.now().toUtc().toIso8601String(),
+        // Regenerated client marks the nullable trailing fields as required
+        // constructor params; the fake's export is only just created.
+        completedAt: null,
+        downloadUrl: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       ),
     );
   }

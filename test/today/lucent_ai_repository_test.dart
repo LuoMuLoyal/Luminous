@@ -58,15 +58,15 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   }
 }
 
-lucent.TodayAnalysisDataDto _buildDto({
+lucent.TodayAnalysisReadResponseDtoAnalysis _buildDto({
   String date = '2026-07-10',
   String summary = '今日健康状况良好',
   String actionLabel = '多喝水',
   String confidenceNote = '基于最近7天数据',
   bool aiGenerated = true,
-  List<lucent.TodayAnalysisBulletDto>? bullets,
+  List<lucent.TodayAnalysisReadResponseDtoAnalysisBulletsInner>? bullets,
 }) {
-  return lucent.TodayAnalysisDataDto(
+  return lucent.TodayAnalysisReadResponseDtoAnalysis(
     date: date,
     generatedAt: '2026-07-10T08:00:00.000Z',
     summary: summary,
@@ -81,7 +81,7 @@ lucent.TodayAnalysisDataDto _buildDto({
 lucent.TodayAnalysisReadDataDto _buildReadDto({
   lucent.TodayAnalysisReadDataDtoStatusEnum status =
       lucent.TodayAnalysisReadDataDtoStatusEnum.ready,
-  lucent.TodayAnalysisDataDto? analysis,
+  lucent.TodayAnalysisReadResponseDtoAnalysis? analysis,
   String? computedAt = '2026-07-10T08:00:00.000Z',
 }) {
   return lucent.TodayAnalysisReadDataDto(
@@ -94,14 +94,13 @@ lucent.TodayAnalysisReadDataDto _buildReadDto({
   );
 }
 
-lucent.TodayAnalysisBulletDto _bullet({
+lucent.TodayAnalysisReadResponseDtoAnalysisBulletsInner _bullet({
   required String kind,
   required String text,
 }) {
-  return lucent.TodayAnalysisBulletDto.fromJson(<String, Object?>{
-    'kind': kind,
-    'text': text,
-  });
+  return lucent.TodayAnalysisReadResponseDtoAnalysisBulletsInner.fromJson(
+    <String, Object?>{'kind': kind, 'text': text},
+  );
 }
 
 void main() {

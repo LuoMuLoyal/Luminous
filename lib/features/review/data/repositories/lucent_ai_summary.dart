@@ -61,7 +61,9 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
     );
   }
 
-  ReviewAiSummaryCoverage _mapCoverage(lucent.ReportCoverageDto dto) {
+  ReviewAiSummaryCoverage _mapCoverage(
+    lucent.ReportSummaryResponseDtoCoverage dto,
+  ) {
     return ReviewAiSummaryCoverage(
       medication: _mapCoverageDimension(dto.medication),
       water: _mapCoverageDimension(dto.water),
@@ -70,7 +72,7 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
   }
 
   ReviewAiSummaryCoverageDimension _mapCoverageDimension(
-    lucent.ReportCoverageDimensionDto dto,
+    lucent.ReportSummaryResponseDtoCoverageMedication dto,
   ) {
     return ReviewAiSummaryCoverageDimension(
       trackedDays: dto.trackedDays.toInt(),
@@ -79,7 +81,7 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
   }
 
   ReviewAiSummaryObservedPattern? _mapObservedPattern(
-    lucent.ReportObservedPatternDto? dto,
+    lucent.ReportSummaryResponseDtoObservedPattern? dto,
   ) {
     if (dto == null) return null;
     return ReviewAiSummaryObservedPattern(
@@ -90,27 +92,29 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
   }
 
   ReviewAiSummaryPatternKind _mapPatternKind(
-    lucent.ReportObservedPatternDtoKindEnum kind,
+    lucent.ReportSummaryResponseDtoObservedPatternKindEnum kind,
   ) {
     switch (kind) {
-      case lucent.ReportObservedPatternDtoKindEnum.medication:
+      case lucent.ReportSummaryResponseDtoObservedPatternKindEnum.medication:
         return ReviewAiSummaryPatternKind.medication;
-      case lucent.ReportObservedPatternDtoKindEnum.hydration:
+      case lucent.ReportSummaryResponseDtoObservedPatternKindEnum.hydration:
         return ReviewAiSummaryPatternKind.hydration;
-      case lucent.ReportObservedPatternDtoKindEnum.sleep:
+      case lucent.ReportSummaryResponseDtoObservedPatternKindEnum.sleep:
         return ReviewAiSummaryPatternKind.sleep;
       // The OpenAPI generator emits this sentinel for any value the server
       // returns that the generated client does not know about. Log a
       // warning and fall back to `medication` rather than throwing,
       // so a single unknown pattern kind does not break the entire summary.
-      case lucent.ReportObservedPatternDtoKindEnum.unknownDefaultOpenApi:
+      case lucent
+          .ReportSummaryResponseDtoObservedPatternKindEnum
+          .unknownDefaultOpenApi:
         appTalker.warning('Unknown pattern kind from API: $kind');
         return ReviewAiSummaryPatternKind.medication;
     }
   }
 
   ReviewAiSummaryLowRiskAction? _mapLowRiskAction(
-    lucent.ReportLowRiskActionDto? dto,
+    lucent.ReportSummaryResponseDtoLowRiskAction? dto,
   ) {
     if (dto == null) return null;
     return ReviewAiSummaryLowRiskAction(label: dto.label, text: dto.text);

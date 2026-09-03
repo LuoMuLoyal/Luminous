@@ -195,7 +195,10 @@ void main() {
 
         expect(result.profile.locale, 'en-US');
         expect(result.profile.timezone, 'America/New_York');
-        expect(result.profile.unitSystem, UnitSystem.imperial);
+        expect(
+          result.profile.unitSystem,
+          HealthContextResponseDtoProfileUnitSystemEnum.imperial,
+        );
       });
 
       test(
@@ -207,7 +210,10 @@ void main() {
 
           expect(result.profile.locale, 'zh-CN');
           expect(result.profile.timezone, 'Asia/Shanghai');
-          expect(result.profile.unitSystem, UnitSystem.metric);
+          expect(
+            result.profile.unitSystem,
+            HealthContextResponseDtoProfileUnitSystemEnum.metric,
+          );
         },
       );
 

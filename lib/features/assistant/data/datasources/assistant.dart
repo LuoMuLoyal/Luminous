@@ -52,7 +52,7 @@ class AssistantRemoteDataSource {
     return _requireData(response.data, operation: 'getLatestConversation');
   }
 
-  Future<List<lucent.AssistantConversationSummaryDto>>
+  Future<List<lucent.AssistantConversationSummaryDtoInner>>
   listRecentConversations() async {
     final response = await api.assistantControllerListRecentConversationsV1();
     return _requireData(response.data, operation: 'listRecentConversations');

@@ -11,11 +11,16 @@ void main() {
     test('returns requested when status is requested', () {
       final dto = DataExportRequestDataDto(
         id: 'req-1',
-        status: DataExportStatus.requested,
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.requested,
+        kind: DataExportRequestDataDtoKindEnum.hospital,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
+        downloadUrl: null,
+        completedAt: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       );
       expect(dataExportUiStatusForRequest(dto), DataExportUiStatus.requested);
     });
@@ -23,11 +28,16 @@ void main() {
     test('returns processing when status is processing', () {
       final dto = DataExportRequestDataDto(
         id: 'req-1',
-        status: DataExportStatus.processing,
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.processing,
+        kind: DataExportRequestDataDtoKindEnum.hospital,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
+        downloadUrl: null,
+        completedAt: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       );
       expect(dataExportUiStatusForRequest(dto), DataExportUiStatus.processing);
     });
@@ -37,12 +47,16 @@ void main() {
       () {
         final dto = DataExportRequestDataDto(
           id: 'req-1',
-          status: DataExportStatus.completed,
+          status: DataExportRequestDataDtoStatusEnum.completed,
           downloadUrl: 'https://example.com/export.pdf',
-          kind: DataExportKind.hospital,
-          format: DataExportFormat.pdf,
-          range: DataExportRange.last7Days,
+          kind: DataExportRequestDataDtoKindEnum.hospital,
+          format: DataExportRequestDataDtoFormatEnum.pdf,
+          range: DataExportRequestDataDtoRangeEnum.last7Days,
           requestedAt: '2026-07-01T00:00:00.000Z',
+          completedAt: null,
+          fileName: null,
+          fileSizeBytes: null,
+          errorMessage: null,
         );
         expect(dataExportUiStatusForRequest(dto), DataExportUiStatus.completed);
       },
@@ -53,12 +67,16 @@ void main() {
       () {
         final dto = DataExportRequestDataDto(
           id: 'req-1',
-          status: DataExportStatus.completed,
+          status: DataExportRequestDataDtoStatusEnum.completed,
           downloadUrl: null,
-          kind: DataExportKind.hospital,
-          format: DataExportFormat.pdf,
-          range: DataExportRange.last7Days,
+          kind: DataExportRequestDataDtoKindEnum.hospital,
+          format: DataExportRequestDataDtoFormatEnum.pdf,
+          range: DataExportRequestDataDtoRangeEnum.last7Days,
           requestedAt: '2026-07-01T00:00:00.000Z',
+          completedAt: null,
+          fileName: null,
+          fileSizeBytes: null,
+          errorMessage: null,
         );
         expect(
           dataExportUiStatusForRequest(dto),
@@ -72,12 +90,16 @@ void main() {
       () {
         final dto = DataExportRequestDataDto(
           id: 'req-1',
-          status: DataExportStatus.completed,
+          status: DataExportRequestDataDtoStatusEnum.completed,
           downloadUrl: '',
-          kind: DataExportKind.hospital,
-          format: DataExportFormat.pdf,
-          range: DataExportRange.last7Days,
+          kind: DataExportRequestDataDtoKindEnum.hospital,
+          format: DataExportRequestDataDtoFormatEnum.pdf,
+          range: DataExportRequestDataDtoRangeEnum.last7Days,
           requestedAt: '2026-07-01T00:00:00.000Z',
+          completedAt: null,
+          fileName: null,
+          fileSizeBytes: null,
+          errorMessage: null,
         );
         expect(
           dataExportUiStatusForRequest(dto),
@@ -89,11 +111,16 @@ void main() {
     test('returns failed when status is failed', () {
       final dto = DataExportRequestDataDto(
         id: 'req-1',
-        status: DataExportStatus.failed,
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.failed,
+        kind: DataExportRequestDataDtoKindEnum.hospital,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
+        downloadUrl: null,
+        completedAt: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       );
       expect(dataExportUiStatusForRequest(dto), DataExportUiStatus.failed);
     });
@@ -101,11 +128,16 @@ void main() {
     test('returns unavailable when status is unavailable', () {
       final dto = DataExportRequestDataDto(
         id: 'req-1',
-        status: DataExportStatus.unavailable,
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.unavailable,
+        kind: DataExportRequestDataDtoKindEnum.hospital,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
+        downloadUrl: null,
+        completedAt: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       );
       expect(dataExportUiStatusForRequest(dto), DataExportUiStatus.unavailable);
     });
@@ -113,11 +145,16 @@ void main() {
     test('returns failed when status is unknown', () {
       final dto = DataExportRequestDataDto(
         id: 'req-1',
-        status: DataExportStatus.unknownDefaultOpenApi,
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.unknownDefaultOpenApi,
+        kind: DataExportRequestDataDtoKindEnum.hospital,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
+        downloadUrl: null,
+        completedAt: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       );
       expect(dataExportUiStatusForRequest(dto), DataExportUiStatus.failed);
     });
@@ -184,11 +221,16 @@ void main() {
       const input = DataExportRequestInput();
       final dto = DataExportRequestDataDto(
         id: 'req-1',
-        status: DataExportStatus.completed,
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.completed,
+        kind: DataExportRequestDataDtoKindEnum.hospital,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
+        downloadUrl: null,
+        completedAt: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       );
       expect(input.matches(dto), isTrue);
     });
@@ -197,11 +239,16 @@ void main() {
       const input = DataExportRequestInput();
       final dto = DataExportRequestDataDto(
         id: 'req-1',
-        status: DataExportStatus.completed,
-        kind: DataExportKind.monthly,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.completed,
+        kind: DataExportRequestDataDtoKindEnum.monthly,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
+        downloadUrl: null,
+        completedAt: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       );
       expect(input.matches(dto), isFalse);
     });

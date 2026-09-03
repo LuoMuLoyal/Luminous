@@ -2,6 +2,12 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 
 /// Maps generated OpenAPI DTOs to domain entities for the risk check feature.
+///
+/// 响应侧 zod 再生成后,record 载荷由 per-op DTO 表达:list records 的
+/// `static`/`llm` 槽位是 `MedicineRiskCheckRecordsResponseDtoStatic`,
+/// run-check/precheck 单条响应是 `MedicineRiskCheckRecordResponseDto`,
+/// 两者字段布局相同且 `result` 共用
+/// `MedicineRiskCheckRecordsResponseDtoStaticResult`。
 class MedicineRiskCheckMapper {
   const MedicineRiskCheckMapper();
 
@@ -9,27 +15,19 @@ class MedicineRiskCheckMapper {
     MedicineRiskCheckRecordsResponseDto dto,
   ) {
     return MedicineRiskCheckRecords(
-      staticRecord: dto.static_ != null
-          ? recordDtoToDomain(
-              MedicineRiskCheckRecordResponseDto.fromJson(
-                dto.static_!.toJson(),
-              ),
-            )
-          : null,
-      llmRecord: dto.llm == null
+      staticRecord: dto.static_ == null
           ? null
-          : recordDtoToDomain(
-              MedicineRiskCheckRecordResponseDto.fromJson(dto.llm!.toJson()),
-            ),
+          : _listRecordToDomain(dto.static_!),
+      llmRecord: dto.llm == null ? null : _listRecordToDomain(dto.llm!),
     );
   }
 
   MedicineRiskCheckRecord recordDtoToDomain(
     MedicineRiskCheckRecordResponseDto dto,
   ) {
-    return MedicineRiskCheckRecord(
+    return _record(
       checkType: _mapCheckType(dto.checkType),
-      result: responseDtoToDomain(dto.result),
+      result: resultDtoToDomain(dto.result),
       riskScore: dto.riskScore.toInt(),
       riskLevel: _mapRiskLevelFromRecord(dto.riskLevel),
       stale: dto.stale,
@@ -38,8 +36,8 @@ class MedicineRiskCheckMapper {
     );
   }
 
-  MedicineRiskCheckResult responseDtoToDomain(
-    MedicineRiskCheckResponseDto dto,
+  MedicineRiskCheckResult resultDtoToDomain(
+    MedicineRiskCheckRecordsResponseDtoStaticResult dto,
   ) {
     return MedicineRiskCheckResult(
       overallRiskLevel: _mapRiskLevel(dto.overallRiskLevel),
@@ -56,7 +54,9 @@ class MedicineRiskCheckMapper {
     );
   }
 
-  MedicineRiskFinding? findingDtoToDomain(MedicineRiskFindingDto dto) {
+  MedicineRiskFinding? findingDtoToDomain(
+    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner dto,
+  ) {
     final type = _mapFindingType(dto.type);
     if (type == null) {
       return null;
@@ -74,7 +74,7 @@ class MedicineRiskCheckMapper {
   }
 
   MedicineRiskCoverageIssue coverageIssueDtoToDomain(
-    MedicineRiskCoverageIssueDto dto,
+    MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInner dto,
   ) {
     return MedicineRiskCoverageIssue(
       medicineName: dto.medicineName,
@@ -82,7 +82,9 @@ class MedicineRiskCheckMapper {
     );
   }
 
-  RedFlagAlert redFlagDtoToDomain(MedicineRedFlagDto dto) {
+  RedFlagAlert redFlagDtoToDomain(
+    MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInner dto,
+  ) {
     return RedFlagAlert(
       rule: _mapRedFlagRule(dto.rule),
       primaryMedicineName: dto.primaryMedicineName,
@@ -119,19 +121,59 @@ class MedicineRiskCheckMapper {
     );
   }
 
+  // ─── Record builders ─────────────────────────────────────────────────────
+
+  MedicineRiskCheckRecord _listRecordToDomain(
+    MedicineRiskCheckRecordsResponseDtoStatic dto,
+  ) {
+    return _record(
+      checkType: _mapCheckTypeFromList(dto.checkType),
+      result: resultDtoToDomain(dto.result),
+      riskScore: dto.riskScore.toInt(),
+      riskLevel: _mapRiskLevelFromListRecord(dto.riskLevel),
+      stale: dto.stale,
+      createdAt: dto.createdAt,
+      updatedAt: dto.updatedAt,
+    );
+  }
+
+  MedicineRiskCheckRecord _record({
+    required MedicineRiskCheckType checkType,
+    required MedicineRiskCheckResult result,
+    required int riskScore,
+    required MedicineRiskLevel riskLevel,
+    required bool stale,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) {
+    return MedicineRiskCheckRecord(
+      checkType: checkType,
+      result: result,
+      riskScore: riskScore,
+      riskLevel: riskLevel,
+      stale: stale,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
   // ─── Enum mappers ────────────────────────────────────────────────────────
 
   MedicineRiskLevel _mapRiskLevel(
-    MedicineRiskCheckResponseDtoOverallRiskLevelEnum level,
+    MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum level,
   ) {
     return switch (level) {
-      MedicineRiskCheckResponseDtoOverallRiskLevelEnum.safe =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
+          .safe =>
         MedicineRiskLevel.safe,
-      MedicineRiskCheckResponseDtoOverallRiskLevelEnum.caution =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
+          .caution =>
         MedicineRiskLevel.caution,
-      MedicineRiskCheckResponseDtoOverallRiskLevelEnum.risk =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
+          .risk =>
         MedicineRiskLevel.risk,
-      MedicineRiskCheckResponseDtoOverallRiskLevelEnum.danger =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
+          .danger =>
         MedicineRiskLevel.danger,
       _ => MedicineRiskLevel.safe,
     };
@@ -153,6 +195,22 @@ class MedicineRiskCheckMapper {
     };
   }
 
+  MedicineRiskLevel _mapRiskLevelFromListRecord(
+    MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum level,
+  ) {
+    return switch (level) {
+      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.safe =>
+        MedicineRiskLevel.safe,
+      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.caution =>
+        MedicineRiskLevel.caution,
+      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.risk =>
+        MedicineRiskLevel.risk,
+      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.danger =>
+        MedicineRiskLevel.danger,
+      _ => MedicineRiskLevel.safe,
+    };
+  }
+
   MedicineRiskCheckType _mapCheckType(
     MedicineRiskCheckRecordResponseDtoCheckTypeEnum type,
   ) {
@@ -160,6 +218,18 @@ class MedicineRiskCheckMapper {
       MedicineRiskCheckRecordResponseDtoCheckTypeEnum.static_ =>
         MedicineRiskCheckType.static_,
       MedicineRiskCheckRecordResponseDtoCheckTypeEnum.llm =>
+        MedicineRiskCheckType.llm,
+      _ => MedicineRiskCheckType.static_,
+    };
+  }
+
+  MedicineRiskCheckType _mapCheckTypeFromList(
+    MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum type,
+  ) {
+    return switch (type) {
+      MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum.static_ =>
+        MedicineRiskCheckType.static_,
+      MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum.llm =>
         MedicineRiskCheckType.llm,
       _ => MedicineRiskCheckType.static_,
     };
@@ -180,68 +250,98 @@ class MedicineRiskCheckMapper {
   }
 
   MedicineRiskFindingType? _mapFindingType(
-    MedicineRiskFindingDtoTypeEnum type,
+    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum type,
   ) {
     return switch (type) {
-      MedicineRiskFindingDtoTypeEnum.interaction =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+          .interaction =>
         MedicineRiskFindingType.interaction,
-      MedicineRiskFindingDtoTypeEnum.duplicateIngredient =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+          .duplicateIngredient =>
         MedicineRiskFindingType.duplicateIngredient,
-      MedicineRiskFindingDtoTypeEnum.allergy => MedicineRiskFindingType.allergy,
-      MedicineRiskFindingDtoTypeEnum.foodInteraction =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+          .allergy =>
+        MedicineRiskFindingType.allergy,
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+          .foodInteraction =>
         MedicineRiskFindingType.foodInteraction,
-      MedicineRiskFindingDtoTypeEnum.longTermUse =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+          .longTermUse =>
         MedicineRiskFindingType.longTermUse,
-      MedicineRiskFindingDtoTypeEnum.schedulingConflict =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+          .schedulingConflict =>
         MedicineRiskFindingType.schedulingConflict,
-      MedicineRiskFindingDtoTypeEnum.specialGroup =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+          .specialGroup =>
         MedicineRiskFindingType.specialGroup,
       _ => null,
     };
   }
 
   MedicineRiskSeverity _mapSeverity(
-    MedicineRiskFindingDtoSeverityEnum severity,
+    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+    severity,
   ) {
     return switch (severity) {
-      MedicineRiskFindingDtoSeverityEnum.high => MedicineRiskSeverity.high,
-      MedicineRiskFindingDtoSeverityEnum.medium => MedicineRiskSeverity.medium,
-      MedicineRiskFindingDtoSeverityEnum.info => MedicineRiskSeverity.info,
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+          .high =>
+        MedicineRiskSeverity.high,
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+          .medium =>
+        MedicineRiskSeverity.medium,
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+          .info =>
+        MedicineRiskSeverity.info,
       _ => MedicineRiskSeverity.info,
     };
   }
 
   MedicineRiskFindingContext _mapFindingContext(
-    MedicineRiskFindingDtoContextEnum context,
+    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+    context,
   ) {
     return switch (context) {
-      MedicineRiskFindingDtoContextEnum.none => MedicineRiskFindingContext.none,
-      MedicineRiskFindingDtoContextEnum.alcohol =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+          .none =>
+        MedicineRiskFindingContext.none,
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+          .alcohol =>
         MedicineRiskFindingContext.alcohol,
-      MedicineRiskFindingDtoContextEnum.caffeine =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+          .caffeine =>
         MedicineRiskFindingContext.caffeine,
       _ => MedicineRiskFindingContext.none,
     };
   }
 
   MedicineRiskCoverageReason _mapCoverageReason(
-    MedicineRiskCoverageIssueDtoReasonEnum reason,
+    MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+    reason,
   ) {
     return switch (reason) {
-      MedicineRiskCoverageIssueDtoReasonEnum.manualEntry =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+          .manualEntry =>
         MedicineRiskCoverageReason.manualEntry,
-      MedicineRiskCoverageIssueDtoReasonEnum.missingSourceRef =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+          .missingSourceRef =>
         MedicineRiskCoverageReason.missingSourceRef,
-      MedicineRiskCoverageIssueDtoReasonEnum.detailUnavailable =>
+      MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+          .detailUnavailable =>
         MedicineRiskCoverageReason.detailUnavailable,
       _ => MedicineRiskCoverageReason.detailUnavailable,
     };
   }
 
-  RedFlagRule _mapRedFlagRule(MedicineRedFlagDtoRuleEnum rule) {
+  RedFlagRule _mapRedFlagRule(
+    MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum rule,
+  ) {
     return switch (rule) {
-      MedicineRedFlagDtoRuleEnum.severeAllergy => RedFlagRule.severeAllergy,
-      MedicineRedFlagDtoRuleEnum.informationGap => RedFlagRule.informationGap,
+      MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum
+          .severeAllergy =>
+        RedFlagRule.severeAllergy,
+      MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum
+          .informationGap =>
+        RedFlagRule.informationGap,
       _ => RedFlagRule.informationGap,
     };
   }

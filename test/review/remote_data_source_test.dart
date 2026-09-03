@@ -45,7 +45,7 @@ void main() {
         expect(dashboard.aiSummaryEnabled, isTrue);
         expect(
           dashboard.metrics.single.kind,
-          lucent.ReportMetricDtoKindEnum.water,
+          lucent.ReportDashboardResponseDtoMetricsInnerKindEnum.water,
         );
         expect(dashboard.trends.single.currentValue, '1.8L');
         expect(dashboard.findings.single.title, '饮水改善');

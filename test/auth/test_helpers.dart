@@ -326,11 +326,16 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
     return TaskEither.right(
       DataExportRequestDataDto(
         id: 'export-1',
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
-        status: DataExportStatus.requested,
+        kind: DataExportRequestDataDtoKindEnum.hospital,
+        format: DataExportRequestDataDtoFormatEnum.pdf,
+        range: DataExportRequestDataDtoRangeEnum.last7Days,
+        status: DataExportRequestDataDtoStatusEnum.requested,
         requestedAt: DateTime.now().toUtc().toIso8601String(),
+        completedAt: null,
+        downloadUrl: null,
+        fileName: null,
+        fileSizeBytes: null,
+        errorMessage: null,
       ),
     );
   }

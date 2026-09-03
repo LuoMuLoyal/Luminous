@@ -13,7 +13,7 @@ class HealthContextMapper {
     );
   }
 
-  HealthSummary _mapSummary(UserHealthSummaryDto s) {
+  HealthSummary _mapSummary(HealthContextResponseDtoSummary s) {
     return HealthSummary(
       age: s.age is int ? (s.age as int) : null,
       onboardingCompleted: s.onboardingCompleted,
@@ -24,7 +24,7 @@ class HealthContextMapper {
     );
   }
 
-  HealthProfile _mapProfile(UserHealthProfileDto p) {
+  HealthProfile _mapProfile(HealthContextResponseDtoProfile p) {
     return HealthProfile(
       birthDate: p.birthDate?.toString(),
       sexAtBirth: p.sexAtBirth?.name,
@@ -37,11 +37,15 @@ class HealthContextMapper {
       onboardingCompletedAt: p.onboardingCompletedAt?.toString(),
       emergencyContactName: p.emergencyContact?.name?.toString(),
       emergencyContactPhone: p.emergencyContact?.phone?.toString(),
-      extras: Map<String, dynamic>.from(p.extras ?? const {}),
+      // Wire `extras` is a free-form JSON object (Object?); only a Map is
+      // meaningful, anything else (absent/null/malformed) maps to {}.
+      extras: p.extras is Map
+          ? Map<String, dynamic>.from(p.extras as Map)
+          : const {},
     );
   }
 
-  AllergyItem _mapAllergy(UserAllergyItemDto a) {
+  AllergyItem _mapAllergy(HealthContextResponseDtoAllergiesInner a) {
     return AllergyItem(
       id: a.id,
       kind: a.kind.name,
@@ -55,7 +59,7 @@ class HealthContextMapper {
     );
   }
 
-  ConditionItem _mapCondition(UserConditionItemDto c) {
+  ConditionItem _mapCondition(HealthContextResponseDtoConditionsInner c) {
     return ConditionItem(
       id: c.id,
       label: c.label,
@@ -68,7 +72,9 @@ class HealthContextMapper {
     );
   }
 
-  CurrentMedicineItem _mapCurrentMedicine(UserCurrentMedicineItemDto m) {
+  CurrentMedicineItem _mapCurrentMedicine(
+    HealthContextResponseDtoCurrentMedicinesInner m,
+  ) {
     return CurrentMedicineItem(
       id: m.id,
       source: m.source_.value,

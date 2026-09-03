@@ -134,7 +134,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       sourceVersion: _safeInt(dto.sourceVersion) ?? 0,
       computedAt: _parseDateTime(dto.computedAt),
       retryAfterSeconds: _safeInt(dto.retryAfterSeconds),
-      primary: dto.primary != null ? _mapCard(dto.primary!) : null,
+      primary: dto.primary != null ? _mapPrimaryCard(dto.primary!) : null,
       secondary: dto.secondary?.map(_mapCard).toList(growable: false),
       observations: dto.observations?.map(_mapCard).toList(growable: false),
     );
@@ -152,7 +152,17 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     return value.toInt();
   }
 
-  TodaySuggestionCard _mapCard(SuggestionItemDto dto) {
+  /// Maps the primary card to the shared card mapper. The zod contract emits
+  /// one class per array/card slot (primary vs secondary/observations) that
+  /// shares the same JSON shape, so the primary payload is normalized onto the
+  /// canonical card DTO before mapping.
+  TodaySuggestionCard _mapPrimaryCard(TodaySuggestionsResponseDtoPrimary dto) {
+    return _mapCard(
+      TodaySuggestionsResponseDtoSecondaryInner.fromJson(dto.toJson()),
+    );
+  }
+
+  TodaySuggestionCard _mapCard(TodaySuggestionsResponseDtoSecondaryInner dto) {
     return TodaySuggestionCard(
       id: dto.id,
       type: TodaySuggestionType.fromJson(dto.type.value),
@@ -163,7 +173,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       evidence: dto.evidence.map(_mapEvidence).toList(growable: false),
       boundary: dto.boundary,
       primaryAction: _mapAction(dto.primaryAction),
-      secondaryActions: dto.secondaryActions?.map(_mapAction).toList(),
+      secondaryActions: dto.secondaryActions?.map(_mapSecondaryAction).toList(),
       confidence: _mapConfidenceFromString(dto.confidence.value),
       ruleId: dto.ruleId,
       ruleVersion: dto.ruleVersion,
@@ -171,27 +181,29 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       lifecycleState: TodaySuggestionLifecycleState.fromJson(
         dto.lifecycleState.value,
       ),
-      notificationEligible: dto.notificationEligible is bool
-          ? dto.notificationEligible as bool
-          : null,
+      notificationEligible: dto.notificationEligible,
       feedbackOptions: dto.feedbackOptions
-          ?.map(_mapFeedbackFromString)
+          ?.map((option) => _mapFeedbackFromString(option.value))
           .toList(),
-      subtype: dto.subtype is String ? dto.subtype as String : null,
+      subtype: dto.subtype,
     );
   }
 
-  TodaySuggestionEvidence _mapEvidence(EvidenceItemDto dto) {
+  TodaySuggestionEvidence _mapEvidence(
+    TodaySuggestionsResponseDtoPrimaryEvidenceInner dto,
+  ) {
     return TodaySuggestionEvidence(
-      kind: TodaySuggestionEvidenceKind.fromJson(dto.kind.value),
+      kind: TodaySuggestionEvidenceKind.fromJson(dto.kind),
       label: dto.label,
       value: dto.value,
-      recordId: dto.recordId is String ? dto.recordId as String : null,
-      medicineId: dto.medicineId is String ? dto.medicineId as String : null,
+      recordId: dto.recordId,
+      medicineId: dto.medicineId,
     );
   }
 
-  TodaySuggestionAction _mapAction(SuggestionActionDto dto) {
+  TodaySuggestionAction _mapAction(
+    TodaySuggestionsResponseDtoPrimaryPrimaryAction dto,
+  ) {
     return TodaySuggestionAction(
       actionId: dto.actionId,
       label: dto.label,
@@ -200,7 +212,19 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     );
   }
 
-  TodaySuggestionHistoryItem _mapHistoryItem(SuggestionHistoryItemDto dto) {
+  /// Secondary actions reuse the primary action JSON shape under a separate
+  /// per-slot class, so they are normalized before mapping.
+  TodaySuggestionAction _mapSecondaryAction(
+    TodaySuggestionsResponseDtoPrimarySecondaryActionsInner dto,
+  ) {
+    return _mapAction(
+      TodaySuggestionsResponseDtoPrimaryPrimaryAction.fromJson(dto.toJson()),
+    );
+  }
+
+  TodaySuggestionHistoryItem _mapHistoryItem(
+    SuggestionHistoryResponseDtoItemsInner dto,
+  ) {
     return TodaySuggestionHistoryItem(
       id: dto.id,
       date: dto.date,
@@ -215,12 +239,12 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       ),
       confidence: _mapConfidenceFromString(dto.confidence.value),
       generatedAt: dto.generatedAt,
-      subtype: dto.subtype is String ? dto.subtype as String : null,
+      subtype: dto.subtype,
       feedback: dto.feedback != null
-          ? _mapFeedbackFromString(dto.feedback!.value)
+          ? _mapFeedbackFromString(dto.feedback!)
           : null,
-      feedbackAt: dto.feedbackAt is String ? dto.feedbackAt as String : null,
-      expiredAt: dto.expiredAt is String ? dto.expiredAt as String : null,
+      feedbackAt: dto.feedbackAt,
+      expiredAt: dto.expiredAt,
     );
   }
 
