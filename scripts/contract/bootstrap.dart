@@ -131,9 +131,15 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
 
     // 阶段 2（过滤）:openapi-generator-cli 7.x 的 --global-property 只接受
     // 单值 apis，因此每个过滤客户端（TodayAnalysis、Reports 等）各跑一次
-    // 生成再合并拷贝，覆盖阶段 1 的对应文件（过滤生成只产出命名 schema
-    // 模型，不会生成内联响应模型）。新增 API 面只需在 _filteredClients
-    // 里加一条配置。
+    // 生成再合并拷贝，覆盖阶段 1 的对应文件（api 文件 + models 清单列出的
+    // 模型；请求体/内联响应模型同样按清单产出）。清单命名必须是生成器解析
+    // 出的原始 schema 名（components.schemas 键，或 InlineModelResolver 对
+    // 内联 schema 起的 <parent>_<property> 名）；openapi-generator 对清单里
+    // 不存在的名字是静默忽略，因此每次过滤生成后由
+    // _verifyFilteredModelsProduced 断言每个清单名都产出了对应模型文件——
+    // 合同漂移（改名/删 schema）会在此 fail-fast，而不是静默埋雷。新增 API
+    // 面只需在 _filteredClients 里加一条配置（并把该客户端用到的模型补进
+    // 对应清单）。
     for (final client in _filteredClients) {
       final output = await Directory.systemTemp.createTemp(
         'luminous-openapi-${client.apis.toLowerCase()}-',
@@ -146,6 +152,11 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
         outputDirectory: output,
         apis: client.apis,
         models: client.models,
+      );
+      _verifyFilteredModelsProduced(
+        sliceName: client.apis,
+        models: client.models,
+        outputDirectory: output,
       );
       _copyGeneratedFile(
         output,
@@ -237,6 +248,70 @@ Future<void> _generateFilteredApiClient(
     stepName: 'openapi-generator (filtered $apis client)',
   );
   stdout.writeln('');
+}
+
+/// Fail-fast guard for one filtered generation: openapi-generator 7.x
+/// *silently ignores* model names in `models=` that do not resolve against the
+/// current spec, so a stale/renamed entry would otherwise pass with exit 0 and
+/// leave the tracked client silently depending on the stage-1 (full) copy.
+/// After [Directory] [outputDirectory] was produced by
+/// [_generateFilteredApiClient], assert that every listed raw schema name
+/// actually emitted its model file under `lib/src/model/`.
+void _verifyFilteredModelsProduced({
+  required String sliceName,
+  required List<String> models,
+  required Directory outputDirectory,
+}) {
+  final missing = <String>[];
+  for (final rawName in models) {
+    final expectedFile = '${_generatedModelFileName(rawName)}.dart';
+    final file = File(
+      '${outputDirectory.path}${Platform.pathSeparator}lib'
+      '${Platform.pathSeparator}src${Platform.pathSeparator}model'
+      '${Platform.pathSeparator}$expectedFile',
+    );
+    if (!file.existsSync()) {
+      missing.add('$rawName → $expectedFile');
+    }
+  }
+  if (missing.isNotEmpty) {
+    throw StateError(
+      'Filtered client "$sliceName": openapi-generator did not produce model '
+      'files for ${missing.length} of ${models.length} listed schema(s). '
+      'These names are stale or drifted from the OpenAPI contract and were '
+      'silently ignored by the generator:\n'
+      '  ${missing.join('\n  ')}\n'
+      'Update the corresponding model list in scripts/contract/bootstrap.dart '
+      'to the current raw schema names (components.schemas keys or '
+      'InlineModelResolver names such as <Controller>_<action>_v1_request).',
+    );
+  }
+}
+
+/// Expected basename of the model file the dart-dio generator writes for the
+/// raw schema name [rawName] (a components.schemas key, or the name the
+/// InlineModelResolver assigned to an inline schema). Mirrors the generator's
+/// naming pipeline: segment-capitalize to the Dart class name, then split
+/// camel boundaries into snake_case. Validated 1:1 against the generated
+/// model corpus (components + inline names ↔ 243 model files).
+String _generatedModelFileName(String rawName) {
+  final className = rawName
+      .split('_')
+      .map(
+        (segment) => segment.isEmpty
+            ? segment
+            : segment[0].toUpperCase() + segment.substring(1),
+      )
+      .join();
+  var underscored = className.replaceAllMapped(
+    RegExp(r'([a-z0-9])([A-Z])'),
+    (match) => '${match[1]}_${match[2]}',
+  );
+  underscored = underscored.replaceAllMapped(
+    RegExp(r'([A-Z]+)([A-Z][a-z])'),
+    (match) => '${match[1]}_${match[2]}',
+  );
+  return underscored.toLowerCase();
 }
 
 /// Runs one full dart-dio generation (all apis + models + supporting files)
@@ -477,122 +552,128 @@ Options:
   --help                  Show this help text.
 ''';
 
+// 过滤清单命名口径：openapi-generator 7.x 的 --global-property=models= 只接受
+// 生成器解析出的「原始 schema 名」——components.schemas 键（PascalCase，如
+// TodayAnalysisReadResponseDto），以及 InlineModelResolver 给内联 schema 起的
+// 名（下划线小驼峰，如 TodayAnalysisController_refresh_v1_request、
+// TodayAnalysisReadResponseDto_analysis_bullets_inner）。类名 / 文件名都不是
+// 可接受的等价写法（写错即被静默忽略）。清单内容 = 该切片 API 的 model import
+// 闭包（见 _filteredClients 下的机制注释），逐名校验交给生成后的
+// _verifyFilteredModelsProduced。
 const _todayAnalysisModels = [
-  'GenerateTodayAnalysisDto',
-  'TodayAnalysisAsyncJobDataDto',
-  'TodayAnalysisAsyncResponseDto',
-  'TodayAnalysisAsyncResponseDto_data',
-  'TodayAnalysisAsyncResultDataDto',
   'TodayAnalysisAsyncStatusDataDto',
-  'TodayAnalysisBulletDto',
+  'TodayAnalysisController_generate_v1_200_response',
+  'TodayAnalysisController_refresh_v1_request',
   'TodayAnalysisDataDto',
-  'TodayAnalysisGenerateResponseDto',
-  'TodayAnalysisGenerateResponseDto_data',
   'TodayAnalysisReadDataDto',
   'TodayAnalysisReadResponseDto',
-  'TodayAnalysisRefreshPendingDataDto',
+  'TodayAnalysisReadResponseDto_analysis',
+  'TodayAnalysisReadResponseDto_analysis_bullets_inner',
+  'TodayAnalysisReadResponseDto_analysis_metrics_inner',
   'TodayAnalysisRefreshReadyDataDto',
-  'TodayAnalysisRefreshResponseDto',
-  'TodayAnalysisRefreshResponseDto_data',
-  'TodayAnalysisStreamErrorDto',
-  'TodayAnalysisStreamResultDto',
-  'TodayAnalysisStreamResultDto_data',
-  'TodayAnalysisStreamSummaryDto',
-  'ReviewMetricDto',
-  'ReviewObservedMetricDto',
-  'SuggestionItemDto',
-  'SuggestionObservedMetricDto',
+  'TodayAnalysisRefreshReadyDataDto_analysis',
+  'TodayRecommendationResponseDto_inner',
+  'TodaySuggestionsResponseDto_primary_observedMetric',
 ];
 
 const _reviewModels = [
-  'EventReviewCheckInCoverageDto',
-  'EventReviewCoverageSummaryDto',
-  'EventReviewDataDto',
-  'EventReviewEventDto',
-  'EventReviewListDataDto',
-  'EventReviewListResponseDto',
-  'EventReviewNullableResponseDto',
-  'EventReviewObservedSourceDto',
-  'EventReviewResponseDto',
-  'EventReviewSectionDto',
-  'EventReviewSectionFactsDto',
-  'EventReviewSectionsDto',
-  'EventReviewSourceTimestampsDto',
-  'EventReviewTodayCheckInDto',
-  'ClinicSummaryCoverageEntryDto',
-  'ClinicSummaryCoverageDto',
-  'ClinicSummaryProfileDto',
-  'ClinicSummaryAllergyDto',
-  'ClinicSummaryConditionDto',
-  'ClinicSummaryMedicineDto',
-  'ClinicSummaryDto',
-  'ClinicSummaryRequestDto',
+  'ClinicSummaryExportAsyncResponseDto',
   'ClinicSummaryResponseDto',
-  'ClinicSummaryShareDataDto',
-  'ClinicSummaryShareScopeDto',
-  'ClinicSummaryShareResponseDto',
-  'ClinicSummaryShareListItemDto',
-  'ClinicSummaryShareListDataDto',
+  'ClinicSummaryResponseDto_allergies_inner',
+  'ClinicSummaryResponseDto_conditions_inner',
+  'ClinicSummaryResponseDto_coverage',
+  'ClinicSummaryResponseDto_coverage_checkIns',
+  'ClinicSummaryResponseDto_coverage_sleep',
+  'ClinicSummaryResponseDto_coverage_water',
+  'ClinicSummaryResponseDto_currentMedicines_inner',
+  'ClinicSummaryResponseDto_noteEntries_inner',
+  'ClinicSummaryResponseDto_profile',
+  'ClinicSummaryResponseDto_sleepEntries_inner',
+  'ClinicSummaryResponseDto_waterEntries_inner',
   'ClinicSummaryShareListResponseDto',
+  'ClinicSummaryShareListResponseDto_items_inner',
+  'ClinicSummaryShareResponseDto',
+  'ClinicSummaryShareResponseDto_scope',
+  'EventReviewDataDto',
+  'EventReviewDataDto_coverage',
+  'EventReviewDataDto_coverage_checkIns',
+  'EventReviewDataDto_coverage_checkIns_todayCheckIn',
+  'EventReviewDataDto_coverage_dailyRecords',
+  'EventReviewDataDto_event',
+  'EventReviewDataDto_sections',
+  'EventReviewDataDto_sections_whatHappened',
+  'EventReviewDataDto_sections_whatHappened_facts',
+  'EventReviewDataDto_sourceTimestamps',
+  'EventReviewListResponseDto',
+  'EventReviewResponseDto',
+  'ReportDashboardResponseDto',
+  'ReportDashboardResponseDto_findings_inner',
+  'ReportDashboardResponseDto_metrics_inner',
+  'ReportDashboardResponseDto_metrics_inner_observedMetric',
+  'ReportDashboardResponseDto_patterns_inner',
+  'ReportDashboardResponseDto_trends_inner',
+  'ReportSummaryAsyncResponseDto',
+  'ReportSummaryAsyncResponseDto_result',
+  'ReportSummaryResponseDto',
+  'ReportSummaryResponseDto_coverage',
+  'ReportSummaryResponseDto_coverage_medication',
+  'ReportSummaryResponseDto_lowRiskAction',
+  'ReportSummaryResponseDto_observedPattern',
+  'ReportsController_generateSummary_v1_request',
+  'ReportsController_previewClinicSummary_v1_request',
+  'ReportsController_shareClinicSummary_v1_request',
 ];
 
 const _productEventsModels = [
-  'ProductEventName',
-  'ProductEventSurface',
-  'ProductEventResult',
-  'UserDevicePlatform',
-  'CreateProductEventDto',
-  'CreateProductEventBatchDto',
-  // Task 9 admin funnel schemas: the client does not consume the funnel
-  // endpoint, but filtered generation still deserializes every schema listed
-  // in deserialize.dart — omitting them breaks the generated package.
-  'FunnelDailyCountsDto',
-  'FunnelDataDto',
-  'FunnelOptionalCountsDto',
-  'FunnelTotalsDto',
-  'FunnelWindowDto',
   'FunnelResponseDto',
+  // Funnel 响应内联子模型：getFunnel_v1 的内联响应对象由 InlineModelResolver
+  // 命名为 <parent>_<property>（FunnelResponseDto_daily_inner 等），过滤清单
+  // 必须使用该原始名。旧 Task 9 的 FunnelDailyCountsDto/FunnelDataDto/… 扁
+  // DTO 已在 zod 合同迁移中删除，勿再引用。
+  'FunnelResponseDto_daily_inner',
+  'FunnelResponseDto_optional',
+  'FunnelResponseDto_totals',
+  'FunnelResponseDto_window',
+  'ProblemDetailsDto',
+  'ProductEventsController_recordBatch_v1_request',
+  'ProductEventsController_recordBatch_v1_request_events_inner',
 ];
 
 const _notificationsModels = [
-  'CreateNotificationDto',
-  'NotificationDetailDto',
   'NotificationDetailResponseDto',
-  'NotificationListDataDto',
-  'NotificationListItemDto',
   'NotificationListResponseDto',
-  'UnreadCountDataDto',
+  'NotificationListResponseDto_items_inner',
+  'NotificationsController_create_v1_request',
+  'ProblemDetailsDto',
   'UnreadCountResponseDto',
-  'UserNotificationType',
 ];
 
 const _userSettingsModels = [
-  'ChangeSecurityPinDto',
-  'DisableSecurityPinDto',
-  'EnableSecurityPinDto',
-  'SecurityPinElevationDataDto',
-  'SecurityPinElevationResponseDto',
-  'SecurityPinSettingsDto',
-  'UpdateUserSettingsDto',
-  'UserSettingsDataDto',
+  'ProblemDetailsDto',
+  'UserSettingsController_updateSettings_v1_request',
+  'UserSettingsController_updateSettings_v1_request_assistantContext',
   'UserSettingsResponseDto',
-  'VerifySecurityPinDto',
+  'UserSettingsResponseDto_assistantContext',
 ];
 
 const _reminderDeliveriesModels = [
-  'ReminderDeliveryItemDto',
-  'ReminderDeliveryListDataDto',
-  'ReminderDeliveryListResponseDto',
-  'ReminderDeliveryReceiptDto',
-  'ReminderDeliveryReceiptDataDto',
-  'ReminderDeliveryReceiptResponseDto',
-  'LocalCapabilityStateDto',
-  'LocalCapabilityDataDto',
   'LocalCapabilityResponseDto',
+  'ProblemDetailsDto',
+  'ReminderDeliveriesController_recordReceipt_v1_request',
+  'ReminderDeliveriesController_reportLocalCapability_v1_request',
+  'ReminderDeliveryListResponseDto',
+  'ReminderDeliveryListResponseDto_items_inner',
+  'ReminderDeliveryReceiptResponseDto',
+  'ReminderDeliveryReceiptResponseDto_item',
 ];
 
 /// 过滤客户端的数据驱动配置：每一条对应一次 openapi-generator 过滤生成
 /// 及一个 API 文件 + 一组模型的拷贝。新增合同面只需在此追加一条。
+///
+/// 每个 [models] 清单 = 该切片 API 的 model import 闭包（api 文件直接引用 +
+/// 模型文件间传递引用），且必须使用生成器解析出的原始 schema 名（见各常量
+/// 顶部注释）。清单与当前合同不同步（旧 *Dto 名、漏加新请求模型）时，
+/// _verifyFilteredModelsProduced 会在该切片过滤生成后 fail-fast。
 const _filteredClients = <({String apis, String apiFile, List<String> models})>[
   (
     apis: 'TodayAnalysis',
