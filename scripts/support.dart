@@ -62,13 +62,37 @@ Future<void> runLoggedCommand(
       workingDirectory: workingDirectory.path,
       environment: environment,
       runInShell: true,
-      mode: ProcessStartMode.inheritStdio,
     );
 
+    // Forward both streams to the console (identical to inheritStdio) while
+    // retaining stderr text for the retry decision below.
+    final stderrBuffer = StringBuffer();
+    final stdoutDone = process.stdout
+        .transform(const SystemEncoding().decoder)
+        .forEach(stdout.write);
+    final stderrDone = process.stderr
+        .transform(const SystemEncoding().decoder)
+        .forEach((chunk) {
+          stderr.write(chunk);
+          stderrBuffer.write(chunk);
+        });
+
     final exitCode = await process.exitCode;
+    await Future.wait([stdoutDone, stderrDone]);
     if (exitCode == 0) return;
 
     if (attempt > maxRetries) {
+      throw ProcessException(
+        executable,
+        arguments,
+        'Command failed with exit code $exitCode.',
+        exitCode,
+      );
+    }
+
+    if (!_isWindowsFileLockRetryable(executable, stderrBuffer.toString())) {
+      // Deterministic failures (including `dart analyze` semantic errors that
+      // exit 1 without a lock marker) surface immediately, on the first run.
       throw ProcessException(
         executable,
         arguments,
@@ -87,6 +111,18 @@ Future<void> runLoggedCommand(
     await Future<void>.delayed(const Duration(seconds: 3));
     stdout.writeln('$executable ${arguments.join(' ')}');
   }
+}
+
+/// Whether a failed command is the transient Windows file-lock contention
+/// (error 1224 / "The process cannot access the file") that build_runner can
+/// hit under concurrent runs. Only `dart` invocations qualify: retrying other
+/// tools — or a deterministic `dart` semantic failure — would only delay the
+/// real error.
+bool _isWindowsFileLockRetryable(String executable, String stderr) {
+  if (executable != 'dart') return false;
+  final text = stderr.toLowerCase();
+  return text.contains('error 1224') ||
+      text.contains('the process cannot access the file');
 }
 
 Future<void> waitForHttpOk(
