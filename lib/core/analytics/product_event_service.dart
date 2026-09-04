@@ -18,6 +18,11 @@ import 'product_event.dart';
 
 part 'product_event_service.g.dart';
 
+/// File-level shorthand for the generated request-scoped platform enum
+/// (2026-09-03 审查 #4 readability closure; no behavior change).
+typedef _ProductEventPlatform =
+    ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum;
+
 /// Pending-sync entity type for queued product events.
 const String kProductEventSyncEntityType = 'product_event';
 
@@ -29,24 +34,15 @@ const String kProductEventSyncEntityType = 'product_event';
 ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
 resolveUserDevicePlatform() {
   if (kIsWeb) {
-    return ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
-        .web;
+    return _ProductEventPlatform.web;
   }
   return switch (defaultTargetPlatform) {
-    TargetPlatform.iOS =>
-      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.ios,
-    TargetPlatform.android =>
-      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
-          .android,
-    TargetPlatform.windows =>
-      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
-          .windows,
-    TargetPlatform.macOS =>
-      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.macos,
-    TargetPlatform.linux =>
-      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.linux,
-    _ =>
-      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.other,
+    TargetPlatform.iOS => _ProductEventPlatform.ios,
+    TargetPlatform.android => _ProductEventPlatform.android,
+    TargetPlatform.windows => _ProductEventPlatform.windows,
+    TargetPlatform.macOS => _ProductEventPlatform.macos,
+    TargetPlatform.linux => _ProductEventPlatform.linux,
+    _ => _ProductEventPlatform.other,
   };
 }
 
@@ -102,9 +98,7 @@ class ProductEventService {
   final SyncWorker? syncWorker;
 
   final Future<String> Function() _versionLoader;
-  final ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
-  Function()
-  _platformResolver;
+  final _ProductEventPlatform Function() _platformResolver;
   final DateTime Function() _clock;
   final String Function() _eventIdGenerator;
 
