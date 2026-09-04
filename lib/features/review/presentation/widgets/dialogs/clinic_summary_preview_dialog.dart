@@ -285,11 +285,22 @@ class _ClinicSummaryPreviewContentState
       // 创建失败（网络 / 服务端业务失败；空响应体的协议异常逃逸）统一
       // 提示失败，字段选择保持可重试（widget 不读 code/status）。
       final api = ref.read(lucentClientProvider).reports;
+      // share 与 preview 请求在 per-op 化改造后是各自独立生成的枚举，成员
+      // 与 wire 值一一对应，这里按 wire value 互转（UI 状态仍用 preview 枚举）。
+      final body = ReportsControllerShareClinicSummaryV1Request(
+        selectedFields: _selectedFields
+            .map(
+              (field) =>
+                  ReportsControllerShareClinicSummaryV1RequestSelectedFieldsEnum
+                      .values
+                      .firstWhere(
+                        (candidate) => candidate.value == field.value,
+                      ),
+            )
+            .toList(growable: false),
+      );
       final response = await api.reportsControllerShareClinicSummaryV1(
-        reportsControllerPreviewClinicSummaryV1Request:
-            ReportsControllerPreviewClinicSummaryV1Request(
-              selectedFields: _selectedFields,
-            ),
+        reportsControllerShareClinicSummaryV1Request: body,
       );
       final value = response.data!;
       // The share list is cached (keepAlive) — invalidate it so the

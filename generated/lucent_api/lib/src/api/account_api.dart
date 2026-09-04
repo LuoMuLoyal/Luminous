@@ -11,16 +11,16 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/account_controller_change_email_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_change_password_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_create_wechat_web_identity_link_authorize_url_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_delete_account_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_link_wechat_mobile_identity_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_link_wechat_web_identity_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_set_password_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_unlink_identity_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_update_account_v1_request.dart';
 import 'package:lucent_api/src/model/account_email_response_dto.dart';
 import 'package:lucent_api/src/model/account_response_dto.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_response_dto.dart';
-import 'package:lucent_api/src/model/o_auth_controller_create_wechat_web_authorize_url_v1_request.dart';
-import 'package:lucent_api/src/model/o_auth_controller_login_with_wechat_mobile_v1_request.dart';
-import 'package:lucent_api/src/model/o_auth_controller_login_with_wechat_web_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class AccountApi {
@@ -178,7 +178,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthControllerCreateWechatWebAuthorizeUrlV1Request]
+  /// * [accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -190,8 +190,8 @@ class AccountApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<OAuthAuthorizeResponseDto>>
   accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1({
-    required OAuthControllerCreateWechatWebAuthorizeUrlV1Request
-    oAuthControllerCreateWechatWebAuthorizeUrlV1Request,
+    required AccountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request
+    accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -212,7 +212,7 @@ class AccountApi {
 
     try {
       _bodyData = jsonEncode(
-        oAuthControllerCreateWechatWebAuthorizeUrlV1Request,
+        accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request,
       );
     } catch (error, stackTrace) {
       throw DioException(
@@ -397,7 +397,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthControllerLoginWithWechatMobileV1Request]
+  /// * [accountControllerLinkWechatMobileIdentityV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -409,8 +409,8 @@ class AccountApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AccountResponseDto>>
   accountControllerLinkWechatMobileIdentityV1({
-    required OAuthControllerLoginWithWechatMobileV1Request
-    oAuthControllerLoginWithWechatMobileV1Request,
+    required AccountControllerLinkWechatMobileIdentityV1Request
+    accountControllerLinkWechatMobileIdentityV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -430,7 +430,9 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(oAuthControllerLoginWithWechatMobileV1Request);
+      _bodyData = jsonEncode(
+        accountControllerLinkWechatMobileIdentityV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -486,7 +488,7 @@ class AccountApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthControllerLoginWithWechatWebV1Request]
+  /// * [accountControllerLinkWechatWebIdentityV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -498,8 +500,8 @@ class AccountApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AccountResponseDto>>
   accountControllerLinkWechatWebIdentityV1({
-    required OAuthControllerLoginWithWechatWebV1Request
-    oAuthControllerLoginWithWechatWebV1Request,
+    required AccountControllerLinkWechatWebIdentityV1Request
+    accountControllerLinkWechatWebIdentityV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -519,7 +521,7 @@ class AccountApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(oAuthControllerLoginWithWechatWebV1Request);
+      _bodyData = jsonEncode(accountControllerLinkWechatWebIdentityV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

@@ -1,6 +1,9 @@
 import 'package:lucent_api/src/model/account_controller_change_email_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_change_password_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_create_wechat_web_identity_link_authorize_url_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_delete_account_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_link_wechat_mobile_identity_v1_request.dart';
+import 'package:lucent_api/src/model/account_controller_link_wechat_web_identity_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_set_password_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_unlink_identity_v1_request.dart';
 import 'package:lucent_api/src/model/account_controller_update_account_v1_request.dart';
@@ -145,6 +148,7 @@ import 'package:lucent_api/src/model/medicine_safety_tip_response_dto_inner.dart
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto_items_inner.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto_pagination.dart';
+import 'package:lucent_api/src/model/medicines_controller_recognize_async_v1_request.dart';
 import 'package:lucent_api/src/model/medicines_controller_recognize_v1_request.dart';
 import 'package:lucent_api/src/model/medicines_controller_run_risk_check_v1_request.dart';
 import 'package:lucent_api/src/model/medicines_controller_run_risk_check_v1_request_candidate.dart';
@@ -160,8 +164,11 @@ import 'package:lucent_api/src/model/o_auth_controller_create_qq_authorize_url_v
 import 'package:lucent_api/src/model/o_auth_controller_create_wechat_web_authorize_url_v1_request.dart';
 import 'package:lucent_api/src/model/o_auth_controller_create_weibo_authorize_url_v1_request.dart';
 import 'package:lucent_api/src/model/o_auth_controller_login_with_apple_v1_request.dart';
+import 'package:lucent_api/src/model/o_auth_controller_login_with_google_v1_request.dart';
+import 'package:lucent_api/src/model/o_auth_controller_login_with_qq_v1_request.dart';
 import 'package:lucent_api/src/model/o_auth_controller_login_with_wechat_mobile_v1_request.dart';
 import 'package:lucent_api/src/model/o_auth_controller_login_with_wechat_web_v1_request.dart';
+import 'package:lucent_api/src/model/o_auth_controller_login_with_weibo_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/product_events_controller_record_batch_v1_request.dart';
 import 'package:lucent_api/src/model/product_events_controller_record_batch_v1_request_events_inner.dart';
@@ -188,10 +195,16 @@ import 'package:lucent_api/src/model/report_summary_response_dto_coverage.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto_coverage_medication.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto_low_risk_action.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto_observed_pattern.dart';
+import 'package:lucent_api/src/model/reports_controller_download_clinic_summary_pdf_v1_request.dart';
+import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1_request.dart';
+import 'package:lucent_api/src/model/reports_controller_generate_summary_async_v1_request.dart';
+import 'package:lucent_api/src/model/reports_controller_generate_summary_stream_v1_request.dart';
 import 'package:lucent_api/src/model/reports_controller_generate_summary_v1_request.dart';
 import 'package:lucent_api/src/model/reports_controller_preview_clinic_summary_v1_request.dart';
+import 'package:lucent_api/src/model/reports_controller_share_clinic_summary_v1_request.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_api/src/model/session_controller_logout_v1_request.dart';
+import 'package:lucent_api/src/model/session_controller_refresh_v1_request.dart';
 import 'package:lucent_api/src/model/session_list_item_dto_inner.dart';
 import 'package:lucent_api/src/model/sse_problem_details_dto.dart';
 import 'package:lucent_api/src/model/suggestion_explanation_async_response_dto.dart';
@@ -205,7 +218,10 @@ import 'package:lucent_api/src/model/today_analysis_async_result_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_async_result_data_dto_result.dart';
 import 'package:lucent_api/src/model/today_analysis_async_result_data_dto_result_any_of.dart';
 import 'package:lucent_api/src/model/today_analysis_async_status_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_controller_generate_async_v1_request.dart';
+import 'package:lucent_api/src/model/today_analysis_controller_generate_stream_v1_request.dart';
 import 'package:lucent_api/src/model/today_analysis_controller_generate_v1200_response.dart';
+import 'package:lucent_api/src/model/today_analysis_controller_generate_v1_request.dart';
 import 'package:lucent_api/src/model/today_analysis_controller_refresh_v1_request.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_read_data_dto.dart';
@@ -271,8 +287,23 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'AccountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request':
+      return AccountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'AccountControllerDeleteAccountV1Request':
       return AccountControllerDeleteAccountV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'AccountControllerLinkWechatMobileIdentityV1Request':
+      return AccountControllerLinkWechatMobileIdentityV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'AccountControllerLinkWechatWebIdentityV1Request':
+      return AccountControllerLinkWechatWebIdentityV1Request.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -931,6 +962,11 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'MedicinesControllerRecognizeAsyncV1Request':
+      return MedicinesControllerRecognizeAsyncV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'MedicinesControllerRecognizeV1Request':
       return MedicinesControllerRecognizeV1Request.fromJson(
             value as Map<String, dynamic>,
@@ -1002,6 +1038,16 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'OAuthControllerLoginWithGoogleV1Request':
+      return OAuthControllerLoginWithGoogleV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'OAuthControllerLoginWithQqV1Request':
+      return OAuthControllerLoginWithQqV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'OAuthControllerLoginWithWechatMobileV1Request':
       return OAuthControllerLoginWithWechatMobileV1Request.fromJson(
             value as Map<String, dynamic>,
@@ -1009,6 +1055,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'OAuthControllerLoginWithWechatWebV1Request':
       return OAuthControllerLoginWithWechatWebV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'OAuthControllerLoginWithWeiboV1Request':
+      return OAuthControllerLoginWithWeiboV1Request.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1128,6 +1179,26 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'ReportsControllerDownloadClinicSummaryPdfV1Request':
+      return ReportsControllerDownloadClinicSummaryPdfV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportsControllerExportClinicSummaryPdfAsyncV1Request':
+      return ReportsControllerExportClinicSummaryPdfAsyncV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportsControllerGenerateSummaryAsyncV1Request':
+      return ReportsControllerGenerateSummaryAsyncV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportsControllerGenerateSummaryStreamV1Request':
+      return ReportsControllerGenerateSummaryStreamV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'ReportsControllerGenerateSummaryV1Request':
       return ReportsControllerGenerateSummaryV1Request.fromJson(
             value as Map<String, dynamic>,
@@ -1138,6 +1209,11 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'ReportsControllerShareClinicSummaryV1Request':
+      return ReportsControllerShareClinicSummaryV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'SendVerificationCodeResponseDto':
       return SendVerificationCodeResponseDto.fromJson(
             value as Map<String, dynamic>,
@@ -1145,6 +1221,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'SessionControllerLogoutV1Request':
       return SessionControllerLogoutV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'SessionControllerRefreshV1Request':
+      return SessionControllerRefreshV1Request.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1209,8 +1290,23 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'TodayAnalysisControllerGenerateAsyncV1Request':
+      return TodayAnalysisControllerGenerateAsyncV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisControllerGenerateStreamV1Request':
+      return TodayAnalysisControllerGenerateStreamV1Request.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'TodayAnalysisControllerGenerateV1200Response':
       return TodayAnalysisControllerGenerateV1200Response.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisControllerGenerateV1Request':
+      return TodayAnalysisControllerGenerateV1Request.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

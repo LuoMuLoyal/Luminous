@@ -125,8 +125,8 @@ class LucentAuthRepository implements AuthRepository {
       final trimmedIdentityCallbackUri = _trimOrNull(callbackUri);
       final response = await _client.account
           .accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(
-            oAuthControllerCreateWechatWebAuthorizeUrlV1Request:
-                OAuthControllerCreateWechatWebAuthorizeUrlV1Request(
+            accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request:
+                AccountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request(
                   callbackUri: trimmedIdentityCallbackUri,
                 ),
           );
@@ -227,8 +227,8 @@ class LucentAuthRepository implements AuthRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _client.auth.oAuthControllerLoginWithQqV1(
-        oAuthControllerLoginWithWechatWebV1Request:
-            OAuthControllerLoginWithWechatWebV1Request(
+        oAuthControllerLoginWithQqV1Request:
+            OAuthControllerLoginWithQqV1Request(
               code: code.trim(),
               state: state.trim(),
             ),
@@ -267,8 +267,8 @@ class LucentAuthRepository implements AuthRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _client.auth.oAuthControllerLoginWithWeiboV1(
-        oAuthControllerLoginWithWechatWebV1Request:
-            OAuthControllerLoginWithWechatWebV1Request(
+        oAuthControllerLoginWithWeiboV1Request:
+            OAuthControllerLoginWithWeiboV1Request(
               code: code.trim(),
               state: state.trim(),
             ),
@@ -307,8 +307,8 @@ class LucentAuthRepository implements AuthRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _client.auth.oAuthControllerLoginWithGoogleV1(
-        oAuthControllerLoginWithWechatWebV1Request:
-            OAuthControllerLoginWithWechatWebV1Request(
+        oAuthControllerLoginWithGoogleV1Request:
+            OAuthControllerLoginWithGoogleV1Request(
               code: code.trim(),
               state: state.trim(),
             ),
@@ -329,8 +329,8 @@ class LucentAuthRepository implements AuthRepository {
     return TaskEither.tryCatch(() async {
       final response = await _client.account
           .accountControllerLinkWechatWebIdentityV1(
-            oAuthControllerLoginWithWechatWebV1Request:
-                OAuthControllerLoginWithWechatWebV1Request(
+            accountControllerLinkWechatWebIdentityV1Request:
+                AccountControllerLinkWechatWebIdentityV1Request(
                   code: code.trim(),
                   state: state.trim(),
                 ),
@@ -348,8 +348,8 @@ class LucentAuthRepository implements AuthRepository {
     return TaskEither.tryCatch(() async {
       final response = await _client.account
           .accountControllerLinkWechatMobileIdentityV1(
-            oAuthControllerLoginWithWechatMobileV1Request:
-                OAuthControllerLoginWithWechatMobileV1Request(
+            accountControllerLinkWechatMobileIdentityV1Request:
+                AccountControllerLinkWechatMobileIdentityV1Request(
                   code: code.trim(),
                 ),
           );
@@ -415,9 +415,10 @@ class LucentAuthRepository implements AuthRepository {
     final refreshTokens =
         TaskEither<LucentFailure, RefreshResponseDto>.tryCatch(() async {
           final response = await _client.auth.sessionControllerRefreshV1(
-            sessionControllerLogoutV1Request: SessionControllerLogoutV1Request(
-              refreshToken: refreshToken.trim(),
-            ),
+            sessionControllerRefreshV1Request:
+                SessionControllerRefreshV1Request(
+                  refreshToken: refreshToken.trim(),
+                ),
           );
           final tokens = _requireBody(response.data, 'refreshSession');
           await _sessionStore.write(

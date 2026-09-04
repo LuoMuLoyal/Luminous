@@ -19,8 +19,13 @@ import 'package:lucent_api/src/model/event_review_response_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 import 'package:lucent_api/src/model/report_summary_async_response_dto.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto.dart';
+import 'package:lucent_api/src/model/reports_controller_download_clinic_summary_pdf_v1_request.dart';
+import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1_request.dart';
+import 'package:lucent_api/src/model/reports_controller_generate_summary_async_v1_request.dart';
+import 'package:lucent_api/src/model/reports_controller_generate_summary_stream_v1_request.dart';
 import 'package:lucent_api/src/model/reports_controller_generate_summary_v1_request.dart';
 import 'package:lucent_api/src/model/reports_controller_preview_clinic_summary_v1_request.dart';
+import 'package:lucent_api/src/model/reports_controller_share_clinic_summary_v1_request.dart';
 
 class ReportsApi {
   final Dio _dio;
@@ -31,7 +36,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerPreviewClinicSummaryV1Request]
+  /// * [reportsControllerDownloadClinicSummaryPdfV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -42,8 +47,8 @@ class ReportsApi {
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
   Future<Response<void>> reportsControllerDownloadClinicSummaryPdfV1({
-    required ReportsControllerPreviewClinicSummaryV1Request
-    reportsControllerPreviewClinicSummaryV1Request,
+    required ReportsControllerDownloadClinicSummaryPdfV1Request
+    reportsControllerDownloadClinicSummaryPdfV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -63,7 +68,9 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerPreviewClinicSummaryV1Request);
+      _bodyData = jsonEncode(
+        reportsControllerDownloadClinicSummaryPdfV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -137,7 +144,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerPreviewClinicSummaryV1Request]
+  /// * [reportsControllerExportClinicSummaryPdfAsyncV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -149,8 +156,8 @@ class ReportsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<ClinicSummaryExportAsyncResponseDto>>
   reportsControllerExportClinicSummaryPdfAsyncV1({
-    required ReportsControllerPreviewClinicSummaryV1Request
-    reportsControllerPreviewClinicSummaryV1Request,
+    required ReportsControllerExportClinicSummaryPdfAsyncV1Request
+    reportsControllerExportClinicSummaryPdfAsyncV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -170,7 +177,9 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerPreviewClinicSummaryV1Request);
+      _bodyData = jsonEncode(
+        reportsControllerExportClinicSummaryPdfAsyncV1Request,
+      );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -273,7 +282,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerGenerateSummaryV1Request]
+  /// * [reportsControllerGenerateSummaryAsyncV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -285,8 +294,8 @@ class ReportsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<ReportSummaryAsyncResponseDto>>
   reportsControllerGenerateSummaryAsyncV1({
-    required ReportsControllerGenerateSummaryV1Request
-    reportsControllerGenerateSummaryV1Request,
+    required ReportsControllerGenerateSummaryAsyncV1Request
+    reportsControllerGenerateSummaryAsyncV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -306,7 +315,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerGenerateSummaryV1Request);
+      _bodyData = jsonEncode(reportsControllerGenerateSummaryAsyncV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -409,7 +418,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerGenerateSummaryV1Request]
+  /// * [reportsControllerGenerateSummaryStreamV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -420,8 +429,8 @@ class ReportsApi {
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<String>> reportsControllerGenerateSummaryStreamV1({
-    required ReportsControllerGenerateSummaryV1Request
-    reportsControllerGenerateSummaryV1Request,
+    required ReportsControllerGenerateSummaryStreamV1Request
+    reportsControllerGenerateSummaryStreamV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -441,7 +450,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerGenerateSummaryV1Request);
+      _bodyData = jsonEncode(reportsControllerGenerateSummaryStreamV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -1181,7 +1190,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerPreviewClinicSummaryV1Request]
+  /// * [reportsControllerShareClinicSummaryV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1193,8 +1202,8 @@ class ReportsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<ClinicSummaryShareResponseDto>>
   reportsControllerShareClinicSummaryV1({
-    required ReportsControllerPreviewClinicSummaryV1Request
-    reportsControllerPreviewClinicSummaryV1Request,
+    required ReportsControllerShareClinicSummaryV1Request
+    reportsControllerShareClinicSummaryV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1214,7 +1223,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerPreviewClinicSummaryV1Request);
+      _bodyData = jsonEncode(reportsControllerShareClinicSummaryV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

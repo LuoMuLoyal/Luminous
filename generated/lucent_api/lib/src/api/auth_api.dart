@@ -23,13 +23,17 @@ import 'package:lucent_api/src/model/o_auth_controller_create_qq_authorize_url_v
 import 'package:lucent_api/src/model/o_auth_controller_create_wechat_web_authorize_url_v1_request.dart';
 import 'package:lucent_api/src/model/o_auth_controller_create_weibo_authorize_url_v1_request.dart';
 import 'package:lucent_api/src/model/o_auth_controller_login_with_apple_v1_request.dart';
+import 'package:lucent_api/src/model/o_auth_controller_login_with_google_v1_request.dart';
+import 'package:lucent_api/src/model/o_auth_controller_login_with_qq_v1_request.dart';
 import 'package:lucent_api/src/model/o_auth_controller_login_with_wechat_mobile_v1_request.dart';
 import 'package:lucent_api/src/model/o_auth_controller_login_with_wechat_web_v1_request.dart';
+import 'package:lucent_api/src/model/o_auth_controller_login_with_weibo_v1_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 import 'package:lucent_api/src/model/refresh_response_dto.dart';
 import 'package:lucent_api/src/model/register_response_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_api/src/model/session_controller_logout_v1_request.dart';
+import 'package:lucent_api/src/model/session_controller_refresh_v1_request.dart';
 import 'package:lucent_api/src/model/session_list_item_dto_inner.dart';
 import 'package:lucent_api/src/model/verify_email_response_dto.dart';
 
@@ -984,7 +988,7 @@ class AuthApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthControllerLoginWithWechatWebV1Request]
+  /// * [oAuthControllerLoginWithGoogleV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -995,8 +999,8 @@ class AuthApi {
   /// Returns a [Future] containing a [Response] with a [LoginResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<LoginResponseDto>> oAuthControllerLoginWithGoogleV1({
-    required OAuthControllerLoginWithWechatWebV1Request
-    oAuthControllerLoginWithWechatWebV1Request,
+    required OAuthControllerLoginWithGoogleV1Request
+    oAuthControllerLoginWithGoogleV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1016,7 +1020,7 @@ class AuthApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(oAuthControllerLoginWithWechatWebV1Request);
+      _bodyData = jsonEncode(oAuthControllerLoginWithGoogleV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -1072,7 +1076,7 @@ class AuthApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthControllerLoginWithWechatWebV1Request]
+  /// * [oAuthControllerLoginWithQqV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1083,8 +1087,8 @@ class AuthApi {
   /// Returns a [Future] containing a [Response] with a [LoginResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<LoginResponseDto>> oAuthControllerLoginWithQqV1({
-    required OAuthControllerLoginWithWechatWebV1Request
-    oAuthControllerLoginWithWechatWebV1Request,
+    required OAuthControllerLoginWithQqV1Request
+    oAuthControllerLoginWithQqV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1104,7 +1108,7 @@ class AuthApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(oAuthControllerLoginWithWechatWebV1Request);
+      _bodyData = jsonEncode(oAuthControllerLoginWithQqV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -1336,7 +1340,7 @@ class AuthApi {
   ///
   ///
   /// Parameters:
-  /// * [oAuthControllerLoginWithWechatWebV1Request]
+  /// * [oAuthControllerLoginWithWeiboV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1347,8 +1351,8 @@ class AuthApi {
   /// Returns a [Future] containing a [Response] with a [LoginResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<LoginResponseDto>> oAuthControllerLoginWithWeiboV1({
-    required OAuthControllerLoginWithWechatWebV1Request
-    oAuthControllerLoginWithWechatWebV1Request,
+    required OAuthControllerLoginWithWeiboV1Request
+    oAuthControllerLoginWithWeiboV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1368,7 +1372,7 @@ class AuthApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(oAuthControllerLoginWithWechatWebV1Request);
+      _bodyData = jsonEncode(oAuthControllerLoginWithWeiboV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -1599,7 +1603,7 @@ class AuthApi {
   ///
   ///
   /// Parameters:
-  /// * [sessionControllerLogoutV1Request]
+  /// * [sessionControllerRefreshV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1610,7 +1614,8 @@ class AuthApi {
   /// Returns a [Future] containing a [Response] with a [RefreshResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<RefreshResponseDto>> sessionControllerRefreshV1({
-    required SessionControllerLogoutV1Request sessionControllerLogoutV1Request,
+    required SessionControllerRefreshV1Request
+    sessionControllerRefreshV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1630,7 +1635,7 @@ class AuthApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(sessionControllerLogoutV1Request);
+      _bodyData = jsonEncode(sessionControllerRefreshV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

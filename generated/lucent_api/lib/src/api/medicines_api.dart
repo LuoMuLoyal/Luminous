@@ -15,6 +15,7 @@ import 'package:lucent_api/src/model/medicine_risk_check_record_response_dto.dar
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_response_dto_inner.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
+import 'package:lucent_api/src/model/medicines_controller_recognize_async_v1_request.dart';
 import 'package:lucent_api/src/model/medicines_controller_recognize_v1_request.dart';
 import 'package:lucent_api/src/model/medicines_controller_run_risk_check_v1_request.dart';
 
@@ -267,7 +268,7 @@ class MedicinesApi {
   ///
   ///
   /// Parameters:
-  /// * [medicinesControllerRecognizeV1Request]
+  /// * [medicinesControllerRecognizeAsyncV1Request]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -279,8 +280,8 @@ class MedicinesApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<MedicineRecognitionAsyncResponseDto>>
   medicinesControllerRecognizeAsyncV1({
-    required MedicinesControllerRecognizeV1Request
-    medicinesControllerRecognizeV1Request,
+    required MedicinesControllerRecognizeAsyncV1Request
+    medicinesControllerRecognizeAsyncV1Request,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -300,7 +301,7 @@ class MedicinesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicinesControllerRecognizeV1Request);
+      _bodyData = jsonEncode(medicinesControllerRecognizeAsyncV1Request);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

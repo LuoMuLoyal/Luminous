@@ -198,6 +198,9 @@ void main() {
     registerFallbackValue(
       ReportsControllerPreviewClinicSummaryV1Request(selectedFields: []),
     );
+    registerFallbackValue(
+      ReportsControllerShareClinicSummaryV1Request(selectedFields: []),
+    );
   });
 
   setUp(() {
@@ -960,8 +963,8 @@ void main() {
         );
         when(
           () => reportsApi.reportsControllerShareClinicSummaryV1(
-            reportsControllerPreviewClinicSummaryV1Request: any(
-              named: 'reportsControllerPreviewClinicSummaryV1Request',
+            reportsControllerShareClinicSummaryV1Request: any(
+              named: 'reportsControllerShareClinicSummaryV1Request',
             ),
           ),
         ).thenAnswer(
@@ -1003,12 +1006,12 @@ void main() {
         final shareRequest =
             verify(
                   () => reportsApi.reportsControllerShareClinicSummaryV1(
-                    reportsControllerPreviewClinicSummaryV1Request: captureAny(
-                      named: 'reportsControllerPreviewClinicSummaryV1Request',
+                    reportsControllerShareClinicSummaryV1Request: captureAny(
+                      named: 'reportsControllerShareClinicSummaryV1Request',
                     ),
                   ),
                 ).captured.single
-                as ReportsControllerPreviewClinicSummaryV1Request;
+                as ReportsControllerShareClinicSummaryV1Request;
         expect(shareRequest.selectedFields?.map((e) => e.value), [
           'event_overview',
           'symptom_changes',
@@ -1068,8 +1071,8 @@ void main() {
         await openDialog(tester, client: client, service: service);
         when(
           () => reportsApi.reportsControllerShareClinicSummaryV1(
-            reportsControllerPreviewClinicSummaryV1Request: any(
-              named: 'reportsControllerPreviewClinicSummaryV1Request',
+            reportsControllerShareClinicSummaryV1Request: any(
+              named: 'reportsControllerShareClinicSummaryV1Request',
             ),
           ),
         ).thenAnswer(
@@ -1134,8 +1137,8 @@ void main() {
         await openDialog(tester, client: client, service: service);
         when(
           () => reportsApi.reportsControllerShareClinicSummaryV1(
-            reportsControllerPreviewClinicSummaryV1Request: any(
-              named: 'reportsControllerPreviewClinicSummaryV1Request',
+            reportsControllerShareClinicSummaryV1Request: any(
+              named: 'reportsControllerShareClinicSummaryV1Request',
             ),
           ),
         ).thenAnswer(
