@@ -33,6 +33,34 @@ LoginResponseDto _loginData({
   );
 }
 
+/// Helper to build a RegisterResponseDto with minimal required fields.
+RegisterResponseDto _registerData({
+  String userId = 'u-1',
+  String email = 'test@example.com',
+  String? nickname,
+  bool emailVerified = false,
+  String? emailVerifiedAt,
+  String accessToken = 'at-1',
+  String refreshToken = 'rt-1',
+  String createdAt = '2026-06-10T08:00:00.000Z',
+}) {
+  return RegisterResponseDto(
+    user: RegisterResponseDtoUser(
+      id: userId,
+      email: email,
+      nickname: nickname ?? email.split('@').first,
+      emailVerified: emailVerified,
+      emailVerifiedAt: emailVerifiedAt,
+      createdAt: createdAt,
+    ),
+    tokens: RegisterResponseDtoTokens(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      expiresIn: 3600,
+    ),
+  );
+}
+
 void main() {
   group('AuthMapper.toSessionFromLogin', () {
     test('maps all fields correctly', () {
@@ -88,6 +116,42 @@ void main() {
     test('maps malformed createdAt to epoch instead of crashing', () {
       final session = AuthMapper.toSessionFromLogin(
         _loginData(createdAt: 'not-a-date', updatedAt: 'not-a-date'),
+      );
+
+      expect(session.user.createdAt, DateTime.fromMillisecondsSinceEpoch(0));
+      expect(session.user.updatedAt, DateTime.fromMillisecondsSinceEpoch(0));
+    });
+  });
+
+  group('AuthMapper.toSessionFromRegister', () {
+    test('maps user and tokens with createdAt as updatedAt placeholder', () {
+      final session = AuthMapper.toSessionFromRegister(
+        _registerData(email: 'user@example.com', nickname: 'TestUser'),
+      );
+
+      expect(session.user.id, 'u-1');
+      expect(session.user.email, 'user@example.com');
+      expect(session.user.nickname, 'TestUser');
+      // RegisterResponseDtoUser 无 avatar/updatedAt:注册路径恒取 avatar null,
+      // updatedAt 沿用 createdAt(与 mapper 内注释一致)。
+      expect(session.user.avatar, isNull);
+      expect(session.user.updatedAt, session.user.createdAt);
+      expect(session.accessToken, 'at-1');
+      expect(session.refreshToken, 'rt-1');
+      expect(session.expiresInSeconds, 3600);
+    });
+
+    test('handles null emailVerifiedAt', () {
+      final session = AuthMapper.toSessionFromRegister(
+        _registerData(emailVerified: false, emailVerifiedAt: null),
+      );
+
+      expect(session.user.emailVerifiedAt, isNull);
+    });
+
+    test('maps malformed createdAt to epoch instead of crashing', () {
+      final session = AuthMapper.toSessionFromRegister(
+        _registerData(createdAt: 'not-a-date'),
       );
 
       expect(session.user.createdAt, DateTime.fromMillisecondsSinceEpoch(0));
