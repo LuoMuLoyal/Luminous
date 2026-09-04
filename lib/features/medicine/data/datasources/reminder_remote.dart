@@ -130,8 +130,11 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
               currentMedicineId: input.currentMedicineId,
               label: _nonEmptyOrNull(input.label),
               daysOfWeek: input.daysOfWeek,
-              startDate: _dateOnlyOrNull(input.startDate),
-              endDate: _dateOnlyOrNull(input.endDate),
+              // 方案 A 后契约把 startDate/endDate 定为可空日键 String?:
+              // '' 表示"未选择日期"(表单 formatDateInput(null) 产出的形态),
+              // 归一为 null 走省略;必填场景由调用侧契约保证非空,不做兜底。
+              startDate: _dateKeyOrNull(input.startDate),
+              endDate: _dateKeyOrNull(input.endDate),
               isActive: input.isActive,
               note: _nonEmptyOrNull(input.note),
               slots: input.slots
@@ -285,11 +288,12 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     return value;
   }
 
-  /// Parses a date-only 'YYYY-MM-DD' domain value into the [DateTime] the
-  /// regenerated reminder contract expects; null/empty/unparseable values stay
-  /// null so the key is omitted from the wire payload.
-  DateTime? _dateOnlyOrNull(String? value) {
+  /// 可空日键归一:契约(方案 A)的 startDate/endDate 是 String? 日键,
+  /// 空串表示"未选择日期"(表单 `formatDateInput(null)` 的产物),归为 null
+  /// 让请求体省略该键;不再经 `DateTime.tryParse` 中转(那会把 null 静默化,
+  /// 且 DateTime 序列化会带出时间部分塞进日键槽位)。
+  String? _dateKeyOrNull(String? value) {
     if (value == null || value.isEmpty) return null;
-    return DateTime.tryParse(value);
+    return value;
   }
 }

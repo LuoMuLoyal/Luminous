@@ -245,7 +245,7 @@ void main() {
           verify(
                 () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
                   id: 'event-1',
-                  date: DateTime.parse('2026-08-09'),
+                  date: '2026-08-09',
                   healthEventsControllerUpsertCheckInV1Request: captureAny(
                     named: 'healthEventsControllerUpsertCheckInV1Request',
                   ),

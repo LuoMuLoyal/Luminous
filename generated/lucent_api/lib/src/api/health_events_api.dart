@@ -38,7 +38,7 @@ class HealthEventsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthEventNullableResponseDto>>
   healthEventsControllerActiveV1({
-    DateTime? date,
+    String? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -297,7 +297,7 @@ class HealthEventsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthEventResponseDto>> healthEventsControllerGetV1({
     required String id,
-    DateTime? date,
+    String? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -377,7 +377,7 @@ class HealthEventsApi {
   /// Returns a [Future] containing a [Response] with a [HealthEventListResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<HealthEventListResponseDto>> healthEventsControllerListV1({
-    DateTime? date,
+    String? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -456,7 +456,7 @@ class HealthEventsApi {
   Future<Response<HealthEventResponseDto>>
   healthEventsControllerUpsertCheckInV1({
     required String id,
-    required DateTime date,
+    required String date,
     required HealthEventsControllerUpsertCheckInV1Request
     healthEventsControllerUpsertCheckInV1Request,
     CancelToken? cancelToken,

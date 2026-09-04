@@ -31,7 +31,7 @@ class DailyRecordsControllerGenerateCandidatesV1Request {
 
   /// Wake date in YYYY-MM-DD format used as the candidate record date baseline.
   @JsonKey(name: r'occurredAt', required: true, includeIfNull: false)
-  final DateTime occurredAt;
+  final String occurredAt;
 
   /// Optional user timezone hint used only for interpretation wording. No server timezone conversion is persisted.
   @JsonKey(name: r'timezone', required: false, includeIfNull: false)

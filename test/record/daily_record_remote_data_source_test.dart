@@ -188,6 +188,29 @@ void main() {
     );
 
     test(
+      'generateCandidates forwards the yyyy-MM-dd day key as a plain string',
+      () async {
+        final result = await dataSource.generateCandidates(
+          text: '喝了一杯水',
+          occurredAt: '2026-07-12',
+        );
+
+        // 方案 A 日键 wire 形态:occurredAt 必须是纯 YYYY-MM-DD 字符串,不再经
+        // DateTime 中转(回归锁:若有人把 occurredAt 塞回 DateTime,此处会断言
+        // 失败,因为生成客户端序列化 DateTime 会带出时间部分)。
+        final request = adapter.requestAt(
+          'POST',
+          '/api/v1/user/daily-records/candidate-records/generate',
+        );
+        expect(request.jsonBody, containsPair('text', '喝了一杯水'));
+        expect(request.jsonBody, containsPair('occurredAt', '2026-07-12'));
+        expect(request.jsonBody['occurredAt'], isA<String>());
+        expect(result.locale, 'zh');
+        expect(result.items, isEmpty);
+      },
+    );
+
+    test(
       'get preserves meal analysis hot fields from generated DTOs',
       () async {
         final item = await dataSource.get('record-1');
@@ -316,6 +339,17 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
             'latest': _recordJson(attachments: const <Object?>[]),
           },
         ],
+      });
+    }
+
+    if (options.path.endsWith(
+      '/api/v1/user/daily-records/candidate-records/generate',
+    )) {
+      return _jsonResponse(<String, Object?>{
+        'locale': 'zh',
+        'generatedAt': '2026-07-12T08:00:00.000Z',
+        'confirmationHint': '请确认',
+        'items': <Object?>[],
       });
     }
 

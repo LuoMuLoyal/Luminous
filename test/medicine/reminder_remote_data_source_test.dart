@@ -244,12 +244,9 @@ void main() {
       expect(request.body, containsPair('currentMedicineId', 'med-1'));
       expect(request.body, containsPair('label', '阿托伐他汀钙片'));
       expect(request.body, containsPair('daysOfWeek', [1, 2, 3]));
-      // The regenerated upsert contract types startDate/endDate as DateTime,
-      // so the date-only domain value is serialized as ISO-8601 local midnight.
-      expect(
-        request.body,
-        containsPair('startDate', '2026-06-10T00:00:00.000'),
-      );
+      // 方案 A 后 upsert 契约把 startDate/endDate 定为 String? 日键,date-only
+      // 域值按纯 YYYY-MM-DD 直传(不再序列化为 ISO-8601 datetime)。
+      expect(request.body, containsPair('startDate', '2026-06-10'));
       expect(request.body!.containsKey('endDate'), isFalse);
       expect(request.body, containsPair('isActive', true));
       expect(request.body, containsPair('note', '饭后服用'));

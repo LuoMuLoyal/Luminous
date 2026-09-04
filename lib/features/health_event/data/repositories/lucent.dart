@@ -126,7 +126,10 @@ class LucentHealthEventRepository implements HealthEventRepository {
     return TaskEither.tryCatch(() async {
       final response = await _api.healthEventsControllerUpsertCheckInV1(
         id: eventId,
-        date: DateTime.parse(date),
+        // 日键 wire 形态为纯 YYYY-MM-DD 字符串(方案 A),直接透传调用方入参
+        // 字符串;不再经 DateTime 中转(此前 DateTime.parse 会让生成客户端把
+        // date.toString() 塞进路径,产出带时间的畸形日键)。
+        date: date,
         healthEventsControllerUpsertCheckInV1Request:
             api.HealthEventsControllerUpsertCheckInV1Request(
               outcome: _toCheckInApiOutcome(outcome),

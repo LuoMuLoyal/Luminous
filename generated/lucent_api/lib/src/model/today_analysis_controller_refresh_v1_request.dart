@@ -21,7 +21,7 @@ class TodayAnalysisControllerRefreshV1Request {
 
   /// Target date in YYYY-MM-DD format. Defaults to backend current day when omitted.
   @JsonKey(name: r'date', required: false, includeIfNull: false)
-  final DateTime? date;
+  final String? date;
 
   @override
   bool operator ==(Object other) =>

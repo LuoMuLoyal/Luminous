@@ -128,7 +128,10 @@ class DailyRecordRemoteDataSource {
       dailyRecordsControllerGenerateCandidatesV1Request:
           lucent.DailyRecordsControllerGenerateCandidatesV1Request(
             text: text,
-            occurredAt: DateTime.parse(occurredAt),
+            // 候选基准日与 record occurredAt 同属日键 wire 契约(String,
+            // YYYY-MM-DD),调用方传参即"生成哪一天候选"的纯日期字符串,直传
+            // 不经 DateTime 中转。
+            occurredAt: occurredAt,
           ),
     );
     final dto = _requireData(response.data, operation: 'generateCandidates');

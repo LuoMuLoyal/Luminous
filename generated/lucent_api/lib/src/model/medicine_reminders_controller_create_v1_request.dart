@@ -63,11 +63,11 @@ class MedicineRemindersControllerCreateV1Request {
 
   /// Date in YYYY-MM-DD format when the reminder starts.
   @JsonKey(name: r'startDate', required: false, includeIfNull: false)
-  final DateTime? startDate;
+  final String? startDate;
 
   /// Date in YYYY-MM-DD format when the reminder ends.
   @JsonKey(name: r'endDate', required: false, includeIfNull: false)
-  final DateTime? endDate;
+  final String? endDate;
 
   /// Whether this reminder is active.
   @JsonKey(name: r'isActive', required: false, includeIfNull: false)
