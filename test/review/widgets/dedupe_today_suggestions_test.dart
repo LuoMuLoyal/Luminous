@@ -4,9 +4,10 @@ import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
 /// dedupeTodaySuggestions 的数据契约测试(2026-09-01 审查 #5)。
 ///
-/// 该函数被 ReviewPage 与 legacy_dashboard_compat 两个调用点共享,是
-/// 建议历史卡「保页面数据契约」的核心算法:按 title|reason|type 去重,
-/// 保留生命周期状态最高的条目,输出保持首次出现顺序。
+/// 该函数当前仅一个生产调用点:ReviewPage(`review/presentation/pages/page.dart`
+/// 装配建议历史卡时调用)。契约语义:按 title|reason|type 去重,保留
+/// 生命周期状态最高的条目,输出保持首次出现顺序。若未来新增第二调用点,
+/// 须先在此对齐契约语义,防止各调用点行为分叉(2026-09-02 审查 S-1)。
 void main() {
   TodaySuggestionHistoryItem item({
     required String id,
