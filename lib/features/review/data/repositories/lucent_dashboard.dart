@@ -20,6 +20,11 @@ import 'package:luminous/features/review/data/datasources/dashboard_remote.dart'
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/repositories/dashboard.dart';
 
+// 文件级 typedef:生成的 dashboard metrics 来源枚举名过长
+// (2026-09-03 审查 #4 纯可读性收口,不改行为)。
+typedef _ObservedMetricSourcesEnum =
+    lucent.ReportDashboardResponseDtoMetricsInnerObservedMetricSourcesEnum;
+
 class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   LucentReviewDashboardRepository({
     required this.dataSource,
@@ -158,8 +163,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   }
 
   ReviewObservedMetricSource _mapObservedSource(
-    lucent.ReportDashboardResponseDtoMetricsInnerObservedMetricSourcesEnum
-    source,
+    _ObservedMetricSourcesEnum source,
   ) {
     return switch (source.value) {
       'manual' => ReviewObservedMetricSource.manual,

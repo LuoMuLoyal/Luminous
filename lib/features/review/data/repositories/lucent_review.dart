@@ -12,6 +12,17 @@ import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 
+// 文件级 typedef:生成的 EventReview 读模型枚举名过长(2026-09-03 审查 #4
+// 纯可读性收口,不改行为)。仅本文件内使用,不新增导出符号。
+typedef _SectionStateEnum =
+    lucent.EventReviewDataDtoSectionsWhatHappenedStateEnum;
+typedef _TodayCheckInOutcomeEnum =
+    lucent.EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum;
+typedef _EventKindEnum = lucent.EventReviewDataDtoEventKindEnum;
+typedef _EventStatusEnum = lucent.EventReviewDataDtoEventStatusEnum;
+typedef _EventOutcomeEnum = lucent.EventReviewDataDtoEventOutcomeEnum;
+typedef _AvailableActionEnum = lucent.EventReviewDataDtoAvailableActionsEnum;
+
 /// Review 端点的远程数据源。
 ///
 /// HTTP Problem Details 由全局错误链处理；当前生成客户端仍处于旧成功
@@ -68,10 +79,8 @@ class ReviewRemoteDataSource {
   String? _apiStatus(ReviewEventStatus? status) {
     return switch (status) {
       null => null,
-      ReviewEventStatus.active =>
-        lucent.EventReviewDataDtoEventStatusEnum.active.value,
-      ReviewEventStatus.ended =>
-        lucent.EventReviewDataDtoEventStatusEnum.ended.value,
+      ReviewEventStatus.active => _EventStatusEnum.active.value,
+      ReviewEventStatus.ended => _EventStatusEnum.ended.value,
       ReviewEventStatus.unknown => null,
     };
   }
@@ -290,14 +299,9 @@ class LucentReviewRepository implements ReviewRepository {
   ReviewSection _mapSection(lucent.EventReviewDataDtoSectionsWhatHappened dto) {
     return ReviewSection(
       state: switch (dto.state) {
-        lucent.EventReviewDataDtoSectionsWhatHappenedStateEnum.available =>
-          ReviewSectionState.available,
-        lucent.EventReviewDataDtoSectionsWhatHappenedStateEnum.unknown =>
-          ReviewSectionState.unknown,
-        lucent
-            .EventReviewDataDtoSectionsWhatHappenedStateEnum
-            .unknownDefaultOpenApi =>
-          ReviewSectionState.unknown,
+        _SectionStateEnum.available => ReviewSectionState.available,
+        _SectionStateEnum.unknown => ReviewSectionState.unknown,
+        _SectionStateEnum.unknownDefaultOpenApi => ReviewSectionState.unknown,
       },
       // 原因码按原文保留；未知码在生成 DTO 反序列化层已被折叠为
       // unknown_default_open_api 占位符，这里保留占位原文而不是折叠成 null。
@@ -360,60 +364,38 @@ class LucentReviewRepository implements ReviewRepository {
     return ReviewTodayCheckIn(
       date: dto.date,
       outcome: switch (dto.outcome) {
-        lucent
-            .EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum
-            .improved =>
-          ReviewEventOutcome.improved,
-        lucent
-            .EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum
-            .unchanged =>
-          ReviewEventOutcome.unchanged,
-        lucent
-            .EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum
-            .worsened =>
-          ReviewEventOutcome.worsened,
-        lucent
-            .EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum
-            .unknownDefaultOpenApi =>
+        _TodayCheckInOutcomeEnum.improved => ReviewEventOutcome.improved,
+        _TodayCheckInOutcomeEnum.unchanged => ReviewEventOutcome.unchanged,
+        _TodayCheckInOutcomeEnum.worsened => ReviewEventOutcome.worsened,
+        _TodayCheckInOutcomeEnum.unknownDefaultOpenApi =>
           ReviewEventOutcome.unknown,
       },
       updatedAt: dto.updatedAt,
     );
   }
 
-  ReviewEventKind _mapKind(lucent.EventReviewDataDtoEventKindEnum kind) {
+  ReviewEventKind _mapKind(_EventKindEnum kind) {
     return switch (kind) {
-      lucent.EventReviewDataDtoEventKindEnum.symptom => ReviewEventKind.symptom,
-      lucent.EventReviewDataDtoEventKindEnum.other => ReviewEventKind.other,
-      lucent.EventReviewDataDtoEventKindEnum.unknownDefaultOpenApi =>
-        ReviewEventKind.unknown,
+      _EventKindEnum.symptom => ReviewEventKind.symptom,
+      _EventKindEnum.other => ReviewEventKind.other,
+      _EventKindEnum.unknownDefaultOpenApi => ReviewEventKind.unknown,
     };
   }
 
-  ReviewEventStatus _mapStatus(
-    lucent.EventReviewDataDtoEventStatusEnum status,
-  ) {
+  ReviewEventStatus _mapStatus(_EventStatusEnum status) {
     return switch (status) {
-      lucent.EventReviewDataDtoEventStatusEnum.active =>
-        ReviewEventStatus.active,
-      lucent.EventReviewDataDtoEventStatusEnum.ended => ReviewEventStatus.ended,
-      lucent.EventReviewDataDtoEventStatusEnum.unknownDefaultOpenApi =>
-        ReviewEventStatus.unknown,
+      _EventStatusEnum.active => ReviewEventStatus.active,
+      _EventStatusEnum.ended => ReviewEventStatus.ended,
+      _EventStatusEnum.unknownDefaultOpenApi => ReviewEventStatus.unknown,
     };
   }
 
-  ReviewEventOutcome _mapOutcome(
-    lucent.EventReviewDataDtoEventOutcomeEnum outcome,
-  ) {
+  ReviewEventOutcome _mapOutcome(_EventOutcomeEnum outcome) {
     return switch (outcome) {
-      lucent.EventReviewDataDtoEventOutcomeEnum.improved =>
-        ReviewEventOutcome.improved,
-      lucent.EventReviewDataDtoEventOutcomeEnum.unchanged =>
-        ReviewEventOutcome.unchanged,
-      lucent.EventReviewDataDtoEventOutcomeEnum.worsened =>
-        ReviewEventOutcome.worsened,
-      lucent.EventReviewDataDtoEventOutcomeEnum.unknownDefaultOpenApi =>
-        ReviewEventOutcome.unknown,
+      _EventOutcomeEnum.improved => ReviewEventOutcome.improved,
+      _EventOutcomeEnum.unchanged => ReviewEventOutcome.unchanged,
+      _EventOutcomeEnum.worsened => ReviewEventOutcome.worsened,
+      _EventOutcomeEnum.unknownDefaultOpenApi => ReviewEventOutcome.unknown,
     };
   }
 
@@ -446,20 +428,13 @@ class LucentReviewRepository implements ReviewRepository {
   }
 
   /// 契约外动作被跳过（客户端无法渲染），已知动作保持顺序。
-  ReviewAction? _mapAction(
-    lucent.EventReviewDataDtoAvailableActionsEnum action,
-  ) {
+  ReviewAction? _mapAction(_AvailableActionEnum action) {
     return switch (action) {
-      lucent.EventReviewDataDtoAvailableActionsEnum.checkIn =>
-        ReviewAction.checkIn,
-      lucent.EventReviewDataDtoAvailableActionsEnum.endEvent =>
-        ReviewAction.endEvent,
-      lucent.EventReviewDataDtoAvailableActionsEnum.clinicSummary =>
-        ReviewAction.clinicSummary,
-      lucent.EventReviewDataDtoAvailableActionsEnum.export_ =>
-        ReviewAction.export,
-      lucent.EventReviewDataDtoAvailableActionsEnum.unknownDefaultOpenApi =>
-        null,
+      _AvailableActionEnum.checkIn => ReviewAction.checkIn,
+      _AvailableActionEnum.endEvent => ReviewAction.endEvent,
+      _AvailableActionEnum.clinicSummary => ReviewAction.clinicSummary,
+      _AvailableActionEnum.export_ => ReviewAction.export,
+      _AvailableActionEnum.unknownDefaultOpenApi => null,
     };
   }
 }
