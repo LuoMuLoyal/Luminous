@@ -60,20 +60,20 @@ class LucentAuthRepository implements AuthRepository {
     return trimmed;
   }
 
-  LocalControllerSendVerificationCodeV1RequestSceneEnum _toDtoScene(
+  SendVerificationCodeRequestSceneEnum _toDtoScene(
     AuthVerificationScene scene,
   ) {
     return switch (scene) {
       AuthVerificationScene.register =>
-        LocalControllerSendVerificationCodeV1RequestSceneEnum.register,
+        SendVerificationCodeRequestSceneEnum.register,
       AuthVerificationScene.login =>
-        LocalControllerSendVerificationCodeV1RequestSceneEnum.login,
+        SendVerificationCodeRequestSceneEnum.login,
       AuthVerificationScene.setPassword =>
-        LocalControllerSendVerificationCodeV1RequestSceneEnum.setPassword,
+        SendVerificationCodeRequestSceneEnum.setPassword,
       AuthVerificationScene.changeEmail =>
-        LocalControllerSendVerificationCodeV1RequestSceneEnum.changeEmail,
+        SendVerificationCodeRequestSceneEnum.changeEmail,
       AuthVerificationScene.deleteAccount =>
-        LocalControllerSendVerificationCodeV1RequestSceneEnum.deleteAccount,
+        SendVerificationCodeRequestSceneEnum.deleteAccount,
     };
   }
 
@@ -84,8 +84,8 @@ class LucentAuthRepository implements AuthRepository {
     String? code,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.localControllerLoginV1(
-        localControllerLoginV1Request: LocalControllerLoginV1Request(
+      final response = await _client.auth.login(
+        loginRequest: LoginRequest(
           email: email.trim(),
           password: _trimOrNull(password),
           code: _trimOrNull(code),
@@ -106,9 +106,9 @@ class LucentAuthRepository implements AuthRepository {
     return TaskEither.tryCatch(() async {
       final trimmedCallbackUri = _trimOrNull(callbackUri);
       final response = await _client.auth
-          .oAuthControllerCreateWechatWebAuthorizeUrlV1(
-            oAuthControllerCreateWechatWebAuthorizeUrlV1Request:
-                OAuthControllerCreateWechatWebAuthorizeUrlV1Request(
+          .createWechatWebAuthorizeUrl(
+            createWechatWebAuthorizeUrlRequest:
+                CreateWechatWebAuthorizeUrlRequest(
                   callbackUri: trimmedCallbackUri,
                 ),
           );
@@ -124,9 +124,9 @@ class LucentAuthRepository implements AuthRepository {
     return TaskEither.tryCatch(() async {
       final trimmedIdentityCallbackUri = _trimOrNull(callbackUri);
       final response = await _client.account
-          .accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(
-            accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request:
-                AccountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1Request(
+          .createWechatWebIdentityLinkAuthorizeUrl(
+            createWechatWebIdentityLinkAuthorizeUrlRequest:
+                CreateWechatWebIdentityLinkAuthorizeUrlRequest(
                   callbackUri: trimmedIdentityCallbackUri,
                 ),
           );
@@ -142,9 +142,9 @@ class LucentAuthRepository implements AuthRepository {
     required String state,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.oAuthControllerLoginWithWechatWebV1(
-        oAuthControllerLoginWithWechatWebV1Request:
-            OAuthControllerLoginWithWechatWebV1Request(
+      final response = await _client.auth.loginWithWechatWeb(
+        loginWithWechatWebRequest:
+            LoginWithWechatWebRequest(
               code: code.trim(),
               state: state.trim(),
             ),
@@ -163,9 +163,9 @@ class LucentAuthRepository implements AuthRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _client.auth
-          .oAuthControllerLoginWithWechatMobileV1(
-            oAuthControllerLoginWithWechatMobileV1Request:
-                OAuthControllerLoginWithWechatMobileV1Request(
+          .loginWithWechatMobile(
+            loginWithWechatMobileRequest:
+                LoginWithWechatMobileRequest(
                   code: code.trim(),
                 ),
           );
@@ -185,9 +185,9 @@ class LucentAuthRepository implements AuthRepository {
     String? familyName,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.oAuthControllerLoginWithAppleV1(
-        oAuthControllerLoginWithAppleV1Request:
-            OAuthControllerLoginWithAppleV1Request(
+      final response = await _client.auth.loginWithApple(
+        loginWithAppleRequest:
+            LoginWithAppleRequest(
               identityToken: identityToken,
               authorizationCode: authorizationCode,
               givenName: givenName,
@@ -208,9 +208,9 @@ class LucentAuthRepository implements AuthRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final trimmedQqCallbackUri = _trimOrNull(callbackUri);
-      final response = await _client.auth.oAuthControllerCreateQqAuthorizeUrlV1(
-        oAuthControllerCreateQqAuthorizeUrlV1Request:
-            OAuthControllerCreateQqAuthorizeUrlV1Request(
+      final response = await _client.auth.createQqAuthorizeUrl(
+        createQqAuthorizeUrlRequest:
+            CreateQqAuthorizeUrlRequest(
               callbackUri: trimmedQqCallbackUri,
             ),
       );
@@ -226,9 +226,9 @@ class LucentAuthRepository implements AuthRepository {
     required String state,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.oAuthControllerLoginWithQqV1(
-        oAuthControllerLoginWithQqV1Request:
-            OAuthControllerLoginWithQqV1Request(
+      final response = await _client.auth.loginWithQq(
+        loginWithQqRequest:
+            LoginWithQqRequest(
               code: code.trim(),
               state: state.trim(),
             ),
@@ -248,9 +248,9 @@ class LucentAuthRepository implements AuthRepository {
     return TaskEither.tryCatch(() async {
       final trimmedWeiboCallbackUri = _trimOrNull(callbackUri);
       final response = await _client.auth
-          .oAuthControllerCreateWeiboAuthorizeUrlV1(
-            oAuthControllerCreateWeiboAuthorizeUrlV1Request:
-                OAuthControllerCreateWeiboAuthorizeUrlV1Request(
+          .createWeiboAuthorizeUrl(
+            createWeiboAuthorizeUrlRequest:
+                CreateWeiboAuthorizeUrlRequest(
                   callbackUri: trimmedWeiboCallbackUri,
                 ),
           );
@@ -266,9 +266,9 @@ class LucentAuthRepository implements AuthRepository {
     required String state,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.oAuthControllerLoginWithWeiboV1(
-        oAuthControllerLoginWithWeiboV1Request:
-            OAuthControllerLoginWithWeiboV1Request(
+      final response = await _client.auth.loginWithWeibo(
+        loginWithWeiboRequest:
+            LoginWithWeiboRequest(
               code: code.trim(),
               state: state.trim(),
             ),
@@ -288,9 +288,9 @@ class LucentAuthRepository implements AuthRepository {
     return TaskEither.tryCatch(() async {
       final trimmedGoogleCallbackUri = _trimOrNull(callbackUri);
       final response = await _client.auth
-          .oAuthControllerCreateGoogleAuthorizeUrlV1(
-            oAuthControllerCreateGoogleAuthorizeUrlV1Request:
-                OAuthControllerCreateGoogleAuthorizeUrlV1Request(
+          .createGoogleAuthorizeUrl(
+            createGoogleAuthorizeUrlRequest:
+                CreateGoogleAuthorizeUrlRequest(
                   callbackUri: trimmedGoogleCallbackUri,
                 ),
           );
@@ -306,9 +306,9 @@ class LucentAuthRepository implements AuthRepository {
     required String state,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.oAuthControllerLoginWithGoogleV1(
-        oAuthControllerLoginWithGoogleV1Request:
-            OAuthControllerLoginWithGoogleV1Request(
+      final response = await _client.auth.loginWithGoogle(
+        loginWithGoogleRequest:
+            LoginWithGoogleRequest(
               code: code.trim(),
               state: state.trim(),
             ),
@@ -328,9 +328,9 @@ class LucentAuthRepository implements AuthRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _client.account
-          .accountControllerLinkWechatWebIdentityV1(
-            accountControllerLinkWechatWebIdentityV1Request:
-                AccountControllerLinkWechatWebIdentityV1Request(
+          .linkWechatWebIdentity(
+            linkWechatWebIdentityRequest:
+                LinkWechatWebIdentityRequest(
                   code: code.trim(),
                   state: state.trim(),
                 ),
@@ -347,9 +347,9 @@ class LucentAuthRepository implements AuthRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _client.account
-          .accountControllerLinkWechatMobileIdentityV1(
-            accountControllerLinkWechatMobileIdentityV1Request:
-                AccountControllerLinkWechatMobileIdentityV1Request(
+          .linkWechatMobileIdentity(
+            linkWechatMobileIdentityRequest:
+                LinkWechatMobileIdentityRequest(
                   code: code.trim(),
                 ),
           );
@@ -367,8 +367,8 @@ class LucentAuthRepository implements AuthRepository {
     String? nickname,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.localControllerRegisterV1(
-        localControllerRegisterV1Request: LocalControllerRegisterV1Request(
+      final response = await _client.auth.register(
+        registerRequest: RegisterRequest(
           email: email.trim(),
           password: password.trim(),
           code: code.trim(),
@@ -386,8 +386,8 @@ class LucentAuthRepository implements AuthRepository {
     return TaskEither.tryCatch(() async {
       final refreshToken = await _sessionStore.readRefreshToken();
       if (refreshToken != null && refreshToken.isNotEmpty) {
-        await _client.auth.sessionControllerLogoutV1(
-          sessionControllerLogoutV1Request: SessionControllerLogoutV1Request(
+        await _client.auth.logout(
+          logoutRequest: LogoutRequest(
             refreshToken: refreshToken,
           ),
         );
@@ -402,7 +402,7 @@ class LucentAuthRepository implements AuthRepository {
   @override
   TaskEither<LucentFailure, AuthUser> fetchAccount() {
     return TaskEither.tryCatch(() async {
-      final response = await _client.account.accountControllerGetAccountV1();
+      final response = await _client.account.getAccount();
       return _authUserFromAccount(_requireBody(response.data, 'fetchAccount'));
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
@@ -413,10 +413,10 @@ class LucentAuthRepository implements AuthRepository {
   }) {
     // Step 1: refresh tokens (with side-effect: persist to session store).
     final refreshTokens =
-        TaskEither<LucentFailure, RefreshResponseDto>.tryCatch(() async {
-          final response = await _client.auth.sessionControllerRefreshV1(
-            sessionControllerRefreshV1Request:
-                SessionControllerRefreshV1Request(
+        TaskEither<LucentFailure, RefreshResponse>.tryCatch(() async {
+          final response = await _client.auth.refreshSession(
+            refreshSessionRequest:
+                RefreshSessionRequest(
                   refreshToken: refreshToken.trim(),
                 ),
           );
@@ -449,9 +449,9 @@ class LucentAuthRepository implements AuthRepository {
     required AuthVerificationScene scene,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.localControllerSendVerificationCodeV1(
-        localControllerSendVerificationCodeV1Request:
-            LocalControllerSendVerificationCodeV1Request(
+      final response = await _client.auth.sendVerificationCode(
+        sendVerificationCodeRequest:
+            SendVerificationCodeRequest(
               email: email.trim(),
               scene: _toDtoScene(scene),
             ),
@@ -467,9 +467,9 @@ class LucentAuthRepository implements AuthRepository {
     required String password,
   }) {
     return TaskEither.tryCatch(() async {
-      await _client.auth.localControllerResetPasswordV1(
-        localControllerResetPasswordV1Request:
-            LocalControllerResetPasswordV1Request(
+      await _client.auth.resetPassword(
+        resetPasswordRequest:
+            ResetPasswordRequest(
               token: token.trim(),
               password: password.trim(),
             ),
@@ -482,9 +482,9 @@ class LucentAuthRepository implements AuthRepository {
     required String email,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.auth.localControllerForgotPasswordV1(
-        localControllerForgotPasswordV1Request:
-            LocalControllerForgotPasswordV1Request(email: email.trim()),
+      final response = await _client.auth.forgotPassword(
+        forgotPasswordRequest:
+            ForgotPasswordRequest(email: email.trim()),
       );
       final dto = _requireBody(response.data, 'forgotPassword');
       return _mapCooldown(dto.message, dto.cooldown);
@@ -494,9 +494,9 @@ class LucentAuthRepository implements AuthRepository {
   @override
   TaskEither<LucentFailure, void> verifyEmail({required String token}) {
     return TaskEither.tryCatch(() async {
-      await _client.auth.localControllerVerifyEmailV1(
-        localControllerVerifyEmailV1Request:
-            LocalControllerVerifyEmailV1Request(token: token.trim()),
+      await _client.auth.verifyEmail(
+        verifyEmailRequest:
+            VerifyEmailRequest(token: token.trim()),
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
@@ -507,9 +507,9 @@ class LucentAuthRepository implements AuthRepository {
     String? avatar,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.account.accountControllerUpdateAccountV1(
-        accountControllerUpdateAccountV1Request:
-            AccountControllerUpdateAccountV1Request(
+      final response = await _client.account.updateAccount(
+        updateAccountRequest:
+            UpdateAccountRequest(
               nickname: _trimOrNull(nickname),
               avatar: _trimOrNull(avatar),
             ),
@@ -526,9 +526,9 @@ class LucentAuthRepository implements AuthRepository {
     required String newPassword,
   }) {
     return TaskEither.tryCatch(() async {
-      await _client.account.accountControllerChangePasswordV1(
-        accountControllerChangePasswordV1Request:
-            AccountControllerChangePasswordV1Request(
+      await _client.account.changePassword(
+        changePasswordRequest:
+            ChangePasswordRequest(
               password: password.trim(),
               newPassword: newPassword.trim(),
             ),
@@ -545,9 +545,9 @@ class LucentAuthRepository implements AuthRepository {
     required AuthUser currentUser,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.account.accountControllerChangeEmailV1(
-        accountControllerChangeEmailV1Request:
-            AccountControllerChangeEmailV1Request(
+      final response = await _client.account.changeEmail(
+        changeEmailRequest:
+            ChangeEmailRequest(
               newEmail: newEmail.trim(),
               code: code.trim(),
               password: password.trim(),
@@ -567,9 +567,9 @@ class LucentAuthRepository implements AuthRepository {
     String? code,
   }) {
     return TaskEither.tryCatch(() async {
-      await _client.account.accountControllerDeleteAccountV1(
-        accountControllerDeleteAccountV1Request:
-            AccountControllerDeleteAccountV1Request(
+      await _client.account.deleteAccount(
+        deleteAccountRequest:
+            DeleteAccountRequest(
               password: _trimOrNull(password),
               code: _trimOrNull(code),
             ),
@@ -584,10 +584,10 @@ class LucentAuthRepository implements AuthRepository {
     required String password,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _client.account.accountControllerUnlinkIdentityV1(
+      final response = await _client.account.unlinkIdentity(
         identityId: identityId,
-        accountControllerUnlinkIdentityV1Request:
-            AccountControllerUnlinkIdentityV1Request(password: password.trim()),
+        unlinkIdentityRequest:
+            UnlinkIdentityRequest(password: password.trim()),
       );
       return _authUserFromAccount(
         _requireBody(response.data, 'unlinkIdentity'),
@@ -596,17 +596,17 @@ class LucentAuthRepository implements AuthRepository {
   }
 
   @override
-  TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
-    required DataExportControllerCreateRequestV1RequestKindEnum kind,
-    required DataExportControllerCreateRequestV1RequestFormatEnum format,
-    required DataExportControllerCreateRequestV1RequestRangeEnum range,
+  TaskEither<LucentFailure, DataExportRequestData> requestDataExport({
+    required CreateRequestRequestKindEnum kind,
+    required CreateRequestRequestFormatEnum format,
+    required CreateRequestRequestRangeEnum range,
     required String password,
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _client.dataExport
-          .dataExportControllerCreateRequestV1(
-            dataExportControllerCreateRequestV1Request:
-                DataExportControllerCreateRequestV1Request(
+          .createRequest(
+            createRequestRequest:
+                CreateRequestRequest(
                   kind: kind,
                   format: format,
                   range: range,
@@ -614,11 +614,11 @@ class LucentAuthRepository implements AuthRepository {
                 ),
           );
       final body = _requireBody(response.data, 'requestDataExport');
-      return DataExportRequestDataDto.fromJson(body.toJson());
+      return DataExportRequestData.fromJson(body.toJson());
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
-  AuthUser _authUserFromAccount(AccountResponseDto user) {
+  AuthUser _authUserFromAccount(AccountResponse user) {
     return AuthUser(
       id: user.id,
       email: user.email?.toString(),
@@ -643,7 +643,7 @@ class LucentAuthRepository implements AuthRepository {
     );
   }
 
-  OAuthAuthorizeData _mapAuthorizeData(OAuthAuthorizeResponseDto dto) {
+  OAuthAuthorizeData _mapAuthorizeData(OAuthAuthorizeResponse dto) {
     return OAuthAuthorizeData(
       authorizeUrl: dto.authorizeUrl,
       state: dto.state,

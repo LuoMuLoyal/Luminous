@@ -5,11 +5,11 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 abstract final class AuthMapper {
   /// 登录响应 → [AuthSession]。
   ///
-  /// tokens 形参沿用生成类型 [RegisterResponseDtoTokens]:generated 客户端对
-  /// 登录与注册响应的 token 载荷建模为同一个类(`LoginResponseDto.tokens` 与
-  /// `RegisterResponseDto.tokens` 均为该类型,无独立的 `LoginResponseDtoTokens`),
-  /// 因此这里不需要再引入"共享 tokens"的中间类型(2026-09-03 审查 #7 澄清)。
-  static AuthSession toSessionFromLogin(LoginResponseDto data) {
+  /// tokens 形参沿用生成类型 [RegisterResponseTokens]:登录响应使用
+  /// [LoginResponseTokens]、注册响应使用 [RegisterResponseTokens],两者字段一致
+  /// (accessToken/refreshToken/expiresIn),此处仅做属性访问,无需中间类型
+  /// (2026-09-03 审查 #7 澄清)。
+  static AuthSession toSessionFromLogin(LoginResponse data) {
     final user = data.user;
     final tokens = data.tokens;
     return AuthSession(
@@ -28,10 +28,10 @@ abstract final class AuthMapper {
     );
   }
 
-  static AuthSession toSessionFromRegister(RegisterResponseDto data) {
+  static AuthSession toSessionFromRegister(RegisterResponse data) {
     final user = data.user;
     final tokens = data.tokens;
-    // RegisterResponseDtoUser 不携带 avatar/updatedAt:注册场景无头像来源,
+    // RegisterResponseUser 不携带 avatar/updatedAt:注册场景无头像来源,
     // updatedAt 沿用 createdAt 作为占位。
     return AuthSession(
       user: AuthUser(
