@@ -74,14 +74,14 @@ void main() {
     group('findAll', () {
       test('maps API items to LegalDocumentSummary list as Right', () async {
         final response = _response(
-          LegalDocumentListResponseDto(
+          LegalDocumentListResponse(
             items: [
-              LegalDocumentListResponseDtoItemsInner(
+              LegalDocumentListResponseItems(
                 docType: 'terms',
                 title: '服务条款',
                 updatedAt: '2026-07-01T00:00:00Z',
               ),
-              LegalDocumentListResponseDtoItemsInner(
+              LegalDocumentListResponseItems(
                 docType: 'privacy',
                 title: '隐私政策',
                 updatedAt: '2026-07-02T00:00:00Z',
@@ -92,7 +92,7 @@ void main() {
         );
 
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenAnswer((_) async => response);
 
         final result = await expectTaskRight(repo.findAll());
@@ -107,9 +107,9 @@ void main() {
 
       test('defaults to terms for unknown docType', () async {
         final response = _response(
-          LegalDocumentListResponseDto(
+          LegalDocumentListResponse(
             items: [
-              LegalDocumentListResponseDtoItemsInner(
+              LegalDocumentListResponseItems(
                 docType: 'unknown-type',
                 title: 'Unknown',
                 updatedAt: '',
@@ -120,7 +120,7 @@ void main() {
         );
 
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenAnswer((_) async => response);
 
         final result = await expectTaskRight(repo.findAll());
@@ -131,11 +131,11 @@ void main() {
 
       test('returns empty list when API returns no items', () async {
         final response = _response(
-          LegalDocumentListResponseDto(items: [], updatedAt: ''),
+          LegalDocumentListResponse(items: [], updatedAt: ''),
         );
 
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenAnswer((_) async => response);
 
         final result = await expectTaskRight(repo.findAll());
@@ -145,7 +145,7 @@ void main() {
 
       test('maps a network error to Left(network)', () async {
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenThrow(_networkException());
 
         final failure = await expectTaskLeft(repo.findAll());
@@ -154,7 +154,7 @@ void main() {
 
       test('keeps 500 Problem Details code/status as Left(server)', () async {
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenThrow(_problemDetails(statusCode: 500, code: 'LEGAL_SERVER_ERR'));
 
         final failure = await expectTaskLeft(repo.findAll());
@@ -168,7 +168,7 @@ void main() {
         () async {
           when(
             () =>
-                api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+                api.listLegalDocuments(lang: any(named: 'lang')),
           ).thenThrow(
             _problemDetails(statusCode: 403, code: 'LEGAL_FORBIDDEN'),
           );
@@ -185,7 +185,7 @@ void main() {
       test('non-Problem Details error body propagates FormatException '
           'from run()', () async {
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenThrow(_nonProblemHtml500());
 
         // 协议违反（500 + text/html 而非 problem+json）保持 mapper 抛出的
@@ -198,9 +198,9 @@ void main() {
 
       test('empty success body is Left(network/emptyResponse)', () async {
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenAnswer(
-          (_) async => Response<LegalDocumentListResponseDto>(
+          (_) async => Response<LegalDocumentListResponse>(
             data: null,
             requestOptions: RequestOptions(path: ''),
             statusCode: 200,
@@ -217,7 +217,7 @@ void main() {
         () async {
           when(
             () =>
-                api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+                api.listLegalDocuments(lang: any(named: 'lang')),
           ).thenThrow(StateError('boom'));
 
           final failure = await expectTaskLeft(repo.findAll());
@@ -234,18 +234,18 @@ void main() {
         );
 
         final response = _response(
-          LegalDocumentListResponseDto(items: [], updatedAt: ''),
+          LegalDocumentListResponse(items: [], updatedAt: ''),
         );
 
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenAnswer((_) async => response);
 
         resolvedLang = 'en';
         await repo.findAll().run();
 
         verify(
-          () => api.legalDocumentsControllerFindAllV1(lang: 'en'),
+          () => api.listLegalDocuments(lang: 'en'),
         ).called(1);
       });
     });
@@ -253,7 +253,7 @@ void main() {
     group('findOne', () {
       test('maps API response to LegalDocument as Right', () async {
         final response = _response(
-          LegalDocumentDetailResponseDto(
+          LegalDocumentDetailResponse(
             docType: 'terms',
             title: '服务条款',
             content: '# 服务条款\n\n正文内容',
@@ -262,7 +262,7 @@ void main() {
         );
 
         when(
-          () => api.legalDocumentsControllerFindOneV1(
+          () => api.getLegalDocument(
             docType: any(named: 'docType'),
             lang: any(named: 'lang'),
           ),
@@ -279,7 +279,7 @@ void main() {
       test('passes correct pathSegment for each docType', () async {
         for (final type in LegalDocType.values) {
           final response = _response(
-            LegalDocumentDetailResponseDto(
+            LegalDocumentDetailResponse(
               docType: type.pathSegment,
               title: 'T',
               content: 'C',
@@ -288,7 +288,7 @@ void main() {
           );
 
           when(
-            () => api.legalDocumentsControllerFindOneV1(
+            () => api.getLegalDocument(
               docType: any(named: 'docType'),
               lang: any(named: 'lang'),
             ),
@@ -297,7 +297,7 @@ void main() {
           await expectTaskRight(repo.findOne(type));
 
           verify(
-            () => api.legalDocumentsControllerFindOneV1(
+            () => api.getLegalDocument(
               docType: type.pathSegment,
               lang: any(named: 'lang'),
             ),
@@ -309,7 +309,7 @@ void main() {
 
       test('maps a network error to Left(network)', () async {
         when(
-          () => api.legalDocumentsControllerFindOneV1(
+          () => api.getLegalDocument(
             docType: any(named: 'docType'),
             lang: any(named: 'lang'),
           ),
@@ -323,7 +323,7 @@ void main() {
 
       test('keeps 500 Problem Details code/status as Left(server)', () async {
         when(
-          () => api.legalDocumentsControllerFindOneV1(
+          () => api.getLegalDocument(
             docType: any(named: 'docType'),
             lang: any(named: 'lang'),
           ),
@@ -339,12 +339,12 @@ void main() {
 
       test('empty success body is Left(network/emptyResponse)', () async {
         when(
-          () => api.legalDocumentsControllerFindOneV1(
+          () => api.getLegalDocument(
             docType: any(named: 'docType'),
             lang: any(named: 'lang'),
           ),
         ).thenAnswer(
-          (_) async => Response<LegalDocumentDetailResponseDto>(
+          (_) async => Response<LegalDocumentDetailResponse>(
             data: null,
             requestOptions: RequestOptions(path: ''),
             statusCode: 200,
@@ -363,7 +363,7 @@ void main() {
         // will throw. The fallback catches this per document and returns
         // whatever assets loaded — here an empty Right list.
         when(
-          () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+          () => api.listLegalDocuments(lang: any(named: 'lang')),
         ).thenThrow(_problemDetails(statusCode: 404, code: 'LEGAL_NOT_FOUND'));
 
         final result = await expectTaskRight(repo.findAll());
@@ -374,7 +374,7 @@ void main() {
 
       test('findOne 404 with missing bundled asset is Left(unknown)', () async {
         when(
-          () => api.legalDocumentsControllerFindOneV1(
+          () => api.getLegalDocument(
             docType: any(named: 'docType'),
             lang: any(named: 'lang'),
           ),
@@ -401,21 +401,21 @@ void main() {
 
     test("passes 'en' to findAll", () async {
       final response = _response(
-        LegalDocumentListResponseDto(items: [], updatedAt: ''),
+        LegalDocumentListResponse(items: [], updatedAt: ''),
       );
 
       when(
-        () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
+        () => api.listLegalDocuments(lang: any(named: 'lang')),
       ).thenAnswer((_) async => response);
 
       await expectTaskRight(repo.findAll());
 
-      verify(() => api.legalDocumentsControllerFindAllV1(lang: 'en')).called(1);
+      verify(() => api.listLegalDocuments(lang: 'en')).called(1);
     });
 
     test("passes 'en' to findOne", () async {
       final response = _response(
-        LegalDocumentDetailResponseDto(
+        LegalDocumentDetailResponse(
           docType: 'privacy',
           title: 'Privacy Policy',
           content: '# Privacy',
@@ -424,7 +424,7 @@ void main() {
       );
 
       when(
-        () => api.legalDocumentsControllerFindOneV1(
+        () => api.getLegalDocument(
           docType: any(named: 'docType'),
           lang: any(named: 'lang'),
         ),
@@ -433,7 +433,7 @@ void main() {
       await expectTaskRight(repo.findOne(LegalDocType.privacy));
 
       verify(
-        () => api.legalDocumentsControllerFindOneV1(
+        () => api.getLegalDocument(
           docType: 'privacy',
           lang: 'en',
         ),

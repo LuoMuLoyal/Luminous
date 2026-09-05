@@ -3,9 +3,9 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/search/data/mappers/medicine_search.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 
-MedicineSearchResponseDtoItemsInner _dto({
+MedicineSearchResponseItems _dto({
   required String id,
-  required MedicineSearchResponseDtoItemsInnerSource_Enum source,
+  required MedicineSearchResponseItemsSource_Enum source,
   required String name,
   String subtitle = '',
   String summary = '',
@@ -13,7 +13,7 @@ MedicineSearchResponseDtoItemsInner _dto({
   String imageUrl = '',
   List<String> matchedBy = const ['name'],
 }) {
-  return MedicineSearchResponseDtoItemsInner(
+  return MedicineSearchResponseItems(
     id: id,
     source_: source,
     name: name,
@@ -36,7 +36,7 @@ void main() {
     test('maps cn source correctly', () {
       final dto = _dto(
         id: 'cn-123',
-        source: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
+        source: MedicineSearchResponseItemsSource_Enum.cn,
         name: '阿莫西林',
         tags: ['antibiotic'],
       );
@@ -53,7 +53,7 @@ void main() {
     test('maps drugbank source with full fields', () {
       final dto = _dto(
         id: 'DB01050',
-        source: MedicineSearchResponseDtoItemsInnerSource_Enum.drugbank,
+        source: MedicineSearchResponseItemsSource_Enum.drugbank,
         name: 'Ibuprofen',
         subtitle: 'NSAID',
         summary: 'Pain reliever',
@@ -72,7 +72,7 @@ void main() {
     test('defaults unknown source to drugbank', () {
       final dto = _dto(
         id: 'unknown',
-        source: MedicineSearchResponseDtoItemsInnerSource_Enum
+        source: MedicineSearchResponseItemsSource_Enum
             .unknownDefaultOpenApi,
         name: 'X',
       );
@@ -83,7 +83,7 @@ void main() {
     test('defaults matchType to name when ingredient not in matchedBy', () {
       final dto = _dto(
         id: '1',
-        source: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
+        source: MedicineSearchResponseItemsSource_Enum.cn,
         name: 'Test',
         matchedBy: ['brand', 'category'],
       );
@@ -94,7 +94,7 @@ void main() {
     test('ingredient matchedBy takes priority over name', () {
       final dto = _dto(
         id: '2',
-        source: MedicineSearchResponseDtoItemsInnerSource_Enum.drugbank,
+        source: MedicineSearchResponseItemsSource_Enum.drugbank,
         name: 'Paracetamol',
         matchedBy: ['ingredient', 'brand'],
       );

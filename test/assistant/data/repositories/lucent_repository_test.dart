@@ -29,10 +29,10 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
          dio: Dio(BaseOptions()),
        );
 
-  final lucent.AssistantCapabilitiesResponseDto? _capabilities;
-  final lucent.AssistantConversationDataDto? _latestConversation;
-  final List<lucent.AssistantConversationSummaryDtoInner>? _recentConversations;
-  final lucent.AssistantConversationDataDto? _openedConversation;
+  final lucent.AssistantCapabilitiesResponse? _capabilities;
+  final lucent.AssistantConversationData? _latestConversation;
+  final List<lucent.AssistantConversationSummaryItem>? _recentConversations;
+  final lucent.AssistantConversationData? _openedConversation;
   final bool? _clearResult;
   final Stream<AssistantRemoteEvent>? _stream;
   final Stream<AssistantRemoteEvent>? _regenerateStream;
@@ -56,7 +56,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   }
 
   @override
-  Future<lucent.AssistantCapabilitiesResponseDto> getCapabilities() async {
+  Future<lucent.AssistantCapabilitiesResponse> getCapabilities() async {
     _maybeThrow();
     if (_capabilities == null) {
       throw const LucentFailure(
@@ -68,20 +68,20 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   }
 
   @override
-  Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
+  Future<lucent.AssistantConversationData?> getLatestConversation() async {
     _maybeThrow();
     return _latestConversation;
   }
 
   @override
-  Future<List<lucent.AssistantConversationSummaryDtoInner>>
+  Future<List<lucent.AssistantConversationSummaryItem>>
   listRecentConversations() async {
     _maybeThrow();
     return _recentConversations ?? const [];
   }
 
   @override
-  Future<lucent.AssistantConversationDataDto> openConversation(
+  Future<lucent.AssistantConversationData> openConversation(
     String conversationId,
   ) async {
     lastOpenedConversationId = conversationId;
@@ -104,7 +104,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   @override
   Stream<AssistantRemoteEvent> streamMessages({
     required List<
-      lucent.AssistantControllerStreamMessagesV1RequestMessagesInner
+      lucent.StreamMessagesRequestMessages
     >
     messages,
     String? conversationId,
@@ -137,7 +137,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   final List<String> deleteCalls = <String>[];
 
   @override
-  Future<lucent.AssistantConversationDataDto> renameConversation({
+  Future<lucent.AssistantConversationData> renameConversation({
     required String conversationId,
     required String title,
   }) async {
@@ -155,13 +155,13 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
 
 // ── DTO factories ──────────────────────────────────────────────
 
-lucent.AssistantCapabilitiesResponseDtoAssistantContext _context({
+lucent.AssistantCapabilitiesResponseAssistantContext _context({
   bool health = true,
   bool daily = true,
   bool sleep = false,
   bool meds = true,
 }) {
-  return lucent.AssistantCapabilitiesResponseDtoAssistantContext(
+  return lucent.AssistantCapabilitiesResponseAssistantContext(
     healthProfile: health,
     dailyRecords: daily,
     sleepRecords: sleep,
@@ -169,31 +169,31 @@ lucent.AssistantCapabilitiesResponseDtoAssistantContext _context({
   );
 }
 
-lucent.AssistantCapabilitiesResponseDtoToolsInner _tool({
-  lucent.AssistantCapabilitiesResponseDtoToolsInnerNameEnum? name,
+lucent.AssistantCapabilitiesResponseTools _tool({
+  lucent.AssistantCapabilitiesResponseToolsNameEnum? name,
   bool enabled = true,
   bool implemented = true,
   bool permitted = true,
   List<
-    lucent.AssistantCapabilitiesResponseDtoToolsInnerRequiredContextSourcesEnum
+    lucent.AssistantCapabilitiesResponseToolsRequiredContextSourcesEnum
   >?
   required,
-  lucent.AssistantCapabilitiesResponseDtoToolsInnerDisabledReasonEnum?
+  lucent.AssistantCapabilitiesResponseToolsDisabledReasonEnum?
   disabledReason,
 }) {
-  return lucent.AssistantCapabilitiesResponseDtoToolsInner(
+  return lucent.AssistantCapabilitiesResponseTools(
     name:
         name ??
         lucent
-            .AssistantCapabilitiesResponseDtoToolsInnerNameEnum
+            .AssistantCapabilitiesResponseToolsNameEnum
             .getTodayRecords,
     requiredContextSources:
         required ??
         const <
-          lucent.AssistantCapabilitiesResponseDtoToolsInnerRequiredContextSourcesEnum
+          lucent.AssistantCapabilitiesResponseToolsRequiredContextSourcesEnum
         >[
           lucent
-              .AssistantCapabilitiesResponseDtoToolsInnerRequiredContextSourcesEnum
+              .AssistantCapabilitiesResponseToolsRequiredContextSourcesEnum
               .healthProfile,
         ],
     permittedByUser: permitted,
@@ -203,7 +203,7 @@ lucent.AssistantCapabilitiesResponseDtoToolsInner _tool({
   );
 }
 
-lucent.AssistantCapabilitiesResponseDto _capabilitiesDto({
+lucent.AssistantCapabilitiesResponse _capabilitiesDto({
   String phase = 'preview',
   bool enabled = true,
   bool memory = false,
@@ -214,10 +214,10 @@ lucent.AssistantCapabilitiesResponseDto _capabilitiesDto({
   String transport = 'sse',
   bool markdown = true,
   bool rag = false,
-  List<lucent.AssistantCapabilitiesResponseDtoToolsInner>? tools,
+  List<lucent.AssistantCapabilitiesResponseTools>? tools,
   String? updatedAt,
 }) {
-  return lucent.AssistantCapabilitiesResponseDto(
+  return lucent.AssistantCapabilitiesResponse(
     phase: phase,
     assistantEnabled: enabled,
     assistantMemoryEnabled: memory,
@@ -234,33 +234,33 @@ lucent.AssistantCapabilitiesResponseDto _capabilitiesDto({
   );
 }
 
-lucent.AssistantConversationDataDtoMessagesInner _messageDto({
-  lucent.AssistantConversationDataDtoMessagesInnerRoleEnum? role,
+lucent.AssistantConversationDataMessages _messageDto({
+  lucent.AssistantConversationDataMessagesRoleEnum? role,
   String content = 'hello',
   List<String>? usedTools,
   String? createdAt,
 }) {
-  return lucent.AssistantConversationDataDtoMessagesInner(
-    role: role ?? lucent.AssistantConversationDataDtoMessagesInnerRoleEnum.user,
+  return lucent.AssistantConversationDataMessages(
+    role: role ?? lucent.AssistantConversationDataMessagesRoleEnum.user,
     content: content,
     usedTools: usedTools ?? const [],
     createdAt: createdAt ?? '2026-07-01T10:00:00Z',
   );
 }
 
-lucent.AssistantConversationDataDto _conversationDto({
+lucent.AssistantConversationData _conversationDto({
   String id = 'conv-1',
   String? title = 'Test Conversation',
-  lucent.AssistantConversationDataDtoStatusEnum? status,
-  List<lucent.AssistantConversationDataDtoMessagesInner>? messages,
+  lucent.AssistantConversationDataStatusEnum? status,
+  List<lucent.AssistantConversationDataMessages>? messages,
   String? lastMessageAt,
   String? createdAt,
   String? updatedAt,
 }) {
-  return lucent.AssistantConversationDataDto(
+  return lucent.AssistantConversationData(
     id: id,
     title: title,
-    status: status ?? lucent.AssistantConversationDataDtoStatusEnum.active,
+    status: status ?? lucent.AssistantConversationDataStatusEnum.active,
     messages: messages ?? [_messageDto()],
     lastMessageAt: lastMessageAt ?? '2026-07-01T10:30:00Z',
     createdAt: createdAt ?? '2026-07-01T10:00:00Z',
@@ -268,19 +268,19 @@ lucent.AssistantConversationDataDto _conversationDto({
   );
 }
 
-lucent.AssistantConversationSummaryDtoInner _summaryDto({
+lucent.AssistantConversationSummaryItem _summaryDto({
   String id = 'conv-1',
   String? title = 'Summary',
-  lucent.AssistantConversationSummaryDtoInnerStatusEnum? status,
+  lucent.AssistantConversationSummaryItemStatusEnum? status,
   String? lastMessageAt,
   String? createdAt,
   String? updatedAt,
 }) {
-  return lucent.AssistantConversationSummaryDtoInner(
+  return lucent.AssistantConversationSummaryItem(
     id: id,
     title: title,
     status:
-        status ?? lucent.AssistantConversationSummaryDtoInnerStatusEnum.active,
+        status ?? lucent.AssistantConversationSummaryItemStatusEnum.active,
     lastMessageAt: lastMessageAt,
     createdAt: createdAt ?? '2026-07-01T10:00:00Z',
     updatedAt: updatedAt ?? '2026-07-01T10:30:00Z',
@@ -307,28 +307,28 @@ void main() {
             tools: [
               _tool(
                 name: lucent
-                    .AssistantCapabilitiesResponseDtoToolsInnerNameEnum
+                    .AssistantCapabilitiesResponseToolsNameEnum
                     .getUserProfile,
                 enabled: true,
                 implemented: true,
                 required:
                     const <
-                      lucent.AssistantCapabilitiesResponseDtoToolsInnerRequiredContextSourcesEnum
+                      lucent.AssistantCapabilitiesResponseToolsRequiredContextSourcesEnum
                     >[
                       lucent
-                          .AssistantCapabilitiesResponseDtoToolsInnerRequiredContextSourcesEnum
+                          .AssistantCapabilitiesResponseToolsRequiredContextSourcesEnum
                           .healthProfile,
                     ],
               ),
               _tool(
                 name: lucent
-                    .AssistantCapabilitiesResponseDtoToolsInnerNameEnum
+                    .AssistantCapabilitiesResponseToolsNameEnum
                     .getCurrentMedicines,
                 enabled: false,
                 implemented: false,
                 permitted: false,
                 disabledReason: lucent
-                    .AssistantCapabilitiesResponseDtoToolsInnerDisabledReasonEnum
+                    .AssistantCapabilitiesResponseToolsDisabledReasonEnum
                     .notImplemented,
               ),
             ],
@@ -407,7 +407,7 @@ void main() {
             tools: [
               _tool(
                 name: lucent
-                    .AssistantCapabilitiesResponseDtoToolsInnerNameEnum
+                    .AssistantCapabilitiesResponseToolsNameEnum
                     .unknownDefaultOpenApi,
               ),
             ],
@@ -445,14 +445,14 @@ void main() {
             messages: [
               _messageDto(
                 role: lucent
-                    .AssistantConversationDataDtoMessagesInnerRoleEnum
+                    .AssistantConversationDataMessagesRoleEnum
                     .user,
                 content: 'What is atorvastatin?',
                 createdAt: '2026-07-01T10:00:00Z',
               ),
               _messageDto(
                 role: lucent
-                    .AssistantConversationDataDtoMessagesInnerRoleEnum
+                    .AssistantConversationDataMessagesRoleEnum
                     .assistant,
                 content: 'It is a statin.',
                 usedTools: const ['get_current_medicines'],
@@ -503,7 +503,7 @@ void main() {
             messages: [
               _messageDto(
                 role: lucent
-                    .AssistantConversationDataDtoMessagesInnerRoleEnum
+                    .AssistantConversationDataMessagesRoleEnum
                     .unknownDefaultOpenApi,
               ),
             ],
@@ -525,7 +525,7 @@ void main() {
               id: 'c2',
               title: 'Second',
               status: lucent
-                  .AssistantConversationSummaryDtoInnerStatusEnum
+                  .AssistantConversationSummaryItemStatusEnum
                   .archived,
             ),
             _summaryDto(id: 'c3', title: null, lastMessageAt: null),

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:lucent_api/lucent_api.dart';
+import 'package:lucent_api/lucent_api.dart' hide HealthSummary;
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -618,10 +618,10 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   }
 
   @override
-  TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
-    required DataExportControllerCreateRequestV1RequestKindEnum kind,
-    required DataExportControllerCreateRequestV1RequestFormatEnum format,
-    required DataExportControllerCreateRequestV1RequestRangeEnum range,
+  TaskEither<LucentFailure, DataExportRequestData> requestDataExport({
+    required CreateRequestRequestKindEnum kind,
+    required CreateRequestRequestFormatEnum format,
+    required CreateRequestRequestRangeEnum range,
     required String password,
   }) {
     // S-4: When expectDataExportPassword is set, validate the password so
@@ -646,12 +646,12 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
       }
     }
     return TaskEither.right(
-      DataExportRequestDataDto(
+      DataExportRequestData(
         id: 'e2e-export-1',
-        kind: DataExportRequestDataDtoKindEnum.hospital,
-        format: DataExportRequestDataDtoFormatEnum.pdf,
-        range: DataExportRequestDataDtoRangeEnum.last7Days,
-        status: DataExportRequestDataDtoStatusEnum.requested,
+        kind: DataExportRequestDataKindEnum.hospital,
+        format: DataExportRequestDataFormatEnum.pdf,
+        range: DataExportRequestDataRangeEnum.last7Days,
+        status: DataExportRequestDataStatusEnum.requested,
         requestedAt: DateTime.now().toUtc().toIso8601String(),
         // Regenerated client marks the nullable trailing fields as required
         // constructor params; the fake's export is only just created.

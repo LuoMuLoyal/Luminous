@@ -12,23 +12,23 @@ import '../../../helpers/task_either.dart';
 
 class _MockHealthEventsApi extends Mock implements api.HealthEventsApi {}
 
-class _HealthEventsControllerCreateV1RequestFake extends Fake
-    implements api.HealthEventsControllerCreateV1Request {}
+class _CreateHealthEventRequestFake extends Fake
+    implements api.CreateHealthEventRequest {}
 
-class _HealthEventsControllerUpsertCheckInV1RequestFake extends Fake
-    implements api.HealthEventsControllerUpsertCheckInV1Request {}
+class _UpsertCheckInRequestFake extends Fake
+    implements api.UpsertCheckInRequest {}
 
-class _HealthEventsControllerEndV1RequestFake extends Fake
-    implements api.HealthEventsControllerEndV1Request {}
+class _EndRequestFake extends Fake
+    implements api.EndRequest {}
 
 void main() {
   late _MockHealthEventsApi healthEventsApi;
   late LucentHealthEventRepository repository;
 
   setUpAll(() {
-    registerFallbackValue(_HealthEventsControllerCreateV1RequestFake());
-    registerFallbackValue(_HealthEventsControllerUpsertCheckInV1RequestFake());
-    registerFallbackValue(_HealthEventsControllerEndV1RequestFake());
+    registerFallbackValue(_CreateHealthEventRequestFake());
+    registerFallbackValue(_UpsertCheckInRequestFake());
+    registerFallbackValue(_EndRequestFake());
   });
 
   setUp(() {
@@ -39,7 +39,7 @@ void main() {
   group('fetchActive', () {
     test('maps generated event response into domain data', () async {
       when(
-        () => healthEventsApi.healthEventsControllerActiveV1(),
+        () => healthEventsApi.active(),
       ).thenAnswer((_) async => _activeResponse(_nullableEvent(_eventJson())));
 
       final event = await expectTaskRight(repository.fetchActive());
@@ -54,7 +54,7 @@ void main() {
 
     test('maps an empty active response to Right(null)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerActiveV1(),
+        () => healthEventsApi.active(),
       ).thenAnswer((_) async => _activeResponse(null));
 
       expect(await expectTaskRight(repository.fetchActive()), isNull);
@@ -64,7 +64,7 @@ void main() {
       'maps an active 404 to Right(null) — no active event is normal',
       () async {
         when(
-          () => healthEventsApi.healthEventsControllerActiveV1(),
+          () => healthEventsApi.active(),
         ).thenThrow(_dioException(404));
 
         expect(await expectTaskRight(repository.fetchActive()), isNull);
@@ -73,7 +73,7 @@ void main() {
 
     test('maps an active 404 Problem Details to Right(null)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerActiveV1(),
+        () => healthEventsApi.active(),
       ).thenThrow(_problemDetails(404, code: 'EVENT_NOT_FOUND'));
 
       expect(await expectTaskRight(repository.fetchActive()), isNull);
@@ -81,7 +81,7 @@ void main() {
 
     test('maps active network failure to Left(network)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerActiveV1(),
+        () => healthEventsApi.active(),
       ).thenThrow(_connectionTimeout());
 
       final failure = await expectTaskLeft(repository.fetchActive());
@@ -92,9 +92,9 @@ void main() {
     test('maps a non-string field in the response to Left(unknown) keeping the '
         'cause (protocol invariant)', () async {
       final malformed = _eventJson()..['endedAt'] = 123;
-      when(() => healthEventsApi.healthEventsControllerActiveV1()).thenAnswer(
+      when(() => healthEventsApi.active()).thenAnswer(
         (_) async => _activeResponse(
-          api.HealthEventNullableResponseDto.fromJson(malformed),
+          api.HealthEventNullableResponse.fromJson(malformed),
         ),
       );
 
@@ -107,7 +107,7 @@ void main() {
   group('fetchById', () {
     test('maps detail response into domain data', () async {
       when(
-        () => healthEventsApi.healthEventsControllerGetV1(id: 'event-1'),
+        () => healthEventsApi.getHealthEvent(id: 'event-1'),
       ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
 
       final detail = await expectTaskRight(repository.fetchById('event-1'));
@@ -117,7 +117,7 @@ void main() {
 
     test('maps a detail 404 to Right(null)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerGetV1(id: 'event-1'),
+        () => healthEventsApi.getHealthEvent(id: 'event-1'),
       ).thenThrow(_dioException(404));
 
       expect(await expectTaskRight(repository.fetchById('event-1')), isNull);
@@ -127,7 +127,7 @@ void main() {
   group('fetchHistory', () {
     test('maps history response into domain data', () async {
       when(
-        () => healthEventsApi.healthEventsControllerListV1(),
+        () => healthEventsApi.listHealthEvents(),
       ).thenAnswer((_) async => _listResponse([_listEvent(_eventJson())]));
 
       final history = await expectTaskRight(repository.fetchHistory());
@@ -136,7 +136,7 @@ void main() {
 
     test('keeps a legal empty history as Right', () async {
       when(
-        () => healthEventsApi.healthEventsControllerListV1(),
+        () => healthEventsApi.listHealthEvents(),
       ).thenAnswer((_) async => _listResponse(const []));
 
       expect(await expectTaskRight(repository.fetchHistory()), isEmpty);
@@ -146,7 +146,7 @@ void main() {
       'maps empty history success body to Left(network, emptyResponse)',
       () async {
         when(
-          () => healthEventsApi.healthEventsControllerListV1(),
+          () => healthEventsApi.listHealthEvents(),
         ).thenAnswer((_) async => _emptyListResponse());
 
         final failure = await expectTaskLeft(repository.fetchHistory());
@@ -157,7 +157,7 @@ void main() {
 
     test('404 Problem Details keeps code and status as a Left', () async {
       when(
-        () => healthEventsApi.healthEventsControllerListV1(),
+        () => healthEventsApi.listHealthEvents(),
       ).thenThrow(_problemDetails(404, code: 'EVENT_NOT_FOUND'));
 
       final failure = await expectTaskLeft(repository.fetchHistory());
@@ -168,7 +168,7 @@ void main() {
 
     test('maps history network failure to Left(network)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerListV1(),
+        () => healthEventsApi.listHealthEvents(),
       ).thenThrow(_connectionTimeout());
 
       final failure = await expectTaskLeft(repository.fetchHistory());
@@ -179,26 +179,26 @@ void main() {
   group('writes', () {
     test('maps successful writes, detail, and history responses', () async {
       when(
-        () => healthEventsApi.healthEventsControllerCreateV1(
-          healthEventsControllerCreateV1Request: any(
-            named: 'healthEventsControllerCreateV1Request',
+        () => healthEventsApi.createHealthEvent(
+          createHealthEventRequest: any(
+            named: 'createHealthEventRequest',
           ),
         ),
       ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
       when(
-        () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+        () => healthEventsApi.upsertCheckIn(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          healthEventsControllerUpsertCheckInV1Request: any(
-            named: 'healthEventsControllerUpsertCheckInV1Request',
+          upsertCheckInRequest: any(
+            named: 'upsertCheckInRequest',
           ),
         ),
       ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
       when(
-        () => healthEventsApi.healthEventsControllerEndV1(
+        () => healthEventsApi.end(
           id: any(named: 'id'),
-          healthEventsControllerEndV1Request: any(
-            named: 'healthEventsControllerEndV1Request',
+          endRequest: any(
+            named: 'endRequest',
           ),
         ),
       ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
@@ -230,72 +230,72 @@ void main() {
 
       final createCall =
           verify(
-                () => healthEventsApi.healthEventsControllerCreateV1(
-                  healthEventsControllerCreateV1Request: captureAny(
-                    named: 'healthEventsControllerCreateV1Request',
+                () => healthEventsApi.createHealthEvent(
+                  createHealthEventRequest: captureAny(
+                    named: 'createHealthEventRequest',
                   ),
                 ),
               ).captured.single
-              as api.HealthEventsControllerCreateV1Request;
+              as api.CreateHealthEventRequest;
       expect(createCall.title, 'Cold observation');
       expect(createCall.reasonRecordId, 'record-1');
       expect(createCall.currentMedicineIds, ['medicine-1']);
 
       final checkInCall =
           verify(
-                () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+                () => healthEventsApi.upsertCheckIn(
                   id: 'event-1',
                   date: '2026-08-09',
-                  healthEventsControllerUpsertCheckInV1Request: captureAny(
-                    named: 'healthEventsControllerUpsertCheckInV1Request',
+                  upsertCheckInRequest: captureAny(
+                    named: 'upsertCheckInRequest',
                   ),
                 ),
               ).captured.single
-              as api.HealthEventsControllerUpsertCheckInV1Request;
+              as api.UpsertCheckInRequest;
       expect(
         checkInCall.outcome,
-        api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum.improved,
+        api.UpsertCheckInRequestOutcomeEnum.improved,
       );
 
       final endCall =
           verify(
-                () => healthEventsApi.healthEventsControllerEndV1(
+                () => healthEventsApi.end(
                   id: 'event-1',
-                  healthEventsControllerEndV1Request: captureAny(
-                    named: 'healthEventsControllerEndV1Request',
+                  endRequest: captureAny(
+                    named: 'endRequest',
                   ),
                 ),
               ).captured.single
-              as api.HealthEventsControllerEndV1Request;
+              as api.EndRequest;
       expect(
         endCall.outcome,
-        api.HealthEventsControllerEndV1RequestOutcomeEnum.unchanged,
+        api.EndRequestOutcomeEnum.unchanged,
       );
     });
 
     test('rejects missing write response data as Left(unknown) keeping the '
         'StateError cause (protocol invariant)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerCreateV1(
-          healthEventsControllerCreateV1Request: any(
-            named: 'healthEventsControllerCreateV1Request',
+        () => healthEventsApi.createHealthEvent(
+          createHealthEventRequest: any(
+            named: 'createHealthEventRequest',
           ),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
       when(
-        () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+        () => healthEventsApi.upsertCheckIn(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          healthEventsControllerUpsertCheckInV1Request: any(
-            named: 'healthEventsControllerUpsertCheckInV1Request',
+          upsertCheckInRequest: any(
+            named: 'upsertCheckInRequest',
           ),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
       when(
-        () => healthEventsApi.healthEventsControllerEndV1(
+        () => healthEventsApi.end(
           id: any(named: 'id'),
-          healthEventsControllerEndV1Request: any(
-            named: 'healthEventsControllerEndV1Request',
+          endRequest: any(
+            named: 'endRequest',
           ),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
@@ -321,11 +321,11 @@ void main() {
     test('maps an unknown status enum to Left(unknown) keeping the StateError '
         'cause (protocol invariant)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+        () => healthEventsApi.upsertCheckIn(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          healthEventsControllerUpsertCheckInV1Request: any(
-            named: 'healthEventsControllerUpsertCheckInV1Request',
+          upsertCheckInRequest: any(
+            named: 'upsertCheckInRequest',
           ),
         ),
       ).thenAnswer(
@@ -348,10 +348,10 @@ void main() {
     test('maps an unknown outcome enum to Left(unknown) keeping the StateError '
         'cause (protocol invariant)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerEndV1(
+        () => healthEventsApi.end(
           id: any(named: 'id'),
-          healthEventsControllerEndV1Request: any(
-            named: 'healthEventsControllerEndV1Request',
+          endRequest: any(
+            named: 'endRequest',
           ),
         ),
       ).thenAnswer(
@@ -375,26 +375,26 @@ void main() {
       () async {
         final problem = _problemDetails(404, code: 'EVENT_NOT_FOUND');
         when(
-          () => healthEventsApi.healthEventsControllerCreateV1(
-            healthEventsControllerCreateV1Request: any(
-              named: 'healthEventsControllerCreateV1Request',
+          () => healthEventsApi.createHealthEvent(
+            createHealthEventRequest: any(
+              named: 'createHealthEventRequest',
             ),
           ),
         ).thenThrow(problem);
         when(
-          () => healthEventsApi.healthEventsControllerUpsertCheckInV1(
+          () => healthEventsApi.upsertCheckIn(
             id: any(named: 'id'),
             date: any(named: 'date'),
-            healthEventsControllerUpsertCheckInV1Request: any(
-              named: 'healthEventsControllerUpsertCheckInV1Request',
+            upsertCheckInRequest: any(
+              named: 'upsertCheckInRequest',
             ),
           ),
         ).thenThrow(problem);
         when(
-          () => healthEventsApi.healthEventsControllerEndV1(
+          () => healthEventsApi.end(
             id: any(named: 'id'),
-            healthEventsControllerEndV1Request: any(
-              named: 'healthEventsControllerEndV1Request',
+            endRequest: any(
+              named: 'endRequest',
             ),
           ),
         ).thenThrow(problem);
@@ -421,9 +421,9 @@ void main() {
 
     test('network failure on writes maps to Left(network)', () async {
       when(
-        () => healthEventsApi.healthEventsControllerCreateV1(
-          healthEventsControllerCreateV1Request: any(
-            named: 'healthEventsControllerCreateV1Request',
+        () => healthEventsApi.createHealthEvent(
+          createHealthEventRequest: any(
+            named: 'createHealthEventRequest',
           ),
         ),
       ).thenThrow(_connectionTimeout());
@@ -439,9 +439,9 @@ void main() {
       'non-Problem Details error body propagates FormatException from run()',
       () async {
         when(
-          () => healthEventsApi.healthEventsControllerCreateV1(
-            healthEventsControllerCreateV1Request: any(
-              named: 'healthEventsControllerCreateV1Request',
+          () => healthEventsApi.createHealthEvent(
+            createHealthEventRequest: any(
+              named: 'createHealthEventRequest',
             ),
           ),
         ).thenThrow(_nonProblemBody400());
@@ -455,60 +455,60 @@ void main() {
   });
 }
 
-Response<api.HealthEventNullableResponseDto> _activeResponse(
-  api.HealthEventNullableResponseDto? data,
+Response<api.HealthEventNullableResponse> _activeResponse(
+  api.HealthEventNullableResponse? data,
 ) {
-  return Response<api.HealthEventNullableResponseDto>(
+  return Response<api.HealthEventNullableResponse>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events/active'),
     statusCode: 200,
     data: data,
   );
 }
 
-Response<api.HealthEventResponseDto> _eventResponse(
-  api.HealthEventResponseDto data,
+Response<api.HealthEventResponse> _eventResponse(
+  api.HealthEventResponse data,
 ) {
-  return Response<api.HealthEventResponseDto>(
+  return Response<api.HealthEventResponse>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
     statusCode: 200,
     data: data,
   );
 }
 
-Response<api.HealthEventResponseDto> _emptyEventResponse() {
-  return Response<api.HealthEventResponseDto>(
+Response<api.HealthEventResponse> _emptyEventResponse() {
+  return Response<api.HealthEventResponse>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
     statusCode: 200,
   );
 }
 
-Response<api.HealthEventListResponseDto> _listResponse(
-  List<api.HealthEventListResponseDtoItemsInner> items,
+Response<api.HealthEventListResponse> _listResponse(
+  List<api.HealthEventListResponseItems> items,
 ) {
-  return Response<api.HealthEventListResponseDto>(
+  return Response<api.HealthEventListResponse>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
     statusCode: 200,
-    data: api.HealthEventListResponseDto(items: items, total: items.length),
+    data: api.HealthEventListResponse(items: items, total: items.length),
   );
 }
 
-Response<api.HealthEventListResponseDto> _emptyListResponse() {
-  return Response<api.HealthEventListResponseDto>(
+Response<api.HealthEventListResponse> _emptyListResponse() {
+  return Response<api.HealthEventListResponse>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
     statusCode: 200,
   );
 }
 
-api.HealthEventNullableResponseDto _nullableEvent(Map<String, Object?> json) {
-  return api.HealthEventNullableResponseDto.fromJson(json);
+api.HealthEventNullableResponse _nullableEvent(Map<String, Object?> json) {
+  return api.HealthEventNullableResponse.fromJson(json);
 }
 
-api.HealthEventResponseDto _responseEvent(Map<String, Object?> json) {
-  return api.HealthEventResponseDto.fromJson(json);
+api.HealthEventResponse _responseEvent(Map<String, Object?> json) {
+  return api.HealthEventResponse.fromJson(json);
 }
 
-api.HealthEventListResponseDtoItemsInner _listEvent(Map<String, Object?> json) {
-  return api.HealthEventListResponseDtoItemsInner.fromJson(json);
+api.HealthEventListResponseItems _listEvent(Map<String, Object?> json) {
+  return api.HealthEventListResponseItems.fromJson(json);
 }
 
 Map<String, Object?> _eventJson({

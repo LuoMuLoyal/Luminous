@@ -79,8 +79,8 @@ class FakeNotificationsApi implements NotificationsApi {
   });
 
   int unreadCount;
-  List<NotificationListResponseDtoItemsInner> notifications;
-  NotificationDetailResponseDto? detail;
+  List<NotificationListResponseItems> notifications;
+  NotificationDetailResponse? detail;
   bool shouldThrow;
   DioException? error;
   bool nullFindAllBody;
@@ -88,8 +88,8 @@ class FakeNotificationsApi implements NotificationsApi {
   int findAllCallCount = 0;
 
   @override
-  Future<Response<UnreadCountResponseDto>>
-  notificationsControllerGetUnreadCountV1({
+  Future<Response<UnreadCountResponse>>
+  getUnreadCount({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -102,18 +102,18 @@ class FakeNotificationsApi implements NotificationsApi {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
     if (nullUnreadCountBody) {
-      return Response<UnreadCountResponseDto>(
+      return Response<UnreadCountResponse>(
         data: null,
         requestOptions: RequestOptions(path: ''),
         statusCode: 200,
       );
     }
-    return _response(UnreadCountResponseDto(count: unreadCount));
+    return _response(UnreadCountResponse(count: unreadCount));
   }
 
   @override
-  Future<Response<NotificationListResponseDto>>
-  notificationsControllerFindAllV1({
+  Future<Response<NotificationListResponse>>
+  listNotifications({
     required num page,
     required num pageSize,
     CancelToken? cancelToken,
@@ -129,14 +129,14 @@ class FakeNotificationsApi implements NotificationsApi {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
     if (nullFindAllBody) {
-      return Response<NotificationListResponseDto>(
+      return Response<NotificationListResponse>(
         data: null,
         requestOptions: RequestOptions(path: ''),
         statusCode: 200,
       );
     }
     return _response(
-      NotificationListResponseDto(
+      NotificationListResponse(
         items: notifications,
         total: notifications.length,
       ),
@@ -144,8 +144,8 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<NotificationDetailResponseDto>>
-  notificationsControllerFindOneV1({
+  Future<Response<NotificationDetailResponse>>
+  getNotification({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -160,9 +160,9 @@ class FakeNotificationsApi implements NotificationsApi {
     }
     return _response(
       detail ??
-          NotificationDetailResponseDto(
+          NotificationDetailResponse(
             id: id,
-            type: NotificationDetailResponseDtoTypeEnum.medicineReminder,
+            type: NotificationDetailResponseTypeEnum.medicineReminder,
             title: '',
             content: '',
             action: null,
@@ -175,7 +175,7 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<void>> notificationsControllerRemoveV1({
+  Future<Response<void>> remove({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -197,8 +197,8 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<UnreadCountResponseDto>>
-  notificationsControllerMarkAllAsReadV1({
+  Future<Response<UnreadCountResponse>>
+  markAllAsRead({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -210,14 +210,14 @@ class FakeNotificationsApi implements NotificationsApi {
     if (shouldThrow) {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
-    return _response(UnreadCountResponseDto(count: 0));
+    return _response(UnreadCountResponse(count: 0));
   }
 
   @override
-  Future<Response<NotificationListResponseDto>>
-  notificationsControllerCreateV1({
-    required NotificationsControllerCreateV1Request
-    notificationsControllerCreateV1Request,
+  Future<Response<void>>
+  createNotification({
+    required CreateNotificationRequest
+    createNotificationRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -225,12 +225,12 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    return _response(NotificationListResponseDto(items: [], total: 0));
+    return _response(null);
   }
 
   @override
-  Future<Response<NotificationDetailResponseDto>>
-  notificationsControllerMarkAsReadV1({
+  Future<Response<NotificationDetailResponse>>
+  markAsRead({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -245,9 +245,9 @@ class FakeNotificationsApi implements NotificationsApi {
     }
     return _response(
       detail ??
-          NotificationDetailResponseDto(
+          NotificationDetailResponse(
             id: id,
-            type: NotificationDetailResponseDtoTypeEnum.medicineReminder,
+            type: NotificationDetailResponseTypeEnum.medicineReminder,
             title: '',
             content: '',
             action: null,
@@ -260,8 +260,8 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<NotificationDetailResponseDto>>
-  notificationsControllerMarkAsUnreadV1({
+  Future<Response<NotificationDetailResponse>>
+  markAsUnread({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -276,9 +276,9 @@ class FakeNotificationsApi implements NotificationsApi {
     }
     return _response(
       detail ??
-          NotificationDetailResponseDto(
+          NotificationDetailResponse(
             id: id,
-            type: NotificationDetailResponseDtoTypeEnum.medicineReminder,
+            type: NotificationDetailResponseTypeEnum.medicineReminder,
             title: '',
             content: '',
             action: null,
@@ -306,15 +306,15 @@ class _FakeLucentClient extends LucentClient {
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
-NotificationListResponseDtoItemsInner _item({
+NotificationListResponseItems _item({
   required String id,
   String title = 'Title',
   String content = 'Content',
   bool isRead = false,
 }) {
-  return NotificationListResponseDtoItemsInner(
+  return NotificationListResponseItems(
     id: id,
-    type: NotificationListResponseDtoItemsInnerTypeEnum.medicineReminder,
+    type: NotificationListResponseItemsTypeEnum.medicineReminder,
     title: title,
     content: content,
     action: null,
@@ -511,9 +511,9 @@ void main() {
   group('notificationDetailProvider', () {
     test('returns notification detail', () async {
       final api = FakeNotificationsApi(
-        detail: NotificationDetailResponseDto(
+        detail: NotificationDetailResponse(
           id: 'notif-1',
-          type: NotificationDetailResponseDtoTypeEnum.medicineReminder,
+          type: NotificationDetailResponseTypeEnum.medicineReminder,
           title: 'Missed dose',
           content: 'You missed a dose.',
           action: null,

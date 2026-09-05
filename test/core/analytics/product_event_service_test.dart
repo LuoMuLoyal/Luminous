@@ -29,8 +29,8 @@ ProductEventService _service({
   _MockPendingSyncDao? dao,
   String version = '1.2.3',
   String eventId = 'pe-fixed-001',
-  ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum platform =
-      ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+  RecordBatchRequestEventsPlatformEnum platform =
+      RecordBatchRequestEventsPlatformEnum
           .android,
 }) {
   return ProductEventService(
@@ -56,7 +56,7 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(
-      ProductEventsControllerRecordBatchV1Request(events: const []),
+      RecordBatchRequest(events: const []),
     );
   });
 
@@ -73,9 +73,9 @@ void main() {
     ).thenAnswer((_) async => 'pending-001');
     // Default: the server accepts the batch. Throwing tests override this.
     when(
-      () => api.productEventsControllerRecordBatchV1(
-        productEventsControllerRecordBatchV1Request: any(
-          named: 'productEventsControllerRecordBatchV1Request',
+      () => api.recordBatch(
+        recordBatchRequest: any(
+          named: 'recordBatchRequest',
         ),
       ),
     ).thenAnswer(
@@ -98,9 +98,9 @@ void main() {
       await Future<void>.delayed(Duration.zero);
 
       verify(
-        () => api.productEventsControllerRecordBatchV1(
-          productEventsControllerRecordBatchV1Request: any(
-            named: 'productEventsControllerRecordBatchV1Request',
+        () => api.recordBatch(
+          recordBatchRequest: any(
+            named: 'recordBatchRequest',
           ),
         ),
       ).called(2);
@@ -114,9 +114,9 @@ void main() {
       await Future<void>.delayed(Duration.zero);
 
       verifyNever(
-        () => api.productEventsControllerRecordBatchV1(
-          productEventsControllerRecordBatchV1Request: any(
-            named: 'productEventsControllerRecordBatchV1Request',
+        () => api.recordBatch(
+          recordBatchRequest: any(
+            named: 'recordBatchRequest',
           ),
         ),
       );
@@ -137,7 +137,7 @@ void main() {
         version: '2.0.1',
         eventId: 'pe-abc',
         platform:
-            ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+            RecordBatchRequestEventsPlatformEnum
                 .ios,
       );
 
@@ -147,34 +147,34 @@ void main() {
 
       final captured =
           verify(
-                () => api.productEventsControllerRecordBatchV1(
-                  productEventsControllerRecordBatchV1Request: captureAny(
-                    named: 'productEventsControllerRecordBatchV1Request',
+                () => api.recordBatch(
+                  recordBatchRequest: captureAny(
+                    named: 'recordBatchRequest',
                   ),
                 ),
               ).captured.single
-              as ProductEventsControllerRecordBatchV1Request;
+              as RecordBatchRequest;
 
       final event = captured.events.single;
       expect(
         event.name,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum
+        RecordBatchRequestEventsNameEnum
             .suggestionImpression,
       );
       expect(
         event.surface,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum.today,
+        RecordBatchRequestEventsSurfaceEnum.today,
       );
       expect(
         event.result,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       );
       expect(event.suggestionRuleCode, 'sleep_shortfall');
       expect(event.appVersion, '2.0.1');
       expect(
         event.platform,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum.ios,
+        RecordBatchRequestEventsPlatformEnum.ios,
       );
       expect(event.occurredAt, '2026-08-14T08:00:00.000Z');
       expect(event.clientEventId, 'pe-abc');
@@ -195,31 +195,31 @@ void main() {
       await service.trackReviewOpened();
 
       final calls = verify(
-        () => api.productEventsControllerRecordBatchV1(
-          productEventsControllerRecordBatchV1Request: captureAny(
-            named: 'productEventsControllerRecordBatchV1Request',
+        () => api.recordBatch(
+          recordBatchRequest: captureAny(
+            named: 'recordBatchRequest',
           ),
         ),
       ).captured;
       expect(calls, hasLength(1));
 
       final event =
-          (calls.single as ProductEventsControllerRecordBatchV1Request)
+          (calls.single as RecordBatchRequest)
               .events
               .single;
       expect(
         event.name,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum
+        RecordBatchRequestEventsNameEnum
             .reviewOpened,
       );
       expect(
         event.surface,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum
+        RecordBatchRequestEventsSurfaceEnum
             .review,
       );
       expect(
         event.result,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       );
       expect(event.suggestionRuleCode, isNull);
@@ -233,26 +233,26 @@ void main() {
         final service = _service(api: api, dao: dao);
 
         await service.trackVisitSummaryPreviewed(
-          ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+          RecordBatchRequestEventsResultEnum
               .success,
         );
         await service.trackVisitSummaryPreviewed(
-          ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+          RecordBatchRequestEventsResultEnum
               .success,
         );
         await service.trackVisitSummaryExported(
-          ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+          RecordBatchRequestEventsResultEnum
               .failure,
         );
         await service.trackVisitSummaryExported(
-          ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+          RecordBatchRequestEventsResultEnum
               .failure,
         );
 
         verify(
-          () => api.productEventsControllerRecordBatchV1(
-            productEventsControllerRecordBatchV1Request: any(
-              named: 'productEventsControllerRecordBatchV1Request',
+          () => api.recordBatch(
+            recordBatchRequest: any(
+              named: 'recordBatchRequest',
             ),
           ),
         ).called(4);
@@ -263,32 +263,32 @@ void main() {
       final service = _service(api: api, dao: dao);
 
       await service.trackVisitSummaryPreviewed(
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .failure,
       );
 
       final captured =
           verify(
-                () => api.productEventsControllerRecordBatchV1(
-                  productEventsControllerRecordBatchV1Request: captureAny(
-                    named: 'productEventsControllerRecordBatchV1Request',
+                () => api.recordBatch(
+                  recordBatchRequest: captureAny(
+                    named: 'recordBatchRequest',
                   ),
                 ),
               ).captured.single
-              as ProductEventsControllerRecordBatchV1Request;
+              as RecordBatchRequest;
       final event = captured.events.single;
       expect(
         event.name,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum
+        RecordBatchRequestEventsNameEnum
             .visitSummaryPreviewed,
       );
       expect(
         event.surface,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum.more,
+        RecordBatchRequestEventsSurfaceEnum.more,
       );
       expect(
         event.result,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .failure,
       );
     });
@@ -297,32 +297,32 @@ void main() {
       final service = _service(api: api, dao: dao);
 
       await service.trackVisitSummaryExported(
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       );
 
       final captured =
           verify(
-                () => api.productEventsControllerRecordBatchV1(
-                  productEventsControllerRecordBatchV1Request: captureAny(
-                    named: 'productEventsControllerRecordBatchV1Request',
+                () => api.recordBatch(
+                  recordBatchRequest: captureAny(
+                    named: 'recordBatchRequest',
                   ),
                 ),
               ).captured.single
-              as ProductEventsControllerRecordBatchV1Request;
+              as RecordBatchRequest;
       final event = captured.events.single;
       expect(
         event.name,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerNameEnum
+        RecordBatchRequestEventsNameEnum
             .visitSummaryExported,
       );
       expect(
         event.surface,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerSurfaceEnum.more,
+        RecordBatchRequestEventsSurfaceEnum.more,
       );
       expect(
         event.result,
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       );
     });
@@ -332,9 +332,9 @@ void main() {
     test('enqueues into the pending-sync queue on DioException', () async {
       final service = _service(api: api, dao: dao);
       when(
-        () => api.productEventsControllerRecordBatchV1(
-          productEventsControllerRecordBatchV1Request: any(
-            named: 'productEventsControllerRecordBatchV1Request',
+        () => api.recordBatch(
+          recordBatchRequest: any(
+            named: 'recordBatchRequest',
           ),
         ),
       ).thenThrow(_networkError());
@@ -358,9 +358,9 @@ void main() {
       () async {
         final service = _service(api: api, dao: dao, eventId: 'pe-queue-001');
         when(
-          () => api.productEventsControllerRecordBatchV1(
-            productEventsControllerRecordBatchV1Request: any(
-              named: 'productEventsControllerRecordBatchV1Request',
+          () => api.recordBatch(
+            recordBatchRequest: any(
+              named: 'recordBatchRequest',
             ),
           ),
         ).thenThrow(_networkError());
@@ -414,15 +414,15 @@ void main() {
     test('retry reuses the same clientEventId (idempotent replay)', () async {
       final service = _service(api: api, dao: dao, eventId: 'pe-retry-42');
       when(
-        () => api.productEventsControllerRecordBatchV1(
-          productEventsControllerRecordBatchV1Request: any(
-            named: 'productEventsControllerRecordBatchV1Request',
+        () => api.recordBatch(
+          recordBatchRequest: any(
+            named: 'recordBatchRequest',
           ),
         ),
       ).thenThrow(_networkError());
 
       await service.trackVisitSummaryExported(
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       );
 
@@ -444,7 +444,7 @@ void main() {
       expect(decoded['clientEventId'], 'pe-retry-42');
 
       final replayed =
-          ProductEventsControllerRecordBatchV1RequestEventsInner.fromJson(
+          RecordBatchRequestEvents.fromJson(
             decoded,
           ).toJson();
       expect(replayed, decoded);
@@ -454,9 +454,9 @@ void main() {
     test('enqueued event keeps the typed event fields on replay', () async {
       final service = _service(api: api, dao: dao);
       when(
-        () => api.productEventsControllerRecordBatchV1(
-          productEventsControllerRecordBatchV1Request: any(
-            named: 'productEventsControllerRecordBatchV1Request',
+        () => api.recordBatch(
+          recordBatchRequest: any(
+            named: 'recordBatchRequest',
           ),
         ),
       ).thenThrow(_networkError());
@@ -489,16 +489,16 @@ void main() {
     test('non-Dio failures are swallowed and never enqueued', () async {
       final service = _service(api: api, dao: dao);
       when(
-        () => api.productEventsControllerRecordBatchV1(
-          productEventsControllerRecordBatchV1Request: any(
-            named: 'productEventsControllerRecordBatchV1Request',
+        () => api.recordBatch(
+          recordBatchRequest: any(
+            named: 'recordBatchRequest',
           ),
         ),
       ).thenThrow(StateError('unexpected'));
 
       // Must not throw and must not enqueue.
       await service.trackVisitSummaryPreviewed(
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       );
 

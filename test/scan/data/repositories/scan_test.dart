@@ -90,9 +90,9 @@ void main() {
   group('LucentScanRepository.search', () {
     test('returns response data from API', () async {
       final items = [
-        MedicineSearchResponseDtoItemsInner(
+        MedicineSearchResponseItems(
           id: 'med-1',
-          source_: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
+          source_: MedicineSearchResponseItemsSource_Enum.cn,
           name: '阿莫西林胶囊',
           subtitle: '抗生素',
           summary: '用于敏感菌所致感染',
@@ -101,9 +101,9 @@ void main() {
           matchedBy: ['name'],
         ),
       ];
-      final searchDto = MedicineSearchResponseDto(
+      final searchDto = MedicineSearchResponse(
         items: items,
-        pagination: MedicineSearchResponseDtoPagination(
+        pagination: MedicineSearchResponsePagination(
           page: 1,
           pageSize: 20,
           total: 1,
@@ -112,7 +112,7 @@ void main() {
       );
 
       when(
-        () => mockApi.medicinesControllerSearchV1(
+        () => mockApi.search(
           source_: any(named: 'source_'),
           q: any(named: 'q'),
           page: any(named: 'page'),
@@ -128,7 +128,7 @@ void main() {
       expect(result.first.subtitle, '抗生素');
 
       verify(
-        () => mockApi.medicinesControllerSearchV1(
+        () => mockApi.search(
           source_: 'cn',
           q: '阿莫西林',
           page: 1,
@@ -140,9 +140,9 @@ void main() {
     test(
       'returns empty list as a legal Right when API returns no data',
       () async {
-        final emptyResponse = MedicineSearchResponseDto(
+        final emptyResponse = MedicineSearchResponse(
           items: [],
-          pagination: MedicineSearchResponseDtoPagination(
+          pagination: MedicineSearchResponsePagination(
             page: 1,
             pageSize: 20,
             total: 0,
@@ -151,7 +151,7 @@ void main() {
         );
 
         when(
-          () => mockApi.medicinesControllerSearchV1(
+          () => mockApi.search(
             source_: any(named: 'source_'),
             q: any(named: 'q'),
             page: any(named: 'page'),
@@ -169,14 +169,14 @@ void main() {
       'empty success response body maps to Left(network, emptyResponse)',
       () async {
         when(
-          () => mockApi.medicinesControllerSearchV1(
+          () => mockApi.search(
             source_: any(named: 'source_'),
             q: any(named: 'q'),
             page: any(named: 'page'),
             pageSize: any(named: 'pageSize'),
           ),
         ).thenAnswer(
-          (_) async => Response<MedicineSearchResponseDto>(
+          (_) async => Response<MedicineSearchResponse>(
             data: null,
             statusCode: 200,
             requestOptions: RequestOptions(path: ''),
@@ -192,7 +192,7 @@ void main() {
 
     test('404 Problem Details keeps code and status as a Left', () async {
       when(
-        () => mockApi.medicinesControllerSearchV1(
+        () => mockApi.search(
           source_: any(named: 'source_'),
           q: any(named: 'q'),
           page: any(named: 'page'),
@@ -209,7 +209,7 @@ void main() {
 
     test('network timeout maps to a network connectivity Left', () async {
       when(
-        () => mockApi.medicinesControllerSearchV1(
+        () => mockApi.search(
           source_: any(named: 'source_'),
           q: any(named: 'q'),
           page: any(named: 'page'),
@@ -227,7 +227,7 @@ void main() {
       'non-Problem Details error body propagates FormatException from run()',
       () async {
         when(
-          () => mockApi.medicinesControllerSearchV1(
+          () => mockApi.search(
             source_: any(named: 'source_'),
             q: any(named: 'q'),
             page: any(named: 'page'),
@@ -244,7 +244,7 @@ void main() {
 
     test('plain unexpected exception maps to a Left(unknown)', () async {
       when(
-        () => mockApi.medicinesControllerSearchV1(
+        () => mockApi.search(
           source_: any(named: 'source_'),
           q: any(named: 'q'),
           page: any(named: 'page'),

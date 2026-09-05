@@ -72,7 +72,7 @@ void main() {
 
     test('maps API response to AppInfo as Right', () async {
       final response = _response(
-        AppInfoResponseDto(
+        AppInfoResponse(
           minClientVersion: '0.1.0',
           latestVersion: '0.2.0',
           downloadUrl: 'https://example.com/app.apk',
@@ -81,7 +81,7 @@ void main() {
       );
 
       when(
-        () => api.appInfoControllerGetAppInfoV1(),
+        () => api.getAppInfo(),
       ).thenAnswer((_) async => response);
 
       final result = await expectTaskRight(repo.getAppInfo());
@@ -97,7 +97,7 @@ void main() {
       // 未配置（env 驱动字段全空）是合法 Right，不转失败；字段为 zod 响应
       // 必填（nullable）参数，未配置时服务端回 null。
       final response = _response(
-        AppInfoResponseDto(
+        AppInfoResponse(
           supportEmail: null,
           minClientVersion: null,
           latestVersion: null,
@@ -106,7 +106,7 @@ void main() {
       );
 
       when(
-        () => api.appInfoControllerGetAppInfoV1(),
+        () => api.getAppInfo(),
       ).thenAnswer((_) async => response);
 
       final result = await expectTaskRight(repo.getAppInfo());
@@ -120,7 +120,7 @@ void main() {
 
     test('maps a network error to Left(network)', () async {
       when(
-        () => api.appInfoControllerGetAppInfoV1(),
+        () => api.getAppInfo(),
       ).thenThrow(_networkException());
 
       final failure = await expectTaskLeft(repo.getAppInfo());
@@ -128,7 +128,7 @@ void main() {
     });
 
     test('keeps 500 Problem Details code/status as Left(server)', () async {
-      when(() => api.appInfoControllerGetAppInfoV1()).thenThrow(
+      when(() => api.getAppInfo()).thenThrow(
         _problemDetails(statusCode: 500, code: 'APP_INFO_SERVER_ERR'),
       );
 
@@ -140,7 +140,7 @@ void main() {
 
     test('keeps 404 Problem Details code/status as Left(business)', () async {
       when(
-        () => api.appInfoControllerGetAppInfoV1(),
+        () => api.getAppInfo(),
       ).thenThrow(_problemDetails(statusCode: 404, code: 'APP_INFO_NOT_FOUND'));
 
       final failure = await expectTaskLeft(repo.getAppInfo());
@@ -152,7 +152,7 @@ void main() {
     test('non-Problem Details error body propagates FormatException '
         'from run()', () async {
       when(
-        () => api.appInfoControllerGetAppInfoV1(),
+        () => api.getAppInfo(),
       ).thenThrow(_nonProblemHtml500());
 
       // 协议违反（500 + text/html 而非 problem+json）保持 mapper 抛出的
@@ -164,8 +164,8 @@ void main() {
     });
 
     test('empty success body is Left(network/emptyResponse)', () async {
-      when(() => api.appInfoControllerGetAppInfoV1()).thenAnswer(
-        (_) async => Response<AppInfoResponseDto>(
+      when(() => api.getAppInfo()).thenAnswer(
+        (_) async => Response<AppInfoResponse>(
           data: null,
           requestOptions: RequestOptions(path: ''),
           statusCode: 200,
@@ -179,7 +179,7 @@ void main() {
 
     test('maps an unexpected exception to Left(unknown) with cause', () async {
       when(
-        () => api.appInfoControllerGetAppInfoV1(),
+        () => api.getAppInfo(),
       ).thenThrow(StateError('boom'));
 
       final failure = await expectTaskLeft(repo.getAppInfo());

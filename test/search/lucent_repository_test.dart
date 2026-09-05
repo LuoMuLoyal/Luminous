@@ -12,8 +12,8 @@ import '../helpers/task_either.dart';
 class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   _FakeSearchDataSource();
 
-  MedicineSearchResponseDto? searchResponse;
-  MedicineDetailResponseDto? detailResponse;
+  MedicineSearchResponse? searchResponse;
+  MedicineDetailResponse? detailResponse;
   Object? searchError;
   Object? detailError;
   String? lastSearchQuery;
@@ -24,7 +24,7 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   String? lastDetailSource;
 
   @override
-  Future<MedicineSearchResponseDto> search({
+  Future<MedicineSearchResponse> search({
     required String source,
     String? query,
     int page = 1,
@@ -39,7 +39,7 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   }
 
   @override
-  Future<MedicineDetailResponseDto> getDetail({
+  Future<MedicineDetailResponse> getDetail({
     required String id,
     required String source,
   }) async {
@@ -50,11 +50,11 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   }
 }
 
-MedicineSearchResponseDto _defaultData([
-  List<MedicineSearchResponseDtoItemsInner>? items,
-]) => MedicineSearchResponseDto(
+MedicineSearchResponse _defaultData([
+  List<MedicineSearchResponseItems>? items,
+]) => MedicineSearchResponse(
   items: items ?? [],
-  pagination: MedicineSearchResponseDtoPagination(
+  pagination: MedicineSearchResponsePagination(
     page: 1,
     pageSize: 20,
     total: 0,
@@ -62,8 +62,8 @@ MedicineSearchResponseDto _defaultData([
   ),
 );
 
-MedicineSearchResponseDto _okSearchResponse([
-  List<MedicineSearchResponseDtoItemsInner>? items,
+MedicineSearchResponse _okSearchResponse([
+  List<MedicineSearchResponseItems>? items,
 ]) {
   return _defaultData(items);
 }
@@ -71,8 +71,8 @@ MedicineSearchResponseDto _okSearchResponse([
 // The zod-merged detail model requires every oneOf branch field at the
 // constructor; search's `fetchDetail` never inspects `detail`, so only
 // `kind`/list fields carry meaningful values and the rest stay null.
-MedicineDetailResponseDtoDetail _minimalDetail() =>
-    MedicineDetailResponseDtoDetail(
+MedicineDetailResponseDetail _minimalDetail() =>
+    MedicineDetailResponseDetail(
       kind: '',
       drugType: null,
       state: null,
@@ -118,13 +118,13 @@ MedicineDetailResponseDtoDetail _minimalDetail() =>
       imageUrl: null,
     );
 
-MedicineDetailResponseDto _okDetailResponse({
+MedicineDetailResponse _okDetailResponse({
   String name = 'Test Medicine',
   String? subtitle,
 }) {
-  return MedicineDetailResponseDto(
+  return MedicineDetailResponse(
     id: 'med-1',
-    source_: MedicineDetailResponseDtoSource_Enum.cn,
+    source_: MedicineDetailResponseSource_Enum.cn,
     name: name,
     subtitle: subtitle,
     detail: _minimalDetail(),
@@ -195,9 +195,9 @@ void main() {
     group('search', () {
       test('returns mapped results on success', () async {
         dataSource.searchResponse = _okSearchResponse([
-          MedicineSearchResponseDtoItemsInner(
+          MedicineSearchResponseItems(
             id: 'med-1',
-            source_: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
+            source_: MedicineSearchResponseItemsSource_Enum.cn,
             name: 'Aspirin',
             subtitle: 'Pain reliever',
             summary: 'NSAID',
@@ -205,9 +205,9 @@ void main() {
             imageUrl: null,
             matchedBy: ['name'],
           ),
-          MedicineSearchResponseDtoItemsInner(
+          MedicineSearchResponseItems(
             id: 'med-2',
-            source_: MedicineSearchResponseDtoItemsInnerSource_Enum.drugbank,
+            source_: MedicineSearchResponseItemsSource_Enum.drugbank,
             name: 'Ibuprofen',
             subtitle: 'NSAID',
             summary: 'Anti-inflammatory',
@@ -286,9 +286,9 @@ void main() {
 
       test('maps subtitle to empty string when null', () async {
         dataSource.searchResponse = _okSearchResponse([
-          MedicineSearchResponseDtoItemsInner(
+          MedicineSearchResponseItems(
             id: 'med-1',
-            source_: MedicineSearchResponseDtoItemsInnerSource_Enum.cn,
+            source_: MedicineSearchResponseItemsSource_Enum.cn,
             name: 'Test',
             subtitle: null,
             summary: null,

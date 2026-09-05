@@ -18,17 +18,17 @@ import '../helpers/task_either.dart';
 
 class _FakeHealthContextRemoteDataSource
     implements HealthContextRemoteDataSource {
-  HealthContextResponseDto? fetchResult;
-  HealthContextResponseDto? updateProfileResult;
-  HealthContextResponseDto? createAllergyResult;
-  HealthContextResponseDto? updateAllergyResult;
-  HealthContextResponseDto? deleteAllergyResult;
-  HealthContextResponseDto? createConditionResult;
-  HealthContextResponseDto? updateConditionResult;
-  HealthContextResponseDto? deleteConditionResult;
-  HealthContextResponseDto? createCurrentMedicineResult;
-  HealthContextResponseDto? updateCurrentMedicineResult;
-  HealthContextResponseDto? deleteCurrentMedicineResult;
+  HealthContextResponse? fetchResult;
+  HealthContextResponse? updateProfileResult;
+  HealthContextResponse? createAllergyResult;
+  HealthContextResponse? updateAllergyResult;
+  HealthContextResponse? deleteAllergyResult;
+  HealthContextResponse? createConditionResult;
+  HealthContextResponse? updateConditionResult;
+  HealthContextResponse? deleteConditionResult;
+  HealthContextResponse? createCurrentMedicineResult;
+  HealthContextResponse? updateCurrentMedicineResult;
+  HealthContextResponse? deleteCurrentMedicineResult;
 
   Object? fetchError;
   int fetchCallCount = 0;
@@ -47,14 +47,14 @@ class _FakeHealthContextRemoteDataSource
   );
 
   @override
-  Future<HealthContextResponseDto> fetchHealthContext() async {
+  Future<HealthContextResponse> fetchHealthContext() async {
     fetchCallCount++;
     if (fetchError != null) throw fetchError!;
     return fetchResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponseDto> updateProfile(
+  Future<HealthContextResponse> updateProfile(
     HealthProfileUpdateInput input,
   ) async {
     if (writeShouldFail) {
@@ -64,7 +64,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> createAllergy(
+  Future<HealthContextResponse> createAllergy(
     HealthAllergyWriteInput input,
   ) async {
     if (writeShouldFail) {
@@ -74,7 +74,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> updateAllergy(
+  Future<HealthContextResponse> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
   ) async {
@@ -85,7 +85,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> deleteAllergy(String id) async {
+  Future<HealthContextResponse> deleteAllergy(String id) async {
     if (writeShouldFail) {
       throw _networkError('/api/v1/user/health-context/allergies/$id');
     }
@@ -93,7 +93,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> createCondition(
+  Future<HealthContextResponse> createCondition(
     HealthConditionWriteInput input,
   ) async {
     if (writeShouldFail) {
@@ -103,7 +103,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> updateCondition(
+  Future<HealthContextResponse> updateCondition(
     String id,
     HealthConditionUpdateInput input,
   ) async {
@@ -114,7 +114,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> deleteCondition(String id) async {
+  Future<HealthContextResponse> deleteCondition(String id) async {
     if (writeShouldFail) {
       throw _networkError('/api/v1/user/health-context/conditions/$id');
     }
@@ -122,7 +122,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> createCurrentMedicine(
+  Future<HealthContextResponse> createCurrentMedicine(
     CurrentMedicineWriteInput input,
   ) async {
     if (writeShouldFail) {
@@ -132,7 +132,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> updateCurrentMedicine(
+  Future<HealthContextResponse> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
   ) async {
@@ -143,7 +143,7 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextResponseDto> deleteCurrentMedicine(String id) async {
+  Future<HealthContextResponse> deleteCurrentMedicine(String id) async {
     if (writeShouldFail) {
       throw _networkError('/api/v1/user/health-context/current-medicines/$id');
     }
@@ -169,15 +169,15 @@ class _FakeSyncWorker extends SyncWorker {
 
 // ── DTO builder ─────────────────────────────────────────────────
 
-HealthContextResponseDto _buildDto({
+HealthContextResponse _buildDto({
   int? age,
   bool onboardingCompleted = true,
   int activeAllergyCount = 0,
   int conditionCount = 0,
   int currentMedicineCount = 0,
 }) {
-  return HealthContextResponseDto(
-    summary: HealthContextResponseDtoSummary(
+  return HealthContextResponse(
+    summary: HealthContextResponseSummary(
       age: age,
       onboardingCompleted: onboardingCompleted,
       activeAllergyCount: activeAllergyCount,
@@ -185,15 +185,15 @@ HealthContextResponseDto _buildDto({
       currentMedicineCount: currentMedicineCount,
       missingCoreProfileFields: [],
     ),
-    profile: HealthContextResponseDtoProfile(
+    profile: HealthContextResponseProfile(
       birthDate: null,
-      sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.unknown,
+      sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.unknown,
       heightCm: null,
       weightKg: null,
       bloodType: null,
       locale: null,
       timezone: null,
-      unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
+      unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
       onboardingCompletedAt: null,
       emergencyContact: null,
       extras: {},
@@ -660,8 +660,8 @@ void main() {
 
   group('cache JSON round-trip', () {
     test('snapshot with allergies survives cache round-trip', () async {
-      dataSource.createAllergyResult = HealthContextResponseDto(
-        summary: HealthContextResponseDtoSummary(
+      dataSource.createAllergyResult = HealthContextResponse(
+        summary: HealthContextResponseSummary(
           age: 30,
           onboardingCompleted: true,
           activeAllergyCount: 1,
@@ -669,26 +669,26 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: HealthContextResponseDtoProfile(
+        profile: HealthContextResponseProfile(
           birthDate: null,
-          sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.unknown,
+          sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           bloodType: null,
           locale: null,
           timezone: null,
-          unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
+          unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           emergencyContact: null,
           extras: {},
         ),
         allergies: [
-          HealthContextResponseDtoAllergiesInner(
+          HealthContextResponseAllergies(
             id: 'allergy-1',
-            kind: HealthContextResponseDtoAllergiesInnerKindEnum.food,
+            kind: HealthContextResponseAllergiesKindEnum.food,
             label: 'Peanuts',
             reaction: null,
-            severity: HealthContextResponseDtoAllergiesInnerSeverityEnum.severe,
+            severity: HealthContextResponseAllergiesSeverityEnum.severe,
             isActive: true,
             note: null,
             extras: null,
@@ -722,8 +722,8 @@ void main() {
     });
 
     test('snapshot with conditions survives cache round-trip', () async {
-      dataSource.createConditionResult = HealthContextResponseDto(
-        summary: HealthContextResponseDtoSummary(
+      dataSource.createConditionResult = HealthContextResponse(
+        summary: HealthContextResponseSummary(
           age: null,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -731,25 +731,25 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: HealthContextResponseDtoProfile(
+        profile: HealthContextResponseProfile(
           birthDate: null,
-          sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.unknown,
+          sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           bloodType: null,
           locale: null,
           timezone: null,
-          unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
+          unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           emergencyContact: null,
           extras: {},
         ),
         allergies: [],
         conditions: [
-          HealthContextResponseDtoConditionsInner(
+          HealthContextResponseConditions(
             id: 'cond-1',
             label: 'Hypertension',
-            status: HealthContextResponseDtoConditionsInnerStatusEnum.active,
+            status: HealthContextResponseConditionsStatusEnum.active,
             diagnosedAt: '2026-01-01',
             resolvedAt: null,
             note: 'Under treatment',
@@ -778,8 +778,8 @@ void main() {
     });
 
     test('snapshot with currentMedicines survives cache round-trip', () async {
-      dataSource.createCurrentMedicineResult = HealthContextResponseDto(
-        summary: HealthContextResponseDtoSummary(
+      dataSource.createCurrentMedicineResult = HealthContextResponse(
+        summary: HealthContextResponseSummary(
           age: null,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -787,15 +787,15 @@ void main() {
           currentMedicineCount: 1,
           missingCoreProfileFields: [],
         ),
-        profile: HealthContextResponseDtoProfile(
+        profile: HealthContextResponseProfile(
           birthDate: null,
-          sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.unknown,
+          sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           bloodType: null,
           locale: null,
           timezone: null,
-          unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
+          unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           emergencyContact: null,
           extras: {},
@@ -803,10 +803,10 @@ void main() {
         allergies: [],
         conditions: [],
         currentMedicines: [
-          HealthContextResponseDtoCurrentMedicinesInner(
+          HealthContextResponseCurrentMedicines(
             id: 'med-1',
             source_:
-                HealthContextResponseDtoCurrentMedicinesInnerSource_Enum.cn,
+                HealthContextResponseCurrentMedicinesSource_Enum.cn,
             sourceRefId: 'ref-1',
             displayName: 'Aspirin',
             strengthText: '100mg',
@@ -843,8 +843,8 @@ void main() {
     });
 
     test('snapshot with profile extras survives cache round-trip', () async {
-      dataSource.updateProfileResult = HealthContextResponseDto(
-        summary: HealthContextResponseDtoSummary(
+      dataSource.updateProfileResult = HealthContextResponse(
+        summary: HealthContextResponseSummary(
           age: 35,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -852,15 +852,15 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: HealthContextResponseDtoProfile(
+        profile: HealthContextResponseProfile(
           birthDate: '1991-05-15',
-          sexAtBirth: HealthContextResponseDtoProfileSexAtBirthEnum.female,
+          sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.female,
           heightCm: 165.0,
           weightKg: null,
           bloodType: 'A+',
           locale: 'zh-CN',
           timezone: 'Asia/Shanghai',
-          unitSystem: HealthContextResponseDtoProfileUnitSystemEnum.metric,
+          unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
           onboardingCompletedAt: '2026-07-11T08:00:00.000Z',
           emergencyContact: null,
           extras: {'customKey': 'customValue'},
