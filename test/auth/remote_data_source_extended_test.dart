@@ -750,7 +750,7 @@ void main() {
 
         expect(
           adapter.lastBody?['scene'],
-          LocalControllerSendVerificationCodeV1RequestSceneEnum
+          SendVerificationCodeRequestSceneEnum
               .setPassword
               .value,
         );
@@ -768,7 +768,7 @@ void main() {
 
         expect(
           adapter.lastBody?['scene'],
-          LocalControllerSendVerificationCodeV1RequestSceneEnum
+          SendVerificationCodeRequestSceneEnum
               .changeEmail
               .value,
         );

@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/auth/data/mappers/auth.dart';
 
-/// Helper to build a LoginResponseDto with minimal required fields.
-LoginResponseDto _loginData({
+/// Helper to build a LoginResponse with minimal required fields.
+LoginResponse _loginData({
   String userId = 'u-1',
   String email = 'test@example.com',
   String? nickname,
@@ -14,8 +14,8 @@ LoginResponseDto _loginData({
   String createdAt = '2026-06-10T08:00:00.000Z',
   String updatedAt = '2026-06-10T08:00:00.000Z',
 }) {
-  return LoginResponseDto(
-    user: LoginResponseDtoUser(
+  return LoginResponse(
+    user: LoginResponseUser(
       id: userId,
       email: email,
       nickname: nickname ?? email.split('@').first,
@@ -25,7 +25,7 @@ LoginResponseDto _loginData({
       createdAt: createdAt,
       updatedAt: updatedAt,
     ),
-    tokens: RegisterResponseDtoTokens(
+    tokens: LoginResponseTokens(
       accessToken: accessToken,
       refreshToken: refreshToken,
       expiresIn: 3600,
@@ -33,8 +33,8 @@ LoginResponseDto _loginData({
   );
 }
 
-/// Helper to build a RegisterResponseDto with minimal required fields.
-RegisterResponseDto _registerData({
+/// Helper to build a RegisterResponse with minimal required fields.
+RegisterResponse _registerData({
   String userId = 'u-1',
   String email = 'test@example.com',
   String? nickname,
@@ -44,8 +44,8 @@ RegisterResponseDto _registerData({
   String refreshToken = 'rt-1',
   String createdAt = '2026-06-10T08:00:00.000Z',
 }) {
-  return RegisterResponseDto(
-    user: RegisterResponseDtoUser(
+  return RegisterResponse(
+    user: RegisterResponseUser(
       id: userId,
       email: email,
       nickname: nickname ?? email.split('@').first,
@@ -53,7 +53,7 @@ RegisterResponseDto _registerData({
       emailVerifiedAt: emailVerifiedAt,
       createdAt: createdAt,
     ),
-    tokens: RegisterResponseDtoTokens(
+    tokens: RegisterResponseTokens(
       accessToken: accessToken,
       refreshToken: refreshToken,
       expiresIn: 3600,
@@ -132,7 +132,7 @@ void main() {
       expect(session.user.id, 'u-1');
       expect(session.user.email, 'user@example.com');
       expect(session.user.nickname, 'TestUser');
-      // RegisterResponseDtoUser 无 avatar/updatedAt:注册路径恒取 avatar null,
+      // RegisterResponseUser 无 avatar/updatedAt:注册路径恒取 avatar null,
       // updatedAt 沿用 createdAt(与 mapper 内注释一致)。
       expect(session.user.avatar, isNull);
       expect(session.user.updatedAt, session.user.createdAt);

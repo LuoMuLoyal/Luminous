@@ -79,7 +79,7 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   String? deleteAccountPassword;
   String? unlinkIdentityId;
   String? unlinkIdentityPassword;
-  DataExportControllerCreateRequestV1Request? lastDataExportRequest;
+  CreateRequestRequest? lastDataExportRequest;
   bool createWechatAuthorizeCalled = false;
   bool createWechatIdentityLinkAuthorizeCalled = false;
   String? wechatAuthorizeCallbackUri;
@@ -311,25 +311,25 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   }
 
   @override
-  TaskEither<LucentFailure, DataExportRequestDataDto> requestDataExport({
-    required DataExportControllerCreateRequestV1RequestKindEnum kind,
-    required DataExportControllerCreateRequestV1RequestFormatEnum format,
-    required DataExportControllerCreateRequestV1RequestRangeEnum range,
+  TaskEither<LucentFailure, DataExportRequestData> requestDataExport({
+    required CreateRequestRequestKindEnum kind,
+    required CreateRequestRequestFormatEnum format,
+    required CreateRequestRequestRangeEnum range,
     required String password,
   }) {
-    lastDataExportRequest = DataExportControllerCreateRequestV1Request(
+    lastDataExportRequest = CreateRequestRequest(
       kind: kind,
       format: format,
       range: range,
       password: password,
     );
     return TaskEither.right(
-      DataExportRequestDataDto(
+      DataExportRequestData(
         id: 'export-1',
-        kind: DataExportRequestDataDtoKindEnum.hospital,
-        format: DataExportRequestDataDtoFormatEnum.pdf,
-        range: DataExportRequestDataDtoRangeEnum.last7Days,
-        status: DataExportRequestDataDtoStatusEnum.requested,
+        kind: DataExportRequestDataKindEnum.hospital,
+        format: DataExportRequestDataFormatEnum.pdf,
+        range: DataExportRequestDataRangeEnum.last7Days,
+        status: DataExportRequestDataStatusEnum.requested,
         requestedAt: DateTime.now().toUtc().toIso8601String(),
         completedAt: null,
         downloadUrl: null,
