@@ -36,6 +36,7 @@ final class RetryPolicy {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
       DioExceptionType.receiveTimeout ||
+      DioExceptionType.transformTimeout ||
       DioExceptionType.connectionError => true,
       DioExceptionType.badCertificate ||
       DioExceptionType.cancel ||

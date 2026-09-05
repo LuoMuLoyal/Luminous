@@ -656,6 +656,13 @@ void main() {
       );
     });
 
+    test('maps transformTimeout to fallback message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.transformTimeout,
+        'Response processing timed out. Please try again later.',
+      );
+    });
+
     test('maps badCertificate to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.badCertificate,

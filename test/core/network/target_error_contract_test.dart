@@ -85,6 +85,7 @@ void main() {
         ),
         (DioExceptionType.sendTimeout, NetworkErrorCode.sendTimeout),
         (DioExceptionType.receiveTimeout, NetworkErrorCode.receiveTimeout),
+        (DioExceptionType.transformTimeout, NetworkErrorCode.receiveTimeout),
         (DioExceptionType.badCertificate, NetworkErrorCode.badCertificate),
       ];
 

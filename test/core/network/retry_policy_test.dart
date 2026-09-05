@@ -35,6 +35,16 @@ void main() {
     expect(policy.shouldRetry(failure(statusCode: 503), request), isTrue);
   });
 
+  test('retries a transport timeout without a response', () {
+    final request = RequestOptions(path: '/test', method: 'GET');
+    final error = DioException(
+      requestOptions: request,
+      type: DioExceptionType.transformTimeout,
+    );
+
+    expect(policy.shouldRetry(error, request), isTrue);
+  });
+
   test('does not retry a non-idempotent write without an idempotency key', () {
     final request = RequestOptions(path: '/test', method: 'POST');
 

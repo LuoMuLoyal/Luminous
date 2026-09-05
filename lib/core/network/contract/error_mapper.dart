@@ -89,6 +89,8 @@ abstract final class LucentErrorMapper {
         'Request timed out. Please try again later.',
       DioExceptionType.receiveTimeout =>
         'Response timed out. Please try again later.',
+      DioExceptionType.transformTimeout =>
+        'Response processing timed out. Please try again later.',
       DioExceptionType.badCertificate =>
         'Server certificate verification failed.',
       DioExceptionType.connectionError =>
@@ -104,6 +106,7 @@ abstract final class LucentErrorMapper {
       DioExceptionType.connectionTimeout => NetworkErrorCode.connectionTimeout,
       DioExceptionType.sendTimeout => NetworkErrorCode.sendTimeout,
       DioExceptionType.receiveTimeout => NetworkErrorCode.receiveTimeout,
+      DioExceptionType.transformTimeout => NetworkErrorCode.receiveTimeout,
       DioExceptionType.badCertificate => NetworkErrorCode.badCertificate,
       DioExceptionType.connectionError => NetworkErrorCode.connectionError,
       DioExceptionType.cancel => NetworkErrorCode.cancelled,
