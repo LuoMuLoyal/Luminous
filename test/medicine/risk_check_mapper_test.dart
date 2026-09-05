@@ -3,20 +3,20 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/medicine/data/mappers/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 
-MedicineRiskCheckRecordsResponseDtoStaticResult _response({
-  MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum level =
-      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum.safe,
+MedicineRiskCheckRecordsResponseStaticResult _response({
+  MedicineRiskCheckRecordsResponseStaticResultOverallRiskLevelEnum level =
+      MedicineRiskCheckRecordsResponseStaticResultOverallRiskLevelEnum.safe,
   int score = 0,
-  List<MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner> findings =
+  List<MedicineRiskCheckRecordsResponseStaticResultFindings> findings =
       const [],
-  List<MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInner>
+  List<MedicineRiskCheckRecordsResponseStaticResultCoverageIssues>
       coverageIssues =
       const [],
-  List<MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInner> redFlags =
+  List<MedicineRiskCheckRecordsResponseStaticResultRedFlags> redFlags =
       const [],
   String? recommendation,
 }) {
-  return MedicineRiskCheckRecordsResponseDtoStaticResult(
+  return MedicineRiskCheckRecordsResponseStaticResult(
     overallRiskLevel: level,
     overallRiskScore: score,
     currentMedicineCount: 3,
@@ -28,16 +28,58 @@ MedicineRiskCheckRecordsResponseDtoStaticResult _response({
   );
 }
 
-MedicineRiskCheckRecordResponseDto _record({
-  MedicineRiskCheckRecordResponseDtoCheckTypeEnum checkType =
-      MedicineRiskCheckRecordResponseDtoCheckTypeEnum.static_,
-  MedicineRiskCheckRecordResponseDtoRiskLevelEnum riskLevel =
-      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.safe,
-  MedicineRiskCheckRecordsResponseDtoStaticResult? result,
+MedicineRiskCheckRecordResponse _record({
+  MedicineRiskCheckRecordResponseCheckTypeEnum checkType =
+      MedicineRiskCheckRecordResponseCheckTypeEnum.static_,
+  MedicineRiskCheckRecordResponseRiskLevelEnum riskLevel =
+      MedicineRiskCheckRecordResponseRiskLevelEnum.safe,
+  MedicineRiskCheckRecordResponseResult? result,
   int score = 10,
   bool stale = false,
 }) {
-  return MedicineRiskCheckRecordResponseDto(
+  return MedicineRiskCheckRecordResponse(
+    checkType: checkType,
+    result: result ?? _recordResult(score: score),
+    riskScore: score,
+    riskLevel: riskLevel,
+    stale: stale,
+    createdAt: DateTime(2026, 7, 1),
+    updatedAt: DateTime(2026, 7, 2),
+  );
+}
+
+MedicineRiskCheckRecordResponseResult _recordResult({
+  MedicineRiskCheckRecordResponseResultOverallRiskLevelEnum level =
+      MedicineRiskCheckRecordResponseResultOverallRiskLevelEnum.safe,
+  int score = 0,
+  List<MedicineRiskCheckRecordResponseResultFindings> findings = const [],
+  List<MedicineRiskCheckRecordResponseResultCoverageIssues> coverageIssues =
+      const [],
+  List<MedicineRiskCheckRecordResponseResultRedFlags> redFlags = const [],
+  String? recommendation,
+}) {
+  return MedicineRiskCheckRecordResponseResult(
+    overallRiskLevel: level,
+    overallRiskScore: score,
+    currentMedicineCount: 3,
+    checkedMedicineCount: 2,
+    findings: findings,
+    coverageIssues: coverageIssues,
+    redFlags: redFlags,
+    overallRecommendation: recommendation,
+  );
+}
+
+MedicineRiskCheckRecordsResponseStatic _listRecord({
+  MedicineRiskCheckRecordsResponseStaticCheckTypeEnum checkType =
+      MedicineRiskCheckRecordsResponseStaticCheckTypeEnum.static_,
+  MedicineRiskCheckRecordsResponseStaticRiskLevelEnum riskLevel =
+      MedicineRiskCheckRecordsResponseStaticRiskLevelEnum.safe,
+  MedicineRiskCheckRecordsResponseStaticResult? result,
+  int score = 10,
+  bool stale = false,
+}) {
+  return MedicineRiskCheckRecordsResponseStatic(
     checkType: checkType,
     result: result ?? _response(score: score),
     riskScore: score,
@@ -48,23 +90,45 @@ MedicineRiskCheckRecordResponseDto _record({
   );
 }
 
-MedicineRiskCheckRecordsResponseDtoStatic _listRecord({
-  MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum checkType =
-      MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum.static_,
-  MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum riskLevel =
-      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.safe,
-  MedicineRiskCheckRecordsResponseDtoStaticResult? result,
+MedicineRiskCheckRecordsResponseLlm _listLlmRecord({
+  MedicineRiskCheckRecordsResponseLlmCheckTypeEnum checkType =
+      MedicineRiskCheckRecordsResponseLlmCheckTypeEnum.static_,
+  MedicineRiskCheckRecordsResponseLlmRiskLevelEnum riskLevel =
+      MedicineRiskCheckRecordsResponseLlmRiskLevelEnum.safe,
+  MedicineRiskCheckRecordsResponseLlmResult? result,
   int score = 10,
   bool stale = false,
 }) {
-  return MedicineRiskCheckRecordsResponseDtoStatic(
+  return MedicineRiskCheckRecordsResponseLlm(
     checkType: checkType,
-    result: result ?? _response(score: score),
+    result: result ?? _llmResult(score: score),
     riskScore: score,
     riskLevel: riskLevel,
     stale: stale,
     createdAt: DateTime(2026, 7, 1),
     updatedAt: DateTime(2026, 7, 2),
+  );
+}
+
+MedicineRiskCheckRecordsResponseLlmResult _llmResult({
+  MedicineRiskCheckRecordsResponseLlmResultOverallRiskLevelEnum level =
+      MedicineRiskCheckRecordsResponseLlmResultOverallRiskLevelEnum.safe,
+  int score = 0,
+  List<MedicineRiskCheckRecordsResponseLlmResultFindings> findings = const [],
+  List<MedicineRiskCheckRecordsResponseLlmResultCoverageIssues>
+      coverageIssues = const [],
+  List<MedicineRiskCheckRecordsResponseLlmResultRedFlags> redFlags = const [],
+  String? recommendation,
+}) {
+  return MedicineRiskCheckRecordsResponseLlmResult(
+    overallRiskLevel: level,
+    overallRiskScore: score,
+    currentMedicineCount: 3,
+    checkedMedicineCount: 2,
+    findings: findings,
+    coverageIssues: coverageIssues,
+    redFlags: redFlags,
+    overallRecommendation: recommendation,
   );
 }
 
@@ -74,14 +138,14 @@ void main() {
   group('recordsDtoToDomain', () {
     test('maps static + llm records', () {
       final records = mapper.recordsDtoToDomain(
-        MedicineRiskCheckRecordsResponseDto(
+        MedicineRiskCheckRecordsResponse(
           static_: _listRecord(
             checkType:
-                MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum.static_,
+                MedicineRiskCheckRecordsResponseStaticCheckTypeEnum.static_,
           ),
-          llm: _listRecord(
+          llm: _listLlmRecord(
             checkType:
-                MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum.llm,
+                MedicineRiskCheckRecordsResponseLlmCheckTypeEnum.llm,
           ),
         ),
       );
@@ -94,7 +158,7 @@ void main() {
 
     test('handles null records', () {
       final records = mapper.recordsDtoToDomain(
-        MedicineRiskCheckRecordsResponseDto(static_: null, llm: null),
+        MedicineRiskCheckRecordsResponse(static_: null, llm: null),
       );
 
       expect(records.staticRecord, isNull);
@@ -109,8 +173,8 @@ void main() {
     test('maps record fields', () {
       final record = mapper.recordDtoToDomain(
         _record(
-          checkType: MedicineRiskCheckRecordResponseDtoCheckTypeEnum.llm,
-          riskLevel: MedicineRiskCheckRecordResponseDtoRiskLevelEnum.danger,
+          checkType: MedicineRiskCheckRecordResponseCheckTypeEnum.llm,
+          riskLevel: MedicineRiskCheckRecordResponseRiskLevelEnum.danger,
           score: 88,
           stale: true,
         ),
@@ -127,7 +191,7 @@ void main() {
     test('maps unknown check type to static', () {
       final record = mapper.recordDtoToDomain(
         _record(
-          checkType: MedicineRiskCheckRecordResponseDtoCheckTypeEnum
+          checkType: MedicineRiskCheckRecordResponseCheckTypeEnum
               .unknownDefaultOpenApi,
         ),
       );
@@ -137,7 +201,7 @@ void main() {
     test('maps unknown risk level to safe', () {
       final record = mapper.recordDtoToDomain(
         _record(
-          riskLevel: MedicineRiskCheckRecordResponseDtoRiskLevelEnum
+          riskLevel: MedicineRiskCheckRecordResponseRiskLevelEnum
               .unknownDefaultOpenApi,
         ),
       );
@@ -150,7 +214,7 @@ void main() {
       final result = mapper.resultDtoToDomain(
         _response(
           level:
-              MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
+              MedicineRiskCheckRecordsResponseStaticResultOverallRiskLevelEnum
                   .caution,
           score: 45,
           recommendation: '多喝水',
@@ -168,7 +232,7 @@ void main() {
       final result = mapper.resultDtoToDomain(
         _response(
           level:
-              MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
+              MedicineRiskCheckRecordsResponseStaticResultOverallRiskLevelEnum
                   .unknownDefaultOpenApi,
         ),
       );
@@ -179,27 +243,27 @@ void main() {
       final result = mapper.resultDtoToDomain(
         _response(
           findings: [
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+            MedicineRiskCheckRecordsResponseStaticResultFindings(
               type:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                       .interaction,
               severity:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                       .high,
               context:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                       .none,
               primaryMedicineName: '合法药',
             ),
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+            MedicineRiskCheckRecordsResponseStaticResultFindings(
               type:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                       .unknownDefaultOpenApi,
               severity:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                       .medium,
               context:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                       .alcohol,
               primaryMedicineName: '未知药',
             ),
@@ -217,41 +281,41 @@ void main() {
     test('maps all finding types', () {
       const expectedByType =
           <
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum,
+            MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum,
             MedicineRiskFindingType
           >{
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+            MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                     .interaction:
                 MedicineRiskFindingType.interaction,
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+            MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                     .duplicateIngredient:
                 MedicineRiskFindingType.duplicateIngredient,
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+            MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                     .allergy:
                 MedicineRiskFindingType.allergy,
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+            MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                     .foodInteraction:
                 MedicineRiskFindingType.foodInteraction,
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+            MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                     .longTermUse:
                 MedicineRiskFindingType.longTermUse,
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+            MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                     .schedulingConflict:
                 MedicineRiskFindingType.schedulingConflict,
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+            MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                     .specialGroup:
                 MedicineRiskFindingType.specialGroup,
           };
 
       expectedByType.forEach((dtoEnum, expected) {
         final finding = mapper.findingDtoToDomain(
-          MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+          MedicineRiskCheckRecordsResponseStaticResultFindings(
             type: dtoEnum,
             severity:
-                MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                     .high,
             context:
-                MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+                MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                     .none,
             primaryMedicineName: '阿莫西林',
           ),
@@ -262,15 +326,15 @@ void main() {
 
     test('findingDtoToDomain returns null for unknown finding type', () {
       final finding = mapper.findingDtoToDomain(
-        MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+        MedicineRiskCheckRecordsResponseStaticResultFindings(
           type:
-              MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+              MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                   .unknownDefaultOpenApi,
           severity:
-              MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+              MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                   .medium,
           context:
-              MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+              MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                   .alcohol,
           primaryMedicineName: '药A',
           secondaryMedicineName: '药B',
@@ -287,15 +351,15 @@ void main() {
       expect(
         mapper
             .findingDtoToDomain(
-              MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+              MedicineRiskCheckRecordsResponseStaticResultFindings(
                 type:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                         .allergy,
                 severity:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                         .high,
                 context:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                         .none,
                 primaryMedicineName: '药',
               ),
@@ -306,15 +370,15 @@ void main() {
       expect(
         mapper
             .findingDtoToDomain(
-              MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+              MedicineRiskCheckRecordsResponseStaticResultFindings(
                 type:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                         .allergy,
                 severity:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                         .medium,
                 context:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                         .none,
                 primaryMedicineName: '药',
               ),
@@ -325,15 +389,15 @@ void main() {
       expect(
         mapper
             .findingDtoToDomain(
-              MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+              MedicineRiskCheckRecordsResponseStaticResultFindings(
                 type:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                         .allergy,
                 severity:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                         .info,
                 context:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                         .none,
                 primaryMedicineName: '药',
               ),
@@ -344,15 +408,15 @@ void main() {
       expect(
         mapper
             .findingDtoToDomain(
-              MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+              MedicineRiskCheckRecordsResponseStaticResultFindings(
                 type:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                         .allergy,
                 severity:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                         .unknownDefaultOpenApi,
                 context:
-                    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+                    MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                         .none,
                 primaryMedicineName: '药',
               ),
@@ -365,28 +429,28 @@ void main() {
     test('maps all contexts', () {
       for (final (dtoEnum, expected) in [
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+          MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
               .none,
           MedicineRiskFindingContext.none,
         ),
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+          MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
               .alcohol,
           MedicineRiskFindingContext.alcohol,
         ),
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+          MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
               .caffeine,
           MedicineRiskFindingContext.caffeine,
         ),
       ]) {
         final finding = mapper.findingDtoToDomain(
-          MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+          MedicineRiskCheckRecordsResponseStaticResultFindings(
             type:
-                MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+                MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                     .allergy,
             severity:
-                MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                     .high,
             context: dtoEnum,
             primaryMedicineName: '药',
@@ -401,28 +465,28 @@ void main() {
     test('maps all reasons', () {
       for (final (dtoEnum, expected) in [
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+          MedicineRiskCheckRecordsResponseStaticResultCoverageIssuesReasonEnum
               .manualEntry,
           MedicineRiskCoverageReason.manualEntry,
         ),
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+          MedicineRiskCheckRecordsResponseStaticResultCoverageIssuesReasonEnum
               .missingSourceRef,
           MedicineRiskCoverageReason.missingSourceRef,
         ),
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+          MedicineRiskCheckRecordsResponseStaticResultCoverageIssuesReasonEnum
               .detailUnavailable,
           MedicineRiskCoverageReason.detailUnavailable,
         ),
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+          MedicineRiskCheckRecordsResponseStaticResultCoverageIssuesReasonEnum
               .unknownDefaultOpenApi,
           MedicineRiskCoverageReason.detailUnavailable,
         ),
       ]) {
         final issue = mapper.coverageIssueDtoToDomain(
-          MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInner(
+          MedicineRiskCheckRecordsResponseStaticResultCoverageIssues(
             medicineName: '药X',
             reason: dtoEnum,
           ),
@@ -437,23 +501,23 @@ void main() {
     test('maps all rules', () {
       for (final (dtoEnum, expected) in [
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum
+          MedicineRiskCheckRecordsResponseStaticResultRedFlagsRuleEnum
               .severeAllergy,
           RedFlagRule.severeAllergy,
         ),
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum
+          MedicineRiskCheckRecordsResponseStaticResultRedFlagsRuleEnum
               .informationGap,
           RedFlagRule.informationGap,
         ),
         (
-          MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum
+          MedicineRiskCheckRecordsResponseStaticResultRedFlagsRuleEnum
               .unknownDefaultOpenApi,
           RedFlagRule.informationGap,
         ),
       ]) {
         final alert = mapper.redFlagDtoToDomain(
-          MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInner(
+          MedicineRiskCheckRecordsResponseStaticResultRedFlags(
             rule: dtoEnum,
             primaryMedicineName: '青霉素',
             relatedLabel: '阿莫西林',
@@ -470,11 +534,11 @@ void main() {
     test('maps static and llm', () {
       expect(
         mapper.checkTypeToDto(MedicineRiskCheckType.static_).type,
-        MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+        RunRiskCheckRequestTypeEnum.static_,
       );
       expect(
         mapper.checkTypeToDto(MedicineRiskCheckType.llm).type,
-        MedicinesControllerRunRiskCheckV1RequestTypeEnum.llm,
+        RunRiskCheckRequestTypeEnum.llm,
       );
     });
   });
@@ -488,12 +552,12 @@ void main() {
 
       expect(
         dto.type,
-        MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+        RunRiskCheckRequestTypeEnum.static_,
       );
       expect(dto.candidate, isNotNull);
       expect(
         dto.candidate!.source_,
-        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.cn,
+        RunRiskCheckRequestCandidateSource_Enum.cn,
       );
       expect(dto.candidate!.id, '__mock_cn_ibuprofen__');
     });
@@ -506,11 +570,11 @@ void main() {
 
       expect(
         dto.type,
-        MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+        RunRiskCheckRequestTypeEnum.static_,
       );
       expect(
         dto.candidate!.source_,
-        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.drugbank,
+        RunRiskCheckRequestCandidateSource_Enum.drugbank,
       );
       expect(dto.candidate!.id, 'DB01050');
     });
@@ -520,7 +584,7 @@ void main() {
 
       expect(
         dto.candidate!.source_,
-        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum
+        RunRiskCheckRequestCandidateSource_Enum
             .unknownDefaultOpenApi,
       );
     });
@@ -531,34 +595,34 @@ void main() {
       final result = mapper.resultDtoToDomain(
         _response(
           level:
-              MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
+              MedicineRiskCheckRecordsResponseStaticResultOverallRiskLevelEnum
                   .risk,
           findings: [
-            MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner(
+            MedicineRiskCheckRecordsResponseStaticResultFindings(
               type:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
                       .interaction,
               severity:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                       .high,
               context:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
+                  MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
                       .none,
               primaryMedicineName: 'A',
             ),
           ],
           coverageIssues: [
-            MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInner(
+            MedicineRiskCheckRecordsResponseStaticResultCoverageIssues(
               medicineName: 'B',
               reason:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
+                  MedicineRiskCheckRecordsResponseStaticResultCoverageIssuesReasonEnum
                       .manualEntry,
             ),
           ],
           redFlags: [
-            MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInner(
+            MedicineRiskCheckRecordsResponseStaticResultRedFlags(
               rule:
-                  MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum
+                  MedicineRiskCheckRecordsResponseStaticResultRedFlagsRuleEnum
                       .severeAllergy,
               primaryMedicineName: 'C',
             ),

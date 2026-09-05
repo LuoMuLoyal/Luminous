@@ -1,9 +1,9 @@
 import 'package:lucent_api/lucent_api.dart';
 
-/// A test-only [MedicineDetailResponseDtoDetail] whose [toJson] returns the raw
+/// A test-only [MedicineDetailResponseDetail] whose [toJson] returns the raw
 /// detail JSON map supplied by the test.
 ///
-/// The generated [MedicineDetailResponseDtoDetail] has strongly typed fields, but
+/// The generated [MedicineDetailResponseDetail] has strongly typed fields, but
 /// the medicine-risk domain code still reads the detail payload as a dynamic
 /// map. Using this fake lets tests keep passing the old free-form JSON shape
 /// (including list values such as `drugInteractions`) without needing to encode
@@ -12,7 +12,7 @@ import 'package:lucent_api/lucent_api.dart';
 /// The regenerated client declares every field as a required constructor
 /// parameter (nullable types included), so the remaining monograph fields are
 /// filled with `null` — [toJson] is overridden and never reads them.
-class TestMedicineDetailDataDtoDetail extends MedicineDetailResponseDtoDetail {
+class TestMedicineDetailDataDtoDetail extends MedicineDetailResponseDetail {
   TestMedicineDetailDataDtoDetail(this._rawJson)
     : super(
         kind: 'generic',

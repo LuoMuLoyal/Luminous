@@ -13,11 +13,10 @@ import '../helpers/task_either.dart';
 
 class _MockMedicinesApi extends Mock implements MedicinesApi {}
 
-MedicineRiskCheckRecordsResponseDtoStaticResult _response() {
-  return MedicineRiskCheckRecordsResponseDtoStaticResult(
+MedicineRiskCheckRecordResponseResult _recordResult() {
+  return MedicineRiskCheckRecordResponseResult(
     overallRiskLevel:
-        MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
-            .safe,
+        MedicineRiskCheckRecordResponseResultOverallRiskLevelEnum.safe,
     overallRiskScore: 0,
     currentMedicineCount: 2,
     checkedMedicineCount: 2,
@@ -27,12 +26,12 @@ MedicineRiskCheckRecordsResponseDtoStaticResult _response() {
   );
 }
 
-MedicineRiskCheckRecordResponseDto _record() {
-  return MedicineRiskCheckRecordResponseDto(
-    checkType: MedicineRiskCheckRecordResponseDtoCheckTypeEnum.static_,
-    result: _response(),
+MedicineRiskCheckRecordResponse _record() {
+  return MedicineRiskCheckRecordResponse(
+    checkType: MedicineRiskCheckRecordResponseCheckTypeEnum.static_,
+    result: _recordResult(),
     riskScore: 0,
-    riskLevel: MedicineRiskCheckRecordResponseDtoRiskLevelEnum.safe,
+    riskLevel: MedicineRiskCheckRecordResponseRiskLevelEnum.safe,
     stale: false,
     createdAt: DateTime(2026, 7, 1),
     updatedAt: DateTime(2026, 7, 1),
@@ -100,18 +99,18 @@ void main() {
       remoteDataSource: dataSource,
     );
     registerFallbackValue(
-      MedicinesControllerRunRiskCheckV1Request(
-        type: MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+      RunRiskCheckRequest(
+        type: RunRiskCheckRequestTypeEnum.static_,
       ),
     );
   });
 
   group('MedicineRiskCheckRemoteDataSource — fetchRecords', () {
     test('maps the direct resource to records', () async {
-      when(() => api.medicinesControllerGetRiskCheckV1()).thenAnswer(
+      when(() => api.getRiskCheck()).thenAnswer(
         (_) async => _apiResponse(
-          MedicineRiskCheckRecordsResponseDto(
-            static_: MedicineRiskCheckRecordsResponseDtoStatic.fromJson(
+          MedicineRiskCheckRecordsResponse(
+            static_: MedicineRiskCheckRecordsResponseStatic.fromJson(
               _record().toJson(),
             ),
             llm: null,
@@ -124,12 +123,12 @@ void main() {
       expect(records.staticRecord, isNotNull);
       expect(records.llmRecord, isNull);
       expect(records.isEmpty, isFalse);
-      verify(() => api.medicinesControllerGetRiskCheckV1()).called(1);
+      verify(() => api.getRiskCheck()).called(1);
     });
 
     test('throws empty response error when the resource is null', () async {
-      when(() => api.medicinesControllerGetRiskCheckV1()).thenAnswer(
-        (_) async => Response<MedicineRiskCheckRecordsResponseDto>(
+      when(() => api.getRiskCheck()).thenAnswer(
+        (_) async => Response<MedicineRiskCheckRecordsResponse>(
           data: null,
           requestOptions: RequestOptions(path: '/'),
         ),
@@ -154,9 +153,9 @@ void main() {
   group('MedicineRiskCheckRemoteDataSource — runCheck', () {
     test('maps record response to domain', () async {
       when(
-        () => api.medicinesControllerRunRiskCheckV1(
-          medicinesControllerRunRiskCheckV1Request: any(
-            named: 'medicinesControllerRunRiskCheckV1Request',
+        () => api.runRiskCheck(
+          runRiskCheckRequest: any(
+            named: 'runRiskCheckRequest',
           ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
@@ -165,9 +164,9 @@ void main() {
 
       expect(record.checkType, MedicineRiskCheckType.static_);
       verify(
-        () => api.medicinesControllerRunRiskCheckV1(
-          medicinesControllerRunRiskCheckV1Request: any(
-            named: 'medicinesControllerRunRiskCheckV1Request',
+        () => api.runRiskCheck(
+          runRiskCheckRequest: any(
+            named: 'runRiskCheckRequest',
           ),
         ),
       ).called(1);
@@ -175,9 +174,9 @@ void main() {
 
     test('maps llm check type to request dto', () async {
       when(
-        () => api.medicinesControllerRunRiskCheckV1(
-          medicinesControllerRunRiskCheckV1Request: any(
-            named: 'medicinesControllerRunRiskCheckV1Request',
+        () => api.runRiskCheck(
+          runRiskCheckRequest: any(
+            named: 'runRiskCheckRequest',
           ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
@@ -186,28 +185,28 @@ void main() {
 
       final captured =
           verify(
-                () => api.medicinesControllerRunRiskCheckV1(
-                  medicinesControllerRunRiskCheckV1Request: captureAny(
-                    named: 'medicinesControllerRunRiskCheckV1Request',
+                () => api.runRiskCheck(
+                  runRiskCheckRequest: captureAny(
+                    named: 'runRiskCheckRequest',
                   ),
                 ),
               ).captured.single
-              as MedicinesControllerRunRiskCheckV1Request;
+              as RunRiskCheckRequest;
       expect(
         captured.type,
-        MedicinesControllerRunRiskCheckV1RequestTypeEnum.llm,
+        RunRiskCheckRequestTypeEnum.llm,
       );
     });
 
     test('throws empty response error when run result is null', () async {
       when(
-        () => api.medicinesControllerRunRiskCheckV1(
-          medicinesControllerRunRiskCheckV1Request: any(
-            named: 'medicinesControllerRunRiskCheckV1Request',
+        () => api.runRiskCheck(
+          runRiskCheckRequest: any(
+            named: 'runRiskCheckRequest',
           ),
         ),
       ).thenAnswer(
-        (_) async => Response<MedicineRiskCheckRecordResponseDto>(
+        (_) async => Response<MedicineRiskCheckRecordResponse>(
           data: null,
           requestOptions: RequestOptions(path: '/'),
         ),
@@ -234,9 +233,9 @@ void main() {
       'posts static precheck with candidate source/id and maps result',
       () async {
         when(
-          () => api.medicinesControllerRunRiskCheckV1(
-            medicinesControllerRunRiskCheckV1Request: any(
-              named: 'medicinesControllerRunRiskCheckV1Request',
+          () => api.runRiskCheck(
+            runRiskCheckRequest: any(
+              named: 'runRiskCheckRequest',
             ),
           ),
         ).thenAnswer((_) async => _apiResponse(_record()));
@@ -248,21 +247,21 @@ void main() {
 
         final captured =
             verify(
-                  () => api.medicinesControllerRunRiskCheckV1(
-                    medicinesControllerRunRiskCheckV1Request: captureAny(
-                      named: 'medicinesControllerRunRiskCheckV1Request',
+                  () => api.runRiskCheck(
+                    runRiskCheckRequest: captureAny(
+                      named: 'runRiskCheckRequest',
                     ),
                   ),
                 ).captured.single
-                as MedicinesControllerRunRiskCheckV1Request;
+                as RunRiskCheckRequest;
         expect(
           captured.type,
-          MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
+          RunRiskCheckRequestTypeEnum.static_,
         );
         expect(captured.candidate, isNotNull);
         expect(
           captured.candidate!.source_,
-          MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.cn,
+          RunRiskCheckRequestCandidateSource_Enum.cn,
         );
         expect(captured.candidate!.id, '__mock_cn_ibuprofen__');
         expect(result.currentMedicineCount, 2);
@@ -273,9 +272,9 @@ void main() {
 
     test('maps drugbank candidate source', () async {
       when(
-        () => api.medicinesControllerRunRiskCheckV1(
-          medicinesControllerRunRiskCheckV1Request: any(
-            named: 'medicinesControllerRunRiskCheckV1Request',
+        () => api.runRiskCheck(
+          runRiskCheckRequest: any(
+            named: 'runRiskCheckRequest',
           ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
@@ -284,29 +283,29 @@ void main() {
 
       final captured =
           verify(
-                () => api.medicinesControllerRunRiskCheckV1(
-                  medicinesControllerRunRiskCheckV1Request: captureAny(
-                    named: 'medicinesControllerRunRiskCheckV1Request',
+                () => api.runRiskCheck(
+                  runRiskCheckRequest: captureAny(
+                    named: 'runRiskCheckRequest',
                   ),
                 ),
               ).captured.single
-              as MedicinesControllerRunRiskCheckV1Request;
+              as RunRiskCheckRequest;
       expect(
         captured.candidate!.source_,
-        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.drugbank,
+        RunRiskCheckRequestCandidateSource_Enum.drugbank,
       );
       expect(captured.candidate!.id, 'DB01050');
     });
 
     test('throws empty response error when precheck result is null', () async {
       when(
-        () => api.medicinesControllerRunRiskCheckV1(
-          medicinesControllerRunRiskCheckV1Request: any(
-            named: 'medicinesControllerRunRiskCheckV1Request',
+        () => api.runRiskCheck(
+          runRiskCheckRequest: any(
+            named: 'runRiskCheckRequest',
           ),
         ),
       ).thenAnswer(
-        (_) async => Response<MedicineRiskCheckRecordResponseDto>(
+        (_) async => Response<MedicineRiskCheckRecordResponse>(
           data: null,
           requestOptions: RequestOptions(path: '/'),
         ),
@@ -330,9 +329,9 @@ void main() {
 
   group('LucentMedicineRiskCheckRepository', () {
     test('getRecords delegates to the data source', () async {
-      when(() => api.medicinesControllerGetRiskCheckV1()).thenAnswer(
+      when(() => api.getRiskCheck()).thenAnswer(
         (_) async => _apiResponse(
-          MedicineRiskCheckRecordsResponseDto(static_: null, llm: null),
+          MedicineRiskCheckRecordsResponse(static_: null, llm: null),
         ),
       );
 
@@ -342,9 +341,9 @@ void main() {
 
     test('runCheck delegates to the data source', () async {
       when(
-        () => api.medicinesControllerRunRiskCheckV1(
-          medicinesControllerRunRiskCheckV1Request: any(
-            named: 'medicinesControllerRunRiskCheckV1Request',
+        () => api.runRiskCheck(
+          runRiskCheckRequest: any(
+            named: 'runRiskCheckRequest',
           ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
@@ -358,9 +357,9 @@ void main() {
 
     test('runPrecheck delegates to the data source', () async {
       when(
-        () => api.medicinesControllerRunRiskCheckV1(
-          medicinesControllerRunRiskCheckV1Request: any(
-            named: 'medicinesControllerRunRiskCheckV1Request',
+        () => api.runRiskCheck(
+          runRiskCheckRequest: any(
+            named: 'runRiskCheckRequest',
           ),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
@@ -373,7 +372,7 @@ void main() {
 
     test('404 Problem Details keeps code and status as a Left', () async {
       when(
-        () => api.medicinesControllerGetRiskCheckV1(),
+        () => api.getRiskCheck(),
       ).thenThrow(_problemDetails404(code: 'RISK_CHECK_NOT_FOUND'));
 
       final failure = await expectTaskLeft(repository.getRecords());
@@ -387,7 +386,7 @@ void main() {
       'non-Problem Details error body propagates FormatException from run()',
       () async {
         when(
-          () => api.medicinesControllerGetRiskCheckV1(),
+          () => api.getRiskCheck(),
         ).thenThrow(_nonProblemBody400());
 
         await expectLater(

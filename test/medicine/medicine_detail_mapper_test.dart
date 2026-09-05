@@ -2,14 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/medicine/data/mappers/medicine_detail.dart';
 
-MedicineDetailResponseDtoDetail _detail({
+MedicineDetailResponseDetail _detail({
   String kind = 'cnProduct',
   List<String> groups = const [],
   List<String> categories = const [],
   List<String> atcCodes = const [],
   List<String> synonyms = const [],
   List<String> foodInteractions = const [],
-  List<MedicineDetailResponseDtoDetailOneOfDrugInteractionsInner>?
+  List<MedicineDetailResponseDrugInteractions>?
   drugInteractions,
   String? approvalNumber,
   String? manufacturer,
@@ -48,7 +48,7 @@ MedicineDetailResponseDtoDetail _detail({
   String? sourceUrl,
   String? imageUrl,
 }) {
-  return MedicineDetailResponseDtoDetail(
+  return MedicineDetailResponseDetail(
     kind: kind,
     groups: groups,
     categories: categories,
@@ -100,9 +100,9 @@ void main() {
     const mapper = MedicineDetailMapper();
 
     test('maps CN detail and trims empty/whitespace strings to null', () {
-      final dto = MedicineDetailResponseDto(
+      final dto = MedicineDetailResponse(
         id: 'cn_1',
-        source_: MedicineDetailResponseDtoSource_Enum.cn,
+        source_: MedicineDetailResponseSource_Enum.cn,
         name: '布洛芬片',
         subtitle: '   ',
         detail: _detail(
@@ -131,9 +131,9 @@ void main() {
     });
 
     test('maps DrugBank detail lists and drug interactions', () {
-      final dto = MedicineDetailResponseDto(
+      final dto = MedicineDetailResponse(
         id: 'DB01050',
-        source_: MedicineDetailResponseDtoSource_Enum.drugbank,
+        source_: MedicineDetailResponseSource_Enum.drugbank,
         name: 'Ibuprofen',
         subtitle: 'Small molecule',
         detail: _detail(
@@ -146,7 +146,7 @@ void main() {
           description: 'A nonsteroidal anti-inflammatory drug.',
           halfLife: '2 hours',
           drugInteractions: [
-            MedicineDetailResponseDtoDetailOneOfDrugInteractionsInner(
+            MedicineDetailResponseDrugInteractions(
               drugbankId: 'DB00795',
               description: 'May increase bleeding risk.',
             ),
@@ -174,9 +174,9 @@ void main() {
     });
 
     test('maps null drug interactions to empty list', () {
-      final dto = MedicineDetailResponseDto(
+      final dto = MedicineDetailResponse(
         id: 'DB01050',
-        source_: MedicineDetailResponseDtoSource_Enum.drugbank,
+        source_: MedicineDetailResponseSource_Enum.drugbank,
         name: 'Ibuprofen',
         subtitle: null,
         detail: _detail(kind: 'drugbank'),
@@ -186,9 +186,9 @@ void main() {
     });
 
     test('normalizes unknown source enum to drugbank', () {
-      final dto = MedicineDetailResponseDto(
+      final dto = MedicineDetailResponse(
         id: 'x',
-        source_: MedicineDetailResponseDtoSource_Enum.unknownDefaultOpenApi,
+        source_: MedicineDetailResponseSource_Enum.unknownDefaultOpenApi,
         name: 'X',
         subtitle: null,
         detail: _detail(kind: 'drugbank'),

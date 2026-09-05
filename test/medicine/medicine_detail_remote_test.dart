@@ -11,14 +11,14 @@ class _MockMedicinesApi extends Mock implements MedicinesApi {}
 
 /// Builds a zod detail DTO whose full required-nullable surface defaults to
 /// null so tests only set the fields they assert on.
-MedicineDetailResponseDtoDetail _detail({
+MedicineDetailResponseDetail _detail({
   String kind = 'cnProduct',
   List<String> groups = const [],
   List<String> categories = const [],
   List<String> atcCodes = const [],
   List<String> synonyms = const [],
   List<String> foodInteractions = const [],
-  List<MedicineDetailResponseDtoDetailOneOfDrugInteractionsInner>?
+  List<MedicineDetailResponseDrugInteractions>?
   drugInteractions,
   String? approvalNumber,
   String? manufacturer,
@@ -57,7 +57,7 @@ MedicineDetailResponseDtoDetail _detail({
   String? sourceUrl,
   String? imageUrl,
 }) {
-  return MedicineDetailResponseDtoDetail(
+  return MedicineDetailResponseDetail(
     kind: kind,
     groups: groups,
     categories: categories,
@@ -115,15 +115,15 @@ void main() {
 
   test('maps the direct resource to MedicineDetail', () async {
     when(
-      () => api.medicinesControllerGetDetailV1(
+      () => api.getDetail(
         id: any(named: 'id'),
         source_: any(named: 'source_'),
       ),
     ).thenAnswer(
-      (_) async => Response<MedicineDetailResponseDto>(
-        data: MedicineDetailResponseDto(
+      (_) async => Response<MedicineDetailResponse>(
+        data: MedicineDetailResponse(
           id: 'cn_1',
-          source_: MedicineDetailResponseDtoSource_Enum.cn,
+          source_: MedicineDetailResponseSource_Enum.cn,
           name: '布洛芬片',
           subtitle: null,
           detail: _detail(indications: '用于缓解轻至中度疼痛'),
@@ -141,18 +141,18 @@ void main() {
     expect(result.indications, '用于缓解轻至中度疼痛');
 
     verify(
-      () => api.medicinesControllerGetDetailV1(id: 'cn_1', source_: 'cn'),
+      () => api.getDetail(id: 'cn_1', source_: 'cn'),
     ).called(1);
   });
 
   test('throws empty response error when the resource is null', () async {
     when(
-      () => api.medicinesControllerGetDetailV1(
+      () => api.getDetail(
         id: any(named: 'id'),
         source_: any(named: 'source_'),
       ),
     ).thenAnswer(
-      (_) async => Response<MedicineDetailResponseDto>(
+      (_) async => Response<MedicineDetailResponse>(
         data: null,
         requestOptions: RequestOptions(path: '/'),
       ),
