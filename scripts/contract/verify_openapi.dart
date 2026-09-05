@@ -113,8 +113,8 @@ void _verifyGeneratedClientLayout(Directory generatedClientRoot) {
   );
   final source = todayAnalysisApi.readAsStringSync();
   for (final methodName in const [
-    'todayAnalysisControllerReadV1',
-    'todayAnalysisControllerRefreshV1',
+    'read',
+    'refreshTodayAnalysis',
   ]) {
     if (!source.contains(methodName)) {
       throw StateError(
