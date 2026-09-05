@@ -46,7 +46,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 123 paths / 264 schemas.
+- Last known Lucent export: 123 paths / 337 schemas (OpenAPI 命名改革后:operationId 与组件名全语义化,无 `Controller`/`V1`/`Dto`/`_inner` 机械名;`ProblemDetailsDto`/`SseProblemDetailsDto` 作为 RFC 9457 错误契约有意保留)。
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
@@ -58,10 +58,10 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
   notifications, legal documents, and assistant streaming REST DTOs, and medicine risk check
   (static + LLM) DTOs.
 - Event review endpoints live in the generated `ReportsApi`:
-  `reportsControllerGetCurrentReviewV1` (no event → `EventReviewNullableResponseDto` with null
-  `data`, not a 404), `reportsControllerListReviewsV1` (status/cursor/limit, opaque
-  `startedAtISO|id` cursor), `reportsControllerGetEventReviewV1` (foreign/missing → 404). The 14
-  generated `EventReview*Dto` models mirror Lucent's read-model shape; domain mapping preserves
+  `getCurrentReview` (no event → `EventReviewNullableResponse` with null
+  `data`, not a 404), `listReviews` (status/cursor/limit, opaque
+  `startedAtISO|id` cursor), `getEventReview` (foreign/missing → 404). The
+  generated `EventReview*` models mirror Lucent's read-model shape; domain mapping preserves
   section state / reasonCode / coverage / sources instead of collapsing unknown values.
 - `scripts/contract/bootstrap.dart` regenerates the filtered client as two
   openapi-generator passes (TodayAnalysis and Reports) because the 7.x CLI accepts only a single
@@ -69,7 +69,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay
   under `/api/v1/account/*`.
 - Notification preferences are generated in `NotificationPreferencesApi` with
-  `NotificationPreferencesDataDto` / `UpdateNotificationPreferencesDto`; the notification enum
+  `NotificationPreferencesResponse`; the notification enum
   includes `ai_weekly_insight`. Event review routes remain in `ReportsApi` and weekly insight
   actions navigate through the existing `report` route token.
 - Application metadata is generated in `AppInfoApi`; the retired `SupportResourcesApi` and
