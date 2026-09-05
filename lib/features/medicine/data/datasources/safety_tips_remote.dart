@@ -15,9 +15,7 @@ class SafetyTipsRemoteDataSource {
   final MedicinesApi api;
 
   Future<List<MedicineSafetyTip>> fetchTips({List<String>? excludeIds}) async {
-    final response = await api.getSafetyTips(
-      exclude: excludeIds,
-    );
+    final response = await api.getSafetyTips(exclude: excludeIds);
     final dto = response.data;
     if (dto == null) {
       throw LucentFailure.network(

@@ -61,9 +61,7 @@ class AssistantRemoteDataSource {
   Future<lucent.AssistantConversationData> openConversation(
     String conversationId,
   ) async {
-    final response = await api.openConversation(
-      conversationId: conversationId,
-    );
+    final response = await api.openConversation(conversationId: conversationId);
     // The DTO's `data` field is nullable; guard both layers so a
     // payload-less success response is reported instead of a `!` crash.
     final responseDto = _requireData(
@@ -89,8 +87,7 @@ class AssistantRemoteDataSource {
   }) async {
     final response = await api.renameConversation(
       conversationId: conversationId,
-      renameConversationRequest:
-          lucent.RenameConversationRequest(title: title),
+      renameConversationRequest: lucent.RenameConversationRequest(title: title),
     );
     final responseDto = _requireData(
       response.data,
@@ -101,9 +98,7 @@ class AssistantRemoteDataSource {
 
   /// Soft-deletes one persisted conversation on the backend.
   Future<void> deleteConversation(String conversationId) async {
-    await api.deleteConversation(
-      conversationId: conversationId,
-    );
+    await api.deleteConversation(conversationId: conversationId);
   }
 
   /// Confirms or rejects pending assistant write proposals on the backend and
@@ -117,27 +112,19 @@ class AssistantRemoteDataSource {
   }) async {
     final response = await api.confirmProposal(
       conversationId: conversationId,
-      confirmProposalRequest:
-          lucent.ConfirmProposalRequest(
-            proposalIds: proposalIds,
-            decision: decision == 'approved'
-                ? lucent
-                      .ConfirmProposalRequestDecisionEnum
-                      .approved
-                : lucent
-                      .ConfirmProposalRequestDecisionEnum
-                      .rejected,
-            note: note,
-          ),
+      confirmProposalRequest: lucent.ConfirmProposalRequest(
+        proposalIds: proposalIds,
+        decision: decision == 'approved'
+            ? lucent.ConfirmProposalRequestDecisionEnum.approved
+            : lucent.ConfirmProposalRequestDecisionEnum.rejected,
+        note: note,
+      ),
     );
     return response.data?.finalContent;
   }
 
   Stream<AssistantRemoteEvent> streamMessages({
-    required List<
-      lucent.StreamMessagesRequestMessages
-    >
-    messages,
+    required List<lucent.StreamMessagesRequestMessages> messages,
     String? conversationId,
   }) async* {
     final sse = LucentSseClient(dio: dio);

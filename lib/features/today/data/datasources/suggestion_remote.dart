@@ -51,10 +51,9 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     return TaskEither.tryCatch(() async {
       final response = await api.submitFeedback(
         id: id,
-        submitFeedbackRequest:
-            SubmitFeedbackRequest(
-              feedback: _mapFeedbackToDto(feedback),
-            ),
+        submitFeedbackRequest: SubmitFeedbackRequest(
+          feedback: _mapFeedbackToDto(feedback),
+        ),
       );
       final data = requireData(response.data, operation: 'submitFeedback');
       return TodaySuggestionFeedbackResult(
@@ -163,9 +162,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   /// shares the same JSON shape, so the primary payload is normalized onto the
   /// canonical card DTO before mapping.
   TodaySuggestionCard _mapPrimaryCard(TodaySuggestionsResponsePrimary dto) {
-    return _mapCard(
-      TodaySuggestionsResponseSecondary.fromJson(dto.toJson()),
-    );
+    return _mapCard(TodaySuggestionsResponseSecondary.fromJson(dto.toJson()));
   }
 
   TodaySuggestionCard _mapCard(TodaySuggestionsResponseSecondary dto) {
@@ -283,13 +280,13 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     };
   }
 
-  SubmitFeedbackRequestFeedbackEnum
-  _mapFeedbackToDto(TodaySuggestionFeedback feedback) {
+  SubmitFeedbackRequestFeedbackEnum _mapFeedbackToDto(
+    TodaySuggestionFeedback feedback,
+  ) {
     return switch (feedback) {
       TodaySuggestionFeedback.accepted =>
         SubmitFeedbackRequestFeedbackEnum.accepted,
-      TodaySuggestionFeedback.later =>
-        SubmitFeedbackRequestFeedbackEnum.later,
+      TodaySuggestionFeedback.later => SubmitFeedbackRequestFeedbackEnum.later,
       TodaySuggestionFeedback.notApplicable =>
         SubmitFeedbackRequestFeedbackEnum.notApplicable,
       TodaySuggestionFeedback.suppress =>

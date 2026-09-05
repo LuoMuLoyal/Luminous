@@ -130,9 +130,7 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
     return ReviewAiSummaryLowRiskAction(label: dto.label, text: dto.text);
   }
 
-  ReviewAiSummaryRange _mapRange(
-    lucent.ReportSummaryResponseRangeEnum range,
-  ) {
+  ReviewAiSummaryRange _mapRange(lucent.ReportSummaryResponseRangeEnum range) {
     switch (range) {
       case lucent.ReportSummaryResponseRangeEnum.last7Days:
         return ReviewAiSummaryRange.last7Days;

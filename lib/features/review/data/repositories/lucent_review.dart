@@ -14,8 +14,7 @@ import 'package:luminous/features/review/domain/repositories/review.dart';
 
 // 文件级 typedef:生成的 EventReview 读模型枚举名过长(2026-09-03 审查 #4
 // 纯可读性收口,不改行为)。仅本文件内使用,不新增导出符号。
-typedef _SectionStateEnum =
-    lucent.EventReviewDataSectionsWhatHappenedStateEnum;
+typedef _SectionStateEnum = lucent.EventReviewDataSectionsWhatHappenedStateEnum;
 typedef _TodayCheckInOutcomeEnum =
     lucent.EventReviewDataCoverageCheckInsTodayCheckInOutcomeEnum;
 typedef _EventKindEnum = lucent.EventReviewDataEventKindEnum;
@@ -53,9 +52,7 @@ class ReviewRemoteDataSource {
   }
 
   Future<lucent.EventReviewData> fetchReview(String eventId) async {
-    final response = await api.getEventReview(
-      eventId: eventId,
-    );
+    final response = await api.getEventReview(eventId: eventId);
     final dto = _requireData(response.data, operation: 'fetchReview');
     return lucent.EventReviewData.fromJson(dto.toJson());
   }

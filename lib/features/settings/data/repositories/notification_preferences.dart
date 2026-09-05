@@ -47,15 +47,14 @@ class LucentNotificationPreferencesRepository
               data: patch.toJson(),
             )
           : await api.callPatch(
-              patchRequest:
-                  PatchRequest(
-                    healthAlertsEnabled: patch.healthAlertsEnabled,
-                    weeklyInsightEnabled: patch.weeklyInsightEnabled,
-                    waterRemindersEnabled: patch.waterRemindersEnabled,
-                    sleepReminderEnabled: patch.sleepReminderEnabled,
-                    sleepBedtimeMinutes: patch.sleepBedtimeMinutes,
-                    sleepWakeTimeMinutes: patch.sleepWakeTimeMinutes,
-                  ),
+              patchRequest: PatchRequest(
+                healthAlertsEnabled: patch.healthAlertsEnabled,
+                weeklyInsightEnabled: patch.weeklyInsightEnabled,
+                waterRemindersEnabled: patch.waterRemindersEnabled,
+                sleepReminderEnabled: patch.sleepReminderEnabled,
+                sleepBedtimeMinutes: patch.sleepBedtimeMinutes,
+                sleepWakeTimeMinutes: patch.sleepWakeTimeMinutes,
+              ),
             );
 
       if (response is Response<NotificationPreferencesResponse>) {

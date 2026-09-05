@@ -120,18 +120,12 @@ class LucentAssistantRepository implements AssistantRepository {
   }) async* {
     final requestMessages = messages
         .map(
-          (
-            message,
-          ) => lucent.StreamMessagesRequestMessages(
+          (message) => lucent.StreamMessagesRequestMessages(
             role: switch (message.role) {
               AssistantMessageRole.user =>
-                lucent
-                    .StreamMessagesRequestMessagesRoleEnum
-                    .user,
+                lucent.StreamMessagesRequestMessagesRoleEnum.user,
               AssistantMessageRole.assistant =>
-                lucent
-                    .StreamMessagesRequestMessagesRoleEnum
-                    .assistant,
+                lucent.StreamMessagesRequestMessagesRoleEnum.assistant,
             },
             content: message.content,
           ),
@@ -243,9 +237,7 @@ class LucentAssistantRepository implements AssistantRepository {
     );
   }
 
-  AssistantConversation _mapConversation(
-    lucent.AssistantConversationData dto,
-  ) {
+  AssistantConversation _mapConversation(lucent.AssistantConversationData dto) {
     return AssistantConversation(
       id: dto.id,
       title: dto.title?.toString(),

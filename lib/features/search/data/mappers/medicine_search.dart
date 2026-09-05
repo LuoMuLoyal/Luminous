@@ -19,8 +19,7 @@ class MedicineSearchMapper {
     MedicineSearchResponseItemsSource_Enum source,
   ) {
     return switch (source) {
-      MedicineSearchResponseItemsSource_Enum.cn =>
-        MedicineSearchSource.cn,
+      MedicineSearchResponseItemsSource_Enum.cn => MedicineSearchSource.cn,
       MedicineSearchResponseItemsSource_Enum.drugbank =>
         MedicineSearchSource.drugbank,
       MedicineSearchResponseItemsSource_Enum.unknownDefaultOpenApi =>

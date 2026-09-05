@@ -60,9 +60,7 @@ class LucentLegalRepository implements LegalRepository {
   TaskEither<LucentFailure, List<LegalDocumentSummary>> findAll() {
     return TaskEither.tryCatch(() async {
       try {
-        final response = await api.listLegalDocuments(
-          lang: localeResolver(),
-        );
+        final response = await api.listLegalDocuments(lang: localeResolver());
         final dto = _requireData(response.data, operation: 'findAll');
         return dto.items
             .map(

@@ -174,9 +174,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     };
   }
 
-  ReviewTrendSeries _mapTrend(
-    lucent.ReportDashboardResponseTrends dto,
-  ) {
+  ReviewTrendSeries _mapTrend(lucent.ReportDashboardResponseTrends dto) {
     final kind = _mapDataKind(dto.kind.value);
     return ReviewTrendSeries(
       kind: kind,
@@ -196,9 +194,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     );
   }
 
-  ReviewFinding _mapFinding(
-    lucent.ReportDashboardResponseFindings dto,
-  ) {
+  ReviewFinding _mapFinding(lucent.ReportDashboardResponseFindings dto) {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewFinding(
       kind: kind,
@@ -209,9 +205,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     );
   }
 
-  ReviewPatternCard _mapPattern(
-    lucent.ReportDashboardResponsePatterns dto,
-  ) {
+  ReviewPatternCard _mapPattern(lucent.ReportDashboardResponsePatterns dto) {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewPatternCard(
       kind: kind,

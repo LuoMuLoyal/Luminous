@@ -104,14 +104,13 @@ class LucentHealthEventRepository implements HealthEventRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await _api.createHealthEvent(
-        createHealthEventRequest:
-            api.CreateHealthEventRequest(
-              title: title,
-              reasonRecordId: reasonRecordId,
-              currentMedicineIds: currentMedicineIds.isEmpty
-                  ? null
-                  : List<String>.of(currentMedicineIds),
-            ),
+        createHealthEventRequest: api.CreateHealthEventRequest(
+          title: title,
+          reasonRecordId: reasonRecordId,
+          currentMedicineIds: currentMedicineIds.isEmpty
+              ? null
+              : List<String>.of(currentMedicineIds),
+        ),
       );
       return _mapRequired(response.data);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
@@ -130,10 +129,9 @@ class LucentHealthEventRepository implements HealthEventRepository {
         // 字符串;不再经 DateTime 中转(此前 DateTime.parse 会让生成客户端把
         // date.toString() 塞进路径,产出带时间的畸形日键)。
         date: date,
-        upsertCheckInRequest:
-            api.UpsertCheckInRequest(
-              outcome: _toCheckInApiOutcome(outcome),
-            ),
+        upsertCheckInRequest: api.UpsertCheckInRequest(
+          outcome: _toCheckInApiOutcome(outcome),
+        ),
       );
       return _mapRequired(response.data);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
@@ -147,10 +145,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
     return TaskEither.tryCatch(() async {
       final response = await _api.end(
         id: eventId,
-        endRequest:
-            api.EndRequest(
-              outcome: _toEndApiOutcome(outcome),
-            ),
+        endRequest: api.EndRequest(outcome: _toEndApiOutcome(outcome)),
       );
       return _mapRequired(response.data);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
@@ -183,9 +178,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
 
   /// Normalizes a per-endpoint event DTO to the canonical list-item DTO
   /// (identical JSON shape).
-  api.HealthEventListResponseItems _canonical(
-    api.HealthEventResponse dto,
-  ) {
+  api.HealthEventListResponseItems _canonical(api.HealthEventResponse dto) {
     return api.HealthEventListResponseItems.fromJson(dto.toJson());
   }
 
@@ -235,9 +228,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
         HealthEventStatus.active,
       api.HealthEventListResponseItemsStatusEnum.ended =>
         HealthEventStatus.ended,
-      api
-          .HealthEventListResponseItemsStatusEnum
-          .unknownDefaultOpenApi =>
+      api.HealthEventListResponseItemsStatusEnum.unknownDefaultOpenApi =>
         _unknownStatus(value.value),
     };
   }
@@ -259,9 +250,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
         HealthEventOutcome.unchanged,
       api.HealthEventListResponseItemsOutcomeEnum.worsened =>
         HealthEventOutcome.worsened,
-      api
-          .HealthEventListResponseItemsOutcomeEnum
-          .unknownDefaultOpenApi =>
+      api.HealthEventListResponseItemsOutcomeEnum.unknownDefaultOpenApi =>
         _unknownOutcome(value.value),
     };
   }
@@ -283,13 +272,16 @@ class LucentHealthEventRepository implements HealthEventRepository {
         HealthEventOutcome.unchanged,
       api.HealthEventListResponseItemsCheckInOutcomeEnum.worsened =>
         HealthEventOutcome.worsened,
-      api.HealthEventListResponseItemsCheckInOutcomeEnum.unknownDefaultOpenApi =>
+      api
+          .HealthEventListResponseItemsCheckInOutcomeEnum
+          .unknownDefaultOpenApi =>
         _unknownOutcome(value.value),
     };
   }
 
-  api.UpsertCheckInRequestOutcomeEnum
-  _toCheckInApiOutcome(HealthEventOutcome value) {
+  api.UpsertCheckInRequestOutcomeEnum _toCheckInApiOutcome(
+    HealthEventOutcome value,
+  ) {
     return switch (value) {
       HealthEventOutcome.improved =>
         api.UpsertCheckInRequestOutcomeEnum.improved,
@@ -300,16 +292,11 @@ class LucentHealthEventRepository implements HealthEventRepository {
     };
   }
 
-  api.EndRequestOutcomeEnum _toEndApiOutcome(
-    HealthEventOutcome value,
-  ) {
+  api.EndRequestOutcomeEnum _toEndApiOutcome(HealthEventOutcome value) {
     return switch (value) {
-      HealthEventOutcome.improved =>
-        api.EndRequestOutcomeEnum.improved,
-      HealthEventOutcome.unchanged =>
-        api.EndRequestOutcomeEnum.unchanged,
-      HealthEventOutcome.worsened =>
-        api.EndRequestOutcomeEnum.worsened,
+      HealthEventOutcome.improved => api.EndRequestOutcomeEnum.improved,
+      HealthEventOutcome.unchanged => api.EndRequestOutcomeEnum.unchanged,
+      HealthEventOutcome.worsened => api.EndRequestOutcomeEnum.worsened,
     };
   }
 }

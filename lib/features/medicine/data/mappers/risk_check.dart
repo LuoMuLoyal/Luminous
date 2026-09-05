@@ -100,8 +100,9 @@ class MedicineRiskCheckMapper {
       currentMedicineCount: dto.currentMedicineCount,
       checkedMedicineCount: dto.checkedMedicineCount,
       findings: dto.findings.map(llmFindingDtoToDomain).toList(),
-      coverageIssues:
-          dto.coverageIssues.map(llmCoverageIssueDtoToDomain).toList(),
+      coverageIssues: dto.coverageIssues
+          .map(llmCoverageIssueDtoToDomain)
+          .toList(),
       redFlags: dto.redFlags.map(llmRedFlagDtoToDomain).toList(),
       overallRecommendation: dto.overallRecommendation,
     );
@@ -152,8 +153,9 @@ class MedicineRiskCheckMapper {
       currentMedicineCount: dto.currentMedicineCount,
       checkedMedicineCount: dto.checkedMedicineCount,
       findings: dto.findings.map(recordFindingDtoToDomain).toList(),
-      coverageIssues:
-          dto.coverageIssues.map(recordCoverageIssueDtoToDomain).toList(),
+      coverageIssues: dto.coverageIssues
+          .map(recordCoverageIssueDtoToDomain)
+          .toList(),
       redFlags: dto.redFlags.map(recordRedFlagDtoToDomain).toList(),
       overallRecommendation: dto.overallRecommendation,
     );
@@ -346,8 +348,7 @@ class MedicineRiskCheckMapper {
       'drugbank' => RunRiskCheckRequestCandidateSource_Enum.drugbank,
       // Unknown sources are rejected by the server; the precheck failure path
       // is non-blocking by design.
-      _ =>
-        RunRiskCheckRequestCandidateSource_Enum.unknownDefaultOpenApi,
+      _ => RunRiskCheckRequestCandidateSource_Enum.unknownDefaultOpenApi,
     };
   }
 

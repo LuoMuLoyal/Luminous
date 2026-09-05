@@ -20,8 +20,7 @@ part 'product_event_service.g.dart';
 
 /// File-level shorthand for the generated request-scoped platform enum
 /// (2026-09-03 审查 #4 readability closure; no behavior change).
-typedef _ProductEventPlatform =
-    RecordBatchRequestEventsPlatformEnum;
+typedef _ProductEventPlatform = RecordBatchRequestEventsPlatformEnum;
 
 /// Pending-sync entity type for queued product events.
 const String kProductEventSyncEntityType = 'product_event';
@@ -31,8 +30,7 @@ const String kProductEventSyncEntityType = 'product_event';
 ///
 /// Uses [defaultTargetPlatform] instead of `dart:io` so it compiles and runs
 /// on every target including web and tests.
-RecordBatchRequestEventsPlatformEnum
-resolveUserDevicePlatform() {
+RecordBatchRequestEventsPlatformEnum resolveUserDevicePlatform() {
   if (kIsWeb) {
     return _ProductEventPlatform.web;
   }
@@ -79,9 +77,7 @@ class ProductEventService {
     this.pendingSyncDao,
     this.syncWorker,
     Future<String> Function()? versionLoader,
-    RecordBatchRequestEventsPlatformEnum
-    Function()?
-    platformResolver,
+    RecordBatchRequestEventsPlatformEnum Function()? platformResolver,
     DateTime Function()? clock,
     String Function()? eventIdGenerator,
   }) : _versionLoader = versionLoader ?? _loadAppVersion,
@@ -152,10 +148,7 @@ class ProductEventService {
       final eventPayload = await _buildEvent(event);
       try {
         await api.recordBatch(
-          recordBatchRequest:
-              RecordBatchRequest(
-                events: [eventPayload],
-              ),
+          recordBatchRequest: RecordBatchRequest(events: [eventPayload]),
         );
       } on DioException catch (error) {
         await _enqueue(eventPayload);
@@ -173,9 +166,7 @@ class ProductEventService {
     }
   }
 
-  Future<RecordBatchRequestEvents> _buildEvent(
-    ProductEvent event,
-  ) async {
+  Future<RecordBatchRequestEvents> _buildEvent(ProductEvent event) async {
     final version = await _versionLoader();
     return event.toDto(
       appVersion: version,
@@ -190,9 +181,7 @@ class ProductEventService {
   /// The payload is the event's own JSON — only allowlisted attribute keys.
   /// The same event (and therefore the same clientEventId) is replayed on
   /// retry, making retries idempotent.
-  Future<void> _enqueue(
-    RecordBatchRequestEvents event,
-  ) async {
+  Future<void> _enqueue(RecordBatchRequestEvents event) async {
     final dao = pendingSyncDao;
     if (dao == null) return;
     await dao.enqueue(
@@ -220,14 +209,9 @@ ProductEventService productEventService(Ref ref) {
   syncWorker.registerHandler(kProductEventSyncEntityType, (entry) async {
     final payload = jsonDecode(entry.payload) as Map<String, dynamic>;
     await api.recordBatch(
-      recordBatchRequest:
-          RecordBatchRequest(
-            events: [
-              RecordBatchRequestEvents.fromJson(
-                payload,
-              ),
-            ],
-          ),
+      recordBatchRequest: RecordBatchRequest(
+        events: [RecordBatchRequestEvents.fromJson(payload)],
+      ),
     );
   });
 

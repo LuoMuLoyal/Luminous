@@ -5,18 +5,14 @@ import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 
 /// All six selectable clinic summary fields, in display order.
-const kClinicSummaryAllFields =
-    <PreviewClinicSummaryRequestSelectedFieldsEnum>[
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .eventOverview,
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .symptomChanges,
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .medicationSlots,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.water,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.sleep,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.notes,
-    ];
+const kClinicSummaryAllFields = <PreviewClinicSummaryRequestSelectedFieldsEnum>[
+  PreviewClinicSummaryRequestSelectedFieldsEnum.eventOverview,
+  PreviewClinicSummaryRequestSelectedFieldsEnum.symptomChanges,
+  PreviewClinicSummaryRequestSelectedFieldsEnum.medicationSlots,
+  PreviewClinicSummaryRequestSelectedFieldsEnum.water,
+  PreviewClinicSummaryRequestSelectedFieldsEnum.sleep,
+  PreviewClinicSummaryRequestSelectedFieldsEnum.notes,
+];
 
 /// Default field selection: every field except the free-text notes.
 ///
@@ -24,12 +20,9 @@ const kClinicSummaryAllFields =
 /// free-text notes in the preview / PDF / share.
 const kClinicSummaryDefaultFields =
     <PreviewClinicSummaryRequestSelectedFieldsEnum>[
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .eventOverview,
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .symptomChanges,
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .medicationSlots,
+      PreviewClinicSummaryRequestSelectedFieldsEnum.eventOverview,
+      PreviewClinicSummaryRequestSelectedFieldsEnum.symptomChanges,
+      PreviewClinicSummaryRequestSelectedFieldsEnum.medicationSlots,
       PreviewClinicSummaryRequestSelectedFieldsEnum.water,
       PreviewClinicSummaryRequestSelectedFieldsEnum.sleep,
     ];
@@ -54,15 +47,13 @@ final clinicSummaryPreviewProvider = FutureProvider.autoDispose
 
 Future<ClinicSummaryResponse> _fetchPreview(
   Ref ref,
-  List<PreviewClinicSummaryRequestSelectedFieldsEnum>
-  selectedFields,
+  List<PreviewClinicSummaryRequestSelectedFieldsEnum> selectedFields,
 ) async {
   final api = ref.watch(lucentClientProvider).reports;
   final response = await api.previewClinicSummary(
-    previewClinicSummaryRequest:
-        PreviewClinicSummaryRequest(
-          selectedFields: selectedFields,
-        ),
+    previewClinicSummaryRequest: PreviewClinicSummaryRequest(
+      selectedFields: selectedFields,
+    ),
   );
   return response.data!;
 }

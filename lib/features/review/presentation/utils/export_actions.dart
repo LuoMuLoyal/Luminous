@@ -67,8 +67,7 @@ Future<void> handleReviewExportAction(
       ref
           .read(productEventServiceProvider)
           .trackVisitSummaryExported(
-            RecordBatchRequestEventsResultEnum
-                .failure,
+            RecordBatchRequestEventsResultEnum.failure,
           ),
     );
     if (!context.mounted) return;

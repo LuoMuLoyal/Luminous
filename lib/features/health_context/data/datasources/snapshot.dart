@@ -19,15 +19,12 @@ class HealthContextRemoteDataSource {
 
   /// Calls GET /api/v1/user/health-context and returns the parsed DTO.
   Future<HealthContextResponse> fetchHealthContext() async {
-    final response = await _api
-        .getUserHealthContext();
+    final response = await _api.getUserHealthContext();
     return requireData(response.data, operation: 'fetchHealthContext');
   }
 
   /// Calls PATCH /api/v1/user/health-context/profile and returns the parsed DTO.
-  Future<HealthContextResponse> updateProfile(
-    HealthProfileUpdateInput input,
-  ) {
+  Future<HealthContextResponse> updateProfile(HealthProfileUpdateInput input) {
     return _write(
       method: 'PATCH',
       path: '/api/v1/user/health-context/profile',
@@ -36,9 +33,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls POST /api/v1/user/health-context/allergies and returns the parsed DTO.
-  Future<HealthContextResponse> createAllergy(
-    HealthAllergyWriteInput input,
-  ) {
+  Future<HealthContextResponse> createAllergy(HealthAllergyWriteInput input) {
     return _write(
       method: 'POST',
       path: '/api/v1/user/health-context/allergies',

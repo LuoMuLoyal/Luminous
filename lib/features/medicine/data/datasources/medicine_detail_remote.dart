@@ -27,10 +27,7 @@ class MedicineDetailRemoteDataSource {
     required String id,
     required String source,
   }) async {
-    final response = await api.getDetail(
-      id: id,
-      source_: source,
-    );
+    final response = await api.getDetail(id: id, source_: source);
     final dto = response.data;
     if (dto == null) {
       throw LucentFailure.network(

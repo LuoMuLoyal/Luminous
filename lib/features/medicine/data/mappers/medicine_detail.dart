@@ -77,8 +77,7 @@ class MedicineDetailMapper {
       switch (source) {
         MedicineDetailResponseSource_Enum.cn => 'cn',
         MedicineDetailResponseSource_Enum.drugbank => 'drugbank',
-        MedicineDetailResponseSource_Enum.unknownDefaultOpenApi =>
-          'drugbank',
+        MedicineDetailResponseSource_Enum.unknownDefaultOpenApi => 'drugbank',
       };
 
   String? _trimToNull(String? value) {

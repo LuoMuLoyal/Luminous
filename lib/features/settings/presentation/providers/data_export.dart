@@ -67,10 +67,8 @@ class DataExportRequestInput {
         DataExportRequestDataKindEnum.hospital,
       CreateRequestRequestKindEnum.monthly =>
         DataExportRequestDataKindEnum.monthly,
-      CreateRequestRequestKindEnum.print =>
-        DataExportRequestDataKindEnum.print,
-      CreateRequestRequestKindEnum
-          .unknownDefaultOpenApi =>
+      CreateRequestRequestKindEnum.print => DataExportRequestDataKindEnum.print,
+      CreateRequestRequestKindEnum.unknownDefaultOpenApi =>
         DataExportRequestDataKindEnum.unknownDefaultOpenApi,
     };
   }
@@ -79,10 +77,8 @@ class DataExportRequestInput {
     CreateRequestRequestFormatEnum value,
   ) {
     return switch (value) {
-      CreateRequestRequestFormatEnum.pdf =>
-        DataExportRequestDataFormatEnum.pdf,
-      CreateRequestRequestFormatEnum
-          .unknownDefaultOpenApi =>
+      CreateRequestRequestFormatEnum.pdf => DataExportRequestDataFormatEnum.pdf,
+      CreateRequestRequestFormatEnum.unknownDefaultOpenApi =>
         DataExportRequestDataFormatEnum.unknownDefaultOpenApi,
     };
   }
@@ -95,8 +91,7 @@ class DataExportRequestInput {
         DataExportRequestDataRangeEnum.last7Days,
       CreateRequestRequestRangeEnum.last30Days =>
         DataExportRequestDataRangeEnum.last30Days,
-      CreateRequestRequestRangeEnum
-          .unknownDefaultOpenApi =>
+      CreateRequestRequestRangeEnum.unknownDefaultOpenApi =>
         DataExportRequestDataRangeEnum.unknownDefaultOpenApi,
     };
   }
@@ -120,10 +115,8 @@ DataExportUiStatus dataExportUiStatusForRequest(
   }
 
   return switch (request.status) {
-    DataExportRequestDataStatusEnum.requested =>
-      DataExportUiStatus.requested,
-    DataExportRequestDataStatusEnum.processing =>
-      DataExportUiStatus.processing,
+    DataExportRequestDataStatusEnum.requested => DataExportUiStatus.requested,
+    DataExportRequestDataStatusEnum.processing => DataExportUiStatus.processing,
     DataExportRequestDataStatusEnum.completed =>
       request.downloadUrl?.isNotEmpty != true
           ? DataExportUiStatus.completedLinkMissing
@@ -202,9 +195,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestData?> {
     final api = ref.read(lucentClientProvider).dataExport;
     try {
       final response = await api.createRequest(
-        createRequestRequest: input.toDto(
-          password: password,
-        ),
+        createRequestRequest: input.toDto(password: password),
       );
       final responseData = requireData(
         response.data,

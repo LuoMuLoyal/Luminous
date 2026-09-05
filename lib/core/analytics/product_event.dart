@@ -54,8 +54,7 @@ sealed class ProductEvent {
   /// fields.
   RecordBatchRequestEvents toDto({
     required String appVersion,
-    required RecordBatchRequestEventsPlatformEnum
-    platform,
+    required RecordBatchRequestEventsPlatformEnum platform,
     required String occurredAt,
     required String clientEventId,
   });
@@ -70,12 +69,10 @@ final class SuggestionImpressionEvent extends ProductEvent {
 
   @override
   RecordBatchRequestEventsNameEnum get name =>
-      RecordBatchRequestEventsNameEnum
-          .suggestionImpression;
+      RecordBatchRequestEventsNameEnum.suggestionImpression;
 
   @override
-  RecordBatchRequestEventsSurfaceEnum
-  get surface =>
+  RecordBatchRequestEventsSurfaceEnum get surface =>
       RecordBatchRequestEventsSurfaceEnum.today;
 
   @override
@@ -85,8 +82,7 @@ final class SuggestionImpressionEvent extends ProductEvent {
   @override
   RecordBatchRequestEvents toDto({
     required String appVersion,
-    required RecordBatchRequestEventsPlatformEnum
-    platform,
+    required RecordBatchRequestEventsPlatformEnum platform,
     required String occurredAt,
     required String clientEventId,
   }) {
@@ -110,12 +106,10 @@ final class ReviewOpenedEvent extends ProductEvent {
 
   @override
   RecordBatchRequestEventsNameEnum get name =>
-      RecordBatchRequestEventsNameEnum
-          .reviewOpened;
+      RecordBatchRequestEventsNameEnum.reviewOpened;
 
   @override
-  RecordBatchRequestEventsSurfaceEnum
-  get surface =>
+  RecordBatchRequestEventsSurfaceEnum get surface =>
       RecordBatchRequestEventsSurfaceEnum.review;
 
   @override
@@ -125,8 +119,7 @@ final class ReviewOpenedEvent extends ProductEvent {
   @override
   RecordBatchRequestEvents toDto({
     required String appVersion,
-    required RecordBatchRequestEventsPlatformEnum
-    platform,
+    required RecordBatchRequestEventsPlatformEnum platform,
     required String occurredAt,
     required String clientEventId,
   }) {
@@ -153,19 +146,16 @@ final class VisitSummaryPreviewedEvent extends ProductEvent {
 
   @override
   RecordBatchRequestEventsNameEnum get name =>
-      RecordBatchRequestEventsNameEnum
-          .visitSummaryPreviewed;
+      RecordBatchRequestEventsNameEnum.visitSummaryPreviewed;
 
   @override
-  RecordBatchRequestEventsSurfaceEnum
-  get surface =>
+  RecordBatchRequestEventsSurfaceEnum get surface =>
       RecordBatchRequestEventsSurfaceEnum.more;
 
   @override
   RecordBatchRequestEvents toDto({
     required String appVersion,
-    required RecordBatchRequestEventsPlatformEnum
-    platform,
+    required RecordBatchRequestEventsPlatformEnum platform,
     required String occurredAt,
     required String clientEventId,
   }) {
@@ -193,19 +183,16 @@ final class VisitSummaryExportedEvent extends ProductEvent {
 
   @override
   RecordBatchRequestEventsNameEnum get name =>
-      RecordBatchRequestEventsNameEnum
-          .visitSummaryExported;
+      RecordBatchRequestEventsNameEnum.visitSummaryExported;
 
   @override
-  RecordBatchRequestEventsSurfaceEnum
-  get surface =>
+  RecordBatchRequestEventsSurfaceEnum get surface =>
       RecordBatchRequestEventsSurfaceEnum.more;
 
   @override
   RecordBatchRequestEvents toDto({
     required String appVersion,
-    required RecordBatchRequestEventsPlatformEnum
-    platform,
+    required RecordBatchRequestEventsPlatformEnum platform,
     required String occurredAt,
     required String clientEventId,
   }) {

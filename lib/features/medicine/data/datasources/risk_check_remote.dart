@@ -38,9 +38,7 @@ class MedicineRiskCheckRemoteDataSource {
   /// POST — manually triggers a risk check of the given [type].
   Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
     final dto = mapper.checkTypeToDto(type);
-    final response = await api.runRiskCheck(
-      runRiskCheckRequest: dto,
-    );
+    final response = await api.runRiskCheck(runRiskCheckRequest: dto);
     final resp = response.data;
     if (resp == null) {
       throw LucentFailure.network(
@@ -61,9 +59,7 @@ class MedicineRiskCheckRemoteDataSource {
     required String sourceRefId,
   }) async {
     final dto = mapper.precheckToDto(source: source, sourceRefId: sourceRefId);
-    final response = await api.runRiskCheck(
-      runRiskCheckRequest: dto,
-    );
+    final response = await api.runRiskCheck(runRiskCheckRequest: dto);
     final resp = response.data;
     if (resp == null) {
       throw LucentFailure.network(

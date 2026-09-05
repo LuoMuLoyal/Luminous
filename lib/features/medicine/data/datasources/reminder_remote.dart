@@ -125,29 +125,27 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     // MedicineReminderListResponse），与 openapi.json 对齐。
     return TaskEither.tryCatch(() async {
       final response = await api.upsertGroup(
-        upsertGroupRequest:
-            UpsertGroupRequest(
-              currentMedicineId: input.currentMedicineId,
-              label: _nonEmptyOrNull(input.label),
-              daysOfWeek: input.daysOfWeek,
-              // 方案 A 后契约把 startDate/endDate 定为可空日键 String?:
-              // '' 表示"未选择日期"(表单 formatDateInput(null) 产出的形态),
-              // 归一为 null 走省略;必填场景由调用侧契约保证非空,不做兜底。
-              startDate: _dateKeyOrNull(input.startDate),
-              endDate: _dateKeyOrNull(input.endDate),
-              isActive: input.isActive,
-              note: _nonEmptyOrNull(input.note),
-              slots: input.slots
-                  .map(
-                    (slot) =>
-                        UpsertGroupRequestSlots(
-                          id: slot.id,
-                          scheduledHour: slot.scheduledHour,
-                          scheduledMinute: slot.scheduledMinute,
-                        ),
-                  )
-                  .toList(growable: false),
-            ),
+        upsertGroupRequest: UpsertGroupRequest(
+          currentMedicineId: input.currentMedicineId,
+          label: _nonEmptyOrNull(input.label),
+          daysOfWeek: input.daysOfWeek,
+          // 方案 A 后契约把 startDate/endDate 定为可空日键 String?:
+          // '' 表示"未选择日期"(表单 formatDateInput(null) 产出的形态),
+          // 归一为 null 走省略;必填场景由调用侧契约保证非空,不做兜底。
+          startDate: _dateKeyOrNull(input.startDate),
+          endDate: _dateKeyOrNull(input.endDate),
+          isActive: input.isActive,
+          note: _nonEmptyOrNull(input.note),
+          slots: input.slots
+              .map(
+                (slot) => UpsertGroupRequestSlots(
+                  id: slot.id,
+                  scheduledHour: slot.scheduledHour,
+                  scheduledMinute: slot.scheduledMinute,
+                ),
+              )
+              .toList(growable: false),
+        ),
       );
       final body = response.data;
       if (body == null) {

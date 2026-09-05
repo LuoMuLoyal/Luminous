@@ -51,21 +51,19 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
   }) {
     return TaskEither.tryCatch(() async {
       final response = await api.updateSettings(
-        updateSettingsRequest:
-            UpdateSettingsRequest(
-              aiSummariesEnabled: aiSummariesEnabled,
-              dataSharingConsent: dataSharingConsent,
-              assistantEnabled: assistantEnabled,
-              assistantMemoryEnabled: assistantMemoryEnabled,
-              waterTargetCount: waterTargetCount,
-              assistantContext:
-                  UpdateSettingsRequestAssistantContext(
-                    healthProfile: assistantContext.healthProfile,
-                    dailyRecords: assistantContext.dailyRecords,
-                    sleepRecords: assistantContext.sleepRecords,
-                    currentMedicines: assistantContext.currentMedicines,
-                  ),
-            ),
+        updateSettingsRequest: UpdateSettingsRequest(
+          aiSummariesEnabled: aiSummariesEnabled,
+          dataSharingConsent: dataSharingConsent,
+          assistantEnabled: assistantEnabled,
+          assistantMemoryEnabled: assistantMemoryEnabled,
+          waterTargetCount: waterTargetCount,
+          assistantContext: UpdateSettingsRequestAssistantContext(
+            healthProfile: assistantContext.healthProfile,
+            dailyRecords: assistantContext.dailyRecords,
+            sleepRecords: assistantContext.sleepRecords,
+            currentMedicines: assistantContext.currentMedicines,
+          ),
+        ),
       );
       return _mapSettings(
         _requireData(response.data, operation: 'updateSettings'),

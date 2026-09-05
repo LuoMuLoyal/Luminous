@@ -35,10 +35,7 @@ class MedicineSearchRemoteDataSource {
     required String id,
     required String source,
   }) async {
-    final response = await _api.getDetail(
-      id: id,
-      source_: source,
-    );
+    final response = await _api.getDetail(id: id, source_: source);
     return _requireBody(response.data, 'medicine detail');
   }
 

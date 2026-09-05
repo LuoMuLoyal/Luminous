@@ -83,12 +83,11 @@ class DailyRecordRemoteDataSource {
     DailyRecordImageUploadInput input,
   ) async {
     final presignResponse = await api.createImageUpload(
-      createImageUploadRequest:
-          lucent.CreateImageUploadRequest(
-            contentType: input.contentType,
-            sizeBytes: input.sizeBytes,
-            fileName: input.fileName,
-          ),
+      createImageUploadRequest: lucent.CreateImageUploadRequest(
+        contentType: input.contentType,
+        sizeBytes: input.sizeBytes,
+        fileName: input.fileName,
+      ),
     );
     final upload = _requireData(presignResponse.data, operation: 'uploadImage');
     final headers = upload.headers;
@@ -125,14 +124,13 @@ class DailyRecordRemoteDataSource {
     required String occurredAt,
   }) async {
     final response = await api.generateCandidates(
-      generateCandidatesRequest:
-          lucent.GenerateCandidatesRequest(
-            text: text,
-            // 候选基准日与 record occurredAt 同属日键 wire 契约(String,
-            // YYYY-MM-DD),调用方传参即"生成哪一天候选"的纯日期字符串,直传
-            // 不经 DateTime 中转。
-            occurredAt: occurredAt,
-          ),
+      generateCandidatesRequest: lucent.GenerateCandidatesRequest(
+        text: text,
+        // 候选基准日与 record occurredAt 同属日键 wire 契约(String,
+        // YYYY-MM-DD),调用方传参即"生成哪一天候选"的纯日期字符串,直传
+        // 不经 DateTime 中转。
+        occurredAt: occurredAt,
+      ),
     );
     final dto = _requireData(response.data, operation: 'generateCandidates');
     return DailyRecordCandidateResult(
