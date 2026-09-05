@@ -204,5 +204,21 @@ void main(List<String> args) {
         expect(runCount(), 1);
       },
     );
+
+    test('dart failure with non-lock "1224" text is not retried', () async {
+      // 反向护栏：stderr 含 "1224" 但并非文件锁特征（如 HTTP status
+      // 1224 / DioException 的 1224），不得触发重试，否则确定性失败会被
+      // 拖成 3 秒延迟 × N 次的重试。
+      await expectLater(
+        runLoggedCommand(
+          'dart',
+          args('DioException: status 1224 returned'),
+          workingDirectory: tempRoot,
+          maxRetries: 1,
+        ),
+        throwsA(isA<ProcessException>()),
+      );
+      expect(runCount(), 1);
+    });
   });
 }
