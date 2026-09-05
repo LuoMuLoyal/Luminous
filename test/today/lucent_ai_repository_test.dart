@@ -14,8 +14,8 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
 
   List<TodayAiRemoteEvent> streamEvents = [];
   Object? streamError;
-  lucent.TodayAnalysisReadDataDto? readResult;
-  lucent.TodayAnalysisReadDataDto? refreshResult;
+  lucent.TodayAnalysisReadData? readResult;
+  lucent.TodayAnalysisReadData? refreshResult;
   Object? readError;
   Object? refreshError;
 
@@ -28,7 +28,7 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   final Dio dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
 
   @override
-  Future<lucent.TodayAnalysisReadDataDto> read({String? date}) async {
+  Future<lucent.TodayAnalysisReadData> read({String? date}) async {
     final error = readError;
     if (error != null) throw error;
     if (readResult == null) {
@@ -38,7 +38,7 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   }
 
   @override
-  Future<lucent.TodayAnalysisReadDataDto> refresh({String? date}) async {
+  Future<lucent.TodayAnalysisReadData> refresh({String? date}) async {
     final error = refreshError;
     if (error != null) throw error;
     if (refreshResult == null) {
@@ -58,15 +58,15 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   }
 }
 
-lucent.TodayAnalysisReadResponseDtoAnalysis _buildDto({
+lucent.TodayAnalysisReadDataAnalysis _buildDto({
   String date = '2026-07-10',
   String summary = '今日健康状况良好',
   String actionLabel = '多喝水',
   String confidenceNote = '基于最近7天数据',
   bool aiGenerated = true,
-  List<lucent.TodayAnalysisReadResponseDtoAnalysisBulletsInner>? bullets,
+  List<lucent.TodayAnalysisReadDataAnalysisBullets>? bullets,
 }) {
-  return lucent.TodayAnalysisReadResponseDtoAnalysis(
+  return lucent.TodayAnalysisReadDataAnalysis(
     date: date,
     generatedAt: '2026-07-10T08:00:00.000Z',
     summary: summary,
@@ -78,13 +78,13 @@ lucent.TodayAnalysisReadResponseDtoAnalysis _buildDto({
   );
 }
 
-lucent.TodayAnalysisReadDataDto _buildReadDto({
-  lucent.TodayAnalysisReadDataDtoStatusEnum status =
-      lucent.TodayAnalysisReadDataDtoStatusEnum.ready,
-  lucent.TodayAnalysisReadResponseDtoAnalysis? analysis,
+lucent.TodayAnalysisReadData _buildReadDto({
+  lucent.TodayAnalysisReadDataStatusEnum status =
+      lucent.TodayAnalysisReadDataStatusEnum.ready,
+  lucent.TodayAnalysisReadDataAnalysis? analysis,
   String? computedAt = '2026-07-10T08:00:00.000Z',
 }) {
-  return lucent.TodayAnalysisReadDataDto(
+  return lucent.TodayAnalysisReadData(
     status: status,
     analysis: analysis,
     sourceVersion: 1,
@@ -94,11 +94,11 @@ lucent.TodayAnalysisReadDataDto _buildReadDto({
   );
 }
 
-lucent.TodayAnalysisReadResponseDtoAnalysisBulletsInner _bullet({
+lucent.TodayAnalysisReadDataAnalysisBullets _bullet({
   required String kind,
   required String text,
 }) {
-  return lucent.TodayAnalysisReadResponseDtoAnalysisBulletsInner.fromJson(
+  return lucent.TodayAnalysisReadDataAnalysisBullets.fromJson(
     <String, Object?>{'kind': kind, 'text': text},
   );
 }
@@ -142,7 +142,7 @@ void main() {
 
       test('maps empty read DTO to empty analysis', () async {
         dataSource.readResult = _buildReadDto(
-          status: lucent.TodayAnalysisReadDataDtoStatusEnum.empty,
+          status: lucent.TodayAnalysisReadDataStatusEnum.empty,
           analysis: null,
         );
 
@@ -159,7 +159,7 @@ void main() {
 
       test('maps pending read DTO preserving computedAt', () async {
         dataSource.readResult = _buildReadDto(
-          status: lucent.TodayAnalysisReadDataDtoStatusEnum.pending,
+          status: lucent.TodayAnalysisReadDataStatusEnum.pending,
           analysis: null,
           computedAt: '2026-07-10T08:00:00.000Z',
         );
@@ -180,7 +180,7 @@ void main() {
 
       test('maps stale read DTO', () async {
         dataSource.readResult = _buildReadDto(
-          status: lucent.TodayAnalysisReadDataDtoStatusEnum.stale,
+          status: lucent.TodayAnalysisReadDataStatusEnum.stale,
           analysis: _buildDto(aiGenerated: false),
         );
 
@@ -197,7 +197,7 @@ void main() {
 
       test('maps failed read DTO', () async {
         dataSource.readResult = _buildReadDto(
-          status: lucent.TodayAnalysisReadDataDtoStatusEnum.failed,
+          status: lucent.TodayAnalysisReadDataStatusEnum.failed,
           analysis: null,
         );
 
@@ -236,7 +236,7 @@ void main() {
 
       test('maps pending refresh response to pending analysis', () async {
         dataSource.refreshResult = _buildReadDto(
-          status: lucent.TodayAnalysisReadDataDtoStatusEnum.pending,
+          status: lucent.TodayAnalysisReadDataStatusEnum.pending,
           analysis: null,
         );
 

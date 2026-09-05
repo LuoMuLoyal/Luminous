@@ -131,7 +131,7 @@ void main() {
       );
       final result = await ds.read();
 
-      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.ready);
+      expect(result.status, lucent.TodayAnalysisReadDataStatusEnum.ready);
       expect(result.analysis, isNotNull);
     });
 
@@ -201,7 +201,7 @@ void main() {
       );
       final result = await ds.refresh();
 
-      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.empty);
+      expect(result.status, lucent.TodayAnalysisReadDataStatusEnum.empty);
       expect(result.analysis, isNull);
     });
 
@@ -216,7 +216,7 @@ void main() {
       );
       final result = await ds.refresh();
 
-      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.ready);
+      expect(result.status, lucent.TodayAnalysisReadDataStatusEnum.ready);
       expect(result.analysis, isNotNull);
       expect(result.analysis!.summary, '今日状态良好');
     });
@@ -232,7 +232,7 @@ void main() {
       );
       final result = await ds.refresh();
 
-      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.pending);
+      expect(result.status, lucent.TodayAnalysisReadDataStatusEnum.pending);
       expect(result.analysis, isNull);
     });
 
@@ -247,7 +247,7 @@ void main() {
       );
       final result = await ds.refresh();
 
-      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.stale);
+      expect(result.status, lucent.TodayAnalysisReadDataStatusEnum.stale);
       expect(result.analysis, isNotNull);
     });
 
@@ -262,7 +262,7 @@ void main() {
       );
       final result = await ds.refresh();
 
-      expect(result.status, lucent.TodayAnalysisReadDataDtoStatusEnum.failed);
+      expect(result.status, lucent.TodayAnalysisReadDataStatusEnum.failed);
       expect(result.analysis, isNull);
     });
 
