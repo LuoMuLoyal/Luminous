@@ -95,8 +95,8 @@ class _ClinicSummaryPreviewContentState
 
   /// The current field-level privacy selection. Defaults to every field
   /// except the free-text notes (notes are off by default).
-  List<PreviewClinicSummaryRequestSelectedFieldsEnum>
-  _selectedFields = kClinicSummaryDefaultFields;
+  List<PreviewClinicSummaryRequestSelectedFieldsEnum> _selectedFields =
+      kClinicSummaryDefaultFields;
 
   /// Active share flow step, or null when showing the summary content.
   _ShareStep? _shareStep;
@@ -128,16 +128,14 @@ class _ClinicSummaryPreviewContentState
           _previewMeasured = true;
           unawaited(
             service.trackVisitSummaryPreviewed(
-              RecordBatchRequestEventsResultEnum
-                  .success,
+              RecordBatchRequestEventsResultEnum.success,
             ),
           );
         } else if (next.hasError) {
           _previewMeasured = true;
           unawaited(
             service.trackVisitSummaryPreviewed(
-              RecordBatchRequestEventsResultEnum
-                  .failure,
+              RecordBatchRequestEventsResultEnum.failure,
             ),
           );
         }
@@ -235,10 +233,8 @@ class _ClinicSummaryPreviewContentState
       unawaited(
         service.trackVisitSummaryExported(
           result == PdfDownloadResult.success
-              ? RecordBatchRequestEventsResultEnum
-                    .success
-              : RecordBatchRequestEventsResultEnum
-                    .failure,
+              ? RecordBatchRequestEventsResultEnum.success
+              : RecordBatchRequestEventsResultEnum.failure,
         ),
       );
       if (mounted) {
@@ -288,16 +284,7 @@ class _ClinicSummaryPreviewContentState
       // share 与 preview 请求在 per-op 化改造后是各自独立生成的枚举，成员
       // 与 wire 值一一对应，这里按 wire value 互转（UI 状态仍用 preview 枚举）。
       final body = ShareClinicSummaryRequest(
-        selectedFields: _selectedFields
-            .map(
-              (field) =>
-                  ShareClinicSummaryRequestSelectedFieldsEnum
-                      .values
-                      .firstWhere(
-                        (candidate) => candidate.value == field.value,
-                      ),
-            )
-            .toList(growable: false),
+        selectedFields: mapPreviewFieldsToShare(_selectedFields),
       );
       final response = await api.shareClinicSummary(
         shareClinicSummaryRequest: body,
@@ -378,8 +365,7 @@ class _ClinicSummaryPreviewContentState
       _ShareStep.confirm => _ShareConfirmPanel(
         isCreating: _isCreatingShare,
         hasNotes: _selectedFields.contains(
-          PreviewClinicSummaryRequestSelectedFieldsEnum
-              .notes,
+          PreviewClinicSummaryRequestSelectedFieldsEnum.notes,
         ),
         onCancel: _closeShareFlow,
         onConfirm: _createShare,
@@ -396,6 +382,40 @@ class _ClinicSummaryPreviewContentState
   }
 }
 
+// ── Enum mapping ───────────────────────────────────────────────────────────
+
+/// Maps [PreviewClinicSummaryRequestSelectedFieldsEnum] values to their
+/// [ShareClinicSummaryRequestSelectedFieldsEnum] counterparts by wire value.
+///
+/// The two enums are generated independently (different request schemas) but
+/// share the same wire values for matching members. Unrecognised values — for
+/// example if Lucent trims a share-only field that the preview schema still
+/// carries — are dropped with a warning rather than crashing, protecting
+/// against `firstWhere` throwing `StateError` at runtime (2026-09-04 review
+/// #2).
+List<ShareClinicSummaryRequestSelectedFieldsEnum> mapPreviewFieldsToShare(
+  List<PreviewClinicSummaryRequestSelectedFieldsEnum> fields,
+) {
+  final result = <ShareClinicSummaryRequestSelectedFieldsEnum>[];
+  for (final field in fields) {
+    final match = ShareClinicSummaryRequestSelectedFieldsEnum.values.firstWhere(
+      (candidate) => candidate.value == field.value,
+      orElse: () =>
+          ShareClinicSummaryRequestSelectedFieldsEnum.unknownDefaultOpenApi,
+    );
+    if (match ==
+        ShareClinicSummaryRequestSelectedFieldsEnum.unknownDefaultOpenApi) {
+      debugPrint(
+        'ClinicSummary share: preview field "${field.value}" has no share '
+        'enum equivalent; dropping from share payload.',
+      );
+    } else {
+      result.add(match);
+    }
+  }
+  return result;
+}
+
 // ── Field selection panel ───────────────────────────────────────────────────
 
 /// Per-field privacy toggles: 事件概况 / 症状变化 / 用药槽位 / 饮水 / 睡眠 /
@@ -408,17 +428,14 @@ class _FieldSelectionPanel extends StatelessWidget {
     required this.onChanged,
   });
 
-  final List<PreviewClinicSummaryRequestSelectedFieldsEnum>
-  selectedFields;
+  final List<PreviewClinicSummaryRequestSelectedFieldsEnum> selectedFields;
 
   /// Whether the toggles can be changed. Disabled once the share link is
   /// created/revoked, so the preview cannot silently change behind the
   /// shown link.
   final bool enabled;
 
-  final ValueChanged<
-    List<PreviewClinicSummaryRequestSelectedFieldsEnum>
-  >
+  final ValueChanged<List<PreviewClinicSummaryRequestSelectedFieldsEnum>>
   onChanged;
 
   @override
@@ -471,14 +488,11 @@ class _FieldSelectionPanel extends StatelessWidget {
     PreviewClinicSummaryRequestSelectedFieldsEnum field,
   ) {
     return switch (field) {
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .eventOverview =>
+      PreviewClinicSummaryRequestSelectedFieldsEnum.eventOverview =>
         l10n.reviewClinicSummaryFieldEventOverview,
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .symptomChanges =>
+      PreviewClinicSummaryRequestSelectedFieldsEnum.symptomChanges =>
         l10n.reviewClinicSummaryFieldSymptomChanges,
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .medicationSlots =>
+      PreviewClinicSummaryRequestSelectedFieldsEnum.medicationSlots =>
         l10n.reviewClinicSummaryFieldMedicationSlots,
       PreviewClinicSummaryRequestSelectedFieldsEnum.water =>
         l10n.reviewClinicSummaryFieldWater,
@@ -486,8 +500,7 @@ class _FieldSelectionPanel extends StatelessWidget {
         l10n.reviewClinicSummaryFieldSleep,
       PreviewClinicSummaryRequestSelectedFieldsEnum.notes =>
         l10n.reviewClinicSummaryFieldNotes,
-      PreviewClinicSummaryRequestSelectedFieldsEnum
-          .unknownDefaultOpenApi =>
+      PreviewClinicSummaryRequestSelectedFieldsEnum.unknownDefaultOpenApi =>
         field.value,
     };
   }
