@@ -37,7 +37,7 @@ void main() {
 
       expect(state, isNotNull);
       expect(state!.id, 'req-1');
-      expect(state.status, DataExportRequestDataDtoStatusEnum.completed);
+      expect(state.status, DataExportRequestDataStatusEnum.completed);
       expect(state.downloadUrl, 'https://example.com/export.csv');
       expect(fakeApi.getLatestCallCount, 1);
     });
@@ -87,7 +87,7 @@ void main() {
 
       fakeApi.createResponse = _buildCreateResponse(
         id: 'req-2',
-        status: DataExportRequestDataDtoStatusEnum.requested,
+        status: DataExportRequestDataStatusEnum.requested,
       );
 
       await container
@@ -100,19 +100,19 @@ void main() {
       final state = container.read(dataExportControllerProvider).value;
       expect(state, isNotNull);
       expect(state!.id, 'req-2');
-      expect(state.status, DataExportRequestDataDtoStatusEnum.requested);
+      expect(state.status, DataExportRequestDataStatusEnum.requested);
       expect(fakeApi.createCallCount, 1);
       expect(
         fakeApi.lastCreateRequest?.kind,
-        DataExportControllerCreateRequestV1RequestKindEnum.hospital,
+        CreateRequestRequestKindEnum.hospital,
       );
       expect(
         fakeApi.lastCreateRequest?.format,
-        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+        CreateRequestRequestFormatEnum.pdf,
       );
       expect(
         fakeApi.lastCreateRequest?.range,
-        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+        CreateRequestRequestRangeEnum.last7Days,
       );
       expect(fakeApi.lastCreateRequest?.password, 'export-password');
       expect(
@@ -130,9 +130,9 @@ void main() {
           .read(dataExportControllerProvider.notifier)
           .requestExport(
             const DataExportRequestInput(
-              kind: DataExportControllerCreateRequestV1RequestKindEnum.monthly,
-              format: DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
-              range: DataExportControllerCreateRequestV1RequestRangeEnum
+              kind: CreateRequestRequestKindEnum.monthly,
+              format: CreateRequestRequestFormatEnum.pdf,
+              range: CreateRequestRequestRangeEnum
                   .last30Days,
             ),
             password: 'export-password',
@@ -140,15 +140,15 @@ void main() {
 
       expect(
         fakeApi.lastCreateRequest?.kind,
-        DataExportControllerCreateRequestV1RequestKindEnum.monthly,
+        CreateRequestRequestKindEnum.monthly,
       );
       expect(
         fakeApi.lastCreateRequest?.format,
-        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+        CreateRequestRequestFormatEnum.pdf,
       );
       expect(
         fakeApi.lastCreateRequest?.range,
-        DataExportControllerCreateRequestV1RequestRangeEnum.last30Days,
+        CreateRequestRequestRangeEnum.last30Days,
       );
     });
 
@@ -246,7 +246,7 @@ void main() {
         fakeApi.latestReturnsNullData = false;
         fakeApi.createResponse = _buildCreateResponse(
           id: 'req-first',
-          status: DataExportRequestDataDtoStatusEnum.processing,
+          status: DataExportRequestDataStatusEnum.processing,
         );
 
         await container
@@ -259,7 +259,7 @@ void main() {
         final state = container.read(dataExportControllerProvider).value;
         expect(state, isNotNull);
         expect(state!.id, 'req-first');
-        expect(state.status, DataExportRequestDataDtoStatusEnum.processing);
+        expect(state.status, DataExportRequestDataStatusEnum.processing);
       },
     );
   });
@@ -274,7 +274,7 @@ void main() {
       // Simulate a new request appearing on the server.
       fakeApi.latestResponse = _buildLatestResponse(
         id: 'req-3',
-        status: DataExportRequestDataDtoStatusEnum.processing,
+        status: DataExportRequestDataStatusEnum.processing,
       );
 
       await container.read(dataExportControllerProvider.notifier).refresh();
@@ -282,7 +282,7 @@ void main() {
       final state = container.read(dataExportControllerProvider).value;
       expect(state, isNotNull);
       expect(state!.id, 'req-3');
-      expect(state.status, DataExportRequestDataDtoStatusEnum.processing);
+      expect(state.status, DataExportRequestDataStatusEnum.processing);
       expect(fakeApi.getLatestCallCount, 2);
     });
 
@@ -333,7 +333,7 @@ void main() {
         // Step 1: Submit export request.
         fakeApi.createResponse = _buildCreateResponse(
           id: 'req-4',
-          status: DataExportRequestDataDtoStatusEnum.requested,
+          status: DataExportRequestDataStatusEnum.requested,
         );
         await container
             .read(dataExportControllerProvider.notifier)
@@ -344,32 +344,32 @@ void main() {
 
         expect(
           container.read(dataExportControllerProvider).value?.status,
-          DataExportRequestDataDtoStatusEnum.requested,
+          DataExportRequestDataStatusEnum.requested,
         );
 
         // Step 2: Server transitions to processing; refresh picks it up.
         fakeApi.latestResponse = _buildLatestResponse(
           id: 'req-4',
-          status: DataExportRequestDataDtoStatusEnum.processing,
+          status: DataExportRequestDataStatusEnum.processing,
         );
         await container.read(dataExportControllerProvider.notifier).refresh();
 
         expect(
           container.read(dataExportControllerProvider).value?.status,
-          DataExportRequestDataDtoStatusEnum.processing,
+          DataExportRequestDataStatusEnum.processing,
         );
 
         // Step 3: Server completes; refresh picks it up.
         fakeApi.latestResponse = _buildLatestResponse(
           id: 'req-4',
-          status: DataExportRequestDataDtoStatusEnum.completed,
+          status: DataExportRequestDataStatusEnum.completed,
         );
         await container.read(dataExportControllerProvider.notifier).refresh();
 
         final finalState = container.read(dataExportControllerProvider).value;
         expect(
           finalState?.status,
-          DataExportRequestDataDtoStatusEnum.completed,
+          DataExportRequestDataStatusEnum.completed,
         );
         expect(fakeApi.createCallCount, 1);
         expect(fakeApi.getLatestCallCount, 3); // build + 2 refreshes
@@ -381,12 +381,12 @@ void main() {
     test(
       'maps completed request without download url to completedLinkMissing',
       () {
-        final request = DataExportRequestDataDto(
+        final request = DataExportRequestData(
           id: 'req-link-missing',
-          kind: DataExportRequestDataDtoKindEnum.hospital,
-          format: DataExportRequestDataDtoFormatEnum.pdf,
-          range: DataExportRequestDataDtoRangeEnum.last7Days,
-          status: DataExportRequestDataDtoStatusEnum.completed,
+          kind: DataExportRequestDataKindEnum.hospital,
+          format: DataExportRequestDataFormatEnum.pdf,
+          range: DataExportRequestDataRangeEnum.last7Days,
+          status: DataExportRequestDataStatusEnum.completed,
           requestedAt: '2026-06-12T00:00:00.000Z',
           completedAt: '2026-06-12T00:01:00.000Z',
           downloadUrl: '',
@@ -414,50 +414,50 @@ Response<T> _response<T>(T data) => Response<T>(
   statusCode: 200,
 );
 
-DataExportRequestDataDto _buildRequestData({
+DataExportRequestData _buildRequestData({
   String id = 'req-1',
-  DataExportRequestDataDtoStatusEnum status =
-      DataExportRequestDataDtoStatusEnum.completed,
+  DataExportRequestDataStatusEnum status =
+      DataExportRequestDataStatusEnum.completed,
 }) {
-  return DataExportRequestDataDto(
+  return DataExportRequestData(
     id: id,
-    kind: DataExportRequestDataDtoKindEnum.hospital,
-    format: DataExportRequestDataDtoFormatEnum.pdf,
-    range: DataExportRequestDataDtoRangeEnum.last7Days,
+    kind: DataExportRequestDataKindEnum.hospital,
+    format: DataExportRequestDataFormatEnum.pdf,
+    range: DataExportRequestDataRangeEnum.last7Days,
     status: status,
     requestedAt: '2026-06-12T00:00:00.000Z',
-    completedAt: status == DataExportRequestDataDtoStatusEnum.completed
+    completedAt: status == DataExportRequestDataStatusEnum.completed
         ? '2026-06-12T00:01:00.000Z'
         : null,
-    downloadUrl: status == DataExportRequestDataDtoStatusEnum.completed
+    downloadUrl: status == DataExportRequestDataStatusEnum.completed
         ? 'https://example.com/export.csv'
         : null,
-    errorMessage: status == DataExportRequestDataDtoStatusEnum.failed
+    errorMessage: status == DataExportRequestDataStatusEnum.failed
         ? 'Export failed'
         : null,
-    fileName: status == DataExportRequestDataDtoStatusEnum.completed
+    fileName: status == DataExportRequestDataStatusEnum.completed
         ? 'export.csv'
         : null,
-    fileSizeBytes: status == DataExportRequestDataDtoStatusEnum.completed
+    fileSizeBytes: status == DataExportRequestDataStatusEnum.completed
         ? 1024
         : null,
   );
 }
 
-DataExportRequestResponseDto _buildCreateResponse({
+DataExportRequestResponse _buildCreateResponse({
   String id = 'req-2',
-  DataExportRequestDataDtoStatusEnum status =
-      DataExportRequestDataDtoStatusEnum.requested,
+  DataExportRequestDataStatusEnum status =
+      DataExportRequestDataStatusEnum.requested,
 }) {
-  return DataExportRequestResponseDto.fromJson(
+  return DataExportRequestResponse.fromJson(
     _buildRequestData(id: id, status: status).toJson(),
   );
 }
 
-DataExportRequestDataDto _buildLatestResponse({
+DataExportRequestData _buildLatestResponse({
   String id = 'req-1',
-  DataExportRequestDataDtoStatusEnum status =
-      DataExportRequestDataDtoStatusEnum.completed,
+  DataExportRequestDataStatusEnum status =
+      DataExportRequestDataStatusEnum.completed,
 }) {
   return _buildRequestData(id: id, status: status);
 }
@@ -475,22 +475,22 @@ class _FakeDataExportApi implements DataExportApi {
 
   // GET latest state.
   int getLatestCallCount = 0;
-  DataExportRequestDataDto? latestResponse;
+  DataExportRequestData? latestResponse;
   bool latestReturnsNullData = false;
   bool getLatestReturnsNullResponse = false;
   DioException? getLatestException;
 
   // POST create state.
   int createCallCount = 0;
-  DataExportRequestResponseDto createResponse = _buildCreateResponse();
+  DataExportRequestResponse createResponse = _buildCreateResponse();
   bool createReturnsNull = false;
   DioException? createException;
-  DataExportControllerCreateRequestV1Request? lastCreateRequest;
+  CreateRequestRequest? lastCreateRequest;
   Duration createDelay;
 
   @override
-  Future<Response<DataExportRequestDataDto>>
-  dataExportControllerGetLatestRequestV1({
+  Future<Response<DataExportRequestData>>
+  getLatestRequest({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -520,10 +520,10 @@ class _FakeDataExportApi implements DataExportApi {
   }
 
   @override
-  Future<Response<DataExportRequestResponseDto>>
-  dataExportControllerCreateRequestV1({
-    required DataExportControllerCreateRequestV1Request
-    dataExportControllerCreateRequestV1Request,
+  Future<Response<DataExportRequestResponse>>
+  createRequest({
+    required CreateRequestRequest
+    createRequestRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -532,7 +532,7 @@ class _FakeDataExportApi implements DataExportApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     createCallCount++;
-    lastCreateRequest = dataExportControllerCreateRequestV1Request;
+    lastCreateRequest = createRequestRequest;
     if (createException != null) {
       throw createException!;
     }

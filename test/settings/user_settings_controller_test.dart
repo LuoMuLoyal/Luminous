@@ -262,7 +262,7 @@ void main() {
           aiSummariesEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: false,
-          assistantContext: UserSettingsResponseDtoAssistantContext(
+          assistantContext: UserSettingsResponseAssistantContext(
             healthProfile: true,
             dailyRecords: true,
             sleepRecords: true,
@@ -293,7 +293,7 @@ void main() {
           dataSharingConsent: true,
           assistantEnabled: true,
           assistantMemoryEnabled: true,
-          assistantContext: UserSettingsResponseDtoAssistantContext(
+          assistantContext: UserSettingsResponseAssistantContext(
             healthProfile: true,
             dailyRecords: true,
             sleepRecords: true,
@@ -329,7 +329,7 @@ void main() {
           aiSummariesEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: true,
-          assistantContext: UserSettingsResponseDtoAssistantContext(
+          assistantContext: UserSettingsResponseAssistantContext(
             healthProfile: false,
             dailyRecords: true,
             sleepRecords: false,
@@ -460,14 +460,14 @@ Response<T> _response<T>(T? data) => Response<T>(
   statusCode: 200,
 );
 
-UserSettingsResponseDto _buildResponse({
+UserSettingsResponse _buildResponse({
   bool aiSummariesEnabled = false,
   bool dataSharingConsent = false,
   bool assistantEnabled = true,
   bool assistantMemoryEnabled = false,
-  UserSettingsResponseDtoAssistantContext? assistantContext,
+  UserSettingsResponseAssistantContext? assistantContext,
 }) {
-  return UserSettingsResponseDto(
+  return UserSettingsResponse(
     aiSummariesEnabled: aiSummariesEnabled,
     dataSharingConsent: dataSharingConsent,
     assistantEnabled: assistantEnabled,
@@ -475,7 +475,7 @@ UserSettingsResponseDto _buildResponse({
     waterTargetCount: 8,
     assistantContext:
         assistantContext ??
-        UserSettingsResponseDtoAssistantContext(
+        UserSettingsResponseAssistantContext(
           healthProfile: true,
           dailyRecords: true,
           sleepRecords: true,
@@ -492,17 +492,17 @@ UserSettingsResponseDto _buildResponse({
 
 class _FakeUserSettingsApi implements UserSettingsApi {
   _FakeUserSettingsApi({
-    UserSettingsResponseDto? responseData,
+    UserSettingsResponse? responseData,
     this.getException,
   }) : _getResponseData = responseData;
 
-  static UserSettingsResponseDto _defaultResponse() => UserSettingsResponseDto(
+  static UserSettingsResponse _defaultResponse() => UserSettingsResponse(
     aiSummariesEnabled: false,
     dataSharingConsent: true,
     assistantEnabled: true,
     assistantMemoryEnabled: false,
     waterTargetCount: 8,
-    assistantContext: UserSettingsResponseDtoAssistantContext(
+    assistantContext: UserSettingsResponseAssistantContext(
       healthProfile: true,
       dailyRecords: true,
       sleepRecords: true,
@@ -514,20 +514,20 @@ class _FakeUserSettingsApi implements UserSettingsApi {
 
   // GET state.
   int getCallCount = 0;
-  final UserSettingsResponseDto? _getResponseData;
+  final UserSettingsResponse? _getResponseData;
   bool getReturnsNullResponse = false;
   final DioException? getException;
 
   // PATCH state.
   int patchCallCount = 0;
-  UserSettingsResponseDto patchResponse = _defaultResponse();
+  UserSettingsResponse patchResponse = _defaultResponse();
   bool patchReturnsNull = false;
   DioException? patchException;
-  UserSettingsControllerUpdateSettingsV1Request? lastPatchDto;
+  UpdateSettingsRequest? lastPatchDto;
 
   @override
-  Future<Response<UserSettingsResponseDto>>
-  userSettingsControllerGetSettingsV1({
+  Future<Response<UserSettingsResponse>>
+  getSettings({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -542,16 +542,16 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     if (getReturnsNullResponse) {
       // HTTP 200 with an empty body: the generated client leaves
       // response.data null, so the repository throws a network failure.
-      return _response<UserSettingsResponseDto>(null);
+      return _response<UserSettingsResponse>(null);
     }
     return _response(_getResponseData ?? _defaultResponse());
   }
 
   @override
-  Future<Response<UserSettingsResponseDto>>
-  userSettingsControllerUpdateSettingsV1({
-    required UserSettingsControllerUpdateSettingsV1Request
-    userSettingsControllerUpdateSettingsV1Request,
+  Future<Response<UserSettingsResponse>>
+  updateSettings({
+    required UpdateSettingsRequest
+    updateSettingsRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -560,13 +560,13 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     patchCallCount++;
-    lastPatchDto = userSettingsControllerUpdateSettingsV1Request;
+    lastPatchDto = updateSettingsRequest;
     if (patchException != null) {
       throw patchException!;
     }
     if (patchReturnsNull) {
       // HTTP 200 with an empty body: response.data is null.
-      return _response<UserSettingsResponseDto>(null);
+      return _response<UserSettingsResponse>(null);
     }
     return _response(patchResponse);
   }

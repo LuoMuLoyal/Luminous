@@ -37,10 +37,10 @@ class _StubSettingsController extends UserSettingsController {
 
 class _StubExportController extends DataExportController {
   _StubExportController(this.exportData);
-  final DataExportRequestDataDto? exportData;
+  final DataExportRequestData? exportData;
 
   @override
-  Future<DataExportRequestDataDto?> build() async => exportData;
+  Future<DataExportRequestData?> build() async => exportData;
 }
 
 UserSettings _buildSettings({
@@ -123,7 +123,7 @@ void main() {
   Future<void> pumpPageWithExport(
     WidgetTester tester,
     Widget page,
-    DataExportRequestDataDto? exportData,
+    DataExportRequestData? exportData,
   ) async {
     await tester.pumpWidget(
       ProviderScope(

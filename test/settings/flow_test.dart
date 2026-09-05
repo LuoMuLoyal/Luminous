@@ -386,7 +386,7 @@ class _FakeSettingsProfileRemoteDataSource
   Object? lastUnitSystem = settingsProfileNoChange;
 
   @override
-  Future<HealthContextResponseDto> updatePreferences({
+  Future<HealthContextResponse> updatePreferences({
     Object? locale = settingsProfileNoChange,
     Object? timezone = settingsProfileNoChange,
     Object? unitSystem = settingsProfileNoChange,
@@ -394,8 +394,8 @@ class _FakeSettingsProfileRemoteDataSource
     lastLocale = locale;
     lastTimezone = timezone;
     lastUnitSystem = unitSystem;
-    return HealthContextResponseDto(
-      summary: HealthContextResponseDtoSummary(
+    return HealthContextResponse(
+      summary: HealthContextResponseSummary(
         age: null,
         onboardingCompleted: false,
         activeAllergyCount: 0,
@@ -403,10 +403,10 @@ class _FakeSettingsProfileRemoteDataSource
         currentMedicineCount: 0,
         missingCoreProfileFields: [],
       ),
-      profile: HealthContextResponseDtoProfile(
+      profile: HealthContextResponseProfile(
         birthDate: null,
         sexAtBirth:
-            HealthContextResponseDtoProfileSexAtBirthEnum.unknownDefaultOpenApi,
+            HealthContextResponseProfileSexAtBirthEnum.unknownDefaultOpenApi,
         heightCm: null,
         weightKg: null,
         bloodType: null,
@@ -417,10 +417,10 @@ class _FakeSettingsProfileRemoteDataSource
             ? null
             : timezone as String?,
         unitSystem: identical(unitSystem, settingsProfileNoChange)
-            ? HealthContextResponseDtoProfileUnitSystemEnum
+            ? HealthContextResponseProfileUnitSystemEnum
                   .unknownDefaultOpenApi
-            : (unitSystem as HealthContextResponseDtoProfileUnitSystemEnum?) ??
-                  HealthContextResponseDtoProfileUnitSystemEnum
+            : (unitSystem as HealthContextResponseProfileUnitSystemEnum?) ??
+                  HealthContextResponseProfileUnitSystemEnum
                       .unknownDefaultOpenApi,
         onboardingCompletedAt: null,
         emergencyContact: null,

@@ -184,7 +184,7 @@ void main() {
 
     // ── updatePreferences — response parsing ─────────────────
     group('updatePreferences response parsing', () {
-      test('returns parsed HealthContextResponseDto on success', () async {
+      test('returns parsed HealthContextResponse on success', () async {
         adapter.responseData = _healthContextResponseJson(
           locale: 'en-US',
           timezone: 'America/New_York',
@@ -197,12 +197,12 @@ void main() {
         expect(result.profile.timezone, 'America/New_York');
         expect(
           result.profile.unitSystem,
-          HealthContextResponseDtoProfileUnitSystemEnum.imperial,
+          HealthContextResponseProfileUnitSystemEnum.imperial,
         );
       });
 
       test(
-        'returns parsed HealthContextResponseDto with zh-CN defaults',
+        'returns parsed HealthContextResponse with zh-CN defaults',
         () async {
           adapter.responseData = _healthContextResponseJson();
 
@@ -212,7 +212,7 @@ void main() {
           expect(result.profile.timezone, 'Asia/Shanghai');
           expect(
             result.profile.unitSystem,
-            HealthContextResponseDtoProfileUnitSystemEnum.metric,
+            HealthContextResponseProfileUnitSystemEnum.metric,
           );
         },
       );
