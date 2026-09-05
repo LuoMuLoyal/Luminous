@@ -29,7 +29,7 @@ class LucentNotificationPreferencesRepository
   @override
   TaskEither<LucentFailure, NotificationPreferences> getPreferences() {
     return TaskEither.tryCatch(() async {
-      final response = await api.notificationPreferencesControllerGetV1();
+      final response = await api.getNotificationPreferences();
       return _map(
         _requireData(response.data, operation: 'getNotificationPreferences'),
       );
@@ -46,9 +46,9 @@ class LucentNotificationPreferencesRepository
               LucentApiPaths.notificationPreferences,
               data: patch.toJson(),
             )
-          : await api.notificationPreferencesControllerPatchV1(
-              notificationPreferencesControllerPatchV1Request:
-                  NotificationPreferencesControllerPatchV1Request(
+          : await api.callPatch(
+              patchRequest:
+                  PatchRequest(
                     healthAlertsEnabled: patch.healthAlertsEnabled,
                     weeklyInsightEnabled: patch.weeklyInsightEnabled,
                     waterRemindersEnabled: patch.waterRemindersEnabled,
@@ -58,7 +58,7 @@ class LucentNotificationPreferencesRepository
                   ),
             );
 
-      if (response is Response<NotificationPreferencesResponseDto>) {
+      if (response is Response<NotificationPreferencesResponse>) {
         return _map(
           _requireData(
             response.data,
@@ -74,7 +74,7 @@ class LucentNotificationPreferencesRepository
           networkErrorCode: NetworkErrorCode.emptyResponse,
         );
       }
-      return _map(NotificationPreferencesResponseDto.fromJson(raw));
+      return _map(NotificationPreferencesResponse.fromJson(raw));
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -92,7 +92,7 @@ class LucentNotificationPreferencesRepository
     return data;
   }
 
-  NotificationPreferences _map(NotificationPreferencesResponseDto data) {
+  NotificationPreferences _map(NotificationPreferencesResponse data) {
     return NotificationPreferences(
       healthAlertsEnabled: data.healthAlertsEnabled,
       weeklyInsightEnabled: data.weeklyInsightEnabled,

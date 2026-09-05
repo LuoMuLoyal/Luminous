@@ -33,7 +33,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
   @override
   TaskEither<LucentFailure, UserSettings> getSettings() {
     return TaskEither.tryCatch(() async {
-      final response = await api.userSettingsControllerGetSettingsV1();
+      final response = await api.getSettings();
       return _mapSettings(
         _requireData(response.data, operation: 'getSettings'),
       );
@@ -50,16 +50,16 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
     required AssistantContextPatch assistantContext,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await api.userSettingsControllerUpdateSettingsV1(
-        userSettingsControllerUpdateSettingsV1Request:
-            UserSettingsControllerUpdateSettingsV1Request(
+      final response = await api.updateSettings(
+        updateSettingsRequest:
+            UpdateSettingsRequest(
               aiSummariesEnabled: aiSummariesEnabled,
               dataSharingConsent: dataSharingConsent,
               assistantEnabled: assistantEnabled,
               assistantMemoryEnabled: assistantMemoryEnabled,
               waterTargetCount: waterTargetCount,
               assistantContext:
-                  UserSettingsControllerUpdateSettingsV1RequestAssistantContext(
+                  UpdateSettingsRequestAssistantContext(
                     healthProfile: assistantContext.healthProfile,
                     dailyRecords: assistantContext.dailyRecords,
                     sleepRecords: assistantContext.sleepRecords,
@@ -87,7 +87,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
     return data;
   }
 
-  UserSettings _mapSettings(UserSettingsResponseDto dto) {
+  UserSettings _mapSettings(UserSettingsResponse dto) {
     return UserSettings(
       aiSummariesEnabled: dto.aiSummariesEnabled,
       dataSharingConsent: dto.dataSharingConsent,

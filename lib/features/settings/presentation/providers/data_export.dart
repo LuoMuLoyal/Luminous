@@ -19,14 +19,14 @@ class DataExportRequestInFlightState {
 
 class DataExportRequestInput {
   const DataExportRequestInput({
-    this.kind = DataExportControllerCreateRequestV1RequestKindEnum.hospital,
-    this.format = DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
-    this.range = DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+    this.kind = CreateRequestRequestKindEnum.hospital,
+    this.format = CreateRequestRequestFormatEnum.pdf,
+    this.range = CreateRequestRequestRangeEnum.last7Days,
   });
 
-  final DataExportControllerCreateRequestV1RequestKindEnum kind;
-  final DataExportControllerCreateRequestV1RequestFormatEnum format;
-  final DataExportControllerCreateRequestV1RequestRangeEnum range;
+  final CreateRequestRequestKindEnum kind;
+  final CreateRequestRequestFormatEnum format;
+  final CreateRequestRequestRangeEnum range;
 
   @override
   bool operator ==(Object other) {
@@ -40,8 +40,8 @@ class DataExportRequestInput {
   @override
   int get hashCode => Object.hash(kind, format, range);
 
-  DataExportControllerCreateRequestV1Request toDto({required String password}) {
-    return DataExportControllerCreateRequestV1Request(
+  CreateRequestRequest toDto({required String password}) {
+    return CreateRequestRequest(
       kind: kind,
       format: format,
       range: range,
@@ -49,7 +49,7 @@ class DataExportRequestInput {
     );
   }
 
-  bool matches(DataExportRequestDataDto? request) {
+  bool matches(DataExportRequestData? request) {
     if (request == null) {
       return false;
     }
@@ -59,45 +59,45 @@ class DataExportRequestInput {
         request.range == _rangeToResponse(range);
   }
 
-  DataExportRequestDataDtoKindEnum _kindToResponse(
-    DataExportControllerCreateRequestV1RequestKindEnum value,
+  DataExportRequestDataKindEnum _kindToResponse(
+    CreateRequestRequestKindEnum value,
   ) {
     return switch (value) {
-      DataExportControllerCreateRequestV1RequestKindEnum.hospital =>
-        DataExportRequestDataDtoKindEnum.hospital,
-      DataExportControllerCreateRequestV1RequestKindEnum.monthly =>
-        DataExportRequestDataDtoKindEnum.monthly,
-      DataExportControllerCreateRequestV1RequestKindEnum.print =>
-        DataExportRequestDataDtoKindEnum.print,
-      DataExportControllerCreateRequestV1RequestKindEnum
+      CreateRequestRequestKindEnum.hospital =>
+        DataExportRequestDataKindEnum.hospital,
+      CreateRequestRequestKindEnum.monthly =>
+        DataExportRequestDataKindEnum.monthly,
+      CreateRequestRequestKindEnum.print =>
+        DataExportRequestDataKindEnum.print,
+      CreateRequestRequestKindEnum
           .unknownDefaultOpenApi =>
-        DataExportRequestDataDtoKindEnum.unknownDefaultOpenApi,
+        DataExportRequestDataKindEnum.unknownDefaultOpenApi,
     };
   }
 
-  DataExportRequestDataDtoFormatEnum _formatToResponse(
-    DataExportControllerCreateRequestV1RequestFormatEnum value,
+  DataExportRequestDataFormatEnum _formatToResponse(
+    CreateRequestRequestFormatEnum value,
   ) {
     return switch (value) {
-      DataExportControllerCreateRequestV1RequestFormatEnum.pdf =>
-        DataExportRequestDataDtoFormatEnum.pdf,
-      DataExportControllerCreateRequestV1RequestFormatEnum
+      CreateRequestRequestFormatEnum.pdf =>
+        DataExportRequestDataFormatEnum.pdf,
+      CreateRequestRequestFormatEnum
           .unknownDefaultOpenApi =>
-        DataExportRequestDataDtoFormatEnum.unknownDefaultOpenApi,
+        DataExportRequestDataFormatEnum.unknownDefaultOpenApi,
     };
   }
 
-  DataExportRequestDataDtoRangeEnum _rangeToResponse(
-    DataExportControllerCreateRequestV1RequestRangeEnum value,
+  DataExportRequestDataRangeEnum _rangeToResponse(
+    CreateRequestRequestRangeEnum value,
   ) {
     return switch (value) {
-      DataExportControllerCreateRequestV1RequestRangeEnum.last7Days =>
-        DataExportRequestDataDtoRangeEnum.last7Days,
-      DataExportControllerCreateRequestV1RequestRangeEnum.last30Days =>
-        DataExportRequestDataDtoRangeEnum.last30Days,
-      DataExportControllerCreateRequestV1RequestRangeEnum
+      CreateRequestRequestRangeEnum.last7Days =>
+        DataExportRequestDataRangeEnum.last7Days,
+      CreateRequestRequestRangeEnum.last30Days =>
+        DataExportRequestDataRangeEnum.last30Days,
+      CreateRequestRequestRangeEnum
           .unknownDefaultOpenApi =>
-        DataExportRequestDataDtoRangeEnum.unknownDefaultOpenApi,
+        DataExportRequestDataRangeEnum.unknownDefaultOpenApi,
     };
   }
 }
@@ -113,25 +113,25 @@ enum DataExportUiStatus {
 }
 
 DataExportUiStatus dataExportUiStatusForRequest(
-  DataExportRequestDataDto? request,
+  DataExportRequestData? request,
 ) {
   if (request == null) {
     return DataExportUiStatus.idle;
   }
 
   return switch (request.status) {
-    DataExportRequestDataDtoStatusEnum.requested =>
+    DataExportRequestDataStatusEnum.requested =>
       DataExportUiStatus.requested,
-    DataExportRequestDataDtoStatusEnum.processing =>
+    DataExportRequestDataStatusEnum.processing =>
       DataExportUiStatus.processing,
-    DataExportRequestDataDtoStatusEnum.completed =>
+    DataExportRequestDataStatusEnum.completed =>
       request.downloadUrl?.isNotEmpty != true
           ? DataExportUiStatus.completedLinkMissing
           : DataExportUiStatus.completed,
-    DataExportRequestDataDtoStatusEnum.failed => DataExportUiStatus.failed,
-    DataExportRequestDataDtoStatusEnum.unavailable =>
+    DataExportRequestDataStatusEnum.failed => DataExportUiStatus.failed,
+    DataExportRequestDataStatusEnum.unavailable =>
       DataExportUiStatus.unavailable,
-    DataExportRequestDataDtoStatusEnum.unknownDefaultOpenApi =>
+    DataExportRequestDataStatusEnum.unknownDefaultOpenApi =>
       DataExportUiStatus.failed,
   };
 }
@@ -139,15 +139,15 @@ DataExportUiStatus dataExportUiStatusForRequest(
 const reviewHospitalPdfLast7DaysExportRequest = DataExportRequestInput();
 
 const reviewMonthlyPdfExportRequest = DataExportRequestInput(
-  kind: DataExportControllerCreateRequestV1RequestKindEnum.monthly,
-  format: DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
-  range: DataExportControllerCreateRequestV1RequestRangeEnum.last30Days,
+  kind: CreateRequestRequestKindEnum.monthly,
+  format: CreateRequestRequestFormatEnum.pdf,
+  range: CreateRequestRequestRangeEnum.last30Days,
 );
 
 const reviewPrintPdfExportRequest = DataExportRequestInput(
-  kind: DataExportControllerCreateRequestV1RequestKindEnum.print,
-  format: DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
-  range: DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+  kind: CreateRequestRequestKindEnum.print,
+  format: CreateRequestRequestFormatEnum.pdf,
+  range: CreateRequestRequestRangeEnum.last7Days,
 );
 
 /// Controller for the data-export feature.
@@ -158,9 +158,9 @@ const reviewPrintPdfExportRequest = DataExportRequestInput(
 ///
 /// The provider is kept alive to avoid disposal/recreation cycles when the
 /// report page transitions between loading and ready states.
-class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
+class DataExportController extends AsyncNotifier<DataExportRequestData?> {
   @override
-  Future<DataExportRequestDataDto?> build() async {
+  Future<DataExportRequestData?> build() async {
     // Keep this provider alive to avoid disposal/recreation cycles when
     // the report page transitions between loading and ready states.
     ref.keepAlive();
@@ -173,7 +173,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
 
   /// Wraps [_fetchLatest] with graceful error handling — returns `null`
   /// instead of throwing so the provider never enters an error state.
-  Future<DataExportRequestDataDto?> _fetchLatestSafe() async {
+  Future<DataExportRequestData?> _fetchLatestSafe() async {
     try {
       return await _fetchLatest();
     } catch (e, st) {
@@ -188,7 +188,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
   /// error). Callers must wrap this call in a try/catch and surface the error
   /// to the user. The [dataExportRequestInFlightProvider] is always reset in
   /// the finally block, regardless of success or failure.
-  Future<DataExportRequestDataDto?> requestExport(
+  Future<DataExportRequestData?> requestExport(
     DataExportRequestInput input, {
     required String password,
   }) async {
@@ -201,8 +201,8 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
         DataExportRequestInFlightState(inFlight: true, input: input);
     final api = ref.read(lucentClientProvider).dataExport;
     try {
-      final response = await api.dataExportControllerCreateRequestV1(
-        dataExportControllerCreateRequestV1Request: input.toDto(
+      final response = await api.createRequest(
+        createRequestRequest: input.toDto(
           password: password,
         ),
       );
@@ -210,7 +210,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
         response.data,
         operation: 'createDataExportRequest',
       );
-      final data = DataExportRequestDataDto.fromJson(responseData.toJson());
+      final data = DataExportRequestData.fromJson(responseData.toJson());
       state = AsyncData(data);
       return data;
     } finally {
@@ -219,21 +219,21 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
     }
   }
 
-  Future<DataExportRequestDataDto?> refresh() async {
+  Future<DataExportRequestData?> refresh() async {
     final latest = await _fetchLatest();
     state = AsyncData(latest);
     return latest;
   }
 
-  Future<DataExportRequestDataDto?> _fetchLatest() async {
+  Future<DataExportRequestData?> _fetchLatest() async {
     final api = ref.read(lucentClientProvider).dataExport;
-    final response = await api.dataExportControllerGetLatestRequestV1();
+    final response = await api.getLatestRequest();
     return requireData(response.data, operation: 'fetchLatestDataExport');
   }
 }
 
 final dataExportControllerProvider =
-    AsyncNotifierProvider<DataExportController, DataExportRequestDataDto?>(
+    AsyncNotifierProvider<DataExportController, DataExportRequestData?>(
       DataExportController.new,
     );
 
