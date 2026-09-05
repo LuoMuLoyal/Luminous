@@ -13,10 +13,10 @@ class ReviewDashboardRemoteDataSource {
 
   static final _dateOnlyFormat = DateFormat('yyyy-MM-dd');
 
-  Future<lucent.ReportDashboardResponseDto> fetchDashboard(
+  Future<lucent.ReportDashboardResponse> fetchDashboard(
     ReviewDashboardQuery query,
   ) async {
-    final response = await api.reportsControllerGetDashboardV1(
+    final response = await api.getDashboard(
       range: query.range.apiValue,
       startDate: query.isCustom
           ? _dateOnlyFormat.format(query.startDate!)

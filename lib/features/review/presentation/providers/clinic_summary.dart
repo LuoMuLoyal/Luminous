@@ -6,16 +6,16 @@ import 'package:luminous/core/providers/auth_guarded.dart';
 
 /// All six selectable clinic summary fields, in display order.
 const kClinicSummaryAllFields =
-    <ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>[
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+    <PreviewClinicSummaryRequestSelectedFieldsEnum>[
+      PreviewClinicSummaryRequestSelectedFieldsEnum
           .eventOverview,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+      PreviewClinicSummaryRequestSelectedFieldsEnum
           .symptomChanges,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+      PreviewClinicSummaryRequestSelectedFieldsEnum
           .medicationSlots,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.water,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.sleep,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.notes,
+      PreviewClinicSummaryRequestSelectedFieldsEnum.water,
+      PreviewClinicSummaryRequestSelectedFieldsEnum.sleep,
+      PreviewClinicSummaryRequestSelectedFieldsEnum.notes,
     ];
 
 /// Default field selection: every field except the free-text notes.
@@ -23,15 +23,15 @@ const kClinicSummaryAllFields =
 /// Notes stay off by default (privacy): the user must opt in to include the
 /// free-text notes in the preview / PDF / share.
 const kClinicSummaryDefaultFields =
-    <ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>[
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+    <PreviewClinicSummaryRequestSelectedFieldsEnum>[
+      PreviewClinicSummaryRequestSelectedFieldsEnum
           .eventOverview,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+      PreviewClinicSummaryRequestSelectedFieldsEnum
           .symptomChanges,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum
+      PreviewClinicSummaryRequestSelectedFieldsEnum
           .medicationSlots,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.water,
-      ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum.sleep,
+      PreviewClinicSummaryRequestSelectedFieldsEnum.water,
+      PreviewClinicSummaryRequestSelectedFieldsEnum.sleep,
     ];
 
 /// Fetches the authenticated user's de-identified clinic summary preview.
@@ -42,8 +42,8 @@ const kClinicSummaryDefaultFields =
 /// same filtered view).
 final clinicSummaryPreviewProvider = FutureProvider.autoDispose
     .family<
-      ClinicSummaryResponseDto,
-      List<ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>
+      ClinicSummaryResponse,
+      List<PreviewClinicSummaryRequestSelectedFieldsEnum>
     >((ref, selectedFields) async {
       return authGuarded(
         ref: ref,
@@ -52,15 +52,15 @@ final clinicSummaryPreviewProvider = FutureProvider.autoDispose
       );
     });
 
-Future<ClinicSummaryResponseDto> _fetchPreview(
+Future<ClinicSummaryResponse> _fetchPreview(
   Ref ref,
-  List<ReportsControllerPreviewClinicSummaryV1RequestSelectedFieldsEnum>
+  List<PreviewClinicSummaryRequestSelectedFieldsEnum>
   selectedFields,
 ) async {
   final api = ref.watch(lucentClientProvider).reports;
-  final response = await api.reportsControllerPreviewClinicSummaryV1(
-    reportsControllerPreviewClinicSummaryV1Request:
-        ReportsControllerPreviewClinicSummaryV1Request(
+  final response = await api.previewClinicSummary(
+    previewClinicSummaryRequest:
+        PreviewClinicSummaryRequest(
           selectedFields: selectedFields,
         ),
   );
@@ -72,9 +72,9 @@ Future<ClinicSummaryResponseDto> _fetchPreview(
 /// Calls `GET /api/v1/user/reports/clinic-summary/shared/{token}` — no
 /// authentication required. Used by the public deep-link share page.
 final clinicSummarySharedProvider = FutureProvider.autoDispose
-    .family<ClinicSummaryResponseDto, String>((ref, token) async {
+    .family<ClinicSummaryResponse, String>((ref, token) async {
       final api = ref.watch(lucentClientProvider).reports;
-      final response = await api.reportsControllerGetSharedClinicSummaryV1(
+      final response = await api.getSharedClinicSummary(
         token: token,
         extra: const {'skipAuthorization': true},
       );
@@ -88,18 +88,18 @@ final clinicSummarySharedProvider = FutureProvider.autoDispose
 final clinicSummaryShareListProvider =
     AsyncNotifierProvider<
       ClinicSummaryShareList,
-      List<ClinicSummaryShareListResponseDtoItemsInner>
+      List<ClinicSummaryShareListResponseItems>
     >(ClinicSummaryShareList.new);
 
 class ClinicSummaryShareList
-    extends AsyncNotifier<List<ClinicSummaryShareListResponseDtoItemsInner>> {
+    extends AsyncNotifier<List<ClinicSummaryShareListResponseItems>> {
   @override
-  Future<List<ClinicSummaryShareListResponseDtoItemsInner>> build() {
+  Future<List<ClinicSummaryShareListResponseItems>> build() {
     return authGuarded(
       ref: ref,
       fetch: () async {
         final api = ref.watch(lucentClientProvider).reports;
-        final response = await api.reportsControllerListClinicSummarySharesV1();
+        final response = await api.listClinicSummaryShares();
         return response.data?.items ?? const [];
       },
       signedOutFallback: () => pendingAuthSessionResolution(),
@@ -110,7 +110,7 @@ class ClinicSummaryShareList
   /// and refreshes the list so the revoked state is reflected immediately.
   Future<void> revoke(String shareId) async {
     final api = ref.read(lucentClientProvider).reports;
-    await api.reportsControllerRevokeClinicSummaryShareV1(shareId: shareId);
+    await api.revokeClinicSummaryShare(shareId: shareId);
     ref.invalidateSelf();
   }
 }

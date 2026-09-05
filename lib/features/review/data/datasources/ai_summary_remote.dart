@@ -18,7 +18,7 @@ class ReviewAiRemoteSummaryEvent extends ReviewAiRemoteEvent {
 class ReviewAiRemoteResultEvent extends ReviewAiRemoteEvent {
   const ReviewAiRemoteResultEvent(this.dto);
 
-  final lucent.ReportSummaryResponseDto dto;
+  final lucent.ReportSummaryResponse dto;
 }
 
 class ReviewAiSummaryRemoteDataSource {
@@ -62,7 +62,7 @@ class ReviewAiSummaryRemoteDataSource {
         case 'result':
           final json = requireMap(event.data);
           yield ReviewAiRemoteResultEvent(
-            lucent.ReportSummaryResponseDto.fromJson(json),
+            lucent.ReportSummaryResponse.fromJson(json),
           );
         case 'error':
           throw mapSseStreamError(event.data);

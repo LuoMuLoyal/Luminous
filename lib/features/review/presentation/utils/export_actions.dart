@@ -54,7 +54,7 @@ Future<void> handleReviewExportAction(
   final controller = ref.read(dataExportControllerProvider.notifier);
   final launcher = ref.read(externalUrlLauncherProvider);
 
-  final DataExportRequestDataDto? value;
+  final DataExportRequestData? value;
   try {
     value = await controller.requestExport(input, password: password);
   } catch (error) {
@@ -67,7 +67,7 @@ Future<void> handleReviewExportAction(
       ref
           .read(productEventServiceProvider)
           .trackVisitSummaryExported(
-            ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+            RecordBatchRequestEventsResultEnum
                 .failure,
           ),
     );
@@ -90,12 +90,12 @@ Future<void> handleReviewExportAction(
     DataExportUiStatus.idle ||
     DataExportUiStatus.failed ||
     DataExportUiStatus.unavailable =>
-      ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum.failure,
+      RecordBatchRequestEventsResultEnum.failure,
     DataExportUiStatus.requested ||
     DataExportUiStatus.processing ||
     DataExportUiStatus.completed ||
     DataExportUiStatus.completedLinkMissing =>
-      ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum.success,
+      RecordBatchRequestEventsResultEnum.success,
   };
   unawaited(
     ref.read(productEventServiceProvider).trackVisitSummaryExported(exported),
@@ -113,7 +113,7 @@ Future<void> _handleExportResult({
   required BuildContext context,
   required WidgetRef ref,
   required ExternalUrlLauncher launcher,
-  required DataExportRequestDataDto? request,
+  required DataExportRequestData? request,
 }) async {
   final l10n = AppLocalizations.of(context)!;
   switch (dataExportUiStatusForRequest(request)) {

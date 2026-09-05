@@ -97,7 +97,7 @@ String reviewExportSubtitle(AppLocalizations l10n, ReviewExportKind kind) {
 String reviewExportCardSubtitle(
   AppLocalizations l10n,
   ReviewExportKind kind,
-  DataExportRequestDataDto? latestRequest,
+  DataExportRequestData? latestRequest,
 ) {
   final input = reviewExportInputForKind(kind);
   if (input == null) {

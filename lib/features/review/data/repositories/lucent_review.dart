@@ -15,13 +15,13 @@ import 'package:luminous/features/review/domain/repositories/review.dart';
 // 文件级 typedef:生成的 EventReview 读模型枚举名过长(2026-09-03 审查 #4
 // 纯可读性收口,不改行为)。仅本文件内使用,不新增导出符号。
 typedef _SectionStateEnum =
-    lucent.EventReviewDataDtoSectionsWhatHappenedStateEnum;
+    lucent.EventReviewDataSectionsWhatHappenedStateEnum;
 typedef _TodayCheckInOutcomeEnum =
-    lucent.EventReviewDataDtoCoverageCheckInsTodayCheckInOutcomeEnum;
-typedef _EventKindEnum = lucent.EventReviewDataDtoEventKindEnum;
-typedef _EventStatusEnum = lucent.EventReviewDataDtoEventStatusEnum;
-typedef _EventOutcomeEnum = lucent.EventReviewDataDtoEventOutcomeEnum;
-typedef _AvailableActionEnum = lucent.EventReviewDataDtoAvailableActionsEnum;
+    lucent.EventReviewDataCoverageCheckInsTodayCheckInOutcomeEnum;
+typedef _EventKindEnum = lucent.EventReviewDataEventKindEnum;
+typedef _EventStatusEnum = lucent.EventReviewDataEventStatusEnum;
+typedef _EventOutcomeEnum = lucent.EventReviewDataEventOutcomeEnum;
+typedef _AvailableActionEnum = lucent.EventReviewDataAvailableActionsEnum;
 
 /// Review 端点的远程数据源。
 ///
@@ -34,17 +34,17 @@ class ReviewRemoteDataSource {
 
   final lucent.ReportsApi api;
 
-  Future<lucent.EventReviewDataDto?> fetchCurrentReview() async {
-    final response = await api.reportsControllerGetCurrentReviewV1();
+  Future<lucent.EventReviewData?> fetchCurrentReview() async {
+    final response = await api.getCurrentReview();
     return response.data;
   }
 
-  Future<lucent.EventReviewListResponseDto> fetchHistory({
+  Future<lucent.EventReviewListResponse> fetchHistory({
     ReviewEventStatus? status,
     String? cursor,
     int? limit,
   }) async {
-    final response = await api.reportsControllerListReviewsV1(
+    final response = await api.listReviews(
       status: _apiStatus(status),
       cursor: cursor,
       limit: limit,
@@ -52,12 +52,12 @@ class ReviewRemoteDataSource {
     return _requireData(response.data, operation: 'fetchHistory');
   }
 
-  Future<lucent.EventReviewDataDto> fetchReview(String eventId) async {
-    final response = await api.reportsControllerGetEventReviewV1(
+  Future<lucent.EventReviewData> fetchReview(String eventId) async {
+    final response = await api.getEventReview(
       eventId: eventId,
     );
     final dto = _requireData(response.data, operation: 'fetchReview');
-    return lucent.EventReviewDataDto.fromJson(dto.toJson());
+    return lucent.EventReviewData.fromJson(dto.toJson());
   }
 
   /// Extracts a non-null generated-client payload, throwing
@@ -111,7 +111,7 @@ class LucentReviewRepository implements ReviewRepository {
       // 1. Check cache
       final cachedJson = await dao.fetchCurrent();
       if (cachedJson != null) {
-        final dto = lucent.EventReviewDataDto.fromJson(
+        final dto = lucent.EventReviewData.fromJson(
           jsonDecode(cachedJson) as Map<String, dynamic>,
         );
         final review = _mapReview(dto);
@@ -146,11 +146,20 @@ class LucentReviewRepository implements ReviewRepository {
       final cachedJson = await dao.fetchHistory(cacheKey);
       if (cachedJson != null) {
         try {
-          final dto = lucent.EventReviewListResponseDto.fromJson(
+          final dto = lucent.EventReviewListResponse.fromJson(
             jsonDecode(cachedJson) as Map<String, dynamic>,
           );
           final page = ReviewEventPage(
-            items: dto.items.map(_mapEvent).toList(growable: false),
+            // 新客户端将 history 列表项提升为独立类型
+            // EventReviewListResponseItems（JSON 形状与
+            // EventReviewDataEvent 一致），经 JSON 往返复用现有映射。
+            items: dto.items
+                .map(
+                  (item) => _mapEvent(
+                    lucent.EventReviewDataEvent.fromJson(item.toJson()),
+                  ),
+                )
+                .toList(growable: false),
             total: dto.total.toInt(),
             nextCursor: dto.nextCursor,
           );
@@ -190,7 +199,13 @@ class LucentReviewRepository implements ReviewRepository {
       );
       await dao.replaceHistory(cacheKey, jsonEncode(dto.toJson()));
       return ReviewEventPage(
-        items: dto.items.map(_mapEvent).toList(growable: false),
+        items: dto.items
+            .map(
+              (item) => _mapEvent(
+                lucent.EventReviewDataEvent.fromJson(item.toJson()),
+              ),
+            )
+            .toList(growable: false),
         total: dto.total.toInt(),
         nextCursor: dto.nextCursor,
       );
@@ -256,19 +271,39 @@ class LucentReviewRepository implements ReviewRepository {
     );
   }
 
-  EventReview _mapReview(lucent.EventReviewDataDto dto) {
+  EventReview _mapReview(lucent.EventReviewData dto) {
     return EventReview(
       event: _mapEvent(dto.event),
       sections: ReviewSections(
         whatHappened: _mapSection(dto.sections.whatHappened),
-        keyChanges: _mapSection(dto.sections.keyChanges),
-        completedActions: _mapSection(dto.sections.completedActions),
-        nextStep: _mapSection(dto.sections.nextStep),
+        // 新客户端为每个 section 生成独立类型（JSON 形状一致），经 JSON
+        // 往返复用 _mapSection。
+        keyChanges: _mapSection(
+          lucent.EventReviewDataSectionsWhatHappened.fromJson(
+            dto.sections.keyChanges.toJson(),
+          ),
+        ),
+        completedActions: _mapSection(
+          lucent.EventReviewDataSectionsWhatHappened.fromJson(
+            dto.sections.completedActions.toJson(),
+          ),
+        ),
+        nextStep: _mapSection(
+          lucent.EventReviewDataSectionsWhatHappened.fromJson(
+            dto.sections.nextStep.toJson(),
+          ),
+        ),
       ),
       coverage: ReviewCoverage(
         checkIns: _mapCheckInCoverage(dto.coverage.checkIns),
         dailyRecords: _mapObservedCoverage(dto.coverage.dailyRecords),
-        doseLogs: _mapObservedCoverage(dto.coverage.doseLogs),
+        // 新客户端为 doseLogs 生成独立类型（JSON 形状与 dailyRecords
+        // 一致），经 JSON 往返复用 _mapObservedCoverage。
+        doseLogs: _mapObservedCoverage(
+          lucent.EventReviewDataCoverageDailyRecords.fromJson(
+            dto.coverage.doseLogs.toJson(),
+          ),
+        ),
       ),
       sourceTimestamps: ReviewSourceTimestamps(
         checkIns: dto.sourceTimestamps.checkIns,
@@ -283,7 +318,7 @@ class LucentReviewRepository implements ReviewRepository {
     );
   }
 
-  ReviewEvent _mapEvent(lucent.EventReviewDataDtoEvent dto) {
+  ReviewEvent _mapEvent(lucent.EventReviewDataEvent dto) {
     return ReviewEvent(
       id: dto.id,
       kind: _mapKind(dto.kind),
@@ -296,7 +331,7 @@ class LucentReviewRepository implements ReviewRepository {
     );
   }
 
-  ReviewSection _mapSection(lucent.EventReviewDataDtoSectionsWhatHappened dto) {
+  ReviewSection _mapSection(lucent.EventReviewDataSectionsWhatHappened dto) {
     return ReviewSection(
       state: switch (dto.state) {
         _SectionStateEnum.available => ReviewSectionState.available,
@@ -311,7 +346,7 @@ class LucentReviewRepository implements ReviewRepository {
   }
 
   ReviewSectionFacts _mapFacts(
-    lucent.EventReviewDataDtoSectionsWhatHappenedFacts dto,
+    lucent.EventReviewDataSectionsWhatHappenedFacts dto,
   ) {
     // 契约声明 arguments 为 object；生成 DTO 反序列化为 Map<String, Object>。
     // 拷贝一份 Map<String, dynamic>，防止上游引用后续被修改。
@@ -322,7 +357,7 @@ class LucentReviewRepository implements ReviewRepository {
   }
 
   ReviewCheckInCoverage _mapCheckInCoverage(
-    lucent.EventReviewDataDtoCoverageCheckIns dto,
+    lucent.EventReviewDataCoverageCheckIns dto,
   ) {
     return ReviewCheckInCoverage(
       state: _mapCoverageState(dto.state.value),
@@ -343,7 +378,7 @@ class LucentReviewRepository implements ReviewRepository {
   }
 
   ReviewObservedCoverage _mapObservedCoverage(
-    lucent.EventReviewDataDtoCoverageDailyRecords dto,
+    lucent.EventReviewDataCoverageDailyRecords dto,
   ) {
     return ReviewObservedCoverage(
       state: _mapCoverageState(dto.state.value),
@@ -359,7 +394,7 @@ class LucentReviewRepository implements ReviewRepository {
   }
 
   ReviewTodayCheckIn _mapTodayCheckIn(
-    lucent.EventReviewDataDtoCoverageCheckInsTodayCheckIn dto,
+    lucent.EventReviewDataCoverageCheckInsTodayCheckIn dto,
   ) {
     return ReviewTodayCheckIn(
       date: dto.date,

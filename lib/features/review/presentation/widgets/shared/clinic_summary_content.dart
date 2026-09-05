@@ -9,7 +9,7 @@ import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Renders the full content of a [ClinicSummaryResponseDto] — used by both the
+/// Renders the full content of a [ClinicSummaryResponse] — used by both the
 /// preview dialog (authenticated) and the public shared page (no auth).
 ///
 /// Pass [onDownloadPdf] / [onShare] to show action buttons at the bottom.
@@ -25,7 +25,7 @@ class ClinicSummaryContent extends StatelessWidget {
     this.isSharing = false,
   });
 
-  final ClinicSummaryResponseDto dto;
+  final ClinicSummaryResponse dto;
   final VoidCallback? onDownloadPdf;
   final VoidCallback? onShare;
   final bool isPdfDownloading;

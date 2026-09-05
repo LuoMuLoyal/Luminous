@@ -47,7 +47,7 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
     }
   }
 
-  ReviewAiSummary _mapSummary(lucent.ReportSummaryResponseDto dto) {
+  ReviewAiSummary _mapSummary(lucent.ReportSummaryResponse dto) {
     return ReviewAiSummary(
       range: _mapRange(dto.range),
       startDate: dto.startDate,
@@ -62,17 +62,27 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
   }
 
   ReviewAiSummaryCoverage _mapCoverage(
-    lucent.ReportSummaryResponseDtoCoverage dto,
+    lucent.ReportSummaryResponseCoverage dto,
   ) {
     return ReviewAiSummaryCoverage(
       medication: _mapCoverageDimension(dto.medication),
-      water: _mapCoverageDimension(dto.water),
-      sleep: _mapCoverageDimension(dto.sleep),
+      // 新客户端为 water/sleep 生成独立类型（JSON 形状一致），经 JSON
+      // 往返复用 _mapCoverageDimension。
+      water: _mapCoverageDimension(
+        lucent.ReportSummaryResponseCoverageMedication.fromJson(
+          dto.water.toJson(),
+        ),
+      ),
+      sleep: _mapCoverageDimension(
+        lucent.ReportSummaryResponseCoverageMedication.fromJson(
+          dto.sleep.toJson(),
+        ),
+      ),
     );
   }
 
   ReviewAiSummaryCoverageDimension _mapCoverageDimension(
-    lucent.ReportSummaryResponseDtoCoverageMedication dto,
+    lucent.ReportSummaryResponseCoverageMedication dto,
   ) {
     return ReviewAiSummaryCoverageDimension(
       trackedDays: dto.trackedDays.toInt(),
@@ -81,7 +91,7 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
   }
 
   ReviewAiSummaryObservedPattern? _mapObservedPattern(
-    lucent.ReportSummaryResponseDtoObservedPattern? dto,
+    lucent.ReportSummaryResponseObservedPattern? dto,
   ) {
     if (dto == null) return null;
     return ReviewAiSummaryObservedPattern(
@@ -92,21 +102,21 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
   }
 
   ReviewAiSummaryPatternKind _mapPatternKind(
-    lucent.ReportSummaryResponseDtoObservedPatternKindEnum kind,
+    lucent.ReportSummaryResponseObservedPatternKindEnum kind,
   ) {
     switch (kind) {
-      case lucent.ReportSummaryResponseDtoObservedPatternKindEnum.medication:
+      case lucent.ReportSummaryResponseObservedPatternKindEnum.medication:
         return ReviewAiSummaryPatternKind.medication;
-      case lucent.ReportSummaryResponseDtoObservedPatternKindEnum.hydration:
+      case lucent.ReportSummaryResponseObservedPatternKindEnum.hydration:
         return ReviewAiSummaryPatternKind.hydration;
-      case lucent.ReportSummaryResponseDtoObservedPatternKindEnum.sleep:
+      case lucent.ReportSummaryResponseObservedPatternKindEnum.sleep:
         return ReviewAiSummaryPatternKind.sleep;
       // The OpenAPI generator emits this sentinel for any value the server
       // returns that the generated client does not know about. Log a
       // warning and fall back to `medication` rather than throwing,
       // so a single unknown pattern kind does not break the entire summary.
       case lucent
-          .ReportSummaryResponseDtoObservedPatternKindEnum
+          .ReportSummaryResponseObservedPatternKindEnum
           .unknownDefaultOpenApi:
         appTalker.warning('Unknown pattern kind from API: $kind');
         return ReviewAiSummaryPatternKind.medication;
@@ -114,26 +124,26 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
   }
 
   ReviewAiSummaryLowRiskAction? _mapLowRiskAction(
-    lucent.ReportSummaryResponseDtoLowRiskAction? dto,
+    lucent.ReportSummaryResponseLowRiskAction? dto,
   ) {
     if (dto == null) return null;
     return ReviewAiSummaryLowRiskAction(label: dto.label, text: dto.text);
   }
 
   ReviewAiSummaryRange _mapRange(
-    lucent.ReportSummaryResponseDtoRangeEnum range,
+    lucent.ReportSummaryResponseRangeEnum range,
   ) {
     switch (range) {
-      case lucent.ReportSummaryResponseDtoRangeEnum.last7Days:
+      case lucent.ReportSummaryResponseRangeEnum.last7Days:
         return ReviewAiSummaryRange.last7Days;
-      case lucent.ReportSummaryResponseDtoRangeEnum.last30Days:
+      case lucent.ReportSummaryResponseRangeEnum.last30Days:
         return ReviewAiSummaryRange.last30Days;
-      case lucent.ReportSummaryResponseDtoRangeEnum.custom:
+      case lucent.ReportSummaryResponseRangeEnum.custom:
         return ReviewAiSummaryRange.custom;
       // The OpenAPI generator emits this sentinel for any value the server
       // returns that the generated client does not know about. Log a
       // warning and fall back to `last7Days` rather than throwing.
-      case lucent.ReportSummaryResponseDtoRangeEnum.unknownDefaultOpenApi:
+      case lucent.ReportSummaryResponseRangeEnum.unknownDefaultOpenApi:
         appTalker.warning('Unknown summary range from API: $range');
         return ReviewAiSummaryRange.last7Days;
     }

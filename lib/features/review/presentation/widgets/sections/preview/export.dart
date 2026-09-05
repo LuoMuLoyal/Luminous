@@ -20,7 +20,7 @@ class ReviewExportSection extends StatelessWidget {
   });
 
   final List<ReviewExportAction> actions;
-  final DataExportRequestDataDto? latestRequest;
+  final DataExportRequestData? latestRequest;
   final DataExportRequestInFlightState requestInFlight;
   final AppLocalizations l10n;
   final Future<void> Function(ReviewExportKind kind)? onActionTap;
@@ -91,7 +91,7 @@ class _ExportCard extends StatelessWidget {
   });
 
   final ReviewExportAction action;
-  final DataExportRequestDataDto? latestRequest;
+  final DataExportRequestData? latestRequest;
   final DataExportRequestInFlightState requestInFlight;
   final AppLocalizations l10n;
   final Future<void> Function(ReviewExportKind kind)? onTap;

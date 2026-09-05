@@ -23,7 +23,7 @@ import 'package:luminous/features/review/domain/repositories/dashboard.dart';
 // 文件级 typedef:生成的 dashboard metrics 来源枚举名过长
 // (2026-09-03 审查 #4 纯可读性收口,不改行为)。
 typedef _ObservedMetricSourcesEnum =
-    lucent.ReportDashboardResponseDtoMetricsInnerObservedMetricSourcesEnum;
+    lucent.ReportDashboardResponseMetricsObservedMetricSourcesEnum;
 
 class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   LucentReviewDashboardRepository({
@@ -51,7 +51,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
       final cachedJson = await dao.fetch(cacheKey);
       if (cachedJson != null) {
         try {
-          final dto = lucent.ReportDashboardResponseDto.fromJson(
+          final dto = lucent.ReportDashboardResponse.fromJson(
             jsonDecode(cachedJson) as Map<String, dynamic>,
           );
           final dashboard = _mapDto(dto);
@@ -85,7 +85,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
-  ReviewDashboard _mapDto(lucent.ReportDashboardResponseDto dto) {
+  ReviewDashboard _mapDto(lucent.ReportDashboardResponse dto) {
     final findings = dto.findings.map(_mapFinding).toList(growable: false);
 
     return ReviewDashboard(
@@ -122,7 +122,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     );
   }
 
-  ReviewMetric _mapMetric(lucent.ReportDashboardResponseDtoMetricsInner dto) {
+  ReviewMetric _mapMetric(lucent.ReportDashboardResponseMetrics dto) {
     final kind = _mapDataKind(dto.kind.value);
     return ReviewMetric(
       kind: kind,
@@ -141,7 +141,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   }
 
   ReviewObservedMetric _mapObservedMetric(
-    lucent.ReportDashboardResponseDtoMetricsInnerObservedMetric dto,
+    lucent.ReportDashboardResponseMetricsObservedMetric dto,
   ) {
     return ReviewObservedMetric(
       value: dto.value?.toDouble(),
@@ -175,7 +175,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   }
 
   ReviewTrendSeries _mapTrend(
-    lucent.ReportDashboardResponseDtoTrendsInner dto,
+    lucent.ReportDashboardResponseTrends dto,
   ) {
     final kind = _mapDataKind(dto.kind.value);
     return ReviewTrendSeries(
@@ -184,14 +184,20 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
       unit: dto.unit,
       values: dto.values.map((value) => value.toDouble()).toList(),
       currentValue: dto.currentValue,
+      // 新客户端将 trends/metrics 的 observedMetric 提升为独立类型
+      // （JSON 形状一致），经 JSON 往返复用 _mapObservedMetric。
       observedMetric: dto.observedMetric == null
           ? null
-          : _mapObservedMetric(dto.observedMetric!),
+          : _mapObservedMetric(
+              lucent.ReportDashboardResponseMetricsObservedMetric.fromJson(
+                dto.observedMetric!.toJson(),
+              ),
+            ),
     );
   }
 
   ReviewFinding _mapFinding(
-    lucent.ReportDashboardResponseDtoFindingsInner dto,
+    lucent.ReportDashboardResponseFindings dto,
   ) {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewFinding(
@@ -204,7 +210,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   }
 
   ReviewPatternCard _mapPattern(
-    lucent.ReportDashboardResponseDtoPatternsInner dto,
+    lucent.ReportDashboardResponsePatterns dto,
   ) {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewPatternCard(

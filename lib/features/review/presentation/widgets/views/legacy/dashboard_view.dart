@@ -75,7 +75,7 @@ class ReviewDashboardView extends StatelessWidget {
   final ValueChanged<ReviewAiSummaryRange>? onAiSummaryRangeChanged;
   final Future<void> Function()? onGenerateAiSummary;
   final Future<void> Function(ReviewExportKind kind)? onExportActionTap;
-  final DataExportRequestDataDto? latestExportRequest;
+  final DataExportRequestData? latestExportRequest;
   final DataExportRequestInFlightState exportRequestInFlight;
   final bool clinicShareInFlight;
   final bool isPreview;
