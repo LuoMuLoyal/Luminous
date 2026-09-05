@@ -38,14 +38,14 @@ void main() {
         expect(request.queryParameters, containsPair('range', 'last_7_days'));
         expect(
           dashboard.range,
-          lucent.ReportDashboardResponseDtoRangeEnum.last7Days,
+          lucent.ReportDashboardResponseRangeEnum.last7Days,
         );
         expect(dashboard.startDate, '2026-06-06');
         expect(dashboard.endDate, '2026-06-12');
         expect(dashboard.aiSummaryEnabled, isTrue);
         expect(
           dashboard.metrics.single.kind,
-          lucent.ReportDashboardResponseDtoMetricsInnerKindEnum.water,
+          lucent.ReportDashboardResponseMetricsKindEnum.water,
         );
         expect(dashboard.trends.single.currentValue, '1.8L');
         expect(dashboard.findings.single.title, '饮水改善');

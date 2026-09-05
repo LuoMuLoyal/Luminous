@@ -24,13 +24,13 @@ class _FakeLucentClient extends LucentClient {
   ReportsApi get reports => reportsApi;
 }
 
-ClinicSummaryShareListResponseDtoItemsInner _shareItem({
+ClinicSummaryShareListResponseItems _shareItem({
   String id = 'share-1',
   String? revokedAt,
   int accessCount = 3,
   String? lastAccessedAt = '2026-07-03T09:00:00',
 }) {
-  return ClinicSummaryShareListResponseDtoItemsInner(
+  return ClinicSummaryShareListResponseItems(
     id: id,
     createdAt: '2026-07-01T08:00:00',
     expiresAt: '2026-07-08T08:00:00',
@@ -38,7 +38,7 @@ ClinicSummaryShareListResponseDtoItemsInner _shareItem({
     accessCount: accessCount,
     firstAccessedAt: lastAccessedAt,
     lastAccessedAt: lastAccessedAt,
-    scope: ClinicSummaryShareResponseDtoScope(
+    scope: ClinicSummaryShareListResponseItemsScope(
       eventId: null,
       dateFrom: '2026-06-02',
       dateTo: '2026-07-01',
@@ -47,11 +47,11 @@ ClinicSummaryShareListResponseDtoItemsInner _shareItem({
   );
 }
 
-Response<ClinicSummaryShareListResponseDto> _shareListResponse(
-  List<ClinicSummaryShareListResponseDtoItemsInner> items,
+Response<ClinicSummaryShareListResponse> _shareListResponse(
+  List<ClinicSummaryShareListResponseItems> items,
 ) {
-  return Response<ClinicSummaryShareListResponseDto>(
-    data: ClinicSummaryShareListResponseDto(items: items),
+  return Response<ClinicSummaryShareListResponse>(
+    data: ClinicSummaryShareListResponse(items: items),
     requestOptions: RequestOptions(path: '/shares'),
     statusCode: 200,
   );
@@ -68,11 +68,11 @@ void main() {
 
   Future<void> pumpSheet(
     WidgetTester tester, {
-    required List<ClinicSummaryShareListResponseDtoItemsInner> items,
-    Future<Response<ClinicSummaryShareListResponseDto>> Function()? listHandler,
+    required List<ClinicSummaryShareListResponseItems> items,
+    Future<Response<ClinicSummaryShareListResponse>> Function()? listHandler,
   }) async {
     when(
-      () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+      () => reportsApi.listClinicSummaryShares(),
     ).thenAnswer((_) async {
       return listHandler != null
           ? await listHandler()
@@ -159,7 +159,7 @@ void main() {
     tester,
   ) async {
     when(
-      () => reportsApi.reportsControllerRevokeClinicSummaryShareV1(
+      () => reportsApi.revokeClinicSummaryShare(
         shareId: 'share-1',
       ),
     ).thenAnswer(
@@ -189,13 +189,13 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(
-      () => reportsApi.reportsControllerRevokeClinicSummaryShareV1(
+      () => reportsApi.revokeClinicSummaryShare(
         shareId: 'share-1',
       ),
     ).called(1);
     // invalidateSelf refetched the list after the revoke.
     verify(
-      () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+      () => reportsApi.listClinicSummaryShares(),
     ).called(2);
     // The refreshed row shows the revoked state without a revoke action.
     expect(find.text(l10n_.reviewShareRevokedBadge), findsOneWidget);
@@ -215,7 +215,7 @@ void main() {
 
   testWidgets('shows the load-failed state with retry', (tester) async {
     when(
-      () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+      () => reportsApi.listClinicSummaryShares(),
     ).thenThrow(
       DioException(
         requestOptions: RequestOptions(path: '/shares'),
@@ -245,7 +245,7 @@ void main() {
 
     // Retry re-fetches and succeeds.
     when(
-      () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+      () => reportsApi.listClinicSummaryShares(),
     ).thenAnswer((_) async => _shareListResponse([_shareItem()]));
     await tester.tap(find.text(l10n_.todayRetryAction));
     await tester.pumpAndSettle();

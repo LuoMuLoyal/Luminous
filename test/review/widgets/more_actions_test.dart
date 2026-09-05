@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_api/lucent_api.dart';
+import 'package:lucent_api/lucent_api.dart' hide HealthSummary;
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
@@ -551,10 +551,10 @@ class _ThrowingDataExportController extends DataExportController {
   DataExportRequestInput? lastInput;
 
   @override
-  Future<DataExportRequestDataDto?> build() async => null;
+  Future<DataExportRequestData?> build() async => null;
 
   @override
-  Future<DataExportRequestDataDto?> requestExport(
+  Future<DataExportRequestData?> requestExport(
     DataExportRequestInput input, {
     required String password,
   }) async {
@@ -563,11 +563,11 @@ class _ThrowingDataExportController extends DataExportController {
   }
 }
 
-ClinicSummaryResponseDtoCoverageCheckIns _checkInsCoverage() {
-  return ClinicSummaryResponseDtoCoverageCheckIns(
-    state: ClinicSummaryResponseDtoCoverageCheckInsStateEnum.observed,
-    coverage: ClinicSummaryResponseDtoCoverageCheckInsCoverageEnum.none,
-    sources: const [ClinicSummaryResponseDtoCoverageCheckInsSourcesEnum.manual],
+ClinicSummaryResponseCoverageCheckIns _checkInsCoverage() {
+  return ClinicSummaryResponseCoverageCheckIns(
+    state: ClinicSummaryResponseCoverageCheckInsStateEnum.observed,
+    coverage: ClinicSummaryResponseCoverageCheckInsCoverageEnum.none,
+    sources: const [ClinicSummaryResponseCoverageCheckInsSourcesEnum.manual],
     observedCount: 0,
     expectedCount: null,
     windowStart: null,
@@ -575,11 +575,11 @@ ClinicSummaryResponseDtoCoverageCheckIns _checkInsCoverage() {
   );
 }
 
-ClinicSummaryResponseDtoCoverageWater _waterCoverage() {
-  return ClinicSummaryResponseDtoCoverageWater(
-    state: ClinicSummaryResponseDtoCoverageWaterStateEnum.observed,
-    coverage: ClinicSummaryResponseDtoCoverageWaterCoverageEnum.none,
-    sources: const [ClinicSummaryResponseDtoCoverageWaterSourcesEnum.manual],
+ClinicSummaryResponseCoverageWater _waterCoverage() {
+  return ClinicSummaryResponseCoverageWater(
+    state: ClinicSummaryResponseCoverageWaterStateEnum.observed,
+    coverage: ClinicSummaryResponseCoverageWaterCoverageEnum.none,
+    sources: const [ClinicSummaryResponseCoverageWaterSourcesEnum.manual],
     observedCount: 0,
     expectedCount: null,
     windowStart: null,
@@ -587,11 +587,11 @@ ClinicSummaryResponseDtoCoverageWater _waterCoverage() {
   );
 }
 
-ClinicSummaryResponseDtoCoverageSleep _sleepCoverage() {
-  return ClinicSummaryResponseDtoCoverageSleep(
-    state: ClinicSummaryResponseDtoCoverageSleepStateEnum.observed,
-    coverage: ClinicSummaryResponseDtoCoverageSleepCoverageEnum.none,
-    sources: const [ClinicSummaryResponseDtoCoverageSleepSourcesEnum.manual],
+ClinicSummaryResponseCoverageSleep _sleepCoverage() {
+  return ClinicSummaryResponseCoverageSleep(
+    state: ClinicSummaryResponseCoverageSleepStateEnum.observed,
+    coverage: ClinicSummaryResponseCoverageSleepCoverageEnum.none,
+    sources: const [ClinicSummaryResponseCoverageSleepSourcesEnum.manual],
     observedCount: 0,
     expectedCount: null,
     windowStart: null,
@@ -599,17 +599,29 @@ ClinicSummaryResponseDtoCoverageSleep _sleepCoverage() {
   );
 }
 
-ClinicSummaryResponseDtoCoverage _coverage() {
-  return ClinicSummaryResponseDtoCoverage(
+ClinicSummaryResponseCoverageDose _doseCoverage() {
+  return ClinicSummaryResponseCoverageDose(
+    state: ClinicSummaryResponseCoverageDoseStateEnum.observed,
+    coverage: ClinicSummaryResponseCoverageDoseCoverageEnum.none,
+    sources: const [ClinicSummaryResponseCoverageDoseSourcesEnum.manual],
+    observedCount: 0,
+    expectedCount: null,
+    windowStart: null,
+    windowEnd: null,
+  );
+}
+
+ClinicSummaryResponseCoverage _coverage() {
+  return ClinicSummaryResponseCoverage(
     checkIns: _checkInsCoverage(),
     water: _waterCoverage(),
-    dose: _checkInsCoverage(),
+    dose: _doseCoverage(),
     sleep: _sleepCoverage(),
   );
 }
 
-ClinicSummaryResponseDto _clinicDto() {
-  return ClinicSummaryResponseDto(
+ClinicSummaryResponse _clinicDto() {
+  return ClinicSummaryResponse(
     generatedAt: '2026-08-13T09:00:00',
     scopeLabel: 'last_7_days',
     start: '2026-08-07T00:00:00',
@@ -617,15 +629,15 @@ ClinicSummaryResponseDto _clinicDto() {
     selectedFields: const [],
     coverage: _coverage(),
     dataRange: 'last_7_days',
-    profile: ClinicSummaryResponseDtoProfile(
+    profile: ClinicSummaryResponseProfile(
       nickname: 'Lumi',
       age: 30,
       sexAtBirth: 'male',
       bloodType: 'A',
     ),
-    allergies: const <ClinicSummaryResponseDtoAllergiesInner>[],
-    conditions: const <ClinicSummaryResponseDtoConditionsInner>[],
-    currentMedicines: const <ClinicSummaryResponseDtoCurrentMedicinesInner>[],
+    allergies: const <ClinicSummaryResponseAllergies>[],
+    conditions: const <ClinicSummaryResponseConditions>[],
+    currentMedicines: const <ClinicSummaryResponseCurrentMedicines>[],
     findings: const [],
     disclaimer: '本摘要仅供参考，不构成医疗建议',
   );

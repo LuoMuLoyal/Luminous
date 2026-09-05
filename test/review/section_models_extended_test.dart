@@ -11,15 +11,15 @@ void main() {
       expect(input, isNotNull);
       expect(
         input!.kind,
-        DataExportControllerCreateRequestV1RequestKindEnum.hospital,
+        CreateRequestRequestKindEnum.hospital,
       );
       expect(
         input.format,
-        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+        CreateRequestRequestFormatEnum.pdf,
       );
       expect(
         input.range,
-        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+        CreateRequestRequestRangeEnum.last7Days,
       );
     });
 
@@ -28,15 +28,15 @@ void main() {
       expect(input, isNotNull);
       expect(
         input!.kind,
-        DataExportControllerCreateRequestV1RequestKindEnum.monthly,
+        CreateRequestRequestKindEnum.monthly,
       );
       expect(
         input.format,
-        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+        CreateRequestRequestFormatEnum.pdf,
       );
       expect(
         input.range,
-        DataExportControllerCreateRequestV1RequestRangeEnum.last30Days,
+        CreateRequestRequestRangeEnum.last30Days,
       );
     });
 
@@ -45,15 +45,15 @@ void main() {
       expect(input, isNotNull);
       expect(
         input!.kind,
-        DataExportControllerCreateRequestV1RequestKindEnum.print,
+        CreateRequestRequestKindEnum.print,
       );
       expect(
         input.format,
-        DataExportControllerCreateRequestV1RequestFormatEnum.pdf,
+        CreateRequestRequestFormatEnum.pdf,
       );
       expect(
         input.range,
-        DataExportControllerCreateRequestV1RequestRangeEnum.last7Days,
+        CreateRequestRequestRangeEnum.last7Days,
       );
     });
 

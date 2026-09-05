@@ -10,34 +10,34 @@ void main() {
   test('Lucent report ai summary repository maps summary dto', () async {
     final repository = LucentReviewAiSummaryRepository(
       dataSource: _FakeReviewAiSummaryRemoteDataSource(
-        lucent.ReportSummaryResponseDto(
-          range: lucent.ReportSummaryResponseDtoRangeEnum.last30Days,
+        lucent.ReportSummaryResponse(
+          range: lucent.ReportSummaryResponseRangeEnum.last30Days,
           startDate: '2026-06-06',
           endDate: '2026-06-12',
           generatedAt: '2026-06-12T10:00:00.000Z',
           summary: '本周用药记录整体稳定，饮水仍有少数低点。',
-          coverage: lucent.ReportSummaryResponseDtoCoverage(
-            medication: lucent.ReportSummaryResponseDtoCoverageMedication(
+          coverage: lucent.ReportSummaryResponseCoverage(
+            medication: lucent.ReportSummaryResponseCoverageMedication(
               trackedDays: 5,
               totalDays: 7,
             ),
-            water: lucent.ReportSummaryResponseDtoCoverageMedication(
+            water: lucent.ReportSummaryResponseCoverageWater(
               trackedDays: 3,
               totalDays: 7,
             ),
-            sleep: lucent.ReportSummaryResponseDtoCoverageMedication(
+            sleep: lucent.ReportSummaryResponseCoverageSleep(
               trackedDays: 0,
               totalDays: 7,
             ),
           ),
-          observedPattern: lucent.ReportSummaryResponseDtoObservedPattern(
+          observedPattern: lucent.ReportSummaryResponseObservedPattern(
             kind: lucent
-                .ReportSummaryResponseDtoObservedPatternKindEnum
+                .ReportSummaryResponseObservedPatternKindEnum
                 .medication,
             text: '近 5 天用药完成率保持在 80% 以上。',
             source_: '用药提醒记录',
           ),
-          lowRiskAction: lucent.ReportSummaryResponseDtoLowRiskAction(
+          lowRiskAction: lucent.ReportSummaryResponseLowRiskAction(
             label: '继续记录',
             text: '建议继续按当前节奏保持用药记录。',
           ),
@@ -80,7 +80,7 @@ class _FakeReviewAiSummaryRemoteDataSource
         dio: Dio(BaseOptions()),
       );
 
-  final lucent.ReportSummaryResponseDto _dto;
+  final lucent.ReportSummaryResponse _dto;
 
   @override
   Stream<ReviewAiRemoteEvent> generateStream(

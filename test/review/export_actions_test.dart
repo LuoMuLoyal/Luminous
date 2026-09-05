@@ -35,12 +35,12 @@ class _FakeLucentClient extends LucentClient {
 class _RecordingProductEventService extends ProductEventService {
   _RecordingProductEventService() : super(api: _MockProductEventsApi());
 
-  final List<ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum>
+  final List<RecordBatchRequestEventsResultEnum>
   exportResults = [];
 
   @override
   Future<void> trackVisitSummaryExported(
-    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+    RecordBatchRequestEventsResultEnum result,
   ) async {
     exportResults.add(result);
   }
@@ -68,12 +68,12 @@ class _FakeUserSettingsController extends UserSettingsController {
   }
 }
 
-DataExportRequestDataDto _request(DataExportRequestDataDtoStatusEnum status) {
-  return DataExportRequestDataDto(
+DataExportRequestData _request(DataExportRequestDataStatusEnum status) {
+  return DataExportRequestData(
     id: 'req-1',
-    kind: DataExportRequestDataDtoKindEnum.monthly,
-    format: DataExportRequestDataDtoFormatEnum.pdf,
-    range: DataExportRequestDataDtoRangeEnum.last30Days,
+    kind: DataExportRequestDataKindEnum.monthly,
+    format: DataExportRequestDataFormatEnum.pdf,
+    range: DataExportRequestDataRangeEnum.last30Days,
     status: status,
     requestedAt: '2026-08-14T08:00:00Z',
     completedAt: null,
@@ -143,9 +143,9 @@ void main() {
     service = _RecordingProductEventService();
     // The export controller's build()/refresh() read the latest request;
     // return a benign response so those reads never throw.
-    when(() => api.dataExportControllerGetLatestRequestV1()).thenAnswer(
-      (_) async => Response<DataExportRequestDataDto>(
-        data: _request(DataExportRequestDataDtoStatusEnum.completed),
+    when(() => api.getLatestRequest()).thenAnswer(
+      (_) async => Response<DataExportRequestData>(
+        data: _request(DataExportRequestDataStatusEnum.completed),
         requestOptions: RequestOptions(path: '/data-export-requests/latest'),
         statusCode: 200,
       ),
@@ -156,14 +156,14 @@ void main() {
     'records exported failure when the server returns a failed request status',
     (tester) async {
       when(
-        () => api.dataExportControllerCreateRequestV1(
-          dataExportControllerCreateRequestV1Request:
+        () => api.createRequest(
+          createRequestRequest:
               reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
         ),
       ).thenAnswer(
-        (_) async => Response<DataExportRequestResponseDto>(
-          data: DataExportRequestResponseDto.fromJson(
-            _request(DataExportRequestDataDtoStatusEnum.failed).toJson(),
+        (_) async => Response<DataExportRequestResponse>(
+          data: DataExportRequestResponse.fromJson(
+            _request(DataExportRequestDataStatusEnum.failed).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -176,7 +176,7 @@ void main() {
       // HTTP 200 alone must not count as exported — the request itself is in
       // a failed state, so the event records failure.
       expect(service.exportResults, [
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .failure,
       ]);
     },
@@ -186,14 +186,14 @@ void main() {
     'records exported success when the server returns a completed request',
     (tester) async {
       when(
-        () => api.dataExportControllerCreateRequestV1(
-          dataExportControllerCreateRequestV1Request:
+        () => api.createRequest(
+          createRequestRequest:
               reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
         ),
       ).thenAnswer(
-        (_) async => Response<DataExportRequestResponseDto>(
-          data: DataExportRequestResponseDto.fromJson(
-            _request(DataExportRequestDataDtoStatusEnum.completed).toJson(),
+        (_) async => Response<DataExportRequestResponse>(
+          data: DataExportRequestResponse.fromJson(
+            _request(DataExportRequestDataStatusEnum.completed).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -204,7 +204,7 @@ void main() {
       await _tapExport(tester);
 
       expect(service.exportResults, [
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       ]);
     },
@@ -214,14 +214,14 @@ void main() {
     'records exported failure when the server returns an unavailable request',
     (tester) async {
       when(
-        () => api.dataExportControllerCreateRequestV1(
-          dataExportControllerCreateRequestV1Request:
+        () => api.createRequest(
+          createRequestRequest:
               reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
         ),
       ).thenAnswer(
-        (_) async => Response<DataExportRequestResponseDto>(
-          data: DataExportRequestResponseDto.fromJson(
-            _request(DataExportRequestDataDtoStatusEnum.unavailable).toJson(),
+        (_) async => Response<DataExportRequestResponse>(
+          data: DataExportRequestResponse.fromJson(
+            _request(DataExportRequestDataStatusEnum.unavailable).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -232,7 +232,7 @@ void main() {
       await _tapExport(tester);
 
       expect(service.exportResults, [
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .failure,
       ]);
     },
@@ -242,8 +242,8 @@ void main() {
     tester,
   ) async {
     when(
-      () => api.dataExportControllerCreateRequestV1(
-        dataExportControllerCreateRequestV1Request:
+      () => api.createRequest(
+        createRequestRequest:
             reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
       ),
     ).thenThrow(
@@ -257,7 +257,7 @@ void main() {
     await _tapExport(tester);
 
     expect(service.exportResults, [
-      ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum.failure,
+      RecordBatchRequestEventsResultEnum.failure,
     ]);
   });
 }

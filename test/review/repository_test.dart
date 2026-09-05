@@ -20,47 +20,47 @@ void main() {
           _dashboardDto(
             aiSummaryEnabled: false,
             findings: [
-              lucent.ReportDashboardResponseDtoFindingsInner(
+              lucent.ReportDashboardResponseFindings(
                 kind: lucent
-                    .ReportDashboardResponseDtoFindingsInnerKindEnum
+                    .ReportDashboardResponseFindingsKindEnum
                     .sleep,
                 title: '睡眠数据不足',
                 body: '最近 7 天还没有睡眠记录。',
               ),
             ],
             metrics: [
-              lucent.ReportDashboardResponseDtoMetricsInner(
+              lucent.ReportDashboardResponseMetrics(
                 kind:
-                    lucent.ReportDashboardResponseDtoMetricsInnerKindEnum.sleep,
+                    lucent.ReportDashboardResponseMetricsKindEnum.sleep,
                 value: '--',
                 unit: 'h',
                 status: lucent
-                    .ReportDashboardResponseDtoMetricsInnerStatusEnum
+                    .ReportDashboardResponseMetricsStatusEnum
                     .insufficientData,
                 delta: '--',
                 direction: lucent
-                    .ReportDashboardResponseDtoMetricsInnerDirectionEnum
+                    .ReportDashboardResponseMetricsDirectionEnum
                     .flat,
                 sparkline: [0, 0, 0, 0, 0, 0, 0],
               ),
             ],
             patterns: [
-              lucent.ReportDashboardResponseDtoPatternsInner(
+              lucent.ReportDashboardResponsePatterns(
                 kind: lucent
-                    .ReportDashboardResponseDtoPatternsInnerKindEnum
+                    .ReportDashboardResponsePatternsKindEnum
                     .sleep,
                 title: '等待睡眠数据',
                 status: lucent
-                    .ReportDashboardResponseDtoPatternsInnerStatusEnum
+                    .ReportDashboardResponsePatternsStatusEnum
                     .insufficientData,
                 body: '补齐睡眠合同后再输出睡眠模式。',
                 sparkline: [0, 0, 0, 0, 0, 0, 0],
               ),
             ],
             trends: [
-              lucent.ReportDashboardResponseDtoTrendsInner(
+              lucent.ReportDashboardResponseTrends(
                 kind:
-                    lucent.ReportDashboardResponseDtoTrendsInnerKindEnum.sleep,
+                    lucent.ReportDashboardResponseTrendsKindEnum.sleep,
                 unit: 'h',
                 currentValue: '--',
                 values: [0, 0, 0, 0, 0, 0, 0],
@@ -97,48 +97,48 @@ void main() {
             aiSummaryEnabled: true,
             findings: [
               for (var index = 1; index <= 4; index += 1)
-                lucent.ReportDashboardResponseDtoFindingsInner(
+                lucent.ReportDashboardResponseFindings(
                   kind: lucent
-                      .ReportDashboardResponseDtoFindingsInnerKindEnum
+                      .ReportDashboardResponseFindingsKindEnum
                       .hydration,
                   title: '发现$index',
                   body: '正文$index',
                 ),
             ],
             metrics: [
-              lucent.ReportDashboardResponseDtoMetricsInner(
+              lucent.ReportDashboardResponseMetrics(
                 kind: lucent
-                    .ReportDashboardResponseDtoMetricsInnerKindEnum
+                    .ReportDashboardResponseMetricsKindEnum
                     .medication,
                 value: '93',
                 unit: '%',
                 status: lucent
-                    .ReportDashboardResponseDtoMetricsInnerStatusEnum
+                    .ReportDashboardResponseMetricsStatusEnum
                     .good,
                 delta: '9%',
                 direction: lucent
-                    .ReportDashboardResponseDtoMetricsInnerDirectionEnum
+                    .ReportDashboardResponseMetricsDirectionEnum
                     .up,
                 sparkline: [80, 88, 92, 89, 93, 88, 93],
               ),
             ],
             patterns: [
-              lucent.ReportDashboardResponseDtoPatternsInner(
+              lucent.ReportDashboardResponsePatterns(
                 kind: lucent
-                    .ReportDashboardResponseDtoPatternsInnerKindEnum
+                    .ReportDashboardResponsePatternsKindEnum
                     .medication,
                 title: '用药依从性稳定',
                 status: lucent
-                    .ReportDashboardResponseDtoPatternsInnerStatusEnum
+                    .ReportDashboardResponsePatternsStatusEnum
                     .good,
                 body: '近 7 天按计划完成率较高。',
                 sparkline: [48, 50, 47, 52, 49, 51, 58],
               ),
             ],
             trends: [
-              lucent.ReportDashboardResponseDtoTrendsInner(
+              lucent.ReportDashboardResponseTrends(
                 kind: lucent
-                    .ReportDashboardResponseDtoTrendsInnerKindEnum
+                    .ReportDashboardResponseTrendsKindEnum
                     .medication,
                 unit: '%',
                 currentValue: '93%',
@@ -181,27 +181,27 @@ void main() {
           patterns: const [],
           trends: const [],
           metrics: [
-            lucent.ReportDashboardResponseDtoMetricsInner(
-              kind: lucent.ReportDashboardResponseDtoMetricsInnerKindEnum.water,
+            lucent.ReportDashboardResponseMetrics(
+              kind: lucent.ReportDashboardResponseMetricsKindEnum.water,
               value: '999',
               unit: 'ml',
               status:
-                  lucent.ReportDashboardResponseDtoMetricsInnerStatusEnum.good,
+                  lucent.ReportDashboardResponseMetricsStatusEnum.good,
               delta: '999',
               direction:
-                  lucent.ReportDashboardResponseDtoMetricsInnerDirectionEnum.up,
+                  lucent.ReportDashboardResponseMetricsDirectionEnum.up,
               sparkline: [999],
-              observedMetric: lucent.ReportDashboardResponseDtoMetricsInnerObservedMetric(
+              observedMetric: lucent.ReportDashboardResponseMetricsObservedMetric(
                 value: 0,
                 state: lucent
-                    .ReportDashboardResponseDtoMetricsInnerObservedMetricStateEnum
+                    .ReportDashboardResponseMetricsObservedMetricStateEnum
                     .observed,
                 coverage: lucent
-                    .ReportDashboardResponseDtoMetricsInnerObservedMetricCoverageEnum
+                    .ReportDashboardResponseMetricsObservedMetricCoverageEnum
                     .sufficient,
                 sources: [
                   lucent
-                      .ReportDashboardResponseDtoMetricsInnerObservedMetricSourcesEnum
+                      .ReportDashboardResponseMetricsObservedMetricSourcesEnum
                       .manual,
                 ],
                 observedCount: 1,
@@ -242,17 +242,17 @@ void main() {
             patterns: const [],
             trends: const [],
             metrics: [
-              lucent.ReportDashboardResponseDtoMetricsInner(
+              lucent.ReportDashboardResponseMetrics(
                 kind:
-                    lucent.ReportDashboardResponseDtoMetricsInnerKindEnum.water,
+                    lucent.ReportDashboardResponseMetricsKindEnum.water,
                 value: '500',
                 unit: 'ml',
                 status: lucent
-                    .ReportDashboardResponseDtoMetricsInnerStatusEnum
+                    .ReportDashboardResponseMetricsStatusEnum
                     .good,
                 delta: '10%',
                 direction: lucent
-                    .ReportDashboardResponseDtoMetricsInnerDirectionEnum
+                    .ReportDashboardResponseMetricsDirectionEnum
                     .up,
                 sparkline: [500],
               ),
@@ -457,11 +457,11 @@ class _FakeReviewDashboardRemoteDataSource
         dio: Dio(BaseOptions()),
       );
 
-  final lucent.ReportDashboardResponseDto _dto;
+  final lucent.ReportDashboardResponse _dto;
   Object? error;
 
   @override
-  Future<lucent.ReportDashboardResponseDto> fetchDashboard(
+  Future<lucent.ReportDashboardResponse> fetchDashboard(
     ReviewDashboardQuery query,
   ) async {
     if (error != null) {
@@ -472,15 +472,15 @@ class _FakeReviewDashboardRemoteDataSource
   }
 }
 
-lucent.ReportDashboardResponseDto _dashboardDto({
+lucent.ReportDashboardResponse _dashboardDto({
   required bool aiSummaryEnabled,
-  required List<lucent.ReportDashboardResponseDtoMetricsInner> metrics,
-  required List<lucent.ReportDashboardResponseDtoTrendsInner> trends,
-  required List<lucent.ReportDashboardResponseDtoFindingsInner> findings,
-  required List<lucent.ReportDashboardResponseDtoPatternsInner> patterns,
+  required List<lucent.ReportDashboardResponseMetrics> metrics,
+  required List<lucent.ReportDashboardResponseTrends> trends,
+  required List<lucent.ReportDashboardResponseFindings> findings,
+  required List<lucent.ReportDashboardResponsePatterns> patterns,
 }) {
-  return lucent.ReportDashboardResponseDto(
-    range: lucent.ReportDashboardResponseDtoRangeEnum.last7Days,
+  return lucent.ReportDashboardResponse(
+    range: lucent.ReportDashboardResponseRangeEnum.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
     generatedAt: '2026-06-12T10:00:00.000Z',

@@ -156,13 +156,13 @@ Map<String, dynamic> _summaryJson({
   };
 }
 
-ClinicSummaryShareListResponseDtoItemsInner _shareItem({
+ClinicSummaryShareListResponseItems _shareItem({
   String id = 'share-1',
   String? revokedAt,
   int accessCount = 3,
   String? lastAccessedAt = '2026-07-03T09:00:00',
 }) {
-  return ClinicSummaryShareListResponseDtoItemsInner(
+  return ClinicSummaryShareListResponseItems(
     id: id,
     createdAt: '2026-07-01T08:00:00',
     expiresAt: '2026-07-08T08:00:00',
@@ -170,7 +170,7 @@ ClinicSummaryShareListResponseDtoItemsInner _shareItem({
     accessCount: accessCount,
     firstAccessedAt: lastAccessedAt,
     lastAccessedAt: lastAccessedAt,
-    scope: ClinicSummaryShareResponseDtoScope(
+    scope: ClinicSummaryShareListResponseItemsScope(
       eventId: null,
       dateFrom: '2026-06-02',
       dateTo: '2026-07-01',
@@ -179,11 +179,11 @@ ClinicSummaryShareListResponseDtoItemsInner _shareItem({
   );
 }
 
-Response<ClinicSummaryShareListResponseDto> _shareListResponse(
-  List<ClinicSummaryShareListResponseDtoItemsInner> items,
+Response<ClinicSummaryShareListResponse> _shareListResponse(
+  List<ClinicSummaryShareListResponseItems> items,
 ) {
-  return Response<ClinicSummaryShareListResponseDto>(
-    data: ClinicSummaryShareListResponseDto(items: items),
+  return Response<ClinicSummaryShareListResponse>(
+    data: ClinicSummaryShareListResponse(items: items),
     requestOptions: RequestOptions(path: '/shares'),
     statusCode: 200,
   );
@@ -192,14 +192,14 @@ Response<ClinicSummaryShareListResponseDto> _shareListResponse(
 void main() {
   late _MockReportsApi reportsApi;
   late _FakeLucentClient client;
-  late List<ReportsControllerPreviewClinicSummaryV1Request> previewRequests;
+  late List<PreviewClinicSummaryRequest> previewRequests;
 
   setUpAll(() {
     registerFallbackValue(
-      ReportsControllerPreviewClinicSummaryV1Request(selectedFields: []),
+      PreviewClinicSummaryRequest(selectedFields: []),
     );
     registerFallbackValue(
-      ReportsControllerShareClinicSummaryV1Request(selectedFields: []),
+      ShareClinicSummaryRequest(selectedFields: []),
     );
   });
 
@@ -415,7 +415,7 @@ void main() {
 
       final c = makeContainer(dioClient: dioClient, useMockClient: false);
       // Keep the autoDispose provider alive while the error propagates.
-      final sub = c.listen<AsyncValue<ClinicSummaryResponseDto>>(
+      final sub = c.listen<AsyncValue<ClinicSummaryResponse>>(
         clinicSummaryPreviewProvider(kClinicSummaryDefaultFields),
         (_, __) {},
       );
@@ -535,7 +535,7 @@ void main() {
 
       final c = await containerWithShared(adapter);
       // Keep the autoDispose provider alive while the error propagates.
-      final sub = c.listen<AsyncValue<ClinicSummaryResponseDto>>(
+      final sub = c.listen<AsyncValue<ClinicSummaryResponse>>(
         clinicSummarySharedProvider('abc123'),
         (_, __) {},
       );
@@ -553,7 +553,7 @@ void main() {
   group('clinicSummaryShareListProvider', () {
     test('lists the current user shares', () async {
       when(
-        () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+        () => reportsApi.listClinicSummaryShares(),
       ).thenAnswer((_) async => _shareListResponse([_shareItem()]));
 
       final c = makeContainer();
@@ -563,16 +563,16 @@ void main() {
       expect(items.first.id, 'share-1');
       expect(items.first.accessCount, 3);
       verify(
-        () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+        () => reportsApi.listClinicSummaryShares(),
       ).called(1);
     });
 
     test('revoke deletes the share and refreshes the list', () async {
       when(
-        () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+        () => reportsApi.listClinicSummaryShares(),
       ).thenAnswer((_) async => _shareListResponse([_shareItem()]));
       when(
-        () => reportsApi.reportsControllerRevokeClinicSummaryShareV1(
+        () => reportsApi.revokeClinicSummaryShare(
           shareId: 'share-1',
         ),
       ).thenAnswer(
@@ -592,13 +592,13 @@ void main() {
       await c.read(clinicSummaryShareListProvider.future);
 
       verify(
-        () => reportsApi.reportsControllerRevokeClinicSummaryShareV1(
+        () => reportsApi.revokeClinicSummaryShare(
           shareId: 'share-1',
         ),
       ).called(1);
       // invalidateSelf triggers a refetch of the list.
       verify(
-        () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+        () => reportsApi.listClinicSummaryShares(),
       ).called(2);
     });
   });
@@ -627,22 +627,22 @@ void main() {
     );
     addTearDown(dioClient.dispose);
     when(
-      () => reportsApi.reportsControllerPreviewClinicSummaryV1(
-        reportsControllerPreviewClinicSummaryV1Request: any(
-          named: 'reportsControllerPreviewClinicSummaryV1Request',
+      () => reportsApi.previewClinicSummary(
+        previewClinicSummaryRequest: any(
+          named: 'previewClinicSummaryRequest',
         ),
       ),
     ).thenAnswer((invocation) async {
       previewRequests.add(
         invocation
-                .namedArguments[#reportsControllerPreviewClinicSummaryV1Request]
-            as ReportsControllerPreviewClinicSummaryV1Request,
+                .namedArguments[#previewClinicSummaryRequest]
+            as PreviewClinicSummaryRequest,
       );
       if (previewError != null) throw previewError;
-      return Response<ClinicSummaryResponseDto>(
+      return Response<ClinicSummaryResponse>(
         requestOptions: RequestOptions(path: '/preview'),
         statusCode: 200,
-        data: ClinicSummaryResponseDto.fromJson(_body(_summaryJson())),
+        data: ClinicSummaryResponse.fromJson(_body(_summaryJson())),
       );
     });
 
@@ -690,7 +690,7 @@ void main() {
       await openDialog(tester, client: client, service: service);
 
       expect(service.previewResults, [
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       ]);
       expect(service.exportResults, isEmpty);
@@ -714,7 +714,7 @@ void main() {
       );
 
       expect(service.previewResults, [
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .failure,
       ]);
       expect(service.exportResults, isEmpty);
@@ -747,11 +747,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(service.previewResults, [
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .success,
       ]);
       expect(service.exportResults, [
-        ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+        RecordBatchRequestEventsResultEnum
             .failure,
       ]);
       // The PDF failure toast auto-dismisses; drain its timer.
@@ -831,7 +831,7 @@ void main() {
 
         // Toggling re-fetches but does not re-measure the presentation.
         expect(service.previewResults, [
-          ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum
+          RecordBatchRequestEventsResultEnum
               .success,
         ]);
       },
@@ -946,7 +946,7 @@ void main() {
       'creating a share sends the current selection and shows copy + revoke',
       (tester) async {
         when(
-          () => reportsApi.reportsControllerRevokeClinicSummaryShareV1(
+          () => reportsApi.revokeClinicSummaryShare(
             shareId: any(named: 'shareId'),
           ),
         ).thenAnswer(
@@ -962,16 +962,16 @@ void main() {
           service: service,
         );
         when(
-          () => reportsApi.reportsControllerShareClinicSummaryV1(
-            reportsControllerShareClinicSummaryV1Request: any(
-              named: 'reportsControllerShareClinicSummaryV1Request',
+          () => reportsApi.shareClinicSummary(
+            shareClinicSummaryRequest: any(
+              named: 'shareClinicSummaryRequest',
             ),
           ),
         ).thenAnswer(
-          (_) async => Response<ClinicSummaryShareResponseDto>(
+          (_) async => Response<ClinicSummaryShareResponse>(
             requestOptions: RequestOptions(path: '/share'),
             statusCode: 200,
-            data: ClinicSummaryShareResponseDto.fromJson(
+            data: ClinicSummaryShareResponse.fromJson(
               _body({
                 'shareId': 'share-42',
                 'token': 'tok',
@@ -1005,13 +1005,13 @@ void main() {
         // The share request carries the current field selection (notes off).
         final shareRequest =
             verify(
-                  () => reportsApi.reportsControllerShareClinicSummaryV1(
-                    reportsControllerShareClinicSummaryV1Request: captureAny(
-                      named: 'reportsControllerShareClinicSummaryV1Request',
+                  () => reportsApi.shareClinicSummary(
+                    shareClinicSummaryRequest: captureAny(
+                      named: 'shareClinicSummaryRequest',
                     ),
                   ),
                 ).captured.single
-                as ReportsControllerShareClinicSummaryV1Request;
+                as ShareClinicSummaryRequest;
         expect(shareRequest.selectedFields?.map((e) => e.value), [
           'event_overview',
           'symptom_changes',
@@ -1047,7 +1047,7 @@ void main() {
         await tester.tap(find.text(l10n.reviewShareRevokeAction));
         await tester.pumpAndSettle();
         verify(
-          () => reportsApi.reportsControllerRevokeClinicSummaryShareV1(
+          () => reportsApi.revokeClinicSummaryShare(
             shareId: 'share-42',
           ),
         ).called(1);
@@ -1062,7 +1062,7 @@ void main() {
       (tester) async {
         var listCalls = 0;
         when(
-          () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+          () => reportsApi.listClinicSummaryShares(),
         ).thenAnswer((_) async {
           listCalls += 1;
           return _shareListResponse([_shareItem()]);
@@ -1070,16 +1070,16 @@ void main() {
         final service = _RecordingProductEventService();
         await openDialog(tester, client: client, service: service);
         when(
-          () => reportsApi.reportsControllerShareClinicSummaryV1(
-            reportsControllerShareClinicSummaryV1Request: any(
-              named: 'reportsControllerShareClinicSummaryV1Request',
+          () => reportsApi.shareClinicSummary(
+            shareClinicSummaryRequest: any(
+              named: 'shareClinicSummaryRequest',
             ),
           ),
         ).thenAnswer(
-          (_) async => Response<ClinicSummaryShareResponseDto>(
+          (_) async => Response<ClinicSummaryShareResponse>(
             requestOptions: RequestOptions(path: '/share'),
             statusCode: 200,
-            data: ClinicSummaryShareResponseDto.fromJson(
+            data: ClinicSummaryShareResponse.fromJson(
               _body({
                 'shareId': 'share-new',
                 'token': 'tok',
@@ -1110,7 +1110,7 @@ void main() {
         addTearDown(sub.close);
         await container.read(clinicSummaryShareListProvider.future);
         verify(
-          () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+          () => reportsApi.listClinicSummaryShares(),
         ).called(1);
 
         final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
@@ -1136,16 +1136,16 @@ void main() {
         final service = _RecordingProductEventService();
         await openDialog(tester, client: client, service: service);
         when(
-          () => reportsApi.reportsControllerShareClinicSummaryV1(
-            reportsControllerShareClinicSummaryV1Request: any(
-              named: 'reportsControllerShareClinicSummaryV1Request',
+          () => reportsApi.shareClinicSummary(
+            shareClinicSummaryRequest: any(
+              named: 'shareClinicSummaryRequest',
             ),
           ),
         ).thenAnswer(
-          (_) async => Response<ClinicSummaryShareResponseDto>(
+          (_) async => Response<ClinicSummaryShareResponse>(
             requestOptions: RequestOptions(path: '/share'),
             statusCode: 200,
-            data: ClinicSummaryShareResponseDto.fromJson(
+            data: ClinicSummaryShareResponse.fromJson(
               _body({
                 'shareId': 'share-42',
                 'token': 'tok',
@@ -1225,21 +1225,21 @@ class _MemSessionStore implements LucentSessionStore {
 class _RecordingProductEventService extends ProductEventService {
   _RecordingProductEventService() : super(api: _MockProductEventsApi());
 
-  final List<ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum>
+  final List<RecordBatchRequestEventsResultEnum>
   previewResults = [];
-  final List<ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum>
+  final List<RecordBatchRequestEventsResultEnum>
   exportResults = [];
 
   @override
   Future<void> trackVisitSummaryPreviewed(
-    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+    RecordBatchRequestEventsResultEnum result,
   ) async {
     previewResults.add(result);
   }
 
   @override
   Future<void> trackVisitSummaryExported(
-    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+    RecordBatchRequestEventsResultEnum result,
   ) async {
     exportResults.add(result);
   }

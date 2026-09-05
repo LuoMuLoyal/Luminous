@@ -7,11 +7,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/test_forui_app.dart';
 
-ClinicSummaryResponseDtoCoverageCheckIns _checkInsCoverage() {
-  return ClinicSummaryResponseDtoCoverageCheckIns(
-    state: ClinicSummaryResponseDtoCoverageCheckInsStateEnum.observed,
-    coverage: ClinicSummaryResponseDtoCoverageCheckInsCoverageEnum.none,
-    sources: const [ClinicSummaryResponseDtoCoverageCheckInsSourcesEnum.manual],
+ClinicSummaryResponseCoverageCheckIns _checkInsCoverage() {
+  return ClinicSummaryResponseCoverageCheckIns(
+    state: ClinicSummaryResponseCoverageCheckInsStateEnum.observed,
+    coverage: ClinicSummaryResponseCoverageCheckInsCoverageEnum.none,
+    sources: const [ClinicSummaryResponseCoverageCheckInsSourcesEnum.manual],
     observedCount: 0,
     expectedCount: null,
     windowStart: null,
@@ -19,11 +19,11 @@ ClinicSummaryResponseDtoCoverageCheckIns _checkInsCoverage() {
   );
 }
 
-ClinicSummaryResponseDtoCoverageWater _waterCoverage() {
-  return ClinicSummaryResponseDtoCoverageWater(
-    state: ClinicSummaryResponseDtoCoverageWaterStateEnum.observed,
-    coverage: ClinicSummaryResponseDtoCoverageWaterCoverageEnum.none,
-    sources: const [ClinicSummaryResponseDtoCoverageWaterSourcesEnum.manual],
+ClinicSummaryResponseCoverageWater _waterCoverage() {
+  return ClinicSummaryResponseCoverageWater(
+    state: ClinicSummaryResponseCoverageWaterStateEnum.observed,
+    coverage: ClinicSummaryResponseCoverageWaterCoverageEnum.none,
+    sources: const [ClinicSummaryResponseCoverageWaterSourcesEnum.manual],
     observedCount: 0,
     expectedCount: null,
     windowStart: null,
@@ -31,11 +31,11 @@ ClinicSummaryResponseDtoCoverageWater _waterCoverage() {
   );
 }
 
-ClinicSummaryResponseDtoCoverageSleep _sleepCoverage() {
-  return ClinicSummaryResponseDtoCoverageSleep(
-    state: ClinicSummaryResponseDtoCoverageSleepStateEnum.observed,
-    coverage: ClinicSummaryResponseDtoCoverageSleepCoverageEnum.none,
-    sources: const [ClinicSummaryResponseDtoCoverageSleepSourcesEnum.manual],
+ClinicSummaryResponseCoverageSleep _sleepCoverage() {
+  return ClinicSummaryResponseCoverageSleep(
+    state: ClinicSummaryResponseCoverageSleepStateEnum.observed,
+    coverage: ClinicSummaryResponseCoverageSleepCoverageEnum.none,
+    sources: const [ClinicSummaryResponseCoverageSleepSourcesEnum.manual],
     observedCount: 0,
     expectedCount: null,
     windowStart: null,
@@ -43,11 +43,23 @@ ClinicSummaryResponseDtoCoverageSleep _sleepCoverage() {
   );
 }
 
-ClinicSummaryResponseDtoCoverage _coverage() {
-  return ClinicSummaryResponseDtoCoverage(
+ClinicSummaryResponseCoverageDose _doseCoverage() {
+  return ClinicSummaryResponseCoverageDose(
+    state: ClinicSummaryResponseCoverageDoseStateEnum.observed,
+    coverage: ClinicSummaryResponseCoverageDoseCoverageEnum.none,
+    sources: const [ClinicSummaryResponseCoverageDoseSourcesEnum.manual],
+    observedCount: 0,
+    expectedCount: null,
+    windowStart: null,
+    windowEnd: null,
+  );
+}
+
+ClinicSummaryResponseCoverage _coverage() {
+  return ClinicSummaryResponseCoverage(
     checkIns: _checkInsCoverage(),
     water: _waterCoverage(),
-    dose: _checkInsCoverage(),
+    dose: _doseCoverage(),
     sleep: _sleepCoverage(),
   );
 }
@@ -56,21 +68,21 @@ ClinicSummaryResponseDtoCoverage _coverage() {
 /// explicit null (a deselected section omitted from the wire response).
 const _defaultSections = Object();
 
-ClinicSummaryResponseDto _dto({
+ClinicSummaryResponse _dto({
   Object? allergies = _defaultSections,
   Object? conditions = _defaultSections,
   Object? medicines = _defaultSections,
   List<String>? findings = const ['长期服用需监测'],
-  List<ClinicSummaryResponseDtoWaterEntriesInner>? waterEntries,
-  List<ClinicSummaryResponseDtoSleepEntriesInner>? sleepEntries,
-  List<ClinicSummaryResponseDtoNoteEntriesInner>? noteEntries,
+  List<ClinicSummaryResponseWaterEntries>? waterEntries,
+  List<ClinicSummaryResponseSleepEntries>? sleepEntries,
+  List<ClinicSummaryResponseNoteEntries>? noteEntries,
   String dataRange = 'last_7_days',
   List<String> selectedFields = const [],
   int? age = 30,
   String? sexAtBirth = 'male',
   String? bloodType = 'A',
 }) {
-  return ClinicSummaryResponseDto(
+  return ClinicSummaryResponse(
     generatedAt: '2026-07-01T10:30:00',
     scopeLabel: dataRange,
     start: '2026-06-24T00:00:00',
@@ -78,45 +90,45 @@ ClinicSummaryResponseDto _dto({
     selectedFields: selectedFields,
     coverage: _coverage(),
     dataRange: dataRange,
-    profile: ClinicSummaryResponseDtoProfile(
+    profile: ClinicSummaryResponseProfile(
       nickname: 'Lumi',
       age: age,
       sexAtBirth: sexAtBirth,
       bloodType: bloodType,
     ),
     allergies: identical(allergies, _defaultSections)
-        ? <ClinicSummaryResponseDtoAllergiesInner>[
-            ClinicSummaryResponseDtoAllergiesInner(
+        ? <ClinicSummaryResponseAllergies>[
+            ClinicSummaryResponseAllergies(
               label: '青霉素',
               reaction: '皮疹',
               severity: 'moderate',
             ),
-            ClinicSummaryResponseDtoAllergiesInner(
+            ClinicSummaryResponseAllergies(
               label: '头孢',
               reaction: null,
               severity: null,
             ),
           ]
-        : (allergies as List?)?.cast<ClinicSummaryResponseDtoAllergiesInner>(),
+        : (allergies as List?)?.cast<ClinicSummaryResponseAllergies>(),
     conditions: identical(conditions, _defaultSections)
-        ? <ClinicSummaryResponseDtoConditionsInner>[
-            ClinicSummaryResponseDtoConditionsInner(
+        ? <ClinicSummaryResponseConditions>[
+            ClinicSummaryResponseConditions(
               label: '高血压',
               status: 'active',
               diagnosedYear: 2023,
             ),
           ]
         : (conditions as List?)
-              ?.cast<ClinicSummaryResponseDtoConditionsInner>(),
+              ?.cast<ClinicSummaryResponseConditions>(),
     currentMedicines: identical(medicines, _defaultSections)
-        ? <ClinicSummaryResponseDtoCurrentMedicinesInner>[
-            ClinicSummaryResponseDtoCurrentMedicinesInner(
+        ? <ClinicSummaryResponseCurrentMedicines>[
+            ClinicSummaryResponseCurrentMedicines(
               displayName: '阿莫西林',
               doseText: '0.5g 每日一次',
             ),
           ]
         : (medicines as List?)
-              ?.cast<ClinicSummaryResponseDtoCurrentMedicinesInner>(),
+              ?.cast<ClinicSummaryResponseCurrentMedicines>(),
     findings: findings,
     waterEntries: waterEntries,
     sleepEntries: sleepEntries,
@@ -128,7 +140,7 @@ ClinicSummaryResponseDto _dto({
 void main() {
   Future<void> pumpContent(
     WidgetTester tester,
-    ClinicSummaryResponseDto dto, {
+    ClinicSummaryResponse dto, {
     VoidCallback? onDownloadPdf,
     VoidCallback? onShare,
     bool isPdfDownloading = false,
@@ -422,7 +434,7 @@ void main() {
       tester,
       _dto(
         waterEntries: [
-          ClinicSummaryResponseDtoWaterEntriesInner(
+          ClinicSummaryResponseWaterEntries(
             date: '2026-08-10',
             ml: 1500,
           ),
@@ -445,7 +457,7 @@ void main() {
       tester,
       _dto(
         sleepEntries: [
-          ClinicSummaryResponseDtoSleepEntriesInner(
+          ClinicSummaryResponseSleepEntries(
             date: '2026-08-10',
             minutes: 420,
           ),
@@ -468,7 +480,7 @@ void main() {
       tester,
       _dto(
         noteEntries: [
-          ClinicSummaryResponseDtoNoteEntriesInner(
+          ClinicSummaryResponseNoteEntries(
             date: '2026-08-10',
             kind: 'note',
             text: 'some note',
