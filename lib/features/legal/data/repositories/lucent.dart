@@ -60,7 +60,7 @@ class LucentLegalRepository implements LegalRepository {
   TaskEither<LucentFailure, List<LegalDocumentSummary>> findAll() {
     return TaskEither.tryCatch(() async {
       try {
-        final response = await api.legalDocumentsControllerFindAllV1(
+        final response = await api.listLegalDocuments(
           lang: localeResolver(),
         );
         final dto = _requireData(response.data, operation: 'findAll');
@@ -90,7 +90,7 @@ class LucentLegalRepository implements LegalRepository {
   TaskEither<LucentFailure, LegalDocument> findOne(LegalDocType docType) {
     return TaskEither.tryCatch(() async {
       try {
-        final response = await api.legalDocumentsControllerFindOneV1(
+        final response = await api.getLegalDocument(
           docType: docType.pathSegment,
           lang: localeResolver(),
         );

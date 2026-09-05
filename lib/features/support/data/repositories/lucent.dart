@@ -35,7 +35,7 @@ class LucentSupportRepository implements SupportRepository {
   @override
   TaskEither<LucentFailure, AppInfo?> getAppInfo() {
     return TaskEither.tryCatch(() async {
-      final response = await api.appInfoControllerGetAppInfoV1();
+      final response = await api.getAppInfo();
       final d = _requireData(response.data, operation: 'getAppInfo');
       return AppInfo(
         minClientVersion: d.minClientVersion,

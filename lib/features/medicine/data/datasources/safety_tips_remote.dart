@@ -15,7 +15,7 @@ class SafetyTipsRemoteDataSource {
   final MedicinesApi api;
 
   Future<List<MedicineSafetyTip>> fetchTips({List<String>? excludeIds}) async {
-    final response = await api.medicinesControllerGetSafetyTipsV1(
+    final response = await api.getSafetyTips(
       exclude: excludeIds,
     );
     final dto = response.data;
