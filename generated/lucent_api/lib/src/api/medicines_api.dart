@@ -9,20 +9,108 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/medicine_detail_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_recognition_async_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_risk_check_record_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_safety_tip_response_dto_inner.dart';
-import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
-import 'package:lucent_api/src/model/medicines_controller_recognize_async_v1_request.dart';
-import 'package:lucent_api/src/model/medicines_controller_recognize_v1_request.dart';
-import 'package:lucent_api/src/model/medicines_controller_run_risk_check_v1_request.dart';
+import 'package:lucent_api/src/model/enqueue_medicine_recognition_request.dart';
+import 'package:lucent_api/src/model/medicine_detail_response.dart';
+import 'package:lucent_api/src/model/medicine_recognition_job.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_record_response.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_response.dart';
+import 'package:lucent_api/src/model/medicine_safety_tip_item.dart';
+import 'package:lucent_api/src/model/medicine_search_response.dart';
+import 'package:lucent_api/src/model/recognize_request.dart';
+import 'package:lucent_api/src/model/run_risk_check_request.dart';
 
 class MedicinesApi {
   final Dio _dio;
 
   const MedicinesApi(this._dio);
+
+  /// Enqueue async medicine box image recognition
+  ///
+  ///
+  /// Parameters:
+  /// * [enqueueMedicineRecognitionRequest]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [MedicineRecognitionJob] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<MedicineRecognitionJob>> enqueueMedicineRecognition({
+    required EnqueueMedicineRecognitionRequest
+    enqueueMedicineRecognitionRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/medicines/recognize/async';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(enqueueMedicineRecognitionRequest);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    MedicineRecognitionJob? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<MedicineRecognitionJob, MedicineRecognitionJob>(
+              rawData,
+              'MedicineRecognitionJob',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineRecognitionJob>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
 
   /// Get medicine detail from a selected knowledge source
   ///
@@ -38,9 +126,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineDetailResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineDetailResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineDetailResponseDto>> medicinesControllerGetDetailV1({
+  Future<Response<MedicineDetailResponse>> getDetail({
     required String id,
     String? source_,
     String? xBypassCache,
@@ -80,15 +168,15 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineDetailResponseDto? _responseData;
+    MedicineDetailResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<MedicineDetailResponseDto, MedicineDetailResponseDto>(
+          : deserialize<MedicineDetailResponse, MedicineDetailResponse>(
               rawData,
-              'MedicineDetailResponseDto',
+              'MedicineDetailResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -101,7 +189,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<MedicineDetailResponseDto>(
+    return Response<MedicineDetailResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -124,10 +212,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineRiskCheckRecordsResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineRiskCheckRecordsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineRiskCheckRecordsResponseDto>>
-  medicinesControllerGetRiskCheckV1({
+  Future<Response<MedicineRiskCheckRecordsResponse>> getRiskCheck({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -151,16 +238,16 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineRiskCheckRecordsResponseDto? _responseData;
+    MedicineRiskCheckRecordsResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              MedicineRiskCheckRecordsResponseDto,
-              MedicineRiskCheckRecordsResponseDto
-            >(rawData, 'MedicineRiskCheckRecordsResponseDto', growable: true);
+              MedicineRiskCheckRecordsResponse,
+              MedicineRiskCheckRecordsResponse
+            >(rawData, 'MedicineRiskCheckRecordsResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -171,7 +258,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<MedicineRiskCheckRecordsResponseDto>(
+    return Response<MedicineRiskCheckRecordsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -195,10 +282,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [List<MedicineSafetyTipResponseDtoInner>] as data
+  /// Returns a [Future] containing a [Response] with a [List<MedicineSafetyTipItem>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<List<MedicineSafetyTipResponseDtoInner>>>
-  medicinesControllerGetSafetyTipsV1({
+  Future<Response<List<MedicineSafetyTipItem>>> getSafetyTips({
     List<String>? exclude,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -228,18 +314,15 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    List<MedicineSafetyTipResponseDtoInner>? _responseData;
+    List<MedicineSafetyTipItem>? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              List<MedicineSafetyTipResponseDtoInner>,
-              MedicineSafetyTipResponseDtoInner
-            >(
+          : deserialize<List<MedicineSafetyTipItem>, MedicineSafetyTipItem>(
               rawData,
-              'List<MedicineSafetyTipResponseDtoInner>',
+              'List<MedicineSafetyTipItem>',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -252,7 +335,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<List<MedicineSafetyTipResponseDtoInner>>(
+    return Response<List<MedicineSafetyTipItem>>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -264,11 +347,11 @@ class MedicinesApi {
     );
   }
 
-  /// Enqueue async medicine box image recognition
+  /// AI recognize medicine box image and extract medicine info
   ///
   ///
   /// Parameters:
-  /// * [medicinesControllerRecognizeAsyncV1Request]
+  /// * [recognizeRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -276,12 +359,10 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineRecognitionAsyncResponseDto] as data
+  /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineRecognitionAsyncResponseDto>>
-  medicinesControllerRecognizeAsyncV1({
-    required MedicinesControllerRecognizeAsyncV1Request
-    medicinesControllerRecognizeAsyncV1Request,
+  Future<Response<void>> recognize({
+    required RecognizeRequest recognizeRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -289,7 +370,7 @@ class MedicinesApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/medicines/recognize/async';
+    final _path = r'/api/v1/medicines/recognize';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -301,7 +382,7 @@ class MedicinesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicinesControllerRecognizeAsyncV1Request);
+      _bodyData = jsonEncode(recognizeRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -320,36 +401,7 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineRecognitionAsyncResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<
-              MedicineRecognitionAsyncResponseDto,
-              MedicineRecognitionAsyncResponseDto
-            >(rawData, 'MedicineRecognitionAsyncResponseDto', growable: true);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<MedicineRecognitionAsyncResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
+    return _response;
   }
 
   /// Poll async medicine recognition status
@@ -366,7 +418,7 @@ class MedicinesApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> medicinesControllerRecognizeStatusV1({
+  Future<Response<void>> recognizeStatus({
     required String jobId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -399,69 +451,11 @@ class MedicinesApi {
     return _response;
   }
 
-  /// AI recognize medicine box image and extract medicine info
-  ///
-  ///
-  /// Parameters:
-  /// * [medicinesControllerRecognizeV1Request]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future]
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> medicinesControllerRecognizeV1({
-    required MedicinesControllerRecognizeV1Request
-    medicinesControllerRecognizeV1Request,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/medicines/recognize';
-    final _options = Options(
-      method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      contentType: 'application/json',
-      validateStatus: validateStatus,
-    );
-
-    dynamic _bodyData;
-
-    try {
-      _bodyData = jsonEncode(medicinesControllerRecognizeV1Request);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    final _response = await _dio.request<Object>(
-      _path,
-      data: _bodyData,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    return _response;
-  }
-
   /// Run medicine risk check (static or LLM)
   ///
   ///
   /// Parameters:
-  /// * [medicinesControllerRunRiskCheckV1Request]
+  /// * [runRiskCheckRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -469,12 +463,10 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineRiskCheckRecordResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineRiskCheckRecordResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineRiskCheckRecordResponseDto>>
-  medicinesControllerRunRiskCheckV1({
-    required MedicinesControllerRunRiskCheckV1Request
-    medicinesControllerRunRiskCheckV1Request,
+  Future<Response<MedicineRiskCheckRecordResponse>> runRiskCheck({
+    required RunRiskCheckRequest runRiskCheckRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -494,7 +486,7 @@ class MedicinesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicinesControllerRunRiskCheckV1Request);
+      _bodyData = jsonEncode(runRiskCheckRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -513,16 +505,16 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineRiskCheckRecordResponseDto? _responseData;
+    MedicineRiskCheckRecordResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              MedicineRiskCheckRecordResponseDto,
-              MedicineRiskCheckRecordResponseDto
-            >(rawData, 'MedicineRiskCheckRecordResponseDto', growable: true);
+              MedicineRiskCheckRecordResponse,
+              MedicineRiskCheckRecordResponse
+            >(rawData, 'MedicineRiskCheckRecordResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -533,7 +525,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<MedicineRiskCheckRecordResponseDto>(
+    return Response<MedicineRiskCheckRecordResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -561,9 +553,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineSearchResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineSearchResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineSearchResponseDto>> medicinesControllerSearchV1({
+  Future<Response<MedicineSearchResponse>> search({
     String? source_,
     String? q,
     int? page = 1,
@@ -603,15 +595,15 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineSearchResponseDto? _responseData;
+    MedicineSearchResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<MedicineSearchResponseDto, MedicineSearchResponseDto>(
+          : deserialize<MedicineSearchResponse, MedicineSearchResponse>(
               rawData,
-              'MedicineSearchResponseDto',
+              'MedicineSearchResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -624,7 +616,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<MedicineSearchResponseDto>(
+    return Response<MedicineSearchResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

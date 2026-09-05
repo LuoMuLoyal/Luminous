@@ -9,12 +9,12 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/medicine_reminder_list_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_reminder_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_reminders_controller_create_v1_request.dart';
-import 'package:lucent_api/src/model/medicine_reminders_controller_update_v1_request.dart';
-import 'package:lucent_api/src/model/medicine_reminders_controller_upsert_group_v1_request.dart';
+import 'package:lucent_api/src/model/create_medicine_reminder_request.dart';
+import 'package:lucent_api/src/model/medicine_reminder_list_response.dart';
+import 'package:lucent_api/src/model/medicine_reminder_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
+import 'package:lucent_api/src/model/update_medicine_reminder_request.dart';
+import 'package:lucent_api/src/model/upsert_group_request.dart';
 
 class MedicineRemindersApi {
   final Dio _dio;
@@ -25,7 +25,7 @@ class MedicineRemindersApi {
   ///
   ///
   /// Parameters:
-  /// * [medicineRemindersControllerCreateV1Request]
+  /// * [createMedicineReminderRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -33,12 +33,10 @@ class MedicineRemindersApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineReminderResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineReminderResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineReminderResponseDto>>
-  medicineRemindersControllerCreateV1({
-    required MedicineRemindersControllerCreateV1Request
-    medicineRemindersControllerCreateV1Request,
+  Future<Response<MedicineReminderResponse>> createMedicineReminder({
+    required CreateMedicineReminderRequest createMedicineReminderRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -58,7 +56,7 @@ class MedicineRemindersApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicineRemindersControllerCreateV1Request);
+      _bodyData = jsonEncode(createMedicineReminderRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -77,16 +75,17 @@ class MedicineRemindersApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineReminderResponseDto? _responseData;
+    MedicineReminderResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              MedicineReminderResponseDto,
-              MedicineReminderResponseDto
-            >(rawData, 'MedicineReminderResponseDto', growable: true);
+          : deserialize<MedicineReminderResponse, MedicineReminderResponse>(
+              rawData,
+              'MedicineReminderResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -97,7 +96,7 @@ class MedicineRemindersApi {
       );
     }
 
-    return Response<MedicineReminderResponseDto>(
+    return Response<MedicineReminderResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -123,7 +122,7 @@ class MedicineRemindersApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> medicineRemindersControllerDeleteV1({
+  Future<Response<void>> deleteMedicineReminder({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -168,10 +167,9 @@ class MedicineRemindersApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineReminderListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineReminderListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineReminderListResponseDto>>
-  medicineRemindersControllerListV1({
+  Future<Response<MedicineReminderListResponse>> listMedicineReminders({
     String? activeOnly,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -201,16 +199,16 @@ class MedicineRemindersApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineReminderListResponseDto? _responseData;
+    MedicineReminderListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              MedicineReminderListResponseDto,
-              MedicineReminderListResponseDto
-            >(rawData, 'MedicineReminderListResponseDto', growable: true);
+              MedicineReminderListResponse,
+              MedicineReminderListResponse
+            >(rawData, 'MedicineReminderListResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -221,7 +219,7 @@ class MedicineRemindersApi {
       );
     }
 
-    return Response<MedicineReminderListResponseDto>(
+    return Response<MedicineReminderListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -238,7 +236,7 @@ class MedicineRemindersApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [medicineRemindersControllerUpdateV1Request]
+  /// * [updateMedicineReminderRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -246,13 +244,11 @@ class MedicineRemindersApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineReminderResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineReminderResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineReminderResponseDto>>
-  medicineRemindersControllerUpdateV1({
+  Future<Response<MedicineReminderResponse>> updateMedicineReminder({
     required String id,
-    required MedicineRemindersControllerUpdateV1Request
-    medicineRemindersControllerUpdateV1Request,
+    required UpdateMedicineReminderRequest updateMedicineReminderRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -277,7 +273,7 @@ class MedicineRemindersApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicineRemindersControllerUpdateV1Request);
+      _bodyData = jsonEncode(updateMedicineReminderRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -296,16 +292,17 @@ class MedicineRemindersApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineReminderResponseDto? _responseData;
+    MedicineReminderResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              MedicineReminderResponseDto,
-              MedicineReminderResponseDto
-            >(rawData, 'MedicineReminderResponseDto', growable: true);
+          : deserialize<MedicineReminderResponse, MedicineReminderResponse>(
+              rawData,
+              'MedicineReminderResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -316,7 +313,7 @@ class MedicineRemindersApi {
       );
     }
 
-    return Response<MedicineReminderResponseDto>(
+    return Response<MedicineReminderResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -332,7 +329,7 @@ class MedicineRemindersApi {
   ///
   ///
   /// Parameters:
-  /// * [medicineRemindersControllerUpsertGroupV1Request]
+  /// * [upsertGroupRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -340,12 +337,10 @@ class MedicineRemindersApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineReminderListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineReminderListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineReminderListResponseDto>>
-  medicineRemindersControllerUpsertGroupV1({
-    required MedicineRemindersControllerUpsertGroupV1Request
-    medicineRemindersControllerUpsertGroupV1Request,
+  Future<Response<MedicineReminderListResponse>> upsertGroup({
+    required UpsertGroupRequest upsertGroupRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -365,7 +360,7 @@ class MedicineRemindersApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicineRemindersControllerUpsertGroupV1Request);
+      _bodyData = jsonEncode(upsertGroupRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -384,16 +379,16 @@ class MedicineRemindersApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineReminderListResponseDto? _responseData;
+    MedicineReminderListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              MedicineReminderListResponseDto,
-              MedicineReminderListResponseDto
-            >(rawData, 'MedicineReminderListResponseDto', growable: true);
+              MedicineReminderListResponse,
+              MedicineReminderListResponse
+            >(rawData, 'MedicineReminderListResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -404,7 +399,7 @@ class MedicineRemindersApi {
       );
     }
 
-    return Response<MedicineReminderListResponseDto>(
+    return Response<MedicineReminderListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

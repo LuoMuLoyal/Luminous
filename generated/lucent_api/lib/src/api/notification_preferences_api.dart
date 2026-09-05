@@ -9,14 +9,100 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/notification_preferences_controller_patch_v1_request.dart';
-import 'package:lucent_api/src/model/notification_preferences_response_dto.dart';
+import 'package:lucent_api/src/model/notification_preferences_response.dart';
+import 'package:lucent_api/src/model/patch_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class NotificationPreferencesApi {
   final Dio _dio;
 
   const NotificationPreferencesApi(this._dio);
+
+  /// Patch authenticated user notification preferences
+  ///
+  ///
+  /// Parameters:
+  /// * [patchRequest]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [NotificationPreferencesResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<NotificationPreferencesResponse>> callPatch({
+    required PatchRequest patchRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/notification-preferences';
+    final _options = Options(
+      method: r'PATCH',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(patchRequest);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    NotificationPreferencesResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              NotificationPreferencesResponse,
+              NotificationPreferencesResponse
+            >(rawData, 'NotificationPreferencesResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<NotificationPreferencesResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
 
   /// Get authenticated user notification preferences
   ///
@@ -29,10 +115,9 @@ class NotificationPreferencesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [NotificationPreferencesResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [NotificationPreferencesResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationPreferencesResponseDto>>
-  notificationPreferencesControllerGetV1({
+  Future<Response<NotificationPreferencesResponse>> getNotificationPreferences({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -56,16 +141,16 @@ class NotificationPreferencesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    NotificationPreferencesResponseDto? _responseData;
+    NotificationPreferencesResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              NotificationPreferencesResponseDto,
-              NotificationPreferencesResponseDto
-            >(rawData, 'NotificationPreferencesResponseDto', growable: true);
+              NotificationPreferencesResponse,
+              NotificationPreferencesResponse
+            >(rawData, 'NotificationPreferencesResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -76,95 +161,7 @@ class NotificationPreferencesApi {
       );
     }
 
-    return Response<NotificationPreferencesResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
-  }
-
-  /// Patch authenticated user notification preferences
-  ///
-  ///
-  /// Parameters:
-  /// * [notificationPreferencesControllerPatchV1Request]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future] containing a [Response] with a [NotificationPreferencesResponseDto] as data
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationPreferencesResponseDto>>
-  notificationPreferencesControllerPatchV1({
-    required NotificationPreferencesControllerPatchV1Request
-    notificationPreferencesControllerPatchV1Request,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/user/notification-preferences';
-    final _options = Options(
-      method: r'PATCH',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      contentType: 'application/json',
-      validateStatus: validateStatus,
-    );
-
-    dynamic _bodyData;
-
-    try {
-      _bodyData = jsonEncode(notificationPreferencesControllerPatchV1Request);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    final _response = await _dio.request<Object>(
-      _path,
-      data: _bodyData,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    NotificationPreferencesResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<
-              NotificationPreferencesResponseDto,
-              NotificationPreferencesResponseDto
-            >(rawData, 'NotificationPreferencesResponseDto', growable: true);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<NotificationPreferencesResponseDto>(
+    return Response<NotificationPreferencesResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

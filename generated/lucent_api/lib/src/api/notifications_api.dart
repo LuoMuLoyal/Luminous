@@ -9,11 +9,11 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/notification_detail_response_dto.dart';
-import 'package:lucent_api/src/model/notification_list_response_dto.dart';
-import 'package:lucent_api/src/model/notifications_controller_create_v1_request.dart';
+import 'package:lucent_api/src/model/create_notification_request.dart';
+import 'package:lucent_api/src/model/notification_detail_response.dart';
+import 'package:lucent_api/src/model/notification_list_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/unread_count_response_dto.dart';
+import 'package:lucent_api/src/model/unread_count_response.dart';
 
 class NotificationsApi {
   final Dio _dio;
@@ -24,7 +24,7 @@ class NotificationsApi {
   ///
   ///
   /// Parameters:
-  /// * [notificationsControllerCreateV1Request]
+  /// * [createNotificationRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -34,9 +34,8 @@ class NotificationsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> notificationsControllerCreateV1({
-    required NotificationsControllerCreateV1Request
-    notificationsControllerCreateV1Request,
+  Future<Response<void>> createNotification({
+    required CreateNotificationRequest createNotificationRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -56,7 +55,7 @@ class NotificationsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(notificationsControllerCreateV1Request);
+      _bodyData = jsonEncode(createNotificationRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -78,6 +77,153 @@ class NotificationsApi {
     return _response;
   }
 
+  /// Get a notification detail
+  ///
+  ///
+  /// Parameters:
+  /// * [id]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [NotificationDetailResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<NotificationDetailResponse>> getNotification({
+    required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/notifications/{id}'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    NotificationDetailResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<NotificationDetailResponse, NotificationDetailResponse>(
+              rawData,
+              'NotificationDetailResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<NotificationDetailResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Get unread notification count
+  ///
+  ///
+  /// Parameters:
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [UnreadCountResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<UnreadCountResponse>> getUnreadCount({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/notifications/unread-count';
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    UnreadCountResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<UnreadCountResponse, UnreadCountResponse>(
+              rawData,
+              'UnreadCountResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<UnreadCountResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// List user notifications
   ///
   ///
@@ -91,10 +237,9 @@ class NotificationsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [NotificationListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [NotificationListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationListResponseDto>>
-  notificationsControllerFindAllV1({
+  Future<Response<NotificationListResponse>> listNotifications({
     required num page,
     required num pageSize,
     CancelToken? cancelToken,
@@ -126,162 +271,15 @@ class NotificationsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    NotificationListResponseDto? _responseData;
+    NotificationListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              NotificationListResponseDto,
-              NotificationListResponseDto
-            >(rawData, 'NotificationListResponseDto', growable: true);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<NotificationListResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
-  }
-
-  /// Get a notification detail
-  ///
-  ///
-  /// Parameters:
-  /// * [id]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future] containing a [Response] with a [NotificationDetailResponseDto] as data
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationDetailResponseDto>>
-  notificationsControllerFindOneV1({
-    required String id,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/user/notifications/{id}'.replaceAll(
-      '{'
-      r'id'
-      '}',
-      id.toString(),
-    );
-    final _options = Options(
-      method: r'GET',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      validateStatus: validateStatus,
-    );
-
-    final _response = await _dio.request<Object>(
-      _path,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    NotificationDetailResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<
-              NotificationDetailResponseDto,
-              NotificationDetailResponseDto
-            >(rawData, 'NotificationDetailResponseDto', growable: true);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<NotificationDetailResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
-  }
-
-  /// Get unread notification count
-  ///
-  ///
-  /// Parameters:
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future] containing a [Response] with a [UnreadCountResponseDto] as data
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<UnreadCountResponseDto>>
-  notificationsControllerGetUnreadCountV1({
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/user/notifications/unread-count';
-    final _options = Options(
-      method: r'GET',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      validateStatus: validateStatus,
-    );
-
-    final _response = await _dio.request<Object>(
-      _path,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    UnreadCountResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<UnreadCountResponseDto, UnreadCountResponseDto>(
+          : deserialize<NotificationListResponse, NotificationListResponse>(
               rawData,
-              'UnreadCountResponseDto',
+              'NotificationListResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -294,7 +292,7 @@ class NotificationsApi {
       );
     }
 
-    return Response<UnreadCountResponseDto>(
+    return Response<NotificationListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -317,10 +315,9 @@ class NotificationsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [UnreadCountResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [UnreadCountResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<UnreadCountResponseDto>>
-  notificationsControllerMarkAllAsReadV1({
+  Future<Response<UnreadCountResponse>> markAllAsRead({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -344,15 +341,15 @@ class NotificationsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    UnreadCountResponseDto? _responseData;
+    UnreadCountResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<UnreadCountResponseDto, UnreadCountResponseDto>(
+          : deserialize<UnreadCountResponse, UnreadCountResponse>(
               rawData,
-              'UnreadCountResponseDto',
+              'UnreadCountResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -365,7 +362,7 @@ class NotificationsApi {
       );
     }
 
-    return Response<UnreadCountResponseDto>(
+    return Response<UnreadCountResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -389,10 +386,9 @@ class NotificationsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [NotificationDetailResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [NotificationDetailResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationDetailResponseDto>>
-  notificationsControllerMarkAsReadV1({
+  Future<Response<NotificationDetailResponse>> markAsRead({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -422,16 +418,17 @@ class NotificationsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    NotificationDetailResponseDto? _responseData;
+    NotificationDetailResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              NotificationDetailResponseDto,
-              NotificationDetailResponseDto
-            >(rawData, 'NotificationDetailResponseDto', growable: true);
+          : deserialize<NotificationDetailResponse, NotificationDetailResponse>(
+              rawData,
+              'NotificationDetailResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -442,7 +439,7 @@ class NotificationsApi {
       );
     }
 
-    return Response<NotificationDetailResponseDto>(
+    return Response<NotificationDetailResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -466,10 +463,9 @@ class NotificationsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [NotificationDetailResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [NotificationDetailResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationDetailResponseDto>>
-  notificationsControllerMarkAsUnreadV1({
+  Future<Response<NotificationDetailResponse>> markAsUnread({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -499,16 +495,17 @@ class NotificationsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    NotificationDetailResponseDto? _responseData;
+    NotificationDetailResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              NotificationDetailResponseDto,
-              NotificationDetailResponseDto
-            >(rawData, 'NotificationDetailResponseDto', growable: true);
+          : deserialize<NotificationDetailResponse, NotificationDetailResponse>(
+              rawData,
+              'NotificationDetailResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -519,7 +516,7 @@ class NotificationsApi {
       );
     }
 
-    return Response<NotificationDetailResponseDto>(
+    return Response<NotificationDetailResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -545,7 +542,7 @@ class NotificationsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> notificationsControllerRemoveV1({
+  Future<Response<void>> remove({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,

@@ -9,13 +9,13 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/health_event_list_response_dto.dart';
-import 'package:lucent_api/src/model/health_event_nullable_response_dto.dart';
-import 'package:lucent_api/src/model/health_event_response_dto.dart';
-import 'package:lucent_api/src/model/health_events_controller_create_v1_request.dart';
-import 'package:lucent_api/src/model/health_events_controller_end_v1_request.dart';
-import 'package:lucent_api/src/model/health_events_controller_upsert_check_in_v1_request.dart';
+import 'package:lucent_api/src/model/create_health_event_request.dart';
+import 'package:lucent_api/src/model/end_request.dart';
+import 'package:lucent_api/src/model/health_event_list_response.dart';
+import 'package:lucent_api/src/model/health_event_nullable_response.dart';
+import 'package:lucent_api/src/model/health_event_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
+import 'package:lucent_api/src/model/upsert_check_in_request.dart';
 
 class HealthEventsApi {
   final Dio _dio;
@@ -34,10 +34,9 @@ class HealthEventsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthEventNullableResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthEventNullableResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthEventNullableResponseDto>>
-  healthEventsControllerActiveV1({
+  Future<Response<HealthEventNullableResponse>> active({
     String? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -65,16 +64,16 @@ class HealthEventsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthEventNullableResponseDto? _responseData;
+    HealthEventNullableResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              HealthEventNullableResponseDto,
-              HealthEventNullableResponseDto
-            >(rawData, 'HealthEventNullableResponseDto', growable: true);
+              HealthEventNullableResponse,
+              HealthEventNullableResponse
+            >(rawData, 'HealthEventNullableResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -85,7 +84,7 @@ class HealthEventsApi {
       );
     }
 
-    return Response<HealthEventNullableResponseDto>(
+    return Response<HealthEventNullableResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -101,7 +100,7 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [healthEventsControllerCreateV1Request]
+  /// * [createHealthEventRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -109,11 +108,10 @@ class HealthEventsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthEventResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthEventResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthEventResponseDto>> healthEventsControllerCreateV1({
-    required HealthEventsControllerCreateV1Request
-    healthEventsControllerCreateV1Request,
+  Future<Response<HealthEventResponse>> createHealthEvent({
+    required CreateHealthEventRequest createHealthEventRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -133,7 +131,7 @@ class HealthEventsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(healthEventsControllerCreateV1Request);
+      _bodyData = jsonEncode(createHealthEventRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -152,15 +150,15 @@ class HealthEventsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthEventResponseDto? _responseData;
+    HealthEventResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthEventResponseDto, HealthEventResponseDto>(
+          : deserialize<HealthEventResponse, HealthEventResponse>(
               rawData,
-              'HealthEventResponseDto',
+              'HealthEventResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -173,7 +171,7 @@ class HealthEventsApi {
       );
     }
 
-    return Response<HealthEventResponseDto>(
+    return Response<HealthEventResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -190,7 +188,7 @@ class HealthEventsApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [healthEventsControllerEndV1Request]
+  /// * [endRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -198,12 +196,11 @@ class HealthEventsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthEventResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthEventResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthEventResponseDto>> healthEventsControllerEndV1({
+  Future<Response<HealthEventResponse>> end({
     required String id,
-    required HealthEventsControllerEndV1Request
-    healthEventsControllerEndV1Request,
+    required EndRequest endRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -228,7 +225,7 @@ class HealthEventsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(healthEventsControllerEndV1Request);
+      _bodyData = jsonEncode(endRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -247,15 +244,15 @@ class HealthEventsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthEventResponseDto? _responseData;
+    HealthEventResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthEventResponseDto, HealthEventResponseDto>(
+          : deserialize<HealthEventResponse, HealthEventResponse>(
               rawData,
-              'HealthEventResponseDto',
+              'HealthEventResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -268,7 +265,7 @@ class HealthEventsApi {
       );
     }
 
-    return Response<HealthEventResponseDto>(
+    return Response<HealthEventResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -293,9 +290,9 @@ class HealthEventsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthEventResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthEventResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthEventResponseDto>> healthEventsControllerGetV1({
+  Future<Response<HealthEventResponse>> getHealthEvent({
     required String id,
     String? date,
     CancelToken? cancelToken,
@@ -329,15 +326,15 @@ class HealthEventsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthEventResponseDto? _responseData;
+    HealthEventResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthEventResponseDto, HealthEventResponseDto>(
+          : deserialize<HealthEventResponse, HealthEventResponse>(
               rawData,
-              'HealthEventResponseDto',
+              'HealthEventResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -350,7 +347,7 @@ class HealthEventsApi {
       );
     }
 
-    return Response<HealthEventResponseDto>(
+    return Response<HealthEventResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -374,9 +371,9 @@ class HealthEventsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthEventListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthEventListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthEventListResponseDto>> healthEventsControllerListV1({
+  Future<Response<HealthEventListResponse>> listHealthEvents({
     String? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -404,15 +401,15 @@ class HealthEventsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthEventListResponseDto? _responseData;
+    HealthEventListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthEventListResponseDto, HealthEventListResponseDto>(
+          : deserialize<HealthEventListResponse, HealthEventListResponse>(
               rawData,
-              'HealthEventListResponseDto',
+              'HealthEventListResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -425,7 +422,7 @@ class HealthEventsApi {
       );
     }
 
-    return Response<HealthEventListResponseDto>(
+    return Response<HealthEventListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -443,7 +440,7 @@ class HealthEventsApi {
   /// Parameters:
   /// * [id]
   /// * [date]
-  /// * [healthEventsControllerUpsertCheckInV1Request]
+  /// * [upsertCheckInRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -451,14 +448,12 @@ class HealthEventsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthEventResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthEventResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthEventResponseDto>>
-  healthEventsControllerUpsertCheckInV1({
+  Future<Response<HealthEventResponse>> upsertCheckIn({
     required String id,
     required String date,
-    required HealthEventsControllerUpsertCheckInV1Request
-    healthEventsControllerUpsertCheckInV1Request,
+    required UpsertCheckInRequest upsertCheckInRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -490,7 +485,7 @@ class HealthEventsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(healthEventsControllerUpsertCheckInV1Request);
+      _bodyData = jsonEncode(upsertCheckInRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -509,15 +504,15 @@ class HealthEventsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthEventResponseDto? _responseData;
+    HealthEventResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthEventResponseDto, HealthEventResponseDto>(
+          : deserialize<HealthEventResponse, HealthEventResponse>(
               rawData,
-              'HealthEventResponseDto',
+              'HealthEventResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -530,7 +525,7 @@ class HealthEventsApi {
       );
     }
 
-    return Response<HealthEventResponseDto>(
+    return Response<HealthEventResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

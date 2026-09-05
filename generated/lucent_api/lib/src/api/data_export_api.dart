@@ -9,9 +9,9 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/data_export_controller_create_request_v1_request.dart';
-import 'package:lucent_api/src/model/data_export_request_data_dto.dart';
-import 'package:lucent_api/src/model/data_export_request_response_dto.dart';
+import 'package:lucent_api/src/model/create_request_request.dart';
+import 'package:lucent_api/src/model/data_export_request_data.dart';
+import 'package:lucent_api/src/model/data_export_request_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class DataExportApi {
@@ -23,7 +23,7 @@ class DataExportApi {
   ///
   ///
   /// Parameters:
-  /// * [dataExportControllerCreateRequestV1Request]
+  /// * [createRequestRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -31,12 +31,10 @@ class DataExportApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DataExportRequestResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DataExportRequestResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DataExportRequestResponseDto>>
-  dataExportControllerCreateRequestV1({
-    required DataExportControllerCreateRequestV1Request
-    dataExportControllerCreateRequestV1Request,
+  Future<Response<DataExportRequestResponse>> createRequest({
+    required CreateRequestRequest createRequestRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -56,7 +54,7 @@ class DataExportApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(dataExportControllerCreateRequestV1Request);
+      _bodyData = jsonEncode(createRequestRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -75,16 +73,17 @@ class DataExportApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DataExportRequestResponseDto? _responseData;
+    DataExportRequestResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              DataExportRequestResponseDto,
-              DataExportRequestResponseDto
-            >(rawData, 'DataExportRequestResponseDto', growable: true);
+          : deserialize<DataExportRequestResponse, DataExportRequestResponse>(
+              rawData,
+              'DataExportRequestResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -95,7 +94,7 @@ class DataExportApi {
       );
     }
 
-    return Response<DataExportRequestResponseDto>(
+    return Response<DataExportRequestResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -118,10 +117,9 @@ class DataExportApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DataExportRequestDataDto] as data
+  /// Returns a [Future] containing a [Response] with a [DataExportRequestData] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DataExportRequestDataDto>>
-  dataExportControllerGetLatestRequestV1({
+  Future<Response<DataExportRequestData>> getLatestRequest({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -145,15 +143,15 @@ class DataExportApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DataExportRequestDataDto? _responseData;
+    DataExportRequestData? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<DataExportRequestDataDto, DataExportRequestDataDto>(
+          : deserialize<DataExportRequestData, DataExportRequestData>(
               rawData,
-              'DataExportRequestDataDto',
+              'DataExportRequestData',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -166,7 +164,7 @@ class DataExportApi {
       );
     }
 
-    return Response<DataExportRequestDataDto>(
+    return Response<DataExportRequestData>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

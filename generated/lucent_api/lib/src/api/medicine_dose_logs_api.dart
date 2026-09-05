@@ -9,12 +9,12 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/dose_log_list_response_dto.dart';
-import 'package:lucent_api/src/model/dose_log_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_dose_logs_controller_create_v1_request.dart';
-import 'package:lucent_api/src/model/medicine_dose_logs_controller_mark_v1_request.dart';
-import 'package:lucent_api/src/model/medicine_dose_logs_controller_update_v1_request.dart';
+import 'package:lucent_api/src/model/create_dose_log_request.dart';
+import 'package:lucent_api/src/model/dose_log_list_response.dart';
+import 'package:lucent_api/src/model/dose_log_response.dart';
+import 'package:lucent_api/src/model/mark_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
+import 'package:lucent_api/src/model/update_dose_log_request.dart';
 
 class MedicineDoseLogsApi {
   final Dio _dio;
@@ -25,7 +25,7 @@ class MedicineDoseLogsApi {
   ///
   ///
   /// Parameters:
-  /// * [medicineDoseLogsControllerCreateV1Request]
+  /// * [createDoseLogRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -33,11 +33,10 @@ class MedicineDoseLogsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DoseLogResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DoseLogResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerCreateV1({
-    required MedicineDoseLogsControllerCreateV1Request
-    medicineDoseLogsControllerCreateV1Request,
+  Future<Response<DoseLogResponse>> createDoseLog({
+    required CreateDoseLogRequest createDoseLogRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -57,7 +56,7 @@ class MedicineDoseLogsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicineDoseLogsControllerCreateV1Request);
+      _bodyData = jsonEncode(createDoseLogRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -76,15 +75,15 @@ class MedicineDoseLogsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DoseLogResponseDto? _responseData;
+    DoseLogResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<DoseLogResponseDto, DoseLogResponseDto>(
+          : deserialize<DoseLogResponse, DoseLogResponse>(
               rawData,
-              'DoseLogResponseDto',
+              'DoseLogResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -97,7 +96,7 @@ class MedicineDoseLogsApi {
       );
     }
 
-    return Response<DoseLogResponseDto>(
+    return Response<DoseLogResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -123,7 +122,7 @@ class MedicineDoseLogsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> medicineDoseLogsControllerDeleteV1({
+  Future<Response<void>> deleteDoseLog({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -170,9 +169,9 @@ class MedicineDoseLogsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DoseLogListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DoseLogListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DoseLogListResponseDto>> medicineDoseLogsControllerListV1({
+  Future<Response<DoseLogListResponse>> listDoseLogs({
     required String date,
     num? page,
     num? pageSize,
@@ -206,15 +205,15 @@ class MedicineDoseLogsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DoseLogListResponseDto? _responseData;
+    DoseLogListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<DoseLogListResponseDto, DoseLogListResponseDto>(
+          : deserialize<DoseLogListResponse, DoseLogListResponse>(
               rawData,
-              'DoseLogListResponseDto',
+              'DoseLogListResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -227,7 +226,7 @@ class MedicineDoseLogsApi {
       );
     }
 
-    return Response<DoseLogListResponseDto>(
+    return Response<DoseLogListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -243,7 +242,7 @@ class MedicineDoseLogsApi {
   ///
   ///
   /// Parameters:
-  /// * [medicineDoseLogsControllerMarkV1Request]
+  /// * [markRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -251,11 +250,10 @@ class MedicineDoseLogsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DoseLogResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DoseLogResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerMarkV1({
-    required MedicineDoseLogsControllerMarkV1Request
-    medicineDoseLogsControllerMarkV1Request,
+  Future<Response<DoseLogResponse>> mark({
+    required MarkRequest markRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -275,7 +273,7 @@ class MedicineDoseLogsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicineDoseLogsControllerMarkV1Request);
+      _bodyData = jsonEncode(markRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -294,15 +292,15 @@ class MedicineDoseLogsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DoseLogResponseDto? _responseData;
+    DoseLogResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<DoseLogResponseDto, DoseLogResponseDto>(
+          : deserialize<DoseLogResponse, DoseLogResponse>(
               rawData,
-              'DoseLogResponseDto',
+              'DoseLogResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -315,7 +313,7 @@ class MedicineDoseLogsApi {
       );
     }
 
-    return Response<DoseLogResponseDto>(
+    return Response<DoseLogResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -332,7 +330,7 @@ class MedicineDoseLogsApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [medicineDoseLogsControllerUpdateV1Request]
+  /// * [updateDoseLogRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -340,12 +338,11 @@ class MedicineDoseLogsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DoseLogResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DoseLogResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerUpdateV1({
+  Future<Response<DoseLogResponse>> updateDoseLog({
     required String id,
-    required MedicineDoseLogsControllerUpdateV1Request
-    medicineDoseLogsControllerUpdateV1Request,
+    required UpdateDoseLogRequest updateDoseLogRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -370,7 +367,7 @@ class MedicineDoseLogsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(medicineDoseLogsControllerUpdateV1Request);
+      _bodyData = jsonEncode(updateDoseLogRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -389,15 +386,15 @@ class MedicineDoseLogsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DoseLogResponseDto? _responseData;
+    DoseLogResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<DoseLogResponseDto, DoseLogResponseDto>(
+          : deserialize<DoseLogResponse, DoseLogResponse>(
               rawData,
-              'DoseLogResponseDto',
+              'DoseLogResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -410,7 +407,7 @@ class MedicineDoseLogsApi {
       );
     }
 
-    return Response<DoseLogResponseDto>(
+    return Response<DoseLogResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

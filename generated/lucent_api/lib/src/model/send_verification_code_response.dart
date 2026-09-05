@@ -1,0 +1,49 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+// ignore_for_file: unused_element
+import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'send_verification_code_response.g.dart';
+
+@CopyWith()
+@JsonSerializable(
+  checked: true,
+  createToJson: true,
+  disallowUnrecognizedKeys: false,
+  explicitToJson: true,
+)
+class SendVerificationCodeResponse {
+  /// Returns a new [SendVerificationCodeResponse] instance.
+  SendVerificationCodeResponse({required this.cooldown, required this.message});
+
+  /// 冷却时间（秒）
+  @JsonKey(name: r'cooldown', required: true, includeIfNull: false)
+  final num cooldown;
+
+  /// 提示消息
+  @JsonKey(name: r'message', required: true, includeIfNull: false)
+  final String message;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SendVerificationCodeResponse &&
+          other.cooldown == cooldown &&
+          other.message == message;
+
+  @override
+  int get hashCode => cooldown.hashCode + message.hashCode;
+
+  factory SendVerificationCodeResponse.fromJson(Map<String, dynamic> json) =>
+      _$SendVerificationCodeResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SendVerificationCodeResponseToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
+}

@@ -9,9 +9,9 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/funnel_response_dto.dart';
+import 'package:lucent_api/src/model/funnel_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/product_events_controller_record_batch_v1_request.dart';
+import 'package:lucent_api/src/model/record_batch_request.dart';
 
 class ProductEventsApi {
   final Dio _dio;
@@ -31,9 +31,9 @@ class ProductEventsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [FunnelResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [FunnelResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<FunnelResponseDto>> productEventsControllerGetFunnelV1({
+  Future<Response<FunnelResponse>> getFunnel({
     String? dateFrom,
     String? dateTo,
     CancelToken? cancelToken,
@@ -65,15 +65,15 @@ class ProductEventsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    FunnelResponseDto? _responseData;
+    FunnelResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<FunnelResponseDto, FunnelResponseDto>(
+          : deserialize<FunnelResponse, FunnelResponse>(
               rawData,
-              'FunnelResponseDto',
+              'FunnelResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -86,7 +86,7 @@ class ProductEventsApi {
       );
     }
 
-    return Response<FunnelResponseDto>(
+    return Response<FunnelResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -102,7 +102,7 @@ class ProductEventsApi {
   /// Write-only ingestion for product measurement. userId always comes from the session — a client-supplied userId is rejected by the whitelist. Raw events are retained 90 days, then deleted.
   ///
   /// Parameters:
-  /// * [productEventsControllerRecordBatchV1Request]
+  /// * [recordBatchRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -112,9 +112,8 @@ class ProductEventsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> productEventsControllerRecordBatchV1({
-    required ProductEventsControllerRecordBatchV1Request
-    productEventsControllerRecordBatchV1Request,
+  Future<Response<void>> recordBatch({
+    required RecordBatchRequest recordBatchRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -134,7 +133,7 @@ class ProductEventsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(productEventsControllerRecordBatchV1Request);
+      _bodyData = jsonEncode(recordBatchRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

@@ -9,12 +9,12 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/local_capability_response_dto.dart';
+import 'package:lucent_api/src/model/local_capability_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/reminder_deliveries_controller_record_receipt_v1_request.dart';
-import 'package:lucent_api/src/model/reminder_deliveries_controller_report_local_capability_v1_request.dart';
-import 'package:lucent_api/src/model/reminder_delivery_list_response_dto.dart';
-import 'package:lucent_api/src/model/reminder_delivery_receipt_response_dto.dart';
+import 'package:lucent_api/src/model/record_receipt_request.dart';
+import 'package:lucent_api/src/model/reminder_delivery_list_response.dart';
+import 'package:lucent_api/src/model/reminder_delivery_receipt_response.dart';
+import 'package:lucent_api/src/model/report_local_capability_request.dart';
 
 class ReminderDeliveriesApi {
   final Dio _dio;
@@ -34,10 +34,9 @@ class ReminderDeliveriesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ReminderDeliveryListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ReminderDeliveryListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReminderDeliveryListResponseDto>>
-  reminderDeliveriesControllerListV1({
+  Future<Response<ReminderDeliveryListResponse>> listReminderDeliveries({
     String? date,
     String? limit,
     CancelToken? cancelToken,
@@ -69,16 +68,16 @@ class ReminderDeliveriesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ReminderDeliveryListResponseDto? _responseData;
+    ReminderDeliveryListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              ReminderDeliveryListResponseDto,
-              ReminderDeliveryListResponseDto
-            >(rawData, 'ReminderDeliveryListResponseDto', growable: true);
+              ReminderDeliveryListResponse,
+              ReminderDeliveryListResponse
+            >(rawData, 'ReminderDeliveryListResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -89,7 +88,7 @@ class ReminderDeliveriesApi {
       );
     }
 
-    return Response<ReminderDeliveryListResponseDto>(
+    return Response<ReminderDeliveryListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -105,7 +104,7 @@ class ReminderDeliveriesApi {
   ///
   ///
   /// Parameters:
-  /// * [reminderDeliveriesControllerRecordReceiptV1Request]
+  /// * [recordReceiptRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -113,12 +112,10 @@ class ReminderDeliveriesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ReminderDeliveryReceiptResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ReminderDeliveryReceiptResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReminderDeliveryReceiptResponseDto>>
-  reminderDeliveriesControllerRecordReceiptV1({
-    required ReminderDeliveriesControllerRecordReceiptV1Request
-    reminderDeliveriesControllerRecordReceiptV1Request,
+  Future<Response<ReminderDeliveryReceiptResponse>> recordReceipt({
+    required RecordReceiptRequest recordReceiptRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -138,9 +135,7 @@ class ReminderDeliveriesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        reminderDeliveriesControllerRecordReceiptV1Request,
-      );
+      _bodyData = jsonEncode(recordReceiptRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -159,16 +154,16 @@ class ReminderDeliveriesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ReminderDeliveryReceiptResponseDto? _responseData;
+    ReminderDeliveryReceiptResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              ReminderDeliveryReceiptResponseDto,
-              ReminderDeliveryReceiptResponseDto
-            >(rawData, 'ReminderDeliveryReceiptResponseDto', growable: true);
+              ReminderDeliveryReceiptResponse,
+              ReminderDeliveryReceiptResponse
+            >(rawData, 'ReminderDeliveryReceiptResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -179,7 +174,7 @@ class ReminderDeliveriesApi {
       );
     }
 
-    return Response<ReminderDeliveryReceiptResponseDto>(
+    return Response<ReminderDeliveryReceiptResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -195,7 +190,7 @@ class ReminderDeliveriesApi {
   ///
   ///
   /// Parameters:
-  /// * [reminderDeliveriesControllerReportLocalCapabilityV1Request]
+  /// * [reportLocalCapabilityRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -203,12 +198,10 @@ class ReminderDeliveriesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [LocalCapabilityResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [LocalCapabilityResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<LocalCapabilityResponseDto>>
-  reminderDeliveriesControllerReportLocalCapabilityV1({
-    required ReminderDeliveriesControllerReportLocalCapabilityV1Request
-    reminderDeliveriesControllerReportLocalCapabilityV1Request,
+  Future<Response<LocalCapabilityResponse>> reportLocalCapability({
+    required ReportLocalCapabilityRequest reportLocalCapabilityRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -228,9 +221,7 @@ class ReminderDeliveriesApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        reminderDeliveriesControllerReportLocalCapabilityV1Request,
-      );
+      _bodyData = jsonEncode(reportLocalCapabilityRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -249,15 +240,15 @@ class ReminderDeliveriesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    LocalCapabilityResponseDto? _responseData;
+    LocalCapabilityResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<LocalCapabilityResponseDto, LocalCapabilityResponseDto>(
+          : deserialize<LocalCapabilityResponse, LocalCapabilityResponse>(
               rawData,
-              'LocalCapabilityResponseDto',
+              'LocalCapabilityResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -270,7 +261,7 @@ class ReminderDeliveriesApi {
       );
     }
 
-    return Response<LocalCapabilityResponseDto>(
+    return Response<LocalCapabilityResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

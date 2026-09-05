@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/health_response_dto.dart';
+import 'package:lucent_api/src/model/health_response.dart';
 
 class HealthApi {
   final Dio _dio;
@@ -27,9 +27,9 @@ class HealthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthResponseDto>> appControllerGetDeepHealthV1({
+  Future<Response<HealthResponse>> getDeepHealth({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -53,15 +53,15 @@ class HealthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthResponseDto? _responseData;
+    HealthResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthResponseDto, HealthResponseDto>(
+          : deserialize<HealthResponse, HealthResponse>(
               rawData,
-              'HealthResponseDto',
+              'HealthResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -74,7 +74,7 @@ class HealthApi {
       );
     }
 
-    return Response<HealthResponseDto>(
+    return Response<HealthResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -97,9 +97,9 @@ class HealthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthResponseDto>> appControllerGetHealthV1({
+  Future<Response<HealthResponse>> getHealth({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -123,15 +123,15 @@ class HealthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthResponseDto? _responseData;
+    HealthResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthResponseDto, HealthResponseDto>(
+          : deserialize<HealthResponse, HealthResponse>(
               rawData,
-              'HealthResponseDto',
+              'HealthResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -144,7 +144,7 @@ class HealthApi {
       );
     }
 
-    return Response<HealthResponseDto>(
+    return Response<HealthResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -167,9 +167,9 @@ class HealthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthResponseDto>> appControllerGetLiveHealthV1({
+  Future<Response<HealthResponse>> getLiveHealth({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -193,15 +193,15 @@ class HealthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthResponseDto? _responseData;
+    HealthResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthResponseDto, HealthResponseDto>(
+          : deserialize<HealthResponse, HealthResponse>(
               rawData,
-              'HealthResponseDto',
+              'HealthResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -214,7 +214,7 @@ class HealthApi {
       );
     }
 
-    return Response<HealthResponseDto>(
+    return Response<HealthResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -237,9 +237,9 @@ class HealthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthResponseDto>> appControllerGetReadyHealthV1({
+  Future<Response<HealthResponse>> getReadyHealth({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -263,15 +263,15 @@ class HealthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthResponseDto? _responseData;
+    HealthResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthResponseDto, HealthResponseDto>(
+          : deserialize<HealthResponse, HealthResponse>(
               rawData,
-              'HealthResponseDto',
+              'HealthResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -284,7 +284,7 @@ class HealthApi {
       );
     }
 
-    return Response<HealthResponseDto>(
+    return Response<HealthResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

@@ -9,23 +9,23 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/clinic_summary_export_async_response_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_response_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_share_list_response_dto.dart';
-import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
-import 'package:lucent_api/src/model/event_review_data_dto.dart';
-import 'package:lucent_api/src/model/event_review_list_response_dto.dart';
-import 'package:lucent_api/src/model/event_review_response_dto.dart';
-import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
-import 'package:lucent_api/src/model/report_summary_async_response_dto.dart';
-import 'package:lucent_api/src/model/report_summary_response_dto.dart';
-import 'package:lucent_api/src/model/reports_controller_download_clinic_summary_pdf_v1_request.dart';
-import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1_request.dart';
-import 'package:lucent_api/src/model/reports_controller_generate_summary_async_v1_request.dart';
-import 'package:lucent_api/src/model/reports_controller_generate_summary_stream_v1_request.dart';
-import 'package:lucent_api/src/model/reports_controller_generate_summary_v1_request.dart';
-import 'package:lucent_api/src/model/reports_controller_preview_clinic_summary_v1_request.dart';
-import 'package:lucent_api/src/model/reports_controller_share_clinic_summary_v1_request.dart';
+import 'package:lucent_api/src/model/clinic_summary_export_job_response.dart';
+import 'package:lucent_api/src/model/clinic_summary_response.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_list_response.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_response.dart';
+import 'package:lucent_api/src/model/download_clinic_summary_pdf_request.dart';
+import 'package:lucent_api/src/model/enqueue_clinic_summary_pdf_export_request.dart';
+import 'package:lucent_api/src/model/enqueue_summary_generation_request.dart';
+import 'package:lucent_api/src/model/event_review_data.dart';
+import 'package:lucent_api/src/model/event_review_list_response.dart';
+import 'package:lucent_api/src/model/event_review_response.dart';
+import 'package:lucent_api/src/model/generate_summary_request.dart';
+import 'package:lucent_api/src/model/generate_summary_stream_request.dart';
+import 'package:lucent_api/src/model/preview_clinic_summary_request.dart';
+import 'package:lucent_api/src/model/report_dashboard_response.dart';
+import 'package:lucent_api/src/model/report_summary_job_response.dart';
+import 'package:lucent_api/src/model/report_summary_response.dart';
+import 'package:lucent_api/src/model/share_clinic_summary_request.dart';
 
 class ReportsApi {
   final Dio _dio;
@@ -36,7 +36,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerDownloadClinicSummaryPdfV1Request]
+  /// * [downloadClinicSummaryPdfRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -46,9 +46,8 @@ class ReportsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> reportsControllerDownloadClinicSummaryPdfV1({
-    required ReportsControllerDownloadClinicSummaryPdfV1Request
-    reportsControllerDownloadClinicSummaryPdfV1Request,
+  Future<Response<void>> downloadClinicSummaryPdf({
+    required DownloadClinicSummaryPdfRequest downloadClinicSummaryPdfRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -68,9 +67,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        reportsControllerDownloadClinicSummaryPdfV1Request,
-      );
+      _bodyData = jsonEncode(downloadClinicSummaryPdfRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -106,7 +103,7 @@ class ReportsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> reportsControllerDownloadSharedClinicSummaryPdfV1({
+  Future<Response<void>> downloadSharedClinicSummaryPdf({
     required String token,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -144,7 +141,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerExportClinicSummaryPdfAsyncV1Request]
+  /// * [enqueueClinicSummaryPdfExportRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -152,12 +149,12 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ClinicSummaryExportAsyncResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ClinicSummaryExportJobResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ClinicSummaryExportAsyncResponseDto>>
-  reportsControllerExportClinicSummaryPdfAsyncV1({
-    required ReportsControllerExportClinicSummaryPdfAsyncV1Request
-    reportsControllerExportClinicSummaryPdfAsyncV1Request,
+  Future<Response<ClinicSummaryExportJobResponse>>
+  enqueueClinicSummaryPdfExport({
+    required EnqueueClinicSummaryPdfExportRequest
+    enqueueClinicSummaryPdfExportRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -177,9 +174,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        reportsControllerExportClinicSummaryPdfAsyncV1Request,
-      );
+      _bodyData = jsonEncode(enqueueClinicSummaryPdfExportRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -198,16 +193,16 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ClinicSummaryExportAsyncResponseDto? _responseData;
+    ClinicSummaryExportJobResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              ClinicSummaryExportAsyncResponseDto,
-              ClinicSummaryExportAsyncResponseDto
-            >(rawData, 'ClinicSummaryExportAsyncResponseDto', growable: true);
+              ClinicSummaryExportJobResponse,
+              ClinicSummaryExportJobResponse
+            >(rawData, 'ClinicSummaryExportJobResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -218,7 +213,94 @@ class ReportsApi {
       );
     }
 
-    return Response<ClinicSummaryExportAsyncResponseDto>(
+    return Response<ClinicSummaryExportJobResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Enqueue async AI summary generation for report
+  ///
+  ///
+  /// Parameters:
+  /// * [enqueueSummaryGenerationRequest]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [ReportSummaryJobResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<ReportSummaryJobResponse>> enqueueSummaryGeneration({
+    required EnqueueSummaryGenerationRequest enqueueSummaryGenerationRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/reports/summary/generate/async';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(enqueueSummaryGenerationRequest);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    ReportSummaryJobResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<ReportSummaryJobResponse, ReportSummaryJobResponse>(
+              rawData,
+              'ReportSummaryJobResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ReportSummaryJobResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -244,7 +326,7 @@ class ReportsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> reportsControllerExportClinicSummaryPdfStatusV1({
+  Future<Response<void>> exportClinicSummaryPdfStatus({
     required String jobId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -278,11 +360,11 @@ class ReportsApi {
     return _response;
   }
 
-  /// Enqueue async AI summary generation for report
+  /// Generate authenticated user AI summary for report
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerGenerateSummaryAsyncV1Request]
+  /// * [generateSummaryRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -290,12 +372,10 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ReportSummaryAsyncResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ReportSummaryResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReportSummaryAsyncResponseDto>>
-  reportsControllerGenerateSummaryAsyncV1({
-    required ReportsControllerGenerateSummaryAsyncV1Request
-    reportsControllerGenerateSummaryAsyncV1Request,
+  Future<Response<ReportSummaryResponse>> generateSummary({
+    required GenerateSummaryRequest generateSummaryRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -303,7 +383,7 @@ class ReportsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/reports/summary/generate/async';
+    final _path = r'/api/v1/user/reports/summary/generate';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -315,7 +395,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerGenerateSummaryAsyncV1Request);
+      _bodyData = jsonEncode(generateSummaryRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -334,16 +414,17 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ReportSummaryAsyncResponseDto? _responseData;
+    ReportSummaryResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              ReportSummaryAsyncResponseDto,
-              ReportSummaryAsyncResponseDto
-            >(rawData, 'ReportSummaryAsyncResponseDto', growable: true);
+          : deserialize<ReportSummaryResponse, ReportSummaryResponse>(
+              rawData,
+              'ReportSummaryResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -354,7 +435,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ReportSummaryAsyncResponseDto>(
+    return Response<ReportSummaryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -380,7 +461,7 @@ class ReportsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> reportsControllerGenerateSummaryStatusV1({
+  Future<Response<void>> generateSummaryStatus({
     required String jobId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -418,7 +499,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerGenerateSummaryStreamV1Request]
+  /// * [generateSummaryStreamRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -428,9 +509,8 @@ class ReportsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<String>> reportsControllerGenerateSummaryStreamV1({
-    required ReportsControllerGenerateSummaryStreamV1Request
-    reportsControllerGenerateSummaryStreamV1Request,
+  Future<Response<String>> generateSummaryStream({
+    required GenerateSummaryStreamRequest generateSummaryStreamRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -450,7 +530,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerGenerateSummaryStreamV1Request);
+      _bodyData = jsonEncode(generateSummaryStreamRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -498,95 +578,6 @@ class ReportsApi {
     );
   }
 
-  /// Generate authenticated user AI summary for report
-  ///
-  ///
-  /// Parameters:
-  /// * [reportsControllerGenerateSummaryV1Request]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future] containing a [Response] with a [ReportSummaryResponseDto] as data
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReportSummaryResponseDto>>
-  reportsControllerGenerateSummaryV1({
-    required ReportsControllerGenerateSummaryV1Request
-    reportsControllerGenerateSummaryV1Request,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/user/reports/summary/generate';
-    final _options = Options(
-      method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      contentType: 'application/json',
-      validateStatus: validateStatus,
-    );
-
-    dynamic _bodyData;
-
-    try {
-      _bodyData = jsonEncode(reportsControllerGenerateSummaryV1Request);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    final _response = await _dio.request<Object>(
-      _path,
-      data: _bodyData,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    ReportSummaryResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<ReportSummaryResponseDto, ReportSummaryResponseDto>(
-              rawData,
-              'ReportSummaryResponseDto',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<ReportSummaryResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
-  }
-
   /// Get the current event review for the authenticated user
   ///
   ///
@@ -598,9 +589,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [EventReviewDataDto] as data
+  /// Returns a [Future] containing a [Response] with a [EventReviewData] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EventReviewDataDto>> reportsControllerGetCurrentReviewV1({
+  Future<Response<EventReviewData>> getCurrentReview({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -624,15 +615,15 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    EventReviewDataDto? _responseData;
+    EventReviewData? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<EventReviewDataDto, EventReviewDataDto>(
+          : deserialize<EventReviewData, EventReviewData>(
               rawData,
-              'EventReviewDataDto',
+              'EventReviewData',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -645,7 +636,7 @@ class ReportsApi {
       );
     }
 
-    return Response<EventReviewDataDto>(
+    return Response<EventReviewData>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -671,9 +662,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ReportDashboardResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ReportDashboardResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReportDashboardResponseDto>> reportsControllerGetDashboardV1({
+  Future<Response<ReportDashboardResponse>> getDashboard({
     String? range,
     String? startDate,
     String? endDate,
@@ -707,15 +698,15 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ReportDashboardResponseDto? _responseData;
+    ReportDashboardResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<ReportDashboardResponseDto, ReportDashboardResponseDto>(
+          : deserialize<ReportDashboardResponse, ReportDashboardResponse>(
               rawData,
-              'ReportDashboardResponseDto',
+              'ReportDashboardResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -728,7 +719,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ReportDashboardResponseDto>(
+    return Response<ReportDashboardResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -752,9 +743,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [EventReviewResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [EventReviewResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EventReviewResponseDto>> reportsControllerGetEventReviewV1({
+  Future<Response<EventReviewResponse>> getEventReview({
     required String eventId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -784,15 +775,15 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    EventReviewResponseDto? _responseData;
+    EventReviewResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<EventReviewResponseDto, EventReviewResponseDto>(
+          : deserialize<EventReviewResponse, EventReviewResponse>(
               rawData,
-              'EventReviewResponseDto',
+              'EventReviewResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -805,7 +796,7 @@ class ReportsApi {
       );
     }
 
-    return Response<EventReviewResponseDto>(
+    return Response<EventReviewResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -829,10 +820,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ClinicSummaryResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ClinicSummaryResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ClinicSummaryResponseDto>>
-  reportsControllerGetSharedClinicSummaryV1({
+  Future<Response<ClinicSummaryResponse>> getSharedClinicSummary({
     required String token,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -863,15 +853,15 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ClinicSummaryResponseDto? _responseData;
+    ClinicSummaryResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<ClinicSummaryResponseDto, ClinicSummaryResponseDto>(
+          : deserialize<ClinicSummaryResponse, ClinicSummaryResponse>(
               rawData,
-              'ClinicSummaryResponseDto',
+              'ClinicSummaryResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -884,7 +874,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ClinicSummaryResponseDto>(
+    return Response<ClinicSummaryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -907,10 +897,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ClinicSummaryShareListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ClinicSummaryShareListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ClinicSummaryShareListResponseDto>>
-  reportsControllerListClinicSummarySharesV1({
+  Future<Response<ClinicSummaryShareListResponse>> listClinicSummaryShares({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -934,16 +923,16 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ClinicSummaryShareListResponseDto? _responseData;
+    ClinicSummaryShareListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              ClinicSummaryShareListResponseDto,
-              ClinicSummaryShareListResponseDto
-            >(rawData, 'ClinicSummaryShareListResponseDto', growable: true);
+              ClinicSummaryShareListResponse,
+              ClinicSummaryShareListResponse
+            >(rawData, 'ClinicSummaryShareListResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -954,7 +943,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ClinicSummaryShareListResponseDto>(
+    return Response<ClinicSummaryShareListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -980,9 +969,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [EventReviewListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [EventReviewListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EventReviewListResponseDto>> reportsControllerListReviewsV1({
+  Future<Response<EventReviewListResponse>> listReviews({
     String? status,
     String? cursor,
     int? limit,
@@ -1016,15 +1005,15 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    EventReviewListResponseDto? _responseData;
+    EventReviewListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<EventReviewListResponseDto, EventReviewListResponseDto>(
+          : deserialize<EventReviewListResponse, EventReviewListResponse>(
               rawData,
-              'EventReviewListResponseDto',
+              'EventReviewListResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -1037,7 +1026,7 @@ class ReportsApi {
       );
     }
 
-    return Response<EventReviewListResponseDto>(
+    return Response<EventReviewListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -1053,7 +1042,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerPreviewClinicSummaryV1Request]
+  /// * [previewClinicSummaryRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1061,12 +1050,10 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ClinicSummaryResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ClinicSummaryResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ClinicSummaryResponseDto>>
-  reportsControllerPreviewClinicSummaryV1({
-    required ReportsControllerPreviewClinicSummaryV1Request
-    reportsControllerPreviewClinicSummaryV1Request,
+  Future<Response<ClinicSummaryResponse>> previewClinicSummary({
+    required PreviewClinicSummaryRequest previewClinicSummaryRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1086,7 +1073,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerPreviewClinicSummaryV1Request);
+      _bodyData = jsonEncode(previewClinicSummaryRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -1105,15 +1092,15 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ClinicSummaryResponseDto? _responseData;
+    ClinicSummaryResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<ClinicSummaryResponseDto, ClinicSummaryResponseDto>(
+          : deserialize<ClinicSummaryResponse, ClinicSummaryResponse>(
               rawData,
-              'ClinicSummaryResponseDto',
+              'ClinicSummaryResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -1126,7 +1113,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ClinicSummaryResponseDto>(
+    return Response<ClinicSummaryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -1152,7 +1139,7 @@ class ReportsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> reportsControllerRevokeClinicSummaryShareV1({
+  Future<Response<void>> revokeClinicSummaryShare({
     required String shareId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1190,7 +1177,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [reportsControllerShareClinicSummaryV1Request]
+  /// * [shareClinicSummaryRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1198,12 +1185,10 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ClinicSummaryShareResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ClinicSummaryShareResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ClinicSummaryShareResponseDto>>
-  reportsControllerShareClinicSummaryV1({
-    required ReportsControllerShareClinicSummaryV1Request
-    reportsControllerShareClinicSummaryV1Request,
+  Future<Response<ClinicSummaryShareResponse>> shareClinicSummary({
+    required ShareClinicSummaryRequest shareClinicSummaryRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1223,7 +1208,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(reportsControllerShareClinicSummaryV1Request);
+      _bodyData = jsonEncode(shareClinicSummaryRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -1242,16 +1227,17 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ClinicSummaryShareResponseDto? _responseData;
+    ClinicSummaryShareResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              ClinicSummaryShareResponseDto,
-              ClinicSummaryShareResponseDto
-            >(rawData, 'ClinicSummaryShareResponseDto', growable: true);
+          : deserialize<ClinicSummaryShareResponse, ClinicSummaryShareResponse>(
+              rawData,
+              'ClinicSummaryShareResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1262,7 +1248,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ClinicSummaryShareResponseDto>(
+    return Response<ClinicSummaryShareResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

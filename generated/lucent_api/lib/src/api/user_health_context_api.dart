@@ -9,15 +9,15 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/health_context_response_dto.dart';
+import 'package:lucent_api/src/model/create_allergy_request.dart';
+import 'package:lucent_api/src/model/create_condition_request.dart';
+import 'package:lucent_api/src/model/create_current_medicine_request.dart';
+import 'package:lucent_api/src/model/health_context_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/user_health_context_controller_create_allergy_v1_request.dart';
-import 'package:lucent_api/src/model/user_health_context_controller_create_condition_v1_request.dart';
-import 'package:lucent_api/src/model/user_health_context_controller_create_current_medicine_v1_request.dart';
-import 'package:lucent_api/src/model/user_health_context_controller_update_allergy_v1_request.dart';
-import 'package:lucent_api/src/model/user_health_context_controller_update_condition_v1_request.dart';
-import 'package:lucent_api/src/model/user_health_context_controller_update_current_medicine_v1_request.dart';
-import 'package:lucent_api/src/model/user_health_context_controller_update_user_health_context_profile_v1_request.dart';
+import 'package:lucent_api/src/model/update_allergy_request.dart';
+import 'package:lucent_api/src/model/update_condition_request.dart';
+import 'package:lucent_api/src/model/update_current_medicine_request.dart';
+import 'package:lucent_api/src/model/update_user_health_context_profile_request.dart';
 
 class UserHealthContextApi {
   final Dio _dio;
@@ -28,7 +28,7 @@ class UserHealthContextApi {
   ///
   ///
   /// Parameters:
-  /// * [userHealthContextControllerCreateAllergyV1Request]
+  /// * [createAllergyRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -36,12 +36,10 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerCreateAllergyV1({
-    required UserHealthContextControllerCreateAllergyV1Request
-    userHealthContextControllerCreateAllergyV1Request,
+  Future<Response<HealthContextResponse>> createAllergy({
+    required CreateAllergyRequest createAllergyRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -61,7 +59,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(userHealthContextControllerCreateAllergyV1Request);
+      _bodyData = jsonEncode(createAllergyRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -80,15 +78,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -101,7 +99,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -117,7 +115,7 @@ class UserHealthContextApi {
   ///
   ///
   /// Parameters:
-  /// * [userHealthContextControllerCreateConditionV1Request]
+  /// * [createConditionRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -125,12 +123,10 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerCreateConditionV1({
-    required UserHealthContextControllerCreateConditionV1Request
-    userHealthContextControllerCreateConditionV1Request,
+  Future<Response<HealthContextResponse>> createCondition({
+    required CreateConditionRequest createConditionRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -150,9 +146,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        userHealthContextControllerCreateConditionV1Request,
-      );
+      _bodyData = jsonEncode(createConditionRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -171,15 +165,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -192,7 +186,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -208,7 +202,7 @@ class UserHealthContextApi {
   ///
   ///
   /// Parameters:
-  /// * [userHealthContextControllerCreateCurrentMedicineV1Request]
+  /// * [createCurrentMedicineRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -216,12 +210,10 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerCreateCurrentMedicineV1({
-    required UserHealthContextControllerCreateCurrentMedicineV1Request
-    userHealthContextControllerCreateCurrentMedicineV1Request,
+  Future<Response<HealthContextResponse>> createCurrentMedicine({
+    required CreateCurrentMedicineRequest createCurrentMedicineRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -241,9 +233,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        userHealthContextControllerCreateCurrentMedicineV1Request,
-      );
+      _bodyData = jsonEncode(createCurrentMedicineRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -262,15 +252,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -283,7 +273,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -307,10 +297,9 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerDeleteAllergyV1({
+  Future<Response<HealthContextResponse>> deleteAllergy({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -340,15 +329,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -361,7 +350,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -385,10 +374,9 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerDeleteConditionV1({
+  Future<Response<HealthContextResponse>> deleteCondition({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -418,15 +406,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -439,7 +427,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -463,10 +451,9 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerDeleteCurrentMedicineV1({
+  Future<Response<HealthContextResponse>> deleteCurrentMedicine({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -497,15 +484,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -518,7 +505,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -541,10 +528,9 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerGetUserHealthContextV1({
+  Future<Response<HealthContextResponse>> getUserHealthContext({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -568,15 +554,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -589,7 +575,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -606,7 +592,7 @@ class UserHealthContextApi {
   ///
   /// Parameters:
   /// * [id] - Allergy id
-  /// * [userHealthContextControllerUpdateAllergyV1Request]
+  /// * [updateAllergyRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -614,13 +600,11 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerUpdateAllergyV1({
+  Future<Response<HealthContextResponse>> updateAllergy({
     required String id,
-    required UserHealthContextControllerUpdateAllergyV1Request
-    userHealthContextControllerUpdateAllergyV1Request,
+    required UpdateAllergyRequest updateAllergyRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -645,7 +629,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(userHealthContextControllerUpdateAllergyV1Request);
+      _bodyData = jsonEncode(updateAllergyRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -664,15 +648,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -685,7 +669,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -702,7 +686,7 @@ class UserHealthContextApi {
   ///
   /// Parameters:
   /// * [id] - Condition id
-  /// * [userHealthContextControllerUpdateConditionV1Request]
+  /// * [updateConditionRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -710,13 +694,11 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerUpdateConditionV1({
+  Future<Response<HealthContextResponse>> updateCondition({
     required String id,
-    required UserHealthContextControllerUpdateConditionV1Request
-    userHealthContextControllerUpdateConditionV1Request,
+    required UpdateConditionRequest updateConditionRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -741,9 +723,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        userHealthContextControllerUpdateConditionV1Request,
-      );
+      _bodyData = jsonEncode(updateConditionRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -762,15 +742,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -783,7 +763,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -800,7 +780,7 @@ class UserHealthContextApi {
   ///
   /// Parameters:
   /// * [id] - Current medicine id
-  /// * [userHealthContextControllerUpdateCurrentMedicineV1Request]
+  /// * [updateCurrentMedicineRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -808,13 +788,11 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerUpdateCurrentMedicineV1({
+  Future<Response<HealthContextResponse>> updateCurrentMedicine({
     required String id,
-    required UserHealthContextControllerUpdateCurrentMedicineV1Request
-    userHealthContextControllerUpdateCurrentMedicineV1Request,
+    required UpdateCurrentMedicineRequest updateCurrentMedicineRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -840,9 +818,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        userHealthContextControllerUpdateCurrentMedicineV1Request,
-      );
+      _bodyData = jsonEncode(updateCurrentMedicineRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -861,15 +837,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -882,7 +858,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -898,7 +874,7 @@ class UserHealthContextApi {
   ///
   ///
   /// Parameters:
-  /// * [userHealthContextControllerUpdateUserHealthContextProfileV1Request]
+  /// * [updateUserHealthContextProfileRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -906,12 +882,11 @@ class UserHealthContextApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [HealthContextResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerUpdateUserHealthContextProfileV1({
-    required UserHealthContextControllerUpdateUserHealthContextProfileV1Request
-    userHealthContextControllerUpdateUserHealthContextProfileV1Request,
+  Future<Response<HealthContextResponse>> updateUserHealthContextProfile({
+    required UpdateUserHealthContextProfileRequest
+    updateUserHealthContextProfileRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -931,9 +906,7 @@ class UserHealthContextApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(
-        userHealthContextControllerUpdateUserHealthContextProfileV1Request,
-      );
+      _bodyData = jsonEncode(updateUserHealthContextProfileRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -952,15 +925,15 @@ class UserHealthContextApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    HealthContextResponseDto? _responseData;
+    HealthContextResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
+          : deserialize<HealthContextResponse, HealthContextResponse>(
               rawData,
-              'HealthContextResponseDto',
+              'HealthContextResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -973,7 +946,7 @@ class UserHealthContextApi {
       );
     }
 
-    return Response<HealthContextResponseDto>(
+    return Response<HealthContextResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

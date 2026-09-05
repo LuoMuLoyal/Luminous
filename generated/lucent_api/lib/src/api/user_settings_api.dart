@@ -10,8 +10,8 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/problem_details_dto.dart';
-import 'package:lucent_api/src/model/user_settings_controller_update_settings_v1_request.dart';
-import 'package:lucent_api/src/model/user_settings_response_dto.dart';
+import 'package:lucent_api/src/model/update_settings_request.dart';
+import 'package:lucent_api/src/model/user_settings_response.dart';
 
 class UserSettingsApi {
   final Dio _dio;
@@ -29,10 +29,9 @@ class UserSettingsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [UserSettingsResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [UserSettingsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<UserSettingsResponseDto>>
-  userSettingsControllerGetSettingsV1({
+  Future<Response<UserSettingsResponse>> getSettings({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -56,15 +55,15 @@ class UserSettingsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    UserSettingsResponseDto? _responseData;
+    UserSettingsResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<UserSettingsResponseDto, UserSettingsResponseDto>(
+          : deserialize<UserSettingsResponse, UserSettingsResponse>(
               rawData,
-              'UserSettingsResponseDto',
+              'UserSettingsResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -77,7 +76,7 @@ class UserSettingsApi {
       );
     }
 
-    return Response<UserSettingsResponseDto>(
+    return Response<UserSettingsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -93,7 +92,7 @@ class UserSettingsApi {
   ///
   ///
   /// Parameters:
-  /// * [userSettingsControllerUpdateSettingsV1Request]
+  /// * [updateSettingsRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -101,12 +100,10 @@ class UserSettingsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [UserSettingsResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [UserSettingsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<UserSettingsResponseDto>>
-  userSettingsControllerUpdateSettingsV1({
-    required UserSettingsControllerUpdateSettingsV1Request
-    userSettingsControllerUpdateSettingsV1Request,
+  Future<Response<UserSettingsResponse>> updateSettings({
+    required UpdateSettingsRequest updateSettingsRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -126,7 +123,7 @@ class UserSettingsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(userSettingsControllerUpdateSettingsV1Request);
+      _bodyData = jsonEncode(updateSettingsRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -145,15 +142,15 @@ class UserSettingsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    UserSettingsResponseDto? _responseData;
+    UserSettingsResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<UserSettingsResponseDto, UserSettingsResponseDto>(
+          : deserialize<UserSettingsResponse, UserSettingsResponse>(
               rawData,
-              'UserSettingsResponseDto',
+              'UserSettingsResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -166,7 +163,7 @@ class UserSettingsApi {
       );
     }
 
-    return Response<UserSettingsResponseDto>(
+    return Response<UserSettingsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

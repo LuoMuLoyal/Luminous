@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/environment_snapshot_response_dto.dart';
+import 'package:lucent_api/src/model/environment_snapshot_response.dart';
 
 class EnvironmentApi {
   final Dio _dio;
@@ -29,10 +29,9 @@ class EnvironmentApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [EnvironmentSnapshotResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [EnvironmentSnapshotResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EnvironmentSnapshotResponseDto>>
-  environmentControllerGetSnapshotV1({
+  Future<Response<EnvironmentSnapshotResponse>> getSnapshot({
     num? lat,
     num? lon,
     CancelToken? cancelToken,
@@ -64,16 +63,16 @@ class EnvironmentApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    EnvironmentSnapshotResponseDto? _responseData;
+    EnvironmentSnapshotResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              EnvironmentSnapshotResponseDto,
-              EnvironmentSnapshotResponseDto
-            >(rawData, 'EnvironmentSnapshotResponseDto', growable: true);
+              EnvironmentSnapshotResponse,
+              EnvironmentSnapshotResponse
+            >(rawData, 'EnvironmentSnapshotResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -84,7 +83,7 @@ class EnvironmentApi {
       );
     }
 
-    return Response<EnvironmentSnapshotResponseDto>(
+    return Response<EnvironmentSnapshotResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

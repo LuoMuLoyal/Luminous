@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/app_info_response_dto.dart';
+import 'package:lucent_api/src/model/app_info_response.dart';
 
 class AppInfoApi {
   final Dio _dio;
@@ -27,9 +27,9 @@ class AppInfoApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AppInfoResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AppInfoResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AppInfoResponseDto>> appInfoControllerGetAppInfoV1({
+  Future<Response<AppInfoResponse>> getAppInfo({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -53,15 +53,15 @@ class AppInfoApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AppInfoResponseDto? _responseData;
+    AppInfoResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<AppInfoResponseDto, AppInfoResponseDto>(
+          : deserialize<AppInfoResponse, AppInfoResponse>(
               rawData,
-              'AppInfoResponseDto',
+              'AppInfoResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -74,7 +74,7 @@ class AppInfoApi {
       );
     }
 
-    return Response<AppInfoResponseDto>(
+    return Response<AppInfoResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

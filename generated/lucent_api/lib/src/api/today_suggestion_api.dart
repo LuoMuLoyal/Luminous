@@ -9,12 +9,12 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/suggestion_explanation_async_response_dto.dart';
-import 'package:lucent_api/src/model/suggestion_explanation_response_dto.dart';
-import 'package:lucent_api/src/model/suggestion_feedback_response_dto.dart';
-import 'package:lucent_api/src/model/suggestion_history_response_dto.dart';
-import 'package:lucent_api/src/model/today_suggestion_controller_submit_feedback_v1_request.dart';
-import 'package:lucent_api/src/model/today_suggestions_response_dto.dart';
+import 'package:lucent_api/src/model/submit_feedback_request.dart';
+import 'package:lucent_api/src/model/suggestion_explanation_job_response.dart';
+import 'package:lucent_api/src/model/suggestion_explanation_response.dart';
+import 'package:lucent_api/src/model/suggestion_feedback_response.dart';
+import 'package:lucent_api/src/model/suggestion_history_response.dart';
+import 'package:lucent_api/src/model/today_suggestions_response.dart';
 
 class TodaySuggestionApi {
   final Dio _dio;
@@ -34,10 +34,10 @@ class TodaySuggestionApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuggestionExplanationAsyncResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [SuggestionExplanationJobResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuggestionExplanationAsyncResponseDto>>
-  todaySuggestionControllerExplainSuggestionAsyncV1({
+  Future<Response<SuggestionExplanationJobResponse>>
+  enqueueSuggestionExplanation({
     required String id,
     required String acceptLanguage,
     CancelToken? cancelToken,
@@ -72,16 +72,16 @@ class TodaySuggestionApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuggestionExplanationAsyncResponseDto? _responseData;
+    SuggestionExplanationJobResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              SuggestionExplanationAsyncResponseDto,
-              SuggestionExplanationAsyncResponseDto
-            >(rawData, 'SuggestionExplanationAsyncResponseDto', growable: true);
+              SuggestionExplanationJobResponse,
+              SuggestionExplanationJobResponse
+            >(rawData, 'SuggestionExplanationJobResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -92,7 +92,7 @@ class TodaySuggestionApi {
       );
     }
 
-    return Response<SuggestionExplanationAsyncResponseDto>(
+    return Response<SuggestionExplanationJobResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -102,54 +102,6 @@ class TodaySuggestionApi {
       statusMessage: _response.statusMessage,
       extra: _response.extra,
     );
-  }
-
-  /// Poll async suggestion explanation status
-  ///
-  ///
-  /// Parameters:
-  /// * [jobId]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future]
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> todaySuggestionControllerExplainSuggestionStatusV1({
-    required String jobId,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/user/today/suggestions/explain/status/{jobId}'
-        .replaceAll(
-          '{'
-          r'jobId'
-          '}',
-          jobId.toString(),
-        );
-    final _options = Options(
-      method: r'GET',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      validateStatus: validateStatus,
-    );
-
-    final _response = await _dio.request<Object>(
-      _path,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    return _response;
   }
 
   /// Get AI explanation for a suggestion card
@@ -165,10 +117,9 @@ class TodaySuggestionApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuggestionExplanationResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [SuggestionExplanationResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuggestionExplanationResponseDto>>
-  todaySuggestionControllerExplainSuggestionV1({
+  Future<Response<SuggestionExplanationResponse>> explainSuggestion({
     required String id,
     required String acceptLanguage,
     CancelToken? cancelToken,
@@ -202,16 +153,16 @@ class TodaySuggestionApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuggestionExplanationResponseDto? _responseData;
+    SuggestionExplanationResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              SuggestionExplanationResponseDto,
-              SuggestionExplanationResponseDto
-            >(rawData, 'SuggestionExplanationResponseDto', growable: true);
+              SuggestionExplanationResponse,
+              SuggestionExplanationResponse
+            >(rawData, 'SuggestionExplanationResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -222,7 +173,7 @@ class TodaySuggestionApi {
       );
     }
 
-    return Response<SuggestionExplanationResponseDto>(
+    return Response<SuggestionExplanationResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -232,6 +183,54 @@ class TodaySuggestionApi {
       statusMessage: _response.statusMessage,
       extra: _response.extra,
     );
+  }
+
+  /// Poll async suggestion explanation status
+  ///
+  ///
+  /// Parameters:
+  /// * [jobId]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future]
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<void>> explainSuggestionStatus({
+    required String jobId,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/today/suggestions/explain/status/{jobId}'
+        .replaceAll(
+          '{'
+          r'jobId'
+          '}',
+          jobId.toString(),
+        );
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    return _response;
   }
 
   /// Get suggestion history for the Report page
@@ -251,10 +250,9 @@ class TodaySuggestionApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuggestionHistoryResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [SuggestionHistoryResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuggestionHistoryResponseDto>>
-  todaySuggestionControllerGetHistoryV1({
+  Future<Response<SuggestionHistoryResponse>> getHistory({
     required String acceptLanguage,
     String? startDate,
     String? endDate,
@@ -296,16 +294,17 @@ class TodaySuggestionApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuggestionHistoryResponseDto? _responseData;
+    SuggestionHistoryResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              SuggestionHistoryResponseDto,
-              SuggestionHistoryResponseDto
-            >(rawData, 'SuggestionHistoryResponseDto', growable: true);
+          : deserialize<SuggestionHistoryResponse, SuggestionHistoryResponse>(
+              rawData,
+              'SuggestionHistoryResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -316,7 +315,7 @@ class TodaySuggestionApi {
       );
     }
 
-    return Response<SuggestionHistoryResponseDto>(
+    return Response<SuggestionHistoryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -342,10 +341,9 @@ class TodaySuggestionApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [TodaySuggestionsResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [TodaySuggestionsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<TodaySuggestionsResponseDto>>
-  todaySuggestionControllerGetSuggestionsV1({
+  Future<Response<TodaySuggestionsResponse>> getSuggestions({
     required String acceptLanguage,
     String? date,
     List<String>? excludeIds,
@@ -381,16 +379,17 @@ class TodaySuggestionApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    TodaySuggestionsResponseDto? _responseData;
+    TodaySuggestionsResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              TodaySuggestionsResponseDto,
-              TodaySuggestionsResponseDto
-            >(rawData, 'TodaySuggestionsResponseDto', growable: true);
+          : deserialize<TodaySuggestionsResponse, TodaySuggestionsResponse>(
+              rawData,
+              'TodaySuggestionsResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -401,7 +400,7 @@ class TodaySuggestionApi {
       );
     }
 
-    return Response<TodaySuggestionsResponseDto>(
+    return Response<TodaySuggestionsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -418,7 +417,7 @@ class TodaySuggestionApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [todaySuggestionControllerSubmitFeedbackV1Request]
+  /// * [submitFeedbackRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -426,13 +425,11 @@ class TodaySuggestionApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [SuggestionFeedbackResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [SuggestionFeedbackResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuggestionFeedbackResponseDto>>
-  todaySuggestionControllerSubmitFeedbackV1({
+  Future<Response<SuggestionFeedbackResponse>> submitFeedback({
     required String id,
-    required TodaySuggestionControllerSubmitFeedbackV1Request
-    todaySuggestionControllerSubmitFeedbackV1Request,
+    required SubmitFeedbackRequest submitFeedbackRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -457,7 +454,7 @@ class TodaySuggestionApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(todaySuggestionControllerSubmitFeedbackV1Request);
+      _bodyData = jsonEncode(submitFeedbackRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -476,16 +473,17 @@ class TodaySuggestionApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    SuggestionFeedbackResponseDto? _responseData;
+    SuggestionFeedbackResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              SuggestionFeedbackResponseDto,
-              SuggestionFeedbackResponseDto
-            >(rawData, 'SuggestionFeedbackResponseDto', growable: true);
+          : deserialize<SuggestionFeedbackResponse, SuggestionFeedbackResponse>(
+              rawData,
+              'SuggestionFeedbackResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -496,7 +494,7 @@ class TodaySuggestionApi {
       );
     }
 
-    return Response<SuggestionFeedbackResponseDto>(
+    return Response<SuggestionFeedbackResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

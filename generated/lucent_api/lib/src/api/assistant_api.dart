@@ -9,16 +9,16 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/assistant_capabilities_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_clear_memory_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_clear_result_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_confirm_result_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_controller_confirm_proposal_v1_request.dart';
-import 'package:lucent_api/src/model/assistant_controller_rename_conversation_v1_request.dart';
-import 'package:lucent_api/src/model/assistant_controller_stream_messages_v1_request.dart';
-import 'package:lucent_api/src/model/assistant_conversation_data_dto.dart';
-import 'package:lucent_api/src/model/assistant_conversation_response_dto.dart';
-import 'package:lucent_api/src/model/assistant_conversation_summary_dto_inner.dart';
+import 'package:lucent_api/src/model/assistant_capabilities_response.dart';
+import 'package:lucent_api/src/model/assistant_clear_memory_response.dart';
+import 'package:lucent_api/src/model/assistant_clear_result_response.dart';
+import 'package:lucent_api/src/model/assistant_confirm_result_response.dart';
+import 'package:lucent_api/src/model/assistant_conversation_data.dart';
+import 'package:lucent_api/src/model/assistant_conversation_response.dart';
+import 'package:lucent_api/src/model/assistant_conversation_summary_item.dart';
+import 'package:lucent_api/src/model/confirm_proposal_request.dart';
+import 'package:lucent_api/src/model/rename_conversation_request.dart';
+import 'package:lucent_api/src/model/stream_messages_request.dart';
 
 class AssistantApi {
   final Dio _dio;
@@ -36,10 +36,9 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantClearResultResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantClearResultResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantClearResultResponseDto>>
-  assistantControllerClearLatestConversationV1({
+  Future<Response<AssistantClearResultResponse>> clearLatestConversation({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -63,16 +62,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantClearResultResponseDto? _responseData;
+    AssistantClearResultResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantClearResultResponseDto,
-              AssistantClearResultResponseDto
-            >(rawData, 'AssistantClearResultResponseDto', growable: true);
+              AssistantClearResultResponse,
+              AssistantClearResultResponse
+            >(rawData, 'AssistantClearResultResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -83,7 +82,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantClearResultResponseDto>(
+    return Response<AssistantClearResultResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -106,10 +105,9 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantClearMemoryResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantClearMemoryResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantClearMemoryResponseDto>>
-  assistantControllerClearMemoryV1({
+  Future<Response<AssistantClearMemoryResponse>> clearMemory({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -133,16 +131,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantClearMemoryResponseDto? _responseData;
+    AssistantClearMemoryResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantClearMemoryResponseDto,
-              AssistantClearMemoryResponseDto
-            >(rawData, 'AssistantClearMemoryResponseDto', growable: true);
+              AssistantClearMemoryResponse,
+              AssistantClearMemoryResponse
+            >(rawData, 'AssistantClearMemoryResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -153,7 +151,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantClearMemoryResponseDto>(
+    return Response<AssistantClearMemoryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -170,7 +168,7 @@ class AssistantApi {
   ///
   /// Parameters:
   /// * [conversationId]
-  /// * [assistantControllerConfirmProposalV1Request]
+  /// * [confirmProposalRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -178,13 +176,11 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantConfirmResultResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantConfirmResultResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantConfirmResultResponseDto>>
-  assistantControllerConfirmProposalV1({
+  Future<Response<AssistantConfirmResultResponse>> confirmProposal({
     required String conversationId,
-    required AssistantControllerConfirmProposalV1Request
-    assistantControllerConfirmProposalV1Request,
+    required ConfirmProposalRequest confirmProposalRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -211,7 +207,7 @@ class AssistantApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(assistantControllerConfirmProposalV1Request);
+      _bodyData = jsonEncode(confirmProposalRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -230,16 +226,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantConfirmResultResponseDto? _responseData;
+    AssistantConfirmResultResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantConfirmResultResponseDto,
-              AssistantConfirmResultResponseDto
-            >(rawData, 'AssistantConfirmResultResponseDto', growable: true);
+              AssistantConfirmResultResponse,
+              AssistantConfirmResultResponse
+            >(rawData, 'AssistantConfirmResultResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -250,7 +246,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantConfirmResultResponseDto>(
+    return Response<AssistantConfirmResultResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -274,10 +270,9 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantConversationResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantConversationResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantConversationResponseDto>>
-  assistantControllerDeleteConversationV1({
+  Future<Response<AssistantConversationResponse>> deleteConversation({
     required String conversationId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -308,16 +303,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantConversationResponseDto? _responseData;
+    AssistantConversationResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantConversationResponseDto,
-              AssistantConversationResponseDto
-            >(rawData, 'AssistantConversationResponseDto', growable: true);
+              AssistantConversationResponse,
+              AssistantConversationResponse
+            >(rawData, 'AssistantConversationResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -328,7 +323,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantConversationResponseDto>(
+    return Response<AssistantConversationResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -351,10 +346,9 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantCapabilitiesResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantCapabilitiesResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantCapabilitiesResponseDto>>
-  assistantControllerGetCapabilitiesV1({
+  Future<Response<AssistantCapabilitiesResponse>> getCapabilities({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -378,16 +372,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantCapabilitiesResponseDto? _responseData;
+    AssistantCapabilitiesResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantCapabilitiesResponseDto,
-              AssistantCapabilitiesResponseDto
-            >(rawData, 'AssistantCapabilitiesResponseDto', growable: true);
+              AssistantCapabilitiesResponse,
+              AssistantCapabilitiesResponse
+            >(rawData, 'AssistantCapabilitiesResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -398,7 +392,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantCapabilitiesResponseDto>(
+    return Response<AssistantCapabilitiesResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -421,10 +415,9 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantConversationDataDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantConversationData] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantConversationDataDto>>
-  assistantControllerGetLatestConversationV1({
+  Future<Response<AssistantConversationData>> getLatestConversation({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -448,16 +441,17 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantConversationDataDto? _responseData;
+    AssistantConversationData? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              AssistantConversationDataDto,
-              AssistantConversationDataDto
-            >(rawData, 'AssistantConversationDataDto', growable: true);
+          : deserialize<AssistantConversationData, AssistantConversationData>(
+              rawData,
+              'AssistantConversationData',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -468,7 +462,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantConversationDataDto>(
+    return Response<AssistantConversationData>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -491,10 +485,10 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [List<AssistantConversationSummaryDtoInner>] as data
+  /// Returns a [Future] containing a [Response] with a [List<AssistantConversationSummaryItem>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<List<AssistantConversationSummaryDtoInner>>>
-  assistantControllerListRecentConversationsV1({
+  Future<Response<List<AssistantConversationSummaryItem>>>
+  listRecentConversations({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -518,18 +512,18 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    List<AssistantConversationSummaryDtoInner>? _responseData;
+    List<AssistantConversationSummaryItem>? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              List<AssistantConversationSummaryDtoInner>,
-              AssistantConversationSummaryDtoInner
+              List<AssistantConversationSummaryItem>,
+              AssistantConversationSummaryItem
             >(
               rawData,
-              'List<AssistantConversationSummaryDtoInner>',
+              'List<AssistantConversationSummaryItem>',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -542,7 +536,7 @@ class AssistantApi {
       );
     }
 
-    return Response<List<AssistantConversationSummaryDtoInner>>(
+    return Response<List<AssistantConversationSummaryItem>>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -566,10 +560,9 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantConversationResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantConversationResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantConversationResponseDto>>
-  assistantControllerOpenConversationV1({
+  Future<Response<AssistantConversationResponse>> openConversation({
     required String conversationId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -600,16 +593,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantConversationResponseDto? _responseData;
+    AssistantConversationResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantConversationResponseDto,
-              AssistantConversationResponseDto
-            >(rawData, 'AssistantConversationResponseDto', growable: true);
+              AssistantConversationResponse,
+              AssistantConversationResponse
+            >(rawData, 'AssistantConversationResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -620,7 +613,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantConversationResponseDto>(
+    return Response<AssistantConversationResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -646,7 +639,7 @@ class AssistantApi {
   ///
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<String>> assistantControllerRegenerateLastMessageV1({
+  Future<Response<String>> regenerateLastMessage({
     required String conversationId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -712,7 +705,7 @@ class AssistantApi {
   ///
   /// Parameters:
   /// * [conversationId]
-  /// * [assistantControllerRenameConversationV1Request]
+  /// * [renameConversationRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -720,13 +713,11 @@ class AssistantApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AssistantConversationResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [AssistantConversationResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AssistantConversationResponseDto>>
-  assistantControllerRenameConversationV1({
+  Future<Response<AssistantConversationResponse>> renameConversation({
     required String conversationId,
-    required AssistantControllerRenameConversationV1Request
-    assistantControllerRenameConversationV1Request,
+    required RenameConversationRequest renameConversationRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -752,7 +743,7 @@ class AssistantApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(assistantControllerRenameConversationV1Request);
+      _bodyData = jsonEncode(renameConversationRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -771,16 +762,16 @@ class AssistantApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    AssistantConversationResponseDto? _responseData;
+    AssistantConversationResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              AssistantConversationResponseDto,
-              AssistantConversationResponseDto
-            >(rawData, 'AssistantConversationResponseDto', growable: true);
+              AssistantConversationResponse,
+              AssistantConversationResponse
+            >(rawData, 'AssistantConversationResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -791,7 +782,7 @@ class AssistantApi {
       );
     }
 
-    return Response<AssistantConversationResponseDto>(
+    return Response<AssistantConversationResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -807,7 +798,7 @@ class AssistantApi {
   ///
   ///
   /// Parameters:
-  /// * [assistantControllerStreamMessagesV1Request]
+  /// * [streamMessagesRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -817,9 +808,8 @@ class AssistantApi {
   ///
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<String>> assistantControllerStreamMessagesV1({
-    required AssistantControllerStreamMessagesV1Request
-    assistantControllerStreamMessagesV1Request,
+  Future<Response<String>> streamMessages({
+    required StreamMessagesRequest streamMessagesRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -839,7 +829,7 @@ class AssistantApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(assistantControllerStreamMessagesV1Request);
+      _bodyData = jsonEncode(streamMessagesRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

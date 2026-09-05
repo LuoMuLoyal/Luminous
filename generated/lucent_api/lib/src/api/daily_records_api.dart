@@ -9,27 +9,27 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/daily_record_candidate_response_dto.dart';
-import 'package:lucent_api/src/model/daily_record_image_upload_response_dto.dart';
-import 'package:lucent_api/src/model/daily_record_list_response_dto.dart';
-import 'package:lucent_api/src/model/daily_record_response_dto.dart';
-import 'package:lucent_api/src/model/daily_record_summary_response_dto.dart';
-import 'package:lucent_api/src/model/daily_records_controller_create_image_upload_v1_request.dart';
-import 'package:lucent_api/src/model/daily_records_controller_create_v1_request.dart';
-import 'package:lucent_api/src/model/daily_records_controller_generate_candidates_v1_request.dart';
-import 'package:lucent_api/src/model/daily_records_controller_update_v1_request.dart';
+import 'package:lucent_api/src/model/create_daily_record_request.dart';
+import 'package:lucent_api/src/model/create_image_upload_request.dart';
+import 'package:lucent_api/src/model/daily_record_candidate_response.dart';
+import 'package:lucent_api/src/model/daily_record_image_upload_response.dart';
+import 'package:lucent_api/src/model/daily_record_list_response.dart';
+import 'package:lucent_api/src/model/daily_record_response.dart';
+import 'package:lucent_api/src/model/daily_record_summary_response.dart';
+import 'package:lucent_api/src/model/generate_candidates_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
+import 'package:lucent_api/src/model/update_daily_record_request.dart';
 
 class DailyRecordsApi {
   final Dio _dio;
 
   const DailyRecordsApi(this._dio);
 
-  /// Create a signed URL for daily record image upload
+  /// Create a daily record
   ///
   ///
   /// Parameters:
-  /// * [dailyRecordsControllerCreateImageUploadV1Request]
+  /// * [createDailyRecordRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -37,12 +37,97 @@ class DailyRecordsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DailyRecordImageUploadResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DailyRecordResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordImageUploadResponseDto>>
-  dailyRecordsControllerCreateImageUploadV1({
-    required DailyRecordsControllerCreateImageUploadV1Request
-    dailyRecordsControllerCreateImageUploadV1Request,
+  Future<Response<DailyRecordResponse>> createDailyRecord({
+    required CreateDailyRecordRequest createDailyRecordRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/daily-records';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(createDailyRecordRequest);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    DailyRecordResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<DailyRecordResponse, DailyRecordResponse>(
+              rawData,
+              'DailyRecordResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<DailyRecordResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Create a signed URL for daily record image upload
+  ///
+  ///
+  /// Parameters:
+  /// * [createImageUploadRequest]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [DailyRecordImageUploadResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<DailyRecordImageUploadResponse>> createImageUpload({
+    required CreateImageUploadRequest createImageUploadRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -63,7 +148,7 @@ class DailyRecordsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(dailyRecordsControllerCreateImageUploadV1Request);
+      _bodyData = jsonEncode(createImageUploadRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -82,16 +167,16 @@ class DailyRecordsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DailyRecordImageUploadResponseDto? _responseData;
+    DailyRecordImageUploadResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              DailyRecordImageUploadResponseDto,
-              DailyRecordImageUploadResponseDto
-            >(rawData, 'DailyRecordImageUploadResponseDto', growable: true);
+              DailyRecordImageUploadResponse,
+              DailyRecordImageUploadResponse
+            >(rawData, 'DailyRecordImageUploadResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -102,95 +187,7 @@ class DailyRecordsApi {
       );
     }
 
-    return Response<DailyRecordImageUploadResponseDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
-  }
-
-  /// Create a daily record
-  ///
-  ///
-  /// Parameters:
-  /// * [dailyRecordsControllerCreateV1Request]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future] containing a [Response] with a [DailyRecordResponseDto] as data
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordResponseDto>> dailyRecordsControllerCreateV1({
-    required DailyRecordsControllerCreateV1Request
-    dailyRecordsControllerCreateV1Request,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/user/daily-records';
-    final _options = Options(
-      method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      contentType: 'application/json',
-      validateStatus: validateStatus,
-    );
-
-    dynamic _bodyData;
-
-    try {
-      _bodyData = jsonEncode(dailyRecordsControllerCreateV1Request);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    final _response = await _dio.request<Object>(
-      _path,
-      data: _bodyData,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    DailyRecordResponseDto? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<DailyRecordResponseDto, DailyRecordResponseDto>(
-              rawData,
-              'DailyRecordResponseDto',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<DailyRecordResponseDto>(
+    return Response<DailyRecordImageUploadResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -216,7 +213,7 @@ class DailyRecordsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> dailyRecordsControllerDeleteV1({
+  Future<Response<void>> deleteDailyRecord({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -253,7 +250,7 @@ class DailyRecordsApi {
   ///
   ///
   /// Parameters:
-  /// * [dailyRecordsControllerGenerateCandidatesV1Request]
+  /// * [generateCandidatesRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -261,12 +258,10 @@ class DailyRecordsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DailyRecordCandidateResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DailyRecordCandidateResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordCandidateResponseDto>>
-  dailyRecordsControllerGenerateCandidatesV1({
-    required DailyRecordsControllerGenerateCandidatesV1Request
-    dailyRecordsControllerGenerateCandidatesV1Request,
+  Future<Response<DailyRecordCandidateResponse>> generateCandidates({
+    required GenerateCandidatesRequest generateCandidatesRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -286,7 +281,7 @@ class DailyRecordsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(dailyRecordsControllerGenerateCandidatesV1Request);
+      _bodyData = jsonEncode(generateCandidatesRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -305,16 +300,16 @@ class DailyRecordsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DailyRecordCandidateResponseDto? _responseData;
+    DailyRecordCandidateResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              DailyRecordCandidateResponseDto,
-              DailyRecordCandidateResponseDto
-            >(rawData, 'DailyRecordCandidateResponseDto', growable: true);
+              DailyRecordCandidateResponse,
+              DailyRecordCandidateResponse
+            >(rawData, 'DailyRecordCandidateResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -325,7 +320,7 @@ class DailyRecordsApi {
       );
     }
 
-    return Response<DailyRecordCandidateResponseDto>(
+    return Response<DailyRecordCandidateResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -349,9 +344,9 @@ class DailyRecordsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DailyRecordResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DailyRecordResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordResponseDto>> dailyRecordsControllerGetV1({
+  Future<Response<DailyRecordResponse>> getDailyRecord({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -381,15 +376,15 @@ class DailyRecordsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DailyRecordResponseDto? _responseData;
+    DailyRecordResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<DailyRecordResponseDto, DailyRecordResponseDto>(
+          : deserialize<DailyRecordResponse, DailyRecordResponse>(
               rawData,
-              'DailyRecordResponseDto',
+              'DailyRecordResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -402,7 +397,7 @@ class DailyRecordsApi {
       );
     }
 
-    return Response<DailyRecordResponseDto>(
+    return Response<DailyRecordResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -429,9 +424,9 @@ class DailyRecordsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DailyRecordListResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DailyRecordListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordListResponseDto>> dailyRecordsControllerListV1({
+  Future<Response<DailyRecordListResponse>> listDailyRecords({
     required String date,
     String? kind,
     int? page,
@@ -467,15 +462,15 @@ class DailyRecordsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DailyRecordListResponseDto? _responseData;
+    DailyRecordListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<DailyRecordListResponseDto, DailyRecordListResponseDto>(
+          : deserialize<DailyRecordListResponse, DailyRecordListResponse>(
               rawData,
-              'DailyRecordListResponseDto',
+              'DailyRecordListResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -488,7 +483,7 @@ class DailyRecordsApi {
       );
     }
 
-    return Response<DailyRecordListResponseDto>(
+    return Response<DailyRecordListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -512,10 +507,9 @@ class DailyRecordsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DailyRecordSummaryResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DailyRecordSummaryResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordSummaryResponseDto>>
-  dailyRecordsControllerSummaryV1({
+  Future<Response<DailyRecordSummaryResponse>> summary({
     required String date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -543,16 +537,17 @@ class DailyRecordsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DailyRecordSummaryResponseDto? _responseData;
+    DailyRecordSummaryResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              DailyRecordSummaryResponseDto,
-              DailyRecordSummaryResponseDto
-            >(rawData, 'DailyRecordSummaryResponseDto', growable: true);
+          : deserialize<DailyRecordSummaryResponse, DailyRecordSummaryResponse>(
+              rawData,
+              'DailyRecordSummaryResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -563,7 +558,7 @@ class DailyRecordsApi {
       );
     }
 
-    return Response<DailyRecordSummaryResponseDto>(
+    return Response<DailyRecordSummaryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -580,7 +575,7 @@ class DailyRecordsApi {
   ///
   /// Parameters:
   /// * [id]
-  /// * [dailyRecordsControllerUpdateV1Request]
+  /// * [updateDailyRecordRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -588,12 +583,11 @@ class DailyRecordsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [DailyRecordResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [DailyRecordResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordResponseDto>> dailyRecordsControllerUpdateV1({
+  Future<Response<DailyRecordResponse>> updateDailyRecord({
     required String id,
-    required DailyRecordsControllerUpdateV1Request
-    dailyRecordsControllerUpdateV1Request,
+    required UpdateDailyRecordRequest updateDailyRecordRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -618,7 +612,7 @@ class DailyRecordsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(dailyRecordsControllerUpdateV1Request);
+      _bodyData = jsonEncode(updateDailyRecordRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -637,15 +631,15 @@ class DailyRecordsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    DailyRecordResponseDto? _responseData;
+    DailyRecordResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<DailyRecordResponseDto, DailyRecordResponseDto>(
+          : deserialize<DailyRecordResponse, DailyRecordResponse>(
               rawData,
-              'DailyRecordResponseDto',
+              'DailyRecordResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -658,7 +652,7 @@ class DailyRecordsApi {
       );
     }
 
-    return Response<DailyRecordResponseDto>(
+    return Response<DailyRecordResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
