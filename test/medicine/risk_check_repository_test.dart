@@ -99,9 +99,7 @@ void main() {
       remoteDataSource: dataSource,
     );
     registerFallbackValue(
-      RunRiskCheckRequest(
-        type: RunRiskCheckRequestTypeEnum.static_,
-      ),
+      RunRiskCheckRequest(type: RunRiskCheckRequestTypeEnum.static_),
     );
   });
 
@@ -154,9 +152,7 @@ void main() {
     test('maps record response to domain', () async {
       when(
         () => api.runRiskCheck(
-          runRiskCheckRequest: any(
-            named: 'runRiskCheckRequest',
-          ),
+          runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -165,9 +161,7 @@ void main() {
       expect(record.checkType, MedicineRiskCheckType.static_);
       verify(
         () => api.runRiskCheck(
-          runRiskCheckRequest: any(
-            named: 'runRiskCheckRequest',
-          ),
+          runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
         ),
       ).called(1);
     });
@@ -175,9 +169,7 @@ void main() {
     test('maps llm check type to request dto', () async {
       when(
         () => api.runRiskCheck(
-          runRiskCheckRequest: any(
-            named: 'runRiskCheckRequest',
-          ),
+          runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -186,24 +178,17 @@ void main() {
       final captured =
           verify(
                 () => api.runRiskCheck(
-                  runRiskCheckRequest: captureAny(
-                    named: 'runRiskCheckRequest',
-                  ),
+                  runRiskCheckRequest: captureAny(named: 'runRiskCheckRequest'),
                 ),
               ).captured.single
               as RunRiskCheckRequest;
-      expect(
-        captured.type,
-        RunRiskCheckRequestTypeEnum.llm,
-      );
+      expect(captured.type, RunRiskCheckRequestTypeEnum.llm);
     });
 
     test('throws empty response error when run result is null', () async {
       when(
         () => api.runRiskCheck(
-          runRiskCheckRequest: any(
-            named: 'runRiskCheckRequest',
-          ),
+          runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
         ),
       ).thenAnswer(
         (_) async => Response<MedicineRiskCheckRecordResponse>(
@@ -234,9 +219,7 @@ void main() {
       () async {
         when(
           () => api.runRiskCheck(
-            runRiskCheckRequest: any(
-              named: 'runRiskCheckRequest',
-            ),
+            runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
           ),
         ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -254,10 +237,7 @@ void main() {
                   ),
                 ).captured.single
                 as RunRiskCheckRequest;
-        expect(
-          captured.type,
-          RunRiskCheckRequestTypeEnum.static_,
-        );
+        expect(captured.type, RunRiskCheckRequestTypeEnum.static_);
         expect(captured.candidate, isNotNull);
         expect(
           captured.candidate!.source_,
@@ -273,9 +253,7 @@ void main() {
     test('maps drugbank candidate source', () async {
       when(
         () => api.runRiskCheck(
-          runRiskCheckRequest: any(
-            named: 'runRiskCheckRequest',
-          ),
+          runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -284,9 +262,7 @@ void main() {
       final captured =
           verify(
                 () => api.runRiskCheck(
-                  runRiskCheckRequest: captureAny(
-                    named: 'runRiskCheckRequest',
-                  ),
+                  runRiskCheckRequest: captureAny(named: 'runRiskCheckRequest'),
                 ),
               ).captured.single
               as RunRiskCheckRequest;
@@ -300,9 +276,7 @@ void main() {
     test('throws empty response error when precheck result is null', () async {
       when(
         () => api.runRiskCheck(
-          runRiskCheckRequest: any(
-            named: 'runRiskCheckRequest',
-          ),
+          runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
         ),
       ).thenAnswer(
         (_) async => Response<MedicineRiskCheckRecordResponse>(
@@ -342,9 +316,7 @@ void main() {
     test('runCheck delegates to the data source', () async {
       when(
         () => api.runRiskCheck(
-          runRiskCheckRequest: any(
-            named: 'runRiskCheckRequest',
-          ),
+          runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -358,9 +330,7 @@ void main() {
     test('runPrecheck delegates to the data source', () async {
       when(
         () => api.runRiskCheck(
-          runRiskCheckRequest: any(
-            named: 'runRiskCheckRequest',
-          ),
+          runRiskCheckRequest: any(named: 'runRiskCheckRequest'),
         ),
       ).thenAnswer((_) async => _apiResponse(_record()));
 
@@ -385,9 +355,7 @@ void main() {
     test(
       'non-Problem Details error body propagates FormatException from run()',
       () async {
-        when(
-          () => api.getRiskCheck(),
-        ).thenThrow(_nonProblemBody400());
+        when(() => api.getRiskCheck()).thenThrow(_nonProblemBody400());
 
         await expectLater(
           repository.getRecords().run(),

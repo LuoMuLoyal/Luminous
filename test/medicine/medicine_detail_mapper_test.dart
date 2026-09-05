@@ -9,8 +9,7 @@ MedicineDetailResponseDetail _detail({
   List<String> atcCodes = const [],
   List<String> synonyms = const [],
   List<String> foodInteractions = const [],
-  List<MedicineDetailResponseDrugInteractions>?
-  drugInteractions,
+  List<MedicineDetailResponseDrugInteractions>? drugInteractions,
   String? approvalNumber,
   String? manufacturer,
   String? packageSpec,

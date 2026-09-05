@@ -417,8 +417,7 @@ class _FakeSettingsProfileRemoteDataSource
             ? null
             : timezone as String?,
         unitSystem: identical(unitSystem, settingsProfileNoChange)
-            ? HealthContextResponseProfileUnitSystemEnum
-                  .unknownDefaultOpenApi
+            ? HealthContextResponseProfileUnitSystemEnum.unknownDefaultOpenApi
             : (unitSystem as HealthContextResponseProfileUnitSystemEnum?) ??
                   HealthContextResponseProfileUnitSystemEnum
                       .unknownDefaultOpenApi,

@@ -195,12 +195,8 @@ void main() {
   late List<PreviewClinicSummaryRequest> previewRequests;
 
   setUpAll(() {
-    registerFallbackValue(
-      PreviewClinicSummaryRequest(selectedFields: []),
-    );
-    registerFallbackValue(
-      ShareClinicSummaryRequest(selectedFields: []),
-    );
+    registerFallbackValue(PreviewClinicSummaryRequest(selectedFields: []));
+    registerFallbackValue(ShareClinicSummaryRequest(selectedFields: []));
   });
 
   setUp(() {
@@ -562,9 +558,7 @@ void main() {
       expect(items, hasLength(1));
       expect(items.first.id, 'share-1');
       expect(items.first.accessCount, 3);
-      verify(
-        () => reportsApi.listClinicSummaryShares(),
-      ).called(1);
+      verify(() => reportsApi.listClinicSummaryShares()).called(1);
     });
 
     test('revoke deletes the share and refreshes the list', () async {
@@ -572,9 +566,7 @@ void main() {
         () => reportsApi.listClinicSummaryShares(),
       ).thenAnswer((_) async => _shareListResponse([_shareItem()]));
       when(
-        () => reportsApi.revokeClinicSummaryShare(
-          shareId: 'share-1',
-        ),
+        () => reportsApi.revokeClinicSummaryShare(shareId: 'share-1'),
       ).thenAnswer(
         (_) async => Response<void>(
           requestOptions: RequestOptions(path: '/revoke'),
@@ -592,14 +584,10 @@ void main() {
       await c.read(clinicSummaryShareListProvider.future);
 
       verify(
-        () => reportsApi.revokeClinicSummaryShare(
-          shareId: 'share-1',
-        ),
+        () => reportsApi.revokeClinicSummaryShare(shareId: 'share-1'),
       ).called(1);
       // invalidateSelf triggers a refetch of the list.
-      verify(
-        () => reportsApi.listClinicSummaryShares(),
-      ).called(2);
+      verify(() => reportsApi.listClinicSummaryShares()).called(2);
     });
   });
 
@@ -628,14 +616,11 @@ void main() {
     addTearDown(dioClient.dispose);
     when(
       () => reportsApi.previewClinicSummary(
-        previewClinicSummaryRequest: any(
-          named: 'previewClinicSummaryRequest',
-        ),
+        previewClinicSummaryRequest: any(named: 'previewClinicSummaryRequest'),
       ),
     ).thenAnswer((invocation) async {
       previewRequests.add(
-        invocation
-                .namedArguments[#previewClinicSummaryRequest]
+        invocation.namedArguments[#previewClinicSummaryRequest]
             as PreviewClinicSummaryRequest,
       );
       if (previewError != null) throw previewError;
@@ -690,8 +675,7 @@ void main() {
       await openDialog(tester, client: client, service: service);
 
       expect(service.previewResults, [
-        RecordBatchRequestEventsResultEnum
-            .success,
+        RecordBatchRequestEventsResultEnum.success,
       ]);
       expect(service.exportResults, isEmpty);
       // The preview content is actually presented.
@@ -714,8 +698,7 @@ void main() {
       );
 
       expect(service.previewResults, [
-        RecordBatchRequestEventsResultEnum
-            .failure,
+        RecordBatchRequestEventsResultEnum.failure,
       ]);
       expect(service.exportResults, isEmpty);
     });
@@ -747,12 +730,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(service.previewResults, [
-        RecordBatchRequestEventsResultEnum
-            .success,
+        RecordBatchRequestEventsResultEnum.success,
       ]);
       expect(service.exportResults, [
-        RecordBatchRequestEventsResultEnum
-            .failure,
+        RecordBatchRequestEventsResultEnum.failure,
       ]);
       // The PDF failure toast auto-dismisses; drain its timer.
       await tester.pump(const Duration(milliseconds: 1900));
@@ -831,8 +812,7 @@ void main() {
 
         // Toggling re-fetches but does not re-measure the presentation.
         expect(service.previewResults, [
-          RecordBatchRequestEventsResultEnum
-              .success,
+          RecordBatchRequestEventsResultEnum.success,
         ]);
       },
     );
@@ -963,9 +943,7 @@ void main() {
         );
         when(
           () => reportsApi.shareClinicSummary(
-            shareClinicSummaryRequest: any(
-              named: 'shareClinicSummaryRequest',
-            ),
+            shareClinicSummaryRequest: any(named: 'shareClinicSummaryRequest'),
           ),
         ).thenAnswer(
           (_) async => Response<ClinicSummaryShareResponse>(
@@ -1047,9 +1025,7 @@ void main() {
         await tester.tap(find.text(l10n.reviewShareRevokeAction));
         await tester.pumpAndSettle();
         verify(
-          () => reportsApi.revokeClinicSummaryShare(
-            shareId: 'share-42',
-          ),
+          () => reportsApi.revokeClinicSummaryShare(shareId: 'share-42'),
         ).called(1);
         expect(find.text(l10n.reviewShareRevokedTitle), findsOneWidget);
         expect(find.text(l10n.reviewShareRevokedBody), findsOneWidget);
@@ -1061,9 +1037,7 @@ void main() {
       'shows the new share',
       (tester) async {
         var listCalls = 0;
-        when(
-          () => reportsApi.listClinicSummaryShares(),
-        ).thenAnswer((_) async {
+        when(() => reportsApi.listClinicSummaryShares()).thenAnswer((_) async {
           listCalls += 1;
           return _shareListResponse([_shareItem()]);
         });
@@ -1071,9 +1045,7 @@ void main() {
         await openDialog(tester, client: client, service: service);
         when(
           () => reportsApi.shareClinicSummary(
-            shareClinicSummaryRequest: any(
-              named: 'shareClinicSummaryRequest',
-            ),
+            shareClinicSummaryRequest: any(named: 'shareClinicSummaryRequest'),
           ),
         ).thenAnswer(
           (_) async => Response<ClinicSummaryShareResponse>(
@@ -1109,9 +1081,7 @@ void main() {
         );
         addTearDown(sub.close);
         await container.read(clinicSummaryShareListProvider.future);
-        verify(
-          () => reportsApi.listClinicSummaryShares(),
-        ).called(1);
+        verify(() => reportsApi.listClinicSummaryShares()).called(1);
 
         final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
         await tester.ensureVisible(find.text(l10n.reviewClinicSummaryShare));
@@ -1137,9 +1107,7 @@ void main() {
         await openDialog(tester, client: client, service: service);
         when(
           () => reportsApi.shareClinicSummary(
-            shareClinicSummaryRequest: any(
-              named: 'shareClinicSummaryRequest',
-            ),
+            shareClinicSummaryRequest: any(named: 'shareClinicSummaryRequest'),
           ),
         ).thenAnswer(
           (_) async => Response<ClinicSummaryShareResponse>(
@@ -1225,10 +1193,8 @@ class _MemSessionStore implements LucentSessionStore {
 class _RecordingProductEventService extends ProductEventService {
   _RecordingProductEventService() : super(api: _MockProductEventsApi());
 
-  final List<RecordBatchRequestEventsResultEnum>
-  previewResults = [];
-  final List<RecordBatchRequestEventsResultEnum>
-  exportResults = [];
+  final List<RecordBatchRequestEventsResultEnum> previewResults = [];
+  final List<RecordBatchRequestEventsResultEnum> exportResults = [];
 
   @override
   Future<void> trackVisitSummaryPreviewed(

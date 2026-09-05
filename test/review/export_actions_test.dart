@@ -35,8 +35,7 @@ class _FakeLucentClient extends LucentClient {
 class _RecordingProductEventService extends ProductEventService {
   _RecordingProductEventService() : super(api: _MockProductEventsApi());
 
-  final List<RecordBatchRequestEventsResultEnum>
-  exportResults = [];
+  final List<RecordBatchRequestEventsResultEnum> exportResults = [];
 
   @override
   Future<void> trackVisitSummaryExported(
@@ -157,8 +156,9 @@ void main() {
     (tester) async {
       when(
         () => api.createRequest(
-          createRequestRequest:
-              reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
+          createRequestRequest: reviewMonthlyPdfExportRequest.toDto(
+            password: 'export-password',
+          ),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponse>(
@@ -176,8 +176,7 @@ void main() {
       // HTTP 200 alone must not count as exported — the request itself is in
       // a failed state, so the event records failure.
       expect(service.exportResults, [
-        RecordBatchRequestEventsResultEnum
-            .failure,
+        RecordBatchRequestEventsResultEnum.failure,
       ]);
     },
   );
@@ -187,8 +186,9 @@ void main() {
     (tester) async {
       when(
         () => api.createRequest(
-          createRequestRequest:
-              reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
+          createRequestRequest: reviewMonthlyPdfExportRequest.toDto(
+            password: 'export-password',
+          ),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponse>(
@@ -204,8 +204,7 @@ void main() {
       await _tapExport(tester);
 
       expect(service.exportResults, [
-        RecordBatchRequestEventsResultEnum
-            .success,
+        RecordBatchRequestEventsResultEnum.success,
       ]);
     },
   );
@@ -215,8 +214,9 @@ void main() {
     (tester) async {
       when(
         () => api.createRequest(
-          createRequestRequest:
-              reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
+          createRequestRequest: reviewMonthlyPdfExportRequest.toDto(
+            password: 'export-password',
+          ),
         ),
       ).thenAnswer(
         (_) async => Response<DataExportRequestResponse>(
@@ -232,8 +232,7 @@ void main() {
       await _tapExport(tester);
 
       expect(service.exportResults, [
-        RecordBatchRequestEventsResultEnum
-            .failure,
+        RecordBatchRequestEventsResultEnum.failure,
       ]);
     },
   );
@@ -243,8 +242,9 @@ void main() {
   ) async {
     when(
       () => api.createRequest(
-        createRequestRequest:
-            reviewMonthlyPdfExportRequest.toDto(password: 'export-password'),
+        createRequestRequest: reviewMonthlyPdfExportRequest.toDto(
+          password: 'export-password',
+        ),
       ),
     ).thenThrow(
       DioException(
@@ -256,8 +256,6 @@ void main() {
     await _pumpHarness(tester, api: api, service: service);
     await _tapExport(tester);
 
-    expect(service.exportResults, [
-      RecordBatchRequestEventsResultEnum.failure,
-    ]);
+    expect(service.exportResults, [RecordBatchRequestEventsResultEnum.failure]);
   });
 }

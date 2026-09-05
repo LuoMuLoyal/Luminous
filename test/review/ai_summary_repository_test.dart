@@ -31,9 +31,8 @@ void main() {
             ),
           ),
           observedPattern: lucent.ReportSummaryResponseObservedPattern(
-            kind: lucent
-                .ReportSummaryResponseObservedPatternKindEnum
-                .medication,
+            kind:
+                lucent.ReportSummaryResponseObservedPatternKindEnum.medication,
             text: '近 5 天用药完成率保持在 80% 以上。',
             source_: '用药提醒记录',
           ),

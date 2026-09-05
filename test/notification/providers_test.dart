@@ -88,8 +88,7 @@ class FakeNotificationsApi implements NotificationsApi {
   int findAllCallCount = 0;
 
   @override
-  Future<Response<UnreadCountResponse>>
-  getUnreadCount({
+  Future<Response<UnreadCountResponse>> getUnreadCount({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -112,8 +111,7 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<NotificationListResponse>>
-  listNotifications({
+  Future<Response<NotificationListResponse>> listNotifications({
     required num page,
     required num pageSize,
     CancelToken? cancelToken,
@@ -144,8 +142,7 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<NotificationDetailResponse>>
-  getNotification({
+  Future<Response<NotificationDetailResponse>> getNotification({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -197,8 +194,7 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<UnreadCountResponse>>
-  markAllAsRead({
+  Future<Response<UnreadCountResponse>> markAllAsRead({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -214,10 +210,8 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<void>>
-  createNotification({
-    required CreateNotificationRequest
-    createNotificationRequest,
+  Future<Response<void>> createNotification({
+    required CreateNotificationRequest createNotificationRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -229,8 +223,7 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<NotificationDetailResponse>>
-  markAsRead({
+  Future<Response<NotificationDetailResponse>> markAsRead({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -260,8 +253,7 @@ class FakeNotificationsApi implements NotificationsApi {
   }
 
   @override
-  Future<Response<NotificationDetailResponse>>
-  markAsUnread({
+  Future<Response<NotificationDetailResponse>> markAsUnread({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,

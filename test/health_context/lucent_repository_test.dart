@@ -805,8 +805,7 @@ void main() {
         currentMedicines: [
           HealthContextResponseCurrentMedicines(
             id: 'med-1',
-            source_:
-                HealthContextResponseCurrentMedicinesSource_Enum.cn,
+            source_: HealthContextResponseCurrentMedicinesSource_Enum.cn,
             sourceRefId: 'ref-1',
             displayName: 'Aspirin',
             strengthText: '100mg',

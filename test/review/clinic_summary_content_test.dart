@@ -118,8 +118,7 @@ ClinicSummaryResponse _dto({
               diagnosedYear: 2023,
             ),
           ]
-        : (conditions as List?)
-              ?.cast<ClinicSummaryResponseConditions>(),
+        : (conditions as List?)?.cast<ClinicSummaryResponseConditions>(),
     currentMedicines: identical(medicines, _defaultSections)
         ? <ClinicSummaryResponseCurrentMedicines>[
             ClinicSummaryResponseCurrentMedicines(
@@ -127,8 +126,7 @@ ClinicSummaryResponse _dto({
               doseText: '0.5g 每日一次',
             ),
           ]
-        : (medicines as List?)
-              ?.cast<ClinicSummaryResponseCurrentMedicines>(),
+        : (medicines as List?)?.cast<ClinicSummaryResponseCurrentMedicines>(),
     findings: findings,
     waterEntries: waterEntries,
     sleepEntries: sleepEntries,
@@ -434,10 +432,7 @@ void main() {
       tester,
       _dto(
         waterEntries: [
-          ClinicSummaryResponseWaterEntries(
-            date: '2026-08-10',
-            ml: 1500,
-          ),
+          ClinicSummaryResponseWaterEntries(date: '2026-08-10', ml: 1500),
         ],
       ),
     );
@@ -457,10 +452,7 @@ void main() {
       tester,
       _dto(
         sleepEntries: [
-          ClinicSummaryResponseSleepEntries(
-            date: '2026-08-10',
-            minutes: 420,
-          ),
+          ClinicSummaryResponseSleepEntries(date: '2026-08-10', minutes: 420),
         ],
       ),
     );

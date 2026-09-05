@@ -188,18 +188,9 @@ void main() {
   group('DataExportRequestInput', () {
     test('default values are hospital/pdf/last7Days', () {
       const input = DataExportRequestInput();
-      expect(
-        input.kind,
-        CreateRequestRequestKindEnum.hospital,
-      );
-      expect(
-        input.format,
-        CreateRequestRequestFormatEnum.pdf,
-      );
-      expect(
-        input.range,
-        CreateRequestRequestRangeEnum.last7Days,
-      );
+      expect(input.kind, CreateRequestRequestKindEnum.hospital);
+      expect(input.format, CreateRequestRequestFormatEnum.pdf);
+      expect(input.range, CreateRequestRequestRangeEnum.last7Days);
     });
 
     test('equality works correctly', () {
@@ -261,18 +252,9 @@ void main() {
     test('toDto creates correct DTO', () {
       const input = DataExportRequestInput();
       final dto = input.toDto(password: 'export-password');
-      expect(
-        dto.kind,
-        CreateRequestRequestKindEnum.hospital,
-      );
-      expect(
-        dto.format,
-        CreateRequestRequestFormatEnum.pdf,
-      );
-      expect(
-        dto.range,
-        CreateRequestRequestRangeEnum.last7Days,
-      );
+      expect(dto.kind, CreateRequestRequestKindEnum.hospital);
+      expect(dto.format, CreateRequestRequestFormatEnum.pdf);
+      expect(dto.range, CreateRequestRequestRangeEnum.last7Days);
     });
   });
 
@@ -313,38 +295,20 @@ void main() {
   group('Predefined export request constants', () {
     test('reviewHospitalPdfLast7DaysExportRequest has correct defaults', () {
       const input = reviewHospitalPdfLast7DaysExportRequest;
-      expect(
-        input.kind,
-        CreateRequestRequestKindEnum.hospital,
-      );
-      expect(
-        input.format,
-        CreateRequestRequestFormatEnum.pdf,
-      );
-      expect(
-        input.range,
-        CreateRequestRequestRangeEnum.last7Days,
-      );
+      expect(input.kind, CreateRequestRequestKindEnum.hospital);
+      expect(input.format, CreateRequestRequestFormatEnum.pdf);
+      expect(input.range, CreateRequestRequestRangeEnum.last7Days);
     });
 
     test('reviewMonthlyPdfExportRequest has monthly kind', () {
       const input = reviewMonthlyPdfExportRequest;
-      expect(
-        input.kind,
-        CreateRequestRequestKindEnum.monthly,
-      );
-      expect(
-        input.range,
-        CreateRequestRequestRangeEnum.last30Days,
-      );
+      expect(input.kind, CreateRequestRequestKindEnum.monthly);
+      expect(input.range, CreateRequestRequestRangeEnum.last30Days);
     });
 
     test('reviewPrintPdfExportRequest has print kind', () {
       const input = reviewPrintPdfExportRequest;
-      expect(
-        input.kind,
-        CreateRequestRequestKindEnum.print,
-      );
+      expect(input.kind, CreateRequestRequestKindEnum.print);
     });
   });
 }

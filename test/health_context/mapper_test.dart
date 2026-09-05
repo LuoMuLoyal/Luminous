@@ -180,8 +180,7 @@ void main() {
         currentMedicines: [
           HealthContextResponseCurrentMedicines(
             id: 'm1',
-            source_:
-                HealthContextResponseCurrentMedicinesSource_Enum.manual,
+            source_: HealthContextResponseCurrentMedicinesSource_Enum.manual,
             sourceRefId: null,
             displayName: 'Aspirin',
             strengthText: null,

@@ -128,12 +128,7 @@ void main() {
       expect(result.first.subtitle, '抗生素');
 
       verify(
-        () => mockApi.search(
-          source_: 'cn',
-          q: '阿莫西林',
-          page: 1,
-          pageSize: 20,
-        ),
+        () => mockApi.search(source_: 'cn', q: '阿莫西林', page: 1, pageSize: 20),
       ).called(1);
     });
 

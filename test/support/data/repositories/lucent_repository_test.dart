@@ -80,9 +80,7 @@ void main() {
         ),
       );
 
-      when(
-        () => api.getAppInfo(),
-      ).thenAnswer((_) async => response);
+      when(() => api.getAppInfo()).thenAnswer((_) async => response);
 
       final result = await expectTaskRight(repo.getAppInfo());
 
@@ -105,9 +103,7 @@ void main() {
         ),
       );
 
-      when(
-        () => api.getAppInfo(),
-      ).thenAnswer((_) async => response);
+      when(() => api.getAppInfo()).thenAnswer((_) async => response);
 
       final result = await expectTaskRight(repo.getAppInfo());
 
@@ -119,9 +115,7 @@ void main() {
     });
 
     test('maps a network error to Left(network)', () async {
-      when(
-        () => api.getAppInfo(),
-      ).thenThrow(_networkException());
+      when(() => api.getAppInfo()).thenThrow(_networkException());
 
       final failure = await expectTaskLeft(repo.getAppInfo());
       expect(failure.kind, LucentFailureKind.network);
@@ -151,9 +145,7 @@ void main() {
 
     test('non-Problem Details error body propagates FormatException '
         'from run()', () async {
-      when(
-        () => api.getAppInfo(),
-      ).thenThrow(_nonProblemHtml500());
+      when(() => api.getAppInfo()).thenThrow(_nonProblemHtml500());
 
       // 协议违反（500 + text/html 而非 problem+json）保持 mapper 抛出的
       // FormatException 从 .run() 传播，而不是映射成 Left。
@@ -178,9 +170,7 @@ void main() {
     });
 
     test('maps an unexpected exception to Left(unknown) with cause', () async {
-      when(
-        () => api.getAppInfo(),
-      ).thenThrow(StateError('boom'));
+      when(() => api.getAppInfo()).thenThrow(StateError('boom'));
 
       final failure = await expectTaskLeft(repo.getAppInfo());
       expect(failure.kind, LucentFailureKind.unknown);

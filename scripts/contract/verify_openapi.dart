@@ -112,10 +112,7 @@ void _verifyGeneratedClientLayout(Directory generatedClientRoot) {
     '${Platform.pathSeparator}today_analysis_api.dart',
   );
   final source = todayAnalysisApi.readAsStringSync();
-  for (final methodName in const [
-    'read',
-    'refreshTodayAnalysis',
-  ]) {
+  for (final methodName in const ['read', 'refreshTodayAnalysis']) {
     if (!source.contains(methodName)) {
       throw StateError(
         'Generated Today Analysis API is missing required endpoint method '

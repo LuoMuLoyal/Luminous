@@ -9,52 +9,25 @@ void main() {
     test('returns hospital request for hospital kind', () {
       final input = reviewExportInputForKind(ReviewExportKind.hospital);
       expect(input, isNotNull);
-      expect(
-        input!.kind,
-        CreateRequestRequestKindEnum.hospital,
-      );
-      expect(
-        input.format,
-        CreateRequestRequestFormatEnum.pdf,
-      );
-      expect(
-        input.range,
-        CreateRequestRequestRangeEnum.last7Days,
-      );
+      expect(input!.kind, CreateRequestRequestKindEnum.hospital);
+      expect(input.format, CreateRequestRequestFormatEnum.pdf);
+      expect(input.range, CreateRequestRequestRangeEnum.last7Days);
     });
 
     test('returns monthly request for monthly kind', () {
       final input = reviewExportInputForKind(ReviewExportKind.monthly);
       expect(input, isNotNull);
-      expect(
-        input!.kind,
-        CreateRequestRequestKindEnum.monthly,
-      );
-      expect(
-        input.format,
-        CreateRequestRequestFormatEnum.pdf,
-      );
-      expect(
-        input.range,
-        CreateRequestRequestRangeEnum.last30Days,
-      );
+      expect(input!.kind, CreateRequestRequestKindEnum.monthly);
+      expect(input.format, CreateRequestRequestFormatEnum.pdf);
+      expect(input.range, CreateRequestRequestRangeEnum.last30Days);
     });
 
     test('returns print request for print kind', () {
       final input = reviewExportInputForKind(ReviewExportKind.print);
       expect(input, isNotNull);
-      expect(
-        input!.kind,
-        CreateRequestRequestKindEnum.print,
-      );
-      expect(
-        input.format,
-        CreateRequestRequestFormatEnum.pdf,
-      );
-      expect(
-        input.range,
-        CreateRequestRequestRangeEnum.last7Days,
-      );
+      expect(input!.kind, CreateRequestRequestKindEnum.print);
+      expect(input.format, CreateRequestRequestFormatEnum.pdf);
+      expect(input.range, CreateRequestRequestRangeEnum.last7Days);
     });
 
     test('returns null for clinicShare kind', () {

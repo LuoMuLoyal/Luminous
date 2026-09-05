@@ -18,8 +18,7 @@ MedicineDetailResponseDetail _detail({
   List<String> atcCodes = const [],
   List<String> synonyms = const [],
   List<String> foodInteractions = const [],
-  List<MedicineDetailResponseDrugInteractions>?
-  drugInteractions,
+  List<MedicineDetailResponseDrugInteractions>? drugInteractions,
   String? approvalNumber,
   String? manufacturer,
   String? packageSpec,
@@ -140,9 +139,7 @@ void main() {
     expect(result.name, '布洛芬片');
     expect(result.indications, '用于缓解轻至中度疼痛');
 
-    verify(
-      () => api.getDetail(id: 'cn_1', source_: 'cn'),
-    ).called(1);
+    verify(() => api.getDetail(id: 'cn_1', source_: 'cn')).called(1);
   });
 
   test('throws empty response error when the resource is null', () async {

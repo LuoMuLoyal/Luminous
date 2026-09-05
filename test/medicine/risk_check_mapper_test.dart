@@ -115,8 +115,8 @@ MedicineRiskCheckRecordsResponseLlmResult _llmResult({
       MedicineRiskCheckRecordsResponseLlmResultOverallRiskLevelEnum.safe,
   int score = 0,
   List<MedicineRiskCheckRecordsResponseLlmResultFindings> findings = const [],
-  List<MedicineRiskCheckRecordsResponseLlmResultCoverageIssues>
-      coverageIssues = const [],
+  List<MedicineRiskCheckRecordsResponseLlmResultCoverageIssues> coverageIssues =
+      const [],
   List<MedicineRiskCheckRecordsResponseLlmResultRedFlags> redFlags = const [],
   String? recommendation,
 }) {
@@ -144,8 +144,7 @@ void main() {
                 MedicineRiskCheckRecordsResponseStaticCheckTypeEnum.static_,
           ),
           llm: _listLlmRecord(
-            checkType:
-                MedicineRiskCheckRecordsResponseLlmCheckTypeEnum.llm,
+            checkType: MedicineRiskCheckRecordsResponseLlmCheckTypeEnum.llm,
           ),
         ),
       );
@@ -244,9 +243,8 @@ void main() {
         _response(
           findings: [
             MedicineRiskCheckRecordsResponseStaticResultFindings(
-              type:
-                  MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
-                      .interaction,
+              type: MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
+                  .interaction,
               severity:
                   MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                       .high,
@@ -256,9 +254,8 @@ void main() {
               primaryMedicineName: '合法药',
             ),
             MedicineRiskCheckRecordsResponseStaticResultFindings(
-              type:
-                  MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
-                      .unknownDefaultOpenApi,
+              type: MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
+                  .unknownDefaultOpenApi,
               severity:
                   MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                       .medium,
@@ -327,9 +324,8 @@ void main() {
     test('findingDtoToDomain returns null for unknown finding type', () {
       final finding = mapper.findingDtoToDomain(
         MedicineRiskCheckRecordsResponseStaticResultFindings(
-          type:
-              MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
-                  .unknownDefaultOpenApi,
+          type: MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
+              .unknownDefaultOpenApi,
           severity:
               MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                   .medium,
@@ -429,8 +425,7 @@ void main() {
     test('maps all contexts', () {
       for (final (dtoEnum, expected) in [
         (
-          MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum
-              .none,
+          MedicineRiskCheckRecordsResponseStaticResultFindingsContextEnum.none,
           MedicineRiskFindingContext.none,
         ),
         (
@@ -446,9 +441,8 @@ void main() {
       ]) {
         final finding = mapper.findingDtoToDomain(
           MedicineRiskCheckRecordsResponseStaticResultFindings(
-            type:
-                MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
-                    .allergy,
+            type: MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
+                .allergy,
             severity:
                 MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                     .high,
@@ -550,10 +544,7 @@ void main() {
         sourceRefId: '__mock_cn_ibuprofen__',
       );
 
-      expect(
-        dto.type,
-        RunRiskCheckRequestTypeEnum.static_,
-      );
+      expect(dto.type, RunRiskCheckRequestTypeEnum.static_);
       expect(dto.candidate, isNotNull);
       expect(
         dto.candidate!.source_,
@@ -568,10 +559,7 @@ void main() {
         sourceRefId: 'DB01050',
       );
 
-      expect(
-        dto.type,
-        RunRiskCheckRequestTypeEnum.static_,
-      );
+      expect(dto.type, RunRiskCheckRequestTypeEnum.static_);
       expect(
         dto.candidate!.source_,
         RunRiskCheckRequestCandidateSource_Enum.drugbank,
@@ -584,8 +572,7 @@ void main() {
 
       expect(
         dto.candidate!.source_,
-        RunRiskCheckRequestCandidateSource_Enum
-            .unknownDefaultOpenApi,
+        RunRiskCheckRequestCandidateSource_Enum.unknownDefaultOpenApi,
       );
     });
   });
@@ -599,9 +586,8 @@ void main() {
                   .risk,
           findings: [
             MedicineRiskCheckRecordsResponseStaticResultFindings(
-              type:
-                  MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
-                      .interaction,
+              type: MedicineRiskCheckRecordsResponseStaticResultFindingsTypeEnum
+                  .interaction,
               severity:
                   MedicineRiskCheckRecordsResponseStaticResultFindingsSeverityEnum
                       .high,
@@ -621,9 +607,8 @@ void main() {
           ],
           redFlags: [
             MedicineRiskCheckRecordsResponseStaticResultRedFlags(
-              rule:
-                  MedicineRiskCheckRecordsResponseStaticResultRedFlagsRuleEnum
-                      .severeAllergy,
+              rule: MedicineRiskCheckRecordsResponseStaticResultRedFlagsRuleEnum
+                  .severeAllergy,
               primaryMedicineName: 'C',
             ),
           ],

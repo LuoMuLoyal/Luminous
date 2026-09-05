@@ -21,34 +21,28 @@ void main() {
             aiSummaryEnabled: false,
             findings: [
               lucent.ReportDashboardResponseFindings(
-                kind: lucent
-                    .ReportDashboardResponseFindingsKindEnum
-                    .sleep,
+                kind: lucent.ReportDashboardResponseFindingsKindEnum.sleep,
                 title: '睡眠数据不足',
                 body: '最近 7 天还没有睡眠记录。',
               ),
             ],
             metrics: [
               lucent.ReportDashboardResponseMetrics(
-                kind:
-                    lucent.ReportDashboardResponseMetricsKindEnum.sleep,
+                kind: lucent.ReportDashboardResponseMetricsKindEnum.sleep,
                 value: '--',
                 unit: 'h',
                 status: lucent
                     .ReportDashboardResponseMetricsStatusEnum
                     .insufficientData,
                 delta: '--',
-                direction: lucent
-                    .ReportDashboardResponseMetricsDirectionEnum
-                    .flat,
+                direction:
+                    lucent.ReportDashboardResponseMetricsDirectionEnum.flat,
                 sparkline: [0, 0, 0, 0, 0, 0, 0],
               ),
             ],
             patterns: [
               lucent.ReportDashboardResponsePatterns(
-                kind: lucent
-                    .ReportDashboardResponsePatternsKindEnum
-                    .sleep,
+                kind: lucent.ReportDashboardResponsePatternsKindEnum.sleep,
                 title: '等待睡眠数据',
                 status: lucent
                     .ReportDashboardResponsePatternsStatusEnum
@@ -59,8 +53,7 @@ void main() {
             ],
             trends: [
               lucent.ReportDashboardResponseTrends(
-                kind:
-                    lucent.ReportDashboardResponseTrendsKindEnum.sleep,
+                kind: lucent.ReportDashboardResponseTrendsKindEnum.sleep,
                 unit: 'h',
                 currentValue: '--',
                 values: [0, 0, 0, 0, 0, 0, 0],
@@ -98,48 +91,36 @@ void main() {
             findings: [
               for (var index = 1; index <= 4; index += 1)
                 lucent.ReportDashboardResponseFindings(
-                  kind: lucent
-                      .ReportDashboardResponseFindingsKindEnum
-                      .hydration,
+                  kind:
+                      lucent.ReportDashboardResponseFindingsKindEnum.hydration,
                   title: '发现$index',
                   body: '正文$index',
                 ),
             ],
             metrics: [
               lucent.ReportDashboardResponseMetrics(
-                kind: lucent
-                    .ReportDashboardResponseMetricsKindEnum
-                    .medication,
+                kind: lucent.ReportDashboardResponseMetricsKindEnum.medication,
                 value: '93',
                 unit: '%',
-                status: lucent
-                    .ReportDashboardResponseMetricsStatusEnum
-                    .good,
+                status: lucent.ReportDashboardResponseMetricsStatusEnum.good,
                 delta: '9%',
-                direction: lucent
-                    .ReportDashboardResponseMetricsDirectionEnum
-                    .up,
+                direction:
+                    lucent.ReportDashboardResponseMetricsDirectionEnum.up,
                 sparkline: [80, 88, 92, 89, 93, 88, 93],
               ),
             ],
             patterns: [
               lucent.ReportDashboardResponsePatterns(
-                kind: lucent
-                    .ReportDashboardResponsePatternsKindEnum
-                    .medication,
+                kind: lucent.ReportDashboardResponsePatternsKindEnum.medication,
                 title: '用药依从性稳定',
-                status: lucent
-                    .ReportDashboardResponsePatternsStatusEnum
-                    .good,
+                status: lucent.ReportDashboardResponsePatternsStatusEnum.good,
                 body: '近 7 天按计划完成率较高。',
                 sparkline: [48, 50, 47, 52, 49, 51, 58],
               ),
             ],
             trends: [
               lucent.ReportDashboardResponseTrends(
-                kind: lucent
-                    .ReportDashboardResponseTrendsKindEnum
-                    .medication,
+                kind: lucent.ReportDashboardResponseTrendsKindEnum.medication,
                 unit: '%',
                 currentValue: '93%',
                 values: [80, 88, 92, 89, 93, 88, 93],
@@ -185,11 +166,9 @@ void main() {
               kind: lucent.ReportDashboardResponseMetricsKindEnum.water,
               value: '999',
               unit: 'ml',
-              status:
-                  lucent.ReportDashboardResponseMetricsStatusEnum.good,
+              status: lucent.ReportDashboardResponseMetricsStatusEnum.good,
               delta: '999',
-              direction:
-                  lucent.ReportDashboardResponseMetricsDirectionEnum.up,
+              direction: lucent.ReportDashboardResponseMetricsDirectionEnum.up,
               sparkline: [999],
               observedMetric: lucent.ReportDashboardResponseMetricsObservedMetric(
                 value: 0,
@@ -243,17 +222,13 @@ void main() {
             trends: const [],
             metrics: [
               lucent.ReportDashboardResponseMetrics(
-                kind:
-                    lucent.ReportDashboardResponseMetricsKindEnum.water,
+                kind: lucent.ReportDashboardResponseMetricsKindEnum.water,
                 value: '500',
                 unit: 'ml',
-                status: lucent
-                    .ReportDashboardResponseMetricsStatusEnum
-                    .good,
+                status: lucent.ReportDashboardResponseMetricsStatusEnum.good,
                 delta: '10%',
-                direction: lucent
-                    .ReportDashboardResponseMetricsDirectionEnum
-                    .up,
+                direction:
+                    lucent.ReportDashboardResponseMetricsDirectionEnum.up,
                 sparkline: [500],
               ),
             ],

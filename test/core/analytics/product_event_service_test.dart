@@ -30,8 +30,7 @@ ProductEventService _service({
   String version = '1.2.3',
   String eventId = 'pe-fixed-001',
   RecordBatchRequestEventsPlatformEnum platform =
-      RecordBatchRequestEventsPlatformEnum
-          .android,
+      RecordBatchRequestEventsPlatformEnum.android,
 }) {
   return ProductEventService(
     api: api,
@@ -55,9 +54,7 @@ void main() {
   late _MockPendingSyncDao dao;
 
   setUpAll(() {
-    registerFallbackValue(
-      RecordBatchRequest(events: const []),
-    );
+    registerFallbackValue(RecordBatchRequest(events: const []));
   });
 
   setUp(() {
@@ -73,11 +70,8 @@ void main() {
     ).thenAnswer((_) async => 'pending-001');
     // Default: the server accepts the batch. Throwing tests override this.
     when(
-      () => api.recordBatch(
-        recordBatchRequest: any(
-          named: 'recordBatchRequest',
-        ),
-      ),
+      () =>
+          api.recordBatch(recordBatchRequest: any(named: 'recordBatchRequest')),
     ).thenAnswer(
       (_) async => Response<void>(
         requestOptions: RequestOptions(path: '/api/v1/user/product-events'),
@@ -99,9 +93,7 @@ void main() {
 
       verify(
         () => api.recordBatch(
-          recordBatchRequest: any(
-            named: 'recordBatchRequest',
-          ),
+          recordBatchRequest: any(named: 'recordBatchRequest'),
         ),
       ).called(2);
     });
@@ -115,9 +107,7 @@ void main() {
 
       verifyNever(
         () => api.recordBatch(
-          recordBatchRequest: any(
-            named: 'recordBatchRequest',
-          ),
+          recordBatchRequest: any(named: 'recordBatchRequest'),
         ),
       );
       verifyNever(
@@ -136,9 +126,7 @@ void main() {
         dao: dao,
         version: '2.0.1',
         eventId: 'pe-abc',
-        platform:
-            RecordBatchRequestEventsPlatformEnum
-                .ios,
+        platform: RecordBatchRequestEventsPlatformEnum.ios,
       );
 
       service.trackSuggestionImpression('sleep_shortfall');
@@ -148,34 +136,18 @@ void main() {
       final captured =
           verify(
                 () => api.recordBatch(
-                  recordBatchRequest: captureAny(
-                    named: 'recordBatchRequest',
-                  ),
+                  recordBatchRequest: captureAny(named: 'recordBatchRequest'),
                 ),
               ).captured.single
               as RecordBatchRequest;
 
       final event = captured.events.single;
-      expect(
-        event.name,
-        RecordBatchRequestEventsNameEnum
-            .suggestionImpression,
-      );
-      expect(
-        event.surface,
-        RecordBatchRequestEventsSurfaceEnum.today,
-      );
-      expect(
-        event.result,
-        RecordBatchRequestEventsResultEnum
-            .success,
-      );
+      expect(event.name, RecordBatchRequestEventsNameEnum.suggestionImpression);
+      expect(event.surface, RecordBatchRequestEventsSurfaceEnum.today);
+      expect(event.result, RecordBatchRequestEventsResultEnum.success);
       expect(event.suggestionRuleCode, 'sleep_shortfall');
       expect(event.appVersion, '2.0.1');
-      expect(
-        event.platform,
-        RecordBatchRequestEventsPlatformEnum.ios,
-      );
+      expect(event.platform, RecordBatchRequestEventsPlatformEnum.ios);
       expect(event.occurredAt, '2026-08-14T08:00:00.000Z');
       expect(event.clientEventId, 'pe-abc');
       expect(event.eventStatus, isNull);
@@ -196,32 +168,15 @@ void main() {
 
       final calls = verify(
         () => api.recordBatch(
-          recordBatchRequest: captureAny(
-            named: 'recordBatchRequest',
-          ),
+          recordBatchRequest: captureAny(named: 'recordBatchRequest'),
         ),
       ).captured;
       expect(calls, hasLength(1));
 
-      final event =
-          (calls.single as RecordBatchRequest)
-              .events
-              .single;
-      expect(
-        event.name,
-        RecordBatchRequestEventsNameEnum
-            .reviewOpened,
-      );
-      expect(
-        event.surface,
-        RecordBatchRequestEventsSurfaceEnum
-            .review,
-      );
-      expect(
-        event.result,
-        RecordBatchRequestEventsResultEnum
-            .success,
-      );
+      final event = (calls.single as RecordBatchRequest).events.single;
+      expect(event.name, RecordBatchRequestEventsNameEnum.reviewOpened);
+      expect(event.surface, RecordBatchRequestEventsSurfaceEnum.review);
+      expect(event.result, RecordBatchRequestEventsResultEnum.success);
       expect(event.suggestionRuleCode, isNull);
     });
   });
@@ -233,27 +188,21 @@ void main() {
         final service = _service(api: api, dao: dao);
 
         await service.trackVisitSummaryPreviewed(
-          RecordBatchRequestEventsResultEnum
-              .success,
+          RecordBatchRequestEventsResultEnum.success,
         );
         await service.trackVisitSummaryPreviewed(
-          RecordBatchRequestEventsResultEnum
-              .success,
+          RecordBatchRequestEventsResultEnum.success,
         );
         await service.trackVisitSummaryExported(
-          RecordBatchRequestEventsResultEnum
-              .failure,
+          RecordBatchRequestEventsResultEnum.failure,
         );
         await service.trackVisitSummaryExported(
-          RecordBatchRequestEventsResultEnum
-              .failure,
+          RecordBatchRequestEventsResultEnum.failure,
         );
 
         verify(
           () => api.recordBatch(
-            recordBatchRequest: any(
-              named: 'recordBatchRequest',
-            ),
+            recordBatchRequest: any(named: 'recordBatchRequest'),
           ),
         ).called(4);
       },
@@ -263,68 +212,43 @@ void main() {
       final service = _service(api: api, dao: dao);
 
       await service.trackVisitSummaryPreviewed(
-        RecordBatchRequestEventsResultEnum
-            .failure,
+        RecordBatchRequestEventsResultEnum.failure,
       );
 
       final captured =
           verify(
                 () => api.recordBatch(
-                  recordBatchRequest: captureAny(
-                    named: 'recordBatchRequest',
-                  ),
+                  recordBatchRequest: captureAny(named: 'recordBatchRequest'),
                 ),
               ).captured.single
               as RecordBatchRequest;
       final event = captured.events.single;
       expect(
         event.name,
-        RecordBatchRequestEventsNameEnum
-            .visitSummaryPreviewed,
+        RecordBatchRequestEventsNameEnum.visitSummaryPreviewed,
       );
-      expect(
-        event.surface,
-        RecordBatchRequestEventsSurfaceEnum.more,
-      );
-      expect(
-        event.result,
-        RecordBatchRequestEventsResultEnum
-            .failure,
-      );
+      expect(event.surface, RecordBatchRequestEventsSurfaceEnum.more);
+      expect(event.result, RecordBatchRequestEventsResultEnum.failure);
     });
 
     test('exported carries surface more and the caller result', () async {
       final service = _service(api: api, dao: dao);
 
       await service.trackVisitSummaryExported(
-        RecordBatchRequestEventsResultEnum
-            .success,
+        RecordBatchRequestEventsResultEnum.success,
       );
 
       final captured =
           verify(
                 () => api.recordBatch(
-                  recordBatchRequest: captureAny(
-                    named: 'recordBatchRequest',
-                  ),
+                  recordBatchRequest: captureAny(named: 'recordBatchRequest'),
                 ),
               ).captured.single
               as RecordBatchRequest;
       final event = captured.events.single;
-      expect(
-        event.name,
-        RecordBatchRequestEventsNameEnum
-            .visitSummaryExported,
-      );
-      expect(
-        event.surface,
-        RecordBatchRequestEventsSurfaceEnum.more,
-      );
-      expect(
-        event.result,
-        RecordBatchRequestEventsResultEnum
-            .success,
-      );
+      expect(event.name, RecordBatchRequestEventsNameEnum.visitSummaryExported);
+      expect(event.surface, RecordBatchRequestEventsSurfaceEnum.more);
+      expect(event.result, RecordBatchRequestEventsResultEnum.success);
     });
   });
 
@@ -333,9 +257,7 @@ void main() {
       final service = _service(api: api, dao: dao);
       when(
         () => api.recordBatch(
-          recordBatchRequest: any(
-            named: 'recordBatchRequest',
-          ),
+          recordBatchRequest: any(named: 'recordBatchRequest'),
         ),
       ).thenThrow(_networkError());
 
@@ -359,9 +281,7 @@ void main() {
         final service = _service(api: api, dao: dao, eventId: 'pe-queue-001');
         when(
           () => api.recordBatch(
-            recordBatchRequest: any(
-              named: 'recordBatchRequest',
-            ),
+            recordBatchRequest: any(named: 'recordBatchRequest'),
           ),
         ).thenThrow(_networkError());
 
@@ -415,15 +335,12 @@ void main() {
       final service = _service(api: api, dao: dao, eventId: 'pe-retry-42');
       when(
         () => api.recordBatch(
-          recordBatchRequest: any(
-            named: 'recordBatchRequest',
-          ),
+          recordBatchRequest: any(named: 'recordBatchRequest'),
         ),
       ).thenThrow(_networkError());
 
       await service.trackVisitSummaryExported(
-        RecordBatchRequestEventsResultEnum
-            .success,
+        RecordBatchRequestEventsResultEnum.success,
       );
 
       final captured =
@@ -443,10 +360,7 @@ void main() {
       final decoded = jsonDecode(captured) as Map<String, dynamic>;
       expect(decoded['clientEventId'], 'pe-retry-42');
 
-      final replayed =
-          RecordBatchRequestEvents.fromJson(
-            decoded,
-          ).toJson();
+      final replayed = RecordBatchRequestEvents.fromJson(decoded).toJson();
       expect(replayed, decoded);
       expect(replayed['clientEventId'], 'pe-retry-42');
     });
@@ -455,9 +369,7 @@ void main() {
       final service = _service(api: api, dao: dao);
       when(
         () => api.recordBatch(
-          recordBatchRequest: any(
-            named: 'recordBatchRequest',
-          ),
+          recordBatchRequest: any(named: 'recordBatchRequest'),
         ),
       ).thenThrow(_networkError());
 
@@ -490,16 +402,13 @@ void main() {
       final service = _service(api: api, dao: dao);
       when(
         () => api.recordBatch(
-          recordBatchRequest: any(
-            named: 'recordBatchRequest',
-          ),
+          recordBatchRequest: any(named: 'recordBatchRequest'),
         ),
       ).thenThrow(StateError('unexpected'));
 
       // Must not throw and must not enqueue.
       await service.trackVisitSummaryPreviewed(
-        RecordBatchRequestEventsResultEnum
-            .success,
+        RecordBatchRequestEventsResultEnum.success,
       );
 
       verifyNever(

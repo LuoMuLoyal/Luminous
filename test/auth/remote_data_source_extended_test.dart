@@ -750,9 +750,7 @@ void main() {
 
         expect(
           adapter.lastBody?['scene'],
-          SendVerificationCodeRequestSceneEnum
-              .setPassword
-              .value,
+          SendVerificationCodeRequestSceneEnum.setPassword.value,
         );
       });
 
@@ -768,9 +766,7 @@ void main() {
 
         expect(
           adapter.lastBody?['scene'],
-          SendVerificationCodeRequestSceneEnum
-              .changeEmail
-              .value,
+          SendVerificationCodeRequestSceneEnum.changeEmail.value,
         );
       });
     });

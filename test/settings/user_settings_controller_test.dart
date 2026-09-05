@@ -491,10 +491,8 @@ UserSettingsResponse _buildResponse({
 // ---------------------------------------------------------------------------
 
 class _FakeUserSettingsApi implements UserSettingsApi {
-  _FakeUserSettingsApi({
-    UserSettingsResponse? responseData,
-    this.getException,
-  }) : _getResponseData = responseData;
+  _FakeUserSettingsApi({UserSettingsResponse? responseData, this.getException})
+    : _getResponseData = responseData;
 
   static UserSettingsResponse _defaultResponse() => UserSettingsResponse(
     aiSummariesEnabled: false,
@@ -526,8 +524,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
   UpdateSettingsRequest? lastPatchDto;
 
   @override
-  Future<Response<UserSettingsResponse>>
-  getSettings({
+  Future<Response<UserSettingsResponse>> getSettings({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -548,10 +545,8 @@ class _FakeUserSettingsApi implements UserSettingsApi {
   }
 
   @override
-  Future<Response<UserSettingsResponse>>
-  updateSettings({
-    required UpdateSettingsRequest
-    updateSettingsRequest,
+  Future<Response<UserSettingsResponse>> updateSettings({
+    required UpdateSettingsRequest updateSettingsRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,

@@ -98,9 +98,10 @@ lucent.TodayAnalysisReadDataAnalysisBullets _bullet({
   required String kind,
   required String text,
 }) {
-  return lucent.TodayAnalysisReadDataAnalysisBullets.fromJson(
-    <String, Object?>{'kind': kind, 'text': text},
-  );
+  return lucent.TodayAnalysisReadDataAnalysisBullets.fromJson(<String, Object?>{
+    'kind': kind,
+    'text': text,
+  });
 }
 
 void main() {

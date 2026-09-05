@@ -132,8 +132,7 @@ void main() {
             const DataExportRequestInput(
               kind: CreateRequestRequestKindEnum.monthly,
               format: CreateRequestRequestFormatEnum.pdf,
-              range: CreateRequestRequestRangeEnum
-                  .last30Days,
+              range: CreateRequestRequestRangeEnum.last30Days,
             ),
             password: 'export-password',
           );
@@ -367,10 +366,7 @@ void main() {
         await container.read(dataExportControllerProvider.notifier).refresh();
 
         final finalState = container.read(dataExportControllerProvider).value;
-        expect(
-          finalState?.status,
-          DataExportRequestDataStatusEnum.completed,
-        );
+        expect(finalState?.status, DataExportRequestDataStatusEnum.completed);
         expect(fakeApi.createCallCount, 1);
         expect(fakeApi.getLatestCallCount, 3); // build + 2 refreshes
       },
@@ -489,8 +485,7 @@ class _FakeDataExportApi implements DataExportApi {
   Duration createDelay;
 
   @override
-  Future<Response<DataExportRequestData>>
-  getLatestRequest({
+  Future<Response<DataExportRequestData>> getLatestRequest({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -520,10 +515,8 @@ class _FakeDataExportApi implements DataExportApi {
   }
 
   @override
-  Future<Response<DataExportRequestResponse>>
-  createRequest({
-    required CreateRequestRequest
-    createRequestRequest,
+  Future<Response<DataExportRequestResponse>> createRequest({
+    required CreateRequestRequest createRequestRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,

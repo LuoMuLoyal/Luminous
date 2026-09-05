@@ -95,17 +95,14 @@ void main() {
           current: _reviewDto(
             event: lucent.EventReviewDataEvent(
               id: 'evt-x',
-              kind:
-                  lucent.EventReviewDataEventKindEnum.unknownDefaultOpenApi,
+              kind: lucent.EventReviewDataEventKindEnum.unknownDefaultOpenApi,
               title: '未知事件',
-              status: lucent
-                  .EventReviewDataEventStatusEnum
-                  .unknownDefaultOpenApi,
+              status:
+                  lucent.EventReviewDataEventStatusEnum.unknownDefaultOpenApi,
               startedAt: '2026-08-01T00:00:00.000Z',
               endedAt: null,
-              outcome: lucent
-                  .EventReviewDataEventOutcomeEnum
-                  .unknownDefaultOpenApi,
+              outcome:
+                  lucent.EventReviewDataEventOutcomeEnum.unknownDefaultOpenApi,
               currentMedicineIds: const [],
             ),
             whatHappened: lucent.EventReviewDataSectionsWhatHappened(
@@ -206,9 +203,8 @@ void main() {
         dataSource: _FakeReviewRemoteDataSource(
           current: _reviewDto(
             whatHappened: lucent.EventReviewDataSectionsWhatHappened(
-              state: lucent
-                  .EventReviewDataSectionsWhatHappenedStateEnum
-                  .available,
+              state:
+                  lucent.EventReviewDataSectionsWhatHappenedStateEnum.available,
               facts: lucent.EventReviewDataSectionsWhatHappenedFacts(
                 code: 'fact.broken',
                 arguments: const <String, Object>{},
@@ -232,14 +228,18 @@ void main() {
         dataSource: _FakeReviewRemoteDataSource(
           page: lucent.EventReviewListResponse(
             items: [
-              lucent.EventReviewListResponseItems.fromJson(_eventDto(
-                id: 'evt-2',
-                status: lucent.EventReviewDataEventStatusEnum.ended,
-              ).toJson()),
-              lucent.EventReviewListResponseItems.fromJson(_eventDto(
-                id: 'evt-1',
-                status: lucent.EventReviewDataEventStatusEnum.active,
-              ).toJson()),
+              lucent.EventReviewListResponseItems.fromJson(
+                _eventDto(
+                  id: 'evt-2',
+                  status: lucent.EventReviewDataEventStatusEnum.ended,
+                ).toJson(),
+              ),
+              lucent.EventReviewListResponseItems.fromJson(
+                _eventDto(
+                  id: 'evt-1',
+                  status: lucent.EventReviewDataEventStatusEnum.active,
+                ).toJson(),
+              ),
             ],
             total: 42,
             nextCursor: '2026-08-01T00:00:00.000Z|evt-2',
@@ -571,9 +571,8 @@ lucent.EventReviewData _reviewDto({
       whatHappened:
           whatHappened ??
           lucent.EventReviewDataSectionsWhatHappened(
-            state: lucent
-                .EventReviewDataSectionsWhatHappenedStateEnum
-                .available,
+            state:
+                lucent.EventReviewDataSectionsWhatHappenedStateEnum.available,
             facts: lucent.EventReviewDataSectionsWhatHappenedFacts(
               code: 'fact.observed',
               arguments: {'count': 3, 'unit': 'times'},
@@ -586,7 +585,8 @@ lucent.EventReviewData _reviewDto({
             .noObservations,
       ),
       completedActions: lucent.EventReviewDataSectionsCompletedActions(
-        state: lucent.EventReviewDataSectionsCompletedActionsStateEnum.available,
+        state:
+            lucent.EventReviewDataSectionsCompletedActionsStateEnum.available,
         facts: lucent.EventReviewDataSectionsCompletedActionsFacts(
           code: 'fact.doses',
           arguments: {'done': 6, 'expected': 7},
@@ -604,14 +604,11 @@ lucent.EventReviewData _reviewDto({
           checkIns ??
           lucent.EventReviewDataCoverageCheckIns(
             state: lucent.EventReviewDataCoverageCheckInsStateEnum.observed,
-            coverage: lucent
-                .EventReviewDataCoverageCheckInsCoverageEnum
-                .sufficient,
+            coverage:
+                lucent.EventReviewDataCoverageCheckInsCoverageEnum.sufficient,
             sources: [
               lucent.EventReviewDataCoverageCheckInsSourcesEnum.manual,
-              lucent
-                  .EventReviewDataCoverageCheckInsSourcesEnum
-                  .healthPlatform,
+              lucent.EventReviewDataCoverageCheckInsSourcesEnum.healthPlatform,
             ],
             observedCount: 3,
             expectedCount: null,
@@ -641,8 +638,7 @@ lucent.EventReviewData _reviewDto({
       ),
       doseLogs: lucent.EventReviewDataCoverageDoseLogs(
         state: lucent.EventReviewDataCoverageDoseLogsStateEnum.unknown,
-        coverage:
-            lucent.EventReviewDataCoverageDoseLogsCoverageEnum.none,
+        coverage: lucent.EventReviewDataCoverageDoseLogsCoverageEnum.none,
         sources: const [],
         observedCount: 0,
         expectedCount: null,

@@ -18,8 +18,7 @@ class _CreateHealthEventRequestFake extends Fake
 class _UpsertCheckInRequestFake extends Fake
     implements api.UpsertCheckInRequest {}
 
-class _EndRequestFake extends Fake
-    implements api.EndRequest {}
+class _EndRequestFake extends Fake implements api.EndRequest {}
 
 void main() {
   late _MockHealthEventsApi healthEventsApi;
@@ -63,9 +62,7 @@ void main() {
     test(
       'maps an active 404 to Right(null) — no active event is normal',
       () async {
-        when(
-          () => healthEventsApi.active(),
-        ).thenThrow(_dioException(404));
+        when(() => healthEventsApi.active()).thenThrow(_dioException(404));
 
         expect(await expectTaskRight(repository.fetchActive()), isNull);
       },
@@ -80,9 +77,7 @@ void main() {
     });
 
     test('maps active network failure to Left(network)', () async {
-      when(
-        () => healthEventsApi.active(),
-      ).thenThrow(_connectionTimeout());
+      when(() => healthEventsApi.active()).thenThrow(_connectionTimeout());
 
       final failure = await expectTaskLeft(repository.fetchActive());
       expect(failure.kind, LucentFailureKind.network);
@@ -180,26 +175,20 @@ void main() {
     test('maps successful writes, detail, and history responses', () async {
       when(
         () => healthEventsApi.createHealthEvent(
-          createHealthEventRequest: any(
-            named: 'createHealthEventRequest',
-          ),
+          createHealthEventRequest: any(named: 'createHealthEventRequest'),
         ),
       ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
       when(
         () => healthEventsApi.upsertCheckIn(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          upsertCheckInRequest: any(
-            named: 'upsertCheckInRequest',
-          ),
+          upsertCheckInRequest: any(named: 'upsertCheckInRequest'),
         ),
       ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
       when(
         () => healthEventsApi.end(
           id: any(named: 'id'),
-          endRequest: any(
-            named: 'endRequest',
-          ),
+          endRequest: any(named: 'endRequest'),
         ),
       ).thenAnswer((_) async => _eventResponse(_responseEvent(_eventJson())));
 
@@ -252,51 +241,37 @@ void main() {
                 ),
               ).captured.single
               as api.UpsertCheckInRequest;
-      expect(
-        checkInCall.outcome,
-        api.UpsertCheckInRequestOutcomeEnum.improved,
-      );
+      expect(checkInCall.outcome, api.UpsertCheckInRequestOutcomeEnum.improved);
 
       final endCall =
           verify(
                 () => healthEventsApi.end(
                   id: 'event-1',
-                  endRequest: captureAny(
-                    named: 'endRequest',
-                  ),
+                  endRequest: captureAny(named: 'endRequest'),
                 ),
               ).captured.single
               as api.EndRequest;
-      expect(
-        endCall.outcome,
-        api.EndRequestOutcomeEnum.unchanged,
-      );
+      expect(endCall.outcome, api.EndRequestOutcomeEnum.unchanged);
     });
 
     test('rejects missing write response data as Left(unknown) keeping the '
         'StateError cause (protocol invariant)', () async {
       when(
         () => healthEventsApi.createHealthEvent(
-          createHealthEventRequest: any(
-            named: 'createHealthEventRequest',
-          ),
+          createHealthEventRequest: any(named: 'createHealthEventRequest'),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
       when(
         () => healthEventsApi.upsertCheckIn(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          upsertCheckInRequest: any(
-            named: 'upsertCheckInRequest',
-          ),
+          upsertCheckInRequest: any(named: 'upsertCheckInRequest'),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
       when(
         () => healthEventsApi.end(
           id: any(named: 'id'),
-          endRequest: any(
-            named: 'endRequest',
-          ),
+          endRequest: any(named: 'endRequest'),
         ),
       ).thenAnswer((_) async => _emptyEventResponse());
 
@@ -324,9 +299,7 @@ void main() {
         () => healthEventsApi.upsertCheckIn(
           id: any(named: 'id'),
           date: any(named: 'date'),
-          upsertCheckInRequest: any(
-            named: 'upsertCheckInRequest',
-          ),
+          upsertCheckInRequest: any(named: 'upsertCheckInRequest'),
         ),
       ).thenAnswer(
         (_) async => _eventResponse(
@@ -350,9 +323,7 @@ void main() {
       when(
         () => healthEventsApi.end(
           id: any(named: 'id'),
-          endRequest: any(
-            named: 'endRequest',
-          ),
+          endRequest: any(named: 'endRequest'),
         ),
       ).thenAnswer(
         (_) async => _eventResponse(
@@ -376,26 +347,20 @@ void main() {
         final problem = _problemDetails(404, code: 'EVENT_NOT_FOUND');
         when(
           () => healthEventsApi.createHealthEvent(
-            createHealthEventRequest: any(
-              named: 'createHealthEventRequest',
-            ),
+            createHealthEventRequest: any(named: 'createHealthEventRequest'),
           ),
         ).thenThrow(problem);
         when(
           () => healthEventsApi.upsertCheckIn(
             id: any(named: 'id'),
             date: any(named: 'date'),
-            upsertCheckInRequest: any(
-              named: 'upsertCheckInRequest',
-            ),
+            upsertCheckInRequest: any(named: 'upsertCheckInRequest'),
           ),
         ).thenThrow(problem);
         when(
           () => healthEventsApi.end(
             id: any(named: 'id'),
-            endRequest: any(
-              named: 'endRequest',
-            ),
+            endRequest: any(named: 'endRequest'),
           ),
         ).thenThrow(problem);
 
@@ -422,9 +387,7 @@ void main() {
     test('network failure on writes maps to Left(network)', () async {
       when(
         () => healthEventsApi.createHealthEvent(
-          createHealthEventRequest: any(
-            named: 'createHealthEventRequest',
-          ),
+          createHealthEventRequest: any(named: 'createHealthEventRequest'),
         ),
       ).thenThrow(_connectionTimeout());
 
@@ -440,9 +403,7 @@ void main() {
       () async {
         when(
           () => healthEventsApi.createHealthEvent(
-            createHealthEventRequest: any(
-              named: 'createHealthEventRequest',
-            ),
+            createHealthEventRequest: any(named: 'createHealthEventRequest'),
           ),
         ).thenThrow(_nonProblemBody400());
 
@@ -465,9 +426,7 @@ Response<api.HealthEventNullableResponse> _activeResponse(
   );
 }
 
-Response<api.HealthEventResponse> _eventResponse(
-  api.HealthEventResponse data,
-) {
+Response<api.HealthEventResponse> _eventResponse(api.HealthEventResponse data) {
   return Response<api.HealthEventResponse>(
     requestOptions: RequestOptions(path: '/api/v1/user/health-events'),
     statusCode: 200,

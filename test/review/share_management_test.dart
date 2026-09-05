@@ -71,9 +71,7 @@ void main() {
     required List<ClinicSummaryShareListResponseItems> items,
     Future<Response<ClinicSummaryShareListResponse>> Function()? listHandler,
   }) async {
-    when(
-      () => reportsApi.listClinicSummaryShares(),
-    ).thenAnswer((_) async {
+    when(() => reportsApi.listClinicSummaryShares()).thenAnswer((_) async {
       return listHandler != null
           ? await listHandler()
           : _shareListResponse(items);
@@ -159,9 +157,7 @@ void main() {
     tester,
   ) async {
     when(
-      () => reportsApi.revokeClinicSummaryShare(
-        shareId: 'share-1',
-      ),
+      () => reportsApi.revokeClinicSummaryShare(shareId: 'share-1'),
     ).thenAnswer(
       (_) async => Response<void>(
         requestOptions: RequestOptions(path: '/revoke'),
@@ -189,14 +185,10 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(
-      () => reportsApi.revokeClinicSummaryShare(
-        shareId: 'share-1',
-      ),
+      () => reportsApi.revokeClinicSummaryShare(shareId: 'share-1'),
     ).called(1);
     // invalidateSelf refetched the list after the revoke.
-    verify(
-      () => reportsApi.listClinicSummaryShares(),
-    ).called(2);
+    verify(() => reportsApi.listClinicSummaryShares()).called(2);
     // The refreshed row shows the revoked state without a revoke action.
     expect(find.text(l10n_.reviewShareRevokedBadge), findsOneWidget);
     expect(find.text(l10n_.reviewShareRevokeAction), findsNothing);
@@ -214,9 +206,7 @@ void main() {
   });
 
   testWidgets('shows the load-failed state with retry', (tester) async {
-    when(
-      () => reportsApi.listClinicSummaryShares(),
-    ).thenThrow(
+    when(() => reportsApi.listClinicSummaryShares()).thenThrow(
       DioException(
         requestOptions: RequestOptions(path: '/shares'),
         type: DioExceptionType.connectionError,

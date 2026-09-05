@@ -167,8 +167,7 @@ void main() {
         'keeps 403 Problem Details code/status as Left(authentication)',
         () async {
           when(
-            () =>
-                api.listLegalDocuments(lang: any(named: 'lang')),
+            () => api.listLegalDocuments(lang: any(named: 'lang')),
           ).thenThrow(
             _problemDetails(statusCode: 403, code: 'LEGAL_FORBIDDEN'),
           );
@@ -197,9 +196,7 @@ void main() {
       });
 
       test('empty success body is Left(network/emptyResponse)', () async {
-        when(
-          () => api.listLegalDocuments(lang: any(named: 'lang')),
-        ).thenAnswer(
+        when(() => api.listLegalDocuments(lang: any(named: 'lang'))).thenAnswer(
           (_) async => Response<LegalDocumentListResponse>(
             data: null,
             requestOptions: RequestOptions(path: ''),
@@ -216,8 +213,7 @@ void main() {
         'maps an unexpected exception to Left(unknown) with cause',
         () async {
           when(
-            () =>
-                api.listLegalDocuments(lang: any(named: 'lang')),
+            () => api.listLegalDocuments(lang: any(named: 'lang')),
           ).thenThrow(StateError('boom'));
 
           final failure = await expectTaskLeft(repo.findAll());
@@ -244,9 +240,7 @@ void main() {
         resolvedLang = 'en';
         await repo.findAll().run();
 
-        verify(
-          () => api.listLegalDocuments(lang: 'en'),
-        ).called(1);
+        verify(() => api.listLegalDocuments(lang: 'en')).called(1);
       });
     });
 
@@ -433,10 +427,7 @@ void main() {
       await expectTaskRight(repo.findOne(LegalDocType.privacy));
 
       verify(
-        () => api.getLegalDocument(
-          docType: 'privacy',
-          lang: 'en',
-        ),
+        () => api.getLegalDocument(docType: 'privacy', lang: 'en'),
       ).called(1);
     });
   });

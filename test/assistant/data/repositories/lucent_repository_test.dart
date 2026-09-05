@@ -103,10 +103,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
 
   @override
   Stream<AssistantRemoteEvent> streamMessages({
-    required List<
-      lucent.StreamMessagesRequestMessages
-    >
-    messages,
+    required List<lucent.StreamMessagesRequestMessages> messages,
     String? conversationId,
   }) {
     lastStreamConversationId = conversationId;
@@ -174,19 +171,14 @@ lucent.AssistantCapabilitiesResponseTools _tool({
   bool enabled = true,
   bool implemented = true,
   bool permitted = true,
-  List<
-    lucent.AssistantCapabilitiesResponseToolsRequiredContextSourcesEnum
-  >?
+  List<lucent.AssistantCapabilitiesResponseToolsRequiredContextSourcesEnum>?
   required,
-  lucent.AssistantCapabilitiesResponseToolsDisabledReasonEnum?
-  disabledReason,
+  lucent.AssistantCapabilitiesResponseToolsDisabledReasonEnum? disabledReason,
 }) {
   return lucent.AssistantCapabilitiesResponseTools(
     name:
         name ??
-        lucent
-            .AssistantCapabilitiesResponseToolsNameEnum
-            .getTodayRecords,
+        lucent.AssistantCapabilitiesResponseToolsNameEnum.getTodayRecords,
     requiredContextSources:
         required ??
         const <
@@ -279,8 +271,7 @@ lucent.AssistantConversationSummaryItem _summaryDto({
   return lucent.AssistantConversationSummaryItem(
     id: id,
     title: title,
-    status:
-        status ?? lucent.AssistantConversationSummaryItemStatusEnum.active,
+    status: status ?? lucent.AssistantConversationSummaryItemStatusEnum.active,
     lastMessageAt: lastMessageAt,
     createdAt: createdAt ?? '2026-07-01T10:00:00Z',
     updatedAt: updatedAt ?? '2026-07-01T10:30:00Z',
@@ -444,16 +435,13 @@ void main() {
             title: 'Chat About Meds',
             messages: [
               _messageDto(
-                role: lucent
-                    .AssistantConversationDataMessagesRoleEnum
-                    .user,
+                role: lucent.AssistantConversationDataMessagesRoleEnum.user,
                 content: 'What is atorvastatin?',
                 createdAt: '2026-07-01T10:00:00Z',
               ),
               _messageDto(
-                role: lucent
-                    .AssistantConversationDataMessagesRoleEnum
-                    .assistant,
+                role:
+                    lucent.AssistantConversationDataMessagesRoleEnum.assistant,
                 content: 'It is a statin.',
                 usedTools: const ['get_current_medicines'],
                 createdAt: '2026-07-01T10:00:05Z',
@@ -524,9 +512,8 @@ void main() {
             _summaryDto(
               id: 'c2',
               title: 'Second',
-              status: lucent
-                  .AssistantConversationSummaryItemStatusEnum
-                  .archived,
+              status:
+                  lucent.AssistantConversationSummaryItemStatusEnum.archived,
             ),
             _summaryDto(id: 'c3', title: null, lastMessageAt: null),
           ],

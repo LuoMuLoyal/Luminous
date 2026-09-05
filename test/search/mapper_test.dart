@@ -72,8 +72,7 @@ void main() {
     test('defaults unknown source to drugbank', () {
       final dto = _dto(
         id: 'unknown',
-        source: MedicineSearchResponseItemsSource_Enum
-            .unknownDefaultOpenApi,
+        source: MedicineSearchResponseItemsSource_Enum.unknownDefaultOpenApi,
         name: 'X',
       );
 
