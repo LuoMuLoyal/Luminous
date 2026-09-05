@@ -53,3 +53,4 @@
 - 每次代码变更追加 `docs/logs/migration-log/YYYY-MM-DD.md`;完成项直接从清单删除。
 - 迭代期窄命令,收尾跑 `flutter analyze`、`flutter test`、`dart run scripts/docs/verify.dart --warning-only`。
 - 依赖关系:P1 依赖 P0 与 Lucent Phase 1 合同导出;P2 依赖 Lucent Phase 2 事件/推送就绪;Phase 3 与 BFF 启动同步。
+- **运行时架构决策**:客户端仅消费 Lucent agent 会话/提案流,不引入独立 Agent 运行时。后端维持自建 LangGraph runtime,不引入 Deep Agents(同层替换、医疗需确定性 HITL 门控);客户端侧不新增对应依赖(见 Lucent risk-graph-plan §6.6)。
