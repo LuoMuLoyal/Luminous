@@ -264,7 +264,7 @@ void _verifyFilteredModelsProduced({
 }) {
   final missing = <String>[];
   for (final rawName in models) {
-    final expectedFile = '${_generatedModelFileName(rawName)}.dart';
+    final expectedFile = '${generatedModelFileName(rawName)}.dart';
     final file = File(
       '${outputDirectory.path}${Platform.pathSeparator}lib'
       '${Platform.pathSeparator}src${Platform.pathSeparator}model'
@@ -292,9 +292,15 @@ void _verifyFilteredModelsProduced({
 /// raw schema name [rawName] (a components.schemas key, or the name the
 /// InlineModelResolver assigned to an inline schema). Mirrors the generator's
 /// naming pipeline: segment-capitalize to the Dart class name, then split
-/// camel boundaries into snake_case. Validated 1:1 against the generated
-/// model corpus (components + inline names ↔ 243 model files).
-String _generatedModelFileName(String rawName) {
+/// camel boundaries into snake_case.
+///
+/// 依赖 openapi-generator-cli 7.x 的 dart-dio 命名（当前 7.25.0，见
+/// openapitools.json）：`<parent>_<property>` 内联名 → 类名 → snake_case
+/// 文件名的两条 `replaceAllMapped` 正则与生成器实现耦合。升级生成器后必须
+/// 重跑 test/scripts/model_naming_test.dart（该测试把六个切片的全部清单名
+/// 锚定到 generated/lucent_api/lib/src/model 的真实产物），否则 bootstrap
+/// 的过滤生成护栏会在文件名失配时 fail-fast 误报。
+String generatedModelFileName(String rawName) {
   final className = rawName
       .split('_')
       .map(
@@ -560,7 +566,7 @@ Options:
 // 可接受的等价写法（写错即被静默忽略）。清单内容 = 该切片 API 的 model import
 // 闭包（见 _filteredClients 下的机制注释），逐名校验交给生成后的
 // _verifyFilteredModelsProduced。
-const _todayAnalysisModels = [
+const todayAnalysisModels = [
   'EnqueueAnalysisGenerationRequest',
   'GenerateRequest',
   'GenerateStreamRequest',
@@ -588,7 +594,7 @@ const _todayAnalysisModels = [
   'TodayRecommendationItem',
 ];
 
-const _reviewModels = [
+const reviewModels = [
   'ClinicSummaryExportJobResponse',
   'ClinicSummaryResponse',
   'ClinicSummaryResponseAllergies',
@@ -675,7 +681,7 @@ const _reviewModels = [
   'ShareClinicSummaryRequest',
 ];
 
-const _productEventsModels = [
+const productEventsModels = [
   'FunnelResponse',
   'FunnelResponseDaily',
   'FunnelResponseOptional',
@@ -686,7 +692,7 @@ const _productEventsModels = [
   'RecordBatchRequestEvents',
 ];
 
-const _notificationsModels = [
+const notificationsModels = [
   'CreateNotificationRequest',
   'NotificationDetailResponse',
   'NotificationListResponse',
@@ -695,7 +701,7 @@ const _notificationsModels = [
   'UnreadCountResponse',
 ];
 
-const _userSettingsModels = [
+const userSettingsModels = [
   'ProblemDetailsDto',
   'UpdateSettingsRequest',
   'UpdateSettingsRequestAssistantContext',
@@ -703,7 +709,7 @@ const _userSettingsModels = [
   'UserSettingsResponseAssistantContext',
 ];
 
-const _reminderDeliveriesModels = [
+const reminderDeliveriesModels = [
   'LocalCapabilityResponse',
   'ProblemDetailsDto',
   'RecordReceiptRequest',
@@ -725,27 +731,27 @@ const _filteredClients = <({String apis, String apiFile, List<String> models})>[
   (
     apis: 'TodayAnalysis',
     apiFile: 'today_analysis_api.dart',
-    models: _todayAnalysisModels,
+    models: todayAnalysisModels,
   ),
-  (apis: 'Reports', apiFile: 'reports_api.dart', models: _reviewModels),
+  (apis: 'Reports', apiFile: 'reports_api.dart', models: reviewModels),
   (
     apis: 'ProductEvents',
     apiFile: 'product_events_api.dart',
-    models: _productEventsModels,
+    models: productEventsModels,
   ),
   (
     apis: 'Notifications',
     apiFile: 'notifications_api.dart',
-    models: _notificationsModels,
+    models: notificationsModels,
   ),
   (
     apis: 'UserSettings',
     apiFile: 'user_settings_api.dart',
-    models: _userSettingsModels,
+    models: userSettingsModels,
   ),
   (
     apis: 'ReminderDeliveries',
     apiFile: 'reminder_deliveries_api.dart',
-    models: _reminderDeliveriesModels,
+    models: reminderDeliveriesModels,
   ),
 ];
