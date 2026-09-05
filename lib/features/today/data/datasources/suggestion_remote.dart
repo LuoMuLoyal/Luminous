@@ -29,7 +29,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     List<String>? excludeIds,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await api.todaySuggestionControllerGetSuggestionsV1(
+      final response = await api.getSuggestions(
         acceptLanguage: language,
         date: date,
         excludeIds: excludeIds,
@@ -49,10 +49,10 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     required TodaySuggestionFeedback feedback,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await api.todaySuggestionControllerSubmitFeedbackV1(
+      final response = await api.submitFeedback(
         id: id,
-        todaySuggestionControllerSubmitFeedbackV1Request:
-            TodaySuggestionControllerSubmitFeedbackV1Request(
+        submitFeedbackRequest:
+            SubmitFeedbackRequest(
               feedback: _mapFeedbackToDto(feedback),
             ),
       );
@@ -77,7 +77,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     required String language,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await api.todaySuggestionControllerExplainSuggestionV1(
+      final response = await api.explainSuggestion(
         id: id,
         acceptLanguage: language,
       );
@@ -105,7 +105,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     int? limit,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await api.todaySuggestionControllerGetHistoryV1(
+      final response = await api.getHistory(
         acceptLanguage: language,
         startDate: startDate,
         endDate: endDate,
@@ -125,7 +125,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
 
   // ── Mapping helpers ────────────────────────────────────────────────────
 
-  TodaySuggestionBundle _mapBundle(TodaySuggestionsResponseDto dto) {
+  TodaySuggestionBundle _mapBundle(TodaySuggestionsResponse dto) {
     return TodaySuggestionBundle(
       generatedAt: dto.generatedAt,
       materializationStatus: TodaySuggestionMaterializationStatus.fromJson(
@@ -136,7 +136,13 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       retryAfterSeconds: _safeInt(dto.retryAfterSeconds),
       primary: dto.primary != null ? _mapPrimaryCard(dto.primary!) : null,
       secondary: dto.secondary?.map(_mapCard).toList(growable: false),
-      observations: dto.observations?.map(_mapCard).toList(growable: false),
+      observations: dto.observations
+          ?.map(
+            (item) => _mapCard(
+              TodaySuggestionsResponseSecondary.fromJson(item.toJson()),
+            ),
+          )
+          .toList(growable: false),
     );
   }
 
@@ -156,13 +162,13 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   /// one class per array/card slot (primary vs secondary/observations) that
   /// shares the same JSON shape, so the primary payload is normalized onto the
   /// canonical card DTO before mapping.
-  TodaySuggestionCard _mapPrimaryCard(TodaySuggestionsResponseDtoPrimary dto) {
+  TodaySuggestionCard _mapPrimaryCard(TodaySuggestionsResponsePrimary dto) {
     return _mapCard(
-      TodaySuggestionsResponseDtoSecondaryInner.fromJson(dto.toJson()),
+      TodaySuggestionsResponseSecondary.fromJson(dto.toJson()),
     );
   }
 
-  TodaySuggestionCard _mapCard(TodaySuggestionsResponseDtoSecondaryInner dto) {
+  TodaySuggestionCard _mapCard(TodaySuggestionsResponseSecondary dto) {
     return TodaySuggestionCard(
       id: dto.id,
       type: TodaySuggestionType.fromJson(dto.type.value),
@@ -190,7 +196,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   }
 
   TodaySuggestionEvidence _mapEvidence(
-    TodaySuggestionsResponseDtoPrimaryEvidenceInner dto,
+    TodaySuggestionsResponseSecondaryEvidence dto,
   ) {
     return TodaySuggestionEvidence(
       kind: TodaySuggestionEvidenceKind.fromJson(dto.kind),
@@ -202,7 +208,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   }
 
   TodaySuggestionAction _mapAction(
-    TodaySuggestionsResponseDtoPrimaryPrimaryAction dto,
+    TodaySuggestionsResponseSecondaryPrimaryAction dto,
   ) {
     return TodaySuggestionAction(
       actionId: dto.actionId,
@@ -215,15 +221,15 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   /// Secondary actions reuse the primary action JSON shape under a separate
   /// per-slot class, so they are normalized before mapping.
   TodaySuggestionAction _mapSecondaryAction(
-    TodaySuggestionsResponseDtoPrimarySecondaryActionsInner dto,
+    TodaySuggestionsResponseSecondarySecondaryActions dto,
   ) {
     return _mapAction(
-      TodaySuggestionsResponseDtoPrimaryPrimaryAction.fromJson(dto.toJson()),
+      TodaySuggestionsResponseSecondaryPrimaryAction.fromJson(dto.toJson()),
     );
   }
 
   TodaySuggestionHistoryItem _mapHistoryItem(
-    SuggestionHistoryResponseDtoItemsInner dto,
+    SuggestionHistoryResponseItems dto,
   ) {
     return TodaySuggestionHistoryItem(
       id: dto.id,
@@ -277,18 +283,17 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
     };
   }
 
-  TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum
+  SubmitFeedbackRequestFeedbackEnum
   _mapFeedbackToDto(TodaySuggestionFeedback feedback) {
     return switch (feedback) {
       TodaySuggestionFeedback.accepted =>
-        TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum.accepted,
+        SubmitFeedbackRequestFeedbackEnum.accepted,
       TodaySuggestionFeedback.later =>
-        TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum.later,
+        SubmitFeedbackRequestFeedbackEnum.later,
       TodaySuggestionFeedback.notApplicable =>
-        TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum
-            .notApplicable,
+        SubmitFeedbackRequestFeedbackEnum.notApplicable,
       TodaySuggestionFeedback.suppress =>
-        TodaySuggestionControllerSubmitFeedbackV1RequestFeedbackEnum.suppress,
+        SubmitFeedbackRequestFeedbackEnum.suppress,
     };
   }
 }

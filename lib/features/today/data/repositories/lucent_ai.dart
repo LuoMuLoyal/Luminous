@@ -78,7 +78,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
     }
   }
 
-  TodayAiAnalysis _mapReadDataDto(lucent.TodayAnalysisReadDataDto dto) {
+  TodayAiAnalysis _mapReadDataDto(lucent.TodayAnalysisReadData dto) {
     final analysis = dto.analysis;
     final status = _mapMaterializationStatus(dto.status);
     final sourceVersion = dto.sourceVersion.toInt();
@@ -107,7 +107,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   TodayAiAnalysis _mapAnalysis(
-    lucent.TodayAnalysisReadResponseDtoAnalysis dto, {
+    lucent.TodayAnalysisReadDataAnalysis dto, {
     TodayAiAnalysisMaterializationStatus materializationStatus =
         TodayAiAnalysisMaterializationStatus.ready,
     DateTime? computedAt,
@@ -129,7 +129,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   TodayAiAnalysisBullet _mapBullet(
-    lucent.TodayAnalysisReadResponseDtoAnalysisBulletsInner dto,
+    lucent.TodayAnalysisReadDataAnalysisBullets dto,
   ) {
     return TodayAiAnalysisBullet(
       kind: switch (dto.kind.value) {
@@ -143,20 +143,20 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   TodayAiAnalysisMaterializationStatus _mapMaterializationStatus(
-    lucent.TodayAnalysisReadDataDtoStatusEnum status,
+    lucent.TodayAnalysisReadDataStatusEnum status,
   ) {
     return switch (status) {
-      lucent.TodayAnalysisReadDataDtoStatusEnum.empty =>
+      lucent.TodayAnalysisReadDataStatusEnum.empty =>
         TodayAiAnalysisMaterializationStatus.empty,
-      lucent.TodayAnalysisReadDataDtoStatusEnum.pending =>
+      lucent.TodayAnalysisReadDataStatusEnum.pending =>
         TodayAiAnalysisMaterializationStatus.pending,
-      lucent.TodayAnalysisReadDataDtoStatusEnum.ready =>
+      lucent.TodayAnalysisReadDataStatusEnum.ready =>
         TodayAiAnalysisMaterializationStatus.ready,
-      lucent.TodayAnalysisReadDataDtoStatusEnum.stale =>
+      lucent.TodayAnalysisReadDataStatusEnum.stale =>
         TodayAiAnalysisMaterializationStatus.stale,
-      lucent.TodayAnalysisReadDataDtoStatusEnum.failed =>
+      lucent.TodayAnalysisReadDataStatusEnum.failed =>
         TodayAiAnalysisMaterializationStatus.failed,
-      lucent.TodayAnalysisReadDataDtoStatusEnum.unknownDefaultOpenApi =>
+      lucent.TodayAnalysisReadDataStatusEnum.unknownDefaultOpenApi =>
         TodayAiAnalysisMaterializationStatus.empty,
     };
   }
