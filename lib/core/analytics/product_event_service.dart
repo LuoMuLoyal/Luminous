@@ -21,17 +21,17 @@ part 'product_event_service.g.dart';
 /// File-level shorthand for the generated request-scoped platform enum
 /// (2026-09-03 审查 #4 readability closure; no behavior change).
 typedef _ProductEventPlatform =
-    ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum;
+    RecordBatchRequestEventsPlatformEnum;
 
 /// Pending-sync entity type for queued product events.
 const String kProductEventSyncEntityType = 'product_event';
 
 /// Maps the running platform to the API platform enum (currently inlined as
-/// [ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum]).
+/// [RecordBatchRequestEventsPlatformEnum]).
 ///
 /// Uses [defaultTargetPlatform] instead of `dart:io` so it compiles and runs
 /// on every target including web and tests.
-ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+RecordBatchRequestEventsPlatformEnum
 resolveUserDevicePlatform() {
   if (kIsWeb) {
     return _ProductEventPlatform.web;
@@ -79,7 +79,7 @@ class ProductEventService {
     this.pendingSyncDao,
     this.syncWorker,
     Future<String> Function()? versionLoader,
-    ProductEventsControllerRecordBatchV1RequestEventsInnerPlatformEnum
+    RecordBatchRequestEventsPlatformEnum
     Function()?
     platformResolver,
     DateTime Function()? clock,
@@ -134,7 +134,7 @@ class ProductEventService {
   /// Tracks a visit summary preview attempt — one event per server response
   /// (success or failure), no dedupe.
   Future<void> trackVisitSummaryPreviewed(
-    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+    RecordBatchRequestEventsResultEnum result,
   ) async {
     await _record(VisitSummaryPreviewedEvent(result: result));
   }
@@ -142,7 +142,7 @@ class ProductEventService {
   /// Tracks a visit summary export attempt — one event per server response
   /// (success or failure), no dedupe.
   Future<void> trackVisitSummaryExported(
-    ProductEventsControllerRecordBatchV1RequestEventsInnerResultEnum result,
+    RecordBatchRequestEventsResultEnum result,
   ) async {
     await _record(VisitSummaryExportedEvent(result: result));
   }
@@ -151,9 +151,9 @@ class ProductEventService {
     try {
       final eventPayload = await _buildEvent(event);
       try {
-        await api.productEventsControllerRecordBatchV1(
-          productEventsControllerRecordBatchV1Request:
-              ProductEventsControllerRecordBatchV1Request(
+        await api.recordBatch(
+          recordBatchRequest:
+              RecordBatchRequest(
                 events: [eventPayload],
               ),
         );
@@ -173,7 +173,7 @@ class ProductEventService {
     }
   }
 
-  Future<ProductEventsControllerRecordBatchV1RequestEventsInner> _buildEvent(
+  Future<RecordBatchRequestEvents> _buildEvent(
     ProductEvent event,
   ) async {
     final version = await _versionLoader();
@@ -191,7 +191,7 @@ class ProductEventService {
   /// The same event (and therefore the same clientEventId) is replayed on
   /// retry, making retries idempotent.
   Future<void> _enqueue(
-    ProductEventsControllerRecordBatchV1RequestEventsInner event,
+    RecordBatchRequestEvents event,
   ) async {
     final dao = pendingSyncDao;
     if (dao == null) return;
@@ -208,7 +208,7 @@ class ProductEventService {
 ///
 /// Registers the pending-sync replay handler for
 /// [kProductEventSyncEntityType]: decodes the queued payload back into a
-/// [ProductEventsControllerRecordBatchV1RequestEventsInner] and re-posts it
+/// [RecordBatchRequestEvents] and re-posts it
 /// via the generated API. Decoding round-trips the clientEventId, so retries
 /// stay idempotent.
 @Riverpod(keepAlive: true)
@@ -219,11 +219,11 @@ ProductEventService productEventService(Ref ref) {
 
   syncWorker.registerHandler(kProductEventSyncEntityType, (entry) async {
     final payload = jsonDecode(entry.payload) as Map<String, dynamic>;
-    await api.productEventsControllerRecordBatchV1(
-      productEventsControllerRecordBatchV1Request:
-          ProductEventsControllerRecordBatchV1Request(
+    await api.recordBatch(
+      recordBatchRequest:
+          RecordBatchRequest(
             events: [
-              ProductEventsControllerRecordBatchV1RequestEventsInner.fromJson(
+              RecordBatchRequestEvents.fromJson(
                 payload,
               ),
             ],

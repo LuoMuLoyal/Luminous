@@ -15,13 +15,13 @@ class MedicineSearchRemoteDataSource {
   final MedicinesApi _api;
 
   /// Calls GET /api/v1/medicines?source=&q=&page=&pageSize=
-  Future<MedicineSearchResponseDto> search({
+  Future<MedicineSearchResponse> search({
     required String source,
     String? query,
     int page = 1,
     int pageSize = 20,
   }) async {
-    final response = await _api.medicinesControllerSearchV1(
+    final response = await _api.search(
       source_: source,
       q: query,
       page: page,
@@ -31,11 +31,11 @@ class MedicineSearchRemoteDataSource {
   }
 
   /// Calls GET /api/v1/medicines/:id?source=
-  Future<MedicineDetailResponseDto> getDetail({
+  Future<MedicineDetailResponse> getDetail({
     required String id,
     required String source,
   }) async {
-    final response = await _api.medicinesControllerGetDetailV1(
+    final response = await _api.getDetail(
       id: id,
       source_: source,
     );

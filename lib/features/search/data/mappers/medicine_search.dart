@@ -3,7 +3,7 @@ import 'package:luminous/features/search/domain/entities/entities.dart';
 
 /// Converts Lucent DTOs to Luminous Search entities.
 class MedicineSearchMapper {
-  MedicineSearchResult dtoToResult(MedicineSearchResponseDtoItemsInner dto) {
+  MedicineSearchResult dtoToResult(MedicineSearchResponseItems dto) {
     return MedicineSearchResult(
       id: dto.id,
       source: _toSource(dto.source_),
@@ -16,14 +16,14 @@ class MedicineSearchMapper {
   }
 
   MedicineSearchSource _toSource(
-    MedicineSearchResponseDtoItemsInnerSource_Enum source,
+    MedicineSearchResponseItemsSource_Enum source,
   ) {
     return switch (source) {
-      MedicineSearchResponseDtoItemsInnerSource_Enum.cn =>
+      MedicineSearchResponseItemsSource_Enum.cn =>
         MedicineSearchSource.cn,
-      MedicineSearchResponseDtoItemsInnerSource_Enum.drugbank =>
+      MedicineSearchResponseItemsSource_Enum.drugbank =>
         MedicineSearchSource.drugbank,
-      MedicineSearchResponseDtoItemsInnerSource_Enum.unknownDefaultOpenApi =>
+      MedicineSearchResponseItemsSource_Enum.unknownDefaultOpenApi =>
         MedicineSearchSource.drugbank,
     };
   }

@@ -122,15 +122,15 @@ class LucentAssistantRepository implements AssistantRepository {
         .map(
           (
             message,
-          ) => lucent.AssistantControllerStreamMessagesV1RequestMessagesInner(
+          ) => lucent.StreamMessagesRequestMessages(
             role: switch (message.role) {
               AssistantMessageRole.user =>
                 lucent
-                    .AssistantControllerStreamMessagesV1RequestMessagesInnerRoleEnum
+                    .StreamMessagesRequestMessagesRoleEnum
                     .user,
               AssistantMessageRole.assistant =>
                 lucent
-                    .AssistantControllerStreamMessagesV1RequestMessagesInnerRoleEnum
+                    .StreamMessagesRequestMessagesRoleEnum
                     .assistant,
             },
             content: message.content,
@@ -200,7 +200,7 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   AssistantCapabilities _mapCapabilities(
-    lucent.AssistantCapabilitiesResponseDto dto,
+    lucent.AssistantCapabilitiesResponse dto,
   ) {
     return AssistantCapabilities(
       phase: dto.phase,
@@ -225,7 +225,7 @@ class LucentAssistantRepository implements AssistantRepository {
               id:
                   tool.name ==
                       lucent
-                          .AssistantCapabilitiesResponseDtoToolsInnerNameEnum
+                          .AssistantCapabilitiesResponseToolsNameEnum
                           .unknownDefaultOpenApi
                   ? ''
                   : tool.name.value,
@@ -244,7 +244,7 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   AssistantConversation _mapConversation(
-    lucent.AssistantConversationDataDto dto,
+    lucent.AssistantConversationData dto,
   ) {
     return AssistantConversation(
       id: dto.id,
@@ -260,7 +260,7 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   AssistantConversationSummary _mapConversationSummary(
-    lucent.AssistantConversationSummaryDtoInner dto,
+    lucent.AssistantConversationSummaryItem dto,
   ) {
     return AssistantConversationSummary(
       id: dto.id,
@@ -273,16 +273,16 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   AssistantMessage _mapConversationMessage(
-    lucent.AssistantConversationDataDtoMessagesInner dto,
+    lucent.AssistantConversationDataMessages dto,
   ) {
     return AssistantMessage(
       role: switch (dto.role) {
-        lucent.AssistantConversationDataDtoMessagesInnerRoleEnum.user =>
+        lucent.AssistantConversationDataMessagesRoleEnum.user =>
           AssistantMessageRole.user,
-        lucent.AssistantConversationDataDtoMessagesInnerRoleEnum.assistant =>
+        lucent.AssistantConversationDataMessagesRoleEnum.assistant =>
           AssistantMessageRole.assistant,
         lucent
-            .AssistantConversationDataDtoMessagesInnerRoleEnum
+            .AssistantConversationDataMessagesRoleEnum
             .unknownDefaultOpenApi =>
           AssistantMessageRole.assistant,
       },

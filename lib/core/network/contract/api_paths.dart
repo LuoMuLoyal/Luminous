@@ -54,7 +54,7 @@ abstract final class LucentApiPaths {
   // ── Partial-PATCH endpoints (generated DTO requires all fields) ────────
 
   /// `PATCH /api/v1/user/health-context/profile` — the generated
-  /// [UpdateHealthContextProfileDto] requires 8 fields; callers need to send
+  /// [UpdateUserHealthContextProfileRequest] requires 8 fields; callers need to send
   /// only changed fields.
   static const healthContextProfile = '/api/v1/user/health-context/profile';
 
@@ -68,7 +68,7 @@ abstract final class LucentApiPaths {
   static const dailyRecords = '/api/v1/user/daily-records';
 
   /// `PATCH /api/v1/user/daily-records/{id}` — partial PATCH semantics
-  /// incompatible with [UpdateDailyRecordDto].
+  /// incompatible with [UpdateDailyRecordRequest].
   static String dailyRecord(String id) => '/api/v1/user/daily-records/$id';
 
   /// `POST /api/v1/user/medicine-reminders` — raw create with custom JSON.

@@ -38,7 +38,7 @@ class LucentNotificationRepository implements NotificationRepository {
     required int pageSize,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await api.notificationsControllerFindAllV1(
+      final response = await api.listNotifications(
         page: page,
         pageSize: pageSize,
       );
@@ -55,7 +55,7 @@ class LucentNotificationRepository implements NotificationRepository {
   @override
   TaskEither<LucentFailure, NotificationDetail?> findOne(String id) {
     return TaskEither.tryCatch(() async {
-      final response = await api.notificationsControllerFindOneV1(id: id);
+      final response = await api.getNotification(id: id);
       final d = _requireData(response.data, operation: 'findOne');
       return NotificationDetail(
         id: d.id,
@@ -74,7 +74,7 @@ class LucentNotificationRepository implements NotificationRepository {
   @override
   TaskEither<LucentFailure, int> getUnreadCount() {
     return TaskEither.tryCatch(() async {
-      final response = await api.notificationsControllerGetUnreadCountV1();
+      final response = await api.getUnreadCount();
       final dto = _requireData(response.data, operation: 'getUnreadCount');
       return dto.count.toInt();
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
@@ -83,28 +83,28 @@ class LucentNotificationRepository implements NotificationRepository {
   @override
   TaskEither<LucentFailure, void> markAllAsRead() {
     return TaskEither.tryCatch(() async {
-      await api.notificationsControllerMarkAllAsReadV1();
+      await api.markAllAsRead();
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
   TaskEither<LucentFailure, void> markAsRead(String id) {
     return TaskEither.tryCatch(() async {
-      await api.notificationsControllerMarkAsReadV1(id: id);
+      await api.markAsRead(id: id);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
   TaskEither<LucentFailure, void> markAsUnread(String id) {
     return TaskEither.tryCatch(() async {
-      await api.notificationsControllerMarkAsUnreadV1(id: id);
+      await api.markAsUnread(id: id);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   @override
   TaskEither<LucentFailure, void> delete(String id) {
     return TaskEither.tryCatch(() async {
-      await api.notificationsControllerRemoveV1(id: id);
+      await api.remove(id: id);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -122,7 +122,7 @@ class LucentNotificationRepository implements NotificationRepository {
     return data;
   }
 
-  NotificationItem _mapItem(NotificationListResponseDtoItemsInner dto) {
+  NotificationItem _mapItem(NotificationListResponseItems dto) {
     return NotificationItem(
       id: dto.id,
       type: NotificationType.fromJson(dto.type.value),

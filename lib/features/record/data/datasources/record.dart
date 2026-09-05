@@ -42,7 +42,7 @@ class DailyRecordRemoteDataSource {
     int page = 1,
     int pageSize = 50,
   }) async {
-    final response = await api.dailyRecordsControllerListV1(
+    final response = await api.listDailyRecords(
       date: date,
       kind: kind,
       page: page,
@@ -56,7 +56,7 @@ class DailyRecordRemoteDataSource {
   }
 
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
-    final response = await api.dailyRecordsControllerSummaryV1(date: date);
+    final response = await api.summary(date: date);
     final dto = _requireData(response.data, operation: 'fetchSummary');
     return DailyRecordSummaryData(
       summaries: dto.summaries
@@ -74,7 +74,7 @@ class DailyRecordRemoteDataSource {
   }
 
   Future<DailyRecordItem> get(String id) async {
-    final response = await api.dailyRecordsControllerGetV1(id: id);
+    final response = await api.getDailyRecord(id: id);
     final dto = _requireData(response.data, operation: 'get');
     return _toItem(_canonicalResponse(dto));
   }
@@ -82,9 +82,9 @@ class DailyRecordRemoteDataSource {
   Future<DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
   ) async {
-    final presignResponse = await api.dailyRecordsControllerCreateImageUploadV1(
-      dailyRecordsControllerCreateImageUploadV1Request:
-          lucent.DailyRecordsControllerCreateImageUploadV1Request(
+    final presignResponse = await api.createImageUpload(
+      createImageUploadRequest:
+          lucent.CreateImageUploadRequest(
             contentType: input.contentType,
             sizeBytes: input.sizeBytes,
             fileName: input.fileName,
@@ -124,9 +124,9 @@ class DailyRecordRemoteDataSource {
     required String text,
     required String occurredAt,
   }) async {
-    final response = await api.dailyRecordsControllerGenerateCandidatesV1(
-      dailyRecordsControllerGenerateCandidatesV1Request:
-          lucent.DailyRecordsControllerGenerateCandidatesV1Request(
+    final response = await api.generateCandidates(
+      generateCandidatesRequest:
+          lucent.GenerateCandidatesRequest(
             text: text,
             // 候选基准日与 record occurredAt 同属日键 wire 契约(String,
             // YYYY-MM-DD),调用方传参即"生成哪一天候选"的纯日期字符串,直传
@@ -233,7 +233,7 @@ class DailyRecordRemoteDataSource {
     }
   }
 
-  Future<lucent.DailyRecordListResponseDtoItemsInner> _write(
+  Future<lucent.DailyRecordListResponseItems> _write(
     String method,
     String path,
     Map<String, dynamic>? payload,
@@ -255,7 +255,7 @@ class DailyRecordRemoteDataSource {
     // Create/update resolve to the same record resource shape as the list
     // item; the list-item DTO is the canonical record shape used to map into
     // the domain entity.
-    return lucent.DailyRecordListResponseDtoItemsInner.fromJson(body);
+    return lucent.DailyRecordListResponseItems.fromJson(body);
   }
 
   /// Extracts a non-null generated-client payload, throwing
@@ -273,9 +273,9 @@ class DailyRecordRemoteDataSource {
 
   /// Re-typed as the canonical list-item DTO. The contract splits the record
   /// resource into per-endpoint classes that share one JSON shape (see
-  /// [lucent.DailyRecordListResponseDtoItemsInner]), so summary/detail payloads
+  /// [lucent.DailyRecordListResponseItems]), so summary/detail payloads
   /// are normalized to it before mapping.
-  DailyRecordItem _toItem(lucent.DailyRecordListResponseDtoItemsInner item) {
+  DailyRecordItem _toItem(lucent.DailyRecordListResponseItems item) {
     return DailyRecordItem(
       id: item.id,
       kind: _parseKind(item.kind.value),
@@ -303,22 +303,22 @@ class DailyRecordRemoteDataSource {
 
   /// Normalizes the summary `latest` record payload to the canonical list-item
   /// DTO (identical JSON shape).
-  lucent.DailyRecordListResponseDtoItemsInner _canonicalLatest(
-    lucent.DailyRecordSummaryResponseDtoSummariesInnerLatest item,
+  lucent.DailyRecordListResponseItems _canonicalLatest(
+    lucent.DailyRecordSummaryResponseSummariesLatest item,
   ) {
-    return lucent.DailyRecordListResponseDtoItemsInner.fromJson(item.toJson());
+    return lucent.DailyRecordListResponseItems.fromJson(item.toJson());
   }
 
   /// Normalizes the get/create/update resource payload to the canonical
   /// list-item DTO (identical JSON shape).
-  lucent.DailyRecordListResponseDtoItemsInner _canonicalResponse(
-    lucent.DailyRecordResponseDto item,
+  lucent.DailyRecordListResponseItems _canonicalResponse(
+    lucent.DailyRecordResponse item,
   ) {
-    return lucent.DailyRecordListResponseDtoItemsInner.fromJson(item.toJson());
+    return lucent.DailyRecordListResponseItems.fromJson(item.toJson());
   }
 
   DailyRecordAttachment _toAttachment(
-    lucent.DailyRecordListResponseDtoItemsInnerAttachmentsInner item,
+    lucent.DailyRecordListResponseItemsAttachments item,
   ) {
     return DailyRecordAttachment(
       id: item.id,
@@ -337,7 +337,7 @@ class DailyRecordRemoteDataSource {
   }
 
   DailyRecordCandidateItem _toCandidateItem(
-    lucent.DailyRecordCandidateResponseDtoItemsInner item,
+    lucent.DailyRecordCandidateResponseItems item,
   ) {
     return DailyRecordCandidateItem(
       kind: _parseKind(item.kind.value),

@@ -42,26 +42,26 @@ class AssistantRemoteDataSource {
   final lucent.AssistantApi api;
   final Dio dio;
 
-  Future<lucent.AssistantCapabilitiesResponseDto> getCapabilities() async {
-    final response = await api.assistantControllerGetCapabilitiesV1();
+  Future<lucent.AssistantCapabilitiesResponse> getCapabilities() async {
+    final response = await api.getCapabilities();
     return _requireData(response.data, operation: 'getCapabilities');
   }
 
-  Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
-    final response = await api.assistantControllerGetLatestConversationV1();
+  Future<lucent.AssistantConversationData?> getLatestConversation() async {
+    final response = await api.getLatestConversation();
     return _requireData(response.data, operation: 'getLatestConversation');
   }
 
-  Future<List<lucent.AssistantConversationSummaryDtoInner>>
+  Future<List<lucent.AssistantConversationSummaryItem>>
   listRecentConversations() async {
-    final response = await api.assistantControllerListRecentConversationsV1();
+    final response = await api.listRecentConversations();
     return _requireData(response.data, operation: 'listRecentConversations');
   }
 
-  Future<lucent.AssistantConversationDataDto> openConversation(
+  Future<lucent.AssistantConversationData> openConversation(
     String conversationId,
   ) async {
-    final response = await api.assistantControllerOpenConversationV1(
+    final response = await api.openConversation(
       conversationId: conversationId,
     );
     // The DTO's `data` field is nullable; guard both layers so a
@@ -70,38 +70,38 @@ class AssistantRemoteDataSource {
       response.data,
       operation: 'openConversation',
     );
-    return lucent.AssistantConversationDataDto.fromJson(responseDto.toJson());
+    return lucent.AssistantConversationData.fromJson(responseDto.toJson());
   }
 
   Future<bool> clearLatestConversation() async {
     // Use the generated OpenAPI client (no manual path or body workaround).
     // The backend treats an empty JSON body as absent, so a no-body POST is
     // accepted by this endpoint.
-    final response = await api.assistantControllerClearLatestConversationV1();
+    final response = await api.clearLatestConversation();
     return response.data?.cleared ?? false;
   }
 
   /// Renames one persisted conversation (title only) and returns the updated
   /// conversation payload.
-  Future<lucent.AssistantConversationDataDto> renameConversation({
+  Future<lucent.AssistantConversationData> renameConversation({
     required String conversationId,
     required String title,
   }) async {
-    final response = await api.assistantControllerRenameConversationV1(
+    final response = await api.renameConversation(
       conversationId: conversationId,
-      assistantControllerRenameConversationV1Request:
-          lucent.AssistantControllerRenameConversationV1Request(title: title),
+      renameConversationRequest:
+          lucent.RenameConversationRequest(title: title),
     );
     final responseDto = _requireData(
       response.data,
       operation: 'renameConversation',
     );
-    return lucent.AssistantConversationDataDto.fromJson(responseDto.toJson());
+    return lucent.AssistantConversationData.fromJson(responseDto.toJson());
   }
 
   /// Soft-deletes one persisted conversation on the backend.
   Future<void> deleteConversation(String conversationId) async {
-    await api.assistantControllerDeleteConversationV1(
+    await api.deleteConversation(
       conversationId: conversationId,
     );
   }
@@ -115,17 +115,17 @@ class AssistantRemoteDataSource {
     required String decision,
     String? note,
   }) async {
-    final response = await api.assistantControllerConfirmProposalV1(
+    final response = await api.confirmProposal(
       conversationId: conversationId,
-      assistantControllerConfirmProposalV1Request:
-          lucent.AssistantControllerConfirmProposalV1Request(
+      confirmProposalRequest:
+          lucent.ConfirmProposalRequest(
             proposalIds: proposalIds,
             decision: decision == 'approved'
                 ? lucent
-                      .AssistantControllerConfirmProposalV1RequestDecisionEnum
+                      .ConfirmProposalRequestDecisionEnum
                       .approved
                 : lucent
-                      .AssistantControllerConfirmProposalV1RequestDecisionEnum
+                      .ConfirmProposalRequestDecisionEnum
                       .rejected,
             note: note,
           ),
@@ -135,7 +135,7 @@ class AssistantRemoteDataSource {
 
   Stream<AssistantRemoteEvent> streamMessages({
     required List<
-      lucent.AssistantControllerStreamMessagesV1RequestMessagesInner
+      lucent.StreamMessagesRequestMessages
     >
     messages,
     String? conversationId,

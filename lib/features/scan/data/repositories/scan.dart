@@ -37,7 +37,7 @@ class LucentScanRepository implements ScanRepository {
   @override
   TaskEither<LucentFailure, List<ScanSearchResult>> search(String query) {
     return TaskEither.tryCatch(() async {
-      final response = await api.medicinesControllerSearchV1(
+      final response = await api.search(
         source_: 'cn',
         q: query,
         page: 1,
