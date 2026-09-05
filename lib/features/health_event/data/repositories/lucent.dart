@@ -48,7 +48,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   TaskEither<LucentFailure, HealthEvent?> fetchActive() {
     return TaskEither.tryCatch(() async {
       try {
-        final response = await _api.healthEventsControllerActiveV1();
+        final response = await _api.active();
         final dto = response.data;
         // 200 with an empty / JSON-null body: no active event — a normal
         // business state, mapped to Right(null).
@@ -71,7 +71,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   TaskEither<LucentFailure, HealthEvent?> fetchById(String eventId) {
     return TaskEither.tryCatch(() async {
       try {
-        final response = await _api.healthEventsControllerGetV1(id: eventId);
+        final response = await _api.getHealthEvent(id: eventId);
         final dto = response.data;
         return dto == null ? null : _map(_canonical(dto));
       } on DioException catch (error) {
@@ -90,7 +90,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   @override
   TaskEither<LucentFailure, List<HealthEvent>> fetchHistory() {
     return TaskEither.tryCatch(() async {
-      final response = await _api.healthEventsControllerListV1();
+      final response = await _api.listHealthEvents();
       final dto = _requireData(response.data, operation: 'fetchHistory');
       return dto.items.map(_map).toList(growable: false);
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
@@ -103,9 +103,9 @@ class LucentHealthEventRepository implements HealthEventRepository {
     List<String> currentMedicineIds = const [],
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _api.healthEventsControllerCreateV1(
-        healthEventsControllerCreateV1Request:
-            api.HealthEventsControllerCreateV1Request(
+      final response = await _api.createHealthEvent(
+        createHealthEventRequest:
+            api.CreateHealthEventRequest(
               title: title,
               reasonRecordId: reasonRecordId,
               currentMedicineIds: currentMedicineIds.isEmpty
@@ -124,14 +124,14 @@ class LucentHealthEventRepository implements HealthEventRepository {
     required HealthEventOutcome outcome,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _api.healthEventsControllerUpsertCheckInV1(
+      final response = await _api.upsertCheckIn(
         id: eventId,
         // 日键 wire 形态为纯 YYYY-MM-DD 字符串(方案 A),直接透传调用方入参
         // 字符串;不再经 DateTime 中转(此前 DateTime.parse 会让生成客户端把
         // date.toString() 塞进路径,产出带时间的畸形日键)。
         date: date,
-        healthEventsControllerUpsertCheckInV1Request:
-            api.HealthEventsControllerUpsertCheckInV1Request(
+        upsertCheckInRequest:
+            api.UpsertCheckInRequest(
               outcome: _toCheckInApiOutcome(outcome),
             ),
       );
@@ -145,10 +145,10 @@ class LucentHealthEventRepository implements HealthEventRepository {
     required HealthEventOutcome outcome,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await _api.healthEventsControllerEndV1(
+      final response = await _api.end(
         id: eventId,
-        healthEventsControllerEndV1Request:
-            api.HealthEventsControllerEndV1Request(
+        endRequest:
+            api.EndRequest(
               outcome: _toEndApiOutcome(outcome),
             ),
       );
@@ -173,7 +173,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   /// Protocol invariant: a write/detail response without event data is not a
   /// valid success. Kept as a recorded [StateError]; the repository boundary
   /// maps it to `Left(unknown)` with the cause preserved.
-  HealthEvent _mapRequired(api.HealthEventResponseDto? dto) {
+  HealthEvent _mapRequired(api.HealthEventResponse? dto) {
     if (dto == null) {
       appTalker.error('LucentHealthEventRepository: 响应缺少事件数据（协议不变量）');
       throw StateError('Health event response did not include event data.');
@@ -183,21 +183,21 @@ class LucentHealthEventRepository implements HealthEventRepository {
 
   /// Normalizes a per-endpoint event DTO to the canonical list-item DTO
   /// (identical JSON shape).
-  api.HealthEventListResponseDtoItemsInner _canonical(
-    api.HealthEventResponseDto dto,
+  api.HealthEventListResponseItems _canonical(
+    api.HealthEventResponse dto,
   ) {
-    return api.HealthEventListResponseDtoItemsInner.fromJson(dto.toJson());
+    return api.HealthEventListResponseItems.fromJson(dto.toJson());
   }
 
   /// Normalizes the nullable active-event DTO to the canonical list-item DTO
   /// (identical JSON shape).
-  api.HealthEventListResponseDtoItemsInner _canonicalNullable(
-    api.HealthEventNullableResponseDto dto,
+  api.HealthEventListResponseItems _canonicalNullable(
+    api.HealthEventNullableResponse dto,
   ) {
-    return api.HealthEventListResponseDtoItemsInner.fromJson(dto.toJson());
+    return api.HealthEventListResponseItems.fromJson(dto.toJson());
   }
 
-  HealthEvent _map(api.HealthEventListResponseDtoItemsInner dto) {
+  HealthEvent _map(api.HealthEventListResponseItems dto) {
     return HealthEvent(
       id: dto.id,
       title: dto.title,
@@ -216,7 +216,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
     );
   }
 
-  HealthEventCheckIn _mapCheckIn(api.HealthEventResponseDtoCheckIn dto) {
+  HealthEventCheckIn _mapCheckIn(api.HealthEventListResponseItemsCheckIn dto) {
     return HealthEventCheckIn(
       id: dto.id,
       eventId: dto.eventId,
@@ -228,15 +228,15 @@ class LucentHealthEventRepository implements HealthEventRepository {
   }
 
   HealthEventStatus _mapStatus(
-    api.HealthEventListResponseDtoItemsInnerStatusEnum value,
+    api.HealthEventListResponseItemsStatusEnum value,
   ) {
     return switch (value) {
-      api.HealthEventListResponseDtoItemsInnerStatusEnum.active =>
+      api.HealthEventListResponseItemsStatusEnum.active =>
         HealthEventStatus.active,
-      api.HealthEventListResponseDtoItemsInnerStatusEnum.ended =>
+      api.HealthEventListResponseItemsStatusEnum.ended =>
         HealthEventStatus.ended,
       api
-          .HealthEventListResponseDtoItemsInnerStatusEnum
+          .HealthEventListResponseItemsStatusEnum
           .unknownDefaultOpenApi =>
         _unknownStatus(value.value),
     };
@@ -250,17 +250,17 @@ class LucentHealthEventRepository implements HealthEventRepository {
   }
 
   HealthEventOutcome _mapOutcome(
-    api.HealthEventListResponseDtoItemsInnerOutcomeEnum value,
+    api.HealthEventListResponseItemsOutcomeEnum value,
   ) {
     return switch (value) {
-      api.HealthEventListResponseDtoItemsInnerOutcomeEnum.improved =>
+      api.HealthEventListResponseItemsOutcomeEnum.improved =>
         HealthEventOutcome.improved,
-      api.HealthEventListResponseDtoItemsInnerOutcomeEnum.unchanged =>
+      api.HealthEventListResponseItemsOutcomeEnum.unchanged =>
         HealthEventOutcome.unchanged,
-      api.HealthEventListResponseDtoItemsInnerOutcomeEnum.worsened =>
+      api.HealthEventListResponseItemsOutcomeEnum.worsened =>
         HealthEventOutcome.worsened,
       api
-          .HealthEventListResponseDtoItemsInnerOutcomeEnum
+          .HealthEventListResponseItemsOutcomeEnum
           .unknownDefaultOpenApi =>
         _unknownOutcome(value.value),
     };
@@ -274,42 +274,42 @@ class LucentHealthEventRepository implements HealthEventRepository {
   }
 
   HealthEventOutcome _mapCheckInOutcome(
-    api.HealthEventResponseDtoCheckInOutcomeEnum value,
+    api.HealthEventListResponseItemsCheckInOutcomeEnum value,
   ) {
     return switch (value) {
-      api.HealthEventResponseDtoCheckInOutcomeEnum.improved =>
+      api.HealthEventListResponseItemsCheckInOutcomeEnum.improved =>
         HealthEventOutcome.improved,
-      api.HealthEventResponseDtoCheckInOutcomeEnum.unchanged =>
+      api.HealthEventListResponseItemsCheckInOutcomeEnum.unchanged =>
         HealthEventOutcome.unchanged,
-      api.HealthEventResponseDtoCheckInOutcomeEnum.worsened =>
+      api.HealthEventListResponseItemsCheckInOutcomeEnum.worsened =>
         HealthEventOutcome.worsened,
-      api.HealthEventResponseDtoCheckInOutcomeEnum.unknownDefaultOpenApi =>
+      api.HealthEventListResponseItemsCheckInOutcomeEnum.unknownDefaultOpenApi =>
         _unknownOutcome(value.value),
     };
   }
 
-  api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum
+  api.UpsertCheckInRequestOutcomeEnum
   _toCheckInApiOutcome(HealthEventOutcome value) {
     return switch (value) {
       HealthEventOutcome.improved =>
-        api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum.improved,
+        api.UpsertCheckInRequestOutcomeEnum.improved,
       HealthEventOutcome.unchanged =>
-        api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum.unchanged,
+        api.UpsertCheckInRequestOutcomeEnum.unchanged,
       HealthEventOutcome.worsened =>
-        api.HealthEventsControllerUpsertCheckInV1RequestOutcomeEnum.worsened,
+        api.UpsertCheckInRequestOutcomeEnum.worsened,
     };
   }
 
-  api.HealthEventsControllerEndV1RequestOutcomeEnum _toEndApiOutcome(
+  api.EndRequestOutcomeEnum _toEndApiOutcome(
     HealthEventOutcome value,
   ) {
     return switch (value) {
       HealthEventOutcome.improved =>
-        api.HealthEventsControllerEndV1RequestOutcomeEnum.improved,
+        api.EndRequestOutcomeEnum.improved,
       HealthEventOutcome.unchanged =>
-        api.HealthEventsControllerEndV1RequestOutcomeEnum.unchanged,
+        api.EndRequestOutcomeEnum.unchanged,
       HealthEventOutcome.worsened =>
-        api.HealthEventsControllerEndV1RequestOutcomeEnum.worsened,
+        api.EndRequestOutcomeEnum.worsened,
     };
   }
 }

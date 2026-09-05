@@ -1,9 +1,9 @@
-import 'package:lucent_api/lucent_api.dart';
+import 'package:lucent_api/lucent_api.dart' hide HealthSummary;
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 
 /// Maps Lucent OpenAPI DTOs to domain entities.
 class HealthContextMapper {
-  HealthContextSnapshot fromDto(HealthContextResponseDto dto) {
+  HealthContextSnapshot fromDto(HealthContextResponse dto) {
     return HealthContextSnapshot(
       summary: _mapSummary(dto.summary),
       profile: _mapProfile(dto.profile),
@@ -13,7 +13,7 @@ class HealthContextMapper {
     );
   }
 
-  HealthSummary _mapSummary(HealthContextResponseDtoSummary s) {
+  HealthSummary _mapSummary(HealthContextResponseSummary s) {
     return HealthSummary(
       age: s.age is int ? (s.age as int) : null,
       onboardingCompleted: s.onboardingCompleted,
@@ -24,7 +24,7 @@ class HealthContextMapper {
     );
   }
 
-  HealthProfile _mapProfile(HealthContextResponseDtoProfile p) {
+  HealthProfile _mapProfile(HealthContextResponseProfile p) {
     return HealthProfile(
       birthDate: p.birthDate?.toString(),
       sexAtBirth: p.sexAtBirth?.name,
@@ -45,7 +45,7 @@ class HealthContextMapper {
     );
   }
 
-  AllergyItem _mapAllergy(HealthContextResponseDtoAllergiesInner a) {
+  AllergyItem _mapAllergy(HealthContextResponseAllergies a) {
     return AllergyItem(
       id: a.id,
       kind: a.kind.name,
@@ -59,7 +59,7 @@ class HealthContextMapper {
     );
   }
 
-  ConditionItem _mapCondition(HealthContextResponseDtoConditionsInner c) {
+  ConditionItem _mapCondition(HealthContextResponseConditions c) {
     return ConditionItem(
       id: c.id,
       label: c.label,
@@ -73,7 +73,7 @@ class HealthContextMapper {
   }
 
   CurrentMedicineItem _mapCurrentMedicine(
-    HealthContextResponseDtoCurrentMedicinesInner m,
+    HealthContextResponseCurrentMedicines m,
   ) {
     return CurrentMedicineItem(
       id: m.id,

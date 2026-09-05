@@ -18,14 +18,14 @@ class HealthContextRemoteDataSource {
   final Dio _dio;
 
   /// Calls GET /api/v1/user/health-context and returns the parsed DTO.
-  Future<HealthContextResponseDto> fetchHealthContext() async {
+  Future<HealthContextResponse> fetchHealthContext() async {
     final response = await _api
-        .userHealthContextControllerGetUserHealthContextV1();
+        .getUserHealthContext();
     return requireData(response.data, operation: 'fetchHealthContext');
   }
 
   /// Calls PATCH /api/v1/user/health-context/profile and returns the parsed DTO.
-  Future<HealthContextResponseDto> updateProfile(
+  Future<HealthContextResponse> updateProfile(
     HealthProfileUpdateInput input,
   ) {
     return _write(
@@ -36,7 +36,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls POST /api/v1/user/health-context/allergies and returns the parsed DTO.
-  Future<HealthContextResponseDto> createAllergy(
+  Future<HealthContextResponse> createAllergy(
     HealthAllergyWriteInput input,
   ) {
     return _write(
@@ -47,7 +47,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls PATCH /api/v1/user/health-context/allergies/:id and returns the parsed DTO.
-  Future<HealthContextResponseDto> updateAllergy(
+  Future<HealthContextResponse> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
   ) {
@@ -59,7 +59,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls DELETE /api/v1/user/health-context/allergies/:id and returns the parsed DTO.
-  Future<HealthContextResponseDto> deleteAllergy(String id) {
+  Future<HealthContextResponse> deleteAllergy(String id) {
     return _write(
       method: 'DELETE',
       path: '/api/v1/user/health-context/allergies/$id',
@@ -67,7 +67,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls POST /api/v1/user/health-context/conditions and returns the parsed DTO.
-  Future<HealthContextResponseDto> createCondition(
+  Future<HealthContextResponse> createCondition(
     HealthConditionWriteInput input,
   ) {
     return _write(
@@ -78,7 +78,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls PATCH /api/v1/user/health-context/conditions/:id and returns the parsed DTO.
-  Future<HealthContextResponseDto> updateCondition(
+  Future<HealthContextResponse> updateCondition(
     String id,
     HealthConditionUpdateInput input,
   ) {
@@ -90,7 +90,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls DELETE /api/v1/user/health-context/conditions/:id and returns the parsed DTO.
-  Future<HealthContextResponseDto> deleteCondition(String id) {
+  Future<HealthContextResponse> deleteCondition(String id) {
     return _write(
       method: 'DELETE',
       path: '/api/v1/user/health-context/conditions/$id',
@@ -98,7 +98,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls POST /api/v1/user/health-context/current-medicines and returns the parsed DTO.
-  Future<HealthContextResponseDto> createCurrentMedicine(
+  Future<HealthContextResponse> createCurrentMedicine(
     CurrentMedicineWriteInput input,
   ) {
     return _write(
@@ -109,7 +109,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls PATCH /api/v1/user/health-context/current-medicines/:id and returns the parsed DTO.
-  Future<HealthContextResponseDto> updateCurrentMedicine(
+  Future<HealthContextResponse> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
   ) {
@@ -121,14 +121,14 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls DELETE /api/v1/user/health-context/current-medicines/:id and returns the parsed DTO.
-  Future<HealthContextResponseDto> deleteCurrentMedicine(String id) {
+  Future<HealthContextResponse> deleteCurrentMedicine(String id) {
     return _write(
       method: 'DELETE',
       path: '/api/v1/user/health-context/current-medicines/$id',
     );
   }
 
-  Future<HealthContextResponseDto> _write({
+  Future<HealthContextResponse> _write({
     required String method,
     required String path,
     Map<String, dynamic>? payload,
@@ -144,7 +144,7 @@ class HealthContextRemoteDataSource {
       message: 'Lucent health-context response is empty.',
     );
 
-    return HealthContextResponseDto.fromJson(body);
+    return HealthContextResponse.fromJson(body);
   }
 }
 

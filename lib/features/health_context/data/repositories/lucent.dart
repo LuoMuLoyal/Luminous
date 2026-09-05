@@ -148,7 +148,7 @@ class LucentHealthContextRepository implements HealthContextRepository {
   /// failure (cache write included) is also a Left — the repository never
   /// turns a failed write into an unconditional success.
   TaskEither<LucentFailure, HealthContextSnapshot> _write(
-    Future<HealthContextResponseDto> Function() remote,
+    Future<HealthContextResponse> Function() remote,
   ) {
     return TaskEither.tryCatch(() async {
       try {
