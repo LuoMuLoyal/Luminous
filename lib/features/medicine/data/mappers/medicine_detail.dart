@@ -5,12 +5,12 @@ import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart'
 /// entity.
 ///
 /// The detail response is flattened by the backend into a single
-/// [MedicineDetailResponseDtoDetail] carrying both CN and DrugBank fields; the
+/// [MedicineDetailResponseDetail] carrying both CN and DrugBank fields; the
 /// `kind` discriminator decides which family is meaningful.
 class MedicineDetailMapper {
   const MedicineDetailMapper();
 
-  MedicineDetail dataDtoToEntity(MedicineDetailResponseDto dto) {
+  MedicineDetail dataDtoToEntity(MedicineDetailResponse dto) {
     final detail = dto.detail;
     return MedicineDetail(
       id: dto.id,
@@ -73,11 +73,11 @@ class MedicineDetailMapper {
   /// generated client's `unknownDefaultOpenApi` fallback only appears on
   /// unexpected payloads; it is folded into `drugbank` (the client's default
   /// source) so the entity's `source` stays within the two known values.
-  String _sourceValue(MedicineDetailResponseDtoSource_Enum source) =>
+  String _sourceValue(MedicineDetailResponseSource_Enum source) =>
       switch (source) {
-        MedicineDetailResponseDtoSource_Enum.cn => 'cn',
-        MedicineDetailResponseDtoSource_Enum.drugbank => 'drugbank',
-        MedicineDetailResponseDtoSource_Enum.unknownDefaultOpenApi =>
+        MedicineDetailResponseSource_Enum.cn => 'cn',
+        MedicineDetailResponseSource_Enum.drugbank => 'drugbank',
+        MedicineDetailResponseSource_Enum.unknownDefaultOpenApi =>
           'drugbank',
       };
 

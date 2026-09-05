@@ -24,7 +24,7 @@ class MedicineRiskCheckRemoteDataSource {
 
   /// GET — reads existing records from the database (static + llm).
   Future<MedicineRiskCheckRecords> fetchRecords() async {
-    final response = await api.medicinesControllerGetRiskCheckV1();
+    final response = await api.getRiskCheck();
     final dto = response.data;
     if (dto == null) {
       throw LucentFailure.network(
@@ -38,8 +38,8 @@ class MedicineRiskCheckRemoteDataSource {
   /// POST — manually triggers a risk check of the given [type].
   Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
     final dto = mapper.checkTypeToDto(type);
-    final response = await api.medicinesControllerRunRiskCheckV1(
-      medicinesControllerRunRiskCheckV1Request: dto,
+    final response = await api.runRiskCheck(
+      runRiskCheckRequest: dto,
     );
     final resp = response.data;
     if (resp == null) {
@@ -61,8 +61,8 @@ class MedicineRiskCheckRemoteDataSource {
     required String sourceRefId,
   }) async {
     final dto = mapper.precheckToDto(source: source, sourceRefId: sourceRefId);
-    final response = await api.medicinesControllerRunRiskCheckV1(
-      medicinesControllerRunRiskCheckV1Request: dto,
+    final response = await api.runRiskCheck(
+      runRiskCheckRequest: dto,
     );
     final resp = response.data;
     if (resp == null) {

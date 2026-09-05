@@ -4,50 +4,51 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 /// Maps generated OpenAPI DTOs to domain entities for the risk check feature.
 ///
 /// 响应侧 zod 再生成后,record 载荷由 per-op DTO 表达:list records 的
-/// `static`/`llm` 槽位是 `MedicineRiskCheckRecordsResponseDtoStatic`,
-/// run-check/precheck 单条响应是 `MedicineRiskCheckRecordResponseDto`,
-/// 两者字段布局相同且 `result` 共用
-/// `MedicineRiskCheckRecordsResponseDtoStaticResult`。
+/// `static`/`llm` 槽位是 `MedicineRiskCheckRecordsResponseStatic` /
+/// `MedicineRiskCheckRecordsResponseLlm`,run-check/precheck 单条响应是
+/// `MedicineRiskCheckRecordResponse`。三者字段布局相同但类型族系不同
+/// (static/llm/single-record 各自有独立的 result 与嵌套枚举),故这里把
+/// 各族的 wire 枚举值收敛到共享的 value→domain 映射,再以薄包装把各族
+/// DTO 转成领域实体。
 class MedicineRiskCheckMapper {
   const MedicineRiskCheckMapper();
 
   MedicineRiskCheckRecords recordsDtoToDomain(
-    MedicineRiskCheckRecordsResponseDto dto,
+    MedicineRiskCheckRecordsResponse dto,
   ) {
     return MedicineRiskCheckRecords(
       staticRecord: dto.static_ == null
           ? null
           : _listRecordToDomain(dto.static_!),
-      llmRecord: dto.llm == null ? null : _listRecordToDomain(dto.llm!),
+      llmRecord: dto.llm == null ? null : _llmRecordToDomain(dto.llm!),
     );
   }
 
   MedicineRiskCheckRecord recordDtoToDomain(
-    MedicineRiskCheckRecordResponseDto dto,
+    MedicineRiskCheckRecordResponse dto,
   ) {
     return _record(
-      checkType: _mapCheckType(dto.checkType),
-      result: resultDtoToDomain(dto.result),
+      checkType: _mapCheckTypeValue(dto.checkType.value),
+      result: recordResultDtoToDomain(dto.result),
       riskScore: dto.riskScore.toInt(),
-      riskLevel: _mapRiskLevelFromRecord(dto.riskLevel),
+      riskLevel: _mapRiskLevelValue(dto.riskLevel.value),
       stale: dto.stale,
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
     );
   }
 
+  // ─── Static-family result mapping (list records `static` slot) ─────────
+
   MedicineRiskCheckResult resultDtoToDomain(
-    MedicineRiskCheckRecordsResponseDtoStaticResult dto,
+    MedicineRiskCheckRecordsResponseStaticResult dto,
   ) {
-    return MedicineRiskCheckResult(
-      overallRiskLevel: _mapRiskLevel(dto.overallRiskLevel),
-      overallRiskScore: dto.overallRiskScore.toInt(),
-      currentMedicineCount: dto.currentMedicineCount.toInt(),
-      checkedMedicineCount: dto.checkedMedicineCount.toInt(),
-      findings: dto.findings
-          .map(findingDtoToDomain)
-          .whereType<MedicineRiskFinding>()
-          .toList(),
+    return _resultFromValues(
+      overallRiskLevelValue: dto.overallRiskLevel.value,
+      overallRiskScore: dto.overallRiskScore,
+      currentMedicineCount: dto.currentMedicineCount,
+      checkedMedicineCount: dto.checkedMedicineCount,
+      findings: dto.findings.map(findingDtoToDomain).toList(),
       coverageIssues: dto.coverageIssues.map(coverageIssueDtoToDomain).toList(),
       redFlags: dto.redFlags.map(redFlagDtoToDomain).toList(),
       overallRecommendation: dto.overallRecommendation,
@@ -55,16 +56,12 @@ class MedicineRiskCheckMapper {
   }
 
   MedicineRiskFinding? findingDtoToDomain(
-    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInner dto,
+    MedicineRiskCheckRecordsResponseStaticResultFindings dto,
   ) {
-    final type = _mapFindingType(dto.type);
-    if (type == null) {
-      return null;
-    }
-    return MedicineRiskFinding(
-      type: type,
-      severity: _mapSeverity(dto.severity),
-      context: _mapFindingContext(dto.context),
+    return _findingFromValues(
+      typeValue: dto.type.value,
+      severityValue: dto.severity.value,
+      contextValue: dto.context.value,
       primaryMedicineName: dto.primaryMedicineName,
       secondaryMedicineName: dto.secondaryMedicineName,
       relatedLabel: dto.relatedLabel,
@@ -74,33 +71,135 @@ class MedicineRiskCheckMapper {
   }
 
   MedicineRiskCoverageIssue coverageIssueDtoToDomain(
-    MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInner dto,
+    MedicineRiskCheckRecordsResponseStaticResultCoverageIssues dto,
   ) {
     return MedicineRiskCoverageIssue(
       medicineName: dto.medicineName,
-      reason: _mapCoverageReason(dto.reason),
+      reason: _mapCoverageReasonValue(dto.reason.value),
     );
   }
 
   RedFlagAlert redFlagDtoToDomain(
-    MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInner dto,
+    MedicineRiskCheckRecordsResponseStaticResultRedFlags dto,
   ) {
     return RedFlagAlert(
-      rule: _mapRedFlagRule(dto.rule),
+      rule: _mapRedFlagRuleValue(dto.rule.value),
       primaryMedicineName: dto.primaryMedicineName,
       relatedLabel: dto.relatedLabel,
     );
   }
 
-  MedicinesControllerRunRiskCheckV1Request checkTypeToDto(
-    MedicineRiskCheckType type,
+  // ─── LLM-family result mapping (list records `llm` slot) ───────────────
+
+  MedicineRiskCheckResult llmResultDtoToDomain(
+    MedicineRiskCheckRecordsResponseLlmResult dto,
   ) {
-    return MedicinesControllerRunRiskCheckV1Request(
+    return _resultFromValues(
+      overallRiskLevelValue: dto.overallRiskLevel.value,
+      overallRiskScore: dto.overallRiskScore,
+      currentMedicineCount: dto.currentMedicineCount,
+      checkedMedicineCount: dto.checkedMedicineCount,
+      findings: dto.findings.map(llmFindingDtoToDomain).toList(),
+      coverageIssues:
+          dto.coverageIssues.map(llmCoverageIssueDtoToDomain).toList(),
+      redFlags: dto.redFlags.map(llmRedFlagDtoToDomain).toList(),
+      overallRecommendation: dto.overallRecommendation,
+    );
+  }
+
+  MedicineRiskFinding? llmFindingDtoToDomain(
+    MedicineRiskCheckRecordsResponseLlmResultFindings dto,
+  ) {
+    return _findingFromValues(
+      typeValue: dto.type.value,
+      severityValue: dto.severity.value,
+      contextValue: dto.context.value,
+      primaryMedicineName: dto.primaryMedicineName,
+      secondaryMedicineName: dto.secondaryMedicineName,
+      relatedLabel: dto.relatedLabel,
+      evidence: dto.evidence,
+      recommendation: dto.recommendation,
+    );
+  }
+
+  MedicineRiskCoverageIssue llmCoverageIssueDtoToDomain(
+    MedicineRiskCheckRecordsResponseLlmResultCoverageIssues dto,
+  ) {
+    return MedicineRiskCoverageIssue(
+      medicineName: dto.medicineName,
+      reason: _mapCoverageReasonValue(dto.reason.value),
+    );
+  }
+
+  RedFlagAlert llmRedFlagDtoToDomain(
+    MedicineRiskCheckRecordsResponseLlmResultRedFlags dto,
+  ) {
+    return RedFlagAlert(
+      rule: _mapRedFlagRuleValue(dto.rule.value),
+      primaryMedicineName: dto.primaryMedicineName,
+      relatedLabel: dto.relatedLabel,
+    );
+  }
+
+  // ─── Single-record result mapping (run-check / precheck) ─────────────────
+
+  MedicineRiskCheckResult recordResultDtoToDomain(
+    MedicineRiskCheckRecordResponseResult dto,
+  ) {
+    return _resultFromValues(
+      overallRiskLevelValue: dto.overallRiskLevel.value,
+      overallRiskScore: dto.overallRiskScore,
+      currentMedicineCount: dto.currentMedicineCount,
+      checkedMedicineCount: dto.checkedMedicineCount,
+      findings: dto.findings.map(recordFindingDtoToDomain).toList(),
+      coverageIssues:
+          dto.coverageIssues.map(recordCoverageIssueDtoToDomain).toList(),
+      redFlags: dto.redFlags.map(recordRedFlagDtoToDomain).toList(),
+      overallRecommendation: dto.overallRecommendation,
+    );
+  }
+
+  MedicineRiskFinding? recordFindingDtoToDomain(
+    MedicineRiskCheckRecordResponseResultFindings dto,
+  ) {
+    return _findingFromValues(
+      typeValue: dto.type.value,
+      severityValue: dto.severity.value,
+      contextValue: dto.context.value,
+      primaryMedicineName: dto.primaryMedicineName,
+      secondaryMedicineName: dto.secondaryMedicineName,
+      relatedLabel: dto.relatedLabel,
+      evidence: dto.evidence,
+      recommendation: dto.recommendation,
+    );
+  }
+
+  MedicineRiskCoverageIssue recordCoverageIssueDtoToDomain(
+    MedicineRiskCheckRecordResponseResultCoverageIssues dto,
+  ) {
+    return MedicineRiskCoverageIssue(
+      medicineName: dto.medicineName,
+      reason: _mapCoverageReasonValue(dto.reason.value),
+    );
+  }
+
+  RedFlagAlert recordRedFlagDtoToDomain(
+    MedicineRiskCheckRecordResponseResultRedFlags dto,
+  ) {
+    return RedFlagAlert(
+      rule: _mapRedFlagRuleValue(dto.rule.value),
+      primaryMedicineName: dto.primaryMedicineName,
+      relatedLabel: dto.relatedLabel,
+    );
+  }
+
+  // ─── Request builders ────────────────────────────────────────────────────
+
+  RunRiskCheckRequest checkTypeToDto(MedicineRiskCheckType type) {
+    return RunRiskCheckRequest(
       type: switch (type) {
-        MedicineRiskCheckType.static_ =>
-          MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
-        MedicineRiskCheckType.llm =>
-          MedicinesControllerRunRiskCheckV1RequestTypeEnum.llm,
+        MedicineRiskCheckType.static_ => RunRiskCheckRequestTypeEnum.static_,
+        MedicineRiskCheckType.llm => RunRiskCheckRequestTypeEnum.llm,
       },
     );
   }
@@ -108,13 +207,13 @@ class MedicineRiskCheckMapper {
   /// Builds the static precheck request DTO for a candidate medicine from a
   /// trusted drug-library source ('cn' / 'drugbank'). The server checks the
   /// current box plus this candidate without persisting a record.
-  MedicinesControllerRunRiskCheckV1Request precheckToDto({
+  RunRiskCheckRequest precheckToDto({
     required String source,
     required String sourceRefId,
   }) {
-    return MedicinesControllerRunRiskCheckV1Request(
-      type: MedicinesControllerRunRiskCheckV1RequestTypeEnum.static_,
-      candidate: MedicinesControllerRunRiskCheckV1RequestCandidate(
+    return RunRiskCheckRequest(
+      type: RunRiskCheckRequestTypeEnum.static_,
+      candidate: RunRiskCheckRequestCandidate(
         source_: _mapCandidateSource(source),
         id: sourceRefId,
       ),
@@ -124,13 +223,27 @@ class MedicineRiskCheckMapper {
   // ─── Record builders ─────────────────────────────────────────────────────
 
   MedicineRiskCheckRecord _listRecordToDomain(
-    MedicineRiskCheckRecordsResponseDtoStatic dto,
+    MedicineRiskCheckRecordsResponseStatic dto,
   ) {
     return _record(
-      checkType: _mapCheckTypeFromList(dto.checkType),
+      checkType: _mapCheckTypeValue(dto.checkType.value),
       result: resultDtoToDomain(dto.result),
       riskScore: dto.riskScore.toInt(),
-      riskLevel: _mapRiskLevelFromListRecord(dto.riskLevel),
+      riskLevel: _mapRiskLevelValue(dto.riskLevel.value),
+      stale: dto.stale,
+      createdAt: dto.createdAt,
+      updatedAt: dto.updatedAt,
+    );
+  }
+
+  MedicineRiskCheckRecord _llmRecordToDomain(
+    MedicineRiskCheckRecordsResponseLlm dto,
+  ) {
+    return _record(
+      checkType: _mapCheckTypeValue(dto.checkType.value),
+      result: llmResultDtoToDomain(dto.result),
+      riskScore: dto.riskScore.toInt(),
+      riskLevel: _mapRiskLevelValue(dto.riskLevel.value),
       stale: dto.stale,
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
@@ -157,191 +270,131 @@ class MedicineRiskCheckMapper {
     );
   }
 
-  // ─── Enum mappers ────────────────────────────────────────────────────────
+  // ─── Shared family-neutral result/finding builders ───────────────────────
 
-  MedicineRiskLevel _mapRiskLevel(
-    MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum level,
-  ) {
-    return switch (level) {
-      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
-          .safe =>
-        MedicineRiskLevel.safe,
-      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
-          .caution =>
-        MedicineRiskLevel.caution,
-      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
-          .risk =>
-        MedicineRiskLevel.risk,
-      MedicineRiskCheckRecordsResponseDtoStaticResultOverallRiskLevelEnum
-          .danger =>
-        MedicineRiskLevel.danger,
+  MedicineRiskCheckResult _resultFromValues({
+    required String overallRiskLevelValue,
+    required num overallRiskScore,
+    required num currentMedicineCount,
+    required num checkedMedicineCount,
+    required List<MedicineRiskFinding?> findings,
+    required List<MedicineRiskCoverageIssue> coverageIssues,
+    required List<RedFlagAlert> redFlags,
+    String? overallRecommendation,
+  }) {
+    return MedicineRiskCheckResult(
+      overallRiskLevel: _mapRiskLevelValue(overallRiskLevelValue),
+      overallRiskScore: overallRiskScore.toInt(),
+      currentMedicineCount: currentMedicineCount.toInt(),
+      checkedMedicineCount: checkedMedicineCount.toInt(),
+      findings: findings.whereType<MedicineRiskFinding>().toList(),
+      coverageIssues: coverageIssues,
+      redFlags: redFlags,
+      overallRecommendation: overallRecommendation,
+    );
+  }
+
+  MedicineRiskFinding? _findingFromValues({
+    required String typeValue,
+    required String severityValue,
+    required String contextValue,
+    required String primaryMedicineName,
+    String? secondaryMedicineName,
+    String? relatedLabel,
+    String? evidence,
+    String? recommendation,
+  }) {
+    final type = _mapFindingTypeValue(typeValue);
+    if (type == null) {
+      return null;
+    }
+    return MedicineRiskFinding(
+      type: type,
+      severity: _mapSeverityValue(severityValue),
+      context: _mapFindingContextValue(contextValue),
+      primaryMedicineName: primaryMedicineName,
+      secondaryMedicineName: secondaryMedicineName,
+      relatedLabel: relatedLabel,
+      evidence: evidence,
+      recommendation: recommendation,
+    );
+  }
+
+  // ─── Enum value mappers (wire value → domain) ────────────────────────────
+
+  MedicineRiskLevel _mapRiskLevelValue(String value) {
+    return switch (value) {
+      'safe' => MedicineRiskLevel.safe,
+      'caution' => MedicineRiskLevel.caution,
+      'risk' => MedicineRiskLevel.risk,
+      'danger' => MedicineRiskLevel.danger,
       _ => MedicineRiskLevel.safe,
     };
   }
 
-  MedicineRiskLevel _mapRiskLevelFromRecord(
-    MedicineRiskCheckRecordResponseDtoRiskLevelEnum level,
-  ) {
-    return switch (level) {
-      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.safe =>
-        MedicineRiskLevel.safe,
-      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.caution =>
-        MedicineRiskLevel.caution,
-      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.risk =>
-        MedicineRiskLevel.risk,
-      MedicineRiskCheckRecordResponseDtoRiskLevelEnum.danger =>
-        MedicineRiskLevel.danger,
-      _ => MedicineRiskLevel.safe,
-    };
-  }
-
-  MedicineRiskLevel _mapRiskLevelFromListRecord(
-    MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum level,
-  ) {
-    return switch (level) {
-      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.safe =>
-        MedicineRiskLevel.safe,
-      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.caution =>
-        MedicineRiskLevel.caution,
-      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.risk =>
-        MedicineRiskLevel.risk,
-      MedicineRiskCheckRecordsResponseDtoStaticRiskLevelEnum.danger =>
-        MedicineRiskLevel.danger,
-      _ => MedicineRiskLevel.safe,
-    };
-  }
-
-  MedicineRiskCheckType _mapCheckType(
-    MedicineRiskCheckRecordResponseDtoCheckTypeEnum type,
-  ) {
-    return switch (type) {
-      MedicineRiskCheckRecordResponseDtoCheckTypeEnum.static_ =>
-        MedicineRiskCheckType.static_,
-      MedicineRiskCheckRecordResponseDtoCheckTypeEnum.llm =>
-        MedicineRiskCheckType.llm,
+  MedicineRiskCheckType _mapCheckTypeValue(String value) {
+    return switch (value) {
+      'static' => MedicineRiskCheckType.static_,
+      'llm' => MedicineRiskCheckType.llm,
       _ => MedicineRiskCheckType.static_,
     };
   }
 
-  MedicineRiskCheckType _mapCheckTypeFromList(
-    MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum type,
-  ) {
-    return switch (type) {
-      MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum.static_ =>
-        MedicineRiskCheckType.static_,
-      MedicineRiskCheckRecordsResponseDtoStaticCheckTypeEnum.llm =>
-        MedicineRiskCheckType.llm,
-      _ => MedicineRiskCheckType.static_,
-    };
-  }
-
-  MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum
-  _mapCandidateSource(String source) {
+  RunRiskCheckRequestCandidateSource_Enum _mapCandidateSource(String source) {
     return switch (source) {
-      'cn' => MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.cn,
-      'drugbank' =>
-        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum.drugbank,
+      'cn' => RunRiskCheckRequestCandidateSource_Enum.cn,
+      'drugbank' => RunRiskCheckRequestCandidateSource_Enum.drugbank,
       // Unknown sources are rejected by the server; the precheck failure path
       // is non-blocking by design.
       _ =>
-        MedicinesControllerRunRiskCheckV1RequestCandidateSource_Enum
-            .unknownDefaultOpenApi,
+        RunRiskCheckRequestCandidateSource_Enum.unknownDefaultOpenApi,
     };
   }
 
-  MedicineRiskFindingType? _mapFindingType(
-    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum type,
-  ) {
-    return switch (type) {
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
-          .interaction =>
-        MedicineRiskFindingType.interaction,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
-          .duplicateIngredient =>
-        MedicineRiskFindingType.duplicateIngredient,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
-          .allergy =>
-        MedicineRiskFindingType.allergy,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
-          .foodInteraction =>
-        MedicineRiskFindingType.foodInteraction,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
-          .longTermUse =>
-        MedicineRiskFindingType.longTermUse,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
-          .schedulingConflict =>
-        MedicineRiskFindingType.schedulingConflict,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerTypeEnum
-          .specialGroup =>
-        MedicineRiskFindingType.specialGroup,
+  MedicineRiskFindingType? _mapFindingTypeValue(String value) {
+    return switch (value) {
+      'interaction' => MedicineRiskFindingType.interaction,
+      'duplicateIngredient' => MedicineRiskFindingType.duplicateIngredient,
+      'allergy' => MedicineRiskFindingType.allergy,
+      'foodInteraction' => MedicineRiskFindingType.foodInteraction,
+      'longTermUse' => MedicineRiskFindingType.longTermUse,
+      'schedulingConflict' => MedicineRiskFindingType.schedulingConflict,
+      'specialGroup' => MedicineRiskFindingType.specialGroup,
       _ => null,
     };
   }
 
-  MedicineRiskSeverity _mapSeverity(
-    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
-    severity,
-  ) {
-    return switch (severity) {
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
-          .high =>
-        MedicineRiskSeverity.high,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
-          .medium =>
-        MedicineRiskSeverity.medium,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerSeverityEnum
-          .info =>
-        MedicineRiskSeverity.info,
+  MedicineRiskSeverity _mapSeverityValue(String value) {
+    return switch (value) {
+      'high' => MedicineRiskSeverity.high,
+      'medium' => MedicineRiskSeverity.medium,
+      'info' => MedicineRiskSeverity.info,
       _ => MedicineRiskSeverity.info,
     };
   }
 
-  MedicineRiskFindingContext _mapFindingContext(
-    MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
-    context,
-  ) {
-    return switch (context) {
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
-          .none =>
-        MedicineRiskFindingContext.none,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
-          .alcohol =>
-        MedicineRiskFindingContext.alcohol,
-      MedicineRiskCheckRecordsResponseDtoStaticResultFindingsInnerContextEnum
-          .caffeine =>
-        MedicineRiskFindingContext.caffeine,
+  MedicineRiskFindingContext _mapFindingContextValue(String value) {
+    return switch (value) {
+      'none' => MedicineRiskFindingContext.none,
+      'alcohol' => MedicineRiskFindingContext.alcohol,
+      'caffeine' => MedicineRiskFindingContext.caffeine,
       _ => MedicineRiskFindingContext.none,
     };
   }
 
-  MedicineRiskCoverageReason _mapCoverageReason(
-    MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
-    reason,
-  ) {
-    return switch (reason) {
-      MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
-          .manualEntry =>
-        MedicineRiskCoverageReason.manualEntry,
-      MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
-          .missingSourceRef =>
-        MedicineRiskCoverageReason.missingSourceRef,
-      MedicineRiskCheckRecordsResponseDtoStaticResultCoverageIssuesInnerReasonEnum
-          .detailUnavailable =>
-        MedicineRiskCoverageReason.detailUnavailable,
+  MedicineRiskCoverageReason _mapCoverageReasonValue(String value) {
+    return switch (value) {
+      'manualEntry' => MedicineRiskCoverageReason.manualEntry,
+      'missingSourceRef' => MedicineRiskCoverageReason.missingSourceRef,
+      'detailUnavailable' => MedicineRiskCoverageReason.detailUnavailable,
       _ => MedicineRiskCoverageReason.detailUnavailable,
     };
   }
 
-  RedFlagRule _mapRedFlagRule(
-    MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum rule,
-  ) {
-    return switch (rule) {
-      MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum
-          .severeAllergy =>
-        RedFlagRule.severeAllergy,
-      MedicineRiskCheckRecordsResponseDtoStaticResultRedFlagsInnerRuleEnum
-          .informationGap =>
-        RedFlagRule.informationGap,
+  RedFlagRule _mapRedFlagRuleValue(String value) {
+    return switch (value) {
+      'severeAllergy' => RedFlagRule.severeAllergy,
+      'informationGap' => RedFlagRule.informationGap,
       _ => RedFlagRule.informationGap,
     };
   }

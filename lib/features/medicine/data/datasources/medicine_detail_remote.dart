@@ -27,7 +27,7 @@ class MedicineDetailRemoteDataSource {
     required String id,
     required String source,
   }) async {
-    final response = await api.medicinesControllerGetDetailV1(
+    final response = await api.getDetail(
       id: id,
       source_: source,
     );

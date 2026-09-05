@@ -121,12 +121,12 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     MedicineReminderGroupUpsertInput input,
   ) {
     // 消费再生契约的生成 API 方法（PUT /api/v1/user/medicine-reminders/group），
-    // 请求/响应均走生成 DTO（MedicineRemindersControllerUpsertGroupV1Request /
-    // MedicineReminderListResponseDto），与 openapi.json 对齐。
+    // 请求/响应均走生成 DTO（UpsertGroupRequest /
+    // MedicineReminderListResponse），与 openapi.json 对齐。
     return TaskEither.tryCatch(() async {
-      final response = await api.medicineRemindersControllerUpsertGroupV1(
-        medicineRemindersControllerUpsertGroupV1Request:
-            MedicineRemindersControllerUpsertGroupV1Request(
+      final response = await api.upsertGroup(
+        upsertGroupRequest:
+            UpsertGroupRequest(
               currentMedicineId: input.currentMedicineId,
               label: _nonEmptyOrNull(input.label),
               daysOfWeek: input.daysOfWeek,
@@ -140,7 +140,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
               slots: input.slots
                   .map(
                     (slot) =>
-                        MedicineRemindersControllerUpsertGroupV1RequestSlotsInner(
+                        UpsertGroupRequestSlots(
                           id: slot.id,
                           scheduledHour: slot.scheduledHour,
                           scheduledMinute: slot.scheduledMinute,
@@ -209,7 +209,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     );
   }
 
-  MedicineReminderItem _fromDto(MedicineReminderListResponseDtoItemsInner dto) {
+  MedicineReminderItem _fromDto(MedicineReminderListResponseItems dto) {
     return MedicineReminderItem(
       id: dto.id,
       currentMedicineId: dto.currentMedicineId,
