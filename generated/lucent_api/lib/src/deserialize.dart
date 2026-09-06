@@ -248,6 +248,7 @@ import 'package:lucent_api/src/model/report_summary_response_coverage_water.dart
 import 'package:lucent_api/src/model/report_summary_response_low_risk_action.dart';
 import 'package:lucent_api/src/model/report_summary_response_observed_pattern.dart';
 import 'package:lucent_api/src/model/reset_password_request.dart';
+import 'package:lucent_api/src/model/reset_password_response.dart';
 import 'package:lucent_api/src/model/run_risk_check_request.dart';
 import 'package:lucent_api/src/model/run_risk_check_request_candidate.dart';
 import 'package:lucent_api/src/model/send_verification_code_request.dart';
@@ -1400,6 +1401,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ResetPasswordRequest':
       return ResetPasswordRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ResetPasswordResponse':
+      return ResetPasswordResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'RunRiskCheckRequest':
       return RunRiskCheckRequest.fromJson(value as Map<String, dynamic>)

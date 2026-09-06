@@ -64,6 +64,8 @@ enum SendVerificationCodeRequestSceneEnum {
   setPassword(r'set-password'),
   @JsonValue(r'delete-account')
   deleteAccount(r'delete-account'),
+  @JsonValue(r'forgot-password')
+  forgotPassword(r'forgot-password'),
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

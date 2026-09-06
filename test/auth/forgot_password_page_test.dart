@@ -4,12 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password.dart';
 
 import 'test_helpers.dart';
 
 void main() {
-  testWidgets('Forgot password page sends reset link', (tester) async {
+  testWidgets('Forgot password page sends a verification code', (tester) async {
     final remote = FakeLucentAuthRepository();
 
     await tester.pumpWidget(
@@ -36,6 +37,7 @@ void main() {
     await tester.tap(find.widgetWithText(FButton, '发送验证码'));
     await tester.pumpAndSettle();
 
-    expect(remote.forgotPasswordEmail, 'reset@example.com');
+    expect(remote.sentCodeEmail, 'reset@example.com');
+    expect(remote.sentCodeScene, AuthVerificationScene.forgotPassword);
   });
 }

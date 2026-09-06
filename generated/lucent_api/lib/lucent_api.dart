@@ -285,6 +285,7 @@ export 'package:lucent_api/src/model/report_summary_response_coverage_water.dart
 export 'package:lucent_api/src/model/report_summary_response_low_risk_action.dart';
 export 'package:lucent_api/src/model/report_summary_response_observed_pattern.dart';
 export 'package:lucent_api/src/model/reset_password_request.dart';
+export 'package:lucent_api/src/model/reset_password_response.dart';
 export 'package:lucent_api/src/model/run_risk_check_request.dart';
 export 'package:lucent_api/src/model/run_risk_check_request_candidate.dart';
 export 'package:lucent_api/src/model/send_verification_code_request.dart';

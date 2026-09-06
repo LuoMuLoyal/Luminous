@@ -60,7 +60,6 @@ class Routes {
   static const loginOauthWeibo = '/login/oauth/weibo';
   static const loginOauthGoogle = '/login/oauth/google';
   static const forgotPassword = '/forgot-password';
-  static const resetPassword = '/reset-password';
   static const register = '/register';
 
   static const account = '/account';
@@ -183,8 +182,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
     final isAuthRoute =
         location.startsWith('/login') ||
         location.startsWith('/register') ||
-        location.startsWith('/forgot-password') ||
-        location.startsWith('/reset-password');
+        location.startsWith('/forgot-password');
     final isPublicRoute =
         _publicRoutePrefixes.any((prefix) => location.startsWith(prefix)) ||
         _publicRootRoutes.contains(location);

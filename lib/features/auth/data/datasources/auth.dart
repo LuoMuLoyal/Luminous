@@ -73,6 +73,8 @@ class LucentAuthRepository implements AuthRepository {
         SendVerificationCodeRequestSceneEnum.changeEmail,
       AuthVerificationScene.deleteAccount =>
         SendVerificationCodeRequestSceneEnum.deleteAccount,
+      AuthVerificationScene.forgotPassword =>
+        SendVerificationCodeRequestSceneEnum.forgotPassword,
     };
   }
 
@@ -442,13 +444,15 @@ class LucentAuthRepository implements AuthRepository {
 
   @override
   TaskEither<LucentFailure, void> resetPassword({
-    required String token,
+    required String email,
+    required String code,
     required String password,
   }) {
     return TaskEither.tryCatch(() async {
       await _client.auth.resetPassword(
         resetPasswordRequest: ResetPasswordRequest(
-          token: token.trim(),
+          email: email.trim(),
+          code: code.trim(),
           password: password.trim(),
         ),
       );

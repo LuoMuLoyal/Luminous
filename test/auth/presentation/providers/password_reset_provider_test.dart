@@ -6,6 +6,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/password_reset.dart';
 
@@ -66,6 +67,7 @@ void main() {
       final valid = notifier.validate(
         emailRequired: '请输入邮箱',
         emailInvalid: '邮箱格式不正确',
+        codeRequired: '请输入验证码',
         passwordRequired: '请输入密码',
         confirmPasswordRequired: '请确认密码',
         passwordsDoNotMatch: '两次密码不一致',
@@ -85,6 +87,7 @@ void main() {
       final valid = notifier.validate(
         emailRequired: '请输入邮箱',
         emailInvalid: '邮箱格式不正确',
+        codeRequired: '请输入验证码',
         passwordRequired: '请输入密码',
         confirmPasswordRequired: '请确认密码',
         passwordsDoNotMatch: '两次密码不一致',
@@ -101,6 +104,7 @@ void main() {
       final valid = notifier.validate(
         emailRequired: '请输入邮箱',
         emailInvalid: '邮箱格式不正确',
+        codeRequired: '请输入验证码',
         passwordRequired: '请输入密码',
         confirmPasswordRequired: '请确认密码',
         passwordsDoNotMatch: '两次密码不一致',
@@ -115,11 +119,13 @@ void main() {
     test('returns true for all valid fields', () {
       final notifier = container.read(passwordResetProvider.notifier);
       notifier.updateEmail('user@example.com');
+      notifier.updateCode('123456');
       notifier.updatePassword('NewPass1');
       notifier.updateConfirmPassword('NewPass1');
       final valid = notifier.validate(
         emailRequired: '请输入邮箱',
         emailInvalid: '邮箱格式不正确',
+        codeRequired: '请输入验证码',
         passwordRequired: '请输入密码',
         confirmPasswordRequired: '请确认密码',
         passwordsDoNotMatch: '两次密码不一致',
@@ -144,17 +150,21 @@ void main() {
     });
   });
 
-  group('PasswordResetNotifier — sendResetCode', () {
+  group('PasswordResetNotifier — sendCode', () {
     test(
       'returns true and sets cooldown + successMessage on success',
       () async {
         final notifier = container.read(passwordResetProvider.notifier);
         notifier.updateEmail('reset@example.com');
 
-        final result = await notifier.sendResetCode();
+        final result = await notifier.sendCode();
 
         expect(result, isTrue);
-        expect(remote.forgotPasswordEmail, 'reset@example.com');
+        expect(remote.sentCodeEmail, 'reset@example.com');
+        expect(
+          remote.sentCodeScene,
+          AuthVerificationScene.forgotPassword,
+        );
         final state = container.read(passwordResetProvider);
         expect(state.isSendingCode, isFalse);
         expect(state.cooldownSeconds, 60);
@@ -176,7 +186,7 @@ void main() {
       final notifier = container.read(passwordResetProvider.notifier);
       notifier.updateEmail('reset@example.com');
 
-      final result = await notifier.sendResetCode();
+      final result = await notifier.sendCode();
 
       expect(result, isFalse);
       expect(container.read(passwordResetProvider).isSendingCode, isFalse);
@@ -187,16 +197,16 @@ void main() {
   group('PasswordResetNotifier — resetPassword', () {
     test('returns true and clears isSubmitting on success', () async {
       final notifier = container.read(passwordResetProvider.notifier);
+      notifier.updateEmail('reset@example.com');
+      notifier.updateCode('123456');
       notifier.updatePassword('NewPass1');
       notifier.updateConfirmPassword('NewPass1');
 
-      final result = await notifier.resetPassword(
-        token: 'reset-token-1',
-        password: 'NewPass1',
-      );
+      final result = await notifier.resetPassword();
 
       expect(result, isTrue);
-      expect(remote.resetPasswordToken, 'reset-token-1');
+      expect(remote.resetPasswordEmail, 'reset@example.com');
+      expect(remote.resetPasswordCode, '123456');
       expect(remote.resetPasswordValue, 'NewPass1');
       final state = container.read(passwordResetProvider);
       expect(state.isSubmitting, isFalse);
@@ -215,13 +225,12 @@ void main() {
       addTearDown(container.dispose);
 
       final notifier = container.read(passwordResetProvider.notifier);
+      notifier.updateEmail('reset@example.com');
+      notifier.updateCode('000000');
       notifier.updatePassword('NewPass1');
       notifier.updateConfirmPassword('NewPass1');
 
-      final result = await notifier.resetPassword(
-        token: 'bad-token',
-        password: 'NewPass1',
-      );
+      final result = await notifier.resetPassword();
 
       expect(result, isFalse);
       expect(container.read(passwordResetProvider).isSubmitting, isFalse);
@@ -237,17 +246,18 @@ class _NoOpAuthSessionNotifier extends AuthSessionNotifier {
 
 class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
   @override
-  TaskEither<LucentFailure, VerificationCooldown> forgotPassword({
+  TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
     required String email,
+    required AuthVerificationScene scene,
   }) {
     return TaskEither.tryCatch(() async {
       throw DioException(
-        requestOptions: RequestOptions(path: '/forgot-password'),
+        requestOptions: RequestOptions(path: '/send-verification-code'),
         type: DioExceptionType.badResponse,
         response: problemResponse(
-          path: '/forgot-password',
+          path: '/send-verification-code',
           statusCode: 429,
-          code: 'AUTH_LOGIN_RATE_LIMITED',
+          code: 'AUTH_VERIFICATION_CODE_RATE_LIMITED',
           detail: '发送过于频繁',
         ),
       );
@@ -256,7 +266,8 @@ class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
 
   @override
   TaskEither<LucentFailure, void> resetPassword({
-    required String token,
+    required String email,
+    required String code,
     required String password,
   }) {
     return TaskEither.tryCatch(() async {
@@ -266,8 +277,8 @@ class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
         response: problemResponse(
           path: '/reset-password',
           statusCode: 400,
-          code: 'AUTH_RESET_TOKEN_INVALID',
-          detail: '重置链接无效或已过期',
+          code: 'AUTH_VERIFICATION_CODE_EXPIRED',
+          detail: '验证码已过期或不存在',
         ),
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));

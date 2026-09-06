@@ -233,19 +233,20 @@ void main() {
     });
 
     group('resetPassword', () {
-      test('invalid reset token keeps its code', () async {
+      test('invalid verification code keeps its code', () async {
         adapter.statusCode = 400;
         adapter.contentType = 'application/problem+json';
-        adapter.body = _problemBody('AUTH_RESET_TOKEN_INVALID', '重置链接无效或已过期');
+        adapter.body = _problemBody('AUTH_VERIFICATION_CODE_EXPIRED', '验证码已过期或不存在');
 
         final failure = await _left(
           dataSource.resetPassword(
-            token: 'invalid-token',
+            email: 'test@example.com',
+            code: '000000',
             password: 'NewPass123',
           ),
         );
 
-        expect(failure.code, 'AUTH_RESET_TOKEN_INVALID');
+        expect(failure.code, 'AUTH_VERIFICATION_CODE_EXPIRED');
         expect(failure.statusCode, 400);
       });
     });

@@ -424,7 +424,8 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   String? sentCodeEmail;
   AuthVerificationScene? sentCodeScene;
   String? forgotPasswordEmail;
-  String? resetPasswordToken;
+  String? resetPasswordEmail;
+  String? resetPasswordCode;
   String? resetPasswordValue;
   String? verifyEmailToken;
   String? changeEmailNewEmail;
@@ -524,10 +525,12 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
 
   @override
   TaskEither<LucentFailure, void> resetPassword({
-    required String token,
+    required String email,
+    required String code,
     required String password,
   }) {
-    resetPasswordToken = token;
+    resetPasswordEmail = email;
+    resetPasswordCode = code;
     resetPasswordValue = password;
     return TaskEither.right(null);
   }

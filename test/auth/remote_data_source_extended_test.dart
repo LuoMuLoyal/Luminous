@@ -778,26 +778,30 @@ void main() {
 
         await _right(
           dataSource.resetPassword(
-            token: 'reset-token-1',
+            email: 'test@example.com',
+            code: '123456',
             password: 'NewPass123',
           ),
         );
 
-        expect(adapter.lastBody?['token'], 'reset-token-1');
+        expect(adapter.lastBody?['email'], 'test@example.com');
+        expect(adapter.lastBody?['code'], '123456');
         expect(adapter.lastBody?['password'], 'NewPass123');
       });
 
-      test('trims token and password', () async {
+      test('trims email, code and password', () async {
         adapter.body = null;
 
         await _right(
           dataSource.resetPassword(
-            token: '  reset-token-1  ',
+            email: '  test@example.com  ',
+            code: '  123456  ',
             password: '  NewPass123  ',
           ),
         );
 
-        expect(adapter.lastBody?['token'], 'reset-token-1');
+        expect(adapter.lastBody?['email'], 'test@example.com');
+        expect(adapter.lastBody?['code'], '123456');
         expect(adapter.lastBody?['password'], 'NewPass123');
       });
     });

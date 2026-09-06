@@ -5,4 +5,5 @@ enum AuthVerificationScene {
   setPassword,
   changeEmail,
   deleteAccount,
+  forgotPassword,
 }

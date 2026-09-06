@@ -93,7 +93,8 @@ abstract interface class AuthRepository {
   });
 
   TaskEither<LucentFailure, void> resetPassword({
-    required String token,
+    required String email,
+    required String code,
     required String password,
   });
 

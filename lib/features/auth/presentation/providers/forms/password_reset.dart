@@ -6,6 +6,7 @@ import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 
 import '../shared/form_mixin.dart';
@@ -16,12 +17,14 @@ part 'password_reset.freezed.dart';
 abstract class PasswordResetState with _$PasswordResetState {
   const factory PasswordResetState({
     @Default('') String email,
+    @Default('') String code,
     @Default('') String password,
     @Default('') String confirmPassword,
     @Default(false) bool isSubmitting,
     @Default(false) bool isSendingCode,
     int? cooldownSeconds,
     String? emailError,
+    String? codeError,
     String? passwordError,
     String? confirmPasswordError,
     String? errorMessage,
@@ -39,6 +42,10 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
 
   void updateEmail(String value) {
     state = state.copyWith(email: value, emailError: null, errorMessage: null);
+  }
+
+  void updateCode(String value) {
+    state = state.copyWith(code: value, codeError: null, errorMessage: null);
   }
 
   void updatePassword(String value) {
@@ -64,6 +71,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
   bool validate({
     required String emailRequired,
     required String emailInvalid,
+    required String codeRequired,
     required String passwordRequired,
     required String confirmPasswordRequired,
     required String passwordsDoNotMatch,
@@ -73,6 +81,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       requiredMessage: emailRequired,
       invalidMessage: emailInvalid,
     );
+    final codeError = CodeInput.validate(state.code, codeRequired);
     final passwordError = PasswordInput.validate(
       state.password,
       passwordRequired,
@@ -86,12 +95,14 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
 
     state = state.copyWith(
       emailError: emailError,
+      codeError: codeError,
       passwordError: passwordError,
       confirmPasswordError: confirmPasswordError,
       errorMessage: null,
     );
 
     return emailError == null &&
+        codeError == null &&
         passwordError == null &&
         confirmPasswordError == null;
   }
@@ -102,7 +113,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     return emailError == null;
   }
 
-  Future<bool> sendResetCode() async {
+  Future<bool> sendCode() async {
     state = state.copyWith(
       isSendingCode: true,
       errorMessage: null,
@@ -110,18 +121,21 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     );
     final result = await ref
         .read(authRepositoryProvider)
-        .forgotPassword(email: state.email)
+        .sendVerificationCode(
+          email: state.email,
+          scene: AuthVerificationScene.forgotPassword,
+        )
         .run();
     return switch (result) {
-      Left(:final value) => _failSendResetCode(value),
-      Right(:final value) => _succeedSendResetCode(value),
+      Left(:final value) => _failSendCode(value),
+      Right(:final value) => _succeedSendCode(value),
     };
   }
 
-  bool _failSendResetCode(LucentFailure failure) {
+  bool _failSendCode(LucentFailure failure) {
     ref
         .read(talkerProvider)
-        .error('PasswordResetNotifier.sendResetCode: failed: $failure');
+        .error('PasswordResetNotifier.sendCode: failed: $failure');
     state = state.copyWith(
       isSubmitting: false,
       isSendingCode: false,
@@ -131,7 +145,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     return false;
   }
 
-  bool _succeedSendResetCode(VerificationCooldown value) {
+  bool _succeedSendCode(VerificationCooldown value) {
     final cooldown = value.cooldownSeconds;
     state = state.copyWith(isSendingCode: false, successMessage: value.message);
     startCooldown(
@@ -142,10 +156,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     return true;
   }
 
-  Future<bool> resetPassword({
-    required String token,
-    required String password,
-  }) async {
+  Future<bool> resetPassword() async {
     state = state.copyWith(
       isSubmitting: true,
       errorMessage: null,
@@ -153,7 +164,11 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     );
     final result = await ref
         .read(authRepositoryProvider)
-        .resetPassword(token: token, password: password)
+        .resetPassword(
+          email: state.email,
+          code: state.code,
+          password: state.password,
+        )
         .run();
     return switch (result) {
       Left(:final value) => _failResetPassword(value),

@@ -11,6 +11,7 @@ import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/password_reset.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ForgotPasswordPage extends HookConsumerWidget {
@@ -20,6 +21,9 @@ class ForgotPasswordPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final emailController = useTextEditingController();
+    final codeController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final confirmPasswordController = useTextEditingController();
 
     final state = ref.watch(passwordResetProvider);
     final notifier = ref.read(passwordResetProvider.notifier);
@@ -30,7 +34,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
       title: l10n.authResetPasswordAction,
       subtitle: l10n.authForgotPasswordSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AppBackButton(fallbackRoute: Routes.home),
+      leading: const AppBackButton(fallbackRoute: Routes.login),
       centerTitle: true,
       form: Form(
         key: formKey,
@@ -49,18 +53,94 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 invalidMessage: l10n.authEmailInvalidError,
               ),
             ),
+            const SizedBox(height: Spacing.level4),
+            VerificationCodeField(
+              controller: codeController,
+              label: l10n.authCodeLabel,
+              hint: l10n.authCodeLabel,
+              buttonLabel: state.cooldownSeconds == null
+                  ? l10n.authSendCode
+                  : l10n.authSendCodeAgain(state.cooldownSeconds!),
+              isLoading: state.isSendingCode,
+              validator: (value) =>
+                  RequiredInput.validate(value, l10n.authCodeRequiredError),
+              onSendCode:
+                  (state.cooldownSeconds != null && state.cooldownSeconds! > 0)
+                  ? null
+                  : () async {
+                      final emailError = EmailInput.validate(
+                        emailController.text,
+                        requiredMessage: l10n.authEmailRequiredError,
+                        invalidMessage: l10n.authEmailInvalidError,
+                      );
+                      if (emailError != null) {
+                        formKey.currentState?.validate();
+                        return;
+                      }
+                      notifier.updateEmail(emailController.text);
+                      final ok = await notifier.sendCode();
+                      if (!ok && context.mounted) {
+                        final msg = ref
+                            .read(passwordResetProvider)
+                            .errorMessage;
+                        if (msg != null && msg.isNotEmpty) {
+                          await Toast.show(context, msg);
+                        }
+                      }
+                    },
+            ),
+            const SizedBox(height: Spacing.level4),
+            FTextFormField.password(
+              control: FTextFieldControl.managed(
+                controller: passwordController,
+              ),
+              label: Text(l10n.authNewPasswordLabel),
+              hint: l10n.authPasswordHint,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) => PasswordInput.validate(
+                value,
+                l10n.authPasswordRequiredError,
+              ),
+            ),
+            const SizedBox(height: Spacing.level4),
+            FTextFormField.password(
+              control: FTextFieldControl.managed(
+                controller: confirmPasswordController,
+              ),
+              label: Text(l10n.authConfirmPasswordLabel),
+              hint: l10n.authPasswordHint,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                final requiredError = RequiredInput.validate(
+                  value,
+                  l10n.authConfirmPasswordRequiredError,
+                );
+                if (requiredError != null) {
+                  return requiredError;
+                }
+                if ((value ?? '') != passwordController.text) {
+                  return l10n.authPasswordsDoNotMatchError;
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: Spacing.level6),
             SizedBox(
               width: double.infinity,
               child: FButton(
-                onPress: state.isSendingCode
+                onPress: state.isSubmitting
                     ? null
                     : () async {
                         if (!(formKey.currentState?.validate() ?? false)) {
                           return;
                         }
                         notifier.updateEmail(emailController.text);
-                        final ok = await notifier.sendResetCode();
+                        notifier.updateCode(codeController.text);
+                        notifier.updatePassword(passwordController.text);
+                        notifier.updateConfirmPassword(
+                          confirmPasswordController.text,
+                        );
+                        final ok = await notifier.resetPassword();
                         if (!ok && context.mounted) {
                           final msg = ref
                               .read(passwordResetProvider)
@@ -73,17 +153,20 @@ class ForgotPasswordPage extends HookConsumerWidget {
                         if (ok && context.mounted) {
                           await Toast.show(
                             context,
-                            l10n.authResetPasswordEmailSent,
+                            l10n.authResetPasswordSuccess,
                           );
+                          if (context.mounted) {
+                            context.go(Routes.login);
+                          }
                         }
                       },
-                child: state.isSendingCode
+                child: state.isSubmitting
                     ? const SizedBox(
                         width: 18,
                         height: 18,
                         child: FCircularProgress(),
                       )
-                    : Text(l10n.authSendCode),
+                    : Text(l10n.authResetPasswordSubmit),
               ),
             ),
             const SizedBox(height: Spacing.level3),

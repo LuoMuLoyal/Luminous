@@ -31,6 +31,7 @@ import 'package:lucent_api/src/model/refresh_session_request.dart';
 import 'package:lucent_api/src/model/register_request.dart';
 import 'package:lucent_api/src/model/register_response.dart';
 import 'package:lucent_api/src/model/reset_password_request.dart';
+import 'package:lucent_api/src/model/reset_password_response.dart';
 import 'package:lucent_api/src/model/send_verification_code_request.dart';
 import 'package:lucent_api/src/model/send_verification_code_response.dart';
 import 'package:lucent_api/src/model/session_list_item_entry.dart';
@@ -1447,9 +1448,9 @@ class AuthApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [ResetPasswordResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> resetPassword({
+  Future<Response<ResetPasswordResponse>> resetPassword({
     required ResetPasswordRequest resetPasswordRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1489,7 +1490,37 @@ class AuthApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    ResetPasswordResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<ResetPasswordResponse, ResetPasswordResponse>(
+              rawData,
+              'ResetPasswordResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ResetPasswordResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Revoke a specific session
