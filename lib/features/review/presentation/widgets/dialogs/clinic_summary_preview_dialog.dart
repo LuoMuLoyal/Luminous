@@ -405,7 +405,7 @@ List<ShareClinicSummaryRequestSelectedFieldsEnum> mapPreviewFieldsToShare(
     );
     if (match ==
         ShareClinicSummaryRequestSelectedFieldsEnum.unknownDefaultOpenApi) {
-      debugPrint(
+      appTalker.warning(
         'ClinicSummary share: preview field "${field.value}" has no share '
         'enum equivalent; dropping from share payload.',
       );
