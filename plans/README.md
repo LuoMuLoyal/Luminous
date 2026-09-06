@@ -32,6 +32,8 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
+- [`2026-09-06-account-profile-restructure.md`](2026-09-06-account-profile-restructure.md)
+  — 账号体系重构：个人信息页（头像/昵称/过敏史/身高体重血型）、账号管理页（重命名自账号与安全，列表化 + 底部客服/反馈/帮助入口）、账号安全中心（授权/敏感/登录记录、账号保护）；Phase 1 盒子套盒子已修
 - [`2026-09-02-agentic-proactive-evolution.md`](2026-09-02-agentic-proactive-evolution.md)
   — Agentic → Proactive → 伴身演进客户端任务清单:语义搜索/扫药视觉增强接入、assistant 能力组件化并贯穿 today/review/medicine 主流程、Proactive 推送承接与偏好开关、跨端会话一致(远期);与 `Lucent/plans/2026-09-02-agentic-proactive-evolution.md` 配套
 

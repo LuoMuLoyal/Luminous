@@ -131,203 +131,181 @@ class AccountSettingsPage extends HookConsumerWidget {
               children: [
                 FTabEntry(
                   label: Text(l10n.authAccountOverviewTitle),
-                  child: FCard(
-                    child: Padding(
-                      padding: const EdgeInsets.all(Spacing.level6),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AccountStatusSection(
-                            user: user,
-                            l10n: l10n,
-                            onVerifyEmail: () => verifyEmailFlow(
-                              context,
-                              l10n,
-                              ref,
-                              user.email!,
-                            ),
-                          ),
-                          const SizedBox(height: Spacing.level6),
-                          ProfileSection(
-                            nicknameController: nicknameController,
-                            avatarController: avatarController,
-                            isSubmitting: accountState.isSubmitting,
-                            onSave: () async {
-                              final ok = await accountNotifier.updateProfile(
-                                nickname: nicknameController.text,
-                                avatar: avatarController.text,
-                              );
-                              if (ok && context.mounted) {
-                                await Toast.show(
-                                  context,
-                                  l10n.authProfileSaveSuccess,
-                                );
-                              }
-                            },
-                          ),
-                          const SizedBox(height: Spacing.level6),
-                          EmailSection(
-                            user: user,
-                            emailController: emailController,
-                            onChangeEmail: () =>
-                                context.push(Routes.accountChangeEmail),
-                          ),
-                          const SizedBox(height: Spacing.level6),
-                          LinkedIdentitiesSection(
-                            user: user,
-                            isSubmitting: accountState.isSubmitting,
-                            onLinkWechat: () =>
-                                startWechatIdentityLink(context, l10n, ref),
-                            onUnlink: (identity) async {
-                              final confirmed = await confirmUnlinkIdentity(
-                                context,
-                                identity,
-                                l10n,
-                              );
-                              if (!confirmed || !context.mounted) return;
-                              final password = await ref.read(
-                                sensitiveActionPasswordPromptProvider,
-                              )(context);
-                              if (password == null || !context.mounted) return;
-                              final ok = await accountNotifier.unlinkIdentity(
-                                identityId: identity.id,
-                                password: password,
-                              );
-                              if (!ok && context.mounted) {
-                                await showAuthAccountFailureToast(
-                                  context,
-                                  ref,
-                                  l10n,
-                                );
-                                return;
-                              }
-                              if (ok && context.mounted) {
-                                await Toast.show(
-                                  context,
-                                  l10n.authIdentityUnlinkSuccess,
-                                );
-                              }
-                            },
-                          ),
-                          const SizedBox(height: Spacing.level6),
-                          SessionManagementSection(
-                            onManage: () =>
-                                context.push(Routes.accountSessions),
-                          ),
-                        ],
+                  // 移除内层 FCard 且不保留内边距：内容直接铺在 AuthShell
+                  // 外层面板上（见 plans 2026-09-06 账号体系重构计划）。
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AccountStatusSection(
+                        user: user,
+                        l10n: l10n,
+                        onVerifyEmail: () =>
+                            verifyEmailFlow(context, l10n, ref, user.email!),
                       ),
-                    ),
+                      const SizedBox(height: Spacing.level6),
+                      ProfileSection(
+                        nicknameController: nicknameController,
+                        avatarController: avatarController,
+                        isSubmitting: accountState.isSubmitting,
+                        onSave: () async {
+                          final ok = await accountNotifier.updateProfile(
+                            nickname: nicknameController.text,
+                            avatar: avatarController.text,
+                          );
+                          if (ok && context.mounted) {
+                            await Toast.show(
+                              context,
+                              l10n.authProfileSaveSuccess,
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: Spacing.level6),
+                      EmailSection(
+                        user: user,
+                        emailController: emailController,
+                        onChangeEmail: () =>
+                            context.push(Routes.accountChangeEmail),
+                      ),
+                      const SizedBox(height: Spacing.level6),
+                      LinkedIdentitiesSection(
+                        user: user,
+                        isSubmitting: accountState.isSubmitting,
+                        onLinkWechat: () =>
+                            startWechatIdentityLink(context, l10n, ref),
+                        onUnlink: (identity) async {
+                          final confirmed = await confirmUnlinkIdentity(
+                            context,
+                            identity,
+                            l10n,
+                          );
+                          if (!confirmed || !context.mounted) return;
+                          final password = await ref.read(
+                            sensitiveActionPasswordPromptProvider,
+                          )(context);
+                          if (password == null || !context.mounted) return;
+                          final ok = await accountNotifier.unlinkIdentity(
+                            identityId: identity.id,
+                            password: password,
+                          );
+                          if (!ok && context.mounted) {
+                            await showAuthAccountFailureToast(
+                              context,
+                              ref,
+                              l10n,
+                            );
+                            return;
+                          }
+                          if (ok && context.mounted) {
+                            await Toast.show(
+                              context,
+                              l10n.authIdentityUnlinkSuccess,
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: Spacing.level6),
+                      SessionManagementSection(
+                        onManage: () => context.push(Routes.accountSessions),
+                      ),
+                    ],
                   ),
                 ),
                 FTabEntry(
                   label: Text(l10n.authPasswordSectionTitle),
-                  child: FCard(
-                    child: Padding(
-                      padding: const EdgeInsets.all(Spacing.level6),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          PasswordSection(
-                            user: user,
-                            oldPasswordController: oldPasswordController,
-                            newPasswordController: newPasswordController,
-                            isSubmitting: accountState.isSubmitting,
-                            onChangePassword: () async {
-                              final ctx = context;
-                              final router = GoRouter.of(ctx);
-                              final ok = await accountNotifier.changePassword(
-                                password: oldPasswordController.text,
-                                newPassword: newPasswordController.text,
-                              );
-                              if (!ok && ctx.mounted) {
-                                await showAuthAccountFailureToast(
-                                  ctx,
-                                  ref,
-                                  l10n,
-                                );
-                                return;
-                              }
-                              if (!ok || !ctx.mounted) return;
-                              await Toast.show(
-                                ctx,
-                                l10n.authChangePasswordSuccess,
-                              );
-                              if (ctx.mounted) router.go(Routes.login);
-                            },
-                          ),
-                          const SizedBox(height: Spacing.level6),
-                          DeleteAccountSection(
-                            user: user,
-                            deletePasswordController: deletePasswordController,
-                            deleteCodeController: deleteCodeController,
-                            isSubmitting: accountState.isSubmitting,
-                            isSendingCode: accountState.isSendingCode,
-                            cooldownSeconds: accountState.lastCooldownSeconds,
-                            onSendCode: () async {
-                              if (user.email == null ||
-                                  user.email!.trim().isEmpty) {
-                                await Toast.show(
-                                  context,
-                                  l10n.authDeleteAccountEmailRequiredHint,
-                                );
-                                return;
-                              }
-                              await accountNotifier.sendVerificationCode(
-                                email: user.email!,
-                                scene: AuthVerificationScene.deleteAccount,
-                              );
-                            },
-                            onDelete: () async {
-                              final ctx = context;
-                              final router = GoRouter.of(ctx);
-                              if (user.hasPassword) {
-                                final ok = await accountNotifier.deleteAccount(
-                                  password: deletePasswordController.text,
-                                );
-                                if (!ok && ctx.mounted) {
-                                  final msg =
-                                      accountState.errorMessage?.isNotEmpty ==
-                                          true
-                                      ? accountState.errorMessage!
-                                      : null;
-                                  if (msg != null) {
-                                    await Toast.show(ctx, msg);
-                                  }
-                                  return;
-                                }
-                                if (!ok || !ctx.mounted) return;
-                                await Toast.show(
-                                  ctx,
-                                  l10n.authDeleteAccountSuccess,
-                                );
-                                if (ctx.mounted) router.go(Routes.login);
-                              } else {
-                                final ok = await accountNotifier.deleteAccount(
-                                  code: deleteCodeController.text,
-                                );
-                                if (!ok && ctx.mounted) {
-                                  final msg =
-                                      accountState.errorMessage?.isNotEmpty ==
-                                          true
-                                      ? accountState.errorMessage!
-                                      : null;
-                                  if (msg != null) {
-                                    await Toast.show(ctx, msg);
-                                  }
-                                  return;
-                                }
-                                if (!ok || !ctx.mounted) return;
-                                await Toast.show(
-                                  ctx,
-                                  l10n.authDeleteAccountSuccess,
-                                );
-                                if (ctx.mounted) router.go(Routes.login);
-                              }
-                            },
-                          ),
-                        ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PasswordSection(
+                        user: user,
+                        oldPasswordController: oldPasswordController,
+                        newPasswordController: newPasswordController,
+                        isSubmitting: accountState.isSubmitting,
+                        onChangePassword: () async {
+                          final ctx = context;
+                          final router = GoRouter.of(ctx);
+                          final ok = await accountNotifier.changePassword(
+                            password: oldPasswordController.text,
+                            newPassword: newPasswordController.text,
+                          );
+                          if (!ok && ctx.mounted) {
+                            await showAuthAccountFailureToast(ctx, ref, l10n);
+                            return;
+                          }
+                          if (!ok || !ctx.mounted) return;
+                          await Toast.show(ctx, l10n.authChangePasswordSuccess);
+                          if (ctx.mounted) router.go(Routes.login);
+                        },
                       ),
-                    ),
+                      const SizedBox(height: Spacing.level6),
+                      DeleteAccountSection(
+                        user: user,
+                        deletePasswordController: deletePasswordController,
+                        deleteCodeController: deleteCodeController,
+                        isSubmitting: accountState.isSubmitting,
+                        isSendingCode: accountState.isSendingCode,
+                        cooldownSeconds: accountState.lastCooldownSeconds,
+                        onSendCode: () async {
+                          if (user.email == null ||
+                              user.email!.trim().isEmpty) {
+                            await Toast.show(
+                              context,
+                              l10n.authDeleteAccountEmailRequiredHint,
+                            );
+                            return;
+                          }
+                          await accountNotifier.sendVerificationCode(
+                            email: user.email!,
+                            scene: AuthVerificationScene.deleteAccount,
+                          );
+                        },
+                        onDelete: () async {
+                          final ctx = context;
+                          final router = GoRouter.of(ctx);
+                          if (user.hasPassword) {
+                            final ok = await accountNotifier.deleteAccount(
+                              password: deletePasswordController.text,
+                            );
+                            if (!ok && ctx.mounted) {
+                              final msg =
+                                  accountState.errorMessage?.isNotEmpty == true
+                                  ? accountState.errorMessage!
+                                  : null;
+                              if (msg != null) {
+                                await Toast.show(ctx, msg);
+                              }
+                              return;
+                            }
+                            if (!ok || !ctx.mounted) return;
+                            await Toast.show(
+                              ctx,
+                              l10n.authDeleteAccountSuccess,
+                            );
+                            if (ctx.mounted) router.go(Routes.login);
+                          } else {
+                            final ok = await accountNotifier.deleteAccount(
+                              code: deleteCodeController.text,
+                            );
+                            if (!ok && ctx.mounted) {
+                              final msg =
+                                  accountState.errorMessage?.isNotEmpty == true
+                                  ? accountState.errorMessage!
+                                  : null;
+                              if (msg != null) {
+                                await Toast.show(ctx, msg);
+                              }
+                              return;
+                            }
+                            if (!ok || !ctx.mounted) return;
+                            await Toast.show(
+                              ctx,
+                              l10n.authDeleteAccountSuccess,
+                            );
+                            if (ctx.mounted) router.go(Routes.login);
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
