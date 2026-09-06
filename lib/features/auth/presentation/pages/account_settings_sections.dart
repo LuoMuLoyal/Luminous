@@ -153,18 +153,20 @@ class LinkedIdentitiesSection extends StatelessWidget {
               onUnlink: () => onUnlink(identity),
             ),
           ),
-        FButton(
-          key: const Key('wechat-identity-link-button'),
-          variant: FButtonVariant.outline,
-          onPress: isSubmitting ? null : () => onLinkWechat(),
-          child: isSubmitting
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: FCircularProgress(),
-                )
-              : Text(l10n.authIdentityLinkWechatAction),
-        ),
+        // 微信绑定入口暂隐藏（保留底层流程与已绑定身份展示/解绑，
+        // 见 docs/TODO.md）；后续具备企业资质后再恢复。
+        // FButton(
+        //   key: const Key('wechat-identity-link-button'),
+        //   variant: FButtonVariant.outline,
+        //   onPress: isSubmitting ? null : () => onLinkWechat(),
+        //   child: isSubmitting
+        //       ? const SizedBox(
+        //           width: 18,
+        //           height: 18,
+        //           child: FCircularProgress(),
+        //         )
+        //       : Text(l10n.authIdentityLinkWechatAction),
+        // ),
       ],
     );
   }

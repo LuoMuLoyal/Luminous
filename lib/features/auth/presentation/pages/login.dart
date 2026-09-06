@@ -613,6 +613,9 @@ class LoginPage extends HookConsumerWidget {
               ),
             ),
             OAuthButtonRow(
+              // WeChat/Weibo 入口暂隐藏（保留底层流程，见 docs/TODO.md）。
+              showWechat: false,
+              showWeibo: false,
               wechatCallbackController: wechatCallbackController,
               isStartingWechat: oauthState.isStartingWechat,
               isCompletingWechat: oauthState.isCompletingWechat,

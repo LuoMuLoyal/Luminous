@@ -123,7 +123,9 @@ void main() {
     expect(remote.sentCodeScene, AuthVerificationScene.login);
   });
 
-  testWidgets('Login page opens WeChat authorize URL', (tester) async {
+  testWidgets('Login page hides WeChat and Weibo OAuth entries', (
+    tester,
+  ) async {
     final remote = FakeLucentAuthRepository();
     final launcher = _FakeExternalUrlLauncher();
 
@@ -147,20 +149,14 @@ void main() {
       ),
     );
 
-    await tester.ensureVisible(
-      find.byKey(const Key('wechat-login-start-button')),
-    );
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('wechat-login-start-button')));
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 2));
 
-    expect(remote.createWechatAuthorizeCalled, isTrue);
-    expect(
-      launcher.openedUri.toString(),
-      'https://open.weixin.qq.com/connect/qrconnect?state=state-1',
-    );
-    expect(find.byKey(const Key('wechat-callback-input')), findsOneWidget);
+    // WeChat / Weibo UI 入口已隐藏（底层流程保留，见 docs/TODO.md）。
+    expect(find.byKey(const Key('wechat-login-start-button')), findsNothing);
+    expect(find.byKey(const Key('weibo-login-start-button')), findsNothing);
+    // QQ / Google 入口仍显示。
+    expect(find.byKey(const Key('qq-login-start-button')), findsOneWidget);
+    expect(find.byKey(const Key('google-login-start-button')), findsOneWidget);
   });
 
   testWidgets('Login page uses mobile WeChat SDK before browser OAuth', (
@@ -196,18 +192,15 @@ void main() {
       ),
     );
 
-    await tester.ensureVisible(
-      find.byKey(const Key('wechat-login-start-button')),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('wechat-login-start-button')));
+    // 微信入口已隐藏，但底层流程仍可通过 provider 直接驱动；
+    // 此处验证隐藏后桌面/移动 SDK 不因 UI 展示而触发。
     await tester.pumpAndSettle();
 
-    expect(mobileClient.authorizeCalled, isTrue);
-    expect(remote.wechatMobileCallbackCode, 'mobile-code');
+    expect(find.byKey(const Key('wechat-login-start-button')), findsNothing);
+    expect(mobileClient.authorizeCalled, isFalse);
+    expect(remote.wechatMobileCallbackCode, isNull);
     expect(remote.createWechatAuthorizeCalled, isFalse);
     expect(launcher.openedUri, isNull);
-    expect(container.read(authSessionProvider).isAuthenticated, isTrue);
   });
 
   testWidgets('Login page completes WeChat callback login', (tester) async {
@@ -239,28 +232,13 @@ void main() {
       ),
     );
 
-    await tester.ensureVisible(
-      find.byKey(const Key('wechat-login-start-button')),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('wechat-login-start-button')));
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 2));
-    await tester.ensureVisible(find.byKey(const Key('wechat-callback-input')));
-    await tester.pumpAndSettle();
-    await tester.enterText(
-      find.byKey(const Key('wechat-callback-input')),
-      'https://app.example.com/oauth/wechat/callback?code=wechat-code&state=state-1',
-    );
-    final completeButton = find.widgetWithText(FButton, '完成微信登录');
-    await tester.ensureVisible(completeButton);
-    await tester.tap(completeButton);
     await tester.pumpAndSettle();
 
-    expect(remote.wechatCallbackCode, 'wechat-code');
-    expect(remote.wechatCallbackState, 'state-1');
-    expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-    expect(container.read(authSessionProvider).user?.nickname, 'WechatUser');
+    // 微信入口隐藏后,回调完成流程不再经由登录页 UI 触发;
+    // 逻辑层覆盖见 login_form_provider_test.dart。
+    expect(find.byKey(const Key('wechat-login-start-button')), findsNothing);
+    expect(remote.wechatCallbackCode, isNull);
+    expect(remote.wechatCallbackState, isNull);
   });
 }
 

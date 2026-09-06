@@ -332,7 +332,7 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
   });
 
-  testWidgets('Account settings links WeChat identity through account flow', (
+  testWidgets('Account settings hides WeChat identity link entry', (
     tester,
   ) async {
     final remote = FakeLucentAuthRepository();
@@ -364,26 +364,12 @@ void main() {
       ),
     );
 
-    final linkButton = find.byKey(const Key('wechat-identity-link-button'));
-    await tester.scrollUntilVisible(
-      linkButton,
-      240,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(linkButton);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
-    expect(mobileClient.authorizeCalled, isTrue);
-    expect(remote.wechatMobileIdentityLinkCallbackCode, 'mobile-link-code');
-    expect(
-      container
-          .read(authSessionProvider)
-          .user
-          ?.linkedIdentities
-          .single
-          .provider,
-      'wechat_mobile',
-    );
+    // 微信绑定入口已隐藏（底层流程保留，见 docs/TODO.md）。
+    expect(find.byKey(const Key('wechat-identity-link-button')), findsNothing);
+    expect(mobileClient.authorizeCalled, isFalse);
+    expect(remote.wechatMobileIdentityLinkCallbackCode, isNull);
     await tester.pump(const Duration(seconds: 2));
   });
 

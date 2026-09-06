@@ -60,6 +60,8 @@ class OAuthButtonRow extends StatefulWidget {
     required this.onGoogleComplete,
     required this.isStartingApple,
     required this.onAppleSignIn,
+    this.showWechat = true,
+    this.showWeibo = true,
   });
 
   // WeChat
@@ -97,6 +99,16 @@ class OAuthButtonRow extends StatefulWidget {
   // Apple
   final bool isStartingApple;
   final VoidCallback onAppleSignIn;
+
+  /// Hides the WeChat entry (button + callback input) while keeping the
+  /// underlying flow available. Used to gate WeChat sign-in until the
+  /// app has the required enterprise qualification (see docs/TODO.md).
+  final bool showWechat;
+
+  /// Hides the Weibo entry (button + callback input) while keeping the
+  /// underlying flow available. Used to remove Weibo from the UI until a
+  /// full removal is done (see docs/TODO.md).
+  final bool showWeibo;
 
   @override
   State<OAuthButtonRow> createState() => _OAuthButtonRowState();
@@ -159,15 +171,18 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _OAuthCircleButton(
-                buttonKey: const Key('wechat-login-start-button'),
-                assetPath: 'assets/icon/oauth/wechat.svg',
-                backgroundColor: OAuthBrandColors.wechat,
-                isLoading: widget.isStartingWechat,
-                disabled: widget.isStartingWechat || widget.isCompletingWechat,
-                onPressed: widget.onWechatStart,
-              ),
-              const SizedBox(width: Spacing.level4),
+              if (widget.showWechat) ...[
+                _OAuthCircleButton(
+                  buttonKey: const Key('wechat-login-start-button'),
+                  assetPath: 'assets/icon/oauth/wechat.svg',
+                  backgroundColor: OAuthBrandColors.wechat,
+                  isLoading: widget.isStartingWechat,
+                  disabled:
+                      widget.isStartingWechat || widget.isCompletingWechat,
+                  onPressed: widget.onWechatStart,
+                ),
+                const SizedBox(width: Spacing.level4),
+              ],
               _OAuthCircleButton(
                 buttonKey: const Key('qq-login-start-button'),
                 assetPath: 'assets/icon/oauth/qq.svg',
@@ -177,15 +192,17 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                 onPressed: widget.onQqStart,
               ),
               const SizedBox(width: Spacing.level4),
-              _OAuthCircleButton(
-                buttonKey: const Key('weibo-login-start-button'),
-                assetPath: 'assets/icon/oauth/weibo.svg',
-                backgroundColor: OAuthBrandColors.weibo,
-                isLoading: widget.isStartingWeibo,
-                disabled: widget.isStartingWeibo || widget.isCompletingWeibo,
-                onPressed: widget.onWeiboStart,
-              ),
-              const SizedBox(width: Spacing.level4),
+              if (widget.showWeibo) ...[
+                _OAuthCircleButton(
+                  buttonKey: const Key('weibo-login-start-button'),
+                  assetPath: 'assets/icon/oauth/weibo.svg',
+                  backgroundColor: OAuthBrandColors.weibo,
+                  isLoading: widget.isStartingWeibo,
+                  disabled: widget.isStartingWeibo || widget.isCompletingWeibo,
+                  onPressed: widget.onWeiboStart,
+                ),
+                const SizedBox(width: Spacing.level4),
+              ],
               _OAuthCircleButton(
                 buttonKey: const Key('google-login-start-button'),
                 assetPath: 'assets/icon/oauth/google.svg',
@@ -209,7 +226,8 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
           ),
         ),
         // WeChat callback input (shown when authorizeUrl is set)
-        if (widget.wechatAuthorizeUrl?.isNotEmpty == true) ...[
+        if (widget.showWechat &&
+            widget.wechatAuthorizeUrl?.isNotEmpty == true) ...[
           const SizedBox(height: Spacing.level4),
           FTextField(
             key: const Key('wechat-callback-input'),
@@ -261,7 +279,8 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
           ),
         ],
         // Weibo callback input (shown when authorizeUrl is set)
-        if (widget.weiboAuthorizeUrl?.isNotEmpty == true) ...[
+        if (widget.showWeibo &&
+            widget.weiboAuthorizeUrl?.isNotEmpty == true) ...[
           const SizedBox(height: Spacing.level4),
           FTextField(
             key: const Key('weibo-callback-input'),
