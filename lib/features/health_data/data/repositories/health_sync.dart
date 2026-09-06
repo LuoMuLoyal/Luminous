@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/health_data/data/datasources/health_platform.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
@@ -27,7 +28,12 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
   /// The source string for synced records.
   /// iOS → "apple_health", Android → "health_connect".
-  String get _sourceTag => Platform.isIOS ? 'apple_health' : 'health_connect';
+  /// Non-mobile (desktop/Web) falls back to "health_connect"; only reachable
+  /// when a sync is somehow invoked, so no throw on the Web Platform stub.
+  String get _sourceTag {
+    if (kIsWeb) return 'health_connect';
+    return Platform.isIOS ? 'apple_health' : 'health_connect';
+  }
 
   @override
   Future<HealthPermissionStatus> requestPermissions(

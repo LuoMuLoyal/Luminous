@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:health/health.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
@@ -20,8 +21,11 @@ class HealthPlatformDataSource {
   ///
   /// iOS: always true (HealthKit is built-in).
   /// Android: depends on Health Connect SDK status.
-  /// Desktop/Web: always false.
+  /// Desktop/Web: always false. The `!kIsWeb` guard must come first —
+  /// `dart:io` `Platform` is a stub on Flutter Web and any access throws
+  /// `Unsupported operation`.
   bool get isPlatformAvailable {
+    if (kIsWeb) return false;
     if (!Platform.isIOS && !Platform.isAndroid) return false;
     if (Platform.isAndroid) {
       return _health.healthConnectSdkStatus ==
