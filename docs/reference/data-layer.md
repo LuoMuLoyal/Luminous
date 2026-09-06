@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-08-31
+updated: 2026-09-06
 ---
 
 # Data Layer
@@ -59,7 +59,11 @@ Widget
   401 clears the session, a 403 does not. Concurrent requests share a single refresh; a definitive
   refresh failure clears the session and passes the **original** `LucentFailure` back to the caller.
   The `onSessionExpired` callback is guarded (a throwing callback is logged and the original error
-  still resolves).
+  still resolves). **SSE (`ResponseType.stream`) exception**: for a streamed 401 whose body cannot
+  be decoded (Dio keeps `ResponseBody` as `response.data`), the refresh decision falls back to
+  status-code + `application/problem+json` content-type detection instead of force-clearing the
+  session — refresh is idempotent for invalid tokens, so a genuine expiry self-heals while a
+  rejected refresh still clears the session.
 
 ### Generated API Client
 
