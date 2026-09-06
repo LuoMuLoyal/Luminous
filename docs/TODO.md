@@ -33,6 +33,24 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
 - 微博与 Google OAuth 图标
   - 修复登录页两者的图标显示问题
 
+## 2026-09-06 OAuth 登入门槛调整（UI 隐藏 / 全链路移除待办）
+
+- 微信登录与微信身份绑定入口已在 UI 层面隐藏（登录页 `OAuthButtonRow` 与账号设置页
+  `LinkedIdentitiesSection`），底层流程与代码全部保留，后续恢复只需改回显示参数。
+  - 微信开放平台「网站应用」需企业认证（300 元/年），当前无企业资质故隐藏；
+    待有资质后恢复入口并配置 `WECHAT_WEB_*` / `WECHAT_MOBILE_*` 环境变量
+- 微博登录入口已在 UI 层面隐藏（登录页 `OAuthButtonRow`），底层流程保留。
+  - **全链路移除（未做，保留待办）**：微博不够主流，计划后续彻底删除——
+    - Lucent：`src/modules/auth/providers/weibo-oauth.provider.ts`、`oauth.controller.ts`
+      的 weibo 端点、`oauth.dto.ts` 的 weibo schema、`oauth.config.ts` 的 weibo 项、
+      `EnvKey.WEIBO_*` 环境变量、`state.service.ts` 的 weibo 回跳路径、相关测试；
+      重新导出 OpenAPI 并同步 `Lucent/docs/reference/environment-variables.md`
+    - Luminous：登录页 `OAuthButtonRow` 的 weibo 按钮/回调区、`oauth_panels.dart` 的
+      `OAuthBrandColors.weibo` 与 `showWeibo` 参数、`oauth_login.dart` 的
+      `startWeiboLogin` / `completeWeiboLogin`、`auth.dart` 域仓储与数据源的 weibo 方法、
+      路由 `/login/oauth/weibo`、l10n fragment 的 `authWeibo*` 文案、`assets/icon/oauth/weibo.svg`、
+      相关测试；重新生成 API client 与 l10n
+
 ## 延后（有明确原因）
 
 - 药箱项「停用/归档」语义（F-2，0.1.0 后）
