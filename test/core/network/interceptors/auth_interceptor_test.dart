@@ -1243,5 +1243,124 @@ void main() {
       // Only one refresh call should have been made
       expect(refreshAdapter.callCount, 1);
     });
+
+    test('refreshes on a streamed 401 whose Problem Details body is not '
+        'decodable (ResponseType.stream)', () async {
+      // SSE requests use ResponseType.stream: the Dio transformer keeps
+      // ResponseBody (the raw stream) as `response.data` for both 2xx and
+      // error responses, so the body is never JSON-decoded into a Map. The
+      // mapper would throw FormatException, and the refresh decision must
+      // fall back to status-code + content-type detection instead of
+      // force-clearing the session.
+      final store = _MemorySessionStore();
+      await store.write(
+        const LucentSessionTokens(
+          accessToken: 'expired-token',
+          refreshToken: 'valid-refresh-token',
+        ),
+      );
+
+      bool sessionExpiredCalled = false;
+      final mainAdapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 401,
+          data: _tokenExpiredBody,
+          statusMessage: 'Unauthorized',
+        )
+        ..enqueueSuccess(
+          data: <String, Object?>{'event': 'done', 'data': <String, Object?>{}},
+        );
+
+      final refreshAdapter = _MockAdapter()..enqueueRefreshSuccess();
+
+      final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+      dio.httpClientAdapter = mainAdapter;
+      dio.interceptors.add(
+        AuthInterceptor(
+          dio: dio,
+          sessionStore: store,
+          refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+            ..httpClientAdapter = refreshAdapter,
+          onSessionExpired: () async {
+            sessionExpiredCalled = true;
+          },
+        ),
+      );
+
+      final response = await dio.post<ResponseBody>(
+        '/api/v1/user/assistant/messages/stream',
+        data: const <String, Object?>{'messages': <Object?>[]},
+        options: Options(responseType: ResponseType.stream),
+      );
+
+      // Original streamed request 401 → refresh → retry succeeded.
+      expect(mainAdapter.callCount, 2);
+      expect(refreshAdapter.callCount, 1);
+      expect(response.statusCode, 200);
+      expect(sessionExpiredCalled, isFalse);
+
+      // Retry request uses the fresh access token.
+      final retryRequest = mainAdapter.capturedRequests[1];
+      expect(retryRequest.headers['Authorization'], 'Bearer new-access-token');
+      expect(retryRequest.extra['hasRetriedAfterRefresh'], true);
+      expect(retryRequest.responseType, ResponseType.stream);
+    });
+
+    test(
+      'clears session on a streamed 401 without a problem+json content type',
+      () async {
+        // A streamed 401 whose content-type is not application/problem+json
+        // (e.g. an intervening proxy / gateway) is not a refresh candidate —
+        // the plain 401 path clears the session.
+        final store = _MemorySessionStore();
+        await store.write(
+          const LucentSessionTokens(
+            accessToken: 'expired-token',
+            refreshToken: 'valid-refresh-token',
+          ),
+        );
+
+        bool sessionExpiredCalled = false;
+        final mainAdapter = _MockAdapter()
+          ..enqueueError(
+            statusCode: 401,
+            data: 'Unauthorized',
+            statusMessage: 'Unauthorized',
+            contentType: 'text/plain',
+          );
+
+        final refreshAdapter = _MockAdapter();
+
+        final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+        dio.httpClientAdapter = mainAdapter;
+        dio.interceptors.add(
+          AuthInterceptor(
+            dio: dio,
+            sessionStore: store,
+            refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+              ..httpClientAdapter = refreshAdapter,
+            onSessionExpired: () async {
+              sessionExpiredCalled = true;
+            },
+          ),
+        );
+
+        try {
+          await dio.post<ResponseBody>(
+            '/api/v1/user/assistant/messages/stream',
+            data: const <String, Object?>{'messages': <Object?>[]},
+            options: Options(responseType: ResponseType.stream),
+          );
+          fail('expected the 401 to surface as a DioException');
+        } on DioException {
+          // Expected.
+        }
+
+        expect(mainAdapter.callCount, 1);
+        expect(refreshAdapter.callCount, 0);
+        expect(sessionExpiredCalled, isTrue);
+        expect(await store.read(), isNull);
+      },
+    );
   });
 }

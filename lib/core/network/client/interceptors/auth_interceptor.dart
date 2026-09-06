@@ -195,16 +195,25 @@ class AuthInterceptor extends Interceptor {
     // session as refreshable. Every other auth failure (AUTH_REQUIRED,
     // AUTH_REFRESH_TOKEN_INVALID, AUTH_WRONG_PASSWORD, plain 401/403) is
     // not a refresh candidate and falls through to the 401 session-clear
-    // path below. A malformed body (non-Problem Details) is also not a
-    // refresh candidate: the FormatException semantics stay at the mapper
-    // layer, where the ErrorInterceptor ultimately surfaces them as
-    // protocol errors.
+    // path below.
     LucentFailure? failure;
     try {
       failure = LucentErrorMapper.fromObject(error);
     } on FormatException {
-      // 畸形 body 不是 refresh 候选;格式语义保留在 mapper 层(最终由
-      // ErrorInterceptor 以协议错误暴露),这里走 401 清 session 路径。
+      // SSE (ResponseType.stream) 401: response.data is a ResponseBody
+      // (stream), not a Map — coerceToStringMap returns null → FormatException.
+      // We cannot determine the exact Problem Details code, but the backend
+      // always returns application/problem+json for 401s. Attempt refresh
+      // when a refresh token is available: if the original error was
+      // AUTH_TOKEN_EXPIRED the refresh will succeed; otherwise the backend
+      // will reject the refresh token and we fall back to session-clear.
+      // This is safe because refresh is idempotent for invalid tokens.
+      if (_isAuthFailure(error) && _hasProblemJsonContentType(error)) {
+        final refreshToken = await _sessionStore.readRefreshToken();
+        if (refreshToken != null && refreshToken.isNotEmpty) {
+          return true;
+        }
+      }
       failure = null;
     }
     if (failure == null || !failure.isTokenExpired) {
@@ -213,6 +222,17 @@ class AuthInterceptor extends Interceptor {
 
     final refreshToken = await _sessionStore.readRefreshToken();
     return refreshToken != null && refreshToken.isNotEmpty;
+  }
+
+  /// Whether the response content-type is `application/problem+json`.
+  bool _hasProblemJsonContentType(DioException error) {
+    final contentType = error.response?.headers
+        .value(Headers.contentTypeHeader)
+        ?.split(';')
+        .first
+        .trim()
+        .toLowerCase();
+    return contentType == 'application/problem+json';
   }
 
   Future<_RefreshOutcome?> _refreshTokens() {
