@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -56,7 +57,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
               suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => pushAuthRequiredRoute(context, Routes.account),
             ),
-            if (Platform.isIOS || Platform.isAndroid)
+            if (!kIsWeb && (Platform.isIOS || Platform.isAndroid))
               FTile(
                 key: const Key('mine-health-sync-tile'),
                 prefix: Icon(
