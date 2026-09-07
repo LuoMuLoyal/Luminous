@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:health/health.dart';
+import 'package:luminous/features/health_data/data/datasources/health_platform.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
 import 'package:luminous/features/health_data/data/repositories/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
@@ -107,6 +108,14 @@ void main() {
 
       dataSource.available = false;
       expect(repository.isPlatformAvailable, isFalse);
+    });
+
+    test('isPlatformAvailable does not throw on any platform', () {
+      // HealthPlatformDataSource.isPlatformAvailable guards with kIsWeb
+      // before accessing dart:io Platform, so it must not throw on any
+      // runtime — including tests (which run on VM, not Web).
+      final ds = HealthPlatformDataSource();
+      expect(() => ds.isPlatformAvailable, returnsNormally);
     });
 
     test('returns empty authorized types when platform unavailable', () async {
