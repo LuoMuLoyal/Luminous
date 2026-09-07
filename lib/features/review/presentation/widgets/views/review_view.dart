@@ -192,29 +192,24 @@ class ReviewView extends StatelessWidget {
           key: const Key('review-preview-overview-card'),
           items: [
             (
-              SemanticIcons.recordSymptom,
-              l10n.reviewPreviewWhatHappenedTitle,
-              l10n.reviewPreviewWhatHappenedBody,
-            ),
-            (
-              SemanticIcons.reportTrend,
-              l10n.reviewPreviewKeyChangesTitle,
-              l10n.reviewPreviewKeyChangesBody,
-            ),
-            (
-              SemanticIcons.recordClipboard,
-              l10n.reviewPreviewCompletedActionsTitle,
-              l10n.reviewPreviewCompletedActionsBody,
+              SemanticIcons.reportAdherence,
+              l10n.reviewPreviewCoverageTitle,
+              l10n.reviewPreviewCoverageBody,
             ),
             (
               SemanticIcons.reportInsight,
-              l10n.reviewPreviewNextStepTitle,
-              l10n.reviewPreviewNextStepBody,
+              l10n.reviewPreviewNoteworthyTitle,
+              l10n.reviewPreviewNoteworthyBody,
             ),
             (
-              SemanticIcons.aiEntry,
-              l10n.reviewPreviewAiSummaryTitle,
-              l10n.reviewPreviewAiSummaryBody,
+              SemanticIcons.reportTrend,
+              l10n.reviewPreviewTrendTitle,
+              l10n.reviewPreviewTrendBody,
+            ),
+            (
+              SemanticIcons.reportHistory,
+              l10n.reviewPreviewHistoryTitle,
+              l10n.reviewPreviewHistoryBody,
             ),
           ],
         ),
@@ -229,14 +224,6 @@ class ReviewView extends StatelessWidget {
         CompletedActionsSection(section: review.sections.completedActions),
         NextStepSection(section: review.sections.nextStep),
       ],
-      ReviewHistorySection(
-        history: historyAsync,
-        onRetry: onHistoryRetry,
-        selectedStatus: historyStatus,
-        onStatusChanged: onHistoryStatusChanged,
-        onEventTap: onEventTap,
-        onLoadMore: onHistoryLoadMore,
-      ),
       // 纵向洞察折线图：饮水/睡眠/用药三指标 FTab 切换单折线。
       if (trendSeries.isNotEmpty)
         ReviewTrendSection(
@@ -250,6 +237,14 @@ class ReviewView extends StatelessWidget {
           selectedKind: selectedTrendKind,
           onKindChanged: onTrendKindChanged,
         ),
+      ReviewHistorySection(
+        history: historyAsync,
+        onRetry: onHistoryRetry,
+        selectedStatus: historyStatus,
+        onStatusChanged: onHistoryStatusChanged,
+        onEventTap: onEventTap,
+        onLoadMore: onHistoryLoadMore,
+      ),
     ];
 
     return Column(

@@ -159,7 +159,7 @@ Created: 2026-09-07
     设置语义不改(Today 摘要仍受其门控)。
   - 检查 `widgets/sections/ai_summary.dart` 是否孤儿:若仅 review_view 消费,在文件头
     加 deferred 标注 + `docs/TODO.md` 条目;移除后 `review_view_test` 中相关断言同步更新。
-- [ ] **P0-8 页面骨架与 preview 预告卡**
+- [x] **P0-8 页面骨架与 preview 预告卡**
   - `skeleton_view.dart` 镜像新区块顺序(周期行 → 概览 → 值得注意 → 趋势 → 事件)。
   - preview(未登录)预告卡内容由「事件五段锁卡」改为「记录后你会看到什么」:
     覆盖率概览 / 值得注意的变化 / 单维趋势 / 事件回顾 / 去登录。
