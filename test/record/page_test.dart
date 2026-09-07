@@ -1158,7 +1158,7 @@ void main() {
     expect(repo.requestedDates, contains(DateTime(2026, 6, 5)));
   });
 
-  testWidgets('Record water quick action records default amount immediately', (
+  testWidgets('Record water quick action opens amount sheet and records', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -1181,9 +1181,19 @@ void main() {
     await tester.tap(find.byKey(const Key('record-quick-water')));
     await tester.pumpAndSettle();
 
+    // The water sheet is shown instead of recording immediately.
     expect(find.byType(RecordCreatePage), findsNothing);
     expect(find.byKey(const Key('record-fast-entry-water')), findsNothing);
     expect(find.byKey(const Key('daily-record-kind-water')), findsNothing);
+    expect(
+      find.byKey(const Key('water-quick-entry-manual-field')),
+      findsOneWidget,
+    );
+    expect(dailyRepo.createInput, isNull);
+
+    // Pick the 250 ml preset.
+    await tester.tap(find.text('+250ml'));
+    await tester.pumpAndSettle();
 
     expect(dailyRepo.createInput?.kind, DailyRecordKind.water);
     expect(dailyRepo.createInput?.occurredAt, '2026-06-06');

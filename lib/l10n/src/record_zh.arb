@@ -59,6 +59,8 @@
   "recordWaterUnitMl": "ml",
   "recordWaterUnitCup": "杯",
   "recordWaterUnitTimes": "次",
+  "recordWaterQuickEntryTitle": "记录饮水",
+  "recordWaterQuickEntryManualHint": "输入毫升数",
   "recordCreateFieldTitleOptional": "标题",
 "recordCreateFieldTitle": "标题",
   "recordCreateFieldNote": "备注",

@@ -21,7 +21,7 @@ import '../../../../helpers/test_helpers.dart';
 void main() {
   group('TodayQuickActionsSection', () {
     testWidgets(
-      'one-tap water action creates a record, emits dailyRecords, and shows toast',
+      'one-tap water action opens amount sheet and creates a record on pick',
       (tester) async {
         final repository = _FakeDailyRecordRepository();
         final container = ProviderContainer(
@@ -48,7 +48,18 @@ void main() {
         );
         await tester.pumpAndSettle();
 
+        // Opening the water action shows the amount sheet instead of
+        // recording immediately.
         await tester.tap(find.text('去喝水'));
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const Key('water-quick-entry-manual-field')),
+          findsOneWidget,
+        );
+        expect(repository.createdInputs, isEmpty);
+
+        // Pick the 250 ml preset.
+        await tester.tap(find.text('+250ml'));
         await tester.pump();
 
         // Wait for the async create + toast to complete.
@@ -82,7 +93,7 @@ void main() {
       },
     );
 
-    testWidgets('one-tap water action shows failure toast when create fails', (
+    testWidgets('water amount sheet shows failure toast when create fails', (
       tester,
     ) async {
       final repository = _FailingDailyRecordRepository();
@@ -109,6 +120,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('去喝水'));
+      await tester.pumpAndSettle();
+
+      // Pick a preset; the create fails and the failure toast shows.
+      await tester.tap(find.text('+250ml'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 

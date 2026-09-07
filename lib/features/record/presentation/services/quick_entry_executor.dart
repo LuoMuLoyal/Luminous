@@ -13,6 +13,7 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/water_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class QuickEntryExecutor {
@@ -70,6 +71,12 @@ class QuickEntryExecutor {
     final buildContext = context.buildContext;
     final l10n = AppLocalizations.of(buildContext)!;
     QuickEntryUndoAction? undoAction;
+
+    // Show the water amount sheet; the user picks a preset or enters a custom
+    // ml amount. Dismissing the sheet records nothing.
+    final result = await showWaterQuickEntrySheet(buildContext);
+    if (result == null || !buildContext.mounted) return;
+
     try {
       await WaterQuickEntryFlow(
         createRecord: createRecord,
@@ -80,7 +87,10 @@ class QuickEntryExecutor {
           occurredAt: context.occurredAt,
           occurredTime: context.occurredTime,
         ),
-        preferences,
+        preferences.copyWith(
+          waterDefault: QuickEntryWaterDefault.custom,
+          waterCustomMl: result.amountMl,
+        ),
       );
     } catch (e, st) {
       appTalker.error('QuickEntryExecutor: water record failed: $e', st);

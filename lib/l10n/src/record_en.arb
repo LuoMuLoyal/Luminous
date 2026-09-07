@@ -59,6 +59,8 @@
   "recordWaterUnitMl": "ml",
   "recordWaterUnitCup": "cup",
   "recordWaterUnitTimes": "times",
+  "recordWaterQuickEntryTitle": "Log water",
+  "recordWaterQuickEntryManualHint": "Enter ml amount",
   "recordCreateFieldTitleOptional": "Title",
 "recordCreateFieldTitle": "Title",
   "recordCreateFieldNote": "Note",

@@ -12,6 +12,7 @@ import 'package:luminous/features/record/application/usecases/quick_entry_undo.d
 import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/water_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Executes a one-tap water quick-entry from the Today quick-actions surface.
@@ -43,6 +44,11 @@ Future<void> executeTodayWaterQuickEntry(
       const QuickEntryPreferences();
   final repository = ref.read(dailyRecordRepositoryProvider);
 
+  // Show the water amount sheet; the user picks a preset or enters a custom
+  // ml amount. Dismissing the sheet records nothing.
+  final result = await showWaterQuickEntrySheet(context);
+  if (result == null || !context.mounted) return;
+
   QuickEntryUndoAction? undoAction;
   try {
     await WaterQuickEntryFlow(
@@ -57,7 +63,10 @@ Future<void> executeTodayWaterQuickEntry(
         occurredAt: _formatDate(DateTime.now()),
         occurredTime: _formatTime(DateTime.now()),
       ),
-      preferences,
+      preferences.copyWith(
+        waterDefault: QuickEntryWaterDefault.custom,
+        waterCustomMl: result.amountMl,
+      ),
     );
   } catch (e, st) {
     _logError('executeTodayWaterQuickEntry: failed: $e', st);
