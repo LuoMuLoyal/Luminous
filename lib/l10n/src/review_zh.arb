@@ -556,6 +556,19 @@
   "reviewReviewNoEventTitle": "现在没有进行中的观察",
   "reviewReviewNoEventDescription": "开始一段健康观察后，这里会按「发生了什么、有什么变化、完成了什么、接下来怎么办」帮你回顾整个过程。",
   "reviewReviewStartObservationAction": "开始健康观察",
+  "reviewRecordGuideTitle": "继续记录，几周后能看到趋势",
+  "reviewRecordGuideDescription": "本周已记录 {observed}/{expected} 天。连续记录饮水、睡眠或用药后，这里会呈现健康趋势与值得注意的变化。",
+  "@reviewRecordGuideDescription": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      },
+      "expected": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewRecordGuideGoRecordAction": "去记录",
   "reviewPreviewOverviewTitle": "开始观察后，这里将呈现",
   "reviewPreviewWhatHappenedTitle": "发生了什么",
   "reviewPreviewWhatHappenedBody": "开始观察后，这里会汇总你的症状记录和结果确认。",

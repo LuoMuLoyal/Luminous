@@ -10,18 +10,13 @@ import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/check_in.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/end_event.dart';
-import 'package:luminous/features/health_event/presentation/widgets/sheets/start_event.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
@@ -91,121 +86,6 @@ class ReviewPage extends ConsumerWidget {
                 talker.error('suggestionHistory refresh failed', e, st),
           ),
     ]);
-  }
-
-  /// 「开始健康观察」入口（无事件时）。
-  ///
-  /// 与 today 的 `_openStart` 对齐：从 health context snapshot 预读当前用药
-  /// 选项、按用户时区的今天预读症状记录选项，并随创建请求转发
-  /// `reasonRecordId` / `currentMedicineIds`。选项加载失败时静默降级为
-  /// 空列表，不阻塞开始观察。创建成功后由 DataChangeBus（healthEvents
-  /// topic）驱动 review providers 自动刷新，无需手动 refresh。
-  Future<void> _openStart(BuildContext context, WidgetRef ref) async {
-    final l10n = AppLocalizations.of(context)!;
-    // 两类选项并行读取（happy path 等待减半），最坏等待取两条链路的
-    // 较大值而非之和；读取失败时各自静默降级为空列表，不阻塞开始观察。
-    final (currentMedicineOptions, reasonRecordOptions) = await (
-      _readCurrentMedicineOptions(ref),
-      _readReasonRecordOptions(ref),
-    ).wait;
-    if (!context.mounted) return;
-    await showAppDialog<void>(
-      context: context,
-      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-      scrollable: false,
-      builder: (dialogContext) => StartEventSheet(
-        heading: l10n.todayHealthEventStartTitle,
-        shortTitleLabel: l10n.todayHealthEventTitleLabel,
-        hint: l10n.todayHealthEventTitleHint,
-        currentMedicineLabel: l10n.todayHealthEventCurrentMedicineLabel,
-        currentMedicineOptions: currentMedicineOptions,
-        reasonRecordLabel: l10n.todayHealthEventReasonRecordLabel,
-        reasonRecordOptions: reasonRecordOptions,
-        cancelLabel: l10n.todayHealthEventCancelAction,
-        submitLabel: l10n.todayHealthEventStartAction,
-        submittingLabel: l10n.todayHealthEventSaveAction,
-        requiredMessage: l10n.todayHealthEventTitleRequired,
-        submitErrorLabel: l10n.todayHealthEventSaveFailed,
-        onSubmit:
-            ({
-              required shortTitle,
-              reasonRecordId,
-              required currentMedicineIds,
-            }) async {
-              await ref
-                  .read(activeHealthEventProvider.notifier)
-                  .create(
-                    title: shortTitle,
-                    reasonRecordId: reasonRecordId,
-                    currentMedicineIds: currentMedicineIds,
-                  );
-              if (dialogContext.mounted) Navigator.of(dialogContext).pop();
-            },
-      ),
-    );
-  }
-
-  Future<List<HealthEventAssociationOption>> _readCurrentMedicineOptions(
-    WidgetRef ref,
-  ) async {
-    try {
-      final snapshot = await ref
-          .read(healthContextSnapshotProvider.future)
-          .timeout(const Duration(seconds: 2));
-      return snapshot.currentMedicines
-          .where((medicine) => medicine.isCurrent)
-          .map(
-            (medicine) => HealthEventAssociationOption(
-              id: medicine.id,
-              label: medicine.displayName,
-            ),
-          )
-          .toList(growable: false);
-    } catch (_) {
-      return const [];
-    }
-  }
-
-  Future<List<HealthEventAssociationOption>> _readReasonRecordOptions(
-    WidgetRef ref,
-  ) async {
-    try {
-      // 时区读取单独加 2s 客户端上限：这是有意的快速降级取舍——选项读取
-      // 失败只影响「开始观察」弹窗里的可选关联项，静默降级为空列表即可，
-      // 不应被 health context provider 自身的 5s 超时拖住整个弹窗。
-      final userTimezone = await readUserTimezone(
-        ref,
-      ).timeout(const Duration(seconds: 2));
-      // localDateKey 返回 `yyyy-MM-dd` 日期键；不再裸用 DateTime.parse——
-      // FormatException 会被外层 catch 整体吞掉、丢掉已读到的选项数据，
-      // 改为可空解析并在 null 时与 catch 同口径降级为空选项列表。
-      final today = parseDateTimeOrNull(
-        localDateKey(DateTime.now(), timeZoneName: userTimezone),
-      );
-      if (today == null) return const [];
-      final records = await ref
-          .read(dailyRecordListForDateProvider(today).future)
-          .timeout(const Duration(seconds: 2));
-      return records.items
-          .where((record) => record.kind == DailyRecordKind.symptom)
-          .map((record) {
-            final label = [record.title, record.value, record.note]
-                .map((value) => value?.trim())
-                .whereType<String>()
-                .firstWhere((value) => value.isNotEmpty, orElse: () => '');
-            return (record: record, label: label);
-          })
-          .where((item) => item.label.isNotEmpty)
-          .map(
-            (item) => HealthEventAssociationOption(
-              id: item.record.id,
-              label: item.label,
-            ),
-          )
-          .toList(growable: false);
-    } catch (_) {
-      return const [];
-    }
   }
 
   Future<void> _openCheckIn(
@@ -388,6 +268,22 @@ class ReviewPage extends ConsumerWidget {
         effectiveDashboardAsync.asData?.value.endDate ?? '----.--.--';
     // 单维趋势卡当前选中的维度（覆盖概览行点击联动）。
     final selectedTrendKind = ref.watch(reviewTrendDimensionProvider);
+    // 冷启动判定：无进行中事件且当前周期数据过稀（metrics 空 / 无足量覆盖
+    // / 趋势全空）时，用记录引导卡替代「开始观察」动作（动作收口 Today）。
+    final coldObserved = coverageMetrics
+        .map((m) => m.observedMetric?.observedCount ?? 0)
+        .fold(0, (a, b) => a > b ? a : b);
+    final coldExpected = dashboardQuery.range == ReviewDashboardRange.last30Days
+        ? 30
+        : 7;
+    final hasUsableCoverage = coverageMetrics.any(
+      (m) =>
+          m.observedMetric != null &&
+          m.observedMetric!.coverage != ReviewObservedMetricCoverage.none &&
+          m.observedMetric!.observedCount >= 2,
+    );
+    final isColdStart =
+        coverageMetrics.isEmpty || (!hasUsableCoverage && trendSeries.isEmpty);
 
     return ShellDeferredContent(
       child: _ReviewOpenedTracker(
@@ -455,7 +351,10 @@ class ReviewPage extends ConsumerWidget {
             onSuggestionTap: (item) =>
                 showSuggestionHistoryDetailSheet(context, suggestion: item),
             onRetry: () => ref.invalidate(reviewCurrentProvider),
-            onStartObservation: () => _openStart(context, ref),
+            onGoRecord: () => context.go(Routes.record),
+            isColdStart: isColdStart,
+            coldObserved: coldObserved,
+            coldExpected: coldExpected,
             onCheckIn: review == null
                 ? () {}
                 : () => _openCheckIn(context, ref, review),

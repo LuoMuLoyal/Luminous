@@ -88,6 +88,9 @@ void main() {
     required AsyncValue<EventReview?> current,
     AsyncValue<ReviewEventPage>? history,
     bool canAccessProtectedData = true,
+    bool isColdStart = false,
+    int coldObserved = 0,
+    int coldExpected = 0,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
@@ -111,10 +114,13 @@ void main() {
               canAccessProtectedData: canAccessProtectedData,
               isPreview: false,
               onRetry: () {},
-              onStartObservation: () {},
+              onGoRecord: () {},
               onCheckIn: () {},
               onEndEvent: () {},
               onSignIn: () {},
+              isColdStart: isColdStart,
+              coldObserved: coldObserved,
+              coldExpected: coldExpected,
             ),
           ),
         ),
@@ -216,13 +222,16 @@ void main() {
     );
   });
 
-  testWidgets('no-event 语义顺序：开始观察入口 → 历史', (tester) async {
+  testWidgets('冷启动 no-event 语义顺序：记录引导 → 历史', (tester) async {
     await pumpReviewView(
       tester,
       current: const AsyncValue<EventReview?>.data(null),
       history: AsyncValue<ReviewEventPage>.data(
         reviewHistoryPage([reviewEventItem(id: 'evt-1', title: '头痛观察')]),
       ),
+      isColdStart: true,
+      coldObserved: 3,
+      coldExpected: 7,
     );
 
     final semantics = collectSemantics(tester, find.byType(ReviewView));
@@ -230,9 +239,9 @@ void main() {
     expectOrder(
       semantics,
       requiredOrder: [
-        l10n.reviewReviewNoEventTitle,
-        l10n.reviewReviewNoEventDescription,
-        l10n.reviewReviewStartObservationAction,
+        l10n.reviewRecordGuideTitle,
+        l10n.reviewRecordGuideDescription(3, 7),
+        l10n.reviewRecordGuideGoRecordAction,
         l10n.reviewReviewHistoryTitle,
         '头痛观察',
       ],

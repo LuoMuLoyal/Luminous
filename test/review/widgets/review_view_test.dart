@@ -21,7 +21,7 @@ void main() {
     required AsyncValue<EventReview?> current,
     EventReview? cached,
     AsyncValue<ReviewEventPage>? history,
-    VoidCallback? onStartObservation,
+    VoidCallback? onGoRecord,
     VoidCallback? onCheckIn,
     VoidCallback? onEndEvent,
     VoidCallback? onRetry,
@@ -29,6 +29,9 @@ void main() {
     bool isPreview = false,
     ReviewEventStatus? historyStatus,
     ValueChanged<ReviewEventStatus?>? onHistoryStatusChanged,
+    bool isColdStart = false,
+    int coldObserved = 0,
+    int coldExpected = 0,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
@@ -52,12 +55,15 @@ void main() {
               canAccessProtectedData: canAccessProtectedData,
               isPreview: isPreview,
               onRetry: onRetry ?? () {},
-              onStartObservation: onStartObservation ?? () {},
+              onGoRecord: onGoRecord ?? () {},
               onCheckIn: onCheckIn ?? () {},
               onEndEvent: onEndEvent ?? () {},
               onSignIn: () {},
               historyStatus: historyStatus,
               onHistoryStatusChanged: onHistoryStatusChanged,
+              isColdStart: isColdStart,
+              coldObserved: coldObserved,
+              coldExpected: coldExpected,
             ),
           ),
         ),
@@ -211,9 +217,9 @@ void main() {
   );
 
   testWidgets(
-    'no-event state offers the start-observation entry and recent history by event',
+    'cold-start no-event state shows the record guide and recent history by event',
     (tester) async {
-      var startTapped = false;
+      var goRecordTapped = false;
       await pumpReviewView(
         tester,
         current: const AsyncValue<EventReview?>.data(null),
@@ -227,15 +233,23 @@ void main() {
             ),
           ]),
         ),
-        onStartObservation: () => startTapped = true,
+        onGoRecord: () => goRecordTapped = true,
+        isColdStart: true,
+        coldObserved: 3,
+        coldExpected: 7,
       );
 
       await tester.pump();
 
-      expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
+      expect(find.byKey(const Key('review-record-guide-card')), findsOneWidget);
+      expect(find.text(l10n.reviewRecordGuideTitle), findsOneWidget);
+      expect(
+        find.text(l10n.reviewRecordGuideDescription(3, 7)),
+        findsOneWidget,
+      );
       expect(
         find.byKey(const Key('review-start-observation-action')),
-        findsOneWidget,
+        findsNothing,
       );
       // 最近事件按事件逐条展示，最近的在最上方。
       expect(
@@ -254,10 +268,8 @@ void main() {
           .dy;
       expect(firstDy, lessThan(secondDy));
 
-      await tester.tap(
-        find.byKey(const Key('review-start-observation-action')),
-      );
-      expect(startTapped, isTrue);
+      await tester.tap(find.byKey(const Key('review-record-guide-action')));
+      expect(goRecordTapped, isTrue);
       await tester.pumpAndSettle();
     },
   );
@@ -343,10 +355,7 @@ void main() {
 
       expect(find.byKey(const Key('sign-in-hint-banner')), findsOneWidget);
       expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
-      expect(
-        find.byKey(const Key('review-start-observation-action')),
-        findsNothing,
-      );
+      expect(find.byKey(const Key('review-record-guide-card')), findsNothing);
     },
   );
 }

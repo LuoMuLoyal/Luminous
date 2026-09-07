@@ -150,7 +150,7 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.byKey(const Key('sign-in-hint-banner')), findsOneWidget);
-      expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
+      expect(find.byKey(const Key('review-record-guide-card')), findsOneWidget);
       expect(
         find.byKey(const Key('review-start-observation-action')),
         findsNothing,
@@ -160,7 +160,7 @@ void main() {
   );
 
   testWidgets(
-    'Report page no-event state offers the start entry and an empty history explanation',
+    'Report page cold-start no-event state shows the record guide and an empty history explanation',
     (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(390, 844);
@@ -183,12 +183,12 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
-      expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
+      expect(find.byKey(const Key('review-record-guide-card')), findsOneWidget);
       expect(
         find.byKey(const Key('review-start-observation-action')),
-        findsOneWidget,
+        findsNothing,
       );
-      expect(find.text(l10n.reviewReviewHistoryEmpty), findsOneWidget);
+      expect(find.text(l10n.reviewRecordGuideTitle), findsOneWidget);
       // 无事件时不自动生成周报。
       expect(find.byKey(const Key('report-export-section')), findsNothing);
       expect(find.byKey(const Key('report-patterns-section')), findsNothing);
@@ -270,110 +270,6 @@ void main() {
         find.byKey(const PageStorageKey<String>('report-mobile-scroll')),
         findsOneWidget,
       );
-    },
-  );
-
-  // ── 事件交互接线（真实 ActiveHealthEvent → HealthEventRepository）──
-
-  testWidgets('start observation entry creates an event with the title', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final healthEvents = _FakeHealthEventRepository();
-
-    await tester.pumpWidget(
-      _buildApp(
-        reviewRepository: _FakeReviewRepository(
-          current: null,
-          page: const ReviewEventPage(items: [], total: 0),
-        ),
-        healthEvents: healthEvents,
-        signedIn: true,
-      ),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    await tester.tap(find.byKey(const Key('review-start-observation-action')));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(
-      find.byKey(const Key('health-event-start-title-field')),
-      '头痛观察',
-    );
-    await tester.tap(find.byKey(const Key('health-event-start-submit')));
-    await tester.pumpAndSettle();
-
-    expect(healthEvents.createdTitle, '头痛观察');
-    expect(healthEvents.createdReasonRecordId, isNull);
-    expect(healthEvents.createdMedicineIds, isEmpty);
-  });
-
-  testWidgets(
-    'start observation forwards symptom and medicine associations like today',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-      final healthEvents = _FakeHealthEventRepository();
-      final snapshot = _healthContextSnapshot.copyWith(
-        currentMedicines: [_currentMedicine],
-      );
-
-      await tester.pumpWidget(
-        _buildApp(
-          reviewRepository: _FakeReviewRepository(
-            current: null,
-            page: const ReviewEventPage(items: [], total: 0),
-          ),
-          healthEvents: healthEvents,
-          snapshot: snapshot,
-          records: const DailyRecordListData(items: [_symptomRecord], total: 1),
-          signedIn: true,
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-
-      await tester.tap(
-        find.byKey(const Key('review-start-observation-action')),
-      );
-      await tester.pumpAndSettle();
-
-      // 与 today 一致：选择器只在选项非空时出现。
-      expect(
-        find.byKey(const Key('health-event-association-record-1')),
-        findsOneWidget,
-      );
-      expect(
-        find.byKey(const Key('health-event-association-medicine-1')),
-        findsOneWidget,
-      );
-
-      await tester.enterText(
-        find.byKey(const Key('health-event-start-title-field')),
-        '发热观察',
-      );
-      await tester.tap(
-        find.byKey(const Key('health-event-association-record-1')),
-      );
-      await tester.tap(
-        find.byKey(const Key('health-event-association-medicine-1')),
-      );
-      await tester.tap(find.byKey(const Key('health-event-start-submit')));
-      await tester.pumpAndSettle();
-
-      expect(healthEvents.createdTitle, '发热观察');
-      expect(healthEvents.createdReasonRecordId, 'record-1');
-      expect(healthEvents.createdMedicineIds, ['medicine-1']);
     },
   );
 
@@ -1366,29 +1262,4 @@ const _healthContextSnapshot = HealthContextSnapshot(
   allergies: [],
   conditions: [],
   currentMedicines: [],
-);
-
-const _currentMedicine = CurrentMedicineItem(
-  id: 'medicine-1',
-  source: 'manual',
-  sourceRefId: null,
-  displayName: '短期用药',
-  strengthText: null,
-  doseText: null,
-  route: null,
-  startedAt: null,
-  endedAt: null,
-  isCurrent: true,
-  note: null,
-  createdAt: '2026-08-09T00:00:00.000Z',
-  updatedAt: '2026-08-09T00:00:00.000Z',
-);
-
-const _symptomRecord = DailyRecordItem(
-  id: 'record-1',
-  kind: DailyRecordKind.symptom,
-  occurredAt: '2026-08-13T08:00:00.000Z',
-  title: '头晕',
-  createdAt: '2026-08-13T08:00:00.000Z',
-  updatedAt: '2026-08-13T08:00:00.000Z',
 );

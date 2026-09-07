@@ -549,6 +549,19 @@
   "reviewReviewNoEventTitle": "No observation in progress",
   "reviewReviewNoEventDescription": "Start a health observation and this page will review what happened, what changed, what you completed, and what's next.",
   "reviewReviewStartObservationAction": "Start health observation",
+  "reviewRecordGuideTitle": "Keep recording to see trends",
+  "reviewRecordGuideDescription": "You have recorded {observed}/{expected} days this week. Track water, sleep, or medication consistently and trends plus notable changes will appear here.",
+  "@reviewRecordGuideDescription": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      },
+      "expected": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewRecordGuideGoRecordAction": "Go to record",
   "reviewPreviewOverviewTitle": "What you'll see after starting an observation",
   "reviewPreviewWhatHappenedTitle": "What happened",
   "reviewPreviewWhatHappenedBody": "After starting an observation, your symptom records and check-ins will be summarized here.",

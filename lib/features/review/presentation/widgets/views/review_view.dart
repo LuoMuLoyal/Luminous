@@ -17,9 +17,9 @@ import 'package:luminous/features/review/presentation/widgets/sections/noteworth
 import 'package:luminous/features/review/presentation/widgets/sections/period_switch.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview_locked.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/record_guide.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/suggestion_history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/what_happened.dart';
-import 'package:luminous/features/review/presentation/widgets/shared/constrained_action_button.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -45,7 +45,7 @@ class ReviewView extends StatelessWidget {
     required this.canAccessProtectedData,
     required this.isPreview,
     required this.onRetry,
-    required this.onStartObservation,
+    required this.onGoRecord,
     required this.onCheckIn,
     required this.onEndEvent,
     required this.onSignIn,
@@ -72,6 +72,9 @@ class ReviewView extends StatelessWidget {
     this.findingsWindowEnd = '----.--.--',
     this.selectedTrendKind,
     this.onTrendKindChanged,
+    this.isColdStart = false,
+    this.coldObserved = 0,
+    this.coldExpected = 0,
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -80,7 +83,7 @@ class ReviewView extends StatelessWidget {
   final bool canAccessProtectedData;
   final bool isPreview;
   final VoidCallback onRetry;
-  final VoidCallback onStartObservation;
+  final VoidCallback onGoRecord;
   final VoidCallback onCheckIn;
   final VoidCallback onEndEvent;
   final VoidCallback onSignIn;
@@ -145,6 +148,16 @@ class ReviewView extends StatelessWidget {
   /// 维度切换回调；页面装配层接到 reviewTrendDimensionProvider。
   final ValueChanged<ReviewDataKind>? onTrendKindChanged;
 
+  /// 冷启动态：无进行中事件且当前周期数据过稀时，展示记录引导卡而非
+  /// 「开始观察」动作（事件动作收口 Today）。
+  final bool isColdStart;
+
+  /// 记录引导卡的已记录天数（observedMetric.observedCount）。
+  final int coldObserved;
+
+  /// 记录引导卡的范围天数（本周/本月）。
+  final int coldExpected;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -193,10 +206,16 @@ class ReviewView extends StatelessWidget {
         endDate: findingsWindowEnd,
       ),
       if (review == null) ...[
-        _StartObservationCard(
-          onStartObservation: onStartObservation,
-          showStartAction: canAccessProtectedData,
-        ),
+        // P0-5：无进行中事件时不再提供「开始观察」动作（收口 Today）。
+        // 数据过稀 → 记录引导卡（去 record 补记）；否则降级为轻量解释卡。
+        if (isColdStart)
+          ReviewRecordGuideSection(
+            observedCount: coldObserved,
+            expectedCount: coldExpected,
+            onGoRecord: onGoRecord,
+          )
+        else
+          const _NoEventExplanationCard(),
         ReviewPreviewOverviewSection(
           key: const Key('review-preview-overview-card'),
           items: [
@@ -340,19 +359,12 @@ class _StaleBanner extends StatelessWidget {
   }
 }
 
-/// 无事件时的入口卡片：开始健康观察 + 轻量解释。
+/// 无进行中事件的轻量解释卡（数据尚足但无事件时）。
 ///
-/// 最近事件由下方的 [ReviewHistorySection] 承接；完全没有事件时不生成
-/// 任何周报或泛化内容。未登录（预览）时隐藏开始按钮，由上方的
-/// [SignInHintBanner] 引导登录。
-class _StartObservationCard extends StatelessWidget {
-  const _StartObservationCard({
-    required this.onStartObservation,
-    required this.showStartAction,
-  });
-
-  final VoidCallback onStartObservation;
-  final bool showStartAction;
+/// P0-5 起不再提供「开始观察」动作（事件动作收口 Today）：仅保留解释文案，
+/// 数据过稀时改由 [ReviewRecordGuideSection] 提供「去 record」入口。
+class _NoEventExplanationCard extends StatelessWidget {
+  const _NoEventExplanationCard();
 
   @override
   Widget build(BuildContext context) {
@@ -376,14 +388,6 @@ class _StartObservationCard extends StatelessWidget {
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            if (showStartAction) ...[
-              const SizedBox(height: Spacing.level4),
-              ConstrainedActionButton(
-                key: const Key('review-start-observation-action'),
-                onPress: onStartObservation,
-                label: l10n.reviewReviewStartObservationAction,
-              ),
-            ],
           ],
         ),
       ),

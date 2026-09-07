@@ -36,10 +36,13 @@ void main() {
       canAccessProtectedData: true,
       isPreview: false,
       onRetry: () {},
-      onStartObservation: () {},
+      onGoRecord: () {},
       onCheckIn: () {},
       onEndEvent: () {},
       onSignIn: () {},
+      isColdStart: false,
+      coldObserved: 0,
+      coldExpected: 0,
     );
 
     await tester.pumpWidget(
@@ -142,9 +145,10 @@ void main() {
     );
 
     expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
+    expect(find.byKey(const Key('review-record-guide-card')), findsNothing);
     expect(
       find.byKey(const Key('review-start-observation-action')),
-      findsOneWidget,
+      findsNothing,
     );
     expectNoLegacyDashboardTraces(tester);
   });
