@@ -7,6 +7,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' hide HealthSummary;
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -24,6 +25,7 @@ import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/legacy/readiness.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period_switch.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/export.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
@@ -420,6 +422,169 @@ void main() {
     expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
     expect(find.text(l10n.reviewReviewErrorTitle), findsNothing);
   });
+
+  testWidgets(
+    'period switch maps 周|月 to the dashboard query and re-fetches with the selected range',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      final recordedQueries = <ReviewDashboardQuery>[];
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            reviewRepositoryProvider.overrideWithValue(
+              _FakeReviewRepository(
+                current: reviewActive(),
+                page: const ReviewEventPage(items: [], total: 0),
+              ),
+            ),
+            reviewDashboardProvider.overrideWith((ref, query) async {
+              recordedQueries.add(query);
+              // 返回带 range 的空 trends dashboard：折线图因 trends 为空不
+              // 渲染，但 range 反映所选周期，用于断言 provider 被以正确
+              // query 重新请求。
+              return ReviewDashboard.signedOut().copyWith(range: query.range);
+            }),
+            healthContextSnapshotProvider.overrideWith(
+              (ref) async => _healthContextSnapshot,
+            ),
+            dailyRecordListForDateProvider.overrideWith(
+              (ref, date) async =>
+                  const DailyRecordListData(items: [], total: 0),
+            ),
+          ],
+          child: const TestForuiApp(home: ReviewPage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // 默认周视角，且周 tab 渲染。
+      expect(find.byType(ReviewPeriodSwitch), findsOneWidget);
+      expect(find.text(l10n.reviewPeriodWeek), findsOneWidget);
+      expect(find.text(l10n.reviewPeriodMonth), findsOneWidget);
+      expect(
+        recordedQueries.any((q) => q.range == ReviewDashboardRange.last7Days),
+        isTrue,
+      );
+
+      // 点「月」→ 查询切换为 last30Days，provider 重新请求。
+      await tester.tap(find.text(l10n.reviewPeriodMonth));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(
+        recordedQueries.any((q) => q.range == ReviewDashboardRange.last30Days),
+        isTrue,
+        reason: '切换月应重新请求 last30Days 查询',
+      );
+    },
+  );
+
+  testWidgets(
+    'period switch keeps the cached dashboard visible while the new range loads',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      // 第一次查询（周）立即返回带 trends 的数据；第二次查询（月）挂起
+      // 不完成，用于模拟切换期间的加载窗口。
+      final monthlyPending = Completer<ReviewDashboard>();
+      var fetchCount = 0;
+      ReviewDashboard dashboardWithTrends(ReviewDashboardRange range) {
+        return ReviewDashboard.signedOut().copyWith(
+          range: range,
+          trends: const [
+            ReviewTrendSeries(
+              kind: ReviewDataKind.water,
+              color: SemanticColor.primary,
+              unit: 'L',
+              values: [1.0, 1.2, 1.4],
+              currentValue: '1.2',
+            ),
+          ],
+        );
+      }
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            reviewRepositoryProvider.overrideWithValue(
+              _FakeReviewRepository(
+                current: reviewActive(),
+                page: const ReviewEventPage(items: [], total: 0),
+              ),
+            ),
+            reviewDashboardProvider.overrideWith((ref, query) {
+              fetchCount += 1;
+              if (query.range == ReviewDashboardRange.last7Days) {
+                return Future.value(dashboardWithTrends(query.range));
+              }
+              return monthlyPending.future;
+            }),
+            healthContextSnapshotProvider.overrideWith(
+              (ref) async => _healthContextSnapshot,
+            ),
+            dailyRecordListForDateProvider.overrideWith(
+              (ref, date) async =>
+                  const DailyRecordListData(items: [], total: 0),
+            ),
+          ],
+          child: const TestForuiApp(home: ReviewPage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // 周数据加载完成，趋势卡可见。
+      expect(find.byKey(const Key('review-trend-section')), findsOneWidget);
+
+      // 切到月：新查询挂起，期间仍展示上次成功缓存（旧趋势卡不消失，
+      // 不整页骨架）。
+      await tester.tap(
+        find.text(
+          AppLocalizations.of(
+            tester.element(find.byType(ReviewPage)),
+          )!.reviewPeriodMonth,
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('review-trend-section')),
+        findsOneWidget,
+        reason: '切换期间应继续显示缓存（旧数据 + 轻量加载态，不整页骨架）',
+      );
+      expect(
+        find.byType(ReviewSkeletonView),
+        findsNothing,
+        reason: '周期切换不应触发整页骨架',
+      );
+
+      // 完成月请求后，趋势卡数据更新为月范围的 trends（仍保留该卡）。
+      monthlyPending.complete(
+        dashboardWithTrends(ReviewDashboardRange.last30Days),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byKey(const Key('review-trend-section')), findsOneWidget);
+      expect(fetchCount, 2, reason: '切换月应触发一次重新请求');
+    },
+  );
 
   testWidgets('history status filter re-fetches with the selected status', (
     tester,

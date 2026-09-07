@@ -1,6 +1,6 @@
 # review
 
-一句话:五 tab shell 中的"回顾"tab(`Routes.review`),以健康事件为主单位的纵向洞察主路径:当前事件四段式回顾、事件历史/详情、AI 摘要、就诊摘要(clinic summary)预览/导出/可撤销分享。
+一句话:五 tab shell 中的"回顾"tab(`Routes.review`),以健康事件为主单位的纵向洞察主路径:当前事件四段式回顾、事件历史/详情、AI 摘要、就诊摘要(clinic summary)预览/导出/可撤销分享;顶栏下首行提供周|月周期开关(`ReviewPeriodSwitch`,reuse forui `FTabs`)。
 
 ## 职责与边界
 - 管:event review 读模型与 provider(`domain/entities/review.dart`、`presentation/providers/review.dart`);AI 摘要 SSE 流(`presentation/providers/ai_summary.dart` + `data/datasources/ai_summary_remote.dart`);就诊摘要预览/PDF/分享(`presentation/providers/clinic_summary.dart`、`utils/pdf_download.dart`);旧 7/30 天 dashboard 兼容页(`pages/legacy_dashboard_compat.dart` + `widgets/views/legacy/`)。
@@ -29,3 +29,4 @@
 - `reviewLastCurrentProvider` 只采纳真正落地的 AsyncData,慢请求迟到不覆盖新数据;失败保留旧值,`ref.invalidate(reviewCurrentProvider)` 即手动重试。
 - `reviewHistoryProvider` 关闭自动重试(`retry: _noHistoryRetry`),失败立即进入 error,避免静默重试掩盖故障。
 - legacy dashboard 按 `LEGACY` 文件头标注兼容期保留,勿在主路径重新装配,也不要顺手删除。
+- 周期开关只接 `reviewDashboardSelectedQueryProvider.setRange(last7Days/last30Days)`;切换期间复用 `reviewLastDashboardProvider` 缓存旧数据 + 轻量加载态,不整页骨架(`page.dart` `ref.listen` 写入缓存 + `effectiveDashboardAsync` 兜底)。当前 `ReviewView` 默认 `periodRange` 为 last7Days。

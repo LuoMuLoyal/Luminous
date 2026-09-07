@@ -77,6 +77,8 @@
   "reviewTrendSectionTitle": "Health trends",
   "reviewRangeLast7Days": "Last 7 days",
   "reviewRangeLast30Days": "Last 30 days",
+  "reviewPeriodWeek": "Week",
+  "reviewPeriodMonth": "Month",
   "reviewTrendSleepLabel": "Sleep (h)",
   "reviewTrendWaterLabel": "Water (L)",
   "reviewTrendMedicationLabel": "Medication (%)",

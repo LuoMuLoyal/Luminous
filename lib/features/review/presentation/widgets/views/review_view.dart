@@ -12,6 +12,7 @@ import 'package:luminous/features/review/presentation/widgets/sections/event_hea
 import 'package:luminous/features/review/presentation/widgets/sections/history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/key_changes.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/next_step.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period_switch.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview_locked.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/suggestion_history.dart';
@@ -61,6 +62,8 @@ class ReviewView extends StatelessWidget {
     this.onHistoryLoadMore,
     this.trendSeries = const [],
     this.trendStartDate = '----.--.--',
+    this.periodRange = ReviewDashboardRange.last7Days,
+    this.onPeriodRangeChanged,
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -110,6 +113,12 @@ class ReviewView extends StatelessWidget {
   /// 折线图的起始日期标签（YYYY-MM-DD 格式）。
   final String trendStartDate;
 
+  /// 周期切换（周|月）当前选中的范围，映射 dashboard 查询。
+  final ReviewDashboardRange periodRange;
+
+  /// 周期切换回调；页面装配层接到 reviewDashboardSelectedQueryProvider。
+  final ValueChanged<ReviewDashboardRange>? onPeriodRangeChanged;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -136,6 +145,12 @@ class ReviewView extends StatelessWidget {
     final review = currentAsync.asData?.value ?? cachedReview;
 
     final children = <Widget>[
+      // P0-1 周期开关：顶栏下首行，周|月 FTabs；切换期间由页面层用旧数据
+      // 承接（轻量加载态），不整页骨架。
+      ReviewPeriodSwitch(
+        selectedRange: periodRange,
+        onRangeChanged: onPeriodRangeChanged ?? (_) {},
+      ),
       if (isPreview) SignInHintBanner(onSignIn: onSignIn),
       if (showStaleBanner) const _StaleBanner(key: Key('review-stale-banner')),
       if (review == null) ...[
@@ -223,9 +238,7 @@ class ReviewView extends StatelessWidget {
         ReviewTrendSection(
           key: const Key('review-trend-section'),
           trends: trendSeries,
-          selectedQuery: const ReviewDashboardQuery(
-            range: ReviewDashboardRange.last7Days,
-          ),
+          selectedQuery: ReviewDashboardQuery(range: periodRange),
           onQueryChanged: (_) {},
           l10n: l10n,
           startDate: trendStartDate,

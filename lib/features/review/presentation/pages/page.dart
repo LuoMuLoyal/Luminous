@@ -346,11 +346,34 @@ class ReviewPage extends ConsumerWidget {
 
     // 纵向洞察折线图数据——复用 reviewDashboardProvider（饮水/睡眠/用药
     // 三条趋势），仅用于在主路径新增折线图展示，不改动既有 provider 语义。
+    // 切换周期时用 reviewLastDashboardProvider 旧数据承接（轻量加载态，
+    // 不整页骨架）。
     final dashboardQuery = ref.watch(reviewDashboardSelectedQueryProvider);
     final dashboardAsync = ref.watch(reviewDashboardProvider(dashboardQuery));
-    final trendSeries = dashboardAsync.asData?.value.trends ?? const [];
+
+    // 将每次成功结果写入 reviewLastDashboardProvider 缓存。
+    ref.listen<AsyncValue<ReviewDashboard>>(
+      reviewDashboardProvider(dashboardQuery),
+      (_, next) {
+        next.whenData((dashboard) {
+          ref.read(reviewLastDashboardProvider.notifier).set(dashboard);
+        });
+      },
+    );
+    final cachedDashboard = ref.watch(reviewLastDashboardProvider);
+
+    // 加载中且无新数据时，展示上次成功缓存（stale），避免整页骨架。
+    final effectiveDashboardAsync =
+        dashboardAsync.isLoading &&
+            !dashboardAsync.hasValue &&
+            cachedDashboard != null
+        ? AsyncValue<ReviewDashboard>.data(cachedDashboard)
+        : dashboardAsync;
+
+    final trendSeries =
+        effectiveDashboardAsync.asData?.value.trends ?? const [];
     final dashboardStartDate =
-        dashboardAsync.asData?.value.startDate ?? '----.--.--';
+        effectiveDashboardAsync.asData?.value.startDate ?? '----.--.--';
 
     return ShellDeferredContent(
       child: _ReviewOpenedTracker(
@@ -442,6 +465,10 @@ class ReviewPage extends ConsumerWidget {
             // 纵向洞察折线图：饮水/睡眠/用药单折线图。
             trendSeries: trendSeries,
             trendStartDate: dashboardStartDate,
+            periodRange: dashboardQuery.range,
+            onPeriodRangeChanged: (range) => ref
+                .read(reviewDashboardSelectedQueryProvider.notifier)
+                .setRange(range),
           ),
         ),
       ),
