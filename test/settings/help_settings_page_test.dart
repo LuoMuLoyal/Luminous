@@ -50,6 +50,7 @@ void main() {
   // 真实 I/O 与 fake clock 冲突），文件内顺序运行时 pumpAndSettle 会挂起、
   // 单独运行时通过。渲染断言已由上方 "renders FAQ items" 用例覆盖，
   // 此处跳过展开行为验证，待后续改用确定性 asset 注入后恢复。
+  // （2026-09 迁移到 FAccordion 后已单独验证展开用例可通过，仅顺序运行挂起。）
   testWidgets('Help page FAQ expands to show the answer', (tester) async {
     await tester.pumpWidget(
       ProviderScope(

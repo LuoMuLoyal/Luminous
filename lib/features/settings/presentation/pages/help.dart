@@ -12,7 +12,6 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -163,14 +162,7 @@ class _FaqSectionState extends State<_FaqSection> {
             if (items.isEmpty) {
               return const SizedBox.shrink();
             }
-            return Column(
-              children: [
-                for (int i = 0; i < items.length; i++) ...[
-                  _FaqTile(item: items[i]),
-                  if (i < items.length - 1) const AppDivider(),
-                ],
-              ],
-            );
+            return _FaqAccordion(items: items);
           },
         ),
       ],
@@ -185,97 +177,44 @@ class _FaqItem {
   final String answer;
 }
 
-class _FaqTile extends StatefulWidget {
-  const _FaqTile({required this.item});
+/// FAQ 条目渲染。
+///
+/// 使用 Forui 的 [FAccordion] / [FAccordionItem] 承载展开/收起：
+/// - 每个问题一行标题 + chevron，点击整行展开/收起，条目间自动带分隔线；
+/// - 标题样式沿用原实现的 `body.md` + w600（Forui 默认 accordion 标题是
+///   `display.sm` + w500，两者视觉不一致，这里通过 style delta 对齐）；
+/// - 默认所有条目收起（原实现行为），由受管 controller 独立管理展开状态。
+class _FaqAccordion extends StatelessWidget {
+  const _FaqAccordion({required this.items});
 
-  final _FaqItem item;
-
-  @override
-  State<_FaqTile> createState() => _FaqTileState();
-}
-
-class _FaqTileState extends State<_FaqTile>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _animation;
-  bool _expanded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: DurationTokens.widgetQuick,
-      vsync: this,
-    );
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _toggle() {
-    setState(() => _expanded = !_expanded);
-    if (_expanded) {
-      unawaited(_controller.forward());
-    } else {
-      unawaited(_controller.reverse());
-    }
-  }
+  final List<_FaqItem> items;
 
   @override
   Widget build(BuildContext context) {
-    return FTappable(
-      onPress: _toggle,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: Spacing.level4,
-          horizontal: Spacing.level1,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.item.question,
-                    style: context.theme.typography.body.md.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: Spacing.level3),
-                AnimatedRotation(
-                  turns: _expanded ? 0.25 : 0,
-                  duration: DurationTokens.widgetQuick,
-                  child: Icon(
-                    SemanticIcons.actionNext,
-                    size: IconSizeTokens.level3,
-                    color: SemanticColor.neutral.solid(context),
-                  ),
-                ),
-              ],
-            ),
-            AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) =>
-                  FCollapsible(value: _animation.value, child: child!),
-              child: Padding(
-                padding: const EdgeInsets.only(top: Spacing.level3),
-                child: MarkdownBody(
-                  data: widget.item.answer,
-                  selectable: true,
-                  shrinkWrap: true,
-                  styleSheet: MarkdownStyle.legal(context),
-                ),
+    final titleStyle = context.theme.typography.body.md.copyWith(
+      fontWeight: FontWeight.w600,
+    );
+    return FAccordion(
+      style: FAccordionStyleDelta.delta(
+        titleTextStyle: FVariantsDelta.delta([
+          FVariantOperation.base(TextStyleDelta.value(titleStyle)),
+        ]),
+      ),
+      children: [
+        for (final item in items)
+          FAccordionItem(
+            title: Text(item.question),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              child: MarkdownBody(
+                data: item.answer,
+                selectable: true,
+                shrinkWrap: true,
+                styleSheet: MarkdownStyle.legal(context),
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+      ],
     );
   }
 }
