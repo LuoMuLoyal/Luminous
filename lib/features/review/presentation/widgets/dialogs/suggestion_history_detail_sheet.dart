@@ -15,6 +15,10 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// All data is already available in the item — no additional API call is
 /// needed.
+///
+/// Deferred by Review Page Restructure P0-7: 详情 sheet 入口已从 Review 主路径
+/// 下线，本助手当前仅被 legacy dashboard 兼容页消费。不删除——capability 仍有
+/// 价值，待后续复核是否归档/启用。
 Future<void> showSuggestionHistoryDetailSheet(
   BuildContext context, {
   required TodaySuggestionHistoryItem suggestion,

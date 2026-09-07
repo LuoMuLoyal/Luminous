@@ -3,10 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/ai_summary.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/completed_actions.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/coverage_strip.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/event_header.dart';
@@ -18,10 +16,8 @@ import 'package:luminous/features/review/presentation/widgets/sections/period_sw
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview_locked.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/record_guide.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/suggestion_history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/what_happened.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
-import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 事件优先的回顾首屏（移动端约束布局）。
@@ -48,14 +44,6 @@ class ReviewView extends StatelessWidget {
     required this.onGoRecord,
     required this.onGoTodayCheckIn,
     required this.onSignIn,
-    this.aiSummaryState,
-    this.aiSummarySelectedRange,
-    this.aiSummariesEnabled,
-    this.onAiSummaryRangeChanged,
-    this.onGenerateAiSummary,
-    this.suggestionHistory,
-    this.isSuggestionHistoryLoading = false,
-    this.onSuggestionTap,
     this.onHistoryRetry,
     this.historyStatus,
     this.onHistoryStatusChanged,
@@ -85,20 +73,6 @@ class ReviewView extends StatelessWidget {
   final VoidCallback onGoRecord;
   final VoidCallback onGoTodayCheckIn;
   final VoidCallback onSignIn;
-
-  /// AI 总结状态与控制回调。缺省时不渲染 AI 总结段落。
-  final ReviewAiSummaryCardState? aiSummaryState;
-  final ReviewAiSummaryRange? aiSummarySelectedRange;
-  final bool? aiSummariesEnabled;
-  final ValueChanged<ReviewAiSummaryRange>? onAiSummaryRangeChanged;
-  final Future<void> Function()? onGenerateAiSummary;
-
-  /// 建议历史数据（调用方已按 title|reason|type 去重、保留生命周期最高
-  /// 状态的全量列表）与回调；卡内默认展示前 3 条，超出时提供「查看全部」。
-  /// 缺省时不渲染建议历史段落。
-  final List<TodaySuggestionHistoryItem>? suggestionHistory;
-  final bool isSuggestionHistoryLoading;
-  final ValueChanged<TodaySuggestionHistoryItem>? onSuggestionTap;
 
   /// 历史加载失败时卡片内的轻量重试回调；缺省时不显示重试按钮。
   final VoidCallback? onHistoryRetry;
@@ -254,25 +228,6 @@ class ReviewView extends StatelessWidget {
         KeyChangesSection(section: review.sections.keyChanges),
         CompletedActionsSection(section: review.sections.completedActions),
         NextStepSection(section: review.sections.nextStep),
-        if (aiSummaryState != null &&
-            aiSummarySelectedRange != null &&
-            aiSummariesEnabled != null)
-          ReviewAiSummarySection(
-            aiSummaryEnabled: aiSummariesEnabled!,
-            canAccessProtectedData: canAccessProtectedData,
-            aiState: aiSummaryState!,
-            selectedRange: aiSummarySelectedRange!,
-            onRangeChanged: onAiSummaryRangeChanged,
-            onGenerate: onGenerateAiSummary,
-            l10n: l10n,
-          ),
-        if (suggestionHistory != null && canAccessProtectedData)
-          ReviewSuggestionHistorySection(
-            suggestions: suggestionHistory!,
-            l10n: l10n,
-            isLoading: isSuggestionHistoryLoading,
-            onSuggestionTap: onSuggestionTap,
-          ),
       ],
       ReviewHistorySection(
         history: historyAsync,

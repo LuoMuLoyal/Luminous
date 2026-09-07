@@ -149,7 +149,7 @@ Created: 2026-09-07
     `page.dart` 对应 `_openStart/_openCheckIn/_openEnd/_readCurrentMedicineOptions/
     _readReasonRecordOptions` 删除或移到 Today(若 Today 缺对应副本——现状 Today 已装配,
     仅做对照确认),review 对 health_event 的 presentation 依赖随之解除。
-- [ ] **P0-7 建议历史与 AI 摘要主路径下线**
+- [x] **P0-7 建议历史与 AI 摘要主路径下线**
   - `review_view.dart` / `page.dart` 移除 `ReviewSuggestionHistorySection` 装配、
     `suggestionHistoryProvider` watch 与 `dedupeTodaySuggestions` 调用、详情 sheet 入口;
     legacy 兼容页路径不动。

@@ -10,7 +10,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// AI 纵向洞察段落：展示 AI 生成的周/月洞察摘要。
 ///
 /// 从旧 `ReviewAiSummarySection` 改名而来，不再硬依赖 `ReviewDashboard`
-/// 实体——只接收 `aiSummaryEnabled` 布尔值即可，适配 Review 主路径。
+/// 实体——只接收 `aiSummaryEnabled` 布尔值即可。
+///
+/// Deferred by Review Page Restructure P0-7: 建议历史与 AI 摘要已从 Review
+/// 主路径下线，本 section 目前仅被 legacy dashboard 兼容页消费。不删除——
+/// capability 仍有价值，待 agentic P0-3 统一 AI 数据层后复核是否归档/启用。
 class ReviewAiSummarySection extends StatelessWidget {
   const ReviewAiSummarySection({
     super.key,

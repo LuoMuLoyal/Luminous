@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-09-02
+updated: 2026-09-07
 ---
 
 # Luminous TODO
 
-Last updated: 2026-09-02
+Last updated: 2026-09-07
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -52,6 +52,15 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
       相关测试；重新生成 API client 与 l10n
 
 ## 延后（有明确原因）
+
+- Review 建议历史与 AI 摘要主路径下线（Review Page Restructure P0-7）
+  - `sections/suggestion_history.dart`（`ReviewSuggestionHistorySection` /
+    `dedupeTodaySuggestions`）、`sections/ai_summary.dart`
+    （`ReviewAiSummarySection`）、`dialogs/suggestion_history_detail_sheet.dart`
+    仍被 legacy dashboard 兼容页消费（`legacy_dashboard_compat.dart` /
+    `dashboard_view.dart`），有保留价值故不删除；`aiSummariesEnabled` 设置语义
+    不变（Today 摘要仍受其门控）
+  - 待 agentic 计划统一 AI 数据层（P0-3）后复核是否归档或改在主路径重新启用
 
 - 药箱项「停用/归档」语义（F-2，0.1.0 后）
   - 现状：药箱项只能软删除，短期事件结束后「停药」会丢可见性

@@ -10,6 +10,10 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// 从页面装配层下沉而来:去重归组是本 section 的展示职责,页面只传
 /// 数据源原始列表。
+///
+/// Deferred by Review Page Restructure P0-7: 建议历史已从 Review 主路径
+/// 下线（不再 watch `suggestionHistoryProvider`），本 section 目前仅被 legacy
+/// dashboard 兼容页消费。不删除——capability 仍有价值，待后续复核是否归档/启用。
 List<TodaySuggestionHistoryItem> dedupeTodaySuggestions(
   List<TodaySuggestionHistoryItem> items,
 ) {

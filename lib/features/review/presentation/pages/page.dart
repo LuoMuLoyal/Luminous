@@ -13,24 +13,16 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
-import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/providers/trend.dart';
 import 'package:luminous/features/review/presentation/utils/export_actions.dart';
-import 'package:luminous/features/review/presentation/widgets/dialogs/range_picker_dialog.dart';
-import 'package:luminous/features/review/presentation/widgets/dialogs/suggestion_history_detail_sheet.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/suggestion_history.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/more_actions.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/share_management.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
-import 'package:luminous/features/today/data/providers/suggestion.dart';
-import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 第五 Tab 的 Review 页：以健康事件为主单位的回顾首屏。
@@ -50,10 +42,6 @@ class ReviewPage extends ConsumerWidget {
   Future<void> _refresh(WidgetRef ref) async {
     ref.invalidate(reviewCurrentProvider);
     ref.invalidate(reviewHistoryProvider);
-    // 建议历史是 fetch 型数据源，纳入下拉刷新；AI 总结卡是用户触发的
-    // 生成结果（生成成本高），保持独立生命周期——invalidate 会清掉已
-    // 生成的摘要迫使用户重新生成，不纳入刷新范围（有意取舍）。
-    ref.invalidate(suggestionHistoryProvider);
     // 失败处理约定：page 层刷新不做 toast 也不重试——三个 provider 的
     // 失败已由各自 AsyncValue.error 承接并投影到对应 section 的错误视图；
     // 这里仅把异常落日志，避免下拉刷新在 500/断网时完全静默不可观测。
@@ -73,44 +61,7 @@ class ReviewPage extends ConsumerWidget {
             onError: (Object e, StackTrace st) =>
                 talker.error('reviewHistory refresh failed', e, st),
           ),
-      ref
-          .read(suggestionHistoryProvider.future)
-          .then(
-            (_) {},
-            onError: (Object e, StackTrace st) =>
-                talker.error('suggestionHistory refresh failed', e, st),
-          ),
     ]);
-  }
-
-  /// AI 总结范围切换：7/30 天直接生效；「自定义」先弹日历选区间，取消则
-  /// 保持原范围（不产生“选了自定义却无区间”的死路）。选中的区间写入
-  /// [reviewDashboardSelectedQueryProvider]——该 provider 同时是 legacy
-  /// 报表的日期状态，主路径不装配 legacy 报表，写入无副作用；AI 生成请求
-  /// 从这里读取自定义区间的起止日期。
-  Future<void> _changeAiSummaryRange(
-    BuildContext context,
-    WidgetRef ref,
-    ReviewAiSummaryRange range,
-  ) async {
-    if (range != ReviewAiSummaryRange.custom) {
-      ref.read(reviewAiSummarySelectedRangeProvider.notifier).setRange(range);
-      return;
-    }
-    final picked = await showReviewCalendarPicker(
-      context,
-      selectedQuery: ref.read(reviewDashboardSelectedQueryProvider),
-    );
-    if (picked == null || !context.mounted) return;
-    final startDate = picked.startDate;
-    final endDate = picked.endDate;
-    if (startDate == null || endDate == null) return;
-    ref
-        .read(reviewDashboardSelectedQueryProvider.notifier)
-        .setCustomRange(startDate, endDate);
-    ref
-        .read(reviewAiSummarySelectedRangeProvider.notifier)
-        .setRange(ReviewAiSummaryRange.custom);
   }
 
   @override
@@ -124,38 +75,6 @@ class ReviewPage extends ConsumerWidget {
     final historyAsync = ref.watch(reviewHistoryProvider);
     final historyStatus = ref.watch(reviewHistoryStatusProvider);
 
-    // AI 总结 providers——仅登录用户可见。
-    final aiSummariesEnabled = canAccessProtectedData
-        ? ref.watch(
-            userSettingsControllerProvider.select(
-              (s) => s.asData?.value.aiSummariesEnabled,
-            ),
-          )
-        : null;
-    final aiSummarySelectedRange = canAccessProtectedData
-        ? ref.watch(reviewAiSummarySelectedRangeProvider)
-        : null;
-    final aiSummaryState = canAccessProtectedData
-        ? ref.watch(reviewAiSummaryControllerProvider(aiSummarySelectedRange!))
-        : null;
-
-    // 建议历史 providers——仅登录用户可见。去重与截断展示由 section 承担，
-    // 这里传去重后的全量列表。
-    final suggestionHistoryAsync = canAccessProtectedData
-        ? ref.watch(suggestionHistoryProvider)
-        : null;
-    final suggestionHistory = canAccessProtectedData
-        ? dedupeTodaySuggestions(
-            suggestionHistoryAsync?.asData?.value?.items ?? const [],
-          )
-        : const <TodaySuggestionHistoryItem>[];
-    final isSuggestionHistoryLoading =
-        suggestionHistoryAsync?.isLoading ?? false;
-
-    // 纵向洞察折线图数据——复用 reviewDashboardProvider（饮水/睡眠/用药
-    // 三条趋势），仅用于在主路径新增折线图展示，不改动既有 provider 语义。
-    // 切换周期时用 reviewLastDashboardProvider 旧数据承接（轻量加载态，
-    // 不整页骨架）。
     final dashboardQuery = ref.watch(reviewDashboardSelectedQueryProvider);
     final dashboardAsync = ref.watch(reviewDashboardProvider(dashboardQuery));
 
@@ -259,24 +178,6 @@ class ReviewPage extends ConsumerWidget {
                 ref.read(reviewHistoryStatusProvider.notifier).select(status),
             canAccessProtectedData: canAccessProtectedData,
             isPreview: isPreview,
-            aiSummaryState: aiSummaryState,
-            aiSummarySelectedRange: aiSummarySelectedRange,
-            aiSummariesEnabled: aiSummariesEnabled,
-            onAiSummaryRangeChanged: (range) =>
-                unawaited(_changeAiSummaryRange(context, ref, range)),
-            onGenerateAiSummary: () async {
-              await ref
-                  .read(
-                    reviewAiSummaryControllerProvider(
-                      aiSummarySelectedRange!,
-                    ).notifier,
-                  )
-                  .generate();
-            },
-            suggestionHistory: suggestionHistory,
-            isSuggestionHistoryLoading: isSuggestionHistoryLoading,
-            onSuggestionTap: (item) =>
-                showSuggestionHistoryDetailSheet(context, suggestion: item),
             onRetry: () => ref.invalidate(reviewCurrentProvider),
             onGoRecord: () => context.go(Routes.record),
             isColdStart: isColdStart,

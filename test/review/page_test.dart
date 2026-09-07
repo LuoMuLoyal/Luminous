@@ -26,7 +26,6 @@ import 'package:luminous/features/review/presentation/widgets/sections/period_sw
 import 'package:luminous/features/review/presentation/widgets/sections/preview/export.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
-import 'package:luminous/features/today/data/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -921,10 +920,6 @@ Widget _buildApp({
       reviewDashboardProvider.overrideWith(
         (ref, query) async => ReviewDashboard.signedOut(),
       ),
-      // 建议历史：_refresh 会 invalidate 并等待它，测试环境无后端，
-      // 直接返回空数据避免真实 HTTP 请求在 FakeAsync zone 留下 pending
-      // timer（页面上该区块由 section 的 isLoading/空态承接）。
-      suggestionHistoryProvider.overrideWith((ref) async => null),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
       dailyRecordListForDateProvider.overrideWith((ref, date) async => records),
       if (productEvents != null)
