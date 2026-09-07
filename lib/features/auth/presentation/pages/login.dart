@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -10,17 +7,17 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
+import 'package:luminous/features/auth/presentation/pages/oauth_callback_hook.dart';
+import 'package:luminous/features/auth/presentation/pages/oauth_handlers.dart';
+import 'package:luminous/features/auth/presentation/pages/oauth_navigation.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/oauth_callback_parser.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_panels.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginPage extends HookConsumerWidget {
   const LoginPage({
@@ -64,322 +61,21 @@ class LoginPage extends HookConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final typography = context.theme.typography;
 
-    // ---- navigation helpers ----
-
-    String? safeReturnTo(String? value) {
-      final trimmed = value?.trim();
-      if (trimmed == null || trimmed.isEmpty) return null;
-      if (!trimmed.startsWith('/') || trimmed.startsWith('//')) return null;
-      if (trimmed == Routes.login ||
-          trimmed.startsWith('${Routes.login}?') ||
-          trimmed.startsWith('${Routes.login}/')) {
-        return null;
-      }
-      return trimmed;
-    }
-
-    void goAfterLogin({bool fallbackHome = false}) {
-      final target = safeReturnTo(returnTo);
-      if (target != null) {
-        context.go(target);
-        return;
-      }
-      if (fallbackHome) context.go(Routes.home);
-    }
-
-    String? webWechatCallbackUri() {
-      if (!kIsWeb) return null;
-      final base = Uri.base;
-      final rt = safeReturnTo(returnTo);
-      return Uri(
-        scheme: base.scheme,
-        host: base.host,
-        port: base.hasPort ? base.port : null,
-        path: Routes.loginOauthWechat,
-        queryParameters: rt == null ? null : {'returnTo': rt},
-      ).toString();
-    }
-
-    String? webQqCallbackUri() {
-      if (!kIsWeb) return null;
-      final base = Uri.base;
-      final rt = safeReturnTo(returnTo);
-      return Uri(
-        scheme: base.scheme,
-        host: base.host,
-        port: base.hasPort ? base.port : null,
-        path: Routes.loginOauthQq,
-        queryParameters: rt == null ? null : {'returnTo': rt},
-      ).toString();
-    }
-
-    String? webWeiboCallbackUri() {
-      if (!kIsWeb) return null;
-      final base = Uri.base;
-      final rt = safeReturnTo(returnTo);
-      return Uri(
-        scheme: base.scheme,
-        host: base.host,
-        port: base.hasPort ? base.port : null,
-        path: Routes.loginOauthWeibo,
-        queryParameters: rt == null ? null : {'returnTo': rt},
-      ).toString();
-    }
-
-    String? webGoogleCallbackUri() {
-      if (!kIsWeb) return null;
-      final base = Uri.base;
-      final rt = safeReturnTo(returnTo);
-      return Uri(
-        scheme: base.scheme,
-        host: base.host,
-        port: base.hasPort ? base.port : null,
-        path: Routes.loginOauthGoogle,
-        queryParameters: rt == null ? null : {'returnTo': rt},
-      ).toString();
-    }
-
-    // ---- OAuth action handlers ----
-
-    Future<void> startWechatLogin() async {
-      final attempt = await oauthController.startWechatLogin(
-        webCallbackUri: webWechatCallbackUri(),
-      );
-      if (!context.mounted) return;
-
-      switch (attempt) {
-        case WechatLoginCompleted():
-          goAfterLogin(fallbackHome: true);
-        case WechatLoginWebFallback(:final authorizeUrl):
-          final opened = await ref
-              .read(externalUrlLauncherProvider)
-              .open(Uri.parse(authorizeUrl));
-          if (!context.mounted) return;
-          if (!opened) {
-            await Toast.show(context, l10n.authWechatBrowserOpenFailed);
-            return;
-          }
-          await Toast.show(context, l10n.authWechatAuthorizeOpened);
-        case WechatLoginFailed():
-          // Error is in oauthState.errorMessage — toast is shown via state
-          break;
-      }
-    }
-
-    Future<void> completeWechatLoginFromInput() async {
-      final callback = OAuthCallbackParser.parse(
-        wechatCallbackController.text,
-        oauthState.wechatState,
-      );
-      if (callback == null) {
-        final message = wechatCallbackController.text.trim().isEmpty
-            ? l10n.authWechatCallbackRequiredToast
-            : l10n.authWechatCallbackInvalidToast;
-        await Toast.show(context, message);
-        return;
-      }
-      final session = await oauthController.completeWechatLogin(
-        code: callback.code,
-        state: callback.state,
-      );
-      if (session == null || !context.mounted) return;
-      goAfterLogin(fallbackHome: true);
-    }
-
-    Future<void> startQqLogin() async {
-      final authorizeUrl = await oauthController.startQqLogin(
-        webCallbackUri: webQqCallbackUri(),
-      );
-      if (authorizeUrl == null || !context.mounted) return;
-
-      final opened = await ref
-          .read(externalUrlLauncherProvider)
-          .open(Uri.parse(authorizeUrl));
-      if (!context.mounted) return;
-      if (!opened) {
-        await Toast.show(context, l10n.authQqBrowserOpenFailed);
-        return;
-      }
-      await Toast.show(context, l10n.authQqAuthorizeOpened);
-    }
-
-    Future<void> completeQqLoginFromInput() async {
-      final callback = OAuthCallbackParser.parse(
-        qqCallbackController.text,
-        oauthState.qqState,
-      );
-      if (callback == null) {
-        final message = qqCallbackController.text.trim().isEmpty
-            ? l10n.authQqCallbackRequiredToast
-            : l10n.authQqCallbackInvalidToast;
-        await Toast.show(context, message);
-        return;
-      }
-      final session = await oauthController.completeQqLogin(
-        code: callback.code,
-        state: callback.state,
-      );
-      if (session == null || !context.mounted) return;
-      goAfterLogin(fallbackHome: true);
-    }
-
-    Future<void> startWeiboLogin() async {
-      final authorizeUrl = await oauthController.startWeiboLogin(
-        webCallbackUri: webWeiboCallbackUri(),
-      );
-      if (authorizeUrl == null || !context.mounted) return;
-
-      final opened = await ref
-          .read(externalUrlLauncherProvider)
-          .open(Uri.parse(authorizeUrl));
-      if (!context.mounted) return;
-      if (!opened) {
-        await Toast.show(context, l10n.authWeiboBrowserOpenFailed);
-        return;
-      }
-      await Toast.show(context, l10n.authWeiboAuthorizeOpened);
-    }
-
-    Future<void> completeWeiboLoginFromInput() async {
-      final callback = OAuthCallbackParser.parse(
-        weiboCallbackController.text,
-        oauthState.weiboState,
-      );
-      if (callback == null) {
-        final message = weiboCallbackController.text.trim().isEmpty
-            ? l10n.authWeiboCallbackRequiredToast
-            : l10n.authWeiboCallbackInvalidToast;
-        await Toast.show(context, message);
-        return;
-      }
-      final session = await oauthController.completeWeiboLogin(
-        code: callback.code,
-        state: callback.state,
-      );
-      if (session == null || !context.mounted) return;
-      goAfterLogin(fallbackHome: true);
-    }
-
-    Future<void> startGoogleLogin() async {
-      final authorizeUrl = await oauthController.startGoogleLogin(
-        webCallbackUri: webGoogleCallbackUri(),
-      );
-      if (authorizeUrl == null || !context.mounted) return;
-
-      final opened = await ref
-          .read(externalUrlLauncherProvider)
-          .open(Uri.parse(authorizeUrl));
-      if (!context.mounted) return;
-      if (!opened) {
-        await Toast.show(context, l10n.authGoogleBrowserOpenFailed);
-        return;
-      }
-      await Toast.show(context, l10n.authGoogleAuthorizeOpened);
-    }
-
-    Future<void> completeGoogleLoginFromInput() async {
-      final callback = OAuthCallbackParser.parse(
-        googleCallbackController.text,
-        oauthState.googleState,
-      );
-      if (callback == null) {
-        final message = googleCallbackController.text.trim().isEmpty
-            ? l10n.authGoogleCallbackRequiredToast
-            : l10n.authGoogleCallbackInvalidToast;
-        await Toast.show(context, message);
-        return;
-      }
-      final session = await oauthController.completeGoogleLogin(
-        code: callback.code,
-        state: callback.state,
-      );
-      if (session == null || !context.mounted) return;
-      goAfterLogin(fallbackHome: true);
-    }
-
-    Future<void> startAppleLogin() async {
-      if (!context.mounted) return;
-      final failMessage = l10n.authAppleSignInFailed;
-      try {
-        final credential = await SignInWithApple.getAppleIDCredential(
-          scopes: [
-            AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName,
-          ],
-        );
-        if (!context.mounted) return;
-        final session = await oauthController.loginWithApple(
-          identityToken: credential.identityToken ?? '',
-          authorizationCode: credential.authorizationCode,
-          givenName: credential.givenName,
-          familyName: credential.familyName,
-        );
-        if (session == null || !context.mounted) return;
-        goAfterLogin(fallbackHome: true);
-      } catch (e) {
-        if (context.mounted) await Toast.show(context, failMessage);
-      }
-    }
-
     // Handle OAuth callbacks on first build (deep-link from browser redirect)
-    useEffect(() {
-      if ((wechatCode?.isNotEmpty ?? false) &&
-          (wechatState?.isNotEmpty ?? false)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          unawaited(
-            oauthController
-                .completeWechatLogin(code: wechatCode!, state: wechatState!)
-                .then((s) {
-                  if (s != null && context.mounted) {
-                    goAfterLogin(fallbackHome: true);
-                  }
-                }),
-          );
-        });
-      }
-      if ((qqCode?.isNotEmpty ?? false) && (qqState?.isNotEmpty ?? false)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          unawaited(
-            oauthController
-                .completeQqLogin(code: qqCode!, state: qqState!)
-                .then((s) {
-                  if (s != null && context.mounted) {
-                    goAfterLogin(fallbackHome: true);
-                  }
-                }),
-          );
-        });
-      }
-      if ((weiboCode?.isNotEmpty ?? false) &&
-          (weiboState?.isNotEmpty ?? false)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          unawaited(
-            oauthController
-                .completeWeiboLogin(code: weiboCode!, state: weiboState!)
-                .then((s) {
-                  if (s != null && context.mounted) {
-                    goAfterLogin(fallbackHome: true);
-                  }
-                }),
-          );
-        });
-      }
-      if ((googleCode?.isNotEmpty ?? false) &&
-          (googleState?.isNotEmpty ?? false)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          unawaited(
-            oauthController
-                .completeGoogleLogin(code: googleCode!, state: googleState!)
-                .then((s) {
-                  if (s != null && context.mounted) {
-                    goAfterLogin(fallbackHome: true);
-                  }
-                }),
-          );
-        });
-      }
-      return null;
-    }, []);
+    useOAuthCallbackHandler(
+      context: context,
+      ref: ref,
+      oauthController: oauthController,
+      wechatCode: wechatCode,
+      wechatState: wechatState,
+      qqCode: qqCode,
+      qqState: qqState,
+      weiboCode: weiboCode,
+      weiboState: weiboState,
+      googleCode: googleCode,
+      googleState: googleState,
+      returnTo: returnTo,
+    );
 
     // ---- build UI ----
 
@@ -503,7 +199,7 @@ class LoginPage extends HookConsumerWidget {
                           }
                         }
                         if (session != null && context.mounted) {
-                          goAfterLogin();
+                          goAfterLogin(context, returnTo: returnTo);
                         }
                       },
                 child: state.isSubmitting
@@ -620,28 +316,85 @@ class LoginPage extends HookConsumerWidget {
               isStartingWechat: oauthState.isStartingWechat,
               isCompletingWechat: oauthState.isCompletingWechat,
               wechatAuthorizeUrl: oauthState.wechatAuthorizeUrl,
-              onWechatStart: startWechatLogin,
-              onWechatComplete: completeWechatLoginFromInput,
+              onWechatStart: () => startWechatLogin(
+                context,
+                ref,
+                oauthController,
+                l10n,
+                returnTo: returnTo,
+              ),
+              onWechatComplete: () => completeWechatLoginFromInput(
+                context,
+                oauthController,
+                l10n,
+                callbackController: wechatCallbackController,
+                fallbackState: oauthState.wechatState,
+                returnTo: returnTo,
+              ),
               qqCallbackController: qqCallbackController,
               isStartingQq: oauthState.isStartingQq,
               isCompletingQq: oauthState.isCompletingQq,
               qqAuthorizeUrl: oauthState.qqAuthorizeUrl,
-              onQqStart: startQqLogin,
-              onQqComplete: completeQqLoginFromInput,
+              onQqStart: () => startQqLogin(
+                context,
+                ref,
+                oauthController,
+                l10n,
+                returnTo: returnTo,
+              ),
+              onQqComplete: () => completeQqLoginFromInput(
+                context,
+                oauthController,
+                l10n,
+                callbackController: qqCallbackController,
+                fallbackState: oauthState.qqState,
+                returnTo: returnTo,
+              ),
               weiboCallbackController: weiboCallbackController,
               isStartingWeibo: oauthState.isStartingWeibo,
               isCompletingWeibo: oauthState.isCompletingWeibo,
               weiboAuthorizeUrl: oauthState.weiboAuthorizeUrl,
-              onWeiboStart: startWeiboLogin,
-              onWeiboComplete: completeWeiboLoginFromInput,
+              onWeiboStart: () => startWeiboLogin(
+                context,
+                ref,
+                oauthController,
+                l10n,
+                returnTo: returnTo,
+              ),
+              onWeiboComplete: () => completeWeiboLoginFromInput(
+                context,
+                oauthController,
+                l10n,
+                callbackController: weiboCallbackController,
+                fallbackState: oauthState.weiboState,
+                returnTo: returnTo,
+              ),
               googleCallbackController: googleCallbackController,
               isStartingGoogle: oauthState.isStartingGoogle,
               isCompletingGoogle: oauthState.isCompletingGoogle,
               googleAuthorizeUrl: oauthState.googleAuthorizeUrl,
-              onGoogleStart: startGoogleLogin,
-              onGoogleComplete: completeGoogleLoginFromInput,
+              onGoogleStart: () => startGoogleLogin(
+                context,
+                ref,
+                oauthController,
+                l10n,
+                returnTo: returnTo,
+              ),
+              onGoogleComplete: () => completeGoogleLoginFromInput(
+                context,
+                oauthController,
+                l10n,
+                callbackController: googleCallbackController,
+                fallbackState: oauthState.googleState,
+                returnTo: returnTo,
+              ),
               isStartingApple: oauthState.isStartingApple,
-              onAppleSignIn: startAppleLogin,
+              onAppleSignIn: () => startAppleLogin(
+                context,
+                oauthController,
+                l10n,
+                returnTo: returnTo,
+              ),
             ),
           ],
         ),
