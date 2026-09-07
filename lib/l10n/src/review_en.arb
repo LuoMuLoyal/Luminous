@@ -283,6 +283,29 @@
       }
     }
   },
+  "reviewCoverageSparseLabel": "Too little data",
+  "reviewCoverageDaysCount": "{observed} / {expected} days",
+  "@reviewCoverageDaysCount": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      },
+      "expected": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewCoverageStripLabel": "{name} {coverage}",
+  "@reviewCoverageStripLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "coverage": {
+        "type": "String"
+      }
+    }
+  },
   "reviewExportFailedWithReason": "Export failed: {reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

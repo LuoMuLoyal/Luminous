@@ -8,6 +8,7 @@ import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/ai_summary.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/completed_actions.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/coverage_strip.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/event_header.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/key_changes.dart';
@@ -64,6 +65,7 @@ class ReviewView extends StatelessWidget {
     this.trendStartDate = '----.--.--',
     this.periodRange = ReviewDashboardRange.last7Days,
     this.onPeriodRangeChanged,
+    this.coverageMetrics = const [],
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -119,6 +121,10 @@ class ReviewView extends StatelessWidget {
   /// 周期切换回调；页面装配层接到 reviewDashboardSelectedQueryProvider。
   final ValueChanged<ReviewDashboardRange>? onPeriodRangeChanged;
 
+  /// 覆盖率概览行数据（各健康维度的记录覆盖小卡），来自主路径 dashboard
+  /// 的 metrics；空列表时不渲染概览行。
+  final List<ReviewMetric> coverageMetrics;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -153,6 +159,9 @@ class ReviewView extends StatelessWidget {
       ),
       if (isPreview) SignInHintBanner(onSignIn: onSignIn),
       if (showStaleBanner) const _StaleBanner(key: Key('review-stale-banner')),
+      // 覆盖率概览行：各维度覆盖小卡，横滑；空列表时不渲染。
+      if (coverageMetrics.isNotEmpty)
+        ReviewCoverageStrip(metrics: coverageMetrics),
       if (review == null) ...[
         _StartObservationCard(
           onStartObservation: onStartObservation,

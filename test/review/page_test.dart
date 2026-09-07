@@ -447,10 +447,34 @@ void main() {
             ),
             reviewDashboardProvider.overrideWith((ref, query) async {
               recordedQueries.add(query);
-              // 返回带 range 的空 trends dashboard：折线图因 trends 为空不
-              // 渲染，但 range 反映所选周期，用于断言 provider 被以正确
-              // query 重新请求。
-              return ReviewDashboard.signedOut().copyWith(range: query.range);
+              // 返回带 range + 单个覆盖指标的 dashboard：趋势因 trends 为空
+              // 不渲染，但周期反映所选范围；覆盖概览卡因此可显示出指标。
+              return ReviewDashboard.signedOut().copyWith(
+                range: query.range,
+                metrics: const [
+                  ReviewMetric(
+                    kind: ReviewDataKind.water,
+                    icon: SemanticIcons.recordWater,
+                    color: SemanticColor.primary,
+                    value: '1.2',
+                    unit: 'L',
+                    status: ReviewStatus.stable,
+                    delta: '-12%',
+                    direction: ReviewMetricDirection.down,
+                    sparkline: [],
+                    observedMetric: ReviewObservedMetric(
+                      value: 1.2,
+                      state: ReviewObservedMetricState.observed,
+                      coverage: ReviewObservedMetricCoverage.sufficient,
+                      sources: [ReviewObservedMetricSource.manual],
+                      observedCount: 4,
+                      expectedCount: 7,
+                      windowStart: '',
+                      windowEnd: '',
+                    ),
+                  ),
+                ],
+              );
             }),
             healthContextSnapshotProvider.overrideWith(
               (ref) async => _healthContextSnapshot,
@@ -471,6 +495,11 @@ void main() {
       expect(find.byType(ReviewPeriodSwitch), findsOneWidget);
       expect(find.text(l10n.reviewPeriodWeek), findsOneWidget);
       expect(find.text(l10n.reviewPeriodMonth), findsOneWidget);
+      // 覆盖率概览行：dashboard 有覆盖指标时渲染。
+      expect(
+        find.byKey(const Key('review-coverage-card-water')),
+        findsOneWidget,
+      );
       expect(
         recordedQueries.any((q) => q.range == ReviewDashboardRange.last7Days),
         isTrue,

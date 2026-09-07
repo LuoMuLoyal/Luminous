@@ -290,6 +290,29 @@
       }
     }
   },
+  "reviewCoverageSparseLabel": "数据太少",
+  "reviewCoverageDaysCount": "{observed} / {expected} 天",
+  "@reviewCoverageDaysCount": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      },
+      "expected": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewCoverageStripLabel": "{name} {coverage}",
+  "@reviewCoverageStripLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "coverage": {
+        "type": "String"
+      }
+    }
+  },
   "reviewExportFailedWithReason": "导出失败：{reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

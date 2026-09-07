@@ -374,6 +374,9 @@ class ReviewPage extends ConsumerWidget {
         effectiveDashboardAsync.asData?.value.trends ?? const [];
     final dashboardStartDate =
         effectiveDashboardAsync.asData?.value.startDate ?? '----.--.--';
+    // 覆盖率概览行数据：dashboard metrics（各健康维度覆盖小卡）。
+    final coverageMetrics =
+        effectiveDashboardAsync.asData?.value.metrics ?? const <ReviewMetric>[];
 
     return ShellDeferredContent(
       child: _ReviewOpenedTracker(
@@ -469,6 +472,7 @@ class ReviewPage extends ConsumerWidget {
             onPeriodRangeChanged: (range) => ref
                 .read(reviewDashboardSelectedQueryProvider.notifier)
                 .setRange(range),
+            coverageMetrics: coverageMetrics,
           ),
         ),
       ),
