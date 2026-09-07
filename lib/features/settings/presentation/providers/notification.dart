@@ -8,6 +8,7 @@ import 'package:luminous/features/settings/data/providers/notification_permissio
 import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
+import 'package:luminous/features/settings/presentation/providers/notification_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'notification.freezed.dart';
@@ -36,11 +37,8 @@ abstract class NotificationSettingsState with _$NotificationSettingsState {
 }
 
 extension NotificationSettingsMinutes on NotificationSettingsState {
-  int? get sleepBedtimeMinutes => _toMinutes(sleepBedtime);
-  int? get sleepWakeTimeMinutes => _toMinutes(sleepWakeTime);
-
-  static int? _toMinutes(TimeOfDay? time) =>
-      time == null ? null : time.hour * 60 + time.minute;
+  int? get sleepBedtimeMinutes => NotificationUtils.toMinutes(sleepBedtime);
+  int? get sleepWakeTimeMinutes => NotificationUtils.toMinutes(sleepWakeTime);
 }
 
 class NotificationSettingsController
@@ -348,10 +346,16 @@ class NotificationSettingsController
       update: (preferences) async {
         await preferences.setBool(_dndEnabledKey, enabled);
         if (start != null) {
-          await preferences.setString(_dndStartTimeKey, _formatTime(start));
+          await preferences.setString(
+            _dndStartTimeKey,
+            NotificationUtils.formatTime(start),
+          );
         }
         if (end != null) {
-          await preferences.setString(_dndEndTimeKey, _formatTime(end));
+          await preferences.setString(
+            _dndEndTimeKey,
+            NotificationUtils.formatTime(end),
+          );
         }
       },
     );
@@ -366,7 +370,10 @@ class NotificationSettingsController
         if (time == null) {
           await preferences.remove(_dndStartTimeKey);
         } else {
-          await preferences.setString(_dndStartTimeKey, _formatTime(time));
+          await preferences.setString(
+            _dndStartTimeKey,
+            NotificationUtils.formatTime(time),
+          );
         }
       },
     );
@@ -381,7 +388,10 @@ class NotificationSettingsController
         if (time == null) {
           await preferences.remove(_dndEndTimeKey);
         } else {
-          await preferences.setString(_dndEndTimeKey, _formatTime(time));
+          await preferences.setString(
+            _dndEndTimeKey,
+            NotificationUtils.formatTime(time),
+          );
         }
       },
     );
@@ -599,7 +609,7 @@ class NotificationSettingsController
     } else {
       await scoped.setString(
         _sleepBedtimeKey,
-        _formatTime(value.sleepBedtime!),
+        NotificationUtils.formatTime(value.sleepBedtime!),
       );
     }
     if (value.sleepWakeTime == null) {
@@ -607,15 +617,9 @@ class NotificationSettingsController
     } else {
       await scoped.setString(
         _sleepWakeTimeKey,
-        _formatTime(value.sleepWakeTime!),
+        NotificationUtils.formatTime(value.sleepWakeTime!),
       );
     }
-  }
-
-  static String _formatTime(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
   }
 
   static int? _toMinutes(TimeOfDay? time) =>
