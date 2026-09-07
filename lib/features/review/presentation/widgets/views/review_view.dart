@@ -70,6 +70,8 @@ class ReviewView extends StatelessWidget {
     this.findings = const [],
     this.findingsWindowStart = '----.--.--',
     this.findingsWindowEnd = '----.--.--',
+    this.selectedTrendKind,
+    this.onTrendKindChanged,
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -137,6 +139,12 @@ class ReviewView extends StatelessWidget {
   final String findingsWindowStart;
   final String findingsWindowEnd;
 
+  /// 当前选中的单维趋势维度（覆盖概览行与趋势卡 chips 联动）。
+  final ReviewDataKind? selectedTrendKind;
+
+  /// 维度切换回调；页面装配层接到 reviewTrendDimensionProvider。
+  final ValueChanged<ReviewDataKind>? onTrendKindChanged;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -173,7 +181,10 @@ class ReviewView extends StatelessWidget {
       if (showStaleBanner) const _StaleBanner(key: Key('review-stale-banner')),
       // 覆盖率概览行：各维度覆盖小卡，横滑；空列表时不渲染。
       if (coverageMetrics.isNotEmpty)
-        ReviewCoverageStrip(metrics: coverageMetrics),
+        ReviewCoverageStrip(
+          metrics: coverageMetrics,
+          onTap: onTrendKindChanged,
+        ),
       // 值得注意区：findings 结构化卡；空时展示弃权占位。
       ReviewNoteworthySection(
         findings: findings,
@@ -271,6 +282,8 @@ class ReviewView extends StatelessWidget {
           l10n: l10n,
           startDate: trendStartDate,
           showRangePill: false,
+          selectedKind: selectedTrendKind,
+          onKindChanged: onTrendKindChanged,
         ),
     ];
 

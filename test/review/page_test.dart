@@ -518,6 +518,96 @@ void main() {
     },
   );
 
+  testWidgets('coverage card tap selects the trend dimension', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          reviewRepositoryProvider.overrideWithValue(
+            _FakeReviewRepository(
+              current: reviewActive(),
+              page: const ReviewEventPage(items: [], total: 0),
+            ),
+          ),
+          reviewDashboardProvider.overrideWith((ref, query) async {
+            // 两个维度 trend + 两个覆盖指标卡，便于观察维度联动切换。
+            return ReviewDashboard.signedOut().copyWith(
+              range: query.range,
+              trends: const [
+                ReviewTrendSeries(
+                  kind: ReviewDataKind.water,
+                  color: SemanticColor.primary,
+                  unit: 'L',
+                  values: [1.0, 1.1, 1.2],
+                  currentValue: '1.2',
+                ),
+                ReviewTrendSeries(
+                  kind: ReviewDataKind.sleep,
+                  color: SemanticColor.info,
+                  unit: 'h',
+                  values: [6.5, 7.0, 6.5],
+                  currentValue: '6.5',
+                ),
+              ],
+              metrics: const [
+                ReviewMetric(
+                  kind: ReviewDataKind.water,
+                  icon: SemanticIcons.recordWater,
+                  color: SemanticColor.primary,
+                  value: '1.2',
+                  unit: 'L',
+                  status: ReviewStatus.stable,
+                  delta: '-12%',
+                  direction: ReviewMetricDirection.down,
+                  sparkline: [],
+                ),
+                ReviewMetric(
+                  kind: ReviewDataKind.sleep,
+                  icon: SemanticIcons.recordSleep,
+                  color: SemanticColor.info,
+                  value: '6.5',
+                  unit: 'h',
+                  status: ReviewStatus.stable,
+                  delta: '+5%',
+                  direction: ReviewMetricDirection.up,
+                  sparkline: [],
+                ),
+              ],
+            );
+          }),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => _healthContextSnapshot,
+          ),
+          dailyRecordListForDateProvider.overrideWith(
+            (ref, date) async => const DailyRecordListData(items: [], total: 0),
+          ),
+        ],
+        child: const TestForuiApp(home: ReviewPage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // 覆盖概览行两张卡可见，健康趋势标题可见。
+    expect(find.byKey(const Key('review-coverage-card-water')), findsOneWidget);
+    expect(find.byKey(const Key('review-coverage-card-sleep')), findsOneWidget);
+    expect(find.text('健康趋势'), findsWidgets);
+
+    // 点击睡眠覆盖卡 → 选中 sleep 维度，趋势卡切到睡眠当前值。
+    await tester.tap(find.byKey(const Key('review-coverage-card-sleep')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('6.5h'), findsWidgets);
+  });
+
   testWidgets(
     'period switch keeps the cached dashboard visible while the new range loads',
     (tester) async {

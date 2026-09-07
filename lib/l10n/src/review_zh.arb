@@ -326,6 +326,7 @@
       }
     }
   },
+  "reviewTrendGapNote": "未记录的天不计入走势。",
   "reviewExportFailedWithReason": "导出失败：{reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

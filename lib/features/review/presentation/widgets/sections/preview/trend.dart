@@ -17,6 +17,8 @@ class ReviewTrendSection extends StatelessWidget {
     required this.l10n,
     required this.startDate,
     this.showRangePill = true,
+    this.selectedKind,
+    this.onKindChanged,
   });
 
   final List<ReviewTrendSeries> trends;
@@ -25,6 +27,14 @@ class ReviewTrendSection extends StatelessWidget {
   final AppLocalizations l10n;
   final String startDate;
   final bool showRangePill;
+
+  /// 当前选中的趋势维度（覆盖概览行联动）；null 时趋势卡内部默认第一个
+  /// 有数据的维度。
+  final ReviewDataKind? selectedKind;
+
+  /// 维度切换回调（覆盖概览行联动）；与 [selectedKind] 同时提供时趋势卡
+  /// 变受控（`FTabControl.lifted`），否则沿用内部自带切换。
+  final ValueChanged<ReviewDataKind>? onKindChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +66,13 @@ class ReviewTrendSection extends StatelessWidget {
           label: _buildSemanticsLabel(l10n),
           child: allEmpty
               ? _TrendEmptyState(l10n: l10n)
-              : _TrendTabs(trends: trends, startDate: startDate, l10n: l10n),
+              : _TrendTabs(
+                  trends: trends,
+                  startDate: startDate,
+                  l10n: l10n,
+                  selectedKind: selectedKind,
+                  onKindChanged: onKindChanged,
+                ),
         ),
       ],
     );
@@ -81,15 +97,33 @@ class _TrendTabs extends StatelessWidget {
     required this.trends,
     required this.startDate,
     required this.l10n,
+    this.selectedKind,
+    this.onKindChanged,
   });
 
   final List<ReviewTrendSeries> trends;
   final String startDate;
   final AppLocalizations l10n;
+  final ReviewDataKind? selectedKind;
+  final ValueChanged<ReviewDataKind>? onKindChanged;
 
   @override
   Widget build(BuildContext context) {
+    // 受控模式：覆盖概览行点击联动时，用 lifted control 同步外部选中维度。
+    final controlled = selectedKind != null && onKindChanged != null;
+    final selectedIndex = trends.indexWhere((s) => s.kind == selectedKind);
+
     return FTabs(
+      control: controlled
+          ? FTabControl.lifted(
+              index: selectedIndex < 0 ? 0 : selectedIndex,
+              onChange: (index) {
+                if (index >= 0 && index < trends.length) {
+                  onKindChanged!.call(trends[index].kind);
+                }
+              },
+            )
+          : const FTabControl.managed(),
       children: [
         for (final series in trends)
           FTabEntry(
@@ -173,7 +207,7 @@ class _SingleTrendChart extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Current value + coverage summary row
+            // Current value row
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
@@ -185,17 +219,6 @@ class _SingleTrendChart extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
-                if (coverageLabel != null)
-                  Expanded(
-                    child: Text(
-                      coverageLabel,
-                      style: typography.body.xs.copyWith(
-                        color: SemanticColor.neutral.solid(context),
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
               ],
             ),
             const SizedBox(height: Spacing.level3),
@@ -309,6 +332,17 @@ class _SingleTrendChart extends StatelessWidget {
                 ),
               ),
             ),
+            // 覆盖率说明（X/N 天 + 数据窗口）与口径说明。
+            if (om != null)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.level3),
+                child: _TrendFooter(
+                  coverageLabel: coverageLabel ?? '',
+                  windowStart: om.windowStart,
+                  windowEnd: om.windowEnd,
+                  l10n: l10n,
+                ),
+              ),
           ],
         ),
       ),
@@ -336,6 +370,56 @@ class _SingleTrendChart extends StatelessWidget {
     if (parsed == null || index < 0) return '';
     final date = parsed.add(Duration(days: index));
     return DateFormat.MMMEd(locale).format(date);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Trend footer: coverage (X/N 天) + data window + gap-note (口径说明)
+
+class _TrendFooter extends StatelessWidget {
+  const _TrendFooter({
+    required this.coverageLabel,
+    required this.windowStart,
+    required this.windowEnd,
+    required this.l10n,
+  });
+
+  final String coverageLabel;
+  final String windowStart;
+  final String windowEnd;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+    final muted = SemanticColor.neutral.solid(context);
+    final window = windowStart.isEmpty || windowEnd.isEmpty
+        ? null
+        : l10n.reviewNoteworthyWindow(windowStart, windowEnd);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Expanded(
+              child: Text(
+                coverageLabel,
+                style: typography.body.xs.copyWith(color: muted),
+              ),
+            ),
+            if (window != null)
+              Text(window, style: typography.body.xs.copyWith(color: muted)),
+          ],
+        ),
+        const SizedBox(height: Spacing.level1),
+        Text(
+          l10n.reviewTrendGapNote,
+          style: typography.body.xs.copyWith(color: muted),
+        ),
+      ],
+    );
   }
 }
 

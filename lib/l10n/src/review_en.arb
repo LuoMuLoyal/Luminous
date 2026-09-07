@@ -319,6 +319,7 @@
       }
     }
   },
+  "reviewTrendGapNote": "Days without records are excluded from the trend.",
   "reviewExportFailedWithReason": "Export failed: {reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

@@ -109,7 +109,7 @@ Created: 2026-09-07
     直接生效,切换期间用 `reviewLastDashboardProvider` 旧数据 + 轻量加载态(不整页骨架)。
   - 周期切换的 a11y label 与语义顺序对齐现有约定(`Semantics sortKey` 语义:标题 →
     状态 → 洞察 → 历史 → 更多)。
-- [ ] **P0-2 覆盖率概览行(新 `widgets/sections/coverage_strip.dart`)**
+- [x] **P0-2 覆盖率概览行(新 `widgets/sections/coverage_strip.dart`)**
   - 数据:`dashboard.metrics` 中带 `observedMetric` 的维度小卡(interim 维度集 =
     后端可用集 water/sleep/medication/general);每卡:图标/名称、`observedCount/
     expectedCount` → 「X/N 天」覆盖文案、`value+unit`、`delta`(方向色),点击 → ③趋势
@@ -117,14 +117,14 @@ Created: 2026-09-07
   - 覆盖 `none` 或 <2 观察:灰态小卡,文案「数据太少」,不可点击进趋势。
   - 空 metrics 且无事件:整页落入冷启动/记录引导分支(P0-5),概览行不渲染空壳。
   - 新增单元/Widget 测试 + l10n 文案(`review` 分片)。
-- [ ] **P0-3 值得注意区(新 `widgets/sections/noteworthy.dart`)**
+- [x] **P0-3 值得注意区(新 `widgets/sections/noteworthy.dart`)**
   - 数据:`dashboard.findings`(title/body/kind/icon/color),最多展示 2 张结构化卡;
     卡头类型图标 + 标题 + 正文 + 数据窗口(`startDate`–`endDate`)。
   - 无 findings → 弃权占位一行(「这段时间没有新的值得注意的变化」),不生成长文。
   - findings 为空且 dashboard 整体 insufficient → 交给 P0-5 记录引导,不展示弃权卡。
   - 反馈(有用/不适用)与证据引用字段 Wave 2 再做;本期不做假按钮。
   - 新 Widget 测试覆盖 有卡/弃权/混合 三态。
-- [ ] **P0-4 单维趋势卡收口(改 `widgets/sections/trend.dart`)**
+- [x] **P0-4 单维趋势卡收口(改 `widgets/sections/trend.dart`)**
   - 承接 ① 的维度点击与本身维度 chips 切换(FTabs,沿用现状);保留单折线 + 面积,
     底部一行覆盖率说明(取该维度 `observedMetric`:X/N 天 + 窗口),不再裸画
     legacy scalar 而不标注。

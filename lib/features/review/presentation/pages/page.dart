@@ -29,6 +29,7 @@ import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
+import 'package:luminous/features/review/presentation/providers/trend.dart';
 import 'package:luminous/features/review/presentation/utils/export_actions.dart';
 import 'package:luminous/features/review/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/features/review/presentation/widgets/dialogs/suggestion_history_detail_sheet.dart';
@@ -385,6 +386,8 @@ class ReviewPage extends ConsumerWidget {
         effectiveDashboardAsync.asData?.value.startDate ?? '----.--.--';
     final findingsWindowEnd =
         effectiveDashboardAsync.asData?.value.endDate ?? '----.--.--';
+    // 单维趋势卡当前选中的维度（覆盖概览行点击联动）。
+    final selectedTrendKind = ref.watch(reviewTrendDimensionProvider);
 
     return ShellDeferredContent(
       child: _ReviewOpenedTracker(
@@ -484,6 +487,9 @@ class ReviewPage extends ConsumerWidget {
             findings: findings,
             findingsWindowStart: findingsWindowStart,
             findingsWindowEnd: findingsWindowEnd,
+            selectedTrendKind: selectedTrendKind,
+            onTrendKindChanged: (kind) =>
+                ref.read(reviewTrendDimensionProvider.notifier).select(kind),
           ),
         ),
       ),
