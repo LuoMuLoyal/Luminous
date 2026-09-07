@@ -10,7 +10,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';
-import 'package:luminous/features/auth/presentation/pages/account_settings_sections.dart';
+import 'package:luminous/features/auth/presentation/pages/account_identity.dart';
 import 'package:luminous/features/auth/presentation/providers/sessions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
