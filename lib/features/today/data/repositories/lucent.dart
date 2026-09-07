@@ -12,45 +12,10 @@ import 'package:luminous/features/notification/domain/repositories/notification.
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
+import 'package:luminous/features/today/data/utils/today_mappers.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-
-TodayObservedMetric _observedMetric({
-  required double? value,
-  required bool observed,
-  required int observedCount,
-  required String date,
-}) {
-  final hasValue = observed && value != null;
-  return TodayObservedMetric(
-    value: hasValue ? value : null,
-    state: hasValue
-        ? TodayObservedMetricState.observed
-        : TodayObservedMetricState.unknown,
-    coverage: hasValue
-        ? TodayObservedMetricCoverage.sufficient
-        : TodayObservedMetricCoverage.none,
-    sources: hasValue ? const [TodayObservedMetricSource.manual] : const [],
-    observedCount: hasValue ? observedCount : 0,
-    expectedCount: null,
-    windowStart: date,
-    windowEnd: date,
-  );
-}
-
-TodayObservedMetric _degradedObservedMetric(String date) {
-  return TodayObservedMetric(
-    value: null,
-    state: TodayObservedMetricState.degraded,
-    coverage: TodayObservedMetricCoverage.none,
-    sources: const [],
-    observedCount: 0,
-    expectedCount: null,
-    windowStart: date,
-    windowEnd: date,
-  );
-}
 
 /// Lucent-backed [TodayRepository] that merges real health-context and
 /// daily-record signals with static mock sections for unsupported surfaces.
@@ -162,7 +127,7 @@ class LucentTodayRepository implements TodayRepository {
         talker.error(
           'LucentTodayRepository: fetch water records failed: $failure',
         );
-        waterMetric = _degradedObservedMetric(dateStr);
+        waterMetric = degradedObservedMetric(dateStr);
       },
       (waterRecords) {
         waterMetric = _waterObservedMetric(
@@ -204,7 +169,7 @@ class LucentTodayRepository implements TodayRepository {
     doseLogsResult.fold(
       (failure) {
         talker.error('LucentTodayRepository: dose logs failed: $failure');
-        medicationObservedMetric = _degradedObservedMetric(dateStr);
+        medicationObservedMetric = degradedObservedMetric(dateStr);
       },
       (doseLogs) {
         for (final log in doseLogs) {
@@ -275,22 +240,22 @@ class LucentTodayRepository implements TodayRepository {
           type: TodayVitalType.heartRate,
           valueLabel: vitalReadout.heartRateLabel,
           observedMetric: summaryFailed
-              ? _degradedObservedMetric(dateStr)
+              ? degradedObservedMetric(dateStr)
               : vitalReadout.heartRateMetric,
         ),
         TodayVitalSummary(
           type: TodayVitalType.bloodPressure,
           valueLabel: vitalReadout.bloodPressureLabel,
           observedMetric: summaryFailed
-              ? _degradedObservedMetric(dateStr)
+              ? degradedObservedMetric(dateStr)
               : vitalReadout.bloodPressureMetric,
         ),
         TodayVitalSummary(
           type: TodayVitalType.sleep,
           valueLabel: _formatSleepLabel(sleepPayload),
           observedMetric: summaryFailed
-              ? _degradedObservedMetric(dateStr)
-              : _observedMetric(
+              ? degradedObservedMetric(dateStr)
+              : observedMetric(
                   value: _sleepHours(recordPayloads['sleep']),
                   observed: sleepPayload != null,
                   observedCount: sleepPayload == null ? 0 : 1,
@@ -304,8 +269,8 @@ class LucentTodayRepository implements TodayRepository {
           type: TodayVitalType.mood,
           valueLabel: recordLatest['mood'] ?? '--',
           observedMetric: summaryFailed
-              ? _degradedObservedMetric(dateStr)
-              : _observedMetric(
+              ? degradedObservedMetric(dateStr)
+              : observedMetric(
                   value: null,
                   observed: recordLatest['mood'] != null,
                   observedCount: recordLatest['mood'] == null ? 0 : 1,
@@ -361,34 +326,34 @@ class LucentTodayRepository implements TodayRepository {
       water: TodayWaterSummary(
         completedCount: 0,
         targetCount: TodayDashboard.defaultWaterTargetCount,
-        observedMetric: _degradedObservedMetric(dateStr),
+        observedMetric: degradedObservedMetric(dateStr),
       ),
       medication: TodayMedicationSummary(
         medicineCount: 0,
         pendingCount: 0,
         nextDoseTimeLabel: '--',
-        observedMetric: _degradedObservedMetric(dateStr),
+        observedMetric: degradedObservedMetric(dateStr),
       ),
       vitals: [
         TodayVitalSummary(
           type: TodayVitalType.heartRate,
           valueLabel: '--',
-          observedMetric: _degradedObservedMetric(dateStr),
+          observedMetric: degradedObservedMetric(dateStr),
         ),
         TodayVitalSummary(
           type: TodayVitalType.bloodPressure,
           valueLabel: '--',
-          observedMetric: _degradedObservedMetric(dateStr),
+          observedMetric: degradedObservedMetric(dateStr),
         ),
         TodayVitalSummary(
           type: TodayVitalType.sleep,
           valueLabel: '--',
-          observedMetric: _degradedObservedMetric(dateStr),
+          observedMetric: degradedObservedMetric(dateStr),
         ),
         TodayVitalSummary(
           type: TodayVitalType.mood,
           valueLabel: '--',
-          observedMetric: _degradedObservedMetric(dateStr),
+          observedMetric: degradedObservedMetric(dateStr),
         ),
       ],
       mealSuggestion: _staticMealSuggestion,
@@ -603,8 +568,8 @@ final class _VitalReadout {
 
   factory _VitalReadout.degraded({required String date}) {
     return _VitalReadout(
-      heartRateMetric: _degradedObservedMetric(date),
-      bloodPressureMetric: _degradedObservedMetric(date),
+      heartRateMetric: degradedObservedMetric(date),
+      bloodPressureMetric: degradedObservedMetric(date),
     );
   }
 
@@ -636,7 +601,7 @@ final class _VitalReadout {
 
       if (vitalType == 'heartRate' && heartRateMetric == null) {
         final observed = value != null;
-        heartRateMetric = _observedMetric(
+        heartRateMetric = observedMetric(
           value: value,
           observed: observed,
           observedCount: observed ? 1 : 0,
@@ -650,7 +615,7 @@ final class _VitalReadout {
       if (vitalType == 'bloodPressure' && bloodPressureMetric == null) {
         final secondaryValue = payload?['secondaryValue'];
         final observed = value != null && secondaryValue is num;
-        bloodPressureMetric = _observedMetric(
+        bloodPressureMetric = observedMetric(
           value: value,
           observed: observed,
           observedCount: observed ? 1 : 0,
