@@ -6,13 +6,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
-import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -20,6 +18,7 @@ import 'package:luminous/features/record/application/usecases/record_detail_acti
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/providers/record_edit_controller.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/widgets/edit/edit_parts.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/edit_actions.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
@@ -146,7 +145,7 @@ class RecordEditPage extends HookConsumerWidget {
       switch (result) {
         case RecordEditSaveResult.saved:
           await Toast.show(context, l10n.mineEditSavedToast);
-          if (context.mounted) _popOrGoHome(context);
+          if (context.mounted) popEditOrGoHome(context);
         case RecordEditSaveResult.invalidSleep:
           await Toast.show(context, l10n.recordSleepInvalidValueToast);
         case RecordEditSaveResult.failed:
@@ -163,12 +162,12 @@ class RecordEditPage extends HookConsumerWidget {
 
     Future<void> handleBack() async {
       if (!dirty) {
-        _popOrGoHome(context);
+        popEditOrGoHome(context);
         return;
       }
-      final leave = await _confirmDiscard(context, l10n);
+      final leave = await confirmDiscardEdit(context, l10n);
       if (leave == true && context.mounted) {
-        _popOrGoHome(context);
+        popEditOrGoHome(context);
       }
     }
 
@@ -187,7 +186,7 @@ class RecordEditPage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               session.isLoading
-                  ? const _RecordEditLoading()
+                  ? const RecordEditLoading()
                   : AuthRequiredDialogGate(
                       onLogin: () =>
                           context.push(loginRouteForCurrentLocation(context)),
@@ -226,7 +225,7 @@ class RecordEditPage extends HookConsumerWidget {
           ),
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_RecordEditLoading()],
+            children: [RecordEditLoading()],
           ),
         ),
       );
@@ -244,7 +243,7 @@ class RecordEditPage extends HookConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
-                child: _EditStatusHint(dirty: dirty, l10n: l10n),
+                child: RecordEditStatusHint(dirty: dirty, l10n: l10n),
               ),
               const SizedBox(height: Spacing.level2),
               Padding(
@@ -381,132 +380,6 @@ class RecordEditPage extends HookConsumerWidget {
         title: l10n.recordEditAction,
         leading: AppBackButton(onPressed: () => unawaited(handleBack())),
         child: SingleChildScrollView(child: content),
-      ),
-    );
-  }
-}
-
-void _popOrGoHome(BuildContext context) {
-  if (GoRouter.of(context).canPop()) {
-    context.pop();
-  } else {
-    context.go(Routes.home);
-  }
-}
-
-/// Shows a discard-confirmation dialog; returns `true` when the user agrees
-/// to leave without saving.
-Future<bool?> _confirmDiscard(BuildContext context, AppLocalizations l10n) {
-  return showAppDialog<bool>(
-    context: context,
-    scrollable: false,
-    builder: (dialogContext) => Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.recordEditDiscardTitle,
-          style: dialogContext.theme.dialogStyle.titleTextStyle,
-        ),
-        const SizedBox(height: Spacing.level2),
-        Text(
-          l10n.recordEditDiscardMessage,
-          style: dialogContext.theme.dialogStyle.bodyTextStyle,
-        ),
-        const SizedBox(height: Spacing.level5),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
-              variant: FButtonVariant.ghost,
-              onPress: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.recordEditKeepEditingAction),
-            ),
-            const SizedBox(width: Spacing.level3),
-            FButton(
-              key: const Key('record-edit-discard-confirm'),
-              variant: FButtonVariant.destructive,
-              onPress: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.recordEditDiscardAction),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
-class _RecordEditLoading extends StatelessWidget {
-  const _RecordEditLoading();
-
-  @override
-  Widget build(BuildContext context) {
-    return const InlineSkeletonSection(
-      children: [
-        InlineSkeletonBlock(height: 56),
-        InlineSkeletonBlock(height: 56),
-        InlineSkeletonBlock(height: 56),
-        InlineSkeletonBlock(height: 96),
-        InlineSkeletonBlock(height: 56),
-        InlineSkeletonBlock(height: 44),
-      ],
-    );
-  }
-}
-
-/// Status hint above the edit form.
-///
-/// Shows a subtle "changes take effect after saving" hint by default, and
-/// switches to a warning pill while the form is dirty, echoing the
-/// discard-confirmation dialog shown on back navigation.
-class _EditStatusHint extends StatelessWidget {
-  const _EditStatusHint({required this.dirty, required this.l10n});
-
-  final bool dirty;
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    const warning = SemanticColor.warning;
-    final background = dirty ? warning.subtle(context) : colors.muted;
-    final foreground = dirty
-        ? warning.solid(context)
-        : SemanticColor.neutral.solid(context);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: context.theme.style.borderRadius.xs,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level2,
-        ),
-        child: Row(
-          key: Key(
-            dirty ? 'record-edit-unsaved-hint' : 'record-edit-save-hint',
-          ),
-          children: [
-            Icon(
-              dirty ? SemanticIcons.statusWarning : SemanticIcons.statusInfo,
-              color: foreground,
-              size: IconSizeTokens.level2,
-            ),
-            const SizedBox(width: Spacing.level2),
-            Expanded(
-              child: Text(
-                dirty
-                    ? l10n.recordEditUnsavedWarning
-                    : l10n.recordEditUnsavedHint,
-                style: context.theme.typography.body.xs.copyWith(
-                  color: foreground,
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
