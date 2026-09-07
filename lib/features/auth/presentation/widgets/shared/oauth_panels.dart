@@ -25,6 +25,9 @@ abstract final class OAuthBrandColors {
   /// Google blue — #4285F4.
   static const Color google = Color(0xFF4285F4);
 
+  /// Google border for white-background icon button — #E8EAED.
+  static const Color googleBorder = Color(0xFFE8EAED);
+
   /// Apple black — #000000.
   static const Color apple = Color(0xFF000000);
 }
@@ -209,9 +212,9 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                 backgroundColor: Colors.white,
                 // Google 官方彩色图标自带品牌色，白底上不再使用蓝色圆底+
                 // 白色滤镜，避免破坏官方品牌规范（品牌惯例）。
-                keepIconColor: true,
+                useOfficialBrandColor: true,
                 border: const Border.fromBorderSide(
-                  BorderSide(color: Color(0xFFE8EAED), width: 1),
+                  BorderSide(color: OAuthBrandColors.googleBorder, width: 1),
                 ),
                 isLoading: widget.isStartingGoogle,
                 disabled: widget.isStartingGoogle || widget.isCompletingGoogle,
@@ -345,8 +348,8 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
 /// A single circular OAuth provider button with brand color background
 /// and white SVG icon. Shows a loading spinner when [isLoading] is true.
 ///
-/// When [keepIconColor] is true the button uses a white background and
-/// renders the icon with its original colors (used by Google's official
+/// When [useOfficialBrandColor] is true the button uses a white background
+/// and renders the icon with its original colors (used by Google's official
 /// colored logo); otherwise the icon is tinted white over the brand color.
 class _OAuthCircleButton extends StatelessWidget {
   const _OAuthCircleButton({
@@ -356,7 +359,7 @@ class _OAuthCircleButton extends StatelessWidget {
     required this.isLoading,
     required this.disabled,
     required this.onPressed,
-    this.keepIconColor = false,
+    this.useOfficialBrandColor = false,
     this.border,
   });
 
@@ -368,7 +371,7 @@ class _OAuthCircleButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   /// Whether the SVG keeps its own colors (no white [ColorFilter]).
-  final bool keepIconColor;
+  final bool useOfficialBrandColor;
 
   /// Optional border (e.g. Google white button needs a subtle outline).
   final BoxBorder? border;
@@ -403,7 +406,7 @@ class _OAuthCircleButton extends StatelessWidget {
                   height: 24,
                   // 品牌色圆底上的固定白色图标（品牌标识惯例，不随主题变化）；
                   // Google 例外：保留彩色官方图标，不加白色滤镜。
-                  colorFilter: keepIconColor
+                  colorFilter: useOfficialBrandColor
                       ? null
                       : const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                 ),
