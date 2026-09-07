@@ -11,13 +11,15 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/api_paths.dart';
-import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/review/presentation/providers/clinic_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import 'package:luminous/features/review/presentation/utils/clinic_summary_field_mapping.dart';
 import 'package:luminous/features/review/presentation/utils/pdf_download.dart';
+import 'package:luminous/features/review/presentation/widgets/dialogs/clinic_summary_error_state.dart';
+import 'package:luminous/features/review/presentation/widgets/dialogs/clinic_summary_field_selection.dart';
+import 'package:luminous/features/review/presentation/widgets/dialogs/clinic_summary_share_flow.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/clinic_summary_content.dart';
-import 'package:luminous/features/review/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Shows a dialog (desktop) or bottom sheet (mobile) that previews the
@@ -74,19 +76,6 @@ class _ClinicSummaryPreviewContent extends ConsumerStatefulWidget {
       _ClinicSummaryPreviewContentState();
 }
 
-/// Share flow step shown inside the dialog after tapping [Share summary].
-enum _ShareStep {
-  /// Ask for confirmation, showing the expiry and the
-  /// "anyone with the link can view" notice before creating.
-  confirm,
-
-  /// Link created — offer copy and revoke.
-  created,
-
-  /// Share revoked — the link no longer works.
-  revoked,
-}
-
 class _ClinicSummaryPreviewContentState
     extends ConsumerState<_ClinicSummaryPreviewContent> {
   bool _isPdfDownloading = false;
@@ -99,9 +88,9 @@ class _ClinicSummaryPreviewContentState
       kClinicSummaryDefaultFields;
 
   /// Active share flow step, or null when showing the summary content.
-  _ShareStep? _shareStep;
+  ClinicSummaryShareStep? _shareStep;
 
-  /// The created share — set once [_ShareStep.created] is reached.
+  /// The created share — set once [ClinicSummaryShareStep.created] is reached.
   ClinicSummaryShareResponse? _shareResponse;
 
   /// One previewed event per dialog presentation. Riverpod auto-retries a
@@ -161,7 +150,7 @@ class _ClinicSummaryPreviewContentState
           ),
         ),
       ),
-      error: (e, _) => _ErrorView(
+      error: (e, _) => ClinicSummaryErrorView(
         message: l10n.reviewClinicSummaryLoadFailed,
         onRetry: () =>
             ref.invalidate(clinicSummaryPreviewProvider(_selectedFields)),
@@ -172,13 +161,15 @@ class _ClinicSummaryPreviewContentState
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _FieldSelectionPanel(
+            ClinicSummaryFieldSelectionPanel(
               selectedFields: _selectedFields,
               // During the created/revoked steps the shown link is already
               // fixed — toggling must not silently re-run the preview behind
               // it. During the confirm step toggling stays enabled because it
               // affects the share being created.
-              enabled: _shareStep == null || _shareStep == _ShareStep.confirm,
+              enabled:
+                  _shareStep == null ||
+                  _shareStep == ClinicSummaryShareStep.confirm,
               onChanged: _updateSelection,
             ),
             const SizedBox(height: Spacing.level4),
@@ -261,7 +252,7 @@ class _ClinicSummaryPreviewContentState
   /// a doctor received it.
   void _openShareConfirm() {
     setState(() {
-      _shareStep = _ShareStep.confirm;
+      _shareStep = ClinicSummaryShareStep.confirm;
       _shareResponse = null;
     });
   }
@@ -296,7 +287,7 @@ class _ClinicSummaryPreviewContentState
       if (mounted) {
         setState(() {
           _shareResponse = value;
-          _shareStep = _ShareStep.created;
+          _shareStep = ClinicSummaryShareStep.created;
         });
       }
     } catch (error) {
@@ -342,7 +333,7 @@ class _ClinicSummaryPreviewContentState
       final api = ref.read(lucentClientProvider).reports;
       await api.revokeClinicSummaryShare(shareId: shareId);
       if (mounted) {
-        setState(() => _shareStep = _ShareStep.revoked);
+        setState(() => _shareStep = ClinicSummaryShareStep.revoked);
       }
     } catch (error) {
       // 撤销失败（网络 / 服务端业务失败 / 协议异常逃逸）统一提示失败，
@@ -362,7 +353,7 @@ class _ClinicSummaryPreviewContentState
 
   Widget _buildShareStep(AppLocalizations l10n) {
     return switch (_shareStep!) {
-      _ShareStep.confirm => _ShareConfirmPanel(
+      ClinicSummaryShareStep.confirm => ClinicSummaryShareConfirmPanel(
         isCreating: _isCreatingShare,
         hasNotes: _selectedFields.contains(
           PreviewClinicSummaryRequestSelectedFieldsEnum.notes,
@@ -370,450 +361,16 @@ class _ClinicSummaryPreviewContentState
         onCancel: _closeShareFlow,
         onConfirm: _createShare,
       ),
-      _ShareStep.created => _ShareCreatedPanel(
+      ClinicSummaryShareStep.created => ClinicSummaryShareCreatedPanel(
         response: _shareResponse!,
         isRevoking: _isRevokingShare,
         onCopy: _copyLink,
         onRevoke: _revokeShare,
         onClose: _closeShareFlow,
       ),
-      _ShareStep.revoked => _ShareRevokedPanel(onClose: _closeShareFlow),
-    };
-  }
-}
-
-// ── Enum mapping ───────────────────────────────────────────────────────────
-
-/// Maps [PreviewClinicSummaryRequestSelectedFieldsEnum] values to their
-/// [ShareClinicSummaryRequestSelectedFieldsEnum] counterparts by wire value.
-///
-/// The two enums are generated independently (different request schemas) but
-/// share the same wire values for matching members. Unrecognised values — for
-/// example if Lucent trims a share-only field that the preview schema still
-/// carries — are dropped with a warning rather than crashing, protecting
-/// against `firstWhere` throwing `StateError` at runtime (2026-09-04 review
-/// #2).
-List<ShareClinicSummaryRequestSelectedFieldsEnum> mapPreviewFieldsToShare(
-  List<PreviewClinicSummaryRequestSelectedFieldsEnum> fields,
-) {
-  final result = <ShareClinicSummaryRequestSelectedFieldsEnum>[];
-  for (final field in fields) {
-    final match = ShareClinicSummaryRequestSelectedFieldsEnum.values.firstWhere(
-      (candidate) => candidate.value == field.value,
-      orElse: () =>
-          ShareClinicSummaryRequestSelectedFieldsEnum.unknownDefaultOpenApi,
-    );
-    if (match ==
-        ShareClinicSummaryRequestSelectedFieldsEnum.unknownDefaultOpenApi) {
-      appTalker.warning(
-        'ClinicSummary share: preview field "${field.value}" has no share '
-        'enum equivalent; dropping from share payload.',
-      );
-    } else {
-      result.add(match);
-    }
-  }
-  return result;
-}
-
-// ── Field selection panel ───────────────────────────────────────────────────
-
-/// Per-field privacy toggles: 事件概况 / 症状变化 / 用药槽位 / 饮水 / 睡眠 /
-/// 备注. The free-text notes field defaults to off; the last remaining
-/// selected field cannot be toggled off (an empty selection is impossible).
-class _FieldSelectionPanel extends StatelessWidget {
-  const _FieldSelectionPanel({
-    required this.selectedFields,
-    required this.enabled,
-    required this.onChanged,
-  });
-
-  final List<PreviewClinicSummaryRequestSelectedFieldsEnum> selectedFields;
-
-  /// Whether the toggles can be changed. Disabled once the share link is
-  /// created/revoked, so the preview cannot silently change behind the
-  /// shown link.
-  final bool enabled;
-
-  final ValueChanged<List<PreviewClinicSummaryRequestSelectedFieldsEnum>>
-  onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final typography = context.theme.typography;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.reviewClinicSummaryFieldSectionTitle,
-          style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: Spacing.level2),
-        for (final field in kClinicSummaryAllFields) ...[
-          _FieldToggle(
-            key: Key('clinic-summary-field-${field.value}'),
-            label: _fieldLabel(l10n, field),
-            selected: selectedFields.contains(field),
-            // The last remaining selection cannot be disabled — an empty
-            // field selection is rejected by the server.
-            enabled:
-                enabled &&
-                (selectedFields.contains(field)
-                    ? selectedFields.length > 1
-                    : true),
-            onChanged: (value) => onChanged(
-              value
-                  ? [...selectedFields, field]
-                  : ([...selectedFields]..remove(field)),
-            ),
-          ),
-          if (field != kClinicSummaryAllFields.last)
-            const SizedBox(height: Spacing.level1),
-        ],
-        const SizedBox(height: Spacing.level2),
-        Text(
-          l10n.reviewClinicSummaryFieldPrivacyHint,
-          style: typography.body.xs.copyWith(
-            color: SemanticColor.neutral.solid(context),
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _fieldLabel(
-    AppLocalizations l10n,
-    PreviewClinicSummaryRequestSelectedFieldsEnum field,
-  ) {
-    return switch (field) {
-      PreviewClinicSummaryRequestSelectedFieldsEnum.eventOverview =>
-        l10n.reviewClinicSummaryFieldEventOverview,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.symptomChanges =>
-        l10n.reviewClinicSummaryFieldSymptomChanges,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.medicationSlots =>
-        l10n.reviewClinicSummaryFieldMedicationSlots,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.water =>
-        l10n.reviewClinicSummaryFieldWater,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.sleep =>
-        l10n.reviewClinicSummaryFieldSleep,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.notes =>
-        l10n.reviewClinicSummaryFieldNotes,
-      PreviewClinicSummaryRequestSelectedFieldsEnum.unknownDefaultOpenApi =>
-        field.value,
-    };
-  }
-}
-
-class _FieldToggle extends StatelessWidget {
-  const _FieldToggle({
-    super.key,
-    required this.label,
-    required this.selected,
-    required this.enabled,
-    required this.onChanged,
-  });
-
-  final String label;
-  final bool selected;
-  final bool enabled;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        FCheckbox(
-          value: selected,
-          enabled: enabled,
-          // The visible label is a separate Text in the row — expose it to
-          // screen readers via the checkbox semantics (register.dart
-          // pattern).
-          semanticsLabel: label,
-          onChange: enabled ? onChanged : null,
-        ),
-        const SizedBox(width: Spacing.level3),
-        Expanded(child: Text(label, style: context.theme.typography.body.sm)),
-      ],
-    );
-  }
-}
-
-// ── Share flow panels ───────────────────────────────────────────────────────
-
-/// Pre-creation confirmation: expiry + "anyone with the link can view".
-class _ShareConfirmPanel extends StatelessWidget {
-  const _ShareConfirmPanel({
-    required this.isCreating,
-    required this.hasNotes,
-    required this.onCancel,
-    required this.onConfirm,
-  });
-
-  final bool isCreating;
-
-  /// Whether the notes field is currently selected — when true, an extra
-  /// privacy warning is shown because notes appear in plain text to anyone
-  /// with the share link (R-2).
-  final bool hasNotes;
-
-  final VoidCallback onCancel;
-  final VoidCallback onConfirm;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.reviewShareConfirmTitle,
-          style: context.theme.typography.body.lg.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: Spacing.level4),
-        _NoticeRow(
-          icon: SemanticIcons.safetyTiming,
-          iconColor: SemanticColor.neutral.solid(context),
-          text: l10n.reviewShareConfirmExpiryHint(7),
-        ),
-        const SizedBox(height: Spacing.level3),
-        _NoticeRow(
-          icon: SemanticIcons.safetySafe,
-          iconColor: SemanticColor.primary.solid(context),
-          text: l10n.reviewShareConfirmNotice,
-        ),
-        if (hasNotes) ...[
-          const SizedBox(height: Spacing.level3),
-          _NoticeRow(
-            icon: SemanticIcons.statusWarning,
-            iconColor: SemanticColor.warning.solid(context),
-            text: l10n.reviewClinicSummaryNotesPrivacyWarning,
-          ),
-        ],
-        const SizedBox(height: Spacing.level5),
-        Row(
-          children: [
-            Expanded(
-              child: FButton(
-                variant: FButtonVariant.outline,
-                onPress: isCreating ? null : onCancel,
-                child: Text(l10n.commonCancel),
-              ),
-            ),
-            const SizedBox(width: Spacing.level3),
-            Expanded(
-              child: FButton(
-                variant: FButtonVariant.primary,
-                onPress: isCreating ? null : onConfirm,
-                child: isCreating
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: FCircularProgress(),
-                      )
-                    : Text(l10n.reviewShareConfirmAction),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-/// Post-creation: the link itself with COPY and REVOKE actions.
-class _ShareCreatedPanel extends StatelessWidget {
-  const _ShareCreatedPanel({
-    required this.response,
-    required this.isRevoking,
-    required this.onCopy,
-    required this.onRevoke,
-    required this.onClose,
-  });
-
-  final ClinicSummaryShareResponse response;
-  final bool isRevoking;
-  final VoidCallback onCopy;
-  final VoidCallback onRevoke;
-  final VoidCallback onClose;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final locale = Localizations.localeOf(context);
-    final typography = context.theme.typography;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.reviewShareCreatedTitle,
-          style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: Spacing.level3),
-        MetaRow(
-          label: l10n.reviewShareCreatedExpiresAt,
-          value: formatDateTimeFull(response.expiresAt, locale),
-        ),
-        const SizedBox(height: Spacing.level4),
-        FCard(
-          child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
-            child: Text(
-              response.shareUrl,
-              style: typography.body.xs.copyWith(
-                color: SemanticColor.neutral.solid(context),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: Spacing.level4),
-        Row(
-          children: [
-            Expanded(
-              child: FButton(
-                variant: FButtonVariant.outline,
-                onPress: isRevoking ? null : onCopy,
-                child: Text(l10n.reviewShareCopyAction),
-              ),
-            ),
-            const SizedBox(width: Spacing.level3),
-            Expanded(
-              child: FButton(
-                variant: FButtonVariant.outline,
-                onPress: isRevoking ? null : onRevoke,
-                child: isRevoking
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: FCircularProgress(),
-                      )
-                    : Text(l10n.reviewShareRevokeAction),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: Spacing.level3),
-        FButton(
-          variant: FButtonVariant.ghost,
-          onPress: isRevoking ? null : onClose,
-          child: Text(l10n.commonClose),
-        ),
-      ],
-    );
-  }
-}
-
-/// Terminal state after revocation: the link no longer works.
-class _ShareRevokedPanel extends StatelessWidget {
-  const _ShareRevokedPanel({required this.onClose});
-
-  final VoidCallback onClose;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final typography = context.theme.typography;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          SemanticIcons.statusWarning,
-          size: 28,
-          color: SemanticColor.neutral.solid(context),
-        ),
-        const SizedBox(height: Spacing.level3),
-        Text(
-          l10n.reviewShareRevokedTitle,
-          style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: Spacing.level2),
-        Text(
-          l10n.reviewShareRevokedBody,
-          style: typography.body.xs.copyWith(
-            color: SemanticColor.neutral.solid(context),
-          ),
-        ),
-        const SizedBox(height: Spacing.level5),
-        FButton(
-          variant: FButtonVariant.primary,
-          onPress: onClose,
-          child: Text(l10n.commonClose),
-        ),
-      ],
-    );
-  }
-}
-
-class _NoticeRow extends StatelessWidget {
-  const _NoticeRow({
-    required this.icon,
-    required this.iconColor,
-    required this.text,
-  });
-
-  final IconData icon;
-  final Color iconColor;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 2),
-          child: Icon(icon, size: 16, color: iconColor),
-        ),
-        const SizedBox(width: Spacing.level3),
-        Expanded(child: Text(text, style: context.theme.typography.body.xs)),
-      ],
-    );
-  }
-}
-
-// ── Error view ──────────────────────────────────────────────────────────────
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry});
-
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.level5),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            SemanticIcons.statusWarning,
-            size: 32,
-            color: SemanticColor.warning.solid(context),
-          ),
-          const SizedBox(height: Spacing.level3),
-          Text(
-            message,
-            style: context.theme.typography.body.sm,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: Spacing.level4),
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: onRetry,
-            child: Text(l10n.todayRetryAction),
-          ),
-        ],
+      ClinicSummaryShareStep.revoked => ClinicSummaryShareRevokedPanel(
+        onClose: _closeShareFlow,
       ),
-    );
+    };
   }
 }

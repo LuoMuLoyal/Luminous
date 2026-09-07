@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/features/review/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart';
+import 'package:luminous/features/review/presentation/utils/clinic_summary_field_mapping.dart';
 
 /// Locks the preview→share field-enum mapping used by the clinic summary
 /// share flow. The two enums are generated independently; this test anchors
