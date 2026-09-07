@@ -32,6 +32,8 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
+- [`2026-09-07-large-file-domain-splitting-plan.md`](2026-09-07-large-file-domain-splitting-plan.md)
+  — 超大文件按领域拆分：55 个 ≥400 行手写文件盘点；P0 五个核心大文件（detail 975 / conversation 922 / clinic 819 / page_body 635 / login 651）已子 agent 完成逐行分析并给出新文件清单；P1/P2 批量拆分与执行批次
 - [`2026-09-06-account-profile-restructure.md`](2026-09-06-account-profile-restructure.md)
   — 账号体系重构：个人信息页（头像/昵称/过敏史/身高体重血型）、账号管理页（重命名自账号与安全，列表化 + 底部客服/反馈/帮助入口）、账号安全中心（授权/敏感/登录记录、账号保护）；Phase 1 盒子套盒子已修
 - [`2026-09-02-agentic-proactive-evolution.md`](2026-09-02-agentic-proactive-evolution.md)
