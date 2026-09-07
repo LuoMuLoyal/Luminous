@@ -9,9 +9,9 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
+import 'package:luminous/features/medicine/presentation/widgets/sections/mobile_safety.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
@@ -20,7 +20,6 @@ import 'package:luminous/l10n/app_localizations.dart';
 part '../sections/mobile_drugbox.dart';
 part '../sections/mobile_quick_operations.dart';
 part '../sections/mobile_records.dart';
-part '../sections/mobile_safety.dart';
 part '../shared/mobile_shared.dart';
 
 class MedicineMobileDashboardView extends StatelessWidget {
@@ -86,7 +85,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
           onMarkDose: onMarkDose,
         ),
         const SizedBox(height: Spacing.level4),
-        _SafetyEngineSection(
+        SafetyEngineSection(
           records: workspace.riskCheckRecords,
           alerts: alerts.take(4).toList(growable: false),
           l10n: l10n,
@@ -136,7 +135,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
                   onMarkDose: onMarkDose,
                 ),
                 const SizedBox(height: Spacing.level5),
-                _SafetyEngineSection(
+                SafetyEngineSection(
                   records: workspace.riskCheckRecords,
                   alerts: alerts.take(4).toList(growable: false),
                   l10n: l10n,
@@ -192,7 +191,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SafetyEngineSection(
+              SafetyEngineSection(
                 records: workspace.riskCheckRecords,
                 alerts: alerts.take(4).toList(growable: false),
                 l10n: l10n,

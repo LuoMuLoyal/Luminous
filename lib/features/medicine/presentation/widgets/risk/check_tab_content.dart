@@ -5,6 +5,8 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/coverage_tab_section.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/findings_tab_section.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/overview_recommendation.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/overview_states.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/overview_tab_section.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/red_flag.dart';
 import 'package:luminous/l10n/app_localizations.dart';
