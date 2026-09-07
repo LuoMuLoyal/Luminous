@@ -203,6 +203,9 @@ class AccountSettingsPage extends HookConsumerWidget {
                             );
                           }
                         },
+                        // 微信绑定入口暂隐藏（保留底层流程与已绑定身份展示/解绑，
+                        // 见 docs/TODO.md）；后续具备企业资质后再恢复。
+                        showWechatLink: false,
                       ),
                       const SizedBox(height: Spacing.level6),
                       SessionManagementSection(

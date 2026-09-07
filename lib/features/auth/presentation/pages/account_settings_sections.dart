@@ -129,12 +129,17 @@ class LinkedIdentitiesSection extends StatelessWidget {
     required this.isSubmitting,
     required this.onLinkWechat,
     required this.onUnlink,
+    this.showWechatLink = true,
   });
 
   final AuthUser user;
   final bool isSubmitting;
   final Future<void> Function() onLinkWechat;
   final Future<void> Function(AuthLinkedIdentity identity) onUnlink;
+
+  /// Shows the "绑定微信" button. When `false` the button is removed but the
+  /// underlying flow and any already-linked identity tiles remain visible.
+  final bool showWechatLink;
 
   @override
   Widget build(BuildContext context) {
@@ -153,20 +158,19 @@ class LinkedIdentitiesSection extends StatelessWidget {
               onUnlink: () => onUnlink(identity),
             ),
           ),
-        // 微信绑定入口暂隐藏（保留底层流程与已绑定身份展示/解绑，
-        // 见 docs/TODO.md）；后续具备企业资质后再恢复。
-        // FButton(
-        //   key: const Key('wechat-identity-link-button'),
-        //   variant: FButtonVariant.outline,
-        //   onPress: isSubmitting ? null : () => onLinkWechat(),
-        //   child: isSubmitting
-        //       ? const SizedBox(
-        //           width: 18,
-        //           height: 18,
-        //           child: FCircularProgress(),
-        //         )
-        //       : Text(l10n.authIdentityLinkWechatAction),
-        // ),
+        if (showWechatLink)
+          FButton(
+            key: const Key('wechat-identity-link-button'),
+            variant: FButtonVariant.outline,
+            onPress: isSubmitting ? null : () => onLinkWechat(),
+            child: isSubmitting
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: FCircularProgress(),
+                  )
+                : Text(l10n.authIdentityLinkWechatAction),
+          ),
       ],
     );
   }
