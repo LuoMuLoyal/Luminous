@@ -10,13 +10,8 @@ import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
-import 'package:luminous/features/health_event/presentation/widgets/sheets/check_in.dart';
-import 'package:luminous/features/health_event/presentation/widgets/sheets/end_event.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
@@ -88,73 +83,6 @@ class ReviewPage extends ConsumerWidget {
     ]);
   }
 
-  Future<void> _openCheckIn(
-    BuildContext context,
-    WidgetRef ref,
-    EventReview review,
-  ) async {
-    final l10n = AppLocalizations.of(context)!;
-    await showAppDialog<void>(
-      context: context,
-      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-      scrollable: false,
-      builder: (dialogContext) => CheckInSheet(
-        heading: l10n.todayHealthEventCheckInTitle,
-        subtitle: l10n.todayHealthEventCheckInSubtitle,
-        improvedLabel: l10n.todayHealthEventImproved,
-        unchangedLabel: l10n.todayHealthEventUnchanged,
-        worsenedLabel: l10n.todayHealthEventWorsened,
-        cancelLabel: l10n.todayHealthEventCancelAction,
-        submitLabel: l10n.todayHealthEventCheckInAction,
-        submittingLabel: l10n.todayHealthEventSaveAction,
-        requiredMessage: l10n.todayHealthEventOutcomeRequired,
-        submitErrorLabel: l10n.todayHealthEventSaveFailed,
-        onSubmit: (outcome) async {
-          final userTimezone = await readUserTimezone(ref);
-          await ref
-              .read(activeHealthEventProvider.notifier)
-              .checkIn(
-                eventId: review.event.id,
-                date: localDateKey(DateTime.now(), timeZoneName: userTimezone),
-                outcome: outcome,
-              );
-          if (dialogContext.mounted) Navigator.of(dialogContext).pop();
-        },
-      ),
-    );
-  }
-
-  Future<void> _openEnd(
-    BuildContext context,
-    WidgetRef ref,
-    EventReview review,
-  ) async {
-    final l10n = AppLocalizations.of(context)!;
-    await showAppDialog<void>(
-      context: context,
-      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-      scrollable: false,
-      builder: (dialogContext) => EndEventSheet(
-        heading: l10n.todayHealthEventEndTitle,
-        subtitle: l10n.todayHealthEventEndSubtitle,
-        improvedLabel: l10n.todayHealthEventImproved,
-        unchangedLabel: l10n.todayHealthEventUnchanged,
-        worsenedLabel: l10n.todayHealthEventWorsened,
-        cancelLabel: l10n.todayHealthEventCancelAction,
-        submitLabel: l10n.todayHealthEventEndAction,
-        submittingLabel: l10n.todayHealthEventSaveAction,
-        requiredMessage: l10n.todayHealthEventOutcomeRequired,
-        submitErrorLabel: l10n.todayHealthEventSaveFailed,
-        onSubmit: (outcome) async {
-          await ref
-              .read(activeHealthEventProvider.notifier)
-              .end(eventId: review.event.id, outcome: outcome);
-          if (dialogContext.mounted) Navigator.of(dialogContext).pop();
-        },
-      ),
-    );
-  }
-
   /// AI 总结范围切换：7/30 天直接生效；「自定义」先弹日历选区间，取消则
   /// 保持原范围（不产生“选了自定义却无区间”的死路）。选中的区间写入
   /// [reviewDashboardSelectedQueryProvider]——该 provider 同时是 legacy
@@ -195,7 +123,6 @@ class ReviewPage extends ConsumerWidget {
     final cachedReview = ref.watch(reviewLastCurrentProvider);
     final historyAsync = ref.watch(reviewHistoryProvider);
     final historyStatus = ref.watch(reviewHistoryStatusProvider);
-    final review = currentAsync.asData?.value ?? cachedReview;
 
     // AI 总结 providers——仅登录用户可见。
     final aiSummariesEnabled = canAccessProtectedData
@@ -355,12 +282,7 @@ class ReviewPage extends ConsumerWidget {
             isColdStart: isColdStart,
             coldObserved: coldObserved,
             coldExpected: coldExpected,
-            onCheckIn: review == null
-                ? () {}
-                : () => _openCheckIn(context, ref, review),
-            onEndEvent: review == null
-                ? () {}
-                : () => _openEnd(context, ref, review),
+            onGoTodayCheckIn: () => context.go(Routes.home),
             onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
             onHistoryRetry: () => ref.invalidate(reviewHistoryProvider),
             onEventTap: (event) => context.push(

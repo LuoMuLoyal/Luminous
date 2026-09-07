@@ -3,37 +3,38 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
-import 'package:luminous/features/review/presentation/widgets/shared/constrained_action_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// 回顾首屏的事件头部：标题、进行中/已结束状态、观察时段与关联用药。
+/// 回顾首屏的事件头部（被动展示）。
 ///
-/// - active 事件：可用且今天尚未确认时提供今日 check-in，同时保留结束入口；
-/// - ended 事件：展示用户确认的结果（outcome），不提供 check-in。
+/// P0-6：check-in / end 动作从 review 主路径移除（动作收口 Today），此头部
+/// 只做信息呈现：active 事件渲染紧凑被动卡（标题、状态 chip、已进行天数、
+/// 今日是否已确认一行 + 「去今日 check-in」浅链接切 today tab）；ended 事件
+/// 保留结果/时段展示，不含任何动作。完整四段回顾仍走 `/review/:eventId`
+/// 详情页。
 class EventHeaderSection extends StatelessWidget {
   const EventHeaderSection({
     super.key,
     required this.event,
     required this.todayCheckIn,
-    required this.showCheckInAction,
-    required this.showEndAction,
-    required this.onCheckIn,
-    required this.onEndEvent,
+    required this.onGoTodayCheckIn,
   });
 
   final ReviewEvent event;
   final ReviewTodayCheckIn? todayCheckIn;
-  final bool showCheckInAction;
-  final bool showEndAction;
-  final VoidCallback onCheckIn;
-  final VoidCallback onEndEvent;
+
+  /// 「去今日 check-in」浅链接回调（页面层切 today tab）。
+  final VoidCallback onGoTodayCheckIn;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isActive = event.status == ReviewEventStatus.active;
-    final canCheckIn = isActive && showCheckInAction && todayCheckIn == null;
     final typography = context.theme.typography;
+    final started = DateTime.tryParse(event.startedAt)?.toLocal();
+    final elapsedDays = started == null
+        ? null
+        : DateTime.now().difference(started).inDays + 1;
 
     return FCard(
       key: const Key('review-event-header'),
@@ -42,8 +43,7 @@ class EventHeaderSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 事件标题在最前：TalkBack/VoiceOver 语义顺序与视觉一致，
-            // 先读标题再读状态/结果（Task 9 a11y 顺序校验）。
+            // 事件标题在最前：TalkBack/VoiceOver 语义顺序与视觉一致。
             Text(
               event.title,
               style: typography.display.lg.copyWith(
@@ -53,8 +53,6 @@ class EventHeaderSection extends StatelessWidget {
             const SizedBox(height: Spacing.level3),
             Row(
               children: [
-                // chip 参与 flex 收缩：英文等长文案下避免与结束按钮同行
-                // 溢出（RenderFlex overflow 回归，Task 9 en 矩阵）。
                 Flexible(
                   child: _ReviewStatusChip(
                     key: const Key('review-event-status-chip'),
@@ -70,14 +68,6 @@ class EventHeaderSection extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                if (isActive && showEndAction)
-                  FButton(
-                    key: const Key('review-end-event-action'),
-                    variant: FButtonVariant.ghost,
-                    size: FButtonSizeVariant.sm,
-                    onPress: onEndEvent,
-                    child: Text(l10n.reviewReviewEndEventAction),
-                  ),
               ],
             ),
             const SizedBox(height: Spacing.level2),
@@ -87,6 +77,15 @@ class EventHeaderSection extends StatelessWidget {
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
+            if (isActive && elapsedDays != null) ...[
+              const SizedBox(height: Spacing.level2),
+              Text(
+                l10n.reviewActiveEventElapsedDays(elapsedDays),
+                style: typography.body.xs.copyWith(
+                  color: SemanticColor.neutral.solid(context),
+                ),
+              ),
+            ],
             const SizedBox(height: Spacing.level2),
             Text(
               l10n.reviewReviewStartedLabel(
@@ -136,23 +135,34 @@ class EventHeaderSection extends StatelessWidget {
                 ],
               ),
             ],
-            if (canCheckIn) ...[
-              const SizedBox(height: Spacing.level4),
-              ConstrainedActionButton(
-                key: const Key('review-check-in-action'),
-                onPress: onCheckIn,
-                label: l10n.reviewReviewCheckInAction,
-              ),
-            ] else if (isActive && todayCheckIn != null) ...[
+            if (isActive) ...[
               const SizedBox(height: Spacing.level3),
-              Text(
-                l10n.reviewReviewCheckInDoneToday(
-                  reviewOutcomeLabel(l10n, todayCheckIn!.outcome),
+              if (todayCheckIn != null)
+                Text(
+                  l10n.reviewReviewCheckInDoneToday(
+                    reviewOutcomeLabel(l10n, todayCheckIn!.outcome),
+                  ),
+                  style: typography.body.xs.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                )
+              else
+                // 今日尚未确认：浅链接切到 today tab 自行呈现 check-in。
+                FButton(
+                  key: const Key('review-go-today-check-in'),
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.sm,
+                  onPress: onGoTodayCheckIn,
+                  // Forui 按钮内部 Row 对大字号不收缩，包一层 Expanded 让其
+                  // 受约束并省略号截断，避免长文本横溢。
+                  child: Expanded(
+                    child: Text(
+                      l10n.reviewActiveEventGoTodayCheckIn,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
-                style: typography.body.xs.copyWith(
-                  color: SemanticColor.neutral.solid(context),
-                ),
-              ),
             ],
           ],
         ),

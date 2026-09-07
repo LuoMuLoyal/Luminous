@@ -376,6 +376,15 @@
       }
     }
   },
+  "reviewActiveEventElapsedDays": "Ongoing for {days} day(s)",
+  "@reviewActiveEventElapsedDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewActiveEventGoTodayCheckIn": "Go to today's check-in",
   "reviewReviewEndEventAction": "End observation",
   "reviewReviewReasonNoObservations": "No observations were recorded during this window.",
   "reviewReviewReasonInsufficientCoverage": "Some records exist, but not enough to compute a trend.",

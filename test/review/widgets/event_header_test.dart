@@ -35,37 +35,31 @@ void main() {
   testWidgets('active event shows ongoing chip and offers today check-in', (
     tester,
   ) async {
-    var checkInTapped = false;
-    var endTapped = false;
+    var goTodayCheckInTapped = false;
     await pumpHeader(
       tester,
       EventHeaderSection(
         event: _activeEvent,
         todayCheckIn: null,
-        showCheckInAction: true,
-        showEndAction: true,
-        onCheckIn: () => checkInTapped = true,
-        onEndEvent: () => endTapped = true,
+        onGoTodayCheckIn: () => goTodayCheckInTapped = true,
       ),
     );
 
     expect(find.text('感冒观察'), findsOneWidget);
     expect(find.text(l10n.reviewReviewStatusActive), findsOneWidget);
-    expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
-    expect(find.byKey(const Key('review-end-event-action')), findsOneWidget);
+    // 今日尚未确认：渲染「去今日 check-in」浅链接，而非旧的 check-in/end 按钮。
+    expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
     // 关联用药与开始日期。
     expect(find.text('关联 2 种用药'), findsOneWidget);
     expect(find.textContaining('开始于'), findsOneWidget);
     expect(find.textContaining('至今'), findsNothing);
 
-    await tester.tap(find.byKey(const Key('review-check-in-action')));
-    expect(checkInTapped, isTrue);
-    await tester.tap(find.byKey(const Key('review-end-event-action')));
-    expect(endTapped, isTrue);
+    await tester.tap(find.byKey(const Key('review-go-today-check-in')));
+    expect(goTodayCheckInTapped, isTrue);
     await tester.pumpAndSettle();
   });
 
-  testWidgets('active event already checked in hides the check-in button', (
+  testWidgets('active event already checked in shows the done-today line', (
     tester,
   ) async {
     await pumpHeader(
@@ -77,36 +71,31 @@ void main() {
           outcome: ReviewEventOutcome.improved,
           updatedAt: '2026-08-13T08:00:00.000Z',
         ),
-        showCheckInAction: true,
-        showEndAction: true,
-        onCheckIn: () {},
-        onEndEvent: () {},
+        onGoTodayCheckIn: () {},
       ),
     );
 
-    expect(find.byKey(const Key('review-check-in-action')), findsNothing);
+    // 已确认今日 check-in：不再渲染去 check-in 入口，改为一行确认文案。
+    expect(find.byKey(const Key('review-go-today-check-in')), findsNothing);
     expect(find.text('今天已确认：好转'), findsOneWidget);
-    expect(find.byKey(const Key('review-end-event-action')), findsOneWidget);
   });
 
-  testWidgets('active event without the check-in action shows nothing extra', (
-    tester,
-  ) async {
-    await pumpHeader(
-      tester,
-      EventHeaderSection(
-        event: _activeEvent,
-        todayCheckIn: null,
-        showCheckInAction: false,
-        showEndAction: false,
-        onCheckIn: () {},
-        onEndEvent: () {},
-      ),
-    );
+  testWidgets(
+    'active event without today check-in shows the go-check-in action',
+    (tester) async {
+      await pumpHeader(
+        tester,
+        EventHeaderSection(
+          event: _activeEvent,
+          todayCheckIn: null,
+          onGoTodayCheckIn: () {},
+        ),
+      );
 
-    expect(find.byKey(const Key('review-check-in-action')), findsNothing);
-    expect(find.byKey(const Key('review-end-event-action')), findsNothing);
-  });
+      // 今日未确认：渲染「去今日 check-in」浅链接。旧的 check-in/end 动作已移除。
+      expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
+    },
+  );
 
   testWidgets('ended event shows the confirmed outcome and no check-in', (
     tester,
@@ -116,18 +105,15 @@ void main() {
       EventHeaderSection(
         event: _endedEvent,
         todayCheckIn: null,
-        showCheckInAction: false,
-        showEndAction: false,
-        onCheckIn: () {},
-        onEndEvent: () {},
+        onGoTodayCheckIn: () {},
       ),
     );
 
     expect(find.text(l10n.reviewReviewStatusEnded), findsOneWidget);
     expect(find.text(l10n.reviewReviewOutcomeLabel), findsOneWidget);
     expect(find.text(l10n.reviewReviewOutcomeImproved), findsOneWidget);
-    expect(find.byKey(const Key('review-check-in-action')), findsNothing);
-    expect(find.byKey(const Key('review-end-event-action')), findsNothing);
+    // 无任何动作：ended 头部不再渲染去 check-in 入口。
+    expect(find.byKey(const Key('review-go-today-check-in')), findsNothing);
     expect(find.textContaining('结束于'), findsOneWidget);
   });
 }

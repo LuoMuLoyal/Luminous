@@ -46,8 +46,7 @@ class ReviewView extends StatelessWidget {
     required this.isPreview,
     required this.onRetry,
     required this.onGoRecord,
-    required this.onCheckIn,
-    required this.onEndEvent,
+    required this.onGoTodayCheckIn,
     required this.onSignIn,
     this.aiSummaryState,
     this.aiSummarySelectedRange,
@@ -84,8 +83,7 @@ class ReviewView extends StatelessWidget {
   final bool isPreview;
   final VoidCallback onRetry;
   final VoidCallback onGoRecord;
-  final VoidCallback onCheckIn;
-  final VoidCallback onEndEvent;
+  final VoidCallback onGoTodayCheckIn;
   final VoidCallback onSignIn;
 
   /// AI 总结状态与控制回调。缺省时不渲染 AI 总结段落。
@@ -250,14 +248,7 @@ class ReviewView extends StatelessWidget {
         EventHeaderSection(
           event: review.event,
           todayCheckIn: review.coverage.checkIns.todayCheckIn,
-          showCheckInAction:
-              canAccessProtectedData &&
-              review.availableActions.contains(ReviewAction.checkIn),
-          showEndAction:
-              canAccessProtectedData &&
-              review.availableActions.contains(ReviewAction.endEvent),
-          onCheckIn: onCheckIn,
-          onEndEvent: onEndEvent,
+          onGoTodayCheckIn: onGoTodayCheckIn,
         ),
         WhatHappenedSection(section: review.sections.whatHappened),
         KeyChangesSection(section: review.sections.keyChanges),

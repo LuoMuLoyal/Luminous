@@ -383,6 +383,15 @@
       }
     }
   },
+  "reviewActiveEventElapsedDays": "已进行 {days} 天",
+  "@reviewActiveEventElapsedDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewActiveEventGoTodayCheckIn": "去今日 check-in",
   "reviewReviewEndEventAction": "结束观察",
   "reviewReviewReasonNoObservations": "这段时间内还没有观察记录。",
   "reviewReviewReasonInsufficientCoverage": "有记录但还不足以看出变化趋势。",

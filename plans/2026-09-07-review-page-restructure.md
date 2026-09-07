@@ -132,14 +132,14 @@ Created: 2026-09-07
     (随 Wave 2 换逐日覆盖数据后可移除);删除旧「7/30 天」范围 pill 在主路径的残留。
   - 「让助手看这个趋势」上下文入口**本期不做**(依赖 agentic P1-1/P1-3 预置上下文),
     在顶栏 [问助手] 提供通用入口即可;条目记入跨计划依赖。
-- [ ] **P0-5 冷启动/记录引导态**
+- [x] **P0-5 冷启动/记录引导态**
   - 判定:无 active/ended 事件 且 `dashboard.metrics` 为空或全部
     `insufficientData/unknown`(或 dashboard 请求成功但 trends 全空)。
   - 呈现:顶部引导卡(本周已记录 X/N 天、还差几天能看到趋势、入口去 record 补记)——
     复用「本周记录进度」文案语义,不回退成「开始健康观察」动作;下方保留 ④ 事件历史
     (若存在)与 preview 教育。
   - 无事件时移除 `_StartObservationCard` 的开始按钮与「事件驱动」文案(动作收口 Today)。
-- [ ] **P0-6 事件区被动化(compact 卡 + 列表保留)**
+- [x] **P0-6 事件区被动化(compact 卡 + 列表保留)**
   - `EventHeaderSection` 中 check-in/end 动作从 review 主路径移除;active event 时渲染
     紧凑被动卡(事件标题、状态 chip、已进行天数、今日是否已确认一行文案),附一条浅链接
     「去今日 check-in」→ 切到 today tab(不做深链传参,Today 事件区块自行呈现)。

@@ -129,9 +129,13 @@ void main() {
           find.byKey(const Key('review-next-step-section')),
           findsOneWidget,
         );
-        // 详情页只读：不提供今日 check-in 与结束入口。
-        expect(find.byKey(const Key('review-check-in-action')), findsNothing);
-        expect(find.byKey(const Key('review-end-event-action')), findsNothing);
+        // 详情页只读：今日已确认的 check-in 动作不在详情页装配（旧的
+        // check-in/end 按钮已移除）。active 事件今日未确认时，事件头部仅
+        // 渲染「去今日 check-in」浅链接（回调为 no-op）。
+        expect(
+          find.byKey(const Key('review-go-today-check-in')),
+          findsOneWidget,
+        );
         // 历史区不属于详情页。
         expect(find.byKey(const Key('review-history-section')), findsNothing);
       },

@@ -13,9 +13,6 @@ import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/health_event/data/providers/health_event.dart';
-import 'package:luminous/features/health_event/domain/entities/health_event.dart';
-import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
@@ -65,7 +62,8 @@ void main() {
 
       expect(find.text(l10n.tabReview), findsOneWidget);
       expect(find.byKey(const Key('review-event-header')), findsOneWidget);
-      expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
+      // 今日未确认：头部渲染去今日 check-in 浅链接（旧的 check-in/end 按钮已移除）。
+      expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
       expect(
         find.byKey(const Key('review-what-happened-section')),
         findsOneWidget,
@@ -315,7 +313,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('review-event-header')), findsOneWidget);
-    expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
+    expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
     expect(find.text(l10n.reviewReviewErrorTitle), findsNothing);
   });
 
@@ -711,83 +709,6 @@ void main() {
     expect(find.text(l10n.reviewReviewHistoryLoadFailed), findsOneWidget);
     expect(find.byKey(const Key('review-history-retry')), findsOneWidget);
   });
-  testWidgets('active event header check-in calls the repository checkIn', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final healthEvents = _FakeHealthEventRepository();
-
-    await tester.pumpWidget(
-      _buildApp(
-        reviewRepository: _FakeReviewRepository(
-          current: reviewActive(),
-          page: const ReviewEventPage(items: [], total: 0),
-        ),
-        healthEvents: healthEvents,
-        signedIn: true,
-      ),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    await tester.tap(find.byKey(const Key('review-check-in-action')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.tap(
-      find.byKey(const Key('health-event-check-in-outcome-improved')),
-    );
-    await tester.tap(find.byKey(const Key('health-event-check-in-submit')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-
-    // 以当前 review 的事件 ID check-in，日期为本地 YYYY-MM-DD。
-    expect(healthEvents.checkedInEventId, 'evt-active');
-    expect(healthEvents.checkedInDate, matches(RegExp(r'^\d{4}-\d{2}-\d{2}$')));
-    expect(healthEvents.checkedInOutcome, HealthEventOutcome.improved);
-  });
-
-  testWidgets('active event header end action calls the repository end', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final healthEvents = _FakeHealthEventRepository();
-
-    await tester.pumpWidget(
-      _buildApp(
-        reviewRepository: _FakeReviewRepository(
-          current: reviewActive(),
-          page: const ReviewEventPage(items: [], total: 0),
-        ),
-        healthEvents: healthEvents,
-        signedIn: true,
-      ),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    await tester.tap(find.byKey(const Key('review-end-event-action')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.tap(
-      find.byKey(const Key('health-event-end-outcome-improved')),
-    );
-    await tester.tap(find.byKey(const Key('health-event-end-submit')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-
-    expect(healthEvents.endedEventId, 'evt-active');
-    expect(healthEvents.endedOutcome, HealthEventOutcome.improved);
-  });
 
   // ── review_opened 成功边界测量 ──────────────────────────────────────────
 
@@ -983,7 +904,6 @@ void main() {
 Widget _buildApp({
   required ReviewRepository reviewRepository,
   required bool signedIn,
-  HealthEventRepository? healthEvents,
   HealthContextSnapshot snapshot = _healthContextSnapshot,
   DailyRecordListData records = const DailyRecordListData(items: [], total: 0),
   ProductEventService? productEvents,
@@ -1005,8 +925,6 @@ Widget _buildApp({
       // 直接返回空数据避免真实 HTTP 请求在 FakeAsync zone 留下 pending
       // timer（页面上该区块由 section 的 isLoading/空态承接）。
       suggestionHistoryProvider.overrideWith((ref) async => null),
-      if (healthEvents != null)
-        healthEventRepositoryProvider.overrideWithValue(healthEvents),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
       dailyRecordListForDateProvider.overrideWith((ref, date) async => records),
       if (productEvents != null)
@@ -1163,76 +1081,6 @@ class _ThrowingReviewRepository implements ReviewRepository {
   @override
   TaskEither<LucentFailure, EventReview> fetchReview(String eventId) {
     return TaskEither.left(LucentFailure.unknown(message: 'Test error'));
-  }
-}
-
-/// 记录 create/checkIn/end 调用参数的 fake，验证 page 层交互真实到达
-/// HealthEventRepository（沿用 today_health_event_section_test 惯例）。
-class _FakeHealthEventRepository implements HealthEventRepository {
-  String? createdTitle;
-  String? createdReasonRecordId;
-  List<String>? createdMedicineIds;
-  String? checkedInEventId;
-  String? checkedInDate;
-  HealthEventOutcome? checkedInOutcome;
-  String? endedEventId;
-  HealthEventOutcome? endedOutcome;
-
-  @override
-  TaskEither<LucentFailure, HealthEvent?> fetchActive() =>
-      TaskEither.right(null);
-
-  @override
-  TaskEither<LucentFailure, HealthEvent?> fetchById(String eventId) =>
-      TaskEither.right(null);
-
-  @override
-  TaskEither<LucentFailure, List<HealthEvent>> fetchHistory() =>
-      TaskEither.right(const []);
-
-  @override
-  TaskEither<LucentFailure, HealthEvent> create({
-    required String title,
-    String? reasonRecordId,
-    List<String> currentMedicineIds = const [],
-  }) {
-    createdTitle = title;
-    createdReasonRecordId = reasonRecordId;
-    createdMedicineIds = currentMedicineIds;
-    return TaskEither.right(_createdEvent(title));
-  }
-
-  @override
-  TaskEither<LucentFailure, HealthEvent> checkIn({
-    required String eventId,
-    required String date,
-    required HealthEventOutcome outcome,
-  }) {
-    checkedInEventId = eventId;
-    checkedInDate = date;
-    checkedInOutcome = outcome;
-    return TaskEither.right(_createdEvent('感冒观察'));
-  }
-
-  @override
-  TaskEither<LucentFailure, HealthEvent> end({
-    required String eventId,
-    required HealthEventOutcome outcome,
-  }) {
-    endedEventId = eventId;
-    endedOutcome = outcome;
-    return TaskEither.right(_createdEvent('感冒观察'));
-  }
-
-  HealthEvent _createdEvent(String title) {
-    return HealthEvent(
-      id: 'event-1',
-      title: title,
-      status: HealthEventStatus.active,
-      startedAt: '2026-08-13T00:00:00.000Z',
-      currentMedicineIds: const [],
-      coverage: const HealthEventCoverage(checkInCount: 0),
-    );
   }
 }
 

@@ -37,8 +37,7 @@ void main() {
       isPreview: false,
       onRetry: () {},
       onGoRecord: () {},
-      onCheckIn: () {},
-      onEndEvent: () {},
+      onGoTodayCheckIn: () {},
       onSignIn: () {},
       isColdStart: false,
       coldObserved: 0,
@@ -105,7 +104,8 @@ void main() {
     );
 
     expect(find.byKey(const Key('review-event-header')), findsOneWidget);
-    expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
+    // active 事件今日未确认：渲染去今日 check-in 浅链接。
+    expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
     expectNoLegacyDashboardTraces(tester);
   });
 
@@ -117,7 +117,8 @@ void main() {
     );
 
     expect(find.byKey(const Key('review-event-header')), findsOneWidget);
-    expect(find.byKey(const Key('review-check-in-action')), findsNothing);
+    // ended 无动作：不再渲染去 check-in 入口。
+    expect(find.byKey(const Key('review-go-today-check-in')), findsNothing);
     expectNoLegacyDashboardTraces(tester);
   });
 

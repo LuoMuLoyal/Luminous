@@ -22,8 +22,7 @@ void main() {
     EventReview? cached,
     AsyncValue<ReviewEventPage>? history,
     VoidCallback? onGoRecord,
-    VoidCallback? onCheckIn,
-    VoidCallback? onEndEvent,
+    VoidCallback? onGoTodayCheckIn,
     VoidCallback? onRetry,
     bool canAccessProtectedData = true,
     bool isPreview = false,
@@ -56,8 +55,7 @@ void main() {
               isPreview: isPreview,
               onRetry: onRetry ?? () {},
               onGoRecord: onGoRecord ?? () {},
-              onCheckIn: onCheckIn ?? () {},
-              onEndEvent: onEndEvent ?? () {},
+              onGoTodayCheckIn: onGoTodayCheckIn ?? () {},
               onSignIn: () {},
               historyStatus: historyStatus,
               onHistoryStatusChanged: onHistoryStatusChanged,
@@ -89,13 +87,13 @@ void main() {
   });
 
   testWidgets(
-    'active state renders header with check-in and the four sections in order, history below',
+    'active state renders header with go-today check-in and the four sections in order, history below',
     (tester) async {
-      var checkInTapped = false;
+      var goTodayCheckInTapped = false;
       await pumpReviewView(
         tester,
         current: AsyncValue<EventReview?>.data(reviewActive()),
-        onCheckIn: () => checkInTapped = true,
+        onGoTodayCheckIn: () => goTodayCheckInTapped = true,
       );
 
       await tester.pump();
@@ -110,8 +108,8 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
-      expect(find.byKey(const Key('review-end-event-action')), findsOneWidget);
+      // 今日未确认：渲染去今日 check-in 浅链接（旧的 check-in/end 按钮已移除）。
+      expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
 
       final orderKeys = <String>[
         'review-event-header',
@@ -133,8 +131,8 @@ void main() {
         );
       }
 
-      await tester.tap(find.byKey(const Key('review-check-in-action')));
-      expect(checkInTapped, isTrue);
+      await tester.tap(find.byKey(const Key('review-go-today-check-in')));
+      expect(goTodayCheckInTapped, isTrue);
       await tester.pumpAndSettle();
     },
   );
@@ -158,8 +156,8 @@ void main() {
     );
     // 头部结果 chip 与变化趋势 chip 都可能出现「好转」。
     expect(find.text(l10n.reviewReviewOutcomeImproved), findsWidgets);
-    expect(find.byKey(const Key('review-check-in-action')), findsNothing);
-    expect(find.byKey(const Key('review-end-event-action')), findsNothing);
+    // 无任何动作：ended 头部不再渲染去 check-in 入口。
+    expect(find.byKey(const Key('review-go-today-check-in')), findsNothing);
   });
 
   testWidgets(

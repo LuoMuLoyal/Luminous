@@ -62,10 +62,7 @@ class ReviewDetailPage extends ConsumerWidget {
                   event: review.event,
                   todayCheckIn: review.coverage.checkIns.todayCheckIn,
                   // 详情页只读：不提供今日 check-in 与结束入口。
-                  showCheckInAction: false,
-                  showEndAction: false,
-                  onCheckIn: () {},
-                  onEndEvent: () {},
+                  onGoTodayCheckIn: () {},
                 ),
                 const SizedBox(height: Spacing.level4),
                 WhatHappenedSection(section: review.sections.whatHappened),
