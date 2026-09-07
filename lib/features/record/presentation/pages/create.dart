@@ -23,10 +23,8 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/kind_icon_field.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/record_create_form.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -68,7 +66,6 @@ class RecordCreatePage extends HookConsumerWidget {
     final sleepDeepMinutes = useState<int?>(null);
     final sleepLightMinutes = useState<int?>(null);
     final sleepRemMinutes = useState<int?>(null);
-    final typography = context.theme.typography;
 
     // Apply kind defaults (initState equivalent)
     useEffect(() {
@@ -402,93 +399,44 @@ class RecordCreatePage extends HookConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(Spacing.level4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      l10n.recordCreateSectionBasicTitle,
-                      style: typography.body.md.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: Spacing.level3),
-                    RecordOccurredAtFields(
-                      date: recordDate.value,
-                      time: recordTime.value,
-                      onDateChanged: (date) => recordDate.value = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                      ),
-                      onTimeChanged: (time) => recordTime.value = time == null
-                          ? null
-                          : formatHourMinute(time.hour, time.minute),
-                    ),
-                    const SizedBox(height: Spacing.level5),
-                    Text(
-                      l10n.recordCreateSectionDetailsTitle,
-                      style: typography.body.md.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: Spacing.level3),
-                    DailyRecordFormFields(
-                      kind: kind.value,
-                      onKindChanged: onKindChanged,
-                      valueController: valueController,
-                      unitController: unitController,
-                      titleController: titleController,
-                      noteController: noteController,
-                      valueError: valueError.value,
-                      titleError: titleError.value,
-                      enabled: !saving.value,
-                    ),
-                    const SizedBox(height: Spacing.level3),
-                    RecordKindIconField(kind: kind.value),
-                    if (kind.value == DailyRecordKind.sleep) ...[
-                      const SizedBox(height: Spacing.level3),
-                      SleepStructuredFields(
-                        l10n: l10n,
-                        bedtime: sleepBedtime.value,
-                        wakeTime: sleepWakeTime.value,
-                        quality: sleepQuality.value,
-                        deepMinutes: sleepDeepMinutes.value,
-                        lightMinutes: sleepLightMinutes.value,
-                        remMinutes: sleepRemMinutes.value,
-                        onBedtimeChanged: (v) => sleepBedtime.value = v,
-                        onWakeTimeChanged: (v) => sleepWakeTime.value = v,
-                        onQualityChanged: (v) => sleepQuality.value = v,
-                        onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
-                        onLightMinutesChanged: (v) =>
-                            sleepLightMinutes.value = v,
-                        onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
-                      ),
-                    ],
-                    const SizedBox(height: Spacing.level3),
-                    DailyRecordImageAttachmentField(
-                      l10n: l10n,
-                      selectedBytes: selectedImage.value?.bytes,
-                      selectedFileName: selectedImage.value?.fileName,
-                      existingAttachment: null,
-                      onPick: onPickImage,
-                      onCameraPick: onPickFromCamera,
-                      onRemove: onRemoveImage,
-                      enabled: !saving.value,
-                    ),
-                    const SizedBox(height: Spacing.level5),
-                    FButton(
-                      key: const Key('record-create-save-action'),
-                      onPress: saving.value ? null : () => onSave(dateStr),
-                      prefix: saving.value
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: FCircularProgress(),
-                            )
-                          : null,
-                      child: Text(l10n.mineEditSaveAction),
-                    ),
-                  ],
+                child: RecordCreateForm(
+                  kind: kind.value,
+                  onKindChanged: onKindChanged,
+                  valueController: valueController,
+                  unitController: unitController,
+                  titleController: titleController,
+                  noteController: noteController,
+                  valueError: valueError.value,
+                  titleError: titleError.value,
+                  saving: saving.value,
+                  recordDate: recordDate.value,
+                  recordTime: recordTime.value,
+                  onDateChanged: (date) => recordDate.value = DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                  ),
+                  onTimeChanged: (time) => recordTime.value = time == null
+                      ? null
+                      : formatHourMinute(time.hour, time.minute),
+                  sleepBedtime: sleepBedtime.value,
+                  sleepWakeTime: sleepWakeTime.value,
+                  sleepQuality: sleepQuality.value,
+                  sleepDeepMinutes: sleepDeepMinutes.value,
+                  sleepLightMinutes: sleepLightMinutes.value,
+                  sleepRemMinutes: sleepRemMinutes.value,
+                  onBedtimeChanged: (v) => sleepBedtime.value = v,
+                  onWakeTimeChanged: (v) => sleepWakeTime.value = v,
+                  onQualityChanged: (v) => sleepQuality.value = v,
+                  onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
+                  onLightMinutesChanged: (v) => sleepLightMinutes.value = v,
+                  onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
+                  selectedImageBytes: selectedImage.value?.bytes,
+                  selectedImageFileName: selectedImage.value?.fileName,
+                  onPickImage: onPickImage,
+                  onPickFromCamera: onPickFromCamera,
+                  onRemoveImage: onRemoveImage,
+                  onSave: () => onSave(dateStr),
                 ),
               ),
             ],
