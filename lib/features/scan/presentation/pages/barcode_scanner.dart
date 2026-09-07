@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -13,10 +12,11 @@ import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
+import 'package:luminous/features/scan/presentation/widgets/scan_corner_painter.dart';
+import 'package:luminous/features/scan/presentation/widgets/scan_result_sheet.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/add_to_box.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -253,7 +253,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
         useSafeArea: true,
         mainAxisMaxRatio: null,
         builder: (ctx) => SafeArea(
-          child: _ScanResultSheet(
+          child: BarcodeScanResultSheet(
             item: item,
             l10n: l10n,
             onAddToBox: () => addMedicineToBoxWithPrecheck(
@@ -367,7 +367,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                     width: _scanFrameWidth,
                     height: _scanFrameHeight,
                     child: CustomPaint(
-                      painter: _ScanCornerPainter(
+                      painter: ScanCornerPainter(
                         color: SemanticColor.primary.solid(context),
                         strokeWidth: 3,
                         cornerLength: 24,
@@ -435,253 +435,4 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
             ),
     );
   }
-}
-
-/// Bottom sheet content for a scanned medicine result (F-3).
-///
-/// The「已加入」state is derived **live** from [healthContextSnapshotProvider]
-/// (matched by the `source:sourceRefId` key `cn:<产品id>`), not captured at
-/// sheet open (F-3 P2-1): after a successful add the shared F-9 loop emits on
-/// the DataChangeBus, the snapshot refreshes and this sheet rebuilds into the
-/// added state — the add button cannot be tapped again to duplicate the
-/// record. Loading / error states fall back to an empty map (default "not
-/// added" exit); once the snapshot resolves the state is correct.
-class _ScanResultSheet extends ConsumerStatefulWidget {
-  const _ScanResultSheet({
-    required this.item,
-    required this.l10n,
-    required this.onAddToBox,
-    required this.onViewInstructions,
-    required this.onOpenReminder,
-  });
-
-  final ScanSearchResult item;
-  final AppLocalizations l10n;
-  final Future<void> Function() onAddToBox;
-  final VoidCallback onViewInstructions;
-
-  /// Called with the matched drugbox record when the user opens the reminder
-  /// detail from the added state (the sheet pops itself first).
-  final ValueChanged<CurrentMedicineItem> onOpenReminder;
-
-  @override
-  ConsumerState<_ScanResultSheet> createState() => _ScanResultSheetState();
-}
-
-class _ScanResultSheetState extends ConsumerState<_ScanResultSheet> {
-  /// True while「加入药箱」is in flight. The button stays disabled from the
-  /// tap until the awaited flow returns (and longer: while the snapshot is
-  /// re-fetching, see the loading guard in [build]), so the sheet can never
-  /// re-add a medicine that was just added (P2 复审 P2-1/P2-4).
-  bool _addingBox = false;
-
-  /// Drugbox lookup by `source:sourceRefId` (drugbox record id as value),
-  /// derived from the live snapshot watched in [build].
-  Map<String, CurrentMedicineItem> _boxByKeyFrom(
-    AsyncValue<HealthContextSnapshot> snapshotAsync,
-  ) => snapshotAsync.maybeWhen(
-    data: (snapshot) => {
-      for (final medicine in snapshot.currentMedicines)
-        if (medicine.isCurrent && medicine.sourceRefId != null)
-          '${medicine.source}:${medicine.sourceRefId}': medicine,
-    },
-    orElse: () => const <String, CurrentMedicineItem>{},
-  );
-
-  Future<void> _handleAddToBox() async {
-    setState(() => _addingBox = true);
-    try {
-      await widget.onAddToBox();
-    } finally {
-      if (mounted) setState(() => _addingBox = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final typography = context.theme.typography;
-    // While the snapshot is (re)fetching, `boxByKey` is empty; the loading
-    // guard below keeps the add button disabled so the sheet cannot offer a
-    // duplicate add for a medicine that was just added.
-    final snapshotAsync = ref.watch(healthContextSnapshotProvider);
-    final boxByKey = _boxByKeyFrom(snapshotAsync);
-    // The loading guard applies to signed-in users only: signed-out
-    // snapshots stay in a loading-with-error state (AuthRequiredException),
-    // where the add button must stay tappable to reach the login prompt.
-    final authSession = ref.watch(authSessionProvider);
-    final snapshotLoading =
-        snapshotAsync.isLoading && authSession.canAccessProtectedData;
-    final boxItem = boxByKey['cn:${widget.item.id}'];
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  widget.l10n.scanBarcodeResultTitle,
-                  style: typography.body.lg.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              FButton.icon(
-                variant: FButtonVariant.ghost,
-                size: FButtonSizeVariant.sm,
-                onPress: () => Navigator.pop(context),
-                child: const Icon(
-                  SemanticIcons.actionClose,
-                  size: IconSizeTokens.level3,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const AppDivider(),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level5,
-            vertical: Spacing.level4,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(widget.item.name, style: typography.body.lg),
-              if (widget.item.subtitle != null) ...[
-                const SizedBox(height: Spacing.level2),
-                Text(
-                  widget.item.subtitle!,
-                  style: typography.body.sm.copyWith(
-                    color: SemanticColor.neutral.solid(context),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-        const AppDivider(),
-        Padding(
-          padding: EdgeInsets.fromLTRB(
-            Spacing.level5,
-            Spacing.level4,
-            Spacing.level5,
-            MediaQuery.paddingOf(context).bottom + Spacing.level4,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (boxItem != null) ...[
-                // Reuses the search tile "already added" visual pattern
-                // (disabled outline button + check icon).
-                FButton(
-                  onPress: null,
-                  variant: FButtonVariant.outline,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        SemanticIcons.statusDone,
-                        size: IconSizeTokens.level2,
-                        color: SemanticColor.primary.solid(context),
-                      ),
-                      const SizedBox(width: Spacing.level2),
-                      Text(widget.l10n.medicineSearchAlreadyAddedLabel),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: Spacing.level3),
-                FButton(
-                  onPress: () => widget.onOpenReminder(boxItem),
-                  child: Text(widget.l10n.scanViewReminderAction),
-                ),
-              ] else ...[
-                FButton(
-                  // Disabled while an add is in flight and while the snapshot
-                  // is (re)fetching (P2 复审 P2-1/P2-4) — a rapid second tap
-                  // cannot duplicate the record, and a just-added medicine is
-                  // not re-addable in the refresh window.
-                  onPress: _addingBox || snapshotLoading
-                      ? null
-                      : _handleAddToBox,
-                  child: Text(widget.l10n.medicineSearchAddToBoxAction),
-                ),
-              ],
-              const SizedBox(height: Spacing.level3),
-              FButton(
-                variant: FButtonVariant.secondary,
-                onPress: widget.onViewInstructions,
-                child: Text(widget.l10n.scanViewInstructionsAction),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Paints L-shaped corner brackets around the scan area.
-class _ScanCornerPainter extends CustomPainter {
-  const _ScanCornerPainter({
-    required this.color,
-    required this.strokeWidth,
-    required this.cornerLength,
-  });
-
-  final Color color;
-  final double strokeWidth;
-  final double cornerLength;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    // Top-left
-    canvas.drawLine(Offset.zero, Offset(cornerLength, 0), paint);
-    canvas.drawLine(Offset.zero, Offset(0, cornerLength), paint);
-    // Top-right
-    canvas.drawLine(
-      Offset(size.width, 0),
-      Offset(size.width - cornerLength, 0),
-      paint,
-    );
-    canvas.drawLine(
-      Offset(size.width, 0),
-      Offset(size.width, cornerLength),
-      paint,
-    );
-    // Bottom-left
-    canvas.drawLine(
-      Offset(0, size.height),
-      Offset(cornerLength, size.height),
-      paint,
-    );
-    canvas.drawLine(
-      Offset(0, size.height),
-      Offset(0, size.height - cornerLength),
-      paint,
-    );
-    // Bottom-right
-    canvas.drawLine(
-      Offset(size.width, size.height),
-      Offset(size.width - cornerLength, size.height),
-      paint,
-    );
-    canvas.drawLine(
-      Offset(size.width, size.height),
-      Offset(size.width, size.height - cornerLength),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _ScanCornerPainter oldDelegate) =>
-      oldDelegate.color != color;
 }
