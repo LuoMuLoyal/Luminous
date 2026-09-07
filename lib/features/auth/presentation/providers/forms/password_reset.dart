@@ -40,12 +40,29 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     return const PasswordResetState();
   }
 
+  /// Syncs the UI draft into state. Email/code are trimmed so `state.email`
+  /// matches what `sendVerificationCode`/`resetPassword` actually send —
+  /// otherwise the state and the text controller can briefly disagree while
+  /// the user edits mid-flight.
+  ///
+  /// Passwords are deliberately **not** trimmed: the backend treats them
+  /// byte-for-byte and `ConfirmPasswordInput` compares raw values, so a
+  /// user whose password legitimately contains edge whitespace must not
+  /// have it silently altered.
   void updateEmail(String value) {
-    state = state.copyWith(email: value, emailError: null, errorMessage: null);
+    state = state.copyWith(
+      email: value.trim(),
+      emailError: null,
+      errorMessage: null,
+    );
   }
 
   void updateCode(String value) {
-    state = state.copyWith(code: value, codeError: null, errorMessage: null);
+    state = state.copyWith(
+      code: value.trim(),
+      codeError: null,
+      errorMessage: null,
+    );
   }
 
   void updatePassword(String value) {

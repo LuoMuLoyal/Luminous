@@ -97,10 +97,8 @@ class ForgotPasswordPage extends HookConsumerWidget {
               label: Text(l10n.authNewPasswordLabel),
               hint: l10n.authPasswordHint,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => PasswordInput.validate(
-                value,
-                l10n.authPasswordRequiredError,
-              ),
+              validator: (value) =>
+                  PasswordInput.validate(value, l10n.authPasswordRequiredError),
             ),
             const SizedBox(height: Spacing.level4),
             FTextFormField.password(
@@ -131,15 +129,29 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 onPress: state.isSubmitting
                     ? null
                     : () async {
-                        if (!(formKey.currentState?.validate() ?? false)) {
-                          return;
-                        }
+                        // 先同步 UI 草稿到 provider，再以 provider 校验作为
+                        // 唯一入口——避免 UI 校验与 provider 校验两套逻辑脱节
+                        // （review 2026-09-06 warning 1）。
                         notifier.updateEmail(emailController.text);
                         notifier.updateCode(codeController.text);
                         notifier.updatePassword(passwordController.text);
                         notifier.updateConfirmPassword(
                           confirmPasswordController.text,
                         );
+                        final valid = notifier.validate(
+                          emailRequired: l10n.authEmailRequiredError,
+                          emailInvalid: l10n.authEmailInvalidError,
+                          codeRequired: l10n.authCodeRequiredError,
+                          passwordRequired: l10n.authPasswordRequiredError,
+                          confirmPasswordRequired:
+                              l10n.authConfirmPasswordRequiredError,
+                          passwordsDoNotMatch:
+                              l10n.authPasswordsDoNotMatchError,
+                        );
+                        if (!valid) {
+                          formKey.currentState?.validate();
+                          return;
+                        }
                         final ok = await notifier.resetPassword();
                         if (!ok && context.mounted) {
                           final msg = ref
