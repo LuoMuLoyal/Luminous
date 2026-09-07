@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/ai_summary.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/completed_actions.dart';
@@ -11,6 +12,7 @@ import 'package:luminous/features/review/presentation/widgets/sections/event_hea
 import 'package:luminous/features/review/presentation/widgets/sections/history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/key_changes.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/next_step.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview_locked.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/suggestion_history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/what_happened.dart';
@@ -57,6 +59,8 @@ class ReviewView extends StatelessWidget {
     this.onHistoryStatusChanged,
     this.onEventTap,
     this.onHistoryLoadMore,
+    this.trendSeries = const [],
+    this.trendStartDate = '----.--.--',
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -98,6 +102,13 @@ class ReviewView extends StatelessWidget {
   /// 历史翻页回调；传入当前页的 nextCursor，返回下一页。
   /// null 时不显示「加载更多」按钮。
   final Future<ReviewEventPage> Function(String cursor)? onHistoryLoadMore;
+
+  /// 纵向洞察折线图数据（饮水/睡眠/用药单折线图）。
+  /// 数据来自 reviewDashboardProvider；空列表时不渲染折线图。
+  final List<ReviewTrendSeries> trendSeries;
+
+  /// 折线图的起始日期标签（YYYY-MM-DD 格式）。
+  final String trendStartDate;
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +218,19 @@ class ReviewView extends StatelessWidget {
         onEventTap: onEventTap,
         onLoadMore: onHistoryLoadMore,
       ),
+      // 纵向洞察折线图：饮水/睡眠/用药三指标 FTab 切换单折线。
+      if (trendSeries.isNotEmpty)
+        ReviewTrendSection(
+          key: const Key('review-trend-section'),
+          trends: trendSeries,
+          selectedQuery: const ReviewDashboardQuery(
+            range: ReviewDashboardRange.last7Days,
+          ),
+          onQueryChanged: (_) {},
+          l10n: l10n,
+          startDate: trendStartDate,
+          showRangePill: false,
+        ),
     ];
 
     return Column(

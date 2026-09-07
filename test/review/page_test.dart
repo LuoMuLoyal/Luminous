@@ -18,6 +18,7 @@ import 'package:luminous/features/health_event/domain/repositories/health_event.
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
@@ -661,6 +662,9 @@ void main() {
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reviewRepositoryProvider.overrideWithValue(repo),
+            reviewDashboardProvider.overrideWith(
+              (ref, query) async => ReviewDashboard.signedOut(),
+            ),
             healthContextSnapshotProvider.overrideWith(
               (ref) async => _healthContextSnapshot,
             ),
@@ -812,6 +816,11 @@ Widget _buildApp({
             : _SignedOutAuthSessionNotifier.new,
       ),
       reviewRepositoryProvider.overrideWithValue(reviewRepository),
+      // dashboard provider：测试环境无后端，返回空 trends 的 signedOut
+      // dashboard，折线图因 trendSeries 为空不渲染。
+      reviewDashboardProvider.overrideWith(
+        (ref, query) async => ReviewDashboard.signedOut(),
+      ),
       // 建议历史：_refresh 会 invalidate 并等待它，测试环境无后端，
       // 直接返回空数据避免真实 HTTP 请求在 FakeAsync zone 留下 pending
       // timer（页面上该区块由 section 的 isLoading/空态承接）。

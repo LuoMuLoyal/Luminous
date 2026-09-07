@@ -479,6 +479,10 @@ Future<void> pumpPage(
         reviewRepositoryProvider.overrideWithValue(
           _FakeReviewRepository(current: current, page: history),
         ),
+        // 测试环境无后端：dashboard 返回空 trends，折线图不渲染。
+        reviewDashboardProvider.overrideWith(
+          (ref, query) async => ReviewDashboard.signedOut(),
+        ),
         healthContextSnapshotProvider.overrideWith(
           (ref) async => _healthContextSnapshot,
         ),

@@ -8,9 +8,11 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
+import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -259,6 +261,10 @@ void main() {
                 reviewEventItem(id: 'evt-2', title: '嗓子疼观察'),
               ]),
             ),
+          ),
+          // 测试环境无后端：dashboard 返回空 trends，折线图不渲染。
+          reviewDashboardProvider.overrideWith(
+            (ref, query) async => ReviewDashboard.signedOut(),
           ),
         ],
         child: const TestForuiApp(home: ReviewPage()),

@@ -344,6 +344,14 @@ class ReviewPage extends ConsumerWidget {
     final isSuggestionHistoryLoading =
         suggestionHistoryAsync?.isLoading ?? false;
 
+    // 纵向洞察折线图数据——复用 reviewDashboardProvider（饮水/睡眠/用药
+    // 三条趋势），仅用于在主路径新增折线图展示，不改动既有 provider 语义。
+    final dashboardQuery = ref.watch(reviewDashboardSelectedQueryProvider);
+    final dashboardAsync = ref.watch(reviewDashboardProvider(dashboardQuery));
+    final trendSeries = dashboardAsync.asData?.value.trends ?? const [];
+    final dashboardStartDate =
+        dashboardAsync.asData?.value.startDate ?? '----.--.--';
+
     return ShellDeferredContent(
       child: _ReviewOpenedTracker(
         child: _ReportMobileShell(
@@ -431,6 +439,9 @@ class ReviewPage extends ConsumerWidget {
               // 加载更多失败行（widget 不导入 fpdart、不读 code/status）。
               return result.fold((failure) => throw failure, (page) => page);
             },
+            // 纵向洞察折线图：饮水/睡眠/用药单折线图。
+            trendSeries: trendSeries,
+            trendStartDate: dashboardStartDate,
           ),
         ),
       ),
