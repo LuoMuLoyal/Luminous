@@ -306,6 +306,19 @@
       }
     }
   },
+  "reviewNoteworthyTitle": "Things to note",
+  "reviewNoteworthyAbstainLabel": "No notable changes in this period.",
+  "reviewNoteworthyWindow": "{start} – {end}",
+  "@reviewNoteworthyWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
   "reviewExportFailedWithReason": "Export failed: {reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

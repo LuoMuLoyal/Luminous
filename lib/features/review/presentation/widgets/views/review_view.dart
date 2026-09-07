@@ -13,6 +13,7 @@ import 'package:luminous/features/review/presentation/widgets/sections/event_hea
 import 'package:luminous/features/review/presentation/widgets/sections/history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/key_changes.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/next_step.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/noteworthy.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/period_switch.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview_locked.dart';
@@ -66,6 +67,9 @@ class ReviewView extends StatelessWidget {
     this.periodRange = ReviewDashboardRange.last7Days,
     this.onPeriodRangeChanged,
     this.coverageMetrics = const [],
+    this.findings = const [],
+    this.findingsWindowStart = '----.--.--',
+    this.findingsWindowEnd = '----.--.--',
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -125,6 +129,14 @@ class ReviewView extends StatelessWidget {
   /// 的 metrics；空列表时不渲染概览行。
   final List<ReviewMetric> coverageMetrics;
 
+  /// 值得注意区数据（dashboard findings），最多展示 2 张结构化卡；空列表
+  /// 时展示弃权占位。
+  final List<ReviewFinding> findings;
+
+  /// 值得注意区的数据窗口（startDate–endDate）。
+  final String findingsWindowStart;
+  final String findingsWindowEnd;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -162,6 +174,13 @@ class ReviewView extends StatelessWidget {
       // 覆盖率概览行：各维度覆盖小卡，横滑；空列表时不渲染。
       if (coverageMetrics.isNotEmpty)
         ReviewCoverageStrip(metrics: coverageMetrics),
+      // 值得注意区：findings 结构化卡；空时展示弃权占位。
+      ReviewNoteworthySection(
+        findings: findings,
+        l10n: l10n,
+        startDate: findingsWindowStart,
+        endDate: findingsWindowEnd,
+      ),
       if (review == null) ...[
         _StartObservationCard(
           onStartObservation: onStartObservation,

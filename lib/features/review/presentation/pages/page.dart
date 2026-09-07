@@ -377,6 +377,14 @@ class ReviewPage extends ConsumerWidget {
     // 覆盖率概览行数据：dashboard metrics（各健康维度覆盖小卡）。
     final coverageMetrics =
         effectiveDashboardAsync.asData?.value.metrics ?? const <ReviewMetric>[];
+    // 值得注意区数据：dashboard findings 与数据窗口。
+    final findings =
+        effectiveDashboardAsync.asData?.value.findings ??
+        const <ReviewFinding>[];
+    final findingsWindowStart =
+        effectiveDashboardAsync.asData?.value.startDate ?? '----.--.--';
+    final findingsWindowEnd =
+        effectiveDashboardAsync.asData?.value.endDate ?? '----.--.--';
 
     return ShellDeferredContent(
       child: _ReviewOpenedTracker(
@@ -473,6 +481,9 @@ class ReviewPage extends ConsumerWidget {
                 .read(reviewDashboardSelectedQueryProvider.notifier)
                 .setRange(range),
             coverageMetrics: coverageMetrics,
+            findings: findings,
+            findingsWindowStart: findingsWindowStart,
+            findingsWindowEnd: findingsWindowEnd,
           ),
         ),
       ),

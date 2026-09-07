@@ -313,6 +313,19 @@
       }
     }
   },
+  "reviewNoteworthyTitle": "值得注意",
+  "reviewNoteworthyAbstainLabel": "这段时间没有新增值得注意的变化。",
+  "reviewNoteworthyWindow": "{start} → {end}",
+  "@reviewNoteworthyWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
   "reviewExportFailedWithReason": "导出失败：{reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {
