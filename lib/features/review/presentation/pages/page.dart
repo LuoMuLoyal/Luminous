@@ -264,18 +264,49 @@ class _ReviewOpenedTrackerState extends ConsumerState<_ReviewOpenedTracker> {
   }
 }
 
-class _ReviewTopBar extends StatelessWidget {
+class _ReviewTopBar extends ConsumerWidget {
   const _ReviewTopBar({required this.onMore});
 
   /// 右上角「更多」入口：就诊摘要 / 分享管理 / PDF / 打印下载 / 兼容历史报告。
   final VoidCallback onMore;
 
+  /// 顶栏 [问助手] 入口：与 today 顶栏助手入口同一语义——登录直接 push
+  /// assistant，未登录走登录守卫（preview 沿用 assistant 未登录预览行为）。
+  void _openAssistant(BuildContext context, WidgetRef ref) {
+    final session = ref.read(authSessionProvider);
+    if (session.canAccessProtectedData) {
+      unawaited(context.push(Routes.assistant));
+      return;
+    }
+    if (session.isLoading) {
+      return;
+    }
+    unawaited(
+      showAuthRequiredDialog(
+        context,
+        onLogin: () => context.push(loginRouteForReturnTo('/assistant')),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     return FHeader.nested(
       title: Text(l10n.tabReview),
       suffixes: [
+        FTooltip(
+          tipBuilder: (context, controller) => Text(l10n.assistantEntryTitle),
+          child: FButton.icon(
+            key: const Key('review-assistant-entry'),
+            onPress: () => _openAssistant(context, ref),
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.sm,
+            // 图标按钮无可见文字：给 TalkBack/VoiceOver 显式 label。
+            semanticsLabel: l10n.assistantEntryTitle,
+            child: const Icon(SemanticIcons.aiEntry),
+          ),
+        ),
         FTooltip(
           tipBuilder: (context, controller) => Text(l10n.reviewMoreTitle),
           child: FButton.icon(

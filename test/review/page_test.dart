@@ -34,6 +34,48 @@ import '../review/widgets/review_fixtures.dart';
 
 void main() {
   testWidgets(
+    'Review top bar shows the assistant entry for both signed-in and signed-out',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      // signed-in：顶栏渲染 [问助手]（与 today 同一语义图标入口）。
+      await tester.pumpWidget(
+        _buildApp(
+          reviewRepository: _FakeReviewRepository(current: reviewActive()),
+          signedIn: true,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(
+        find.byKey(const Key('review-assistant-entry')),
+        findsOneWidget,
+        reason: 'signed-in 时顶栏应显示 [问助手] 入口',
+      );
+
+      // signed-out preview：入口仍渲染（assistant 未登录另有预览行为）。
+      await tester.pumpWidget(
+        _buildApp(
+          reviewRepository: _FakeReviewRepository(current: reviewActive()),
+          signedIn: false,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(
+        find.byKey(const Key('review-assistant-entry')),
+        findsOneWidget,
+        reason: 'signed-out preview 顶栏仍应显示 [问助手] 入口',
+      );
+    },
+  );
+
+  testWidgets(
     'Report page renders the review-first layout for signed-in mobile state',
     (tester) async {
       tester.view.devicePixelRatio = 1;
