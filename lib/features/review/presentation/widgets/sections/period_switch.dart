@@ -33,6 +33,7 @@ class ReviewPeriodSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final selectedIndex = _ranges.indexOf(selectedRange);
+    final safeIndex = selectedIndex < 0 ? 0 : selectedIndex;
 
     return Semantics(
       container: true,
@@ -41,7 +42,7 @@ class ReviewPeriodSwitch extends StatelessWidget {
       child: FTabs(
         key: const ValueKey('review-period-switch'),
         control: FTabControl.lifted(
-          index: selectedIndex,
+          index: safeIndex,
           onChange: (index) => onRangeChanged(_ranges[index]),
         ),
         children: [
