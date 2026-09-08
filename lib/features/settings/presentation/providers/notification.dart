@@ -8,10 +8,15 @@ import 'package:luminous/features/settings/data/providers/notification_permissio
 import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
+import 'package:luminous/features/settings/presentation/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'notification_mapping.dart';
+
 part 'notification.freezed.dart';
+part 'notification_local_setters.dart';
+part 'notification_remote_sync.dart';
 
 @freezed
 abstract class NotificationSettingsState with _$NotificationSettingsState {
@@ -41,79 +46,215 @@ extension NotificationSettingsMinutes on NotificationSettingsState {
   int? get sleepWakeTimeMinutes => NotificationUtils.toMinutes(sleepWakeTime);
 }
 
-class NotificationSettingsController
+// 偏好键常量:库级私有,主文件与 part 文件共享同一 scope,可直接无前缀访问。
+const _medicationKey = PrefKeys.settingsNotificationsMedicationReminders;
+const _healthAlertsKey = PrefKeys.settingsNotificationsHealthAlerts;
+const _weeklySummaryKey = PrefKeys.settingsNotificationsWeeklySummary;
+const _waterRemindersKey = PrefKeys.settingsNotificationsWaterReminders;
+const _sleepRemindersKey = PrefKeys.settingsNotificationsSleepReminders;
+const _sleepReminderEnabledKey =
+    PrefKeys.settingsNotificationsSleepReminderEnabled;
+const _sleepBedtimeKey = PrefKeys.settingsNotificationsSleepBedtime;
+const _sleepWakeTimeKey = PrefKeys.settingsNotificationsSleepWakeTime;
+const _dndEnabledKey = PrefKeys.settingsNotificationsDndEnabled;
+const _dndStartTimeKey = PrefKeys.settingsNotificationsDndStartTime;
+const _dndEndTimeKey = PrefKeys.settingsNotificationsDndEndTime;
+const _soundEnabledKey = PrefKeys.settingsNotificationsSoundEnabled;
+const _vibrationEnabledKey = PrefKeys.settingsNotificationsVibrationEnabled;
+const _reminderAdvanceMinutesKey =
+    PrefKeys.settingsNotificationsReminderAdvanceMinutes;
+const _legacyMigrationOwnerKey =
+    PrefKeys.settingsNotificationsLegacyMigrationOwner;
+
+/// 由 [reset] 清空的全部偏好键。集中在一处,新增设置不会遗漏清理路径。
+const _resetKeys = <String>[
+  PrefKeys.settingsNotificationsMedicationReminders,
+  PrefKeys.settingsNotificationsHealthAlerts,
+  PrefKeys.settingsNotificationsWeeklySummary,
+  PrefKeys.settingsNotificationsWaterReminders,
+  PrefKeys.settingsNotificationsSleepReminders,
+  PrefKeys.settingsNotificationsSleepReminderEnabled,
+  PrefKeys.settingsNotificationsSleepBedtime,
+  PrefKeys.settingsNotificationsSleepWakeTime,
+  PrefKeys.settingsNotificationsDndEnabled,
+  PrefKeys.settingsNotificationsDndStartTime,
+  PrefKeys.settingsNotificationsDndEndTime,
+  PrefKeys.settingsNotificationsSoundEnabled,
+  PrefKeys.settingsNotificationsVibrationEnabled,
+  PrefKeys.settingsNotificationsReminderAdvanceMinutes,
+];
+
+const _legacyRemoteKeys = <String>[
+  PrefKeys.settingsNotificationsHealthAlerts,
+  PrefKeys.settingsNotificationsWeeklySummary,
+  PrefKeys.settingsNotificationsWaterReminders,
+  PrefKeys.settingsNotificationsSleepReminderEnabled,
+  PrefKeys.settingsNotificationsSleepBedtime,
+  PrefKeys.settingsNotificationsSleepWakeTime,
+];
+
+int? _toMinutes(TimeOfDay? time) => NotificationUtils.toMinutes(time);
+
+TimeOfDay? _parseTime(String? value) => NotificationUtils.parseTime(value);
+
+/// 抽象基类:持有通知偏好控制器的共享实例成员(setter mixin 与具体控制器
+/// 都基于它),按职责拆成 part 文件后每个文件都低于 450 行。
+abstract class NotificationSettingsControllerCore
     extends AsyncNotifier<NotificationSettingsState> {
   Future<void> _remoteMutationTail = Future<void>.value();
-  static const _medicationKey =
-      PrefKeys.settingsNotificationsMedicationReminders;
-  static const _healthAlertsKey = PrefKeys.settingsNotificationsHealthAlerts;
-  static const _weeklySummaryKey = PrefKeys.settingsNotificationsWeeklySummary;
-  static const _waterRemindersKey =
-      PrefKeys.settingsNotificationsWaterReminders;
-  static const _sleepRemindersKey =
-      PrefKeys.settingsNotificationsSleepReminders;
-  static const _sleepReminderEnabledKey =
-      PrefKeys.settingsNotificationsSleepReminderEnabled;
-  static const _sleepBedtimeKey = PrefKeys.settingsNotificationsSleepBedtime;
-  static const _sleepWakeTimeKey = PrefKeys.settingsNotificationsSleepWakeTime;
-  static const _dndEnabledKey = PrefKeys.settingsNotificationsDndEnabled;
-  static const _dndStartTimeKey = PrefKeys.settingsNotificationsDndStartTime;
-  static const _dndEndTimeKey = PrefKeys.settingsNotificationsDndEndTime;
-  static const _soundEnabledKey = PrefKeys.settingsNotificationsSoundEnabled;
-  static const _vibrationEnabledKey =
-      PrefKeys.settingsNotificationsVibrationEnabled;
-  static const _reminderAdvanceMinutesKey =
-      PrefKeys.settingsNotificationsReminderAdvanceMinutes;
-  static const _legacyMigrationOwnerKey =
-      PrefKeys.settingsNotificationsLegacyMigrationOwner;
 
-  /// Every preference key cleared by [reset]. Kept in one list so adding a
-  /// new setting cannot be forgotten in the reset path.
-  static const _resetKeys = <String>[
-    PrefKeys.settingsNotificationsMedicationReminders,
-    PrefKeys.settingsNotificationsHealthAlerts,
-    PrefKeys.settingsNotificationsWeeklySummary,
-    PrefKeys.settingsNotificationsWaterReminders,
-    PrefKeys.settingsNotificationsSleepReminders,
-    PrefKeys.settingsNotificationsSleepReminderEnabled,
-    PrefKeys.settingsNotificationsSleepBedtime,
-    PrefKeys.settingsNotificationsSleepWakeTime,
-    PrefKeys.settingsNotificationsDndEnabled,
-    PrefKeys.settingsNotificationsDndStartTime,
-    PrefKeys.settingsNotificationsDndEndTime,
-    PrefKeys.settingsNotificationsSoundEnabled,
-    PrefKeys.settingsNotificationsVibrationEnabled,
-    PrefKeys.settingsNotificationsReminderAdvanceMinutes,
-  ];
+  Future<void> _save(
+    NotificationSettingsState next, {
+    required Future<void> Function(SharedPreferences preferences) update,
+  }) async {
+    state = AsyncData(next);
+    final preferences = await SharedPreferences.getInstance();
+    await update(preferences);
+    // medicineReminderNotificationSyncProvider watches this controller and
+    // handles reminder rescheduling after the schedule data layer is available.
+  }
 
-  static const _legacyRemoteKeys = <String>[
-    PrefKeys.settingsNotificationsHealthAlerts,
-    PrefKeys.settingsNotificationsWeeklySummary,
-    PrefKeys.settingsNotificationsWaterReminders,
-    PrefKeys.settingsNotificationsSleepReminderEnabled,
-    PrefKeys.settingsNotificationsSleepBedtime,
-    PrefKeys.settingsNotificationsSleepWakeTime,
-  ];
+  Future<void> _saveRemotePreference({
+    required NotificationPreferencesPatch patch,
+    required NotificationSettingsState Function(
+      NotificationSettingsState current,
+    )
+    update,
+  }) async {
+    final operation = _remoteMutationTail.then<void>(
+      (_) => _performRemotePreference(patch: patch, update: update),
+    );
+    _remoteMutationTail = operation.catchError((_) {});
+    return operation;
+  }
 
+  Future<void> _performRemotePreference({
+    required NotificationPreferencesPatch patch,
+    required NotificationSettingsState Function(
+      NotificationSettingsState current,
+    )
+    update,
+  }) async {
+    final current = state.asData?.value ?? const NotificationSettingsState();
+    final next = update(current);
+    final auth = ref.read(authSessionProvider);
+    final userId = auth.canAccessProtectedData ? auth.user?.id : null;
+    if (userId == null) {
+      await _save(
+        next,
+        update: (preferences) =>
+            _writeRemoteLocal(ScopedPreferences(preferences, null), next),
+      );
+      return;
+    }
+
+    state = AsyncData(next);
+    try {
+      final result = await ref
+          .read(notificationPreferencesRepositoryProvider)
+          .patchPreferences(patch)
+          .run();
+      final remote = result.fold((failure) => throw failure, (value) => value);
+      final preferences = await SharedPreferences.getInstance();
+      await _cacheRemote(preferences, remote, userId);
+      state = AsyncData(_applyRemote(next, remote));
+    } catch (error) {
+      final preferences = await SharedPreferences.getInstance();
+      await _writeRemoteLocal(ScopedPreferences(preferences, userId), current);
+      state = AsyncData(current);
+      rethrow;
+    }
+  }
+
+  Future<void> _claimLegacyMigration(
+    SharedPreferences preferences,
+    String userId, {
+    required String? legacyOwner,
+  }) async {
+    if (legacyOwner != null && legacyOwner != userId) return;
+
+    final legacy = ScopedPreferences(preferences, null);
+    if (legacyOwner == null) {
+      await preferences.setString(_legacyMigrationOwnerKey, userId);
+    }
+    for (final key in _legacyRemoteKeys) {
+      await legacy.remove(key);
+    }
+    await legacy.remove(PrefKeys.settingsNotificationsRemoteMigrationCompleted);
+  }
+
+  NotificationSettingsState _applyRemote(
+    NotificationSettingsState local,
+    NotificationPreferences remote,
+  ) {
+    return local.copyWith(
+      healthAlerts: remote.healthAlertsEnabled,
+      weeklySummary: remote.weeklyInsightEnabled,
+      waterReminders: remote.waterRemindersEnabled,
+      sleepReminderEnabled: remote.sleepReminderEnabled,
+      sleepBedtime: NotificationUtils.fromMinutes(remote.sleepBedtimeMinutes),
+      sleepWakeTime: NotificationUtils.fromMinutes(remote.sleepWakeTimeMinutes),
+    );
+  }
+
+  Future<void> _cacheRemote(
+    SharedPreferences preferences,
+    NotificationPreferences remote,
+    String userId,
+  ) async {
+    final value = _applyRemote(
+      const NotificationSettingsState(sleepBedtime: null, sleepWakeTime: null),
+      remote,
+    );
+    await _writeRemoteLocal(ScopedPreferences(preferences, userId), value);
+  }
+
+  Future<void> _writeRemoteLocal(
+    ScopedPreferences scoped,
+    NotificationSettingsState value,
+  ) async {
+    await scoped.setBool(_healthAlertsKey, value.healthAlerts);
+    await scoped.setBool(_weeklySummaryKey, value.weeklySummary);
+    await scoped.setBool(_waterRemindersKey, value.waterReminders);
+    await scoped.setBool(_sleepReminderEnabledKey, value.sleepReminderEnabled);
+    if (value.sleepBedtime == null) {
+      await scoped.remove(_sleepBedtimeKey);
+    } else {
+      await scoped.setString(
+        _sleepBedtimeKey,
+        NotificationUtils.formatTime(value.sleepBedtime!),
+      );
+    }
+    if (value.sleepWakeTime == null) {
+      await scoped.remove(_sleepWakeTimeKey);
+    } else {
+      await scoped.setString(
+        _sleepWakeTimeKey,
+        NotificationUtils.formatTime(value.sleepWakeTime!),
+      );
+    }
+  }
+}
+
+/// 通知偏好控制器:构建本地状态、执行远程同步,并暴露本地/远程两类 setter。
+///
+/// setter 方法以 mixin 形式分布在 part 文件
+/// (`notification_local_setters.dart`、`notification_remote_sync.dart`)。
+class NotificationSettingsController extends NotificationSettingsControllerCore
+    with NotificationLocalSetters, NotificationRemoteSync {
   @override
   Future<NotificationSettingsState> build() async {
     final preferences = await SharedPreferences.getInstance();
     final auth = ref.watch(authSessionProvider);
     final userId = auth.canAccessProtectedData ? auth.user?.id : null;
-    final scoped = _ScopedPreferences(preferences, userId);
-    final legacy = _ScopedPreferences(preferences, null);
+    final scoped = ScopedPreferences(preferences, userId);
+    final legacy = ScopedPreferences(preferences, null);
     final legacyOwner = preferences.getString(_legacyMigrationOwnerKey);
     final canConsumeLegacy =
         userId != null && (legacyOwner == null || legacyOwner == userId);
     final permissionState = await ref
         .read(notificationPermissionServiceProvider)
         .getPermissionState();
-    // Times are intentionally *not* defaulted here: a null `sleepBedtime` /
-    // `dndStartTime` means "user never picked one". The list page renders
-    // "未设置" for that case; the sub-page shows a placeholder until the
-    // user toggles the feature on (which persists a default). This keeps the
-    // two surfaces in sync instead of the previous behavior where the list
-    // said "未设置" but the sub-page showed a phantom 22:00.
     final local = NotificationSettingsState(
       medicationReminders: legacy.getBool(_medicationKey) ?? true,
       healthAlerts:
@@ -157,12 +298,6 @@ class NotificationSettingsController
       return local;
     }
 
-    // Remote sync is a documented best-effort degrade: when the preferences
-    // read/patch fails (Left via TaskEither, or a protocol FormatException
-    // escaping `.run()`) the controller keeps the local values — the local
-    // store is the user's primary preference surface — and logs the failure
-    // below. The migration marker stays unset so the next authenticated build
-    // retries the first sync.
     try {
       final result = await ref
           .read(notificationPreferencesRepositoryProvider)
@@ -178,7 +313,16 @@ class NotificationSettingsController
         if (!migrationCompleted) {
           final migrated = await ref
               .read(notificationPreferencesRepositoryProvider)
-              .patchPreferences(_toRemotePatch(local))
+              .patchPreferences(
+                buildRemotePatch(
+                  healthAlerts: local.healthAlerts,
+                  weeklySummary: local.weeklySummary,
+                  waterReminders: local.waterReminders,
+                  sleepReminderEnabled: local.sleepReminderEnabled,
+                  sleepBedtime: local.sleepBedtime,
+                  sleepWakeTime: local.sleepWakeTime,
+                ),
+              )
               .run();
           final migratedValue = migrated.fold(
             (failure) => throw failure,
@@ -214,8 +358,6 @@ class NotificationSettingsController
       ref
           .read(talkerProvider)
           .error('NotificationSettingsController: remote sync failed: $error');
-      // Keep local values and leave the migration marker unset so the next
-      // authenticated build can retry a failed first sync.
       return local;
     }
   }
@@ -241,404 +383,6 @@ class NotificationSettingsController
     final permissionState = await service.getPermissionState();
     state = AsyncData(current.copyWith(permissionState: permissionState));
   }
-
-  Future<void> setMedicationReminders(bool enabled) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(medicationReminders: enabled);
-    await _save(
-      next,
-      update: (preferences) => preferences.setBool(_medicationKey, enabled),
-    );
-  }
-
-  Future<void> setHealthAlerts(bool enabled) async {
-    await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(healthAlertsEnabled: enabled),
-      update: (current) => current.copyWith(healthAlerts: enabled),
-    );
-  }
-
-  Future<void> setWeeklySummary(bool enabled) async {
-    await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(weeklyInsightEnabled: enabled),
-      update: (current) => current.copyWith(weeklySummary: enabled),
-    );
-  }
-
-  Future<void> setWaterReminders(bool enabled) async {
-    await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(waterRemindersEnabled: enabled),
-      update: (current) => current.copyWith(waterReminders: enabled),
-    );
-  }
-
-  Future<void> setSleepReminders(bool enabled) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(sleepReminders: enabled);
-    await _save(
-      next,
-      update: (preferences) => preferences.setBool(_sleepRemindersKey, enabled),
-    );
-  }
-
-  Future<void> setSleepReminderEnabled(bool enabled) async {
-    final current = state.asData?.value ?? const NotificationSettingsState();
-    // When turning the feature on for the first time, seed any unset times
-    // with sane defaults so the sub-page never shows a placeholder while
-    // the list page claims the feature is active.
-    TimeOfDay? bedtime = current.sleepBedtime;
-    TimeOfDay? wakeTime = current.sleepWakeTime;
-    if (enabled) {
-      bedtime ??= const TimeOfDay(hour: 23, minute: 0);
-      wakeTime ??= const TimeOfDay(hour: 7, minute: 0);
-    }
-    await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(
-        sleepReminderEnabled: enabled,
-        sleepBedtimeMinutes: _toMinutes(bedtime),
-        sleepWakeTimeMinutes: _toMinutes(wakeTime),
-      ),
-      update: (value) => value.copyWith(
-        sleepReminderEnabled: enabled,
-        sleepBedtime: bedtime,
-        sleepWakeTime: wakeTime,
-      ),
-    );
-  }
-
-  Future<void> setSleepBedtime(TimeOfDay? time) async {
-    await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(
-        sleepBedtimeMinutes: _toMinutes(time),
-        clearSleepBedtime: time == null,
-      ),
-      update: (current) => current.copyWith(sleepBedtime: time),
-    );
-  }
-
-  Future<void> setSleepWakeTime(TimeOfDay? time) async {
-    await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(
-        sleepWakeTimeMinutes: _toMinutes(time),
-        clearSleepWakeTime: time == null,
-      ),
-      update: (current) => current.copyWith(sleepWakeTime: time),
-    );
-  }
-
-  Future<void> setDndEnabled(bool enabled) async {
-    final current = state.asData?.value ?? const NotificationSettingsState();
-    // Mirror `setSleepReminderEnabled`: seed defaults when first enabled so
-    // the sub-page and list page agree on a concrete time range.
-    TimeOfDay? start = current.dndStartTime;
-    TimeOfDay? end = current.dndEndTime;
-    if (enabled) {
-      start ??= const TimeOfDay(hour: 22, minute: 0);
-      end ??= const TimeOfDay(hour: 7, minute: 0);
-    }
-    final next = current.copyWith(
-      dndEnabled: enabled,
-      dndStartTime: start,
-      dndEndTime: end,
-    );
-    await _save(
-      next,
-      update: (preferences) async {
-        await preferences.setBool(_dndEnabledKey, enabled);
-        if (start != null) {
-          await preferences.setString(
-            _dndStartTimeKey,
-            NotificationUtils.formatTime(start),
-          );
-        }
-        if (end != null) {
-          await preferences.setString(
-            _dndEndTimeKey,
-            NotificationUtils.formatTime(end),
-          );
-        }
-      },
-    );
-  }
-
-  Future<void> setDndStartTime(TimeOfDay? time) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(dndStartTime: time);
-    await _save(
-      next,
-      update: (preferences) async {
-        if (time == null) {
-          await preferences.remove(_dndStartTimeKey);
-        } else {
-          await preferences.setString(
-            _dndStartTimeKey,
-            NotificationUtils.formatTime(time),
-          );
-        }
-      },
-    );
-  }
-
-  Future<void> setDndEndTime(TimeOfDay? time) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(dndEndTime: time);
-    await _save(
-      next,
-      update: (preferences) async {
-        if (time == null) {
-          await preferences.remove(_dndEndTimeKey);
-        } else {
-          await preferences.setString(
-            _dndEndTimeKey,
-            NotificationUtils.formatTime(time),
-          );
-        }
-      },
-    );
-  }
-
-  Future<void> setNotificationSoundEnabled(bool enabled) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(notificationSoundEnabled: enabled);
-    await _save(
-      next,
-      update: (preferences) => preferences.setBool(_soundEnabledKey, enabled),
-    );
-  }
-
-  Future<void> setNotificationVibrationEnabled(bool enabled) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(notificationVibrationEnabled: enabled);
-    await _save(
-      next,
-      update: (preferences) =>
-          preferences.setBool(_vibrationEnabledKey, enabled),
-    );
-  }
-
-  Future<void> setReminderAdvanceMinutes(int minutes) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(reminderAdvanceMinutes: minutes);
-    await _save(
-      next,
-      update: (preferences) =>
-          preferences.setInt(_reminderAdvanceMinutesKey, minutes),
-    );
-  }
-
-  Future<void> reset() async {
-    final auth = ref.read(authSessionProvider);
-    if (auth.canAccessProtectedData && auth.user?.id != null) {
-      await _saveRemotePreference(
-        patch: const NotificationPreferencesPatch(
-          healthAlertsEnabled: true,
-          weeklyInsightEnabled: false,
-          waterRemindersEnabled: true,
-          sleepReminderEnabled: false,
-          clearSleepBedtime: true,
-          clearSleepWakeTime: true,
-        ),
-        update: (current) => current.copyWith(
-          healthAlerts: true,
-          weeklySummary: false,
-          waterReminders: true,
-          sleepReminderEnabled: false,
-          sleepBedtime: null,
-          sleepWakeTime: null,
-        ),
-      );
-    }
-    await _save(
-      NotificationSettingsState(
-        permissionState:
-            state.asData?.value.permissionState ??
-            NotificationPermissionState.unsupported,
-        // Explicitly null out the time fields so the list page renders
-        // "未设置" after a reset, instead of inheriting the freezed
-        // `@Default(TimeOfDay(...))` which would desync from the sub-page.
-        sleepBedtime: null,
-        sleepWakeTime: null,
-        dndStartTime: null,
-        dndEndTime: null,
-      ),
-      update: (preferences) async {
-        for (final key in _resetKeys) {
-          await preferences.remove(key);
-        }
-        final userId = ref.read(authSessionProvider).user?.id;
-        if (userId != null) {
-          final scoped = _ScopedPreferences(preferences, userId);
-          for (final key in _legacyRemoteKeys) {
-            await scoped.remove(key);
-          }
-          await scoped.remove(
-            PrefKeys.settingsNotificationsRemoteMigrationCompleted,
-          );
-        }
-      },
-    );
-  }
-
-  Future<void> _save(
-    NotificationSettingsState next, {
-    required Future<void> Function(SharedPreferences preferences) update,
-  }) async {
-    state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await update(preferences);
-    // medicineReminderNotificationSyncProvider watches this controller and
-    // handles reminder rescheduling after the schedule data layer is available.
-  }
-
-  Future<void> _saveRemotePreference({
-    required NotificationPreferencesPatch patch,
-    required NotificationSettingsState Function(
-      NotificationSettingsState current,
-    )
-    update,
-  }) async {
-    final operation = _remoteMutationTail.then<void>(
-      (_) => _performRemotePreference(patch: patch, update: update),
-    );
-    _remoteMutationTail = operation.catchError((_) {});
-    return operation;
-  }
-
-  Future<void> _performRemotePreference({
-    required NotificationPreferencesPatch patch,
-    required NotificationSettingsState Function(
-      NotificationSettingsState current,
-    )
-    update,
-  }) async {
-    final current = state.asData?.value ?? const NotificationSettingsState();
-    final next = update(current);
-    final auth = ref.read(authSessionProvider);
-    final userId = auth.canAccessProtectedData ? auth.user?.id : null;
-    if (userId == null) {
-      await _save(
-        next,
-        update: (preferences) =>
-            _writeRemoteLocal(_ScopedPreferences(preferences, null), next),
-      );
-      return;
-    }
-
-    state = AsyncData(next);
-    try {
-      final result = await ref
-          .read(notificationPreferencesRepositoryProvider)
-          .patchPreferences(patch)
-          .run();
-      final remote = result.fold((failure) => throw failure, (value) => value);
-      final preferences = await SharedPreferences.getInstance();
-      await _cacheRemote(preferences, remote, userId);
-      state = AsyncData(_applyRemote(next, remote));
-    } catch (error) {
-      final preferences = await SharedPreferences.getInstance();
-      await _writeRemoteLocal(_ScopedPreferences(preferences, userId), current);
-      state = AsyncData(current);
-      rethrow;
-    }
-  }
-
-  Future<void> _claimLegacyMigration(
-    SharedPreferences preferences,
-    String userId, {
-    required String? legacyOwner,
-  }) async {
-    if (legacyOwner != null && legacyOwner != userId) return;
-
-    final legacy = _ScopedPreferences(preferences, null);
-    if (legacyOwner == null) {
-      await preferences.setString(_legacyMigrationOwnerKey, userId);
-    }
-    for (final key in _legacyRemoteKeys) {
-      await legacy.remove(key);
-    }
-    await legacy.remove(PrefKeys.settingsNotificationsRemoteMigrationCompleted);
-  }
-
-  NotificationPreferencesPatch _toRemotePatch(NotificationSettingsState value) {
-    return NotificationPreferencesPatch(
-      healthAlertsEnabled: value.healthAlerts,
-      weeklyInsightEnabled: value.weeklySummary,
-      waterRemindersEnabled: value.waterReminders,
-      sleepReminderEnabled: value.sleepReminderEnabled,
-      sleepBedtimeMinutes: _toMinutes(value.sleepBedtime),
-      sleepWakeTimeMinutes: _toMinutes(value.sleepWakeTime),
-    );
-  }
-
-  NotificationSettingsState _applyRemote(
-    NotificationSettingsState local,
-    NotificationPreferences remote,
-  ) {
-    return local.copyWith(
-      healthAlerts: remote.healthAlertsEnabled,
-      weeklySummary: remote.weeklyInsightEnabled,
-      waterReminders: remote.waterRemindersEnabled,
-      sleepReminderEnabled: remote.sleepReminderEnabled,
-      sleepBedtime: _fromMinutes(remote.sleepBedtimeMinutes),
-      sleepWakeTime: _fromMinutes(remote.sleepWakeTimeMinutes),
-    );
-  }
-
-  Future<void> _cacheRemote(
-    SharedPreferences preferences,
-    NotificationPreferences remote,
-    String userId,
-  ) async {
-    final value = _applyRemote(
-      const NotificationSettingsState(sleepBedtime: null, sleepWakeTime: null),
-      remote,
-    );
-    await _writeRemoteLocal(_ScopedPreferences(preferences, userId), value);
-  }
-
-  Future<void> _writeRemoteLocal(
-    _ScopedPreferences scoped,
-    NotificationSettingsState value,
-  ) async {
-    await scoped.setBool(_healthAlertsKey, value.healthAlerts);
-    await scoped.setBool(_weeklySummaryKey, value.weeklySummary);
-    await scoped.setBool(_waterRemindersKey, value.waterReminders);
-    await scoped.setBool(_sleepReminderEnabledKey, value.sleepReminderEnabled);
-    if (value.sleepBedtime == null) {
-      await scoped.remove(_sleepBedtimeKey);
-    } else {
-      await scoped.setString(
-        _sleepBedtimeKey,
-        NotificationUtils.formatTime(value.sleepBedtime!),
-      );
-    }
-    if (value.sleepWakeTime == null) {
-      await scoped.remove(_sleepWakeTimeKey);
-    } else {
-      await scoped.setString(
-        _sleepWakeTimeKey,
-        NotificationUtils.formatTime(value.sleepWakeTime!),
-      );
-    }
-  }
-
-  static int? _toMinutes(TimeOfDay? time) =>
-      time == null ? null : time.hour * 60 + time.minute;
-
-  static TimeOfDay? _fromMinutes(int? minutes) {
-    if (minutes == null || minutes < 0 || minutes > 1439) return null;
-    return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
-  }
-
-  static TimeOfDay? _parseTime(String? value) {
-    if (value == null || value.isEmpty) return null;
-    final parts = value.split(':');
-    if (parts.length != 2) return null;
-    final hour = int.tryParse(parts[0]);
-    final minute = int.tryParse(parts[1]);
-    if (hour == null || minute == null) return null;
-    return TimeOfDay(hour: hour, minute: minute);
-  }
 }
 
 final notificationSettingsControllerProvider =
@@ -646,42 +390,3 @@ final notificationSettingsControllerProvider =
       NotificationSettingsController,
       NotificationSettingsState
     >(NotificationSettingsController.new);
-
-/// A user-scoped wrapper around [SharedPreferences].
-///
-/// Currently only used by the notification preferences module. When a second
-/// feature needs user-isolated local storage, extract this into
-/// `core/storage/` with a generic key-scoping strategy (e.g. a
-/// `ScopedStorage` class that takes a key prefix function). Until then,
-/// keeping it here avoids a premature abstraction that may not fit future
-/// use cases.
-class _ScopedPreferences {
-  _ScopedPreferences(this._preferences, this._userId);
-
-  final SharedPreferences _preferences;
-  final String? _userId;
-
-  String _key(String key) {
-    final userId = _userId;
-    return userId == null
-        ? key
-        : PrefKeys.settingsNotificationsScoped(key, userId);
-  }
-
-  bool? getBool(String key) => _preferences.getBool(_key(key));
-
-  int? getInt(String key) => _preferences.getInt(_key(key));
-
-  String? getString(String key) => _preferences.getString(_key(key));
-
-  Future<bool> setBool(String key, bool value) =>
-      _preferences.setBool(_key(key), value);
-
-  Future<bool> setInt(String key, int value) =>
-      _preferences.setInt(_key(key), value);
-
-  Future<bool> setString(String key, String value) =>
-      _preferences.setString(_key(key), value);
-
-  Future<bool> remove(String key) => _preferences.remove(_key(key));
-}
