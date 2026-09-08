@@ -147,10 +147,8 @@ void main() {
 
     expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
     expect(find.byKey(const Key('review-record-guide-card')), findsNothing);
-    expect(
-      find.byKey(const Key('review-start-observation-action')),
-      findsNothing,
-    );
+    // 事件动作已收口 Today：review 侧不渲染开始观察动作。
+    expect(find.byKey(const Key('health-event-start-action')), findsNothing);
     expectNoLegacyDashboardTraces(tester);
   });
 

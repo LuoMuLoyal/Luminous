@@ -190,10 +190,8 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.byKey(const Key('sign-in-hint-banner')), findsOneWidget);
       expect(find.byKey(const Key('review-record-guide-card')), findsOneWidget);
-      expect(
-        find.byKey(const Key('review-start-observation-action')),
-        findsNothing,
-      );
+      // 事件动作已收口 Today：review 侧不渲染任何开始观察动作。
+      expect(find.byKey(const Key('health-event-start-action')), findsNothing);
       expect(find.byKey(const Key('report-readiness-card')), findsNothing);
     },
   );
@@ -223,10 +221,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       expect(find.byKey(const Key('review-record-guide-card')), findsOneWidget);
-      expect(
-        find.byKey(const Key('review-start-observation-action')),
-        findsNothing,
-      );
+      // 事件动作已收口 Today：review 侧不渲染任何开始观察动作。
+      expect(find.byKey(const Key('health-event-start-action')), findsNothing);
       expect(find.text(l10n.reviewRecordGuideTitle), findsOneWidget);
       // 无事件时不自动生成周报。
       expect(find.byKey(const Key('report-export-section')), findsNothing);

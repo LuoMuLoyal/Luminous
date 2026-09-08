@@ -245,10 +245,7 @@ void main() {
         find.text(l10n.reviewRecordGuideDescription(3, 7)),
         findsOneWidget,
       );
-      expect(
-        find.byKey(const Key('review-start-observation-action')),
-        findsNothing,
-      );
+      expect(find.byKey(const Key('health-event-start-action')), findsNothing);
       // 最近事件按事件逐条展示，最近的在最上方。
       expect(
         find.byKey(const Key('review-history-item-evt-2')),
