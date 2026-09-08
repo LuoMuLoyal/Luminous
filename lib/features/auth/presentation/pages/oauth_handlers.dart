@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/pages/oauth_navigation.dart';
 import 'package:luminous/features/auth/presentation/pages/oauth_uris.dart';
@@ -239,6 +240,7 @@ Future<void> completeGoogleLoginFromInput(
 
 Future<void> startAppleLogin(
   BuildContext context,
+  WidgetRef ref,
   OAuthLoginController oauthController,
   AppLocalizations l10n, {
   String? returnTo,
@@ -261,7 +263,8 @@ Future<void> startAppleLogin(
     );
     if (session == null || !context.mounted) return;
     goAfterLogin(context, returnTo: returnTo, fallbackHome: true);
-  } catch (e) {
+  } catch (e, st) {
+    ref.read(talkerProvider).warning('startAppleLogin: failed: $e', st);
     if (context.mounted) await Toast.show(context, failMessage);
   }
 }

@@ -391,6 +391,7 @@ class LoginPage extends HookConsumerWidget {
               isStartingApple: oauthState.isStartingApple,
               onAppleSignIn: () => startAppleLogin(
                 context,
+                ref,
                 oauthController,
                 l10n,
                 returnTo: returnTo,
