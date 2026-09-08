@@ -66,6 +66,7 @@ class Routes {
   static const accountOauthWechat = '/account/oauth/wechat';
   static const accountChangeEmail = '/account/change-email';
   static const accountSessions = '/account/sessions';
+  static const accountSecurityCenter = '/account/security-center';
 
   static const settings = '/settings';
   static const settingsLanguage = '/settings/language';
@@ -81,6 +82,8 @@ class Routes {
   static const settingsAbout = '/settings/about';
   static const settingsDataStorage = '/settings/data-storage';
   static const settingsFeatureFlags = '/settings/more/feature-flags';
+
+  static const profile = '/profile';
 
   static const recordCreate = '/record/create';
   static const recordQuickEntrySettings = '/record/quick-entry-settings';

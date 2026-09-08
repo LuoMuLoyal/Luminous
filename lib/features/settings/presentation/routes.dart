@@ -13,6 +13,7 @@ import 'package:luminous/features/settings/presentation/pages/help.dart';
 import 'package:luminous/features/settings/presentation/pages/language.dart';
 import 'package:luminous/features/settings/presentation/pages/notification.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
+import 'package:luminous/features/settings/presentation/pages/profile.dart';
 import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/theme.dart';
 
@@ -186,5 +187,15 @@ class SettingsDataStorageRoute extends GoRouteData
       key: state.pageKey,
       child: const DataStorageSettingsPage(),
     );
+  }
+}
+
+@TypedGoRoute<ProfileRoute>(path: '/profile')
+class ProfileRoute extends GoRouteData with $ProfileRoute {
+  const ProfileRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return slidePage(key: state.pageKey, child: const ProfilePage());
   }
 }

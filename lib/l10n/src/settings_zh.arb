@@ -241,5 +241,11 @@
   "settingsHelpTraceIdCopy": "复制",
   "settingsHelpTraceIdTitle": "最近一次请求 Trace ID",
   "settingsHealthAutoSyncTitle": "健康数据自动同步",
-  "settingsHealthAutoSyncSubtitle": "App 进入前台时自动同步最近 24 小时的健康数据"
+  "settingsHealthAutoSyncSubtitle": "App 进入前台时自动同步最近 24 小时的健康数据",
+  "profilePageTitle": "个人信息",
+  "profileUserSectionTitle": "用户信息",
+  "profileUserSaveAction": "保存用户信息",
+  "profileHealthSectionTitle": "健康档案",
+  "profileNicknameLabel": "昵称",
+  "profileAvatarLabel": "头像 URL"
 }

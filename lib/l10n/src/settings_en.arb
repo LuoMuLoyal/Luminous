@@ -241,5 +241,11 @@
   "settingsHelpTraceIdCopy": "Copy",
   "settingsHelpTraceIdTitle": "Latest request Trace ID",
   "settingsHealthAutoSyncTitle": "Health Data Auto-Sync",
-  "settingsHealthAutoSyncSubtitle": "Automatically sync last 24 hours of health data when app enters foreground"
+  "settingsHealthAutoSyncSubtitle": "Automatically sync last 24 hours of health data when app enters foreground",
+  "profilePageTitle": "Profile",
+  "profileUserSectionTitle": "User Information",
+  "profileUserSaveAction": "Save User Info",
+  "profileHealthSectionTitle": "Health Profile",
+  "profileNicknameLabel": "Nickname",
+  "profileAvatarLabel": "Avatar URL"
 }

@@ -411,9 +411,9 @@ void main() {
             routes: [
               GoRoute(path: '/', builder: (context, state) => const MinePage()),
               GoRoute(
-                path: '/mine/profile/edit',
+                path: '/profile',
                 builder: (context, state) =>
-                    const Scaffold(body: Text('profile-edit-page')),
+                    const Scaffold(body: Text('profile-page')),
               ),
             ],
           ),
@@ -432,7 +432,7 @@ void main() {
     await tester.tap(find.byKey(const Key('mine-readiness-action')));
     await tester.pumpAndSettle();
 
-    expect(find.text('profile-edit-page'), findsOneWidget);
+    expect(find.text('profile-page'), findsOneWidget);
   });
 
   testWidgets('Mine archive routes basic info to edit page', (tester) async {

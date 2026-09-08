@@ -85,7 +85,7 @@ class SettingsPage extends ConsumerWidget {
     final accountHeader = AccountHeader(
       session: session,
       signedIn: signedIn,
-      onTap: () => pushAuthRequiredRoute(context, Routes.account),
+      onTap: () => pushAuthRequiredRoute(context, Routes.profile),
     );
 
     final signOutTile = SignOutTile(

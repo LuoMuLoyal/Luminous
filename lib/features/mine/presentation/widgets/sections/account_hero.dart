@@ -221,8 +221,8 @@ class MineAccountHero extends StatelessWidget {
       unawaited(context.push(loginRouteForCurrentLocation(context)));
       return;
     }
-    final route = gaps.isNotEmpty ? gaps.first.route : Routes.mineProfileEdit;
-    unawaited(pushAuthRequiredRoute(context, route));
+    // 统一导航到ProfilePage
+    unawaited(pushAuthRequiredRoute(context, Routes.profile));
   }
 }
 
