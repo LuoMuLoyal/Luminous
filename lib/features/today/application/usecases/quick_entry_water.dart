@@ -21,6 +21,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// layer so the create/emit/undo semantics stay identical to the record-page
 /// quick entry. It is gated by authentication: signed-out users see the auth
 /// dialog instead of creating a record.
+///
+/// UI interaction: [showWaterQuickEntrySheet] (from
+/// `record/presentation/widgets/dialogs/water_quick_entry_sheet.dart`).
+/// Cross-feature call site: `record/presentation/services/quick_entry_executor.dart`
+/// also delegates to [WaterQuickEntryFlow] for the same flow.
 Future<void> executeTodayWaterQuickEntry(
   BuildContext context,
   WidgetRef ref,
