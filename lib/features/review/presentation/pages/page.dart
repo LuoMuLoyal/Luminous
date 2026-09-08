@@ -25,12 +25,14 @@ import 'package:luminous/features/review/presentation/widgets/views/review_view.
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// 第五 Tab 的 Review 页：以健康事件为主单位的回顾首屏。
+/// 第五 Tab 的 Review 页：以纵向洞察为主单位的洞察优先回顾首屏。
 ///
-/// 数据来自 [reviewCurrentProvider] / [reviewLastCurrentProvider] /
-/// [reviewHistoryProvider]；事件交互（开始观察 / check-in / 结束）复用
-/// health_event 的 ActiveHealthEvent notifier 与 bottom sheet，服务端
-/// 成功后由 DataChangeBus 驱动 review providers 自动刷新。
+/// 主路径装配 周期开关 → 覆盖率概览 → 值得注意 → 单维趋势 → 事件回顾；
+/// 数据来自 [reviewDashboardProvider]（metrics/trends/findings +
+/// observedMetric 覆盖率）与 [reviewCurrentProvider] / [reviewLastCurrentProvider]
+/// / [reviewHistoryProvider]。事件动作（开始观察 / check-in / 结束）已收口
+/// Today（`health_event` + Today 装配），本页只做被动事件回顾与「去今日
+/// check-in」浅链接；落库后由 DataChangeBus 驱动 review providers 自动刷新。
 ///
 /// 旧 dashboard 视图（`dashboard_view.dart` 及其 sections、
 /// `widgets/shared/top_bar.dart` 的 7/30 天切换）已从主路径移除（Task 7

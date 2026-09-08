@@ -20,18 +20,20 @@ import 'package:luminous/features/review/presentation/widgets/sections/what_happ
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// 事件优先的回顾首屏（移动端约束布局）。
+/// 洞察优先的回顾首屏（移动端约束布局）。
 ///
 /// 六种状态：
 /// 1. loading —— 无数据时的骨架屏；
-/// 2. active —— 事件头部提供今日 check-in + 四段；
+/// 2. active —— 事件头部提供「去今日 check-in」浅链接 + 四段；
 /// 3. ended —— 事件头部展示 outcome + 四段；
 /// 4. partial —— 个别段落 unknown，只显示简短缺失原因，无分数/红色告警；
-/// 5. no-event —— 开始观察入口 + 聚合预告卡（五段内容要点），无事件时轻量解释，不生成周报；
+/// 5. no-event —— 数据过稀时记录引导卡（去 record 补记），否则轻量解释卡 +
+///    记录后预览预告卡；无事件时不生成周报、不渲染任何事件动作；
 /// 6. error-with-cache —— 刷新失败但保留上次成功数据，顶部轻量提示；
 ///    无缓存的错误在 [StateErrorView] 中给出重试。
 ///
-/// 所有事件交互（check-in / 结束 / 开始观察）通过回调上抛给页面装配层。
+/// 事件动作（开始观察 / check-in / end）已收口 Today，本视图不承接任何
+/// 事件动作回调；仅通过 [onGoTodayCheckIn] 提供「去今日 check-in」浅链接。
 class ReviewView extends StatelessWidget {
   const ReviewView({
     super.key,
