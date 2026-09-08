@@ -32,6 +32,9 @@ class ReviewRecordGuideSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final typography = context.theme.typography;
     final expected = expectedCount > 0 ? expectedCount : observedCount;
+    final description = expected == 0 && observedCount == 0
+        ? l10n.reviewRecordGuideEmptyRangeDescription
+        : l10n.reviewRecordGuideDescription(observedCount, expected);
     return FCard(
       key: const Key('review-record-guide-card'),
       child: Padding(
@@ -59,7 +62,7 @@ class ReviewRecordGuideSection extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.level2),
             Text(
-              l10n.reviewRecordGuideDescription(observedCount, expected),
+              description,
               style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),

@@ -572,6 +572,7 @@
     }
   },
   "reviewRecordGuideGoRecordAction": "Go to record",
+  "reviewRecordGuideEmptyRangeDescription": "No recorded days in this period yet. Start recording to see trends here.",
   "reviewPreviewOverviewTitle": "What you'll see after recording",
   "reviewPreviewCoverageTitle": "Coverage overview",
   "reviewPreviewCoverageBody": "See at a glance how many days each health dimension was recorded in the week or month.",
