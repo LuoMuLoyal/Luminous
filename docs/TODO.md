@@ -107,6 +107,11 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
   - 现状：LangGraph time travel 重生与 confirm（HITL 挂起）并发操作同一线程时无 per-thread 锁，极端并发下可能状态竞争
   - 方案：为 regenerate/confirm 路径加 per-thread 互斥
 
+- `lucent_dashboard.dart` 的 `// ignore_for_file: deprecated_member_use` 与 Q4 observed-metric 迁移强绑定
+  - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是 legacy scalar 投影，客户端无法区分「空档=无记录」与「0」；`coverage_strip.dart` 使用 `ReviewObservedMetricCoverage` 枚举消费该投影
+  - 目标：2026 Q4 Lucent observed-metric 域迁移后删除 ignore，`coverage_strip.dart` 调用点同步调整
+  - 跟踪：`// tracked-by-TODO-ignore-deprecated-metric-migration`
+
 ## 2026-08-20 Mine settings P2-1 deferred follow-up
 
 - Lucent `AuthTokenService.listSessions()` 当前将每条会话的 `isCurrent` 固定为 `false`，Luminous 已实现收到 `isCurrent=true` 时撤销后登出的分支，但当前设备无法在会话列表中被标识；后续需在不暴露 refresh token 的前提下补齐服务端当前会话识别。

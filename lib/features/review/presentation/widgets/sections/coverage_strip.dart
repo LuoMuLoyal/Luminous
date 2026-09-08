@@ -77,7 +77,9 @@ class _CoverageCard extends StatelessWidget {
     final observed = metric.observedMetric;
     final sparse =
         observed == null ||
-        observed.coverage == ReviewObservedMetricCoverage.none ||
+        observed.coverage ==
+            ReviewObservedMetricCoverage
+                .none || // tracked-by-TODO-ignore-deprecated-metric-migration
         observed.observedCount < 2;
 
     final coverageLabel = sparse
