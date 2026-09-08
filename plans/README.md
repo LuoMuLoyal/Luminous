@@ -32,8 +32,6 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
-- [`2026-09-07-review-page-restructure.md`](2026-09-07-review-page-restructure.md)
-  — Review 页重组为洞察优先 + 覆盖感知(周/月周期、覆盖率概览行、值得注意区、单维趋势、事件被动区):事件动作收口 Today、建议历史下线、AI 摘要主路径退役为 [问助手] 入口;数据全部复用现有 dashboard 契约(Wave 2 聚合契约后置,依赖 Lucent observed-metric 域迁移);依据 `research/01-用户价值调研/record-review-assistant-纵向洞察归属与Tab验证.md`
 - [`2026-09-07-large-file-domain-splitting-plan.md`](2026-09-07-large-file-domain-splitting-plan.md)
   — 超大文件按领域拆分：55 个 ≥400 行手写文件盘点；P0 五个核心大文件（detail 975 / conversation 922 / clinic 819 / page_body 635 / login 651）已子 agent 完成逐行分析并给出新文件清单；P1/P2 批量拆分与执行批次
 - [`2026-09-06-account-profile-restructure.md`](2026-09-06-account-profile-restructure.md)
