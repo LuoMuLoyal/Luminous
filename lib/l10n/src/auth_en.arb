@@ -283,5 +283,13 @@
   "authAccountManageBottomSupport": "Support & Feedback",
   "authAccountManageSupportCustomerService": "Customer Service",
   "authAccountManageSupportFeedback": "Feedback",
-  "authAccountManageSupportHelpCenter": "Help Center"
+  "authAccountManageSupportHelpCenter": "Help Center",
+  "securityCenterSensitiveOperationsTitle": "Sensitive Operations",
+  "securityCenterSensitiveOperationsEmpty": "No sensitive operations recorded",
+  "securityCenterLoginHistoryTitle": "Login History",
+  "securityCenterLoginHistoryViewAll": "View all login records",
+  "securityCenterLoginHistoryViewAllSubtitle": "View devices and login history",
+  "securityCenterAccountProtectionTitle": "Account Protection",
+  "securityCenterAccountProtectionComingSoon": "Two-factor verification",
+  "securityCenterAccountProtectionComingSoonSubtitle": "Coming soon"
 }

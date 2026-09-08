@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
-import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
+import 'package:luminous/features/auth/presentation/pages/account_manage.dart';
 import 'package:luminous/features/auth/presentation/pages/change_email.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/auth/presentation/pages/register.dart';
+import 'package:luminous/features/auth/presentation/pages/security_center.dart';
 import 'package:luminous/features/auth/presentation/pages/sessions.dart';
 
 part 'routes.g.dart';
@@ -143,7 +144,7 @@ class AccountRoute extends GoRouteData with $AccountRoute {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(key: state.pageKey, child: const AccountSettingsPage());
+    return slidePage(key: state.pageKey, child: const AccountManagePage());
   }
 }
 
@@ -170,7 +171,7 @@ class AccountOauthWechatRoute extends GoRouteData
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return slidePage(
       key: state.pageKey,
-      child: AccountSettingsPage(wechatCode: code, wechatState: this.state),
+      child: AccountManagePage(wechatCode: code, wechatState: this.state),
     );
   }
 }
@@ -193,7 +194,6 @@ class AccountSecurityCenterRoute extends GoRouteData
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    // TODO: 实现安全中心页面
-    return slidePage(key: state.pageKey, child: const Scaffold());
+    return slidePage(key: state.pageKey, child: const SecurityCenterPage());
   }
 }

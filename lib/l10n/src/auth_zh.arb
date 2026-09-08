@@ -283,5 +283,13 @@
   "authAccountManageBottomSupport": "服务与反馈",
   "authAccountManageSupportCustomerService": "我的客服",
   "authAccountManageSupportFeedback": "意见反馈",
-  "authAccountManageSupportHelpCenter": "帮助中心"
+  "authAccountManageSupportHelpCenter": "帮助中心",
+  "securityCenterSensitiveOperationsTitle": "敏感操作记录",
+  "securityCenterSensitiveOperationsEmpty": "暂无敏感操作记录",
+  "securityCenterLoginHistoryTitle": "登录记录",
+  "securityCenterLoginHistoryViewAll": "查看全部登录记录",
+  "securityCenterLoginHistoryViewAllSubtitle": "查看设备与登录历史",
+  "securityCenterAccountProtectionTitle": "账号保护",
+  "securityCenterAccountProtectionComingSoon": "二次验证",
+  "securityCenterAccountProtectionComingSoonSubtitle": "即将推出"
 }
