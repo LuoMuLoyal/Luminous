@@ -185,3 +185,15 @@ class AccountChangeEmailRoute extends GoRouteData
     return slidePage(key: state.pageKey, child: const ChangeEmailPage());
   }
 }
+
+@TypedGoRoute<AccountSecurityCenterRoute>(path: '/account/security-center')
+class AccountSecurityCenterRoute extends GoRouteData
+    with $AccountSecurityCenterRoute {
+  const AccountSecurityCenterRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    // TODO: 实现安全中心页面
+    return slidePage(key: state.pageKey, child: const Scaffold());
+  }
+}

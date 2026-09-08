@@ -12,7 +12,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
+import 'package:luminous/features/auth/presentation/pages/account_manage.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
@@ -439,7 +439,7 @@ GoRouter _buildSettingsTestRouter() {
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/account',
-        builder: (context, state) => const AccountSettingsPage(),
+        builder: (context, state) => const AccountManagePage(),
       ),
       GoRoute(
         path: '/settings',

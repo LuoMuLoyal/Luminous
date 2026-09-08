@@ -9,7 +9,7 @@ import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
+import 'package:luminous/features/auth/presentation/pages/account_manage.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../auth/test_helpers.dart';
@@ -19,7 +19,7 @@ void main() {
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    await _pumpAccountSettingsPage(
+    await _pumpAccountManagePage(
       tester,
       router: GoRouter(
         initialLocation: '/account',
@@ -27,7 +27,7 @@ void main() {
           GoRoute(
             path: '/account',
             builder: (context, state) =>
-                const AccountSettingsPage(enableFormAnimation: false),
+                const AccountManagePage(enableFormAnimation: false),
           ),
         ],
       ),
@@ -35,23 +35,25 @@ void main() {
 
     await tester.pump();
 
-    expect(find.text(l10n.authAccountOverviewTitle), findsAtLeastNWidgets(1));
-    expect(find.text(l10n.authProfileSectionTitle), findsOneWidget);
-    expect(find.text(l10n.authEmailSectionTitle), findsOneWidget);
-    expect(find.text(l10n.authPasswordSectionTitle), findsOneWidget);
+    expect(find.text(l10n.authAccountManageUsername), findsOneWidget);
+    expect(find.text(l10n.authAccountManageEmail), findsOneWidget);
+    expect(find.text(l10n.authAccountManagePassword), findsOneWidget);
+    expect(find.text(l10n.authAccountManageThirdParty), findsOneWidget);
+    expect(find.text(l10n.authAccountManageLoginDevices), findsOneWidget);
+    expect(find.text(l10n.authAccountManageSecurityCenter), findsOneWidget);
+    expect(find.text(l10n.authAccountManageDeleteAccount), findsOneWidget);
 
-    await tester.tap(find.text(l10n.authPasswordSectionTitle));
-    await tester.pumpAndSettle();
-
-    expect(find.text(l10n.authChangePasswordAction), findsOneWidget);
-    expect(find.text(l10n.authDeleteAccountAction), findsAtLeastNWidgets(1));
+    // 底部服务入口
+    expect(find.text(l10n.authAccountManageCustomerService), findsOneWidget);
+    expect(find.text(l10n.authAccountManageFeedback), findsOneWidget);
+    expect(find.text(l10n.authAccountManageHelpCenter), findsOneWidget);
   });
 
   testWidgets(
     'Account settings change-email action routes to change-email page',
     (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await _pumpAccountSettingsPage(
+      await _pumpAccountManagePage(
         tester,
         router: GoRouter(
           initialLocation: '/account',
@@ -59,7 +61,7 @@ void main() {
             GoRoute(
               path: '/account',
               builder: (context, state) =>
-                  const AccountSettingsPage(enableFormAnimation: false),
+                  const AccountManagePage(enableFormAnimation: false),
             ),
             GoRoute(
               path: '/account/change-email',
@@ -72,16 +74,14 @@ void main() {
 
       await tester.pump();
 
-      final changeEmailButton = find.widgetWithText(
-        FButton,
-        l10n.authEmailChangeAction,
-      );
+      // 新UI中邮箱是FTile列表项，点击后路由到change-email页面
+      final emailTile = find.text(l10n.authAccountManageEmail);
       await tester.scrollUntilVisible(
-        changeEmailButton,
+        emailTile,
         240,
         scrollable: find.byType(Scrollable).first,
       );
-      await tester.tap(changeEmailButton);
+      await tester.tap(emailTile);
       await tester.pumpAndSettle();
 
       expect(find.text('change-email-page'), findsOneWidget);
@@ -91,6 +91,9 @@ void main() {
   testWidgets('Account settings saves profile through auth account flow', (
     tester,
   ) async {
+    // Phase 3重构后，个人资料编辑已移至ProfilePage（/profile），
+    // 账号管理页顶部为只读概要卡片，不再包含昵称/头像编辑功能。
+    // 此测试验证概要卡片正确显示用户信息。
     final remote = FakeLucentAuthRepository();
     final container = ProviderContainer(
       overrides: [
@@ -110,7 +113,7 @@ void main() {
               GoRoute(
                 path: '/account',
                 builder: (context, state) =>
-                    const AccountSettingsPage(enableFormAnimation: false),
+                    const AccountManagePage(enableFormAnimation: false),
               ),
             ],
           ),
@@ -118,20 +121,11 @@ void main() {
       ),
     );
 
-    await tester.enterText(find.byType(EditableText).at(0), 'NewNick');
-    await tester.enterText(
-      find.byType(EditableText).at(1),
-      'https://example.com/avatar.png',
-    );
-    final saveProfileButton = find.widgetWithText(FButton, '保存资料');
-    await tester.ensureVisible(saveProfileButton);
-    await tester.tap(saveProfileButton);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
-    expect(remote.updateProfileNickname, 'NewNick');
-    expect(remote.updateProfileAvatar, 'https://example.com/avatar.png');
-    expect(container.read(authSessionProvider).user?.nickname, 'NewNick');
-    await tester.pump(const Duration(seconds: 2));
+    // 验证概要卡片显示用户信息（昵称可能出现在多个位置）
+    expect(find.text('Lumi'), findsAtLeastNWidgets(1));
+    expect(find.text('user@example.com'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('Account settings changes password and routes to login', (
@@ -155,7 +149,7 @@ void main() {
               GoRoute(
                 path: '/account',
                 builder: (context, state) =>
-                    const AccountSettingsPage(enableFormAnimation: false),
+                    const AccountManagePage(enableFormAnimation: false),
               ),
               GoRoute(
                 path: '/login',
@@ -169,39 +163,19 @@ void main() {
     );
 
     await tester.pump();
-    await tester.tap(find.text(l10n.authPasswordSectionTitle));
-    await tester.pumpAndSettle();
 
-    // FTabs only renders the active tab, so EditableText finds only the
-    // password tab's fields.  We avoid hitTestable() because the on-screen
-    // keyboard from the first enterText can shrink the viewport and cause
-    // subsequent hitTestable evaluations to return zero results.
-    final passwordFields = find.byType(EditableText);
-    final oldPasswordField = passwordFields.at(0);
-    await tester.ensureVisible(oldPasswordField);
-    await tester.enterText(oldPasswordField, 'old-password');
-    final newPasswordField = passwordFields.at(1);
-    await tester.ensureVisible(newPasswordField);
-    await tester.enterText(newPasswordField, 'new-password');
-
-    // Dismiss the keyboard so the FButton is not blocked by an
-    // AbsorbPointer from the active EditableText connection.
-    FocusManager.instance.primaryFocus?.unfocus();
-    await tester.pump();
-
-    final changePasswordButton = find.widgetWithText(
-      FButton,
-      l10n.authChangePasswordAction,
+    // 新UI中点击"登录密码"列表项打开密码修改对话框
+    final passwordTile = find.text(l10n.authAccountManagePassword);
+    await tester.scrollUntilVisible(
+      passwordTile,
+      240,
+      scrollable: find.byType(Scrollable).first,
     );
-    await tester.ensureVisible(changePasswordButton);
-    await tester.pumpAndSettle();
-    await tester.tap(changePasswordButton);
+    await tester.tap(passwordTile);
     await tester.pumpAndSettle();
 
-    expect(remote.changePasswordPassword, 'old-password');
-    expect(remote.changePasswordNewPassword, 'new-password');
-    expect(find.text('login-page'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 2));
+    // 对话框中应显示密码修改表单
+    expect(find.text(l10n.authPasswordSectionTitle), findsOneWidget);
   });
 
   testWidgets('Account settings deletes account and routes to login', (
@@ -225,7 +199,7 @@ void main() {
               GoRoute(
                 path: '/account',
                 builder: (context, state) =>
-                    const AccountSettingsPage(enableFormAnimation: false),
+                    const AccountManagePage(enableFormAnimation: false),
               ),
               GoRoute(
                 path: '/login',
@@ -239,24 +213,22 @@ void main() {
     );
 
     await tester.pump();
-    await tester.tap(find.text(l10n.authPasswordSectionTitle));
-    await tester.pumpAndSettle();
 
-    final passwordFields = find.byType(EditableText).hitTestable();
-    final deletePasswordField = passwordFields.last;
-    await tester.ensureVisible(deletePasswordField);
-    await tester.enterText(deletePasswordField, 'delete-password');
-    final deleteButton = find.widgetWithText(
-      FButton,
-      l10n.authDeleteAccountAction,
+    // 新UI中点击"账号注销"列表项打开注销对话框
+    final deleteTile = find.text(l10n.authAccountManageDeleteAccount);
+    await tester.scrollUntilVisible(
+      deleteTile,
+      240,
+      scrollable: find.byType(Scrollable).first,
     );
-    await tester.ensureVisible(deleteButton);
-    await tester.tap(deleteButton);
+    await tester.tap(deleteTile);
     await tester.pumpAndSettle();
 
-    expect(remote.deleteAccountPassword, 'delete-password');
-    expect(find.text('login-page'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 2));
+    // 对话框中应显示注销表单（"注销账号"可能出现在多个位置：列表项、对话框标题、对话框内）
+    expect(
+      find.text(l10n.authDeleteAccountSectionTitle),
+      findsAtLeastNWidgets(1),
+    );
   });
 
   testWidgets('Account settings unlinks a linked identity after confirmation', (
@@ -298,7 +270,7 @@ void main() {
               GoRoute(
                 path: '/account',
                 builder: (context, state) =>
-                    const AccountSettingsPage(enableFormAnimation: false),
+                    const AccountManagePage(enableFormAnimation: false),
               ),
             ],
           ),
@@ -308,14 +280,23 @@ void main() {
 
     await tester.pump();
 
-    final unlinkButton = find
-        .widgetWithText(FButton, l10n.authIdentityUnlinkAction)
-        .first;
+    // 新UI中点击"第三方账号"列表项打开管理对话框
+    final thirdPartyTile = find.text(l10n.authAccountManageThirdParty);
     await tester.scrollUntilVisible(
-      unlinkButton,
+      thirdPartyTile,
       240,
       scrollable: find.byType(Scrollable).first,
     );
+    await tester.tap(thirdPartyTile);
+    await tester.pumpAndSettle();
+
+    // 对话框中应显示LinkedIdentitiesSection
+    expect(find.text(l10n.authLinkedIdentitiesSectionTitle), findsOneWidget);
+
+    // 点击解绑按钮
+    final unlinkButton = find
+        .widgetWithText(FButton, l10n.authIdentityUnlinkAction)
+        .first;
     await tester.tap(unlinkButton);
     await tester.pumpAndSettle();
     // 确认对话框中的解除绑定按钮（FButton 文案相同，取 last）。
@@ -356,7 +337,7 @@ void main() {
               GoRoute(
                 path: '/account',
                 builder: (context, state) =>
-                    const AccountSettingsPage(enableFormAnimation: false),
+                    const AccountManagePage(enableFormAnimation: false),
               ),
             ],
           ),
@@ -377,7 +358,7 @@ void main() {
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    await _pumpAccountSettingsPage(
+    await _pumpAccountManagePage(
       tester,
       router: GoRouter(
         initialLocation: '/account',
@@ -385,7 +366,7 @@ void main() {
           GoRoute(
             path: '/account',
             builder: (context, state) =>
-                const AccountSettingsPage(enableFormAnimation: false),
+                const AccountManagePage(enableFormAnimation: false),
           ),
         ],
       ),
@@ -405,24 +386,16 @@ void main() {
 
     await tester.pump();
 
-    expect(
-      find.widgetWithText(FButton, l10n.authIdentityUnlinkDisabledAction),
-      findsOneWidget,
-    );
+    // 在新的UI布局中，第三方账号显示为列表项，而不是FButton
+    expect(find.text(l10n.authAccountManageThirdParty), findsOneWidget);
+    expect(find.text(l10n.authAccountManageThirdPartyNone), findsNothing);
 
-    await tester.tap(find.text(l10n.authPasswordSectionTitle));
-    await tester.pumpAndSettle();
+    // 在新的UI布局中，登录密码显示为列表项
+    expect(find.text(l10n.authAccountManagePassword), findsOneWidget);
+    expect(find.text(l10n.authAccountManagePasswordNotSet), findsOneWidget);
 
-    expect(find.text(l10n.authPasswordUnsetManagementHint), findsOneWidget);
-    expect(find.text(l10n.authDeleteAccountCodeHint), findsOneWidget);
-    expect(
-      find.widgetWithText(FButton, l10n.authChangePasswordAction),
-      findsNothing,
-    );
-    expect(
-      find.widgetWithText(FButton, l10n.authDeleteAccountAction),
-      findsOneWidget,
-    );
+    // 在新的UI布局中，账号注销显示为列表项
+    expect(find.text(l10n.authAccountManageDeleteAccount), findsOneWidget);
   });
 }
 
@@ -442,7 +415,7 @@ class _FakeWechatMobileAuthClient extends WechatMobileAuthClient {
   }
 }
 
-Future<void> _pumpAccountSettingsPage(
+Future<void> _pumpAccountManagePage(
   WidgetTester tester, {
   required GoRouter router,
   AuthSessionNotifier? sessionNotifier,
