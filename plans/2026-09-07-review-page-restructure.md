@@ -170,26 +170,26 @@ Created: 2026-09-07
 
 ### P1 收口与替换(旧组件留用处置、测试、l10n)
 
-- [ ] **P1-1 删除/标记主路径死引用**:确认移除后无编译残留(lint: unused import /
+- [x] **P1-1 删除/标记主路径死引用**:确认移除后无编译残留(lint: unused import /
   discard);legacy 路径消费的符号逐一核对不误删;孤儿文件按 P0-7 标注。
-- [ ] **P1-2 l10n**:新增/修改文案全部走 `lib/l10n/src/review_zh.arb` /
+- [x] **P1-2 l10n**:新增/修改文案全部走 `lib/l10n/src/review_zh.arb` /
   `review_en.arb`(周期、覆盖文案、值得注意、弃权、记录引导、去今日 check-in、预告卡、
   [问助手] 等);`dart scripts/l10n/arb_tools.dart merge` + `flutter gen-l10n`;
   同步 `docs/reference/localization.md`。
-- [ ] **P1-3 单元/Widget 测试**
+- [x] **P1-3 单元/Widget 测试**
   - 更新:`test/review/` 下 page/review_view/golden/sections 依赖旧装配的用例;
     ai_summary/suggestion 相关测试按新装配语义改写或移至 legacy 覆盖。
   - 新增:coverage_strip(含灰态)、noteworthy(有卡/弃权)、周期切换(状态映射+旧值缓存)、
     冷启动引导、compact 事件卡(无动作 + 去今日入口)。
   - fixture:`test/review/review_fixtures.dart` 按新 dashboard 字段补数据构造。
-- [ ] **P1-4 集成/E2E 迁移**
+- [x] **P1-4 集成/E2E 迁移**
   - `review_closed_loop_e2e_test.dart`:事件 start/check-in/end 动作步骤迁到 today 流;
     review 侧只断言被动卡与「去今日」跳转。
   - 核对 `report_e2e_test.dart` / `shell_navigation_e2e_test.dart` /
     `app_smoke_test.dart` 中 review key(`review-more-action`、tab key、事件动作 key、
     `review-start-observation-action` 删除后无残留引用)并更新。
   - e2e 不硬编码内部 ID 的既有约定保持(改用语义可读 key)。
-- [ ] **P1-5 review README 与文档**
+- [x] **P1-5 review README 与文档**
   - 更新 `lib/features/review/README.md`:职责与边界(主路径=洞察+事件列表;动作归
     Today;建议历史/AI 摘要主路径下线)、对外契约(移除 suggestion/ai-summary 主路径
     导出)、不变量(覆盖率口径、冷启动分支、[问助手] 入口)、依赖禁区(解除
