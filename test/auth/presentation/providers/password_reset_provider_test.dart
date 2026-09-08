@@ -161,10 +161,7 @@ void main() {
 
         expect(result, isTrue);
         expect(remote.sentCodeEmail, 'reset@example.com');
-        expect(
-          remote.sentCodeScene,
-          AuthVerificationScene.forgotPassword,
-        );
+        expect(remote.sentCodeScene, AuthVerificationScene.forgotPassword);
         final state = container.read(passwordResetProvider);
         expect(state.isSendingCode, isFalse);
         expect(state.cooldownSeconds, 60);

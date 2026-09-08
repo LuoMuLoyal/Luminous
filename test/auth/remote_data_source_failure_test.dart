@@ -236,7 +236,10 @@ void main() {
       test('invalid verification code keeps its code', () async {
         adapter.statusCode = 400;
         adapter.contentType = 'application/problem+json';
-        adapter.body = _problemBody('AUTH_VERIFICATION_CODE_EXPIRED', '验证码已过期或不存在');
+        adapter.body = _problemBody(
+          'AUTH_VERIFICATION_CODE_EXPIRED',
+          '验证码已过期或不存在',
+        );
 
         final failure = await _left(
           dataSource.resetPassword(

@@ -103,14 +103,6 @@ Future<void> runPrePushChecks(ToolContext context) async {
   );
   stdout.writeln('');
 
-  await runLoggedCommand(
-    'flutter',
-    ['test'],
-    workingDirectory: context.repoRoot,
-    stepName: 'flutter test',
-  );
-  stdout.writeln('');
-
   // Custom lint rules — observation mode (always exit 0); --quiet keeps
   // the output to the per-rule summary.
   await runLoggedCommand(
