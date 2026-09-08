@@ -75,6 +75,7 @@
   "reviewStatusNeedsImprove": "待改善",
   "reviewStatusStable": "稳定",
   "reviewTrendSectionTitle": "健康趋势",
+  "reviewCoverageTitle": "覆盖率概览",
   "reviewRangeLast7Days": "近 7 天",
   "reviewRangeLast30Days": "近 30 天",
   "reviewPeriodWeek": "周",

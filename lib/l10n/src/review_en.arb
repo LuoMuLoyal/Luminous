@@ -75,6 +75,7 @@
   "reviewStatusNeedsImprove": "Needs improvement",
   "reviewStatusStable": "Stable",
   "reviewTrendSectionTitle": "Health trends",
+  "reviewCoverageTitle": "Coverage overview",
   "reviewRangeLast7Days": "Last 7 days",
   "reviewRangeLast30Days": "Last 30 days",
   "reviewPeriodWeek": "Week",

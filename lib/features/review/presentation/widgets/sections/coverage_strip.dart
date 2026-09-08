@@ -31,7 +31,7 @@ class ReviewCoverageStrip extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.reviewTrendSectionTitle,
+          l10n.reviewCoverageTitle,
           style: context.theme.typography.body.md.copyWith(
             fontWeight: FontWeight.w700,
           ),
