@@ -9,7 +9,13 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:luminous/features/auth/presentation/services/wechat_oauth.dart';
 
-/// State for OAuth login flows (WeChat, QQ, Apple).
+part 'oauth_apple.dart';
+part 'oauth_google.dart';
+part 'oauth_qq.dart';
+part 'oauth_wechat.dart';
+part 'oauth_weibo.dart';
+
+/// State for OAuth login flows (WeChat, QQ, Weibo, Google, Apple).
 ///
 /// Managed by [OAuthLoginController]. This is intentionally a plain Dart class
 /// (not freezed) to avoid build_runner dependencies and keep the OAuth state
@@ -121,38 +127,10 @@ class OAuthLoginState {
   }
 }
 
-/// Result of a WeChat login attempt via [OAuthLoginController.startWechatLogin].
-sealed class WechatLoginAttempt {
-  const WechatLoginAttempt();
-}
-
-/// Login completed successfully.
-class WechatLoginCompleted extends WechatLoginAttempt {
-  const WechatLoginCompleted(this.session);
-  final AuthSession session;
-}
-
-/// Web fallback is active — authorize URL created. The UI should open the
-/// browser and then the user pastes the callback manually.
-class WechatLoginWebFallback extends WechatLoginAttempt {
-  const WechatLoginWebFallback(this.authorizeUrl);
-  final String authorizeUrl;
-}
-
-/// Attempt failed or no platform supported. Check
-/// [OAuthLoginState.errorMessage] for details.
-class WechatLoginFailed extends WechatLoginAttempt {
-  const WechatLoginFailed();
-}
-
-/// Manages all OAuth login flows (WeChat, QQ, Apple).
-///
-/// Replaces the 7 OAuth methods that were previously on [LoginFormNotifier].
-/// The email/password form notifier is now slim and focused.
-class OAuthLoginController extends Notifier<OAuthLoginState> {
-  @override
-  OAuthLoginState build() => const OAuthLoginState();
-
+/// Base class that holds shared helpers for [OAuthLoginController] and its
+/// provider-specific mixins. Split into part files by OAuth provider so each
+/// file stays under 450 lines.
+abstract class OAuthLoginControllerBase extends Notifier<OAuthLoginState> {
   WechatOAuthService get _wechat => ref.read(wechatOAuthServiceProvider);
   AuthRepository get _remote => ref.read(authRepositoryProvider);
 
@@ -168,380 +146,22 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
     ref.read(talkerProvider).error('$tag: failed: $error');
     return LucentErrorMapper.fromObject(error).message;
   }
+}
 
-  // =========================
-  //  WeChat
-  // =========================
-
-  /// Tries all WeChat login paths in order: mobile → desktop → web fallback.
-  ///
-  /// Returns:
-  /// - [WechatLoginCompleted] on successful login
-  /// - [WechatLoginWebFallback] when web fallback is needed (UI opens browser)
-  /// - [WechatLoginFailed] on error or unsupported platform
-  Future<WechatLoginAttempt> startWechatLogin({String? webCallbackUri}) async {
-    state = state.copyWith(
-      isStartingWechat: true,
-      errorMessage: null,
-      wechatAuthorizeUrl: null,
-      wechatState: null,
-    );
-
-    // 1. Try mobile SDK
-    final mobileSession = await startWechatMobileLogin();
-    if (mobileSession != null) {
-      return WechatLoginCompleted(mobileSession);
-    }
-    // Bail if mobile auth threw an error (not just "unsupported")
-    if (state.errorMessage?.isNotEmpty == true) {
-      return const WechatLoginFailed();
-    }
-
-    // 2. Try desktop loopback
-    final desktopSession = await startWechatDesktopLogin();
-    if (desktopSession != null) {
-      return WechatLoginCompleted(desktopSession);
-    }
-    if (state.errorMessage?.isNotEmpty == true) {
-      return const WechatLoginFailed();
-    }
-
-    // 3. Web fallback — create authorize URL, let UI open browser
-    try {
-      final authorize = await _wechat.createWebAuthorizeUrl(
-        callbackUri: webCallbackUri,
-      );
-      state = state.copyWith(
-        isStartingWechat: false,
-        wechatAuthorizeUrl: authorize.authorizeUrl,
-        wechatState: authorize.state,
-      );
-      return WechatLoginWebFallback(authorize.authorizeUrl);
-    } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.startWechatLogin.webFallback',
-      );
-      state = state.copyWith(
-        isStartingWechat: false,
-        errorMessage: errorMessage,
-      );
-      return const WechatLoginFailed();
-    }
-  }
-
-  /// Tries mobile SDK login only. Returns the session on success, `null` if
-  /// mobile is not supported or login failed.
-  Future<AuthSession?> startWechatMobileLogin() async {
-    try {
-      final code = await _wechat.tryMobileAuth();
-      if (code == null) return null;
-
-      state = state.copyWith(
-        isStartingWechat: true,
-        isCompletingWechat: true,
-        errorMessage: null,
-      );
-      final s = await _resolve(_remote.loginWithWechatMobile(code: code));
-      await ref.read(authSessionProvider.notifier).applySession(s);
-      state = state.copyWith(
-        isStartingWechat: false,
-        isCompletingWechat: false,
-      );
-      return s;
-    } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.startWechatMobileLogin',
-      );
-      state = state.copyWith(
-        isStartingWechat: false,
-        isCompletingWechat: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  /// Tries desktop loopback login only. Returns the session on success, `null`
-  /// if desktop is not supported, browser failed, or state mismatch.
-  Future<AuthSession?> startWechatDesktopLogin() async {
-    try {
-      final result = await _wechat.tryDesktopAuth(forIdentityLink: false);
-      if (result == null) return null;
-
-      state = state.copyWith(
-        isStartingWechat: false,
-        isCompletingWechat: true,
-        errorMessage: null,
-      );
-      final s = await _resolve(
-        _remote.loginWithWechatWeb(code: result.code, state: result.state),
-      );
-      await ref.read(authSessionProvider.notifier).applySession(s);
-      state = state.copyWith(isCompletingWechat: false);
-      return s;
-    } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.startWechatDesktopLogin',
-      );
-      state = state.copyWith(
-        isStartingWechat: false,
-        isCompletingWechat: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  /// Completes a WeChat web login with a manually-pasted callback.
-  Future<AuthSession?> completeWechatLogin({
-    required String code,
-    required String state,
-  }) async {
-    this.state = this.state.copyWith(
-      isCompletingWechat: true,
-      errorMessage: null,
-    );
-    try {
-      final s = await _resolve(
-        _remote.loginWithWechatWeb(code: code, state: state),
-      );
-      await ref.read(authSessionProvider.notifier).applySession(s);
-      this.state = this.state.copyWith(isCompletingWechat: false);
-      return s;
-    } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.completeWechatLogin',
-      );
-      this.state = this.state.copyWith(
-        isCompletingWechat: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  // =========================
-  //  QQ
-  // =========================
-
-  /// Creates a QQ authorize URL.
-  ///
-  /// Returns the authorize URL on success, `null` on failure.
-  Future<String?> startQqLogin({String? webCallbackUri}) async {
-    state = state.copyWith(
-      isStartingQq: true,
-      errorMessage: null,
-      qqAuthorizeUrl: null,
-      qqState: null,
-    );
-    try {
-      final authorize = await _resolve(
-        _remote.createQqAuthorizeUrl(callbackUri: webCallbackUri),
-      );
-      state = state.copyWith(
-        isStartingQq: false,
-        qqAuthorizeUrl: authorize.authorizeUrl,
-        qqState: authorize.state,
-      );
-      return authorize.authorizeUrl;
-    } catch (e) {
-      final errorMessage = _mapError(e, 'OAuthLoginController.startQqLogin');
-      state = state.copyWith(isStartingQq: false, errorMessage: errorMessage);
-      return null;
-    }
-  }
-
-  /// Completes a QQ login with a manually-pasted callback.
-  Future<AuthSession?> completeQqLogin({
-    required String code,
-    required String state,
-  }) async {
-    this.state = this.state.copyWith(isCompletingQq: true, errorMessage: null);
-    try {
-      final s = await _resolve(_remote.loginWithQq(code: code, state: state));
-      await ref.read(authSessionProvider.notifier).applySession(s);
-      this.state = this.state.copyWith(isCompletingQq: false);
-      return s;
-    } catch (e) {
-      final errorMessage = _mapError(e, 'OAuthLoginController.completeQqLogin');
-      this.state = this.state.copyWith(
-        isCompletingQq: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  // =========================
-  //  Weibo
-  // =========================
-
-  /// Creates a Weibo authorize URL.
-  ///
-  /// Returns the authorize URL on success, `null` on failure.
-  Future<String?> startWeiboLogin({String? webCallbackUri}) async {
-    state = state.copyWith(
-      isStartingWeibo: true,
-      errorMessage: null,
-      weiboAuthorizeUrl: null,
-      weiboState: null,
-    );
-    try {
-      final authorize = await _resolve(
-        _remote.createWeiboAuthorizeUrl(callbackUri: webCallbackUri),
-      );
-      state = state.copyWith(
-        isStartingWeibo: false,
-        weiboAuthorizeUrl: authorize.authorizeUrl,
-        weiboState: authorize.state,
-      );
-      return authorize.authorizeUrl;
-    } catch (e) {
-      final errorMessage = _mapError(e, 'OAuthLoginController.startWeiboLogin');
-      state = state.copyWith(
-        isStartingWeibo: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  /// Completes a Weibo login with a manually-pasted callback.
-  Future<AuthSession?> completeWeiboLogin({
-    required String code,
-    required String state,
-  }) async {
-    this.state = this.state.copyWith(
-      isCompletingWeibo: true,
-      errorMessage: null,
-    );
-    try {
-      final s = await _resolve(
-        _remote.loginWithWeibo(code: code, state: state),
-      );
-      await ref.read(authSessionProvider.notifier).applySession(s);
-      this.state = this.state.copyWith(isCompletingWeibo: false);
-      return s;
-    } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.completeWeiboLogin',
-      );
-      this.state = this.state.copyWith(
-        isCompletingWeibo: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  // =========================
-  //  Google
-  // =========================
-
-  /// Creates a Google authorize URL.
-  ///
-  /// Returns the authorize URL on success, `null` on failure.
-  Future<String?> startGoogleLogin({String? webCallbackUri}) async {
-    state = state.copyWith(
-      isStartingGoogle: true,
-      errorMessage: null,
-      googleAuthorizeUrl: null,
-      googleState: null,
-    );
-    try {
-      final authorize = await _resolve(
-        _remote.createGoogleAuthorizeUrl(callbackUri: webCallbackUri),
-      );
-      state = state.copyWith(
-        isStartingGoogle: false,
-        googleAuthorizeUrl: authorize.authorizeUrl,
-        googleState: authorize.state,
-      );
-      return authorize.authorizeUrl;
-    } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.startGoogleLogin',
-      );
-      state = state.copyWith(
-        isStartingGoogle: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  /// Completes a Google login with a manually-pasted callback.
-  Future<AuthSession?> completeGoogleLogin({
-    required String code,
-    required String state,
-  }) async {
-    this.state = this.state.copyWith(
-      isCompletingGoogle: true,
-      errorMessage: null,
-    );
-    try {
-      final s = await _resolve(
-        _remote.loginWithGoogle(code: code, state: state),
-      );
-      await ref.read(authSessionProvider.notifier).applySession(s);
-      this.state = this.state.copyWith(isCompletingGoogle: false);
-      return s;
-    } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.completeGoogleLogin',
-      );
-      this.state = this.state.copyWith(
-        isCompletingGoogle: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  // =========================
-  //  Apple
-  // =========================
-
-  /// Completes an Apple Sign In flow.
-  Future<AuthSession?> loginWithApple({
-    required String identityToken,
-    String? authorizationCode,
-    String? givenName,
-    String? familyName,
-  }) async {
-    state = state.copyWith(isStartingApple: true, errorMessage: null);
-    try {
-      final s = await _resolve(
-        _remote.loginWithApple(
-          identityToken: identityToken,
-          authorizationCode: authorizationCode,
-          givenName: givenName,
-          familyName: familyName,
-        ),
-      );
-      await ref.read(authSessionProvider.notifier).applySession(s);
-      state = state.copyWith(isStartingApple: false);
-      return s;
-    } catch (e) {
-      final errorMessage = _mapError(e, 'OAuthLoginController.loginWithApple');
-      state = state.copyWith(
-        isStartingApple: false,
-        errorMessage: errorMessage,
-      );
-      return null;
-    }
-  }
-
-  // =========================
-  //  Shared
-  // =========================
+/// Manages all OAuth login flows (WeChat, QQ, Weibo, Google, Apple).
+///
+/// Provider-specific methods are defined as mixins in part files
+/// (`oauth_wechat.dart`, `oauth_qq.dart`, `oauth_weibo.dart`,
+/// `oauth_google.dart`, `oauth_apple.dart`).
+class OAuthLoginController extends OAuthLoginControllerBase
+    with
+        OAuthWechatMixin,
+        OAuthQqMixin,
+        OAuthWeiboMixin,
+        OAuthGoogleMixin,
+        OAuthAppleMixin {
+  @override
+  OAuthLoginState build() => const OAuthLoginState();
 
   /// Clears the error message.
   void clearError() {
