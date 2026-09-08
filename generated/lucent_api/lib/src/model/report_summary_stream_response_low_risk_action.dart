@@ -6,7 +6,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'report_summary_job_response_result_low_risk_action.g.dart';
+part 'report_summary_stream_response_low_risk_action.g.dart';
 
 @CopyWith()
 @JsonSerializable(
@@ -15,9 +15,9 @@ part 'report_summary_job_response_result_low_risk_action.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class ReportSummaryJobResponseResultLowRiskAction {
-  /// Returns a new [ReportSummaryJobResponseResultLowRiskAction] instance.
-  ReportSummaryJobResponseResultLowRiskAction({
+class ReportSummaryStreamResponseLowRiskAction {
+  /// Returns a new [ReportSummaryStreamResponseLowRiskAction] instance.
+  ReportSummaryStreamResponseLowRiskAction({
     required this.label,
 
     required this.text,
@@ -32,19 +32,19 @@ class ReportSummaryJobResponseResultLowRiskAction {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ReportSummaryJobResponseResultLowRiskAction &&
+      other is ReportSummaryStreamResponseLowRiskAction &&
           other.label == label &&
           other.text == text;
 
   @override
   int get hashCode => label.hashCode + text.hashCode;
 
-  factory ReportSummaryJobResponseResultLowRiskAction.fromJson(
+  factory ReportSummaryStreamResponseLowRiskAction.fromJson(
     Map<String, dynamic> json,
-  ) => _$ReportSummaryJobResponseResultLowRiskActionFromJson(json);
+  ) => _$ReportSummaryStreamResponseLowRiskActionFromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$ReportSummaryJobResponseResultLowRiskActionToJson(this);
+      _$ReportSummaryStreamResponseLowRiskActionToJson(this);
 
   @override
   String toString() {

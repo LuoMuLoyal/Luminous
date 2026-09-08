@@ -6,7 +6,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'report_summary_job_response_result_coverage_water.g.dart';
+part 'report_summary_stream_response_coverage_medication.g.dart';
 
 @CopyWith()
 @JsonSerializable(
@@ -15,9 +15,9 @@ part 'report_summary_job_response_result_coverage_water.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class ReportSummaryJobResponseResultCoverageWater {
-  /// Returns a new [ReportSummaryJobResponseResultCoverageWater] instance.
-  ReportSummaryJobResponseResultCoverageWater({
+class ReportSummaryStreamResponseCoverageMedication {
+  /// Returns a new [ReportSummaryStreamResponseCoverageMedication] instance.
+  ReportSummaryStreamResponseCoverageMedication({
     required this.trackedDays,
 
     required this.totalDays,
@@ -32,19 +32,19 @@ class ReportSummaryJobResponseResultCoverageWater {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ReportSummaryJobResponseResultCoverageWater &&
+      other is ReportSummaryStreamResponseCoverageMedication &&
           other.trackedDays == trackedDays &&
           other.totalDays == totalDays;
 
   @override
   int get hashCode => trackedDays.hashCode + totalDays.hashCode;
 
-  factory ReportSummaryJobResponseResultCoverageWater.fromJson(
+  factory ReportSummaryStreamResponseCoverageMedication.fromJson(
     Map<String, dynamic> json,
-  ) => _$ReportSummaryJobResponseResultCoverageWaterFromJson(json);
+  ) => _$ReportSummaryStreamResponseCoverageMedicationFromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$ReportSummaryJobResponseResultCoverageWaterToJson(this);
+      _$ReportSummaryStreamResponseCoverageMedicationToJson(this);
 
   @override
   String toString() {

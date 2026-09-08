@@ -3,13 +3,13 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/report_summary_job_response_result_observed_pattern.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result_coverage.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result_low_risk_action.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_low_risk_action.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_observed_pattern.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_coverage.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'report_summary_job_response_result.g.dart';
+part 'report_summary_async_response_data_result.g.dart';
 
 @CopyWith()
 @JsonSerializable(
@@ -18,9 +18,9 @@ part 'report_summary_job_response_result.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class ReportSummaryJobResponseResult {
-  /// Returns a new [ReportSummaryJobResponseResult] instance.
-  ReportSummaryJobResponseResult({
+class ReportSummaryAsyncResponseDataResult {
+  /// Returns a new [ReportSummaryAsyncResponseDataResult] instance.
+  ReportSummaryAsyncResponseDataResult({
     required this.range,
 
     required this.startDate,
@@ -45,9 +45,9 @@ class ReportSummaryJobResponseResult {
     required: true,
     includeIfNull: false,
     unknownEnumValue:
-        ReportSummaryJobResponseResultRangeEnum.unknownDefaultOpenApi,
+        ReportSummaryAsyncResponseDataResultRangeEnum.unknownDefaultOpenApi,
   )
-  final ReportSummaryJobResponseResultRangeEnum range;
+  final ReportSummaryAsyncResponseDataResultRangeEnum range;
 
   @JsonKey(name: r'startDate', required: true, includeIfNull: false)
   final String startDate;
@@ -62,13 +62,13 @@ class ReportSummaryJobResponseResult {
   final String summary;
 
   @JsonKey(name: r'coverage', required: true, includeIfNull: false)
-  final ReportSummaryJobResponseResultCoverage coverage;
+  final ReportSummaryAsyncResponseDataResultCoverage coverage;
 
   @JsonKey(name: r'observedPattern', required: true, includeIfNull: true)
-  final ReportSummaryJobResponseResultObservedPattern? observedPattern;
+  final ReportSummaryAsyncResponseDataResultObservedPattern? observedPattern;
 
   @JsonKey(name: r'lowRiskAction', required: true, includeIfNull: true)
-  final ReportSummaryJobResponseResultLowRiskAction? lowRiskAction;
+  final ReportSummaryAsyncResponseDataResultLowRiskAction? lowRiskAction;
 
   @JsonKey(name: r'disclaimer', required: true, includeIfNull: false)
   final String disclaimer;
@@ -76,7 +76,7 @@ class ReportSummaryJobResponseResult {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ReportSummaryJobResponseResult &&
+      other is ReportSummaryAsyncResponseDataResult &&
           other.range == range &&
           other.startDate == startDate &&
           other.endDate == endDate &&
@@ -99,10 +99,12 @@ class ReportSummaryJobResponseResult {
       (lowRiskAction == null ? 0 : lowRiskAction.hashCode) +
       disclaimer.hashCode;
 
-  factory ReportSummaryJobResponseResult.fromJson(Map<String, dynamic> json) =>
-      _$ReportSummaryJobResponseResultFromJson(json);
+  factory ReportSummaryAsyncResponseDataResult.fromJson(
+    Map<String, dynamic> json,
+  ) => _$ReportSummaryAsyncResponseDataResultFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ReportSummaryJobResponseResultToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$ReportSummaryAsyncResponseDataResultToJson(this);
 
   @override
   String toString() {
@@ -110,7 +112,7 @@ class ReportSummaryJobResponseResult {
   }
 }
 
-enum ReportSummaryJobResponseResultRangeEnum {
+enum ReportSummaryAsyncResponseDataResultRangeEnum {
   @JsonValue(r'last_7_days')
   last7Days(r'last_7_days'),
   @JsonValue(r'last_30_days')
@@ -120,7 +122,7 @@ enum ReportSummaryJobResponseResultRangeEnum {
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
-  const ReportSummaryJobResponseResultRangeEnum(this.value);
+  const ReportSummaryAsyncResponseDataResultRangeEnum(this.value);
 
   final String value;
 

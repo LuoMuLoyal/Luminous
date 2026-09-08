@@ -6,7 +6,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'report_summary_job_response_result_observed_pattern.g.dart';
+part 'report_summary_stream_response_observed_pattern.g.dart';
 
 @CopyWith()
 @JsonSerializable(
@@ -15,9 +15,9 @@ part 'report_summary_job_response_result_observed_pattern.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class ReportSummaryJobResponseResultObservedPattern {
-  /// Returns a new [ReportSummaryJobResponseResultObservedPattern] instance.
-  ReportSummaryJobResponseResultObservedPattern({
+class ReportSummaryStreamResponseObservedPattern {
+  /// Returns a new [ReportSummaryStreamResponseObservedPattern] instance.
+  ReportSummaryStreamResponseObservedPattern({
     required this.kind,
 
     required this.text,
@@ -29,10 +29,10 @@ class ReportSummaryJobResponseResultObservedPattern {
     name: r'kind',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: ReportSummaryJobResponseResultObservedPatternKindEnum
+    unknownEnumValue: ReportSummaryStreamResponseObservedPatternKindEnum
         .unknownDefaultOpenApi,
   )
-  final ReportSummaryJobResponseResultObservedPatternKindEnum kind;
+  final ReportSummaryStreamResponseObservedPatternKindEnum kind;
 
   @JsonKey(name: r'text', required: true, includeIfNull: false)
   final String text;
@@ -43,7 +43,7 @@ class ReportSummaryJobResponseResultObservedPattern {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ReportSummaryJobResponseResultObservedPattern &&
+      other is ReportSummaryStreamResponseObservedPattern &&
           other.kind == kind &&
           other.text == text &&
           other.source_ == source_;
@@ -51,12 +51,12 @@ class ReportSummaryJobResponseResultObservedPattern {
   @override
   int get hashCode => kind.hashCode + text.hashCode + source_.hashCode;
 
-  factory ReportSummaryJobResponseResultObservedPattern.fromJson(
+  factory ReportSummaryStreamResponseObservedPattern.fromJson(
     Map<String, dynamic> json,
-  ) => _$ReportSummaryJobResponseResultObservedPatternFromJson(json);
+  ) => _$ReportSummaryStreamResponseObservedPatternFromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$ReportSummaryJobResponseResultObservedPatternToJson(this);
+      _$ReportSummaryStreamResponseObservedPatternToJson(this);
 
   @override
   String toString() {
@@ -64,7 +64,7 @@ class ReportSummaryJobResponseResultObservedPattern {
   }
 }
 
-enum ReportSummaryJobResponseResultObservedPatternKindEnum {
+enum ReportSummaryStreamResponseObservedPatternKindEnum {
   @JsonValue(r'medication')
   medication(r'medication'),
   @JsonValue(r'hydration')
@@ -74,7 +74,7 @@ enum ReportSummaryJobResponseResultObservedPatternKindEnum {
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
-  const ReportSummaryJobResponseResultObservedPatternKindEnum(this.value);
+  const ReportSummaryStreamResponseObservedPatternKindEnum(this.value);
 
   final String value;
 

@@ -23,8 +23,9 @@ import 'package:lucent_api/src/model/generate_summary_request.dart';
 import 'package:lucent_api/src/model/generate_summary_stream_request.dart';
 import 'package:lucent_api/src/model/preview_clinic_summary_request.dart';
 import 'package:lucent_api/src/model/report_dashboard_response.dart';
-import 'package:lucent_api/src/model/report_summary_job_response.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data.dart';
 import 'package:lucent_api/src/model/report_summary_response.dart';
+import 'package:lucent_api/src/model/report_summary_stream_response.dart';
 import 'package:lucent_api/src/model/share_clinic_summary_request.dart';
 
 class ReportsApi {
@@ -225,7 +226,7 @@ class ReportsApi {
     );
   }
 
-  /// Enqueue async AI summary generation for report
+  /// Enqueue AI report summary generation (async)
   ///
   ///
   /// Parameters:
@@ -237,9 +238,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ReportSummaryJobResponse] as data
+  /// Returns a [Future] containing a [Response] with a [ReportSummaryAsyncResponseData] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReportSummaryJobResponse>> enqueueSummaryGeneration({
+  Future<Response<ReportSummaryAsyncResponseData>> enqueueSummaryGeneration({
     required EnqueueSummaryGenerationRequest enqueueSummaryGenerationRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -279,17 +280,16 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ReportSummaryJobResponse? _responseData;
+    ReportSummaryAsyncResponseData? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<ReportSummaryJobResponse, ReportSummaryJobResponse>(
-              rawData,
-              'ReportSummaryJobResponse',
-              growable: true,
-            );
+          : deserialize<
+              ReportSummaryAsyncResponseData,
+              ReportSummaryAsyncResponseData
+            >(rawData, 'ReportSummaryAsyncResponseData', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -300,7 +300,7 @@ class ReportsApi {
       );
     }
 
-    return Response<ReportSummaryJobResponse>(
+    return Response<ReportSummaryAsyncResponseData>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -447,7 +447,7 @@ class ReportsApi {
     );
   }
 
-  /// Poll async report AI summary generation status
+  /// Poll AI report summary generation status
   ///
   ///
   /// Parameters:
@@ -495,8 +495,8 @@ class ReportsApi {
     return _response;
   }
 
-  /// Stream authenticated user AI summary generation for report
-  ///
+  /// Stream AI report summary generation events (SSE)
+  /// Progress events (&#x60;progress&#x60;), LLM partials (&#x60;chunk&#x60;), a final &#x60;result&#x60; when ready, and an &#x60;error&#x60; event on failure.
   ///
   /// Parameters:
   /// * [generateSummaryStreamRequest]
@@ -507,9 +507,9 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [String] as data
+  /// Returns a [Future] containing a [Response] with a [ReportSummaryStreamResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<String>> generateSummaryStream({
+  Future<Response<ReportSummaryStreamResponse>> generateSummaryStream({
     required GenerateSummaryStreamRequest generateSummaryStreamRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -549,13 +549,16 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    String? _responseData;
+    ReportSummaryStreamResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<String, String>(rawData, 'String', growable: true);
+          : deserialize<
+              ReportSummaryStreamResponse,
+              ReportSummaryStreamResponse
+            >(rawData, 'ReportSummaryStreamResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -566,7 +569,7 @@ class ReportsApi {
       );
     }
 
-    return Response<String>(
+    return Response<ReportSummaryStreamResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -578,7 +581,7 @@ class ReportsApi {
     );
   }
 
-  /// Get the current event review for the authenticated user
+  /// Build the current event review
   ///
   ///
   /// Parameters:
@@ -731,7 +734,7 @@ class ReportsApi {
     );
   }
 
-  /// Get one user event review by event id
+  /// Rebuild and persist the event review
   ///
   ///
   /// Parameters:
@@ -955,7 +958,7 @@ class ReportsApi {
     );
   }
 
-  /// List the user event review history
+  /// Event review history
   ///
   ///
   /// Parameters:

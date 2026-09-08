@@ -232,14 +232,14 @@ import 'package:lucent_api/src/model/report_dashboard_response_patterns.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_trends.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_trends_observed_metric.dart';
 import 'package:lucent_api/src/model/report_local_capability_request.dart';
-import 'package:lucent_api/src/model/report_summary_job_response.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result_coverage.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result_coverage_medication.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result_coverage_sleep.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result_coverage_water.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result_low_risk_action.dart';
-import 'package:lucent_api/src/model/report_summary_job_response_result_observed_pattern.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_coverage.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_coverage_medication.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_coverage_sleep.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_coverage_water.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_low_risk_action.dart';
+import 'package:lucent_api/src/model/report_summary_async_response_data_result_observed_pattern.dart';
 import 'package:lucent_api/src/model/report_summary_response.dart';
 import 'package:lucent_api/src/model/report_summary_response_coverage.dart';
 import 'package:lucent_api/src/model/report_summary_response_coverage_medication.dart';
@@ -247,6 +247,13 @@ import 'package:lucent_api/src/model/report_summary_response_coverage_sleep.dart
 import 'package:lucent_api/src/model/report_summary_response_coverage_water.dart';
 import 'package:lucent_api/src/model/report_summary_response_low_risk_action.dart';
 import 'package:lucent_api/src/model/report_summary_response_observed_pattern.dart';
+import 'package:lucent_api/src/model/report_summary_stream_response.dart';
+import 'package:lucent_api/src/model/report_summary_stream_response_coverage.dart';
+import 'package:lucent_api/src/model/report_summary_stream_response_coverage_medication.dart';
+import 'package:lucent_api/src/model/report_summary_stream_response_coverage_sleep.dart';
+import 'package:lucent_api/src/model/report_summary_stream_response_coverage_water.dart';
+import 'package:lucent_api/src/model/report_summary_stream_response_low_risk_action.dart';
+import 'package:lucent_api/src/model/report_summary_stream_response_observed_pattern.dart';
 import 'package:lucent_api/src/model/reset_password_request.dart';
 import 'package:lucent_api/src/model/reset_password_response.dart';
 import 'package:lucent_api/src/model/run_risk_check_request.dart';
@@ -1328,41 +1335,43 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'ReportSummaryJobResponse':
-      return ReportSummaryJobResponse.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'ReportSummaryJobResponseResult':
-      return ReportSummaryJobResponseResult.fromJson(
+    case 'ReportSummaryAsyncResponseData':
+      return ReportSummaryAsyncResponseData.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'ReportSummaryJobResponseResultCoverage':
-      return ReportSummaryJobResponseResultCoverage.fromJson(
+    case 'ReportSummaryAsyncResponseDataResult':
+      return ReportSummaryAsyncResponseDataResult.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'ReportSummaryJobResponseResultCoverageMedication':
-      return ReportSummaryJobResponseResultCoverageMedication.fromJson(
+    case 'ReportSummaryAsyncResponseDataResultCoverage':
+      return ReportSummaryAsyncResponseDataResultCoverage.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'ReportSummaryJobResponseResultCoverageSleep':
-      return ReportSummaryJobResponseResultCoverageSleep.fromJson(
+    case 'ReportSummaryAsyncResponseDataResultCoverageMedication':
+      return ReportSummaryAsyncResponseDataResultCoverageMedication.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'ReportSummaryJobResponseResultCoverageWater':
-      return ReportSummaryJobResponseResultCoverageWater.fromJson(
+    case 'ReportSummaryAsyncResponseDataResultCoverageSleep':
+      return ReportSummaryAsyncResponseDataResultCoverageSleep.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'ReportSummaryJobResponseResultLowRiskAction':
-      return ReportSummaryJobResponseResultLowRiskAction.fromJson(
+    case 'ReportSummaryAsyncResponseDataResultCoverageWater':
+      return ReportSummaryAsyncResponseDataResultCoverageWater.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'ReportSummaryJobResponseResultObservedPattern':
-      return ReportSummaryJobResponseResultObservedPattern.fromJson(
+    case 'ReportSummaryAsyncResponseDataResultLowRiskAction':
+      return ReportSummaryAsyncResponseDataResultLowRiskAction.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportSummaryAsyncResponseDataResultObservedPattern':
+      return ReportSummaryAsyncResponseDataResultObservedPattern.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1396,6 +1405,39 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ReportSummaryResponseObservedPattern':
       return ReportSummaryResponseObservedPattern.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportSummaryStreamResponse':
+      return ReportSummaryStreamResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ReportSummaryStreamResponseCoverage':
+      return ReportSummaryStreamResponseCoverage.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportSummaryStreamResponseCoverageMedication':
+      return ReportSummaryStreamResponseCoverageMedication.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportSummaryStreamResponseCoverageSleep':
+      return ReportSummaryStreamResponseCoverageSleep.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportSummaryStreamResponseCoverageWater':
+      return ReportSummaryStreamResponseCoverageWater.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportSummaryStreamResponseLowRiskAction':
+      return ReportSummaryStreamResponseLowRiskAction.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportSummaryStreamResponseObservedPattern':
+      return ReportSummaryStreamResponseObservedPattern.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
