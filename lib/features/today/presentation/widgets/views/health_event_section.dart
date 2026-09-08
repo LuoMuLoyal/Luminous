@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -160,7 +161,10 @@ class HealthEventSection extends ConsumerWidget {
             .toList(growable: false),
         hasError: false,
       );
-    } catch (_) {
+    } catch (e, st) {
+      ref
+          .read(talkerProvider)
+          .error('HealthEventSection._readXxxOptions: failed: $e', st);
       return (options: const <HealthEventAssociationOption>[], hasError: true);
     }
   }
@@ -195,7 +199,10 @@ class HealthEventSection extends ConsumerWidget {
             .toList(growable: false),
         hasError: false,
       );
-    } catch (_) {
+    } catch (e, st) {
+      ref
+          .read(talkerProvider)
+          .error('HealthEventSection._readXxxOptions: failed: $e', st);
       return (options: const <HealthEventAssociationOption>[], hasError: true);
     }
   }
