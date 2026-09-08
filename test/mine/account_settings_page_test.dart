@@ -3,13 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_manage.dart';
+import 'package:luminous/features/support/data/repositories/lucent.dart';
+import 'package:luminous/features/support/domain/entities/app_info.dart';
+import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../auth/test_helpers.dart';
@@ -99,6 +104,7 @@ void main() {
       overrides: [
         authRepositoryProvider.overrideWithValue(remote),
         authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+        supportRepositoryProvider.overrideWithValue(_FakeSupportRepository()),
       ],
     );
     addTearDown(container.dispose);
@@ -427,11 +433,20 @@ Future<void> _pumpAccountManagePage(
         authSessionProvider.overrideWith(
           () => sessionNotifier ?? _SignedInAuthSessionNotifier(),
         ),
+        // 底部服务入口读取支持邮箱；测试中固定为空避免真实网络请求。
+        supportRepositoryProvider.overrideWithValue(_FakeSupportRepository()),
         ...overrides,
       ],
       child: TestAuthApp(router: router),
     ),
   );
+}
+
+class _FakeSupportRepository implements SupportRepository {
+  @override
+  TaskEither<LucentFailure, AppInfo?> getAppInfo() {
+    return TaskEither.right(null);
+  }
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {

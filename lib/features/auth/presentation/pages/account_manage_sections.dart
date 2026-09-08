@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/config/env_keys.dart';
+import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
@@ -15,7 +17,9 @@ import 'package:luminous/features/auth/presentation/pages/account_manage_helpers
 import 'package:luminous/features/auth/presentation/pages/account_security.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
+import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // 保留账号设置加载状态组件
 class AccountManageLoading extends StatelessWidget {
@@ -432,12 +436,18 @@ class AccountManageSection extends ConsumerWidget {
 }
 
 /// 底部服务入口
-class SupportLinksSection extends StatelessWidget {
+class SupportLinksSection extends ConsumerWidget {
   const SupportLinksSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+
+    // Prefer backend supportEmail; fall back to compile-time env.
+    final appInfo = ref.watch(appInfoProvider).asData?.value;
+    final supportEmail =
+        appInfo?.supportEmail ?? EnvReader.string(EnvKey.supportEmail);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -457,7 +467,7 @@ class SupportLinksSection extends StatelessWidget {
               child: _SupportLink(
                 icon: SemanticIcons.actionSettings,
                 label: l10n.authAccountManageSupportFeedback,
-                onTap: () => _openFeedback(context),
+                onTap: () => _openFeedback(context, l10n, supportEmail),
               ),
             ),
             Expanded(
@@ -474,18 +484,31 @@ class SupportLinksSection extends StatelessWidget {
   }
 
   Future<void> _openCustomerService(BuildContext context) async {
-    // TODO: 实现客服链接
-    await Toast.show(context, '客服功能开发中');
+    await context.push(Routes.settingsHelp);
   }
 
-  Future<void> _openFeedback(BuildContext context) async {
-    // TODO: 实现反馈链接
-    await Toast.show(context, '反馈功能开发中');
+  Future<void> _openFeedback(
+    BuildContext context,
+    AppLocalizations l10n,
+    String email,
+  ) async {
+    if (email.isEmpty) {
+      await Toast.show(context, l10n.settingsHelpFeedbackUnavailable);
+      return;
+    }
+    final uri = Uri(
+      scheme: 'mailto',
+      path: email,
+      query: 'subject=${Uri.encodeComponent(l10n.settingsHelpFeedbackSubject)}',
+    );
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!launched && context.mounted) {
+      await Toast.show(context, l10n.settingsHelpFeedbackOpenFailed);
+    }
   }
 
   Future<void> _openHelpCenter(BuildContext context) async {
-    // TODO: 实现帮助中心链接
-    await Toast.show(context, '帮助中心开发中');
+    await context.push(Routes.settingsHelp);
   }
 }
 
