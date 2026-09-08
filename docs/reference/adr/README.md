@@ -87,3 +87,7 @@ What becomes easier or harder as a result of this decision?
   - Title: 桌面端采用独立 Web 产品路线
   - Status: accepted
   - Date: 2026-08-16
+- [0009](0009-local-database-encryption.md)
+  - Title: 本地数据库静态加密 — 引入时机与目标路线
+  - Status: proposed
+  - Date: 2026-09-08
