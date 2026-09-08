@@ -5,6 +5,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
+import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 
@@ -15,10 +16,10 @@ import '../support/e2e_test_helpers.dart';
 ///
 /// 运行环境说明（Windows 桌面窗口）：
 /// - 桌面布局未做功能对等：Today 健康事件卡片是移动布局专属，因此
-///   「开始事件」走 Review 无事件卡的同一入口（同一 StartEventSheet +
-///   ActiveHealthEvent notifier + DataChangeBus 链路）；Medicine 剂量确认
-///   卡片桌面同样渲染（medicine 页桌面/移动共用 dashboard 视图），可完整
-///   确认槽位。
+///   本测试的事件开始/结束经 `activeHealthEventProvider` 驱动（与 Today
+///   卡片共享同一 controller 与 DataChangeBus 广播链路），事件动作已收口
+///   Today；Medicine 剂量确认卡片桌面同样渲染（medicine 页桌面/移动共用
+///   dashboard 视图），可完整确认槽位。
 /// - 视口 resize 到手机宽度会触发 riverpod 3.3.1 在 TickerMode 重建期间的
 ///   setState-during-build 竞态，本环境无法以移动视口运行（见迁移日志）。
 ///
@@ -45,18 +46,13 @@ void main() {
       doseLogRemoteDataSource: doseLogs,
     );
 
-    // ── 1. 开始事件（Review 无事件卡入口，桌面布局下 Today 无健康
-    //        事件卡片；链路与 Today 的 health-event-start-action 相同）─
-    await openTab(tester, '报告');
-    await tapVisible(
-      tester,
-      find.byKey(const Key('review-start-observation-action')),
-    );
-    await tester.enterText(
-      find.byKey(const Key('health-event-start-title-field')),
-      '闭环观察',
-    );
-    await tester.tap(find.byKey(const Key('health-event-start-submit')));
+    // ── 1. 开始事件：事件动作已收口 Today。桌面布局下 Today 无健康
+    //        事件卡片，因此经 activeHealthEventProvider 驱动（与 Today
+    //        卡片共享同一 controller 与 DataChangeBus 广播链路），不再走
+    //        Review 侧已被移除的开始观察入口 ─
+    await container
+        .read(activeHealthEventProvider.notifier)
+        .create(title: '闭环观察');
     await settleE2e(tester, frames: 10);
 
     expect(loop.active, isNotNull, reason: '开始事件应写入共享事实源');
@@ -122,16 +118,15 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
+    // 事件动作收口 Today：review 只提供被动「去今日 check-in」浅链接。
+    expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
     expect(find.byKey(const Key('report-readiness-card')), findsNothing);
 
-    // ── 5. 结束并确认结果 ────────────────────────────────────────
-    await tapVisible(tester, find.byKey(const Key('review-end-event-action')));
-    await tester.tap(
-      find.byKey(const Key('health-event-end-outcome-improved')),
-    );
-    await settleE2e(tester);
-    await tester.tap(find.byKey(const Key('health-event-end-submit')));
+    // ── 5. 结束并确认结果：经 Today 控制器（同 health-event-end 卡片
+    //        链路）结束事件，Review 侧不再提供结束动作 ─────────
+    await container
+        .read(activeHealthEventProvider.notifier)
+        .end(eventId: loop.active!.id, outcome: HealthEventOutcome.improved);
     await settleE2e(tester, frames: 10);
 
     expect(loop.active, isNull, reason: '事件结束后共享事实源不再有 active');

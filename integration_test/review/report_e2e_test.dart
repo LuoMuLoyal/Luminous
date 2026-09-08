@@ -19,10 +19,8 @@ void main() {
     // 未登录预览：开始观察入口隐藏，登录提示 banner 出现。
     expect(find.byKey(const Key('sign-in-hint-banner')), findsOneWidget);
     expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
-    expect(
-      find.byKey(const Key('review-start-observation-action')),
-      findsNothing,
-    );
+    // 事件动作已收口 Today：review 侧不渲染开始观察动作。
+    expect(find.byKey(const Key('health-event-start-action')), findsNothing);
     expect(find.text('还没有已结束的观察。'), findsOneWidget);
 
     // 旧 dashboard 痕迹不出现：无 readiness 锁、无综合分数、无默认导出矩阵。
@@ -48,10 +46,8 @@ void main() {
 
       expect(find.byKey(const Key('sign-in-hint-banner')), findsNothing);
       expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
-      expect(
-        find.byKey(const Key('review-start-observation-action')),
-        findsOneWidget,
-      );
+      // 事件动作已收口 Today：review 侧不再提供「开始观察」入口。
+      expect(find.byKey(const Key('health-event-start-action')), findsNothing);
       // 最近事件按事件逐条展示。
       expect(
         find.byKey(const Key('review-history-item-evt-2')),
@@ -80,7 +76,8 @@ void main() {
 
       expect(find.byKey(const Key('review-event-header')), findsOneWidget);
       expect(find.text('感冒观察'), findsOneWidget);
-      expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
+      // 事件动作收口 Today：review 只提供被动「去今日 check-in」浅链接。
+      expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
       expect(
         find.byKey(const Key('review-what-happened-section')),
         findsOneWidget,
@@ -124,8 +121,9 @@ void main() {
     await openTab(tester, '报告');
 
     expect(find.byKey(const Key('review-event-header')), findsOneWidget);
-    expect(find.byKey(const Key('review-check-in-action')), findsNothing);
-    expect(find.byKey(const Key('review-end-event-action')), findsNothing);
+    expect(find.byKey(const Key('review-go-today-check-in')), findsNothing);
+    // 事件动作收口 Today：review 侧不渲染结束事件动作。
+    expect(find.byKey(const Key('health-event-end-action')), findsNothing);
     expect(find.text('已结束'), findsWidgets);
     expect(find.text('好转'), findsWidgets);
     expect(find.byKey(const Key('report-readiness-card')), findsNothing);
