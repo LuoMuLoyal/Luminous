@@ -199,12 +199,12 @@ Created: 2026-09-07
 
 ### P2 收尾验证与后置项
 
-- [ ] **P2-1 全量验证**:`flutter analyze`、`flutter test`、
+- [x] **P2-1 全量验证**:`flutter analyze`、`flutter test`、
   `dart run scripts/docs/verify.dart --warning-only`、必要时
   `flutter test integration_test`;金样测试若受影响按仓库规则重生成。
-- [ ] **P2-2 迁移日志**:追加 `docs/logs/migration-log/2026-09-07.md`(或执行当日)条目,
+- [x] **P2-2 迁移日志**:追加 `docs/logs/migration-log/2026-09-07.md`(或执行当日)条目,
   描述范围与验证结论(append,不覆盖)。
-- [ ] **P2-3 后置依赖登记**(不在本期客户端范围,仅登记跟踪):
+- [x] **P2-3 后置依赖登记**(不在本期客户端范围,仅登记跟踪):
   - agentic P1-1/P1-3:「看这个趋势/就此回顾问助手」预置上下文入口(本计划 P0-4 的
     [问助手] 通用入口升级);
   - Lucent observed-metric 域迁移(target 2026 Q4):逐日覆盖桶、mood/symptom/meal/

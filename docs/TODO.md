@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-09-07
+updated: 2026-09-08
 ---
 
 # Luminous TODO
 
-Last updated: 2026-09-07
+Last updated: 2026-09-08
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -32,6 +32,25 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
 
 - 微博与 Google OAuth 图标
   - 修复登录页两者的图标显示问题
+
+## 2026-09-08 Review 页重组后置依赖登记（Review Page Restructure 波次）
+
+Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下为不在本期客户端范围的
+后置依赖，仅登记跟踪；落地后做一次 Wave 2 客户端适配并删除本条。
+
+- Review 洞察的预置上下文入口（agentic 计划承接）
+  - 现状：顶栏 [问助手] 为通用 `/assistant` 入口（与 today 同语义），不携带
+    「看这个趋势 / 就此回顾问助手」的预置上下文
+  - 待 agentic 计划 P1-1/P1-3 预置上下文能力就绪后升级入口，并复核 `ai_summary` /
+    `suggestion_history` 组件（P0-7 deferred 标注）是否归档或改在主路径重新启用
+- Lucent observed-metric 域迁移（target 2026 Q4）后的 Wave 2 客户端适配
+  - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是
+    legacy scalar 投影，客户端无法区分「空档=无记录」与「0」；findings/patterns
+    无证据引用（record id/日期）与反馈通道
+  - 期望：维度扩展（mood/symptom/meal/activity）、逐日 presence（recorded: bool）、
+    findings 证据引用与反馈字段；Lucent 侧 contract 变化后 `pnpm export:openapi`
+    （Lucent）→ `dart run scripts/contract/bootstrap.dart`（Luminous）→ 按新实体改
+    mapper 与 UI（替换 legacy scalar 趋势渲染、趋势空档可视化、证据展开、反馈）
 
 ## 2026-09-06 OAuth 登入门槛调整（UI 隐藏 / 全链路移除待办）
 
