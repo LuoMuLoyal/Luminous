@@ -164,7 +164,10 @@ class HealthEventSection extends ConsumerWidget {
     } catch (e, st) {
       ref
           .read(talkerProvider)
-          .error('HealthEventSection._readXxxOptions: failed: $e', st);
+          .error(
+            'HealthEventSection._readCurrentMedicineOptions: failed: $e',
+            st,
+          );
       return (options: const <HealthEventAssociationOption>[], hasError: true);
     }
   }
@@ -202,7 +205,7 @@ class HealthEventSection extends ConsumerWidget {
     } catch (e, st) {
       ref
           .read(talkerProvider)
-          .error('HealthEventSection._readXxxOptions: failed: $e', st);
+          .error('HealthEventSection._readReasonRecordOptions: failed: $e', st);
       return (options: const <HealthEventAssociationOption>[], hasError: true);
     }
   }
