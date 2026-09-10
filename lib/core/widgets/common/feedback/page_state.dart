@@ -13,7 +13,8 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// Priority order (highest → lowest):
 /// 1. [PageViewStateFatalError] — data loading failed
-/// 2. [PageViewStateLoading] — session restoring or data fetching
+/// 2. [PageViewStateLoading] — data fetching (session restoring with cache miss,
+///    or first load)
 /// 3. [PageViewStateEmptyInsufficient] — data loaded but insufficient
 /// 4. [PageViewStateReady] — normal content ready to render
 ///
@@ -26,7 +27,8 @@ sealed class PageViewState<T> {
   const PageViewState();
 }
 
-/// Data is still being fetched or the auth session is being restored.
+/// Data is still being fetched or the auth session is being restored with a
+/// cache miss.
 class PageViewStateLoading<T> extends PageViewState<T> {
   const PageViewStateLoading();
 }
@@ -78,7 +80,10 @@ class PageViewStateReady<T> extends PageViewState<T> {
 /// Resolves the [PageViewState] from the current auth session and async data.
 ///
 /// Priority:
-/// 1. If the session is restoring → [PageViewStateLoading]
+/// 1. If the async data is loading (without a previous value) and the session
+///    is restoring → [PageViewStateLoading]. Providers are cache-first, so
+///    during restore they resolve immediately when a local cache hit exists;
+///    only a genuine cache miss keeps the skeleton.
 /// 2. If the async data is loading (without a previous value) →
 ///    [PageViewStateLoading]
 /// 3. If the async data has an error → [PageViewStateFatalError]
@@ -96,11 +101,6 @@ PageViewState<T> resolvePageViewState<T>({
   bool Function(T data)? isInsufficient,
   IconData errorIcon = SemanticIcons.statusError,
 }) {
-  // Priority 1: session still restoring
-  if (session.isRestoring) {
-    return PageViewStateLoading<T>();
-  }
-
   final isPreview = session.isConfirmedSignedOut;
 
   // If the data is refreshing (loading but has a previous value), keep
