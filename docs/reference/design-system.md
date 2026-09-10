@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-02
+updated: 2026-09-10
 ---
 
 # Design System
@@ -128,6 +128,7 @@ updated: 2026-09-02
 - `StateMessageView`（`lib/core/widgets/common/feedback/state_message.dart`）的 `description` 参数为可选——仅需标题+图标的空态/错误态（如帮助页）不传重复描述文案。
 - `StateErrorView`（同文件）通过 `LayoutBuilder` 检测父级是否有界高度：无界时 fallback 到 `SizedBox(height: 320)`，使 `SingleChildScrollView` 在 `SliverList` 或无 `Scaffold` 的测试环境中不会因 `Viewport` 获得无界高度而崩溃。
 - `_LoadingTimeoutWrapper`（`lib/core/widgets/common/feedback/page_state.dart`）同样以 `LayoutBuilder` 检测：有界高度时用 `Expanded` 填充，无界高度时用 `mainAxisSize: MainAxisSize.min` 不强制 `Expanded`，避免子 widget 的 `Expanded` 在无界 `Column` 中触发 `RenderFlex` 异常。
+- `resolvePageViewState`（同文件）直接按数据状态解析 loading/error/ready——**不再** 在 session restore 期间无条件返回 `PageViewStateLoading`。结合 `authGuarded` 的离线优先（restore 期间有 stored session 则走 cache-first fetch），有本地缓存数据的 provider 在冷启动时直接展示数据而非骨架屏（2026-09-10 修订）。
 - `IconActionButton`（`lib/core/widgets/common/control/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，`showBadge` 在右上角叠加红点（未读消息提醒等）；各模块顶栏统一引用 core 版本。
 - `showForuiDatePicker`（`lib/core/widgets/common/control/date_picker.dart`）是全 App 共享的日历日期选择器，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
 - 设置页统一引用 `settingsPageVerticalPadding(BuildContext)`（响应式垂直 padding）与 `SettingsSectionLabel`（分组标题：`typography.body.xs` + `w600` + `SemanticColor.neutral.solid(context)` + `Spacing.level2` 水平 padding），不再各自手写响应式三元表达式或分组标题实现。

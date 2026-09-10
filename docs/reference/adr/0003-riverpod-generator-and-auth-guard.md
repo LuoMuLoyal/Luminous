@@ -32,11 +32,14 @@ ADR-0001 确立了 Riverpod 作为唯一状态管理方案。经过两个月的�
 
 创建一个受 auth session 保护的 FutureProvider 工厂，消除 5+ 处重复的 auth guard 逻辑：
 
-- session 正在恢复 → 返回 pending future（不触发 error/loading）
+- session 正在恢复并**有 stored session**（离线优先，2026-09-10 修订）→ 调用 fetch，cache-first repository 立即返回本地缓存数据，同时 session restore 后台继续；缓存缺失走网络路径并经调用方 timeout/error 处理降级
+- session 正在恢复但**无 stored session**（全新安装）→ 返回 pending future（不触发 error/loading）；restore 无 token 时极快 resolve 为 signed-out，仅一两个帧
 - session 确认未登录 → 返回 signedOutFallback（如有）
 - session 已登录 → 执行 fetch
 
 各 feature 的数据 provider 改为通过 `authGuarded` 调用，repository 边界为 `TaskEither<LucentFailure, T>`（ADR-0005），fetch 内 `run()` + fold，Left 抛出让 Riverpod 投影为 `AsyncValue.error`。
+
+> **2026-09-10 修订（冷启动骨架屏 → 离线优先）**：原实现中 restore 期间无条件返回 pending future，导致所有 tab 在冷启动时卡骨架屏最长 8 秒，即使本地 Drift 缓存已有数据。修订后 restore 期间按是否有 stored session 决定是否走 cache-first fetch——返回用户启动即显示本地缓存，同时后台刷新；全新安装无 token 则不触发无谓网络请求。`resolvePageViewState` 同步移除 restore 期间强制 loading 的分支，让有缓存数据的 provider 直接展示。`authGuarded` 由同步函数改为 async（throw 语义不变，但错误 settle 在微任务队列上，依赖同步 error 断言的测试需 await 后再检查）。stored-session 的读取失败（如测试环境 platform channel 不可用）静默视为"无 session"。
 
 ## Options Considered
 
