@@ -30,6 +30,11 @@ class _FakeSearchRepository implements MedicineSearchRepository {
   Duration searchDelay = Duration.zero;
   Duration detailDelay = Duration.zero;
 
+  /// When set, [search] blocks on this gate before returning, so tests can
+  /// deterministically observe the in-flight (`isSearching: true`) window
+  /// without racing against real timers.
+  Completer<void>? searchGate;
+
   String? lastSearchQuery;
   MedicineSearchSource? lastSearchSource;
   String? lastDetailId;
@@ -45,6 +50,10 @@ class _FakeSearchRepository implements MedicineSearchRepository {
     return TaskEither(() async {
       lastSearchQuery = query;
       lastSearchSource = source;
+      final gate = searchGate;
+      if (gate != null) {
+        await gate.future;
+      }
       if (searchDelay != Duration.zero) {
         await Future.delayed(searchDelay);
       }
@@ -217,20 +226,43 @@ void main() {
 
     test('sets isSearching to true during search', () async {
       repo.searchResults = [_result('m1')];
-      repo.searchDelay = const Duration(milliseconds: 50);
+      // Gate the in-flight search deterministically — no reliance on the
+      // 400ms debounce + 50ms search-delay race that made this test flaky
+      // under full-suite load.
+      final gate = Completer<void>();
+      repo.searchGate = gate;
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
-      // Don't await — check loading state
-      unawaited(notifier.updateQuery('aspirin'));
+      // Set the query (also arms the 400ms debounce, drained at the end).
+      await notifier.updateQuery('aspirin');
+      expect(
+        container.read(medicineSearchNotifierProvider).isSearching,
+        isFalse,
+      );
 
-      // Wait for the 400ms debounce to fire, then a bit for search to start.
-      await Future.delayed(const Duration(milliseconds: 410));
+      // switchSource triggers _doSearch immediately (no debounce wait).
+      final searchFuture = notifier.switchSource(MedicineSearchSource.cn);
 
-      final state = container.read(medicineSearchNotifierProvider);
-      expect(state.isSearching, isTrue);
+      // Let _doSearch run up to the gate: isSearching must be true while the
+      // request is in flight.
+      await Future<void>.delayed(Duration.zero);
+      final inFlight = container.read(medicineSearchNotifierProvider);
+      expect(inFlight.isSearching, isTrue);
+      expect(inFlight.query, 'aspirin');
+      expect(repo.lastSearchQuery, 'aspirin');
 
-      // Wait for completion (50ms search delay)
-      await Future.delayed(const Duration(milliseconds: 60));
+      // Release the gate; the search completes and the flag clears.
+      gate.complete();
+      await searchFuture;
+      expect(
+        container.read(medicineSearchNotifierProvider).isSearching,
+        isFalse,
+      );
+
+      // Drain the debounce timer's second search so no asynchronous work
+      // escapes the test (the gate is already completed, so it passes through
+      // and settles the same results).
+      await Future<void>.delayed(const Duration(milliseconds: 450));
     });
   });
 
