@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
+import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -26,42 +28,58 @@ import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/test_helpers.dart';
 
 void main() {
-  test(
-    'restoring auth keeps protected providers loading without repo calls',
-    () {
-      final todayRepository = _CountingTodayRepository();
-      final medicineRepository = _CountingMedicineWorkspaceRepository();
-      final mineRepository = _CountingMineRepository();
-      final recordRepository = _CountingRecordRepository();
-      final healthRepository = _CountingHealthContextRepository();
-      final container = ProviderContainer(
-        overrides: [
-          todayRepositoryProvider.overrideWithValue(todayRepository),
-          medicineWorkspaceRepositoryProvider.overrideWithValue(
-            medicineRepository,
-          ),
-          mineRepositoryProvider.overrideWithValue(mineRepository),
-          recordRepositoryProvider.overrideWithValue(recordRepository),
-          healthContextRepositoryProvider.overrideWithValue(healthRepository),
-        ],
+  test('restoring auth attempts cache-first fetches (offline-first)', () async {
+    final todayRepository = _CountingTodayRepository();
+    final medicineRepository = _CountingMedicineWorkspaceRepository();
+    final mineRepository = _CountingMineRepository();
+    final recordRepository = _CountingRecordRepository();
+    final healthRepository = _CountingHealthContextRepository();
+    // A returning user has a stored session — the stored-session gate in
+    // authGuarded fires the fetch so cache-first repositories return local
+    // data immediately instead of keeping the UI in a skeleton.
+    final sessionStore = MemorySessionStore()
+      ..tokens = const LucentSessionTokens(
+        accessToken: 'access-token',
+        refreshToken: 'refresh-token',
       );
-      addTearDown(container.dispose);
+    final container = ProviderContainer(
+      overrides: [
+        lucentSessionStoreProvider.overrideWithValue(sessionStore),
+        todayRepositoryProvider.overrideWithValue(todayRepository),
+        medicineWorkspaceRepositoryProvider.overrideWithValue(
+          medicineRepository,
+        ),
+        mineRepositoryProvider.overrideWithValue(mineRepository),
+        recordRepositoryProvider.overrideWithValue(recordRepository),
+        healthContextRepositoryProvider.overrideWithValue(healthRepository),
+      ],
+    );
+    addTearDown(container.dispose);
 
-      expect(container.read(todayDashboardProvider).isLoading, isTrue);
-      expect(container.read(medicineWorkspaceProvider).isLoading, isTrue);
-      expect(container.read(mineDashboardProvider).isLoading, isTrue);
-      expect(container.read(recordDashboardProvider).isLoading, isTrue);
-      expect(container.read(healthContextSnapshotProvider).isLoading, isTrue);
+    // During restore authGuarded now attempts the fetch so cache-first
+    // repositories return local data immediately instead of keeping the
+    // UI in an indefinite skeleton (offline-first, ADR-0006).
+    final today = await container.read(todayDashboardProvider.future);
+    final medicine = await container.read(medicineWorkspaceProvider.future);
+    final mine = await container.read(mineDashboardProvider.future);
+    final record = await container.read(recordDashboardProvider.future);
+    final health = await container.read(healthContextSnapshotProvider.future);
 
-      expect(todayRepository.calls, 0);
-      expect(medicineRepository.calls, 0);
-      expect(mineRepository.calls, 0);
-      expect(recordRepository.calls, 0);
-      expect(healthRepository.fetchCalls, 0);
-    },
-  );
+    expect(todayRepository.calls, 1);
+    expect(medicineRepository.calls, 1);
+    expect(mineRepository.calls, 1);
+    expect(recordRepository.calls, 1);
+    expect(healthRepository.fetchCalls, 1);
+
+    expect(today, isA<TodayDashboard>());
+    expect(medicine, isA<MedicineWorkspace>());
+    expect(mine, isA<MineDashboard>());
+    expect(record, isA<RecordDashboard>());
+    expect(health, isA<HealthContextSnapshot>());
+  });
 
   test('signed out dashboard providers use local data only', () async {
     final todayRepository = _CountingTodayRepository();
@@ -92,6 +110,11 @@ void main() {
     expect(medicine.plan.items, isNotEmpty);
     expect(mine.account.isAuthenticated, isFalse);
     expect(record.timeline, isNotEmpty);
+
+    // authGuarded is async — trigger the provider, let the error settle on
+    // the microtask queue, then verify the provider entered error state.
+    container.read(healthContextSnapshotProvider);
+    await Future<void>.delayed(const Duration(milliseconds: 50));
     final healthState = container.read(healthContextSnapshotProvider);
     expect(healthState.hasError, isTrue);
     expect(healthState.error, isA<AuthRequiredException>());

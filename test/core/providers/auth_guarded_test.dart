@@ -3,8 +3,12 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
+import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+
+import '../../helpers/test_helpers.dart';
 
 void main() {
   group('authGuarded', () {
@@ -42,7 +46,10 @@ void main() {
           ],
         );
 
-        // authGuarded throws synchronously; the provider should be in error state
+        // authGuarded is async, so the thrown exception settles into the
+        // provider's error state on the next microtask.
+        container.read(_testNoFallbackProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 50));
         final value = container.read(_testNoFallbackProvider);
         expect(value.hasError, isTrue);
         expect(value.error, isA<AuthRequiredException>());
@@ -69,7 +76,37 @@ void main() {
       container.dispose();
     });
 
-    test('stays pending when session is restoring', () async {
+    test('fetches during session restore with stored session', () async {
+      final sessionStore = MemorySessionStore();
+      // Simulate a returning user with stored tokens.
+      await sessionStore.write(
+        const LucentSessionTokens(
+          accessToken: 'access',
+          refreshToken: 'refresh',
+        ),
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: true, isAuthenticated: false),
+            ),
+          ),
+          lucentSessionStoreProvider.overrideWithValue(sessionStore),
+        ],
+      );
+
+      // During restore authGuarded attempts the fetch when a stored session
+      // exists so cache-first repositories return local data immediately.
+      final result = await container.read(_testFetchProvider.future);
+
+      expect(result, 'success');
+
+      container.dispose();
+    });
+
+    test('stays pending during restore without stored session', () async {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(
@@ -80,8 +117,11 @@ void main() {
         ],
       );
 
+      // No session store override: SecureLucentSessionStore may or may not
+      // have tokens in the test env — the defensive catch in _hasStoredSession
+      // treats a store-read failure as "no stored session" and falls back to
+      // the old blocking future.
       final future = container.read(_testFetchProvider.future);
-
       bool completed = false;
       unawaited(future.whenComplete(() => completed = true));
 

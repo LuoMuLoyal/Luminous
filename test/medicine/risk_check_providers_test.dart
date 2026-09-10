@@ -222,6 +222,9 @@ void main() {
         );
         addTearDown(c.dispose);
 
+        // authGuarded is async — trigger, let the error settle.
+        c.read(medicineRiskCheckRecordsProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 50));
         final state = c.read(medicineRiskCheckRecordsProvider);
         expect(state.hasError, isTrue);
         expect(state.error, isA<AuthRequiredException>());
@@ -237,11 +240,17 @@ void main() {
       );
       addTearDown(c.dispose);
 
-      final state = c.read(
+      // runMedicineRiskCheckProvider is not keepAlive — hold a listener so
+      // the async error isn't dropped on auto-dispose, then let it settle.
+      AsyncValue<MedicineRiskCheckRecord>? observed;
+      c.listen<AsyncValue<MedicineRiskCheckRecord>>(
         runMedicineRiskCheckProvider(MedicineRiskCheckType.static_),
+        (_, next) => observed = next,
       );
-      expect(state.hasError, isTrue);
-      expect(state.error, isA<AuthRequiredException>());
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(observed, isNotNull);
+      expect(observed!.hasError, isTrue);
+      expect(observed!.error, isA<AuthRequiredException>());
     });
   });
 }

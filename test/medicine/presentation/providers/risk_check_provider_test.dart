@@ -72,6 +72,9 @@ void main() {
         );
         addTearDown(c.dispose);
 
+        // authGuarded is async — trigger, let the error settle.
+        c.read(medicineRiskCheckRecordsProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 50));
         final state = c.read(medicineRiskCheckRecordsProvider);
 
         expect(state.hasError, isTrue);
