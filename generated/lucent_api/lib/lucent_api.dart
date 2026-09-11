@@ -75,6 +75,7 @@ export 'package:lucent_api/src/model/create_current_medicine_request.dart';
 export 'package:lucent_api/src/model/create_daily_record_request.dart';
 export 'package:lucent_api/src/model/create_daily_record_request_attachments.dart';
 export 'package:lucent_api/src/model/create_dose_log_request.dart';
+export 'package:lucent_api/src/model/create_file_upload_response.dart';
 export 'package:lucent_api/src/model/create_google_authorize_url_request.dart';
 export 'package:lucent_api/src/model/create_health_event_request.dart';
 export 'package:lucent_api/src/model/create_image_upload_request.dart';

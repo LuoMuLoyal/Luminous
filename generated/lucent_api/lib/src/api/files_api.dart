@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
+import 'package:lucent_api/src/model/create_file_upload_response.dart';
 import 'package:lucent_api/src/model/create_upload_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 
@@ -29,9 +30,9 @@ class FilesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [CreateFileUploadResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> createUpload({
+  Future<Response<CreateFileUploadResponse>> createUpload({
     required CreateUploadRequest createUploadRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -71,6 +72,36 @@ class FilesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    CreateFileUploadResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<CreateFileUploadResponse, CreateFileUploadResponse>(
+              rawData,
+              'CreateFileUploadResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<CreateFileUploadResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 }

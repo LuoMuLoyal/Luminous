@@ -41,6 +41,7 @@ import 'package:lucent_api/src/model/create_current_medicine_request.dart';
 import 'package:lucent_api/src/model/create_daily_record_request.dart';
 import 'package:lucent_api/src/model/create_daily_record_request_attachments.dart';
 import 'package:lucent_api/src/model/create_dose_log_request.dart';
+import 'package:lucent_api/src/model/create_file_upload_response.dart';
 import 'package:lucent_api/src/model/create_google_authorize_url_request.dart';
 import 'package:lucent_api/src/model/create_health_event_request.dart';
 import 'package:lucent_api/src/model/create_image_upload_request.dart';
@@ -554,6 +555,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'CreateDoseLogRequest':
       return CreateDoseLogRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'CreateFileUploadResponse':
+      return CreateFileUploadResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'CreateGoogleAuthorizeUrlRequest':
       return CreateGoogleAuthorizeUrlRequest.fromJson(
