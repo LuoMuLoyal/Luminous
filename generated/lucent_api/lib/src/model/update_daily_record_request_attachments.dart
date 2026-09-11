@@ -57,7 +57,7 @@ class UpdateDailyRecordRequestAttachments {
   @JsonKey(name: r'bucket', required: false, includeIfNull: false)
   final String? bucket;
 
-  /// Storage provider (e.g. tencent-cos, s3).
+  /// Storage provider (e.g. tencent-cos, s3, ali-oss).
   @JsonKey(name: r'provider', required: false, includeIfNull: false)
   final String? provider;
 
