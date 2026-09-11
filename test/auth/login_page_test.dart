@@ -93,6 +93,54 @@ void main() {
     expect(find.text('settings-page'), findsOneWidget);
   });
 
+  testWidgets(
+    'Login page leaves the login route after password login without returnTo',
+    (tester) async {
+      // Sign-out and the "go to login" links navigate to a bare `/login`
+      // (no `return-to` query), so post-login navigation must not depend on
+      // that hint being present.
+      final remote = FakeLucentAuthRepository();
+      final container = ProviderContainer(
+        overrides: [authRepositoryProvider.overrideWithValue(remote)],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: TestAuthApp(
+            router: GoRouter(
+              initialLocation: '/login',
+              routes: [
+                GoRoute(
+                  path: '/login',
+                  builder: (context, state) => const LoginPage(),
+                ),
+                GoRoute(
+                  path: '/',
+                  builder: (context, state) =>
+                      const Scaffold(body: Text('home-page')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.enterText(
+        find.byType(EditableText).at(0),
+        'user@example.com',
+      );
+      await tester.enterText(find.byType(EditableText).at(1), 'Password123');
+      await tester.tap(find.widgetWithText(FButton, '登录'));
+      await tester.pumpAndSettle();
+
+      expect(container.read(authSessionProvider).isAuthenticated, isTrue);
+      expect(find.byType(LoginPage), findsNothing);
+      expect(find.text('home-page'), findsOneWidget);
+    },
+  );
+
   testWidgets('Login page sends code in code mode', (tester) async {
     final remote = FakeLucentAuthRepository();
 

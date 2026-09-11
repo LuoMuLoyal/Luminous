@@ -199,7 +199,16 @@ class LoginPage extends HookConsumerWidget {
                           }
                         }
                         if (session != null && context.mounted) {
-                          goAfterLogin(context, returnTo: returnTo);
+                          // `fallbackHome` matters: sign-out and the
+                          // "go to login" links land on a bare `/login`
+                          // with no `return-to`, and without the fallback
+                          // this call would be a silent no-op, leaving the
+                          // user on the login page while already signed in.
+                          goAfterLogin(
+                            context,
+                            returnTo: returnTo,
+                            fallbackHome: true,
+                          );
                         }
                       },
                 child: state.isSubmitting
