@@ -68,6 +68,9 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(RequestOptions(path: ''));
+    registerFallbackValue(
+      CreateUploadRequest(contentType: 'image/jpeg', sizeBytes: 1),
+    );
   });
 
   setUp(() {
@@ -254,23 +257,40 @@ void main() {
   });
 
   group('LucentScanRepository.uploadImage', () {
-    test('returns publicUrl from presign response', () async {
-      const presignData = {
-        'uploadUrl': 'https://upload.example.com/presigned',
-        'publicUrl': 'https://cdn.example.com/image.jpg',
-        'headers': {'Content-Type': 'image/jpeg'},
-      };
+    /// The presign response is a typed DTO now that
+    /// `POST /files/upload` declares its 200 schema.
+    CreateFileUploadResponse presign({
+      String uploadUrl = 'https://upload.example.com/presigned',
+      String? publicUrl = 'https://cdn.example.com/image.jpg',
+      Map<String, String> headers = const {'Content-Type': 'image/jpeg'},
+    }) {
+      return CreateFileUploadResponse(
+        provider: 's3',
+        bucket: 'test-bucket',
+        objectKey: 'files/user-1/object.jpg',
+        uploadUrl: uploadUrl,
+        headers: headers,
+        publicUrl: publicUrl,
+        expiresAt: '2026-01-01T00:00:00.000Z',
+        maxSizeBytes: 10485760,
+      );
+    }
 
+    void stubPresign(CreateFileUploadResponse response) {
       when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+        () => mockFilesApi.createUpload(
+          createUploadRequest: any(named: 'createUploadRequest'),
+        ),
       ).thenAnswer(
-        (_) async => Response<Object>(
-          data: presignData,
+        (_) async => Response<CreateFileUploadResponse>(
+          data: response,
           statusCode: 200,
           requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
         ),
       );
+    }
 
+    void stubPut() {
       when(
         () => mockDio.put(
           any(),
@@ -284,6 +304,11 @@ void main() {
           requestOptions: RequestOptions(path: ''),
         ),
       );
+    }
+
+    test('returns publicUrl from presign response', () async {
+      stubPresign(presign());
+      stubPut();
 
       final result = await expectTaskRight(
         repo.uploadImage(bytes: [1, 2, 3], contentType: 'image/jpeg'),
@@ -292,73 +317,53 @@ void main() {
       expect(result, 'https://cdn.example.com/image.jpg');
     });
 
-    test('falls back to uploadUrl when publicUrl is null', () async {
-      const presignData = {
-        'uploadUrl': 'https://upload.example.com/presigned',
-        'headers': {},
-      };
+    test('uploads to the presigned URL without the session bearer', () async {
+      stubPresign(presign(uploadUrl: 'https://upload.example.com/presigned'));
+      stubPut();
 
-      when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
-      ).thenAnswer(
-        (_) async => Response<Object>(
-          data: presignData,
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
-        ),
+      await expectTaskRight(
+        repo.uploadImage(bytes: [1, 2, 3], contentType: 'image/jpeg'),
       );
 
-      when(
-        () => mockDio.put(
-          any(),
-          data: any(named: 'data'),
-          options: any(named: 'options'),
-        ),
-      ).thenAnswer(
-        (_) async => Response<dynamic>(
-          data: '',
-          statusCode: 200,
-          requestOptions: RequestOptions(path: ''),
-        ),
-      );
+      final options =
+          verify(
+                () => mockDio.put(
+                  captureAny(),
+                  data: any(named: 'data'),
+                  options: captureAny(named: 'options'),
+                ),
+              ).captured
+              as List<Object?>;
+      expect(options[0], 'https://upload.example.com/presigned');
+      final requestOptions = options[1] as Options;
+      // Object storage is not the Lucent API: the bearer token must not leak
+      // to it, and a storage 401/403 must not spend the single-use refresh
+      // token.
+      expect(requestOptions.extra?['skipAuthorization'], isTrue);
+      expect(requestOptions.extra?['skipAuthRefresh'], isTrue);
+      expect(requestOptions.headers?['Content-Type'], 'image/jpeg');
+      // Dio's own constant, so the assertion cannot drift from the map key.
+      expect(requestOptions.headers?[Headers.contentLengthHeader], 3);
+    });
 
-      final result = await expectTaskRight(
+    test('fails when the deployment exposes no public URL', () async {
+      // `uploadUrl` is a write-only signature: the recognition endpoint fetches
+      // the returned URL server-side, so handing it the PUT URL would produce
+      // an image URL that can never load.
+      stubPresign(presign(publicUrl: null));
+      stubPut();
+
+      final failure = await expectTaskLeft(
         repo.uploadImage(bytes: [1, 2, 3], contentType: 'image/png'),
       );
 
-      expect(result, 'https://upload.example.com/presigned');
+      expect(failure.kind, LucentFailureKind.unknown);
+      expect(failure.message, contains('public base URL'));
     });
 
     test('uses sizeBytes from parameter when provided', () async {
-      when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
-      ).thenAnswer((invocation) async {
-        final data = invocation.namedArguments[#data] as Map<String, Object?>;
-        expect(data['sizeBytes'], 999);
-        return Response<Object>(
-          data: {
-            'uploadUrl': 'https://upload.example.com',
-            'publicUrl': 'https://cdn.example.com/img.jpg',
-            'headers': {},
-          },
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
-        );
-      });
-
-      when(
-        () => mockDio.put(
-          any(),
-          data: any(named: 'data'),
-          options: any(named: 'options'),
-        ),
-      ).thenAnswer(
-        (_) async => Response<dynamic>(
-          data: '',
-          statusCode: 200,
-          requestOptions: RequestOptions(path: ''),
-        ),
-      );
+      stubPresign(presign());
+      stubPut();
 
       await expectTaskRight(
         repo.uploadImage(
@@ -367,38 +372,20 @@ void main() {
           sizeBytes: 999,
         ),
       );
+
+      final request =
+          verify(
+                () => mockFilesApi.createUpload(
+                  createUploadRequest: captureAny(named: 'createUploadRequest'),
+                ),
+              ).captured.single
+              as CreateUploadRequest;
+      expect(request.sizeBytes, 999);
     });
 
     test('includes fileName in presign request when provided', () async {
-      when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
-      ).thenAnswer((invocation) async {
-        final data = invocation.namedArguments[#data] as Map<String, Object?>;
-        expect(data['fileName'], 'test.jpg');
-        return Response<Object>(
-          data: {
-            'uploadUrl': 'https://upload.example.com',
-            'publicUrl': 'https://cdn.example.com/img.jpg',
-            'headers': {},
-          },
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
-        );
-      });
-
-      when(
-        () => mockDio.put(
-          any(),
-          data: any(named: 'data'),
-          options: any(named: 'options'),
-        ),
-      ).thenAnswer(
-        (_) async => Response<dynamic>(
-          data: '',
-          statusCode: 200,
-          requestOptions: RequestOptions(path: ''),
-        ),
-      );
+      stubPresign(presign());
+      stubPut();
 
       await expectTaskRight(
         repo.uploadImage(
@@ -407,15 +394,26 @@ void main() {
           fileName: 'test.jpg',
         ),
       );
+
+      final request =
+          verify(
+                () => mockFilesApi.createUpload(
+                  createUploadRequest: captureAny(named: 'createUploadRequest'),
+                ),
+              ).captured.single
+              as CreateUploadRequest;
+      expect(request.fileName, 'test.jpg');
     });
 
     test(
       'empty presign response body maps to Left(network, emptyResponse)',
       () async {
         when(
-          () => mockDio.post<Object>(any(), data: any(named: 'data')),
+          () => mockFilesApi.createUpload(
+            createUploadRequest: any(named: 'createUploadRequest'),
+          ),
         ).thenAnswer(
-          (_) async => Response<Object>(
+          (_) async => Response<CreateFileUploadResponse>(
             data: null,
             statusCode: 200,
             requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
@@ -431,52 +429,11 @@ void main() {
       },
     );
 
-    test('presign response missing uploadUrl maps to Left(unknown) protocol '
-        'violation', () async {
-      when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
-      ).thenAnswer(
-        (_) async => Response<Object>(
-          data: const {'publicUrl': 'https://cdn.example.com/image.jpg'},
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
-        ),
-      );
-
-      final failure = await expectTaskLeft(
-        repo.uploadImage(bytes: [1, 2, 3], contentType: 'image/jpeg'),
-      );
-
-      expect(failure.kind, LucentFailureKind.unknown);
-      expect(failure.cause, isA<StateError>());
-    });
-
-    test('presign response headers not a map maps to Left(unknown) protocol '
-        'violation', () async {
-      when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
-      ).thenAnswer(
-        (_) async => Response<Object>(
-          data: const {
-            'uploadUrl': 'https://upload.example.com/presigned',
-            'headers': 'not-a-map',
-          },
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
-        ),
-      );
-
-      final failure = await expectTaskLeft(
-        repo.uploadImage(bytes: [1, 2, 3], contentType: 'image/jpeg'),
-      );
-
-      expect(failure.kind, LucentFailureKind.unknown);
-      expect(failure.cause, isA<StateError>());
-    });
-
     test('404 Problem Details keeps code and status as a Left', () async {
       when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+        () => mockFilesApi.createUpload(
+          createUploadRequest: any(named: 'createUploadRequest'),
+        ),
       ).thenThrow(_problemDetails404(code: 'FILE_UPLOAD_REJECTED'));
 
       final failure = await expectTaskLeft(
@@ -492,7 +449,9 @@ void main() {
       'network timeout on presign maps to a network connectivity Left',
       () async {
         when(
-          () => mockDio.post<Object>(any(), data: any(named: 'data')),
+          () => mockFilesApi.createUpload(
+            createUploadRequest: any(named: 'createUploadRequest'),
+          ),
         ).thenThrow(_connectionTimeout());
 
         final failure = await expectTaskLeft(

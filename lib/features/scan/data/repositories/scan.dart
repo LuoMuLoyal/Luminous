@@ -1,5 +1,7 @@
 // ignore_for_file: use_of_void_result
 
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
@@ -19,10 +21,15 @@ part 'scan.g.dart';
 /// business failure) is a `TaskEither` Left produced via
 /// `LucentErrorMapper.fromObject`; a legal empty result set stays a Right.
 /// An empty success response body is a `LucentFailure.network(emptyResponse)`
-/// (auth `_requireBody` precedent). Protocol violations — a response body that
-/// does not match the generated-client structure — stay thrown `StateError` /
-/// `FormatException` (logged via [appTalker] for diagnosability) and surface
-/// as a Left carrying `LucentFailureKind.unknown`.
+/// (auth `_requireBody` precedent).
+///
+/// [uploadImage] goes through the typed generated client plus the shared
+/// object-storage transport (`presignFileUpload` / `putPresignedObject`).
+/// [recognizeMedicine] still posts through raw [Dio] and parses the body by
+/// hand, because that endpoint declares no response schema yet — a protocol
+/// violation there stays a thrown `StateError` / `FormatException` (logged via
+/// [appTalker] for diagnosability) and surfaces as a Left carrying
+/// `LucentFailureKind.unknown`.
 class LucentScanRepository implements ScanRepository {
   const LucentScanRepository({
     required this.api,
@@ -69,63 +76,26 @@ class LucentScanRepository implements ScanRepository {
     String? fileName,
   }) {
     return TaskEither.tryCatch(() async {
-      final presignResponse = await dio.post<Object>(
-        LucentApiPaths.filesUpload,
-        data: <String, Object?>{
-          'contentType': contentType,
-          'sizeBytes': sizeBytes ?? bytes.length,
-          if (fileName != null) 'fileName': fileName,
-        },
-      );
-      final uploadData = coerceToStringMap(presignResponse.data);
-      if (uploadData == null) {
-        // Empty success body: transport-level failure (auth precedent).
-        throw LucentFailure.network(
-          message: 'File upload presign response was empty.',
-          networkErrorCode: NetworkErrorCode.emptyResponse,
-        );
-      }
-      final uploadUrl = uploadData['uploadUrl']?.toString() ?? '';
-      if (uploadUrl.isEmpty) {
-        // Protocol violation: presign body does not match the expected
-        // generated-client structure. Logged for diagnosability and kept as
-        // a thrown protocol exception (mapped to Left(unknown)).
-        appTalker.error(
-          'LucentScanRepository.uploadImage: presign response missing '
-          'uploadUrl: $uploadData',
-        );
-        throw StateError('File upload presign response is missing uploadUrl.');
-      }
-      final headersRaw = uploadData['headers'];
-      final headersMap = coerceToStringMap(headersRaw);
-      if (headersRaw != null && headersMap == null) {
-        // Protocol violation: headers must be a map when present. Logged for
-        // diagnosability and kept as a thrown protocol exception.
-        appTalker.error(
-          'LucentScanRepository.uploadImage: presign response headers is '
-          'not a map: $headersRaw',
-        );
-        throw StateError('File upload presign response headers must be a map.');
-      }
-      final headers = headersMap ?? const <String, dynamic>{};
-      final publicUrl = uploadData['publicUrl']?.toString();
-
-      await dio.put(
-        uploadUrl,
-        data: bytes,
-        options: Options(
-          headers: <String, Object?>{
-            ...headers,
-            'Content-Length': (sizeBytes ?? bytes.length).toString(),
-          },
-          extra: const <String, Object?>{
-            'skipAuthorization': true,
-            'skipAuthRefresh': true,
-          },
-        ),
+      final upload = await presignFileUpload(
+        filesApi,
+        contentType: contentType,
+        sizeBytes: sizeBytes ?? bytes.length,
+        fileName: fileName,
       );
 
-      return publicUrl ?? uploadUrl;
+      await putPresignedObject(
+        dio,
+        upload: upload,
+        bytes: Uint8List.fromList(bytes),
+        contentType: contentType,
+        sizeBytes: sizeBytes ?? bytes.length,
+      );
+
+      // The recognition endpoint fetches this URL server-side, so it has to be
+      // a readable one. A deployment without a public base URL cannot serve
+      // the object back at all — failing here says so, instead of handing over
+      // the write-only PUT signature as if it were an image URL.
+      return upload.requirePublicUrl();
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 

@@ -26,10 +26,11 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 /// surfaces as a `Left(unknown)` at the repository boundary.
 ///
 /// Raw [Dio] is kept only where the typed client cannot express the call:
-/// the direct object-storage PUT ([uploadImage]), the partial create/PATCH
-/// writes ([create] / [update] send only changed keys with null-means-clear
-/// semantics the generated all-optional request DTO cannot distinguish from
-/// "unchanged"), and [delete] whose 204 invariant needs the raw status code.
+/// the direct object-storage PUT ([uploadImage], shared through
+/// `putPresignedObject`), the partial create/PATCH writes ([create] / [update]
+/// send only changed keys with null-means-clear semantics the generated
+/// all-optional request DTO cannot distinguish from "unchanged"), and [delete]
+/// whose 204 invariant needs the raw status code.
 class DailyRecordRemoteDataSource {
   DailyRecordRemoteDataSource({required this.api, required this.dio});
 
@@ -82,6 +83,9 @@ class DailyRecordRemoteDataSource {
   Future<DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
   ) async {
+    // The daily-records endpoint is a domain-specific presign (its own object
+    // key prefix), so it stays; only the direct-to-storage PUT is shared with
+    // every other upload path.
     final presignResponse = await api.createImageUpload(
       createImageUploadRequest: lucent.CreateImageUploadRequest(
         contentType: input.contentType,
@@ -89,23 +93,16 @@ class DailyRecordRemoteDataSource {
         fileName: input.fileName,
       ),
     );
-    final upload = _requireData(presignResponse.data, operation: 'uploadImage');
-    final headers = upload.headers;
+    final upload = PresignedUpload.fromDailyRecordImageUpload(
+      _requireData(presignResponse.data, operation: 'uploadImage'),
+    );
 
-    await dio.put<Object>(
-      upload.uploadUrl,
-      data: Uint8List.fromList(input.bytes),
-      options: Options(
-        headers: <String, Object?>{
-          ...headers,
-          Headers.contentLengthHeader: input.sizeBytes,
-        },
-        contentType: headers[Headers.contentTypeHeader] ?? input.contentType,
-        extra: const <String, Object?>{
-          'skipAuthorization': true,
-          'skipAuthRefresh': true,
-        },
-      ),
+    await putPresignedObject(
+      dio,
+      upload: upload,
+      bytes: Uint8List.fromList(input.bytes),
+      contentType: input.contentType,
+      sizeBytes: input.sizeBytes,
     );
 
     return DailyRecordAttachmentInput(

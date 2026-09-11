@@ -13,6 +13,10 @@ abstract interface class ScanRepository {
 
   /// Upload an image via a presigned URL and return its public URL.
   ///
+  /// The returned URL is fetched server-side by [recognizeMedicine], so it must
+  /// be readable. A deployment with no public base URL configured uploads the
+  /// object but cannot serve it back; that is a Left, not a made-up URL.
+  ///
   /// Server business failures (4xx/5xx Problem Details) are a Left carrying
   /// the upstream `code`/`status`; network failures are a Left(network).
   TaskEither<LucentFailure, String> uploadImage({
