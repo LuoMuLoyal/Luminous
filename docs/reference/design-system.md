@@ -87,6 +87,10 @@ updated: 2026-09-10
 ## 间距与布局
 
 - 间距使用 `Spacing` token（语义别名 `xs`~`xl8` 为主命名，`level1`~`level12` 为等价别名；全量值见生成的 [token 清单](generated/design-tokens.md)）。
+- 标题与其内容的间距全应用统一走 `context.titleContentGap`（`TitleContentGapTokens`）：值取自 Forui 主题
+  `context.theme.style.borderRadius.lg`（14px，与 `Spacing.lg`/`level4` 同值），覆盖区块标题/分组标签 →
+  其直接统领的内容（`TodaySection`、`ReviewSectionCard`、各设置页 `SettingsSectionLabel` 调用点等）；
+  标题与副标题/说明之间的紧凑间距不适用本约定，桌面端布局的区块分隔各自处理。
 - 硬编码像素值正被项目范围地替换为 token 引用，即使这些 token 值本身在向 Forui 靠拢。
 - 断点引用 `Breakpoints` 常量；不出现硬编码 `600`。
 - 响应式尺寸 helper 位于 `lib/core/design/layout/responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart
