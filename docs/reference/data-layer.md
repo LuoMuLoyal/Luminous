@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-06
+updated: 2026-09-11
 ---
 
 # Data Layer
@@ -45,11 +45,19 @@ Widget
 - `lib/core/network/client/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
   optional reconnect and capped exponential backoff (1s, 2s, 4s, ... clamped to 60s) so raising
   `maxReconnects` later cannot produce unbounded delays. An empty stream response surfaces as
-  `LucentFailure.network(emptyStreamResponse)`.
+  `LucentFailure.network(emptyStreamResponse)`. SSE requests set **both** `connectTimeout` and
+  `receiveTimeout` to `Duration.zero`: an SSE stream has no per-request deadline, and on Web the XHR
+  adapter collapses the two into a single `xhr.timeout` (`connectTimeout + receiveTimeout`), so a
+  non-zero connect timeout would silently cap the whole stream. Web transport is not incremental —
+  `dio_web_adapter` buffers the XHR body (`arraybuffer`), so chunks are parsed only once the response
+  completes (tracked in [TODO](../TODO.md), Web 端无逐字流式).
 - `lib/core/network/contract/response_body.dart`: `requireData(response, operation: 'apiName')` guards
   success responses — an empty/non-object body throws so the repository boundary maps it to
   `LucentFailure.network(emptyResponse)` instead of a bare `!` crash. The retired
-  `{ code, message, data }` envelope is not interpreted anywhere.
+  `{ code, message, data }` envelope is not interpreted anywhere. Resources that are legitimately
+  nullable are exempt: `GET /user/assistant/latest` answers 200 with `null` when no conversation
+  exists, so that data source returns `response.data` unchanged and the repository maps `null` to
+  its "no resource yet" state instead of reporting an empty response.
 - `lib/core/network/client/interceptors/auth_interceptor.dart`: token injection + 401 refresh + retry +
   session clear. Refresh outcomes are typed (`_RefreshOutcome`): the refresh token being rejected
   (Problem Details 401/403) is an auth failure that clears the session and notifies the auth layer,
