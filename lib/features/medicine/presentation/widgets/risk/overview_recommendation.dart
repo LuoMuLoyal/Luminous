@@ -35,7 +35,7 @@ class OverallRecommendationCard extends StatelessWidget {
                 Icon(
                   SemanticIcons.aiTip,
                   color: SemanticColor.primary.solid(context),
-                  size: IconSizeTokens.level3,
+                  size: IconSizeTokens.md,
                 ),
                 const SizedBox(width: Spacing.level2),
                 Text(

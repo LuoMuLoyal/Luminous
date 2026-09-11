@@ -19,7 +19,7 @@ class DesktopTabs extends StatelessWidget {
             Icon(
               SemanticIcons.profileCondition,
               color: SemanticColor.primary.solid(context),
-              size: IconSizeTokens.level3,
+              size: IconSizeTokens.md,
             ),
             const SizedBox(width: Spacing.level3),
             Text(
@@ -38,7 +38,7 @@ class DesktopTabs extends StatelessWidget {
           child: const SizedBox(
             width: 28,
             height: 28,
-            child: Icon(SemanticIcons.profileUser, size: IconSizeTokens.level2),
+            child: Icon(SemanticIcons.profileUser, size: IconSizeTokens.sm),
           ),
         ),
       ],

@@ -59,7 +59,7 @@ class RecordFilterPanel extends StatelessWidget {
                         const SizedBox(width: Spacing.level1),
                         Icon(
                           SemanticIcons.statusAllDone,
-                          size: IconSizeTokens.level2,
+                          size: IconSizeTokens.sm,
                           color: colors.foreground,
                         ),
                       ],
@@ -125,13 +125,13 @@ class FilterRow extends StatelessWidget {
               color: filter.selected
                   ? SemanticColor.primary.solid(context)
                   : SemanticColor.neutral.solid(context),
-              size: IconSizeTokens.level2,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.level3),
             Icon(
               filter.icon,
               color: filter.accent.solid(context),
-              size: IconSizeTokens.level2,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.level3),
             Expanded(

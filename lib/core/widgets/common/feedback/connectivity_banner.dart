@@ -40,7 +40,7 @@ class ConnectivityBanner extends ConsumerWidget {
             children: [
               Icon(
                 SemanticIcons.statusWarning,
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
                 color: warningPalette.foreground,
               ),
               const SizedBox(width: Spacing.level2),

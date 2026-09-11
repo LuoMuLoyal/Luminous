@@ -37,7 +37,7 @@ class MethodTile extends StatelessWidget {
         prefix: Icon(
           icon,
           color: SemanticColor.primary.solid(context),
-          size: IconSizeTokens.level6,
+          size: IconSizeTokens.xl2,
         ),
         title: Text(title),
         subtitle: Text(

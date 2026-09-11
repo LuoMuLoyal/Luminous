@@ -108,7 +108,7 @@ class AlertChip extends StatelessWidget {
         Icon(
           alert.icon,
           color: alert.color.solid(context),
-          size: IconSizeTokens.level3,
+          size: IconSizeTokens.md,
         ),
         const SizedBox(width: Spacing.level2),
         Expanded(

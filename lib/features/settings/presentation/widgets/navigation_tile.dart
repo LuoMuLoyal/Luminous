@@ -33,7 +33,7 @@ class SettingsNavigationTile extends StatelessWidget with FTileMixin {
         final s = subtitle;
         return s == null || s.isEmpty ? null : Text(s);
       }(),
-      prefix: icon != null ? Icon(icon, size: IconSizeTokens.level3) : null,
+      prefix: icon != null ? Icon(icon, size: IconSizeTokens.md) : null,
       details: () {
         final v = value;
         return v == null || v.isEmpty ? null : Text(v);

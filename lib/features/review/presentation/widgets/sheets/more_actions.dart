@@ -194,11 +194,11 @@ class _MoreActionTile extends StatelessWidget {
           child: Row(
             children: [
               FAvatar.raw(
-                size: IconSizeTokens.level6,
+                size: IconSizeTokens.xl2,
                 child: Icon(
                   icon,
                   color: color.solid(context),
-                  size: IconSizeTokens.level3,
+                  size: IconSizeTokens.md,
                 ),
               ),
               const SizedBox(width: Spacing.level4),
@@ -230,7 +230,7 @@ class _MoreActionTile extends StatelessWidget {
               Icon(
                 SemanticIcons.actionNext,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
             ],
           ),

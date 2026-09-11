@@ -31,7 +31,7 @@ class SuggestionEmptyState extends StatelessWidget {
             children: [
               Icon(
                 SemanticIcons.aiEntry,
-                size: IconSizeTokens.level6,
+                size: IconSizeTokens.xl2,
                 color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level3),
@@ -177,7 +177,7 @@ class SuggestionErrorState extends StatelessWidget {
             children: [
               Icon(
                 SemanticIcons.statusError,
-                size: IconSizeTokens.level6,
+                size: IconSizeTokens.xl2,
                 color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level3),
@@ -287,7 +287,7 @@ class SecondarySuggestionErrorState extends StatelessWidget {
             children: [
               Icon(
                 SemanticIcons.statusError,
-                size: IconSizeTokens.level4,
+                size: IconSizeTokens.lg,
                 color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.level2),

@@ -289,7 +289,7 @@ class _HoverActionButton extends StatelessWidget {
         width: 32,
         height: 32,
         child: IconButton(
-          icon: Icon(icon, size: IconSizeTokens.level2),
+          icon: Icon(icon, size: IconSizeTokens.sm),
           color: color,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 32, minHeight: 32),

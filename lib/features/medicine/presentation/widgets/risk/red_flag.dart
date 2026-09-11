@@ -47,7 +47,7 @@ class RiskRedFlagItem extends StatelessWidget {
                         Icon(
                           SemanticIcons.statusWarning,
                           color: SemanticColor.destructive.solid(context),
-                          size: IconSizeTokens.level3,
+                          size: IconSizeTokens.md,
                         ),
                         const SizedBox(width: Spacing.level2),
                         Expanded(
@@ -68,7 +68,7 @@ class RiskRedFlagItem extends StatelessWidget {
                         Icon(
                           SemanticIcons.safetyDanger,
                           color: SemanticColor.destructive.solid(context),
-                          size: IconSizeTokens.level2,
+                          size: IconSizeTokens.sm,
                         ),
                         const SizedBox(width: Spacing.level2),
                         Expanded(

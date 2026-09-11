@@ -54,14 +54,6 @@ is the machine projection; the interpretive contract lives in
 | `xl2` | `double` | `32` | 32px — avatar, hero icon, large empty-state. |
 | `xl3` | `double` | `48` | 48px — category icon, large hero. |
 | `xl4` | `double` | `64` | 64px — account avatar, extra large. |
-| `level1` | `double` | `xs` | 12px — status dot, tiny indicator. (= [xs]) |
-| `level2` | `double` | `sm` | 16px — inline icon, chevron, small action. (= [sm]) |
-| `level3` | `double` | `md` | 20px — tile prefix, button icon, default size. (= [md]) |
-| `level4` | `double` | `lg` | 24px — section header, empty-state icon. (= [lg]) |
-| `level5` | `double` | `xl` | 28px — suggestion card icon, medium hero. (= [xl]) |
-| `level6` | `double` | `xl2` | 32px — avatar, hero icon, large empty-state. (= [xl2]) |
-| `level7` | `double` | `xl3` | 48px — category icon, large hero. (= [xl3]) |
-| `level8` | `double` | `xl4` | 64px — account avatar, extra large. (= [xl4]) |
 
 ### tokens/lucide_icon_bridge.dart
 

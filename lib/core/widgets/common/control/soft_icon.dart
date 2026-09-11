@@ -31,7 +31,7 @@ class SoftIcon extends StatelessWidget {
     required this.icon,
     required this.color,
     this.size = 44.0,
-    this.iconSize = IconSizeTokens.level4,
+    this.iconSize = IconSizeTokens.lg,
     this.variant = SoftIconVariant.subtle,
     this.duotone = false,
   });
@@ -45,7 +45,7 @@ class SoftIcon extends StatelessWidget {
   /// Container size.
   final double size;
 
-  /// Icon size, defaults to [IconSizeTokens.level4] (24px).
+  /// Icon size, defaults to [IconSizeTokens.lg] (24px).
   final double iconSize;
 
   /// Background variant.

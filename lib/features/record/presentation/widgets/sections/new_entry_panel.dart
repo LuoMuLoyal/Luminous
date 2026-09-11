@@ -205,7 +205,7 @@ class _DesktopEntryButtonState extends State<_DesktopEntryButton> {
                     child: Icon(
                       widget.action.icon,
                       color: widget.action.accent.solid(context),
-                      size: IconSizeTokens.level3,
+                      size: IconSizeTokens.md,
                     ),
                   ),
                 ),

@@ -317,7 +317,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                       subtitle: Text(l10n.recordQuickIconChangeAction),
                       prefix: Icon(
                         resolveQuickActionIcon(action, prefs),
-                        size: IconSizeTokens.level3,
+                        size: IconSizeTokens.md,
                       ),
                       suffix: const Icon(SemanticIcons.actionNext),
                       onPress: () => pickQuickEntryIcon(context, ref, action),

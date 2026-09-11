@@ -250,7 +250,7 @@ class _ScopeRow extends StatelessWidget {
           Icon(
             icon,
             color: SemanticColor.neutral.solid(context),
-            size: IconSizeTokens.level2,
+            size: IconSizeTokens.sm,
           ),
           const SizedBox(width: Spacing.level3),
           Expanded(
@@ -264,7 +264,7 @@ class _ScopeRow extends StatelessWidget {
           Icon(
             SemanticIcons.statusDone,
             color: SemanticColor.primary.solid(context),
-            size: IconSizeTokens.level2,
+            size: IconSizeTokens.sm,
           ),
         ],
       ),
@@ -297,7 +297,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
             Icon(
               SemanticIcons.statusError,
               color: colors.secondary,
-              size: IconSizeTokens.level3,
+              size: IconSizeTokens.md,
             ),
             const SizedBox(width: Spacing.level3),
             Expanded(

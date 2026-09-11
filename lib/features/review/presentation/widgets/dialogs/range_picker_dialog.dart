@@ -121,7 +121,7 @@ Future<ReviewDashboardQuery?> _showMobileRangePicker(
                   IconButton(
                     icon: const Icon(
                       SemanticIcons.actionClose,
-                      size: IconSizeTokens.level3,
+                      size: IconSizeTokens.md,
                     ),
                     onPressed: () => Navigator.of(sheetContext).pop(),
                   ),
@@ -354,7 +354,7 @@ class _RangeOptionTile extends StatelessWidget {
               Icon(
                 SemanticIcons.statusDone,
                 color: SemanticColor.primary.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
           ],
         ),

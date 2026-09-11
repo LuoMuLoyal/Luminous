@@ -207,10 +207,10 @@ class _SidebarHeaderContent extends StatelessWidget {
           child: Row(
             children: [
               FAvatar.raw(
-                size: IconSizeTokens.level6,
+                size: IconSizeTokens.xl2,
                 child: const Icon(
                   SemanticIcons.profileUser,
-                  size: IconSizeTokens.level2,
+                  size: IconSizeTokens.sm,
                 ),
               ),
               const SizedBox(width: Spacing.level2),
@@ -236,8 +236,8 @@ class _SidebarHeaderContent extends StatelessWidget {
         children: [
           Image.asset(
             'assets/icon/app_icon.png',
-            width: IconSizeTokens.level4,
-            height: IconSizeTokens.level4,
+            width: IconSizeTokens.lg,
+            height: IconSizeTokens.lg,
           ),
           const SizedBox(width: Spacing.level2),
           Expanded(

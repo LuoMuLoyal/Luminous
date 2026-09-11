@@ -117,7 +117,7 @@ class RiskSummary extends StatelessWidget {
             key: const Key('medicine-safety-summary-icon'),
             summary.icon,
             color: palette.solid(context),
-            size: IconSizeTokens.level4,
+            size: IconSizeTokens.lg,
           ),
         ),
         const SizedBox(width: Spacing.level3),
@@ -144,7 +144,7 @@ class RiskSummary extends StatelessWidget {
         Icon(
           SemanticIcons.actionNext,
           color: SemanticColor.neutral.solid(context),
-          size: IconSizeTokens.level3,
+          size: IconSizeTokens.md,
         ),
       ],
     );
@@ -187,7 +187,7 @@ class SafetyEmptyCard extends StatelessWidget {
                 child: Icon(
                   SemanticIcons.safetySafe,
                   color: SemanticColor.neutral.solid(context),
-                  size: IconSizeTokens.level4,
+                  size: IconSizeTokens.lg,
                 ),
               ),
               const SizedBox(width: Spacing.level3),
@@ -214,7 +214,7 @@ class SafetyEmptyCard extends StatelessWidget {
               Icon(
                 SemanticIcons.actionNext,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
             ],
           ),

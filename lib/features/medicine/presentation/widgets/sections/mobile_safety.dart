@@ -129,7 +129,7 @@ class LastCheckedLabel extends StatelessWidget {
         children: [
           Icon(
             SemanticIcons.doseSlot,
-            size: IconSizeTokens.level2,
+            size: IconSizeTokens.sm,
             color: SemanticColor.warning.solid(context),
           ),
           const SizedBox(width: Spacing.level1),
@@ -150,7 +150,7 @@ class LastCheckedLabel extends StatelessWidget {
       children: [
         Icon(
           SemanticIcons.doseSlot,
-          size: IconSizeTokens.level2,
+          size: IconSizeTokens.sm,
           color: SemanticColor.neutral.solid(context),
         ),
         const SizedBox(width: Spacing.level1),

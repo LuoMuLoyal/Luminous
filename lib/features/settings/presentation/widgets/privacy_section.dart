@@ -70,7 +70,7 @@ class PrivacySection extends ConsumerWidget {
               subtitle: Text(l10n.minePrivacyReportSubtitle),
               prefix: const Icon(
                 SemanticIcons.actionShare,
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               suffix: FSwitch(
                 value: settings?.dataSharingConsent ?? false,
@@ -119,7 +119,7 @@ class PrivacySection extends ConsumerWidget {
               subtitle: Text(healthAutoSyncSubtitle),
               prefix: const Icon(
                 SemanticIcons.recordActivity,
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               suffix: FSwitch(
                 value: healthAutoSyncEnabled,

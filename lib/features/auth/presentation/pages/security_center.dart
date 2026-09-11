@@ -108,7 +108,7 @@ class SecurityCenterPage extends ConsumerWidget {
                   prefix: Icon(
                     SemanticIcons.statusPending,
                     color: SemanticColor.neutral.solid(context),
-                    size: IconSizeTokens.level3,
+                    size: IconSizeTokens.md,
                   ),
                   title: Text(l10n.securityCenterLoginHistoryViewAll),
                   subtitle: Text(
@@ -137,7 +137,7 @@ class SecurityCenterPage extends ConsumerWidget {
                   prefix: Icon(
                     SemanticIcons.safetySafe,
                     color: SemanticColor.neutral.solid(context),
-                    size: IconSizeTokens.level3,
+                    size: IconSizeTokens.md,
                   ),
                   title: Text(l10n.securityCenterAccountProtectionComingSoon),
                   subtitle: Text(

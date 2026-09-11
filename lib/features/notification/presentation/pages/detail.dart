@@ -357,7 +357,7 @@ class _ActionBar extends StatelessWidget {
           onPress: onNavigate,
           prefix: const Icon(
             SemanticIcons.actionExternalLink,
-            size: IconSizeTokens.level3,
+            size: IconSizeTokens.md,
           ),
           child: Text(l10n.notificationActionNavigate),
         ),
@@ -382,10 +382,7 @@ class _ActionBar extends StatelessWidget {
       FButton(
         variant: FButtonVariant.destructive,
         onPress: () => _showDeleteConfirm(context, onDelete),
-        prefix: const Icon(
-          SemanticIcons.actionDelete,
-          size: IconSizeTokens.level3,
-        ),
+        prefix: const Icon(SemanticIcons.actionDelete, size: IconSizeTokens.md),
         child: Text(l10n.notificationActionDelete),
       ),
     ];

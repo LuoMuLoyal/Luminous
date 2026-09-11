@@ -308,7 +308,7 @@ class TimelineCard extends StatelessWidget {
               Icon(
                 _trailingIcon(),
                 color: _trailingColor(colors),
-                size: IconSizeTokens.level2,
+                size: IconSizeTokens.sm,
               ),
             ],
           ),
@@ -415,7 +415,7 @@ class TimelineImageFallback extends StatelessWidget {
         child: Icon(
           icon,
           color: SemanticColor.neutral.solid(context),
-          size: IconSizeTokens.level4,
+          size: IconSizeTokens.lg,
         ),
       ),
     );

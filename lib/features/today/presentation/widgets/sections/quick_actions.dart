@@ -40,7 +40,7 @@ class TodayQuickActionsSection extends ConsumerWidget {
                 FTile(
                   prefix: Icon(
                     action.icon,
-                    size: IconSizeTokens.level3,
+                    size: IconSizeTokens.md,
                     color: SemanticColor.primary.solid(context),
                   ),
                   title: Text(action.title),
@@ -66,7 +66,7 @@ class TodayQuickActionsSection extends ConsumerWidget {
                   FTile(
                     prefix: Icon(
                       action.icon,
-                      size: IconSizeTokens.level3,
+                      size: IconSizeTokens.md,
                       color: SemanticColor.neutral.solid(context),
                     ),
                     title: Text(action.title),

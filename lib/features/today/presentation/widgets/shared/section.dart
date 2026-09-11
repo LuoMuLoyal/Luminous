@@ -79,7 +79,7 @@ class TodaySection extends StatelessWidget {
                     const SizedBox(width: Spacing.level1),
                     Icon(
                       SemanticIcons.actionNext,
-                      size: IconSizeTokens.level2,
+                      size: IconSizeTokens.sm,
                       color: foreground,
                     ),
                   ],

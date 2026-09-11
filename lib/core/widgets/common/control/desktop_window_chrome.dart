@@ -129,7 +129,7 @@ class _WindowControlButtons extends StatelessWidget {
             icon: isMaximized
                 ? SemanticIcons.actionCopy
                 : SemanticIcons.statusPending,
-            iconSize: IconSizeTokens.level2,
+            iconSize: IconSizeTokens.sm,
             tooltip: isMaximized
                 ? l10n.desktopWindowRestore
                 : l10n.desktopWindowMaximize,
@@ -157,7 +157,7 @@ class _WindowButton extends StatefulWidget {
     required this.tooltip,
     required this.iconColor,
     required this.onPressed,
-    this.iconSize = IconSizeTokens.level2,
+    this.iconSize = IconSizeTokens.sm,
     this.hoverColor,
     this.hoverIconColor,
   });

@@ -410,7 +410,7 @@ class CalendarIconActionButton extends StatelessWidget {
       child: FButton.icon(
         onPress: onTap,
         size: FButtonSizeVariant.xs,
-        child: Icon(icon, size: IconSizeTokens.level2),
+        child: Icon(icon, size: IconSizeTokens.sm),
       ),
     );
   }

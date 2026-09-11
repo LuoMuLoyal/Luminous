@@ -139,7 +139,7 @@ class ReviewReadinessSection extends StatelessWidget {
                       variant: FButtonVariant.outline,
                       prefix: const Icon(
                         SemanticIcons.actionRefresh,
-                        size: IconSizeTokens.level2,
+                        size: IconSizeTokens.sm,
                       ),
                       child: Text(l10n.reviewSyncAction),
                     ),
@@ -204,17 +204,14 @@ class _PrimaryAction extends StatelessWidget {
         onPress: section.onSignIn,
         prefix: const Icon(
           SemanticIcons.statusBlocked,
-          size: IconSizeTokens.level2,
+          size: IconSizeTokens.sm,
         ),
         child: Text(section.l10n.authGoLogin),
       ),
       ReviewReadinessStatus.insufficient => FButton(
         key: const Key('report-readiness-record-action'),
         onPress: section.onContinueRecord,
-        prefix: const Icon(
-          SemanticIcons.tabRecord,
-          size: IconSizeTokens.level2,
-        ),
+        prefix: const Icon(SemanticIcons.tabRecord, size: IconSizeTokens.sm),
         child: Text(section.l10n.reviewContinueRecordAction),
       ),
       ReviewReadinessStatus.ready => FButton(

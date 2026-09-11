@@ -176,7 +176,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
               padding: const EdgeInsets.only(top: Spacing.level1),
               child: Icon(
                 widget.item.icon,
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
@@ -221,7 +221,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                 padding: const EdgeInsets.only(top: Spacing.level1),
                 child: Icon(
                   SemanticIcons.actionNext,
-                  size: IconSizeTokens.level2,
+                  size: IconSizeTokens.sm,
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
@@ -239,7 +239,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
         children: [
           Icon(
             SemanticIcons.statusDone,
-            size: IconSizeTokens.level2,
+            size: IconSizeTokens.sm,
             color: SemanticColor.primary.solid(context),
           ),
           const SizedBox(width: Spacing.level1),

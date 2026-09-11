@@ -126,7 +126,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                               visible[index].icon,
                             ),
                             color: colorFor(visible[index].cardTone),
-                            size: IconSizeTokens.level5,
+                            size: IconSizeTokens.xl,
                             radius:
                                 context.theme.style.borderRadius.sm.topLeft.x,
                           ),
@@ -156,7 +156,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                           const SizedBox(width: Spacing.level2),
                           Icon(
                             SemanticIcons.actionNext,
-                            size: IconSizeTokens.level2,
+                            size: IconSizeTokens.sm,
                             color: SemanticColor.neutral.solid(context),
                           ),
                         ],

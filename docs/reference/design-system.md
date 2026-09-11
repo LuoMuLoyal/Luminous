@@ -64,7 +64,7 @@ updated: 2026-09-10
 - 圆角（2026-08-30 起）：`RadiusTokens` 已退役，统一使用 Forui `context.theme.style.borderRadius.*`（`FBorderRadius` scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。需要裸 `double` 时用 `.xxx.topLeft.x`，需要 `Radius` 时用 `.xxx.topLeft`。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
-- `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size（`xs`~`xl4`，`level1`~`level8` 为等价别名；全量值见生成的 [token 清单](generated/design-tokens.md)）。原 level5=32 已拆分为 xl=28（suggestion card）和 xl2=32（avatar/hero）。
+- `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size（`xs`~`xl4`；全量值见生成的 [token 清单](generated/design-tokens.md)）。原 level5=32 已拆分为 xl=28（suggestion card）和 xl2=32（avatar/hero）。其 `level1`~`level8` 向后兼容别名已于 2026-09-11 退役。
 - `LucideIconBridge`（`lucide_icon_bridge.dart`，generated）提供 name→IconData 正查 (`resolve`) 和 IconData→name 反查 (`nameOf`)。反查使用预计算 `_reverseMap`（O(1)），而非每次 keystroke O(N) 扫描。
 - `ElevationTokens`（`elevation.dart`）提供 `raised(FColors)` / `glow(Color)` / `shadowColor(FColors)` 方法。
 - `GradientTokens`（`gradient.dart`）提供 `semanticFill(SemanticColorPalette)` / `tintFade(Color, Color)` 两个命名渐变模式；禁止内联 `LinearGradient`，必须走 token。

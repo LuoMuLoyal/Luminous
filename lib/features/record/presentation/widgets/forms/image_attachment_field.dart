@@ -89,7 +89,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                             onPress: enabled ? onPick : null,
                             prefix: const Icon(
                               SemanticIcons.actionImage,
-                              size: IconSizeTokens.level3,
+                              size: IconSizeTokens.md,
                             ),
                             child: Text(
                               hasAttachment
@@ -103,7 +103,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                               onPress: enabled ? onCameraPick : null,
                               prefix: const Icon(
                                 SemanticIcons.actionCamera,
-                                size: IconSizeTokens.level3,
+                                size: IconSizeTokens.md,
                               ),
                               child: Text(l10n.recordImageCameraAction),
                             ),
@@ -113,7 +113,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                               onPress: enabled ? onRemove : null,
                               prefix: const Icon(
                                 SemanticIcons.actionClose,
-                                size: IconSizeTokens.level3,
+                                size: IconSizeTokens.md,
                               ),
                               child: Text(l10n.recordImageRemoveAction),
                             ),
@@ -191,7 +191,7 @@ class _PreviewFallback extends StatelessWidget {
       child: Icon(
         icon,
         color: SemanticColor.neutral.solid(context),
-        size: IconSizeTokens.level4,
+        size: IconSizeTokens.lg,
       ),
     );
   }

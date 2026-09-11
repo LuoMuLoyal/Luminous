@@ -260,7 +260,7 @@ class _FaqError extends StatelessWidget {
           Icon(
             SemanticIcons.statusError,
             color: colors.error,
-            size: IconSizeTokens.level3,
+            size: IconSizeTokens.md,
           ),
           const SizedBox(width: Spacing.level2),
           Expanded(
@@ -315,7 +315,7 @@ class _FeedbackSection extends ConsumerWidget {
                 prefix: Icon(
                   SemanticIcons.actionCopy,
                   color: SemanticColor.primary.solid(context),
-                  size: IconSizeTokens.level3,
+                  size: IconSizeTokens.md,
                 ),
                 title: Text(
                   lastTraceId,
@@ -338,7 +338,7 @@ class _FeedbackSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.actionMessage,
                 color: SemanticColor.primary.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               title: Text(l10n.mineHelpFeedbackTitle),
               subtitle: Text(

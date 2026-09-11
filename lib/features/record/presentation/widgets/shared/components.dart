@@ -49,7 +49,7 @@ class RecordHeaderActionChip extends StatelessWidget {
             spacing: iconOnly ? 0 : null,
           ),
         ),
-        prefix: Icon(icon, size: IconSizeTokens.level3),
+        prefix: Icon(icon, size: IconSizeTokens.md),
         child: iconOnly
             ? const SizedBox.shrink()
             : Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),

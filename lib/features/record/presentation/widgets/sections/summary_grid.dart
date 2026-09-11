@@ -114,7 +114,7 @@ class _SummaryTile extends StatelessWidget {
                       child: Icon(
                         item.icon,
                         color: item.accent.solid(context),
-                        size: IconSizeTokens.level2,
+                        size: IconSizeTokens.sm,
                       ),
                     ),
                   ),

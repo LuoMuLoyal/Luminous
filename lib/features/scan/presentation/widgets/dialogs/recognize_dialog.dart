@@ -172,7 +172,7 @@ class _MedicineRecognizeDialogState
                         color: colors.muted,
                         child: Icon(
                           SemanticIcons.statusUnavailable,
-                          size: IconSizeTokens.level3,
+                          size: IconSizeTokens.md,
                           color: SemanticColor.neutral.solid(context),
                         ),
                       ),
@@ -352,7 +352,7 @@ class _MedicineRecognizeDialogState
                   children: [
                     Icon(
                       SemanticIcons.statusDone,
-                      size: IconSizeTokens.level2,
+                      size: IconSizeTokens.sm,
                       color: SemanticColor.primary.solid(context),
                     ),
                     const SizedBox(width: Spacing.level2),

@@ -40,7 +40,7 @@ class TodayGlyphTile extends StatelessWidget {
           child: Icon(
             icon,
             color: filled ? palette.foreground : palette.solid,
-            size: IconSizeTokens.level3,
+            size: IconSizeTokens.md,
           ),
         ),
       ),
@@ -85,7 +85,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                   child: Icon(
                     SemanticIcons.reportChart,
                     color: palette.fillStrong,
-                    size: IconSizeTokens.level3,
+                    size: IconSizeTokens.md,
                   ),
                 ),
               ),

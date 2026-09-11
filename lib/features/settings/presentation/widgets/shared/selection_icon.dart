@@ -16,7 +16,7 @@ class SettingsSelectionIcon extends StatelessWidget {
       opacity: selected ? 1 : 0,
       child: Icon(
         SemanticIcons.statusDone,
-        size: IconSizeTokens.level3,
+        size: IconSizeTokens.md,
         color: SemanticColor.primary.solid(context),
       ),
     );

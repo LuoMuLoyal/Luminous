@@ -68,7 +68,7 @@ class RecordEditStatusHint extends StatelessWidget {
             Icon(
               dirty ? SemanticIcons.statusWarning : SemanticIcons.statusInfo,
               color: foreground,
-              size: IconSizeTokens.level2,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.level2),
             Expanded(

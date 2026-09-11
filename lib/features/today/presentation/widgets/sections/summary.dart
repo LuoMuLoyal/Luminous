@@ -380,7 +380,7 @@ class _AiExpandButton extends StatelessWidget {
               duration: DurationTokens.widgetQuick,
               child: Icon(
                 SemanticIcons.actionNext,
-                size: IconSizeTokens.level2,
+                size: IconSizeTokens.sm,
                 color: SemanticColor.primary.solid(context),
               ),
             ),
@@ -406,7 +406,7 @@ class _CompactSummaryMetric extends StatelessWidget {
         Icon(
           item.icon,
           color: item.color.solid(context),
-          size: IconSizeTokens.level3,
+          size: IconSizeTokens.md,
         ),
         const SizedBox(width: Spacing.level2),
         Flexible(
@@ -461,7 +461,7 @@ class _SummaryBullet extends StatelessWidget {
           child: Icon(
             item.icon,
             color: item.color.fill(context),
-            size: IconSizeTokens.level2,
+            size: IconSizeTokens.sm,
           ),
         ),
         const SizedBox(width: Spacing.level3),

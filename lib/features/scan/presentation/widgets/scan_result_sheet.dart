@@ -109,7 +109,7 @@ class BarcodeScanResultSheetState
                 onPress: () => Navigator.pop(context),
                 child: const Icon(
                   SemanticIcons.actionClose,
-                  size: IconSizeTokens.level3,
+                  size: IconSizeTokens.md,
                 ),
               ),
             ],
@@ -159,7 +159,7 @@ class BarcodeScanResultSheetState
                     children: [
                       Icon(
                         SemanticIcons.statusDone,
-                        size: IconSizeTokens.level2,
+                        size: IconSizeTokens.sm,
                         color: SemanticColor.primary.solid(context),
                       ),
                       const SizedBox(width: Spacing.level2),

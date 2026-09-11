@@ -296,7 +296,7 @@ class _IconChip extends StatelessWidget {
         ),
         child: Icon(
           icon,
-          size: IconSizeTokens.level3,
+          size: IconSizeTokens.md,
           color: selected
               ? SemanticColor.primary.foreground(context)
               : SemanticColor.neutral.solid(context),

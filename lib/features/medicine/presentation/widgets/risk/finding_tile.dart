@@ -58,7 +58,7 @@ class RiskFindingItem extends StatelessWidget {
               child: Icon(
                 medicineRiskFindingIcon(finding),
                 color: color.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
             ),
           ),
@@ -149,7 +149,7 @@ class _SeverityPill extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: IconSizeTokens.level1, color: resolvedColor),
+            Icon(icon, size: IconSizeTokens.xs, color: resolvedColor),
             const SizedBox(width: Spacing.level1),
             Text(
               label,
@@ -216,7 +216,7 @@ class _RecommendationLine extends StatelessWidget {
       children: [
         Icon(
           SemanticIcons.aiTip,
-          size: IconSizeTokens.level2,
+          size: IconSizeTokens.sm,
           color: color.solid(context),
         ),
         const SizedBox(width: Spacing.level2),

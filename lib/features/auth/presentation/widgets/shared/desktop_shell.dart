@@ -234,7 +234,7 @@ class BrandFeatureItem extends StatelessWidget {
             child: Icon(
               icon,
               color: SemanticColor.primary.solid(context),
-              size: IconSizeTokens.level4,
+              size: IconSizeTokens.lg,
             ),
           ),
         ),

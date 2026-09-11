@@ -30,7 +30,7 @@ class RiskCoverageItem extends StatelessWidget {
           Icon(
             SemanticIcons.statusError,
             color: SemanticColor.warning.solid(context),
-            size: IconSizeTokens.level3,
+            size: IconSizeTokens.md,
           ),
           const SizedBox(width: Spacing.level3),
           Expanded(

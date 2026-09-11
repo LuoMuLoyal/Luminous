@@ -283,7 +283,7 @@ class _StaleBanner extends StatelessWidget {
           ExcludeSemantics(
             child: Icon(
               SemanticIcons.statusInfo,
-              size: IconSizeTokens.level2,
+              size: IconSizeTokens.sm,
               color: SemanticColor.neutral.solid(context),
             ),
           ),

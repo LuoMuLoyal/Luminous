@@ -87,7 +87,7 @@ class HelpLine extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 2),
-            child: Icon(SemanticIcons.statusInfo, size: IconSizeTokens.level2),
+            child: Icon(SemanticIcons.statusInfo, size: IconSizeTokens.sm),
           ),
           const SizedBox(width: Spacing.level2),
           Expanded(child: Text(text, style: context.theme.typography.body.sm)),

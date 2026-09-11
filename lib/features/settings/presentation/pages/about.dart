@@ -218,8 +218,8 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                   subtitle: checkUpdateSubtitle,
                   suffix: _checkState == _CheckState.checking
                       ? SizedBox(
-                          width: IconSizeTokens.level3,
-                          height: IconSizeTokens.level3,
+                          width: IconSizeTokens.md,
+                          height: IconSizeTokens.md,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             color: SemanticColor.neutral.solid(context),

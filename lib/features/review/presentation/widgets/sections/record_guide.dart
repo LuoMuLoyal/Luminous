@@ -46,7 +46,7 @@ class ReviewRecordGuideSection extends StatelessWidget {
               children: [
                 Icon(
                   SemanticIcons.tabRecord,
-                  size: IconSizeTokens.level3,
+                  size: IconSizeTokens.md,
                   color: SemanticColor.primary.solid(context),
                 ),
                 const SizedBox(width: Spacing.level3),

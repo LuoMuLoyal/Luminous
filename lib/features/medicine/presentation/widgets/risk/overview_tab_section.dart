@@ -32,7 +32,7 @@ class TabHeader extends StatelessWidget {
       children: [
         Icon(
           SemanticIcons.doseSlot,
-          size: IconSizeTokens.level2,
+          size: IconSizeTokens.sm,
           color: SemanticColor.neutral.solid(context),
         ),
         const SizedBox(width: Spacing.level1),
@@ -46,7 +46,7 @@ class TabHeader extends StatelessWidget {
         ),
         if (isRunning)
           const SizedBox.square(
-            dimension: IconSizeTokens.level3,
+            dimension: IconSizeTokens.md,
             child: FCircularProgress.loader(size: .sm),
           )
         else
@@ -230,7 +230,7 @@ class SafeStateCard extends StatelessWidget {
               child: Icon(
                 SemanticIcons.reportAdherence,
                 color: SemanticColor.success.solid(context),
-                size: IconSizeTokens.level4,
+                size: IconSizeTokens.lg,
               ),
             ),
             const SizedBox(width: Spacing.level3),

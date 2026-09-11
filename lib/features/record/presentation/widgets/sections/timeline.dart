@@ -255,7 +255,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
                       children: [
                         const Icon(
                           SemanticIcons.actionAdd,
-                          size: IconSizeTokens.level2,
+                          size: IconSizeTokens.sm,
                         ),
                         const SizedBox(width: Spacing.level2),
                         Text(l10n.recordTimelineEmptyAction),

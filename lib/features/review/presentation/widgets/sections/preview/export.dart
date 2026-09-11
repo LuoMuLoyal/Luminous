@@ -169,7 +169,7 @@ class _ExportCard extends StatelessWidget {
               Icon(
                 trailingIcon,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
             ],
           ),

@@ -153,7 +153,7 @@ class AccountManageSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.actionSettings,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               title: Text(l10n.authAccountManageUsername),
               subtitle: Text(
@@ -170,7 +170,7 @@ class AccountManageSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.actionMessage,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               title: Text(l10n.authAccountManageEmail),
               subtitle: Text(
@@ -191,7 +191,7 @@ class AccountManageSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.actionExternalLink,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               title: Text(l10n.authAccountManageThirdParty),
               subtitle: Text(
@@ -217,7 +217,7 @@ class AccountManageSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.actionSettings,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               title: Text(l10n.authAccountManagePassword),
               subtitle: Text(
@@ -234,7 +234,7 @@ class AccountManageSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.statusPending,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               title: Text(l10n.authAccountManageLoginDevices),
               subtitle: Text(
@@ -249,7 +249,7 @@ class AccountManageSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.statusWarning,
                 color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               title: Text(l10n.authAccountManageSecurityCenter),
               subtitle: Text(
@@ -264,7 +264,7 @@ class AccountManageSection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.statusWarning,
                 color: SemanticColor.destructive.solid(context),
-                size: IconSizeTokens.level3,
+                size: IconSizeTokens.md,
               ),
               title: Text(
                 l10n.authAccountManageDeleteAccount,

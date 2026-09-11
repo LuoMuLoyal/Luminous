@@ -180,7 +180,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                       onPress: () => Navigator.pop(ctx),
                       child: const Icon(
                         SemanticIcons.actionClose,
-                        size: IconSizeTokens.level3,
+                        size: IconSizeTokens.md,
                       ),
                     ),
                   ],

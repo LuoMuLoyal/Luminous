@@ -137,7 +137,7 @@ class MasterNavItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: IconSizeTokens.level2,
+              size: IconSizeTokens.sm,
               color: selected
                   ? SemanticColor.primary.solid(context)
                   : SemanticColor.neutral.solid(context),
@@ -157,7 +157,7 @@ class MasterNavItem extends StatelessWidget {
             if (selected)
               Icon(
                 SemanticIcons.actionNext,
-                size: IconSizeTokens.level2,
+                size: IconSizeTokens.sm,
                 color: SemanticColor.primary.solid(context),
               ),
           ],

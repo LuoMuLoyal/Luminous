@@ -423,7 +423,7 @@ class _HistoryEventRow extends StatelessWidget {
             ExcludeSemantics(
               child: Icon(
                 SemanticIcons.actionNext,
-                size: IconSizeTokens.level2,
+                size: IconSizeTokens.sm,
                 color: SemanticColor.neutral.solid(context),
               ),
             ),

@@ -2,8 +2,7 @@
 ///
 /// 8 levels covering all icon sizes used in the app. Semantic names ([xs]
 /// through [xl4]) are the primary naming — use them for all `Icon(size:)`
-/// and `iconSize:` values. The [level1] (12px) through [level8] (64px)
-/// names are kept as backward-compatible aliases.
+/// and `iconSize:` values.
 ///
 /// | Name  | px  | Use case                          |
 /// |-------|-----|-----------------------------------|
@@ -39,28 +38,4 @@ abstract final class IconSizeTokens {
 
   /// 64px — account avatar, extra large.
   static const double xl4 = 64;
-
-  /// 12px — status dot, tiny indicator. (= [xs])
-  static const double level1 = xs;
-
-  /// 16px — inline icon, chevron, small action. (= [sm])
-  static const double level2 = sm;
-
-  /// 20px — tile prefix, button icon, default size. (= [md])
-  static const double level3 = md;
-
-  /// 24px — section header, empty-state icon. (= [lg])
-  static const double level4 = lg;
-
-  /// 28px — suggestion card icon, medium hero. (= [xl])
-  static const double level5 = xl;
-
-  /// 32px — avatar, hero icon, large empty-state. (= [xl2])
-  static const double level6 = xl2;
-
-  /// 48px — category icon, large hero. (= [xl3])
-  static const double level7 = xl3;
-
-  /// 64px — account avatar, extra large. (= [xl4])
-  static const double level8 = xl4;
 }
