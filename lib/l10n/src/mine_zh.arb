@@ -320,6 +320,14 @@
   "mineSyncFailedDetailsTitle": "同步失败详情",
   "mineSyncFailedDetailsDescription": "以下本地变更未能同步，网络恢复后可以重试。",
   "mineSyncFailedDetailsEmpty": "当前没有待处理的同步失败项。",
+  "mineSyncFailedDetailsListTitle": "待处理项（{count}）",
+  "@mineSyncFailedDetailsListTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "mineSyncFailedDetailsEntity": "数据类型",
   "mineSyncFailedDetailsOperation": "操作",
   "mineSyncFailedDetailsRecord": "记录 ID",

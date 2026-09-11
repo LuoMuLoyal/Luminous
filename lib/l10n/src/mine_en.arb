@@ -320,6 +320,14 @@
   "mineSyncFailedDetailsTitle": "Sync failures",
   "mineSyncFailedDetailsDescription": "These local changes could not be synced. Retry them when your connection is available.",
   "mineSyncFailedDetailsEmpty": "No failed sync items remain.",
+  "mineSyncFailedDetailsListTitle": "Failed items ({count})",
+  "@mineSyncFailedDetailsListTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "mineSyncFailedDetailsEntity": "Data type",
   "mineSyncFailedDetailsOperation": "Operation",
   "mineSyncFailedDetailsRecord": "Record ID",
