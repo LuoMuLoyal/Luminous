@@ -42,6 +42,9 @@
   (`claimSessionForRefresh` 原子抢占),并行两次刷新必有一次 401,而 401 分支会清掉本来
   有效的会话(test/core/network/interceptors/auth_interceptor_test.dart 的
   `_SingleUseRefreshAdapter` 用例锁定)。
+- 会话 token 必须**原子落盘**:`LucentSessionTokens` 以单键 JSON 载荷写入(`session_store.dart`),
+  不得拆成两次写。读者观察到「新 access + 旧 refresh」的半更新对,就会把已消费的 refresh token
+  再次提交,触发上一条同样的 401 清会话(test/core/network/session_store_test.dart 锁定)。
 - 写请求默认不重试:需 `extra['retryEnabled'] = true` 且带 `Idempotency-Key` 头
   (client/retry_policy.dart,test/core/network/retry_policy_test.dart)。
 - `api.dart` re-export `lucent_api` 是有意的 barrel 例外,移除会强迫每个 data 文件追加
