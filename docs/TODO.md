@@ -144,6 +144,42 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 - `NetworkErrorCode.invalidSsePayload` 运行时已无产生点（枚举 + l10n + pending sync 序列化保留以兼容历史持久化行）：若未来清理 legacy pending-sync 数据后可评估移除。
 - `_ErrorSseAdapter` 测试辅助类在 assistant/today/report 三个测试文件各复制一份（沿用每文件自带惯例）：可选收敛到 test/helpers/。
 
+## 2026-09-11 上传链路与主题信号遗留
+
+- `scan` 的 `recognizeMedicine` 仍手写 Dio 解析（等后端补响应 schema）
+  - 现状：`uploadImage` 已改走类型化 `files/upload` + 共享直传（见当日迁移日志）；但
+    `POST /medicines/recognize` 在 OpenAPI 里同样没有响应 schema，客户端仍手写 Dio +
+    `coerceToStringMap` 解 `name` / `approvalNumber`，协议违例只能抛 `StateError` 归
+    `Left(unknown)`（`lib/features/scan/data/repositories/scan.dart`）
+  - 前置：Lucent 为该端点注册响应 schema 并 `pnpm export:openapi`（已登记在 Lucent `docs/TODO.md`）
+  - 方案：契约齐了之后换成类型化客户端，并评估 `lib/core/network/map_utils.dart` 是否还有消费方
+
+- 对象存储的孤儿对象清理（跨仓）
+  - 现状：`/user/files/upload` 只签发上传凭证，后端没有删除对象的端点；用户上传头像/附件后放弃
+    保存、或替换旧头像，对象会永久留在 bucket 里
+  - 方案：Lucent 增加对象删除能力（或将前缀 + 时间的生命周期回收交给存储后端），客户端在
+    「替换/移除」路径调用（已登记在 Lucent `docs/TODO.md`）
+
+- `Theme.of(context).brightness` 在本应用深色下恒为 light
+  - 现象：应用根是 `material_ui` 的 `MaterialApp`，它的 `Theme` 不是 `flutter/material` 的
+    `Theme.of` 能取到的那一个；`material_ui` 自己的 `Theme.of` 与 Forui 的
+    `context.theme.colors.brightness` 都正常报 dark（一次性探针实测）
+  - 影响：`lib/features/assistant/presentation/widgets/flow_theme_bridge.dart` 的
+    `luminousFlowTheme` 用前者选 `FlowColors.light/dark`，其 dark 分支在生产中不可达
+    （`test/assistant/flow_theme_bridge_test.dart` 必须额外套一层
+    `Theme(data: ThemeData(brightness: dark))` 才测得到），深色下 FlowUI 里未被 bridge 覆盖的
+    字段（`primaryContainer` 等）取的是 light 预设
+  - 方案：改用 Forui 的 `context.theme.colors.brightness`（当日 assistant 面板改动即用该信号），
+    并补一条深色用例
+
+- 登录后守卫重定向未兜住的取证（观察项，未复现）
+  - 背景：当日修的「密码登录成功后停在登录页」根因是 `goAfterLogin` 漏传 `fallbackHome`；
+    按设计守卫的 `refresh()` 重定向本应兜住，且实测该链路本身是通的，故未能从代码复现该场景
+  - 若复现，先查 `AuthSessionNotifier.build` 的 `client.onSessionExpired`：`!isLoading` 时任意
+    不可恢复 401 会清空 UI 会话，而登录成功后 `healthContextSnapshotProvider` 失效触发的受保护
+    请求正好落在该窗口
+  - 方案：复现时先在该回调加日志取证，再决定是否收窄清会话条件
+
 ## 2026-09-11 助手流式排查遗留（Web 端无逐字流式）
 
 - Web 端 `ResponseType.stream` 不真正流式：dio 的 Web 适配器（`dio_web_adapter`）用 XHR +
