@@ -10,6 +10,7 @@ export 'client/interceptors/auth_interceptor.dart';
 export 'client/interceptors/error_interceptor.dart';
 export 'client/interceptors/retry_interceptor.dart';
 export 'client/interceptors/trace_interceptor.dart';
+export 'client/object_upload.dart';
 export 'client/retry_policy.dart';
 export 'client/session_store.dart';
 export 'contract/api_paths.dart';

@@ -5,9 +5,9 @@
 错误契约。
 
 ## 职责与边界
-- 管:`client/`(Dio 实例、auth/retry/error/trace 拦截器、会话 token 存储、SSE)、
-  `contract/`(路径常量、错误码、Problem Details → `LucentFailure` 映射)、根 barrel
-  `api.dart`。
+- 管:`client/`(Dio 实例、auth/retry/error/trace 拦截器、会话 token 存储、SSE、
+    **对象存储直传** `object_upload.dart`)、`contract/`(路径常量、错误码、Problem Details →
+  `LucentFailure` 映射)、根 barrel `api.dart`。
 - 不管:业务 repository(各 feature data 层);`LucentFailure` 类型定义在
   core/errors/lucent_failure.dart;生成客户端由 Lucent OpenAPI 导出后经
   `dart run scripts/bootstrap_generated_sources.dart` 再生成。
@@ -49,4 +49,11 @@
   (client/retry_policy.dart,test/core/network/retry_policy_test.dart)。
 - `api.dart` re-export `lucent_api` 是有意的 barrel 例外,移除会强迫每个 data 文件追加
   第二个 import(文件头注释已说明)。
+- 对象存储直传只有一条链路:`presignFileUpload`(经类型化 `files/upload` 取签名)+
+  `putPresignedObject`(直传 PUT)。两条规则只在这一处表达——PUT **不带** Bearer
+  (`skipAuthorization`)且**不过** 401 刷新(`skipAuthRefresh`),存储侧 401/403 不能
+  去消费一次性的 refresh token。新增加的上传路径(头像等)一律走这两个函数,勿再手写 Dio。
+- `PresignedUpload.uploadUrl` 是**只写**签名,不能当图片地址读;需要可读 URL 时用
+  `requirePublicUrl()`——未配置 `*_PUBLIC_BASE_URL` 的环境会明确失败,而不是把 PUT URL
+  当成可读地址返回(scan 曾经如此,表现为「上传成功但服务端读不到图」)。
 - 拦截器单一职责拆分的决策见 ../../../docs/reference/adr/0004-network-layer-separation.md。
