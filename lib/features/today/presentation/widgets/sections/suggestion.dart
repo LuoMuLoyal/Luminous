@@ -82,6 +82,17 @@ class TodayPrimarySuggestionSection extends ConsumerWidget {
 class TodaySecondarySuggestionsSection extends ConsumerWidget {
   const TodaySecondarySuggestionsSection({super.key});
 
+  /// Whether [bundle] renders any secondary card.
+  ///
+  /// The mobile dashboard evaluates the same condition to decide whether this
+  /// section's slot still reserves its bottom gap: a slot that renders nothing
+  /// must not leave a phantom gap between its neighbours.
+  static bool hasCards(TodaySuggestionBundle? bundle) =>
+      _cardsOf(bundle).isNotEmpty;
+
+  static List<TodaySuggestionCard> _cardsOf(TodaySuggestionBundle? bundle) =>
+      bundle?.secondary ?? const <TodaySuggestionCard>[];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -90,7 +101,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
 
     return suggestionAsync.when(
       data: (bundle) {
-        final items = bundle?.secondary ?? const [];
+        final items = _cardsOf(bundle);
         if (items.isEmpty) return const SizedBox.shrink();
 
         final visible = items.take(2).toList();

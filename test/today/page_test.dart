@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
@@ -14,6 +15,7 @@ import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/suggestion_state_views.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -64,6 +66,73 @@ void main() {
       expect(primarySuggestionTop.dy, lessThan(summaryTop.dy));
     },
   );
+
+  testWidgets('Empty secondary suggestion slot leaves no phantom section gap', (
+    tester,
+  ) async {
+    _setMobileViewport(tester);
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          activeHealthEventProvider.overrideWith(
+            _EmptyActiveHealthEventNotifier.new,
+          ),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          todaySuggestionProvider.overrideWith(
+            EmptyTodaySuggestionNotifier.new,
+          ),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+    await _settleDashboard(tester);
+
+    // 稍后处理 区块没有卡片时不占位：它的槽位不能保留自己的下间距，否则
+    // 「优先处理」卡片与「今日摘要」标题之间会出现 2×Spacing.level5 的幽灵空隙。
+    final emptyStateBottom = tester
+        .getRect(find.byType(SuggestionEmptyState))
+        .bottom;
+    final summaryHeadingTop = tester
+        .getRect(find.text(l10n.todayHealthSummaryCardTitle))
+        .top;
+
+    expect(summaryHeadingTop - emptyStateBottom, Spacing.level4);
+  });
+
+  testWidgets('Preview mode health event slot leaves no phantom section gap', (
+    tester,
+  ) async {
+    _setMobileViewport(tester);
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
+          todaySuggestionProvider.overrideWith(
+            EmptyTodaySuggestionNotifier.new,
+          ),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+    await _settleDashboard(tester);
+
+    // 预览态下 健康观察 区块整体不渲染，同样不能留下占位间距。
+    final summaryCardBottom = tester
+        .getRect(find.byKey(const Key('today-summary-card')))
+        .bottom;
+    final observationHeadingTop = tester
+        .getRect(find.text(l10n.todayObservationSectionTitle))
+        .top;
+
+    expect(observationHeadingTop - summaryCardBottom, Spacing.level4);
+  });
 
   testWidgets('Today page renders action-first mobile dashboard sections', (
     tester,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/feedback/page_state.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/quick_actions.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
@@ -12,7 +14,7 @@ import 'package:luminous/features/today/presentation/widgets/shared/view_models.
 import 'package:luminous/features/today/presentation/widgets/views/health_event_section.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MobileTodayDashboard extends StatelessWidget {
+class MobileTodayDashboard extends ConsumerWidget {
   const MobileTodayDashboard({
     super.key,
     required this.dashboard,
@@ -27,18 +29,29 @@ class MobileTodayDashboard extends StatelessWidget {
   final Future<void> Function() onRefresh;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
 
     // Each section carries its own bottom spacing so that the
     // conditional banner slot (SignInHintBanner or SizedBox.shrink)
-    // doesn't leave an unwanted gap when hidden.
+    // doesn't leave an unwanted gap when hidden. The same rule applies to every
+    // slot whose section may render nothing (empty 稍后处理, preview-mode 健康观察):
+    // a slot that renders nothing must not reserve spacing either, otherwise
+    // the neighbouring sections end up one section gap further apart.
+    final hasSecondarySuggestions = ref
+        .watch(todaySuggestionProvider)
+        .when(
+          data: TodaySecondarySuggestionsSection.hasCards,
+          loading: () => true,
+          error: (_, __) => true,
+        );
+
     final sections = <Widget>[
       // Preview banner slot — always present to keep list indices stable.
       // SizedBox.shrink has zero height, so no gap when hidden.
       if (isPreview)
         Padding(
-          padding: const EdgeInsets.only(bottom: Spacing.level5),
+          padding: const EdgeInsets.only(bottom: Spacing.level4),
           child: SignInHintBanner(
             onSignIn: onSignIn,
             message: l10n.todayPreviewBannerMessage,
@@ -48,7 +61,7 @@ class MobileTodayDashboard extends StatelessWidget {
         const SizedBox.shrink(),
       // 问候语从 Header 拆分，放到内容区
       Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level5),
+        padding: const EdgeInsets.only(bottom: Spacing.level4),
         child: Text(
           greetingSubtitle(l10n, dashboard),
           style: context.theme.typography.body.sm.copyWith(
@@ -57,25 +70,31 @@ class MobileTodayDashboard extends StatelessWidget {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level5),
+        padding: const EdgeInsets.only(bottom: Spacing.level4),
         child: TodayPrimarySuggestionSection(dashboard: dashboard),
       ),
-      const Padding(
-        padding: EdgeInsets.only(bottom: Spacing.level5),
-        child: TodaySecondarySuggestionsSection(
-          key: Key('today-secondary-suggestions-card'),
-        ),
-      ),
+      if (hasSecondarySuggestions)
+        const Padding(
+          padding: EdgeInsets.only(bottom: Spacing.level4),
+          child: TodaySecondarySuggestionsSection(
+            key: Key('today-secondary-suggestions-card'),
+          ),
+        )
+      else
+        const SizedBox.shrink(),
       Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level5),
+        padding: const EdgeInsets.only(bottom: Spacing.level4),
         child: TodaySummarySection(dashboard: dashboard),
       ),
+      if (!isPreview)
+        Padding(
+          padding: const EdgeInsets.only(bottom: Spacing.level4),
+          child: HealthEventSection(isPreview: isPreview, onRefresh: onRefresh),
+        )
+      else
+        const SizedBox.shrink(),
       Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level5),
-        child: HealthEventSection(isPreview: isPreview, onRefresh: onRefresh),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level5),
+        padding: const EdgeInsets.only(bottom: Spacing.level4),
         child: TodayObservationSection(dashboard: dashboard),
       ),
       TodayQuickActionsSection(dashboard: dashboard),
