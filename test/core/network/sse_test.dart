@@ -14,6 +14,9 @@ class _MockSseAdapter implements HttpClientAdapter {
   final List<_SseEvent> _events;
   int _callCount = 0;
 
+  /// Options of the last request, for asserting the SSE request shape.
+  RequestOptions? lastOptions;
+
   int get callCount => _callCount;
 
   @override
@@ -23,6 +26,7 @@ class _MockSseAdapter implements HttpClientAdapter {
     Future<dynamic>? cancelFuture,
   ) async {
     _callCount++;
+    lastOptions = options;
     final controller = StreamController<Uint8List>();
 
     Future.delayed(Duration.zero, () async {
@@ -149,6 +153,27 @@ void main() {
 
       expect(events, isEmpty);
     });
+
+    test(
+      'leaves the SSE request without a connection or receive deadline',
+      () async {
+        // The Web (XHR) adapter derives a single total deadline from
+        // connectTimeout + receiveTimeout, so an inherited non-zero
+        // connectTimeout cuts any answer that takes longer than it to generate.
+        final adapter = _MockSseAdapter([_SseEvent(field: 'done', data: '{}')]);
+        final dio = Dio(
+          BaseOptions(
+            connectTimeout: const Duration(seconds: 10),
+            receiveTimeout: const Duration(seconds: 10),
+          ),
+        )..httpClientAdapter = adapter;
+
+        await LucentSseClient(dio: dio).postJson('/test', body: {}).toList();
+
+        expect(adapter.lastOptions!.connectTimeout, Duration.zero);
+        expect(adapter.lastOptions!.receiveTimeout, Duration.zero);
+      },
+    );
 
     test('throws LucentFailure.network(emptyStreamResponse) when the response '
         'body is null', () async {

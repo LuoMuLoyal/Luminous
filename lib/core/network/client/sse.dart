@@ -89,6 +89,12 @@ class LucentSseClient {
         // 最大间隔。AI 生成可能需要 >10s 来产出第一个 chunk，设为 0
         // （不限超时）避免流提前中断。
         receiveTimeout: Duration.zero,
+        // Web 的 XHR 适配器只有「总超时」一个旋钮：xhr.timeout =
+        // connectTimeout + receiveTimeout。BaseOptions 的 10s 连接超时因此会
+        // 变成整条流的总期限，把耗时 >10s 的回答直接掐断（表现为
+        // connectionError/receiveTimeout → 「连接中断了」）。两个值同时为 0
+        // 才是「不设总超时」的唯一表达；流由服务端 result/done 结束。
+        connectTimeout: Duration.zero,
       ),
     );
 
