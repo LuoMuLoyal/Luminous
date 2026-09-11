@@ -100,7 +100,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           l10n: l10n,
           onDateSelected: onDateSelected,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         RecordQuickEntryPanel(
           actions: quickActions,
           summary: dashboard.summary,
@@ -109,13 +109,13 @@ class _MobileRecordDashboard extends StatelessWidget {
           onQuickAction: onQuickAction,
           onQuickActionLongPress: onQuickActionLongPress,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         RecordMobileFilter(
           filters: mobileFilters,
           l10n: l10n,
           onFilterSelected: onFilterSelected,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         RecordMobileTimeline(
           entries: dashboard.timeline,
           totalCount: dashboard.timeline.length,
@@ -129,7 +129,7 @@ class _MobileRecordDashboard extends StatelessWidget {
               ? () => onDateSelected!(clock.now())
               : null,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
       ],
     );
   }
@@ -172,7 +172,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 // Month navigation is handled internally by the panel's
                 // _viewedMonth state — no parent callback needed.
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               RecordFilterPanel(
                 filters: dashboard.filters,
                 l10n: l10n,
@@ -181,7 +181,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level5),
+        const SizedBox(width: Spacing.xl),
         Expanded(
           child: Column(
             children: [
@@ -190,7 +190,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 l10n: l10n,
                 onTypeSelected: onFilterSelected,
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               RecordTimelinePanel(
                 entries: dashboard.timeline,
                 l10n: l10n,
@@ -201,7 +201,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level5),
+        const SizedBox(width: Spacing.xl),
         SizedBox(
           width: 220,
           child: Column(

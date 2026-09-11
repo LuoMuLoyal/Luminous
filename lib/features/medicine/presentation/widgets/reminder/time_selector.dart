@@ -47,7 +47,7 @@ class ReminderTimePickerDialog extends HookWidget {
             ),
           ],
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
 
         // Live preview of the currently selected time
         ValueListenableBuilder<FTime>(
@@ -65,7 +65,7 @@ class ReminderTimePickerDialog extends HookWidget {
             );
           },
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
 
         // Time picker wheel
         SizedBox(
@@ -74,7 +74,7 @@ class ReminderTimePickerDialog extends HookWidget {
             control: FTimePickerControl.managed(controller: timeController),
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
 
         // Cancel + Confirm action buttons
         Row(
@@ -86,7 +86,7 @@ class ReminderTimePickerDialog extends HookWidget {
                 child: Text(l10n.commonCancel),
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: FButton(
                 onPress: () => Navigator.of(context).pop(timeController.value),

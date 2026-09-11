@@ -57,7 +57,7 @@ class TodayQuickActionsSection extends ConsumerWidget {
             ],
           ),
           if (secondaryActions.isNotEmpty) ...[
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             FTileGroup(
               key: const Key('today-quick-actions-secondary'),
               divider: FItemDivider.full,

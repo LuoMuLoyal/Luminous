@@ -10,10 +10,7 @@ class DetailSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FCard(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
-        child: child,
-      ),
+      child: Padding(padding: const EdgeInsets.all(Spacing.xl), child: child),
     );
   }
 }

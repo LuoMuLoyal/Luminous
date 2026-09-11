@@ -36,7 +36,7 @@ class WaterProgressCard extends StatelessWidget {
           Row(
             children: [
               const Icon(SemanticIcons.recordWater, size: 18),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               Expanded(
                 child: Text(
                   l10n.recordDetailDailyWaterTitle,
@@ -61,7 +61,7 @@ class WaterProgressCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           ClipRRect(
             borderRadius: context.theme.style.borderRadius.xs2,
             child: LinearProgressIndicator(

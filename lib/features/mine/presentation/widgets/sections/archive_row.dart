@@ -165,10 +165,10 @@ class ArchiveRow extends ConsumerWidget with FTileMixin {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  Spacing.level4,
-                  Spacing.level4,
-                  Spacing.level4,
-                  Spacing.level2,
+                  Spacing.lg,
+                  Spacing.lg,
+                  Spacing.lg,
+                  Spacing.sm,
                 ),
                 child: Row(
                   children: [
@@ -192,8 +192,8 @@ class ArchiveRow extends ConsumerWidget with FTileMixin {
                 child: ListView.separated(
                   shrinkWrap: true,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level4,
-                    vertical: Spacing.level2,
+                    horizontal: Spacing.lg,
+                    vertical: Spacing.sm,
                   ),
                   itemCount: records.length,
                   separatorBuilder: (_, __) => const AppDivider(),
@@ -214,7 +214,7 @@ class ArchiveRow extends ConsumerWidget with FTileMixin {
               ),
               const AppDivider(),
               Padding(
-                padding: const EdgeInsets.all(Spacing.level4),
+                padding: const EdgeInsets.all(Spacing.lg),
                 child: FButton(
                   variant: FButtonVariant.outline,
                   onPress: () {
@@ -225,7 +225,7 @@ class ArchiveRow extends ConsumerWidget with FTileMixin {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(SemanticIcons.actionAdd, size: 16),
-                      const SizedBox(width: Spacing.level2),
+                      const SizedBox(width: Spacing.sm),
                       Text(l10n.mineArchiveAddNewAction),
                     ],
                   ),
@@ -294,8 +294,8 @@ class ArchiveRecordListTile extends StatelessWidget {
       onPress: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: Spacing.level3,
-          horizontal: Spacing.level1,
+          vertical: Spacing.md,
+          horizontal: Spacing.xs,
         ),
         child: Row(
           children: [
@@ -310,7 +310,7 @@ class ArchiveRecordListTile extends StatelessWidget {
                     ),
                   ),
                   if (subtitle != null && subtitle!.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level1),
+                    const SizedBox(height: Spacing.xs),
                     Text(
                       subtitle!,
                       style: typography.body.xs.copyWith(
@@ -323,7 +323,7 @@ class ArchiveRecordListTile extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             Icon(
               SemanticIcons.actionNext,
               size: 18,

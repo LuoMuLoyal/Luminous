@@ -18,11 +18,11 @@ class QuickEntryMetrics {
     final shortEdge = math.min(size.width, size.height);
     final scale = ((shortEdge - 600) / 280).clamp(0.0, 1.0);
     return QuickEntryMetrics(
-      sectionGap: _lerpDouble(Spacing.level2, Spacing.level3, scale),
-      tileVerticalPadding: _lerpDouble(Spacing.level2, Spacing.level4, scale),
-      avatarSize: _lerpDouble(Spacing.level6, Spacing.level7, scale),
-      notePadding: _lerpDouble(Spacing.level2, Spacing.level4, scale),
-      dividerHeight: _lerpDouble(Spacing.level6, Spacing.level8, scale),
+      sectionGap: _lerpDouble(Spacing.sm, Spacing.md, scale),
+      tileVerticalPadding: _lerpDouble(Spacing.sm, Spacing.lg, scale),
+      avatarSize: _lerpDouble(Spacing.xl2, Spacing.xl3, scale),
+      notePadding: _lerpDouble(Spacing.sm, Spacing.lg, scale),
+      dividerHeight: _lerpDouble(Spacing.xl2, Spacing.xl4, scale),
     );
   }
 

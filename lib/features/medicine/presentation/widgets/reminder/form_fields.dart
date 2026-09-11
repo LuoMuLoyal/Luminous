@@ -73,8 +73,8 @@ class WeekdayPicker extends StatelessWidget {
     };
 
     return Wrap(
-      spacing: Spacing.level2,
-      runSpacing: Spacing.level2,
+      spacing: Spacing.sm,
+      runSpacing: Spacing.sm,
       children: labels.entries
           .map(
             (entry) => FButton(
@@ -118,10 +118,10 @@ class TimePickerRow extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Wrap(
-          spacing: Spacing.level2,
-          runSpacing: Spacing.level2,
+          spacing: Spacing.sm,
+          runSpacing: Spacing.sm,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             for (var index = 0; index < times.length; index += 1)
@@ -133,13 +133,10 @@ class TimePickerRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 prefix: const Icon(
                   SemanticIcons.statusPending,
-                  size: Spacing.level5,
+                  size: Spacing.xl,
                 ),
                 suffix: canRemove
-                    ? const Icon(
-                        SemanticIcons.actionClose,
-                        size: Spacing.level5,
-                      )
+                    ? const Icon(SemanticIcons.actionClose, size: Spacing.xl)
                     : null,
                 child: Text(
                   formatTimeOfDay(
@@ -157,7 +154,7 @@ class TimePickerRow extends StatelessWidget {
               variant: FButtonVariant.ghost,
               size: FButtonSizeVariant.xs,
               mainAxisSize: MainAxisSize.min,
-              prefix: const Icon(SemanticIcons.actionAdd, size: Spacing.level5),
+              prefix: const Icon(SemanticIcons.actionAdd, size: Spacing.xl),
               child: Text(l10n.medicineReminderAddTimeAction),
             ),
           ],

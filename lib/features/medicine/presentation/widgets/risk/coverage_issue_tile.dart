@@ -24,7 +24,7 @@ class RiskCoverageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     final tile = Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.md),
       child: Row(
         children: [
           Icon(
@@ -32,7 +32,7 @@ class RiskCoverageItem extends StatelessWidget {
             color: SemanticColor.warning.solid(context),
             size: IconSizeTokens.md,
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +43,7 @@ class RiskCoverageItem extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   medicineRiskCoverageReasonLabel(l10n, issue.reason),
                   style: typography.body.xs.copyWith(

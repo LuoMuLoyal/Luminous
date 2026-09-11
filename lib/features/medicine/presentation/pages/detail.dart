@@ -60,8 +60,8 @@ class MedicineDetailLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level4,
+        horizontal: Spacing.lg,
+        vertical: Spacing.lg,
       ),
       child: InlineSkeletonSection(
         children: [

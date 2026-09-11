@@ -142,7 +142,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                         onVerifyEmail: () =>
                             verifyEmailFlow(context, l10n, ref, user.email!),
                       ),
-                      const SizedBox(height: Spacing.level6),
+                      const SizedBox(height: Spacing.xl2),
                       ProfileSection(
                         nicknameController: nicknameController,
                         avatarController: avatarController,
@@ -160,14 +160,14 @@ class AccountSettingsPage extends HookConsumerWidget {
                           }
                         },
                       ),
-                      const SizedBox(height: Spacing.level6),
+                      const SizedBox(height: Spacing.xl2),
                       EmailSection(
                         user: user,
                         emailController: emailController,
                         onChangeEmail: () =>
                             context.push(Routes.accountChangeEmail),
                       ),
-                      const SizedBox(height: Spacing.level6),
+                      const SizedBox(height: Spacing.xl2),
                       LinkedIdentitiesSection(
                         user: user,
                         isSubmitting: accountState.isSubmitting,
@@ -207,7 +207,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                         // 见 docs/TODO.md）；后续具备企业资质后再恢复。
                         showWechatLink: false,
                       ),
-                      const SizedBox(height: Spacing.level6),
+                      const SizedBox(height: Spacing.xl2),
                       SessionManagementSection(
                         onManage: () => context.push(Routes.accountSessions),
                       ),
@@ -240,7 +240,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                           if (ctx.mounted) router.go(Routes.login);
                         },
                       ),
-                      const SizedBox(height: Spacing.level6),
+                      const SizedBox(height: Spacing.xl2),
                       DeleteAccountSection(
                         user: user,
                         deletePasswordController: deletePasswordController,

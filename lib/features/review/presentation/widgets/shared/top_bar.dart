@@ -169,7 +169,7 @@ class ReviewActionBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         FTooltip(
           tipBuilder: (context, controller) => Text(l10n.reviewSyncAction),
           child: FButton(
@@ -211,10 +211,7 @@ class ReviewPeriodPill extends StatelessWidget {
       style: const .delta(
         contentStyle: .delta(
           padding: .value(
-            EdgeInsets.symmetric(
-              horizontal: Spacing.level4,
-              vertical: Spacing.level3,
-            ),
+            EdgeInsets.symmetric(horizontal: Spacing.lg, vertical: Spacing.md),
           ),
         ),
       ),
@@ -227,7 +224,7 @@ class ReviewPeriodPill extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(width: Spacing.level1),
+          const SizedBox(width: Spacing.xs),
           Icon(
             SemanticIcons.actionExpand,
             size: 16,

@@ -225,8 +225,8 @@ class SignInHintBanner extends StatelessWidget {
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level2,
+        horizontal: Spacing.lg,
+        vertical: Spacing.sm,
       ),
       child: Row(
         children: [
@@ -235,7 +235,7 @@ class SignInHintBanner extends StatelessWidget {
             color: SemanticColor.primary.solid(context),
             size: 20,
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Text(
               message ?? l10n.statePreviewSignInHint,
@@ -244,7 +244,7 @@ class SignInHintBanner extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           FButton(
             variant: FButtonVariant.ghost,
             size: FButtonSizeVariant.sm,
@@ -305,8 +305,8 @@ class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
               key: const Key('loading-slow-hint'),
               width: double.infinity,
               padding: const EdgeInsets.symmetric(
-                horizontal: Spacing.level4,
-                vertical: Spacing.level2,
+                horizontal: Spacing.lg,
+                vertical: Spacing.sm,
               ),
               color: SemanticColor.warning.subtle(context),
               child: Row(
@@ -316,7 +316,7 @@ class _LoadingTimeoutWrapperState extends State<_LoadingTimeoutWrapper> {
                     size: 18,
                     color: SemanticColor.warning.solid(context),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   Expanded(
                     child: Text(
                       l10n.todayLoadingSlowHint,

@@ -38,9 +38,7 @@ class MobileAuthShell extends StatelessWidget {
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
             horizontal: layout.pageHorizontalPadding,
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level5
-                : Spacing.level6,
+            vertical: width < Breakpoints.mobile ? Spacing.xl : Spacing.xl2,
           ),
           child: Center(
             child: ConstrainedBox(
@@ -58,10 +56,10 @@ class MobileAuthShell extends StatelessWidget {
                     subtitle: subtitle,
                   ),
                   if (formModeSelector != null) ...[
-                    const SizedBox(height: Spacing.level6),
+                    const SizedBox(height: Spacing.xl2),
                     formModeSelector!,
                   ],
-                  const SizedBox(height: Spacing.level6),
+                  const SizedBox(height: Spacing.xl2),
                   AuthFormPanel(
                     form: form,
                     enableAnimation: enableFormAnimation,
@@ -100,7 +98,7 @@ class AuthPageHeader extends StatelessWidget {
       return Row(
         children: [
           SizedBox(
-            width: Spacing.level8,
+            width: Spacing.xl4,
             child: leading == null
                 ? null
                 : Align(alignment: Alignment.centerLeft, child: leading),
@@ -112,7 +110,7 @@ class AuthPageHeader extends StatelessWidget {
               style: typography.body.xl.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
-          const SizedBox(width: Spacing.level8),
+          const SizedBox(width: Spacing.xl4),
         ],
       );
     }
@@ -124,7 +122,7 @@ class AuthPageHeader extends StatelessWidget {
           Align(alignment: Alignment.centerLeft, child: leading),
         if (logo != null) ...[
           Center(child: logo),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
         ],
         Text(
           title,
@@ -132,7 +130,7 @@ class AuthPageHeader extends StatelessWidget {
           style: typography.body.xl.copyWith(fontWeight: FontWeight.w700),
         ),
         if (subtitle != null) ...[
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           Text(
             subtitle!,
             textAlign: TextAlign.center,
@@ -159,10 +157,7 @@ class AuthFormPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final panel = FCard(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.level6),
-        child: form,
-      ),
+      child: Padding(padding: const EdgeInsets.all(Spacing.xl2), child: form),
     );
 
     if (!enableAnimation) {

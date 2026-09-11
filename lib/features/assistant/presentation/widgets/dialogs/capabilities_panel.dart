@@ -61,10 +61,10 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          Spacing.level5,
-          Spacing.level4,
-          Spacing.level5,
-          Spacing.level5,
+          Spacing.xl,
+          Spacing.lg,
+          Spacing.xl,
+          Spacing.xl,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -87,12 +87,12 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Text(
               l10n.assistantCapabilitiesSummaryTitle,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             _SummaryRow(
               label: l10n.assistantSettingsEnableTitle,
               enabled: capabilities.assistantEnabled,
@@ -105,7 +105,7 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
               label: l10n.assistantCapabilitiesRagLabel,
               enabled: capabilities.ragEnabled,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               children: [
                 Expanded(
@@ -124,7 +124,7 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Flexible(
               child: SingleChildScrollView(
                 child: Column(
@@ -156,7 +156,7 @@ class _SummaryRow extends StatelessWidget {
     final typography = context.theme.typography;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         children: [
           Icon(
@@ -166,7 +166,7 @@ class _SummaryRow extends StatelessWidget {
                 ? SemanticColor.primary.solid(context)
                 : SemanticColor.neutral.solid(context),
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(child: Text(label, style: typography.body.sm)),
           Text(
             value,
@@ -197,7 +197,7 @@ class _ToolRow extends StatelessWidget {
     final typography = context.theme.typography;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.level2),
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
       child: DecoratedBox(
         key: Key('assistant-capability-tool-${tool.id}'),
         decoration: BoxDecoration(
@@ -206,8 +206,8 @@ class _ToolRow extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level3,
-            vertical: Spacing.level3,
+            horizontal: Spacing.md,
+            vertical: Spacing.md,
           ),
           child: Row(
             children: [
@@ -220,7 +220,7 @@ class _ToolRow extends StatelessWidget {
                     ? SemanticColor.primary.solid(context)
                     : SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Expanded(
                 child: Text(
                   name,
@@ -229,7 +229,7 @@ class _ToolRow extends StatelessWidget {
                   style: typography.body.xs,
                 ),
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Flexible(
                 child: Tooltip(
                   message: status,

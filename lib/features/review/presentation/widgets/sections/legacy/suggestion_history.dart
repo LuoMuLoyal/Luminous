@@ -33,9 +33,9 @@ class ReviewSuggestionHistorySection extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         const AppDivider(),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         if (isLoading)
           const _LoadingList()
         else if (suggestions.isEmpty)
@@ -133,8 +133,8 @@ class _SuggestionBadge extends StatelessWidget {
       ),
       builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level1,
+          horizontal: Spacing.md,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,
@@ -159,7 +159,7 @@ class _EmptyView extends StatelessWidget {
     final typography = context.theme.typography;
 
     return Container(
-      padding: const EdgeInsets.all(Spacing.level5),
+      padding: const EdgeInsets.all(Spacing.xl),
       decoration: BoxDecoration(
         color: SemanticColor.neutral.subtle(context),
         borderRadius: context.theme.style.borderRadius.sm,
@@ -170,9 +170,9 @@ class _EmptyView extends StatelessWidget {
           Icon(
             SemanticIcons.reportHistory,
             color: colors.secondary,
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +183,7 @@ class _EmptyView extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   l10n.reviewSuggestionHistoryEmptyBody,
                   style: typography.body.xs.copyWith(
@@ -208,9 +208,9 @@ class _LoadingList extends StatelessWidget {
       child: Column(
         children: [
           InlineSkeletonBlock(height: 72, widthFactor: 1),
-          SizedBox(height: Spacing.level3),
+          SizedBox(height: Spacing.md),
           InlineSkeletonBlock(height: 72, widthFactor: 1),
-          SizedBox(height: Spacing.level3),
+          SizedBox(height: Spacing.md),
           InlineSkeletonBlock(height: 72, widthFactor: 1),
         ],
       ),

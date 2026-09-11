@@ -20,13 +20,13 @@ class ReviewSkeletonView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _PeriodSwitchPlaceholder(),
-          SizedBox(height: Spacing.level4),
+          SizedBox(height: Spacing.lg),
           _CoverageStripPlaceholder(),
-          SizedBox(height: Spacing.level4),
+          SizedBox(height: Spacing.lg),
           _NoteworthyPlaceholder(),
-          SizedBox(height: Spacing.level4),
+          SizedBox(height: Spacing.lg),
           _TrendPlaceholder(),
-          SizedBox(height: Spacing.level4),
+          SizedBox(height: Spacing.lg),
           _HistoryPlaceholder(),
         ],
       ),
@@ -46,7 +46,7 @@ class _PeriodSwitchPlaceholder extends StatelessWidget {
         Row(
           children: [
             InlineSkeletonBlock(height: 14, width: 48, widthFactor: 1),
-            SizedBox(width: Spacing.level4),
+            SizedBox(width: Spacing.lg),
             InlineSkeletonBlock(height: 14, width: 48, widthFactor: 1),
           ],
         ),
@@ -64,11 +64,11 @@ class _CoverageStripPlaceholder extends StatelessWidget {
     return InlineSkeletonSection(
       children: [
         const InlineSkeletonBlock(height: 14, widthFactor: 0.4),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Row(
           children: [
             for (var i = 0; i < 3; i += 1) ...[
-              if (i > 0) const SizedBox(width: Spacing.level3),
+              if (i > 0) const SizedBox(width: Spacing.md),
               const Expanded(child: _CoverageCardPlaceholder()),
             ],
           ],
@@ -90,22 +90,22 @@ class _CoverageCardPlaceholder extends StatelessWidget {
         borderRadius: context.theme.style.borderRadius.md,
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
-      padding: const EdgeInsets.all(Spacing.level3),
+      padding: const EdgeInsets.all(Spacing.md),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               InlineSkeletonCircle(size: 20),
-              SizedBox(width: Spacing.level2),
+              SizedBox(width: Spacing.sm),
               Expanded(
                 child: InlineSkeletonBlock(height: 14, widthFactor: 0.8),
               ),
             ],
           ),
-          SizedBox(height: Spacing.level4),
+          SizedBox(height: Spacing.lg),
           InlineSkeletonBlock(height: 12, widthFactor: 0.6),
-          SizedBox(height: Spacing.level2),
+          SizedBox(height: Spacing.sm),
           InlineSkeletonBlock(height: 16, widthFactor: 0.4),
         ],
       ),
@@ -122,22 +122,22 @@ class _NoteworthyPlaceholder extends StatelessWidget {
     return const InlineSkeletonSection(
       children: [
         InlineSkeletonBlock(height: 14, widthFactor: 0.35),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InlineSkeletonCircle(size: 24),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InlineSkeletonBlock(height: 14, widthFactor: 0.5),
-                  SizedBox(height: Spacing.level3),
+                  SizedBox(height: Spacing.md),
                   InlineSkeletonBlock(height: 12, widthFactor: 1.0),
-                  SizedBox(height: Spacing.level2),
+                  SizedBox(height: Spacing.sm),
                   InlineSkeletonBlock(height: 12, widthFactor: 0.8),
-                  SizedBox(height: Spacing.level4),
+                  SizedBox(height: Spacing.lg),
                   InlineSkeletonBlock(height: 11, widthFactor: 0.4),
                 ],
               ),
@@ -160,14 +160,14 @@ class _TrendPlaceholder extends StatelessWidget {
         Row(
           children: [
             InlineSkeletonCircle(size: 20),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 14, widthFactor: 0.4)),
             InlineSkeletonBlock(height: 20, width: 48),
           ],
         ),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         InlineSkeletonBlock(height: 180, widthFactor: 1.0),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         InlineSkeletonBlock(height: 12, widthFactor: 0.6),
       ],
     );
@@ -185,23 +185,23 @@ class _HistoryPlaceholder extends StatelessWidget {
         const Row(
           children: [
             InlineSkeletonCircle(size: 20),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 14, widthFactor: 0.35)),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         const Row(
           children: [
             InlineSkeletonBlock(height: 28, width: 52),
-            SizedBox(width: Spacing.level2),
+            SizedBox(width: Spacing.sm),
             InlineSkeletonBlock(height: 28, width: 64),
-            SizedBox(width: Spacing.level2),
+            SizedBox(width: Spacing.sm),
             InlineSkeletonBlock(height: 28, width: 64),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         for (var i = 0; i < 2; i += 1) ...[
-          if (i > 0) const SizedBox(height: Spacing.level3),
+          if (i > 0) const SizedBox(height: Spacing.md),
           const Row(
             children: [
               Expanded(
@@ -209,17 +209,17 @@ class _HistoryPlaceholder extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InlineSkeletonBlock(height: 14, widthFactor: 0.5),
-                    SizedBox(height: Spacing.level1),
+                    SizedBox(height: Spacing.xs),
                     InlineSkeletonBlock(height: 12, widthFactor: 0.35),
                   ],
                 ),
               ),
-              SizedBox(width: Spacing.level3),
+              SizedBox(width: Spacing.md),
               InlineSkeletonBlock(height: 20, width: 48),
             ],
           ),
         ],
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         const Align(
           alignment: Alignment.centerRight,
           child: InlineSkeletonBlock(height: 28, width: 72),

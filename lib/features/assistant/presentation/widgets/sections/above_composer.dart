@@ -30,7 +30,7 @@ class AssistantAboveComposer extends StatelessWidget {
       children: [
         if (isOpeningConversation)
           Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.level3),
+            padding: const EdgeInsets.only(bottom: Spacing.md),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -41,7 +41,7 @@ class AssistantAboveComposer extends StatelessWidget {
                     )
                     .animate(onPlay: (controller) => controller.repeat())
                     .rotate(duration: 800.ms),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Text(
                   l10n.assistantOpeningConversationLabel,
                   style: context.theme.typography.body.xs.copyWith(
@@ -52,7 +52,7 @@ class AssistantAboveComposer extends StatelessWidget {
             ),
           ),
         if (sendError != null) ...[
-          if (isOpeningConversation) const SizedBox(height: Spacing.level4),
+          if (isOpeningConversation) const SizedBox(height: Spacing.lg),
           StateMessageView(
             title: l10n.assistantSendErrorTitle,
             description: sendErrorDescription(l10n, sendErrorType, sendError!),
@@ -63,7 +63,7 @@ class AssistantAboveComposer extends StatelessWidget {
                 : null,
             onAction: onRetry,
             actionKey: const Key('assistant-retry-action'),
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
           ),
         ],
       ],

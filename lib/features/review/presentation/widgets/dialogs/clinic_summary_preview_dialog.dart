@@ -139,7 +139,7 @@ class _ClinicSummaryPreviewContentState
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(width: 24, height: 24, child: FCircularProgress()),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 l10n.reviewClinicSummaryLoading,
                 style: context.theme.typography.body.xs.copyWith(
@@ -156,7 +156,7 @@ class _ClinicSummaryPreviewContentState
             ref.invalidate(clinicSummaryPreviewProvider(_selectedFields)),
       ),
       data: (dto) => SingleChildScrollView(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +172,7 @@ class _ClinicSummaryPreviewContentState
                   _shareStep == ClinicSummaryShareStep.confirm,
               onChanged: _updateSelection,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             if (_shareStep == null)
               ClinicSummaryContent(
                 dto: dto,

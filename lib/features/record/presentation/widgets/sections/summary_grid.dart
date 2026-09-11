@@ -29,11 +29,11 @@ class RecordSummaryGrid extends StatelessWidget {
     return FCard(
       key: const Key('record-summary'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: LayoutBuilder(
           builder: (context, constraints) {
             const minTileWidth = 160.0;
-            const spacing = Spacing.level3;
+            const spacing = Spacing.md;
             final maxColumns = isDesktop
                 ? 4
                 : ((constraints.maxWidth + spacing) / (minTileWidth + spacing))
@@ -97,7 +97,7 @@ class _SummaryTile extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -118,7 +118,7 @@ class _SummaryTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                   Expanded(
                     child: Text(
                       recordCopy(l10n, item.titleKey),
@@ -132,7 +132,7 @@ class _SummaryTile extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               if (item.value.isNotEmpty)
                 RichText(
                   text: TextSpan(
@@ -160,7 +160,7 @@ class _SummaryTile extends StatelessWidget {
                   ),
                 ),
               if (detail != null && item.value.isNotEmpty) ...[
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   detail,
                   style: typography.body.xs.copyWith(

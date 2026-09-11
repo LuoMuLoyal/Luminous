@@ -67,7 +67,7 @@ class MetricItem extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: Spacing.level1),
+          const SizedBox(height: Spacing.xs),
           Text(
             label,
             style: typography.body.xs.copyWith(
@@ -88,7 +88,7 @@ class MetricDividerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 1,
-      height: Spacing.level6,
+      height: Spacing.xl2,
       color: SemanticColor.neutral.border(context),
     );
   }
@@ -110,7 +110,7 @@ class AlertChip extends StatelessWidget {
           color: alert.color.solid(context),
           size: IconSizeTokens.md,
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         Expanded(
           child: Text(
             medicineAlertTitle(l10n, alert),
@@ -119,11 +119,11 @@ class AlertChip extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         Container(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level2,
-            vertical: Spacing.level1,
+            horizontal: Spacing.sm,
+            vertical: Spacing.xs,
           ),
           decoration: ShapeDecoration(
             color: alert.color.muted(context),

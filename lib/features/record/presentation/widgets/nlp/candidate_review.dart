@@ -38,19 +38,19 @@ class RecordNlpCandidateReview extends StatelessWidget {
           l10n.recordNlpCandidatesTitle(state.candidates.length),
           style: typography.display.xl.copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           meta.confirmationHint,
           style: typography.body.xs.copyWith(color: colors.foreground),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.recordNlpSelectedCountHint(state.selectedCount),
           style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         for (var index = 0; index < state.candidates.length; index += 1) ...[
           _CandidateTile(
             index: index,
@@ -61,7 +61,7 @@ class RecordNlpCandidateReview extends StatelessWidget {
             onRemove: () => onRemove(index),
           ),
           if (index < state.candidates.length - 1)
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
         ],
       ],
     );
@@ -92,7 +92,7 @@ class _CandidateTile extends StatelessWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -105,7 +105,7 @@ class _CandidateTile extends StatelessWidget {
                   enabled: enabled,
                   onChange: enabled ? onToggleSelected : null,
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +117,7 @@ class _CandidateTile extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(height: Spacing.level1),
+                      const SizedBox(height: Spacing.xs),
                       Text(
                         _candidateTitle(l10n, item),
                         style: typography.body.sm.copyWith(
@@ -134,14 +134,14 @@ class _CandidateTile extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             RecordNlpCandidateEditor(
               index: index,
               item: item,
               enabled: enabled,
               onChanged: onUpdate,
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               item.rationale,
               style: typography.body.xs.copyWith(
@@ -149,7 +149,7 @@ class _CandidateTile extends StatelessWidget {
               ),
             ),
             if (item.lastErrorMessage case final errMsg?) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 l10n.recordNlpCandidateSaveFailedHint(errMsg),
                 style: typography.body.xs.copyWith(

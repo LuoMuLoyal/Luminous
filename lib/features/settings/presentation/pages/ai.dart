@@ -111,15 +111,15 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 SettingsSectionLabel(label: l10n.settingsAiContextSectionTitle),
                 SizedBox(height: context.titleContentGap),
                 if (!assistantEnabled)
                   Padding(
                     padding: const EdgeInsets.only(
-                      left: Spacing.level2,
-                      right: Spacing.level2,
-                      bottom: Spacing.level3,
+                      left: Spacing.sm,
+                      right: Spacing.sm,
+                      bottom: Spacing.md,
                     ),
                     child: Text(
                       l10n.settingsAiContextDisabledHint,
@@ -174,20 +174,18 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 SettingsSectionLabel(label: l10n.settingsAiPrivacySectionTitle),
                 SizedBox(height: context.titleContentGap),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level2,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _privacyNote(context, l10n.settingsAiPrivacyMemoryNote),
-                      const SizedBox(height: Spacing.level2),
+                      const SizedBox(height: Spacing.sm),
                       _privacyNote(context, l10n.settingsAiPrivacyContextNote),
-                      const SizedBox(height: Spacing.level2),
+                      const SizedBox(height: Spacing.sm),
                       _privacyNote(
                         context,
                         l10n.settingsAiPrivacyHistoricalNote,

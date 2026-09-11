@@ -97,10 +97,10 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
         style: todayCardStyle(context, tone: TodayCardTone.soft),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
-            Spacing.level3,
-            Spacing.level4,
-            Spacing.level3,
-            Spacing.level3,
+            Spacing.md,
+            Spacing.lg,
+            Spacing.md,
+            Spacing.md,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,11 +113,11 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                       child: _CompactSummaryMetric(item: metrics[index]),
                     ),
                     if (index < metrics.length - 1)
-                      const SizedBox(width: Spacing.level3),
+                      const SizedBox(width: Spacing.md),
                   ],
                 ],
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               if (content.summary != null) ...[
                 MarkdownBody(
                   data: content.summary!,
@@ -137,7 +137,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 ),
               ],
               if (showRuleBasedLabel) ...[
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 FBadge(
                   variant: FBadgeVariant.outline,
                   child: Text(l10n.todayAnalysisRuleBasedLabel),
@@ -145,7 +145,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
               ],
               // --- Expand/collapse bullets + action button in one row ---
               if (hasAiContent) ...[
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -173,7 +173,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                   ],
                 ),
               ] else if (!isPreview) ...[
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 Align(
                   alignment: Alignment.centerRight,
                   child: FButton(
@@ -199,15 +199,15 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: Spacing.level2),
+                    const SizedBox(height: Spacing.sm),
                     for (final bullet in content.bullets.take(3))
                       Padding(
-                        padding: const EdgeInsets.only(bottom: Spacing.level1),
+                        padding: const EdgeInsets.only(bottom: Spacing.xs),
                         child: _SummaryBullet(item: bullet),
                       ),
                     if (content.footer case final footer?)
                       Padding(
-                        padding: const EdgeInsets.only(top: Spacing.level1),
+                        padding: const EdgeInsets.only(top: Spacing.xs),
                         child: Text(
                           footer,
                           style: typography.body.xs.copyWith(
@@ -316,7 +316,7 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
     if (message == null) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.only(top: Spacing.level2),
+      padding: const EdgeInsets.only(top: Spacing.sm),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -331,7 +331,7 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
           ),
           if (status == TodayAiAnalysisMaterializationStatus.failed &&
               onRetry != null) ...[
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             FButton(
               onPress: onRetry,
               variant: FButtonVariant.ghost,
@@ -361,7 +361,7 @@ class _AiExpandButton extends StatelessWidget {
     return FTappable(
       onPress: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -374,7 +374,7 @@ class _AiExpandButton extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(width: Spacing.level1),
+            const SizedBox(width: Spacing.xs),
             AnimatedRotation(
               turns: isCollapse ? 0.25 : 0,
               duration: DurationTokens.widgetQuick,
@@ -408,7 +408,7 @@ class _CompactSummaryMetric extends StatelessWidget {
           color: item.color.solid(context),
           size: IconSizeTokens.md,
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         Flexible(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -422,7 +422,7 @@ class _CompactSummaryMetric extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 item.value,
                 style: typography.body.sm.copyWith(
@@ -457,14 +457,14 @@ class _SummaryBullet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: Spacing.level1),
+          padding: const EdgeInsets.only(top: Spacing.xs),
           child: Icon(
             item.icon,
             color: item.color.fill(context),
             size: IconSizeTokens.sm,
           ),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Expanded(
           child: Text(
             item.text,

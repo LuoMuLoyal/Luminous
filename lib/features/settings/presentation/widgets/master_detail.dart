@@ -64,7 +64,7 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
                     width: 260,
                     child: FCard(
                       child: Padding(
-                        padding: const EdgeInsets.all(Spacing.level2),
+                        padding: const EdgeInsets.all(Spacing.sm),
                         child: Column(
                           children: [
                             for (var i = 0; i < widget.groups.length; i++) ...[
@@ -80,7 +80,7 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: Spacing.level6),
+                  const SizedBox(width: Spacing.xl2),
                   // Right content column.
                   Expanded(
                     child: SingleChildScrollView(
@@ -124,8 +124,8 @@ class MasterNavItem extends StatelessWidget {
       child: AnimatedContainer(
         duration: DurationTokens.widgetQuick,
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level3,
+          horizontal: Spacing.md,
+          vertical: Spacing.md,
         ),
         decoration: BoxDecoration(
           color: selected
@@ -142,7 +142,7 @@ class MasterNavItem extends StatelessWidget {
                   ? SemanticColor.primary.solid(context)
                   : SemanticColor.neutral.solid(context),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Text(
                 label,

@@ -39,7 +39,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
           prefix: Icon(
             SemanticIcons.doseRepeat,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
           title: Text(l10n.medicineReminderFrequencyLabel),
           details: Text(
@@ -54,7 +54,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
           prefix: Icon(
             SemanticIcons.statusPending,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
           title: Text(l10n.medicineReminderTimesLabel),
           details: Text(
@@ -71,7 +71,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
           prefix: Icon(
             SemanticIcons.medicineBottle,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
           title: Text(l10n.medicineReminderDoseLabel),
           details: Text(
@@ -86,7 +86,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
           prefix: Icon(
             SemanticIcons.actionCalendar,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
           title: Text(l10n.medicineReminderStartDateLabel),
           details: Text(
@@ -101,7 +101,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
           prefix: Icon(
             SemanticIcons.safetySchedulingConflict,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
           title: Text(l10n.medicineReminderEndDateLabel),
           details: Text(
@@ -116,7 +116,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
           prefix: Icon(
             SemanticIcons.notificationBell,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
           title: Text(l10n.medicineReminderMethodLabel),
           details: Text(
@@ -133,7 +133,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
           prefix: Icon(
             SemanticIcons.actionMessage,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
           title: Text(l10n.medicineReminderSmsLabel),
           details: Text(
@@ -148,7 +148,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
           prefix: Icon(
             SemanticIcons.doseVolume,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
           title: Text(l10n.medicineReminderSoundLabel),
           details: Text(
@@ -164,7 +164,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
             prefix: Icon(
               SemanticIcons.tabRecord,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
             title: Text(l10n.medicineReminderNoteLabel),
             details: Text(

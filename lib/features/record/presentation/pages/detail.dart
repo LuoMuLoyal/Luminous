@@ -29,9 +29,7 @@ class RecordDetailPage extends ConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,9 +51,7 @@ class RecordDetailPage extends ConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

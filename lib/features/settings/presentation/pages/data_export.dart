@@ -26,9 +26,7 @@ class DataExportPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < Breakpoints.mobile
-              ? Spacing.level6
-              : Spacing.level7,
+          vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,12 +41,12 @@ class DataExportPage extends ConsumerWidget {
                       color: colors.foreground,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level5),
+                  const SizedBox(height: Spacing.xl),
                   _StatusRow(
                     label: l10n.mineSettingExportValue,
                     value: _statusLabel(l10n, export),
                   ),
-                  const SizedBox(height: Spacing.level5),
+                  const SizedBox(height: Spacing.xl),
                   _buildActionButton(context, ref, export, l10n),
                 ],
               ),
@@ -89,7 +87,7 @@ class DataExportPage extends ConsumerWidget {
                 height: 18,
                 child: Center(child: FCircularProgress()),
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Text(l10n.settingsExportStatusLoading),
             ],
           ),
@@ -109,7 +107,7 @@ class DataExportPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(SemanticIcons.actionExpand, size: IconSizeTokens.md),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Text(l10n.mineExportDownloadButton),
             ],
           ),
@@ -128,7 +126,7 @@ class DataExportPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(SemanticIcons.actionMore, size: IconSizeTokens.md),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Text(l10n.mineExportRegenerateButton),
             ],
           ),

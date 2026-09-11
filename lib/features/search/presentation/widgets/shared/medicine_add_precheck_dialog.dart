@@ -32,7 +32,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
     return DialogShell(
       maxWidth: 480,
       maxHeight: 640,
-      padding: const EdgeInsets.all(Spacing.level4),
+      padding: const EdgeInsets.all(Spacing.lg),
       scrollable: false,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
@@ -58,7 +58,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: Spacing.level4),
+                  const SizedBox(height: Spacing.lg),
                   // Coverage scope section
                   Text(
                     l10n.medicineSearchPrecheckScopeTitle,
@@ -66,7 +66,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level3),
+                  const SizedBox(height: Spacing.md),
                   _ScopeRow(
                     icon: SemanticIcons.safetyCaution,
                     label: l10n.medicineSearchPrecheckScopeAllergy,
@@ -80,9 +80,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     label: l10n.medicineSearchPrecheckScopeContraindication,
                   ),
                   if (result.coverageIssues.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     Container(
-                      padding: const EdgeInsets.all(Spacing.level3),
+                      padding: const EdgeInsets.all(Spacing.md),
                       decoration: BoxDecoration(
                         color: SemanticColor.neutral.muted(context),
                         borderRadius: context.theme.style.borderRadius.sm,
@@ -98,7 +98,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                             color: colors.secondary,
                             size: 18,
                           ),
-                          const SizedBox(width: Spacing.level3),
+                          const SizedBox(width: Spacing.md),
                           Expanded(
                             child: Text(
                               medicineRiskCheckCoverageSummary(
@@ -115,41 +115,37 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     ),
                   ],
                   if (result.findings.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     Text(
                       l10n.medicineRiskCheckFindingsTitle,
                       style: context.theme.typography.body.md.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: Spacing.level3),
+                    const SizedBox(height: Spacing.md),
                     ...result.findings
                         .take(3)
                         .map(
                           (finding) => Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: Spacing.level3,
-                            ),
+                            padding: const EdgeInsets.only(bottom: Spacing.md),
                             child: _PrecheckFindingRow(finding: finding),
                           ),
                         ),
                   ],
                   if (result.coverageIssues.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     Text(
                       l10n.medicineRiskCheckCoverageTitle,
                       style: context.theme.typography.body.md.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: Spacing.level3),
+                    const SizedBox(height: Spacing.md),
                     ...result.coverageIssues
                         .take(3)
                         .map(
                           (issue) => Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: Spacing.level3,
-                            ),
+                            padding: const EdgeInsets.only(bottom: Spacing.md),
                             child: _PrecheckCoverageRow(issue: issue),
                           ),
                         ),
@@ -158,13 +154,13 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           FButton(
             key: const Key('medicine-search-precheck-confirm'),
             onPress: () => Navigator.of(context).pop(true),
             child: Text(l10n.medicineSearchPrecheckConfirmAction),
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           FButton(
             key: const Key('medicine-search-precheck-cancel'),
             variant: FButtonVariant.secondary,
@@ -197,7 +193,7 @@ class _PrecheckFindingRow extends StatelessWidget {
         border: Border.all(color: color.border(context)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level3),
+        padding: const EdgeInsets.all(Spacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -206,7 +202,7 @@ class _PrecheckFindingRow extends StatelessWidget {
               color: color.solid(context),
               size: 18,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,7 +213,7 @@ class _PrecheckFindingRow extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     medicineRiskFindingBody(l10n, finding),
                     style: typography.body.xs.copyWith(
@@ -244,7 +240,7 @@ class _ScopeRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.level2),
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
       child: Row(
         children: [
           Icon(
@@ -252,7 +248,7 @@ class _ScopeRow extends StatelessWidget {
             color: SemanticColor.neutral.solid(context),
             size: IconSizeTokens.sm,
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Text(
               label,
@@ -290,7 +286,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level3),
+        padding: const EdgeInsets.all(Spacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -299,7 +295,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
               color: colors.secondary,
               size: IconSizeTokens.md,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +306,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     medicineRiskCoverageReasonLabel(l10n, issue.reason),
                     style: typography.body.xs.copyWith(

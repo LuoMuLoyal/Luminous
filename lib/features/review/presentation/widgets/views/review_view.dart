@@ -253,7 +253,7 @@ class ReviewView extends StatelessWidget {
       children: [
         for (final child in children)
           Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.level4),
+            padding: const EdgeInsets.only(bottom: Spacing.lg),
             child: child,
           ),
       ],
@@ -275,8 +275,8 @@ class _StaleBanner extends StatelessWidget {
         borderRadius: context.theme.style.borderRadius.sm,
       ),
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level3,
-        vertical: Spacing.level2,
+        horizontal: Spacing.md,
+        vertical: Spacing.sm,
       ),
       child: Row(
         children: [
@@ -287,7 +287,7 @@ class _StaleBanner extends StatelessWidget {
               color: SemanticColor.neutral.solid(context),
             ),
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(
             child: Text(
               l10n.reviewReviewStaleBanner,
@@ -316,7 +316,7 @@ class _NoEventExplanationCard extends StatelessWidget {
     return FCard(
       key: const Key('review-no-event-card'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -324,7 +324,7 @@ class _NoEventExplanationCard extends StatelessWidget {
               l10n.reviewReviewNoEventTitle,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               l10n.reviewReviewNoEventDescription,
               style: typography.body.xs.copyWith(

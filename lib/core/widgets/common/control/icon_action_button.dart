@@ -33,12 +33,12 @@ class IconActionButton extends StatelessWidget {
             onPress: onTap,
             variant: FButtonVariant.ghost,
             size: FButtonSizeVariant.sm,
-            child: Icon(icon, size: Spacing.level5),
+            child: Icon(icon, size: Spacing.xl),
           ),
           if (showBadge)
             Positioned(
-              right: Spacing.level2,
-              top: Spacing.level2,
+              right: Spacing.sm,
+              top: Spacing.sm,
               child: FBadge.raw(
                 style: .delta(
                   decoration: .shapeDelta(
@@ -49,7 +49,7 @@ class IconActionButton extends StatelessWidget {
                   ),
                 ),
                 builder: (context, style) =>
-                    const SizedBox.square(dimension: Spacing.level3),
+                    const SizedBox.square(dimension: Spacing.md),
               ),
             ),
         ],

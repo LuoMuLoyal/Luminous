@@ -62,7 +62,7 @@ class MedicinePage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _MedicineMobileSearchBar(),
-                    SizedBox(height: Spacing.level4),
+                    SizedBox(height: Spacing.lg),
                     Expanded(child: MedicineSkeletonView()),
                   ],
                 ),
@@ -79,7 +79,7 @@ class MedicinePage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const _MedicineMobileSearchBar(),
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     Expanded(
                       child: MedicineErrorView(
                         onRetry: () =>
@@ -106,7 +106,7 @@ class MedicinePage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const _MedicineMobileSearchBar(),
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     Expanded(
                       child: StateMessageView(
                         title: l10n.medicineEmptyAddFirstTitle,
@@ -148,7 +148,7 @@ class MedicinePage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SignInHintBanner(onSignIn: onSignIn),
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     content,
                   ],
                 )
@@ -165,7 +165,7 @@ class MedicinePage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const _MedicineMobileSearchBar(),
-                      const SizedBox(height: Spacing.level4),
+                      const SizedBox(height: Spacing.lg),
                       dashboardContent,
                     ],
                   ),
@@ -323,14 +323,14 @@ class _MedicineMobileShell extends StatelessWidget {
             child: ListView(
               key: const PageStorageKey<String>('medicine-mobile-scroll'),
               padding: const EdgeInsets.fromLTRB(
-                Spacing.level4,
-                Spacing.level4,
-                Spacing.level4,
-                Spacing.level10,
+                Spacing.lg,
+                Spacing.lg,
+                Spacing.lg,
+                Spacing.xl6,
               ),
               children: [
                 const _MedicineMobileSearchBar(),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 child,
               ],
             ),
@@ -353,7 +353,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
     final shieldIcon = Icon(
       SemanticIcons.safetySafe,
       color: SemanticColor.primary.solid(context),
-      size: Spacing.level5,
+      size: Spacing.xl,
     );
 
     return FTooltip(
@@ -372,11 +372,11 @@ class _MedicineSafeGuardPill extends StatelessWidget {
                 contentStyle: .delta(
                   padding: .value(
                     EdgeInsets.symmetric(
-                      horizontal: Spacing.level2,
-                      vertical: Spacing.level2,
+                      horizontal: Spacing.sm,
+                      vertical: Spacing.sm,
                     ),
                   ),
-                  spacing: Spacing.level2,
+                  spacing: Spacing.sm,
                 ),
               ),
               prefix: shieldIcon,
@@ -419,8 +419,8 @@ class _MedicineNotificationButton extends ConsumerWidget {
           ),
           if (showBadge)
             Positioned(
-              right: Spacing.level3,
-              top: Spacing.level2,
+              right: Spacing.md,
+              top: Spacing.sm,
               child: FBadge.raw(
                 style: .delta(
                   decoration: .shapeDelta(
@@ -429,7 +429,7 @@ class _MedicineNotificationButton extends ConsumerWidget {
                   ),
                 ),
                 builder: (context, style) =>
-                    const SizedBox.square(dimension: Spacing.level2),
+                    const SizedBox.square(dimension: Spacing.sm),
               ),
             ),
         ],
@@ -467,18 +467,18 @@ class _MedicineMobileSearchBar extends StatelessWidget {
             ),
           ]),
           contentStyle: const .delta(
-            padding: .value(EdgeInsets.symmetric(horizontal: Spacing.level4)),
+            padding: .value(EdgeInsets.symmetric(horizontal: Spacing.lg)),
           ),
         ),
         child: Row(
           children: [
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             Icon(
               SemanticIcons.actionSearch,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Text(
                 l10n.medicineHomeSearchHint,

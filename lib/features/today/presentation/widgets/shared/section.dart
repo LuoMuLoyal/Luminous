@@ -54,7 +54,7 @@ class TodaySection extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (subtitle != null) ...[
-                    const SizedBox(height: Spacing.level1),
+                    const SizedBox(height: Spacing.xs),
                     Text(
                       subtitle!,
                       style: typography.body.xs2.copyWith(
@@ -66,7 +66,7 @@ class TodaySection extends StatelessWidget {
               ),
             ),
             if (actionLabel != null) ...[
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               FButton(
                 variant: FButtonVariant.ghost,
                 size: FButtonSizeVariant.xs,
@@ -76,7 +76,7 @@ class TodaySection extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     actionText,
-                    const SizedBox(width: Spacing.level1),
+                    const SizedBox(width: Spacing.xs),
                     Icon(
                       SemanticIcons.actionNext,
                       size: IconSizeTokens.sm,

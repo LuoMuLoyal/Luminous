@@ -7,7 +7,7 @@ class TodayGlyphTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.color,
-    this.size = Spacing.level8 + Spacing.level2,
+    this.size = Spacing.xl4 + Spacing.sm,
     this.radius,
     this.filled = false,
   });
@@ -53,7 +53,7 @@ class TodayMiniTrendChart extends StatelessWidget {
     super.key,
     required this.points,
     required this.color,
-    this.height = Spacing.level9,
+    this.height = Spacing.xl5,
   });
 
   final List<double> points;
@@ -75,8 +75,8 @@ class TodayMiniTrendChart extends StatelessWidget {
         height: height,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level2,
-            vertical: Spacing.level2,
+            horizontal: Spacing.sm,
+            vertical: Spacing.sm,
           ),
           child: Column(
             children: [
@@ -100,11 +100,11 @@ class TodayMiniTrendChart extends StatelessWidget {
                               : SemanticColor.primary.solid(context),
                           borderRadius: borderRadius.pill,
                         ),
-                        child: const SizedBox(height: Spacing.level1),
+                        child: const SizedBox(height: Spacing.xs),
                       ),
                     ),
                     if (index < tickCount - 1)
-                      const SizedBox(width: Spacing.level1),
+                      const SizedBox(width: Spacing.xs),
                   ],
                 ],
               ),

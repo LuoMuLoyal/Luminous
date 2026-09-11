@@ -94,10 +94,10 @@ class _WaterQuickEntrySheetState extends State<_WaterQuickEntrySheet> {
               // Drag handle
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: Spacing.level2),
+                  padding: const EdgeInsets.only(top: Spacing.sm),
                   child: Container(
-                    width: Spacing.level7,
-                    height: Spacing.level1,
+                    width: Spacing.xl3,
+                    height: Spacing.xs,
                     decoration: BoxDecoration(
                       color: SemanticColor.neutral.solid(context),
                       borderRadius: context.theme.style.borderRadius.pill,
@@ -108,10 +108,10 @@ class _WaterQuickEntrySheetState extends State<_WaterQuickEntrySheet> {
               // Title
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  Spacing.level4,
-                  Spacing.level3,
-                  Spacing.level4,
-                  Spacing.level2,
+                  Spacing.lg,
+                  Spacing.md,
+                  Spacing.lg,
+                  Spacing.sm,
                 ),
                 child: Text(
                   l10n.recordWaterQuickEntryTitle,
@@ -122,14 +122,14 @@ class _WaterQuickEntrySheetState extends State<_WaterQuickEntrySheet> {
               ),
               // 3-column preset grid (all "+X ml")
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
                 child: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    mainAxisSpacing: Spacing.level3,
-                    crossAxisSpacing: Spacing.level3,
+                    mainAxisSpacing: Spacing.md,
+                    crossAxisSpacing: Spacing.md,
                     mainAxisExtent: 44,
                   ),
                   itemCount: kWaterQuickEntryPresetMl.length,
@@ -145,8 +145,8 @@ class _WaterQuickEntrySheetState extends State<_WaterQuickEntrySheet> {
                           ]),
                           padding: const .value(
                             EdgeInsets.symmetric(
-                              horizontal: Spacing.level2,
-                              vertical: Spacing.level2,
+                              horizontal: Spacing.sm,
+                              vertical: Spacing.sm,
                             ),
                           ),
                         ),
@@ -161,10 +161,10 @@ class _WaterQuickEntrySheetState extends State<_WaterQuickEntrySheet> {
               // tapping outside the sheet dismisses it).
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  Spacing.level4,
-                  Spacing.level3,
-                  Spacing.level4,
-                  Spacing.level4,
+                  Spacing.lg,
+                  Spacing.md,
+                  Spacing.lg,
+                  Spacing.lg,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +187,7 @@ class _WaterQuickEntrySheetState extends State<_WaterQuickEntrySheet> {
                         onSubmit: (_) => _submitManual(),
                       ),
                     ),
-                    const SizedBox(width: Spacing.level3),
+                    const SizedBox(width: Spacing.md),
                     FButton(
                       key: const Key('water-quick-entry-manual-confirm'),
                       onPress: _submitManual,

@@ -74,7 +74,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
     final typography = context.theme.typography;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(Spacing.level5),
+      padding: const EdgeInsets.all(Spacing.xl),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +85,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
             l10n.reviewShareManagementTitle,
             style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           ...switch (async) {
             // Value-first: while a revoke refreshes the list the previous
             // rows stay visible instead of flashing the spinner.
@@ -95,7 +95,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
             ),
             AsyncValue(:final isLoading) when isLoading => [
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: Spacing.level6),
+                padding: EdgeInsets.symmetric(vertical: Spacing.xl2),
                 child: Center(
                   child: SizedBox(
                     width: 24,
@@ -107,7 +107,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
             ],
             _ => [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.level4),
+                padding: const EdgeInsets.symmetric(vertical: Spacing.lg),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -116,13 +116,13 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
                       size: 28,
                       color: SemanticColor.warning.solid(context),
                     ),
-                    const SizedBox(height: Spacing.level3),
+                    const SizedBox(height: Spacing.md),
                     Text(
                       l10n.reviewShareManagementLoadFailed,
                       style: typography.body.xs,
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     FButton(
                       variant: FButtonVariant.outline,
                       onPress: () =>
@@ -134,7 +134,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
               ),
             ],
           },
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
         ],
       ),
     );
@@ -148,7 +148,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
     if (shares.isEmpty) {
       return [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.level5),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -157,9 +157,9 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
                 size: 28,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(l10n.reviewShareManagementEmpty, style: typography.body.sm),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 l10n.reviewShareManagementEmptyHint,
                 style: typography.body.xs.copyWith(
@@ -180,7 +180,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
           isRevoking: _revokingShareIds.contains(shares[i].id),
           onRevoke: () => _revoke(context, shares[i].id),
         ),
-        if (i < shares.length - 1) const SizedBox(height: Spacing.level3),
+        if (i < shares.length - 1) const SizedBox(height: Spacing.md),
       ],
     ];
   }
@@ -230,7 +230,7 @@ class _ShareRow extends ConsumerWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -248,8 +248,8 @@ class _ShareRow extends ConsumerWidget {
                     ),
                     builder: (context, style) => Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.level3,
-                        vertical: Spacing.level1,
+                        horizontal: Spacing.md,
+                        vertical: Spacing.xs,
                       ),
                       child: Text(
                         l10n.reviewShareRevokedBadge,
@@ -260,7 +260,7 @@ class _ShareRow extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   Expanded(
                     child: Text(
                       formatDateTimeFull(share.revokedAt!, locale),
@@ -271,7 +271,7 @@ class _ShareRow extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
             ],
             MetaRow(
               label: l10n.reviewShareCreatedAt,
@@ -292,7 +292,7 @@ class _ShareRow extends ConsumerWidget {
                   : l10n.reviewShareLastAccessedNever,
             ),
             if (!revoked) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: isRevoking ? null : onRevoke,

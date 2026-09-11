@@ -78,11 +78,11 @@ class ThemeSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 SettingsSectionLabel(
                   label: l10n.settingsThemeFamilySectionTitle,
                 ),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [

@@ -96,19 +96,19 @@ class RecordCreateForm extends StatelessWidget {
           l10n.recordCreateSectionBasicTitle,
           style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         RecordOccurredAtFields(
           date: recordDate,
           time: recordTime,
           onDateChanged: onDateChanged,
           onTimeChanged: onTimeChanged,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Text(
           l10n.recordCreateSectionDetailsTitle,
           style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         DailyRecordFormFields(
           kind: kind,
           onKindChanged: onKindChanged,
@@ -120,10 +120,10 @@ class RecordCreateForm extends StatelessWidget {
           titleError: titleError,
           enabled: !saving,
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         RecordKindIconField(kind: kind),
         if (kind == DailyRecordKind.sleep) ...[
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           SleepStructuredFields(
             l10n: l10n,
             bedtime: sleepBedtime,
@@ -140,7 +140,7 @@ class RecordCreateForm extends StatelessWidget {
             onRemMinutesChanged: onRemMinutesChanged,
           ),
         ],
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         DailyRecordImageAttachmentField(
           l10n: l10n,
           selectedBytes: selectedImageBytes,
@@ -151,7 +151,7 @@ class RecordCreateForm extends StatelessWidget {
           onRemove: onRemoveImage,
           enabled: !saving,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         FButton(
           key: const Key('record-create-save-action'),
           onPress: saving ? null : onSave,

@@ -91,7 +91,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
           MediaQuery.sizeOf(context).width,
         ),
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         builder: (_) => SizedBox(
           height: 400,
           child: FCalendar.splitGrid(
@@ -175,7 +175,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               onSignIn: () =>
                   context.push(loginRouteForCurrentLocation(context)),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
           ],
           RecordDashboardView(
             dashboard: dashboard,

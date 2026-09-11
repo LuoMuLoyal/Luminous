@@ -93,9 +93,7 @@ class ProfileEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,9 +131,7 @@ class ProfileEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +140,7 @@ class ProfileEditPage extends HookConsumerWidget {
                 data: (ctx) {
                   initFromSnapshot(ctx.profile);
                   return Padding(
-                    padding: const EdgeInsets.all(Spacing.level4),
+                    padding: const EdgeInsets.all(Spacing.lg),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -157,7 +153,7 @@ class ProfileEditPage extends HookConsumerWidget {
                             onChange: (value) => birthDate.value = value,
                           ),
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         _enumDropdown<HealthSexAtBirth>(
                           label: l10n.mineEditFieldSexAtBirth,
                           value: sexAtBirth.value,
@@ -174,7 +170,7 @@ class ProfileEditPage extends HookConsumerWidget {
                               l10n.mineEditSexAtBirthUnknown,
                           },
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         FTextField(
                           key: const Key('profile-height-field'),
                           control: FTextFieldControl.managed(
@@ -183,7 +179,7 @@ class ProfileEditPage extends HookConsumerWidget {
                           label: Text(l10n.mineEditFieldHeightCm),
                           keyboardType: TextInputType.number,
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         FTextField(
                           key: const Key('profile-weight-field'),
                           control: FTextFieldControl.managed(
@@ -192,7 +188,7 @@ class ProfileEditPage extends HookConsumerWidget {
                           label: Text(l10n.mineEditFieldWeightKg),
                           keyboardType: TextInputType.number,
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         FSelect<String>.rich(
                           label: Text(l10n.mineEditFieldBloodType),
                           hint: l10n.mineEditFieldBloodTypeHint,
@@ -208,7 +204,7 @@ class ProfileEditPage extends HookConsumerWidget {
                               )
                               .toList(),
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         _enumDropdown<HealthUnitSystem>(
                           label: l10n.mineEditFieldUnitSystem,
                           value: unitSystem.value,
@@ -218,28 +214,28 @@ class ProfileEditPage extends HookConsumerWidget {
                               ? l10n.mineEditUnitSystemMetric
                               : l10n.mineEditUnitSystemImperial,
                         ),
-                        const SizedBox(height: Spacing.level5),
+                        const SizedBox(height: Spacing.xl),
                         Text(
                           l10n.mineEditFieldEmergencyContactName,
                           style: typography.body.sm.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: Spacing.level2),
+                        const SizedBox(height: Spacing.sm),
                         FTextField(
                           key: const Key('profile-emergency-contact-name'),
                           control: FTextFieldControl.managed(
                             controller: emergencyContactNameController,
                           ),
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         Text(
                           l10n.mineEditFieldEmergencyContactPhone,
                           style: typography.body.sm.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: Spacing.level2),
+                        const SizedBox(height: Spacing.sm),
                         FTextField(
                           key: const Key('profile-emergency-contact-phone'),
                           control: FTextFieldControl.managed(
@@ -247,7 +243,7 @@ class ProfileEditPage extends HookConsumerWidget {
                           ),
                           keyboardType: TextInputType.phone,
                         ),
-                        const SizedBox(height: Spacing.level5),
+                        const SizedBox(height: Spacing.xl),
                         FButton(
                           key: const Key('profile-save-button'),
                           onPress: formState.isSaving ? null : onSave,

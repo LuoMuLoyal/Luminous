@@ -209,7 +209,7 @@ class AssistantFlowUiAdapter {
                   label: AppLocalizations.of(context)!.assistantReplacedLabel,
                 ),
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Opacity(
                 key: const Key('assistant-replaced-muted'),
                 opacity: 0.55,
@@ -296,7 +296,7 @@ class AssistantFlowUiAdapter {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (var index = 0; index < children.length; index++) ...[
-          if (index > 0) const SizedBox(height: Spacing.level2),
+          if (index > 0) const SizedBox(height: Spacing.sm),
           children[index],
         ],
       ],
@@ -374,12 +374,12 @@ class AssistantFlowUiAdapter {
             l10n.assistantMarkdownLinkConfirmTitle,
             style: context.theme.typography.body.lg,
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Text(
             l10n.assistantMarkdownLinkConfirmDescription,
             style: context.theme.typography.body.sm,
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -388,7 +388,7 @@ class AssistantFlowUiAdapter {
                 onPress: () => Navigator.of(context).pop(false),
                 child: Text(l10n.commonCancel),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               FButton(
                 onPress: () => Navigator.of(context).pop(true),
                 child: Text(l10n.assistantMarkdownLinkOpenAction),
@@ -420,7 +420,7 @@ class _ReplacedBadge extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
+          horizontal: Spacing.sm,
           vertical: 1,
         ),
         child: Text(

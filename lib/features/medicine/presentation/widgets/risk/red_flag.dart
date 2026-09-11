@@ -38,7 +38,7 @@ class RiskRedFlagItem extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(Spacing.level4),
+                padding: const EdgeInsets.all(Spacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -49,7 +49,7 @@ class RiskRedFlagItem extends StatelessWidget {
                           color: SemanticColor.destructive.solid(context),
                           size: IconSizeTokens.md,
                         ),
-                        const SizedBox(width: Spacing.level2),
+                        const SizedBox(width: Spacing.sm),
                         Expanded(
                           child: Text(
                             redFlagAlertCopy(l10n, alert),
@@ -61,7 +61,7 @@ class RiskRedFlagItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: Spacing.level2),
+                    const SizedBox(height: Spacing.sm),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -70,7 +70,7 @@ class RiskRedFlagItem extends StatelessWidget {
                           color: SemanticColor.destructive.solid(context),
                           size: IconSizeTokens.sm,
                         ),
-                        const SizedBox(width: Spacing.level2),
+                        const SizedBox(width: Spacing.sm),
                         Expanded(
                           child: Text(
                             redFlagActionCopy(l10n, alert),
@@ -114,10 +114,10 @@ class RiskRedFlagSection extends StatelessWidget {
             fontWeight: FontWeight.w800,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         for (var i = 0; i < alerts.length; i += 1) ...[
           RiskRedFlagItem(alert: alerts[i], l10n: l10n),
-          if (i < alerts.length - 1) const SizedBox(height: Spacing.level3),
+          if (i < alerts.length - 1) const SizedBox(height: Spacing.md),
         ],
       ],
     );

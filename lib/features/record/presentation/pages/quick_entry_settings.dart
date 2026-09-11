@@ -37,8 +37,8 @@ class QuickEntrySettingsPage extends ConsumerWidget {
         child: SingleChildScrollView(
           key: const Key('record-quick-settings-page'),
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level4,
-            vertical: Spacing.level4,
+            horizontal: Spacing.lg,
+            vertical: Spacing.lg,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +82,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level6),
+              const SizedBox(height: Spacing.xl2),
               SettingsSectionLabel(label: l10n.recordQuickSettingsDefaults),
               SizedBox(height: context.titleContentGap),
               FSelect<int>.rich(
@@ -112,7 +112,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: Spacing.level6),
+              const SizedBox(height: Spacing.xl2),
               FSelect<QuickEntryWaterDefault>.rich(
                 key: const Key('record-quick-settings-water-default'),
                 label: Text(l10n.recordQuickSettingsWaterDefault),
@@ -150,7 +150,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: Spacing.level6),
+              const SizedBox(height: Spacing.xl2),
               FSelect<String>.rich(
                 key: const Key('record-quick-settings-mood-default-level'),
                 label: Text(l10n.recordQuickSettingsMoodDefaultLevel),
@@ -171,7 +171,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: Spacing.level6),
+              const SizedBox(height: Spacing.xl2),
               SettingsSectionLabel(label: l10n.recordQuickSettingsDisplay),
               SizedBox(height: context.titleContentGap),
               FSelect<QuickEntryWaterBadgeMode>.rich(
@@ -194,7 +194,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
                 divider: FItemDivider.full,
@@ -230,11 +230,11 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level6),
+              const SizedBox(height: Spacing.xl2),
               SettingsSectionLabel(
                 label: l10n.recordQuickSettingsSymptomChoices,
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               FSelect<String>.rich(
                 key: const Key('record-quick-settings-symptom-severity'),
                 label: Text(l10n.recordQuickSettingsSymptomDefaultSeverity),
@@ -255,19 +255,19 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 l10n.recordQuickSettingsSymptomChoices,
                 style: typography.body.sm.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Material(
                 type: MaterialType.transparency,
                 child: Wrap(
-                  spacing: Spacing.level2,
-                  runSpacing: Spacing.level2,
+                  spacing: Spacing.sm,
+                  runSpacing: Spacing.sm,
                   children: [
                     for (final choice in recordFastEntryChoicesFor(
                       DailyRecordKind.symptom,
@@ -294,7 +294,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: Spacing.level6),
+              const SizedBox(height: Spacing.xl2),
               SettingsSectionLabel(label: l10n.recordQuickSettingsIcons),
               SizedBox(height: context.titleContentGap),
               Text(
@@ -303,7 +303,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
                 divider: FItemDivider.full,
@@ -331,7 +331,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level6),
+              const SizedBox(height: Spacing.xl2),
               SettingsSectionLabel(label: l10n.recordQuickSettingsRules),
               SizedBox(height: context.titleContentGap),
               FTileGroup(

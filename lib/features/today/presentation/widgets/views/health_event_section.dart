@@ -298,10 +298,7 @@ class HealthEventCard extends StatelessWidget {
         border: Border.all(color: SurfaceTokens.containerBorder(colors)),
         borderRadius: context.theme.style.borderRadius.sm,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
-        child: child,
-      ),
+      child: Padding(padding: const EdgeInsets.all(Spacing.lg), child: child),
     );
   }
 }
@@ -329,14 +326,14 @@ class HealthEventActionRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: typography.body.md),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           subtitle,
           style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FButton(key: actionKey, onPress: onPress, child: Text(actionLabel)),
       ],
     );
@@ -364,7 +361,7 @@ class ActiveHealthEventContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(event.title, style: typography.body.md),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           onCheckIn == null
               ? l10n.todayHealthEventCheckInDone
@@ -373,10 +370,10 @@ class ActiveHealthEventContent extends StatelessWidget {
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Wrap(
-          spacing: Spacing.level2,
-          runSpacing: Spacing.level2,
+          spacing: Spacing.sm,
+          runSpacing: Spacing.sm,
           children: [
             if (onCheckIn != null)
               FButton(

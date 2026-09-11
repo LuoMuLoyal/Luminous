@@ -65,7 +65,7 @@ class SearchInput extends HookWidget {
                 button: true,
                 label: l10n.medicineSearchClearAction,
                 child: Padding(
-                  padding: const EdgeInsets.all(Spacing.level1),
+                  padding: const EdgeInsets.all(Spacing.xs),
                   child: Icon(
                     SemanticIcons.notificationFailed,
                     color: SemanticColor.neutral.solid(context),

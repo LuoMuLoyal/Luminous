@@ -116,7 +116,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
     final typography = context.theme.typography;
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -125,7 +125,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
               widget.heading,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FTextField(
               key: const Key('health-event-start-title-field'),
               control: FTextFieldControl.managed(
@@ -146,7 +146,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
             ),
             if (widget.currentMedicineOptions.isNotEmpty ||
                 widget.currentMedicineOptionsLoadFailed) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               _AssociationOptions(
                 label: widget.currentMedicineLabel ?? '',
                 options: widget.currentMedicineOptions,
@@ -165,7 +165,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
             ],
             if (widget.reasonRecordOptions.isNotEmpty ||
                 widget.reasonRecordOptionsLoadFailed) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               _AssociationOptions(
                 label: widget.reasonRecordLabel ?? '',
                 options: widget.reasonRecordOptions,
@@ -183,7 +183,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
               ),
             ],
             if (_validationError != null) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 _validationError!,
                 key: const Key('health-event-start-validation-error'),
@@ -193,7 +193,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
               ),
             ],
             if (_submitError != null) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 _submitError!,
                 key: const Key('health-event-start-submit-error'),
@@ -202,7 +202,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
                 ),
               ),
             ],
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -214,7 +214,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
                       : () => Navigator.of(context).pop(),
                   child: Text(widget.cancelLabel),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   key: const Key('health-event-start-submit'),
                   onPress: _isSubmitting ? null : _submit,
@@ -301,7 +301,7 @@ class _AssociationOptions extends StatelessWidget {
       children: [
         Text(label, style: typography.body.xs),
         if (loadFailed) ...[
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           Row(
             children: [
               Expanded(
@@ -323,10 +323,10 @@ class _AssociationOptions extends StatelessWidget {
           ),
         ],
         if (options.isNotEmpty) ...[
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           Wrap(
-            spacing: Spacing.level2,
-            runSpacing: Spacing.level2,
+            spacing: Spacing.sm,
+            runSpacing: Spacing.sm,
             children: [
               for (final option in options)
                 FButton(

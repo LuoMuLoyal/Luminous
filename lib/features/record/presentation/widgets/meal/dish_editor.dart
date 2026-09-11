@@ -31,9 +31,9 @@ class MealDishEditorSection extends StatelessWidget {
           l10n.recordMealAnalysisRecognizedDishes,
           style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(l10n.recordMealDishEditorHelperText, style: typography.body.xs),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         for (var index = 0; index < dishNames.length; index += 1) ...[
           Row(
             children: [
@@ -48,7 +48,7 @@ class MealDishEditorSection extends StatelessWidget {
                   label: Text(l10n.recordMealDishFieldLabel(index + 1)),
                 ),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               Tooltip(
                 message: l10n.recordMealDishRemoveAction,
                 child: FButton.icon(
@@ -62,7 +62,7 @@ class MealDishEditorSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
         ],
         Align(
           alignment: Alignment.centerLeft,

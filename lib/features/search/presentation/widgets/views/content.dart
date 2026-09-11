@@ -73,8 +73,8 @@ class MedicineSearchView extends ConsumerWidget {
           expand: true,
           child: Padding(
             padding: EdgeInsets.only(
-              bottom: isDesktop ? Spacing.level5 : Spacing.level4,
-              top: isDesktop ? Spacing.level5 : Spacing.level3,
+              bottom: isDesktop ? Spacing.xl : Spacing.lg,
+              top: isDesktop ? Spacing.xl : Spacing.md,
             ),
             child: isDesktop
                 ? _DesktopSearchLayout(
@@ -121,16 +121,16 @@ class MedicineSearchLoadingView extends StatelessWidget {
       baseColor: SemanticColor.neutral.shimmerBase(context),
       highlightColor: colors.background,
       child: const Padding(
-        padding: EdgeInsets.all(Spacing.level4),
+        padding: EdgeInsets.all(Spacing.lg),
         child: SingleChildScrollView(
           child: Column(
             children: [
               InlineSkeletonBlock(height: 48),
-              SizedBox(height: Spacing.level4),
+              SizedBox(height: Spacing.lg),
               InlineSkeletonBlock(height: 160),
-              SizedBox(height: Spacing.level4),
+              SizedBox(height: Spacing.lg),
               InlineSkeletonBlock(height: 160),
-              SizedBox(height: Spacing.level4),
+              SizedBox(height: Spacing.lg),
               InlineSkeletonBlock(height: 160),
             ],
           ),
@@ -198,21 +198,21 @@ class _MobileSearchLayout extends StatelessWidget {
 
     return ListView(
       key: const PageStorageKey<String>('medicine-search-scroll'),
-      padding: const EdgeInsets.only(bottom: Spacing.level6),
+      padding: const EdgeInsets.only(bottom: Spacing.xl2),
       children: [
         SearchInput(l10n: l10n, query: state.query, onChanged: onQueryChanged),
         if (state.isSearching)
           const Padding(
-            padding: EdgeInsets.only(top: Spacing.level2),
+            padding: EdgeInsets.only(top: Spacing.sm),
             child: LinearProgressIndicator(),
           ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         SourceSwitch(
           selectedSource: state.source,
           l10n: l10n,
           onChanged: onSourceSwitched,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         if (state.query.trim().isEmpty) ...[
           RecentSearches(
             keywords: recentKeywords,
@@ -236,10 +236,10 @@ class _MobileSearchLayout extends StatelessWidget {
               color: SemanticColor.neutral.solid(context),
             ),
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           ...state.results.map(
             (result) => Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level4),
+              padding: const EdgeInsets.only(bottom: Spacing.lg),
               child: SearchResultTile(
                 result: result,
                 l10n: l10n,
@@ -320,7 +320,7 @@ class _DesktopSearchLayout extends StatelessWidget {
             addedMedicineIds: addedMedicineIds,
           ),
         ),
-        const SizedBox(width: Spacing.level5),
+        const SizedBox(width: Spacing.xl),
         Expanded(
           flex: 3,
           child: PreviewPanel(state: state, l10n: l10n),
@@ -358,30 +358,30 @@ class _DesktopSearchPanel extends StatelessWidget {
     final typography = context.theme.typography;
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level6),
+        padding: const EdgeInsets.all(Spacing.xl2),
         child: ListView(
           children: [
             DesktopTabs(l10n: l10n),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             Text(
               l10n.medicineSearchPageTitle,
               style: typography.display.xl2.copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             SearchInput(
               l10n: l10n,
               query: state.query,
               onChanged: onQueryChanged,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             SourceSwitch(
               selectedSource: state.source,
               l10n: l10n,
               onChanged: onSourceSwitched,
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             if (state.query.trim().isEmpty) ...[
               RecentSearches(
                 keywords: recentKeywords,
@@ -406,10 +406,10 @@ class _DesktopSearchPanel extends StatelessWidget {
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               ...state.results.map(
                 (result) => Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.level4),
+                  padding: const EdgeInsets.only(bottom: Spacing.lg),
                   child: SearchResultTile(
                     result: result,
                     l10n: l10n,

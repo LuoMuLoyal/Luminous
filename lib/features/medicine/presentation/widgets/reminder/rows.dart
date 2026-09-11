@@ -27,7 +27,7 @@ class ReminderInfoRow extends StatelessWidget {
       prefix: Icon(
         icon,
         color: SemanticColor.neutral.solid(context),
-        size: Spacing.level5,
+        size: Spacing.xl,
       ),
       title: Text(label),
       details: Text(
@@ -69,24 +69,24 @@ class ValueActionRow extends StatelessWidget {
       onPress: onTap,
       builder: (context, data, _) => Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level4,
-          vertical: Spacing.level3,
+          horizontal: Spacing.lg,
+          vertical: Spacing.md,
         ),
         child: Row(
           children: [
             Icon(
               icon,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
-            const SizedBox(width: Spacing.level4),
+            const SizedBox(width: Spacing.lg),
             Expanded(
               child: Text(
                 title,
                 style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Text(
               value,
               textAlign: TextAlign.right,
@@ -94,7 +94,7 @@ class ValueActionRow extends StatelessWidget {
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             onClear != null
                 ? FButton.icon(
                     variant: FButtonVariant.ghost,
@@ -102,13 +102,13 @@ class ValueActionRow extends StatelessWidget {
                     onPress: onClear,
                     child: const Icon(
                       SemanticIcons.actionClose,
-                      size: Spacing.level5,
+                      size: Spacing.xl,
                     ),
                   )
                 : Icon(
                     SemanticIcons.actionNext,
                     color: SemanticColor.neutral.solid(context),
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                   ),
           ],
         ),
@@ -137,17 +137,17 @@ class SwitchRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level3,
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
       ),
       child: Row(
         children: [
           Icon(
             SemanticIcons.notificationBellRing,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
-          const SizedBox(width: Spacing.level4),
+          const SizedBox(width: Spacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +158,7 @@ class SwitchRow extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   subtitle,
                   style: typography.body.sm.copyWith(
@@ -197,17 +197,17 @@ class UnavailableMethodRow extends StatelessWidget {
       opacity: 0.5,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level4,
-          vertical: Spacing.level3,
+          horizontal: Spacing.lg,
+          vertical: Spacing.md,
         ),
         child: Row(
           children: [
             Icon(
               icon,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
-            const SizedBox(width: Spacing.level4),
+            const SizedBox(width: Spacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +227,7 @@ class UnavailableMethodRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FBadge(variant: FBadgeVariant.secondary, child: Text(status)),
           ],
         ),
@@ -253,17 +253,17 @@ class SoundPreferenceRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level3,
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
       ),
       child: Row(
         children: [
           Icon(
             SemanticIcons.doseVolume,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
-          const SizedBox(width: Spacing.level4),
+          const SizedBox(width: Spacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +274,7 @@ class SoundPreferenceRow extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   l10n.medicineReminderSoundLocalHint,
                   style: typography.body.sm.copyWith(
@@ -284,7 +284,7 @@ class SoundPreferenceRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Flexible(
             child: FSelect<MedicineReminderSoundPreference>(
               items: {
@@ -316,7 +316,7 @@ class SelectedMedicineRow extends StatelessWidget {
     final typography = context.theme.typography;
 
     return Padding(
-      padding: const EdgeInsets.all(Spacing.level4),
+      padding: const EdgeInsets.all(Spacing.lg),
       child: Row(
         children: [
           FAvatar.raw(
@@ -325,7 +325,7 @@ class SelectedMedicineRow extends StatelessWidget {
               color: SemanticColor.primary.solid(context),
             ),
           ),
-          const SizedBox(width: Spacing.level4),
+          const SizedBox(width: Spacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +338,7 @@ class SelectedMedicineRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   medicineDoseText(l10n, medicine),
                   style: typography.body.sm.copyWith(

@@ -153,20 +153,20 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Drag handle
             Container(
-              width: Spacing.level7,
-              height: Spacing.level1,
+              width: Spacing.xl3,
+              height: Spacing.xs,
               decoration: BoxDecoration(
                 color: SemanticColor.neutral.solid(context),
                 borderRadius: context.theme.style.borderRadius.pill,
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             // Search field
             FTextField(
               control: FTextFieldControl.managed(
@@ -184,12 +184,12 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
                     ),
                   ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             // Icon grid
             Flexible(
               child: filtered.isEmpty
                   ? Padding(
-                      padding: const EdgeInsets.all(Spacing.level6),
+                      padding: const EdgeInsets.all(Spacing.xl2),
                       child: Text(
                         l10n.iconPickerEmpty,
                         style: context.theme.typography.body.xs.copyWith(
@@ -199,7 +199,7 @@ class _IconPickerSheetState extends State<_IconPickerSheet> {
                     )
                   : ListView.builder(
                       shrinkWrap: true,
-                      padding: const EdgeInsets.only(bottom: Spacing.level4),
+                      padding: const EdgeInsets.only(bottom: Spacing.lg),
                       itemCount: filtered.length,
                       itemBuilder: (context, index) {
                         final entry = filtered[index];
@@ -239,10 +239,7 @@ class _CategorySection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.only(
-            top: Spacing.level4,
-            bottom: Spacing.level2,
-          ),
+          padding: const EdgeInsets.only(top: Spacing.lg, bottom: Spacing.sm),
           child: Text(
             label,
             style: context.theme.typography.body.xs2.copyWith(
@@ -252,8 +249,8 @@ class _CategorySection extends StatelessWidget {
           ),
         ),
         Wrap(
-          spacing: Spacing.level2,
-          runSpacing: Spacing.level2,
+          spacing: Spacing.sm,
+          runSpacing: Spacing.sm,
           children: [
             for (final icon in icons)
               _IconChip(
@@ -286,8 +283,8 @@ class _IconChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: Spacing.level8,
-        height: Spacing.level8,
+        width: Spacing.xl4,
+        height: Spacing.xl4,
         decoration: BoxDecoration(
           color: selected
               ? SemanticColor.primary.solid(context)

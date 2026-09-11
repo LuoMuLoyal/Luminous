@@ -34,9 +34,7 @@ class NotificationDetailPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < Breakpoints.mobile
-              ? Spacing.level6
-              : Spacing.level7,
+          vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +53,7 @@ class NotificationDetailPage extends ConsumerWidget {
               },
               loading: () => const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(Spacing.level10),
+                  padding: EdgeInsets.all(Spacing.xl6),
                   child: SkeletonShimmer(
                     child: InlineSkeletonBlock(height: 120, widthFactor: 1),
                   ),
@@ -144,29 +142,29 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _TypeChip(type: detail.type),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Text(
           detail.title,
           style: typography.display.xl.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Text(
           _formatTime(context, detail.createdAt),
           style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         FCard(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Text(
               detail.content,
               style: typography.body.md.copyWith(height: 1.6),
             ),
           ),
         ),
-        const SizedBox(height: Spacing.level7),
+        const SizedBox(height: Spacing.xl3),
         _ActionBar(
           detail: detail,
           onNavigate: () => _handleAction(context, detail.action),
@@ -317,8 +315,8 @@ class _TypeChip extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level1,
+          horizontal: Spacing.md,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,
@@ -361,8 +359,7 @@ class _ActionBar extends StatelessWidget {
           ),
           child: Text(l10n.notificationActionNavigate),
         ),
-      if (detail.action?.isNotEmpty ?? false)
-        const SizedBox(width: Spacing.level3),
+      if (detail.action?.isNotEmpty ?? false) const SizedBox(width: Spacing.md),
       FButton(
         variant: FButtonVariant.outline,
         onPress: detail.isRead ? onMarkUnread : onMarkRead,
@@ -378,7 +375,7 @@ class _ActionBar extends StatelessWidget {
               : l10n.notificationActionMarkRead,
         ),
       ),
-      const SizedBox(width: Spacing.level3),
+      const SizedBox(width: Spacing.md),
       FButton(
         variant: FButtonVariant.destructive,
         onPress: () => _showDeleteConfirm(context, onDelete),
@@ -387,11 +384,7 @@ class _ActionBar extends StatelessWidget {
       ),
     ];
 
-    return Wrap(
-      spacing: Spacing.level3,
-      runSpacing: Spacing.level3,
-      children: actions,
-    );
+    return Wrap(spacing: Spacing.md, runSpacing: Spacing.md, children: actions);
   }
 
   void _showDeleteConfirm(BuildContext context, VoidCallback onDelete) {
@@ -411,12 +404,12 @@ class _ActionBar extends StatelessWidget {
               l10n.notificationDeleteConfirmTitle,
               style: context.theme.typography.body.lg,
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Text(
               l10n.notificationDeleteConfirmDescription,
               style: context.theme.typography.body.sm,
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -425,7 +418,7 @@ class _ActionBar extends StatelessWidget {
                   onPress: () => Navigator.of(context).pop(),
                   child: Text(l10n.notificationDeleteConfirmCancel),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   variant: FButtonVariant.destructive,
                   onPress: () {

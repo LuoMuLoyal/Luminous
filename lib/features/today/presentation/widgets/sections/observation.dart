@@ -44,7 +44,7 @@ class TodayObservationSection extends ConsumerWidget {
 
             if (items.isEmpty) {
               return Padding(
-                padding: const EdgeInsets.all(Spacing.level4),
+                padding: const EdgeInsets.all(Spacing.lg),
                 child: Text(
                   l10n.todayObservationEmptyState,
                   style: context.theme.typography.body.sm.copyWith(
@@ -166,21 +166,21 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
       onPress: widget.item.onPress,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level4,
-          vertical: Spacing.level3,
+          horizontal: Spacing.lg,
+          vertical: Spacing.md,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: Spacing.level1),
+              padding: const EdgeInsets.only(top: Spacing.xs),
               child: Icon(
                 widget.item.icon,
                 size: IconSizeTokens.md,
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,7 +191,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     widget.item.subtitle,
                     style: typography.body.xs2.copyWith(
@@ -201,24 +201,24 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (_canSuppress) ...[
-                    const SizedBox(height: Spacing.level2),
+                    const SizedBox(height: Spacing.sm),
                     _buildSuppressButton(context, l10n),
                   ],
                 ],
               ),
             ),
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             Padding(
-              padding: const EdgeInsets.only(top: Spacing.level1),
+              padding: const EdgeInsets.only(top: Spacing.xs),
               child: _ConfidenceBadge(
                 label: widget.item.tag,
                 confidence: widget.item.confidence,
               ),
             ),
             if (widget.item.onPress != null) ...[
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Padding(
-                padding: const EdgeInsets.only(top: Spacing.level1),
+                padding: const EdgeInsets.only(top: Spacing.xs),
                 child: Icon(
                   SemanticIcons.actionNext,
                   size: IconSizeTokens.sm,
@@ -242,7 +242,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
             size: IconSizeTokens.sm,
             color: SemanticColor.primary.solid(context),
           ),
-          const SizedBox(width: Spacing.level1),
+          const SizedBox(width: Spacing.xs),
           Text(
             l10n.todaySuggestionFeedbackSubmitted,
             style: context.theme.typography.body.xs.copyWith(
@@ -261,8 +261,8 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
       mainAxisSize: MainAxisSize.min,
       child: _isSubmitting
           ? const SizedBox(
-              width: Spacing.level4,
-              height: Spacing.level4,
+              width: Spacing.lg,
+              height: Spacing.lg,
               child: FCircularProgress.loader(),
             )
           : Text(
@@ -280,11 +280,11 @@ class _ObservationLoadingState extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SkeletonShimmer(
       child: Padding(
-        padding: EdgeInsets.all(Spacing.level4),
+        padding: EdgeInsets.all(Spacing.lg),
         child: Column(
           children: [
             _ObservationSkeletonRow(),
-            SizedBox(height: Spacing.level3),
+            SizedBox(height: Spacing.md),
             _ObservationSkeletonRow(),
           ],
         ),
@@ -308,9 +308,9 @@ class _ObservationSkeletonRow extends StatelessWidget {
             color: colors.secondary,
             borderRadius: borderRadius.pill,
           ),
-          child: const SizedBox.square(dimension: Spacing.level6),
+          child: const SizedBox.square(dimension: Spacing.xl2),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Expanded(
           child: Column(
             children: [
@@ -321,7 +321,7 @@ class _ObservationSkeletonRow extends StatelessWidget {
                   borderRadius: borderRadius.xs,
                 ),
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Container(
                 height: 12,
                 decoration: BoxDecoration(
@@ -347,14 +347,14 @@ class _ObservationErrorState extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsets.all(Spacing.level4),
+      padding: const EdgeInsets.all(Spacing.lg),
       child: Row(
         children: [
           Icon(
             SemanticIcons.statusError,
             color: SemanticColor.destructive.solid(context),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Text(
               l10n.todayObservationErrorTitle,

@@ -150,7 +150,7 @@ class RecordNlpCandidateEditor extends HookWidget {
             enabled: enabled,
             label: Text(titleLabel(l10n, kind)),
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
         ],
         if (shouldShowValueOrUnit(kind)) ...[
           Row(
@@ -169,7 +169,7 @@ class RecordNlpCandidateEditor extends HookWidget {
                   ),
                 ),
               if (shouldShowValue(kind) && shouldShowUnit(kind))
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
               if (shouldShowUnit(kind))
                 Expanded(
                   child: _WaterUnitField(
@@ -181,7 +181,7 @@ class RecordNlpCandidateEditor extends HookWidget {
                 ),
             ],
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
         ],
         if (kind == DailyRecordKind.sleep) ...[
           _SleepCandidateFields(
@@ -190,7 +190,7 @@ class RecordNlpCandidateEditor extends HookWidget {
             enabled: enabled,
             onChanged: onChanged,
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
         ],
         FTextField(
           key: Key('record-nlp-candidate-note-$index'),
@@ -309,7 +309,7 @@ class _SleepCandidateFields extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: Spacing.level4),
+            const SizedBox(width: Spacing.lg),
             Expanded(
               child: FTimeField.picker(
                 key: Key('record-nlp-candidate-sleep-waketime-$index'),
@@ -333,7 +333,7 @@ class _SleepCandidateFields extends StatelessWidget {
           ],
         ),
         if (bedtime != null && wakeTime != null) ...[
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Text(
             '${l10n.recordSleepDurationLabel}: ${_formatDuration(computeSleepDurationMinutes(bedtime, wakeTime) ?? 0, l10n)}',
             style: context.theme.typography.body.xs.copyWith(
@@ -341,7 +341,7 @@ class _SleepCandidateFields extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FSelect<String>.rich(
           key: Key('record-nlp-candidate-sleep-quality-$index'),
           label: Text(l10n.recordSleepQualityLabel),

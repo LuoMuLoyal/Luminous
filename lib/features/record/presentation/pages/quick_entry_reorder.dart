@@ -81,7 +81,7 @@ class _DisabledView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Text(
           l10n.recordQuickSortDisableDynamicFirst,
           key: const Key('record-quick-reorder-disabled'),
@@ -107,7 +107,7 @@ class _ReorderList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(Spacing.level4),
+      padding: const EdgeInsets.all(Spacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -118,7 +118,7 @@ class _ReorderList extends StatelessWidget {
               color: SemanticColor.neutral.solid(context),
             ),
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Expanded(
             child: ReorderableListView.builder(
               key: const Key('record-quick-reorder-list'),

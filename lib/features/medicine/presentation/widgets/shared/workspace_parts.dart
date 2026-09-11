@@ -82,8 +82,8 @@ class TintedStatusBadge extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
-          vertical: Spacing.level1,
+          horizontal: Spacing.sm,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,

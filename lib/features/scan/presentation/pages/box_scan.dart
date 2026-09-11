@@ -34,14 +34,14 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
           l10n.scanMethodPickerTitle,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         MethodTile(
           icon: SemanticIcons.actionCamera,
           title: l10n.scanMethodOcrTitle,
           subtitle: l10n.scanMethodOcrSubtitle,
           onTap: () => Navigator.of(dialogContext).pop(MedicineScanMethod.ocr),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         MethodTile(
           icon: SemanticIcons.aiEntry,
           title: l10n.scanMethodAiTitle,

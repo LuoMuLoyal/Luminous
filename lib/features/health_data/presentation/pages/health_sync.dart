@@ -30,7 +30,7 @@ class HealthSyncPage extends ConsumerWidget {
         title: l10n.healthSyncTitle,
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level6),
+            padding: const EdgeInsets.all(Spacing.xl2),
             child: Text(
               l10n.healthSyncNotAvailable,
               style: typography.body.md,
@@ -44,7 +44,7 @@ class HealthSyncPage extends ConsumerWidget {
     return PageScaffold(
       title: l10n.healthSyncTitle,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -56,7 +56,7 @@ class HealthSyncPage extends ConsumerWidget {
             ),
             if (autoSyncAvailability ==
                 HealthAutoSyncAvailability.notConfigured) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 l10n.healthSyncAutoSyncNotConfigured,
                 style: typography.body.md.copyWith(
@@ -64,20 +64,20 @@ class HealthSyncPage extends ConsumerWidget {
                 ),
               ),
             ],
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             _MetricTypeSection(
               selectedTypes: state.selectedTypes,
               onToggle: controller.toggleType,
             ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             _TimeRangeSection(
               selectedRange: state.timeRange,
               onChanged: controller.setTimeRange,
             ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             if (state.error != null) ...[
               Container(
-                padding: const EdgeInsets.all(Spacing.level4),
+                padding: const EdgeInsets.all(Spacing.lg),
                 decoration: BoxDecoration(
                   color: colors.error.withValues(alpha: 0.1),
                   borderRadius: context.theme.style.borderRadius.xs,
@@ -87,15 +87,15 @@ class HealthSyncPage extends ConsumerWidget {
                   style: typography.body.md.copyWith(color: colors.error),
                 ),
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
             ],
             if (state.syncResult != null) ...[
               _SyncResultSection(result: state.syncResult!),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
             ],
             if (state.fetchedMetrics.isNotEmpty) ...[
               _MetricsPreviewSection(metrics: state.fetchedMetrics),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
             ],
             if (state.fetchedMetrics.isEmpty) ...[
               FButton(
@@ -120,7 +120,7 @@ class HealthSyncPage extends ConsumerWidget {
                         ),
                 ),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: state.isLoading ? null : controller.reset,
@@ -129,7 +129,7 @@ class HealthSyncPage extends ConsumerWidget {
             ],
             if (state.isLoading)
               Padding(
-                padding: const EdgeInsets.only(top: Spacing.level4),
+                padding: const EdgeInsets.only(top: Spacing.lg),
                 child: Center(
                   child: FProgress(semanticsLabel: l10n.healthSyncLoading),
                 ),
@@ -178,10 +178,10 @@ class _MetricTypeSection extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Wrap(
-          spacing: Spacing.level2,
-          runSpacing: Spacing.level2,
+          spacing: Spacing.sm,
+          runSpacing: Spacing.sm,
           children: allTypes.map((type) {
             final selected = selectedTypes.contains(type);
             return FButton(
@@ -238,7 +238,7 @@ class _TimeRangeSection extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FSelect<HealthSyncTimeRange>.rich(
           label: Text(l10n.healthSyncTimeRange),
           hint: l10n.healthSyncTimeRange,
@@ -282,7 +282,7 @@ class _SyncResultSection extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Container(
-      padding: const EdgeInsets.all(Spacing.level4),
+      padding: const EdgeInsets.all(Spacing.lg),
       decoration: BoxDecoration(
         color: SemanticColor.primary.solid(context).withValues(alpha: 0.08),
         borderRadius: context.theme.style.borderRadius.xs,
@@ -296,7 +296,7 @@ class _SyncResultSection extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           _ResultRow(
             label: l10n.healthSyncResultSuccess(result.successCount),
             color: SemanticColor.primary.solid(context),
@@ -325,11 +325,11 @@ class _ResultRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         children: [
-          Icon(Icons.check_circle, size: Spacing.level4, color: color),
-          const SizedBox(width: Spacing.level2),
+          Icon(Icons.check_circle, size: Spacing.lg, color: color),
+          const SizedBox(width: Spacing.sm),
           Text(label, style: context.theme.typography.body.md),
         ],
       ),
@@ -354,7 +354,7 @@ class _MetricsPreviewSection extends StatelessWidget {
           l10n.healthSyncPreviewTitle,
           style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FTileGroup(
           divider: FItemDivider.full,
           children: metrics.take(20).map((metric) {
@@ -366,7 +366,7 @@ class _MetricsPreviewSection extends StatelessWidget {
         ),
         if (metrics.length > 20)
           Padding(
-            padding: const EdgeInsets.only(top: Spacing.level2),
+            padding: const EdgeInsets.only(top: Spacing.sm),
             child: Text(
               l10n.healthSyncPreviewMore(metrics.length - 20),
               style: typography.body.md.copyWith(

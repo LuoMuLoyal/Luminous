@@ -43,7 +43,7 @@ class ReviewReadinessSection extends StatelessWidget {
     return FCard(
       key: const Key('report-readiness-card'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,26 +51,26 @@ class ReviewReadinessSection extends StatelessWidget {
               children: [
                 ExcludeSemantics(
                   child: FAvatar.raw(
-                    size: Spacing.level8,
+                    size: Spacing.xl4,
                     child: Icon(
                       _statusIcon,
                       color: _statusColor.solid(context),
-                      size: Spacing.level5,
+                      size: Spacing.xl,
                     ),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 _StatusBadge(label: _badgeLabel, color: _statusColor),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Text(
               _title,
               style: typography.display.lg.copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               _description,
               style: typography.body.sm.copyWith(
@@ -78,17 +78,17 @@ class ReviewReadinessSection extends StatelessWidget {
               ),
             ),
             if (generatedAtLabel.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Row(
                 children: [
                   ExcludeSemantics(
                     child: Icon(
                       SemanticIcons.statusPending,
                       color: SemanticColor.neutral.solid(context),
-                      size: Spacing.level5,
+                      size: Spacing.xl,
                     ),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   Expanded(
                     child: Text(
                       l10n.reviewReadinessUpdatedAt(generatedAtLabel),
@@ -102,7 +102,7 @@ class ReviewReadinessSection extends StatelessWidget {
             ],
             if (status == ReviewReadinessStatus.insufficient) ...[
               if (insufficientMetricCount > 0) ...[
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 Text(
                   l10n.reviewReadinessMissingMetricsHint(
                     insufficientMetricCount,
@@ -113,7 +113,7 @@ class ReviewReadinessSection extends StatelessWidget {
                 ),
               ],
               if (needsAttentionMetricCount > 0) ...[
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 Text(
                   l10n.reviewReadinessNeedsAttentionMetricsHint(
                     needsAttentionMetricCount,
@@ -124,14 +124,14 @@ class ReviewReadinessSection extends StatelessWidget {
                 ),
               ],
             ],
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               children: [
                 Expanded(
                   child: _PrimaryAction(status: status, section: this),
                 ),
                 if (_showSecondaryAction) ...[
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                   Expanded(
                     child: FButton(
                       key: const Key('report-readiness-sync-action'),
@@ -219,11 +219,11 @@ class _PrimaryAction extends StatelessWidget {
         onPress: section.isGenerating ? null : section.onGenerate,
         prefix: section.isGenerating
             ? const SizedBox(
-                width: Spacing.level5,
-                height: Spacing.level5,
+                width: Spacing.xl,
+                height: Spacing.xl,
                 child: FCircularProgress(),
               )
-            : const Icon(SemanticIcons.aiEntry, size: Spacing.level5),
+            : const Icon(SemanticIcons.aiEntry, size: Spacing.xl),
         child: Text(section.l10n.reviewGenerateAction),
       ),
     };
@@ -249,8 +249,8 @@ class _StatusBadge extends StatelessWidget {
       ),
       builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level1,
+          horizontal: Spacing.md,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,

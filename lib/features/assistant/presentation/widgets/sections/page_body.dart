@@ -183,15 +183,11 @@ class AssistantPageBody extends ConsumerWidget {
       ],
       child: ResponsiveContentFrame(
         padding: EdgeInsets.symmetric(
-          horizontal: width < Breakpoints.mobile
-              ? Spacing.level3
-              : Spacing.level4,
+          horizontal: width < Breakpoints.mobile ? Spacing.md : Spacing.lg,
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level3
-                : Spacing.level4,
+            vertical: width < Breakpoints.mobile ? Spacing.md : Spacing.lg,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,7 +226,7 @@ class AssistantPageBody extends ConsumerWidget {
                 ),
               ] else ...[
                 if (conversationError != null) ...[
-                  const SizedBox(height: Spacing.level4),
+                  const SizedBox(height: Spacing.lg),
                   StateMessageView(
                     title: l10n.assistantLoadErrorTitle,
                     description: conversationError,
@@ -242,7 +238,7 @@ class AssistantPageBody extends ConsumerWidget {
                         .loadLatestConversation(),
                   ),
                 ],
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 Expanded(
                   child: FlowChatScreen(
                     key: const Key('assistant-flow-chat-screen'),

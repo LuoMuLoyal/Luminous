@@ -52,27 +52,27 @@ class ClinicSummaryShareConfirmPanel extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         ClinicSummaryNoticeRow(
           icon: SemanticIcons.safetyTiming,
           iconColor: SemanticColor.neutral.solid(context),
           text: l10n.reviewShareConfirmExpiryHint(7),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         ClinicSummaryNoticeRow(
           icon: SemanticIcons.safetySafe,
           iconColor: SemanticColor.primary.solid(context),
           text: l10n.reviewShareConfirmNotice,
         ),
         if (hasNotes) ...[
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           ClinicSummaryNoticeRow(
             icon: SemanticIcons.statusWarning,
             iconColor: SemanticColor.warning.solid(context),
             text: l10n.reviewClinicSummaryNotesPrivacyWarning,
           ),
         ],
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           children: [
             Expanded(
@@ -82,7 +82,7 @@ class ClinicSummaryShareConfirmPanel extends StatelessWidget {
                 child: Text(l10n.commonCancel),
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: FButton(
                 variant: FButtonVariant.primary,
@@ -134,15 +134,15 @@ class ClinicSummaryShareCreatedPanel extends StatelessWidget {
           l10n.reviewShareCreatedTitle,
           style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         MetaRow(
           label: l10n.reviewShareCreatedExpiresAt,
           value: formatDateTimeFull(response.expiresAt, locale),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FCard(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Text(
               response.shareUrl,
               style: typography.body.xs.copyWith(
@@ -151,7 +151,7 @@ class ClinicSummaryShareCreatedPanel extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Row(
           children: [
             Expanded(
@@ -161,7 +161,7 @@ class ClinicSummaryShareCreatedPanel extends StatelessWidget {
                 child: Text(l10n.reviewShareCopyAction),
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: FButton(
                 variant: FButtonVariant.outline,
@@ -177,7 +177,7 @@ class ClinicSummaryShareCreatedPanel extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FButton(
           variant: FButtonVariant.ghost,
           onPress: isRevoking ? null : onClose,
@@ -207,19 +207,19 @@ class ClinicSummaryShareRevokedPanel extends StatelessWidget {
           size: 28,
           color: SemanticColor.neutral.solid(context),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Text(
           l10n.reviewShareRevokedTitle,
           style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.reviewShareRevokedBody,
           style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         FButton(
           variant: FButtonVariant.primary,
           onPress: onClose,
@@ -251,7 +251,7 @@ class ClinicSummaryNoticeRow extends StatelessWidget {
           padding: const EdgeInsets.only(top: 2),
           child: Icon(icon, size: 16, color: iconColor),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Expanded(child: Text(text, style: context.theme.typography.body.xs)),
       ],
     );

@@ -56,7 +56,7 @@ class RegisterPage extends HookConsumerWidget {
                 invalidMessage: l10n.authEmailInvalidError,
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             VerificationCodeField(
               controller: codeController,
               label: l10n.authCodeLabel,
@@ -90,7 +90,7 @@ class RegisterPage extends HookConsumerWidget {
                       }
                     },
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: passwordController,
@@ -101,7 +101,7 @@ class RegisterPage extends HookConsumerWidget {
               validator: (value) =>
                   RequiredInput.validate(value, l10n.authPasswordRequiredError),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: confirmPasswordController,
@@ -123,7 +123,7 @@ class RegisterPage extends HookConsumerWidget {
                 return null;
               },
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FTextFormField(
               control: FTextFieldControl.managed(
                 controller: nicknameController,
@@ -132,7 +132,7 @@ class RegisterPage extends HookConsumerWidget {
               hint: l10n.authNicknameHint,
               autovalidateMode: AutovalidateMode.onUserInteraction,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -144,7 +144,7 @@ class RegisterPage extends HookConsumerWidget {
                     l10n.authPrivacyPolicy,
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: _TermsAgreementText(
                     terms: l10n.authTermsOfService,
@@ -157,7 +157,7 @@ class RegisterPage extends HookConsumerWidget {
             ),
             if (!acceptedTerms.value)
               Padding(
-                padding: const EdgeInsets.only(top: Spacing.level2),
+                padding: const EdgeInsets.only(top: Spacing.sm),
                 child: Text(
                   l10n.authRegisterTermsRequiredHint,
                   style: typography.body.xs.copyWith(
@@ -165,7 +165,7 @@ class RegisterPage extends HookConsumerWidget {
                   ),
                 ),
               ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             SizedBox(
               width: double.infinity,
               child: FButton(
@@ -213,12 +213,12 @@ class RegisterPage extends HookConsumerWidget {
                     : Text(l10n.authCreateAccountAction),
               ),
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Wrap(
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: Spacing.level2,
-              runSpacing: Spacing.level1,
+              spacing: Spacing.sm,
+              runSpacing: Spacing.xs,
               children: [
                 Text(
                   l10n.authHaveAccountPrompt,

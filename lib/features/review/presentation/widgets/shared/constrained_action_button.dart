@@ -18,7 +18,7 @@ class ConstrainedActionButton extends StatelessWidget {
   });
 
   /// Forui 按钮内容横向 padding 12+12（FButtonSizeStyles 的 md/sm
-  /// contentPadding 均为 12；不用 Spacing.level6=28 以免多扣 4px 裕量）。
+  /// contentPadding 均为 12；不用 Spacing.xl2=28 以免多扣 4px 裕量）。
   static const double _kContentPadding = 24;
 
   final VoidCallback onPress;

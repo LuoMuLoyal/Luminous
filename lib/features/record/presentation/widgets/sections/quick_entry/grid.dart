@@ -126,18 +126,18 @@ class QuickRecordTile extends StatelessWidget {
                       child: Icon(
                         isLocked ? SemanticIcons.statusBlocked : action.icon,
                         color: action.accent.solid(context),
-                        size: Spacing.level5,
+                        size: Spacing.xl,
                       ),
                     ),
                     if (badge != null)
                       Positioned(
-                        top: -Spacing.level1,
-                        right: -Spacing.level2,
+                        top: -Spacing.xs,
+                        right: -Spacing.sm,
                         child: QuickBadge(text: badge!),
                       ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 Text(
                   displayLabel,
                   style: context.theme.typography.body.md.copyWith(
@@ -172,7 +172,7 @@ class QuickBadge extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
+          horizontal: Spacing.sm,
           vertical: 1,
         ),
         child: Text(
@@ -217,8 +217,8 @@ class QuickRecordNoteButton extends StatelessWidget {
           opacity: isLocked ? 0.76 : 1,
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.level4,
-              vertical: Spacing.level2,
+              horizontal: Spacing.lg,
+              vertical: Spacing.sm,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -232,10 +232,10 @@ class QuickRecordNoteButton extends StatelessWidget {
                   child: Icon(
                     isLocked ? SemanticIcons.statusBlocked : action.icon,
                     color: action.accent.solid(context),
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Text(
                   label,
                   style: context.theme.typography.body.md.copyWith(

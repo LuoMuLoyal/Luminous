@@ -32,9 +32,7 @@ class NotificationSettingsPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < Breakpoints.mobile
-              ? Spacing.level6
-              : Spacing.level7,
+          vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +55,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                   await controller.requestPermission();
                 },
               ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             SettingsSectionLabel(label: l10n.settingsNotificationsGeneralGroup),
             SizedBox(height: context.titleContentGap),
             FTileGroup(
@@ -132,11 +130,11 @@ class NotificationSettingsPage extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             SettingsSectionLabel(
               label: l10n.settingsNotificationsReminderGroup,
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             FTileGroup(
               style: settingsSubpageTileGroupStyle(context.theme),
               children: [
@@ -352,7 +350,7 @@ class _PermissionCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   const Icon(SemanticIcons.actionNext),
                 ],
               )
@@ -380,13 +378,13 @@ class _AdvancePickerSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.md),
               child: Text(
                 l10n.settingsNotificationsAdvance,
                 style: context.theme.typography.body.md.copyWith(

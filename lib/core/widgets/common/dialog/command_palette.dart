@@ -130,7 +130,7 @@ class _CommandPaletteState extends State<CommandPalette> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 560, maxHeight: 480),
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,8 +149,8 @@ class _CommandPaletteState extends State<CommandPalette> {
                   ),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level3,
-                    vertical: Spacing.level3,
+                    horizontal: Spacing.md,
+                    vertical: Spacing.md,
                   ),
                 ),
                 style: typography.body.sm,
@@ -160,7 +160,7 @@ class _CommandPaletteState extends State<CommandPalette> {
               // Results list.
               if (_filtered.isEmpty)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.xl2),
                   child: Center(
                     child: Text(
                       l10n.commandPaletteEmpty,
@@ -173,7 +173,7 @@ class _CommandPaletteState extends State<CommandPalette> {
               else
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.only(top: Spacing.level2),
+                    padding: const EdgeInsets.only(top: Spacing.sm),
                     itemCount: _filtered.length,
                     itemBuilder: (context, index) {
                       final cmd = _filtered[index];
@@ -254,8 +254,8 @@ class _CommandTileState extends State<_CommandTile> {
         child: Container(
           margin: const EdgeInsets.only(bottom: 2),
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level3,
-            vertical: Spacing.level3,
+            horizontal: Spacing.md,
+            vertical: Spacing.md,
           ),
           decoration: BoxDecoration(
             color: widget.selected
@@ -272,7 +272,7 @@ class _CommandTileState extends State<_CommandTile> {
                     ? SemanticColor.primary.solid(context)
                     : SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

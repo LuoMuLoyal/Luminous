@@ -43,9 +43,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,9 +67,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +145,7 @@ class _ReminderDetailBody extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Row(
               children: [
                 Expanded(
@@ -164,7 +160,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: Spacing.level1),
+                      const SizedBox(height: Spacing.xs),
                       Text(
                         medicineDoseText(l10n, data.medicine),
                         style: typography.body.xs.copyWith(
@@ -176,7 +172,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FBadge.raw(
                   builder: (context, style) {
                     final pillColor = isActive
@@ -192,8 +188,8 @@ class _ReminderDetailBody extends ConsumerWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.level2,
-                          vertical: Spacing.level1,
+                          horizontal: Spacing.sm,
+                          vertical: Spacing.xs,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -223,8 +219,8 @@ class _ReminderDetailBody extends ConsumerWidget {
           // Active/inactive toggle — allows switching without entering edit page.
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.level4,
-              vertical: Spacing.level3,
+              horizontal: Spacing.lg,
+              vertical: Spacing.md,
             ),
             child: Row(
               children: [
@@ -233,9 +229,9 @@ class _ReminderDetailBody extends ConsumerWidget {
                   color: isActive
                       ? SemanticColor.primary.solid(context)
                       : SemanticColor.neutral.solid(context),
-                  size: Spacing.level5,
+                  size: Spacing.xl,
                 ),
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,7 +242,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: Spacing.level1),
+                      const SizedBox(height: Spacing.xs),
                       Text(
                         isActive
                             ? l10n.medicineReminderEnabledStatus
@@ -286,12 +282,12 @@ class _ReminderDetailBody extends ConsumerWidget {
         : medicineCard;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           topCard,
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           ReminderDetailInfoTiles(
             l10n: l10n,
             data: data,
@@ -299,12 +295,12 @@ class _ReminderDetailBody extends ConsumerWidget {
             soundPreference: soundPreference,
             hasNote: hasNote,
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           ReminderTodayLogPanel(logs: data.todayLogs),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           ReminderDeliveryLogPanel(logs: data.deliveryLogs),
           if (reminders.isNotEmpty) ...[
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             FButton(
               key: const Key('medicine-reminder-delete-button'),
               variant: FButtonVariant.destructive,

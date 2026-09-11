@@ -18,7 +18,7 @@ class AssistantDisclaimerBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -27,7 +27,7 @@ class AssistantDisclaimerBar extends StatelessWidget {
             size: 14,
             color: SemanticColor.neutral.solid(context),
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(
             child: Text(
               text,

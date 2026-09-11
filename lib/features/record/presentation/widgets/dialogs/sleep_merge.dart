@@ -27,7 +27,7 @@ class SleepMergeSummaryRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Expanded(child: Text(value, style: typography.body.sm)),
       ],
     );

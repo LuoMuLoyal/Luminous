@@ -84,7 +84,7 @@ class _ReviewSuggestionHistorySectionState
     return FCard(
       key: const Key('review-suggestion-history-section'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -93,11 +93,11 @@ class _ReviewSuggestionHistorySectionState
                 ExcludeSemantics(
                   child: Icon(
                     SemanticIcons.reportHistory,
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                     color: SemanticColor.primary.solid(context),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: Text(
                     l10n.reviewSuggestionHistorySectionTitle,
@@ -120,7 +120,7 @@ class _ReviewSuggestionHistorySectionState
                   ),
               ],
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             if (widget.isLoading)
               const _LoadingList()
             else if (visibleSuggestions.isEmpty)
@@ -222,8 +222,8 @@ class _SuggestionBadge extends StatelessWidget {
       ),
       builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level1,
+          horizontal: Spacing.md,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,
@@ -248,7 +248,7 @@ class _EmptyView extends StatelessWidget {
     final typography = context.theme.typography;
 
     return Container(
-      padding: const EdgeInsets.all(Spacing.level5),
+      padding: const EdgeInsets.all(Spacing.xl),
       decoration: BoxDecoration(
         color: SemanticColor.neutral.subtle(context),
         borderRadius: context.theme.style.borderRadius.sm,
@@ -259,9 +259,9 @@ class _EmptyView extends StatelessWidget {
           Icon(
             SemanticIcons.reportHistory,
             color: colors.secondary,
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,7 +272,7 @@ class _EmptyView extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   l10n.reviewSuggestionHistoryEmptyBody,
                   style: typography.body.xs.copyWith(
@@ -297,9 +297,9 @@ class _LoadingList extends StatelessWidget {
       child: Column(
         children: [
           InlineSkeletonBlock(height: 72, widthFactor: 1),
-          SizedBox(height: Spacing.level3),
+          SizedBox(height: Spacing.md),
           InlineSkeletonBlock(height: 72, widthFactor: 1),
-          SizedBox(height: Spacing.level3),
+          SizedBox(height: Spacing.md),
           InlineSkeletonBlock(height: 72, widthFactor: 1),
         ],
       ),

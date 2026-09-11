@@ -75,12 +75,12 @@ Future<void> showNoMedicationPrompt(BuildContext context) async {
           l10n.recordQuickMedicationNoMedicinesTitle,
           style: context.theme.typography.body.lg,
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Text(
           l10n.recordQuickMedicationNoMedicinesBody,
           style: context.theme.typography.body.sm,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -89,7 +89,7 @@ Future<void> showNoMedicationPrompt(BuildContext context) async {
               onPress: () => Navigator.of(context).pop(false),
               child: Text(l10n.commonCancel),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               onPress: () => Navigator.of(context).pop(true),
               child: Text(l10n.recordQuickMedicationAddAction),
@@ -133,10 +133,10 @@ Future<void> showMedicationSelectionDialog(
               l10n.recordQuickMedicationSelectTitle,
               style: dialogContext.theme.typography.body.lg,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Wrap(
-              spacing: Spacing.level3,
-              runSpacing: Spacing.level3,
+              spacing: Spacing.md,
+              runSpacing: Spacing.md,
               children: [
                 for (final choice in selection.choices)
                   FButton(
@@ -157,10 +157,10 @@ Future<void> showMedicationSelectionDialog(
               ],
             ),
             if (saving) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               const Center(child: FProgress()),
             ],
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -171,7 +171,7 @@ Future<void> showMedicationSelectionDialog(
                       : () => Navigator.of(dialogContext).pop(),
                   child: Text(l10n.commonCancel),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   onPress: saving || selectedChoices.isEmpty
                       ? null

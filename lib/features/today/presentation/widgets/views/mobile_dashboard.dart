@@ -51,7 +51,7 @@ class MobileTodayDashboard extends ConsumerWidget {
       // SizedBox.shrink has zero height, so no gap when hidden.
       if (isPreview)
         Padding(
-          padding: const EdgeInsets.only(bottom: Spacing.level4),
+          padding: const EdgeInsets.only(bottom: Spacing.lg),
           child: SignInHintBanner(
             onSignIn: onSignIn,
             message: l10n.todayPreviewBannerMessage,
@@ -61,7 +61,7 @@ class MobileTodayDashboard extends ConsumerWidget {
         const SizedBox.shrink(),
       // 问候语从 Header 拆分，放到内容区
       Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level4),
+        padding: const EdgeInsets.only(bottom: Spacing.lg),
         child: Text(
           greetingSubtitle(l10n, dashboard),
           style: context.theme.typography.body.sm.copyWith(
@@ -70,12 +70,12 @@ class MobileTodayDashboard extends ConsumerWidget {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level4),
+        padding: const EdgeInsets.only(bottom: Spacing.lg),
         child: TodayPrimarySuggestionSection(dashboard: dashboard),
       ),
       if (hasSecondarySuggestions)
         const Padding(
-          padding: EdgeInsets.only(bottom: Spacing.level4),
+          padding: EdgeInsets.only(bottom: Spacing.lg),
           child: TodaySecondarySuggestionsSection(
             key: Key('today-secondary-suggestions-card'),
           ),
@@ -83,18 +83,18 @@ class MobileTodayDashboard extends ConsumerWidget {
       else
         const SizedBox.shrink(),
       Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level4),
+        padding: const EdgeInsets.only(bottom: Spacing.lg),
         child: TodaySummarySection(dashboard: dashboard),
       ),
       if (!isPreview)
         Padding(
-          padding: const EdgeInsets.only(bottom: Spacing.level4),
+          padding: const EdgeInsets.only(bottom: Spacing.lg),
           child: HealthEventSection(isPreview: isPreview, onRefresh: onRefresh),
         )
       else
         const SizedBox.shrink(),
       Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.level4),
+        padding: const EdgeInsets.only(bottom: Spacing.lg),
         child: TodayObservationSection(dashboard: dashboard),
       ),
       TodayQuickActionsSection(dashboard: dashboard),
@@ -112,10 +112,10 @@ class MobileTodayDashboard extends ConsumerWidget {
               slivers: [
                 SliverPadding(
                   padding: EdgeInsets.fromLTRB(
-                    Spacing.level4,
-                    Spacing.level4,
-                    Spacing.level4,
-                    Spacing.level10 + MediaQuery.paddingOf(context).bottom,
+                    Spacing.lg,
+                    Spacing.lg,
+                    Spacing.lg,
+                    Spacing.xl6 + MediaQuery.paddingOf(context).bottom,
                   ),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate.fixed(sections),

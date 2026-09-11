@@ -93,7 +93,7 @@ void main() {
     await _settleDashboard(tester);
 
     // 稍后处理 区块没有卡片时不占位：它的槽位不能保留自己的下间距，否则
-    // 「优先处理」卡片与「今日摘要」标题之间会出现 2×Spacing.level5 的幽灵空隙。
+    // 「优先处理」卡片与「今日摘要」标题之间会出现 2×Spacing.xl 的幽灵空隙。
     final emptyStateBottom = tester
         .getRect(find.byType(SuggestionEmptyState))
         .bottom;
@@ -101,7 +101,7 @@ void main() {
         .getRect(find.text(l10n.todayHealthSummaryCardTitle))
         .top;
 
-    expect(summaryHeadingTop - emptyStateBottom, Spacing.level4);
+    expect(summaryHeadingTop - emptyStateBottom, Spacing.lg);
   });
 
   testWidgets('Preview mode health event slot leaves no phantom section gap', (
@@ -131,7 +131,7 @@ void main() {
         .getRect(find.text(l10n.todayObservationSectionTitle))
         .top;
 
-    expect(observationHeadingTop - summaryCardBottom, Spacing.level4);
+    expect(observationHeadingTop - summaryCardBottom, Spacing.lg);
   });
 
   testWidgets('Section title and its content sit one titleContentGap apart', (

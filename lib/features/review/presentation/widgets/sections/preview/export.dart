@@ -45,7 +45,7 @@ class ReviewExportSection extends StatelessWidget {
           style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         if (isDataInsufficient) ...[
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           Text(
             l10n.reviewExportInsufficientReason,
             style: typography.body.xs.copyWith(
@@ -53,15 +53,15 @@ class ReviewExportSection extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: actions.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: Spacing.level3,
-            mainAxisSpacing: Spacing.level3,
+            crossAxisSpacing: Spacing.md,
+            mainAxisSpacing: Spacing.md,
             mainAxisExtent: _exportCardHeight(context),
           ),
           itemBuilder: (context, index) {
@@ -129,18 +129,18 @@ class _ExportCard extends StatelessWidget {
       ),
       child: FCard(
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           child: Row(
             children: [
               FAvatar.raw(
-                size: Spacing.level8,
+                size: Spacing.xl4,
                 child: Icon(
                   action.icon,
                   color: action.color.solid(context),
-                  size: Spacing.level5,
+                  size: Spacing.xl,
                 ),
               ),
-              const SizedBox(width: Spacing.level4),
+              const SizedBox(width: Spacing.lg),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -154,7 +154,7 @@ class _ExportCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: Spacing.level1),
+                    const SizedBox(height: Spacing.xs),
                     Text(
                       subtitle,
                       style: typography.body.xs.copyWith(

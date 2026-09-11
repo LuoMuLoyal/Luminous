@@ -53,7 +53,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 invalidMessage: l10n.authEmailInvalidError,
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             VerificationCodeField(
               controller: codeController,
               label: l10n.authCodeLabel,
@@ -89,7 +89,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                       }
                     },
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: passwordController,
@@ -100,7 +100,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
               validator: (value) =>
                   PasswordInput.validate(value, l10n.authPasswordRequiredError),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: confirmPasswordController,
@@ -122,7 +122,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 return null;
               },
             ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             SizedBox(
               width: double.infinity,
               child: FButton(
@@ -181,12 +181,12 @@ class ForgotPasswordPage extends HookConsumerWidget {
                     : Text(l10n.authResetPasswordSubmit),
               ),
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Wrap(
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: Spacing.level2,
-              runSpacing: Spacing.level1,
+              spacing: Spacing.sm,
+              runSpacing: Spacing.xs,
               children: [
                 Text(
                   l10n.authRememberPasswordPrompt,

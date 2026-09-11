@@ -17,15 +17,15 @@ class ReviewReferenceNotice extends StatelessWidget {
           borderRadius: context.theme.style.borderRadius.md,
           border: Border.all(color: SemanticColor.primary.border(context)),
         ),
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Row(
           children: [
             Icon(
               SemanticIcons.statusWarning,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Text(
                 l10n.reviewReferenceNotice,

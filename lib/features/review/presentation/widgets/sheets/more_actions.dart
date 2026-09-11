@@ -90,7 +90,7 @@ class ReviewMoreActionsSheet extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(Spacing.level5),
+      padding: const EdgeInsets.all(Spacing.xl),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,7 @@ class ReviewMoreActionsSheet extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           _MoreActionTile(
             key: const Key('more-visit-summary'),
             icon: SemanticIcons.medicineKit,
@@ -112,7 +112,7 @@ class ReviewMoreActionsSheet extends StatelessWidget {
             subtitle: l10n.reviewMoreVisitSummarySubtitle,
             onTap: () => _run(context, onVisitSummary),
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           _MoreActionTile(
             key: const Key('more-share-management'),
             icon: SemanticIcons.actionShare,
@@ -121,7 +121,7 @@ class ReviewMoreActionsSheet extends StatelessWidget {
             subtitle: l10n.reviewMoreShareManagementSubtitle,
             onTap: () => _run(context, onShareManagement),
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           _MoreActionTile(
             key: const Key('more-pdf'),
             icon: SemanticIcons.recordNote,
@@ -130,7 +130,7 @@ class ReviewMoreActionsSheet extends StatelessWidget {
             subtitle: l10n.reviewMorePdfSubtitle,
             onTap: () => _run(context, onPdf),
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           _MoreActionTile(
             key: const Key('more-print'),
             icon: SemanticIcons.reportExport,
@@ -139,7 +139,7 @@ class ReviewMoreActionsSheet extends StatelessWidget {
             subtitle: l10n.reviewMorePrintSubtitle,
             onTap: () => _run(context, onPrint),
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           _MoreActionTile(
             key: const Key('more-legacy-report'),
             icon: SemanticIcons.reportHistory,
@@ -190,7 +190,7 @@ class _MoreActionTile extends StatelessWidget {
       ),
       child: FCard(
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           child: Row(
             children: [
               FAvatar.raw(
@@ -201,7 +201,7 @@ class _MoreActionTile extends StatelessWidget {
                   size: IconSizeTokens.md,
                 ),
               ),
-              const SizedBox(width: Spacing.level4),
+              const SizedBox(width: Spacing.lg),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -215,7 +215,7 @@ class _MoreActionTile extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: Spacing.level1),
+                    const SizedBox(height: Spacing.xs),
                     Text(
                       subtitle,
                       style: typography.body.xs.copyWith(

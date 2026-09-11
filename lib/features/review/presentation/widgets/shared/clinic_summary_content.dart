@@ -60,9 +60,9 @@ class ClinicSummaryContent extends StatelessWidget {
           value: _dataRangeLabel(dto.dataRange, l10n),
         ),
 
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         const AppDivider(),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
 
         // Profile section — present only when the event_overview field is
         // selected AND the server included the section (deselected sections
@@ -95,9 +95,9 @@ class ClinicSummaryContent extends StatelessWidget {
         // like findings/coverage metadata: always rendered when present,
         // regardless of the field selection.
         if (allergies != null && allergies.isNotEmpty) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           const AppDivider(),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _SectionTitle(text: l10n.reviewClinicSummaryAllergiesSection),
           SizedBox(height: context.titleContentGap),
           ...allergies.map((e) => _BulletItem(text: e.label)),
@@ -107,9 +107,9 @@ class ClinicSummaryContent extends StatelessWidget {
         if (conditions != null &&
             conditions.isNotEmpty &&
             _sectionSelected(dto.selectedFields, 'conditions')) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           const AppDivider(),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _SectionTitle(text: l10n.reviewClinicSummaryConditionsSection),
           SizedBox(height: context.titleContentGap),
           ...conditions.map((e) => _BulletItem(text: e.label)),
@@ -119,9 +119,9 @@ class ClinicSummaryContent extends StatelessWidget {
         if (currentMedicines != null &&
             currentMedicines.isNotEmpty &&
             _sectionSelected(dto.selectedFields, 'currentMedicines')) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           const AppDivider(),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _SectionTitle(text: l10n.reviewClinicSummaryMedicinesSection),
           SizedBox(height: context.titleContentGap),
           ...currentMedicines.map((e) => _BulletItem(text: e.displayName)),
@@ -134,9 +134,9 @@ class ClinicSummaryContent extends StatelessWidget {
         if (dto.findings != null &&
             dto.findings!.isNotEmpty &&
             _sectionSelected(dto.selectedFields, 'findings')) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           const AppDivider(),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _SectionTitle(text: l10n.reviewClinicSummaryFindingsSection),
           SizedBox(height: context.titleContentGap),
           ...dto.findings!.map((e) => _BulletItem(text: e)),
@@ -146,9 +146,9 @@ class ClinicSummaryContent extends StatelessWidget {
         if (dto.waterEntries != null &&
             dto.waterEntries!.isNotEmpty &&
             _sectionSelected(dto.selectedFields, 'water')) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           const AppDivider(),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _SectionTitle(text: l10n.reviewClinicSummaryWaterSection),
           SizedBox(height: context.titleContentGap),
           ...dto.waterEntries!.map(
@@ -162,9 +162,9 @@ class ClinicSummaryContent extends StatelessWidget {
         if (dto.sleepEntries != null &&
             dto.sleepEntries!.isNotEmpty &&
             _sectionSelected(dto.selectedFields, 'sleep')) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           const AppDivider(),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _SectionTitle(text: l10n.reviewClinicSummarySleepSection),
           SizedBox(height: context.titleContentGap),
           ...dto.sleepEntries!.map(
@@ -180,9 +180,9 @@ class ClinicSummaryContent extends StatelessWidget {
         if (dto.noteEntries != null &&
             dto.noteEntries!.isNotEmpty &&
             _sectionSelected(dto.selectedFields, 'notes')) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           const AppDivider(),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _SectionTitle(text: l10n.reviewClinicSummaryNotesSection),
           SizedBox(height: context.titleContentGap),
           ...dto.noteEntries!.map(
@@ -191,9 +191,9 @@ class ClinicSummaryContent extends StatelessWidget {
         ],
 
         // Disclaimer.
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         const AppDivider(),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         _SectionTitle(text: l10n.reviewClinicSummaryDisclaimerSection),
         SizedBox(height: context.titleContentGap),
         Text(
@@ -205,9 +205,9 @@ class ClinicSummaryContent extends StatelessWidget {
 
         // Action buttons.
         if (onDownloadPdf != null || onShare != null) ...[
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           const AppDivider(),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           Row(
             children: [
               if (onDownloadPdf != null)
@@ -225,7 +225,7 @@ class ClinicSummaryContent extends StatelessWidget {
                   ),
                 ),
               if (onDownloadPdf != null && onShare != null)
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
               if (onShare != null)
                 Expanded(
                   child: FButton(
@@ -244,7 +244,7 @@ class ClinicSummaryContent extends StatelessWidget {
           ),
         ],
 
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
       ],
     );
   }
@@ -292,7 +292,7 @@ class _BulletItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -307,7 +307,7 @@ class _BulletItem extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(child: Text(text, style: context.theme.typography.body.xs)),
         ],
       ),

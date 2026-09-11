@@ -149,9 +149,7 @@ class ConditionEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,9 +175,7 @@ class ConditionEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+              vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,9 +196,7 @@ class ConditionEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+              vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,15 +211,13 @@ class ConditionEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+              vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
+                  padding: const EdgeInsets.all(Spacing.lg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -236,7 +228,7 @@ class ConditionEditPage extends HookConsumerWidget {
                         ),
                         label: Text(l10n.mineEditFieldLabel),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       _enumDropdown<HealthConditionStatus>(
                         label: l10n.mineEditFieldStatus,
                         value: status.value,
@@ -248,7 +240,7 @@ class ConditionEditPage extends HookConsumerWidget {
                           status.value,
                         ),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       FDateField.calendar(
                         key: const Key('condition-diagnosed-at-field'),
                         label: Text(l10n.mineEditFieldDiagnosedAt),
@@ -258,7 +250,7 @@ class ConditionEditPage extends HookConsumerWidget {
                           onChange: (value) => diagnosedAt.value = value,
                         ),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: noteController,
@@ -266,14 +258,14 @@ class ConditionEditPage extends HookConsumerWidget {
                         label: Text(l10n.mineEditFieldNote),
                         maxLines: 3,
                       ),
-                      const SizedBox(height: Spacing.level5),
+                      const SizedBox(height: Spacing.xl),
                       FButton(
                         key: const Key('condition-save-button'),
                         onPress: onSave,
                         child: Text(l10n.mineEditSaveAction),
                       ),
                       if (!isNew) ...[
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         FButton(
                           key: const Key('condition-delete-button'),
                           variant: FButtonVariant.destructive,

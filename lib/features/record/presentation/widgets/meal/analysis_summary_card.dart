@@ -31,7 +31,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
     final typography = context.theme.typography;
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -53,7 +53,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ],
             ),
             if (_nonEmpty(data.mealDescription) case final mealDesc?) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 mealDesc,
                 style: typography.body.xs.copyWith(
@@ -62,7 +62,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.recognizedDishes.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               _SectionTitle(title: l10n.recordMealAnalysisRecognizedDishes),
               SizedBox(height: context.titleContentGap),
               ...data.recognizedDishes.map(
@@ -70,7 +70,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.resolvedIngredients.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               _SectionTitle(title: l10n.recordMealAnalysisResolvedIngredients),
               SizedBox(height: context.titleContentGap),
               ...data.resolvedIngredients.map(
@@ -82,7 +82,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.compositionMatches.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               _SectionTitle(title: l10n.recordMealAnalysisCompositionMatches),
               SizedBox(height: context.titleContentGap),
               ...data.compositionMatches.map(
@@ -94,7 +94,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.nutritionEstimate case final nutrition?) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               _SectionTitle(title: l10n.recordMealAnalysisNutritionEstimate),
               SizedBox(height: context.titleContentGap),
               if (nutrition.energyKcal != null)
@@ -109,7 +109,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 ),
             ],
             if (_nonEmpty(data.mealCommentary) case final commentary?) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               Text(
                 commentary,
                 style: typography.body.xs.copyWith(
@@ -118,7 +118,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.isEstimate) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               Text(
                 l10n.recordMealAnalysisEstimateDisclaimer,
                 style: typography.body.xs.copyWith(
@@ -127,7 +127,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.status == 'unconfirmed' && onConfirm != null) ...[
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               Align(
                 alignment: Alignment.centerLeft,
                 child: FButton(
@@ -176,7 +176,7 @@ class _BulletText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.level1),
+      padding: const EdgeInsets.only(bottom: Spacing.xs),
       child: Text(
         '• $text',
         style: context.theme.typography.body.xs.copyWith(

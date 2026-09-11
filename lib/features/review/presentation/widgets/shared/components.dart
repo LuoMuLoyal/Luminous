@@ -17,7 +17,7 @@ class MetaRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -30,7 +30,7 @@ class MetaRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(child: Text(value, style: typography.body.xs)),
         ],
       ),
@@ -43,7 +43,7 @@ class ReviewMetricTrack extends StatelessWidget {
     super.key,
     required this.values,
     required this.color,
-    this.height = Spacing.level7,
+    this.height = Spacing.xl3,
   });
 
   final List<double> values;
@@ -79,13 +79,13 @@ class ReviewMetricTrack extends StatelessWidget {
                           color: SemanticColor.neutral.border(context),
                         ),
                       ),
-                      child: const SizedBox(width: Spacing.level1),
+                      child: const SizedBox(width: Spacing.xs),
                     ),
                   ),
                 ),
               ),
               if (index != visibleValues.length - 1)
-                const SizedBox(width: Spacing.level1),
+                const SizedBox(width: Spacing.xs),
             ],
           ],
         ),

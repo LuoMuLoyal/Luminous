@@ -38,7 +38,7 @@ class ClinicSummaryFieldSelectionPanel extends StatelessWidget {
           l10n.reviewClinicSummaryFieldSectionTitle,
           style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         for (final field in kClinicSummaryAllFields) ...[
           ClinicSummaryFieldToggle(
             key: Key('clinic-summary-field-${field.value}'),
@@ -58,9 +58,9 @@ class ClinicSummaryFieldSelectionPanel extends StatelessWidget {
             ),
           ),
           if (field != kClinicSummaryAllFields.last)
-            const SizedBox(height: Spacing.level1),
+            const SizedBox(height: Spacing.xs),
         ],
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.reviewClinicSummaryFieldPrivacyHint,
           style: typography.body.xs.copyWith(
@@ -121,7 +121,7 @@ class ClinicSummaryFieldToggle extends StatelessWidget {
           semanticsLabel: label,
           onChange: enabled ? onChanged : null,
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Expanded(child: Text(label, style: context.theme.typography.body.sm)),
       ],
     );

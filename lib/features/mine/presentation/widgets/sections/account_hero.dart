@@ -46,7 +46,7 @@ class MineAccountHero extends StatelessWidget {
     return FCard(
       key: const Key('mine-account-manage-link'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,7 +54,7 @@ class MineAccountHero extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const _AvatarPlaceholder(),
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,10 +66,10 @@ class MineAccountHero extends StatelessWidget {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: Spacing.level2),
+                      const SizedBox(height: Spacing.sm),
                       Wrap(
-                        spacing: Spacing.level2,
-                        runSpacing: Spacing.level2,
+                        spacing: Spacing.sm,
+                        runSpacing: Spacing.sm,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           _StateBadge(
@@ -88,12 +88,12 @@ class MineAccountHero extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Text(
               title,
               style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               description,
               style: typography.body.sm.copyWith(
@@ -101,7 +101,7 @@ class MineAccountHero extends StatelessWidget {
                 height: 1.45,
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               children: [
                 Text(
@@ -110,7 +110,7 @@ class MineAccountHero extends StatelessWidget {
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 SkeletonSlot(
                   skeleton: InlineSkeletonBlock(
                     height: 22,
@@ -127,7 +127,7 @@ class MineAccountHero extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             SkeletonSlot(
               skeleton: InlineSkeletonBlock(
                 height: 8,
@@ -141,10 +141,10 @@ class MineAccountHero extends StatelessWidget {
               ),
             ),
             if (gaps.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Wrap(
-                spacing: Spacing.level2,
-                runSpacing: Spacing.level2,
+                spacing: Spacing.sm,
+                runSpacing: Spacing.sm,
                 children: [
                   for (final gap in gaps.take(2))
                     FBadge(
@@ -159,7 +159,7 @@ class MineAccountHero extends StatelessWidget {
                 ],
               ),
             ],
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             SizedBox(
               width: double.infinity,
               child: FButton(
@@ -262,7 +262,7 @@ class _AvatarPlaceholder extends StatelessWidget {
                 border: Border.all(color: colors.background, width: 2),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(Spacing.level1),
+                padding: const EdgeInsets.all(Spacing.xs),
                 child: Icon(
                   SemanticIcons.actionEdit,
                   color: SemanticColor.primary.foreground(context),

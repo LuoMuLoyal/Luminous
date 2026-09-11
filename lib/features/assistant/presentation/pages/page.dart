@@ -430,13 +430,13 @@ class _RenameConversationDialogState extends State<_RenameConversationDialog> {
       key: const Key('assistant-conversation-rename-dialog'),
       constraints: const BoxConstraints(maxWidth: 440),
       builder: (context, style) => Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.dialogTitle, style: context.theme.typography.body.lg),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FTextField(
               key: const Key('assistant-conversation-rename-field'),
               control: FTextFieldControl.managed(controller: _controller),
@@ -445,7 +445,7 @@ class _RenameConversationDialogState extends State<_RenameConversationDialog> {
               maxLength: 48,
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -454,7 +454,7 @@ class _RenameConversationDialogState extends State<_RenameConversationDialog> {
                   onPress: () => Navigator.of(context).pop(),
                   child: Text(widget.cancelLabel),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   key: const Key('assistant-conversation-rename-confirm'),
                   onPress: () => Navigator.of(context).pop(_controller.text),

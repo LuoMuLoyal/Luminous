@@ -8,7 +8,7 @@ class StateSkeletonView extends StatelessWidget {
   const StateSkeletonView({
     super.key,
     required this.blocks,
-    this.padding = const EdgeInsets.all(Spacing.level4),
+    this.padding = const EdgeInsets.all(Spacing.lg),
   });
 
   final List<StateSkeletonBlock> blocks;
@@ -23,7 +23,7 @@ class StateSkeletonView extends StatelessWidget {
         padding: padding,
         itemBuilder: (context, index) => _SkeletonBlock(data: blocks[index]),
         separatorBuilder: (context, index) =>
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
         itemCount: blocks.length,
       ),
     );
@@ -35,7 +35,7 @@ class InlineSkeleton extends StatelessWidget {
   const InlineSkeleton({
     super.key,
     required this.children,
-    this.spacing = Spacing.level3,
+    this.spacing = Spacing.md,
   });
 
   final List<Widget> children;
@@ -272,7 +272,7 @@ class InlineSkeletonSection extends StatelessWidget {
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: SizedBox(
           height: height,
           child: InlineSkeleton(children: children),

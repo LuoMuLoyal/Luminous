@@ -42,8 +42,8 @@ class RecordHeaderActionChip extends StatelessWidget {
           contentStyle: FButtonContentStyleDelta.delta(
             padding: .value(
               EdgeInsets.symmetric(
-                horizontal: iconOnly ? Spacing.level3 : Spacing.level4,
-                vertical: Spacing.level3,
+                horizontal: iconOnly ? Spacing.md : Spacing.lg,
+                vertical: Spacing.md,
               ),
             ),
             spacing: iconOnly ? 0 : null,

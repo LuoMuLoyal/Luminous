@@ -76,7 +76,7 @@ class _QuickOperationSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FCard(
           child: Column(
             children: [
@@ -104,20 +104,20 @@ class _QuickOperationRow extends StatelessWidget {
       onPress: operation.onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level4,
-          vertical: Spacing.level3,
+          horizontal: Spacing.lg,
+          vertical: Spacing.md,
         ),
         child: Row(
           children: [
             FAvatar.raw(
-              size: Spacing.level8,
+              size: Spacing.xl4,
               child: Icon(
                 operation.icon,
                 color: operation.color.solid(context),
-                size: Spacing.level5,
+                size: Spacing.xl,
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +130,7 @@ class _QuickOperationRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     operation.subtitle,
                     style: typography.body.xs.copyWith(
@@ -145,7 +145,7 @@ class _QuickOperationRow extends StatelessWidget {
             Icon(
               SemanticIcons.actionNext,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
           ],
         ),

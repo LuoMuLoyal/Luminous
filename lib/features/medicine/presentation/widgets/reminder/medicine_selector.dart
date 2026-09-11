@@ -15,7 +15,7 @@ class MedicineSelectorPrompt extends StatelessWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -24,7 +24,7 @@ class MedicineSelectorPrompt extends StatelessWidget {
               style: context.theme.typography.body.sm,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FButton(
               onPress: onSelect,
               child: Text(l10n.medicineReminderSelectMedicineAction),

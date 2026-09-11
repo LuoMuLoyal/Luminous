@@ -36,9 +36,9 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
-                    left: Spacing.level2,
-                    right: Spacing.level2,
-                    bottom: Spacing.level4,
+                    left: Spacing.sm,
+                    right: Spacing.sm,
+                    bottom: Spacing.lg,
                   ),
                   child: Row(
                     children: [
@@ -47,7 +47,7 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                         size: IconSizeTokens.sm,
                         color: SemanticColor.primary.solid(context),
                       ),
-                      const SizedBox(width: Spacing.level2),
+                      const SizedBox(width: Spacing.sm),
                       Expanded(
                         child: Text(
                           l10n.settingsFeatureFlagsWarning,
@@ -99,11 +99,11 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 SettingsSectionLabel(
                   label: l10n.settingsFeatureFlagsAssistantSection,
                 ),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -122,11 +122,11 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 SettingsSectionLabel(
                   label: l10n.settingsFeatureFlagsMedicineSection,
                 ),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -145,11 +145,11 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 SettingsSectionLabel(
                   label: l10n.settingsFeatureFlagsReportSection,
                 ),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -207,13 +207,13 @@ class _ProviderSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.md),
               child: Text(
                 l10n.settingsFeatureFlagsAiProvider,
                 style: context.theme.typography.body.md.copyWith(

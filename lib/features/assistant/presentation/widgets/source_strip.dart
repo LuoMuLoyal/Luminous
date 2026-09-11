@@ -50,7 +50,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
             behavior: HitTestBehavior.opaque,
             onTap: () => setState(() => _expanded = !_expanded),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+              padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
               child: Row(
                 children: [
                   Icon(
@@ -58,7 +58,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                     size: 14,
                     color: SemanticColor.neutral.solid(context),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   Expanded(
                     child: Text.rich(
                       TextSpan(
@@ -71,7 +71,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   Icon(
                     _expanded
                         ? SemanticIcons.actionCollapse
@@ -86,12 +86,12 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
         ),
         if (_hasMedicalQaTool) ...[
           Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.level2),
+            padding: const EdgeInsets.only(bottom: Spacing.sm),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(width: 14),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Expanded(
                   child: Text(
                     l10n.assistantSourceLowTrustHint,
@@ -109,7 +109,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
         if (_expanded)
           for (final tool in widget.usedTools)
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.md),
               child: _ToolDetailCard(
                 tool: tool,
                 label: _labelFor(tool),
@@ -146,7 +146,7 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: Padding(
-              padding: const EdgeInsets.only(left: Spacing.level1),
+              padding: const EdgeInsets.only(left: Spacing.xs),
               child: _SourceTierBadge(type: tier),
             ),
           ),
@@ -260,7 +260,7 @@ class _ToolDetailCard extends StatelessWidget {
         borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level3),
+        padding: const EdgeInsets.all(Spacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -268,7 +268,7 @@ class _ToolDetailCard extends StatelessWidget {
               title,
               style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: Spacing.level1),
+            const SizedBox(height: Spacing.xs),
             if (detail == null)
               Text(
                 l10n.assistantSourceNoDetailsNote,
@@ -279,7 +279,7 @@ class _ToolDetailCard extends StatelessWidget {
             else ...[
               for (final row in rows)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.level1),
+                  padding: const EdgeInsets.only(bottom: Spacing.xs),
                   child: Text(
                     row,
                     style: typography.body.sm.copyWith(
@@ -289,7 +289,7 @@ class _ToolDetailCard extends StatelessWidget {
                 ),
               if (disclaimer != null && disclaimer.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: Spacing.level1),
+                  padding: const EdgeInsets.only(top: Spacing.xs),
                   child: Text(
                     disclaimer,
                     style: typography.body.xs.copyWith(
@@ -395,7 +395,7 @@ class _SourceTierBadge extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
+          horizontal: Spacing.sm,
           vertical: 1,
         ),
         child: Text(

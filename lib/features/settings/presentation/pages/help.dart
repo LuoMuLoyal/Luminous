@@ -33,15 +33,13 @@ class HelpSettingsPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < Breakpoints.mobile
-              ? Spacing.level6
-              : Spacing.level7,
+          vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _FaqSection(locale: locale),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             _FeedbackSection(l10n: l10n),
           ],
         ),
@@ -254,7 +252,7 @@ class _FaqError extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level4),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.lg),
       child: Row(
         children: [
           Icon(
@@ -262,7 +260,7 @@ class _FaqError extends StatelessWidget {
             color: colors.error,
             size: IconSizeTokens.md,
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(
             child: Text(
               l10n.settingsHelpFaqLoadError,
@@ -328,7 +326,7 @@ class _FeedbackSection extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: Spacing.level6),
+          const SizedBox(height: Spacing.xl2),
         ],
         SettingsSectionLabel(label: l10n.settingsHelpFeedbackSectionTitle),
         SizedBox(height: context.titleContentGap),

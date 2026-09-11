@@ -63,7 +63,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -147,11 +147,11 @@ class AdvancedSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 if (kDebugMode) ...[
-                  const SizedBox(height: Spacing.level5),
+                  const SizedBox(height: Spacing.xl),
                   SettingsSectionLabel(
                     label: l10n.settingsDeveloperSectionTitle,
                   ),
-                  const SizedBox(height: Spacing.level3),
+                  const SizedBox(height: Spacing.md),
                   _DeveloperOptionsGroup(),
                 ],
               ],
@@ -316,13 +316,13 @@ class _EndpointSheetState extends State<_EndpointSheet> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.md),
               child: Text(
                 widget.l10n.settingsDevApiEndpoint,
                 style: context.theme.typography.body.md.copyWith(
@@ -354,7 +354,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
               ],
             ),
             if (_selected == ApiEndpoint.custom) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               FTextField(
                 control: FTextFieldControl.managed(
                   controller: _customController,
@@ -363,7 +363,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
                 hint: 'https://...',
               ),
             ],
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             SizedBox(
               width: double.infinity,
               child: FButton(
@@ -406,13 +406,13 @@ class _LogLevelSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.md),
               child: Text(
                 l10n.settingsDevLogLevel,
                 style: context.theme.typography.body.md.copyWith(

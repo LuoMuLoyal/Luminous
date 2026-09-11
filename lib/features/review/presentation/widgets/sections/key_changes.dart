@@ -153,7 +153,7 @@ class _TrendRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.level3),
+      padding: const EdgeInsets.only(bottom: Spacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -174,8 +174,8 @@ class _TrendRow extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level3,
-                    vertical: Spacing.level1,
+                    horizontal: Spacing.md,
+                    vertical: Spacing.xs,
                   ),
                   child: Text(
                     chipLabel,
@@ -188,7 +188,7 @@ class _TrendRow extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Spacing.level1),
+          const SizedBox(height: Spacing.xs),
           Text(
             detail,
             style: typography.body.xs.copyWith(

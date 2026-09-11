@@ -43,7 +43,7 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(label, style: typography.body.lg),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         if (action.type == RecordEntryType.water)
           _WaterSettings(
             prefs: prefs,
@@ -76,7 +76,7 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
           )
         else
           Text(_ruleText(l10n, action.type), style: typography.body.sm),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Align(
           alignment: Alignment.centerRight,
           child: FButton(
@@ -127,7 +127,7 @@ class _MedicationSettings extends StatelessWidget {
             !prefs.medicationAutoRecordSingle,
           ),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         FTile(
           title: Text(l10n.recordQuickSettingsMedicationAlreadyRecordedHint),
           subtitle: Text(
@@ -187,7 +187,7 @@ class _SleepSettings extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FTile(
           title: Text(l10n.recordQuickSettingsSleepBadge),
           subtitle: Text(l10n.recordQuickSettingsSleepBadgeHint),
@@ -240,7 +240,7 @@ class _MoodSettings extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FSelect<QuickEntryMoodBadgeMode>.rich(
           key: const Key('quick-type-mood-badge'),
           label: Text(l10n.recordQuickSettingsMoodBadge),
@@ -313,17 +313,17 @@ class _SymptomSettings extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Text(
           l10n.recordQuickSettingsSymptomChoices,
           style: context.theme.typography.body.sm,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Material(
           type: MaterialType.transparency,
           child: Wrap(
-            spacing: Spacing.level2,
-            runSpacing: Spacing.level2,
+            spacing: Spacing.sm,
+            runSpacing: Spacing.sm,
             children: [
               for (final choice in allChoices)
                 FilterChip(
@@ -410,7 +410,7 @@ class _WaterSettings extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FSelect<QuickEntryWaterBadgeMode>.rich(
           key: const Key('quick-type-water-badge'),
           label: Text(l10n.recordQuickSettingsWaterBadge),

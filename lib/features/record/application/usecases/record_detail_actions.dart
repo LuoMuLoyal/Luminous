@@ -80,12 +80,12 @@ Future<bool?> _showDeleteConfirmDialog(
           l10n.recordDeleteConfirmTitle,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.recordDeleteConfirmMessage,
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -94,7 +94,7 @@ Future<bool?> _showDeleteConfirmDialog(
               onPress: () => Navigator.of(dialogContext).pop(false),
               child: Text(l10n.authCancelAction),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               key: const Key('record-delete-confirm-action'),
               variant: FButtonVariant.destructive,

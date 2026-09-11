@@ -37,7 +37,7 @@ class SafetyEngineSection extends StatelessWidget {
           isStale: records?.isStale ?? false,
           lastChecked: bestRecord?.updatedAt,
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         SafetyCard(
           l10n: l10n,
           result: result,
@@ -84,7 +84,7 @@ class SafetyHeader extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         if (hasData)
           LastCheckedLabel(
             l10n: l10n,
@@ -132,7 +132,7 @@ class LastCheckedLabel extends StatelessWidget {
             size: IconSizeTokens.sm,
             color: SemanticColor.warning.solid(context),
           ),
-          const SizedBox(width: Spacing.level1),
+          const SizedBox(width: Spacing.xs),
           Text(
             l10n.medicineRiskCheckStale,
             style: typography.body.xs.copyWith(
@@ -153,7 +153,7 @@ class LastCheckedLabel extends StatelessWidget {
           size: IconSizeTokens.sm,
           color: SemanticColor.neutral.solid(context),
         ),
-        const SizedBox(width: Spacing.level1),
+        const SizedBox(width: Spacing.xs),
         Text(
           l10n.medicineRiskCheckLastUpdated(time),
           style: typography.body.xs.copyWith(

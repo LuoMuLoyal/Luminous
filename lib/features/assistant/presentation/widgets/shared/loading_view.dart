@@ -17,7 +17,7 @@ class AssistantLoadingView extends StatelessWidget {
             InlineSkeletonBlock(height: 18, widthFactor: 0.74),
           ],
         ),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         InlineSkeletonSection(
           children: [
             InlineSkeletonBlock(height: 240),

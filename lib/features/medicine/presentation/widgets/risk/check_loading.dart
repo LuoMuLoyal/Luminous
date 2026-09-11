@@ -13,23 +13,23 @@ class MedicineRiskCheckLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level4,
+        horizontal: Spacing.lg,
+        vertical: Spacing.lg,
       ),
       child: InlineSkeleton(
         children: [
           // Tab bar area.
           InlineSkeletonBlock(height: 44, widthFactor: 0.6),
-          SizedBox(height: Spacing.level4),
+          SizedBox(height: Spacing.lg),
           // Hero (risk score ring + description).
           InlineSkeletonBlock(height: 160),
-          SizedBox(height: Spacing.level5),
+          SizedBox(height: Spacing.xl),
           // Metric grid.
           InlineSkeletonBlock(height: 72),
-          SizedBox(height: Spacing.level5),
+          SizedBox(height: Spacing.xl),
           // Finding items.
           InlineSkeletonBlock(height: 64),
-          SizedBox(height: Spacing.level3),
+          SizedBox(height: Spacing.md),
           InlineSkeletonBlock(height: 64),
         ],
       ),

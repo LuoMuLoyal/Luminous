@@ -50,14 +50,14 @@ class QuickEntryHeader extends StatelessWidget {
             l10n.recordQuickHelpTooltip,
             style: dialogContext.theme.typography.body.lg,
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           HelpLine(text: l10n.recordQuickSettingsMedicationRule),
           HelpLine(text: l10n.recordQuickSettingsMealRule),
           HelpLine(text: l10n.recordQuickSettingsSymptomRule),
           HelpLine(text: l10n.recordQuickSettingsMoodRule),
           HelpLine(text: l10n.recordQuickSettingsSleepRule),
           HelpLine(text: l10n.recordQuickHelpLongPressRule),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           Align(
             alignment: Alignment.centerRight,
             child: FButton(
@@ -81,7 +81,7 @@ class HelpLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.level2),
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -89,7 +89,7 @@ class HelpLine extends StatelessWidget {
             padding: EdgeInsets.only(top: 2),
             child: Icon(SemanticIcons.statusInfo, size: IconSizeTokens.sm),
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(child: Text(text, style: context.theme.typography.body.sm)),
         ],
       ),

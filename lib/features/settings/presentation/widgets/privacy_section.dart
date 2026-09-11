@@ -171,12 +171,12 @@ class PrivacySection extends ConsumerWidget {
                 l10n.settingsDataSharingConfirmTitle,
                 style: context.theme.typography.body.lg,
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 l10n.settingsDataSharingConfirmDescription,
                 style: context.theme.typography.body.sm,
               ),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -185,7 +185,7 @@ class PrivacySection extends ConsumerWidget {
                     onPress: () => Navigator.of(context).pop(false),
                     child: Text(l10n.settingsDataSharingCancelAction),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   FButton(
                     onPress: () => Navigator.of(context).pop(true),
                     child: Text(l10n.settingsDataSharingConfirmAction),

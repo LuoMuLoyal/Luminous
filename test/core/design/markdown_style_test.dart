@@ -21,7 +21,7 @@ Future<BuildContext> _themedContext(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('legal 样式：正文 level4、行高 1.7', (tester) async {
+  testWidgets('legal 样式：正文 lg、行高 1.7', (tester) async {
     final context = await _themedContext(tester);
     final sheet = MarkdownStyle.legal(context);
     expect(sheet.p?.fontSize, 16);
@@ -42,10 +42,10 @@ void main() {
     expect(border.left.width, 4);
     expect(border.left.color, context.theme.colors.primary);
     // 带底色后四边都有 padding，不再只留左侧。
-    expect(sheet.blockquotePadding?.left, Spacing.level3);
-    expect(sheet.blockquotePadding?.top, Spacing.level2);
-    expect(sheet.blockquotePadding?.right, Spacing.level3);
-    expect(sheet.blockquotePadding?.bottom, Spacing.level2);
+    expect(sheet.blockquotePadding?.left, Spacing.md);
+    expect(sheet.blockquotePadding?.top, Spacing.sm);
+    expect(sheet.blockquotePadding?.right, Spacing.md);
+    expect(sheet.blockquotePadding?.bottom, Spacing.sm);
   });
 
   testWidgets('ai 样式：h1-h6 字号阶梯递减', (tester) async {
@@ -72,8 +72,8 @@ void main() {
     final context = await _themedContext(tester);
     final sheet = MarkdownStyle.ai(context);
 
-    expect(sheet.listIndent, Spacing.level5);
-    expect(sheet.listBulletPadding?.right, Spacing.level2);
+    expect(sheet.listIndent, Spacing.xl);
+    expect(sheet.listBulletPadding?.right, Spacing.sm);
     expect(sheet.listBullet?.color, context.theme.colors.primary);
     // flutter_markdown_plus 仅在列宽为 Intrinsic/Fixed 时把表格包进横向滚动容器。
     expect(sheet.tableColumnWidth, isA<IntrinsicColumnWidth>());

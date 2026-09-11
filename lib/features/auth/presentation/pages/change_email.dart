@@ -59,7 +59,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                       invalidMessage: l10n.authEmailInvalidError,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level4),
+                  const SizedBox(height: Spacing.lg),
                   FTextFormField.password(
                     key: const Key('change-email-password-field'),
                     control: FTextFieldControl.managed(
@@ -73,7 +73,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                         ? l10n.authCurrentPasswordRequiredToast
                         : null,
                   ),
-                  const SizedBox(height: Spacing.level4),
+                  const SizedBox(height: Spacing.lg),
                   VerificationCodeField(
                     controller: codeController,
                     label: l10n.authCodeLabel,
@@ -107,7 +107,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                             );
                           },
                   ),
-                  const SizedBox(height: Spacing.level6),
+                  const SizedBox(height: Spacing.xl2),
                   SizedBox(
                     width: double.infinity,
                     child: FButton(
@@ -146,7 +146,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                           : Text(l10n.authChangeEmailSubmit),
                     ),
                   ),
-                  const SizedBox(height: Spacing.level3),
+                  const SizedBox(height: Spacing.md),
                   Row(
                     children: [
                       Expanded(

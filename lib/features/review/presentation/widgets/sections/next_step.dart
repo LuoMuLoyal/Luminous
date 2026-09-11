@@ -67,7 +67,7 @@ class NextStepSection extends StatelessWidget {
         children: [
           ReviewFactRow(icon: SemanticIcons.aiTip, text: prompt),
           if (redFlags.isNotEmpty) ...[
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             _RedFlagList(l10n: l10n, redFlags: redFlags),
           ],
         ],
@@ -93,7 +93,7 @@ class _RedFlagList extends StatelessWidget {
         color: warning.subtle(context),
         borderRadius: context.theme.style.borderRadius.sm,
       ),
-      padding: const EdgeInsets.all(Spacing.level3),
+      padding: const EdgeInsets.all(Spacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -102,11 +102,11 @@ class _RedFlagList extends StatelessWidget {
               ExcludeSemantics(
                 child: Icon(
                   SemanticIcons.safetyAllergy,
-                  size: Spacing.level4,
+                  size: Spacing.lg,
                   color: warning.solid(context),
                 ),
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               // 标题参与 flex 收缩：en 长文案下避免横向溢出（Task 9 矩阵）。
               Expanded(
                 child: Text(
@@ -119,10 +119,10 @@ class _RedFlagList extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           for (final flag in redFlags)
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level1),
+              padding: const EdgeInsets.only(bottom: Spacing.xs),
               child: Text(_redFlagLabel(flag), style: typography.body.xs),
             ),
         ],

@@ -60,21 +60,21 @@ class MedicineDetailContent extends ConsumerWidget {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level4,
-            vertical: Spacing.level4,
+            horizontal: Spacing.lg,
+            vertical: Spacing.lg,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               HeaderCard(detail: detail, source: source),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               ReferenceNotice(l10n: l10n),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               RiskCheckEntry(
                 l10n: l10n,
                 onTap: () => const MedicineRiskCheckRoute().push(context),
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               if (sections.isNotEmpty)
                 FAccordion(
                   children: [
@@ -91,7 +91,7 @@ class MedicineDetailContent extends ConsumerWidget {
                   title: l10n.medicineDetailNoContentTitle,
                   icon: SemanticIcons.statusInfo,
                 ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               FButton(
                 onPress: isAdded
                     ? null
@@ -106,7 +106,7 @@ class MedicineDetailContent extends ConsumerWidget {
                 ),
               ),
               if (isAdded) ...[
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 FButton(
                   variant: FButtonVariant.outline,
                   onPress: () => MedicineReminderDetailRoute(
@@ -318,7 +318,7 @@ class HeaderCard extends StatelessWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -333,12 +333,12 @@ class HeaderCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 SourceBadge(source: source, l10n: l10n),
               ],
             ),
             if (detail.subtitle != null) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 detail.subtitle!,
                 style: typography.body.xs.copyWith(
@@ -347,7 +347,7 @@ class HeaderCard extends StatelessWidget {
               ),
             ],
             if (source == 'cn') ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               if (detail.approvalNumber != null)
                 MetaRow(
                   label: l10n.medicineDetailApprovalNumber,
@@ -387,12 +387,12 @@ class MetaRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.only(top: Spacing.level2),
+      padding: const EdgeInsets.only(top: Spacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: Spacing.level8,
+            width: Spacing.xl4,
             child: Text(
               label,
               style: typography.body.xs.copyWith(
@@ -400,7 +400,7 @@ class MetaRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(child: Text(value, style: typography.body.xs)),
         ],
       ),

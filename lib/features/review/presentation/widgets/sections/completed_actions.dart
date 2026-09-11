@@ -61,7 +61,7 @@ class CompletedActionsSection extends StatelessWidget {
           l10n.reviewReviewDoseSectionTitle,
           style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         ReviewFactRow(
           icon: SemanticIcons.statusDone,
           text: l10n.reviewReviewDoseConfirmedLabel(confirmed),
@@ -76,12 +76,12 @@ class CompletedActionsSection extends StatelessWidget {
             text: l10n.reviewReviewDoseUnconfirmedLabel(unconfirmed),
           ),
         if (checkIns.isNotEmpty) ...[
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           Text(
             l10n.reviewReviewCheckInSectionTitle,
             style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           for (final checkIn in checkIns.take(_maxCheckInRows))
             ReviewFactRow(
               icon: SemanticIcons.statusDone,

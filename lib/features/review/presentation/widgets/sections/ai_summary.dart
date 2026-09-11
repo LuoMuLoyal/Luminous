@@ -51,7 +51,7 @@ class ReviewAiSummarySection extends StatelessWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -59,14 +59,14 @@ class ReviewAiSummarySection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FAvatar.raw(
-                  size: Spacing.level8,
+                  size: Spacing.xl4,
                   child: Icon(
                     SemanticIcons.aiEntry,
                     color: SemanticColor.primary.solid(context),
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                   ),
                 ),
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,14 +77,14 @@ class ReviewAiSummarySection extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: Spacing.level1),
+                      const SizedBox(height: Spacing.xs),
                       Text(
                         content.subtitle,
                         style: typography.body.xs.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       _RangeChipRow(
                         selectedRange: selectedRange,
                         onRangeChanged: onRangeChanged,
@@ -95,13 +95,13 @@ class ReviewAiSummarySection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             const AppDivider(),
             if (content.summaryText != null) ...[
               Padding(
                 padding: const EdgeInsets.only(
-                  top: Spacing.level3,
-                  bottom: Spacing.level3,
+                  top: Spacing.md,
+                  bottom: Spacing.md,
                 ),
                 child: MarkdownBody(
                   data: content.summaryText!,
@@ -116,7 +116,7 @@ class ReviewAiSummarySection extends StatelessWidget {
             ],
             if (content.observedPattern != null) ...[
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
+                padding: const EdgeInsets.symmetric(vertical: Spacing.md),
                 child: Text(
                   content.observedPattern!,
                   style: typography.body.xs.copyWith(
@@ -128,7 +128,7 @@ class ReviewAiSummarySection extends StatelessWidget {
             ],
             if (content.lowRiskAction != null) ...[
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
+                padding: const EdgeInsets.symmetric(vertical: Spacing.md),
                 child: Text(
                   content.lowRiskAction!,
                   style: typography.body.xs.copyWith(
@@ -139,7 +139,7 @@ class ReviewAiSummarySection extends StatelessWidget {
               const AppDivider(),
             ],
             if (content.disclaimer != null) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 content.disclaimer!,
                 style: typography.body.xs.copyWith(
@@ -148,7 +148,7 @@ class ReviewAiSummarySection extends StatelessWidget {
               ),
             ],
             if (content.showGenerateButton) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               Align(
                 alignment: Alignment.centerLeft,
                 child: FButton(
@@ -200,8 +200,8 @@ class _RangeChipRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       key: const Key('review-ai-summary-range-toggle'),
-      spacing: Spacing.level2,
-      runSpacing: Spacing.level2,
+      spacing: Spacing.sm,
+      runSpacing: Spacing.sm,
       children: [
         for (final (range, label) in <(ReviewAiSummaryRange, String)>[
           (ReviewAiSummaryRange.last7Days, l10n.reviewRangeLast7Days),
@@ -242,8 +242,8 @@ class _RangeChip extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.level3,
-              vertical: Spacing.level2,
+              horizontal: Spacing.md,
+              vertical: Spacing.sm,
             ),
             child: Text(
               label,

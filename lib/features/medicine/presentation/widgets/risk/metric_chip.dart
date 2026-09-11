@@ -36,8 +36,8 @@ class RiskMetricCell extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level2,
+          horizontal: Spacing.md,
+          vertical: Spacing.sm,
         ),
         child: Column(
           children: [
@@ -49,7 +49,7 @@ class RiskMetricCell extends StatelessWidget {
                 color: color?.solid(context),
               ),
             ),
-            const SizedBox(height: Spacing.level1),
+            const SizedBox(height: Spacing.xs),
             Text(
               label,
               style: typography.body.xs.copyWith(

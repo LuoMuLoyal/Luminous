@@ -358,9 +358,7 @@ class RecordCreatePage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,15 +388,13 @@ class RecordCreatePage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(Spacing.level4),
+                padding: const EdgeInsets.all(Spacing.lg),
                 child: RecordCreateForm(
                   kind: kind.value,
                   onKindChanged: onKindChanged,
@@ -494,12 +490,12 @@ class RecordCreatePage extends HookConsumerWidget {
             l10n.recordDiscardChangesTitle,
             style: dialogContext.theme.dialogStyle.titleTextStyle,
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           Text(
             l10n.recordDiscardChangesMessage,
             style: dialogContext.theme.dialogStyle.bodyTextStyle,
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -508,7 +504,7 @@ class RecordCreatePage extends HookConsumerWidget {
                 onPress: () => Navigator.of(dialogContext).pop(false),
                 child: Text(l10n.authCancelAction),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               FButton(
                 variant: FButtonVariant.destructive,
                 onPress: () => Navigator.of(dialogContext).pop(true),

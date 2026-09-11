@@ -22,8 +22,8 @@ class SuggestionEmptyState extends StatelessWidget {
       style: todayCardStyle(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level4,
-          vertical: Spacing.level6,
+          horizontal: Spacing.lg,
+          vertical: Spacing.xl2,
         ),
         child: Center(
           child: Column(
@@ -34,12 +34,12 @@ class SuggestionEmptyState extends StatelessWidget {
                 size: IconSizeTokens.xl2,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 l10n.todaySuggestionEmptyTitle,
                 style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 l10n.todaySuggestionEmptySubtitle,
                 style: typography.body.xs.copyWith(
@@ -71,7 +71,7 @@ class SuggestionSkeleton extends StatelessWidget {
       child: FCard(
         style: todayCardStyle(context),
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -83,9 +83,9 @@ class SuggestionSkeleton extends StatelessWidget {
                       color: colors.secondary,
                       borderRadius: borderRadius.sm,
                     ),
-                    child: const SizedBox.square(dimension: Spacing.level7),
+                    child: const SizedBox.square(dimension: Spacing.xl3),
                   ),
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +97,7 @@ class SuggestionSkeleton extends StatelessWidget {
                             borderRadius: borderRadius.xs,
                           ),
                         ),
-                        const SizedBox(height: Spacing.level2),
+                        const SizedBox(height: Spacing.sm),
                         Container(
                           height: 12,
                           width: 120,
@@ -111,7 +111,7 @@ class SuggestionSkeleton extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               // Reason lines
               Container(
                 height: 14,
@@ -120,7 +120,7 @@ class SuggestionSkeleton extends StatelessWidget {
                   borderRadius: borderRadius.xs,
                 ),
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Container(
                 height: 14,
                 width: 200,
@@ -129,7 +129,7 @@ class SuggestionSkeleton extends StatelessWidget {
                   borderRadius: borderRadius.xs,
                 ),
               ),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               // Action row
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -168,8 +168,8 @@ class SuggestionErrorState extends StatelessWidget {
       style: todayCardStyle(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level4,
-          vertical: Spacing.level6,
+          horizontal: Spacing.lg,
+          vertical: Spacing.xl2,
         ),
         child: Center(
           child: Column(
@@ -180,14 +180,14 @@ class SuggestionErrorState extends StatelessWidget {
                 size: IconSizeTokens.xl2,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 l10n.todaySuggestionErrorHint,
                 style: context.theme.typography.body.sm.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               FButton(
                 onPress: onRetry,
                 variant: FButtonVariant.secondary,
@@ -235,7 +235,7 @@ class SuggestionMaterializationNotice extends StatelessWidget {
 
     if (message == null) return const SizedBox.shrink();
     return Padding(
-      padding: const EdgeInsets.only(top: Spacing.level2),
+      padding: const EdgeInsets.only(top: Spacing.sm),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -250,7 +250,7 @@ class SuggestionMaterializationNotice extends StatelessWidget {
           ),
           if (status == TodaySuggestionMaterializationStatus.failed &&
               onRetry != null) ...[
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             FButton(
               onPress: onRetry,
               variant: FButtonVariant.ghost,
@@ -278,8 +278,8 @@ class SecondarySuggestionErrorState extends StatelessWidget {
       title: l10n.todaySecondarySuggestionSectionTitle,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level4,
-          vertical: Spacing.level5,
+          horizontal: Spacing.lg,
+          vertical: Spacing.xl,
         ),
         child: Center(
           child: Column(
@@ -290,14 +290,14 @@ class SecondarySuggestionErrorState extends StatelessWidget {
                 size: IconSizeTokens.lg,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 l10n.todaySuggestionSecondaryErrorHint,
                 style: context.theme.typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               FButton(
                 onPress: onRetry,
                 variant: FButtonVariant.ghost,
@@ -330,11 +330,11 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
         child: Column(
           children: [
             for (var i = 0; i < 2; i++) ...[
-              if (i > 0) const SizedBox(height: Spacing.level3),
+              if (i > 0) const SizedBox(height: Spacing.md),
               FCard(
                 style: todayCardStyle(context, tone: TodayCardTone.soft),
                 child: Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
+                  padding: const EdgeInsets.all(Spacing.lg),
                   child: Row(
                     children: [
                       DecoratedBox(
@@ -342,9 +342,9 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
                           color: colors.secondary,
                           borderRadius: borderRadius.sm,
                         ),
-                        child: const SizedBox.square(dimension: Spacing.level7),
+                        child: const SizedBox.square(dimension: Spacing.xl3),
                       ),
-                      const SizedBox(width: Spacing.level3),
+                      const SizedBox(width: Spacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,7 +356,7 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
                                 borderRadius: borderRadius.xs,
                               ),
                             ),
-                            const SizedBox(height: Spacing.level2),
+                            const SizedBox(height: Spacing.sm),
                             Container(
                               height: 12,
                               width: 140,

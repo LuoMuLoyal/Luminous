@@ -27,7 +27,7 @@ class AccountSessionsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+            padding: const EdgeInsets.symmetric(vertical: Spacing.xl2),
             child: sessions.when(
               loading: () => const _SessionsLoading(),
               error: (error, stackTrace) => StateErrorView(

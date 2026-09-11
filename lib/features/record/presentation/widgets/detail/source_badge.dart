@@ -18,7 +18,7 @@ class SourceBadge extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
+          horizontal: Spacing.sm,
           vertical: 1,
         ),
         child: Text(

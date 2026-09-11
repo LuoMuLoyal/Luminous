@@ -63,8 +63,8 @@ class LegalDetailPage extends ConsumerWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
-                    top: Spacing.level5,
-                    bottom: Spacing.level2,
+                    top: Spacing.xl,
+                    bottom: Spacing.sm,
                   ),
                   child: Text(
                     l10n.legalListUpdatedAt(
@@ -85,7 +85,7 @@ class LegalDetailPage extends ConsumerWidget {
                   shrinkWrap: true,
                   styleSheet: MarkdownStyle.legal(context),
                 ),
-                const SizedBox(height: Spacing.level7),
+                const SizedBox(height: Spacing.xl3),
               ],
             ),
           ),

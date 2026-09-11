@@ -33,17 +33,17 @@ class _DrugBoxSection extends StatelessWidget {
             letterSpacing: 0,
           ),
         ),
-        const SizedBox(height: Spacing.level1),
+        const SizedBox(height: Spacing.xs),
         Text(
           l10n.medicineDrugboxSubtitle,
           style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FCard(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -52,7 +52,7 @@ class _DrugBoxSection extends StatelessWidget {
                   hasMedicines: items.isNotEmpty,
                   count: items.length,
                 ),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 if (items.isEmpty)
                   _DrugBoxEmpty(l10n: l10n)
                 else ...[
@@ -64,7 +64,7 @@ class _DrugBoxSection extends StatelessWidget {
                     onOpenReminder: onOpenReminder,
                   ),
                   if (items.length > _maxVisibleDrugboxItems) ...[
-                    const SizedBox(height: Spacing.level2),
+                    const SizedBox(height: Spacing.sm),
                     _TruncatedFooter(
                       label: l10n.medicineDrugboxMoreCount(
                         items.length - _maxVisibleDrugboxItems,
@@ -104,8 +104,8 @@ class _DrugBoxHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: Spacing.level7,
-          height: Spacing.level7,
+          width: Spacing.xl3,
+          height: Spacing.xl3,
           decoration: BoxDecoration(
             color: SemanticColor.primary.muted(context),
             borderRadius: context.theme.style.borderRadius.md,
@@ -114,11 +114,11 @@ class _DrugBoxHeader extends StatelessWidget {
             child: Icon(
               SemanticIcons.medicineKit,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
           ),
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +132,7 @@ class _DrugBoxHeader extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 l10n.medicineDrugboxTotalPrefix,
                 style: typography.body.xs.copyWith(
@@ -142,7 +142,7 @@ class _DrugBoxHeader extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         FButton(
           variant: FButtonVariant.ghost,
           size: FButtonSizeVariant.xs,
@@ -166,10 +166,10 @@ class _DrugBoxHeader extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(width: Spacing.level1),
+              const SizedBox(width: Spacing.xs),
               Icon(
                 SemanticIcons.actionNext,
-                size: Spacing.level4,
+                size: Spacing.lg,
                 color: colors.foreground,
               ),
             ],
@@ -285,7 +285,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.level1),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -294,9 +294,9 @@ class _DrugBoxMetricItem extends StatelessWidget {
               Icon(
                 icon,
                 color: color.solid(context).withValues(alpha: 0.78),
-                size: Spacing.level5,
+                size: Spacing.xl,
               ),
-              const SizedBox(width: Spacing.level1),
+              const SizedBox(width: Spacing.xs),
               Expanded(
                 child: Text(
                   label,
@@ -309,7 +309,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Spacing.level1),
+          const SizedBox(height: Spacing.xs),
           SkeletonText(
             text: value,
             style: typography.body.md.copyWith(
@@ -320,7 +320,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.76,
           ),
-          const SizedBox(height: Spacing.level1),
+          const SizedBox(height: Spacing.xs),
           SkeletonText(
             text: detail,
             style: typography.body.xs.copyWith(
@@ -342,7 +342,7 @@ class _MetricDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: Spacing.level9,
+      height: Spacing.xl5,
       child: AppDivider(axis: Axis.vertical),
     );
   }
@@ -357,18 +357,18 @@ class _DrugBoxEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
       child: Row(
         children: [
           FAvatar.raw(
-            size: Spacing.level8,
+            size: Spacing.xl4,
             child: Icon(
               SemanticIcons.medicineBottle,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
           ),
-          const SizedBox(width: Spacing.level4),
+          const SizedBox(width: Spacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,7 +379,7 @@ class _DrugBoxEmpty extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   l10n.medicineNoMedicineBody,
                   style: typography.body.xs.copyWith(
@@ -445,13 +445,13 @@ class _DrugBoxMedicationRow extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
-          vertical: Spacing.level3,
+          horizontal: Spacing.sm,
+          vertical: Spacing.md,
         ),
         child: Row(
           children: [
-            _MedicationAvatar(item: item, size: Spacing.level7),
-            const SizedBox(width: Spacing.level3),
+            _MedicationAvatar(item: item, size: Spacing.xl3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -465,10 +465,10 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.72,
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Wrap(
-                    spacing: Spacing.level2,
-                    runSpacing: Spacing.level1,
+                    spacing: Spacing.sm,
+                    runSpacing: Spacing.xs,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       SkeletonText(
@@ -497,11 +497,11 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             Icon(
               SemanticIcons.actionNext,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
           ],
         ),
@@ -522,7 +522,7 @@ class _TruncatedFooter extends StatelessWidget {
       onPress: onTap,
       builder: (context, data, _) => Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
           child: Text(
             label,
             style: context.theme.typography.body.xs.copyWith(

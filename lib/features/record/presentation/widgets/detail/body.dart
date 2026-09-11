@@ -135,7 +135,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   KindHeroAvatar(kind: record.kind),
-                  const SizedBox(width: Spacing.level4),
+                  const SizedBox(width: Spacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,14 +152,14 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
                               ),
                             ),
                             if (nonEmpty(record.source) != null) ...[
-                              const SizedBox(width: Spacing.level3),
+                              const SizedBox(width: Spacing.md),
                               SourceBadge(
                                 label: sourceLabel(l10n, record.source!),
                               ),
                             ],
                           ],
                         ),
-                        const SizedBox(height: Spacing.level2),
+                        const SizedBox(height: Spacing.sm),
                         Text(
                           formatRecordDateTimeLabel(
                             record.occurredAt,
@@ -174,7 +174,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               DetailRows(
                 rows: [
                   DetailRowData(
@@ -205,7 +205,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
           ),
         ),
         if (record.kind == DailyRecordKind.meal && mealAnalysis != null) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           if (mealAnalysis.status == 'analyzing')
             DetailSurface(
               child: Row(
@@ -215,7 +215,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
                     coverage: mealAnalysis.coverage,
                     large: true,
                   ),
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                   Expanded(
                     child: Text(
                       l10n.recordMealAnalysisStatusAnalyzing,
@@ -238,7 +238,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
                     large: true,
                   ),
                   if (nonEmpty(mealAnalysis.failureReason) != null) ...[
-                    const SizedBox(height: Spacing.level3),
+                    const SizedBox(height: Spacing.md),
                     Text(
                       mealAnalysis.failureReason!,
                       style: typography.body.xs.copyWith(
@@ -257,7 +257,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
             ),
         ],
         if (imageAttachment != null) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           DetailSurface(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,10 +268,10 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 RecordDetailImage(attachment: imageAttachment),
                 if (nonEmpty(imageAttachment.fileName) != null) ...[
-                  const SizedBox(height: Spacing.level3),
+                  const SizedBox(height: Spacing.md),
                   Text(
                     imageAttachment.fileName!,
                     style: typography.body.xs.copyWith(
@@ -285,21 +285,21 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
           ),
         ],
         if (record.kind == DailyRecordKind.water && waterTotalMl > 0) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           WaterProgressCard(
             waterTotalMl: waterTotalMl,
             waterTargetMl: waterTargetMl,
             isImperialWater: isImperialWater,
           ),
         ],
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FButton(
           key: const Key('record-detail-edit-action'),
           onPress: () => editRecord(context, record.id),
           prefix: const Icon(SemanticIcons.actionEdit, size: 18),
           child: Text(l10n.recordDetailEditAction),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Row(
           children: [
             Expanded(
@@ -315,7 +315,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
                 child: Text(l10n.recordDetailPreviousAction),
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: FButton(
                 key: const Key('record-detail-next-action'),
@@ -329,7 +329,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
             ),
           ],
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FButton(
           key: const Key('record-detail-copy-action'),
           variant: FButtonVariant.ghost,
@@ -337,7 +337,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
           prefix: const Icon(SemanticIcons.actionCopy, size: 18),
           child: Text(l10n.recordDetailCopyAction),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FButton(
           key: const Key('record-detail-delete-action'),
           variant: FButtonVariant.destructive,
@@ -431,6 +431,6 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
 
     if (rows.isEmpty) return const [];
 
-    return [const SizedBox(height: Spacing.level5), DetailRows(rows: rows)];
+    return [const SizedBox(height: Spacing.xl), DetailRows(rows: rows)];
   }
 }

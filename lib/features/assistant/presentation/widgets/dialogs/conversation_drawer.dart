@@ -90,7 +90,7 @@ class _AssistantConversationDrawerState
       width: width,
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level5),
+          padding: const EdgeInsets.all(Spacing.xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -113,7 +113,7 @@ class _AssistantConversationDrawerState
                 onNewConversation: widget.onNewConversation,
                 onClose: widget.onClose,
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               Expanded(
                 child: AssistantConversationDrawerList(
                   state: widget.state,

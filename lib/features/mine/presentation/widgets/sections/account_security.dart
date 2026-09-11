@@ -46,7 +46,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
               prefix: Icon(
                 SemanticIcons.profileUser,
                 color: SemanticColor.primary.solid(context),
-                size: Spacing.level5,
+                size: Spacing.xl,
               ),
               title: Text(l10n.mineSettingsAccountTitle),
               subtitle: Text(
@@ -63,7 +63,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
                 prefix: Icon(
                   SemanticIcons.recordActivity,
                   color: SemanticColor.primary.solid(context),
-                  size: Spacing.level5,
+                  size: Spacing.xl,
                 ),
                 title: Text(l10n.mineHealthSyncTitle),
                 subtitle: Text(
@@ -82,7 +82,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
                 color: signedIn
                     ? colors.error
                     : SemanticColor.primary.solid(context),
-                size: Spacing.level5,
+                size: Spacing.xl,
               ),
               title: Text(
                 signedIn ? l10n.authSignOut : l10n.authGoLogin,

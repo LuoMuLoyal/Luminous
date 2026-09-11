@@ -35,7 +35,7 @@ class TabHeader extends StatelessWidget {
           size: IconSizeTokens.sm,
           color: SemanticColor.neutral.solid(context),
         ),
-        const SizedBox(width: Spacing.level1),
+        const SizedBox(width: Spacing.xs),
         Expanded(
           child: Text(
             l10n.medicineRiskCheckLastUpdated(timeStr),
@@ -95,11 +95,11 @@ class RiskScoreHero extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level6),
+        padding: const EdgeInsets.all(Spacing.xl2),
         child: Row(
           children: [
             RiskScoreRing(score: score, riskLevel: riskLevel),
-            const SizedBox(width: Spacing.level6),
+            const SizedBox(width: Spacing.xl2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,7 @@ class RiskScoreHero extends StatelessWidget {
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     medicineRiskLevelLabel(l10n, riskLevel),
                     style: typography.display.xl.copyWith(
@@ -119,7 +119,7 @@ class RiskScoreHero extends StatelessWidget {
                       color: palette.solid,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level2),
+                  const SizedBox(height: Spacing.sm),
                   Text(
                     medicineRiskLevelDescription(l10n, riskLevel, findingCount),
                     style: typography.body.xs.copyWith(
@@ -217,12 +217,12 @@ class SafeStateCard extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Row(
           children: [
             Container(
-              width: Spacing.level8,
-              height: Spacing.level8,
+              width: Spacing.xl4,
+              height: Spacing.xl4,
               decoration: ShapeDecoration(
                 color: SemanticColor.success.muted(context),
                 shape: const CircleBorder(),
@@ -233,7 +233,7 @@ class SafeStateCard extends StatelessWidget {
                 size: IconSizeTokens.lg,
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +244,7 @@ class SafeStateCard extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     l10n.medicineRiskCheckTierSafeBody(
                       result.checkedMedicineCount,
@@ -253,7 +253,7 @@ class SafeStateCard extends StatelessWidget {
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     l10n.medicineRiskCheckTierSafeDisclaimer,
                     style: typography.body.xs.copyWith(

@@ -31,14 +31,14 @@ class DetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
             constraints: const BoxConstraints(
-              minWidth: Spacing.level8 * 2,
-              maxWidth: Spacing.level8 * 2 + Spacing.level4,
+              minWidth: Spacing.xl4 * 2,
+              maxWidth: Spacing.xl4 * 2 + Spacing.lg,
             ),
             child: Text(
               data.label,
@@ -47,7 +47,7 @@ class DetailRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Spacing.level4),
+          const SizedBox(width: Spacing.lg),
           Expanded(
             child: Text(
               data.value,

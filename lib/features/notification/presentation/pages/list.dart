@@ -111,7 +111,7 @@ class NotificationListPage extends ConsumerWidget {
           );
         },
         loading: () => const StateSkeletonView(
-          padding: EdgeInsets.symmetric(vertical: Spacing.level6),
+          padding: EdgeInsets.symmetric(vertical: Spacing.xl2),
           blocks: [
             StateSkeletonBlock(height: 64),
             StateSkeletonBlock(height: 64),
@@ -169,16 +169,16 @@ class _GroupedNotificationList extends StatelessWidget {
     final entries = _buildEntries();
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.xl2),
       itemCount: entries.length,
       itemBuilder: (context, index) {
         final entry = entries[index];
         return switch (entry) {
           _HeaderEntry(:final title, :final isFirst) => Padding(
             padding: EdgeInsets.only(
-              top: isFirst ? Spacing.level3 : Spacing.level4,
-              bottom: Spacing.level2,
-              left: Spacing.level3,
+              top: isFirst ? Spacing.md : Spacing.lg,
+              bottom: Spacing.sm,
+              left: Spacing.md,
             ),
             child: Text(
               title,
@@ -195,7 +195,7 @@ class _GroupedNotificationList extends StatelessWidget {
             :final onToggleRead,
           ) =>
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.md),
               child: NotificationListItemWidget(
                 item: item,
                 onTap: onTap,
@@ -204,7 +204,7 @@ class _GroupedNotificationList extends StatelessWidget {
               ),
             ),
           _LoadMoreEntry() => Padding(
-            padding: const EdgeInsets.only(top: Spacing.level4),
+            padding: const EdgeInsets.only(top: Spacing.lg),
             child: Center(
               child: isLoadingMore
                   ? const SizedBox(
@@ -344,7 +344,7 @@ class _EmptyView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.only(top: Spacing.level10),
+      padding: const EdgeInsets.only(top: Spacing.xl6),
       child: StateMessageView(
         title: l10n.notificationEmptyTitle,
         description: l10n.notificationEmptyDescription,

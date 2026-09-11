@@ -39,15 +39,15 @@ class _MobileMineSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SyncBannerPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _AccountHeroPlaceholder(),
-        SizedBox(height: Spacing.level5),
+        SizedBox(height: Spacing.xl),
         _ArchivePlaceholder(),
-        SizedBox(height: Spacing.level5),
+        SizedBox(height: Spacing.xl),
         _AiPrivacyPlaceholder(),
-        SizedBox(height: Spacing.level5),
+        SizedBox(height: Spacing.xl),
         _NotificationsRemindersPlaceholder(),
-        SizedBox(height: Spacing.level5),
+        SizedBox(height: Spacing.xl),
         _AccountSecurityPlaceholder(),
       ],
     );
@@ -64,9 +64,9 @@ class _DesktopMineSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SyncBannerPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _AccountHeroPlaceholder(),
-        SizedBox(height: Spacing.level5),
+        SizedBox(height: Spacing.xl),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -76,19 +76,19 @@ class _DesktopMineSkeleton extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _ArchivePlaceholder(),
-                  SizedBox(height: Spacing.level5),
+                  SizedBox(height: Spacing.xl),
                   _NotificationsRemindersPlaceholder(),
                 ],
               ),
             ),
-            SizedBox(width: Spacing.level5),
+            SizedBox(width: Spacing.xl),
             Expanded(
               flex: 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _AiPrivacyPlaceholder(),
-                  SizedBox(height: Spacing.level5),
+                  SizedBox(height: Spacing.xl),
                   _AccountSecurityPlaceholder(),
                 ],
               ),
@@ -113,13 +113,13 @@ class _SyncBannerPlaceholder extends StatelessWidget {
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: const Padding(
-        padding: EdgeInsets.all(Spacing.level4),
+        padding: EdgeInsets.all(Spacing.lg),
         child: Row(
           children: [
             InlineSkeletonCircle(size: 24),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 14)),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             InlineSkeletonBlock(height: 14, width: 56),
           ],
         ),
@@ -138,7 +138,7 @@ class _AccountHeroPlaceholder extends StatelessWidget {
         Row(
           children: [
             const InlineSkeletonCircle(size: 64),
-            const SizedBox(width: Spacing.level5),
+            const SizedBox(width: Spacing.xl),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +146,7 @@ class _AccountHeroPlaceholder extends StatelessWidget {
                   Row(
                     children: [
                       const InlineSkeletonBlock(height: 28, widthFactor: 0.45),
-                      const SizedBox(width: Spacing.level3),
+                      const SizedBox(width: Spacing.md),
                       InlineSkeletonBlock(
                         height: 18,
                         width: 56,
@@ -154,14 +154,14 @@ class _AccountHeroPlaceholder extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Spacing.level2),
+                  const SizedBox(height: Spacing.sm),
                   const InlineSkeletonBlock(height: 14, widthFactor: 0.65),
                 ],
               ),
             ),
           ],
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         const InlineSkeletonBlock(height: 14, widthFactor: 0.55),
       ],
     );
@@ -177,21 +177,21 @@ class _ArchivePlaceholder extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const InlineSkeletonBlock(height: 18, widthFactor: 0.3),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         InlineSkeletonSection(
           children: [
             for (var i = 0; i < 4; i += 1) ...[
-              if (i > 0) const SizedBox(height: Spacing.level4),
+              if (i > 0) const SizedBox(height: Spacing.lg),
               const Row(
                 children: [
                   InlineSkeletonCircle(size: 40),
-                  SizedBox(width: Spacing.level4),
+                  SizedBox(width: Spacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InlineSkeletonBlock(height: 16, widthFactor: 0.55),
-                        SizedBox(height: Spacing.level2),
+                        SizedBox(height: Spacing.sm),
                         InlineSkeletonBlock(height: 14, widthFactor: 0.72),
                       ],
                     ),
@@ -199,7 +199,7 @@ class _ArchivePlaceholder extends StatelessWidget {
                   Icon(
                     SemanticIcons.actionNext,
                     color: Colors.transparent,
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                   ),
                 ],
               ),
@@ -224,18 +224,18 @@ class _AiPrivacyPlaceholder extends StatelessWidget {
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: const Padding(
-        padding: EdgeInsets.all(Spacing.level4),
+        padding: EdgeInsets.all(Spacing.lg),
         child: Row(
           children: [
             InlineSkeletonCircle(size: 24),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 14)),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             InlineSkeletonBlock(height: 14, width: 56),
             Icon(
               SemanticIcons.actionNext,
               color: Colors.transparent,
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
           ],
         ),
@@ -253,21 +253,21 @@ class _NotificationsRemindersPlaceholder extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const InlineSkeletonBlock(height: 18, widthFactor: 0.35),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         InlineSkeletonSection(
           children: [
             for (var i = 0; i < 3; i += 1) ...[
-              if (i > 0) const SizedBox(height: Spacing.level4),
+              if (i > 0) const SizedBox(height: Spacing.lg),
               const Row(
                 children: [
                   InlineSkeletonCircle(size: 40),
-                  SizedBox(width: Spacing.level4),
+                  SizedBox(width: Spacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InlineSkeletonBlock(height: 16, widthFactor: 0.5),
-                        SizedBox(height: Spacing.level2),
+                        SizedBox(height: Spacing.sm),
                         InlineSkeletonBlock(height: 14, widthFactor: 0.72),
                       ],
                     ),
@@ -275,7 +275,7 @@ class _NotificationsRemindersPlaceholder extends StatelessWidget {
                   Icon(
                     SemanticIcons.actionNext,
                     color: Colors.transparent,
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                   ),
                 ],
               ),
@@ -296,21 +296,21 @@ class _AccountSecurityPlaceholder extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const InlineSkeletonBlock(height: 18, widthFactor: 0.3),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         InlineSkeletonSection(
           children: [
             for (var i = 0; i < 3; i += 1) ...[
-              if (i > 0) const SizedBox(height: Spacing.level4),
+              if (i > 0) const SizedBox(height: Spacing.lg),
               const Row(
                 children: [
                   InlineSkeletonCircle(size: 40),
-                  SizedBox(width: Spacing.level4),
+                  SizedBox(width: Spacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InlineSkeletonBlock(height: 16, widthFactor: 0.45),
-                        SizedBox(height: Spacing.level2),
+                        SizedBox(height: Spacing.sm),
                         InlineSkeletonBlock(height: 14, widthFactor: 0.6),
                       ],
                     ),
@@ -318,7 +318,7 @@ class _AccountSecurityPlaceholder extends StatelessWidget {
                   Icon(
                     SemanticIcons.actionNext,
                     color: Colors.transparent,
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                   ),
                 ],
               ),

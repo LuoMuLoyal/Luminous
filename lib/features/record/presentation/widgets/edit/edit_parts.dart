@@ -57,8 +57,8 @@ class RecordEditStatusHint extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level2,
+          horizontal: Spacing.md,
+          vertical: Spacing.sm,
         ),
         child: Row(
           key: Key(
@@ -70,7 +70,7 @@ class RecordEditStatusHint extends StatelessWidget {
               color: foreground,
               size: IconSizeTokens.sm,
             ),
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             Expanded(
               child: Text(
                 dirty
@@ -112,12 +112,12 @@ Future<bool?> confirmDiscardEdit(BuildContext context, AppLocalizations l10n) {
           l10n.recordEditDiscardTitle,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.recordEditDiscardMessage,
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -126,7 +126,7 @@ Future<bool?> confirmDiscardEdit(BuildContext context, AppLocalizations l10n) {
               onPress: () => Navigator.of(dialogContext).pop(false),
               child: Text(l10n.recordEditKeepEditingAction),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               key: const Key('record-edit-discard-confirm'),
               variant: FButtonVariant.destructive,

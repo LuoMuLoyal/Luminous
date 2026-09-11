@@ -108,7 +108,7 @@ Future<SleepQuickEntryStartOptions?> showSleepTypeSelectionDialog(
               l10n.recordQuickSleepTypeTitle,
               style: dialogContext.theme.typography.body.lg,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               children: [
                 Expanded(
@@ -122,7 +122,7 @@ Future<SleepQuickEntryStartOptions?> showSleepTypeSelectionDialog(
                     child: Text(l10n.recordQuickSleepNightAction),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: FButton(
                     key: const Key('record-quick-sleep-nap-type'),
@@ -135,7 +135,7 @@ Future<SleepQuickEntryStartOptions?> showSleepTypeSelectionDialog(
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             FTextField(
               key: const Key('record-quick-sleep-approximate-duration'),
               control: FTextFieldControl.managed(
@@ -144,7 +144,7 @@ Future<SleepQuickEntryStartOptions?> showSleepTypeSelectionDialog(
               label: Text(l10n.recordQuickSleepApproximateDurationLabel),
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             FSelect<String>.rich(
               key: const Key('record-quick-sleep-quality'),
               label: Text(l10n.recordSleepQualityLabel),
@@ -165,7 +165,7 @@ Future<SleepQuickEntryStartOptions?> showSleepTypeSelectionDialog(
                   )
                   .toList(),
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -174,7 +174,7 @@ Future<SleepQuickEntryStartOptions?> showSleepTypeSelectionDialog(
                   onPress: () => Navigator.of(dialogContext).pop(),
                   child: Text(l10n.commonCancel),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   onPress: () {
                     final parsed = int.tryParse(durationController.text.trim());
@@ -225,7 +225,7 @@ Future<void> showSleepStartSelectionDialog(
               l10n.recordQuickSleepSelectStartTitle,
               style: dialogContext.theme.typography.body.lg,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             for (final start in openStarts) ...[
               FButton(
                 key: Key('record-quick-sleep-start-${start.id}'),
@@ -276,13 +276,13 @@ Future<void> showSleepStartSelectionDialog(
                       },
                 child: Text(sleepEventLabel(start)),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
             ],
             if (saving) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               const Center(child: FProgress()),
             ],
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -325,31 +325,31 @@ Future<void> showSleepMergeDialog(
               l10n.recordQuickSleepMergeTitle,
               style: dialogContext.theme.typography.body.lg,
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Text(
               l10n.recordQuickSleepMergeBody,
               style: dialogContext.theme.typography.body.sm,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             SleepMergeSummaryRow(
               label: l10n.recordQuickSleepStartLabel,
               value: sleepEventLabel(merge.startRecord),
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             SleepMergeSummaryRow(
               label: l10n.recordQuickSleepWakeLabel,
               value: sleepEventLabel(merge.wakeRecord),
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             SleepMergeSummaryRow(
               label: l10n.recordSleepDurationLabel,
               value: formatSleepDuration(merge.durationMinutes, l10n),
             ),
             if (saving) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               const Center(child: FProgress()),
             ],
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -360,7 +360,7 @@ Future<void> showSleepMergeDialog(
                       : () => Navigator.of(dialogContext).pop(),
                   child: Text(l10n.recordQuickSleepKeepSeparateAction),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   onPress: saving
                       ? null

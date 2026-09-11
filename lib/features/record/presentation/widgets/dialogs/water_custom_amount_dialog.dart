@@ -96,12 +96,12 @@ class _WaterCustomAmountBodyState extends State<_WaterCustomAmountBody> {
           l10n.recordQuickSettingsWaterCustomDialogTitle,
           style: typography.body.lg,
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Text(
           l10n.recordQuickSettingsWaterCustomDialogHint,
           style: typography.body.sm,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FTextField(
           key: const Key('water-custom-ml-field'),
           control: FTextFieldControl.managed(controller: _controller),
@@ -113,7 +113,7 @@ class _WaterCustomAmountBodyState extends State<_WaterCustomAmountBody> {
           error: _errorText == null ? null : Text(_errorText!),
           onSubmit: (_) => _submit(),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -122,7 +122,7 @@ class _WaterCustomAmountBodyState extends State<_WaterCustomAmountBody> {
               onPress: () => Navigator.of(context).pop(),
               child: Text(l10n.commonCancel),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               key: const Key('water-custom-ml-confirm'),
               onPress: _submit,

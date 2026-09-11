@@ -71,14 +71,14 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
             title ?? l10n.authSensitiveActionPasswordDialogTitle,
             style: typography.body.lg,
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           Text(
             message ?? l10n.authSensitiveActionPasswordDialogMessage,
             style: typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           FTextFormField.password(
             key: const Key('sensitive-action-password-field'),
             control: FTextFieldControl.managed(controller: controller),
@@ -88,7 +88,7 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
             onSubmit: (_) => handleConfirm(),
           ),
           if (errorMessage.value != null) ...[
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               errorMessage.value!,
               style: typography.body.xs.copyWith(
@@ -96,7 +96,7 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
               ),
             ),
           ],
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -105,7 +105,7 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
                 onPress: () => Navigator.of(context).pop(),
                 child: Text(l10n.authCancelAction),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               FButton(
                 key: const Key('sensitive-action-password-confirm'),
                 onPress: handleConfirm,

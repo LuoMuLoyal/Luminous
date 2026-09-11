@@ -51,7 +51,7 @@ class AccountSummaryCard extends StatelessWidget {
         borderRadius: context.theme.style.borderRadius.md,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Row(
           children: [
             // 头像
@@ -70,7 +70,7 @@ class AccountSummaryCard extends StatelessWidget {
                     )
                   : const Icon(SemanticIcons.profileUser, size: 32),
             ),
-            const SizedBox(width: Spacing.level5),
+            const SizedBox(width: Spacing.xl),
             // 昵称和邮箱
             Expanded(
               child: Column(
@@ -82,7 +82,7 @@ class AccountSummaryCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level2),
+                  const SizedBox(height: Spacing.sm),
                   Text(
                     user.email ?? l10n.authEmailMissing,
                     style: context.theme.typography.body.sm.copyWith(
@@ -203,7 +203,7 @@ class AccountManageSection extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: Spacing.level6),
+        const SizedBox(height: Spacing.xl2),
 
         // 账号安全分组
         SettingsSectionLabel(label: l10n.authAccountManageSectionSecurity),
@@ -535,7 +535,7 @@ class _SupportLink extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 24, color: SemanticColor.neutral.solid(context)),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               label,
               style: typography.body.xs.copyWith(

@@ -187,10 +187,7 @@ class _ConversationGroup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(
-            top: Spacing.level3,
-            bottom: Spacing.level2,
-          ),
+          padding: const EdgeInsets.only(top: Spacing.md, bottom: Spacing.sm),
           child: Text(
             groupTitle,
             style: context.theme.typography.body.xs2.copyWith(
@@ -250,7 +247,7 @@ class _ConversationGroup extends StatelessWidget {
                   size: 14,
                   color: SemanticColor.primary.solid(context),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Text(
                   l10n.assistantConversationTapToName,
                   style: typography.body.xs.copyWith(

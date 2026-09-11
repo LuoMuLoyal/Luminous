@@ -42,8 +42,8 @@ class TimelineDragFeedback extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.level4,
-              vertical: Spacing.level3,
+              horizontal: Spacing.lg,
+              vertical: Spacing.md,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -53,7 +53,7 @@ class TimelineDragFeedback extends StatelessWidget {
                   color: entry.accent.solid(context),
                   size: IconSizeTokens.sm,
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Flexible(
                   child: Text(
                     label,
@@ -64,7 +64,7 @@ class TimelineDragFeedback extends StatelessWidget {
                     maxLines: 1,
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Icon(
                   SemanticIcons.actionCalendar,
                   color: SemanticColor.neutral.solid(context),

@@ -37,7 +37,7 @@ class RecordNewEntryPanel extends StatelessWidget {
     return FCard(
       key: const Key('record-new-entry-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -47,13 +47,13 @@ class RecordNewEntryPanel extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Column(
               children: actions
                   .take(7)
                   .map(
                     (action) => Padding(
-                      padding: const EdgeInsets.only(bottom: Spacing.level2),
+                      padding: const EdgeInsets.only(bottom: Spacing.sm),
                       child: _DesktopEntryButton(
                         action: action,
                         l10n: l10n,
@@ -77,7 +77,7 @@ class RecordNewEntryPanel extends StatelessWidget {
     return FCard(
       key: const Key('record-new-entry-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -85,10 +85,10 @@ class RecordNewEntryPanel extends StatelessWidget {
               l10n.recordNewEntrySectionTitle,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Wrap(
-              spacing: Spacing.level3,
-              runSpacing: Spacing.level3,
+              spacing: Spacing.md,
+              runSpacing: Spacing.md,
               children: actions
                   .take(7)
                   .map(
@@ -100,7 +100,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                   )
                   .toList(),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             FButton(
               onPress: onNewEntry,
               variant: FButtonVariant.ghost,
@@ -121,7 +121,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                   ),
                 ]),
                 contentStyle: const .delta(
-                  padding: .value(EdgeInsets.all(Spacing.level4)),
+                  padding: .value(EdgeInsets.all(Spacing.lg)),
                 ),
               ),
               prefix: Icon(
@@ -189,8 +189,8 @@ class _DesktopEntryButtonState extends State<_DesktopEntryButton> {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.level2,
-              vertical: Spacing.level2,
+              horizontal: Spacing.sm,
+              vertical: Spacing.sm,
             ),
             child: Row(
               children: [
@@ -209,7 +209,7 @@ class _DesktopEntryButtonState extends State<_DesktopEntryButton> {
                     ),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: Text(
                     label,
@@ -255,10 +255,7 @@ class _NewEntryChip extends StatelessWidget {
         ]),
         contentStyle: const .delta(
           padding: .value(
-            EdgeInsets.symmetric(
-              horizontal: Spacing.level3,
-              vertical: Spacing.level3,
-            ),
+            EdgeInsets.symmetric(horizontal: Spacing.md, vertical: Spacing.md),
           ),
         ),
       ),
@@ -266,7 +263,7 @@ class _NewEntryChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(action.icon, color: action.accent.solid(context), size: 16),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Text(
             label,
             style: context.theme.typography.body.xs.copyWith(

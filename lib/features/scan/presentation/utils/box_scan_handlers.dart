@@ -118,12 +118,12 @@ Future<bool?> showModelDownloadDialog(
           l10n.scanModelDownloadTitle,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.scanModelDownloadMessage,
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -132,7 +132,7 @@ Future<bool?> showModelDownloadDialog(
               onPress: () => Navigator.of(dialogContext).pop(false),
               child: Text(l10n.scanModelDownloadCancel),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               onPress: () => Navigator.of(dialogContext).pop(true),
               child: Text(l10n.scanModelDownloadConfirm),
@@ -163,12 +163,12 @@ Future<void> showModelDownloadFailedDialog(
           l10n.scanModelDownloadFailedTitle,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.scanModelDownloadFailedMessage,
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -177,7 +177,7 @@ Future<void> showModelDownloadFailedDialog(
               onPress: () => Navigator.of(dialogContext).pop(),
               child: Text(l10n.scanCloseAction),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               onPress: () {
                 Navigator.of(dialogContext).pop();
@@ -212,12 +212,12 @@ Future<void> showOcrUnavailableDialog(
           l10n.scanOcrUnavailableTitle,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.scanOcrUnavailableMessage,
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -226,7 +226,7 @@ Future<void> showOcrUnavailableDialog(
               onPress: () => Navigator.of(dialogContext).pop(),
               child: Text(l10n.scanCloseAction),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               onPress: () {
                 Navigator.of(dialogContext).pop();
@@ -274,12 +274,12 @@ Future<void> showScanFailureDialog(
           l10n.scanRecognitionFailedToast,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.scanManualSearchToast,
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -291,7 +291,7 @@ Future<void> showScanFailureDialog(
               },
               child: Text(l10n.scanRetakeAction),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               onPress: () {
                 Navigator.of(dialogContext).pop();
@@ -320,7 +320,7 @@ void showProcessingOverlay(BuildContext context, MedicineScanMethod method) {
           mainAxisSize: MainAxisSize.min,
           children: [
             const FCircularProgress(),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Text(
               method == MedicineScanMethod.ocr
                   ? l10n.scanProcessingOcr

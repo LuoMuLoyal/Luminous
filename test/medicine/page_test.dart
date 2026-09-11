@@ -879,7 +879,7 @@ void main() {
     );
   });
 
-  testWidgets('Medicine search bar icon is offset by Spacing.level2', (
+  testWidgets('Medicine search bar icon is offset by Spacing.sm', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -915,7 +915,7 @@ void main() {
     );
 
     expect(row.children.first, isA<SizedBox>());
-    expect((row.children.first as SizedBox).width, Spacing.level2);
+    expect((row.children.first as SizedBox).width, Spacing.sm);
     expect(row.children[1], isA<Icon>());
   });
 

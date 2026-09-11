@@ -25,25 +25,25 @@ class ReminderTodayLogPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: Spacing.level2),
+          padding: const EdgeInsets.only(left: Spacing.sm),
           child: Text(
             l10n.medicineReminderTodayLogsTitle,
             style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FCard(
           child: visibleLogs.isEmpty
               ? Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
+                  padding: const EdgeInsets.all(Spacing.lg),
                   child: Row(
                     children: [
                       Icon(
                         SemanticIcons.recordClipboard,
                         color: SemanticColor.neutral.solid(context),
-                        size: Spacing.level5,
+                        size: Spacing.xl,
                       ),
-                      const SizedBox(width: Spacing.level3),
+                      const SizedBox(width: Spacing.md),
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoTodayLogs,
@@ -67,7 +67,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
         ),
         if (logs.length > visibleLogs.length)
           Padding(
-            padding: const EdgeInsets.only(top: Spacing.level2),
+            padding: const EdgeInsets.only(top: Spacing.sm),
             child: Text(
               l10n.medicineReminderLogCountTotal(logs.length),
               style: typography.body.xs2.copyWith(
@@ -106,25 +106,25 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: Spacing.level2),
+          padding: const EdgeInsets.only(left: Spacing.sm),
           child: Text(
             l10n.medicineReminderDeliveryLogsTitle,
             style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FCard(
           child: visibleLogs.isEmpty
               ? Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
+                  padding: const EdgeInsets.all(Spacing.lg),
                   child: Row(
                     children: [
                       Icon(
                         SemanticIcons.doseLog,
                         color: SemanticColor.neutral.solid(context),
-                        size: Spacing.level5,
+                        size: Spacing.xl,
                       ),
-                      const SizedBox(width: Spacing.level3),
+                      const SizedBox(width: Spacing.md),
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoDeliveryLogs,
@@ -145,7 +145,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
                       ),
                     if (hasMore)
                       Padding(
-                        padding: const EdgeInsets.all(Spacing.level3),
+                        padding: const EdgeInsets.all(Spacing.md),
                         child: FButton(
                           onPress: () => setState(() => _showAll = !_showAll),
                           variant: FButtonVariant.ghost,
@@ -178,17 +178,17 @@ class _DeliveryLogRow extends StatelessWidget {
     final typography = context.theme.typography;
     final row = Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level3,
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
       ),
       child: Row(
         children: [
           Icon(
             deliveryStatusIcon(log.status),
             color: color.solid(context),
-            size: Spacing.level5,
+            size: Spacing.xl,
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +203,7 @@ class _DeliveryLogRow extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   deliveryChannelLabel(l10n, log.channel),
                   style: typography.body.xs.copyWith(
@@ -213,7 +213,7 @@ class _DeliveryLogRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           TintedStatusBadge(
             color: color,
             label: deliveryStatusLabel(l10n, log.status),
@@ -259,13 +259,13 @@ class _TodayLogRow extends StatelessWidget {
 
     final row = Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level3,
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
       ),
       child: Row(
         children: [
-          Icon(icon, color: color.solid(context), size: Spacing.level5),
-          const SizedBox(width: Spacing.level3),
+          Icon(icon, color: color.solid(context), size: Spacing.xl),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Text(
               dateTimeTimeLabel(

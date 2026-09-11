@@ -33,8 +33,8 @@ class ConnectivityBanner extends ConsumerWidget {
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level3,
-            vertical: Spacing.level2,
+            horizontal: Spacing.md,
+            vertical: Spacing.sm,
           ),
           child: Row(
             children: [
@@ -43,7 +43,7 @@ class ConnectivityBanner extends ConsumerWidget {
                 size: IconSizeTokens.md,
                 color: warningPalette.foreground,
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Expanded(
                 child: Text(
                   l10n.authSessionRestoreTimeout,

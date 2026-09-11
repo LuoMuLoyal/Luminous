@@ -26,13 +26,13 @@ class ReviewFindingsSection extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         if (findings.isEmpty)
           _EmptyFindingsView(l10n: l10n)
         else
           Wrap(
-            spacing: Spacing.level3,
-            runSpacing: Spacing.level3,
+            spacing: Spacing.md,
+            runSpacing: Spacing.md,
             children: [
               for (final finding in findings)
                 SizedBox(
@@ -57,7 +57,7 @@ class _EmptyFindingsView extends StatelessWidget {
     final typography = context.theme.typography;
 
     return Container(
-      padding: const EdgeInsets.all(Spacing.level5),
+      padding: const EdgeInsets.all(Spacing.xl),
       decoration: BoxDecoration(
         color: SemanticColor.neutral.subtle(context),
         borderRadius: context.theme.style.borderRadius.sm,
@@ -65,12 +65,8 @@ class _EmptyFindingsView extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            SemanticIcons.aiTip,
-            color: colors.secondary,
-            size: Spacing.level5,
-          ),
-          const SizedBox(width: Spacing.level3),
+          Icon(SemanticIcons.aiTip, color: colors.secondary, size: Spacing.xl),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +77,7 @@ class _EmptyFindingsView extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   l10n.reviewFindingsEmptyBody,
                   style: typography.body.xs.copyWith(
@@ -118,7 +114,7 @@ class _FindingCard extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -147,13 +143,13 @@ class _FindingCard extends StatelessWidget {
                 // a tap action that doesn't exist.
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             SkeletonText(
               text: finding.title,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w800),
               widthFactor: 0.7,
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             SkeletonText(
               text: finding.body,
               style: typography.body.xs.copyWith(

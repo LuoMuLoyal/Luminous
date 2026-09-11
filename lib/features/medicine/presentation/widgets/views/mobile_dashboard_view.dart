@@ -77,20 +77,20 @@ class MedicineMobileDashboardView extends StatelessWidget {
           l10n: l10n,
           onOpenReminder: onOpenReminder,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         _MedicineRecordsSection(
           workspace: workspace,
           nextDose: nextDose,
           l10n: l10n,
           onMarkDose: onMarkDose,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         SafetyEngineSection(
           records: workspace.riskCheckRecords,
           alerts: alerts.take(4).toList(growable: false),
           l10n: l10n,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         _QuickOperationSection(l10n: l10n, onCreateReminder: onCreateReminder),
       ],
     );
@@ -121,7 +121,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: Spacing.level5),
+          const SizedBox(width: Spacing.xl),
           // Center: records + safety.
           Expanded(
             flex: 6,
@@ -134,7 +134,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
                   l10n: l10n,
                   onMarkDose: onMarkDose,
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 SafetyEngineSection(
                   records: workspace.riskCheckRecords,
                   alerts: alerts.take(4).toList(growable: false),
@@ -143,7 +143,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: Spacing.level5),
+          const SizedBox(width: Spacing.xl),
           // Right: quick operations.
           Expanded(
             flex: 3,
@@ -175,7 +175,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
                 l10n: l10n,
                 onOpenReminder: onOpenReminder,
               ),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               _MedicineRecordsSection(
                 workspace: workspace,
                 nextDose: nextDose,
@@ -185,7 +185,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level5),
+        const SizedBox(width: Spacing.xl),
         Expanded(
           flex: 5,
           child: Column(
@@ -196,7 +196,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
                 alerts: alerts.take(4).toList(growable: false),
                 l10n: l10n,
               ),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               _QuickOperationSection(
                 l10n: l10n,
                 onCreateReminder: onCreateReminder,

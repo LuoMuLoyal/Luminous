@@ -32,7 +32,7 @@ class RiskFindingItem extends StatelessWidget {
     final typography = context.theme.typography;
 
     final tile = Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -46,7 +46,7 @@ class RiskFindingItem extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           // Icon circle.
           DecoratedBox(
             decoration: BoxDecoration(
@@ -54,7 +54,7 @@ class RiskFindingItem extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: SizedBox.square(
-              dimension: Spacing.level9,
+              dimension: Spacing.xl5,
               child: Icon(
                 medicineRiskFindingIcon(finding),
                 color: color.solid(context),
@@ -62,7 +62,7 @@ class RiskFindingItem extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           // Title + body + evidence + recommendation.
           Expanded(
             child: Column(
@@ -74,14 +74,14 @@ class RiskFindingItem extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   medicineRiskFindingBody(l10n, finding),
                   style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   medicineRiskFindingEvidence(l10n, finding),
                   style: typography.body.xs.copyWith(
@@ -89,13 +89,13 @@ class RiskFindingItem extends StatelessWidget {
                   ),
                 ),
                 if (recommendation != null && recommendation.isNotEmpty) ...[
-                  const SizedBox(height: Spacing.level2),
+                  const SizedBox(height: Spacing.sm),
                   _RecommendationLine(text: recommendation, color: color),
                 ],
               ],
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           // Severity + context pills.
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -106,7 +106,7 @@ class RiskFindingItem extends StatelessWidget {
                 label: medicineRiskSeverityLabel(l10n, finding.severity),
               ),
               if (contextLabel.isNotEmpty) ...[
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 _ContextPill(label: contextLabel),
               ],
             ],
@@ -143,14 +143,14 @@ class _SeverityPill extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
-          vertical: Spacing.level1,
+          horizontal: Spacing.sm,
+          vertical: Spacing.xs,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: IconSizeTokens.xs, color: resolvedColor),
-            const SizedBox(width: Spacing.level1),
+            const SizedBox(width: Spacing.xs),
             Text(
               label,
               style: context.theme.typography.body.xs.copyWith(
@@ -185,8 +185,8 @@ class _ContextPill extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
-          vertical: Spacing.level1,
+          horizontal: Spacing.sm,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,
@@ -219,7 +219,7 @@ class _RecommendationLine extends StatelessWidget {
           size: IconSizeTokens.sm,
           color: color.solid(context),
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         Expanded(
           child: Text(
             text,

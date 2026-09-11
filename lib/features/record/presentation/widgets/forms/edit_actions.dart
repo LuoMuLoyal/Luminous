@@ -25,7 +25,7 @@ class RecordEditActions extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         FButton(
           key: const Key('record-edit-save-action'),
           onPress: saving ? null : onSave,
@@ -38,7 +38,7 @@ class RecordEditActions extends StatelessWidget {
               : null,
           child: Text(l10n.mineEditSaveAction),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FButton(
           key: const Key('record-edit-delete-action'),
           variant: FButtonVariant.destructive,

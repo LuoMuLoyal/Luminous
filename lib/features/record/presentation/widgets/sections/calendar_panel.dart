@@ -174,7 +174,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
     return FCard(
       key: const Key('record-calendar-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           children: [
             Row(
@@ -201,7 +201,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               children: weekdayKeys
                   .map(
@@ -217,15 +217,15 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                   )
                   .toList(),
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
                 childAspectRatio: 0.95,
-                mainAxisSpacing: Spacing.level1,
-                crossAxisSpacing: Spacing.level1,
+                mainAxisSpacing: Spacing.xs,
+                crossAxisSpacing: Spacing.xs,
               ),
               itemCount: viewedDays.length,
               itemBuilder: (context, index) => MonthDayCell(

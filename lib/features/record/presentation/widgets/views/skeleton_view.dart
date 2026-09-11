@@ -33,13 +33,13 @@ class _MobileRecordSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DateBarPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _AiInputPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _QuickEntryPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _FilterPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _TimelinePlaceholder(itemCount: 5),
       ],
     );
@@ -61,14 +61,14 @@ class _DesktopRecordSkeleton extends StatelessWidget {
             height: 420,
             children: [
               InlineSkeletonBlock(height: 18, widthFactor: 0.6),
-              SizedBox(height: Spacing.level4),
+              SizedBox(height: Spacing.lg),
               InlineSkeletonBlock(height: 280),
-              SizedBox(height: Spacing.level4),
+              SizedBox(height: Spacing.lg),
               InlineSkeletonBlock(height: 72),
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level5),
+        const SizedBox(width: Spacing.xl),
         // Center: summary + timeline
         const Expanded(
           flex: 6,
@@ -76,12 +76,12 @@ class _DesktopRecordSkeleton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InlineSkeletonBlock(height: 120),
-              SizedBox(height: Spacing.level4),
+              SizedBox(height: Spacing.lg),
               _TimelinePlaceholder(itemCount: 6),
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level5),
+        const SizedBox(width: Spacing.xl),
         // Right rail: new entry panel
         SizedBox(
           width: ResponsiveSizing.sidebarWidth(context),
@@ -108,14 +108,14 @@ class _DateBarPlaceholder extends StatelessWidget {
           width: 40,
           radius: borderRadius.pill.topLeft.x,
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         Expanded(
           child: InlineSkeletonBlock(
             height: 44,
             radius: borderRadius.pill.topLeft.x,
           ),
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         InlineSkeletonBlock(
           height: 40,
           width: 40,
@@ -143,7 +143,7 @@ class _QuickEntryPlaceholder extends StatelessWidget {
     return Row(
       children: [
         for (var i = 0; i < 4; i += 1) ...[
-          if (i > 0) const SizedBox(width: Spacing.level3),
+          if (i > 0) const SizedBox(width: Spacing.md),
           const Expanded(child: InlineSkeletonBlock(height: 72)),
         ],
       ],
@@ -157,8 +157,8 @@ class _FilterPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: Spacing.level3,
-      runSpacing: Spacing.level3,
+      spacing: Spacing.md,
+      runSpacing: Spacing.md,
       children: List.generate(
         5,
         (_) => InlineSkeletonBlock(
@@ -181,21 +181,21 @@ class _TimelinePlaceholder extends StatelessWidget {
     return InlineSkeletonSection(
       children: [
         const InlineSkeletonBlock(height: 20, widthFactor: 0.45),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         for (var i = 0; i < itemCount; i += 1) ...[
-          if (i > 0) const SizedBox(height: Spacing.level4),
+          if (i > 0) const SizedBox(height: Spacing.lg),
           Row(
             children: [
               const InlineSkeletonBlock(height: 14, width: 40),
-              const SizedBox(width: Spacing.level4),
-              const InlineSkeletonCircle(size: Spacing.level3),
-              const SizedBox(width: Spacing.level4),
+              const SizedBox(width: Spacing.lg),
+              const InlineSkeletonCircle(size: Spacing.md),
+              const SizedBox(width: Spacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const InlineSkeletonBlock(height: 16, widthFactor: 0.55),
-                    const SizedBox(height: Spacing.level2),
+                    const SizedBox(height: Spacing.sm),
                     InlineSkeletonBlock(
                       height: 14,
                       widthFactor: i == itemCount - 1 ? 0.4 : 0.72,

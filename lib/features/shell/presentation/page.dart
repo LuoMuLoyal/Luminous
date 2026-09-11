@@ -213,7 +213,7 @@ class _SidebarHeaderContent extends StatelessWidget {
                   size: IconSizeTokens.sm,
                 ),
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Expanded(
                 child: Text(
                   displayName,
@@ -239,7 +239,7 @@ class _SidebarHeaderContent extends StatelessWidget {
             width: IconSizeTokens.lg,
             height: IconSizeTokens.lg,
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(
             child: Text(
               l10n.appTitle,
@@ -298,14 +298,14 @@ class _SidebarFooter extends ConsumerWidget {
               ),
               if (hasUnread)
                 Positioned(
-                  right: Spacing.level4,
-                  top: Spacing.level3,
+                  right: Spacing.lg,
+                  top: Spacing.md,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: SemanticColor.destructive.solid(context),
                       shape: BoxShape.circle,
                     ),
-                    child: const SizedBox.square(dimension: Spacing.level2),
+                    child: const SizedBox.square(dimension: Spacing.sm),
                   ),
                 ),
             ],

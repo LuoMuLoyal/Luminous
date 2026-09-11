@@ -23,7 +23,7 @@ Future<DateTime?> showForuiDatePicker(
     maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
       MediaQuery.sizeOf(context).width,
     ),
-    padding: const EdgeInsets.all(Spacing.level4),
+    padding: const EdgeInsets.all(Spacing.lg),
     builder: (_) => SizedBox(
       height: 360,
       child: FCalendar.grid(

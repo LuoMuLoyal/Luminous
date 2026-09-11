@@ -126,7 +126,7 @@ class AccountManagePage extends HookConsumerWidget {
           ] else ...[
             // 顶部概要卡片：头像 + 昵称 + 邮箱
             AccountSummaryCard(user: user),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
 
             // 账号管理列表
             AccountManageSection(
@@ -148,7 +148,7 @@ class AccountManagePage extends HookConsumerWidget {
               onManageSecurityCenter: () =>
                   context.push(Routes.accountSecurityCenter),
             ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
 
             // 底部服务入口
             const SupportLinksSection(),

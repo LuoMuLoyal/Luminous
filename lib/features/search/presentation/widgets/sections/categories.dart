@@ -30,7 +30,7 @@ class Categories extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Row(
           children: categories
               .map(
@@ -63,7 +63,7 @@ class _CategoryItem extends StatelessWidget {
       variant: FButtonVariant.ghost,
       style: const .delta(
         contentStyle: .delta(
-          padding: .value(EdgeInsets.symmetric(vertical: Spacing.level2)),
+          padding: .value(EdgeInsets.symmetric(vertical: Spacing.sm)),
         ),
       ),
       child: Column(
@@ -75,7 +75,7 @@ class _CategoryItem extends StatelessWidget {
             ),
             child: Icon(category.icon, color: category.accent.solid(context)),
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Text(
             categoryLabel(l10n, category.type),
             style: context.theme.typography.body.xs,

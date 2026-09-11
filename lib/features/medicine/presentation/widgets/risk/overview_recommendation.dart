@@ -26,7 +26,7 @@ class OverallRecommendationCard extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,7 +37,7 @@ class OverallRecommendationCard extends StatelessWidget {
                   color: SemanticColor.primary.solid(context),
                   size: IconSizeTokens.md,
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Text(
                   l10n.medicineRiskOverallRecommendation,
                   style: typography.body.md.copyWith(
@@ -46,7 +46,7 @@ class OverallRecommendationCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Text(
               text,
               style: typography.body.xs.copyWith(

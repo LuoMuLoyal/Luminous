@@ -42,7 +42,7 @@ class ReviewNoteworthySection extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Semantics(
           container: true,
           explicitChildNodes: true,
@@ -57,7 +57,7 @@ class ReviewNoteworthySection extends StatelessWidget {
                   window: _windowLabel(),
                 ),
                 if (index < shown.length - 1)
-                  const SizedBox(height: Spacing.level3),
+                  const SizedBox(height: Spacing.md),
               ],
             ],
           ),
@@ -86,7 +86,7 @@ class _NoteworthyCard extends StatelessWidget {
     final typography = context.theme.typography;
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -94,14 +94,14 @@ class _NoteworthyCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FAvatar.raw(
-                  size: Spacing.level6,
+                  size: Spacing.xl2,
                   child: Icon(
                     finding.icon,
-                    size: Spacing.level4,
+                    size: Spacing.lg,
                     color: finding.color.solid(context),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: Text(
                     finding.title,
@@ -112,14 +112,14 @@ class _NoteworthyCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Text(
               finding.body,
               style: typography.body.sm.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Text(
               window,
               style: typography.body.xs.copyWith(
@@ -145,7 +145,7 @@ class _AbstainRow extends StatelessWidget {
         padding: EdgeInsetsGeometryDelta.value(EdgeInsets.zero),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Text(
           l10n.reviewNoteworthyAbstainLabel,
           style: context.theme.typography.body.sm.copyWith(

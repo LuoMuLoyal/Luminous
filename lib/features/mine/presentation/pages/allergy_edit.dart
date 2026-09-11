@@ -151,9 +151,7 @@ class AllergyEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,9 +177,7 @@ class AllergyEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+              vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,9 +198,7 @@ class AllergyEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+              vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,15 +213,13 @@ class AllergyEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+              vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
+                  padding: const EdgeInsets.all(Spacing.lg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -238,7 +230,7 @@ class AllergyEditPage extends HookConsumerWidget {
                         onChanged: (v) => kind.value = v,
                         labelBuilder: (v) => allergyKindLabel(l10n, v),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       FTextField(
                         key: const Key('allergy-label-field'),
                         control: FTextFieldControl.managed(
@@ -246,14 +238,14 @@ class AllergyEditPage extends HookConsumerWidget {
                         ),
                         label: Text(l10n.mineEditFieldLabel),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: reactionController,
                         ),
                         label: Text(l10n.mineEditFieldReaction),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       FSelect<HealthAllergySeverity>.rich(
                         label: Text(l10n.mineEditFieldSeverity),
                         hint: l10n.mineEditFieldSeverity,
@@ -276,7 +268,7 @@ class AllergyEditPage extends HookConsumerWidget {
                             )
                             .toList(),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: noteController,
@@ -284,14 +276,14 @@ class AllergyEditPage extends HookConsumerWidget {
                         label: Text(l10n.mineEditFieldNote),
                         maxLines: 3,
                       ),
-                      const SizedBox(height: Spacing.level5),
+                      const SizedBox(height: Spacing.xl),
                       FButton(
                         key: const Key('allergy-save-button'),
                         onPress: onSave,
                         child: Text(l10n.mineEditSaveAction),
                       ),
                       if (!isNew) ...[
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         FButton(
                           key: const Key('allergy-delete-button'),
                           variant: FButtonVariant.destructive,

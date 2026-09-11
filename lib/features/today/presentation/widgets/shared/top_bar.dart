@@ -110,8 +110,8 @@ class _NotificationButton extends ConsumerWidget {
           ),
           if (hasUnread)
             Positioned(
-              right: Spacing.level2,
-              top: Spacing.level2,
+              right: Spacing.sm,
+              top: Spacing.sm,
               child: Semantics(
                 label: l10n.todayNotificationsUnreadLabel,
                 child: ExcludeSemantics(
@@ -123,7 +123,7 @@ class _NotificationButton extends ConsumerWidget {
                       ),
                     ),
                     builder: (context, style) =>
-                        const SizedBox.square(dimension: Spacing.level2),
+                        const SizedBox.square(dimension: Spacing.sm),
                   ),
                 ),
               ),

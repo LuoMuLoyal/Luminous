@@ -65,13 +65,13 @@ class _NotificationListItemWidgetState
           child: FTappable(
             onPress: widget.onTap,
             child: Padding(
-              padding: const EdgeInsets.all(Spacing.level4),
+              padding: const EdgeInsets.all(Spacing.lg),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (!widget.item.isRead) ...[
                     Padding(
-                      padding: const EdgeInsets.only(top: Spacing.level2),
+                      padding: const EdgeInsets.only(top: Spacing.sm),
                       child: Semantics(
                         label: l10n.notificationUnreadSemantics,
                         child: Container(
@@ -84,7 +84,7 @@ class _NotificationListItemWidgetState
                         ),
                       ),
                     ),
-                    const SizedBox(width: Spacing.level3),
+                    const SizedBox(width: Spacing.md),
                   ],
                   Expanded(
                     child: Column(
@@ -105,7 +105,7 @@ class _NotificationListItemWidgetState
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const SizedBox(width: Spacing.level2),
+                            const SizedBox(width: Spacing.sm),
                             Text(
                               _formatTime(context, widget.item.createdAt),
                               style: typography.body.xs.copyWith(
@@ -114,7 +114,7 @@ class _NotificationListItemWidgetState
                             ),
                           ],
                         ),
-                        const SizedBox(height: Spacing.level1),
+                        const SizedBox(height: Spacing.xs),
                         Text(
                           widget.item.content,
                           style: typography.body.sm.copyWith(
@@ -135,14 +135,14 @@ class _NotificationListItemWidgetState
                       return Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const SizedBox(width: Spacing.level3),
+                          const SizedBox(width: Spacing.md),
                           _HoverActionButton(
                             icon: toggleIcon,
                             color: toggleColor,
                             tooltip: toggleLabel,
                             onPressed: widget.onToggleRead,
                           ),
-                          const SizedBox(width: Spacing.level2),
+                          const SizedBox(width: Spacing.sm),
                           _HoverActionButton(
                             icon: SemanticIcons.actionDelete,
                             color: SemanticColor.destructive.solid(context),
@@ -192,13 +192,13 @@ class _NotificationListItemWidgetState
         child: FTappable(
           onPress: widget.onTap,
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (!widget.item.isRead) ...[
                   Padding(
-                    padding: const EdgeInsets.only(top: Spacing.level2),
+                    padding: const EdgeInsets.only(top: Spacing.sm),
                     child: Semantics(
                       label: l10n.notificationUnreadSemantics,
                       child: Container(
@@ -211,7 +211,7 @@ class _NotificationListItemWidgetState
                       ),
                     ),
                   ),
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                 ],
                 Expanded(
                   child: Column(
@@ -232,7 +232,7 @@ class _NotificationListItemWidgetState
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: Spacing.level2),
+                          const SizedBox(width: Spacing.sm),
                           Text(
                             _formatTime(context, widget.item.createdAt),
                             style: typography.body.xs.copyWith(
@@ -241,7 +241,7 @@ class _NotificationListItemWidgetState
                           ),
                         ],
                       ),
-                      const SizedBox(height: Spacing.level1),
+                      const SizedBox(height: Spacing.xs),
                       Text(
                         widget.item.content,
                         style: typography.body.sm.copyWith(

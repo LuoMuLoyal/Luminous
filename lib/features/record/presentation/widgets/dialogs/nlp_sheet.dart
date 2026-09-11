@@ -135,7 +135,7 @@ class RecordNlpSheet extends HookConsumerWidget {
         context: context,
         builder: (dialogContext, style, animation) => DialogShell(
           maxWidth: 360,
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           scrollable: false,
           builder: (innerContext) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -147,14 +147,14 @@ class RecordNlpSheet extends HookConsumerWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 l10n.recordNlpResetConfirmBody,
                 style: innerContext.theme.typography.body.sm.copyWith(
                   color: SemanticColor.neutral.solid(innerContext),
                 ),
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -163,7 +163,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                     onPress: () => Navigator.of(dialogContext).pop(false),
                     child: Text(l10n.commonCancel),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   FButton(
                     variant: FButtonVariant.primary,
                     onPress: () => Navigator.of(dialogContext).pop(true),
@@ -196,10 +196,10 @@ class RecordNlpSheet extends HookConsumerWidget {
           // Drag handle
           Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.level2),
+              padding: const EdgeInsets.only(top: Spacing.sm),
               child: Container(
-                width: Spacing.level10,
-                height: Spacing.level1,
+                width: Spacing.xl6,
+                height: Spacing.xs,
                 decoration: BoxDecoration(
                   color: SemanticColor.neutral.solid(context),
                   borderRadius: context.theme.style.borderRadius.xs2,
@@ -210,10 +210,10 @@ class RecordNlpSheet extends HookConsumerWidget {
           // Header
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              Spacing.level4,
-              Spacing.level2,
-              Spacing.level2,
-              Spacing.level2,
+              Spacing.lg,
+              Spacing.sm,
+              Spacing.sm,
+              Spacing.sm,
             ),
             child: Row(
               children: [
@@ -237,8 +237,8 @@ class RecordNlpSheet extends HookConsumerWidget {
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
-                horizontal: Spacing.level4,
-                vertical: Spacing.level2,
+                horizontal: Spacing.lg,
+                vertical: Spacing.sm,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +249,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
-                  const SizedBox(height: Spacing.level4),
+                  const SizedBox(height: Spacing.lg),
                   FTextField(
                     key: const Key('record-nlp-input-field'),
                     control: FTextFieldControl.managed(
@@ -263,7 +263,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                     enabled: !state.isGenerating && !state.isSaving,
                     hint: l10n.recordNlpInputHint,
                   ),
-                  const SizedBox(height: Spacing.level4),
+                  const SizedBox(height: Spacing.lg),
                   Row(
                     children: [
                       Expanded(
@@ -276,7 +276,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                           child: Text(l10n.recordNlpResetAction),
                         ),
                       ),
-                      const SizedBox(width: Spacing.level3),
+                      const SizedBox(width: Spacing.md),
                       Expanded(
                         child: FButton(
                           key: const Key('record-nlp-generate-action'),
@@ -293,7 +293,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                     ],
                   ),
                   if (state.hasResult) ...[
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     RecordNlpCandidateReview(
                       state: state,
                       onToggleSelected: (index, selected) => ref
@@ -307,7 +307,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                           .removeCandidateAt(index),
                     ),
                     if (state.hasFailedCandidates) ...[
-                      const SizedBox(height: Spacing.level4),
+                      const SizedBox(height: Spacing.lg),
                       RecordNlpRetryPanel(
                         failedCount: state.failedCount,
                         enabled: !state.isSaving,
@@ -315,10 +315,10 @@ class RecordNlpSheet extends HookConsumerWidget {
                       ),
                     ],
                   ] else if (state.status == RecordNlpStatus.generating) ...[
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     const FProgress(),
                   ] else if (state.status == RecordNlpStatus.error) ...[
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     Row(
                       children: [
                         Icon(
@@ -326,7 +326,7 @@ class RecordNlpSheet extends HookConsumerWidget {
                           color: SemanticColor.destructive.solid(context),
                           size: 18,
                         ),
-                        const SizedBox(width: Spacing.level2),
+                        const SizedBox(width: Spacing.sm),
                         Expanded(
                           child: Text(
                             state.errorMessage ??
@@ -357,10 +357,10 @@ class RecordNlpSheet extends HookConsumerWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  Spacing.level4,
-                  Spacing.level3,
-                  Spacing.level4,
-                  Spacing.level4,
+                  Spacing.lg,
+                  Spacing.md,
+                  Spacing.lg,
+                  Spacing.lg,
                 ),
                 child: SizedBox(
                   width: double.infinity,

@@ -92,7 +92,7 @@ class ReminderFormBody extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -107,8 +107,8 @@ class ReminderFormBody extends StatelessWidget {
                 else
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: Spacing.level4,
-                      vertical: Spacing.level3,
+                      horizontal: Spacing.lg,
+                      vertical: Spacing.md,
                     ),
                     child: FSelect<String>.rich(
                       label: Text(l10n.medicineReminderMedicineLabel),
@@ -135,7 +135,7 @@ class ReminderFormBody extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _FormCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,8 +143,8 @@ class ReminderFormBody extends StatelessWidget {
                 _SectionTitle(label: l10n.medicineReminderSettingsSectionTitle),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level4,
-                    vertical: Spacing.level3,
+                    horizontal: Spacing.lg,
+                    vertical: Spacing.md,
                   ),
                   child: FrequencySegments(
                     frequency: frequency,
@@ -155,8 +155,8 @@ class ReminderFormBody extends StatelessWidget {
                   const AppDivider(),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: Spacing.level4,
-                      vertical: Spacing.level3,
+                      horizontal: Spacing.lg,
+                      vertical: Spacing.md,
                     ),
                     child: WeekdayPicker(
                       selectedWeekdays: selectedWeekdays,
@@ -167,8 +167,8 @@ class ReminderFormBody extends StatelessWidget {
                 const AppDivider(),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level4,
-                    vertical: Spacing.level3,
+                    horizontal: Spacing.lg,
+                    vertical: Spacing.md,
                   ),
                   child: TimePickerRow(
                     times: times,
@@ -202,7 +202,7 @@ class ReminderFormBody extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _FormCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,10 +229,10 @@ class ReminderFormBody extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           _FormCard(
             child: Padding(
-              padding: const EdgeInsets.all(Spacing.level4),
+              padding: const EdgeInsets.all(Spacing.lg),
               child: FTextField(
                 control: FTextFieldControl.managed(controller: noteController),
                 style: FTextFieldStyleDelta.delta(
@@ -258,7 +258,7 @@ class ReminderFormBody extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           FButton(
             key: const Key('medicine-reminder-save-button'),
             onPress: isSaving ? null : onSave,
@@ -272,7 +272,7 @@ class ReminderFormBody extends StatelessWidget {
             child: Text(l10n.mineEditSaveAction),
           ),
           if (onDelete != null) ...[
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             FButton(
               key: const Key('medicine-reminder-form-delete-button'),
               variant: FButtonVariant.destructive,
@@ -306,9 +306,9 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        Spacing.level4,
-        Spacing.level4,
-        Spacing.level4,
+        Spacing.lg,
+        Spacing.lg,
+        Spacing.lg,
         context.titleContentGap,
       ),
       child: Text(

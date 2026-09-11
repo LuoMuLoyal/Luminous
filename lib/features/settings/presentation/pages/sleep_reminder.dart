@@ -29,8 +29,8 @@ class SleepReminderSettingsPage extends ConsumerWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(
               vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+                  ? Spacing.xl2
+                  : Spacing.xl3,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 if (settings.sleepReminderEnabled)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,7 +75,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                               controller.setSleepBedtime(value?.toTimeOfDay()),
                         ),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       FTimeField.picker(
                         label: Text(l10n.settingsNotificationsSleepWakeTime),
                         control: FTimeFieldControl.lifted(
@@ -94,8 +94,8 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                           ))
                         Padding(
                           padding: const EdgeInsets.only(
-                            left: Spacing.level2,
-                            top: Spacing.level2,
+                            left: Spacing.sm,
+                            top: Spacing.sm,
                           ),
                           child: Text(
                             l10n.settingsNotificationsCrossDayHint,
@@ -109,8 +109,8 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                 else
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: Spacing.level2,
-                      vertical: Spacing.level1,
+                      horizontal: Spacing.sm,
+                      vertical: Spacing.xs,
                     ),
                     child: Text(
                       l10n.settingsNotificationsTimeUnset,

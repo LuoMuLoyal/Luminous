@@ -47,7 +47,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
     final typography = context.theme.typography;
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -57,7 +57,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
               style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
             ),
             if (widget.subtitle != null) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 widget.subtitle!,
                 style: typography.body.xs.copyWith(
@@ -65,7 +65,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
                 ),
               ),
             ],
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               children: [
                 Expanded(
@@ -77,7 +77,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
                     onPressed: () => _select(HealthEventOutcome.improved),
                   ),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Expanded(
                   child: _OutcomeButton(
                     key: const Key('health-event-check-in-outcome-unchanged'),
@@ -87,7 +87,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
                     onPressed: () => _select(HealthEventOutcome.unchanged),
                   ),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Expanded(
                   child: _OutcomeButton(
                     key: const Key('health-event-check-in-outcome-worsened'),
@@ -100,7 +100,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
               ],
             ),
             if (_validationError != null) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 _validationError!,
                 key: const Key('health-event-check-in-validation-error'),
@@ -110,7 +110,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
               ),
             ],
             if (_submitError != null) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 _submitError!,
                 key: const Key('health-event-check-in-submit-error'),
@@ -119,7 +119,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
                 ),
               ),
             ],
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -131,7 +131,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
                       : () => Navigator.of(context).pop(),
                   child: Text(widget.cancelLabel),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   key: const Key('health-event-check-in-submit'),
                   onPress: _isSubmitting ? null : _submit,

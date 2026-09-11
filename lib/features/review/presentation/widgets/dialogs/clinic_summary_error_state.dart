@@ -19,7 +19,7 @@ class ClinicSummaryErrorView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsets.all(Spacing.level5),
+      padding: const EdgeInsets.all(Spacing.xl),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -28,13 +28,13 @@ class ClinicSummaryErrorView extends StatelessWidget {
             size: 32,
             color: SemanticColor.warning.solid(context),
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Text(
             message,
             style: context.theme.typography.body.sm,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           FButton(
             variant: FButtonVariant.outline,
             onPress: onRetry,

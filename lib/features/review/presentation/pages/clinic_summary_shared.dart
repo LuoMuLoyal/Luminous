@@ -74,7 +74,7 @@ class _ClinicSummarySharedPageState
           );
         },
         data: (dto) => SingleChildScrollView(
-          padding: const EdgeInsets.all(Spacing.level5),
+          padding: const EdgeInsets.all(Spacing.xl),
           child: ClinicSummaryContent(
             dto: dto,
             onDownloadPdf: _downloadPdf,

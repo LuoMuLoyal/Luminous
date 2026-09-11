@@ -42,7 +42,7 @@ class AssistantConversationDrawerHeader extends StatelessWidget {
                   child: const Icon(SemanticIcons.actionAdd, size: 18),
                 ),
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
             ],
             FButton.icon(
               variant: FButtonVariant.ghost,
@@ -51,7 +51,7 @@ class AssistantConversationDrawerHeader extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         searchField,
       ],
     );

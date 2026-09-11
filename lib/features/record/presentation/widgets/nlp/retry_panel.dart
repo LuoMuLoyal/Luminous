@@ -22,14 +22,14 @@ class RecordNlpRetryPanel extends StatelessWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Row(
           children: [
             Icon(
               SemanticIcons.statusError,
               color: SemanticColor.primary.solid(context),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Text(
                 l10n.recordNlpFailedCandidatesHint(failedCount),
@@ -38,7 +38,7 @@ class RecordNlpRetryPanel extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               variant: FButtonVariant.outline,
               key: const Key('record-nlp-retry-failed-action'),

@@ -35,15 +35,15 @@ class ReviewPatternsSection extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: patterns.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: Spacing.level3,
-            mainAxisSpacing: Spacing.level3,
+            crossAxisSpacing: Spacing.md,
+            mainAxisSpacing: Spacing.md,
             mainAxisExtent: _patternCardHeight(context),
           ),
           itemBuilder: (context, index) {
@@ -66,7 +66,7 @@ class _PatternCard extends StatelessWidget {
     final typography = context.theme.typography;
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -90,7 +90,7 @@ class _PatternCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Expanded(
                   child: Text(
                     pattern.title,
@@ -103,7 +103,7 @@ class _PatternCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             SkeletonText(
               text: reviewStatusLabel(l10n, pattern.status),
               style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
@@ -111,7 +111,7 @@ class _PatternCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.74,
             ),
-            const SizedBox(height: Spacing.level1),
+            const SizedBox(height: Spacing.xs),
             SkeletonText(
               text: pattern.body,
               style: typography.body.xs.copyWith(

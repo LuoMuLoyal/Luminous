@@ -31,7 +31,7 @@ class SearchResultTile extends StatelessWidget {
 
     final card = FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -49,31 +49,31 @@ class SearchResultTile extends StatelessWidget {
                 _SourceBadge(source: result.source, l10n: l10n),
               ],
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               result.subtitle,
               style: typography.body.sm.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            const SizedBox(height: Spacing.level1),
+            const SizedBox(height: Spacing.xs),
             Text(
               sourceRefLabel(l10n, result.source, result.id),
               style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Text(
               result.summary,
               style: typography.body.md.copyWith(color: colors.foreground),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Wrap(
-              spacing: Spacing.level3,
-              runSpacing: Spacing.level3,
+              spacing: Spacing.md,
+              runSpacing: Spacing.md,
               children: [
                 ...result.tags.map((tag) => _TagPill(label: tag)),
                 _TagPill(
@@ -83,7 +83,7 @@ class SearchResultTile extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Align(
               alignment: expandedAction
                   ? Alignment.center
@@ -102,7 +102,7 @@ class SearchResultTile extends StatelessWidget {
                               size: IconSizeTokens.sm,
                               color: SemanticColor.primary.solid(context),
                             ),
-                            const SizedBox(width: Spacing.level2),
+                            const SizedBox(width: Spacing.sm),
                             Text(l10n.medicineSearchAlreadyAddedLabel),
                           ],
                         ),
@@ -186,7 +186,7 @@ class PreviewPanel extends StatelessWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level6),
+        padding: const EdgeInsets.all(Spacing.xl2),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +196,7 @@ class PreviewPanel extends StatelessWidget {
                 style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               ),
               if (preview != null) ...[
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 Text(
                   preview.title,
                   style: typography.body.md.copyWith(
@@ -206,7 +206,7 @@ class PreviewPanel extends StatelessWidget {
               ],
               if (preview == null)
                 Padding(
-                  padding: const EdgeInsets.only(top: Spacing.level6),
+                  padding: const EdgeInsets.only(top: Spacing.xl2),
                   child: Column(
                     children: [
                       Icon(
@@ -214,7 +214,7 @@ class PreviewPanel extends StatelessWidget {
                         size: IconSizeTokens.xl3,
                         color: SemanticColor.neutral.solid(context),
                       ),
-                      const SizedBox(height: Spacing.level4),
+                      const SizedBox(height: Spacing.lg),
                       Text(
                         l10n.medicineSearchPreviewEmpty,
                         style: typography.body.md.copyWith(
@@ -263,14 +263,14 @@ class NoResultTools extends StatelessWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           children: [
             Text(
               l10n.medicineSearchNoResultTitle,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               children: actions
                   .map(
@@ -306,11 +306,11 @@ class _NoResultAction extends StatelessWidget {
         ? FTappable(
             onPress: onTap,
             child: Padding(
-              padding: const EdgeInsets.all(Spacing.level3),
+              padding: const EdgeInsets.all(Spacing.md),
               child: Column(
                 children: [
                   Icon(icon, color: SemanticColor.primary.solid(context)),
-                  const SizedBox(height: Spacing.level2),
+                  const SizedBox(height: Spacing.sm),
                   Text(
                     label,
                     textAlign: TextAlign.center,
@@ -321,11 +321,11 @@ class _NoResultAction extends StatelessWidget {
             ),
           )
         : Padding(
-            padding: const EdgeInsets.all(Spacing.level3),
+            padding: const EdgeInsets.all(Spacing.md),
             child: Column(
               children: [
                 Icon(icon, color: SemanticColor.neutral.solid(context)),
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 Text(
                   label,
                   textAlign: TextAlign.center,

@@ -54,7 +54,7 @@ class ReviewDetailPage extends ConsumerWidget {
         ),
         data: (review) => _ReviewDetailOpenedTracker(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -64,15 +64,15 @@ class ReviewDetailPage extends ConsumerWidget {
                   // 详情页只读：不提供今日 check-in 与结束入口。
                   onGoTodayCheckIn: () {},
                 ),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 WhatHappenedSection(section: review.sections.whatHappened),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 KeyChangesSection(section: review.sections.keyChanges),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 CompletedActionsSection(
                   section: review.sections.completedActions,
                 ),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 NextStepSection(section: review.sections.nextStep),
               ],
             ),

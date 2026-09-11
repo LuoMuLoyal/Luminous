@@ -90,8 +90,8 @@ class _CheckTabContentState extends State<CheckTabContent> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level4,
+        horizontal: Spacing.lg,
+        vertical: Spacing.lg,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,11 +103,11 @@ class _CheckTabContentState extends State<CheckTabContent> {
             onRun: widget.onRunCheck,
             isRunning: widget.isRunning,
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           // Stale banner (LLM only, when stale).
           if (_isLlm && record.stale) ...[
             StaleBanner(l10n: l10n),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
           ],
           // Risk score hero.
           RiskScoreHero(
@@ -116,11 +116,11 @@ class _CheckTabContentState extends State<CheckTabContent> {
             riskLevel: record.riskLevel,
             findingCount: result.findingCount,
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           // Red flags (if any).
           if (result.hasRedFlags) ...[
             RiskRedFlagSection(alerts: result.redFlags, l10n: l10n),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
           ],
           // Metric grid.
           MetricGrid(
@@ -133,7 +133,7 @@ class _CheckTabContentState extends State<CheckTabContent> {
                 ? () => _scrollToKey(_coverageKey)
                 : null,
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           // Findings section.
           if (result.hasFindings)
             FindingsTabSection(
@@ -147,7 +147,7 @@ class _CheckTabContentState extends State<CheckTabContent> {
             ),
           // Coverage section.
           if (result.hasCoverageGaps) ...[
-            if (result.hasFindings) const SizedBox(height: Spacing.level5),
+            if (result.hasFindings) const SizedBox(height: Spacing.xl),
             CoverageTabSection(
               l10n: l10n,
               result: result,
@@ -166,7 +166,7 @@ class _CheckTabContentState extends State<CheckTabContent> {
           if (_isLlm &&
               result.overallRecommendation != null &&
               result.overallRecommendation!.trim().isNotEmpty) ...[
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             OverallRecommendationCard(
               l10n: l10n,
               text: result.overallRecommendation!,

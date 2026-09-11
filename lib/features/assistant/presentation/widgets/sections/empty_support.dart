@@ -55,7 +55,7 @@ class _AssistantEmptySupportState extends State<AssistantEmptySupport> {
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level6),
+        const SizedBox(height: Spacing.xl2),
         Align(
           alignment: Alignment.centerLeft,
           child: Column(
@@ -67,7 +67,7 @@ class _AssistantEmptySupportState extends State<AssistantEmptySupport> {
                   color: SemanticColor.neutral.solid(context),
                 ),
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               FlowSuggestionGroup(
                 layout: FlowSuggestionLayout.column,
                 suggestions: [
@@ -82,10 +82,10 @@ class _AssistantEmptySupportState extends State<AssistantEmptySupport> {
           ),
         ),
         if (widget.showMemoryHint) ...[
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           const AssistantMemoryHint(),
         ],
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         AssistantDisclaimer(
           expanded: _disclaimerExpanded,
           onToggle: () =>
@@ -106,7 +106,7 @@ class AssistantMemoryHint extends StatelessWidget {
     final typography = context.theme.typography;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -115,7 +115,7 @@ class AssistantMemoryHint extends StatelessWidget {
             size: 14,
             color: SemanticColor.neutral.solid(context),
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +127,7 @@ class AssistantMemoryHint extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   l10n.assistantMemoryHintDescription,
                   style: typography.body.xs2.copyWith(
@@ -168,7 +168,7 @@ class AssistantDisclaimer extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onToggle,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -177,7 +177,7 @@ class AssistantDisclaimer extends StatelessWidget {
                 size: 14,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Expanded(
                 child: Text(
                   l10n.assistantDisclaimerText,
@@ -188,7 +188,7 @@ class AssistantDisclaimer extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: Spacing.level2),
+              const SizedBox(width: Spacing.sm),
               Icon(
                 expanded
                     ? SemanticIcons.actionCollapse

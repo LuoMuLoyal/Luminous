@@ -120,7 +120,7 @@ class LoginPage extends HookConsumerWidget {
                 invalidMessage: l10n.authEmailInvalidError,
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             if (state.mode == AuthLoginMode.password)
               FTextFormField.password(
                 key: const ValueKey('password-login-field'),
@@ -171,7 +171,7 @@ class LoginPage extends HookConsumerWidget {
                         }
                       },
               ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             SizedBox(
               width: double.infinity,
               child: FButton(
@@ -211,18 +211,18 @@ class LoginPage extends HookConsumerWidget {
                     : Text(l10n.authSignIn),
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Wrap(
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: Spacing.level2,
-              runSpacing: Spacing.level2,
+              spacing: Spacing.sm,
+              runSpacing: Spacing.sm,
               children: [
                 // Group: "需要账号？" + "立即注册"
                 Wrap(
                   alignment: WrapAlignment.start,
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: Spacing.level2,
+                  spacing: Spacing.sm,
                   children: [
                     Text(
                       l10n.authNeedAccountPrompt,
@@ -261,8 +261,8 @@ class LoginPage extends HookConsumerWidget {
               child: Wrap(
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: Spacing.level1,
-                runSpacing: Spacing.level1,
+                spacing: Spacing.xs,
+                runSpacing: Spacing.xs,
                 children: [
                   Text(
                     l10n

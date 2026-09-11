@@ -136,7 +136,7 @@ class TimelineCard extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(dense ? Spacing.level4 : Spacing.level5),
+          padding: EdgeInsets.all(dense ? Spacing.lg : Spacing.xl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -155,7 +155,7 @@ class TimelineCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: Spacing.level4),
+              const SizedBox(width: Spacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +172,7 @@ class TimelineCard extends StatelessWidget {
                           ),
                         ),
                         if (entry.badgeKey != null) ...[
-                          const SizedBox(width: Spacing.level3),
+                          const SizedBox(width: Spacing.md),
                           // 桌面端时间线列较窄：badge 参与 flex 收缩，过长时
                           // 省略号截断，避免 RenderFlex 溢出（e2e 桌面宽度回归）。
                           Flexible(
@@ -188,8 +188,8 @@ class TimelineCard extends StatelessWidget {
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: Spacing.level2,
-                                      vertical: Spacing.level1,
+                                      horizontal: Spacing.sm,
+                                      vertical: Spacing.xs,
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -225,7 +225,7 @@ class TimelineCard extends StatelessWidget {
                       ],
                     ),
                     if (value != null && value.isNotEmpty) ...[
-                      const SizedBox(height: Spacing.level2),
+                      const SizedBox(height: Spacing.sm),
                       Text.rich(
                         TextSpan(
                           style: typography.body.sm.copyWith(
@@ -246,7 +246,7 @@ class TimelineCard extends StatelessWidget {
                       ),
                     ],
                     if (detail != null) ...[
-                      const SizedBox(height: Spacing.level2),
+                      const SizedBox(height: Spacing.sm),
                       Text(
                         detail,
                         style: typography.body.xs.copyWith(
@@ -258,10 +258,10 @@ class TimelineCard extends StatelessWidget {
                 ),
               ),
               if (entry.imageUrl != null && !dense) ...[
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
                 TimelineImageThumbnail(imageUrl: entry.imageUrl!, label: label),
               ] else if (entry.imagePlaceholderKey != null && !dense) ...[
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: SemanticColor.neutral.subtle(context),
@@ -276,8 +276,8 @@ class TimelineCard extends StatelessWidget {
                     child: Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.level3,
-                          vertical: Spacing.level2,
+                          horizontal: Spacing.md,
+                          vertical: Spacing.sm,
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -287,7 +287,7 @@ class TimelineCard extends StatelessWidget {
                               size: 22,
                               color: SemanticColor.neutral.solid(context),
                             ),
-                            const SizedBox(height: Spacing.level1),
+                            const SizedBox(height: Spacing.xs),
                             Text(
                               recordCopy(l10n, entry.imagePlaceholderKey!),
                               style: typography.body.xs.copyWith(
@@ -304,7 +304,7 @@ class TimelineCard extends StatelessWidget {
                   ),
                 ),
               ],
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               Icon(
                 _trailingIcon(),
                 color: _trailingColor(colors),

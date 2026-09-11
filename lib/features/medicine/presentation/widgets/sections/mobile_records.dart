@@ -43,10 +43,10 @@ class _MedicineRecordsSectionState extends State<_MedicineRecordsSection> {
             letterSpacing: 0,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FCard(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -56,9 +56,9 @@ class _MedicineRecordsSectionState extends State<_MedicineRecordsSection> {
                   nextDose: widget.nextDose,
                   l10n: l10n,
                 ),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 const AppDivider(),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 if (items.isEmpty)
                   _TodayPlanEmpty(l10n: l10n)
                 else ...[
@@ -75,7 +75,7 @@ class _MedicineRecordsSectionState extends State<_MedicineRecordsSection> {
                     ],
                   ),
                   if (isTruncated) ...[
-                    const SizedBox(height: Spacing.level2),
+                    const SizedBox(height: Spacing.sm),
                     _TruncatedFooter(
                       label: _expanded
                           ? l10n.medicineTodayPlanCollapse
@@ -121,15 +121,15 @@ class _TodayPlanRow extends StatelessWidget {
     final typography = context.theme.typography;
 
     final rowContent = Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _MedicationAvatar(item: item, size: Spacing.level8),
-              const SizedBox(width: Spacing.level3),
+              _MedicationAvatar(item: item, size: Spacing.xl4),
+              const SizedBox(width: Spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,17 +142,17 @@ class _TodayPlanRow extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: Spacing.level1),
+                    const SizedBox(height: Spacing.xs),
                     Text(
                       _itemPlanDetail(),
                       style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
-                    const SizedBox(height: Spacing.level2),
+                    const SizedBox(height: Spacing.sm),
                     Wrap(
-                      spacing: Spacing.level2,
-                      runSpacing: Spacing.level2,
+                      spacing: Spacing.sm,
+                      runSpacing: Spacing.sm,
                       children: [
                         TintedStatusBadge(
                           color: item.stateColor,
@@ -190,7 +190,7 @@ class _TodayPlanRow extends StatelessWidget {
             ],
           ),
           if (canMark) ...[
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Row(
               children: [
                 Expanded(
@@ -202,7 +202,7 @@ class _TodayPlanRow extends StatelessWidget {
                     onTap: () => onMarkDose!(takenRequest),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: _DoseActionButton(
                     key: const Key('medicine-plan-dose-action-skipped'),
@@ -284,18 +284,18 @@ class _TodayPlanEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
       child: Row(
         children: [
           FAvatar.raw(
-            size: Spacing.level8,
+            size: Spacing.xl4,
             child: Icon(
               SemanticIcons.doseCalendarCheck,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
           ),
-          const SizedBox(width: Spacing.level4),
+          const SizedBox(width: Spacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +306,7 @@ class _TodayPlanEmpty extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   l10n.medicineNoMedicineBody,
                   style: typography.body.xs.copyWith(

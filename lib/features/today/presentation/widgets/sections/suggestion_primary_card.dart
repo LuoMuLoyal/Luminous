@@ -129,7 +129,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
             key: const Key('today-primary-suggestion-card'),
             style: todayCardStyle(context, tone: cardTone),
             child: Padding(
-              padding: const EdgeInsets.all(Spacing.level4),
+              padding: const EdgeInsets.all(Spacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -154,14 +154,14 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                       ),
                     ],
                   ),
-                  const SizedBox(height: Spacing.level4),
+                  const SizedBox(height: Spacing.lg),
                   Text(
                     card.title,
                     style: typography.display.xl.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level2),
+                  const SizedBox(height: Spacing.sm),
                   Text(
                     card.reason,
                     style: typography.body.sm.copyWith(
@@ -171,10 +171,10 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                   ),
                   if (card.secondaryActions != null &&
                       card.secondaryActions!.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level3),
+                    const SizedBox(height: Spacing.md),
                     Wrap(
-                      spacing: Spacing.level2,
-                      runSpacing: Spacing.level2,
+                      spacing: Spacing.sm,
+                      runSpacing: Spacing.sm,
                       children: [
                         for (final action in card.secondaryActions!)
                           FButton(
@@ -189,11 +189,11 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       const SizedBox(
-                                        width: Spacing.level4,
-                                        height: Spacing.level4,
+                                        width: Spacing.lg,
+                                        height: Spacing.lg,
                                         child: FCircularProgress.loader(),
                                       ),
-                                      const SizedBox(width: Spacing.level2),
+                                      const SizedBox(width: Spacing.sm),
                                       Text(action.label),
                                     ],
                                   )
@@ -203,12 +203,12 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                     ),
                   ],
                   if (card.subtype == 'water' && widget.dashboard != null) ...[
-                    const SizedBox(height: Spacing.level3),
+                    const SizedBox(height: Spacing.md),
                     WaterProgressBar(
                       progress: widget.dashboard!.water.progress,
                     ),
                   ],
-                  const SizedBox(height: Spacing.level3),
+                  const SizedBox(height: Spacing.md),
                   EvidenceToggleButton(
                     expanded: _evidenceExpanded,
                     onTap: _toggleEvidence,
@@ -221,26 +221,26 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         if (card.evidence.isNotEmpty) ...[
                           EvidenceList(
                             label: l10n.todaySuggestionEvidenceLabel,
                             evidence: card.evidence,
                           ),
-                          const SizedBox(height: Spacing.level3),
+                          const SizedBox(height: Spacing.md),
                         ],
                         SuggestionMetaBlock(
                           label: l10n.todaySuggestionBoundaryLabel,
                           value: card.boundary,
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         SuggestionAiExplainButton(suggestionId: card.id),
                       ],
                     ),
                   ),
                   if (card.feedbackOptions != null &&
                       card.feedbackOptions!.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     SuggestionFeedbackRow(
                       suggestionId: card.id,
                       feedbackOptions: card.feedbackOptions!,
@@ -377,7 +377,7 @@ class EvidenceToggleButton extends StatelessWidget {
     return FTappable(
       onPress: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -390,7 +390,7 @@ class EvidenceToggleButton extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(width: Spacing.level1),
+            const SizedBox(width: Spacing.xs),
             AnimatedRotation(
               turns: expanded ? 0.25 : 0,
               duration: DurationTokens.widgetQuick,
@@ -431,7 +431,7 @@ class SuggestionMetaBlock extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level1),
+        const SizedBox(height: Spacing.xs),
         Text(value, style: typography.body.sm),
       ],
     );
@@ -457,9 +457,9 @@ class EvidenceList extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         for (var i = 0; i < evidence.length; i++) ...[
-          if (i > 0) const SizedBox(height: Spacing.level1),
+          if (i > 0) const SizedBox(height: Spacing.xs),
           EvidenceItemRow(label: evidence[i].label, value: evidence[i].value),
         ],
       ],
@@ -489,7 +489,7 @@ class EvidenceItemRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Expanded(
           flex: 7,
           child: Text(
@@ -519,7 +519,7 @@ class WaterProgressBar extends StatelessWidget {
             child: FDeterminateProgress(value: progress),
           ),
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         Text(
           '${(progress * 100).round()}%',
           style: context.theme.typography.body.xs2.copyWith(

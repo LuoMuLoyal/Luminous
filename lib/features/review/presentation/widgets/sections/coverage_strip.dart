@@ -36,7 +36,7 @@ class ReviewCoverageStrip extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Semantics(
           container: true,
           explicitChildNodes: true,
@@ -47,7 +47,7 @@ class ReviewCoverageStrip extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.zero,
               itemCount: metrics.length,
-              separatorBuilder: (_, _) => const SizedBox(width: Spacing.level3),
+              separatorBuilder: (_, _) => const SizedBox(width: Spacing.md),
               itemBuilder: (context, index) {
                 final metric = metrics[index];
                 return _CoverageCard(
@@ -96,7 +96,7 @@ class _CoverageCard extends StatelessWidget {
       child: SizedBox(
         width: 148,
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level3),
+          padding: const EdgeInsets.all(Spacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -104,12 +104,12 @@ class _CoverageCard extends StatelessWidget {
                 children: [
                   Icon(
                     metric.icon,
-                    size: Spacing.level4,
+                    size: Spacing.lg,
                     color: sparse
                         ? SemanticColor.neutral.solid(context)
                         : metric.color.solid(context),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   Expanded(
                     child: Text(
                       reviewMetricTitle(l10n, metric.kind),
@@ -122,7 +122,7 @@ class _CoverageCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 coverageLabel,
                 style: typography.body.xs.copyWith(
@@ -131,7 +131,7 @@ class _CoverageCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Row(
                 children: [
                   Expanded(
@@ -175,7 +175,7 @@ class _DeltaLabel extends StatelessWidget {
       ReviewMetricDirection.flat => SemanticColor.neutral,
     };
     return Padding(
-      padding: const EdgeInsets.only(left: Spacing.level2),
+      padding: const EdgeInsets.only(left: Spacing.sm),
       child: Text(
         metric.delta,
         style: context.theme.typography.body.xs.copyWith(

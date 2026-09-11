@@ -39,7 +39,7 @@ class EventHeaderSection extends StatelessWidget {
     return FCard(
       key: const Key('review-event-header'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -50,7 +50,7 @@ class EventHeaderSection extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Row(
               children: [
                 Flexible(
@@ -70,7 +70,7 @@ class EventHeaderSection extends StatelessWidget {
                 const Spacer(),
               ],
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               reviewEventKindLabel(l10n, event.kind),
               style: typography.body.xs.copyWith(
@@ -78,7 +78,7 @@ class EventHeaderSection extends StatelessWidget {
               ),
             ),
             if (isActive && elapsedDays != null) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 l10n.reviewActiveEventElapsedDays(elapsedDays),
                 style: typography.body.xs.copyWith(
@@ -86,7 +86,7 @@ class EventHeaderSection extends StatelessWidget {
                 ),
               ),
             ],
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               l10n.reviewReviewStartedLabel(
                 reviewShortDateLabel(context, event.startedAt),
@@ -96,7 +96,7 @@ class EventHeaderSection extends StatelessWidget {
               ),
             ),
             if (event.endedAt != null) ...[
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 l10n.reviewReviewEndedLabel(
                   reviewShortDateLabel(context, event.endedAt!),
@@ -107,7 +107,7 @@ class EventHeaderSection extends StatelessWidget {
               ),
             ],
             if (event.currentMedicineIds.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 l10n.reviewReviewMedicineCountLabel(
                   event.currentMedicineIds.length,
@@ -118,7 +118,7 @@ class EventHeaderSection extends StatelessWidget {
               ),
             ],
             if (!isActive && event.outcome != null) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Row(
                 children: [
                   Text(
@@ -127,7 +127,7 @@ class EventHeaderSection extends StatelessWidget {
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
-                  const SizedBox(width: Spacing.level2),
+                  const SizedBox(width: Spacing.sm),
                   _ReviewStatusChip(
                     label: reviewOutcomeLabel(l10n, event.outcome!),
                     tone: _outcomeTone(event.outcome!),
@@ -136,7 +136,7 @@ class EventHeaderSection extends StatelessWidget {
               ),
             ],
             if (isActive) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               if (todayCheckIn != null)
                 Text(
                   l10n.reviewReviewCheckInDoneToday(
@@ -199,8 +199,8 @@ class _ReviewStatusChip extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level1,
+          horizontal: Spacing.md,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,

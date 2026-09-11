@@ -42,10 +42,7 @@ class DesktopTodayDashboard extends StatelessWidget {
       // Preview banner slot — SizedBox.shrink has zero height when hidden
       if (isPreview)
         Padding(
-          padding: const EdgeInsets.only(
-            top: Spacing.level3,
-            bottom: Spacing.level6,
-          ),
+          padding: const EdgeInsets.only(top: Spacing.md, bottom: Spacing.xl2),
           child: SignInHintBanner(
             onSignIn: onSignIn,
             message: l10n.todayPreviewBannerMessage,
@@ -61,12 +58,12 @@ class DesktopTodayDashboard extends StatelessWidget {
             child: Column(
               children: [
                 TodayPrimarySuggestionSection(dashboard: dashboard),
-                const SizedBox(height: Spacing.level6),
+                const SizedBox(height: Spacing.xl2),
                 TodaySummarySection(dashboard: dashboard),
               ],
             ),
           ),
-          const SizedBox(width: Spacing.level6),
+          const SizedBox(width: Spacing.xl2),
           Expanded(
             flex: 5,
             child: Column(
@@ -74,14 +71,14 @@ class DesktopTodayDashboard extends StatelessWidget {
                 const TodaySecondarySuggestionsSection(
                   key: Key('today-secondary-suggestions-card'),
                 ),
-                const SizedBox(height: Spacing.level6),
+                const SizedBox(height: Spacing.xl2),
                 TodayObservationSection(dashboard: dashboard),
               ],
             ),
           ),
         ],
       ),
-      const SizedBox(height: Spacing.level6),
+      const SizedBox(height: Spacing.xl2),
       TodayQuickActionsSection(dashboard: dashboard),
     ];
 
@@ -100,7 +97,7 @@ class DesktopTodayDashboard extends StatelessWidget {
                 SliverPadding(
                   // Horizontal padding is provided by DesktopTabShell's
                   // content area. Only add bottom padding for nav bar.
-                  padding: const EdgeInsets.only(bottom: Spacing.level10),
+                  padding: const EdgeInsets.only(bottom: Spacing.xl6),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate.fixed(items),
                   ),

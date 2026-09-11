@@ -11,7 +11,7 @@ class SheetDragHandle extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Container(
           width: 36,
           height: 4,
@@ -20,7 +20,7 @@ class SheetDragHandle extends StatelessWidget {
             borderRadius: context.theme.style.borderRadius.pill,
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
       ],
     );
   }

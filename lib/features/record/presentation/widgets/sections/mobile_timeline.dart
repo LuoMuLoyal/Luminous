@@ -100,7 +100,7 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
               ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         if (isEmpty)
           _MobileTimelineEmptyState(
             l10n: widget.l10n,
@@ -172,8 +172,8 @@ class _TimelineRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level3,
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,10 +195,10 @@ class _TimelineRow extends StatelessWidget {
               isFirst: index == 0,
               isLast: isLast,
               indicatorStyle: IndicatorStyle(
-                width: Spacing.level3,
-                height: Spacing.level3,
+                width: Spacing.md,
+                height: Spacing.md,
                 indicator: _TimelineDot(entry: entry),
-                padding: const EdgeInsets.only(right: Spacing.level3),
+                padding: const EdgeInsets.only(right: Spacing.md),
                 indicatorXY: 0.0,
               ),
               beforeLineStyle: LineStyle(
@@ -230,8 +230,8 @@ class _TimelineRow extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: Spacing.level8,
-                      height: Spacing.level8,
+                      width: Spacing.xl4,
+                      height: Spacing.xl4,
                       decoration: BoxDecoration(
                         color: entry.softColor.muted(context),
                         borderRadius: context.theme.style.borderRadius.sm,
@@ -240,11 +240,11 @@ class _TimelineRow extends StatelessWidget {
                         child: Icon(
                           entry.icon,
                           color: entry.accent.solid(context),
-                          size: Spacing.level5,
+                          size: Spacing.xl,
                         ),
                       ),
                     ),
-                    const SizedBox(width: Spacing.level4),
+                    const SizedBox(width: Spacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,7 +258,7 @@ class _TimelineRow extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           if (subtitle.isNotEmpty) ...[
-                            const SizedBox(height: Spacing.level1),
+                            const SizedBox(height: Spacing.xs),
                             Text(
                               subtitle,
                               style: typography.body.xs.copyWith(
@@ -272,7 +272,7 @@ class _TimelineRow extends StatelessWidget {
                       ),
                     ),
                     if (entry.badgeKey != null) ...[
-                      const SizedBox(width: Spacing.level2),
+                      const SizedBox(width: Spacing.sm),
                       FBadge.raw(
                         builder: (context, style) {
                           return DecoratedBox(
@@ -285,8 +285,8 @@ class _TimelineRow extends StatelessWidget {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: Spacing.level2,
-                                vertical: Spacing.level1,
+                                horizontal: Spacing.sm,
+                                vertical: Spacing.xs,
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -309,11 +309,11 @@ class _TimelineRow extends StatelessWidget {
                         },
                       ),
                     ],
-                    const SizedBox(width: Spacing.level2),
+                    const SizedBox(width: Spacing.sm),
                     Icon(
                       SemanticIcons.actionNext,
                       color: SemanticColor.neutral.solid(context),
-                      size: Spacing.level5,
+                      size: Spacing.xl,
                     ),
                   ],
                 ),
@@ -338,9 +338,9 @@ class _TimelineDot extends StatelessWidget {
       decoration: BoxDecoration(
         color: entry.accent.solid(context),
         shape: BoxShape.circle,
-        border: Border.all(color: colors.background, width: Spacing.level1),
+        border: Border.all(color: colors.background, width: Spacing.xs),
       ),
-      child: const SizedBox.square(dimension: Spacing.level3),
+      child: const SizedBox.square(dimension: Spacing.md),
     );
   }
 }
@@ -366,22 +366,22 @@ class _MobileTimelineEmptyState extends StatelessWidget {
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level6,
-            vertical: Spacing.level8,
+            horizontal: Spacing.xl2,
+            vertical: Spacing.xl4,
           ),
           child: Column(
             children: [
               Icon(
                 SemanticIcons.actionAdd,
-                size: Spacing.level8,
+                size: Spacing.xl4,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               Text(
                 l10n.recordTimelineEmptyTitle,
                 style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 l10n.recordTimelineEmptyDescription,
                 style: typography.body.xs.copyWith(
@@ -389,7 +389,7 @@ class _MobileTimelineEmptyState extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               FButton(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
@@ -402,13 +402,13 @@ class _MobileTimelineEmptyState extends StatelessWidget {
                       SemanticIcons.actionAdd,
                       size: IconSizeTokens.sm,
                     ),
-                    const SizedBox(width: Spacing.level2),
+                    const SizedBox(width: Spacing.sm),
                     Text(l10n.recordTimelineEmptyAction),
                   ],
                 ),
               ),
               if (hasActiveFilter && onClearFilter != null) ...[
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FButton(
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,

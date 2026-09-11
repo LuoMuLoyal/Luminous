@@ -71,7 +71,7 @@ class SleepStructuredFields extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: Spacing.level4),
+            const SizedBox(width: Spacing.lg),
             Expanded(
               child: FTimeField.picker(
                 key: const Key('sleep-waketime-picker'),
@@ -85,7 +85,7 @@ class SleepStructuredFields extends StatelessWidget {
           ],
         ),
         if (durationMinutes != null) ...[
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Text(
             '${l10n.recordSleepDurationLabel}: ${_formatDuration(durationMinutes, l10n)}',
             style: context.theme.typography.body.xs.copyWith(
@@ -93,7 +93,7 @@ class SleepStructuredFields extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FSelect<String>.rich(
           key: const Key('sleep-quality-field'),
           label: Text(l10n.recordSleepQualityLabel),
@@ -113,7 +113,7 @@ class SleepStructuredFields extends StatelessWidget {
               )
               .toList(),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Row(
           children: [
             Expanded(
@@ -124,7 +124,7 @@ class SleepStructuredFields extends StatelessWidget {
                 onChanged: onDeepMinutesChanged,
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: _NumberField(
                 key: const Key('sleep-light-minutes-field'),
@@ -133,7 +133,7 @@ class SleepStructuredFields extends StatelessWidget {
                 onChanged: onLightMinutesChanged,
               ),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: _NumberField(
                 key: const Key('sleep-rem-minutes-field'),

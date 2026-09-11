@@ -92,7 +92,7 @@ class BarcodeScanResultSheetState
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           child: Row(
             children: [
               Expanded(
@@ -118,15 +118,15 @@ class BarcodeScanResultSheetState
         const AppDivider(),
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level5,
-            vertical: Spacing.level4,
+            horizontal: Spacing.xl,
+            vertical: Spacing.lg,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(widget.item.name, style: typography.body.lg),
               if (widget.item.subtitle != null) ...[
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 Text(
                   widget.item.subtitle!,
                   style: typography.body.sm.copyWith(
@@ -140,10 +140,10 @@ class BarcodeScanResultSheetState
         const AppDivider(),
         Padding(
           padding: EdgeInsets.fromLTRB(
-            Spacing.level5,
-            Spacing.level4,
-            Spacing.level5,
-            MediaQuery.paddingOf(context).bottom + Spacing.level4,
+            Spacing.xl,
+            Spacing.lg,
+            Spacing.xl,
+            MediaQuery.paddingOf(context).bottom + Spacing.lg,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -162,12 +162,12 @@ class BarcodeScanResultSheetState
                         size: IconSizeTokens.sm,
                         color: SemanticColor.primary.solid(context),
                       ),
-                      const SizedBox(width: Spacing.level2),
+                      const SizedBox(width: Spacing.sm),
                       Text(widget.l10n.medicineSearchAlreadyAddedLabel),
                     ],
                   ),
                 ),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FButton(
                   onPress: () => widget.onOpenReminder(boxItem),
                   child: Text(widget.l10n.scanViewReminderAction),
@@ -184,7 +184,7 @@ class BarcodeScanResultSheetState
                   child: Text(widget.l10n.medicineSearchAddToBoxAction),
                 ),
               ],
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               FButton(
                 variant: FButtonVariant.secondary,
                 onPress: widget.onViewInstructions,

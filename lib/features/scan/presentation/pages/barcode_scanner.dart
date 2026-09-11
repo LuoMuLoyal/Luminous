@@ -163,7 +163,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.all(Spacing.level4),
+                padding: const EdgeInsets.all(Spacing.lg),
                 child: Row(
                   children: [
                     Expanded(
@@ -191,7 +191,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                 child: ListView.separated(
                   shrinkWrap: true,
                   padding: EdgeInsets.only(
-                    bottom: MediaQuery.paddingOf(ctx).bottom + Spacing.level4,
+                    bottom: MediaQuery.paddingOf(ctx).bottom + Spacing.lg,
                   ),
                   itemCount: items.length,
                   separatorBuilder: (_, __) => const AppDivider(),
@@ -204,8 +204,8 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.level5,
-                          vertical: Spacing.level4,
+                          horizontal: Spacing.xl,
+                          vertical: Spacing.lg,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,7 +382,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                   bottom: 0,
                   child: SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.all(Spacing.level5),
+                      padding: const EdgeInsets.all(Spacing.xl),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -397,14 +397,14 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                             ),
                           ),
                           if (_isSearching) ...[
-                            const SizedBox(height: Spacing.level3),
+                            const SizedBox(height: Spacing.md),
                             const SizedBox(
                               width: 24,
                               height: 24,
                               child: FCircularProgress(),
                             ),
                           ],
-                          const SizedBox(height: Spacing.level4),
+                          const SizedBox(height: Spacing.lg),
                           FButton(
                             variant: FButtonVariant.ghost,
                             onPress: _goToManualSearch,
@@ -416,7 +416,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                                   size: 16,
                                   color: Color(0xFFFFFFFF),
                                 ),
-                                const SizedBox(width: Spacing.level2),
+                                const SizedBox(width: Spacing.sm),
                                 Text(
                                   l10n.scanManualSearchAction,
                                   style: const TextStyle(

@@ -51,7 +51,7 @@ class SecurityCenterPage extends ConsumerWidget {
           ] else ...[
             // 顶部概要卡片：头像 + 昵称
             AccountSummaryCard(user: user),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
 
             // 授权记录
             LinkedIdentitiesSection(
@@ -85,17 +85,17 @@ class SecurityCenterPage extends ConsumerWidget {
               },
               showWechatLink: false,
             ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
 
             // 敏感操作记录
             SettingsSectionLabel(
               label: l10n.securityCenterSensitiveOperationsTitle,
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             _EmptyRecordCard(
               message: l10n.securityCenterSensitiveOperationsEmpty,
             ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
 
             // 登录记录
             SettingsSectionLabel(label: l10n.securityCenterLoginHistoryTitle),
@@ -122,13 +122,13 @@ class SecurityCenterPage extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
 
             // 账号保护（预留）
             SettingsSectionLabel(
               label: l10n.securityCenterAccountProtectionTitle,
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             FTileGroup(
               physics: const NeverScrollableScrollPhysics(),
               divider: FItemDivider.full,
@@ -194,7 +194,7 @@ class _EmptyRecordCard extends StatelessWidget {
         borderRadius: context.theme.style.borderRadius.md,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Row(
           children: [
             Icon(
@@ -202,7 +202,7 @@ class _EmptyRecordCard extends StatelessWidget {
               color: SemanticColor.neutral.solid(context),
               size: 20,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Text(
                 message,

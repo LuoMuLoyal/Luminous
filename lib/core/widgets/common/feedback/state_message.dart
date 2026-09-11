@@ -27,7 +27,7 @@ class StateMessageView extends StatelessWidget {
     this.onAction,
     this.actionKey,
     this.tone = StateTone.neutral,
-    this.padding = const EdgeInsets.all(Spacing.level5),
+    this.padding = const EdgeInsets.all(Spacing.xl),
     this.maxWidth,
   });
 
@@ -66,18 +66,18 @@ class StateMessageView extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
+                  padding: const EdgeInsets.all(Spacing.lg),
                   child: Icon(icon, color: accent.solid(context), size: 28),
                 ),
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               Text(
                 title,
                 style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
               if (description != null) ...[
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 Text(
                   description!,
                   style: typography.body.sm.copyWith(
@@ -87,7 +87,7 @@ class StateMessageView extends StatelessWidget {
                 ),
               ],
               if (actionLabel != null && onAction != null) ...[
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 FButton(
                   key: actionKey,
                   onPress: onAction,
@@ -147,8 +147,8 @@ class StateErrorView extends StatelessWidget {
       onAction: onAction,
       tone: tone,
       padding: compact
-          ? const EdgeInsets.all(Spacing.level4)
-          : const EdgeInsets.all(Spacing.level5),
+          ? const EdgeInsets.all(Spacing.lg)
+          : const EdgeInsets.all(Spacing.xl),
     );
 
     if (compact) {
@@ -167,7 +167,7 @@ class StateErrorView extends StatelessWidget {
           height: height,
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 520),
                 child: message,

@@ -15,18 +15,18 @@ class ArchiveEmpty extends StatelessWidget {
     final typography = context.theme.typography;
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Row(
           children: [
             FAvatar.raw(
-              size: Spacing.level8,
+              size: Spacing.xl4,
               child: Icon(
                 SemanticIcons.recordClipboard,
                 color: SemanticColor.primary.solid(context),
-                size: Spacing.level5,
+                size: Spacing.xl,
               ),
             ),
-            const SizedBox(width: Spacing.level4),
+            const SizedBox(width: Spacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +37,7 @@ class ArchiveEmpty extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     l10n.mineArchiveEmptyDescription,
                     style: typography.body.xs.copyWith(

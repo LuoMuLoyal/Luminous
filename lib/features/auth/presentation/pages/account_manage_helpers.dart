@@ -39,7 +39,7 @@ class ProfileSection extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         // Avatar preview
         ValueListenableBuilder<TextEditingValue>(
           valueListenable: avatarController,
@@ -66,7 +66,7 @@ class ProfileSection extends StatelessWidget {
                         )
                       : const Icon(SemanticIcons.profileUser, size: 28),
                 ),
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
                 Expanded(
                   child: Text(
                     url.isEmpty
@@ -85,20 +85,20 @@ class ProfileSection extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FTextField(
           control: FTextFieldControl.managed(controller: nicknameController),
           label: Text(l10n.authNicknameLabel),
           hint: l10n.authNicknameHint,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FTextField(
           control: FTextFieldControl.managed(controller: avatarController),
           label: Text(l10n.authAvatarLabel),
           hint: l10n.authAvatarHint,
           keyboardType: TextInputType.url,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         SizedBox(
           width: double.infinity,
           child: FButton(
@@ -193,14 +193,14 @@ Future<bool> confirmUnlinkIdentity(
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Text(
           l10n.authIdentityUnlinkConfirmMessage(
             identityProviderLabel(identity.provider, l10n),
           ),
           style: context.theme.typography.body.sm,
         ),
-        const SizedBox(height: Spacing.level6),
+        const SizedBox(height: Spacing.xl2),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -211,7 +211,7 @@ Future<bool> confirmUnlinkIdentity(
               onPress: () => Navigator.of(context).pop(false),
               child: Text(l10n.authCancelAction),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               variant: FButtonVariant.destructive,
               size: FButtonSizeVariant.sm,

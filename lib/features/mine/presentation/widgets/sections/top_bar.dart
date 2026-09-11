@@ -46,8 +46,8 @@ class MineTopBar extends ConsumerWidget {
               ),
               if (hasUnread)
                 Positioned(
-                  right: Spacing.level2,
-                  top: Spacing.level2,
+                  right: Spacing.sm,
+                  top: Spacing.sm,
                   child: FBadge.raw(
                     style: .delta(
                       decoration: .shapeDelta(
@@ -56,7 +56,7 @@ class MineTopBar extends ConsumerWidget {
                       ),
                     ),
                     builder: (context, style) =>
-                        const SizedBox.square(dimension: Spacing.level2),
+                        const SizedBox.square(dimension: Spacing.sm),
                   ),
                 ),
             ],

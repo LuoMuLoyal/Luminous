@@ -59,7 +59,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
       key: Key('record-fast-entry-${widget.kind.name}'),
       animation: widget.animation,
       builder: (context, style) => Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,17 +68,17 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
               l10n.recordFastEntryTitle(typeLabel),
               style: style.titleTextStyle,
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               l10n.recordFastEntryDateHint(widget.occurredAt),
               style: context.theme.typography.body.sm.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Wrap(
-              spacing: Spacing.level3,
-              runSpacing: Spacing.level3,
+              spacing: Spacing.md,
+              runSpacing: Spacing.md,
               children: [
                 for (var index = 0; index < choices.length; index += 1)
                   _QuickChoiceChip(
@@ -95,10 +95,10 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
               ],
             ),
             if (_saving) ...[
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               const Center(child: FProgress()),
             ],
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -111,7 +111,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
                         : () => setState(() => _multiSelect = true),
                     child: Text(l10n.recordFastEntryMultiSelectAction),
                   ),
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                 ],
                 if (!_multiSelect) ...[
                   FButton(
@@ -120,7 +120,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
                     onPress: _saving ? null : _openMore,
                     child: Text(l10n.recordFastEntryMoreAction),
                   ),
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                 ],
                 if (_multiSelect) ...[
                   FButton(
@@ -130,7 +130,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
                         : () => _saveSelectedChoices(choices),
                     child: Text(l10n.commonConfirm),
                   ),
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                 ],
                 FButton(
                   variant: FButtonVariant.ghost,
@@ -439,7 +439,7 @@ class _QuickChoiceChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         button,
-        const SizedBox(height: Spacing.level1),
+        const SizedBox(height: Spacing.xs),
         DecoratedBox(
           decoration: BoxDecoration(
             color: SemanticColor.primary.solid(context),

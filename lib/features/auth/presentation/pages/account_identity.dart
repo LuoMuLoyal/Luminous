@@ -188,7 +188,7 @@ class LinkedIdentityTile extends StatelessWidget {
         borderRadius: context.theme.style.borderRadius.xs,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Row(
           children: [
             Icon(
@@ -196,7 +196,7 @@ class LinkedIdentityTile extends StatelessWidget {
               color: SemanticColor.primary.solid(context),
               size: 20,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,7 +207,7 @@ class LinkedIdentityTile extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     [
                       identity.email ?? l10n.authLinkedIdentityEmailMissing,
@@ -283,10 +283,10 @@ class _SectionColumn extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         for (final child in children) ...[
           child,
-          if (child != children.last) const SizedBox(height: Spacing.level4),
+          if (child != children.last) const SizedBox(height: Spacing.lg),
         ],
       ],
     ),
@@ -313,7 +313,7 @@ class _InfoRow extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 18, color: SemanticColor.neutral.solid(context)),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Expanded(
           child: Text(
             label,
@@ -322,7 +322,7 @@ class _InfoRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: Spacing.level4),
+        const SizedBox(width: Spacing.lg),
         Flexible(
           child: Text(
             value,

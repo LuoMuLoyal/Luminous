@@ -22,7 +22,7 @@ class ReviewSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,11 +31,11 @@ class ReviewSectionCard extends StatelessWidget {
                 ExcludeSemantics(
                   child: Icon(
                     icon,
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                     color: SemanticColor.primary.solid(context),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: Text(
                     title,
@@ -70,10 +70,10 @@ class ReviewUnknownReason extends StatelessWidget {
       children: [
         Icon(
           SemanticIcons.statusInfo,
-          size: Spacing.level4,
+          size: Spacing.lg,
           color: SemanticColor.neutral.solid(context),
         ),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         Expanded(
           child: Text(
             reason,
@@ -97,18 +97,18 @@ class ReviewFactRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.level2),
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ExcludeSemantics(
             child: Icon(
               icon,
-              size: Spacing.level4,
+              size: Spacing.lg,
               color: SemanticColor.neutral.solid(context),
             ),
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(child: Text(text, style: context.theme.typography.body.xs)),
         ],
       ),

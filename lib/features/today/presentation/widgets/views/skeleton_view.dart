@@ -48,8 +48,8 @@ class _TodaySkeletonViewState extends State<TodaySkeletonView> {
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
-    final horizontalPadding = isDesktop ? Spacing.level6 : Spacing.level4;
-    final verticalPadding = isDesktop ? Spacing.level6 : Spacing.level4;
+    final horizontalPadding = isDesktop ? Spacing.xl2 : Spacing.lg;
+    final verticalPadding = isDesktop ? Spacing.xl2 : Spacing.lg;
     final l10n = AppLocalizations.of(context)!;
 
     return SkeletonShimmer(
@@ -60,13 +60,13 @@ class _TodaySkeletonViewState extends State<TodaySkeletonView> {
           horizontalPadding,
           verticalPadding,
           horizontalPadding,
-          Spacing.level10 + Spacing.level2,
+          Spacing.xl6 + Spacing.sm,
         ),
         children: [
           _TopBarPlaceholder(isDesktop: isDesktop),
-          SizedBox(height: isDesktop ? Spacing.level6 : Spacing.level5),
+          SizedBox(height: isDesktop ? Spacing.xl2 : Spacing.xl),
           _RecordHintPlaceholder(),
-          SizedBox(height: isDesktop ? Spacing.level6 : Spacing.level5),
+          SizedBox(height: isDesktop ? Spacing.xl2 : Spacing.xl),
           if (isDesktop) ...[
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,41 +77,41 @@ class _TodaySkeletonViewState extends State<TodaySkeletonView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _PrimarySuggestionPlaceholder(),
-                      const SizedBox(height: Spacing.level6),
+                      const SizedBox(height: Spacing.xl2),
                       _SummaryPlaceholder(),
                     ],
                   ),
                 ),
-                const SizedBox(width: Spacing.level6),
+                const SizedBox(width: Spacing.xl2),
                 Expanded(
                   flex: 5,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _SecondarySuggestionsPlaceholder(),
-                      const SizedBox(height: Spacing.level6),
+                      const SizedBox(height: Spacing.xl2),
                       _ObservationPlaceholder(),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
           ] else ...[
             _PrimarySuggestionPlaceholder(),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             _SecondarySuggestionsPlaceholder(),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             _SummaryPlaceholder(),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             _HealthEventPlaceholder(),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             _ObservationPlaceholder(),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
           ],
           _QuickActionsPlaceholder(),
           if (_showSlowHint) ...[
-            const SizedBox(height: Spacing.level6),
+            const SizedBox(height: Spacing.xl2),
             Center(
               child: Text(
                 l10n.todayLoadingSlowHint,
@@ -145,14 +145,14 @@ class _TopBarPlaceholder extends StatelessWidget {
                 height: isDesktop ? 48 : 40,
                 widthFactor: 0.55,
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               const InlineSkeletonBlock(height: 18, widthFactor: 0.64),
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level4),
+        const SizedBox(width: Spacing.lg),
         InlineSkeletonCircle(size: isDesktop ? 44 : 40),
-        const SizedBox(width: Spacing.level2),
+        const SizedBox(width: Spacing.sm),
         InlineSkeletonCircle(size: isDesktop ? 44 : 40),
       ],
     );
@@ -167,9 +167,9 @@ class _RecordHintPlaceholder extends StatelessWidget {
         Row(
           children: [
             InlineSkeletonCircle(size: 32),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 16, widthFactor: 0.7)),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             InlineSkeletonBlock(height: 14, width: 64),
           ],
         ),
@@ -187,19 +187,19 @@ class _PrimarySuggestionPlaceholder extends StatelessWidget {
         const Row(
           children: [
             InlineSkeletonCircle(size: 40),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 18)),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             InlineSkeletonBlock(height: 14, width: 72),
           ],
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         const InlineSkeletonBlock(height: 16, widthFactor: 0.92),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         const InlineSkeletonBlock(height: 16, widthFactor: 0.78),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         const InlineSkeletonBlock(height: 16, widthFactor: 0.84),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Row(
           children: [
             InlineSkeletonBlock(
@@ -207,7 +207,7 @@ class _PrimarySuggestionPlaceholder extends StatelessWidget {
               width: 80,
               radius: borderRadius.pill.topLeft.x,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             InlineSkeletonBlock(
               height: 32,
               width: 80,
@@ -226,19 +226,19 @@ class _SecondarySuggestionsPlaceholder extends StatelessWidget {
     return InlineSkeletonSection(
       children: [
         const InlineSkeletonBlock(height: 18, widthFactor: 0.4),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         for (var i = 0; i < 2; i += 1) ...[
-          if (i > 0) const SizedBox(height: Spacing.level4),
+          if (i > 0) const SizedBox(height: Spacing.lg),
           const Row(
             children: [
               InlineSkeletonCircle(size: 32),
-              SizedBox(width: Spacing.level3),
+              SizedBox(width: Spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InlineSkeletonBlock(height: 16, widthFactor: 0.7),
-                    SizedBox(height: Spacing.level2),
+                    SizedBox(height: Spacing.sm),
                     InlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
@@ -257,13 +257,13 @@ class _SummaryPlaceholder extends StatelessWidget {
     return const InlineSkeletonSection(
       children: [
         InlineSkeletonBlock(height: 18, widthFactor: 0.35),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         Row(
           children: [
             Expanded(child: InlineSkeletonBlock(height: 56)),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 56)),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 56)),
           ],
         ),
@@ -278,19 +278,19 @@ class _ObservationPlaceholder extends StatelessWidget {
     return InlineSkeletonSection(
       children: [
         const InlineSkeletonBlock(height: 18, widthFactor: 0.35),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         for (var i = 0; i < 2; i += 1) ...[
-          if (i > 0) const SizedBox(height: Spacing.level4),
+          if (i > 0) const SizedBox(height: Spacing.lg),
           const Row(
             children: [
               InlineSkeletonCircle(size: 32),
-              SizedBox(width: Spacing.level3),
+              SizedBox(width: Spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InlineSkeletonBlock(height: 16, widthFactor: 0.65),
-                    SizedBox(height: Spacing.level2),
+                    SizedBox(height: Spacing.sm),
                     InlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
@@ -310,11 +310,11 @@ class _HealthEventPlaceholder extends StatelessWidget {
       key: const Key('today-health-event-skeleton'),
       children: [
         const InlineSkeletonBlock(height: 18, widthFactor: 0.3),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         const InlineSkeletonBlock(height: 16, widthFactor: 0.8),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         const InlineSkeletonBlock(height: 14, widthFactor: 0.62),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         InlineSkeletonBlock(
           height: 36,
           width: 112,
@@ -331,7 +331,7 @@ class _QuickActionsPlaceholder extends StatelessWidget {
     return Row(
       children: [
         for (var i = 0; i < 4; i += 1) ...[
-          if (i > 0) const SizedBox(width: Spacing.level3),
+          if (i > 0) const SizedBox(width: Spacing.md),
           const Expanded(child: InlineSkeletonBlock(height: 80)),
         ],
       ],

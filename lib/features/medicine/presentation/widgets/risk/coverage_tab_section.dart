@@ -41,7 +41,7 @@ class CoverageTabSection extends StatelessWidget {
             fontWeight: FontWeight.w800,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         for (var i = 0; i < visibleCount; i += 1)
           RiskCoverageItem(
             issue: result.coverageIssues[i],
@@ -49,7 +49,7 @@ class CoverageTabSection extends StatelessWidget {
             l10n: l10n,
           ),
         if (result.coverageIssues.length > foldThreshold) ...[
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Center(
             child: FButton(
               variant: FButtonVariant.ghost,

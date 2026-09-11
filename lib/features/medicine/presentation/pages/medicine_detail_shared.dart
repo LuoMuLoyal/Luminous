@@ -39,8 +39,8 @@ class ReferenceNotice extends StatelessWidget {
     final colors = context.theme.colors;
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level3,
-        vertical: Spacing.level2,
+        horizontal: Spacing.md,
+        vertical: Spacing.sm,
       ),
       decoration: BoxDecoration(
         color: SemanticColor.info.muted(context),
@@ -50,10 +50,10 @@ class ReferenceNotice extends StatelessWidget {
         children: [
           Icon(
             SemanticIcons.statusInfo,
-            size: Spacing.level4,
+            size: Spacing.lg,
             color: SemanticColor.info.solid(context),
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Expanded(
             child: Text(
               l10n.medicineReferenceNoticeTitle,
@@ -81,15 +81,15 @@ class RiskCheckEntry extends StatelessWidget {
     return FTappable(
       onPress: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
         child: Row(
           children: [
             Icon(
               SemanticIcons.safetyCaution,
-              size: Spacing.level4,
+              size: Spacing.lg,
               color: SemanticColor.primary.solid(context),
             ),
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             Expanded(
               child: Text(
                 l10n.medicineDetailRiskCheckEntry,
@@ -100,7 +100,7 @@ class RiskCheckEntry extends StatelessWidget {
             ),
             Icon(
               SemanticIcons.actionNext,
-              size: Spacing.level4,
+              size: Spacing.lg,
               color: SemanticColor.neutral.solid(context),
             ),
           ],

@@ -70,8 +70,8 @@ class _Banner extends StatelessWidget {
             border: Border.all(color: SemanticColor.warning.border(context)),
           ),
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level4,
-            vertical: Spacing.level3,
+            horizontal: Spacing.lg,
+            vertical: Spacing.md,
           ),
           child: Row(
             children: [
@@ -80,7 +80,7 @@ class _Banner extends StatelessWidget {
                 size: 20,
                 color: SemanticColor.warning.solid(context),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               Expanded(
                 child: Text(
                   message,
@@ -89,7 +89,7 @@ class _Banner extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               Text(
                 actionLabel,
                 style: typography.body.sm.copyWith(

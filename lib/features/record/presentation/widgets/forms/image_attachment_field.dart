@@ -39,7 +39,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
 
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -47,7 +47,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
               l10n.recordImageSectionTitle,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Row(
               children: [
                 _AttachmentPreview(
@@ -55,7 +55,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                   existingAttachment: existingAttachment,
                   label: l10n.recordImageAttachedLabel,
                 ),
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +70,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (fileName != null && fileName.trim().isNotEmpty) ...[
-                        const SizedBox(height: Spacing.level1),
+                        const SizedBox(height: Spacing.xs),
                         Text(
                           fileName,
                           style: typography.body.xs.copyWith(
@@ -79,10 +79,10 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       Wrap(
-                        spacing: Spacing.level3,
-                        runSpacing: Spacing.level2,
+                        spacing: Spacing.md,
+                        runSpacing: Spacing.sm,
                         children: [
                           FButton(
                             variant: FButtonVariant.outline,

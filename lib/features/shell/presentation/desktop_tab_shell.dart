@@ -85,7 +85,7 @@ class DesktopTabShell extends StatelessWidget {
   Widget _buildContent(LayoutScale layout) {
     final padding = EdgeInsets.symmetric(
       horizontal: layout.pageHorizontalPadding,
-      vertical: Spacing.level5,
+      vertical: Spacing.xl,
     );
 
     if (!scrollable) {

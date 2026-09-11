@@ -65,24 +65,24 @@ abstract final class LayoutScaleResolver {
   static LayoutScale resolve(double width) {
     if (width < Breakpoints.mobile) {
       return const LayoutScale(
-        pageHorizontalPadding: Spacing.level4,
-        sectionVerticalPadding: Spacing.level7,
-        heroVerticalPadding: Spacing.level9,
-        cardPadding: Spacing.level4,
-        cardPaddingLarge: Spacing.level5,
-        componentGap: Spacing.level3,
+        pageHorizontalPadding: Spacing.lg,
+        sectionVerticalPadding: Spacing.xl3,
+        heroVerticalPadding: Spacing.xl5,
+        cardPadding: Spacing.lg,
+        cardPaddingLarge: Spacing.xl,
+        componentGap: Spacing.md,
         maxContentWidth: 560,
       );
     }
 
     if (width < Breakpoints.tablet) {
       return const LayoutScale(
-        pageHorizontalPadding: Spacing.level5,
-        sectionVerticalPadding: Spacing.level9,
-        heroVerticalPadding: Spacing.level10,
-        cardPadding: Spacing.level5,
-        cardPaddingLarge: Spacing.level6,
-        componentGap: Spacing.level4,
+        pageHorizontalPadding: Spacing.xl,
+        sectionVerticalPadding: Spacing.xl5,
+        heroVerticalPadding: Spacing.xl6,
+        cardPadding: Spacing.xl,
+        cardPaddingLarge: Spacing.xl2,
+        componentGap: Spacing.lg,
         maxContentWidth: 760,
       );
     }
@@ -91,12 +91,12 @@ abstract final class LayoutScaleResolver {
     // maxContentWidth, but not full dual-pane.
     if (width < Breakpoints.desktop) {
       return const LayoutScale(
-        pageHorizontalPadding: Spacing.level6,
-        sectionVerticalPadding: Spacing.level9,
-        heroVerticalPadding: Spacing.level10,
-        cardPadding: Spacing.level5,
-        cardPaddingLarge: Spacing.level6,
-        componentGap: Spacing.level4,
+        pageHorizontalPadding: Spacing.xl2,
+        sectionVerticalPadding: Spacing.xl5,
+        heroVerticalPadding: Spacing.xl6,
+        cardPadding: Spacing.xl,
+        cardPaddingLarge: Spacing.xl2,
+        componentGap: Spacing.lg,
         maxContentWidth: 1040,
       );
     }
@@ -104,24 +104,24 @@ abstract final class LayoutScaleResolver {
     // 1200–1400: standard desktop dual-pane.
     if (width < Breakpoints.wide) {
       return const LayoutScale(
-        pageHorizontalPadding: Spacing.level6,
-        sectionVerticalPadding: Spacing.level10,
-        heroVerticalPadding: Spacing.level12,
-        cardPadding: Spacing.level5,
-        cardPaddingLarge: Spacing.level6,
-        componentGap: Spacing.level5,
+        pageHorizontalPadding: Spacing.xl2,
+        sectionVerticalPadding: Spacing.xl6,
+        heroVerticalPadding: Spacing.xl8,
+        cardPadding: Spacing.xl,
+        cardPaddingLarge: Spacing.xl2,
+        componentGap: Spacing.xl,
         maxContentWidth: 1400,
       );
     }
 
     // ≥1400: wide desktop — same spacing, wider content allowance.
     return const LayoutScale(
-      pageHorizontalPadding: Spacing.level7,
-      sectionVerticalPadding: Spacing.level10,
-      heroVerticalPadding: Spacing.level12,
-      cardPadding: Spacing.level5,
-      cardPaddingLarge: Spacing.level6,
-      componentGap: Spacing.level5,
+      pageHorizontalPadding: Spacing.xl3,
+      sectionVerticalPadding: Spacing.xl6,
+      heroVerticalPadding: Spacing.xl8,
+      cardPadding: Spacing.xl,
+      cardPaddingLarge: Spacing.xl2,
+      componentGap: Spacing.xl,
       maxContentWidth: 1600,
     );
   }

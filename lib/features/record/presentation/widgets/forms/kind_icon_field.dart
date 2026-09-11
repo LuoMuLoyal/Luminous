@@ -36,12 +36,12 @@ class RecordKindIconField extends ConsumerWidget {
       title: Text(l10n.recordQuickIconFieldLabel),
       subtitle: Text(l10n.recordQuickIconChangeAction),
       prefix: FAvatar.raw(
-        size: Spacing.level6,
+        size: Spacing.xl2,
         style: .delta(backgroundColor: action.softColor.subtle(context)),
         child: Icon(
           icon,
           color: action.accent.solid(context),
-          size: Spacing.level4,
+          size: Spacing.lg,
         ),
       ),
       suffix: const Icon(SemanticIcons.actionNext),

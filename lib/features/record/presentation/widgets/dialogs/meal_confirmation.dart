@@ -60,7 +60,7 @@ class _MealQuickConfirmationDialogState
           style: context.theme.typography.body.lg,
         ),
         if (image != null) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           ClipRRect(
             borderRadius: context.theme.style.borderRadius.sm,
             child: AspectRatio(
@@ -69,21 +69,21 @@ class _MealQuickConfirmationDialogState
             ),
           ),
         ],
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FTextField(
           key: const Key('record-quick-meal-title-field'),
           control: FTextFieldControl.managed(controller: _titleController),
           label: Text(l10n.recordCreateFieldTitle),
           enabled: !_saving,
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FTextField(
           key: const Key('record-quick-meal-value-field'),
           control: FTextFieldControl.managed(controller: _valueController),
           label: Text(l10n.recordCreateValueMeal),
           enabled: !_saving,
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FTextField(
           key: const Key('record-quick-meal-note-field'),
           control: FTextFieldControl.managed(controller: _noteController),
@@ -92,10 +92,10 @@ class _MealQuickConfirmationDialogState
           enabled: !_saving,
         ),
         if (_saving) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           const Center(child: FProgress()),
         ],
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -104,7 +104,7 @@ class _MealQuickConfirmationDialogState
               onPress: _saving ? null : () => Navigator.of(context).pop(),
               child: Text(l10n.commonCancel),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               key: const Key('record-quick-meal-confirm-action'),
               onPress: _saving ? null : _save,

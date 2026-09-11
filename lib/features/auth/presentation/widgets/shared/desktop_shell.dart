@@ -45,14 +45,14 @@ class DesktopAuthShell extends StatelessWidget {
                 child: Row(
                   children: [
                     const Expanded(flex: 5, child: DesktopBrandPanel()),
-                    const SizedBox(width: Spacing.level6),
+                    const SizedBox(width: Spacing.xl2),
                     Expanded(
                       flex: 4,
                       child: SafeArea(
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: Spacing.level8,
-                            vertical: Spacing.level6,
+                            horizontal: Spacing.xl4,
+                            vertical: Spacing.xl2,
                           ),
                           child: Center(
                             child: ConstrainedBox(
@@ -68,10 +68,10 @@ class DesktopAuthShell extends StatelessWidget {
                                     subtitle: subtitle,
                                   ),
                                   if (formModeSelector != null) ...[
-                                    const SizedBox(height: Spacing.level6),
+                                    const SizedBox(height: Spacing.xl2),
                                     formModeSelector!,
                                   ],
-                                  const SizedBox(height: Spacing.level6),
+                                  const SizedBox(height: Spacing.xl2),
                                   AuthFormPanel(
                                     form: form,
                                     enableAnimation: enableFormAnimation,
@@ -93,7 +93,7 @@ class DesktopAuthShell extends StatelessWidget {
                 left: 0,
                 child: SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.all(Spacing.level4),
+                    padding: const EdgeInsets.all(Spacing.lg),
                     child: leading,
                   ),
                 ),
@@ -150,8 +150,8 @@ class DesktopBrandPanel extends StatelessWidget {
               // Brand content.
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: Spacing.level10,
-                  vertical: Spacing.level8,
+                  horizontal: Spacing.xl6,
+                  vertical: Spacing.xl4,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +165,7 @@ class DesktopBrandPanel extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     // Description
                     Text(
                       l10n.authBrandDescription,
@@ -173,20 +173,20 @@ class DesktopBrandPanel extends StatelessWidget {
                         color: SemanticColor.neutral.solid(context),
                       ),
                     ),
-                    const SizedBox(height: Spacing.level9),
+                    const SizedBox(height: Spacing.xl5),
                     // Feature list
                     BrandFeatureItem(
                       icon: SemanticIcons.tabRecord,
                       title: l10n.authBrandFeatureRecords,
                       description: l10n.authBrandFeatureRecordsDesc,
                     ),
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     BrandFeatureItem(
                       icon: SemanticIcons.aiEntry,
                       title: l10n.authBrandFeatureAnalysis,
                       description: l10n.authBrandFeatureAnalysisDesc,
                     ),
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     BrandFeatureItem(
                       icon: SemanticIcons.safetySafe,
                       title: l10n.authBrandFeaturePrivacy,
@@ -238,7 +238,7 @@ class BrandFeatureItem extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: Spacing.level4),
+        const SizedBox(width: Spacing.lg),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +250,7 @@ class BrandFeatureItem extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 description,
                 style: typography.body.xs.copyWith(

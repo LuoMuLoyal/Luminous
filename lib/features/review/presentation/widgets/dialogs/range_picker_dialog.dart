@@ -45,7 +45,7 @@ Future<ReviewDashboardQuery?> showReviewRangePickerDialog(
           l10n.reviewRangePickerTitle,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -107,7 +107,7 @@ Future<ReviewDashboardQuery?> _showMobileRangePicker(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.all(Spacing.level4),
+              padding: const EdgeInsets.all(Spacing.lg),
               child: Row(
                 children: [
                   Expanded(
@@ -161,7 +161,7 @@ Future<ReviewDashboardQuery?> _showMobileRangePicker(
                 }
               },
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
           ],
         ),
       );
@@ -195,7 +195,7 @@ Future<ReviewDashboardQuery?> _showCalendarBottomSheet(
       builder: (sheetContext) {
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -216,7 +216,7 @@ Future<ReviewDashboardQuery?> _showCalendarBottomSheet(
                     ),
                   ),
                 ),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -225,7 +225,7 @@ Future<ReviewDashboardQuery?> _showCalendarBottomSheet(
                       onPress: () => Navigator.of(sheetContext).pop(null),
                       child: Text(l10n.commonCancel),
                     ),
-                    const SizedBox(width: Spacing.level3),
+                    const SizedBox(width: Spacing.md),
                     FButton(
                       onPress: () =>
                           Navigator.of(sheetContext).pop(rangeController.value),
@@ -273,7 +273,7 @@ Future<ReviewDashboardQuery?> _showCalendarDialog(
         maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
           MediaQuery.sizeOf(context).width,
         ),
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         builder: (_) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -294,7 +294,7 @@ Future<ReviewDashboardQuery?> _showCalendarDialog(
                 ),
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -303,7 +303,7 @@ Future<ReviewDashboardQuery?> _showCalendarDialog(
                   onPress: () => Navigator.of(calendarContext).pop(null),
                   child: Text(l10n.commonCancel),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   onPress: () =>
                       Navigator.of(calendarContext).pop(rangeController.value),

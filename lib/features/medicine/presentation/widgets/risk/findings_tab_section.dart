@@ -41,7 +41,7 @@ class FindingsTabSection extends StatelessWidget {
             fontWeight: FontWeight.w800,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         for (var i = 0; i < visibleCount; i += 1)
           RiskFindingItem(
             finding: result.findings[i],
@@ -49,7 +49,7 @@ class FindingsTabSection extends StatelessWidget {
             l10n: l10n,
           ),
         if (result.findings.length > foldThreshold) ...[
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Center(
             child: FButton(
               variant: FButtonVariant.ghost,

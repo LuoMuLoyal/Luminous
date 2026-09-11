@@ -42,7 +42,7 @@ class VerificationCodeField extends StatelessWidget {
             validator: validator,
           ),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Padding(
           padding: const EdgeInsets.only(top: 26),
           child: IntrinsicWidth(

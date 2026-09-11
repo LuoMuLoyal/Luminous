@@ -19,15 +19,15 @@ class ReviewPreviewOverviewSection extends StatelessWidget {
     final typography = context.theme.typography;
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (final (index, item) in items.indexed) ...[
               if (index > 0) ...[
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 const AppDivider(),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
               ],
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,10 +36,10 @@ class ReviewPreviewOverviewSection extends StatelessWidget {
                     child: Icon(
                       item.$1,
                       color: SemanticColor.primary.solid(context),
-                      size: Spacing.level5,
+                      size: Spacing.xl,
                     ),
                   ),
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +50,7 @@ class ReviewPreviewOverviewSection extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: Spacing.level1),
+                        const SizedBox(height: Spacing.xs),
                         Text(
                           item.$3,
                           style: typography.body.xs.copyWith(
@@ -89,16 +89,16 @@ class ReviewPreviewLockedSection extends StatelessWidget {
     final typography = context.theme.typography;
     return FCard(
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               icon,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.level5,
+              size: Spacing.xl,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +109,7 @@ class ReviewPreviewLockedSection extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     body,
                     style: typography.body.xs.copyWith(

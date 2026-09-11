@@ -54,7 +54,7 @@ class DndSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 if (settings.dndEnabled)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,7 +69,7 @@ class DndSettingsPage extends ConsumerWidget {
                               controller.setDndStartTime(value?.toTimeOfDay()),
                         ),
                       ),
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       FTimeField.picker(
                         label: Text(l10n.settingsNotificationsDndEnd),
                         control: FTimeFieldControl.lifted(
@@ -88,8 +88,8 @@ class DndSettingsPage extends ConsumerWidget {
                           ))
                         Padding(
                           padding: const EdgeInsets.only(
-                            left: Spacing.level2,
-                            top: Spacing.level2,
+                            left: Spacing.sm,
+                            top: Spacing.sm,
                           ),
                           child: Text(
                             l10n.settingsNotificationsCrossDayHint,
@@ -103,8 +103,8 @@ class DndSettingsPage extends ConsumerWidget {
                 else
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: Spacing.level2,
-                      vertical: Spacing.level1,
+                      horizontal: Spacing.sm,
+                      vertical: Spacing.xs,
                     ),
                     child: Text(
                       l10n.settingsNotificationsTimeUnset,

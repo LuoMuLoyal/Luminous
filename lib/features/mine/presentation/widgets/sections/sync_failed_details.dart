@@ -20,7 +20,7 @@ Future<void> showMineSyncFailedDetailsDialog({
 }) async {
   await showAppDialog<void>(
     context: context,
-    maxHeight: MediaQuery.sizeOf(context).height - Spacing.level8,
+    maxHeight: MediaQuery.sizeOf(context).height - Spacing.xl4,
     scrollable: true,
     builder: (_) => _SyncFailedDetailsContent(entries: entries),
   );
@@ -86,24 +86,24 @@ class _SyncFailedDetailsContentState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(l10n.mineSyncFailedDetailsTitle, style: typography.body.lg),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.mineSyncFailedDetailsDescription,
           style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         if (widget.entries.isEmpty)
           Text(l10n.mineSyncFailedDetailsEmpty, style: typography.body.sm)
         else
           for (final entry in widget.entries) ...[
             _SyncFailedEntryCard(entry: entry),
             if (entry != widget.entries.last)
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
           ],
         if (_retryError != null) ...[
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           Text(
             _retryError!,
             style: typography.body.xs.copyWith(
@@ -111,7 +111,7 @@ class _SyncFailedDetailsContentState
             ),
           ),
         ],
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -121,7 +121,7 @@ class _SyncFailedDetailsContentState
               child: Text(l10n.commonCancel),
             ),
             if (widget.entries.isNotEmpty) ...[
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               FButton(
                 onPress: _isRetrying ? null : _retryAll,
                 child: _isRetrying
@@ -133,7 +133,7 @@ class _SyncFailedDetailsContentState
                             height: 18,
                             child: FCircularProgress(),
                           ),
-                          const SizedBox(width: Spacing.level2),
+                          const SizedBox(width: Spacing.sm),
                           Text(l10n.mineSyncFailedDetailsRetrying),
                         ],
                       )
@@ -212,7 +212,7 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(Spacing.level4),
+      padding: const EdgeInsets.all(Spacing.lg),
       decoration: BoxDecoration(
         color: colors.muted,
         borderRadius: context.theme.style.borderRadius.sm,
@@ -242,14 +242,14 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
             label: l10n.mineSyncFailedDetailsQueuedAt,
             value: queuedAt,
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           Text(
             l10n.mineSyncFailedDetailsLastError,
             style: typography.body.xs2.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
           ),
-          const SizedBox(height: Spacing.level1),
+          const SizedBox(height: Spacing.xs),
           Text(
             userMessage,
             style: typography.body.xs.copyWith(
@@ -257,7 +257,7 @@ class _SyncFailedEntryCardState extends State<_SyncFailedEntryCard> {
             ),
           ),
           if (hasDiagnostics) ...[
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             _DiagnosticsPanel(
               expanded: _diagnosticsExpanded,
               copied: _copied,
@@ -307,7 +307,7 @@ class _DiagnosticsPanel extends StatelessWidget {
           onTap: onToggle,
           behavior: HitTestBehavior.opaque,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+            padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
             child: Row(
               children: [
                 Icon(
@@ -317,7 +317,7 @@ class _DiagnosticsPanel extends StatelessWidget {
                   size: 18,
                   color: SemanticColor.neutral.solid(context),
                 ),
-                const SizedBox(width: Spacing.level1),
+                const SizedBox(width: Spacing.xs),
                 Text(
                   l10n.mineSyncFailedDetailsDiagnostics,
                   style: typography.body.xs.copyWith(
@@ -331,7 +331,7 @@ class _DiagnosticsPanel extends StatelessWidget {
         if (expanded) ...[
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(Spacing.level3),
+            padding: const EdgeInsets.all(Spacing.md),
             decoration: BoxDecoration(
               color: colors.background,
               borderRadius: context.theme.style.borderRadius.xs,
@@ -360,13 +360,13 @@ class _DiagnosticsPanel extends StatelessWidget {
                   ),
                 ],
                 if (raw != null && raw!.isNotEmpty) ...[
-                  const SizedBox(height: Spacing.level2),
+                  const SizedBox(height: Spacing.sm),
                   SelectableText(raw!, style: typography.body.xs2),
                 ],
               ],
             ),
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           FButton(
             variant: FButtonVariant.outline,
             size: FButtonSizeVariant.sm,
@@ -393,7 +393,7 @@ class _DetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.level1),
+      padding: const EdgeInsets.only(bottom: Spacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

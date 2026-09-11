@@ -51,22 +51,22 @@ class MineDashboardView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const MineSyncFailedBanner(),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         MineAccountHero(
           key: const Key('mine-account-header'),
           dashboard: dashboard,
         ),
         if (dashboard.alerts.isNotEmpty) ...[
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           MineStatusAlertsSection(alerts: dashboard.alerts),
         ],
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         MineArchiveSection(dashboard: dashboard),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         const MineAiPrivacySection(),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         const MineNotificationsReminderSection(),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         MineAccountSecuritySection(account: dashboard.account),
       ],
     );
@@ -83,23 +83,23 @@ class MineDashboardView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const MineSyncFailedBanner(),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               MineAccountHero(
                 key: const Key('mine-account-header'),
                 dashboard: dashboard,
               ),
               if (dashboard.alerts.isNotEmpty) ...[
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 MineStatusAlertsSection(alerts: dashboard.alerts),
               ],
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               MineArchiveSection(dashboard: dashboard),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               const MineNotificationsReminderSection(),
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level5),
+        const SizedBox(width: Spacing.xl),
         // Right: AI privacy + account security.
         Expanded(
           flex: 4,
@@ -107,7 +107,7 @@ class MineDashboardView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const MineAiPrivacySection(),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               MineAccountSecuritySection(account: dashboard.account),
             ],
           ),

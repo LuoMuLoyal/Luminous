@@ -20,7 +20,7 @@ class StaleBanner extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Row(
           children: [
             Icon(
@@ -28,7 +28,7 @@ class StaleBanner extends StatelessWidget {
               color: SemanticColor.warning.solid(context),
               size: IconSizeTokens.md,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Text(
                 l10n.medicineRiskCheckStaleBanner,
@@ -61,7 +61,7 @@ class LlmEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     return Padding(
-      padding: const EdgeInsets.all(Spacing.level6),
+      padding: const EdgeInsets.all(Spacing.xl2),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -71,13 +71,13 @@ class LlmEmptyState extends StatelessWidget {
               size: IconSizeTokens.xl2,
               color: SemanticColor.neutral.solid(context),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Text(
               l10n.medicineRiskCheckLlmEmptyTitle,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w800),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               l10n.medicineRiskCheckLlmEmptyBody,
               style: typography.body.xs.copyWith(
@@ -85,7 +85,7 @@ class LlmEmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             FButton(
               onPress: isRunning ? null : onRun,
               child: isRunning
@@ -96,7 +96,7 @@ class LlmEmptyState extends StatelessWidget {
                           dimension: IconSizeTokens.sm,
                           child: FCircularProgress.loader(size: .sm),
                         ),
-                        const SizedBox(width: Spacing.level2),
+                        const SizedBox(width: Spacing.sm),
                         Text(l10n.medicineRiskCheckRunLlm),
                       ],
                     )
@@ -125,7 +125,7 @@ class NeverCheckedState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(Spacing.level6),
+      padding: const EdgeInsets.all(Spacing.xl2),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -135,7 +135,7 @@ class NeverCheckedState extends StatelessWidget {
               size: IconSizeTokens.xl2,
               color: SemanticColor.neutral.solid(context),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Text(
               l10n.medicineRiskCheckNeverChecked,
               style: context.theme.typography.body.md.copyWith(
@@ -143,7 +143,7 @@ class NeverCheckedState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             FButton(
               onPress: isRunning ? null : onRun,
               child: isRunning
@@ -154,7 +154,7 @@ class NeverCheckedState extends StatelessWidget {
                           dimension: IconSizeTokens.sm,
                           child: FCircularProgress.loader(size: .sm),
                         ),
-                        const SizedBox(width: Spacing.level2),
+                        const SizedBox(width: Spacing.sm),
                         Text(l10n.medicineRiskCheckRunStatic),
                       ],
                     )
@@ -176,7 +176,7 @@ class LlmUnavailableState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(Spacing.level6),
+      padding: const EdgeInsets.all(Spacing.xl2),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -186,7 +186,7 @@ class LlmUnavailableState extends StatelessWidget {
               size: IconSizeTokens.xl2,
               color: SemanticColor.neutral.solid(context),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Text(
               l10n.medicineRiskCheckLlmUnavailable,
               style: context.theme.typography.body.md.copyWith(

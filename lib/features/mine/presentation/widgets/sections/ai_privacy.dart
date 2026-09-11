@@ -26,7 +26,7 @@ class MineAiPrivacySection extends StatelessWidget {
               prefix: Icon(
                 SemanticIcons.aiEntry,
                 color: SemanticColor.primary.solid(context),
-                size: Spacing.level5,
+                size: Spacing.xl,
               ),
               title: Text(l10n.settingsAiTitle),
               subtitle: Text(
@@ -42,7 +42,7 @@ class MineAiPrivacySection extends StatelessWidget {
               prefix: Icon(
                 SemanticIcons.actionShare,
                 color: SemanticColor.primary.solid(context),
-                size: Spacing.level5,
+                size: Spacing.xl,
               ),
               title: Text(l10n.minePrivacyReportTitle),
               subtitle: Text(

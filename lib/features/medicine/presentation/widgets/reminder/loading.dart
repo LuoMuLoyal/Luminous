@@ -8,7 +8,7 @@ class ReminderLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: Spacing.level4),
+      padding: EdgeInsets.symmetric(horizontal: Spacing.lg),
       child: InlineSkeletonSection(
         children: [
           InlineSkeletonBlock(height: 86),

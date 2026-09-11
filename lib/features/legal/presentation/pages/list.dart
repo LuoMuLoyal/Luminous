@@ -47,8 +47,8 @@ class LegalListPage extends ConsumerWidget {
           }
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.level4,
-              vertical: Spacing.level4,
+              horizontal: Spacing.lg,
+              vertical: Spacing.lg,
             ),
             child: FTileGroup(
               children: docs.map((doc) {

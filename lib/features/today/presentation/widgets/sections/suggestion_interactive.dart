@@ -84,7 +84,7 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
             size: IconSizeTokens.sm,
             color: SemanticColor.primary.solid(context),
           ),
-          const SizedBox(width: Spacing.level1),
+          const SizedBox(width: Spacing.xs),
           Text(
             l10n.todaySuggestionFeedbackSubmitted,
             style: context.theme.typography.body.xs.copyWith(
@@ -97,8 +97,8 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
     }
 
     return Wrap(
-      spacing: Spacing.level2,
-      runSpacing: Spacing.level2,
+      spacing: Spacing.sm,
+      runSpacing: Spacing.sm,
       children: [
         for (final option in ordered)
           FButton(
@@ -191,11 +191,11 @@ class _SuggestionAiExplainButtonState
       loading: () => Row(
         children: [
           const SizedBox(
-            width: Spacing.level4,
-            height: Spacing.level4,
+            width: Spacing.lg,
+            height: Spacing.lg,
             child: FCircularProgress.loader(),
           ),
-          const SizedBox(width: Spacing.level2),
+          const SizedBox(width: Spacing.sm),
           Text(
             l10n.todaySuggestionAiExplainLoading,
             style: context.theme.typography.body.xs.copyWith(
@@ -236,7 +236,7 @@ class AiExplainContent extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final typography = context.theme.typography;
     return Container(
-      padding: const EdgeInsets.all(Spacing.level3),
+      padding: const EdgeInsets.all(Spacing.md),
       decoration: BoxDecoration(
         color: SemanticColor.primary.subtle(context),
         borderRadius: context.theme.style.borderRadius.sm,
@@ -256,7 +256,7 @@ class AiExplainContent extends StatelessWidget {
                     ? SemanticColor.primary.solid(context)
                     : SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(width: Spacing.level1),
+              const SizedBox(width: Spacing.xs),
               Text(
                 explanation.aiGenerated
                     ? l10n.todaySuggestionAiLabel
@@ -270,14 +270,14 @@ class AiExplainContent extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Spacing.level2),
+          const SizedBox(height: Spacing.sm),
           MarkdownBody(
             data: explanation.reason,
             selectable: true,
             styleSheet: MarkdownStyle.ai(context),
           ),
           if (explanation.boundary.isNotEmpty) ...[
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             MarkdownBody(
               data: explanation.boundary,
               selectable: true,
@@ -303,7 +303,7 @@ class AiExplainUnavailable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -312,7 +312,7 @@ class AiExplainUnavailable extends StatelessWidget {
             size: IconSizeTokens.sm,
             color: SemanticColor.neutral.solid(context),
           ),
-          const SizedBox(width: Spacing.level1),
+          const SizedBox(width: Spacing.xs),
           Flexible(
             child: Text(
               l10n.todaySuggestionAiExplainMaxRetry,

@@ -44,7 +44,7 @@ class AssistantProposalCard extends StatelessWidget {
         border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -55,7 +55,7 @@ class AssistantProposalCard extends StatelessWidget {
                   size: 18,
                   color: SemanticColor.primary.solid(context),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Expanded(
                   child: Text(
                     proposal.title,
@@ -73,10 +73,10 @@ class AssistantProposalCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(proposal.summary, style: typography.body.md),
             if (proposal.reason case final reason?) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 reason,
                 style: typography.body.sm.copyWith(
@@ -85,20 +85,20 @@ class AssistantProposalCard extends StatelessWidget {
               ),
             ],
             if (proposal.previewFields.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Wrap(
-                spacing: Spacing.level2,
-                runSpacing: Spacing.level2,
+                spacing: Spacing.sm,
+                runSpacing: Spacing.sm,
                 children: [
                   for (final field in proposal.previewFields)
                     AssistantToolChip(label: '${field.label}: ${field.value}'),
                 ],
               ),
             ],
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             _ProposalMetaSection(proposal: proposal),
             if (proposal.executionError case final error?) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 error,
                 style: typography.body.sm.copyWith(
@@ -106,7 +106,7 @@ class AssistantProposalCard extends StatelessWidget {
                 ),
               ),
             ],
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             Row(
               children: [
                 FButton(
@@ -123,7 +123,7 @@ class AssistantProposalCard extends StatelessWidget {
                         ),
                   child: Text(proposalConfirmLabel(l10n, proposal.type)),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   key: Key('assistant-proposal-dismiss-${proposal.id}'),
                   variant: FButtonVariant.ghost,
@@ -138,7 +138,7 @@ class AssistantProposalCard extends StatelessWidget {
                   child: Text(l10n.assistantProposalDismissAction),
                 ),
                 if (proposal.isExpired) ...[
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                   FButton(
                     key: Key('assistant-proposal-regenerate-${proposal.id}'),
                     variant: FButtonVariant.ghost,
@@ -186,13 +186,13 @@ class _ProposalMetaSection extends StatelessWidget {
         borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level3),
+        padding: const EdgeInsets.all(Spacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (final row in metaRows)
               Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.level1),
+                padding: const EdgeInsets.only(bottom: Spacing.xs),
                 child: Text(
                   row,
                   style: typography.body.sm.copyWith(
@@ -201,15 +201,15 @@ class _ProposalMetaSection extends StatelessWidget {
                 ),
               ),
             if (proposal.constraints.isNotEmpty) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 l10n.assistantProposalConstraintsLabel,
                 style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               for (final constraint in proposal.constraints)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.level1),
+                  padding: const EdgeInsets.only(bottom: Spacing.xs),
                   child: Text(
                     '• $constraint',
                     style: typography.body.sm.copyWith(
@@ -219,7 +219,7 @@ class _ProposalMetaSection extends StatelessWidget {
                 ),
             ],
             if (proposal.isExpired) ...[
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Text(
                 l10n.assistantProposalExpiredHint,
                 style: typography.body.sm.copyWith(

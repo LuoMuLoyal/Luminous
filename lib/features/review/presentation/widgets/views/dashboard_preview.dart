@@ -104,9 +104,9 @@ class ReviewDashboardPreview extends StatelessWidget {
           onSignIn: onSignIn,
           message: l10n.reviewPreviewBannerMessage,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         trendSection,
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         if (isDesktop)
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +119,7 @@ class ReviewDashboardPreview extends StatelessWidget {
                   body: l10n.reviewFindingsPreviewBody,
                 ),
               ),
-              const SizedBox(width: Spacing.level4),
+              const SizedBox(width: Spacing.lg),
               Expanded(
                 child: ReviewPreviewLockedSection(
                   key: const Key('report-suggestion-history-preview-locked'),
@@ -137,7 +137,7 @@ class ReviewDashboardPreview extends StatelessWidget {
             title: l10n.reviewFindingsPreviewTitle,
             body: l10n.reviewFindingsPreviewBody,
           ),
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           ReviewPreviewLockedSection(
             key: const Key('report-suggestion-history-preview-locked'),
             icon: SemanticIcons.reportHistory,
@@ -145,7 +145,7 @@ class ReviewDashboardPreview extends StatelessWidget {
             body: l10n.reviewSuggestionHistoryPreviewBody,
           ),
         ],
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         exportSection,
       ],
     );

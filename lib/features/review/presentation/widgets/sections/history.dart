@@ -163,7 +163,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
     return FCard(
       key: const Key('review-history-section'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -172,11 +172,11 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                 ExcludeSemantics(
                   child: Icon(
                     SemanticIcons.reportHistory,
-                    size: Spacing.level5,
+                    size: Spacing.xl,
                     color: SemanticColor.primary.solid(context),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: Text(
                     l10n.reviewReviewHistoryTitle,
@@ -187,16 +187,16 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             _StatusFilterRow(
               selectedStatus: widget.selectedStatus,
               onStatusChanged: widget.onStatusChanged,
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             widget.history.when(
               skipLoadingOnRefresh: true,
               loading: () => const Padding(
-                padding: EdgeInsets.symmetric(vertical: Spacing.level3),
+                padding: EdgeInsets.symmetric(vertical: Spacing.md),
                 child: Center(child: FProgress()),
               ),
               error: (_, __) => Row(
@@ -210,7 +210,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                     ),
                   ),
                   if (widget.onRetry != null) ...[
-                    const SizedBox(width: Spacing.level3),
+                    const SizedBox(width: Spacing.md),
                     FButton(
                       key: const Key('review-history-retry'),
                       variant: FButtonVariant.outline,
@@ -253,12 +253,10 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                       ),
                     ],
                     if (canLoadMore) ...[
-                      const SizedBox(height: Spacing.level3),
+                      const SizedBox(height: Spacing.md),
                       if (_loadingMore)
                         const Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: Spacing.level2,
-                          ),
+                          padding: EdgeInsets.symmetric(vertical: Spacing.sm),
                           child: Center(child: FProgress()),
                         )
                       else if (_loadMoreError != null)
@@ -344,7 +342,7 @@ class _LoadMoreErrorRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         FButton(
           key: const Key('review-history-load-more-retry'),
           variant: FButtonVariant.outline,
@@ -376,7 +374,7 @@ class _HistoryEventRow extends StatelessWidget {
 
     final row = Padding(
       key: Key('review-history-item-${event.id}'),
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
       child: Row(
         children: [
           Expanded(
@@ -391,7 +389,7 @@ class _HistoryEventRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: Spacing.level1),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   '${reviewShortDateLabel(context, event.startedAt)} – $endLabel',
                   style: typography.body.xs.copyWith(
@@ -401,7 +399,7 @@ class _HistoryEventRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           if (isActive)
             _HistoryStatusChip(
               label: l10n.reviewReviewStatusActive,
@@ -419,7 +417,7 @@ class _HistoryEventRow extends StatelessWidget {
             ),
           // 可点入详情的行右侧补 chevron 指向性；只读行不加，避免暗示可点。
           if (onTap != null) ...[
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             ExcludeSemantics(
               child: Icon(
                 SemanticIcons.actionNext,
@@ -453,8 +451,8 @@ class _HistoryStatusChip extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level1,
+          horizontal: Spacing.md,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,
@@ -493,8 +491,8 @@ class _StatusFilterRow extends StatelessWidget {
     ];
 
     return Wrap(
-      spacing: Spacing.level2,
-      runSpacing: Spacing.level2,
+      spacing: Spacing.sm,
+      runSpacing: Spacing.sm,
       children: [
         for (final (key, status, label) in options)
           Semantics(
@@ -514,8 +512,8 @@ class _StatusFilterRow extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level3,
-                    vertical: Spacing.level2,
+                    horizontal: Spacing.md,
+                    vertical: Spacing.sm,
                   ),
                   child: Text(
                     label,

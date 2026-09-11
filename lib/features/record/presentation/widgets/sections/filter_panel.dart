@@ -23,7 +23,7 @@ class RecordFilterPanel extends StatelessWidget {
     return FCard(
       key: const Key('record-filter-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -56,7 +56,7 @@ class RecordFilterPanel extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: Spacing.level1),
+                        const SizedBox(width: Spacing.xs),
                         Icon(
                           SemanticIcons.statusAllDone,
                           size: IconSizeTokens.sm,
@@ -67,12 +67,12 @@ class RecordFilterPanel extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             Column(
               children: filters
                   .map(
                     (filter) => Padding(
-                      padding: const EdgeInsets.only(bottom: Spacing.level3),
+                      padding: const EdgeInsets.only(bottom: Spacing.md),
                       child: FilterRow(
                         filter: filter,
                         l10n: l10n,
@@ -115,7 +115,7 @@ class FilterRow extends StatelessWidget {
     return FTappable(
       onPress: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
         child: Row(
           children: [
             Icon(
@@ -127,13 +127,13 @@ class FilterRow extends StatelessWidget {
                   : SemanticColor.neutral.solid(context),
               size: IconSizeTokens.sm,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Icon(
               filter.icon,
               color: filter.accent.solid(context),
               size: IconSizeTokens.sm,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Expanded(
               child: Text(
                 label,
@@ -148,8 +148,8 @@ class FilterRow extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level3,
-                    vertical: Spacing.level2,
+                    horizontal: Spacing.md,
+                    vertical: Spacing.sm,
                   ),
                   child: Text(
                     l10n.recordNotEnabledLabel,

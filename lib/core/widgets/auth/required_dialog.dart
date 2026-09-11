@@ -67,12 +67,12 @@ Future<void> showAuthRequiredDialog(
           l10n.authNotSignedIn,
           style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.authLoginRequiredPrompt,
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -82,7 +82,7 @@ Future<void> showAuthRequiredDialog(
               onPress: () => Navigator.of(dialogContext).pop(),
               child: Text(l10n.authCancelAction),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               key: const Key('auth-required-login-action'),
               onPress: () {

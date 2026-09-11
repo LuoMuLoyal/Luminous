@@ -151,7 +151,7 @@ class ReviewDashboardView extends StatelessWidget {
           isGenerating:
               aiSummaryState.status == ReviewAiSummaryCardStatus.loading,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         ReviewTrendSection(
           key: const Key('report-trend-section'),
           trends: dashboard.trends,
@@ -161,14 +161,14 @@ class ReviewDashboardView extends StatelessWidget {
           startDate: dashboard.startDate,
           showRangePill: false,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         ReviewFindingsSection(
           key: const Key('report-findings-section'),
           findings: dashboard.findings,
           l10n: l10n,
         ),
         if (canAccessProtectedData) ...[
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           ReviewSuggestionHistorySection(
             suggestions: suggestionHistory,
             isLoading: isSuggestionHistoryLoading,
@@ -177,7 +177,7 @@ class ReviewDashboardView extends StatelessWidget {
           ),
         ],
         if (!canShowFullReview) ...[
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           _ReportLockedFeaturesHint(
             message: readinessStatus == ReviewReadinessStatus.signedOut
                 ? l10n.reviewLockedFeaturesSignedOutHint
@@ -185,7 +185,7 @@ class ReviewDashboardView extends StatelessWidget {
           ),
         ],
         if (canShowFullReview) ...[
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           ReviewAiSummarySection(
             key: const Key('report-ai-summary-section'),
             dashboard: dashboard,
@@ -197,13 +197,13 @@ class ReviewDashboardView extends StatelessWidget {
             onGenerate: onGenerateAiSummary,
             l10n: l10n,
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           ReviewPatternsSection(
             key: const Key('report-patterns-section'),
             patterns: dashboard.patterns,
             l10n: l10n,
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           ReviewExportSection(
             key: const Key('report-export-section'),
             actions: dashboard.exportActions,
@@ -213,7 +213,7 @@ class ReviewDashboardView extends StatelessWidget {
             onActionTap: onExportActionTap,
             l10n: l10n,
           ),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           ReviewReferenceNotice(
             key: const Key('report-reference-notice-mobile'),
             l10n: l10n,
@@ -261,7 +261,7 @@ class ReviewDashboardView extends StatelessWidget {
           isGenerating:
               aiSummaryState.status == ReviewAiSummaryCardStatus.loading,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         // Dual-column body: left (trend + findings + history) | right (AI + patterns)
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,14 +280,14 @@ class ReviewDashboardView extends StatelessWidget {
                     startDate: dashboard.startDate,
                     showRangePill: false,
                   ),
-                  const SizedBox(height: Spacing.level5),
+                  const SizedBox(height: Spacing.xl),
                   ReviewFindingsSection(
                     key: const Key('report-findings-section'),
                     findings: dashboard.findings,
                     l10n: l10n,
                   ),
                   if (canAccessProtectedData) ...[
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     ReviewSuggestionHistorySection(
                       suggestions: suggestionHistory,
                       isLoading: isSuggestionHistoryLoading,
@@ -298,7 +298,7 @@ class ReviewDashboardView extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: Spacing.level5),
+            const SizedBox(width: Spacing.xl),
             Expanded(
               flex: 5,
               child: Column(
@@ -316,20 +316,20 @@ class ReviewDashboardView extends StatelessWidget {
                       onGenerate: onGenerateAiSummary,
                       l10n: l10n,
                     ),
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     ReviewPatternsSection(
                       key: const Key('report-patterns-section'),
                       patterns: dashboard.patterns,
                       l10n: l10n,
                     ),
-                    const SizedBox(height: Spacing.level5),
+                    const SizedBox(height: Spacing.xl),
                     ReviewReferenceNotice(
                       key: const Key('report-reference-notice'),
                       l10n: l10n,
                     ),
                   ],
                   if (!canShowFullReview) ...[
-                    const SizedBox(height: Spacing.level4),
+                    const SizedBox(height: Spacing.lg),
                     _ReportLockedFeaturesHint(
                       message:
                           readinessStatus == ReviewReadinessStatus.signedOut
@@ -343,7 +343,7 @@ class ReviewDashboardView extends StatelessWidget {
           ],
         ),
         if (canShowFullReview) ...[
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           ReviewExportSection(
             key: const Key('report-export-section'),
             actions: dashboard.exportActions,
@@ -402,7 +402,7 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
           child: Icon(
             SemanticIcons.statusBlocked,
             color: SemanticColor.primary.solid(context),
-            size: Spacing.level4,
+            size: Spacing.lg,
           ),
         ),
         title: Text(

@@ -32,11 +32,11 @@ class _MobileMedicineSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DrugBoxPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _RecordsPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _SafetyEnginePlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.lg),
         _QuickOperationsPlaceholder(),
       ],
     );
@@ -57,14 +57,14 @@ class _DesktopMedicineSkeleton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _DrugBoxPlaceholder(),
-              SizedBox(height: Spacing.level5),
+              SizedBox(height: Spacing.xl),
               _RecordsPlaceholder(),
-              SizedBox(height: Spacing.level5),
+              SizedBox(height: Spacing.xl),
               _SafetyEnginePlaceholder(),
             ],
           ),
         ),
-        SizedBox(width: Spacing.level5),
+        SizedBox(width: Spacing.xl),
         Expanded(
           flex: 5,
           child: Column(
@@ -87,53 +87,53 @@ class _DrugBoxPlaceholder extends StatelessWidget {
         const Row(
           children: [
             InlineSkeletonCircle(size: 40),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             Expanded(child: InlineSkeletonBlock(height: 18, widthFactor: 0.45)),
-            SizedBox(width: Spacing.level3),
+            SizedBox(width: Spacing.md),
             InlineSkeletonBlock(height: 14, width: 80),
           ],
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         const InlineSkeletonBlock(height: 14, widthFactor: 0.55),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const InlineSkeletonBlock(height: 64, width: 64),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Container(
               width: 1,
               height: 64,
               color: SemanticColor.neutral.border(context),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InlineSkeletonBlock(height: 16, widthFactor: 0.8),
-                  SizedBox(height: Spacing.level2),
+                  SizedBox(height: Spacing.sm),
                   InlineSkeletonBlock(height: 14, widthFactor: 0.55),
-                  SizedBox(height: Spacing.level3),
+                  SizedBox(height: Spacing.md),
                   InlineSkeletonBlock(height: 14, widthFactor: 0.7),
                 ],
               ),
             ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         const AppDivider(),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Row(
           children: [
             const InlineSkeletonCircle(size: 32),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InlineSkeletonBlock(height: 14, widthFactor: 0.6),
-                  SizedBox(height: Spacing.level2),
+                  SizedBox(height: Spacing.sm),
                   InlineSkeletonBlock(height: 12, widthFactor: 0.45),
                 ],
               ),
@@ -164,19 +164,19 @@ class _SafetyEnginePlaceholder extends StatelessWidget {
             InlineSkeletonBlock(height: 14, width: 80),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         for (var i = 0; i < 3; i += 1) ...[
-          if (i > 0) const SizedBox(height: Spacing.level4),
+          if (i > 0) const SizedBox(height: Spacing.lg),
           const Row(
             children: [
               InlineSkeletonCircle(size: 40),
-              SizedBox(width: Spacing.level3),
+              SizedBox(width: Spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InlineSkeletonBlock(height: 16, widthFactor: 0.72),
-                    SizedBox(height: Spacing.level2),
+                    SizedBox(height: Spacing.sm),
                     InlineSkeletonBlock(height: 14, widthFactor: 0.55),
                   ],
                 ),
@@ -197,7 +197,7 @@ class _QuickOperationsPlaceholder extends StatelessWidget {
     return Row(
       children: [
         for (var i = 0; i < 4; i += 1) ...[
-          if (i > 0) const SizedBox(width: Spacing.level3),
+          if (i > 0) const SizedBox(width: Spacing.md),
           const Expanded(child: InlineSkeletonBlock(height: 80)),
         ],
       ],
@@ -219,24 +219,24 @@ class _RecordsPlaceholder extends StatelessWidget {
             InlineSkeletonBlock(height: 14, width: 120),
           ],
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         for (var i = 0; i < 3; i += 1) ...[
-          if (i > 0) const SizedBox(height: Spacing.level4),
+          if (i > 0) const SizedBox(height: Spacing.lg),
           Row(
             children: [
               const InlineSkeletonCircle(size: 40),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InlineSkeletonBlock(height: 16, widthFactor: 0.65),
-                    SizedBox(height: Spacing.level2),
+                    SizedBox(height: Spacing.sm),
                     InlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               InlineSkeletonBlock(
                 height: 28,
                 width: 56,

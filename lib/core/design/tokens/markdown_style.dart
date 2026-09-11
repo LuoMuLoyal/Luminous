@@ -27,9 +27,9 @@ abstract final class MarkdownStyle {
       h1: typography.body.xl.copyWith(fontWeight: FontWeight.w700),
       h2: typography.body.lg.copyWith(fontWeight: FontWeight.w600),
       h3: typography.body.md.copyWith(fontWeight: FontWeight.w600),
-      h1Padding: const EdgeInsets.only(top: Spacing.level6),
-      h2Padding: const EdgeInsets.only(top: Spacing.level5),
-      h3Padding: const EdgeInsets.only(top: Spacing.level4),
+      h1Padding: const EdgeInsets.only(top: Spacing.xl2),
+      h2Padding: const EdgeInsets.only(top: Spacing.xl),
+      h3Padding: const EdgeInsets.only(top: Spacing.lg),
       blockquote: typography.body.sm.copyWith(
         color: SemanticColor.neutral.solid(context),
       ),
@@ -41,13 +41,13 @@ abstract final class MarkdownStyle {
           ),
         ),
       ),
-      blockquotePadding: const EdgeInsets.only(left: Spacing.level3),
+      blockquotePadding: const EdgeInsets.only(left: Spacing.md),
       code: typography.body.xs.copyWith(
         fontFamily: 'monospace',
         color: colors.foreground,
         backgroundColor: colors.secondary,
       ),
-      codeblockPadding: const EdgeInsets.all(Spacing.level3),
+      codeblockPadding: const EdgeInsets.all(Spacing.md),
       codeblockDecoration: BoxDecoration(
         color: colors.secondary,
         borderRadius: context.theme.style.borderRadius.sm,
@@ -68,7 +68,7 @@ abstract final class MarkdownStyle {
       tableHead: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
       tableHeadCellsDecoration: BoxDecoration(color: colors.secondary),
       tableBody: typography.body.sm,
-      tableCellsPadding: const EdgeInsets.all(Spacing.level2),
+      tableCellsPadding: const EdgeInsets.all(Spacing.sm),
     );
   }
 
@@ -106,12 +106,12 @@ abstract final class MarkdownStyle {
       h4: typography.body.xs.copyWith(fontWeight: FontWeight.w600),
       h5: typography.body.xs2.copyWith(fontWeight: FontWeight.w600),
       h6: typography.body.xs2.copyWith(fontWeight: FontWeight.w500),
-      h1Padding: const EdgeInsets.only(top: Spacing.level5),
-      h2Padding: const EdgeInsets.only(top: Spacing.level4),
-      h3Padding: const EdgeInsets.only(top: Spacing.level3),
-      h4Padding: const EdgeInsets.only(top: Spacing.level3),
-      h5Padding: const EdgeInsets.only(top: Spacing.level2),
-      h6Padding: const EdgeInsets.only(top: Spacing.level2),
+      h1Padding: const EdgeInsets.only(top: Spacing.xl),
+      h2Padding: const EdgeInsets.only(top: Spacing.lg),
+      h3Padding: const EdgeInsets.only(top: Spacing.md),
+      h4Padding: const EdgeInsets.only(top: Spacing.md),
+      h5Padding: const EdgeInsets.only(top: Spacing.sm),
+      h6Padding: const EdgeInsets.only(top: Spacing.sm),
       blockquote: typography.body.sm.copyWith(
         color: SemanticColor.neutral.solid(context),
       ),
@@ -128,22 +128,22 @@ abstract final class MarkdownStyle {
         borderRadius: borderRadius.xs,
       ),
       blockquotePadding: const EdgeInsets.fromLTRB(
-        Spacing.level3,
-        Spacing.level2,
-        Spacing.level3,
-        Spacing.level2,
+        Spacing.md,
+        Spacing.sm,
+        Spacing.md,
+        Spacing.sm,
       ),
       listBullet: typography.body.sm.copyWith(
         color: SemanticColor.primary.solid(context),
       ),
-      listIndent: Spacing.level5,
-      listBulletPadding: const EdgeInsets.only(right: Spacing.level2),
+      listIndent: Spacing.xl,
+      listBulletPadding: const EdgeInsets.only(right: Spacing.sm),
       code: typography.body.xs.copyWith(
         fontFamily: 'monospace',
         color: colors.foreground,
         backgroundColor: codeBg,
       ),
-      codeblockPadding: const EdgeInsets.all(Spacing.level3),
+      codeblockPadding: const EdgeInsets.all(Spacing.md),
       codeblockDecoration: BoxDecoration(
         color: codeBg,
         borderRadius: borderRadius.sm,
@@ -167,7 +167,7 @@ abstract final class MarkdownStyle {
       tableHead: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
       tableHeadCellsDecoration: BoxDecoration(color: colors.secondary),
       tableBody: typography.body.sm,
-      tableCellsPadding: const EdgeInsets.all(Spacing.level2),
+      tableCellsPadding: const EdgeInsets.all(Spacing.sm),
     );
   }
 }

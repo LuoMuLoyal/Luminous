@@ -122,9 +122,7 @@ class ProfilePage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,9 +159,7 @@ class ProfilePage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +172,7 @@ class ProfilePage extends HookConsumerWidget {
                 l10n: l10n,
                 onSave: saveUserProfile,
               ),
-              const SizedBox(height: Spacing.level6),
+              const SizedBox(height: Spacing.xl2),
 
               // 健康档案部分
               snapshot.when(
@@ -249,21 +245,21 @@ class _UserProfileSection extends StatelessWidget {
           l10n.profileUserSectionTitle,
           style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         // 头像编辑
         _AvatarEditSection(
           avatarUrl: user?.avatar,
           avatarController: avatarController,
           l10n: l10n,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         // 昵称编辑
         FTextField(
           key: const Key('profile-nickname-field'),
           control: FTextFieldControl.managed(controller: nicknameController),
           label: Text(l10n.profileNicknameLabel),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FButton(
           key: const Key('profile-user-save-button'),
           onPress: onSave,
@@ -326,7 +322,7 @@ class _AvatarEditSection extends StatelessWidget {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(Spacing.level1),
+                    padding: const EdgeInsets.all(Spacing.xs),
                     child: Icon(
                       SemanticIcons.actionEdit,
                       color: SemanticColor.primary.foreground(context),
@@ -338,7 +334,7 @@ class _AvatarEditSection extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level4),
+        const SizedBox(width: Spacing.lg),
         // 头像URL输入框
         Expanded(
           child: FTextField(
@@ -390,7 +386,7 @@ class _HealthProfileSection extends StatelessWidget {
           l10n.profileHealthSectionTitle,
           style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FDateField.calendar(
           key: const Key('profile-birthdate-field'),
           label: Text(l10n.mineEditFieldBirthDate),
@@ -400,7 +396,7 @@ class _HealthProfileSection extends StatelessWidget {
             onChange: (value) => birthDate.value = value,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         _enumDropdown<HealthSexAtBirth>(
           label: l10n.mineEditFieldSexAtBirth,
           value: sexAtBirth.value,
@@ -413,21 +409,21 @@ class _HealthProfileSection extends StatelessWidget {
             HealthSexAtBirth.unknown => l10n.mineEditSexAtBirthUnknown,
           },
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FTextField(
           key: const Key('profile-height-field'),
           control: FTextFieldControl.managed(controller: heightCmController),
           label: Text(l10n.mineEditFieldHeightCm),
           keyboardType: TextInputType.number,
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FTextField(
           key: const Key('profile-weight-field'),
           control: FTextFieldControl.managed(controller: weightKgController),
           label: Text(l10n.mineEditFieldWeightKg),
           keyboardType: TextInputType.number,
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         FSelect<String>.rich(
           label: Text(l10n.mineEditFieldBloodType),
           hint: l10n.mineEditFieldBloodTypeHint,
@@ -440,7 +436,7 @@ class _HealthProfileSection extends StatelessWidget {
               .map((v) => FSelectItem.item(title: Text(v), value: v))
               .toList(),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         _enumDropdown<HealthUnitSystem>(
           label: l10n.mineEditFieldUnitSystem,
           value: unitSystem.value,
@@ -450,24 +446,24 @@ class _HealthProfileSection extends StatelessWidget {
               ? l10n.mineEditUnitSystemMetric
               : l10n.mineEditUnitSystemImperial,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Text(
           l10n.mineEditFieldEmergencyContactName,
           style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         FTextField(
           key: const Key('profile-emergency-contact-name'),
           control: FTextFieldControl.managed(
             controller: emergencyContactNameController,
           ),
         ),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Text(
           l10n.mineEditFieldEmergencyContactPhone,
           style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         FTextField(
           key: const Key('profile-emergency-contact-phone'),
           control: FTextFieldControl.managed(
@@ -475,7 +471,7 @@ class _HealthProfileSection extends StatelessWidget {
           ),
           keyboardType: TextInputType.phone,
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         FButton(
           key: const Key('profile-health-save-button'),
           onPress: isSaving ? null : onSave,

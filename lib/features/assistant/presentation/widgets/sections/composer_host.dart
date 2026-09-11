@@ -44,7 +44,7 @@ class AssistantComposerHost extends StatelessWidget {
       children: [
         if (!canSendMessages)
           Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.level3),
+            padding: const EdgeInsets.only(bottom: Spacing.md),
             child: Row(
               children: [
                 Icon(
@@ -52,7 +52,7 @@ class AssistantComposerHost extends StatelessWidget {
                   size: 14,
                   color: SemanticColor.neutral.solid(context),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Expanded(
                   child: Text(
                     l10n.assistantInputDisabledHint,

@@ -56,7 +56,7 @@ class PasswordSectionState extends State<PasswordSection> {
                       ? l10n.authCurrentPasswordRequiredToast
                       : null,
                 ),
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 FTextFormField.password(
                   control: FTextFieldControl.managed(
                     controller: widget.newPasswordController,
@@ -242,7 +242,7 @@ class DangerZoneSection extends StatelessWidget {
         borderRadius: context.theme.style.borderRadius.sm,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -253,7 +253,7 @@ class DangerZoneSection extends StatelessWidget {
                   size: 16,
                   color: SemanticColor.destructive.solid(context),
                 ),
-                const SizedBox(width: Spacing.level2),
+                const SizedBox(width: Spacing.sm),
                 Text(
                   dangerLabel,
                   style: typography.body.xs.copyWith(
@@ -263,16 +263,15 @@ class DangerZoneSection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               title,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             for (final child in children) ...[
               child,
-              if (child != children.last)
-                const SizedBox(height: Spacing.level4),
+              if (child != children.last) const SizedBox(height: Spacing.lg),
             ],
           ],
         ),
@@ -304,10 +303,10 @@ class _SectionColumn extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         for (final child in children) ...[
           child,
-          if (child != children.last) const SizedBox(height: Spacing.level4),
+          if (child != children.last) const SizedBox(height: Spacing.lg),
         ],
       ],
     ),

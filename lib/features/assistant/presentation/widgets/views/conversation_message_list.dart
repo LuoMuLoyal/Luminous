@@ -105,7 +105,7 @@ class AssistantConversationMessageList extends ConsumerWidget {
       ),
       controller: scrollController,
       padding: EdgeInsets.zero,
-      itemSpacing: Spacing.level4,
+      itemSpacing: Spacing.lg,
       messageBuilder: adapter.buildMessage,
     );
   }

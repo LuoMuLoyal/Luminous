@@ -70,7 +70,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
     final typography = context.theme.typography;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(Spacing.level5),
+      padding: const EdgeInsets.all(Spacing.xl),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +83,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
           Row(
             children: [
               Icon(_iconForType(suggestion.type), size: 20),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               Expanded(
                 child: Text(
                   suggestion.title,
@@ -95,7 +95,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
 
           // Lifecycle badge.
           _LifecycleBadge(
@@ -103,16 +103,16 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
             l10n: l10n,
           ),
 
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           const AppDivider(),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
 
           // Reason body.
           Text(suggestion.reason, style: typography.body.sm),
 
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
           const AppDivider(),
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
 
           // Meta fields.
           MetaRow(
@@ -138,7 +138,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
 
           // Feedback (optional).
           if (suggestion.feedback != null) ...[
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             MetaRow(
               label: l10n.reviewSuggestionHistoryDetailFeedback,
               value: _feedbackLabel(suggestion.feedback!, l10n),
@@ -149,7 +149,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
                 value: formatDateTimeFull(suggestion.feedbackAt!, locale),
               ),
           ] else ...[
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             MetaRow(
               label: l10n.reviewSuggestionHistoryDetailFeedback,
               value: l10n.reviewSuggestionHistoryDetailNoFeedback,
@@ -158,14 +158,14 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
 
           // Expiry (optional).
           if (suggestion.expiredAt != null) ...[
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             MetaRow(
               label: l10n.reviewSuggestionHistoryDetailExpiredAt,
               value: formatDateTimeFull(suggestion.expiredAt!, locale),
             ),
           ],
 
-          const SizedBox(height: Spacing.level5),
+          const SizedBox(height: Spacing.xl),
 
           // Close button.
           FButton(
@@ -265,8 +265,8 @@ class _LifecycleBadge extends StatelessWidget {
       ),
       builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level1,
+          horizontal: Spacing.md,
+          vertical: Spacing.xs,
         ),
         child: Text(
           label,

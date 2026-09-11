@@ -148,14 +148,14 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
       children: [
         // "其他方式登录" divider
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.level5),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.xl),
           child: Row(
             children: [
               Expanded(
                 child: Divider(color: SemanticColor.neutral.border(context)),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
                 child: Text(
                   l10n.authOrOtherLogin,
                   style: context.theme.typography.body.xs2.copyWith(
@@ -184,7 +184,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                       widget.isStartingWechat || widget.isCompletingWechat,
                   onPressed: widget.onWechatStart,
                 ),
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
               ],
               _OAuthCircleButton(
                 buttonKey: const Key('qq-login-start-button'),
@@ -194,7 +194,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                 disabled: widget.isStartingQq || widget.isCompletingQq,
                 onPressed: widget.onQqStart,
               ),
-              const SizedBox(width: Spacing.level4),
+              const SizedBox(width: Spacing.lg),
               if (widget.showWeibo) ...[
                 _OAuthCircleButton(
                   buttonKey: const Key('weibo-login-start-button'),
@@ -204,7 +204,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                   disabled: widget.isStartingWeibo || widget.isCompletingWeibo,
                   onPressed: widget.onWeiboStart,
                 ),
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
               ],
               _OAuthCircleButton(
                 buttonKey: const Key('google-login-start-button'),
@@ -221,7 +221,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                 onPressed: widget.onGoogleStart,
               ),
               if (_appleAvailable) ...[
-                const SizedBox(width: Spacing.level4),
+                const SizedBox(width: Spacing.lg),
                 _OAuthCircleButton(
                   buttonKey: const Key('apple-login-start-button'),
                   assetPath: 'assets/icon/oauth/apple.svg',
@@ -237,7 +237,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
         // WeChat callback input (shown when authorizeUrl is set)
         if (widget.showWechat &&
             widget.wechatAuthorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           FTextField(
             key: const Key('wechat-callback-input'),
             control: FTextFieldControl.managed(
@@ -247,7 +247,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
             hint: l10n.authWechatCallbackHint,
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           FButton(
             key: const Key('wechat-complete-button'),
             onPress: widget.isCompletingWechat ? null : widget.onWechatComplete,
@@ -263,7 +263,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
         ],
         // QQ callback input (shown when authorizeUrl is set)
         if (widget.qqAuthorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           FTextField(
             key: const Key('qq-callback-input'),
             control: FTextFieldControl.managed(
@@ -273,7 +273,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
             hint: l10n.authQqCallbackHint,
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           FButton(
             key: const Key('qq-complete-button'),
             onPress: widget.isCompletingQq ? null : widget.onQqComplete,
@@ -290,7 +290,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
         // Weibo callback input (shown when authorizeUrl is set)
         if (widget.showWeibo &&
             widget.weiboAuthorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           FTextField(
             key: const Key('weibo-callback-input'),
             control: FTextFieldControl.managed(
@@ -300,7 +300,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
             hint: l10n.authWeiboCallbackHint,
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           FButton(
             key: const Key('weibo-complete-button'),
             onPress: widget.isCompletingWeibo ? null : widget.onWeiboComplete,
@@ -316,7 +316,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
         ],
         // Google callback input (shown when authorizeUrl is set)
         if (widget.googleAuthorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.lg),
           FTextField(
             key: const Key('google-callback-input'),
             control: FTextFieldControl.managed(
@@ -326,7 +326,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
             hint: l10n.authGoogleCallbackHint,
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: Spacing.level3),
+          const SizedBox(height: Spacing.md),
           FButton(
             key: const Key('google-complete-button'),
             onPress: widget.isCompletingGoogle ? null : widget.onGoogleComplete,

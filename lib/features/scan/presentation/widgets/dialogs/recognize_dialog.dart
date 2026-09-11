@@ -145,7 +145,7 @@ class _MedicineRecognizeDialogState
           AppLocalizations.of(context)!.scanResultTitle,
           style: dialogStyle.titleTextStyle,
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
@@ -178,7 +178,7 @@ class _MedicineRecognizeDialogState
                       ),
                     ),
                   ),
-                  const SizedBox(width: Spacing.level4),
+                  const SizedBox(width: Spacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,13 +198,13 @@ class _MedicineRecognizeDialogState
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
 
               if (top != null) ...[
                 // Top result card
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(Spacing.level4),
+                  padding: const EdgeInsets.all(Spacing.lg),
                   decoration: BoxDecoration(
                     color: colors.background,
                     borderRadius: borderRadius.sm,
@@ -221,7 +221,7 @@ class _MedicineRecognizeDialogState
                           l10n.scanResultApprovalNumberLabel,
                           top.approvalNumber!,
                         ),
-                      const SizedBox(height: Spacing.level2),
+                      const SizedBox(height: Spacing.sm),
                       // No fabricated confidence percentage: the recognition
                       // path has no trustworthy score, so show a method-aware
                       // verify hint instead (F-6).
@@ -243,7 +243,7 @@ class _MedicineRecognizeDialogState
                 ),
               ],
 
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
 
               // Candidate list expander
               if (sorted.length > 1)
@@ -251,9 +251,7 @@ class _MedicineRecognizeDialogState
                   onPress: () =>
                       setState(() => _showCandidateList = !_showCandidateList),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: Spacing.level3,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: Spacing.md),
                     child: Row(
                       children: [
                         Icon(
@@ -287,7 +285,7 @@ class _MedicineRecognizeDialogState
                         onPress: () => setState(() => _selectedIndex = i),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                            vertical: Spacing.level2,
+                            vertical: Spacing.sm,
                           ),
                           child: Row(
                             children: [
@@ -298,7 +296,7 @@ class _MedicineRecognizeDialogState
                                 color: SemanticColor.primary.solid(context),
                                 size: 20,
                               ),
-                              const SizedBox(width: Spacing.level3),
+                              const SizedBox(width: Spacing.md),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,10 +325,10 @@ class _MedicineRecognizeDialogState
             ],
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Wrap(
-          spacing: Spacing.level3,
-          runSpacing: Spacing.level3,
+          spacing: Spacing.md,
+          runSpacing: Spacing.md,
           alignment: WrapAlignment.end,
           children: [
             FButton(
@@ -355,7 +353,7 @@ class _MedicineRecognizeDialogState
                       size: IconSizeTokens.sm,
                       color: SemanticColor.primary.solid(context),
                     ),
-                    const SizedBox(width: Spacing.level2),
+                    const SizedBox(width: Spacing.sm),
                     Text(l10n.medicineSearchAlreadyAddedLabel),
                   ],
                 ),

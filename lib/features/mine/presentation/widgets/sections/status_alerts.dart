@@ -68,13 +68,13 @@ class _StatusAlertRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level3,
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
       ),
       child: Row(
         children: [
           SoftIcon(icon: card.icon, color: card.accent),
-          const SizedBox(width: Spacing.level3),
+          const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,7 @@ class _StatusAlertRow extends StatelessWidget {
                   ),
                 ),
                 if (subtitle != null) ...[
-                  const SizedBox(height: Spacing.level1),
+                  const SizedBox(height: Spacing.xs),
                   Text(
                     subtitle,
                     style: typography.body.xs.copyWith(
@@ -100,7 +100,7 @@ class _StatusAlertRow extends StatelessWidget {
             ),
           ),
           if (badge != null) ...[
-            const SizedBox(width: Spacing.level2),
+            const SizedBox(width: Spacing.sm),
             Text(
               badge,
               style: typography.body.xs.copyWith(

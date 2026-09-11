@@ -111,16 +111,14 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < Breakpoints.mobile
-              ? Spacing.level6
-              : Spacing.level7,
+          vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FCard(
               child: Padding(
-                padding: const EdgeInsets.all(Spacing.level5),
+                padding: const EdgeInsets.all(Spacing.xl),
                 child: Row(
                   children: [
                     Image.asset(
@@ -128,7 +126,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                       width: 64,
                       height: 64,
                     ),
-                    const SizedBox(width: Spacing.level4),
+                    const SizedBox(width: Spacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +138,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                             ),
                           ),
                           if (version.isNotEmpty) ...[
-                            const SizedBox(height: Spacing.level1),
+                            const SizedBox(height: Spacing.xs),
                             Text(
                               buildNumber.isNotEmpty
                                   ? '${l10n.settingsAboutVersionLabel(version)} · ${l10n.settingsAboutBuildLabel(buildNumber)}'
@@ -150,7 +148,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                               ),
                             ),
                           ],
-                          const SizedBox(height: Spacing.level1),
+                          const SizedBox(height: Spacing.xs),
                           Text(
                             l10n.settingsAboutTagline,
                             style: typography.body.xs.copyWith(
@@ -164,7 +162,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                 ),
               ),
             ),
-            const SizedBox(height: Spacing.level5),
+            const SizedBox(height: Spacing.xl),
             FTileGroup(
               style: settingsSubpageTileGroupStyle(context.theme),
               children: [

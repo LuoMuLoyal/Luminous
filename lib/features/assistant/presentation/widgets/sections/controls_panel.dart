@@ -41,14 +41,14 @@ class AssistantControlsPanel extends StatelessWidget {
           l10n.assistantStatusSectionTitle,
           style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: Spacing.level2),
+        const SizedBox(height: Spacing.sm),
         Text(
           l10n.assistantEntrySubtitle,
           style: typography.body.xs.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         FTileGroup(
           children: [
             _SwitchTile(

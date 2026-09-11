@@ -61,7 +61,7 @@ class ReviewTrendSection extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.lg),
         Semantics(
           label: _buildSemanticsLabel(l10n),
           child: allEmpty
@@ -203,7 +203,7 @@ class _SingleTrendChart extends StatelessWidget {
           borderRadius: context.theme.style.borderRadius.md,
           border: Border.all(color: SemanticColor.neutral.border(context)),
         ),
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -221,7 +221,7 @@ class _SingleTrendChart extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level3),
+            const SizedBox(height: Spacing.md),
             SizedBox(
               height: ResponsiveSizing.scaleByHeight(
                 context,
@@ -272,7 +272,7 @@ class _SingleTrendChart extends StatelessWidget {
                             return const SizedBox.shrink();
                           }
                           return Padding(
-                            padding: const EdgeInsets.only(top: Spacing.level2),
+                            padding: const EdgeInsets.only(top: Spacing.sm),
                             child: Text(
                               labels[index],
                               style: typography.body.xs.copyWith(
@@ -335,7 +335,7 @@ class _SingleTrendChart extends StatelessWidget {
             // 覆盖率说明（X/N 天 + 数据窗口）与口径说明。
             if (om != null)
               Padding(
-                padding: const EdgeInsets.only(top: Spacing.level3),
+                padding: const EdgeInsets.only(top: Spacing.md),
                 child: _TrendFooter(
                   coverageLabel: coverageLabel ?? '',
                   windowStart: om.windowStart,
@@ -413,7 +413,7 @@ class _TrendFooter extends StatelessWidget {
               Text(window, style: typography.body.xs.copyWith(color: muted)),
           ],
         ),
-        const SizedBox(height: Spacing.level1),
+        const SizedBox(height: Spacing.xs),
         Text(
           l10n.reviewTrendGapNote,
           style: typography.body.xs.copyWith(color: muted),
@@ -439,23 +439,23 @@ class _TrendEmptyState extends StatelessWidget {
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level4,
-            vertical: Spacing.level8,
+            horizontal: Spacing.lg,
+            vertical: Spacing.xl4,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 SemanticIcons.reportChart,
-                size: Spacing.level8,
+                size: Spacing.xl4,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.md),
               Text(
                 l10n.reviewTrendEmptyTitle,
                 style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 l10n.reviewTrendEmptyBody,
                 style: typography.body.xs.copyWith(

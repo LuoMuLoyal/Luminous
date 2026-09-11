@@ -45,7 +45,7 @@ Future<void> showMoodBadgeSelectDialog(
     builder: (dialogContext, style, animation) => FDialog(
       animation: animation,
       builder: (context, style) => Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -54,12 +54,12 @@ Future<void> showMoodBadgeSelectDialog(
               l10n.recordQuickSettingsMoodBadge,
               style: style.titleTextStyle,
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             for (final mode in QuickEntryMoodBadgeMode.values)
               FTappable(
                 onPress: () => Navigator.of(context).pop(mode),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
                   child: Row(
                     children: [
                       Expanded(

@@ -178,9 +178,7 @@ class RecordEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,9 +198,7 @@ class RecordEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: StateErrorView(
             title: l10n.recordDetailErrorTitle,
@@ -219,9 +215,7 @@ class RecordEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,27 +228,25 @@ class RecordEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+            vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
                 child: RecordEditStatusHint(dirty: dirty, l10n: l10n),
               ),
-              const SizedBox(height: Spacing.level2),
+              const SizedBox(height: Spacing.sm),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: context.theme.colors.secondary,
                     borderRadius: context.theme.style.borderRadius.sm,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(Spacing.level4),
+                    padding: const EdgeInsets.all(Spacing.lg),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -290,7 +282,7 @@ class RecordEditPage extends HookConsumerWidget {
                             );
                           },
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         DailyRecordFormFields(
                           kind: state.kind,
                           onKindChanged: onKindChanged,
@@ -300,10 +292,10 @@ class RecordEditPage extends HookConsumerWidget {
                           titleController: titleController,
                           noteController: noteController,
                         ),
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         RecordKindIconField(kind: state.kind),
                         if (state.kind == DailyRecordKind.sleep) ...[
-                          const SizedBox(height: Spacing.level3),
+                          const SizedBox(height: Spacing.md),
                           SleepStructuredFields(
                             l10n: l10n,
                             bedtime: state.bedtime,
@@ -321,7 +313,7 @@ class RecordEditPage extends HookConsumerWidget {
                           ),
                         ],
                         if (state.kind == DailyRecordKind.meal) ...[
-                          const SizedBox(height: Spacing.level3),
+                          const SizedBox(height: Spacing.md),
                           MealDishEditorSection(
                             dishNames: state.dishNames,
                             enabled: !state.saving && !state.deleting,
@@ -330,7 +322,7 @@ class RecordEditPage extends HookConsumerWidget {
                             onDishAdded: controller.addDish,
                           ),
                           if (state.canConfirmMealAnalysis) ...[
-                            const SizedBox(height: Spacing.level3),
+                            const SizedBox(height: Spacing.md),
                             MealConfirmAction(
                               l10n: l10n,
                               confirmed: state.confirmMealAnalysis,
@@ -340,7 +332,7 @@ class RecordEditPage extends HookConsumerWidget {
                             ),
                           ],
                         ],
-                        const SizedBox(height: Spacing.level3),
+                        const SizedBox(height: Spacing.md),
                         DailyRecordImageAttachmentField(
                           l10n: l10n,
                           selectedBytes: state.selectedImage?.bytes,

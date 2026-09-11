@@ -48,21 +48,21 @@ class SafetyCard extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RiskSummary(l10n: l10n, result: result, riskLevel: riskLevel),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               MetricRow(l10n: l10n, result: result),
               if (visibleAlerts.isNotEmpty) ...[
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.lg),
                 Column(
                   children: [
                     for (final alert in visibleAlerts) ...[
                       AlertChip(alert: alert, l10n: l10n),
                       if (alert != visibleAlerts.last)
-                        const SizedBox(height: Spacing.level2),
+                        const SizedBox(height: Spacing.sm),
                     ],
                     if (alertCount > visibleAlerts.length)
                       Text(
@@ -107,8 +107,8 @@ class RiskSummary extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: Spacing.level8,
-          height: Spacing.level8,
+          width: Spacing.xl4,
+          height: Spacing.xl4,
           decoration: ShapeDecoration(
             color: palette.muted(context),
             shape: const CircleBorder(),
@@ -120,7 +120,7 @@ class RiskSummary extends StatelessWidget {
             size: IconSizeTokens.lg,
           ),
         ),
-        const SizedBox(width: Spacing.level3),
+        const SizedBox(width: Spacing.md),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +129,7 @@ class RiskSummary extends StatelessWidget {
                 summary.title,
                 style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 summary.body,
                 style: typography.body.xs.copyWith(
@@ -174,12 +174,12 @@ class SafetyEmptyCard extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.lg),
           child: Row(
             children: [
               Container(
-                width: Spacing.level8,
-                height: Spacing.level8,
+                width: Spacing.xl4,
+                height: Spacing.xl4,
                 decoration: ShapeDecoration(
                   color: SemanticColor.neutral.muted(context),
                   shape: const CircleBorder(),
@@ -190,7 +190,7 @@ class SafetyEmptyCard extends StatelessWidget {
                   size: IconSizeTokens.lg,
                 ),
               ),
-              const SizedBox(width: Spacing.level3),
+              const SizedBox(width: Spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +201,7 @@ class SafetyEmptyCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: Spacing.level1),
+                    const SizedBox(height: Spacing.xs),
                     Text(
                       l10n.medicineSafetyPanelEmptyBody,
                       style: typography.body.xs.copyWith(

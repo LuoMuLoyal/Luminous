@@ -47,7 +47,7 @@ class CurrentMedicineForm extends StatelessWidget {
         SettingsSectionLabel(label: l10n.mineEditMedicineSectionInfo),
         FCard(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -58,7 +58,7 @@ class CurrentMedicineForm extends StatelessWidget {
                   ),
                   label: Text(l10n.mineEditFieldDisplayName),
                 ),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FTextField(
                   control: FTextFieldControl.managed(
                     controller: strengthTextController,
@@ -70,13 +70,13 @@ class CurrentMedicineForm extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
 
         // Group 2 — 用法用量
         SettingsSectionLabel(label: l10n.mineEditMedicineSectionDosage),
         FCard(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -87,10 +87,10 @@ class CurrentMedicineForm extends StatelessWidget {
                   label: Text(l10n.mineEditFieldDoseText),
                   hint: l10n.mineEditFieldDoseTextHint,
                 ),
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 Wrap(
-                  spacing: Spacing.level2,
-                  runSpacing: Spacing.level2,
+                  spacing: Spacing.sm,
+                  runSpacing: Spacing.sm,
                   children: [
                     for (final v in [
                       l10n.mineEditDoseQuick1Tablet,
@@ -104,7 +104,7 @@ class CurrentMedicineForm extends StatelessWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FTextField(
                   control: FTextFieldControl.managed(
                     controller: routeController,
@@ -112,10 +112,10 @@ class CurrentMedicineForm extends StatelessWidget {
                   label: Text(l10n.mineEditFieldRoute),
                   hint: l10n.mineEditFieldRouteHint,
                 ),
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.sm),
                 Wrap(
-                  spacing: Spacing.level2,
-                  runSpacing: Spacing.level2,
+                  spacing: Spacing.sm,
+                  runSpacing: Spacing.sm,
                   children: [
                     for (final v in [
                       l10n.mineEditRouteQuickOral,
@@ -133,13 +133,13 @@ class CurrentMedicineForm extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
 
         // Group 3 — 时间与备注
         SettingsSectionLabel(label: l10n.mineEditMedicineSectionTimeline),
         FCard(
           child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
+            padding: const EdgeInsets.all(Spacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -152,7 +152,7 @@ class CurrentMedicineForm extends StatelessWidget {
                     onChange: onStartedAtChanged,
                   ),
                 ),
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.md),
                 FTextField(
                   control: FTextFieldControl.managed(
                     controller: noteController,
@@ -160,14 +160,14 @@ class CurrentMedicineForm extends StatelessWidget {
                   label: Text(l10n.mineEditFieldNote),
                   maxLines: 3,
                 ),
-                const SizedBox(height: Spacing.level5),
+                const SizedBox(height: Spacing.xl),
                 FButton(
                   key: const Key('medicine-save-button'),
                   onPress: onSave,
                   child: Text(l10n.mineEditSaveAction),
                 ),
                 if (showDelete) ...[
-                  const SizedBox(height: Spacing.level3),
+                  const SizedBox(height: Spacing.md),
                   FButton(
                     key: const Key('medicine-delete-button'),
                     variant: FButtonVariant.destructive,
@@ -211,8 +211,8 @@ class QuickSelectChip extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.level3,
-            vertical: Spacing.level1,
+            horizontal: Spacing.md,
+            vertical: Spacing.xs,
           ),
           child: Text(
             label,

@@ -38,7 +38,7 @@ class RecordTimelinePanel extends StatelessWidget {
     return FCard(
       key: const Key('record-timeline'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
+        padding: const EdgeInsets.all(Spacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,7 +51,7 @@ class RecordTimelinePanel extends StatelessWidget {
                   ),
                 ),
                 if (selectedDate != null) ...[
-                  const SizedBox(width: Spacing.level3),
+                  const SizedBox(width: Spacing.md),
                   Text(
                     DateFormat.yMd(
                       Localizations.localeOf(context).toString(),
@@ -81,10 +81,10 @@ class RecordTimelinePanel extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: Spacing.level1),
+                        const SizedBox(width: Spacing.xs),
                         Icon(
                           SemanticIcons.actionExpand,
-                          size: Spacing.level4,
+                          size: Spacing.lg,
                           color: colors.foreground,
                         ),
                       ],
@@ -92,7 +92,7 @@ class RecordTimelinePanel extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             if (entries.isEmpty)
               _DesktopTimelineEmptyState(
                 l10n: l10n,
@@ -171,7 +171,7 @@ class _TimelineEntryRow extends StatelessWidget {
               width: 10,
               height: 10,
               indicator: TimelineDot(entry: entry, size: 10, borderWidth: 3),
-              padding: const EdgeInsets.only(right: Spacing.level3),
+              padding: const EdgeInsets.only(right: Spacing.md),
               indicatorXY: 0.25,
             ),
             beforeLineStyle: LineStyle(
@@ -183,7 +183,7 @@ class _TimelineEntryRow extends StatelessWidget {
               thickness: 1,
             ),
             endChild: Padding(
-              padding: EdgeInsets.only(bottom: isLast ? 0 : Spacing.level4),
+              padding: EdgeInsets.only(bottom: isLast ? 0 : Spacing.lg),
               child: TimelineCard(
                 entry: entry,
                 index: index,
@@ -218,20 +218,20 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 320),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.level8),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.xl4),
           child: Column(
             children: [
               Icon(
                 SemanticIcons.actionAdd,
-                size: Spacing.level8,
+                size: Spacing.xl4,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(height: Spacing.level4),
+              const SizedBox(height: Spacing.lg),
               Text(
                 l10n.recordTimelineEmptyTitle,
                 style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: Spacing.level1),
+              const SizedBox(height: Spacing.xs),
               Text(
                 l10n.recordTimelineEmptyDescription,
                 style: typography.body.xs.copyWith(
@@ -239,10 +239,10 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: Spacing.level5),
+              const SizedBox(height: Spacing.xl),
               Wrap(
-                spacing: Spacing.level3,
-                runSpacing: Spacing.level2,
+                spacing: Spacing.md,
+                runSpacing: Spacing.sm,
                 alignment: WrapAlignment.center,
                 children: [
                   FButton(
@@ -257,7 +257,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
                           SemanticIcons.actionAdd,
                           size: IconSizeTokens.sm,
                         ),
-                        const SizedBox(width: Spacing.level2),
+                        const SizedBox(width: Spacing.sm),
                         Text(l10n.recordTimelineEmptyAction),
                       ],
                     ),

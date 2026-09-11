@@ -11,7 +11,7 @@ class DialogShell extends StatelessWidget {
     this.animation,
     this.maxWidth = 560,
     this.maxHeight,
-    this.padding = const EdgeInsets.all(Spacing.level5),
+    this.padding = const EdgeInsets.all(Spacing.xl),
     this.scrollable = true,
   });
 
@@ -56,7 +56,7 @@ Future<T?> showAppDialog<T>({
   required WidgetBuilder builder,
   double? maxWidth,
   double? maxHeight,
-  EdgeInsets padding = const EdgeInsets.all(Spacing.level5),
+  EdgeInsets padding = const EdgeInsets.all(Spacing.xl),
   bool scrollable = true,
   bool barrierDismissible = true,
 }) {
@@ -104,9 +104,9 @@ Future<bool> showDangerConfirmationDialog({
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: context.theme.typography.body.lg),
-        const SizedBox(height: Spacing.level3),
+        const SizedBox(height: Spacing.md),
         Text(message, style: context.theme.typography.body.sm),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -115,7 +115,7 @@ Future<bool> showDangerConfirmationDialog({
               onPress: () => Navigator.of(context).pop(false),
               child: Text(cancelLabel ?? l10n.commonCancel),
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             FButton(
               variant: FButtonVariant.destructive,
               onPress: () => Navigator.of(context).pop(true),

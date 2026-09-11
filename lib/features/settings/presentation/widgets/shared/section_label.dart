@@ -11,7 +11,7 @@ class SettingsSectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.level2),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: Text(
         label,
         style: context.theme.typography.body.xs.copyWith(

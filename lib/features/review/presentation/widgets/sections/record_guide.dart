@@ -38,7 +38,7 @@ class ReviewRecordGuideSection extends StatelessWidget {
     return FCard(
       key: const Key('review-record-guide-card'),
       child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
+        padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -49,7 +49,7 @@ class ReviewRecordGuideSection extends StatelessWidget {
                   size: IconSizeTokens.md,
                   color: SemanticColor.primary.solid(context),
                 ),
-                const SizedBox(width: Spacing.level3),
+                const SizedBox(width: Spacing.md),
                 Expanded(
                   child: Text(
                     l10n.reviewRecordGuideTitle,
@@ -60,14 +60,14 @@ class ReviewRecordGuideSection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level2),
+            const SizedBox(height: Spacing.sm),
             Text(
               description,
               style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            const SizedBox(height: Spacing.level4),
+            const SizedBox(height: Spacing.lg),
             ConstrainedActionButton(
               key: const Key('review-record-guide-action'),
               onPress: onGoRecord,

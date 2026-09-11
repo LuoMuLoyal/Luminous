@@ -21,7 +21,7 @@ class DesktopTabs extends StatelessWidget {
               color: SemanticColor.primary.solid(context),
               size: IconSizeTokens.md,
             ),
-            const SizedBox(width: Spacing.level3),
+            const SizedBox(width: Spacing.md),
             Text(
               l10n.medicineSearchAssistantTitle,
               style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
@@ -29,7 +29,7 @@ class DesktopTabs extends StatelessWidget {
           ],
         ),
         const Spacer(),
-        const SizedBox(width: Spacing.level5),
+        const SizedBox(width: Spacing.xl),
         DecoratedBox(
           decoration: BoxDecoration(
             color: SemanticColor.primary.muted(context),

@@ -110,7 +110,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
           child: Column(
             children: [
               for (var index = 0; index < visible.length; index += 1) ...[
-                if (index > 0) const SizedBox(height: Spacing.level3),
+                if (index > 0) const SizedBox(height: Spacing.md),
                 FCard(
                   key: Key('today-secondary-suggestion-$index'),
                   style: todayCardStyle(context, tone: TodayCardTone.soft),
@@ -118,7 +118,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                     onPress: () =>
                         openRoute(context, visible[index].primaryAction.route),
                     child: Padding(
-                      padding: const EdgeInsets.all(Spacing.level4),
+                      padding: const EdgeInsets.all(Spacing.lg),
                       child: Row(
                         children: [
                           TodayGlyphTile(
@@ -130,7 +130,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                             radius:
                                 context.theme.style.borderRadius.sm.topLeft.x,
                           ),
-                          const SizedBox(width: Spacing.level3),
+                          const SizedBox(width: Spacing.md),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +141,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                const SizedBox(height: Spacing.level1),
+                                const SizedBox(height: Spacing.xs),
                                 Text(
                                   visible[index].reason,
                                   style: typography.body.xs.copyWith(
@@ -153,7 +153,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(width: Spacing.level2),
+                          const SizedBox(width: Spacing.sm),
                           Icon(
                             SemanticIcons.actionNext,
                             size: IconSizeTokens.sm,

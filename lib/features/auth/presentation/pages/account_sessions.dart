@@ -52,10 +52,10 @@ class _SectionColumn extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: Spacing.level5),
+        const SizedBox(height: Spacing.xl),
         for (final child in children) ...[
           child,
-          if (child != children.last) const SizedBox(height: Spacing.level4),
+          if (child != children.last) const SizedBox(height: Spacing.lg),
         ],
       ],
     ),
