@@ -37,7 +37,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.settingsAccountSecuritySectionTitle),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         FTileGroup(
           divider: FItemDivider.full,
           children: [

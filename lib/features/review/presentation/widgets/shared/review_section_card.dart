@@ -46,7 +46,7 @@ class ReviewSectionCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.level3),
+            SizedBox(height: context.titleContentGap),
             child,
           ],
         ),

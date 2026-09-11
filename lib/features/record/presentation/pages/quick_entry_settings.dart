@@ -44,7 +44,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SettingsSectionLabel(label: l10n.recordQuickSettingsSorting),
-              const SizedBox(height: Spacing.level3),
+              SizedBox(height: context.titleContentGap),
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
                 divider: FItemDivider.full,
@@ -84,7 +84,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               ),
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsDefaults),
-              const SizedBox(height: Spacing.level3),
+              SizedBox(height: context.titleContentGap),
               FSelect<int>.rich(
                 key: const Key('record-quick-settings-sleep-duration'),
                 label: Text(l10n.recordQuickSettingsSleepDefaultDuration),
@@ -173,7 +173,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               ),
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsDisplay),
-              const SizedBox(height: Spacing.level3),
+              SizedBox(height: context.titleContentGap),
               FSelect<QuickEntryWaterBadgeMode>.rich(
                 key: const Key('record-quick-settings-water-badge'),
                 label: Text(l10n.recordQuickSettingsWaterBadge),
@@ -296,7 +296,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               ),
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsIcons),
-              const SizedBox(height: Spacing.level3),
+              SizedBox(height: context.titleContentGap),
               Text(
                 l10n.recordQuickSettingsCustomIconHint,
                 style: typography.body.sm.copyWith(
@@ -333,7 +333,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               ),
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsRules),
-              const SizedBox(height: Spacing.level3),
+              SizedBox(height: context.titleContentGap),
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
                 divider: FItemDivider.full,

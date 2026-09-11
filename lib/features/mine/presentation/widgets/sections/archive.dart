@@ -25,7 +25,7 @@ class MineArchiveSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.mineProfileTitle),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         if (dashboard.archiveEntries.isEmpty)
           const ArchiveEmpty()
         else

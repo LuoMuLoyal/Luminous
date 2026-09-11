@@ -31,7 +31,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.mineNotificationReminderSectionTitle),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         FTileGroup(
           key: const Key('mine-notifications-reminder-section'),
           divider: FItemDivider.full,

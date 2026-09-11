@@ -1,3 +1,6 @@
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
+
 /// Spacing token scale.
 ///
 /// 12 levels mapped to the Forui design system's spacing values.
@@ -77,4 +80,23 @@ abstract final class Spacing {
 
   /// 128px — backward-compatible alias for [xl8].
   static const double level12 = xl8;
+}
+
+/// 标题与其内容之间的统一间距。
+///
+/// 全应用统一为 14px：值直接取自 Forui 主题 `context.theme.style.borderRadius.lg`
+/// （= 14），与本层 `Spacing.lg` / `level4` 同值——与圆角、字体一样走 Forui 原语，
+/// 不在各处标题下方内联不同档位的间距。
+///
+/// 用法：在 build 里先取一次局部变量再用（本层「取法约定」），例如
+/// ```dart
+/// final titleGap = context.titleContentGap;
+/// ...
+/// SizedBox(height: titleGap),
+/// ```
+///
+/// 「内容」指标题/分组标签直接统领的那块内容；标题与副标题之间的紧凑间距、
+/// 桌面端布局的区块分隔不适用本约定。
+extension TitleContentGapTokens on BuildContext {
+  double get titleContentGap => theme.style.borderRadius.lg.topLeft.x;
 }

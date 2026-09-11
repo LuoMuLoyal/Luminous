@@ -143,7 +143,7 @@ class AccountManageSection extends ConsumerWidget {
       children: [
         // 账号信息分组
         SettingsSectionLabel(label: l10n.authAccountManageSectionAccount),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         FTileGroup(
           physics: const NeverScrollableScrollPhysics(),
           divider: FItemDivider.full,
@@ -207,7 +207,7 @@ class AccountManageSection extends ConsumerWidget {
 
         // 账号安全分组
         SettingsSectionLabel(label: l10n.authAccountManageSectionSecurity),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         FTileGroup(
           physics: const NeverScrollableScrollPhysics(),
           divider: FItemDivider.full,
@@ -452,7 +452,7 @@ class SupportLinksSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionLabel(label: l10n.authAccountManageBottomSupport),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

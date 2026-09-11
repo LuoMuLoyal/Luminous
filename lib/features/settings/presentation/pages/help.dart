@@ -144,7 +144,7 @@ class _FaqSectionState extends State<_FaqSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionLabel(label: l10n.settingsHelpFaqSectionTitle),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         // 收窄问答区并让内容左缘与下方「意见反馈」卡片的内容列对齐。
         Padding(
           padding: _faqContentInset,
@@ -308,7 +308,7 @@ class _FeedbackSection extends ConsumerWidget {
         // so users can attach it to their feedback for backend correlation.
         if (lastTraceId != null && lastTraceId.isNotEmpty) ...[
           SettingsSectionLabel(label: l10n.settingsHelpTraceIdTitle),
-          const SizedBox(height: Spacing.level3),
+          SizedBox(height: context.titleContentGap),
           FTileGroup(
             children: [
               FTile(
@@ -331,7 +331,7 @@ class _FeedbackSection extends ConsumerWidget {
           const SizedBox(height: Spacing.level6),
         ],
         SettingsSectionLabel(label: l10n.settingsHelpFeedbackSectionTitle),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         FTileGroup(
           children: [
             FTile(

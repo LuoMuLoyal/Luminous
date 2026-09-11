@@ -137,7 +137,7 @@ class SettingsPage extends ConsumerWidget {
       const SizedBox(height: _kGroupSpacing),
       // -- 账号与安全 --
       SettingsSectionLabel(label: l10n.settingsAccountSecuritySectionTitle),
-      const SizedBox(height: Spacing.level3),
+      SizedBox(height: context.titleContentGap),
       buildAccountSecurityGroup(),
       const SizedBox(height: _kGroupSpacing),
       const GeneralSection(),

@@ -70,7 +70,7 @@ class ClinicSummaryContent extends StatelessWidget {
         if (profile != null &&
             _sectionSelected(dto.selectedFields, 'profile')) ...[
           _SectionTitle(text: l10n.reviewClinicSummaryProfileSection),
-          const SizedBox(height: Spacing.level2),
+          SizedBox(height: context.titleContentGap),
           MetaRow(
             label: l10n.reviewClinicSummaryProfileNickname,
             value: profile.nickname,
@@ -99,7 +99,7 @@ class ClinicSummaryContent extends StatelessWidget {
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reviewClinicSummaryAllergiesSection),
-          const SizedBox(height: Spacing.level2),
+          SizedBox(height: context.titleContentGap),
           ...allergies.map((e) => _BulletItem(text: e.label)),
         ],
 
@@ -111,7 +111,7 @@ class ClinicSummaryContent extends StatelessWidget {
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reviewClinicSummaryConditionsSection),
-          const SizedBox(height: Spacing.level2),
+          SizedBox(height: context.titleContentGap),
           ...conditions.map((e) => _BulletItem(text: e.label)),
         ],
 
@@ -123,7 +123,7 @@ class ClinicSummaryContent extends StatelessWidget {
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reviewClinicSummaryMedicinesSection),
-          const SizedBox(height: Spacing.level2),
+          SizedBox(height: context.titleContentGap),
           ...currentMedicines.map((e) => _BulletItem(text: e.displayName)),
         ],
 
@@ -138,7 +138,7 @@ class ClinicSummaryContent extends StatelessWidget {
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reviewClinicSummaryFindingsSection),
-          const SizedBox(height: Spacing.level2),
+          SizedBox(height: context.titleContentGap),
           ...dto.findings!.map((e) => _BulletItem(text: e)),
         ],
 
@@ -150,7 +150,7 @@ class ClinicSummaryContent extends StatelessWidget {
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reviewClinicSummaryWaterSection),
-          const SizedBox(height: Spacing.level2),
+          SizedBox(height: context.titleContentGap),
           ...dto.waterEntries!.map(
             (e) => _BulletItem(
               text: '${e.date}  ${e.ml}${l10n.reviewClinicSummaryWaterUnit}',
@@ -166,7 +166,7 @@ class ClinicSummaryContent extends StatelessWidget {
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reviewClinicSummarySleepSection),
-          const SizedBox(height: Spacing.level2),
+          SizedBox(height: context.titleContentGap),
           ...dto.sleepEntries!.map(
             (e) => _BulletItem(
               text:
@@ -184,7 +184,7 @@ class ClinicSummaryContent extends StatelessWidget {
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reviewClinicSummaryNotesSection),
-          const SizedBox(height: Spacing.level2),
+          SizedBox(height: context.titleContentGap),
           ...dto.noteEntries!.map(
             (e) => _BulletItem(text: '${e.date}  (${e.kind})  ${e.text}'),
           ),
@@ -195,7 +195,7 @@ class ClinicSummaryContent extends StatelessWidget {
         const AppDivider(),
         const SizedBox(height: Spacing.level4),
         _SectionTitle(text: l10n.reviewClinicSummaryDisclaimerSection),
-        const SizedBox(height: Spacing.level2),
+        SizedBox(height: context.titleContentGap),
         Text(
           dto.disclaimer,
           style: context.theme.typography.body.xs.copyWith(

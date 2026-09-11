@@ -14,7 +14,7 @@ design 层集中存放全部设计 token（颜色/间距/图标/动效/布局）
 
 - 根 — `design.dart`：barrel，导出其余 15 个文件。
 - `color/` — `semantic_color.dart`（`SemanticColor` enum 6 色 + `SemanticColorResolution` 解析扩展）、`palette.dart`（`SemanticColorPalette`：单个语义色的 10 tone 值对象）、`theme_extension.dart`（`SemanticColors`：`ThemeExtension`，注入 `FColors.extensions`，提供 `colors.semantic` 访问）、`high_contrast.dart`（`HighContrastColors`：高对比度无障碍覆盖色）。
-- `tokens/` — `spacing.dart`（`Spacing`：12 级间距 token）、`icon_size.dart`（`IconSizeTokens`：8 级图标尺寸 token）、`semantic_icons.dart`（`SemanticIcons`：语义图标注册表，`{域}{语义}` 命名如 `safetyCaution`）、`breakpoints.dart`（`Breakpoints`：响应式断点常量）、`elevation.dart`（`ElevationTokens`：`raised` / `glow` / `shadowColor`）、`motion.dart`（`MotionTokens` 4 条 curve + `DurationTokens` 时长）、`markdown_style.dart`（`MarkdownStyle`：`legal` / `ai` 两套 Markdown 样式工厂）、`lucide_icon_bridge.dart`（`LucideIconBridge`：kebab-case 图标名 ↔ `FLucideIcons`，**生成文件**，由 `scripts/generate_lucide_bridge.dart` 生成，**不在 barrel 内**，按需直接 import）。
+- `tokens/` — `spacing.dart`（`Spacing`：12 级间距 token + `TitleContentGapTokens`：标题与其内容之间的统一间距）、`icon_size.dart`（`IconSizeTokens`：8 级图标尺寸 token）、`semantic_icons.dart`（`SemanticIcons`：语义图标注册表，`{域}{语义}` 命名如 `safetyCaution`）、`breakpoints.dart`（`Breakpoints`：响应式断点常量）、`elevation.dart`（`ElevationTokens`：`raised` / `glow` / `shadowColor`）、`motion.dart`（`MotionTokens` 4 条 curve + `DurationTokens` 时长）、`markdown_style.dart`（`MarkdownStyle`：`legal` / `ai` 两套 Markdown 样式工厂）、`lucide_icon_bridge.dart`（`LucideIconBridge`：kebab-case 图标名 ↔ `FLucideIcons`，**生成文件**，由 `scripts/generate_lucide_bridge.dart` 生成，**不在 barrel 内**，按需直接 import）。
 - `layout/` — `gradient.dart`（`GradientTokens`：`semanticFill` / `tintFade` 两个命名渐变，**禁止内联 `LinearGradient`**）、`layout_scale.dart`（`LayoutScale` 值对象 + `LayoutScaleResolver`：按屏宽解析 + 对话框宽度）、`responsive_sizing.dart`（`ResponsiveSizing`：卡宽/侧栏宽/网格列数/按宽高缩放）、`surface.dart`（`SurfaceTokens`：scaffold 背景 / 容器边框）。
 
 ## Token 体系概览
@@ -29,6 +29,15 @@ design 层集中存放全部设计 token（颜色/间距/图标/动效/布局）
 - 圆角：`context.theme.style.borderRadius.*`（`FBorderRadius` scale）。
 - 字体：`context.theme.typography.body/display.*`（`FTypeface` scale）。
 - 历史：`RadiusTokens` / `TypographyToken` 已于 2026-08-30 退役，本层不再定义。
+
+## 标题与内容的间距
+
+- 全应用统一走 `context.titleContentGap`（`TitleContentGapTokens`）：值取自 Forui 主题
+  `context.theme.style.borderRadius.lg`（= 14，与 `Spacing.lg` / `level4` 同值）。
+- 覆盖范围：区块标题/分组标签 → 其直接统领的内容（`TodaySection`、`ReviewSectionCard`、
+  `SettingsSectionLabel` 等所有调用点）。标题与其副标题/说明之间的紧凑间距不适用本约定；
+  桌面端布局的区块分隔各自处理。
+- 与圆角、字体一致：值从 context 取，不在 widget 内联 `Spacing.level*` 或裸数值。
 
 ## 取法约定
 

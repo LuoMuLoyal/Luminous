@@ -46,7 +46,7 @@ class PrivacySection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionLabel(label: l10n.settingsPrivacySectionTitle),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         FTileGroup(
           physics: const NeverScrollableScrollPhysics(),
           divider: FItemDivider.full,

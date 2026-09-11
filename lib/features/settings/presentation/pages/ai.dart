@@ -113,7 +113,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                 ),
                 const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(label: l10n.settingsAiContextSectionTitle),
-                const SizedBox(height: Spacing.level3),
+                SizedBox(height: context.titleContentGap),
                 if (!assistantEnabled)
                   Padding(
                     padding: const EdgeInsets.only(
@@ -176,7 +176,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                 ),
                 const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(label: l10n.settingsAiPrivacySectionTitle),
-                const SizedBox(height: Spacing.level3),
+                SizedBox(height: context.titleContentGap),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: Spacing.level2,

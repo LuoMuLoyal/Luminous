@@ -64,7 +64,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
             if (data.recognizedDishes.isNotEmpty) ...[
               const SizedBox(height: Spacing.level5),
               _SectionTitle(title: l10n.recordMealAnalysisRecognizedDishes),
-              const SizedBox(height: Spacing.level2),
+              SizedBox(height: context.titleContentGap),
               ...data.recognizedDishes.map(
                 (dish) => _BulletText(text: dish.displayName),
               ),
@@ -72,7 +72,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
             if (data.resolvedIngredients.isNotEmpty) ...[
               const SizedBox(height: Spacing.level4),
               _SectionTitle(title: l10n.recordMealAnalysisResolvedIngredients),
-              const SizedBox(height: Spacing.level2),
+              SizedBox(height: context.titleContentGap),
               ...data.resolvedIngredients.map(
                 (item) => _BulletText(
                   text: item.matchedFoodName == null
@@ -84,7 +84,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
             if (data.compositionMatches.isNotEmpty) ...[
               const SizedBox(height: Spacing.level4),
               _SectionTitle(title: l10n.recordMealAnalysisCompositionMatches),
-              const SizedBox(height: Spacing.level2),
+              SizedBox(height: context.titleContentGap),
               ...data.compositionMatches.map(
                 (item) => _BulletText(
                   text: item.matchedFoodName == null
@@ -96,7 +96,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
             if (data.nutritionEstimate case final nutrition?) ...[
               const SizedBox(height: Spacing.level4),
               _SectionTitle(title: l10n.recordMealAnalysisNutritionEstimate),
-              const SizedBox(height: Spacing.level2),
+              SizedBox(height: context.titleContentGap),
               if (nutrition.energyKcal != null)
                 _BulletText(
                   text:

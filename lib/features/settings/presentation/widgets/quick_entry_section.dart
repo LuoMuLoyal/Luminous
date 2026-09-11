@@ -19,7 +19,7 @@ class QuickEntrySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionLabel(label: l10n.settingsQuickEntrySection),
-        const SizedBox(height: Spacing.level3),
+        SizedBox(height: context.titleContentGap),
         FTileGroup(
           physics: const NeverScrollableScrollPhysics(),
           divider: FItemDivider.full,

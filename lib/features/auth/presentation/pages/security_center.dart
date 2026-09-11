@@ -99,7 +99,7 @@ class SecurityCenterPage extends ConsumerWidget {
 
             // 登录记录
             SettingsSectionLabel(label: l10n.securityCenterLoginHistoryTitle),
-            const SizedBox(height: Spacing.level3),
+            SizedBox(height: context.titleContentGap),
             FTileGroup(
               physics: const NeverScrollableScrollPhysics(),
               divider: FItemDivider.full,

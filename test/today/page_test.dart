@@ -134,6 +134,30 @@ void main() {
     expect(observationHeadingTop - summaryCardBottom, Spacing.level4);
   });
 
+  testWidgets('Section title and its content sit one titleContentGap apart', (
+    tester,
+  ) async {
+    _setMobileViewport(tester);
+
+    await tester.pumpWidget(_signedInTodayApp());
+    await _settleDashboard(tester);
+
+    final context = tester.element(find.byType(TodayPage));
+    final headingBottom = tester
+        .getRect(
+          find.text(
+            AppLocalizations.of(context)!.todayPrimarySuggestionSectionTitle,
+          ),
+        )
+        .bottom;
+    final cardTop = tester
+        .getRect(find.byKey(const Key('today-primary-suggestion-card')))
+        .top;
+
+    // 区块标题与其内容统一走 context.titleContentGap（= Forui borderRadius.lg，14px）。
+    expect(cardTop - headingBottom, context.titleContentGap);
+  });
+
   testWidgets('Today page renders action-first mobile dashboard sections', (
     tester,
   ) async {

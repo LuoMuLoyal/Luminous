@@ -35,7 +35,7 @@ class ThemeSettingsPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SettingsSectionLabel(label: l10n.settingsThemeModeSectionTitle),
-                const SizedBox(height: Spacing.level3),
+                SizedBox(height: context.titleContentGap),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [

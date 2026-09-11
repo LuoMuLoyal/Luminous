@@ -305,11 +305,11 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
+      padding: EdgeInsets.fromLTRB(
         Spacing.level4,
         Spacing.level4,
         Spacing.level4,
-        Spacing.level3,
+        context.titleContentGap,
       ),
       child: Text(
         label,
