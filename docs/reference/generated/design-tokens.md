@@ -212,28 +212,16 @@ is the machine projection; the interpretive contract lives in
 
 | Name | Type | Value | Docs |
 | --- | --- | --- | --- |
-| `xs` | `double` | `4` | 4px — extra small spacing. (= [level1]) |
-| `sm` | `double` | `6` | 6px — small spacing. (= [level2]) |
-| `md` | `double` | `10` | 10px — medium spacing. (= [level3]) |
-| `lg` | `double` | `14` | 14px — large spacing. (= [level4]) |
-| `xl` | `double` | `20` | 20px — extra large spacing. (= [level5]) |
-| `xl2` | `double` | `28` | 28px — 2× extra large spacing. (= [level6]) |
-| `xl3` | `double` | `36` | 36px — 3× extra large spacing. (= [level7]) |
-| `xl4` | `double` | `44` | 44px — 4× extra large spacing. (= [level8]) |
-| `xl5` | `double` | `56` | 56px — 5× extra large spacing. (= [level9]) |
-| `xl6` | `double` | `72` | 72px — 6× extra large spacing. (= [level10]) |
-| `xl7` | `double` | `96` | 96px — 7× extra large spacing. (= [level11]) |
-| `xl8` | `double` | `128` | 128px — 8× extra large spacing. (= [level12]) |
-| `level1` | `double` | `xs` | 4px — backward-compatible alias for [xs]. |
-| `level2` | `double` | `sm` | 6px — backward-compatible alias for [sm]. |
-| `level3` | `double` | `md` | 10px — backward-compatible alias for [md]. |
-| `level4` | `double` | `lg` | 14px — backward-compatible alias for [lg]. |
-| `level5` | `double` | `xl` | 20px — backward-compatible alias for [xl]. |
-| `level6` | `double` | `xl2` | 28px — backward-compatible alias for [xl2]. |
-| `level7` | `double` | `xl3` | 36px — backward-compatible alias for [xl3]. |
-| `level8` | `double` | `xl4` | 44px — backward-compatible alias for [xl4]. |
-| `level9` | `double` | `xl5` | 56px — backward-compatible alias for [xl5]. |
-| `level10` | `double` | `xl6` | 72px — backward-compatible alias for [xl6]. |
-| `level11` | `double` | `xl7` | 96px — backward-compatible alias for [xl7]. |
-| `level12` | `double` | `xl8` | 128px — backward-compatible alias for [xl8]. |
+| `xs` | `double` | `4` | 4px — extra small spacing. |
+| `sm` | `double` | `6` | 6px — small spacing. |
+| `md` | `double` | `10` | 10px — medium spacing. |
+| `lg` | `double` | `14` | 14px — large spacing. |
+| `xl` | `double` | `20` | 20px — extra large spacing. |
+| `xl2` | `double` | `28` | 28px — 2× extra large spacing. |
+| `xl3` | `double` | `36` | 36px — 3× extra large spacing. |
+| `xl4` | `double` | `44` | 44px — 4× extra large spacing. |
+| `xl5` | `double` | `56` | 56px — 5× extra large spacing. |
+| `xl6` | `double` | `72` | 72px — 6× extra large spacing. |
+| `xl7` | `double` | `96` | 96px — 7× extra large spacing. |
+| `xl8` | `double` | `128` | 128px — 8× extra large spacing. |
 <!-- gen:design-tokens:end -->

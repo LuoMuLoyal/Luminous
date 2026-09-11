@@ -59,7 +59,7 @@ updated: 2026-09-10
 ## 命名
 
 - 所有 token 类名无 `App` 前缀，通过 barrel `design.dart` 统一导出。
-- `Spacing` / `IconSizeTokens`（2026-08-30 起）以语义别名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）为主命名，`level*` 保留为向后兼容别名；`DurationTokens` / `Breakpoints` / `ResponsiveSizing` 仍暴露 `level*` 主命名。
+- `Spacing` / `IconSizeTokens` 以语义名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）为主命名；`DurationTokens` / `Breakpoints` / `ResponsiveSizing` 仍暴露 `level*` 主命名。
 - 字体（2026-08-30 起）：`TypographyToken` 已退役，统一使用 Forui `context.theme.typography.body/display.*`（`FTypeface` scale：`xs3`/`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`，touch 主题下对应 10/12/14/16/18/20/22/30/36/48px）。
 - 圆角（2026-08-30 起）：`RadiusTokens` 已退役，统一使用 Forui `context.theme.style.borderRadius.*`（`FBorderRadius` scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。需要裸 `double` 时用 `.xxx.topLeft.x`，需要 `Radius` 时用 `.xxx.topLeft`。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
@@ -68,7 +68,7 @@ updated: 2026-09-10
 - `LucideIconBridge`（`lucide_icon_bridge.dart`，generated）提供 name→IconData 正查 (`resolve`) 和 IconData→name 反查 (`nameOf`)。反查使用预计算 `_reverseMap`（O(1)），而非每次 keystroke O(N) 扫描。
 - `ElevationTokens`（`elevation.dart`）提供 `raised(FColors)` / `glow(Color)` / `shadowColor(FColors)` 方法。
 - `GradientTokens`（`gradient.dart`）提供 `semanticFill(SemanticColorPalette)` / `tintFade(Color, Color)` 两个命名渐变模式；禁止内联 `LinearGradient`，必须走 token。
-- 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名曾在所有调用点迁移后被移除；2026-08-30 起 `Spacing` / `IconSizeTokens` 重新引入语义名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）作为主命名，`level*` 保留为向后兼容别名。
+- 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名曾在所有调用点迁移后被移除；2026-08-30 起 `Spacing` / `IconSizeTokens` 以语义名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）为主命名，其 `level*` 向后兼容别名已于 2026-09-11 全部退役。
 
 ## 主题偏好
 
@@ -86,9 +86,9 @@ updated: 2026-09-10
 
 ## 间距与布局
 
-- 间距使用 `Spacing` token（语义别名 `xs`~`xl8` 为主命名，`level1`~`level12` 为等价别名；全量值见生成的 [token 清单](generated/design-tokens.md)）。
+- 间距使用 `Spacing` token（语义名 `xs`~`xl8`；全量值见生成的 [token 清单](generated/design-tokens.md)）。
 - 标题与其内容的间距全应用统一走 `context.titleContentGap`（`TitleContentGapTokens`）：值取自 Forui 主题
-  `context.theme.style.borderRadius.lg`（14px，与 `Spacing.lg`/`level4` 同值），覆盖区块标题/分组标签 →
+  `context.theme.style.borderRadius.lg`（14px，与 `Spacing.lg` 同值），覆盖区块标题/分组标签 →
   其直接统领的内容（`TodaySection`、`ReviewSectionCard`、各设置页 `SettingsSectionLabel` 调用点等）；
   标题与副标题/说明之间的紧凑间距不适用本约定，桌面端布局的区块分隔各自处理。
 - 硬编码像素值正被项目范围地替换为 token 引用，即使这些 token 值本身在向 Forui 靠拢。
@@ -135,7 +135,7 @@ updated: 2026-09-10
 - `resolvePageViewState`（同文件）直接按数据状态解析 loading/error/ready——**不再** 在 session restore 期间无条件返回 `PageViewStateLoading`。结合 `authGuarded` 的离线优先（restore 期间有 stored session 则走 cache-first fetch），有本地缓存数据的 provider 在冷启动时直接展示数据而非骨架屏（2026-09-10 修订）。
 - `IconActionButton`（`lib/core/widgets/common/control/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，`showBadge` 在右上角叠加红点（未读消息提醒等）；各模块顶栏统一引用 core 版本。
 - `showForuiDatePicker`（`lib/core/widgets/common/control/date_picker.dart`）是全 App 共享的日历日期选择器，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
-- 设置页统一引用 `settingsPageVerticalPadding(BuildContext)`（响应式垂直 padding）与 `SettingsSectionLabel`（分组标题：`typography.body.xs` + `w600` + `SemanticColor.neutral.solid(context)` + `Spacing.level2` 水平 padding），不再各自手写响应式三元表达式或分组标题实现。
+- 设置页统一引用 `settingsPageVerticalPadding(BuildContext)`（响应式垂直 padding）与 `SettingsSectionLabel`（分组标题：`typography.body.xs` + `w600` + `SemanticColor.neutral.solid(context)` + `Spacing.sm` 水平 padding），不再各自手写响应式三元表达式或分组标题实现。
 
 ## Auth 与表单
 
@@ -157,7 +157,7 @@ updated: 2026-09-10
   - `MarkdownStyle.ai(context, {background, paragraphWeight, emphasizeLinks})` — AI 生成内容（聊天气泡、Today 摘要/建议、报告总结）：正文 sm / 行高 1.6、`SemanticColor.primary.solid(context)` 引用左条与列表 bullet、代码块圆角 + 等宽字体 + 主题背景；`background` 传入气泡/容器底色使代码背景自适配，`paragraphWeight` 支持摘要 w600 / 报告总结 w700 覆盖。
 - F-4 扩展（2026-08-17，仅 `MarkdownStyle.ai`）：
   - 标题完整字号阶梯 h1-h6：h1→lg (w700)、h2→md、h3→sm（同正文、加粗区分）、h4→xs、h5→xs2、h6→xs2（降一档字重收尾），各带递减 `*Padding`。
-  - 列表缩进走 `Spacing` token（level5=20/级），bullet 与文字间距 `listBulletPadding` level2=6。
+  - 列表缩进走 `Spacing` token（xl=20/级），bullet 与文字间距 `listBulletPadding` sm=6。
   - 引用块：primary 4px 左侧色条 + `SemanticColor.primary.subtle` 底色（深浅色自动适配），四边 padding。
   - 表格：`tableColumnWidth: IntrinsicColumnWidth` —— flutter_markdown_plus 检测到该列宽类型时自动把表格包进横向 `SingleChildScrollView`，窄屏可横向滚动而不是挤压列；表头 `colors.secondary` 背景 + `SemanticColor.neutral.border(context)` 边框不变。
   - **代码块限制（已记录）**：flutter_markdown_plus 把 `pre` 硬编码为横向 ScrollView，样式表无折行开关；折行会破坏代码缩进，故保持库默认横向滚动，不硬造自定义 builder。

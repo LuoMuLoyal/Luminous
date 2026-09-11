@@ -19,7 +19,7 @@ design 层集中存放全部设计 token（颜色/间距/图标/动效/布局）
 
 ## Token 体系概览
 
-- **`Spacing`**（12 级）/ **`IconSizeTokens`**（8 级）— 语义名为**主命名**：`Spacing` `xs`(4)/`sm`(6)/`md`(10)/`lg`(14)/`xl`(20)/`xl2`(28)/`xl3`(36)/`xl4`(44)/`xl5`(56)/`xl6`(72)/`xl7`(96)/`xl8`(128)；`IconSizeTokens` `xs`(12)/`sm`(16)/`md`(20)/`lg`(24)/`xl`(28)/`xl2`(32)/`xl3`(48)/`xl4`(64)。`IconSizeTokens` 的 `level1`~`level8` 别名已于 2026-09-11 退役，`Spacing` 的 `level1`~`level12` 别名待全量迁移后退役。
+- **`Spacing`**（12 级）/ **`IconSizeTokens`**（8 级）— 语义名为**主命名**：`Spacing` `xs`(4)/`sm`(6)/`md`(10)/`lg`(14)/`xl`(20)/`xl2`(28)/`xl3`(36)/`xl4`(44)/`xl5`(56)/`xl6`(72)/`xl7`(96)/`xl8`(128)；`IconSizeTokens` `xs`(12)/`sm`(16)/`md`(20)/`lg`(24)/`xl`(28)/`xl2`(32)/`xl3`(48)/`xl4`(64)。两者的 `levelN` 向后兼容别名已于 2026-09-11 全部退役。
 - **`SemanticColor`** — 6 色 enum：`primary` / `success` / `warning` / `info` / `destructive` / `neutral`。domain/data 层用它保持 theme-agnostic；widget 层再解析为具体颜色。
 - **`SemanticColorPalette`** — 每色 10 个**预计算** tone：`solid` / `foreground` / `muted` / `subtle` / `border` / `shimmerBase` / `disabled` / `borderStrong` / `fill` / `fillStrong`。暗色模式 alpha 补偿在主题创建时烘焙，widget 代码不做亮度分支。
 - **`SemanticColors`** — 每 (主题族, 明暗) 创建一次，经 `FColors.extensions` 注入；访问路径 `context.theme.colors.semantic`（`colors.semantic.of(color)` 取 palette）。
@@ -33,11 +33,11 @@ design 层集中存放全部设计 token（颜色/间距/图标/动效/布局）
 ## 标题与内容的间距
 
 - 全应用统一走 `context.titleContentGap`（`TitleContentGapTokens`）：值取自 Forui 主题
-  `context.theme.style.borderRadius.lg`（= 14，与 `Spacing.lg` / `level4` 同值）。
+  `context.theme.style.borderRadius.lg`（= 14，与 `Spacing.lg` 同值）。
 - 覆盖范围：区块标题/分组标签 → 其直接统领的内容（`TodaySection`、`ReviewSectionCard`、
   `SettingsSectionLabel` 等所有调用点）。标题与其副标题/说明之间的紧凑间距不适用本约定；
   桌面端布局的区块分隔各自处理。
-- 与圆角、字体一致：值从 context 取，不在 widget 内联 `Spacing.level*` 或裸数值。
+- 与圆角、字体一致：值从 context 取，不在 widget 内联 `Spacing.*` 或裸数值。
 
 ## 取法约定
 
