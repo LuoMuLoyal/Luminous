@@ -27,3 +27,4 @@
 - 流式草稿 `streamingDraft` 与已落库 `messages` 分离;发送失败保留 `lastFailedInput` 供重发(`presentation/providers/conversation.dart`)。
 - SSE 复用 dio 实例(`LucentSseClient(dio: dio)`),`error` 事件经 `mapSseStreamError` 直接 throw,勿吞掉。
 - 会话持久化全在后端(latest/rename/delete/clear 均为 API 调用),客户端不写本地库。
+- AI 回复的底衬由 `flowui_adapter.dart` 的 `_AssistantReplyPanel` 包住**整条** `FlowMessage`(含 footer),底色取 `colors.secondary`——**跟随主题,勿钉死浅色值**(深色下会变成压在近黑页面上的一块浅板)。复制/重新生成位于 footer 内,所以才会落在回复末尾——**勿把 footer 挪到面板外**,否则动作条又会掉回页面背景上、与回复脱开。error 状态不包(自身已有 error 容器气泡,再包一层成双底);流式草稿照包,避免回复完成时底衬突然出现。

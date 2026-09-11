@@ -172,12 +172,17 @@ class AssistantFlowUiAdapter {
   /// Builder passed to [FlowThread.messageBuilder].
   Widget buildMessage(BuildContext context, FlowMessageData message) {
     final isComplete = message.status == FlowMessageStatus.complete;
-    return FlowMessage(
+    final rendered = FlowMessage(
       message,
       customPartBuilder: buildCustomPart,
       footer: isComplete ? _buildFooter(context, message) : null,
       thinkingLabel: thinkingLabel,
     );
+    if (message.role != FlowMessageRole.assistant ||
+        message.status == FlowMessageStatus.error) {
+      return rendered;
+    }
+    return _AssistantReplyPanel(child: rendered);
   }
 
   /// Renders the adapter-owned FlowUI custom parts.
@@ -401,6 +406,38 @@ class AssistantFlowUiAdapter {
     if (confirmed == true && context.mounted) {
       await onOpenLink?.call(uri);
     }
+  }
+}
+
+/// The ground an assistant turn sits on.
+///
+/// A reply is a body of content, not loose text on the page, so it gets the
+/// same kind of ground the user bubble already has: a rounded panel one step
+/// off the surface. `colors.secondary` is that step, and it is the same color
+/// [MarkdownStyle.ai] is handed for nested code and quotes, so those stay
+/// consistent with the surface they sit on.
+///
+/// The message footer — time, sources, disclaimer, and the copy/regenerate
+/// actions — is inside the panel, which is what puts the actions at the end
+/// of the reply. Error turns are not wrapped: they already carry an
+/// error-container bubble of their own.
+class _AssistantReplyPanel extends StatelessWidget {
+  const _AssistantReplyPanel({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('assistant-reply-panel'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(Spacing.lg),
+      decoration: BoxDecoration(
+        color: context.theme.colors.secondary,
+        borderRadius: context.theme.style.borderRadius.lg,
+      ),
+      child: child,
+    );
   }
 }
 

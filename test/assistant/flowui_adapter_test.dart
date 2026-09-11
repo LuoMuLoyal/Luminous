@@ -1,5 +1,5 @@
 import 'package:flow_ui/flow_ui.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +14,8 @@ import 'package:luminous/features/assistant/presentation/widgets/flowui_adapter.
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
+// `ThemeMode` on `TestForuiApp` is material_ui's, not flutter/material's.
+import 'package:material_ui/material_ui.dart' show ThemeMode;
 
 import '../helpers/test_forui_app.dart';
 
@@ -589,6 +591,212 @@ void main() {
 
     expect(find.text('打开外部链接？'), findsNothing);
     expect(opened, <Uri>[Uri.parse('https://example.com/doc')]);
+  });
+
+  group('assistant reply panel', () {
+    testWidgets('wraps the assistant turn and leaves the user turn alone', (
+      tester,
+    ) async {
+      const adapter = AssistantFlowUiAdapter();
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: SizedBox(
+            height: 500,
+            child: Builder(
+              builder: (context) => Column(
+                children: [
+                  adapter.buildMessage(
+                    context,
+                    adapter.mapMessage(
+                      _message(content: 'answer'),
+                      conversationId: 'conversation-1',
+                      index: 0,
+                    ),
+                  ),
+                  adapter.buildMessage(
+                    context,
+                    adapter.mapMessage(
+                      _message(
+                        role: AssistantMessageRole.user,
+                        content: 'question',
+                      ),
+                      conversationId: 'conversation-1',
+                      index: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Only the assistant turn gets the ground; the user bubble is the
+      // package's own and must not be wrapped a second time.
+      expect(find.byKey(const Key('assistant-reply-panel')), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('assistant-reply-panel')),
+          matching: find.byType(FlowMessageActions),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('fills the panel one step off the page background', (
+      tester,
+    ) async {
+      const adapter = AssistantFlowUiAdapter();
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: SizedBox(
+            height: 300,
+            child: Builder(
+              builder: (context) => adapter.buildMessage(
+                context,
+                adapter.mapMessage(
+                  _message(content: 'answer'),
+                  conversationId: 'conversation-1',
+                  index: 0,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final panelFinder = find.byKey(const Key('assistant-reply-panel'));
+      final context = tester.element(panelFinder);
+      final decoration =
+          tester.widget<Container>(panelFinder).decoration! as BoxDecoration;
+
+      expect(decoration.color, context.theme.colors.secondary);
+      expect(decoration.color, isNot(context.theme.colors.background));
+    });
+
+    testWidgets('follows the theme into dark mode', (tester) async {
+      const adapter = AssistantFlowUiAdapter();
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          themeMode: ThemeMode.dark,
+          home: SizedBox(
+            height: 300,
+            child: Builder(
+              builder: (context) => adapter.buildMessage(
+                context,
+                adapter.mapMessage(
+                  _message(content: 'answer'),
+                  conversationId: 'conversation-1',
+                  index: 0,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final panelFinder = find.byKey(const Key('assistant-reply-panel'));
+      final context = tester.element(panelFinder);
+      final decoration =
+          tester.widget<Container>(panelFinder).decoration! as BoxDecoration;
+
+      // The ground must come from the theme, not a hardcoded light fill —
+      // a pinned `#F5F5F5` would paint a light slab on the dark page.
+      expect(context.theme.colors.brightness, Brightness.dark);
+      expect(decoration.color, context.theme.colors.secondary);
+      expect(decoration.color, isNot(context.theme.colors.background));
+    });
+
+    testWidgets('puts copy and regenerate after the reply body', (
+      tester,
+    ) async {
+      const adapter = AssistantFlowUiAdapter();
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: SizedBox(
+            height: 400,
+            child: Builder(
+              builder: (context) => adapter.buildMessage(
+                context,
+                adapter.mapMessage(
+                  _message(content: 'answer'),
+                  conversationId: 'conversation-1',
+                  index: 0,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final actions = find.byType(FlowMessageActions);
+      expect(actions, findsOneWidget);
+      // The action strip is the end of the reply: below the rendered body and
+      // inside the panel.
+      expect(
+        tester.getRect(actions).top,
+        greaterThan(tester.getRect(find.byType(MarkdownBody)).bottom),
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('assistant-reply-panel')),
+          matching: actions,
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('keeps the panel on a streaming draft', (tester) async {
+      const adapter = AssistantFlowUiAdapter();
+      final streaming = adapter.mapStreamingDraft('partial answer');
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: SizedBox(
+            height: 200,
+            child: Builder(
+              builder: (context) => adapter.buildMessage(context, streaming),
+            ),
+          ),
+        ),
+      );
+
+      // The ground must not pop in only once the reply settles.
+      expect(find.byKey(const Key('assistant-reply-panel')), findsOneWidget);
+      expect(find.byType(FlowStreamingText), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+
+    testWidgets('leaves the error turn to its own error bubble', (
+      tester,
+    ) async {
+      const adapter = AssistantFlowUiAdapter();
+      final failed = FlowMessageData.text(
+        id: 'failed',
+        role: FlowMessageRole.assistant,
+        text: 'boom',
+        status: FlowMessageStatus.error,
+      );
+
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: SizedBox(
+            height: 200,
+            child: Builder(
+              builder: (context) => adapter.buildMessage(context, failed),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byKey(const Key('assistant-reply-panel')), findsNothing);
+    });
   });
 }
 
