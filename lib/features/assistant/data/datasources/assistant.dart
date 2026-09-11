@@ -49,7 +49,10 @@ class AssistantRemoteDataSource {
 
   Future<lucent.AssistantConversationData?> getLatestConversation() async {
     final response = await api.getLatestConversation();
-    return _requireData(response.data, operation: 'getLatestConversation');
+    // A `null` body is the documented "no persisted conversation yet" state
+    // (200 with `null`), not a missing payload — it must reach the repository
+    // as `null` instead of being reported as an empty response.
+    return response.data;
   }
 
   Future<List<lucent.AssistantConversationSummaryItem>>

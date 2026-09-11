@@ -96,6 +96,21 @@ void main() {
       expect(result!.id, 'conv-1');
     });
 
+    test(
+      'getLatestConversation returns null when no conversation exists',
+      () async {
+        // The backend answers 200 with a `null` body when the user has no
+        // persisted conversation; that is a valid resource state, not an
+        // empty-response failure.
+        adapter.responseBody = null;
+
+        final ds = AssistantRemoteDataSource(api: api, dio: dio);
+        final result = await ds.getLatestConversation();
+
+        expect(result, isNull);
+      },
+    );
+
     test('listRecentConversations returns list', () async {
       adapter.responseBody = [
         {
