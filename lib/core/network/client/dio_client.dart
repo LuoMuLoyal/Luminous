@@ -181,6 +181,21 @@ class LucentDioClient {
     _authInterceptor.onSessionExpired = callback;
   }
 
+  /// Refreshes the session through the shared coalesced refresh path and
+  /// returns the fresh tokens (already persisted to the session store).
+  ///
+  /// Feature code that needs an explicit refresh (the session restore flow)
+  /// must go through here rather than calling `POST /auth/refresh` itself: the
+  /// backend rotates refresh tokens with single-use semantics, so an explicit
+  /// refresh racing the interceptor's automatic 401 refresh makes one of the
+  /// two fail with `AUTH_REFRESH_TOKEN_INVALID` and sign the user out of a
+  /// session that was still alive.
+  ///
+  /// Throws [DioException] when the refresh fails, preserving the original
+  /// status code and Problem Details body for the caller's error mapping.
+  Future<LucentSessionTokens> refreshSession() =>
+      _authInterceptor.refreshSession();
+
   void dispose() {
     _dio.close(force: true);
     _refreshDio.close(force: true);

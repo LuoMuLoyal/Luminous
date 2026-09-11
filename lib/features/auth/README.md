@@ -17,6 +17,9 @@
 - 会话状态只在 core/auth/session_provider.dart 的 `authSessionProvider` 上变更;presentation/providers/session.dart 仅为兼容 re-export,不得再 import。
 - 网络连通性错误不清 session store(`isNetworkConnectivityError` 分支);远程 logout 失败不得把用户置为登出。
 - 仓库方法一律 `TaskEither<LucentFailure, T>`;会话恢复有超时地板(isTimeout),防冷启动挂死骨架屏。
+- 显式刷新只能经注入的 `LucentDioClient.refreshSession` 回调(`LucentAuthRepository.refreshSession` 的第三个
+  构造参数)执行,与 401 自动刷新共享在途合并槽;直接打生成客户端的 refresh 端点会与拦截器抢用同一个
+  一次性 refresh token,后到者的 401 会把有效会话清掉(见 lib/core/network/README.md)。
 
 ## 依赖禁区
 - 不 import 其他 feature;微信平台通道经条件导出(io/stub),非支持平台不得直接依赖 fluwx。

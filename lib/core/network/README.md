@@ -36,6 +36,12 @@
 ## 陷阱与决策
 - token 刷新走独立 `refreshDio`,避免刷新请求再次触发拦截器递归;它的 trace 拦截器
   不写 `lastTraceId`,防止污染用户可见 trace(见 dio_client.dart 注释)。
+- 刷新入口唯一:`LucentDioClient.refreshSession()`(内部 `AuthInterceptor.refreshSession()`)
+  是唯一允许触发刷新的公开入口,它与 401 自动刷新共用同一个在途合并槽。业务侧**不得**自行
+  调用生成客户端的 `auth.refreshSession()`:Lucent 的 refresh token 一次性
+  (`claimSessionForRefresh` 原子抢占),并行两次刷新必有一次 401,而 401 分支会清掉本来
+  有效的会话(test/core/network/interceptors/auth_interceptor_test.dart 的
+  `_SingleUseRefreshAdapter` 用例锁定)。
 - 写请求默认不重试:需 `extra['retryEnabled'] = true` 且带 `Idempotency-Key` 头
   (client/retry_policy.dart,test/core/network/retry_policy_test.dart)。
 - `api.dart` re-export `lucent_api` 是有意的 barrel 例外,移除会强迫每个 data 文件追加

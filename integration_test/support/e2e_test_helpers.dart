@@ -412,6 +412,11 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
           LucentApi(dio: Dio(BaseOptions(baseUrl: 'http://localhost'))),
         ),
         _MemorySessionStore(),
+        // Never exercised: the fake overrides refreshSession.
+        () async => const LucentSessionTokens(
+          accessToken: 'e2e-at',
+          refreshToken: 'e2e-rt',
+        ),
       );
 
   String? loginEmail;

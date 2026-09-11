@@ -9,9 +9,14 @@ part 'auth.g.dart';
 
 @riverpod
 AuthRepository authRepository(Ref ref) {
+  final dioClient = ref.watch(lucentDioClientProvider);
   return LucentAuthRepository(
     ref.watch(lucentClientProvider),
     ref.watch(lucentSessionStoreProvider),
+    // Route the explicit session-restore refresh through the interceptor's
+    // coalesced refresh so it can never race the automatic 401 refresh for the
+    // same single-use refresh token.
+    dioClient.refreshSession,
   );
 }
 

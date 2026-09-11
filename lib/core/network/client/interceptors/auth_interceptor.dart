@@ -32,6 +32,12 @@ final class _RefreshAuthFailure extends _RefreshOutcome {
   const _RefreshAuthFailure();
 }
 
+/// No refresh token is stored (for example a concurrent logout already
+/// cleared the session) — the session cannot be recovered.
+final class _RefreshUnavailable extends _RefreshOutcome {
+  const _RefreshUnavailable();
+}
+
 /// Transient failure (network, timeout, 5xx, empty/malformed body) — the
 /// session may still be valid and is kept.
 final class _RefreshTransientFailure extends _RefreshOutcome {
@@ -76,7 +82,59 @@ class AuthInterceptor extends Interceptor {
     _onSessionExpired = callback;
   }
 
-  Future<_RefreshOutcome?>? _refreshFuture;
+  Future<_RefreshOutcome>? _refreshFuture;
+
+  /// HTTP error of the most recent failed refresh call, kept so
+  /// [refreshSession] can rethrow the real transport/server failure (status
+  /// code, Problem Details body, timeout type) instead of a synthesized one.
+  DioException? _lastRefreshError;
+
+  /// Coalesced token refresh — the single entry point every refresh caller
+  /// must use.
+  ///
+  /// The backend rotates refresh tokens with single-use semantics (the
+  /// `UserSession` row is claimed by an atomic delete), so two refresh calls
+  /// racing with the same stored token can never both succeed: the loser gets
+  /// `AUTH_REFRESH_TOKEN_INVALID` and, on the 401 path, wipes the session of a
+  /// user whose session is in fact still valid.
+  ///
+  /// Concurrent calls — including one from external code such as the session
+  /// restore flow — share the first in-flight call instead of issuing their
+  /// own request. Returns the fresh token pair (already persisted); throws the
+  /// underlying [DioException] when the refresh fails so callers can map it
+  /// (401/403 → definitive auth failure, transport errors → transient).
+  Future<LucentSessionTokens> refreshSession() async {
+    final outcome = await _refreshTokens();
+    if (outcome case _RefreshSuccess(:final tokens)) {
+      return tokens;
+    }
+    throw _refreshFailureToException(outcome);
+  }
+
+  /// Rebuilds the [DioException] a coalesced refresh failed with. Callers that
+  /// did not issue the request themselves (the explicit session-restore
+  /// refresh) need the original status code and body to map the failure the
+  /// same way the interceptor's own 401 path does.
+  DioException _refreshFailureToException(_RefreshOutcome outcome) {
+    final lastError = _lastRefreshError;
+    if (lastError != null) {
+      return lastError;
+    }
+    // No HTTP error was recorded (e.g. the refresh token vanished from the
+    // store before the call): report a definitive 401 so callers treat the
+    // session as unrecoverable rather than retrying forever.
+    final requestOptions = RequestOptions(path: LucentApiPaths.authRefresh);
+    return DioException(
+      requestOptions: requestOptions,
+      response: Response<Object>(
+        requestOptions: requestOptions,
+        statusCode: 401,
+      ),
+      type: DioExceptionType.badResponse,
+      message: 'Refresh token unavailable',
+      error: outcome,
+    );
+  }
 
   @override
   Future<void> onRequest(
@@ -127,19 +185,15 @@ class AuthInterceptor extends Interceptor {
             handler.next(e);
             return;
           }
-        case _RefreshAuthFailure():
-          // 刷新令牌过期/无效:会话不可恢复,清会话并通知。
+        case _RefreshAuthFailure() || _RefreshUnavailable():
+          // 刷新令牌过期/无效,或本地已无刷新令牌(如并发登出):会话不可恢复,
+          // 清会话并通知。
           await _clearSessionAndNotify();
           handler.next(err);
           return;
         case _RefreshTransientFailure():
           // 网络/服务端临时故障:保留会话,原 401 走常规错误路径,
           // 用户不会被误登出。
-          handler.next(err);
-          return;
-        case null:
-          // 刷新令牌已不可用(如并发登出已清除):会话不可恢复。
-          await _clearSessionAndNotify();
           handler.next(err);
           return;
       }
@@ -235,22 +289,29 @@ class AuthInterceptor extends Interceptor {
     return contentType == 'application/problem+json';
   }
 
-  Future<_RefreshOutcome?> _refreshTokens() {
+  /// Runs [_doRefresh] at most once at a time.
+  ///
+  /// The async wrapper matters: an `async` function body runs synchronously up
+  /// to its first `await`, so `_refreshFuture` is assigned before any caller
+  /// can observe it. A non-async version would hand control back at the first
+  /// `await` inside [_doRefresh] and let a second caller start its own refresh
+  /// with the same still-unrotated token.
+  Future<_RefreshOutcome> _refreshTokens() async {
     final pending = _refreshFuture;
     if (pending != null) {
-      return pending;
+      return await pending;
     }
 
     final future = _doRefresh();
     _refreshFuture = future;
     unawaited(future.whenComplete(() => _refreshFuture = null));
-    return future;
+    return await future;
   }
 
-  Future<_RefreshOutcome?> _doRefresh() async {
+  Future<_RefreshOutcome> _doRefresh() async {
     final refreshToken = await _sessionStore.readRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) {
-      return null;
+      return const _RefreshUnavailable();
     }
 
     try {
@@ -289,6 +350,7 @@ class AuthInterceptor extends Interceptor {
         refreshToken: nextRefreshToken.trim(),
       );
       await _sessionStore.write(tokens);
+      _lastRefreshError = null;
       return _RefreshSuccess(tokens);
     } on DioException catch (e) {
       // Log refresh failures (endpoint + status) instead of swallowing them,
@@ -301,15 +363,17 @@ class AuthInterceptor extends Interceptor {
       // 401/403 表示刷新令牌被拒绝或无权访问:认证失效;
       // 网络连接类、超时、5xx 等均为临时故障,保留会话。直接按状态码分类,
       // 避免畸形 refresh 错误体在此抛 FormatException 逃逸。
+      _lastRefreshError = e;
       final statusCode = e.response?.statusCode;
       if (statusCode == 401 || statusCode == 403) {
         return const _RefreshAuthFailure();
       }
       return const _RefreshTransientFailure();
     } on Exception catch (e, st) {
-      // e.g. session store write failures — still degrade to null rather
-      // than letting the original request hang.
+      // e.g. session store write failures — still degrade to a transient
+      // failure rather than letting the original request hang.
       appTalker.error('AuthInterceptor: token refresh failed: $e', st);
+      _lastRefreshError = null;
       return const _RefreshTransientFailure();
     }
   }

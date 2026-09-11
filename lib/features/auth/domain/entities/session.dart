@@ -51,3 +51,10 @@ abstract class AuthSession with _$AuthSession {
   factory AuthSession.fromJson(Map<String, Object?> json) =>
       _$AuthSessionFromJson(json);
 }
+
+/// Default access-token lifetime (seconds) reported by the refresh endpoint.
+///
+/// Used when a refreshed session is composed from a token pair whose `expiresIn`
+/// was not retained. The value is informational — access-token expiry is
+/// decided by the signed JWT's `exp`, not by this field.
+const int kDefaultAccessTokenTtlSeconds = 15 * 60;

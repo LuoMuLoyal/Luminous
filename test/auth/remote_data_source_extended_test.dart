@@ -137,7 +137,17 @@ void main() {
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
         ..httpClientAdapter = adapter;
       client = LucentClient(LucentApi(dio: dio));
-      dataSource = LucentAuthRepository(client, store);
+      dataSource = LucentAuthRepository(
+        client,
+        store,
+        // Token rotation is exercised by the AuthInterceptor tests; this
+        // default stub only keeps the constructor satisfied. The refreshSession
+        // test below installs its own stub.
+        () async => const LucentSessionTokens(
+          accessToken: 'stub-at',
+          refreshToken: 'stub-rt',
+        ),
+      );
     });
 
     // ─── OAuth: WeChat Web ───────────────────────────────────────────
@@ -453,21 +463,20 @@ void main() {
     // ─── refreshSession ──────────────────────────────────────────────
     group('refreshSession', () {
       test('writes fresh tokens and returns the refreshed session', () async {
-        // First request: refresh tokens. Second request: fetchAccount after
-        // token refresh. Serve a fixed sequence of bodies, one per request.
-        final sequenced = _SequencedAdapter([
-          <String, dynamic>{
-            'accessToken': 'new-at',
-            'refreshToken': 'new-rt',
-            'expiresIn': 1800,
-          },
-          _accountDto(),
-        ]);
-        final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
-          ..httpClientAdapter = sequenced;
+        // Only the post-refresh account fetch hits the adapter: the token
+        // rotation is performed by the injected refresh callback.
+        adapter.body = _accountDto();
         dataSource = LucentAuthRepository(
-          LucentClient(LucentApi(dio: dio)),
+          client,
           store,
+          // The token rotation itself lives in the Dio client's coalesced
+          // refresh path (covered by the AuthInterceptor tests); here it is
+          // stubbed to keep the repository's write + compose behaviour under
+          // test.
+          () async => const LucentSessionTokens(
+            accessToken: 'new-at',
+            refreshToken: 'new-rt',
+          ),
         );
 
         final session = await _right(
@@ -476,7 +485,6 @@ void main() {
 
         expect(session.accessToken, 'new-at');
         expect(session.refreshToken, 'new-rt');
-        expect(session.expiresInSeconds, 1800);
         expect(session.user.id, 'u-1');
         final stored = await store.read();
         expect(stored?.accessToken, 'new-at');
@@ -1182,32 +1190,4 @@ void main() {
       });
     });
   });
-}
-
-/// Adapter that serves a fixed sequence of bodies, one per request.
-class _SequencedAdapter implements HttpClientAdapter {
-  _SequencedAdapter(this._bodies);
-
-  final List<Object?> _bodies;
-  int _index = 0;
-
-  @override
-  Future<ResponseBody> fetch(
-    RequestOptions options,
-    Stream<Uint8List>? requestStream,
-    Future<dynamic>? cancelFuture,
-  ) async {
-    final body = _index < _bodies.length ? _bodies[_index++] : null;
-    final json = body != null ? utf8.encode(jsonEncode(body)) : <int>[];
-    return ResponseBody(
-      Stream.value(Uint8List.fromList(json)),
-      200,
-      headers: <String, List<String>>{
-        Headers.contentTypeHeader: <String>['application/json'],
-      },
-    );
-  }
-
-  @override
-  void close({bool force = false}) {}
 }

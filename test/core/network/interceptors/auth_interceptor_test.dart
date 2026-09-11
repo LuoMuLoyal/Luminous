@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -135,6 +136,95 @@ class _MockResponse {
   final Object? data;
   final String statusMessage;
   final String? contentType;
+}
+
+/// Adapter implementing the backend's single-use refresh-token rotation: a
+/// token may be claimed exactly once, and claiming it issues the next pair.
+///
+/// Records every claimed token so a test can prove a refresh token was never
+/// spent twice — the failure mode that signed users out of live sessions.
+class _SingleUseRefreshAdapter implements HttpClientAdapter {
+  /// The refresh token currently valid, i.e. not yet claimed.
+  String _outstanding = 'rt-1';
+
+  /// Every token a caller presented to the refresh endpoint, in order.
+  final List<String> claimedTokens = <String>[];
+
+  /// Emits the moment a refresh call arrives, so a test can let a second
+  /// refresh caller start while the first call is still in flight — the exact
+  /// interleaving that used to spend the token twice.
+  final StreamController<void> _arrived = StreamController<void>.broadcast();
+
+  /// Completes once a refresh call has reached this adapter.
+  Future<void> waitForCall() => _arrived.stream.first;
+
+  int callCount = 0;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    callCount++;
+    _arrived.add(null);
+    // Hold the response past the caller's await so concurrent callers can
+    // arrive while this call is still in flight.
+    await Future<void>.delayed(Duration.zero);
+    // The adapter receives whatever Dio's transformer produced: an encoded
+    // String for the refresh call, or the raw map for a request built by hand.
+    final rawData = options.data;
+    final decoded = rawData is String ? jsonDecode(rawData) : rawData;
+    final presented =
+        (decoded as Map<String, dynamic>)['refreshToken'] as String;
+    claimedTokens.add(presented);
+
+    if (presented != _outstanding) {
+      // The token was already claimed (or never existed): the backend answers
+      // with a Problem Details 401.
+      return ResponseBody(
+        Stream.value(
+          Uint8List.fromList(
+            utf8.encode(
+              jsonEncode(<String, dynamic>{
+                'type': 'https://api.lumos.example/problems/auth/refresh',
+                'title': 'Refresh token invalid',
+                'detail': 'Session can no longer be refreshed.',
+                'code': 'AUTH_REFRESH_TOKEN_INVALID',
+              }),
+            ),
+          ),
+        ),
+        401,
+        headers: <String, List<String>>{
+          Headers.contentTypeHeader: <String>['application/problem+json'],
+        },
+      );
+    }
+
+    // Claiming the token spends it and issues the next pair.
+    _outstanding = 'rt-${claimedTokens.length + 1}';
+    return ResponseBody(
+      Stream.value(
+        Uint8List.fromList(
+          utf8.encode(
+            jsonEncode(<String, dynamic>{
+              'accessToken': 'at-${claimedTokens.length}',
+              'refreshToken': _outstanding,
+              'expiresIn': 3600,
+            }),
+          ),
+        ),
+      ),
+      200,
+      headers: <String, List<String>>{
+        Headers.contentTypeHeader: <String>['application/json'],
+      },
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
 }
 
 /// Adapter that always throws [error] — simulates network-level failures
@@ -1362,5 +1452,78 @@ void main() {
         expect(await store.read(), isNull);
       },
     );
+  });
+
+  group('AuthInterceptor.refreshSession — shared coalesced refresh', () {
+    late _SingleUseRefreshAdapter refreshAdapter;
+    late _MemorySessionStore store;
+    late Dio dio;
+    late AuthInterceptor interceptor;
+
+    setUp(() {
+      refreshAdapter = _SingleUseRefreshAdapter();
+      store = _MemorySessionStore();
+      final mainAdapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 401,
+          data: _tokenExpiredBody,
+          statusMessage: 'Unauthorized',
+        )
+        ..enqueueSuccess(data: <String, dynamic>{});
+      dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+        ..httpClientAdapter = mainAdapter;
+      interceptor = AuthInterceptor(
+        dio: dio,
+        sessionStore: store,
+        refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+          ..httpClientAdapter = refreshAdapter,
+      );
+      dio.interceptors.add(interceptor);
+    });
+
+    tearDown(() => dio.close(force: true));
+
+    test('an explicit refresh concurrent with the 401 refresh spends the '
+        'single-use refresh token only once', () async {
+      // Backend semantics: the refresh token is single-use — the session row
+      // is claimed by an atomic delete, so whichever refresh arrives second
+      // is rejected with AUTH_REFRESH_TOKEN_INVALID. On the 401 path that
+      // used to wipe the session of a user whose session was still valid.
+      await store.write(
+        const LucentSessionTokens(
+          accessToken: 'expired-token',
+          refreshToken: 'rt-1',
+        ),
+      );
+
+      // Request A: the access token is expired, so the interceptor refreshes
+      // automatically and retries.
+      final authGuardedGet = dio.get<void>(
+        '/api/v1/account',
+        options: Options(extra: const <String, Object?>{}),
+      );
+      // Wait until A's refresh call is actually in flight, then issue the
+      // concurrent explicit refresh (the session restore flow would do this
+      // while a background 401 refresh is still running).
+      await refreshAdapter.waitForCall();
+      final explicitRefresh = interceptor.refreshSession();
+
+      final results = await Future.wait(<Future<Object?>>[
+        authGuardedGet,
+        explicitRefresh,
+      ]);
+      final accountResponse = results[0]! as Response<void>;
+      final refreshed = results[1]! as LucentSessionTokens;
+
+      expect(refreshAdapter.claimedTokens, <String>[
+        'rt-1',
+      ], reason: 'the single-use refresh token must never be spent twice');
+      expect(refreshAdapter.callCount, 1);
+      expect(accountResponse.statusCode, 200);
+
+      // Both callers observe the same rotated token pair.
+      expect(refreshed.refreshToken, 'rt-2');
+      expect((await store.read())?.refreshToken, 'rt-2');
+    });
   });
 }

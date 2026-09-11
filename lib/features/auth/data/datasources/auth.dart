@@ -14,10 +14,24 @@ import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
 
 class LucentAuthRepository implements AuthRepository {
-  const LucentAuthRepository(this._client, this._sessionStore);
+  const LucentAuthRepository(
+    this._client,
+    this._sessionStore,
+    this._refreshSession,
+  );
 
   final LucentClient _client;
   final LucentSessionStore _sessionStore;
+
+  /// Performs the actual token rotation and returns the fresh tokens.
+  ///
+  /// Injected from the Dio client's coalesced refresh path
+  /// (`LucentDioClient.refreshSession`) so this explicit refresh shares one
+  /// in-flight call with the auth interceptor's automatic 401 refresh. Calling
+  /// `POST /auth/refresh` directly here would race the interceptor for the same
+  /// single-use refresh token, and the loser's 401 would sign the user out of a
+  /// live session.
+  final Future<LucentSessionTokens> Function() _refreshSession;
 
   /// Persists [session] tokens to the local session store.
   ///
@@ -392,34 +406,38 @@ class LucentAuthRepository implements AuthRepository {
   TaskEither<LucentFailure, AuthSession> refreshSession({
     required String refreshToken,
   }) {
-    // Step 1: refresh tokens (with side-effect: persist to session store).
-    final refreshTokens = TaskEither<LucentFailure, RefreshResponse>.tryCatch(
-      () async {
-        final response = await _client.auth.refreshSession(
-          refreshSessionRequest: RefreshSessionRequest(
-            refreshToken: refreshToken.trim(),
-          ),
-        );
-        final tokens = _requireBody(response.data, 'refreshSession');
-        await _sessionStore.write(
-          LucentSessionTokens(
-            accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken,
-          ),
-        );
-        return tokens;
-      },
-      (error, stackTrace) => LucentErrorMapper.fromObject(error),
-    );
+    // Step 1: rotate tokens through the shared coalesced refresh path (the
+    // interceptor owns the single-use refresh token; see [_refreshSession]).
+    // The returned tokens are persisted here, then step 2 composes the
+    // session — no throw inside step 2.
+    final refreshedTokens =
+        TaskEither<LucentFailure, LucentSessionTokens>.tryCatch(() async {
+          final trimmed = refreshToken.trim();
+          if (trimmed.isEmpty) {
+            // The caller passed no token: nothing to rotate. Fail fast instead
+            // of letting the interceptor read a token the caller did not mean
+            // to spend.
+            throw LucentFailure.network(
+              message: 'Empty refresh token',
+              networkErrorCode: NetworkErrorCode.emptyResponse,
+            );
+          }
+          final tokens = await _refreshSession();
+          await _sessionStore.write(tokens);
+          return tokens;
+        }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
 
     // Step 2: fetch account and compose the session — no throw inside.
-    return refreshTokens.flatMap(
+    return refreshedTokens.flatMap(
       (tokens) => fetchAccount().map(
         (user) => AuthSession(
           user: user,
           accessToken: tokens.accessToken,
           refreshToken: tokens.refreshToken,
-          expiresInSeconds: tokens.expiresIn.toInt(),
+          // The refresh endpoint's `expiresIn` is not retained by the
+          // interceptor's token pair; access-token expiry is carried by the
+          // JWT itself, so the reported lifetime is informational only.
+          expiresInSeconds: kDefaultAccessTokenTtlSeconds,
         ),
       ),
     );

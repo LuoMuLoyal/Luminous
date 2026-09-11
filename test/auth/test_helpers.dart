@@ -54,6 +54,11 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
           LucentApi(dio: Dio(BaseOptions(baseUrl: 'http://localhost'))),
         ),
         _MemorySessionStore(),
+        // Never exercised: the fake overrides refreshSession.
+        () async => const LucentSessionTokens(
+          accessToken: 'fake-at',
+          refreshToken: 'fake-rt',
+        ),
       );
 
   String? loginEmail;

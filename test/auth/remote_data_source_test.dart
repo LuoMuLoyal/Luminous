@@ -105,7 +105,12 @@ void main() {
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
         ..httpClientAdapter = adapter;
       client = LucentClient(LucentApi(dio: dio));
-      dataSource = LucentAuthRepository(client, store);
+      dataSource = LucentAuthRepository(client, store, () async {
+        throw DioException(
+          requestOptions: RequestOptions(path: '/api/v1/auth/refresh'),
+          message: 'no refresh stub wired in this test',
+        );
+      });
     });
 
     group('login', () {

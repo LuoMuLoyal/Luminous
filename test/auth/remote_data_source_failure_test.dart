@@ -86,17 +86,29 @@ void main() {
     late _Adapter adapter;
     late _MemStore store;
     late LucentAuthRepository dataSource;
+    late LucentDioClient dioClient;
 
     setUp(() {
       adapter = _Adapter();
       store = _MemStore();
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
         ..httpClientAdapter = adapter;
+      // The refreshSession tests below drive the repository's injected
+      // refresh, i.e. the real Dio client's coalesced refresh path, so the
+      // refresh error mapping stays covered end to end.
+      dioClient = LucentDioClient(
+        baseUrl: 'http://localhost:3000',
+        sessionStore: store,
+        httpClientAdapter: adapter,
+      );
       dataSource = LucentAuthRepository(
         LucentClient(LucentApi(dio: dio)),
         store,
+        dioClient.refreshSession,
       );
     });
+
+    tearDown(() => dioClient.dispose());
 
     group('login', () {
       test('AUTH_WRONG_PASSWORD stays a Problem Details failure', () async {
@@ -285,6 +297,13 @@ void main() {
     });
 
     group('refreshSession', () {
+      // The interceptor only refreshes when a refresh token is stored.
+      setUp(() async {
+        await store.write(
+          const LucentSessionTokens(accessToken: 'at-1', refreshToken: 'rt-1'),
+        );
+      });
+
       test(
         'AUTH_REFRESH_TOKEN_INVALID is preserved, not downgraded to a network error',
         () async {
