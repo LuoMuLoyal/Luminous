@@ -145,30 +145,45 @@ class _FaqSectionState extends State<_FaqSection> {
       children: [
         SettingsSectionLabel(label: l10n.settingsHelpFaqSectionTitle),
         const SizedBox(height: Spacing.level3),
-        FutureBuilder<List<_FaqItem>>(
-          future: _itemsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return const _FaqSkeleton();
-            }
-            if (snapshot.hasError || snapshot.data == null) {
-              return _FaqError(
-                onRetry: () => setState(() {
-                  _itemsFuture = _loadFaqItems();
-                }),
-              );
-            }
-            final items = snapshot.data!;
-            if (items.isEmpty) {
-              return const SizedBox.shrink();
-            }
-            return _FaqAccordion(items: items);
-          },
+        // 收窄问答区并让内容左缘与下方「意见反馈」卡片的内容列对齐。
+        Padding(
+          padding: _faqContentInset,
+          child: FutureBuilder<List<_FaqItem>>(
+            future: _itemsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const _FaqSkeleton();
+              }
+              if (snapshot.hasError || snapshot.data == null) {
+                return _FaqError(
+                  onRetry: () => setState(() {
+                    _itemsFuture = _loadFaqItems();
+                  }),
+                );
+              }
+              final items = snapshot.data!;
+              if (items.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return _FaqAccordion(items: items);
+            },
+          ),
         ),
       ],
     );
   }
 }
+
+/// FAQ 内容列相对页面内容列的缩进。
+///
+/// 取值对齐下方 `FTileGroup` 卡片内容列所用的内边距（Forui `FTile` 的
+/// `suffixedPadding`：左 15 / 右 13）：问题文字左缘对齐卡片的前缀图标，
+/// chevron 右缘对齐卡片的后缀图标，使无边框的问答列表仍与卡片同处一个内容列，
+/// 而不是贴到屏幕边缘。
+///
+/// 这是「对齐外部组件的内部几何」而非通用设计标尺，故不走 [Spacing] token
+/// （该刻度没有 15/13 档）；`FTile` 内边距若调整，这里需同步。
+const EdgeInsets _faqContentInset = EdgeInsets.only(left: 15, right: 13);
 
 class _FaqItem {
   const _FaqItem({required this.question, required this.answer});
@@ -179,11 +194,15 @@ class _FaqItem {
 
 /// FAQ 条目渲染。
 ///
-/// 使用 Forui 的 [FAccordion] / [FAccordionItem] 承载展开/收起：
+/// 直接使用 Forui [FAccordion] 的官方默认样式，与 forui.dev 的 Accordion
+/// 官方示例保持一致（`FAccordion(children: [...])`，不传 style override）：
+/// - 标题走主题默认 `display.sm`（touch 下 16px / w500 / foreground），与示例
+///   同字重同字号；不再提升到 `body.md` + w600，避免问题列表比页面标题、
+///   比下方 FTileGroup 的条目标题更重；
+/// - 展开内容沿用 accordion 自身的 `childTextStyle` + `childPadding`
+///   （官方节奏：标题上下 16，答案距分隔线 16），不再额外叠加底部内边距；
 /// - 每个问题一行标题 + chevron，点击整行展开/收起，条目间自动带分隔线；
-/// - 标题样式沿用原实现的 `body.md` + w600（Forui 默认 accordion 标题是
-///   `display.sm` + w500，两者视觉不一致，这里通过 style delta 对齐）；
-/// - 默认所有条目收起（原实现行为），由受管 controller 独立管理展开状态。
+/// - 默认所有条目收起，由受管 controller 独立管理展开状态（可同时展开多条）。
 class _FaqAccordion extends StatelessWidget {
   const _FaqAccordion({required this.items});
 
@@ -191,27 +210,16 @@ class _FaqAccordion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = context.theme.typography.body.md.copyWith(
-      fontWeight: FontWeight.w600,
-    );
     return FAccordion(
-      style: FAccordionStyleDelta.delta(
-        titleTextStyle: FVariantsDelta.delta([
-          FVariantOperation.base(TextStyleDelta.value(titleStyle)),
-        ]),
-      ),
       children: [
         for (final item in items)
           FAccordionItem(
             title: Text(item.question),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.level3),
-              child: MarkdownBody(
-                data: item.answer,
-                selectable: true,
-                shrinkWrap: true,
-                styleSheet: MarkdownStyle.legal(context),
-              ),
+            child: MarkdownBody(
+              data: item.answer,
+              selectable: true,
+              shrinkWrap: true,
+              styleSheet: MarkdownStyle.legal(context),
             ),
           ),
       ],

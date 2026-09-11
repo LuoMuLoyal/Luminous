@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
@@ -44,6 +46,31 @@ void main() {
     // same l10n string, so both texts appear twice on the page.
     expect(find.text(l10n.settingsHelpFeedbackSectionTitle), findsWidgets);
     expect(find.text(l10n.mineHelpFeedbackTitle), findsWidgets);
+
+    // The FAQ keeps the official Forui accordion appearance — no style
+    // override, so the questions render with the theme default display.sm +
+    // w500 instead of a heavier body.md + w600 that would outweigh the
+    // FTileGroup titles below.
+    final accordion = tester.widget<FAccordion>(find.byType(FAccordion));
+    expect(accordion.style, const FAccordionStyleDelta.context());
+
+    final titleContext = tester.element(find.text('数据会同步到云端吗？'));
+    final titleStyle = DefaultTextStyle.of(titleContext).style;
+    final theme = titleContext.theme;
+    expect(titleStyle.fontSize, theme.typography.display.sm.fontSize);
+    expect(titleStyle.fontWeight, FontWeight.w500);
+
+    // The FAQ column is inset to the feedback card's content column, so the
+    // question text lines up with the tile's prefix icon and the accordion's
+    // trailing edge lines up with the tile's suffix icon.
+    expect(
+      tester.getTopLeft(find.text('数据会同步到云端吗？')).dx,
+      tester.getTopLeft(find.byIcon(SemanticIcons.actionMessage)).dx,
+    );
+    expect(
+      tester.getRect(find.byType(FAccordion)).right,
+      tester.getRect(find.byIcon(SemanticIcons.actionExternalLink)).right,
+    );
   });
 
   // FAQ asset 加载在 widget 测试中存在时序问题（shimmer 骨架屏无限动画 +
