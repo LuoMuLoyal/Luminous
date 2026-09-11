@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-09-08
+updated: 2026-09-11
 ---
 
 # Luminous TODO
 
-Last updated: 2026-09-08
+Last updated: 2026-09-11
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -143,6 +143,16 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 
 - `NetworkErrorCode.invalidSsePayload` 运行时已无产生点（枚举 + l10n + pending sync 序列化保留以兼容历史持久化行）：若未来清理 legacy pending-sync 数据后可评估移除。
 - `_ErrorSseAdapter` 测试辅助类在 assistant/today/report 三个测试文件各复制一份（沿用每文件自带惯例）：可选收敛到 test/helpers/。
+
+## 2026-09-11 助手流式排查遗留（Web 端无逐字流式）
+
+- Web 端 `ResponseType.stream` 不真正流式：dio 的 Web 适配器（`dio_web_adapter`）用 XHR +
+  `responseType = 'arraybuffer'`，整流 body 到齐后才交给 SSE 解析器，因此 Flutter Web 上助手回答
+  是「一次性出现」，`streamingDraft` 的逐字追加只在原生端生效。
+  - 现状：2026-09-11 已解除 Web XHR 的 10s 总超时（见当日迁移日志），功能可用但无流式体验；
+    assistant / reports / today-analysis 三条 SSE 共用同一客户端，同等受影响。
+  - 方案：为 SSE 单独提供 fetch + ReadableStream 的 `HttpClientAdapter`（或 Web 分支改用
+    EventSource / `package:http` BrowserClient），需评估与鉴权拦截器、401 刷新路径的兼容性。
 
 ## 2026-09-02 代码审查遗留（08-30 / 09-01 review）
 
