@@ -196,6 +196,7 @@ void main() {
       '/mine/condition/123/edit',
       '/mine/medicine/new',
       '/mine/medicine/123/edit',
+      '/mine/sync/failures',
       '/settings',
       '/settings/language',
       '/settings/theme',

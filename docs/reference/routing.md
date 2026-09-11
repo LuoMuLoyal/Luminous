@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-08-31
+updated: 2026-09-11
 ---
 
 # Routing (GoRouter)
@@ -86,6 +86,9 @@ The following routes are accessible without signing in so the app can be opened 
 - `/medicine/detail/:source/:id` — 药品详情页（列入 `_publicRoutePrefixes`）：后端
   `GET /medicines/:id?source=` 为 `@Public`、页面仅对「加入药箱」做 auth 门控，未登录可浏览
   说明书；「加入药箱」未登录时走 `showAuthRequiredDialog`。
+- `/mine/sync/failures` — 同步失败页（列入 `_publicRoutePrefixes`）：只展示本地待同步队列的
+  诊断信息，不触达服务端数据；Mine 页在未登录预览态同样渲染失败横幅（`MineSyncFailedBanner`
+  消费 `syncFailedCountProvider`），故点击后保持可直接查看，不重定向到 `/login`。
 
 All other routes require an authenticated session. The redirect guard sends unauthenticated users
 to `/login` only when they reach a non-public, non-auth route, and it redirects authenticated users

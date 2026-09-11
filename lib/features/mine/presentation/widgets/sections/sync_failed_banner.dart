@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/mine/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-import 'sync_failed_details.dart';
 
 /// A warning banner shown in the Mine page when there are permanently
 /// failed sync items.
 ///
 /// Displays the count of failed items and a call-to-action. Tapping the
-/// action opens the local failure details and retry controls.
+/// action opens the sync failures page, which owns the entry list and the
+/// retry controls.
 class MineSyncFailedBanner extends ConsumerWidget {
   const MineSyncFailedBanner({super.key});
 
@@ -27,16 +26,7 @@ class MineSyncFailedBanner extends ConsumerWidget {
         return _Banner(
           message: l10n.mineSyncFailedWarning(count),
           actionLabel: l10n.mineSyncFailedAction,
-          onTap: () async {
-            final entries = await ref
-                .read(pendingSyncDaoProvider)
-                .fetchPermanentlyFailed();
-            if (!context.mounted) return;
-            await showMineSyncFailedDetailsDialog(
-              context: context,
-              entries: entries,
-            );
-          },
+          onTap: () => const MineSyncFailuresRoute().push(context),
         );
       },
       orElse: () => const SizedBox.shrink(),
