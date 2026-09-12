@@ -16,6 +16,7 @@ import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/pages/page.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/assistant_greeting.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -724,7 +725,7 @@ void main() {
     final screen = tester.widget<FlowChatScreen>(find.byType(FlowChatScreen));
 
     expect(screen.empty, isTrue);
-    expect(find.byType(FlowGreeting), findsOneWidget);
+    expect(find.byType(AssistantSvgGreeting), findsOneWidget);
     expect(find.text('开始和 Luminous 聊天'), findsOneWidget);
     expect(find.text('可以问我最近的睡眠、记录和用药情况。'), findsOneWidget);
     final suggestions = tester.widget<FlowSuggestionGroup>(
