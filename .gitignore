@@ -98,6 +98,11 @@ docs/assets
 # Obsidian
 .obsidian/
 
+# DevTools performance snapshots (tens of MB, recorded ad hoc for
+# scripts/perf/analyze_trace.dart) — never commit these.
+dart_devtools_*.json
+*_trace.json
+
 # Windows null-device artifact (Bash writes to "nul" as a file)
 nul
 

@@ -31,6 +31,7 @@ rules:
       - scripts/hooks/git.dart
       - scripts/workflows/daily.dart
       - scripts/workflows/fullstack.dart
+      - scripts/perf/analyze_trace.dart
       - scripts/contract/verify_openapi.dart
       - .github/workflows/**
       - .github/copilot-instructions.md
