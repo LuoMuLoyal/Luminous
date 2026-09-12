@@ -81,18 +81,37 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
                     ),
                   ),
                   const SizedBox(width: Spacing.xl2),
-                  // Right content column. AnimatedSwitcher cross-fades the
-                  // pane when switching groups (fade-through, bounded so
-                  // pumpAndSettle converges); keyed by index so a change
-                  // always triggers the transition.
+                  // Right content column.
+                  //
+                  // Deliberately NOT an `AnimatedSwitcher`: its default layout
+                  // is a centred `Stack`, so the outgoing and incoming panes
+                  // would overlap for the whole transition and the shorter one
+                  // would be vertically centred against the taller one — a
+                  // visible jolt, and two panes' text available to finders and
+                  // screen readers at once. And it must stay inline (not
+                  // `Positioned`/`fill`) because this sits inside a scroll view
+                  // and has to contribute its height.
+                  //
+                  // Instead the swap is synchronous and only the *incoming*
+                  // pane animates: an implicit fade-in (keyed per group so a
+                  // change re-runs it) inside an [AnimatedSize] that animates
+                  // the scroll extent from the old pane's height to the new
+                  // one, so groups of different heights do not snap.
                   Expanded(
                     child: SingleChildScrollView(
-                      child: AnimatedSwitcher(
+                      child: AnimatedSize(
                         duration: DurationTokens.masterDetailSwitch,
-                        switchInCurve: MotionTokens.emphasizedDecelerate,
-                        switchOutCurve: MotionTokens.exit,
-                        child: KeyedSubtree(
+                        curve: DurationTokens.masterDetailSwitchCurve,
+                        alignment: Alignment.topLeft,
+                        clipBehavior: Clip.hardEdge,
+                        child: TweenAnimationBuilder<double>(
+                          // Reset the fade on every group change.
                           key: ValueKey<int>(_selectedIndex),
+                          tween: Tween<double>(begin: 0, end: 1),
+                          duration: DurationTokens.masterDetailSwitch,
+                          curve: DurationTokens.masterDetailSwitchCurve,
+                          builder: (context, opacity, child) =>
+                              Opacity(opacity: opacity, child: child),
                           child: widget.groups[_selectedIndex].body,
                         ),
                       ),
