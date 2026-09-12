@@ -6,16 +6,18 @@ updated: 2026-09-12
 
 # 动画体系调研与选型:全局分级动画(Motion Hierarchy)
 
-> 结论:**分三层建动画体系,不引大包**。导航过渡(tab 切换 + 子页面 push/pop)用
-> **官方 GoRouter `navigatorContainerBuilder` + 默认 MaterialPage/`PageTransitionsTheme`**
-> (平台原生过渡),**自写 fade-through tab 过渡**;列表/内容过渡继续用已依赖的
-> **`flutter_animate`**(限制规模);微交互优先吃 **Forui 自带动画**(FTappable/
-> FPopover/FTooltip motion + `FAccessibilityMotion` 自动降级)。可选引入官方
-> **`animations` 3.0.0**(SharedAxis/FadeThrough)统一品牌过渡 —— 与项目主题
-> (material_ui 1.x)同源,风险低。明确不引入 page_transition / motion(GPL-3)/
-> rive / lottie / go_router_animated_branch 等小众包。
+> 结论:**分三层建动画体系,核心过渡走官方 Material Motion 实现**。导航过渡
+> (tab 切换 + 子页面 push/pop)用 **官方 `animations` 包的 SharedAxis/FadeThrough**
+> ——`slidePage` 用 SharedAxis(水平)、`tabFadePage` 与 tab 分支切换用 FadeThrough;
+> `PageTransitionsTheme` 全局兜底统一为 M3 共享轴,消灭桌面 Zoom / 移动原生的平台混搭。
+> 列表/内容过渡用官方 `PageTransitionSwitcher`(页面状态切换)+ 已依赖的
+> **`flutter_animate`**(限制规模)+ record 首页入场;微交互优先吃 **Forui 自带动画**
+> (FTappable/FPopover/FTooltip motion + `FAccessibilityMotion` 自动降级)。明确不引入
+> page_transition / motion(GPL-3)/ rive / lottie / go_router_animated_branch 等小众包。
 >
-> **状态:阶段 1(调研)+ 阶段 2(tab fade-through + 设置页 master-detail)+ 阶段 3(路由反向让位)+ 阶段 4(record 首页入场)已落地**(2026-09-12);阶段 5 待实施。
+> **状态:全部落地**(2026-09-12)。阶段 1 调研 → 阶段 2 tab fade-through + 设置页
+> master-detail → 阶段 3 路由 push/pop → 阶段 4 record 首页入场 → 阶段 5 引入官方
+> `animations` 包统一品牌过渡 + 页面状态切换 fade-through。
 >
 > 依据:本地代码审计(2026-09-12)+ 官方调研(Flutter 3.38+ 源码与文档、go_router
 > 17.x 文档与示例、M3 motion 规范)+ 社区包调研(pub.dev / GitHub 实时数据)。
@@ -27,7 +29,7 @@ updated: 2026-09-12
 
 | 层 | 现状 | 位置 |
 |---|---|---|
-| 路由过渡(部分) | `fadePage`(auth 400/280ms)、`tabFadePage`(150/0ms)、`slidePage`(220/150ms 滑入+淡入)、`sidePanelPage`(桌面右滑面板) | `lib/app/router_helpers.dart` |
+| 路由过渡(部分) | `fadePage`(auth 400/280ms 淡入)、`tabFadePage`(官方 FadeThrough 260ms)、`slidePage`(官方 SharedAxis 水平 220/150ms)、`sidePanelPage`(桌面右滑面板) | `lib/app/router_helpers.dart` |
 | in-widget 基础 | `MotionTokens`(entrance/exit/standard/snappy)+ `DurationTokens` 4+ 档 | `lib/core/design/tokens/motion.dart` |
 | flutter_animate | 已依赖 4.5.2,~6 处使用(auth 表单入场、assistant 旋转指示、mine/review dashboard 入场) | 各 feature |
 | 显式动画 | `AnimationController` 3 处(summary 展开、suggestion card、risk score ring) | today / medicine |
@@ -42,10 +44,11 @@ updated: 2026-09-12
 |---|---|---|
 | **Tab 切换** | ✅ **已补**(2026-09-12):`ShellTabBranchContainer` fade-through | `StatefulShellRoute.indexedStack` 官方**明确不做分支切换过渡**;现改用自定义 `navigatorContainerBuilder` |
 | **设置页桌面 master-detail** | ✅ **已补**:右侧 pane `AnimatedSwitcher`(220ms) | 原 `setState` 直接换 body |
-| **子页面路由** | 现有 slidePage 是**进入方向固定**(一律右滑),返回无反向滑动 | `slidePage` 用 `animation` 单侧过渡,`secondaryAnimation` 未用(阶段 3) |
-| **列表内容变化** | 无 `AnimatedList`/列表项进场交错,数据刷新直接替换 | 未建列表动画惯例(阶段 4) |
-| **micro-interaction** | 按钮/开关/图标按压反馈零散,无统一节奏 | 未统一 M3 tokens(阶段 5 前置) |
-| **Hero/共享元素** | 零使用 | 未规划(阶段 4) |
+| **子页面路由** | ✅ **已补**:`slidePage` 换官方 SharedAxis 水平轴,push/pop 双向 | 原手写 slide 仅用 `animation`(单侧),`secondaryAnimation` 未用 |
+| **页面状态切换** | ✅ **已补**:`PageStateSwitch` 用官方 `PageTransitionSwitcher` + FadeThrough | 原 `switch` 硬替换(骨架 ↔ 内容 ↔ 错误) |
+| **列表项进场交错** | 未做 | 收益/风险比不佳:核心列表(如 review 历史)被单帧 `pump()` + 位置断言测试覆盖,交错入场会引入脆弱性 |
+| **micro-interaction** | 部分:Forui 自带按压/hover + `flutter_animate` 少量使用,无统一节奏 | 未统一 M3 tokens |
+| **Hero/共享元素** | 零使用 | 未规划;跨 StatefulShellRoute 分支不工作(独立 Navigator),仅限同分支"列表→详情" |
 
 ### 1.3 约束(选型必须满足)
 
@@ -57,7 +60,7 @@ updated: 2026-09-12
 
 ## 2. 官方方案调研结论(要点)
 
-完整论证与链接见 `flutter-motion-hierarchy-report.md`。核心事实:
+核心事实:
 
 1. **Tab 切换**:`StatefulShellRoute` 官方文档明确"分支切换过渡由 `navigatorContainerBuilder` 负责,默认 IndexedStack 无动画";官方示例 [custom_stateful_shell_route.dart](https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/others/custom_stateful_shell_route.dart) 用 AnimatedSwitcher/FadeTransition 包分支。M3 规范称此模式为 **Fade through**(旧页淡出、新页淡入+轻微缩放,≈300ms)。
 2. **子页面路由**:GoRouter 默认 pageBuilder 返回 `MaterialPage`,过渡由 `ThemeData.pageTransitionsTheme` 按平台接管(零配置、平台原生);特殊页才用 `CustomTransitionPage`(默认 300ms,`key: state.pageKey`);无动画用 `NoTransitionPage`。
@@ -79,7 +82,7 @@ updated: 2026-09-12
 
 | 包 | 结论 | 理由 |
 |---|---|---|
-| **`animations` 3.0.0**(官方 flutter.dev) | **可选引入** ✅ | SharedAxis/FadeThrough/OpenContainer;6.8k likes / 160 points / 1.24M 下载;BSD-3;依赖 material_ui ^1.0.0 与项目同源;活跃维护。**限制**:OpenContainer 与 go_router 不兼容([#121929](https://github.com/flutter/flutter/issues/121929),勿用于路由,只做页内容器变换) |
+| **`animations` 3.0.0**(官方 flutter.dev) | **已引入** ✅ | SharedAxis/FadeThrough/OpenContainer;6.8k likes / 160 points / 1.24M 下载;BSD-3;依赖 material_ui ^1.0.0 与项目同源;活跃维护。**限制**:OpenContainer 与 go_router 不兼容([#121929](https://github.com/flutter/flutter/issues/121929),勿用于路由,只做页内容器变换) |
 | **`flutter_animate` 4.5.2**(已依赖) | **维持现状,限制规模** ⚠️ | 做 micro-interaction / 列表交错性价比最高;维护停滞 + 泄漏 bug,大量使用会放大风险;监控 `flutter_animate_plus` fork 作升级预案 |
 | `rive` 0.14.11 | 不引入 ❌ | 交互式矢量动画才有需要;原生依赖 + 构建复杂度,普通 UI 过渡用不上 |
 | `lottie` 3.5.1 | 不引入 ❌ | 设计团队产出 AE 素材才需要;当前无需求,未来按设计工具链二选一 |
@@ -137,9 +140,17 @@ updated: 2026-09-12
    - `router.dart`:`StatefulShellRoute.indexedStack` → `StatefulShellRoute` + 自定义 `navigatorContainerBuilder`。
    - 设置页桌面 `master_detail.dart`:右侧 pane 包 `AnimatedSwitcher`(220ms,`emphasizedDecelerate` 入场)。
    - `motion.dart` 新增 `MotionTokens.emphasized` / `emphasizedDecelerate` + `DurationTokens.tabFadeThrough` / `tabFadeThroughOut` / `masterDetailSwitch`。
-3. **阶段 3(路由增强)**:`slidePage` 补 `secondaryAnimation` 反向过渡(被覆盖的旧页向左让位,形成 push/pop 方向感)。✅ 已完成(2026-09-12)。`PageTransitionsTheme` 品牌统一评估推迟到阶段 5 与 `animations` 一起做——当前全站统一 slide 视觉优于桌面 Zoom/移动原生混搭,且切换成本高(50+ 路由)。
+3. **阶段 3(路由增强)**:`slidePage` 补 `secondaryAnimation` 反向过渡(被覆盖的旧页向左让位,形成 push/pop 方向感)。✅ 已完成(2026-09-12),**该手写实现随后被阶段 5 的官方 `SharedAxisTransition` 取代**(行为等价:push/pop 双向,位移量级由 15% 屏幕宽改为固定约 30 逻辑像素)。`PageTransitionsTheme` 品牌统一已在阶段 5 落地,见下。
 4. **阶段 4(内容/列表)**:record 首页 dashboard 入场动画(fade + 轻微上移,与 mine 对齐)。✅ 部分完成(2026-09-12)。review 历史列表刷新过渡**暂缓**:该 section 被大量单帧 `pump()` + 位置断言测试覆盖,入场动画会引入脆弱性;且周期/筛选切换频繁刷新,过渡易显"跳"。数据刷新过渡等 `animations` 包引入后以 `PageTransitionSwitcher` 统一再做。
-5. **阶段 5(可选)**:引入 `animations` 3.0.0 做品牌 SharedAxis/FadeThrough + `PageTransitionsTheme` 统一(评估后决定;不引则维持阶段 2/3)。
+5. **阶段 5(品牌统一)**:引入官方 `animations` 3.0.0 统一过渡实现。✅ 已完成(2026-09-12)。
+   - `slidePage` → 官方 `SharedAxisTransition`(horizontal):替换阶段 3 手写的 slide + `secondaryAnimation` 让位,push/pop 共用包内 `DualTransitionBuilder` 实现(M3 共享轴,位移约 30 逻辑像素 + 淡入淡出)。
+   - `tabFadePage` → 官方 `FadeThroughTransition`(260ms / reverse 0),与 tab 分支容器的 fade-through 同模式;`DurationTokens.tabPageTransitionIn/Out`(150/0ms)随之退役。
+   - `foruiMaterialTheme()` 新增 `pageTransitionsTheme`:全平台(android/iOS/macOS/windows/linux/fuchsia)统一 `SharedAxisPageTransitionsBuilder(horizontal)`。**注意**:当前所有路由都自带 `pageBuilder`(`router_helpers.dart`),故该项是"未来未指定过渡的路由不再回落到平台默认"的兜底,而非现有路由生效点;真正的品牌统一来自上面两个 helper 的替换。
+   - `PageStateSwitch`(today / medicine / mine / record / review legacy 兼容页共用)→ 官方 `PageTransitionSwitcher` + `FadeThroughTransition`:骨架 → 内容 → 错误之间的切换由硬替换变为 fade-through。要点:
+     - `KeyedSubtree` 按**状态变体**取 key(loading/error/empty/ready),同变体内的数据刷新在原地更新、不重播动画;
+     - 自定义 `layoutBuilder` 用 `StackFit.passthrough`,保住入参约束(record 页把它挂在 `SingleChildScrollView` 内,默认 loose Stack 会给子级无界约束);
+     - 首次构建不播动画(`PageTransitionSwitcher` 首子项 `primaryController = 1.0`),页面首帧即时渲染。
+   - 新增 `DurationTokens.pageStateSwitch`(240ms)。
 
 ## 6. 风险与权衡
 
@@ -148,8 +159,10 @@ updated: 2026-09-12
 | 测试面 | 新增过渡/动画必须 `pumpAndSettle` 可收敛;tab 过渡建议 280–300ms 有界;shimmer 等无限动画既有规避先例 |
 | go_router 版本 | 项目 17.3.0;升级 18.0 需回归(ShellRoute Hero 回归 #192043,与本次无关但记录) |
 | flutter_animate | 限制规模;跟踪 flutter_animate_plus;不做路由过渡 |
-| animations 3.0.0 | 与项目 material_ui 同源,风险低;OpenContainer 勿用于路由 |
-| 平台一致性 | 桌面 Zoom / 移动原生是特性;品牌统一只动 `PageTransitionsTheme`,不逐路由覆盖 |
+| animations 3.0.0 | 已引入;与项目 material_ui 同源,类型零摩擦;OpenContainer 勿用于路由 |
+| 平台一致性 | 全平台统一 M3 共享轴(`pageTransitionsTheme`)+ helper 内官方过渡,不再有桌面 Zoom / 移动原生混搭 |
+| 过渡位移量级 | SharedAxis 水平位移为**固定约 30 逻辑像素**(非屏幕比例),比原 15% 更克制;移动端观感明显更"轻" |
+| 不透明盖底 | `FadeThroughTransition` / `SharedAxisTransition` 退出侧会用 `fillColor`(默认 `Theme.canvasColor`)盖底;本项目 `canvasColor == scaffoldBackgroundColor`,使用点均在 scaffold 底色上,故不可见 |
 | reduced-motion | 框架自动 + 自写判断;Forui/flow_ui 已内建 |
 
 ## 7. 参考链接
