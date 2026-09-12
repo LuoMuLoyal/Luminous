@@ -247,5 +247,10 @@
   "profileUserSaveAction": "Save User Info",
   "profileHealthSectionTitle": "Health Profile",
   "profileNicknameLabel": "Nickname",
-  "profileAvatarLabel": "Avatar URL"
+  "profileAvatarLabel": "Avatar URL",
+  "profileAvatarActionsTitle": "Avatar settings",
+  "profileAvatarTakePhoto": "Take a photo",
+  "profileAvatarChooseFromGallery": "Choose from gallery",
+  "profileAvatarRemove": "Remove avatar",
+  "profileAvatarViewerLabel": "View avatar"
 }

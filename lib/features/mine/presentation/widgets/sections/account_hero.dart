@@ -6,7 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
@@ -234,35 +235,17 @@ class _AvatarHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     return SizedBox.square(
       dimension: 64,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          AvatarView(
+          AvatarActionView(
             avatarUrl: avatarUrl,
             size: 64,
             iconSize: 32,
-            semanticLabel: AppLocalizations.of(context)!.profileAvatarLabel,
-          ),
-          Positioned(
-            right: -2,
-            bottom: -2,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: SemanticColor.primary.solid(context),
-                shape: BoxShape.circle,
-                border: Border.all(color: colors.background, width: 2),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(Spacing.xs),
-                child: Icon(
-                  SemanticIcons.actionEdit,
-                  color: SemanticColor.primary.foreground(context),
-                  size: 12,
-                ),
-              ),
+            onEdit: () => unawaited(
+              showAvatarActionsSheet(context, avatarUrl: avatarUrl),
             ),
           ),
         ],

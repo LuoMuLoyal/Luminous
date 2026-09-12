@@ -247,5 +247,10 @@
   "profileUserSaveAction": "保存用户信息",
   "profileHealthSectionTitle": "健康档案",
   "profileNicknameLabel": "昵称",
-  "profileAvatarLabel": "头像 URL"
+  "profileAvatarLabel": "头像 URL",
+  "profileAvatarActionsTitle": "头像设置",
+  "profileAvatarTakePhoto": "拍照",
+  "profileAvatarChooseFromGallery": "从相册选择",
+  "profileAvatarRemove": "移除头像",
+  "profileAvatarViewerLabel": "查看头像"
 }

@@ -9,7 +9,8 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -288,11 +289,12 @@ class _AvatarEditSection extends StatelessWidget {
     return Row(
       children: [
         // 头像预览
-        AvatarView(
+        AvatarActionView(
           avatarUrl: avatarUrl,
           size: 64,
           iconSize: 32,
-          semanticLabel: l10n.profileAvatarLabel,
+          onEdit: () =>
+              unawaited(showAvatarActionsSheet(context, avatarUrl: avatarUrl)),
         ),
         const SizedBox(width: Spacing.lg),
         // 头像URL输入框
