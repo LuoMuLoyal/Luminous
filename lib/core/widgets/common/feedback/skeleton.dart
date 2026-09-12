@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/accessibility/motion.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -17,17 +18,27 @@ class StateSkeletonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _ShimmerScope(
-      child: Shimmer.fromColors(
-        baseColor: SemanticColor.neutral.border(context),
-        highlightColor: context.theme.colors.background,
-        child: ListView.separated(
-          padding: padding,
-          itemBuilder: (context, index) => _SkeletonBlock(data: blocks[index]),
-          separatorBuilder: (context, index) =>
-              const SizedBox(height: Spacing.lg),
-          itemCount: blocks.length,
-        ),
-      ),
+      child: prefersReducedMotion(context)
+          ? ListView.separated(
+              padding: padding,
+              itemBuilder: (context, index) =>
+                  _SkeletonBlock(data: blocks[index]),
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: Spacing.lg),
+              itemCount: blocks.length,
+            )
+          : Shimmer.fromColors(
+              baseColor: SemanticColor.neutral.border(context),
+              highlightColor: context.theme.colors.background,
+              child: ListView.separated(
+                padding: padding,
+                itemBuilder: (context, index) =>
+                    _SkeletonBlock(data: blocks[index]),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: Spacing.lg),
+                itemCount: blocks.length,
+              ),
+            ),
     );
   }
 }
@@ -185,6 +196,13 @@ class SkeletonShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     if (_ShimmerScope.isActiveOf(context)) {
       return child;
+    }
+
+    // The shimmer is an infinite `ShaderMask` animation. Under reduced motion
+    // it is dropped entirely, leaving the blocks as a static skeleton — a
+    // per-frame animation is precisely what the setting asks us to avoid.
+    if (prefersReducedMotion(context)) {
+      return _ShimmerScope(child: child);
     }
 
     return _ShimmerScope(

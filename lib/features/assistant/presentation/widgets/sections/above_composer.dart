@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/accessibility/motion.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
@@ -21,7 +22,6 @@ class AssistantAboveComposer extends StatelessWidget {
   final String? sendError;
   final AssistantSendErrorType? sendErrorType;
   final VoidCallback? onRetry;
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -34,13 +34,7 @@ class AssistantAboveComposer extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: FCircularProgress(),
-                    )
-                    .animate(onPlay: (controller) => controller.repeat())
-                    .rotate(duration: 800.ms),
+                const _OpeningSpinner(),
                 const SizedBox(width: Spacing.sm),
                 Text(
                   l10n.assistantOpeningConversationLabel,
@@ -68,5 +62,30 @@ class AssistantAboveComposer extends StatelessWidget {
         ],
       ],
     );
+  }
+}
+
+/// The "opening conversation" spinner.
+///
+/// Spins only when the user has not asked for reduced motion. `flutter_animate`
+/// has no built-in support for the accessibility flags, so this has to opt in
+/// itself — otherwise the 800ms repeating rotation kept the app scheduling
+/// frames forever while a conversation was opening, regardless of the setting.
+/// The reduced-motion rendering is the same spinner held still: it still reads
+/// as "working", it just does not move.
+class _OpeningSpinner extends StatelessWidget {
+  const _OpeningSpinner();
+
+  @override
+  Widget build(BuildContext context) {
+    const spinner = SizedBox(width: 16, height: 16, child: FCircularProgress());
+
+    if (prefersReducedMotion(context)) {
+      return spinner;
+    }
+
+    return spinner
+        .animate(onPlay: (controller) => controller.repeat())
+        .rotate(duration: 800.ms);
   }
 }

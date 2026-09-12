@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -7,6 +8,7 @@ import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabil
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/above_composer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
@@ -952,6 +954,53 @@ void main() {
       );
 
       expect(find.text('0 / 0'), findsOneWidget);
+    });
+  });
+
+  group('AssistantAboveComposer reduced motion', () {
+    Widget composer({required bool reduced}) {
+      const child = AssistantAboveComposer(
+        isOpeningConversation: true,
+        sendError: null,
+        sendErrorType: null,
+        onRetry: null,
+      );
+      return TestForuiApp(
+        home: reduced
+            ? const MediaQuery(
+                data: MediaQueryData(disableAnimations: true),
+                child: Scaffold(body: child),
+              )
+            : const Scaffold(body: child),
+      );
+    }
+
+    Future<void> settle(WidgetTester tester) async {
+      for (var i = 0; i < 40; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+    }
+
+    testWidgets('wraps the spinner in a flutter_animate effect normally', (
+      tester,
+    ) async {
+      await tester.pumpWidget(composer(reduced: false));
+      await settle(tester);
+
+      expect(find.text('正在切换会话…'), findsOneWidget);
+      expect(find.byType(Animate), findsOneWidget);
+    });
+
+    testWidgets('drops the flutter_animate wrapper under reduced motion', (
+      tester,
+    ) async {
+      await tester.pumpWidget(composer(reduced: true));
+      await settle(tester);
+
+      // The label and the spinner stay; only the repeating rotation effect is
+      // dropped, so the widget no longer holds a perpetual ticker of its own.
+      expect(find.text('正在切换会话…'), findsOneWidget);
+      expect(find.byType(Animate), findsNothing);
     });
   });
 }
