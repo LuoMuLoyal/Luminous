@@ -165,6 +165,22 @@ updated: 2026-09-12
 | 不透明盖底 | `FadeThroughTransition` / `SharedAxisTransition` 退出侧会用 `fillColor`(默认 `Theme.canvasColor`)盖底;本项目 `canvasColor == scaffoldBackgroundColor`,使用点均在 scaffold 底色上,故不可见 |
 | reduced-motion | 框架自动 + 自写判断;Forui/flow_ui 已内建 |
 
+## 6.1 实测(profile trace,2026-09-12,Android · GLES · 60Hz · 592 帧 / 23.4s)
+
+用 DevTools 性能快照(`traceBinary`,Perfetto protobuf)对"启动 → 切 tab → 进/退登录页 → 回今日 → AI 对话弹登录提示"整条链路做了解码分析。结论**修正了此前的判断**:
+
+| 指标 | 实测 |
+|---|---|
+| UI 线程帧耗时(`Frame`,build/layout/paint) | p50 **1.17ms** / p90 2.64ms / max 15.56ms;**超 16.67ms 预算 0 帧** |
+| Raster 帧耗时(`GPURasterizer::Draw`) | p50 **15.31ms** / p90 18.23ms / p99 29.66ms;**超预算 153/591 帧(25.9%)** |
+| 帧间隔 | p50 16.74ms ≈ 59.8fps |
+
+- **瓶颈在 raster(GPU),不在 Dart 侧**。本项目新增的过渡全部在 UI 线程,只花 1–2ms,不是卡顿主因;raster 中位数已占满整个预算,因此任何额外 raster 开销都会掉帧。这也解释了"首次切 tab 卡顿":首次构建那一帧 UI 15.6ms + raster 29.7ms,UI 未超预算但整帧被 raster 拖垮。
+- **骨架 shimmer 是启动阶段最大的一笔**:`InlineSkeletonCircle` / `InlineSkeletonSection` 各自包一层 `Shimmer.fromColors`,而每个 `Shimmer` = 一个 `ShaderMask` = **每帧一次 `saveLayer`**。实测启动期 `Canvas::saveLayer` ≈ **22 次/帧**、raster p50 15.7ms;内容加载后降到 1–5 次/帧、raster p50 3.7ms。→ 已修:`SkeletonShimmer` 引入作用域,嵌套实例不再创建 mask。
+- **登录页进入的卡顿是真实且可修的**:`ImageCache.putIfAbsent` **41.8ms** + `listener` 41.7ms(`AssetBundleImageKey`),叠加 `ConcurrentMark` 31.3ms、3 次 `flutter/assets` 读取(8–13ms)。根因是 `app_icon.png` **1024×1024(解码位图 4MB)却按 24–64 逻辑像素渲染**。→ 已修:新增 `BrandIcon` 统一按显示尺寸解码(`cacheWidth/cacheHeight = size × dpr`)。
+- 登录页**本身**渲染很便宜(raster p50 3.7–5.5ms),说明 auth 过渡实现无问题。
+- 设备侧:trace 显示 **GLES 后端**(`ReactorGLES` / `SurfaceGLES` / `RenderPassGLES`)。若为模拟器,上述 raster 数字会被显著放大,真机需复测。
+
 ## 7. 参考链接
 
 **官方**
