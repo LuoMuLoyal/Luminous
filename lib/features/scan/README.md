@@ -44,7 +44,9 @@
 - OCR 路径免登录,AI 路径(压缩 → COS 预签名上传 → recognize)强制登录,auth gate
   在 `box_scan.dart`;勿把 OCR 路径也加登录墙。
 - 进相机前先做 OCR 预检查(ABI/模型文件),失败引导下载 ~30MB 模型;模型不打进 APK
-  是为控制包体(`OcrModelManager`,GitHub Releases 固定分发渠道)。
+  是为控制包体。模型从上游 `v0.1.1` git tag 的 raw 文件分发(`OcrModelManager`,
+  `ocr_model_hashes.dart` 固定 4 个 SHA-256,下载后校验,失败即删文件并报错,
+  篡改/替换模型 fail closed)。
 - `PaddleOcr` 是进程级单例,`PaddleOcrEngine` 只是懒初始化包装;测试的 fake 必须在
   创建 engine 之前安装(paddle_ocr_provider_test.dart 的顺序依赖)。
 - 批准文号 OCR 纠错映射(`medicine_ocr_extractor.dart`)是单向幂等,勿反向使用。

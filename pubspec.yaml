@@ -85,6 +85,7 @@ dependencies:
   timeline_tile: ^2.0.0
   flutter_slidable: ^4.0.3
   clock: ^1.1.2
+  crypto: ^3.0.6
   talker_flutter: ^5.1.17
   sentry: ^9.0.0
   sentry_flutter: ^9.0.0
