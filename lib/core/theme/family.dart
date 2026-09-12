@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/color/palette.dart';
 import 'package:luminous/core/design/color/theme_extension.dart';
@@ -289,6 +290,37 @@ ThemeData foruiMaterialTheme(FThemeData theme) {
   return material.copyWith(
     scaffoldBackgroundColor: scaffoldBg,
     canvasColor: scaffoldBg,
+    // Brand-wide page transition fallback: every platform uses the M3
+    // shared-axis horizontal transition instead of the mixed platform defaults
+    // (Windows/Linux Zoom, iOS/macOS Cupertino, Android FadeForwards).
+    //
+    // Note: all current routes provide their own `pageBuilder` via
+    // `lib/app/router_helpers.dart` (`slidePage` / `fadePage` / `tabFadePage` /
+    // `sidePanelPage`), so this theme entry governs routes that do not — it
+    // keeps a future route consistent instead of silently falling back to a
+    // platform default.
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: <TargetPlatform, PageTransitionsBuilder>{
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
+        TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
+        TargetPlatform.macOS: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
+        TargetPlatform.windows: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
+        TargetPlatform.linux: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
+        TargetPlatform.fuchsia: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
+      },
+    ),
     cardColor: theme.colors.card,
     dividerColor: theme.colors.border,
     shadowColor: ElevationTokens.shadowColor(theme.colors),
