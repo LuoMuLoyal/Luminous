@@ -111,10 +111,22 @@ class ProfilePage extends HookConsumerWidget {
 
     Future<void> saveUserProfile() async {
       final accountNotifier = ref.read(authAccountProvider.notifier);
-      final ok = await accountNotifier.updateProfile(
-        nickname: nicknameController.text,
-        avatar: avatarController.text,
-      );
+      final draft = avatarDraft.value;
+      var ok = true;
+      if (draft != null) {
+        ok = await accountNotifier.uploadAvatar(
+          bytes: draft.bytes,
+          fileName: draft.fileName,
+          contentType: draft.contentType,
+          nickname: nicknameController.text,
+        );
+      }
+      if (draft == null) {
+        ok = await accountNotifier.updateProfile(
+          nickname: nicknameController.text,
+          avatar: avatarController.text,
+        );
+      }
       if (ok && context.mounted) {
         await Toast.show(context, l10n.authProfileSaveSuccess);
       }

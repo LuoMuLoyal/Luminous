@@ -10,6 +10,7 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/data/services/avatar_uploader.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
@@ -95,6 +96,36 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
           .flatMap((_) => ref.read(authRepositoryProvider).fetchAccount()),
       (user) => ref.read(authSessionProvider.notifier).applyUser(user),
     );
+  }
+
+  Future<bool> uploadAvatar({
+    required Uint8List bytes,
+    required String fileName,
+    required String contentType,
+    String? nickname,
+  }) async {
+    final user = ref.read(authSessionProvider).user;
+    if (user == null) {
+      return _fail(
+        const LucentFailure(
+          kind: LucentFailureKind.authentication,
+          message: 'Not signed in.',
+        ),
+      );
+    }
+    try {
+      final url = await ref
+          .read(avatarUploaderProvider)
+          .upload(
+            userId: user.id,
+            bytes: bytes,
+            contentType: contentType,
+            fileName: fileName,
+          );
+      return await updateProfile(nickname: nickname, avatar: url);
+    } catch (error) {
+      return _fail(error);
+    }
   }
 
   Future<bool> updateProfile({String? nickname, String? avatar}) async {
