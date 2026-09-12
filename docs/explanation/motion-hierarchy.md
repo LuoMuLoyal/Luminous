@@ -8,16 +8,19 @@ updated: 2026-09-12
 
 > 结论:**分三层建动画体系,核心过渡走官方 Material Motion 实现**。导航过渡
 > (tab 切换 + 子页面 push/pop)用 **官方 `animations` 包的 SharedAxis/FadeThrough**
-> ——`slidePage` 用 SharedAxis(水平)、`tabFadePage` 与 tab 分支切换用 FadeThrough;
-> `PageTransitionsTheme` 全局兜底统一为 M3 共享轴,消灭桌面 Zoom / 移动原生的平台混搭。
-> 列表/内容过渡用官方 `PageTransitionSwitcher`(页面状态切换)+ 已依赖的
-> **`flutter_animate`**(限制规模)+ record 首页入场;微交互优先吃 **Forui 自带动画**
-> (FTappable/FPopover/FTooltip motion + `FAccessibilityMotion` 自动降级)。明确不引入
-> page_transition / motion(GPL-3)/ rive / lottie / go_router_animated_branch 等小众包。
+> ——`slidePage` 用 SharedAxis(水平)、`PageStateSwitch` 用 FadeThrough;**tab 切换
+> 的交叉淡化由 `ShellTabBranchContainer` 单独负责**(tab 根路由是 `NoTransitionPage`,
+> 见 §5 阶段 5);
+> `PageTransitionsTheme` 全局兜底统一为 M3 共享轴但**当前无路由消费**(见 §6)。
+> 列表/内容过渡用官方 `PageTransitionSwitcher`(页面状态切换);微交互优先吃
+> **Forui 自带动画**(FTappable/FPopover/FTooltip motion + `FAccessibilityMotion`
+> 自动降级)。明确不引入 page_transition / motion(GPL-3)/ rive / lottie /
+> go_router_animated_branch 等小众包。
 >
-> **状态:全部落地**(2026-09-12)。阶段 1 调研 → 阶段 2 tab fade-through + 设置页
-> master-detail → 阶段 3 路由 push/pop → 阶段 4 record 首页入场 → 阶段 5 引入官方
-> `animations` 包统一品牌过渡 + 页面状态切换 fade-through。
+> **状态:全部落地**(2026-09-12)。阶段 1 调研 → 阶段 2 tab 交叉淡化 + 设置页
+> master-detail → 阶段 3 路由 push/pop → 阶段 4 record 首页入场(**当日回退**,见下)
+> → 阶段 5 引入官方 `animations` 包统一品牌过渡 + 页面状态切换 fade-through
+> → 阶段 6 逐帧实测后的收敛修正(2026-09-12)。
 >
 > 依据:本地代码审计(2026-09-12)+ 官方调研(Flutter 3.38+ 源码与文档、go_router
 > 17.x 文档与示例、M3 motion 规范)+ 社区包调研(pub.dev / GitHub 实时数据)。
@@ -29,9 +32,9 @@ updated: 2026-09-12
 
 | 层 | 现状 | 位置 |
 |---|---|---|
-| 路由过渡(部分) | `fadePage`(auth 400/280ms 淡入)、`tabFadePage`(官方 FadeThrough 260ms)、`slidePage`(官方 SharedAxis 水平 220/150ms)、`sidePanelPage`(桌面右滑面板) | `lib/app/router_helpers.dart` |
-| in-widget 基础 | `MotionTokens`(entrance/exit/standard/snappy)+ `DurationTokens` 4+ 档 | `lib/core/design/tokens/motion.dart` |
-| flutter_animate | 已依赖 4.5.2,~6 处使用(auth 表单入场、assistant 旋转指示、mine/review dashboard 入场) | 各 feature |
+| 路由过渡(部分) | `fadePage`(auth 300/240ms 对称淡入淡出)、`slidePage`(官方 SharedAxis 水平 220/150ms)、`sidePanelPage`(桌面右滑面板);tab 根路由为 `NoTransitionPage`(过渡由分支容器负责) | `lib/app/router_helpers.dart`、`lib/app/router.dart` |
+| in-widget 基础 | `MotionTokens`(entrance/exit/standard/snappy/emphasized/emphasizedDecelerate)+ `DurationTokens` 4+ 档 | `lib/core/design/tokens/motion.dart` |
+| flutter_animate | 已依赖 4.5.2,全库**仅剩 1 处**使用(assistant 旋转指示) | `assistant/.../above_composer.dart` |
 | 显式动画 | `AnimationController` 3 处(summary 展开、suggestion card、risk score ring) | today / medicine |
 | 桌面 hover | `AnimatedContainer` 200ms snappy(背景+边框) | `desktop_hover.dart` |
 | 弹层 | Forui `showFDialog` / `showFSheet` / `FPopover` 自带动画 | core + features |
@@ -42,8 +45,8 @@ updated: 2026-09-12
 
 | 场景 | 缺口 | 根因 |
 |---|---|---|
-| **Tab 切换** | ✅ **已补**(2026-09-12):`ShellTabBranchContainer` fade-through | `StatefulShellRoute.indexedStack` 官方**明确不做分支切换过渡**;现改用自定义 `navigatorContainerBuilder` |
-| **设置页桌面 master-detail** | ✅ **已补**:右侧 pane `AnimatedSwitcher`(220ms) | 原 `setState` 直接换 body |
+| **Tab 切换** | ✅ **已补**(2026-09-12):`ShellTabBranchContainer` 交叉淡化 | `StatefulShellRoute.indexedStack` 官方**明确不做分支切换过渡**;现改用自定义 `navigatorContainerBuilder` |
+| **设置页桌面 master-detail** | ✅ **已补**:右侧 pane 淡入 + 高度过渡(220ms) | 原 `setState` 直接换 body |
 | **子页面路由** | ✅ **已补**:`slidePage` 换官方 SharedAxis 水平轴,push/pop 双向 | 原手写 slide 仅用 `animation`(单侧),`secondaryAnimation` 未用 |
 | **页面状态切换** | ✅ **已补**:`PageStateSwitch` 用官方 `PageTransitionSwitcher` + FadeThrough | 原 `switch` 硬替换(骨架 ↔ 内容 ↔ 错误) |
 | **列表项进场交错** | 未做 | 收益/风险比不佳:核心列表(如 review 历史)被单帧 `pump()` + 位置断言测试覆盖,交错入场会引入脆弱性 |
@@ -135,35 +138,53 @@ updated: 2026-09-12
 ## 5. 落地建议(分阶段,每阶段独立提交可回滚)
 
 1. **阶段 1(调研落地,仅文档)**:本调研报告 + 迁移日志;不动代码。✅ 已完成(2026-09-12)。
-2. **阶段 2(核心痛点)**:tab 切换 fade-through(`navigatorContainerBuilder`)+ 设置页桌面 master-detail `AnimatedSwitcher`;补 `DurationTokens`/`MotionTokens` M3 对齐 token(emphasized 系 + 分级时长)。✅ 已完成(2026-09-12)。
-   - 新增 `ShellTabBranchContainer`(`lib/features/shell/presentation/tab_branch_container.dart`):M3 fade-through(淡入+轻微缩放 0.98→1.0,260/200ms emphasized),保持 IndexedStack 的"分支常驻 + 非当前分支 offstage"语义。
+2. **阶段 2(核心痛点)**:tab 切换过渡(`navigatorContainerBuilder`)+ 设置页桌面 master-detail;补 `DurationTokens`/`MotionTokens` M3 对齐 token(emphasized 系 + 分级时长)。✅ 已完成(2026-09-12),**曲线与 master-detail 实现于阶段 6 修正**。
+   - 新增 `ShellTabBranchContainer`(`lib/features/shell/presentation/tab_branch_container.dart`):交叉淡化(新分支淡入 + 轻微缩放 0.98→1.0,260/200ms),保持 IndexedStack 的"分支常驻 + 非当前分支 offstage"语义。
    - `router.dart`:`StatefulShellRoute.indexedStack` → `StatefulShellRoute` + 自定义 `navigatorContainerBuilder`。
-   - 设置页桌面 `master_detail.dart`:右侧 pane 包 `AnimatedSwitcher`(220ms,`emphasizedDecelerate` 入场)。
+   - 设置页桌面 `master_detail.dart`:右侧 pane 加切换过渡(220ms),阶段 6 由 `AnimatedSwitcher` 改为"淡入 + `AnimatedSize` 高度过渡"。
    - `motion.dart` 新增 `MotionTokens.emphasized` / `emphasizedDecelerate` + `DurationTokens.tabFadeThrough` / `tabFadeThroughOut` / `masterDetailSwitch`。
 3. **阶段 3(路由增强)**:`slidePage` 补 `secondaryAnimation` 反向过渡(被覆盖的旧页向左让位,形成 push/pop 方向感)。✅ 已完成(2026-09-12),**该手写实现随后被阶段 5 的官方 `SharedAxisTransition` 取代**(行为等价:push/pop 双向,位移量级由 15% 屏幕宽改为固定约 30 逻辑像素)。`PageTransitionsTheme` 品牌统一已在阶段 5 落地,见下。
-4. **阶段 4(内容/列表)**:record 首页 dashboard 入场动画(fade + 轻微上移,与 mine 对齐)。✅ 部分完成(2026-09-12)。review 历史列表刷新过渡**暂缓**:该 section 被大量单帧 `pump()` + 位置断言测试覆盖,入场动画会引入脆弱性;且周期/筛选切换频繁刷新,过渡易显"跳"。数据刷新过渡等 `animations` 包引入后以 `PageTransitionSwitcher` 统一再做。
+4. **阶段 4(内容/列表)**:record 首页 dashboard 入场动画(fade + 轻微上移,与 mine 对齐)。**已实现并于同日回退**(2026-09-12):当日实测发现它与外围过渡(页面状态 fade-through / tab 分支淡化)叠乘 —— 两层不透明度相乘使可见显示被推迟,且"内容往上飘"的观感不佳;`mine` / `record` / `review legacy` 三处 `Animate` 入场全部移除,只保留 `SkeletonScope`。review 历史列表刷新过渡**暂缓**:该 section 被大量单帧 `pump()` + 位置断言测试覆盖,入场动画会引入脆弱性;且周期/筛选切换频繁刷新,过渡易显"跳"。数据刷新过渡等 `animations` 包引入后以 `PageTransitionSwitcher` 统一再做。
 5. **阶段 5(品牌统一)**:引入官方 `animations` 3.0.0 统一过渡实现。✅ 已完成(2026-09-12)。
    - `slidePage` → 官方 `SharedAxisTransition`(horizontal):替换阶段 3 手写的 slide + `secondaryAnimation` 让位,push/pop 共用包内 `DualTransitionBuilder` 实现(M3 共享轴,位移约 30 逻辑像素 + 淡入淡出)。
-   - `tabFadePage` → 官方 `FadeThroughTransition`(260ms / reverse 0),与 tab 分支容器的 fade-through 同模式;`DurationTokens.tabPageTransitionIn/Out`(150/0ms)随之退役。
-   - `foruiMaterialTheme()` 新增 `pageTransitionsTheme`:全平台(android/iOS/macOS/windows/linux/fuchsia)统一 `SharedAxisPageTransitionsBuilder(horizontal)`。**注意**:当前所有路由都自带 `pageBuilder`(`router_helpers.dart`),故该项是"未来未指定过渡的路由不再回落到平台默认"的兜底,而非现有路由生效点;真正的品牌统一来自上面两个 helper 的替换。
+   - tab 根路由曾短暂经 `tabFadePage` 走官方 `FadeThroughTransition`(260ms / reverse 0);`DurationTokens.tabPageTransitionIn/Out`(150/0ms)随之退役。**阶段 6 实测发现该 helper 在 tab 切换下从不播放**(见 §5 阶段 6),已改为 `NoTransitionPage` 并删除 helper。
+   - `foruiMaterialTheme()` 新增 `pageTransitionsTheme`:全平台(android/iOS/macOS/windows/linux/fuchsia)统一 `SharedAxisPageTransitionsBuilder(horizontal)`。**注意**:该 map **当前没有任何路由消费**(全部路由自带 `pageBuilder`,tab 根路由用 `NoTransitionPage`),是"未来返回普通 `MaterialPage` 的路由不再回落到平台默认"的兜底,而非现有路由生效点;真正的品牌统一来自上面两个 helper 的替换。
    - `PageStateSwitch`(today / medicine / mine / record / review legacy 兼容页共用)→ 官方 `PageTransitionSwitcher` + `FadeThroughTransition`:骨架 → 内容 → 错误之间的切换由硬替换变为 fade-through。要点:
      - `KeyedSubtree` 按**状态变体**取 key(loading/error/empty/ready),同变体内的数据刷新在原地更新、不重播动画;
      - 自定义 `layoutBuilder` 用 `StackFit.passthrough`,保住入参约束(record 页把它挂在 `SingleChildScrollView` 内,默认 loose Stack 会给子级无界约束);
      - 首次构建不播动画(`PageTransitionSwitcher` 首子项 `primaryController = 1.0`),页面首帧即时渲染。
    - 新增 `DurationTokens.pageStateSwitch`(240ms)。
+6. **阶段 6(逐帧实测后的收敛修正)**:✅ 已完成(2026-09-12)。用一次性探针在**生产 router**上逐帧测 tab 切换的不透明度/路由动画值,据此修掉四处问题:
+   - **`tabFadePage` 的 fade-through 从不播放**:逐帧实测 `FadeThroughTransition.animation.value` 全程恒为 **1.000**。go_router 只在分支位置真正变化时重建分支 Navigator,回访分支走 `restore` 直接复用,因此该 helper 是纯死配置。→ tab 根路由改 `NoTransitionPage`,删除 `tabFadePage`,并由 `ShellTabBranchContainer` 单独负责过渡。
+   - **删掉一层"看着像在生效"的过渡**:tab 根路由曾套 `CustomTransitionPage`(fade-through + `0.92→1.0` 缩放)。实测它**从不播放**——分支首次挂载时落地页以满不透明度加入,回访分支直接复用 Navigator。它不产生可见效果,却让"tab 过渡由谁负责"变得不可读,也留下"两层缩放会相乘"的错误直觉。→ 改 `NoTransitionPage`,过渡唯一归口到分支容器。
+   - **交叉淡化曲线用错**:原用 `MotionTokens.emphasized`(= `ThreePointCubic`,在 t/T≈0.25 就到 1.0)。它是给**单边元素进出**设计的,用在"两边同时可见"的交叉淡化上,实测 32ms 时旧分支已掉到 0.661 而新分支只有 0.155 —— 中段两边都很淡的洗白帧。→ 交叉淡化改 `MotionTokens.snappy`(`easeOut`);`MotionTokens.emphasized` 的文档补上"勿用于交叉淡化"。
+   - **快切闪断**:`_transitioningFrom` 原为单个 `int?`,只能记住一个退场分支;连续切 tab 时被覆盖,更早的分支会在那一帧直接 `Offstage`、淡出被掐断。→ 改为 `Set<int>`,按索引各自清除。
+   - 设置页 master-detail 的 `AnimatedSwitcher` 默认 layout 是居中 `Stack`,新旧 pane 全程叠放且较矮者被居中(高度不同即纵向跳动),默认过渡也只是普通 `FadeTransition`(并非 fade-through)。→ 改为同步替换 + 新 pane 淡入 + `AnimatedSize` 高度过渡。
+   - 实测数据(260/200ms,`snappy` 修正前为 `emphasized`):
+     | t | 旧分支 | 新分支(修正前) |
+     |---|---|---|
+     | 0ms | 1.000 | 0.000 |
+     | 16ms | 0.944 | 0.032 |
+     | 32ms | 0.661 | 0.155 |
+     | 48ms | 0.246 | 0.555 |
+     | 96ms | 0.055 | 0.896 |
+     | 192ms | 0.000 | 0.990 |
+   - 回归测试:`test/shell/tab_branch_container_test.dart` 覆盖"分支常驻 + 仅当前分支 onstage / 过渡分支 onstage 且忽略指针 / 淡入淡出曲线 / 连续快切收敛"。其中曲线断言已在旧实现上实测会失败,即它确实能挡住这次回归。
 
 ## 6. 风险与权衡
 
 | 项 | 评估 |
 |---|---|
-| 测试面 | 新增过渡/动画必须 `pumpAndSettle` 可收敛;tab 过渡建议 280–300ms 有界;shimmer 等无限动画既有规避先例 |
+| 测试面 | 新增过渡/动画必须 `pumpAndSettle` 可收敛;tab 过渡有界(260/200ms);shimmer 等无限动画既有规避先例 |
 | go_router 版本 | 项目 17.3.0;升级 18.0 需回归(ShellRoute Hero 回归 #192043,与本次无关但记录) |
-| flutter_animate | 限制规模;跟踪 flutter_animate_plus;不做路由过渡 |
+| flutter_animate | 仅剩 1 处使用;跟踪 flutter_animate_plus;不做路由过渡 |
 | animations 3.0.0 | 已引入;与项目 material_ui 同源,类型零摩擦;OpenContainer 勿用于路由 |
-| 平台一致性 | 全平台统一 M3 共享轴(`pageTransitionsTheme`)+ helper 内官方过渡,不再有桌面 Zoom / 移动原生混搭 |
+| 平台一致性 | 逐路由 helper 已统一官方过渡,不再有桌面 Zoom / 移动原生混搭;`pageTransitionsTheme` 是兜底,当前无人消费 |
 | 过渡位移量级 | SharedAxis 水平位移为**固定约 30 逻辑像素**(非屏幕比例),比原 15% 更克制;移动端观感明显更"轻" |
 | 不透明盖底 | `FadeThroughTransition` / `SharedAxisTransition` 退出侧会用 `fillColor`(默认 `Theme.canvasColor`)盖底;本项目 `canvasColor == scaffoldBackgroundColor`,使用点均在 scaffold 底色上,故不可见 |
-| reduced-motion | 框架自动 + 自写判断;Forui/flow_ui 已内建 |
+| 交叉淡化曲线 | **两边同时可见的过渡用 `MotionTokens.snappy`(`easeOut`),不要用 `emphasized`** —— M3 emphasized 系在 t/T≈0.25 就到 1.0,是为单边进出设计的,套到交叉淡化上会留下两边都很淡的洗白中段(阶段 6 实测) |
+| 幂等/叠加 | 同一段可见变化只允许一层动画负责:路由过渡、分支容器、页面状态切换、组件入场**不得叠乘** —— 多层不透明度会相乘,把可见显示整体推迟(阶段 4 的 dashboard 入场动画就是这么被去掉的) |
+| reduced-motion | 框架 `AnimationController` 自动响应(项目把 `reduceAnimations` 映射到 `accessibleNavigation`)+ Forui/flow_ui 内建;**`flutter_animate` 无此支持**,那 1 处使用未判断 |
 
 ## 6.1 实测(profile trace,2026-09-12,Android · GLES · 60Hz · 592 帧 / 23.4s)
 

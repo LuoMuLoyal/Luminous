@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-11
+updated: 2026-09-12
 ---
 
 # Routing (GoRouter)
@@ -25,6 +25,20 @@ StatefulShellRoute (preserves tab state)
 └── ShellBranch 4: /mine      → Mine/profile
 ```
 
+`navigatorContainerBuilder` returns `ShellTabBranchContainer`
+(`lib/features/shell/presentation/tab_branch_container.dart`) instead of the default
+`IndexedStack`, so switching tabs cross-fades. It keeps the `IndexedStack` semantics the rest
+of the app relies on: every visited branch stays mounted, and only the active branch (plus any
+branch still fading out) is onstage, so finders and tests see one tab's content. Locked in by
+`test/shell/tab_branch_container_test.dart`.
+
+**Tab roots use `NoTransitionPage` on purpose.** The branch cross-fade is the *only* animation
+a tab switch gets. Adding a `CustomTransitionPage` there previously meant a second fade + scale
+on the incoming branch the first time that branch was mounted; and a `tabFadePage` helper that
+wrapped the tab roots in a `FadeThroughTransition` was measured (frame-by-frame, 2026-09-12) to
+never play at all — go_router reuses a restored branch's Navigator instead of rebuilding it. See
+[Motion Hierarchy](../explanation/motion-hierarchy.md) §5 for the full motion contract.
+
 All create/detail/edit sub-pages are **top-level full-screen routes** (outside the shell), which
 hides the bottom navigation bar and desktop sidebar. 全量路由清单由 `lib/app/router.g.dart` 与
 生成索引承接，本文件不复述逐路由清单。
@@ -36,7 +50,7 @@ Router entry lives in `lib/app/`; typed routes are declared per feature:
 ```
 lib/app/
 ├── router.dart          # Routes 常量、公开路由前缀、redirect 守卫、shell branches + routes spread
-├── router_helpers.dart  # fadePage / tabFadePage / slidePage / sidePanelPage 页面过渡
+├── router_helpers.dart  # fadePage / slidePage / sidePanelPage 页面过渡
 └── router.g.dart        # go_router_builder 生成的 typed routes（router.dart 的 part 文件）
 ```
 
@@ -67,6 +81,15 @@ class Routes {
 - Use `context.push()` for sub-page navigation (preserves tab state).
 - Use `context.go()` for auth redirects and tab switching.
 - Shell branches only model the five visible tabs; no hidden branches.
+- Branches load on demand (a branch is built the first time its tab is opened). `preload: true`
+  was tried and dropped to keep cold start light.
+- Page transitions come from `lib/app/router_helpers.dart`
+  (`slidePage` / `fadePage` / `sidePanelPage`) or `NoTransitionPage` for tab roots. **Exactly one
+  layer owns a given visible motion** — do not stack a route transition, the branch container and
+  a widget-level entrance animation on the same element; the opacity ramps multiply and the
+  content's appearance is delayed. See [Motion Hierarchy](../explanation/motion-hierarchy.md).
+- `foruiMaterialTheme().pageTransitionsTheme` is a fallback only: no current route consumes it,
+  because every route supplies its own `pageBuilder`.
 - 带路径参数的路由使用 `go_router_builder` 生成的 typed route class（如
   `XxxRoute(id: id).push(context)`），不手拼路径字符串。
 - `AppBackButton` uses `context.pop()` when the route can pop, otherwise falls back to
