@@ -64,14 +64,6 @@ abstract final class DurationTokens {
   /// Auth page route transition (fade out).
   static const authPageTransitionOut = Duration(milliseconds: 280);
 
-  /// Shell tab route transition (fade in). Fast to keep tab
-  /// switching feeling instantaneous.
-  static const tabPageTransitionIn = Duration(milliseconds: 150);
-
-  /// Shell tab route transition (fade out). Zero so outgoing
-  /// tab content is removed immediately without flicker.
-  static const tabPageTransitionOut = Duration.zero;
-
   /// CRUD page route transition (slide in).
   static const crudPageTransitionIn = Duration(milliseconds: 220);
 
@@ -98,10 +90,9 @@ abstract final class DurationTokens {
   /// Standard implicit animation for larger containers.
   static const widgetStandard = Duration(milliseconds: 300);
 
-  /// Shell tab fade-through transition (in). Slightly longer than the old
-  /// [tabPageTransitionIn] so the cross-fade between branches reads as a
-  /// deliberate switch instead of a blink; bounded so `pumpAndSettle`
-  /// converges.
+  /// Shell tab fade-through transition (in). Long enough for the cross-fade
+  /// between branches to read as a deliberate switch instead of a blink;
+  /// bounded so `pumpAndSettle` converges.
   static const tabFadeThrough = Duration(milliseconds: 260);
 
   /// Shell tab fade-through transition (out). Matches [tabFadeThrough] so

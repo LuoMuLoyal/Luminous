@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
@@ -16,10 +17,17 @@ CustomTransitionPage<T> fadePage<T>({
   );
 }
 
-/// Fade transition helper for shell tab routes.
+/// Fade-through transition helper for shell tab routes.
 ///
-/// Uses the fast [DurationTokens.tabPageTransitionIn] / [tabPageTransitionOut]
-/// tokens so tab switching feels instantaneous.
+/// Uses the official Material [FadeThroughTransition] — the outgoing page
+/// fades out over the first 30% of the duration, then the incoming page fades
+/// in and scales up (0.92 → 1.0) — which is the M3 pattern for peer content
+/// without a spatial relationship. This matches the cross-branch fade-through
+/// performed by `ShellTabBranchContainer` when switching tabs.
+///
+/// [DurationTokens.tabFadeThrough] keeps the transition bounded so
+/// `pumpAndSettle` converges; the reverse duration stays zero so rapid tab
+/// switching never plays a reverse animation.
 CustomTransitionPage<T> tabFadePage<T>({
   required LocalKey key,
   required Widget child,
@@ -28,12 +36,29 @@ CustomTransitionPage<T> tabFadePage<T>({
     key: key,
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeTransition(opacity: animation, child: child),
-    transitionDuration: DurationTokens.tabPageTransitionIn,
-    reverseTransitionDuration: DurationTokens.tabPageTransitionOut,
+        FadeThroughTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+        ),
+    transitionDuration: DurationTokens.tabFadeThrough,
+    reverseTransitionDuration: Duration.zero,
   );
 }
 
+/// Drill-down transition helper for full-screen sub-pages.
+///
+/// Uses the official Material [SharedAxisTransition] on the horizontal axis —
+/// the M3 pattern for elements with a spatial/navigational relationship (e.g.
+/// a list opening a detail page). The incoming page slides in ~30 logical
+/// pixels and fades in; the page underneath slides out ~30 pixels and fades
+/// out; popping runs the whole thing in reverse.
+///
+/// Replaces the previous hand-rolled slide + `secondaryAnimation` pair: the
+/// dual enter/exit behaviour is now the package's `DualTransitionBuilder`
+/// implementation, so push and pop share one M3 curve set. Durations still come
+/// from [DurationTokens.crudPageTransitionIn] / [crudPageTransitionOut] so the
+/// transition stays bounded and `pumpAndSettle` converges.
 CustomTransitionPage<T> slidePage<T>({
   required LocalKey key,
   required Widget child,
@@ -41,28 +66,13 @@ CustomTransitionPage<T> slidePage<T>({
   return CustomTransitionPage<T>(
     key: key,
     child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      // 本页作为"新页":从右 15% 滑入(进入)/ 向右滑出(返回),同时淡入淡出。
-      final entering = SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0.15, 0),
-          end: Offset.zero,
-        ).chain(CurveTween(curve: MotionTokens.entrance)).animate(animation),
-        child: FadeTransition(
-          opacity: Tween<double>(begin: 0, end: 1).animate(animation),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        SharedAxisTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.horizontal,
           child: child,
         ),
-      );
-      // 本页作为"被覆盖的旧页"(栈下有页压上来时):向左让位约 12%,
-      // 形成 push/pop 的方向感;pop 时随 secondaryAnimation 复位。
-      // 本页作为新页时 secondaryAnimation 静止在 0,此层无位移。
-      return SlideTransition(
-        position: Tween<Offset>(begin: Offset.zero, end: const Offset(-0.12, 0))
-            .chain(CurveTween(curve: MotionTokens.standard))
-            .animate(secondaryAnimation),
-        child: entering,
-      );
-    },
     transitionDuration: DurationTokens.crudPageTransitionIn,
     reverseTransitionDuration: DurationTokens.crudPageTransitionOut,
   );
