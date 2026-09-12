@@ -15,8 +15,7 @@ updated: 2026-09-12
 > (material_ui 1.x)同源,风险低。明确不引入 page_transition / motion(GPL-3)/
 > rive / lottie / go_router_animated_branch 等小众包。
 >
-> **状态:阶段 1(调研)+ 阶段 2(tab fade-through + 设置页 master-detail)已落地**
-> (2026-09-12);阶段 3–5 待实施。
+> **状态:阶段 1(调研)+ 阶段 2(tab fade-through + 设置页 master-detail)+ 阶段 3(路由反向让位)已落地**(2026-09-12);阶段 4–5 待实施。
 >
 > 依据:本地代码审计(2026-09-12)+ 官方调研(Flutter 3.38+ 源码与文档、go_router
 > 17.x 文档与示例、M3 motion 规范)+ 社区包调研(pub.dev / GitHub 实时数据)。
@@ -138,9 +137,9 @@ updated: 2026-09-12
    - `router.dart`:`StatefulShellRoute.indexedStack` → `StatefulShellRoute` + 自定义 `navigatorContainerBuilder`。
    - 设置页桌面 `master_detail.dart`:右侧 pane 包 `AnimatedSwitcher`(220ms,`emphasizedDecelerate` 入场)。
    - `motion.dart` 新增 `MotionTokens.emphasized` / `emphasizedDecelerate` + `DurationTokens.tabFadeThrough` / `tabFadeThroughOut` / `masterDetailSwitch`。
-3. **阶段 3(路由增强)**:`slidePage` 补 `secondaryAnimation` 反向过渡;评估 `PageTransitionsTheme` 品牌统一。
+3. **阶段 3(路由增强)**:`slidePage` 补 `secondaryAnimation` 反向过渡(被覆盖的旧页向左让位,形成 push/pop 方向感)。✅ 已完成(2026-09-12)。`PageTransitionsTheme` 品牌统一评估推迟到阶段 5 与 `animations` 一起做——当前全站统一 slide 视觉优于桌面 Zoom/移动原生混搭,且切换成本高(50+ 路由)。
 4. **阶段 4(内容/列表)**:核心列表页进场交错 + 数据刷新 `AnimatedSwitcher`。
-5. **阶段 5(可选)**:引入 `animations` 3.0.0 做品牌 SharedAxis/FadeThrough(评估后决定;不引则维持阶段 2/3)。
+5. **阶段 5(可选)**:引入 `animations` 3.0.0 做品牌 SharedAxis/FadeThrough + `PageTransitionsTheme` 统一(评估后决定;不引则维持阶段 2/3)。
 
 ## 6. 风险与权衡
 
@@ -155,7 +154,7 @@ updated: 2026-09-12
 
 ## 7. 参考链接
 
-**官方(完整见 `flutter-motion-hierarchy-report.md` §11)**
+**官方**
 - [PageTransitionsTheme API](https://api.flutter.dev/flutter/material/PageTransitionsTheme-class.html) · [StatefulShellRoute 文档](https://pub.dev/documentation/go_router/latest/go_router/StatefulShellRoute-class.html) · [custom_stateful_shell_route.dart 示例](https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/others/custom_stateful_shell_route.dart) · [go_router transition-animations.md](https://github.com/flutter/packages/blob/main/packages/go_router/doc/transition-animations.md) · [M3 Motion overview](https://m3.material.io/styles/motion/overview/how-it-works) · [M3 easing/duration tokens](https://m3.material.io/styles/motion/easing-and-duration/tokens-specs) · [MDC Motion.md](https://github.com/material-components/material-components-android/blob/master/docs/theming/Motion.md) · [Easing class](https://api.flutter.dev/flutter/material/Easing-class.html) · [Android 默认过渡 breaking change](https://docs.flutter.dev/release/breaking-changes/default-android-page-transition) · [MediaQueryData.disableAnimations](https://api.flutter.dev/flutter/widgets/MediaQueryData/disableAnimations.html) · [reduceMotion PR #190287](https://github.com/flutter/flutter/pull/190287) · [Hero 跨分支 issue #192043](https://github.com/flutter/flutter/issues/192043)
 
 **社区**
