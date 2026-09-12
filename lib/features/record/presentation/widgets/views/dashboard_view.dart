@@ -1,5 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -66,7 +67,24 @@ class RecordDashboardView extends StatelessWidget {
             onDateSelected: onDateSelected,
           );
 
-    return SkeletonScope(isLoading: isLoading, child: content);
+    final scopedContent = SkeletonScope(isLoading: isLoading, child: content);
+    if (isLoading) {
+      return scopedContent;
+    }
+
+    // 入场动画：ready 时 fade + 轻微上移，与 Mine 页 dashboard 保持一致。
+    // 仅挂载时播放一次；刷新若保留旧数据（AsyncData + loading）不重播。
+    return Animate(
+      effects: const [
+        FadeEffect(duration: DurationTokens.widgetFadeIn),
+        SlideEffect(
+          begin: Offset(0, 0.02),
+          end: Offset.zero,
+          duration: DurationTokens.widgetFadeIn,
+        ),
+      ],
+      child: scopedContent,
+    );
   }
 }
 
