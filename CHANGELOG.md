@@ -6,8 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 Detailed daily migration logs live in `docs/logs/migration-log/`. This file
-provides a release-level summary. Pre-2026-07 entries are archived under
-`docs/archive/migration-log/`.
+provides a release-level summary. Older entries are archived under
+`docs/archive/<YYYY-MM>/` — one folder per month, file names unchanged.
 
 ---
 
