@@ -101,7 +101,6 @@ class AccountManageSection extends ConsumerWidget {
     required this.accountNotifier,
     required this.emailController,
     required this.nicknameController,
-    required this.avatarController,
     required this.oldPasswordController,
     required this.newPasswordController,
     required this.deletePasswordController,
@@ -118,7 +117,6 @@ class AccountManageSection extends ConsumerWidget {
   final AuthAccountNotifier accountNotifier;
   final TextEditingController emailController;
   final TextEditingController nicknameController;
-  final TextEditingController avatarController;
   final TextEditingController oldPasswordController;
   final TextEditingController newPasswordController;
   final TextEditingController deletePasswordController;

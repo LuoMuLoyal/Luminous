@@ -68,19 +68,27 @@ is the machine projection; the interpretive contract lives in
 | `entrance` | `` | `Curves.easeOutCubic` | Entrance animation — route slide-in, panel expand. |
 | `exit` | `` | `Curves.easeInCubic` | Exit animation — route slide-out, panel collapse. |
 | `standard` | `` | `Curves.easeInOut` | Standard bidirectional animation — expand/collapse, toggle. |
-| `snappy` | `` | `Curves.easeOut` | Snappy one-directional animation — tab switch, hover feedback. |
-| `authPageTransitionIn` | `` | `Duration(milliseconds: 400)` | Auth page route transition (fade in). |
-| `authPageTransitionOut` | `` | `Duration(milliseconds: 280)` | Auth page route transition (fade out). |
-| `tabPageTransitionIn` | `` | `Duration(milliseconds: 150)` | Shell tab route transition (fade in). Fast to keep tab |
-| `tabPageTransitionOut` | `` | `Duration.zero` | Shell tab route transition (fade out). Zero so outgoing |
+| `snappy` | `` | `Curves.easeOut` | Snappy one-directional animation — cross-fades, tab switch, hover. |
+| `emphasized` | `` | `Curves.easeInOutCubicEmphasized` | M3 emphasized — a single container/navigation element entering or |
+| `emphasizedDecelerate` | `` | `Cubic(0.05, 0.7, 0.1, 1)` | M3 emphasizedDecelerate — emphasized element entrance. |
+| `authPageTransitionIn` | `` | `Duration(milliseconds: 300)` | Auth page route transition (fade in). Short enough that the page shows up |
+| `authPageTransitionOut` | `` | `Duration(milliseconds: 240)` | Auth page route transition (fade out). Kept close to the entry duration so |
 | `crudPageTransitionIn` | `` | `Duration(milliseconds: 220)` | CRUD page route transition (slide in). |
 | `crudPageTransitionOut` | `` | `Duration(milliseconds: 150)` | CRUD page route transition (slide out). |
-| `authContentFadeIn` | `` | `Duration(milliseconds: 180)` | Auth form content fade-in (flutter_animate). |
 | `sidebarSlide` | `` | `Duration(milliseconds: 200)` | Sidebar slide animation. |
-| `widgetFadeIn` | `` | `Duration(milliseconds: 220)` | Fade-in for flutter_animate effects (FadeEffect, SlideEffect). |
 | `widgetExpand` | `` | `Duration(milliseconds: 250)` | Expand/collapse AnimationController duration. |
 | `widgetQuick` | `` | `Duration(milliseconds: 200)` | Quick implicit animation (AnimatedRotation, AnimatedContainer). |
 | `widgetStandard` | `` | `Duration(milliseconds: 300)` | Standard implicit animation for larger containers. |
+| `tabFadeThrough` | `` | `Duration(milliseconds: 260)` | Shell tab cross-fade (incoming branch). Only |
+| `tabFadeThroughOut` | `` | `Duration(milliseconds: 200)` | Shell tab cross-fade (outgoing branch). Shorter than |
+| `masterDetailSwitch` | `` | `Duration(milliseconds: 220)` | Settings desktop master-detail pane switch: fade the incoming pane and |
+| `pageStateSwitch` | `` | `Duration(milliseconds: 240)` | Page state switch (skeleton → content → error …) fade-through. |
+
+### tokens/semantic_icon_svg.dart
+
+| Name | Type | Value | Docs |
+| --- | --- | --- | --- |
+| `_base` | `String` | `'assets/icon/iconmind'` |  |
 
 ### tokens/semantic_icons.dart
 

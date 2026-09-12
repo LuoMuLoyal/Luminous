@@ -11,7 +11,7 @@ import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
-import 'package:luminous/features/auth/presentation/pages/account_settings_helpers.dart';
+import 'package:luminous/features/auth/presentation/pages/account_manage_helpers.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';

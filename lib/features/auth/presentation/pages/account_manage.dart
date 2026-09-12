@@ -35,7 +35,6 @@ class AccountManagePage extends HookConsumerWidget {
     final nicknameController = useTextEditingController(
       text: user?.nickname ?? '',
     );
-    final avatarController = useTextEditingController(text: user?.avatar ?? '');
     final oldPasswordController = useTextEditingController();
     final newPasswordController = useTextEditingController();
     final deletePasswordController = useTextEditingController();
@@ -49,7 +48,6 @@ class AccountManagePage extends HookConsumerWidget {
       formUserId.value = user.id;
       emailController.text = user.email ?? '';
       nicknameController.text = user.nickname ?? '';
-      avatarController.text = user.avatar ?? '';
       return null;
     }, [user?.id]);
 
@@ -129,7 +127,6 @@ class AccountManagePage extends HookConsumerWidget {
               accountNotifier: accountNotifier,
               emailController: emailController,
               nicknameController: nicknameController,
-              avatarController: avatarController,
               oldPasswordController: oldPasswordController,
               newPasswordController: newPasswordController,
               deletePasswordController: deletePasswordController,
