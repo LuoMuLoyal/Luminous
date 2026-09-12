@@ -33,5 +33,6 @@ export 'tokens/elevation.dart';
 export 'tokens/icon_size.dart';
 export 'tokens/markdown_style.dart';
 export 'tokens/motion.dart';
+export 'tokens/semantic_icon_svg.dart';
 export 'tokens/semantic_icons.dart';
 export 'tokens/spacing.dart';
