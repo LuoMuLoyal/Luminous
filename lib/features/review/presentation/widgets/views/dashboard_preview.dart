@@ -115,6 +115,8 @@ class ReviewDashboardPreview extends StatelessWidget {
                 child: ReviewPreviewLockedSection(
                   key: const Key('report-findings-preview-locked'),
                   icon: SemanticIcons.aiTip,
+                  svgIcon: (color, size) =>
+                      SemanticIconSvg.aiTip(size: size, color: color),
                   title: l10n.reviewFindingsPreviewTitle,
                   body: l10n.reviewFindingsPreviewBody,
                 ),
@@ -134,6 +136,8 @@ class ReviewDashboardPreview extends StatelessWidget {
           ReviewPreviewLockedSection(
             key: const Key('report-findings-preview-locked'),
             icon: SemanticIcons.aiTip,
+            svgIcon: (color, size) =>
+                SemanticIconSvg.aiTip(size: size, color: color),
             title: l10n.reviewFindingsPreviewTitle,
             body: l10n.reviewFindingsPreviewBody,
           ),

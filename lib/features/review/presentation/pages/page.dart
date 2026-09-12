@@ -306,7 +306,7 @@ class _ReviewTopBar extends ConsumerWidget {
             size: FButtonSizeVariant.sm,
             // 图标按钮无可见文字：给 TalkBack/VoiceOver 显式 label。
             semanticsLabel: l10n.assistantEntryTitle,
-            child: const Icon(SemanticIcons.aiEntry),
+            child: SemanticIconSvg.aiEntry(),
           ),
         ),
         FTooltip(

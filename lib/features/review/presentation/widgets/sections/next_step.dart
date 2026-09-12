@@ -36,6 +36,8 @@ class NextStepSection extends StatelessWidget {
       return ReviewSectionCard(
         key: const Key('review-next-step-section'),
         icon: SemanticIcons.reportInsight,
+        svgIcon: (color, size) =>
+            SemanticIconSvg.aiTip(size: size, color: color),
         title: l10n.reviewReviewSectionNextStep,
         child: ReviewUnknownReason(
           reason: reviewReasonLabel(l10n, section.reasonCode),
@@ -61,11 +63,17 @@ class NextStepSection extends StatelessWidget {
     return ReviewSectionCard(
       key: const Key('review-next-step-section'),
       icon: SemanticIcons.reportInsight,
+      svgIcon: (color, size) => SemanticIconSvg.aiTip(size: size, color: color),
       title: l10n.reviewReviewSectionNextStep,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ReviewFactRow(icon: SemanticIcons.aiTip, text: prompt),
+          ReviewFactRow(
+            icon: SemanticIcons.aiTip,
+            svgIcon: (color, size) =>
+                SemanticIconSvg.aiTip(size: size, color: color),
+            text: prompt,
+          ),
           if (redFlags.isNotEmpty) ...[
             const SizedBox(height: Spacing.sm),
             _RedFlagList(l10n: l10n, redFlags: redFlags),
