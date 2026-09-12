@@ -15,6 +15,9 @@ updated: 2026-09-12
 > (material_ui 1.x)同源,风险低。明确不引入 page_transition / motion(GPL-3)/
 > rive / lottie / go_router_animated_branch 等小众包。
 >
+> **状态:阶段 1(调研)+ 阶段 2(tab fade-through + 设置页 master-detail)已落地**
+> (2026-09-12);阶段 3–5 待实施。
+>
 > 依据:本地代码审计(2026-09-12)+ 官方调研(Flutter 3.38+ 源码与文档、go_router
 > 17.x 文档与示例、M3 motion 规范)+ 社区包调研(pub.dev / GitHub 实时数据)。
 > 本文 §2/§3 为两份调研的浓缩结论,关键参考链接见 §7。
@@ -38,12 +41,12 @@ updated: 2026-09-12
 
 | 场景 | 缺口 | 根因 |
 |---|---|---|
-| **Tab 切换** | 5 个 Tab 切换**无动画**,瞬间跳变 | `StatefulShellRoute.indexedStack` 官方**明确不做分支切换过渡**;`tabFadePage` 在分支常驻后不再重放(已知行为) |
-| **设置页桌面 master-detail** | 左栏点选切换 body **无过渡**(`setState` 直接换) | `settings/presentation/widgets/master_detail.dart` 无动画 |
-| **子页面路由** | 现有 slidePage 是**进入方向固定**(一律右滑),返回无反向滑动 | `slidePage` 用 `animation` 单侧过渡,`secondaryAnimation` 未用 |
-| **列表内容变化** | 无 `AnimatedList`/列表项进场交错,数据刷新直接替换 | 未建列表动画惯例 |
-| **micro-interaction** | 按钮/开关/图标按压反馈零散,无统一节奏 | 未统一 M3 tokens |
-| **Hero/共享元素** | 零使用 | 未规划 |
+| **Tab 切换** | ✅ **已补**(2026-09-12):`ShellTabBranchContainer` fade-through | `StatefulShellRoute.indexedStack` 官方**明确不做分支切换过渡**;现改用自定义 `navigatorContainerBuilder` |
+| **设置页桌面 master-detail** | ✅ **已补**:右侧 pane `AnimatedSwitcher`(220ms) | 原 `setState` 直接换 body |
+| **子页面路由** | 现有 slidePage 是**进入方向固定**(一律右滑),返回无反向滑动 | `slidePage` 用 `animation` 单侧过渡,`secondaryAnimation` 未用(阶段 3) |
+| **列表内容变化** | 无 `AnimatedList`/列表项进场交错,数据刷新直接替换 | 未建列表动画惯例(阶段 4) |
+| **micro-interaction** | 按钮/开关/图标按压反馈零散,无统一节奏 | 未统一 M3 tokens(阶段 5 前置) |
+| **Hero/共享元素** | 零使用 | 未规划(阶段 4) |
 
 ### 1.3 约束(选型必须满足)
 
@@ -129,8 +132,12 @@ updated: 2026-09-12
 
 ## 5. 落地建议(分阶段,每阶段独立提交可回滚)
 
-1. **阶段 1(本调研落地,仅文档)**:本调研报告 + 迁移日志;不动代码。
-2. **阶段 2(核心痛点)**:tab 切换 fade-through(`navigatorContainerBuilder`)+ 设置页桌面 master-detail `AnimatedSwitcher`;补 `DurationTokens`/`MotionTokens` M3 对齐 token(emphasized 系 + 分级时长)。
+1. **阶段 1(调研落地,仅文档)**:本调研报告 + 迁移日志;不动代码。✅ 已完成(2026-09-12)。
+2. **阶段 2(核心痛点)**:tab 切换 fade-through(`navigatorContainerBuilder`)+ 设置页桌面 master-detail `AnimatedSwitcher`;补 `DurationTokens`/`MotionTokens` M3 对齐 token(emphasized 系 + 分级时长)。✅ 已完成(2026-09-12)。
+   - 新增 `ShellTabBranchContainer`(`lib/features/shell/presentation/tab_branch_container.dart`):M3 fade-through(淡入+轻微缩放 0.98→1.0,260/200ms emphasized),保持 IndexedStack 的"分支常驻 + 非当前分支 offstage"语义。
+   - `router.dart`:`StatefulShellRoute.indexedStack` → `StatefulShellRoute` + 自定义 `navigatorContainerBuilder`。
+   - 设置页桌面 `master_detail.dart`:右侧 pane 包 `AnimatedSwitcher`(220ms,`emphasizedDecelerate` 入场)。
+   - `motion.dart` 新增 `MotionTokens.emphasized` / `emphasizedDecelerate` + `DurationTokens.tabFadeThrough` / `tabFadeThroughOut` / `masterDetailSwitch`。
 3. **阶段 3(路由增强)**:`slidePage` 补 `secondaryAnimation` 反向过渡;评估 `PageTransitionsTheme` 品牌统一。
 4. **阶段 4(内容/列表)**:核心列表页进场交错 + 数据刷新 `AnimatedSwitcher`。
 5. **阶段 5(可选)**:引入 `animations` 3.0.0 做品牌 SharedAxis/FadeThrough(评估后决定;不引则维持阶段 2/3)。
