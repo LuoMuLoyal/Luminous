@@ -131,9 +131,26 @@ updated: 2026-09-12
 
 ### 无障碍(reduce motion)
 
-- 框架动画自动响应 `disableAnimations`(AnimationController 自动压缩)。
-- 自写显式动画统一经 `AnimationController` 并判断 `MediaQueryData.disableAnimations`;项目 `reduceAnimations` 设置已映射到 `accessibleNavigation`,继续沿用。
-- flutter_animate 无内置 disableAnimations 支持 —— 使用处需自行判断(现状未做,补上)。
+统一入口:`lib/core/accessibility/motion.dart` 的 `prefersReducedMotion(context)`,同时读
+`MediaQuery.disableAnimations`(引擎/SDK 级无障碍开关)与 `MediaQuery.accessibleNavigation`
+(本项目 `reduceAnimations` 设置映射到的那一项)。只认其中一个会漏掉另一半。
+
+- **框架动画自动响应**:`AnimationController` 默认 `AnimationBehavior.normal` 会在
+  `SemanticsBinding.disableAnimations`(来自平台 `AccessibilityFeatures`)下压缩时长;
+  隐式动画(`AnimatedOpacity` / `AnimatedSize` / `AnimatedSwitcher` / `AnimatedContainer`)
+  与 `animations` 包的过渡都建立在这些 controller 上,故免费获得。注意:被压缩的是
+  framework 会响应的那部分,`repeat()` 类循环动画按设计**不**压缩(框架刻意避免它们
+  在开启动画缩减时疯狂闪烁)。
+- **需要自行判断的(已处理)**:
+  - 骨架 shimmer —— 手写无限 `ShaderMask`。开启动画缩减时直接不建 mask,骨架退化为静态块
+    (`SkeletonShimmer` / `StateSkeletonView`)。
+  - `flutter_animate` 的旋转指示(assistant「正在切换会话」)—— 其 `.rotate()` 是一层
+    额外的 `RotationTransition` + `repeat()`,开启动画缩减时不再套这一层
+    (`AssistantAboveComposer._OpeningSpinner`)。
+- **仍未覆盖**:Forui 的 `FProgress` / `FCircularProgress` 自带 `repeat()`,且它读的是
+  **平台** `AccessibilityFeatures`(经 `FAccessibilityScope`),不是 MediaQuery —— 所以
+  应用内的「减少动画」开关对它无效(平台级无障碍开关可以)。它同时是加载骨架/进行中态的
+  常见组成,因此"开着减少动画时仍在跑动画"目前是已知缺口,而不是遗漏的判断。
 
 ## 5. 落地建议(分阶段,每阶段独立提交可回滚)
 
@@ -170,6 +187,12 @@ updated: 2026-09-12
      | 96ms | 0.055 | 0.896 |
      | 192ms | 0.000 | 0.990 |
    - 回归测试:`test/shell/tab_branch_container_test.dart` 覆盖"分支常驻 + 仅当前分支 onstage / 过渡分支 onstage 且忽略指针 / 淡入淡出曲线 / 连续快切收敛"。其中曲线断言已在旧实现上实测会失败,即它确实能挡住这次回归。
+7. **阶段 7(reduce motion 收敛与帧调度定性)**:✅ 已完成(2026-09-12)。
+   - 新增 `lib/core/accessibility/motion.dart`(`prefersReducedMotion`),同时读 `disableAnimations` 与 `accessibleNavigation`。
+   - 骨架 shimmer 与 assistant 开场旋转指示接入该判断(见 §4 无障碍小节);测试落在 `test/core/widgets/skeleton_test.dart` 与 `test/assistant/widgets_test.dart`(两处均以"无限动画消失"及对应 widget 是否构建为断言)。
+   - **定性"页面稳定后仍在调度帧"**:逐帧探针(开启 `debugPrintScheduleFrameStacks`)显示恒定 1 个 transient 回调,即一个 Ticker 永久自续;用二分法把范围缩到「真实 tab 内容」——把 5 个分支换成静态占位、其余(shell chrome / 分支容器 / Forui 组件 / 测试宿主)全部不变时 `transientCallbackCount` 立刻为 **0**。结论:来源是加载态的无限动画(`Shimmer`、Forui `FProgress`),数据加载完成即停,**不是泄漏**;测试里 mock 数据不解析,故看起来"永不停止"。
+   - 由同一探针记录到的 Forui 事实:`FProgress`/`FCircularProgress` 的 `repeat()` 只服从平台 `AccessibilityFeatures`,应用内设置管不到(见 §4)。
+   - token 收敛:`MotionTokens.emphasizedDecelerate` 改为 master-detail 入场的实际曲线;`MotionTokens.emphasized` 在交叉淡化改 `snappy` 后无调用点,保留为已文档化的 M3 token 并在注释里写明"当前无调用点、以及为什么"。
 
 ## 6. 风险与权衡
 
@@ -184,7 +207,8 @@ updated: 2026-09-12
 | 不透明盖底 | `FadeThroughTransition` / `SharedAxisTransition` 退出侧会用 `fillColor`(默认 `Theme.canvasColor`)盖底;本项目 `canvasColor == scaffoldBackgroundColor`,使用点均在 scaffold 底色上,故不可见 |
 | 交叉淡化曲线 | **两边同时可见的过渡用 `MotionTokens.snappy`(`easeOut`),不要用 `emphasized`** —— M3 emphasized 系在 t/T≈0.25 就到 1.0,是为单边进出设计的,套到交叉淡化上会留下两边都很淡的洗白中段(阶段 6 实测) |
 | 幂等/叠加 | 同一段可见变化只允许一层动画负责:路由过渡、分支容器、页面状态切换、组件入场**不得叠乘** —— 多层不透明度会相乘,把可见显示整体推迟(阶段 4 的 dashboard 入场动画就是这么被去掉的) |
-| reduced-motion | 框架 `AnimationController` 自动响应(项目把 `reduceAnimations` 映射到 `accessibleNavigation`)+ Forui/flow_ui 内建;**`flutter_animate` 无此支持**,那 1 处使用未判断 |
+| reduced-motion | 统一入口 `prefersReducedMotion`(`lib/core/accessibility/motion.dart`):框架动画自动响应,骨架 shimmer 与 `flutter_animate` 旋转已显式判断;Forui `FProgress` 只认平台级开关,应用内设置对它无效(已知缺口) |
+| 无限动画与帧调度 | 加载骨架的 `Shimmer` 与 Forui `FProgress` 都是 `repeat()`,在对应内容真正加载完成前会一直请求帧 —— 这是"页面稳定后仍在调度帧"的唯一来源(实测:把 tab 内容换成静态占位后 `transientCallbackCount` 立刻归 0),属预期行为而非泄漏 |
 
 ## 6.1 实测(profile trace,2026-09-12,Android · GLES · 60Hz · 592 帧 / 23.4s)
 

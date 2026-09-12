@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-10
+updated: 2026-09-12
 ---
 
 # Design System
@@ -137,6 +137,8 @@ updated: 2026-09-10
 - `IconActionButton`（`lib/core/widgets/common/control/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，`showBadge` 在右上角叠加红点（未读消息提醒等）；各模块顶栏统一引用 core 版本。
 - `showForuiDatePicker`（`lib/core/widgets/common/control/date_picker.dart`）是全 App 共享的日历日期选择器，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
 - 设置页统一引用 `settingsPageVerticalPadding(BuildContext)`（响应式垂直 padding）与 `SettingsSectionLabel`（分组标题：`typography.body.xs` + `w600` + `SemanticColor.neutral.solid(context)` + `Spacing.sm` 水平 padding），不再各自手写响应式三元表达式或分组标题实现。
+- 骨架 shimmer（`lib/core/widgets/common/feedback/skeleton.dart`）每帧只允许一个 `ShaderMask`：`SkeletonShimmer` 通过私有 `_ShimmerScope` 使嵌套实例直接返回 child，`StateSkeletonView` 也提供该作用域（实测每帧 `saveLayer` 从 ~22 降到 ~1）。
+- 减少动画（`prefersReducedMotion`,定义在 `lib/core/accessibility/motion.dart`）下骨架不建 shimmer mask，退化为静态块；判断入口同时读 `MediaQuery.disableAnimations` 与 `accessibleNavigation`。Forui `FProgress`/`FCircularProgress` 只认平台级 `AccessibilityFeatures`，不受应用内设置影响（已知缺口）。
 
 ## Auth 与表单
 
