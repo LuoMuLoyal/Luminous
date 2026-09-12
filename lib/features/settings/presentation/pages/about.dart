@@ -6,6 +6,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
+import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/domain/services/version_check.dart';
@@ -121,11 +122,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                 padding: const EdgeInsets.all(Spacing.xl),
                 child: Row(
                   children: [
-                    Image.asset(
-                      'assets/icon/app_icon.png',
-                      width: 64,
-                      height: 64,
-                    ),
+                    const BrandIcon(size: 64),
                     const SizedBox(width: Spacing.lg),
                     Expanded(
                       child: Column(

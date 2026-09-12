@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/mobile_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -132,12 +133,7 @@ class DesktopBrandPanel extends StatelessWidget {
                         colors.foreground.withValues(alpha: 0.03),
                         BlendMode.srcIn,
                       ),
-                      child: Image.asset(
-                        'assets/icon/app_icon.png',
-                        width: logoSize,
-                        height: logoSize,
-                        fit: BoxFit.contain,
-                      ),
+                      child: BrandIcon(size: logoSize),
                     ),
                   ),
                 ),

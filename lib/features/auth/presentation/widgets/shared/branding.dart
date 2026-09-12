@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AuthBrandLogo extends StatelessWidget {
@@ -8,21 +9,9 @@ class AuthBrandLogo extends StatelessWidget {
 
   final double size;
 
-  static const String _assetPath = 'assets/icon/app_icon.png';
-
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      _assetPath,
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) => Icon(
-        SemanticIcons.safetyCaution,
-        color: SemanticColor.primary.solid(context),
-        size: size,
-      ),
-    );
+    return BrandIcon(size: size);
   }
 }
 

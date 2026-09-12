@@ -11,6 +11,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/theme/preference.dart';
+import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/core/widgets/common/feedback/connectivity_banner.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
@@ -234,11 +235,7 @@ class _SidebarHeaderContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
-          Image.asset(
-            'assets/icon/app_icon.png',
-            width: IconSizeTokens.lg,
-            height: IconSizeTokens.lg,
-          ),
+          const BrandIcon(size: IconSizeTokens.lg),
           const SizedBox(width: Spacing.sm),
           Expanded(
             child: Text(
