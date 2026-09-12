@@ -20,6 +20,8 @@
 - data 层不 import 其他 feature;profile_remote.dart 直用 Dio(取自 `lucentDioClientProvider`)写 profile 偏好是 transport-only 例外,不得扩散为通用模式。
 
 ## 陷阱与决策
+- 个人信息页(`presentation/pages/profile.dart`)是「左标签 / 右当前值 / 点击进编辑」的分组列表:页面不内联常驻输入框、也没有整体保存按钮;每个健康字段由单字段 sheet 独立提交,只发送被改动的那一个(其余保持 `healthContextNoChange`)。
+- 头像与昵称只在个人信息页可改;账号管理页(`/account`)与账号安全中心只跳转过来,不复制概要卡片或第二份编辑入口。
 - 本目录刻意无厚 domain:业务规则限于表单校验与偏好持久化,datasource 直接映射生成 DTO(profile_remote.dart 头注);本地偏好键统一走 PrefKeys。
 - 桌面端 master-detail 双栏(presentation/widgets/master_detail.dart);About 页用 domain/services/version_check.dart 做更新比较。
 - 决策:authGuarded 工厂见 ../../../docs/reference/adr/0003-riverpod-generator-and-auth-guard.md。

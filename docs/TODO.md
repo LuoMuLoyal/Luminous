@@ -268,7 +268,6 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 - 七规则观察期收敛（`tool/luminous_lints`，warn 观察基线 245 处：no_direct_navigator 113、layered_import 64、no_bang_on_response_data 37、enum_parse_unknown_branch 20、no_raw_datetime_parse 8、first_where_requires_or_else 3、empty_catch_requires_comment 0）：各规则清零后按计划逐条转 error（`--fatal` 门禁接入 pre-push）
 - 七规则 IDE 插件集成：主包依赖图 freezed 钉 analyzer 12.x，而 analysis server 要求插件与其内置 analyzer 一致（14.1.0）；主包升级兼容 analyzer 14 后在 `analysis_options.yaml` 的 `plugins:` 接入 `luminous_lints`（当前仅 CLI 观察）
 
-## 2026-09-12 头像计划收口的遗留 URL 编辑面
+## 2026-09-12 头像计划的唯一写入路径
 
-- `account_manage_helpers.dart` 的 `ProfileSection`（昵称 + 头像 URL 文本输入 + URL 预览校验）在 `AccountManagePage` 重构后已无生产调用方，随旧 `account_settings*.dart` 一起退化为不可达代码。删除它会同时孤儿化 `authProfileSectionTitle` / `authAvatarLabel` / `authAvatarHint` / `authAvatarPreviewEmpty|Ready|Invalid` 等 ARB 串，需要走分片 merge + `flutter gen-l10n` + `docs/reference/localization.md` 同步，故本波只删除页面文件本体，`ProfileSection` 的退役另开一次纯死代码清理
-- 账号页 `/account` 与 Profile 页 `/profile` 都能改头像 URL：Profile 已接本地草稿上传（Phase 4），URL 文本输入只作降级入口；两者合并前不要新增第三条头像写入路径
+- 账号页 `/account` 与 Profile 页 `/profile` 都曾能改头像 URL；两处 URL 文本输入已全部退役，头像只能经 Profile 的 `showAvatarActionsDialog`（查看/拍照/相册/移除）+ 本地草稿 + 预签名上传写入。不要新增第三条头像写入路径，也不要把 URL 文本输入加回来。

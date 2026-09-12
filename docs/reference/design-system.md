@@ -137,6 +137,10 @@ updated: 2026-09-12
 - `IconActionButton`（`lib/core/widgets/common/control/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，`showBadge` 在右上角叠加红点（未读消息提醒等）；各模块顶栏统一引用 core 版本。
 - `showForuiDatePicker`（`lib/core/widgets/common/control/date_picker.dart`）是全 App 共享的日历日期选择器，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
 - 设置页统一引用 `settingsPageVerticalPadding(BuildContext)`（响应式垂直 padding）与 `SettingsSectionLabel`（分组标题：`typography.body.xs` + `w600` + `SemanticColor.neutral.solid(context)` + `Spacing.sm` 水平 padding），不再各自手写响应式三元表达式或分组标题实现。
+- 账号/资料列表统一用 `AppValueRow`（`lib/core/widgets/common/control/value_row.dart`）：左标签（`body.md` + `w500`）+ 右当前值（右对齐）+ 尾部箭头。列表行是读侧、点击后进入编辑面是写侧——**不再**把字段渲染成常驻可编辑输入框，也不用「图标+标题+副标题」的卡片组（2026-09-12 个人信息/账号管理改版）。**值列必须固定贴右**：标签 `Expanded` 吃掉剩余宽度，值+图标的列按自身内容定宽（`Flexible` + `LayoutBuilder` + `IntrinsicWidth`，上限行宽 55%）后贴右——把值和标签都放进共用 flex 的 `Expanded` 会在长标签行（如「出生日期（YYYY-MM-DD）」）把空闲空间算成 0，值列被压没（这个 bug 已踩过一次）。
+- 分组块靠**色差**区分，不画外边框：页面背景是 `SurfaceTokens.scaffoldBackground`（#FAFAFA 灰白），所以分组内容区取**纯白** `colors.card`（#FFFFFF）——取 `colors.secondary`（#F5F5F5）反而比页面更灰，看着像凹坑。分隔线只出现在组内行与行之间（`AppDivider`），组与组之间靠留白。
+- auth 壳的分组页面（账号管理）传 `AuthShell(formPanel: false)`：壳默认把 form 包进白色 `AuthFormPanel` 卡片，自带白色分组块的页面再套一层就是双层 surface。
+- 单字段编辑统一用 `showAppEditSheet` / `showValueEditSheet` / `showTextEditSheet`（`lib/core/widgets/common/dialog/edit_sheet.dart`）：标题居中、内容由 body 提供、底部取消/保存。文本型 sheet 自己持有 `TextEditingController` 并在自身 `State.dispose` 释放——调用方只 await 路由 pop，若由调用方释放会在退场动画期间触发「controller used after being disposed」。
 - 骨架 shimmer（`lib/core/widgets/common/feedback/skeleton.dart`）每帧只允许一个 `ShaderMask`：`SkeletonShimmer` 通过私有 `_ShimmerScope` 使嵌套实例直接返回 child，`StateSkeletonView` 也提供该作用域（实测每帧 `saveLayer` 从 ~22 降到 ~1）。
 - 减少动画（`prefersReducedMotion`,定义在 `lib/core/accessibility/motion.dart`）下骨架不建 shimmer mask，退化为静态块；判断入口同时读 `MediaQuery.disableAnimations` 与 `accessibleNavigation`。Forui `FProgress`/`FCircularProgress` 只认平台级 `AccessibilityFeatures`，不受应用内设置影响（已知缺口）。
 

@@ -27,6 +27,7 @@
 ## 陷阱与决策
 - OAuth 回调以深链携带 code/state 进入 LoginPage/AccountManagePage;`LoginRoute.returnTo` 控制登录后回跳。
 - 旧 `account_settings.dart`/`account_settings_helpers.dart`/`account_settings_sections.dart`(被 `AccountManagePage` 取代后不可达)已删除,勿再引入;账号页共用 helper 只保留 `account_manage_helpers.dart`。
+- 账号页(`account_manage_sections.dart`)与账号安全中心只列可管理项,行样式统一 `AppValueRow`(左标签/右数据/箭头);头像与昵称归个人信息页(`Routes.profile`),这里只跳转,不再持有 `AccountSummaryCard` 之类的第二份资料展示与编辑。
 - 登录后的跳转一律走 `goAfterLogin(..., fallbackHome: true)`。`return-to` 不是必需的:退出登录与「去登录」链接都落在**裸 `/login`** 上,此时必须回退 `Routes.home`;漏传 `fallbackHome` 会让该调用成为静默空操作,表现为「登录成功却停在登录页」。`app/router.dart` 守卫的 `refresh()` 重定向只是兜底,受会话通知时序影响,不能当作登录后跳转的唯一依据。
 - 登录与账号绑定共用 WechatOAuthService 的平台探测(移动 SDK → 桌面 loopback → 浏览器回退),勿在页面层重写。
 - 决策:会话守卫与 authGuarded 工厂见 ../../../docs/reference/adr/0003-riverpod-generator-and-auth-guard.md;TaskEither 边界见 0005-result-type-and-error-handling.md。
