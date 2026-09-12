@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
@@ -28,22 +27,11 @@ class MineDashboardView extends StatelessWidget {
 
     final content = isDesktop ? _buildDesktopLayout() : _buildMobileLayout();
 
-    final scopedContent = SkeletonScope(isLoading: isLoading, child: content);
-    if (isLoading) {
-      return scopedContent;
-    }
-
-    return Animate(
-      effects: const [
-        FadeEffect(duration: DurationTokens.widgetFadeIn),
-        SlideEffect(
-          begin: Offset(0, 0.02),
-          end: Offset.zero,
-          duration: DurationTokens.widgetFadeIn,
-        ),
-      ],
-      child: scopedContent,
-    );
+    // No entrance animation here: the surrounding transition already brings this
+    // view in (page state switch fade-through / tab branch cross-fade), and
+    // stacking a second fade + rise on top of it delayed the visible appearance
+    // and read as the content drifting upwards.
+    return SkeletonScope(isLoading: isLoading, child: content);
   }
 
   Widget _buildMobileLayout() {

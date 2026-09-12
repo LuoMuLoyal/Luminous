@@ -13,7 +13,6 @@
 // ═══════════════════════════════════════════════════════════════════════════
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/design.dart';
@@ -97,22 +96,9 @@ class ReviewDashboardView extends StatelessWidget {
         ? _buildDesktopLayout(l10n: l10n)
         : _buildMobileLayout(l10n: l10n);
 
-    final scopedContent = SkeletonScope(isLoading: isLoading, child: content);
-    if (isLoading) {
-      return scopedContent;
-    }
-
-    return Animate(
-      effects: const [
-        FadeEffect(duration: DurationTokens.widgetFadeIn),
-        SlideEffect(
-          begin: Offset(0, 0.02),
-          end: Offset.zero,
-          duration: DurationTokens.widgetFadeIn,
-        ),
-      ],
-      child: scopedContent,
-    );
+    // No entrance animation: the surrounding transition already brings this view
+    // in, and layering a fade + rise on top of it delayed the appearance.
+    return SkeletonScope(isLoading: isLoading, child: content);
   }
 
   Widget _buildMobileLayout({required AppLocalizations l10n}) {

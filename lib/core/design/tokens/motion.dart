@@ -78,8 +78,12 @@ abstract final class DurationTokens {
   /// Sidebar slide animation.
   static const sidebarSlide = Duration(milliseconds: 200);
 
-  /// Fade-in for flutter_animate effects (FadeEffect, SlideEffect).
-  static const widgetFadeIn = Duration(milliseconds: 220);
+  /// Entrance duration for flutter_animate effects (`SlideEffect`).
+  ///
+  /// The paired `FadeEffect` was removed from the dashboard views: the
+  /// route/branch transition and [pageStateSwitch] already fade their content
+  /// in, and a second opacity ramp multiplied with them into a visible delay.
+  static const widgetEntrance = Duration(milliseconds: 220);
 
   /// Expand/collapse AnimationController duration.
   static const widgetExpand = Duration(milliseconds: 250);
