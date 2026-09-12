@@ -81,10 +81,21 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
                     ),
                   ),
                   const SizedBox(width: Spacing.xl2),
-                  // Right content column.
+                  // Right content column. AnimatedSwitcher cross-fades the
+                  // pane when switching groups (fade-through, bounded so
+                  // pumpAndSettle converges); keyed by index so a change
+                  // always triggers the transition.
                   Expanded(
                     child: SingleChildScrollView(
-                      child: widget.groups[_selectedIndex].body,
+                      child: AnimatedSwitcher(
+                        duration: DurationTokens.masterDetailSwitch,
+                        switchInCurve: MotionTokens.emphasizedDecelerate,
+                        switchOutCurve: MotionTokens.exit,
+                        child: KeyedSubtree(
+                          key: ValueKey<int>(_selectedIndex),
+                          child: widget.groups[_selectedIndex].body,
+                        ),
+                      ),
                     ),
                   ),
                 ],
