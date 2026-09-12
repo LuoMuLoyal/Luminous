@@ -34,9 +34,10 @@ flutter:
       ios:
         pluginClass: PaddleOcrNativePlugin
 
-  # ONNX model files are NOT bundled in the APK. They are downloaded on demand
-  # by the host app and loaded from the file system at runtime. See the
-  # README.md "On-demand model download" section for details.
+  # ONNX model files are NOT bundled in the APK. The host app downloads them
+  # on demand (raw.githubusercontent, v0.1.1 tag) and passes their file-system
+  # paths to init() via ModelPaths. Host-side SHA-256 verification lives in
+  # Luminous lib/features/scan/domain/services/ocr_model_hashes.dart.
   assets:
     - assets/models/det/inference.yml
     - assets/models/rec/inference.yml
