@@ -14,6 +14,8 @@ import 'package:flutter/animation.dart';
 /// | [exit]     | `easeInCubic`    | Route slide-out, panel collapse        |
 /// | [standard] | `easeInOut`      | Expand/collapse, bidirectional         |
 /// | [snappy]   | `easeOut`        | Tab switch, hover feedback             |
+/// | [emphasized] | `easeInOutCubicEmphasized` | M3 容器/导航级双向过渡      |
+/// | [emphasizedDecelerate] | `Cubic(0.05, 0.7, 0.1, 1)` | M3 元素进场(强调版) |
 abstract final class MotionTokens {
   /// Entrance animation — route slide-in, panel expand.
   ///
@@ -34,6 +36,19 @@ abstract final class MotionTokens {
   ///
   /// `easeOut` decelerates quickly, feeling responsive.
   static const snappy = Curves.easeOut;
+
+  /// M3 emphasized — container/navigation-level bidirectional transitions.
+  ///
+  /// Material 3's primary curve for in-screen container/shared-element
+  /// transitions (`ThreePointCubic`, path C 0.05,0 0.133,0.06 0.167,0.4
+  /// C 0.208,0.82 0.25,1 1,1).
+  static const emphasized = Curves.easeInOutCubicEmphasized;
+
+  /// M3 emphasizedDecelerate — emphasized element entrance.
+  ///
+  /// `cubic-bezier(0.05, 0.7, 0.1, 1)`; new-page entrance in navigation
+  /// transitions (M3 easing spec).
+  static const emphasizedDecelerate = Cubic(0.05, 0.7, 0.1, 1);
 }
 
 /// Centralized animation duration tokens.
@@ -82,4 +97,17 @@ abstract final class DurationTokens {
 
   /// Standard implicit animation for larger containers.
   static const widgetStandard = Duration(milliseconds: 300);
+
+  /// Shell tab fade-through transition (in). Slightly longer than the old
+  /// [tabPageTransitionIn] so the cross-fade between branches reads as a
+  /// deliberate switch instead of a blink; bounded so `pumpAndSettle`
+  /// converges.
+  static const tabFadeThrough = Duration(milliseconds: 260);
+
+  /// Shell tab fade-through transition (out). Matches [tabFadeThrough] so
+  /// incoming and outgoing branches cross-fade symmetrically.
+  static const tabFadeThroughOut = Duration(milliseconds: 200);
+
+  /// Settings desktop master-detail pane switch (fade through).
+  static const masterDetailSwitch = Duration(milliseconds: 220);
 }
