@@ -15,7 +15,7 @@ updated: 2026-09-12
 > (material_ui 1.x)同源,风险低。明确不引入 page_transition / motion(GPL-3)/
 > rive / lottie / go_router_animated_branch 等小众包。
 >
-> **状态:阶段 1(调研)+ 阶段 2(tab fade-through + 设置页 master-detail)+ 阶段 3(路由反向让位)已落地**(2026-09-12);阶段 4–5 待实施。
+> **状态:阶段 1(调研)+ 阶段 2(tab fade-through + 设置页 master-detail)+ 阶段 3(路由反向让位)+ 阶段 4(record 首页入场)已落地**(2026-09-12);阶段 5 待实施。
 >
 > 依据:本地代码审计(2026-09-12)+ 官方调研(Flutter 3.38+ 源码与文档、go_router
 > 17.x 文档与示例、M3 motion 规范)+ 社区包调研(pub.dev / GitHub 实时数据)。
@@ -138,7 +138,7 @@ updated: 2026-09-12
    - 设置页桌面 `master_detail.dart`:右侧 pane 包 `AnimatedSwitcher`(220ms,`emphasizedDecelerate` 入场)。
    - `motion.dart` 新增 `MotionTokens.emphasized` / `emphasizedDecelerate` + `DurationTokens.tabFadeThrough` / `tabFadeThroughOut` / `masterDetailSwitch`。
 3. **阶段 3(路由增强)**:`slidePage` 补 `secondaryAnimation` 反向过渡(被覆盖的旧页向左让位,形成 push/pop 方向感)。✅ 已完成(2026-09-12)。`PageTransitionsTheme` 品牌统一评估推迟到阶段 5 与 `animations` 一起做——当前全站统一 slide 视觉优于桌面 Zoom/移动原生混搭,且切换成本高(50+ 路由)。
-4. **阶段 4(内容/列表)**:核心列表页进场交错 + 数据刷新 `AnimatedSwitcher`。
+4. **阶段 4(内容/列表)**:record 首页 dashboard 入场动画(fade + 轻微上移,与 mine 对齐)。✅ 部分完成(2026-09-12)。review 历史列表刷新过渡**暂缓**:该 section 被大量单帧 `pump()` + 位置断言测试覆盖,入场动画会引入脆弱性;且周期/筛选切换频繁刷新,过渡易显"跳"。数据刷新过渡等 `animations` 包引入后以 `PageTransitionSwitcher` 统一再做。
 5. **阶段 5(可选)**:引入 `animations` 3.0.0 做品牌 SharedAxis/FadeThrough + `PageTransitionsTheme` 统一(评估后决定;不引则维持阶段 2/3)。
 
 ## 6. 风险与权衡
