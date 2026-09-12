@@ -91,6 +91,7 @@ rules:
       - docs/reference/design-system.md
       - docs/reference/forui-reference.md
       - docs/explanation/iconmind-assistant-icons.md
+      - docs/explanation/motion-hierarchy.md
 
   # ──────────────────────────────────────────────
   # Core — 本地持久化（Drift）
