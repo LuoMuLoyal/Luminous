@@ -66,6 +66,7 @@ updated: 2026-09-10
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
 - `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size（`xs`~`xl4`；全量值见生成的 [token 清单](generated/design-tokens.md)）。原 level5=32 已拆分为 xl=28（suggestion card）和 xl2=32（avatar/hero）。其 `level1`~`level8` 向后兼容别名已于 2026-09-11 退役。
 - `LucideIconBridge`（`lucide_icon_bridge.dart`，generated）提供 name→IconData 正查 (`resolve`) 和 IconData→name 反查 (`nameOf`)。反查使用预计算 `_reverseMap`（O(1)），而非每次 keystroke O(N) 扫描。
+- `SemanticIconSvg`（`semantic_icon_svg.dart`，2026-09-11 起）——AI 语义 SVG 图标注册表：返回 `Widget`（封装 `SvgPicture.asset` + `colorFilter` 染色），与 `SemanticIcons`（`IconData` 字体图标）并存。**分工**：AI 语义图标（aiEntry/aiAnalyzing/aiGenerated/aiSuggestion/aiTip/aiMemory/aiKnowledge/aiToolCalling 等）用 iconMind SVG（`assets/icon/iconmind/`，MIT），通用操作/状态图标仍走 `SemanticIcons`（Lucide）。数据驱动映射（后端字符串/枚举 → 图标，如 `SuggestionIconMapping`）保留 `IconData` 形态不换。
 - `ElevationTokens`（`elevation.dart`）提供 `raised(FColors)` / `glow(Color)` / `shadowColor(FColors)` 方法。
 - `GradientTokens`（`gradient.dart`）提供 `semanticFill(SemanticColorPalette)` / `tintFade(Color, Color)` 两个命名渐变模式；禁止内联 `LinearGradient`，必须走 token。
 - 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名曾在所有调用点迁移后被移除；2026-08-30 起 `Spacing` / `IconSizeTokens` 以语义名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）为主命名，其 `level*` 向后兼容别名已于 2026-09-11 全部退役。
