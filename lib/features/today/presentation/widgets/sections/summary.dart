@@ -453,16 +453,16 @@ class _SummaryBullet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = item.color.fill(context);
+    final svgBuilder = item.svgIcon;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: Spacing.xs),
-          child: Icon(
-            item.icon,
-            color: item.color.fill(context),
-            size: IconSizeTokens.sm,
-          ),
+          child: svgBuilder != null
+              ? svgBuilder(color, IconSizeTokens.sm)
+              : Icon(item.icon, color: color, size: IconSizeTokens.sm),
         ),
         const SizedBox(width: Spacing.md),
         Expanded(
