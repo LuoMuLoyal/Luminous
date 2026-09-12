@@ -41,17 +41,28 @@ CustomTransitionPage<T> slidePage<T>({
   return CustomTransitionPage<T>(
     key: key,
     child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0.15, 0),
-            end: Offset.zero,
-          ).chain(CurveTween(curve: MotionTokens.entrance)).animate(animation),
-          child: FadeTransition(
-            opacity: Tween<double>(begin: 0, end: 1).animate(animation),
-            child: child,
-          ),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      // 本页作为"新页":从右 15% 滑入(进入)/ 向右滑出(返回),同时淡入淡出。
+      final entering = SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0.15, 0),
+          end: Offset.zero,
+        ).chain(CurveTween(curve: MotionTokens.entrance)).animate(animation),
+        child: FadeTransition(
+          opacity: Tween<double>(begin: 0, end: 1).animate(animation),
+          child: child,
         ),
+      );
+      // 本页作为"被覆盖的旧页"(栈下有页压上来时):向左让位约 12%,
+      // 形成 push/pop 的方向感;pop 时随 secondaryAnimation 复位。
+      // 本页作为新页时 secondaryAnimation 静止在 0,此层无位移。
+      return SlideTransition(
+        position: Tween<Offset>(begin: Offset.zero, end: const Offset(-0.12, 0))
+            .chain(CurveTween(curve: MotionTokens.standard))
+            .animate(secondaryAnimation),
+        child: entering,
+      );
+    },
     transitionDuration: DurationTokens.crudPageTransitionIn,
     reverseTransitionDuration: DurationTokens.crudPageTransitionOut,
   );
