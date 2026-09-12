@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
@@ -53,7 +54,7 @@ class MineAccountHero extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _AvatarPlaceholder(),
+                _AvatarHero(avatarUrl: account.avatar),
                 const SizedBox(width: Spacing.lg),
                 Expanded(
                   child: Column(
@@ -226,8 +227,10 @@ class MineAccountHero extends StatelessWidget {
   }
 }
 
-class _AvatarPlaceholder extends StatelessWidget {
-  const _AvatarPlaceholder();
+class _AvatarHero extends StatelessWidget {
+  const _AvatarHero({required this.avatarUrl});
+
+  final String? avatarUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -237,20 +240,11 @@ class _AvatarPlaceholder extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: colors.secondary,
-              shape: BoxShape.circle,
-              border: Border.all(color: SemanticColor.neutral.border(context)),
-            ),
-            child: SizedBox.square(
-              dimension: 64,
-              child: Icon(
-                SemanticIcons.profileUser,
-                color: SemanticColor.neutral.solid(context),
-                size: 32,
-              ),
-            ),
+          AvatarView(
+            avatarUrl: avatarUrl,
+            size: 64,
+            iconSize: 32,
+            semanticLabel: AppLocalizations.of(context)!.profileAvatarLabel,
           ),
           Positioned(
             right: -2,

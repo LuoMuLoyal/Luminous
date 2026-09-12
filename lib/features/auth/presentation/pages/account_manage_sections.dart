@@ -8,6 +8,7 @@ import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -55,20 +56,11 @@ class AccountSummaryCard extends StatelessWidget {
         child: Row(
           children: [
             // 头像
-            FAvatar.raw(
+            AvatarView(
+              avatarUrl: user.avatar,
               size: 64,
-              child: user.avatar != null && user.avatar!.isNotEmpty
-                  ? ClipOval(
-                      child: Image.network(
-                        user.avatar!,
-                        fit: BoxFit.cover,
-                        width: 64,
-                        height: 64,
-                        errorBuilder: (_, __, ___) =>
-                            const Icon(SemanticIcons.profileUser, size: 32),
-                      ),
-                    )
-                  : const Icon(SemanticIcons.profileUser, size: 32),
+              iconSize: 32,
+              semanticLabel: l10n.profileAvatarLabel,
             ),
             const SizedBox(width: Spacing.xl),
             // 昵称和邮箱

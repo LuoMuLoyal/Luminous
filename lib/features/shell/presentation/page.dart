@@ -11,6 +11,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/theme/preference.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/core/widgets/common/feedback/connectivity_banner.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
@@ -207,12 +208,12 @@ class _SidebarHeaderContent extends StatelessWidget {
           onTap: () => context.push(Routes.mine),
           child: Row(
             children: [
-              FAvatar.raw(
+              AvatarView(
+                avatarUrl: user.avatar,
                 size: IconSizeTokens.xl2,
-                child: const Icon(
-                  SemanticIcons.profileUser,
-                  size: IconSizeTokens.sm,
-                ),
+                iconSize: IconSizeTokens.sm,
+                semanticLabel: l10n.profileAvatarLabel,
+                borderWidth: 0,
               ),
               const SizedBox(width: Spacing.sm),
               Expanded(

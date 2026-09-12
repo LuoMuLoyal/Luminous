@@ -73,6 +73,7 @@ abstract class MineAccount with _$MineAccount {
     required bool isAuthenticated,
     required MineCopyKey displayNameKey,
     String? displayName,
+    String? avatar,
     required String email,
     required MineCopyKey statusKey,
     required MineCopyKey roleKey,

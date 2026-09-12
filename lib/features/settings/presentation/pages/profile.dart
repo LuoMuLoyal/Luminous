@@ -9,6 +9,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -287,52 +288,11 @@ class _AvatarEditSection extends StatelessWidget {
     return Row(
       children: [
         // 头像预览
-        SizedBox.square(
-          dimension: 64,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: context.theme.colors.secondary,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: SemanticColor.neutral.border(context),
-                  ),
-                ),
-                child: SizedBox.square(
-                  dimension: 64,
-                  child: Icon(
-                    SemanticIcons.profileUser,
-                    color: SemanticColor.neutral.solid(context),
-                    size: 32,
-                  ),
-                ),
-              ),
-              Positioned(
-                right: -2,
-                bottom: -2,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: SemanticColor.primary.solid(context),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: context.theme.colors.background,
-                      width: 2,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(Spacing.xs),
-                    child: Icon(
-                      SemanticIcons.actionEdit,
-                      color: SemanticColor.primary.foreground(context),
-                      size: 12,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        AvatarView(
+          avatarUrl: avatarUrl,
+          size: 64,
+          iconSize: 32,
+          semanticLabel: l10n.profileAvatarLabel,
         ),
         const SizedBox(width: Spacing.lg),
         // 头像URL输入框

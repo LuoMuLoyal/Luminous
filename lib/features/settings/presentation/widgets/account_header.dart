@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Account header card shown at the top of the settings page.
@@ -31,12 +32,11 @@ class AccountHeader extends StatelessWidget {
       child: FTile(
         title: Text(displayName),
         subtitle: subtitle.isEmpty ? null : Text(subtitle),
-        prefix: FAvatar.raw(
+        prefix: AvatarView(
+          avatarUrl: session.user?.avatar,
           size: IconSizeTokens.xl4,
-          child: const Icon(
-            SemanticIcons.profileUser,
-            size: IconSizeTokens.xl2,
-          ),
+          iconSize: IconSizeTokens.xl2,
+          semanticLabel: l10n.profileAvatarLabel,
         ),
         suffix: const Icon(SemanticIcons.actionNext),
         onPress: onTap,

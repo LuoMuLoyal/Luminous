@@ -54,6 +54,7 @@ class LucentMineRepository implements MineRepository {
       isAuthenticated: true,
       displayNameKey: MineCopyKey.accountDisplayName,
       displayName: displayName,
+      avatar: currentUser?.avatar,
       email: currentUser?.email ?? '',
       statusKey: MineCopyKey.accountSignedIn,
       roleKey: MineCopyKey.accountStudentRole,
