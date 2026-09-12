@@ -9,12 +9,17 @@ class RecordHeaderActionChip extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.onTap,
+    this.svgIcon,
     this.emphasized = false,
     this.iconOnly = false,
   });
 
   final String label;
   final IconData icon;
+
+  /// Optional SVG glyph (iconMind AI 语义图标) shown instead of [icon] when
+  /// set — used by the NLP entry to carry the AI icon.
+  final Widget? svgIcon;
   final VoidCallback onTap;
   final bool emphasized;
   final bool iconOnly;
@@ -49,7 +54,7 @@ class RecordHeaderActionChip extends StatelessWidget {
             spacing: iconOnly ? 0 : null,
           ),
         ),
-        prefix: Icon(icon, size: IconSizeTokens.md),
+        prefix: svgIcon ?? Icon(icon, size: IconSizeTokens.md),
         child: iconOnly
             ? const SizedBox.shrink()
             : Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),

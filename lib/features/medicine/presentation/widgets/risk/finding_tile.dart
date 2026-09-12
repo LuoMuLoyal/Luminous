@@ -214,8 +214,7 @@ class _RecommendationLine extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          SemanticIcons.aiTip,
+        SemanticIconSvg.aiTip(
           size: IconSizeTokens.sm,
           color: color.solid(context),
         ),
