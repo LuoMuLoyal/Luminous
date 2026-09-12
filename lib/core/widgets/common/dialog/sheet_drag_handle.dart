@@ -25,3 +25,34 @@ class SheetDragHandle extends StatelessWidget {
     );
   }
 }
+
+/// Paints the opaque sheet surface behind bottom-sheet content.
+///
+/// Forui's `showFSheet` provides only layout, gestures and the barrier — it
+/// never paints a background for the sheet itself, so content placed directly
+/// in a sheet builder renders on top of the dimmed page underneath. Every
+/// `showFSheet` body must therefore be wrapped in this surface (or bring its
+/// own opaque background).
+///
+/// Top corners stay rounded while the bottom edge runs past the viewport so the
+/// sheet reads as edge-attached, matching Forui's own sheet previews.
+class SheetSurface extends StatelessWidget {
+  const SheetSurface({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = context.theme.style.borderRadius.xl2;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: context.theme.colors.card,
+        borderRadius: BorderRadius.only(
+          topLeft: radius.topLeft,
+          topRight: radius.topRight,
+        ),
+      ),
+      child: child,
+    );
+  }
+}

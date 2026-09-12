@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/tokens/lucide_icon_bridge.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Opens a lightweight icon picker sheet using Forui components.
@@ -24,9 +25,11 @@ Future<IconData?> showAppIconPicker(
   return showFSheet(
     context: context,
     side: FLayout.btt,
-    builder: (context) => _IconPickerSheet(
-      currentIcon: currentIcon,
-      categories: categories ?? defaultIconPickerCategories,
+    builder: (context) => SheetSurface(
+      child: _IconPickerSheet(
+        currentIcon: currentIcon,
+        categories: categories ?? defaultIconPickerCategories,
+      ),
     ),
   );
 }

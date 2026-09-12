@@ -19,6 +19,7 @@ class AvatarView extends StatelessWidget {
     this.semanticLabel,
     this.borderColor,
     this.borderWidth = 1,
+    this.onTap,
   });
 
   final String? avatarUrl;
@@ -29,36 +30,52 @@ class AvatarView extends StatelessWidget {
   final Color? borderColor;
   final double borderWidth;
 
+  /// Makes the avatar box a tap target.
+  ///
+  /// The gesture belongs here rather than on an outer [Stack] wrapper: the
+  /// stack's hit test is resolved by its children, so a tap that lands off the
+  /// rendered bitmap never reaches a wrapper-level detector.
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     final url = avatarUrl?.trim();
     final border = borderColor ?? SemanticColor.neutral.border(context);
 
+    final avatar = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: context.theme.colors.secondary,
+        shape: BoxShape.circle,
+        border: Border.all(color: border, width: borderWidth),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: bytes != null
+          ? Image.memory(bytes!, width: size, height: size, fit: BoxFit.cover)
+          : url == null || url.isEmpty
+          ? _FallbackIcon(size: iconSize)
+          : CachedNetworkImage(
+              imageUrl: url,
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              placeholder: (_, __) => _FallbackIcon(size: iconSize),
+              errorWidget: (_, __, ___) => _FallbackIcon(size: iconSize),
+            ),
+    );
+
     return Semantics(
       image: true,
+      button: onTap != null,
       label: semanticLabel,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: context.theme.colors.secondary,
-          shape: BoxShape.circle,
-          border: Border.all(color: border, width: borderWidth),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: bytes != null
-            ? Image.memory(bytes!, width: size, height: size, fit: BoxFit.cover)
-            : url == null || url.isEmpty
-            ? _FallbackIcon(size: iconSize)
-            : CachedNetworkImage(
-                imageUrl: url,
-                width: size,
-                height: size,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => _FallbackIcon(size: iconSize),
-                errorWidget: (_, __, ___) => _FallbackIcon(size: iconSize),
-              ),
-      ),
+      child: onTap == null
+          ? avatar
+          : GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onTap,
+              child: avatar,
+            ),
     );
   }
 }
