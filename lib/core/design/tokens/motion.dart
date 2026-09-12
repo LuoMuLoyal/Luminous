@@ -101,4 +101,7 @@ abstract final class DurationTokens {
 
   /// Settings desktop master-detail pane switch (fade through).
   static const masterDetailSwitch = Duration(milliseconds: 220);
+
+  /// Page state switch (skeleton → content → error …) fade-through.
+  static const pageStateSwitch = Duration(milliseconds: 240);
 }

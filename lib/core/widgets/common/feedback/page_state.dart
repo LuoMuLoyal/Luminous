@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -167,9 +168,20 @@ class PageStateSwitch<T> extends StatelessWidget {
   final Widget Function(PageViewStateEmptyInsufficient<T> empty)?
   emptyInsufficientBuilder;
 
+  /// Stable key for the [PageViewState] variant, so [PageTransitionSwitcher]
+  /// animates between variants (skeleton → content → error) but a payload change
+  /// within the same variant (e.g. a data refresh keeping [PageViewStateReady])
+  /// updates in place without re-animating the whole page.
+  String _variantKey(PageViewState<T> state) => switch (state) {
+    PageViewStateLoading<T>() => 'loading',
+    PageViewStateFatalError<T>() => 'error',
+    PageViewStateEmptyInsufficient<T>() => 'empty',
+    PageViewStateReady<T>() => 'ready',
+  };
+
   @override
   Widget build(BuildContext context) {
-    return switch (state) {
+    final view = switch (state) {
       PageViewStateLoading<T>() => _LoadingTimeoutWrapper(
         child: loadingBuilder?.call() ?? const _DefaultLoadingView(),
       ),
@@ -195,6 +207,29 @@ class PageStateSwitch<T> extends StatelessWidget {
         isPreview,
       ),
     };
+
+    // Material fade-through between state variants: the outgoing view fades out
+    // over the first 30% of the duration, then the incoming view fades in and
+    // scales up (0.92 → 1.0). The first child renders without animating, so a
+    // page's initial paint is immediate.
+    return PageTransitionSwitcher(
+      duration: DurationTokens.pageStateSwitch,
+      transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+          FadeThroughTransition(
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          ),
+      // StackFit.passthrough forwards the incoming constraints untouched: some
+      // pages mount this switch inside a SingleChildScrollView, where the
+      // default loose Stack would hand children unbounded constraints.
+      layoutBuilder: (entries) =>
+          Stack(fit: StackFit.passthrough, children: entries),
+      child: KeyedSubtree(
+        key: ValueKey<String>(_variantKey(state)),
+        child: view,
+      ),
+    );
   }
 }
 
