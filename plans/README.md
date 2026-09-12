@@ -32,6 +32,8 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
+- [`2026-09-12-avatar-upload-crop-view-plan.md`](2026-09-12-avatar-upload-crop-view-plan.md)
+  — 头像选择、移动端 crop_your_image 裁剪、Web 原图回退、预签名上传、统一展示与全屏查看；承接已失效的账号资料重构计划中的头像部分；每阶段独立可回滚提交
 - [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md)
   — Record 内嵌迷你趋势:快捷面板下新增近 7/30 天类别覆盖率行 + 单类别折线(周|月切换、空档≠0、数据不足引导);Wave 1 客户端逐日聚合(不跨 feature 消费 review),Wave 2 接 Lucent 聚合契约;与 review 页重组计划构成阶段 1 的另一半
 - [`2026-09-07-review-page-restructure.md`](2026-09-07-review-page-restructure.md)
