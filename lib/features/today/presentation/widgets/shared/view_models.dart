@@ -37,17 +37,11 @@ class TodayAiSummaryItem {
     required this.icon,
     required this.color,
     required this.text,
-    this.svgIcon,
   });
 
   final IconData icon;
   final SemanticColor color;
   final String text;
-
-  /// Optional SVG glyph (iconMind AI 语义图标) shown instead of [icon] when
-  /// set. Lets AI bullets carry an SVG AI icon while keeping [icon] as the
-  /// IconData fallback for callers that only consume icons.
-  final Widget Function(Color color, double size)? svgIcon;
 }
 
 class TodayAiSummaryCardContent {
@@ -270,8 +264,6 @@ TodayAiSummaryCardContent buildAiCardContent({
           icon: SemanticIcons.aiEntry,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryPreviewHint,
-          svgIcon: (color, size) =>
-              SemanticIconSvg.aiEntry(size: size, color: color),
         ),
       ],
     );
@@ -284,8 +276,6 @@ TodayAiSummaryCardContent buildAiCardContent({
           icon: SemanticIcons.aiSuggestion,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryDisabledHint,
-          svgIcon: (color, size) =>
-              SemanticIconSvg.aiSuggestion(size: size, color: color),
         ),
       ],
     );
@@ -301,8 +291,6 @@ TodayAiSummaryCardContent buildAiCardContent({
           icon: SemanticIcons.aiEntry,
           color: SemanticColor.primary,
           text: l10n.todayAnalysisEmptyTitle,
-          svgIcon: (color, size) =>
-              SemanticIconSvg.aiEntry(size: size, color: color),
         ),
       ],
       footer: l10n.todayAnalysisEmptyBody,
@@ -339,8 +327,6 @@ TodayAiSummaryCardContent buildAiCardContent({
           icon: SemanticIcons.aiAnalyzing,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryGeneratingHint,
-          svgIcon: (color, size) =>
-              SemanticIconSvg.aiAnalyzing(size: size, color: color),
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
       ],
@@ -366,9 +352,6 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
     icon: icon,
     color: SemanticColor.primary,
     text: bullet.text,
-    svgIcon: bullet.kind == TodayAiAnalysisBulletKind.general
-        ? (color, size) => SemanticIconSvg.aiTip(size: size, color: color)
-        : null,
   );
 }
 

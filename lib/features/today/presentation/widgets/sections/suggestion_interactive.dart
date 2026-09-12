@@ -247,16 +247,15 @@ class AiExplainContent extends StatelessWidget {
         children: [
           Row(
             children: [
-              explanation.aiGenerated
-                  ? SemanticIconSvg.aiGenerated(
-                      size: IconSizeTokens.sm,
-                      color: SemanticColor.primary.solid(context),
-                    )
-                  : Icon(
-                      SemanticIcons.statusInfo,
-                      size: IconSizeTokens.sm,
-                      color: SemanticColor.neutral.solid(context),
-                    ),
+              Icon(
+                explanation.aiGenerated
+                    ? SemanticIcons.aiGenerated
+                    : SemanticIcons.statusInfo,
+                size: IconSizeTokens.sm,
+                color: explanation.aiGenerated
+                    ? SemanticColor.primary.solid(context)
+                    : SemanticColor.neutral.solid(context),
+              ),
               const SizedBox(width: Spacing.xs),
               Text(
                 explanation.aiGenerated

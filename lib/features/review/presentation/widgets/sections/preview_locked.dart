@@ -78,31 +78,26 @@ class ReviewPreviewLockedSection extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.body,
-    this.svgIcon,
   });
 
   final IconData icon;
   final String title;
   final String body;
 
-  /// Optional SVG glyph (iconMind AI 语义图标) shown instead of [icon] when
-  /// set — lets the AI-findings preview card carry an AI icon.
-  final Widget Function(Color color, double size)? svgIcon;
-
   @override
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
-    final color = SemanticColor.primary.solid(context);
-    final svgBuilder = svgIcon;
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.lg),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            svgBuilder != null
-                ? svgBuilder(color, Spacing.xl)
-                : Icon(icon, color: color, size: Spacing.xl),
+            Icon(
+              icon,
+              color: SemanticColor.primary.solid(context),
+              size: Spacing.xl,
+            ),
             const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(

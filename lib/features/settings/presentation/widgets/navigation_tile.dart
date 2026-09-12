@@ -11,7 +11,6 @@ class SettingsNavigationTile extends StatelessWidget with FTileMixin {
     super.key,
     required this.title,
     this.icon,
-    this.svgIcon,
     this.subtitle,
     this.value,
     this.tileKey,
@@ -20,10 +19,6 @@ class SettingsNavigationTile extends StatelessWidget with FTileMixin {
 
   final String title;
   final IconData? icon;
-
-  /// Optional SVG glyph (iconMind AI 语义图标) shown instead of [icon] when
-  /// set.
-  final Widget Function(Color color, double size)? svgIcon;
   final String? subtitle;
   final String? value;
   final Key? tileKey;
@@ -31,8 +26,6 @@ class SettingsNavigationTile extends StatelessWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context) {
-    final color = SemanticColor.neutral.solid(context);
-    final svgBuilder = svgIcon;
     return FTile(
       key: tileKey,
       title: Text(title),
@@ -40,11 +33,7 @@ class SettingsNavigationTile extends StatelessWidget with FTileMixin {
         final s = subtitle;
         return s == null || s.isEmpty ? null : Text(s);
       }(),
-      prefix: svgBuilder != null
-          ? svgBuilder(color, IconSizeTokens.md)
-          : icon != null
-          ? Icon(icon, size: IconSizeTokens.md)
-          : null,
+      prefix: icon != null ? Icon(icon, size: IconSizeTokens.md) : null,
       details: () {
         final v = value;
         return v == null || v.isEmpty ? null : Text(v);

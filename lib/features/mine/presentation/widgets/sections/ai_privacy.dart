@@ -23,9 +23,10 @@ class MineAiPrivacySection extends StatelessWidget {
           children: [
             FTile(
               key: const Key('mine-ai-settings-tile'),
-              prefix: SemanticIconSvg.aiEntry(
-                size: Spacing.xl,
+              prefix: Icon(
+                SemanticIcons.aiEntry,
                 color: SemanticColor.primary.solid(context),
+                size: Spacing.xl,
               ),
               title: Text(l10n.settingsAiTitle),
               subtitle: Text(

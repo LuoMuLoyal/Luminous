@@ -12,21 +12,14 @@ class ReviewSectionCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.child,
-    this.svgIcon,
   });
 
   final IconData icon;
   final String title;
   final Widget child;
 
-  /// Optional SVG glyph (iconMind AI 语义图标) shown instead of [icon] when
-  /// set.
-  final Widget Function(Color color, double size)? svgIcon;
-
   @override
   Widget build(BuildContext context) {
-    final color = SemanticColor.primary.solid(context);
-    final svgBuilder = svgIcon;
     return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.lg),
@@ -36,9 +29,11 @@ class ReviewSectionCard extends StatelessWidget {
             Row(
               children: [
                 ExcludeSemantics(
-                  child: svgBuilder != null
-                      ? svgBuilder(color, Spacing.xl)
-                      : Icon(icon, size: Spacing.xl, color: color),
+                  child: Icon(
+                    icon,
+                    size: Spacing.xl,
+                    color: SemanticColor.primary.solid(context),
+                  ),
                 ),
                 const SizedBox(width: Spacing.md),
                 Expanded(
@@ -94,36 +89,24 @@ class ReviewUnknownReason extends StatelessWidget {
 
 /// 事实列表的单行条目：小图标 + 文本。
 class ReviewFactRow extends StatelessWidget {
-  const ReviewFactRow({
-    super.key,
-    required this.icon,
-    required this.text,
-    this.svgIcon,
-  });
+  const ReviewFactRow({super.key, required this.icon, required this.text});
 
   final IconData icon;
   final String text;
 
-  /// Optional SVG glyph (iconMind AI 语义图标) shown instead of [icon] when
-  /// set.
-  final Widget Function(Color color, double size)? svgIcon;
-
   @override
   Widget build(BuildContext context) {
-    final svgBuilder = svgIcon;
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ExcludeSemantics(
-            child: svgBuilder != null
-                ? svgBuilder(SemanticColor.neutral.solid(context), Spacing.lg)
-                : Icon(
-                    icon,
-                    size: Spacing.lg,
-                    color: SemanticColor.neutral.solid(context),
-                  ),
+            child: Icon(
+              icon,
+              size: Spacing.lg,
+              color: SemanticColor.neutral.solid(context),
+            ),
           ),
           const SizedBox(width: Spacing.sm),
           Expanded(child: Text(text, style: context.theme.typography.body.xs)),

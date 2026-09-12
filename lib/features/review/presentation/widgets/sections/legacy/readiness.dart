@@ -223,7 +223,7 @@ class _PrimaryAction extends StatelessWidget {
                 height: Spacing.xl,
                 child: FCircularProgress(),
               )
-            : SemanticIconSvg.aiEntry(size: Spacing.xl),
+            : const Icon(SemanticIcons.aiEntry, size: Spacing.xl),
         child: Text(section.l10n.reviewGenerateAction),
       ),
     };

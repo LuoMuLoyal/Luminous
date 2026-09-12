@@ -158,9 +158,10 @@ class ReviewActionBar extends StatelessWidget {
           child: FButton(
             key: const Key('report-top-generate-action'),
             onPress: isGenerating ? null : onGenerate,
-            prefix: isGenerating
-                ? SemanticIconSvg.aiAnalyzing(size: 16)
-                : SemanticIconSvg.aiEntry(size: 16),
+            prefix: Icon(
+              isGenerating ? SemanticIcons.aiAnalyzing : SemanticIcons.aiEntry,
+              size: 16,
+            ),
             child: Text(
               l10n.reviewGenerateAction,
               maxLines: 1,

@@ -44,10 +44,6 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
         const SizedBox(height: Spacing.md),
         MethodTile(
           icon: SemanticIcons.aiEntry,
-          svgIcon: SemanticIconSvg.aiEntry(
-            size: IconSizeTokens.xl2,
-            color: SemanticColor.primary.solid(context),
-          ),
           title: l10n.scanMethodAiTitle,
           subtitle: l10n.scanMethodAiSubtitle,
           onTap: () => Navigator.of(dialogContext).pop(MedicineScanMethod.ai),

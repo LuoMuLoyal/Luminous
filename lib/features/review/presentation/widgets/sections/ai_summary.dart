@@ -60,12 +60,10 @@ class ReviewAiSummarySection extends StatelessWidget {
               children: [
                 FAvatar.raw(
                   size: Spacing.xl4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(Spacing.md),
-                    child: SemanticIconSvg.aiEntry(
-                      size: Spacing.xl,
-                      color: SemanticColor.primary.solid(context),
-                    ),
+                  child: Icon(
+                    SemanticIcons.aiEntry,
+                    color: SemanticColor.primary.solid(context),
+                    size: Spacing.xl,
                   ),
                 ),
                 const SizedBox(width: Spacing.lg),
@@ -160,9 +158,12 @@ class ReviewAiSummarySection extends StatelessWidget {
                       : () async {
                           await onGenerate!();
                         },
-                  prefix: aiState.isLoading
-                      ? SemanticIconSvg.aiAnalyzing(size: 16)
-                      : SemanticIconSvg.aiEntry(size: 16),
+                  prefix: Icon(
+                    aiState.isLoading
+                        ? SemanticIcons.aiAnalyzing
+                        : SemanticIcons.aiEntry,
+                    size: 16,
+                  ),
                   child: Text(
                     aiState.isLoading
                         ? reviewAiSummaryGeneratingLabel(l10n, selectedRange)

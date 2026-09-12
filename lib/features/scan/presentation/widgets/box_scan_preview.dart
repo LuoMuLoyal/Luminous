@@ -10,17 +10,12 @@ class MethodTile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
-    this.svgIcon,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
-
-  /// Optional SVG glyph (iconMind AI 语义图标) shown instead of [icon] when
-  /// set — the AI recognition method carries the AI icon.
-  final Widget? svgIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +34,11 @@ class MethodTile extends StatelessWidget {
       ),
       child: FTile(
         onPress: onTap,
-        prefix:
-            svgIcon ??
-            Icon(
-              icon,
-              color: SemanticColor.primary.solid(context),
-              size: IconSizeTokens.xl2,
-            ),
+        prefix: Icon(
+          icon,
+          color: SemanticColor.primary.solid(context),
+          size: IconSizeTokens.xl2,
+        ),
         title: Text(title),
         subtitle: Text(
           subtitle,

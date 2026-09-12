@@ -174,10 +174,6 @@ class DesktopBrandPanel extends StatelessWidget {
                     const SizedBox(height: Spacing.xl),
                     BrandFeatureItem(
                       icon: SemanticIcons.aiEntry,
-                      svgIcon: SemanticIconSvg.aiEntry(
-                        size: IconSizeTokens.lg,
-                        color: SemanticColor.primary.solid(context),
-                      ),
                       title: l10n.authBrandFeatureAnalysis,
                       description: l10n.authBrandFeatureAnalysisDesc,
                     ),
@@ -204,16 +200,11 @@ class BrandFeatureItem extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.description,
-    this.svgIcon,
   });
 
   final IconData icon;
   final String title;
   final String description;
-
-  /// Optional SVG glyph (iconMind AI 语义图标) shown instead of [icon] when
-  /// set — the AI analysis feature carries the AI icon.
-  final Widget? svgIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -231,13 +222,11 @@ class BrandFeatureItem extends StatelessWidget {
             borderRadius: context.theme.style.borderRadius.md,
           ),
           child: Center(
-            child:
-                svgIcon ??
-                Icon(
-                  icon,
-                  color: SemanticColor.primary.solid(context),
-                  size: IconSizeTokens.lg,
-                ),
+            child: Icon(
+              icon,
+              color: SemanticColor.primary.solid(context),
+              size: IconSizeTokens.lg,
+            ),
           ),
         ),
         const SizedBox(width: Spacing.lg),
