@@ -37,35 +37,6 @@ CustomTransitionPage<T> fadePage<T>({
   );
 }
 
-/// Fade-through transition helper for shell tab routes.
-///
-/// Uses the official Material [FadeThroughTransition] — the outgoing page
-/// fades out over the first 30% of the duration, then the incoming page fades
-/// in and scales up (0.92 → 1.0) — which is the M3 pattern for peer content
-/// without a spatial relationship. This matches the cross-branch fade-through
-/// performed by `ShellTabBranchContainer` when switching tabs.
-///
-/// [DurationTokens.tabFadeThrough] keeps the transition bounded so
-/// `pumpAndSettle` converges; the reverse duration stays zero so rapid tab
-/// switching never plays a reverse animation.
-CustomTransitionPage<T> tabFadePage<T>({
-  required LocalKey key,
-  required Widget child,
-}) {
-  return CustomTransitionPage<T>(
-    key: key,
-    child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeThroughTransition(
-          animation: animation,
-          secondaryAnimation: secondaryAnimation,
-          child: child,
-        ),
-    transitionDuration: DurationTokens.tabFadeThrough,
-    reverseTransitionDuration: Duration.zero,
-  );
-}
-
 /// Drill-down transition helper for full-screen sub-pages.
 ///
 /// Uses the official Material [SharedAxisTransition] on the horizontal axis —
