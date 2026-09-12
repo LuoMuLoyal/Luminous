@@ -18,6 +18,7 @@ class DesktopAuthShell extends StatelessWidget {
     this.centerTitle = false,
     this.logo,
     this.subtitle,
+    this.formPanel = true,
   });
 
   final String title;
@@ -27,6 +28,10 @@ class DesktopAuthShell extends StatelessWidget {
   final bool centerTitle;
   final Widget? logo;
   final String? subtitle;
+
+  /// Wraps [form] in [AuthFormPanel] (a white card); off for pages that lay out
+  /// their own grouped white blocks.
+  final bool formPanel;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +76,10 @@ class DesktopAuthShell extends StatelessWidget {
                                     formModeSelector!,
                                   ],
                                   const SizedBox(height: Spacing.xl2),
-                                  AuthFormPanel(form: form),
+                                  if (formPanel)
+                                    AuthFormPanel(form: form)
+                                  else
+                                    form,
                                 ],
                               ),
                             ),

@@ -39,7 +39,7 @@ void main() {
 
     await tester.pump();
 
-    expect(find.text(l10n.authAccountManageUsername), findsOneWidget);
+    expect(find.text(l10n.profileNicknameLabel), findsOneWidget);
     expect(find.text(l10n.authAccountManageEmail), findsOneWidget);
     expect(find.text(l10n.authAccountManagePassword), findsOneWidget);
     expect(find.text(l10n.authAccountManageThirdParty), findsOneWidget);

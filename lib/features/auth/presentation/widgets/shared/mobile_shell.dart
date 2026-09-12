@@ -15,6 +15,7 @@ class MobileAuthShell extends StatelessWidget {
     this.centerTitle = false,
     this.logo,
     this.subtitle,
+    this.formPanel = true,
   });
 
   final String title;
@@ -24,6 +25,12 @@ class MobileAuthShell extends StatelessWidget {
   final bool centerTitle;
   final Widget? logo;
   final String? subtitle;
+
+  /// Wraps [form] in [AuthFormPanel] (a white card).
+  ///
+  /// Off for pages that lay out their own grouped white blocks — nesting them
+  /// in another card would double the surface.
+  final bool formPanel;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +64,7 @@ class MobileAuthShell extends StatelessWidget {
                     formModeSelector!,
                   ],
                   const SizedBox(height: Spacing.xl2),
-                  AuthFormPanel(form: form),
+                  if (formPanel) AuthFormPanel(form: form) else form,
                 ],
               ),
             ),

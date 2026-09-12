@@ -8,15 +8,74 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/core/widgets/common/control/value_row.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_identity.dart';
 import 'package:luminous/features/auth/presentation/pages/account_manage_helpers.dart';
-import 'package:luminous/features/auth/presentation/pages/account_manage_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+/// 账号概要卡片：头像 + 昵称 + 邮箱，点击进入个人信息页。
+class _AccountOverviewCard extends StatelessWidget {
+  const _AccountOverviewCard({required this.user});
+
+  final AuthUser user;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+      decoration: BoxDecoration(
+        color: context.theme.colors.card,
+        borderRadius: context.theme.style.borderRadius.lg,
+        border: Border.all(
+          color: SemanticColor.neutral.border(context),
+          width: context.theme.style.borderWidth,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppValueRow(
+            key: const Key('security-center-avatar-row'),
+            label: l10n.profileAvatarRowTitle,
+            value: '',
+            onPress: () => context.push(Routes.profile),
+            leading: AvatarView(
+              avatarUrl: user.avatar,
+              size: 40,
+              iconSize: 20,
+              semanticLabel: l10n.profileAvatarLabel,
+            ),
+          ),
+          const AppDivider(),
+          AppValueRow(
+            key: const Key('security-center-nickname-row'),
+            label: l10n.profileNicknameLabel,
+            value: user.nickname?.trim().isNotEmpty == true
+                ? user.nickname!.trim()
+                : l10n.profileEmptyValue,
+            isPlaceholder: user.nickname?.trim().isNotEmpty != true,
+            onPress: () => context.push(Routes.profile),
+          ),
+          const AppDivider(),
+          AppValueRow(
+            label: l10n.authAccountManageEmail,
+            value: user.email ?? l10n.authEmailMissing,
+            isPlaceholder: user.email == null,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// 账号安全中心页面
 class SecurityCenterPage extends ConsumerWidget {
@@ -48,8 +107,9 @@ class SecurityCenterPage extends ConsumerWidget {
                   context.push(loginRouteForCurrentLocation(context)),
             ),
           ] else ...[
-            // 顶部概要卡片：头像 + 昵称
-            AccountSummaryCard(user: user),
+            // 账号概要：头像 + 昵称 / 邮箱，与个人信息页同一「左标签 / 右数据」观感，
+            // 点击回到个人信息页编辑。
+            _AccountOverviewCard(user: user),
             const SizedBox(height: Spacing.xl2),
 
             // 授权记录

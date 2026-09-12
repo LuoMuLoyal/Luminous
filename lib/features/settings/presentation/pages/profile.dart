@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -12,10 +14,13 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_draft.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_viewer.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/core/widgets/common/control/value_row.dart';
+import 'package:luminous/core/widgets/common/dialog/edit_sheet.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -35,7 +40,14 @@ const _bloodTypeOptions = <String>[
   'O-',
 ];
 
-/// 个人信息页面 - 集成头像、昵称、健康档案编辑
+/// 头像上传前的本地字节上限，与 Lucent 的 `maxSizeBytes` 一致，超限提前反馈。
+const _maxAvatarBytes = 5 * 1024 * 1024;
+
+/// 个人信息页。
+///
+/// 列表行是读侧(左标签 / 右当前值 / 箭头),写入只发生在点击后弹出的底部编辑
+/// sheet;页面不再内联常驻输入框,也没有整体提交按钮。健康字段每行单独提交,
+/// 只发送被改动的那个字段,其余用 [healthContextNoChange] 保持服务端现值。
 class ProfilePage extends HookConsumerWidget {
   const ProfilePage({super.key});
 
@@ -44,111 +56,8 @@ class ProfilePage extends HookConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
     final user = session.user;
-
-    // 用户资料控制器
-    final nicknameController = useTextEditingController(
-      text: user?.nickname ?? '',
-    );
-    final avatarController = useTextEditingController(text: user?.avatar ?? '');
     final avatarDraft = useState<AvatarDraft?>(null);
-    final formUserId = useRef<String?>(null);
-
-    // 健康档案控制器
-    final heightCmController = useTextEditingController();
-    final weightKgController = useTextEditingController();
-    final birthDate = useState<DateTime?>(null);
-    final bloodType = useState<String?>(null);
-    final unitSystem = useState<HealthUnitSystem?>(null);
-    final sexAtBirth = useState<HealthSexAtBirth?>(null);
-    final emergencyContactNameController = useTextEditingController();
-    final emergencyContactPhoneController = useTextEditingController();
-    final initialized = useRef(false);
-
-    // 同步控制器当用户变化时
-    useEffect(() {
-      if (user == null || formUserId.value == user.id) return null;
-      formUserId.value = user.id;
-      nicknameController.text = user.nickname ?? '';
-      avatarController.text = user.avatar ?? '';
-      avatarDraft.value = null;
-      return null;
-    }, [user?.id]);
-
-    // 从快照初始化健康档案数据
-    void initFromSnapshot(HealthProfile profile) {
-      if (initialized.value) return;
-      initialized.value = true;
-
-      heightCmController.text = profile.heightCm?.toString() ?? '';
-      weightKgController.text = profile.weightKg?.toString() ?? '';
-      birthDate.value = _tryParseDate(profile.birthDate);
-      bloodType.value = profile.bloodType;
-      unitSystem.value = HealthUnitSystem.fromValue(profile.unitSystem);
-      sexAtBirth.value = HealthSexAtBirth.fromValue(profile.sexAtBirth);
-      emergencyContactNameController.text = profile.emergencyContactName ?? '';
-      emergencyContactPhoneController.text =
-          profile.emergencyContactPhone ?? '';
-    }
-
-    // 保存用户资料
-    Future<void> pickAvatar(AvatarAction action) async {
-      if (action == AvatarAction.remove) {
-        avatarDraft.value = null;
-        avatarController.clear();
-        return;
-      }
-      final draft = await pickAvatarDraft(context, action: action);
-      if (context.mounted && draft != null) avatarDraft.value = draft;
-    }
-
-    Future<void> openAvatarActions() async {
-      final action = await showAvatarActionsSheet(
-        context,
-        avatarUrl: user?.avatar,
-      );
-      if (context.mounted && action != null) await pickAvatar(action);
-    }
-
-    Future<void> saveUserProfile() async {
-      final accountNotifier = ref.read(authAccountProvider.notifier);
-      final draft = avatarDraft.value;
-      var ok = true;
-      if (draft != null) {
-        ok = await accountNotifier.uploadAvatar(
-          bytes: draft.bytes,
-          fileName: draft.fileName,
-          contentType: draft.contentType,
-          nickname: nicknameController.text,
-        );
-      }
-      if (draft == null) {
-        ok = await accountNotifier.updateProfile(
-          nickname: nicknameController.text,
-          avatar: avatarController.text,
-        );
-      }
-      if (ok && context.mounted) {
-        await Toast.show(context, l10n.authProfileSaveSuccess);
-      }
-    }
-
-    // 保存健康档案
-    void saveHealthProfile() {
-      final input = HealthProfileUpdateInput(
-        birthDate: birthDate.value != null
-            ? _formatDate(birthDate.value!)
-            : null,
-        heightCm: num.tryParse(heightCmController.text),
-        weightKg: num.tryParse(weightKgController.text),
-        bloodType: bloodType.value,
-        unitSystem: unitSystem.value,
-        sexAtBirth: sexAtBirth.value,
-        emergencyContactName: emergencyContactNameController.text.trim(),
-        emergencyContactPhone: emergencyContactPhoneController.text.trim(),
-      );
-
-      unawaited(ref.read(healthProfileFormProvider.notifier).save(input));
-    }
+    final avatarRemoved = useState(false);
 
     final Widget content;
 
@@ -172,23 +81,82 @@ class ProfilePage extends HookConsumerWidget {
         ),
       );
     } else {
-      final formState = ref.watch(healthProfileFormProvider);
-
-      ref.listen<HealthProfileFormState>(healthProfileFormProvider, (
-        prev,
-        next,
-      ) {
-        if (next.saved && prev?.saved != true) {
-          unawaited(Toast.show(context, l10n.mineEditSavedToast));
-          if (context.mounted) Navigator.of(context).pop();
-        }
-        final error = next.errorMessage;
-        if (error != null && error != prev?.errorMessage) {
-          unawaited(Toast.show(context, error));
-        }
-      });
-
       final snapshot = ref.watch(healthContextSnapshotProvider);
+
+      Future<void> editAvatar() async {
+        final action = await showAvatarActionsDialog(
+          context,
+          avatarUrl: avatarRemoved.value ? null : user?.avatar,
+        );
+        if (!context.mounted || action == null) return;
+
+        if (action == AvatarAction.view) {
+          final draft = avatarDraft.value;
+          if (draft != null) {
+            await showAvatarBytesViewer(context, bytes: draft.bytes);
+          } else {
+            final url = user?.avatar;
+            if (url != null && url.isNotEmpty) {
+              await showAvatarViewer(context, avatarUrl: url);
+            }
+          }
+          return;
+        }
+
+        final notifier = ref.read(authAccountProvider.notifier);
+        if (action == AvatarAction.remove) {
+          final ok = await notifier.updateProfile(
+            nickname: user?.nickname,
+            avatar: null,
+          );
+          if (!context.mounted) return;
+          if (ok) {
+            avatarDraft.value = null;
+            avatarRemoved.value = true;
+            await Toast.show(context, l10n.mineEditSavedToast);
+          }
+          return;
+        }
+
+        final draft = await pickAvatarDraft(context, action: action);
+        if (!context.mounted || draft == null) return;
+        if (draft.bytes.lengthInBytes > _maxAvatarBytes) {
+          await Toast.show(context, l10n.profileAvatarTooLarge);
+          return;
+        }
+        final ok = await notifier.uploadAvatar(
+          bytes: draft.bytes,
+          fileName: draft.fileName,
+          contentType: draft.contentType,
+          nickname: user?.nickname,
+        );
+        if (!context.mounted) return;
+        if (ok) {
+          avatarDraft.value = draft;
+          avatarRemoved.value = false;
+          await Toast.show(context, l10n.mineEditSavedToast);
+        }
+      }
+
+      Future<void> editNickname() async {
+        final value = await showTextEditSheet(
+          context: context,
+          title: l10n.profileNicknameLabel,
+          label: l10n.profileNicknameLabel,
+          hint: l10n.profileNicknameHint,
+          initialValue: user?.nickname ?? '',
+        );
+        if (!context.mounted || value == null || value == user?.nickname) {
+          return;
+        }
+
+        final ok = await ref
+            .read(authAccountProvider.notifier)
+            .updateProfile(nickname: value, avatar: user?.avatar);
+        if (ok && context.mounted) {
+          await Toast.show(context, l10n.mineEditSavedToast);
+        }
+      }
 
       final width = MediaQuery.sizeOf(context).width;
       content = ResponsiveContentFrame(
@@ -199,38 +167,62 @@ class ProfilePage extends HookConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 用户资料部分
-              _UserProfileSection(
-                nicknameController: nicknameController,
-                avatarController: avatarController,
-                avatarDraft: avatarDraft.value,
-                user: user,
-                l10n: l10n,
-                onAvatarEdit: openAvatarActions,
-                onSave: saveUserProfile,
+              _SectionLabel(label: l10n.profileUserSectionTitle),
+              const SizedBox(height: Spacing.sm),
+              _ValueCard(
+                children: [
+                  AppValueRow(
+                    key: const Key('profile-avatar-row'),
+                    label: l10n.profileAvatarRowTitle,
+                    value: '',
+                    onPress: () => unawaited(editAvatar()),
+                    leading: AvatarActionView(
+                      avatarUrl: avatarRemoved.value ? null : user?.avatar,
+                      bytes: avatarDraft.value?.bytes,
+                      size: 40,
+                      iconSize: 20,
+                      showEditBadge: false,
+                    ),
+                  ),
+                  const AppDivider(),
+                  AppValueRow(
+                    key: const Key('profile-nickname-row'),
+                    label: l10n.profileNicknameLabel,
+                    value: user?.nickname?.trim().isNotEmpty == true
+                        ? user!.nickname!.trim()
+                        : l10n.profileEmptyValue,
+                    isPlaceholder: user?.nickname?.trim().isNotEmpty != true,
+                    onPress: () => unawaited(editNickname()),
+                  ),
+                  const AppDivider(),
+                  AppValueRow(
+                    key: const Key('profile-email-row'),
+                    label: l10n.authAccountManageEmail,
+                    value: user?.email ?? l10n.authEmailMissing,
+                    isPlaceholder: user?.email == null,
+                    // 邮箱走改邮箱页(验证码 + 密码),不是就地编辑。
+                    onPress: () =>
+                        unawaited(context.push(Routes.accountChangeEmail)),
+                    trailing: user?.emailVerifiedAt != null
+                        ? Icon(
+                            SemanticIcons.statusSuccess,
+                            size: IconSizeTokens.md,
+                            color: SemanticColor.success.solid(context),
+                          )
+                        : null,
+                  ),
+                ],
               ),
               const SizedBox(height: Spacing.xl2),
 
-              // 健康档案部分
+              _SectionLabel(label: l10n.profileHealthSectionTitle),
+              const SizedBox(height: Spacing.sm),
               snapshot.when(
-                data: (ctx) {
-                  initFromSnapshot(ctx.profile);
-                  return _HealthProfileSection(
-                    heightCmController: heightCmController,
-                    weightKgController: weightKgController,
-                    birthDate: birthDate,
-                    bloodType: bloodType,
-                    unitSystem: unitSystem,
-                    sexAtBirth: sexAtBirth,
-                    emergencyContactNameController:
-                        emergencyContactNameController,
-                    emergencyContactPhoneController:
-                        emergencyContactPhoneController,
-                    l10n: l10n,
-                    isSaving: formState.isSaving,
-                    onSave: saveHealthProfile,
-                  );
-                },
+                data: (ctx) => _HealthProfileCard(
+                  profile: ctx.profile,
+                  onChanged: () =>
+                      unawaited(Toast.show(context, l10n.mineEditSavedToast)),
+                ),
                 loading: () => const ProfilePageLoading(),
                 error: (_, __) => StateErrorView(
                   title: l10n.mineErrorTitle,
@@ -256,242 +248,399 @@ class ProfilePage extends HookConsumerWidget {
   }
 }
 
-/// 用户资料部分
-class _UserProfileSection extends StatelessWidget {
-  const _UserProfileSection({
-    required this.nicknameController,
-    required this.avatarController,
-    required this.avatarDraft,
-    required this.user,
-    required this.l10n,
-    required this.onAvatarEdit,
-    required this.onSave,
-  });
+/// 健康档案卡片:每行点击后弹出单字段编辑 sheet。
+class _HealthProfileCard extends ConsumerWidget {
+  const _HealthProfileCard({required this.profile, required this.onChanged});
 
-  final TextEditingController nicknameController;
-  final TextEditingController avatarController;
-  final AvatarDraft? avatarDraft;
-  final AuthUser? user;
-  final AppLocalizations l10n;
-  final VoidCallback onAvatarEdit;
-  final VoidCallback onSave;
+  final HealthProfile profile;
+  final VoidCallback onChanged;
 
-  @override
-  Widget build(BuildContext context) {
-    final typography = context.theme.typography;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.profileUserSectionTitle,
-          style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: Spacing.lg),
-        // 头像编辑
-        _AvatarEditSection(
-          avatarUrl: user?.avatar,
-          avatarDraft: avatarDraft,
-          avatarController: avatarController,
-          l10n: l10n,
-          onAvatarEdit: onAvatarEdit,
-        ),
-        const SizedBox(height: Spacing.lg),
-        // 昵称编辑
-        FTextField(
-          key: const Key('profile-nickname-field'),
-          control: FTextFieldControl.managed(controller: nicknameController),
-          label: Text(l10n.profileNicknameLabel),
-        ),
-        const SizedBox(height: Spacing.lg),
-        FButton(
-          key: const Key('profile-user-save-button'),
-          onPress: onSave,
-          child: Text(l10n.profileUserSaveAction),
-        ),
-      ],
-    );
+  /// 弹出单字段 sheet,确认后只提交该字段。
+  Future<void> _submit({
+    required BuildContext context,
+    required WidgetRef ref,
+    required HealthProfileUpdateInput input,
+  }) async {
+    if (!context.mounted) return;
+    final state = ref.read(healthProfileFormProvider);
+    if (state.isSaving) return;
+    await ref.read(healthProfileFormProvider.notifier).save(input);
+    onChanged();
   }
-}
 
-/// 头像编辑部分
-class _AvatarEditSection extends StatelessWidget {
-  const _AvatarEditSection({
-    required this.avatarUrl,
-    required this.avatarDraft,
-    required this.avatarController,
-    required this.l10n,
-    required this.onAvatarEdit,
-  });
-
-  final String? avatarUrl;
-  final AvatarDraft? avatarDraft;
-  final TextEditingController avatarController;
-  final AppLocalizations l10n;
-  final VoidCallback onAvatarEdit;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // 头像预览
-        AvatarActionView(
-          avatarUrl: avatarUrl,
-          bytes: avatarDraft?.bytes,
-          size: 64,
-          iconSize: 32,
-          onEdit: onAvatarEdit,
-        ),
-        const SizedBox(width: Spacing.lg),
-        // 头像URL输入框
-        Expanded(
-          child: FTextField(
-            key: const Key('profile-avatar-field'),
-            control: FTextFieldControl.managed(controller: avatarController),
-            label: Text(l10n.profileAvatarLabel),
-          ),
-        ),
-      ],
+  /// 弹出一个由 [slot] 承载当前值的 sheet,确认后把值交给 [buildInput]。
+  Future<void> _edit<T>({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String title,
+    required SheetValueSlot<T> slot,
+    required Widget Function(BuildContext context, SheetValueSlot<T> slot) body,
+    required HealthProfileUpdateInput Function(T value) buildInput,
+  }) async {
+    final value = await showValueEditSheet<T>(
+      context: context,
+      title: title,
+      slot: slot,
+      body: body,
     );
+    if (value == null || !context.mounted) return;
+    await _submit(context: context, ref: ref, input: buildInput(value));
   }
-}
 
-/// 健康档案部分
-class _HealthProfileSection extends StatelessWidget {
-  const _HealthProfileSection({
-    required this.heightCmController,
-    required this.weightKgController,
-    required this.birthDate,
-    required this.bloodType,
-    required this.unitSystem,
-    required this.sexAtBirth,
-    required this.emergencyContactNameController,
-    required this.emergencyContactPhoneController,
-    required this.l10n,
-    required this.isSaving,
-    required this.onSave,
-  });
-
-  final TextEditingController heightCmController;
-  final TextEditingController weightKgController;
-  final ValueNotifier<DateTime?> birthDate;
-  final ValueNotifier<String?> bloodType;
-  final ValueNotifier<HealthUnitSystem?> unitSystem;
-  final ValueNotifier<HealthSexAtBirth?> sexAtBirth;
-  final TextEditingController emergencyContactNameController;
-  final TextEditingController emergencyContactPhoneController;
-  final AppLocalizations l10n;
-  final bool isSaving;
-  final VoidCallback onSave;
+  /// 文本型单字段 sheet:sheet 自己持有 controller,返回值或 null。
+  Future<void> _editText({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String title,
+    required HealthProfileUpdateInput Function(String value) buildInput,
+    String? hint,
+    String? initialValue,
+    TextInputType? keyboardType,
+  }) async {
+    final value = await showTextEditSheet(
+      context: context,
+      title: title,
+      hint: hint,
+      initialValue: initialValue,
+      keyboardType: keyboardType,
+    );
+    if (value == null || !context.mounted) return;
+    await _submit(context: context, ref: ref, input: buildInput(value));
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final typography = context.theme.typography;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final sex = HealthSexAtBirth.fromValue(profile.sexAtBirth);
+    final unit = HealthUnitSystem.fromValue(profile.unitSystem);
+
+    return _ValueCard(
       children: [
-        Text(
-          l10n.profileHealthSectionTitle,
-          style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: Spacing.lg),
-        FDateField.calendar(
-          key: const Key('profile-birthdate-field'),
-          label: Text(l10n.mineEditFieldBirthDate),
-          selectionControl: FDateSelectionControl.managedSingle(
-            initial: birthDate.value,
-            toggleable: true,
-            onChange: (value) => birthDate.value = value,
-          ),
-        ),
-        const SizedBox(height: Spacing.md),
-        _enumDropdown<HealthSexAtBirth>(
-          label: l10n.mineEditFieldSexAtBirth,
-          value: sexAtBirth.value,
-          values: HealthSexAtBirth.values,
-          onChanged: (v) => sexAtBirth.value = v,
-          labelBuilder: (v) => switch (v) {
-            HealthSexAtBirth.female => l10n.mineEditSexAtBirthFemale,
-            HealthSexAtBirth.male => l10n.mineEditSexAtBirthMale,
-            HealthSexAtBirth.intersex => l10n.mineEditSexAtBirthIntersex,
-            HealthSexAtBirth.unknown => l10n.mineEditSexAtBirthUnknown,
+        AppValueRow(
+          key: const Key('profile-birthdate-row'),
+          label: l10n.mineEditFieldBirthDate,
+          value: profile.birthDate ?? l10n.profileEmptyValue,
+          isPlaceholder: profile.birthDate == null,
+          onPress: () {
+            unawaited(
+              _edit<DateTime>(
+                context: context,
+                ref: ref,
+                title: l10n.mineEditFieldBirthDate,
+                slot: SheetValueSlot<DateTime>(
+                  _tryParseDate(profile.birthDate) ?? DateTime.now(),
+                ),
+                body: (sheetContext, slot) => FDateField.calendar(
+                  key: const Key('profile-birthdate-sheet-field'),
+                  label: Text(l10n.mineEditFieldBirthDate),
+                  selectionControl: FDateSelectionControl.managedSingle(
+                    initial: slot.value,
+                    onChange: (value) {
+                      if (value != null) slot.value = value;
+                    },
+                  ),
+                ),
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(birthDate: _formatDate(value)),
+              ),
+            );
           },
         ),
-        const SizedBox(height: Spacing.md),
-        FTextField(
-          key: const Key('profile-height-field'),
-          control: FTextFieldControl.managed(controller: heightCmController),
-          label: Text(l10n.mineEditFieldHeightCm),
-          keyboardType: TextInputType.number,
+        const AppDivider(),
+        AppValueRow(
+          key: const Key('profile-sex-row'),
+          label: l10n.mineEditFieldSexAtBirth,
+          value: sex == null ? l10n.profileEmptyValue : _sexLabel(l10n, sex),
+          isPlaceholder: sex == null,
+          onPress: () {
+            unawaited(
+              _edit<HealthSexAtBirth>(
+                context: context,
+                ref: ref,
+                title: l10n.mineEditFieldSexAtBirth,
+                slot: SheetValueSlot<HealthSexAtBirth>(
+                  sex ?? HealthSexAtBirth.unknown,
+                ),
+                body: (sheetContext, slot) => _EnumSheet<HealthSexAtBirth>(
+                  fieldKey: const Key('profile-sex-sheet-field'),
+                  label: l10n.mineEditFieldSexAtBirth,
+                  hint: l10n.mineEditFieldSexAtBirth,
+                  value: slot.value,
+                  values: HealthSexAtBirth.values,
+                  labelBuilder: (v) => _sexLabel(l10n, v),
+                  onChanged: (v) {
+                    if (v != null) slot.value = v;
+                  },
+                ),
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(sexAtBirth: value),
+              ),
+            );
+          },
         ),
-        const SizedBox(height: Spacing.md),
-        FTextField(
-          key: const Key('profile-weight-field'),
-          control: FTextFieldControl.managed(controller: weightKgController),
-          label: Text(l10n.mineEditFieldWeightKg),
-          keyboardType: TextInputType.number,
+        const AppDivider(),
+        AppValueRow(
+          key: const Key('profile-height-row'),
+          label: l10n.mineEditFieldHeightCm,
+          value: profile.heightCm == null
+              ? l10n.profileEmptyValue
+              : profile.heightCm!.toStringAsFixed(0),
+          isPlaceholder: profile.heightCm == null,
+          onPress: () {
+            unawaited(
+              _editText(
+                context: context,
+                ref: ref,
+                title: l10n.mineEditFieldHeightCm,
+                hint: l10n.profileHeightHint,
+                initialValue: profile.heightCm?.toStringAsFixed(0) ?? '',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(heightCm: num.tryParse(value)),
+              ),
+            );
+          },
         ),
-        const SizedBox(height: Spacing.md),
-        FSelect<String>.rich(
-          label: Text(l10n.mineEditFieldBloodType),
-          hint: l10n.mineEditFieldBloodTypeHint,
-          format: (value) => value,
-          control: FSelectControl.lifted(
-            value: bloodType.value,
-            onChange: (v) => bloodType.value = v,
-          ),
-          children: _bloodTypeOptions
-              .map((v) => FSelectItem.item(title: Text(v), value: v))
-              .toList(),
+        const AppDivider(),
+        AppValueRow(
+          key: const Key('profile-weight-row'),
+          label: l10n.mineEditFieldWeightKg,
+          value: profile.weightKg == null
+              ? l10n.profileEmptyValue
+              : profile.weightKg!.toStringAsFixed(0),
+          isPlaceholder: profile.weightKg == null,
+          onPress: () {
+            unawaited(
+              _editText(
+                context: context,
+                ref: ref,
+                title: l10n.mineEditFieldWeightKg,
+                hint: l10n.profileWeightHint,
+                initialValue: profile.weightKg?.toStringAsFixed(0) ?? '',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(weightKg: num.tryParse(value)),
+              ),
+            );
+          },
         ),
-        const SizedBox(height: Spacing.md),
-        _enumDropdown<HealthUnitSystem>(
+        const AppDivider(),
+        AppValueRow(
+          key: const Key('profile-blood-type-row'),
+          label: l10n.mineEditFieldBloodType,
+          value: profile.bloodType ?? l10n.profileEmptyValue,
+          isPlaceholder: profile.bloodType == null,
+          onPress: () {
+            unawaited(
+              _edit<String>(
+                context: context,
+                ref: ref,
+                title: l10n.mineEditFieldBloodType,
+                slot: SheetValueSlot<String>(
+                  profile.bloodType ?? _bloodTypeOptions.first,
+                ),
+                body: (sheetContext, slot) => _EnumSheet<String>(
+                  fieldKey: const Key('profile-blood-type-sheet-field'),
+                  label: l10n.mineEditFieldBloodType,
+                  hint: l10n.profileBloodTypeHint,
+                  value: slot.value,
+                  values: _bloodTypeOptions,
+                  labelBuilder: (v) => v,
+                  onChanged: (v) {
+                    if (v != null) slot.value = v;
+                  },
+                ),
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(bloodType: value),
+              ),
+            );
+          },
+        ),
+        const AppDivider(),
+        AppValueRow(
+          key: const Key('profile-unit-system-row'),
           label: l10n.mineEditFieldUnitSystem,
-          value: unitSystem.value,
-          values: HealthUnitSystem.values,
-          onChanged: (v) => unitSystem.value = v,
-          labelBuilder: (v) => v == HealthUnitSystem.metric
+          value: unit == null
+              ? l10n.profileEmptyValue
+              : unit == HealthUnitSystem.metric
               ? l10n.mineEditUnitSystemMetric
               : l10n.mineEditUnitSystemImperial,
+          isPlaceholder: unit == null,
+          onPress: () {
+            unawaited(
+              _edit<HealthUnitSystem>(
+                context: context,
+                ref: ref,
+                title: l10n.mineEditFieldUnitSystem,
+                slot: SheetValueSlot<HealthUnitSystem>(
+                  unit ?? HealthUnitSystem.metric,
+                ),
+                body: (sheetContext, slot) => _EnumSheet<HealthUnitSystem>(
+                  fieldKey: const Key('profile-unit-system-sheet-field'),
+                  label: l10n.mineEditFieldUnitSystem,
+                  hint: l10n.mineEditFieldUnitSystemHint,
+                  value: slot.value,
+                  values: HealthUnitSystem.values,
+                  labelBuilder: (v) => v == HealthUnitSystem.metric
+                      ? l10n.mineEditUnitSystemMetric
+                      : l10n.mineEditUnitSystemImperial,
+                  onChanged: (v) {
+                    if (v != null) slot.value = v;
+                  },
+                ),
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(unitSystem: value),
+              ),
+            );
+          },
         ),
-        const SizedBox(height: Spacing.xl),
-        Text(
-          l10n.mineEditFieldEmergencyContactName,
-          style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+        const AppDivider(),
+        AppValueRow(
+          key: const Key('profile-emergency-name-row'),
+          label: l10n.mineEditFieldEmergencyContactName,
+          value: profile.emergencyContactName ?? l10n.profileEmptyValue,
+          isPlaceholder: profile.emergencyContactName == null,
+          onPress: () {
+            unawaited(
+              _editText(
+                context: context,
+                ref: ref,
+                title: l10n.mineEditFieldEmergencyContactName,
+                hint: l10n.profileEmergencyNameHint,
+                initialValue: profile.emergencyContactName ?? '',
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(emergencyContactName: value),
+              ),
+            );
+          },
         ),
-        const SizedBox(height: Spacing.sm),
-        FTextField(
-          key: const Key('profile-emergency-contact-name'),
-          control: FTextFieldControl.managed(
-            controller: emergencyContactNameController,
-          ),
-        ),
-        const SizedBox(height: Spacing.md),
-        Text(
-          l10n.mineEditFieldEmergencyContactPhone,
-          style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: Spacing.sm),
-        FTextField(
-          key: const Key('profile-emergency-contact-phone'),
-          control: FTextFieldControl.managed(
-            controller: emergencyContactPhoneController,
-          ),
-          keyboardType: TextInputType.phone,
-        ),
-        const SizedBox(height: Spacing.xl),
-        FButton(
-          key: const Key('profile-health-save-button'),
-          onPress: isSaving ? null : onSave,
-          prefix: isSaving
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: FCircularProgress(),
-                )
-              : null,
-          child: Text(l10n.mineEditSaveAction),
+        const AppDivider(),
+        AppValueRow(
+          key: const Key('profile-emergency-phone-row'),
+          label: l10n.mineEditFieldEmergencyContactPhone,
+          value: profile.emergencyContactPhone ?? l10n.profileEmptyValue,
+          isPlaceholder: profile.emergencyContactPhone == null,
+          onPress: () {
+            unawaited(
+              _editText(
+                context: context,
+                ref: ref,
+                title: l10n.mineEditFieldEmergencyContactPhone,
+                hint: l10n.profileEmergencyPhoneHint,
+                initialValue: profile.emergencyContactPhone ?? '',
+                keyboardType: TextInputType.phone,
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(emergencyContactPhone: value),
+              ),
+            );
+          },
         ),
       ],
+    );
+  }
+}
+
+/// 下拉型单字段编辑器。
+class _EnumSheet<T> extends StatelessWidget {
+  const _EnumSheet({
+    required this.fieldKey,
+    required this.label,
+    required this.hint,
+    required this.value,
+    required this.values,
+    required this.labelBuilder,
+    required this.onChanged,
+  });
+
+  final Key fieldKey;
+  final String label;
+  final String hint;
+  final T? value;
+  final List<T> values;
+  final String Function(T value) labelBuilder;
+  final ValueChanged<T?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return FSelect<T>.rich(
+      key: fieldKey,
+      label: Text(label),
+      hint: hint,
+      format: labelBuilder,
+      control: FSelectControl.lifted(value: value, onChange: onChanged),
+      children: values
+          .map((v) => FSelectItem.item(title: Text(labelBuilder(v)), value: v))
+          .toList(),
+    );
+  }
+}
+
+/// 数值单字段编辑器。
+
+String _sexLabel(AppLocalizations l10n, HealthSexAtBirth sex) {
+  return switch (sex) {
+    HealthSexAtBirth.female => l10n.mineEditSexAtBirthFemale,
+    HealthSexAtBirth.male => l10n.mineEditSexAtBirthMale,
+    HealthSexAtBirth.intersex => l10n.mineEditSexAtBirthIntersex,
+    HealthSexAtBirth.unknown => l10n.mineEditSexAtBirthUnknown,
+  };
+}
+
+DateTime? _tryParseDate(String? value) {
+  if (value == null || value.isEmpty) return null;
+  return DateTime.tryParse(value);
+}
+
+String _formatDate(DateTime date) {
+  final y = date.year.toString().padLeft(4, '0');
+  final m = date.month.toString().padLeft(2, '0');
+  final d = date.day.toString().padLeft(2, '0');
+  return '$y-$m-$d';
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
+      child: Text(
+        label,
+        style: context.theme.typography.body.md.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+/// 分组块:内容区用**纯白**,页面背景是 #FAFAFA 灰白,靠这个色差把分组浮起来。
+///
+/// 不画外边框;分隔线只出现在组内行与行之间。
+class _ValueCard extends StatelessWidget {
+  const _ValueCard({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+      decoration: BoxDecoration(
+        color: context.theme.colors.card,
+        borderRadius: context.theme.style.borderRadius.lg,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
     );
   }
 }
@@ -511,35 +660,4 @@ class ProfilePageLoading extends StatelessWidget {
       ],
     );
   }
-}
-
-DateTime? _tryParseDate(String? value) {
-  if (value == null || value.isEmpty) return null;
-  return DateTime.tryParse(value);
-}
-
-String _formatDate(DateTime date) {
-  final y = date.year.toString().padLeft(4, '0');
-  final m = date.month.toString().padLeft(2, '0');
-  final d = date.day.toString().padLeft(2, '0');
-  return '$y-$m-$d';
-}
-
-Widget _enumDropdown<T extends HealthContextWireEnum>({
-  required String label,
-  required T? value,
-  required List<T> values,
-  required ValueChanged<T?> onChanged,
-  String Function(T)? labelBuilder,
-}) {
-  final formatLabel = labelBuilder ?? (T v) => v.value;
-  return FSelect<T>.rich(
-    label: Text(label),
-    hint: label,
-    format: formatLabel,
-    control: FSelectControl.lifted(value: value, onChange: onChanged),
-    children: values
-        .map((v) => FSelectItem.item(title: Text(formatLabel(v)), value: v))
-        .toList(),
-  );
 }

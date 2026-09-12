@@ -14,6 +14,7 @@ class AuthShell extends StatelessWidget {
     this.centerTitle = false,
     this.logo,
     this.subtitle,
+    this.formPanel = true,
   });
 
   final String title;
@@ -23,6 +24,10 @@ class AuthShell extends StatelessWidget {
   final bool centerTitle;
   final Widget? logo;
   final String? subtitle;
+
+  /// Wraps [form] in the white `AuthFormPanel` card. Turn off for pages that
+  /// already lay out their own grouped white blocks.
+  final bool formPanel;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +43,7 @@ class AuthShell extends StatelessWidget {
         centerTitle: centerTitle,
         formModeSelector: formModeSelector,
         form: form,
+        formPanel: formPanel,
       );
     }
 
@@ -49,6 +55,7 @@ class AuthShell extends StatelessWidget {
       centerTitle: centerTitle,
       formModeSelector: formModeSelector,
       form: form,
+      formPanel: formPanel,
     );
   }
 }

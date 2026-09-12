@@ -103,6 +103,8 @@ class AccountManagePage extends HookConsumerWidget {
       title: l10n.authAccountManageFormTitle,
       leading: const AppBackButton(),
       centerTitle: true,
+      // 页面自己按分组铺纯白内容块，不再套一层白色卡片。
+      formPanel: false,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -115,11 +117,7 @@ class AccountManagePage extends HookConsumerWidget {
                   context.push(loginRouteForCurrentLocation(context)),
             ),
           ] else ...[
-            // 顶部概要卡片：头像 + 昵称 + 邮箱
-            AccountSummaryCard(user: user),
-            const SizedBox(height: Spacing.xl2),
-
-            // 账号管理列表
+            // 账号管理列表（头像与昵称在个人信息页，这里只列出可管理项）
             AccountManageSection(
               user: user,
               l10n: l10n,
@@ -131,6 +129,7 @@ class AccountManagePage extends HookConsumerWidget {
               newPasswordController: newPasswordController,
               deletePasswordController: deletePasswordController,
               deleteCodeController: deleteCodeController,
+              onEditProfile: () => context.push(Routes.profile),
               onVerifyEmail: () =>
                   verifyEmailFlow(context, l10n, ref, user.email!),
               onChangeEmail: () => context.push(Routes.accountChangeEmail),

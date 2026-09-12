@@ -9,6 +9,8 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/core/widgets/common/control/value_row.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -37,55 +39,25 @@ class AccountManageLoading extends StatelessWidget {
   );
 }
 
-/// 顶部概要卡片：头像 + 昵称 + 邮箱
-class AccountSummaryCard extends StatelessWidget {
-  const AccountSummaryCard({super.key, required this.user});
+/// 账号页的分组块：内容区用**纯白**，页面背景是 #FAFAFA 灰白，靠这个色差把分组浮起来。
+///
+/// 不画外边框；分隔线只出现在组内行与行之间。
+class _AccountValueCard extends StatelessWidget {
+  const _AccountValueCard({required this.children});
 
-  final AuthUser user;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return DecoratedBox(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
       decoration: BoxDecoration(
-        border: Border.all(color: SemanticColor.neutral.border(context)),
-        borderRadius: context.theme.style.borderRadius.md,
+        color: context.theme.colors.card,
+        borderRadius: context.theme.style.borderRadius.lg,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.xl),
-        child: Row(
-          children: [
-            // 头像
-            AvatarView(
-              avatarUrl: user.avatar,
-              size: 64,
-              iconSize: 32,
-              semanticLabel: l10n.profileAvatarLabel,
-            ),
-            const SizedBox(width: Spacing.xl),
-            // 昵称和邮箱
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    user.nickname ?? l10n.authAccountOverviewEmail,
-                    style: context.theme.typography.body.lg.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: Spacing.sm),
-                  Text(
-                    user.email ?? l10n.authEmailMissing,
-                    style: context.theme.typography.body.sm.copyWith(
-                      color: SemanticColor.neutral.solid(context),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
       ),
     );
   }
@@ -105,6 +77,7 @@ class AccountManageSection extends ConsumerWidget {
     required this.newPasswordController,
     required this.deletePasswordController,
     required this.deleteCodeController,
+    required this.onEditProfile,
     required this.onVerifyEmail,
     required this.onChangeEmail,
     required this.onManageSessions,
@@ -121,6 +94,9 @@ class AccountManageSection extends ConsumerWidget {
   final TextEditingController newPasswordController;
   final TextEditingController deletePasswordController;
   final TextEditingController deleteCodeController;
+
+  /// 头像与昵称归个人信息页，这里只做跳转。
+  final VoidCallback onEditProfile;
   final Future<void> Function() onVerifyEmail;
   final VoidCallback onChangeEmail;
   final VoidCallback onManageSessions;
@@ -134,61 +110,51 @@ class AccountManageSection extends ConsumerWidget {
         // 账号信息分组
         SettingsSectionLabel(label: l10n.authAccountManageSectionAccount),
         SizedBox(height: context.titleContentGap),
-        FTileGroup(
-          physics: const NeverScrollableScrollPhysics(),
-          divider: FItemDivider.full,
+        _AccountValueCard(
           children: [
-            // 用户名
-            FTile(
-              prefix: Icon(
-                SemanticIcons.actionSettings,
-                color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.md,
+            AppValueRow(
+              key: const Key('account-avatar-row'),
+              label: l10n.profileAvatarRowTitle,
+              value: '',
+              onPress: onEditProfile,
+              leading: AvatarView(
+                avatarUrl: user.avatar,
+                size: 40,
+                iconSize: 20,
+                semanticLabel: l10n.profileAvatarLabel,
               ),
-              title: Text(l10n.authAccountManageUsername),
-              subtitle: Text(
-                user.nickname ?? l10n.authAccountManageUsernameNotSet,
-                style: TextStyle(color: SemanticColor.neutral.solid(context)),
-              ),
-              suffix: const Icon(SemanticIcons.actionNext),
-              onPress: () {
-                // TODO: 实现用户名设置页面
-              },
             ),
-            // 邮箱
-            FTile(
-              prefix: Icon(
-                SemanticIcons.actionMessage,
-                color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.md,
-              ),
-              title: Text(l10n.authAccountManageEmail),
-              subtitle: Text(
-                user.email ?? l10n.authEmailMissing,
-                style: TextStyle(color: SemanticColor.neutral.solid(context)),
-              ),
-              suffix: user.emailVerifiedAt != null
+            const AppDivider(),
+            AppValueRow(
+              key: const Key('account-nickname-row'),
+              label: l10n.profileNicknameLabel,
+              value: user.nickname?.trim().isNotEmpty == true
+                  ? user.nickname!.trim()
+                  : l10n.authAccountManageUsernameNotSet,
+              isPlaceholder: user.nickname?.trim().isNotEmpty != true,
+              onPress: onEditProfile,
+            ),
+            const AppDivider(),
+            AppValueRow(
+              key: const Key('account-email-row'),
+              label: l10n.authAccountManageEmail,
+              value: user.email ?? l10n.authEmailMissing,
+              isPlaceholder: user.email == null,
+              onPress: onChangeEmail,
+              trailing: user.emailVerifiedAt != null
                   ? Icon(
                       SemanticIcons.statusSuccess,
-                      size: 16,
+                      size: IconSizeTokens.md,
                       color: SemanticColor.success.solid(context),
                     )
-                  : const Icon(SemanticIcons.actionNext),
-              onPress: onChangeEmail,
+                  : null,
             ),
-            // 第三方账号
-            FTile(
-              prefix: Icon(
-                SemanticIcons.actionExternalLink,
-                color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.md,
-              ),
-              title: Text(l10n.authAccountManageThirdParty),
-              subtitle: Text(
-                _getThirdPartySubtitle(user, l10n),
-                style: TextStyle(color: SemanticColor.neutral.solid(context)),
-              ),
-              suffix: const Icon(SemanticIcons.actionNext),
+            const AppDivider(),
+            AppValueRow(
+              key: const Key('account-third-party-row'),
+              label: l10n.authAccountManageThirdParty,
+              value: _getThirdPartySubtitle(user, l10n),
+              isPlaceholder: user.linkedIdentities.isEmpty,
               onPress: () => _showThirdPartyDialog(context, ref),
             ),
           ],
@@ -198,78 +164,36 @@ class AccountManageSection extends ConsumerWidget {
         // 账号安全分组
         SettingsSectionLabel(label: l10n.authAccountManageSectionSecurity),
         SizedBox(height: context.titleContentGap),
-        FTileGroup(
-          physics: const NeverScrollableScrollPhysics(),
-          divider: FItemDivider.full,
+        _AccountValueCard(
           children: [
-            // 登录密码
-            FTile(
-              prefix: Icon(
-                SemanticIcons.actionSettings,
-                color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.md,
-              ),
-              title: Text(l10n.authAccountManagePassword),
-              subtitle: Text(
-                user.hasPassword
-                    ? l10n.authAccountManagePasswordSet
-                    : l10n.authAccountManagePasswordNotSet,
-                style: TextStyle(color: SemanticColor.neutral.solid(context)),
-              ),
-              suffix: const Icon(SemanticIcons.actionNext),
+            AppValueRow(
+              key: const Key('account-password-row'),
+              label: l10n.authAccountManagePassword,
+              value: user.hasPassword
+                  ? l10n.authAccountManagePasswordSet
+                  : l10n.authAccountManagePasswordNotSet,
               onPress: () => _showPasswordDialog(context, ref),
             ),
-            // 登录设备
-            FTile(
-              prefix: Icon(
-                SemanticIcons.statusPending,
-                color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.md,
-              ),
-              title: Text(l10n.authAccountManageLoginDevices),
-              subtitle: Text(
-                l10n.authSessionsSectionSubtitle,
-                style: TextStyle(color: SemanticColor.neutral.solid(context)),
-              ),
-              suffix: const Icon(SemanticIcons.actionNext),
+            const AppDivider(),
+            AppValueRow(
+              key: const Key('account-devices-row'),
+              label: l10n.authAccountManageLoginDevices,
+              value: l10n.authSessionsSectionSubtitle,
               onPress: onManageSessions,
             ),
-            // 账号安全中心
-            FTile(
-              prefix: Icon(
-                SemanticIcons.statusWarning,
-                color: SemanticColor.neutral.solid(context),
-                size: IconSizeTokens.md,
-              ),
-              title: Text(l10n.authAccountManageSecurityCenter),
-              subtitle: Text(
-                l10n.authAccountManageSecurityCenterSubtitle,
-                style: TextStyle(color: SemanticColor.neutral.solid(context)),
-              ),
-              suffix: const Icon(SemanticIcons.actionNext),
+            const AppDivider(),
+            AppValueRow(
+              key: const Key('account-security-center-row'),
+              label: l10n.authAccountManageSecurityCenter,
+              value: l10n.authAccountManageSecurityCenterSubtitle,
               onPress: onManageSecurityCenter,
             ),
-            // 账号注销
-            FTile(
-              prefix: Icon(
-                SemanticIcons.statusWarning,
-                color: SemanticColor.destructive.solid(context),
-                size: IconSizeTokens.md,
-              ),
-              title: Text(
-                l10n.authAccountManageDeleteAccount,
-                style: TextStyle(
-                  color: SemanticColor.destructive.solid(context),
-                ),
-              ),
-              subtitle: Text(
-                l10n.authDeleteAccountSectionDescription,
-                style: TextStyle(color: SemanticColor.neutral.solid(context)),
-              ),
-              suffix: Icon(
-                SemanticIcons.actionNext,
-                color: SemanticColor.destructive.solid(context),
-              ),
+            const AppDivider(),
+            AppValueRow(
+              key: const Key('account-delete-row'),
+              label: l10n.authAccountManageDeleteAccount,
+              value: l10n.authDeleteAccountSectionDescription,
+              labelColor: SemanticColor.destructive.solid(context),
               onPress: () => _showDeleteAccountDialog(context, ref),
             ),
           ],
