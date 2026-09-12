@@ -28,3 +28,5 @@
 - SSE 复用 dio 实例(`LucentSseClient(dio: dio)`),`error` 事件经 `mapSseStreamError` 直接 throw,勿吞掉。
 - 会话持久化全在后端(latest/rename/delete/clear 均为 API 调用),客户端不写本地库。
 - AI 回复的底衬由 `flowui_adapter.dart` 的 `_AssistantReplyPanel` 包住**整条** `FlowMessage`(含 footer),底色取 `colors.secondary`——**跟随主题,勿钉死浅色值**(深色下会变成压在近黑页面上的一块浅板)。复制/重新生成位于 footer 内,所以才会落在回复末尾——**勿把 footer 挪到面板外**,否则动作条又会掉回页面背景上、与回复脱开。error 状态不包(自身已有 error 容器气泡,再包一层成双底);流式草稿照包,避免回复完成时底衬突然出现。
+- 欢迎区 greeting 用 `AssistantSvgGreeting`(`sections/assistant_greeting.dart`)而非 flow_ui 的 `FlowGreeting`——后者只收 `IconData`,而欢迎区 glyph 是 iconMind SVG AI 图标(`SemanticIconSvg.aiGenerated`)。布局与 `FlowGreeting` 一致(40px glyph/16 间隔/32px 文本,compact 21px/4 间隔),只换 glyph 源。
+- AI 语义图标(入口/生成中/记忆/RAG/工具)统一走 `SemanticIconSvg`(`core/design/tokens/semantic_icon_svg.dart`,iconMind SVG);通用操作/状态图标仍走 `SemanticIcons`(Lucide)。能力面板摘要行/工具行即为此分工的例子。

@@ -95,14 +95,17 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
             const SizedBox(height: Spacing.sm),
             _SummaryRow(
               label: l10n.assistantSettingsEnableTitle,
+              icon: SemanticIconSvg.aiEntry(size: 14),
               enabled: capabilities.assistantEnabled,
             ),
             _SummaryRow(
               label: l10n.assistantSettingsMemoryTitle,
+              icon: SemanticIconSvg.aiMemory(size: 14),
               enabled: capabilities.assistantMemoryEnabled,
             ),
             _SummaryRow(
               label: l10n.assistantCapabilitiesRagLabel,
+              icon: SemanticIconSvg.aiKnowledge(size: 14),
               enabled: capabilities.ragEnabled,
             ),
             const SizedBox(height: Spacing.lg),
@@ -140,11 +143,18 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
   }
 }
 
-/// One summary line: label + 已启用 / 已关闭 value.
+/// One summary line: label + 已启用 / 已关闭 value. Leading icon is the
+/// AI-semantic SVG glyph ([SemanticIconSvg]) so the summary reads as
+/// capability-specific; the trailing status stays a plain check/lock.
 class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({required this.label, required this.enabled});
+  const _SummaryRow({
+    required this.label,
+    required this.icon,
+    required this.enabled,
+  });
 
   final String label;
+  final Widget icon;
   final bool enabled;
 
   @override
@@ -159,13 +169,7 @@ class _SummaryRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         children: [
-          Icon(
-            enabled ? SemanticIcons.statusSuccess : SemanticIcons.statusBlocked,
-            size: 14,
-            color: enabled
-                ? SemanticColor.primary.solid(context)
-                : SemanticColor.neutral.solid(context),
-          ),
+          icon,
           const SizedBox(width: Spacing.sm),
           Expanded(child: Text(label, style: typography.body.sm)),
           Text(
@@ -211,10 +215,9 @@ class _ToolRow extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                tool.enabled
-                    ? SemanticIcons.statusSuccess
-                    : SemanticIcons.statusBlocked,
+              // 工具行前缀用「工具调用」语义图标,状态(可用/原因)在
+              // 右侧文本表达;不再用 check/lock 重复状态符号。
+              SemanticIconSvg.aiToolCalling(
                 size: 14,
                 color: tool.enabled
                     ? SemanticColor.primary.solid(context)

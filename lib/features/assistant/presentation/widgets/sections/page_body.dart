@@ -16,6 +16,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/above_composer.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/assistant_greeting.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/composer_host.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/empty_support.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
@@ -246,9 +247,8 @@ class AssistantPageBody extends ConsumerWidget {
                         !hasConversation &&
                         capabilities.canSendMessages &&
                         !isSending,
-                    greeting: FlowGreeting(
+                    greeting: AssistantSvgGreeting(
                       text: l10n.assistantWelcomeTitle,
-                      icon: SemanticIcons.aiGenerated,
                     ),
                     suggestions: AssistantEmptySupport(
                       onStarterPrompt: handleStarterPrompt,

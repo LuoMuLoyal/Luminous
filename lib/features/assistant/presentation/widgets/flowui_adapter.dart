@@ -287,7 +287,7 @@ class AssistantFlowUiAdapter {
     } else if (message.status != FlowMessageStatus.streaming) {
       actions.add(
         FlowMessageAction(
-          icon: Icons.refresh,
+          icon: SemanticIcons.actionRefresh,
           tooltip: l10n.assistantResendAction,
           onPressed: onResend == null
               ? null
