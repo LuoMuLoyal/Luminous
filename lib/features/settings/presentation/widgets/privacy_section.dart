@@ -54,6 +54,8 @@ class PrivacySection extends ConsumerWidget {
             SettingsNavigationTile(
               tileKey: const Key('settings-row-ai'),
               icon: SemanticIcons.aiEntry,
+              svgIcon: (color, size) =>
+                  SemanticIconSvg.aiEntry(size: size, color: color),
               title: l10n.settingsAiTitle,
               subtitle: l10n.settingsAiSubtitle,
               onTap: () {

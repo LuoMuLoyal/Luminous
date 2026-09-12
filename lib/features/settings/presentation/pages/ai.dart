@@ -60,6 +60,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       disabled: disabled,
+                      icon: SemanticIconSvg.aiEntry(size: IconSizeTokens.md),
                       title: l10n.settingsAiSummariesTitle,
                       subtitle: l10n.settingsAiSummariesSubtitle,
                       value: settings?.aiSummariesEnabled ?? false,
@@ -78,6 +79,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       disabled: disabled,
+                      icon: SemanticIconSvg.aiGenerated(
+                        size: IconSizeTokens.md,
+                      ),
                       title: l10n.settingsAiAssistantTitle,
                       subtitle: l10n.settingsAiAssistantSubtitle,
                       value: settings?.assistantEnabled ?? false,
@@ -96,6 +100,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       disabled: disabled,
+                      icon: SemanticIconSvg.aiMemory(size: IconSizeTokens.md),
                       title: l10n.settingsAiMemoryTitle,
                       subtitle: l10n.settingsAiMemorySubtitle,
                       value: settings?.assistantMemoryEnabled ?? false,
@@ -222,6 +227,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     required AppLocalizations l10n,
     required bool signedIn,
     required bool disabled,
+    Widget? icon,
     required String title,
     required String subtitle,
     required bool value,
@@ -231,6 +237,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     return FTile(
       title: Text(title),
       subtitle: Text(subtitle),
+      prefix: icon,
       enabled: !disabled,
       onPress: disabled
           ? null
