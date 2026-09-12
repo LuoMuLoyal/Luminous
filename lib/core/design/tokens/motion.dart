@@ -13,9 +13,15 @@ import 'package:flutter/animation.dart';
 /// | [entrance] | `easeOutCubic`   | Route slide-in, panel expand          |
 /// | [exit]     | `easeInCubic`    | Route slide-out, panel collapse        |
 /// | [standard] | `easeInOut`      | Expand/collapse, bidirectional         |
-/// | [snappy]   | `easeOut`        | Tab switch, hover feedback             |
-/// | [emphasized] | `easeInOutCubicEmphasized` | M3 容器/导航级双向过渡      |
+/// | [snappy]   | `easeOut`        | Cross-fade, tab switch, hover feedback |
+/// | [emphasized] | `easeInOutCubicEmphasized` | M3 容器/导航级单边进出,勿用于交叉淡化 |
 /// | [emphasizedDecelerate] | `Cubic(0.05, 0.7, 0.1, 1)` | M3 元素进场(强调版) |
+///
+/// Pick [snappy] for anything where **both** sides of a transition are on
+/// screen at once (cross-fades): the M3 emphasized curves front-load almost
+/// their whole range, so a cross-fade driven by them dips in the middle with
+/// both sides washed out. Emphasized is for a single element entering or
+/// leaving.
 abstract final class MotionTokens {
   /// Entrance animation — route slide-in, panel expand.
   ///
@@ -32,16 +38,23 @@ abstract final class MotionTokens {
   /// `easeInOut` accelerates then decelerates, symmetric.
   static const standard = Curves.easeInOut;
 
-  /// Snappy one-directional animation — tab switch, hover feedback.
+  /// Snappy one-directional animation — cross-fades, tab switch, hover.
   ///
-  /// `easeOut` decelerates quickly, feeling responsive.
+  /// `easeOut` decelerates quickly, feeling responsive. Also the right curve
+  /// for a cross-fade, where both sides are visible at once: it fills the
+  /// middle of the ramp instead of leaving it washed out. See the class doc.
   static const snappy = Curves.easeOut;
 
-  /// M3 emphasized — container/navigation-level bidirectional transitions.
+  /// M3 emphasized — a single container/navigation element entering or
+  /// leaving.
   ///
   /// Material 3's primary curve for in-screen container/shared-element
   /// transitions (`ThreePointCubic`, path C 0.05,0 0.133,0.06 0.167,0.4
   /// C 0.208,0.82 0.25,1 1,1).
+  ///
+  /// Front-loads its range: it reaches 1.0 at t/T≈0.25, so the remaining three
+  /// quarters of the duration are a near-invisible settle. Intended for one
+  /// element moving on its own — for a cross-fade use [snappy].
   static const emphasized = Curves.easeInOutCubicEmphasized;
 
   /// M3 emphasizedDecelerate — emphasized element entrance.
@@ -73,17 +86,10 @@ abstract final class DurationTokens {
   /// CRUD page route transition (slide out).
   static const crudPageTransitionOut = Duration(milliseconds: 150);
 
-  // -- In-widget animations (flutter_animate / explicit) --
+  // -- In-widget animations (explicit / implicit) --
 
   /// Sidebar slide animation.
   static const sidebarSlide = Duration(milliseconds: 200);
-
-  /// Entrance duration for flutter_animate effects (`SlideEffect`).
-  ///
-  /// The paired `FadeEffect` was removed from the dashboard views: the
-  /// route/branch transition and [pageStateSwitch] already fade their content
-  /// in, and a second opacity ramp multiplied with them into a visible delay.
-  static const widgetEntrance = Duration(milliseconds: 220);
 
   /// Expand/collapse AnimationController duration.
   static const widgetExpand = Duration(milliseconds: 250);
@@ -94,17 +100,28 @@ abstract final class DurationTokens {
   /// Standard implicit animation for larger containers.
   static const widgetStandard = Duration(milliseconds: 300);
 
-  /// Shell tab fade-through transition (in). Long enough for the cross-fade
-  /// between branches to read as a deliberate switch instead of a blink;
-  /// bounded so `pumpAndSettle` converges.
+  /// Shell tab cross-fade (incoming branch). Only
+  /// `ShellTabBranchContainer` consumes it — tab root routes are
+  /// `NoTransitionPage`, so this is the sole duration of a tab switch.
+  ///
+  /// Deliberately longer than the outgoing half so the new branch finishes
+  /// settling after the old one is gone, and bounded so `pumpAndSettle`
+  /// converges.
   static const tabFadeThrough = Duration(milliseconds: 260);
 
-  /// Shell tab fade-through transition (out). Matches [tabFadeThrough] so
-  /// incoming and outgoing branches cross-fade symmetrically.
+  /// Shell tab cross-fade (outgoing branch). Shorter than
+  /// [tabFadeThrough] on purpose — the outgoing branch should be clear of the
+  /// screen before the incoming one finishes, so the two are *not*
+  /// symmetrical.
   static const tabFadeThroughOut = Duration(milliseconds: 200);
 
-  /// Settings desktop master-detail pane switch (fade through).
+  /// Settings desktop master-detail pane switch: fade the incoming pane and
+  /// resize the scroll extent to its height in one motion.
   static const masterDetailSwitch = Duration(milliseconds: 220);
+
+  /// Curve for [masterDetailSwitch]. `easeInOut` because the switch animates
+  /// both a faked fade and the container height — a single bidirectional move.
+  static const masterDetailSwitchCurve = Curves.easeInOut;
 
   /// Page state switch (skeleton → content → error …) fade-through.
   static const pageStateSwitch = Duration(milliseconds: 240);

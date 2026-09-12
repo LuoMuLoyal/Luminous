@@ -294,11 +294,14 @@ ThemeData foruiMaterialTheme(FThemeData theme) {
     // shared-axis horizontal transition instead of the mixed platform defaults
     // (Windows/Linux Zoom, iOS/macOS Cupertino, Android FadeForwards).
     //
-    // Note: all current routes provide their own `pageBuilder` via
-    // `lib/app/router_helpers.dart` (`slidePage` / `fadePage` / `tabFadePage` /
-    // `sidePanelPage`), so this theme entry governs routes that do not — it
-    // keeps a future route consistent instead of silently falling back to a
-    // platform default.
+    // DORMANT TODAY — nothing consumes this map. Every route in the app is a
+    // `CustomTransitionPage` built by `lib/app/router_helpers.dart`
+    // (`slidePage` / `fadePage` / `sidePanelPage`) or, for tab roots, a
+    // `NoTransitionPage`; none of them consult `PageTransitionsTheme`. This is
+    // purely a guard so a future route that returns a plain `MaterialPage`
+    // (which is what `builder:`-only routes get) inherits the shared-axis
+    // motion instead of silently falling back to a platform default. Delete it
+    // if the per-route helpers are ever removed.
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: <TargetPlatform, PageTransitionsBuilder>{
         TargetPlatform.android: SharedAxisPageTransitionsBuilder(
