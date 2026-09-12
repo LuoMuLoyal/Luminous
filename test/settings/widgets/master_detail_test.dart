@@ -142,8 +142,9 @@ void main() {
       expect(find.text('Second body'), findsNothing);
 
       await tester.tap(find.text('Second'));
-      await tester.pump(const Duration(milliseconds: 150));
-      await tester.pump();
+      // Wait for the fade-through switch animation to complete so the
+      // outgoing pane is removed from the tree.
+      await tester.pumpAndSettle();
 
       expect(find.text('First body'), findsNothing);
       expect(find.text('Second body'), findsOneWidget);
