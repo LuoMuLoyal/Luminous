@@ -17,6 +17,7 @@
 - 状态卡只携带结构化数据(`MineStatusCard.kind/items/count`),截断与文案本地化是展示层职责(`presentation/widgets/sections/status_alerts.dart`)。
 - 编辑写成功后由 `DataChangeTopic.healthContext` 驱动 `mineDashboardProvider`(keepAlive)自动刷新,不手动重拉。
 - 同步失败队列的读取归同步失败页(`presentation/providers/sync_failures.dart`),横幅只消费 `syncFailedCountProvider` 决定是否展示;「全部重试」= 逐条 `resetForRetry` + `SyncWorker.flush()`,随后同时失效计数与队列两个 provider。
+- Mine 头像只是展示 + 导航入口(`account_hero.dart` 的 `mine-avatar-edit`):点击一律 `pushAuthRequiredRoute` 进 `/profile`,不得在 Mine 打开头像操作 Sheet 或复制选图/上传状态——头像的选图、裁剪、上传、移除只有 Profile 一处实现。
 
 ## 依赖禁区
 - 跨 feature 数据只经共享 provider seam:health_context 快照/写入输入、notification 未读数(`notification/data/providers/unread_count.dart`);不得 import 其他 feature 的 datasource/mapper/repository 实现层。

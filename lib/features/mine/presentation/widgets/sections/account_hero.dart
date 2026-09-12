@@ -7,7 +7,6 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
-import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
@@ -55,7 +54,15 @@ class MineAccountHero extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _AvatarHero(avatarUrl: account.avatar),
+                _AvatarHero(
+                  // Mine's avatar is a navigation entry into Profile's avatar
+                  // management surface: the picker/upload state stays in one
+                  // page instead of being duplicated here.
+                  key: const Key('mine-avatar-edit'),
+                  avatarUrl: account.avatar,
+                  onEdit: () =>
+                      unawaited(pushAuthRequiredRoute(context, Routes.profile)),
+                ),
                 const SizedBox(width: Spacing.lg),
                 Expanded(
                   child: Column(
@@ -229,9 +236,10 @@ class MineAccountHero extends StatelessWidget {
 }
 
 class _AvatarHero extends StatelessWidget {
-  const _AvatarHero({required this.avatarUrl});
+  const _AvatarHero({super.key, required this.avatarUrl, required this.onEdit});
 
   final String? avatarUrl;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -244,9 +252,7 @@ class _AvatarHero extends StatelessWidget {
             avatarUrl: avatarUrl,
             size: 64,
             iconSize: 32,
-            onEdit: () => unawaited(
-              showAvatarActionsSheet(context, avatarUrl: avatarUrl),
-            ),
+            onEdit: onEdit,
           ),
         ],
       ),

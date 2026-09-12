@@ -19,6 +19,7 @@ class AvatarActionView extends StatelessWidget {
     this.size = 64,
     this.iconSize = 32,
     this.onEdit,
+    this.onView,
     this.showEditBadge = true,
   });
 
@@ -27,6 +28,13 @@ class AvatarActionView extends StatelessWidget {
   final double size;
   final double iconSize;
   final VoidCallback? onEdit;
+
+  /// Opens the full-screen viewer for a stored avatar.
+  ///
+  /// Owners that keep viewing on a separate surface (Profile's edit badge
+  /// opens the picker sheet) supply this; when it is omitted the tap falls
+  /// back to [onEdit] so a populated avatar is never a dead tap target.
+  final VoidCallback? onView;
   final bool showEditBadge;
 
   @override
@@ -34,6 +42,8 @@ class AvatarActionView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final url = avatarUrl?.trim();
     final canView = bytes != null || (url != null && url.isNotEmpty);
+    final openViewer =
+        onView != null && (bytes != null || (url != null && url.isNotEmpty));
 
     return Semantics(
       button: canView || onEdit != null,
@@ -41,9 +51,9 @@ class AvatarActionView extends StatelessWidget {
           ? l10n.profileAvatarViewerLabel
           : l10n.profileAvatarActionsTitle,
       child: GestureDetector(
-        onTap: canView
+        onTap: openViewer
             ? bytes != null
-                  ? onEdit
+                  ? onView
                   : () => showAvatarViewer(context, avatarUrl: url!)
             : onEdit,
         child: Stack(

@@ -435,6 +435,115 @@ void main() {
     expect(find.text('profile-page'), findsOneWidget);
   });
 
+  testWidgets('Mine avatar edit entry routes to the profile management page', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(
+          () => _EmailSignedInAuthSessionNotifier(),
+        ),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) => Future.value(_completeSnapshot),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestForuiRouterApp(
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MinePage()),
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('profile-page')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    await tester.tap(find.byKey(const Key('mine-avatar-edit')));
+    await tester.pumpAndSettle();
+
+    // The avatar entry is a navigation entry into Profile's avatar management
+    // surface; it must never surface a sheet whose selection is discarded.
+    expect(find.text('profile-page'), findsOneWidget);
+    expect(find.text('头像设置'), findsNothing);
+  });
+
+  testWidgets('Mine avatar edit entry shows login dialog when signed out', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => throw Exception('should not fetch when signed out'),
+          ),
+          mineRepositoryProvider.overrideWithValue(
+            const _EmptyPreviewMineRepository(),
+          ),
+        ],
+        child: TestForuiRouterApp(
+          routerConfig: GoRouter(
+            initialLocation: '/mine',
+            routes: [
+              GoRoute(
+                path: '/mine',
+                builder: (context, state) => const MinePage(),
+              ),
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('profile-page')),
+              ),
+              GoRoute(
+                path: '/login',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('login-page')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    await tester.tap(find.byKey(const Key('mine-avatar-edit')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.text('profile-page'), findsNothing);
+  });
+
   testWidgets('Mine archive routes basic info to edit page', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(393, 852);
