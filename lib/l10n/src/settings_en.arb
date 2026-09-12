@@ -252,5 +252,9 @@
   "profileAvatarTakePhoto": "Take a photo",
   "profileAvatarChooseFromGallery": "Choose from gallery",
   "profileAvatarRemove": "Remove avatar",
-  "profileAvatarViewerLabel": "View avatar"
+  "profileAvatarViewerLabel": "View avatar",
+  "profileAvatarCropTitle": "Crop avatar",
+  "profileAvatarCropProcessing": "Processing…",
+  "profileAvatarCropDone": "Use this avatar",
+  "profileAvatarCropFailed": "Avatar cropping failed. Try again."
 }

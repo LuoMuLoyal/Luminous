@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -13,6 +15,7 @@ class AvatarActionView extends StatelessWidget {
   const AvatarActionView({
     super.key,
     this.avatarUrl,
+    this.bytes,
     this.size = 64,
     this.iconSize = 32,
     this.onEdit,
@@ -20,6 +23,7 @@ class AvatarActionView extends StatelessWidget {
   });
 
   final String? avatarUrl;
+  final Uint8List? bytes;
   final double size;
   final double iconSize;
   final VoidCallback? onEdit;
@@ -29,7 +33,7 @@ class AvatarActionView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final url = avatarUrl?.trim();
-    final canView = url != null && url.isNotEmpty;
+    final canView = bytes != null || (url != null && url.isNotEmpty);
 
     return Semantics(
       button: canView || onEdit != null,
@@ -38,13 +42,16 @@ class AvatarActionView extends StatelessWidget {
           : l10n.profileAvatarActionsTitle,
       child: GestureDetector(
         onTap: canView
-            ? () => showAvatarViewer(context, avatarUrl: url)
+            ? bytes != null
+                  ? onEdit
+                  : () => showAvatarViewer(context, avatarUrl: url!)
             : onEdit,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
             AvatarView(
               avatarUrl: avatarUrl,
+              bytes: bytes,
               size: size,
               iconSize: iconSize,
               semanticLabel: l10n.profileAvatarLabel,

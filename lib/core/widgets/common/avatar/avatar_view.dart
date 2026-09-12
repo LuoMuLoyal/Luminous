@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
@@ -11,6 +13,7 @@ class AvatarView extends StatelessWidget {
   const AvatarView({
     super.key,
     this.avatarUrl,
+    this.bytes,
     this.size = IconSizeTokens.xl4,
     this.iconSize = IconSizeTokens.xl2,
     this.semanticLabel,
@@ -19,6 +22,7 @@ class AvatarView extends StatelessWidget {
   });
 
   final String? avatarUrl;
+  final Uint8List? bytes;
   final double size;
   final double iconSize;
   final String? semanticLabel;
@@ -42,7 +46,9 @@ class AvatarView extends StatelessWidget {
           border: Border.all(color: border, width: borderWidth),
         ),
         clipBehavior: Clip.antiAlias,
-        child: url == null || url.isEmpty
+        child: bytes != null
+            ? Image.memory(bytes!, width: size, height: size, fit: BoxFit.cover)
+            : url == null || url.isEmpty
             ? _FallbackIcon(size: iconSize)
             : CachedNetworkImage(
                 imageUrl: url,

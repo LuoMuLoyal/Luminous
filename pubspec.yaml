@@ -96,6 +96,7 @@ dependencies:
   package_info_plus: ^10.2.0
   jpush_flutter: ^3.5.0
   animations: ^3.0.0
+  crop_your_image: 2.0.0
 
 dev_dependencies:
   flutter_test:

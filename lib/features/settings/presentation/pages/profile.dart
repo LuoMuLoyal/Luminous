@@ -11,6 +11,7 @@ import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
+import 'package:luminous/core/widgets/common/avatar/avatar_draft.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -49,6 +50,7 @@ class ProfilePage extends HookConsumerWidget {
       text: user?.nickname ?? '',
     );
     final avatarController = useTextEditingController(text: user?.avatar ?? '');
+    final avatarDraft = useState<AvatarDraft?>(null);
     final formUserId = useRef<String?>(null);
 
     // 健康档案控制器
@@ -68,6 +70,7 @@ class ProfilePage extends HookConsumerWidget {
       formUserId.value = user.id;
       nicknameController.text = user.nickname ?? '';
       avatarController.text = user.avatar ?? '';
+      avatarDraft.value = null;
       return null;
     }, [user?.id]);
 
@@ -88,6 +91,24 @@ class ProfilePage extends HookConsumerWidget {
     }
 
     // 保存用户资料
+    Future<void> pickAvatar(AvatarAction action) async {
+      if (action == AvatarAction.remove) {
+        avatarDraft.value = null;
+        avatarController.clear();
+        return;
+      }
+      final draft = await pickAvatarDraft(context, action: action);
+      if (context.mounted && draft != null) avatarDraft.value = draft;
+    }
+
+    Future<void> openAvatarActions() async {
+      final action = await showAvatarActionsSheet(
+        context,
+        avatarUrl: user?.avatar,
+      );
+      if (context.mounted && action != null) await pickAvatar(action);
+    }
+
     Future<void> saveUserProfile() async {
       final accountNotifier = ref.read(authAccountProvider.notifier);
       final ok = await accountNotifier.updateProfile(
@@ -170,8 +191,10 @@ class ProfilePage extends HookConsumerWidget {
               _UserProfileSection(
                 nicknameController: nicknameController,
                 avatarController: avatarController,
+                avatarDraft: avatarDraft.value,
                 user: user,
                 l10n: l10n,
+                onAvatarEdit: openAvatarActions,
                 onSave: saveUserProfile,
               ),
               const SizedBox(height: Spacing.xl2),
@@ -226,15 +249,19 @@ class _UserProfileSection extends StatelessWidget {
   const _UserProfileSection({
     required this.nicknameController,
     required this.avatarController,
+    required this.avatarDraft,
     required this.user,
     required this.l10n,
+    required this.onAvatarEdit,
     required this.onSave,
   });
 
   final TextEditingController nicknameController;
   final TextEditingController avatarController;
+  final AvatarDraft? avatarDraft;
   final AuthUser? user;
   final AppLocalizations l10n;
+  final VoidCallback onAvatarEdit;
   final VoidCallback onSave;
 
   @override
@@ -251,8 +278,10 @@ class _UserProfileSection extends StatelessWidget {
         // 头像编辑
         _AvatarEditSection(
           avatarUrl: user?.avatar,
+          avatarDraft: avatarDraft,
           avatarController: avatarController,
           l10n: l10n,
+          onAvatarEdit: onAvatarEdit,
         ),
         const SizedBox(height: Spacing.lg),
         // 昵称编辑
@@ -276,13 +305,17 @@ class _UserProfileSection extends StatelessWidget {
 class _AvatarEditSection extends StatelessWidget {
   const _AvatarEditSection({
     required this.avatarUrl,
+    required this.avatarDraft,
     required this.avatarController,
     required this.l10n,
+    required this.onAvatarEdit,
   });
 
   final String? avatarUrl;
+  final AvatarDraft? avatarDraft;
   final TextEditingController avatarController;
   final AppLocalizations l10n;
+  final VoidCallback onAvatarEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -291,10 +324,10 @@ class _AvatarEditSection extends StatelessWidget {
         // 头像预览
         AvatarActionView(
           avatarUrl: avatarUrl,
+          bytes: avatarDraft?.bytes,
           size: 64,
           iconSize: 32,
-          onEdit: () =>
-              unawaited(showAvatarActionsSheet(context, avatarUrl: avatarUrl)),
+          onEdit: onAvatarEdit,
         ),
         const SizedBox(width: Spacing.lg),
         // 头像URL输入框

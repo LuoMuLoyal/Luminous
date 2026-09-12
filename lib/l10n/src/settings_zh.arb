@@ -252,5 +252,9 @@
   "profileAvatarTakePhoto": "拍照",
   "profileAvatarChooseFromGallery": "从相册选择",
   "profileAvatarRemove": "移除头像",
-  "profileAvatarViewerLabel": "查看头像"
+  "profileAvatarViewerLabel": "查看头像",
+  "profileAvatarCropTitle": "裁剪头像",
+  "profileAvatarCropProcessing": "处理中…",
+  "profileAvatarCropDone": "使用此头像",
+  "profileAvatarCropFailed": "头像裁剪失败，请重试"
 }
