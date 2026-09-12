@@ -16,15 +16,17 @@ class StateSkeletonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: SemanticColor.neutral.border(context),
-      highlightColor: context.theme.colors.background,
-      child: ListView.separated(
-        padding: padding,
-        itemBuilder: (context, index) => _SkeletonBlock(data: blocks[index]),
-        separatorBuilder: (context, index) =>
-            const SizedBox(height: Spacing.lg),
-        itemCount: blocks.length,
+    return _ShimmerScope(
+      child: Shimmer.fromColors(
+        baseColor: SemanticColor.neutral.border(context),
+        highlightColor: context.theme.colors.background,
+        child: ListView.separated(
+          padding: padding,
+          itemBuilder: (context, index) => _SkeletonBlock(data: blocks[index]),
+          separatorBuilder: (context, index) =>
+              const SizedBox(height: Spacing.lg),
+          itemCount: blocks.length,
+        ),
       ),
     );
   }
@@ -163,6 +165,17 @@ class SkeletonText extends StatelessWidget {
 }
 
 /// Wrapper that applies shimmer effect to its subtree.
+///
+/// **Only the outermost instance applies a mask.** A [Shimmer] is a
+/// `ShaderMask`, and every `ShaderMask` costs a `saveLayer` on the raster thread
+/// *every frame*. Skeleton pages used to nest one shimmer per circle/section
+/// (`InlineSkeletonCircle`, `InlineSkeletonSection` → `InlineSkeleton`), so a
+/// loading page issued ~20+ saveLayers per frame — which by itself consumed the
+/// entire 16.7 ms budget on a 60 Hz device and made every frame drop while a
+/// skeleton was on screen (measured in a profile trace, 2026-09-12: raster
+/// p50 15.7 ms with ~22 saveLayers/frame, dropping to 3.7 ms with ~1/frame once
+/// content loaded). Nested instances therefore just return [child]; the outer
+/// shimmer already covers the whole subtree.
 class SkeletonShimmer extends StatelessWidget {
   const SkeletonShimmer({super.key, required this.child});
 
@@ -170,12 +183,31 @@ class SkeletonShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: SemanticColor.neutral.border(context),
-      highlightColor: context.theme.colors.background,
-      child: child,
+    if (_ShimmerScope.isActiveOf(context)) {
+      return child;
+    }
+
+    return _ShimmerScope(
+      child: Shimmer.fromColors(
+        baseColor: SemanticColor.neutral.border(context),
+        highlightColor: context.theme.colors.background,
+        child: child,
+      ),
     );
   }
+}
+
+/// Marks a subtree that already renders inside a shimmer mask, so nested
+/// [SkeletonShimmer]s collapse instead of stacking another `saveLayer` per
+/// frame. See [SkeletonShimmer] for the measurement behind this.
+class _ShimmerScope extends InheritedWidget {
+  const _ShimmerScope({required super.child});
+
+  static bool isActiveOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_ShimmerScope>() != null;
+
+  @override
+  bool updateShouldNotify(_ShimmerScope oldWidget) => false;
 }
 
 /// Rectangular shimmer placeholder block.
@@ -231,8 +263,9 @@ class InlineSkeletonBlock extends StatelessWidget {
 
 /// Circular shimmer placeholder block.
 ///
-/// Auto-wrapped with [SkeletonShimmer]; can be used standalone. If placed
-/// inside an existing shimmer scope, the outer shimmer visually overrides (no side effects).
+/// Auto-wrapped with [SkeletonShimmer]; can be used standalone. Inside an
+/// existing shimmer scope the wrapper is skipped entirely — the outer shimmer
+/// covers it and no extra `saveLayer` is created per frame.
 class InlineSkeletonCircle extends StatelessWidget {
   const InlineSkeletonCircle({super.key, required this.size});
 
