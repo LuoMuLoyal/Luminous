@@ -222,6 +222,11 @@ GoRouter appRouter(Ref ref) => GoRouter(
             navigationShell: navigationShell,
             children: children,
           ),
+      // Branches load on demand: a branch is built the first time its tab is
+      // opened and stays mounted afterwards, so only that first switch pays the
+      // tab's widget-tree build. `preload: true` on the branches removes that
+      // first-switch cost but builds all five tab trees during startup — tried
+      // and deliberately dropped in favour of a lighter cold start.
       branches: [
         StatefulShellBranch(
           routes: [
