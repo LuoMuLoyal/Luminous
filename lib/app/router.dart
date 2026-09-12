@@ -27,6 +27,7 @@ import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
     as settings_routes;
 import 'package:luminous/features/shell/presentation/page.dart';
+import 'package:luminous/features/shell/presentation/tab_branch_container.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -208,9 +209,19 @@ GoRouter appRouter(Ref ref) => GoRouter(
     return null;
   },
   routes: [
-    StatefulShellRoute.indexedStack(
+    StatefulShellRoute(
       builder: (context, state, navigationShell) =>
           ShellPage(navigationShell: navigationShell),
+      // Custom branch container: M3 fade-through when switching tabs
+      // (incoming branch fades in + scales up, outgoing fades out), while
+      // keeping IndexedStack semantics (branches stay mounted, non-current
+      // branches stay offstage for finders/tests). See
+      // ShellTabBranchContainer for details.
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          ShellTabBranchContainer(
+            navigationShell: navigationShell,
+            children: children,
+          ),
       branches: [
         StatefulShellBranch(
           routes: [
