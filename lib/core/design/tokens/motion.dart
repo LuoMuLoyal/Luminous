@@ -58,11 +58,14 @@ abstract final class MotionTokens {
 abstract final class DurationTokens {
   // -- Route transitions (GoRouter page builders) --
 
-  /// Auth page route transition (fade in).
-  static const authPageTransitionIn = Duration(milliseconds: 400);
+  /// Auth page route transition (fade in). Short enough that the page shows up
+  /// promptly, long enough that the cross-fade from the outgoing page reads as
+  /// a transition rather than a cut.
+  static const authPageTransitionIn = Duration(milliseconds: 300);
 
-  /// Auth page route transition (fade out).
-  static const authPageTransitionOut = Duration(milliseconds: 280);
+  /// Auth page route transition (fade out). Kept close to the entry duration so
+  /// leaving the auth flow is as visible as entering it.
+  static const authPageTransitionOut = Duration(milliseconds: 240);
 
   /// CRUD page route transition (slide in).
   static const crudPageTransitionIn = Duration(milliseconds: 220);
@@ -71,9 +74,6 @@ abstract final class DurationTokens {
   static const crudPageTransitionOut = Duration(milliseconds: 150);
 
   // -- In-widget animations (flutter_animate / explicit) --
-
-  /// Auth form content fade-in (flutter_animate).
-  static const authContentFadeIn = Duration(milliseconds: 180);
 
   /// Sidebar slide animation.
   static const sidebarSlide = Duration(milliseconds: 200);

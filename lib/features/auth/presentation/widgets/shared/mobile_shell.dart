@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
@@ -12,7 +11,6 @@ class MobileAuthShell extends StatelessWidget {
     required this.title,
     required this.form,
     this.formModeSelector,
-    this.enableFormAnimation = true,
     this.leading,
     this.centerTitle = false,
     this.logo,
@@ -22,7 +20,6 @@ class MobileAuthShell extends StatelessWidget {
   final String title;
   final Widget form;
   final Widget? formModeSelector;
-  final bool enableFormAnimation;
   final Widget? leading;
   final bool centerTitle;
   final Widget? logo;
@@ -60,10 +57,7 @@ class MobileAuthShell extends StatelessWidget {
                     formModeSelector!,
                   ],
                   const SizedBox(height: Spacing.xl2),
-                  AuthFormPanel(
-                    form: form,
-                    enableAnimation: enableFormAnimation,
-                  ),
+                  AuthFormPanel(form: form),
                 ],
               ),
             ),
@@ -144,37 +138,21 @@ class AuthPageHeader extends StatelessWidget {
   }
 }
 
+/// The auth form card.
+///
+/// Deliberately carries no entrance animation: the route transition already
+/// brings the page in, and a second opacity/offset ramp on top of it both
+/// delayed the visible appearance (the two ramps multiplied) and read as the
+/// card drifting upwards.
 class AuthFormPanel extends StatelessWidget {
-  const AuthFormPanel({
-    super.key,
-    required this.form,
-    required this.enableAnimation,
-  });
+  const AuthFormPanel({super.key, required this.form});
 
   final Widget form;
-  final bool enableAnimation;
 
   @override
   Widget build(BuildContext context) {
-    final panel = FCard(
+    return FCard(
       child: Padding(padding: const EdgeInsets.all(Spacing.xl2), child: form),
     );
-
-    if (!enableAnimation) {
-      return panel;
-    }
-
-    return panel
-        .animate()
-        .fadeIn(
-          duration: DurationTokens.authContentFadeIn,
-          curve: MotionTokens.snappy,
-        )
-        .slideY(
-          begin: 0.03,
-          end: 0,
-          duration: DurationTokens.authContentFadeIn,
-          curve: MotionTokens.entrance,
-        );
   }
 }

@@ -3,6 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 
+/// Auth page transition helper — a symmetric page fade.
+///
+/// The incoming auth page fades in over [DurationTokens.authPageTransitionIn]
+/// and fades out over [DurationTokens.authPageTransitionOut], so both entering
+/// *and* leaving the auth flow read as a deliberate transition.
+///
+/// Deliberately **not** [FadeThroughTransition]: its exit only occupies the
+/// first 30% of the reverse duration (≈70 ms here), which made leaving the
+/// login page look instantaneous and left an empty hand-off frame — the visible
+/// result was a stiff, animation-less pop. Fade-through is the right pattern
+/// for swapping content **inside one widget** (`PageStateSwitch`, the tab branch
+/// container), where the outgoing and incoming views are managed together;
+/// it does not work for a route push/pop, where only one side is ours.
+///
+/// The forward curve is front-loaded ([MotionTokens.snappy]) so the page shows
+/// up immediately instead of holding on the outgoing page, and the reverse runs
+/// on the same curve so the exit stays visible for its whole duration.
 CustomTransitionPage<T> fadePage<T>({
   required LocalKey key,
   required Widget child,
@@ -11,7 +28,10 @@ CustomTransitionPage<T> fadePage<T>({
     key: key,
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeTransition(opacity: animation, child: child),
+        FadeTransition(
+          opacity: animation.drive(CurveTween(curve: MotionTokens.snappy)),
+          child: child,
+        ),
     transitionDuration: DurationTokens.authPageTransitionIn,
     reverseTransitionDuration: DurationTokens.authPageTransitionOut,
   );

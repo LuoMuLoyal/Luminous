@@ -27,7 +27,6 @@ void main() {
             title: 'Sign in',
             subtitle: 'My subtitle',
             logo: AuthBrandLogo(),
-            enableFormAnimation: false,
             form: Column(children: [Text('form body')]),
           ),
         ),

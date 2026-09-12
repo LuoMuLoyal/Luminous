@@ -36,7 +36,6 @@ class SecurityCenterPage extends ConsumerWidget {
       title: l10n.authAccountManageSecurityCenter,
       leading: const AppBackButton(),
       centerTitle: true,
-      enableFormAnimation: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

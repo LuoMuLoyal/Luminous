@@ -13,7 +13,6 @@ class DesktopAuthShell extends StatelessWidget {
     required this.title,
     required this.form,
     this.formModeSelector,
-    this.enableFormAnimation = true,
     this.leading,
     this.centerTitle = false,
     this.logo,
@@ -23,7 +22,6 @@ class DesktopAuthShell extends StatelessWidget {
   final String title;
   final Widget form;
   final Widget? formModeSelector;
-  final bool enableFormAnimation;
   final Widget? leading;
   final bool centerTitle;
   final Widget? logo;
@@ -72,10 +70,7 @@ class DesktopAuthShell extends StatelessWidget {
                                     formModeSelector!,
                                   ],
                                   const SizedBox(height: Spacing.xl2),
-                                  AuthFormPanel(
-                                    form: form,
-                                    enableAnimation: enableFormAnimation,
-                                  ),
+                                  AuthFormPanel(form: form),
                                 ],
                               ),
                             ),

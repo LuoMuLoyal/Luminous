@@ -31,8 +31,7 @@ void main() {
         routes: [
           GoRoute(
             path: '/account',
-            builder: (context, state) =>
-                const AccountManagePage(enableFormAnimation: false),
+            builder: (context, state) => const AccountManagePage(),
           ),
         ],
       ),
@@ -65,8 +64,7 @@ void main() {
           routes: [
             GoRoute(
               path: '/account',
-              builder: (context, state) =>
-                  const AccountManagePage(enableFormAnimation: false),
+              builder: (context, state) => const AccountManagePage(),
             ),
             GoRoute(
               path: '/account/change-email',
@@ -118,8 +116,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/account',
-                builder: (context, state) =>
-                    const AccountManagePage(enableFormAnimation: false),
+                builder: (context, state) => const AccountManagePage(),
               ),
             ],
           ),
@@ -154,8 +151,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/account',
-                builder: (context, state) =>
-                    const AccountManagePage(enableFormAnimation: false),
+                builder: (context, state) => const AccountManagePage(),
               ),
               GoRoute(
                 path: '/login',
@@ -204,8 +200,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/account',
-                builder: (context, state) =>
-                    const AccountManagePage(enableFormAnimation: false),
+                builder: (context, state) => const AccountManagePage(),
               ),
               GoRoute(
                 path: '/login',
@@ -275,8 +270,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/account',
-                builder: (context, state) =>
-                    const AccountManagePage(enableFormAnimation: false),
+                builder: (context, state) => const AccountManagePage(),
               ),
             ],
           ),
@@ -342,8 +336,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/account',
-                builder: (context, state) =>
-                    const AccountManagePage(enableFormAnimation: false),
+                builder: (context, state) => const AccountManagePage(),
               ),
             ],
           ),
@@ -371,8 +364,7 @@ void main() {
         routes: [
           GoRoute(
             path: '/account',
-            builder: (context, state) =>
-                const AccountManagePage(enableFormAnimation: false),
+            builder: (context, state) => const AccountManagePage(),
           ),
         ],
       ),

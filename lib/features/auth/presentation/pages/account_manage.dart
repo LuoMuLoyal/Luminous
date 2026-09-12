@@ -17,13 +17,7 @@ import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AccountManagePage extends HookConsumerWidget {
-  const AccountManagePage({
-    super.key,
-    this.enableFormAnimation = true,
-    this.wechatCode,
-    this.wechatState,
-  });
-  final bool enableFormAnimation;
+  const AccountManagePage({super.key, this.wechatCode, this.wechatState});
   final String? wechatCode;
   final String? wechatState;
 
@@ -111,7 +105,6 @@ class AccountManagePage extends HookConsumerWidget {
       title: l10n.authAccountManageFormTitle,
       leading: const AppBackButton(),
       centerTitle: true,
-      enableFormAnimation: enableFormAnimation,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

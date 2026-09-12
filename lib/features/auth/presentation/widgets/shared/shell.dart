@@ -10,7 +10,6 @@ class AuthShell extends StatelessWidget {
     required this.title,
     required this.form,
     this.formModeSelector,
-    this.enableFormAnimation = true,
     this.leading,
     this.centerTitle = false,
     this.logo,
@@ -20,7 +19,6 @@ class AuthShell extends StatelessWidget {
   final String title;
   final Widget form;
   final Widget? formModeSelector;
-  final bool enableFormAnimation;
   final Widget? leading;
   final bool centerTitle;
   final Widget? logo;
@@ -40,7 +38,6 @@ class AuthShell extends StatelessWidget {
         centerTitle: centerTitle,
         formModeSelector: formModeSelector,
         form: form,
-        enableFormAnimation: enableFormAnimation,
       );
     }
 
@@ -52,7 +49,6 @@ class AuthShell extends StatelessWidget {
       centerTitle: centerTitle,
       formModeSelector: formModeSelector,
       form: form,
-      enableFormAnimation: enableFormAnimation,
     );
   }
 }
