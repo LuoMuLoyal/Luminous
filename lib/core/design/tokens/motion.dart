@@ -55,12 +55,19 @@ abstract final class MotionTokens {
   /// Front-loads its range: it reaches 1.0 at t/T≈0.25, so the remaining three
   /// quarters of the duration are a near-invisible settle. Intended for one
   /// element moving on its own — for a cross-fade use [snappy].
+  ///
+  /// **Currently has no call site**, and that is deliberate: every container
+  /// transition in the app is either a cross-fade (both sides visible, so
+  /// [snappy] is correct — see the class doc) or a single element's entrance
+  /// (so [emphasizedDecelerate] is correct). Kept as the documented M3 token so
+  /// the next genuine single-element move does not reach for the wrong curve.
   static const emphasized = Curves.easeInOutCubicEmphasized;
 
   /// M3 emphasizedDecelerate — emphasized element entrance.
   ///
   /// `cubic-bezier(0.05, 0.7, 0.1, 1)`; new-page entrance in navigation
-  /// transitions (M3 easing spec).
+  /// transitions (M3 easing spec). This is the M3 "in" half of the emphasized
+  /// pair, so it is the right curve for the incoming side of a pane/route swap.
   static const emphasizedDecelerate = Cubic(0.05, 0.7, 0.1, 1);
 }
 
@@ -118,10 +125,6 @@ abstract final class DurationTokens {
   /// Settings desktop master-detail pane switch: fade the incoming pane and
   /// resize the scroll extent to its height in one motion.
   static const masterDetailSwitch = Duration(milliseconds: 220);
-
-  /// Curve for [masterDetailSwitch]. `easeInOut` because the switch animates
-  /// both a faked fade and the container height — a single bidirectional move.
-  static const masterDetailSwitchCurve = Curves.easeInOut;
 
   /// Page state switch (skeleton → content → error …) fade-through.
   static const pageStateSwitch = Duration(milliseconds: 240);

@@ -101,7 +101,7 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
                     child: SingleChildScrollView(
                       child: AnimatedSize(
                         duration: DurationTokens.masterDetailSwitch,
-                        curve: DurationTokens.masterDetailSwitchCurve,
+                        curve: MotionTokens.emphasizedDecelerate,
                         alignment: Alignment.topLeft,
                         clipBehavior: Clip.hardEdge,
                         child: TweenAnimationBuilder<double>(
@@ -109,7 +109,10 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
                           key: ValueKey<int>(_selectedIndex),
                           tween: Tween<double>(begin: 0, end: 1),
                           duration: DurationTokens.masterDetailSwitch,
-                          curve: DurationTokens.masterDetailSwitchCurve,
+                          // M3 emphasizedDecelerate: the "in" half of the
+                          // emphasized pair, i.e. the right curve for an
+                          // element arriving (the incoming pane).
+                          curve: MotionTokens.emphasizedDecelerate,
                           builder: (context, opacity, child) =>
                               Opacity(opacity: opacity, child: child),
                           child: widget.groups[_selectedIndex].body,
