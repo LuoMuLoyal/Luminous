@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/widgets/common/control/value_row.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -94,6 +95,46 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('edit-sheet-text-field')), findsOneWidget);
+  });
+
+  testWidgets('Profile rows pin the value and chevron to the card edge', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final container = _container();
+
+    await tester.pumpWidget(_app(container));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AppValueRow), findsWidgets);
+    final rows = tester
+        .widgetList<AppValueRow>(find.byType(AppValueRow))
+        .map((row) => tester.getRect(find.byWidget(row)))
+        .toList();
+
+    // Every row spans the same horizontal band, and that band is the group's own
+    // inner width (the card's padding is [Spacing.lg] = 14). The chevron is the
+    // last child, so this is what pins it to the card edge. The regression this
+    // guards against left the value and chevron drifting inwards, and flattened
+    // short values to zero width.
+    final card = tester.getRect(
+      find
+          .ancestor(
+            of: find.byKey(const Key('profile-avatar-row')),
+            matching: find.byType(DecoratedBox),
+          )
+          .last,
+    );
+    const inset = 14.0;
+    for (final rect in rows) {
+      expect(rect.right, closeTo(card.right - inset, 0.5));
+      expect(rect.left, closeTo(card.left + inset, 0.5));
+    }
   });
 }
 

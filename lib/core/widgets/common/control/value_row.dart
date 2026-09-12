@@ -41,8 +41,11 @@ class AppValueRow extends StatelessWidget {
   /// True when [value] is missing, so it renders muted as「未设置」-style copy.
   final bool isPlaceholder;
 
-  /// Share of the row the value column may claim before it ellipsizes.
-  static const _maxValueWidthFactor = 0.55;
+  /// Flex weights for the free-space split. Both buckets prefer their content's
+  /// natural width; the ratio only decides who yields first when a row is too
+  /// narrow (the value yields less, so short values like「已设置」never vanish).
+  static const _labelFlex = 3;
+  static const _valueFlex = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +56,16 @@ class AppValueRow extends StatelessWidget {
       color: valueColor ?? (isPlaceholder ? muted : null),
     );
 
+    // Split the label / value / chevron into buckets whose flex only applies to
+    // *free* space: the label gets the largest share, the value claims what its
+    // content needs (capped), and the chevron claims its own width. Because the
+    // value bucket is right-aligned, its text lands against the chevron and the
+    // chevron against the row's trailing edge — no intrinsic-width guesswork.
     final row = Row(
       children: [
         if (leading != null) ...[leading!, const SizedBox(width: Spacing.lg)],
-        // The label takes every pixel the value column does not need, so the
-        // value and the chevron always sit flush right. The value column is
-        // intrinsically sized (see [_maxValueWidthFactor] for its cap), which is
-        // what keeps it from being squeezed to nothing on long labels.
         Expanded(
+          flex: _labelFlex,
           child: Text(
             label,
             overflow: TextOverflow.ellipsis,
@@ -72,41 +77,19 @@ class AppValueRow extends StatelessWidget {
         ),
         const SizedBox(width: Spacing.lg),
         Flexible(
-          child: LayoutBuilder(
-            builder: (context, constraints) => IntrinsicWidth(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: constraints.maxWidth * _maxValueWidthFactor,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        value,
-                        textAlign: TextAlign.right,
-                        overflow: TextOverflow.ellipsis,
-                        style: valueStyle,
-                      ),
-                    ),
-                    if (trailing != null) ...[
-                      const SizedBox(width: Spacing.sm),
-                      trailing!,
-                    ],
-                    if (onPress != null) ...[
-                      const SizedBox(width: Spacing.sm),
-                      Icon(
-                        SemanticIcons.actionNext,
-                        size: IconSizeTokens.md,
-                        color: muted,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
+          flex: _valueFlex,
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            overflow: TextOverflow.ellipsis,
+            style: valueStyle,
           ),
         ),
+        if (trailing != null) ...[const SizedBox(width: Spacing.sm), trailing!],
+        if (onPress != null) ...[
+          const SizedBox(width: Spacing.sm),
+          Icon(SemanticIcons.actionNext, size: IconSizeTokens.md, color: muted),
+        ],
       ],
     );
 
