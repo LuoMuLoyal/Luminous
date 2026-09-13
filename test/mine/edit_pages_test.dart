@@ -50,7 +50,8 @@ void main() {
     final payload = healthProfileUpdatePayload(input!);
     expect(payload, containsPair('birthDate', '1999-01-01'));
     expect(payload, containsPair('heightCm', 170));
-    expect(payload, containsPair('bloodType', 'O+'));
+    // 血型已随契约收敛退场,legacy 页不再发送该字段。
+    expect(payload.containsKey('bloodType'), isFalse);
   });
 
   testWidgets('Profile edit shows login dialog when signed out', (
@@ -480,13 +481,12 @@ const _snapshot = HealthContextSnapshot(
     sexAtBirth: 'female',
     heightCm: 168,
     weightKg: null,
-    bloodType: 'O+',
+    activityLevel: null,
+    dietaryPreferences: null,
     locale: null,
     timezone: null,
     unitSystem: 'metric',
     onboardingCompletedAt: '2026-01-01T00:00:00.000Z',
-    emergencyContactName: null,
-    emergencyContactPhone: null,
     extras: {},
   ),
   allergies: [],
@@ -508,13 +508,12 @@ const _snapshotWithItems = HealthContextSnapshot(
     sexAtBirth: 'female',
     heightCm: 168,
     weightKg: null,
-    bloodType: 'O+',
+    activityLevel: null,
+    dietaryPreferences: null,
     locale: null,
     timezone: null,
     unitSystem: 'metric',
     onboardingCompletedAt: '2026-01-01T00:00:00.000Z',
-    emergencyContactName: null,
-    emergencyContactPhone: null,
     extras: {},
   ),
   allergies: [

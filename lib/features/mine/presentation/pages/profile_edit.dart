@@ -20,21 +20,6 @@ import 'package:luminous/features/mine/presentation/providers/health_edit_forms.
 import 'package:luminous/features/mine/presentation/widgets/shared/edit_form_loading.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Common blood type options offered in the profile editor.
-///
-/// The backend stores [bloodType] as a free-text string, but constraining the
-/// UI to a standard list avoids typos and makes the field easier to scan.
-const _bloodTypeOptions = <String>[
-  'A+',
-  'A-',
-  'B+',
-  'B-',
-  'AB+',
-  'AB-',
-  'O+',
-  'O-',
-];
-
 class ProfileEditPage extends HookConsumerWidget {
   const ProfileEditPage({super.key});
 
@@ -46,13 +31,9 @@ class ProfileEditPage extends HookConsumerWidget {
     final heightCmController = useTextEditingController();
     final weightKgController = useTextEditingController();
     final birthDate = useState<DateTime?>(null);
-    final bloodType = useState<String?>(null);
     final unitSystem = useState<HealthUnitSystem?>(null);
     final sexAtBirth = useState<HealthSexAtBirth?>(null);
-    final emergencyContactNameController = useTextEditingController();
-    final emergencyContactPhoneController = useTextEditingController();
     final initialized = useRef(false);
-    final typography = context.theme.typography;
 
     void initFromSnapshot(HealthProfile profile) {
       if (initialized.value) return;
@@ -61,12 +42,8 @@ class ProfileEditPage extends HookConsumerWidget {
       heightCmController.text = profile.heightCm?.toString() ?? '';
       weightKgController.text = profile.weightKg?.toString() ?? '';
       birthDate.value = _tryParseDate(profile.birthDate);
-      bloodType.value = profile.bloodType;
       unitSystem.value = HealthUnitSystem.fromValue(profile.unitSystem);
       sexAtBirth.value = HealthSexAtBirth.fromValue(profile.sexAtBirth);
-      emergencyContactNameController.text = profile.emergencyContactName ?? '';
-      emergencyContactPhoneController.text =
-          profile.emergencyContactPhone ?? '';
     }
 
     void onSave() {
@@ -76,11 +53,8 @@ class ProfileEditPage extends HookConsumerWidget {
             : null,
         heightCm: num.tryParse(heightCmController.text),
         weightKg: num.tryParse(weightKgController.text),
-        bloodType: bloodType.value,
         unitSystem: unitSystem.value,
         sexAtBirth: sexAtBirth.value,
-        emergencyContactName: emergencyContactNameController.text.trim(),
-        emergencyContactPhone: emergencyContactPhoneController.text.trim(),
       );
 
       unawaited(ref.read(healthProfileFormProvider.notifier).save(input));
@@ -189,22 +163,6 @@ class ProfileEditPage extends HookConsumerWidget {
                           keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: Spacing.md),
-                        FSelect<String>.rich(
-                          label: Text(l10n.mineEditFieldBloodType),
-                          hint: l10n.mineEditFieldBloodTypeHint,
-                          format: (value) => value,
-                          control: FSelectControl.lifted(
-                            value: bloodType.value,
-                            onChange: (v) => bloodType.value = v,
-                          ),
-                          children: _bloodTypeOptions
-                              .map(
-                                (v) =>
-                                    FSelectItem.item(title: Text(v), value: v),
-                              )
-                              .toList(),
-                        ),
-                        const SizedBox(height: Spacing.md),
                         _enumDropdown<HealthUnitSystem>(
                           label: l10n.mineEditFieldUnitSystem,
                           value: unitSystem.value,
@@ -213,35 +171,6 @@ class ProfileEditPage extends HookConsumerWidget {
                           labelBuilder: (v) => v == HealthUnitSystem.metric
                               ? l10n.mineEditUnitSystemMetric
                               : l10n.mineEditUnitSystemImperial,
-                        ),
-                        const SizedBox(height: Spacing.xl),
-                        Text(
-                          l10n.mineEditFieldEmergencyContactName,
-                          style: typography.body.sm.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: Spacing.sm),
-                        FTextField(
-                          key: const Key('profile-emergency-contact-name'),
-                          control: FTextFieldControl.managed(
-                            controller: emergencyContactNameController,
-                          ),
-                        ),
-                        const SizedBox(height: Spacing.md),
-                        Text(
-                          l10n.mineEditFieldEmergencyContactPhone,
-                          style: typography.body.sm.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: Spacing.sm),
-                        FTextField(
-                          key: const Key('profile-emergency-contact-phone'),
-                          control: FTextFieldControl.managed(
-                            controller: emergencyContactPhoneController,
-                          ),
-                          keyboardType: TextInputType.phone,
                         ),
                         const SizedBox(height: Spacing.xl),
                         FButton(
