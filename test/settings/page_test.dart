@@ -82,8 +82,10 @@ void main() {
     expect(find.text(l10n.mineSettingAboutTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsAdvancedTitle), findsOneWidget);
     expect(find.text(l10n.authSignOut), findsOneWidget);
-    expect(find.byType(FTileGroup), findsNWidgets(6));
-    expect(find.byType(FCard), findsOneWidget);
+    // 7 组:页面分节 6 组 + account_header 单行卡片(fc954cf4 由 FCard+FTile 收敛为
+    // 单子项 FTileGroup,该测试在彼次漏更,此处补上)。
+    expect(find.byType(FTileGroup), findsNWidgets(7));
+    expect(find.byType(FCard), findsNothing);
   });
 
   testWidgets('Settings back button routes to previous page', (tester) async {
