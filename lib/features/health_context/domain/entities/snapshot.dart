@@ -33,13 +33,12 @@ abstract class HealthProfile with _$HealthProfile {
     required String? sexAtBirth,
     required double? heightCm,
     required double? weightKg,
-    required String? bloodType,
+    required String? activityLevel,
+    required List<String>? dietaryPreferences,
     required String? locale,
     required String? timezone,
     required String? unitSystem,
     required String? onboardingCompletedAt,
-    required String? emergencyContactName,
-    required String? emergencyContactPhone,
     required Map<String, dynamic> extras,
   }) = _HealthProfile;
 }

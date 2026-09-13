@@ -23,8 +23,6 @@ class ClinicSummaryResponseProfile {
     this.age,
 
     required this.sexAtBirth,
-
-    this.bloodType,
   });
 
   /// Masked display name (e.g. 张**)
@@ -37,24 +35,19 @@ class ClinicSummaryResponseProfile {
   @JsonKey(name: r'sexAtBirth', required: true, includeIfNull: true)
   final String? sexAtBirth;
 
-  @JsonKey(name: r'bloodType', required: false, includeIfNull: false)
-  final String? bloodType;
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ClinicSummaryResponseProfile &&
           other.nickname == nickname &&
           other.age == age &&
-          other.sexAtBirth == sexAtBirth &&
-          other.bloodType == bloodType;
+          other.sexAtBirth == sexAtBirth;
 
   @override
   int get hashCode =>
       nickname.hashCode +
       (age == null ? 0 : age.hashCode) +
-      (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
-      (bloodType == null ? 0 : bloodType.hashCode);
+      (sexAtBirth == null ? 0 : sexAtBirth.hashCode);
 
   factory ClinicSummaryResponseProfile.fromJson(Map<String, dynamic> json) =>
       _$ClinicSummaryResponseProfileFromJson(json);

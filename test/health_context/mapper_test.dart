@@ -30,12 +30,12 @@ HealthContextResponseProfile _p({
     birthDate: bd as String?,
     sexAtBirth: sx,
     weightKg: null,
-    bloodType: null,
+    activityLevel: null,
+    dietaryPreferences: null,
     locale: null,
     timezone: null,
     unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
     onboardingCompletedAt: null,
-    emergencyContact: null,
     extras: null,
   );
 }

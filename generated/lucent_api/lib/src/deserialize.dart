@@ -139,7 +139,6 @@ import 'package:lucent_api/src/model/health_context_response_allergies.dart';
 import 'package:lucent_api/src/model/health_context_response_conditions.dart';
 import 'package:lucent_api/src/model/health_context_response_current_medicines.dart';
 import 'package:lucent_api/src/model/health_context_response_profile.dart';
-import 'package:lucent_api/src/model/health_context_response_profile_emergency_contact.dart';
 import 'package:lucent_api/src/model/health_context_response_summary.dart';
 import 'package:lucent_api/src/model/health_event_list_response.dart';
 import 'package:lucent_api/src/model/health_event_list_response_items.dart';
@@ -959,11 +958,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'HealthContextResponseProfile':
       return HealthContextResponseProfile.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'HealthContextResponseProfileEmergencyContact':
-      return HealthContextResponseProfileEmergencyContact.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

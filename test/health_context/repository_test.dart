@@ -10,7 +10,6 @@ void main() {
           birthDate: null,
           sexAtBirth: HealthSexAtBirth.female,
           heightCm: 168,
-          bloodType: null,
           unitSystem: healthContextNoChange,
         ),
       );
@@ -19,7 +18,6 @@ void main() {
         'birthDate': null,
         'sexAtBirth': 'female',
         'heightCm': 168,
-        'bloodType': null,
       });
       expect(payload.containsKey('unitSystem'), isFalse);
     });

@@ -22,7 +22,7 @@ health_context 是**跨 feature 共享的健康档案数据 feature**：聚合�
 ```
 HealthContextSnapshot
 ├── summary   HealthSummary       age / onboardingCompleted / 各计数 / missingCoreProfileFields
-├── profile   HealthProfile       birthDate / sexAtBirth / heightCm / weightKg / bloodType / locale / timezone / unitSystem / onboardingCompletedAt / emergencyContact(姓名+电话) / extras
+├── profile   HealthProfile       birthDate / sexAtBirth / heightCm / weightKg / activityLevel / dietaryPreferences / locale / timezone / unitSystem / onboardingCompletedAt / extras
 ├── allergies List<AllergyItem>   id / kind / label / reaction / severity / isActive / note / 时间戳
 ├── conditions List<ConditionItem> id / label / status / diagnosedAt / resolvedAt / note / 时间戳
 └── currentMedicines List<CurrentMedicineItem> id / source / sourceRefId / displayName / strengthText / doseText / route / startedAt / endedAt / isCurrent / note / 时间戳

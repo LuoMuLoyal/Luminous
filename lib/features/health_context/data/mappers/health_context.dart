@@ -30,13 +30,12 @@ class HealthContextMapper {
       sexAtBirth: p.sexAtBirth?.name,
       heightCm: p.heightCm is num ? (p.heightCm as num).toDouble() : null,
       weightKg: p.weightKg is num ? (p.weightKg as num).toDouble() : null,
-      bloodType: p.bloodType?.toString(),
+      activityLevel: p.activityLevel?.name,
+      dietaryPreferences: p.dietaryPreferences,
       locale: p.locale?.toString(),
       timezone: p.timezone?.toString(),
       unitSystem: p.unitSystem?.name,
       onboardingCompletedAt: p.onboardingCompletedAt?.toString(),
-      emergencyContactName: p.emergencyContact?.name?.toString(),
-      emergencyContactPhone: p.emergencyContact?.phone?.toString(),
       // Wire `extras` is a free-form JSON object (Object?); only a Map is
       // meaningful, anything else (absent/null/malformed) maps to {}.
       extras: p.extras is Map

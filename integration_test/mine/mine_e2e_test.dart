@@ -42,7 +42,6 @@ void main() {
     final fields = find.byType(TextField);
     await tester.enterText(fields.at(0), '1998-06-07');
     await tester.enterText(fields.at(1), '171');
-    await tester.enterText(fields.at(2), 'AB');
 
     final saveButton = find.text('保存');
     await tapVisible(tester, saveButton);
@@ -51,7 +50,6 @@ void main() {
     expect(input, isNotNull);
     expect(input!.birthDate, '1998-06-07');
     expect(input.heightCm, 171);
-    expect(input.bloodType, 'AB');
     expect(find.byKey(const Key('mine-archive-section')), findsOneWidget);
   });
 

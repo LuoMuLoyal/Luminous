@@ -154,9 +154,8 @@ Map<String, dynamic> healthProfileUpdatePayload(
   _putIfChanged(payload, 'sexAtBirth', input.sexAtBirth);
   _putIfChanged(payload, 'heightCm', input.heightCm);
   _putIfChanged(payload, 'weightKg', input.weightKg);
-  _putIfChanged(payload, 'bloodType', input.bloodType);
-  _putIfChanged(payload, 'emergencyContactName', input.emergencyContactName);
-  _putIfChanged(payload, 'emergencyContactPhone', input.emergencyContactPhone);
+  _putIfChanged(payload, 'activityLevel', input.activityLevel);
+  _putIfChanged(payload, 'dietaryPreferences', input.dietaryPreferences);
   _putIfChanged(payload, 'onboardingCompleted', input.onboardingCompleted);
   return payload;
 }
@@ -256,6 +255,12 @@ void _putIfChanged(Map<String, dynamic> payload, String key, Object? value) {
 Object? _wireValue(Object? value) {
   if (value is HealthContextWireEnum) {
     return value.value;
+  }
+  if (value is List) {
+    return [
+      for (final item in value)
+        item is HealthContextWireEnum ? item.value : item,
+    ];
   }
   return value;
 }

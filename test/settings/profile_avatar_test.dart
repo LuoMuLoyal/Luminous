@@ -89,13 +89,16 @@ void main() {
 
     expect(find.byKey(const Key('profile-birthdate-row')), findsOneWidget);
     expect(find.byKey(const Key('profile-height-row')), findsOneWidget);
-    expect(find.byKey(const Key('profile-blood-type-row')), findsOneWidget);
-    expect(find.byKey(const Key('profile-emergency-name-row')), findsOneWidget);
+    expect(find.byKey(const Key('profile-activity-level-row')), findsOneWidget);
+    expect(
+      find.byKey(const Key('profile-dietary-preferences-row')),
+      findsOneWidget,
+    );
 
     await tester.tap(find.byKey(const Key('profile-height-row')));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('edit-sheet-text-field')), findsOneWidget);
+    expect(find.byKey(const Key('quantity-sheet-picker')), findsOneWidget);
   });
 
   testWidgets('Profile rows pin the value and chevron to the group edge', (
@@ -129,13 +132,17 @@ void main() {
       expect(rect.left, closeTo(group.left, 0.5));
       expect(rect.right, closeTo(group.right, 0.5));
 
-      final chevron = tester.getRect(
-        find.descendant(
-          of: find.byWidget(row),
-          matching: find.byIcon(SemanticIcons.actionNext),
-        ),
+      // FSelectMenuTile 行的 suffix 是 Forui 自带的 chevronsUpDown(布局仍由
+      // Forui 落在行尾),只有自绘 actionNext 箭头的行才做贴右断言。
+      final chevron = find.descendant(
+        of: find.byWidget(row),
+        matching: find.byIcon(SemanticIcons.actionNext),
       );
-      expect(group.right - chevron.right, closeTo(tileRightInset, 0.5));
+      if (tester.widgetList(chevron).isEmpty) continue;
+      expect(
+        group.right - tester.getRect(chevron).right,
+        closeTo(tileRightInset, 0.5),
+      );
     }
   });
 }
@@ -211,13 +218,12 @@ const _snapshot = HealthContextSnapshot(
     sexAtBirth: 'female',
     heightCm: 170.0,
     weightKg: 60.0,
-    bloodType: null,
+    activityLevel: null,
+    dietaryPreferences: null,
     locale: null,
     timezone: null,
     unitSystem: null,
     onboardingCompletedAt: '2026-01-01T00:00:00Z',
-    emergencyContactName: null,
-    emergencyContactPhone: null,
     extras: {},
   ),
   allergies: [],

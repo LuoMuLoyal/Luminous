@@ -174,7 +174,6 @@ export 'package:lucent_api/src/model/health_context_response_allergies.dart';
 export 'package:lucent_api/src/model/health_context_response_conditions.dart';
 export 'package:lucent_api/src/model/health_context_response_current_medicines.dart';
 export 'package:lucent_api/src/model/health_context_response_profile.dart';
-export 'package:lucent_api/src/model/health_context_response_profile_emergency_contact.dart';
 export 'package:lucent_api/src/model/health_context_response_summary.dart';
 export 'package:lucent_api/src/model/health_event_list_response.dart';
 export 'package:lucent_api/src/model/health_event_list_response_items.dart';

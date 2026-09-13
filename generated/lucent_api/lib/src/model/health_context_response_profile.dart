@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/health_context_response_profile_emergency_contact.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -27,7 +26,9 @@ class HealthContextResponseProfile {
 
     required this.weightKg,
 
-    required this.bloodType,
+    this.activityLevel,
+
+    this.dietaryPreferences,
 
     required this.locale,
 
@@ -36,8 +37,6 @@ class HealthContextResponseProfile {
     required this.unitSystem,
 
     required this.onboardingCompletedAt,
-
-    required this.emergencyContact,
 
     required this.extras,
   });
@@ -60,8 +59,17 @@ class HealthContextResponseProfile {
   @JsonKey(name: r'weightKg', required: true, includeIfNull: true)
   final num? weightKg;
 
-  @JsonKey(name: r'bloodType', required: true, includeIfNull: true)
-  final String? bloodType;
+  @JsonKey(
+    name: r'activityLevel',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue:
+        HealthContextResponseProfileActivityLevelEnum.unknownDefaultOpenApi,
+  )
+  final HealthContextResponseProfileActivityLevelEnum? activityLevel;
+
+  @JsonKey(name: r'dietaryPreferences', required: false, includeIfNull: false)
+  final List<String>? dietaryPreferences;
 
   @JsonKey(name: r'locale', required: true, includeIfNull: true)
   final String? locale;
@@ -81,9 +89,6 @@ class HealthContextResponseProfile {
   @JsonKey(name: r'onboardingCompletedAt', required: true, includeIfNull: true)
   final String? onboardingCompletedAt;
 
-  @JsonKey(name: r'emergencyContact', required: true, includeIfNull: true)
-  final HealthContextResponseProfileEmergencyContact? emergencyContact;
-
   /// Sparse profile extensions stored in jsonb.
   @JsonKey(name: r'extras', required: true, includeIfNull: true)
   final Object? extras;
@@ -96,12 +101,12 @@ class HealthContextResponseProfile {
           other.sexAtBirth == sexAtBirth &&
           other.heightCm == heightCm &&
           other.weightKg == weightKg &&
-          other.bloodType == bloodType &&
+          other.activityLevel == activityLevel &&
+          other.dietaryPreferences == dietaryPreferences &&
           other.locale == locale &&
           other.timezone == timezone &&
           other.unitSystem == unitSystem &&
           other.onboardingCompletedAt == onboardingCompletedAt &&
-          other.emergencyContact == emergencyContact &&
           other.extras == extras;
 
   @override
@@ -110,12 +115,12 @@ class HealthContextResponseProfile {
       (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
       (heightCm == null ? 0 : heightCm.hashCode) +
       (weightKg == null ? 0 : weightKg.hashCode) +
-      (bloodType == null ? 0 : bloodType.hashCode) +
+      (activityLevel == null ? 0 : activityLevel.hashCode) +
+      (dietaryPreferences == null ? 0 : dietaryPreferences.hashCode) +
       (locale == null ? 0 : locale.hashCode) +
       (timezone == null ? 0 : timezone.hashCode) +
       (unitSystem == null ? 0 : unitSystem.hashCode) +
       (onboardingCompletedAt == null ? 0 : onboardingCompletedAt.hashCode) +
-      (emergencyContact == null ? 0 : emergencyContact.hashCode) +
       (extras == null ? 0 : extras.hashCode);
 
   factory HealthContextResponseProfile.fromJson(Map<String, dynamic> json) =>
@@ -142,6 +147,28 @@ enum HealthContextResponseProfileSexAtBirthEnum {
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
   const HealthContextResponseProfileSexAtBirthEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum HealthContextResponseProfileActivityLevelEnum {
+  @JsonValue(r'sedentary')
+  sedentary(r'sedentary'),
+  @JsonValue(r'lightlyActive')
+  lightlyActive(r'lightlyActive'),
+  @JsonValue(r'moderatelyActive')
+  moderatelyActive(r'moderatelyActive'),
+  @JsonValue(r'veryActive')
+  veryActive(r'veryActive'),
+  @JsonValue(r'extremelyActive')
+  extremelyActive(r'extremelyActive'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const HealthContextResponseProfileActivityLevelEnum(this.value);
 
   final String value;
 

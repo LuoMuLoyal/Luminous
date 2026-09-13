@@ -409,7 +409,8 @@ class _FakeSettingsProfileRemoteDataSource
             HealthContextResponseProfileSexAtBirthEnum.unknownDefaultOpenApi,
         heightCm: null,
         weightKg: null,
-        bloodType: null,
+        activityLevel: null,
+        dietaryPreferences: null,
         locale: identical(locale, settingsProfileNoChange)
             ? null
             : locale as String?,
@@ -422,7 +423,6 @@ class _FakeSettingsProfileRemoteDataSource
                   HealthContextResponseProfileUnitSystemEnum
                       .unknownDefaultOpenApi,
         onboardingCompletedAt: null,
-        emergencyContact: null,
         extras: const <String, Object>{},
       ),
       allergies: const [],

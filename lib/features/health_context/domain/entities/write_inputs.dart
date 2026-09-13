@@ -34,6 +34,44 @@ enum HealthUnitSystem implements HealthContextWireEnum {
   }
 }
 
+enum HealthActivityLevel implements HealthContextWireEnum {
+  sedentary('sedentary'),
+  lightlyActive('lightlyActive'),
+  moderatelyActive('moderatelyActive'),
+  veryActive('veryActive'),
+  extremelyActive('extremelyActive');
+
+  const HealthActivityLevel(this.value);
+
+  @override
+  final String value;
+
+  static HealthActivityLevel? fromValue(String? value) {
+    return _fromValue(values, value);
+  }
+}
+
+enum HealthDietaryPreference implements HealthContextWireEnum {
+  vegetarian('vegetarian'),
+  vegan('vegan'),
+  lowCarb('lowCarb'),
+  lowSalt('lowSalt'),
+  lowFat('lowFat'),
+  highProtein('highProtein'),
+  keto('keto'),
+  halal('halal'),
+  other('other');
+
+  const HealthDietaryPreference(this.value);
+
+  @override
+  final String value;
+
+  static HealthDietaryPreference? fromValue(String? value) {
+    return _fromValue(values, value);
+  }
+}
+
 enum HealthAllergyKind implements HealthContextWireEnum {
   drug('drug'),
   food('food'),
@@ -114,9 +152,8 @@ class HealthProfileUpdateInput {
     this.sexAtBirth = healthContextNoChange,
     this.heightCm = healthContextNoChange,
     this.weightKg = healthContextNoChange,
-    this.bloodType = healthContextNoChange,
-    this.emergencyContactName = healthContextNoChange,
-    this.emergencyContactPhone = healthContextNoChange,
+    this.activityLevel = healthContextNoChange,
+    this.dietaryPreferences = healthContextNoChange,
     this.onboardingCompleted = healthContextNoChange,
   });
 
@@ -127,9 +164,8 @@ class HealthProfileUpdateInput {
   final Object? sexAtBirth;
   final Object? heightCm;
   final Object? weightKg;
-  final Object? bloodType;
-  final Object? emergencyContactName;
-  final Object? emergencyContactPhone;
+  final Object? activityLevel;
+  final Object? dietaryPreferences;
   final Object? onboardingCompleted;
 }
 

@@ -27,13 +27,12 @@ abstract final class HealthContextSnapshotCodec {
         'sexAtBirth': snapshot.profile.sexAtBirth,
         'heightCm': snapshot.profile.heightCm,
         'weightKg': snapshot.profile.weightKg,
-        'bloodType': snapshot.profile.bloodType,
+        'activityLevel': snapshot.profile.activityLevel,
+        'dietaryPreferences': snapshot.profile.dietaryPreferences,
         'locale': snapshot.profile.locale,
         'timezone': snapshot.profile.timezone,
         'unitSystem': snapshot.profile.unitSystem,
         'onboardingCompletedAt': snapshot.profile.onboardingCompletedAt,
-        'emergencyContactName': snapshot.profile.emergencyContactName,
-        'emergencyContactPhone': snapshot.profile.emergencyContactPhone,
         'extras': snapshot.profile.extras,
       },
       'allergies': snapshot.allergies.map(_allergyToJson).toList(),
@@ -66,13 +65,13 @@ abstract final class HealthContextSnapshotCodec {
         weightKg: p['weightKg'] is num
             ? (p['weightKg'] as num).toDouble()
             : null,
-        bloodType: p['bloodType'] as String?,
+        activityLevel: p['activityLevel'] as String?,
+        dietaryPreferences: (p['dietaryPreferences'] as List<dynamic>?)
+            ?.cast<String>(),
         locale: p['locale'] as String?,
         timezone: p['timezone'] as String?,
         unitSystem: p['unitSystem'] as String?,
         onboardingCompletedAt: p['onboardingCompletedAt'] as String?,
-        emergencyContactName: p['emergencyContactName'] as String?,
-        emergencyContactPhone: p['emergencyContactPhone'] as String?,
         extras: Map<String, dynamic>.from(p['extras'] as Map? ?? const {}),
       ),
       allergies: (map['allergies'] as List<dynamic>)

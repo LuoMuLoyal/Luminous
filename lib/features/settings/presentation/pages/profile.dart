@@ -17,6 +17,7 @@ import 'package:luminous/core/widgets/common/avatar/avatar_draft.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_viewer.dart';
 import 'package:luminous/core/widgets/common/control/tile_value.dart';
 import 'package:luminous/core/widgets/common/dialog/edit_sheet.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -24,20 +25,10 @@ import 'package:luminous/features/auth/presentation/providers/account.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/features/health_context/domain/services/unit_conversion.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/quantity_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-/// 常用血型选项
-const _bloodTypeOptions = <String>[
-  'A+',
-  'A-',
-  'B+',
-  'B-',
-  'AB+',
-  'AB-',
-  'O+',
-  'O-',
-];
 
 /// 头像上传前的本地字节上限，与 Lucent 的 `maxSizeBytes` 一致，超限提前反馈。
 const _maxAvatarBytes = 5 * 1024 * 1024;
@@ -140,8 +131,8 @@ class ProfilePage extends HookConsumerWidget {
       Future<void> editNickname() async {
         final value = await showTextEditSheet(
           context: context,
+          // 标题已是「昵称」,字段内不再重复 label。
           title: l10n.profileNicknameLabel,
-          label: l10n.profileNicknameLabel,
           hint: l10n.profileNicknameHint,
           initialValue: user?.nickname ?? '',
         );
@@ -174,15 +165,22 @@ class ProfilePage extends HookConsumerWidget {
                 children: [
                   FTile(
                     key: const Key('profile-avatar-row'),
-                    prefix: AvatarActionView(
-                      avatarUrl: avatarRemoved.value ? null : user?.avatar,
-                      bytes: avatarDraft.value?.bytes,
-                      size: 40,
-                      iconSize: 20,
-                      showEditBadge: false,
-                    ),
+                    // 左文字右头像:头像作为 suffix,后面跟跳转箭头。
                     title: Text(l10n.profileAvatarRowTitle),
-                    suffix: const Icon(SemanticIcons.actionNext),
+                    suffix: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AvatarActionView(
+                          avatarUrl: avatarRemoved.value ? null : user?.avatar,
+                          bytes: avatarDraft.value?.bytes,
+                          size: 40,
+                          iconSize: 20,
+                          showEditBadge: false,
+                        ),
+                        const SizedBox(width: Spacing.sm),
+                        const Icon(SemanticIcons.actionNext),
+                      ],
+                    ),
                     onPress: () => unawaited(editAvatar()),
                   ),
                   FTile(
@@ -225,6 +223,10 @@ class ProfilePage extends HookConsumerWidget {
               _SectionLabel(label: l10n.profileHealthSectionTitle),
               const SizedBox(height: Spacing.sm),
               snapshot.when(
+                // 每次行内提交都会 emit healthContext 主题,快照 provider 因依赖
+                // 变化 reload——重取期间保留既有内容,不让整卡掉回骨架屏闪一下。
+                skipLoadingOnReload: true,
+                skipLoadingOnRefresh: true,
                 data: (ctx) => _HealthProfileCard(
                   profile: ctx.profile,
                   onChanged: () =>
@@ -294,25 +296,54 @@ class _HealthProfileCard extends ConsumerWidget {
     await _submit(context: context, ref: ref, input: buildInput(value));
   }
 
-  /// 文本型单字段 sheet:sheet 自己持有 controller,返回值或 null。
-  Future<void> _editText({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String title,
-    required HealthProfileUpdateInput Function(String value) buildInput,
-    String? hint,
-    String? initialValue,
-    TextInputType? keyboardType,
-  }) async {
-    final value = await showTextEditSheet(
+  /// 出生日期:直接弹出裸日历 sheet,选中日期即弹回并提交,无确认按钮。
+  Future<void> _editBirthDate(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
+    final picked = await showFSheet<DateTime>(
       context: context,
-      title: title,
-      hint: hint,
-      initialValue: initialValue,
-      keyboardType: keyboardType,
+      side: FLayout.btt,
+      useSafeArea: true,
+      builder: (sheetContext) => SheetSurface(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            Spacing.xl,
+            0,
+            Spacing.xl,
+            Spacing.xl,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SheetDragHandle(),
+              Text(
+                l10n.mineEditFieldBirthDate,
+                textAlign: TextAlign.center,
+                style: sheetContext.theme.typography.body.lg.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: Spacing.lg),
+              FCalendar.grid(
+                key: const Key('profile-birthdate-calendar'),
+                selectionControl: FDateSelectionControl.managedSingle(
+                  initial: _tryParseDate(profile.birthDate),
+                  onChange: (value) {
+                    if (value != null) Navigator.pop(sheetContext, value);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
-    if (value == null || !context.mounted) return;
-    await _submit(context: context, ref: ref, input: buildInput(value));
+    if (picked == null || !context.mounted) return;
+    await _submit(
+      context: context,
+      ref: ref,
+      input: HealthProfileUpdateInput(birthDate: _formatDate(picked)),
+    );
   }
 
   @override
@@ -320,6 +351,12 @@ class _HealthProfileCard extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final sex = HealthSexAtBirth.fromValue(profile.sexAtBirth);
     final unit = HealthUnitSystem.fromValue(profile.unitSystem);
+    final imperial = isImperialUnitSystem(profile.unitSystem);
+    final activity = HealthActivityLevel.fromValue(profile.activityLevel);
+    final diets = profile.dietaryPreferences
+        ?.map(HealthDietaryPreference.fromValue)
+        .whereType<HealthDietaryPreference>()
+        .toList();
 
     return FTileGroup(
       physics: const NeverScrollableScrollPhysics(),
@@ -330,148 +367,118 @@ class _HealthProfileCard extends ConsumerWidget {
           title: Text(l10n.mineEditFieldBirthDate),
           details: AppTileValue(profile.birthDate ?? l10n.profileEmptyValue),
           suffix: const Icon(SemanticIcons.actionNext),
-          onPress: () {
-            unawaited(
-              _edit<DateTime>(
-                context: context,
-                ref: ref,
-                title: l10n.mineEditFieldBirthDate,
-                slot: SheetValueSlot<DateTime>(
-                  _tryParseDate(profile.birthDate) ?? DateTime.now(),
-                ),
-                body: (sheetContext, slot) => FDateField.calendar(
-                  key: const Key('profile-birthdate-sheet-field'),
-                  label: Text(l10n.mineEditFieldBirthDate),
-                  selectionControl: FDateSelectionControl.managedSingle(
-                    initial: slot.value,
-                    onChange: (value) {
-                      if (value != null) slot.value = value;
-                    },
-                  ),
-                ),
-                buildInput: (value) =>
-                    HealthProfileUpdateInput(birthDate: _formatDate(value)),
-              ),
-            );
-          },
+          // 直接弹出裸日历 sheet:选中日期即弹回并提交,无确认按钮。
+          onPress: () => unawaited(_editBirthDate(context, ref)),
         ),
-        FTile(
+        FSelectMenuTile<HealthSexAtBirth>(
           key: const Key('profile-sex-row'),
           title: Text(l10n.mineEditFieldSexAtBirth),
           details: AppTileValue(
             sex == null ? l10n.profileEmptyValue : _sexLabel(l10n, sex),
           ),
-          suffix: const Icon(SemanticIcons.actionNext),
-          onPress: () {
-            unawaited(
-              _edit<HealthSexAtBirth>(
-                context: context,
-                ref: ref,
-                title: l10n.mineEditFieldSexAtBirth,
-                slot: SheetValueSlot<HealthSexAtBirth>(
-                  sex ?? HealthSexAtBirth.unknown,
+          selectControl: FMultiValueControl<HealthSexAtBirth>.managedRadio(
+            initial: sex,
+            onChange: (selection) {
+              if (selection.isEmpty) return;
+              unawaited(
+                _submit(
+                  context: context,
+                  ref: ref,
+                  input: HealthProfileUpdateInput(sexAtBirth: selection.first),
                 ),
-                body: (sheetContext, slot) => _EnumSheet<HealthSexAtBirth>(
-                  fieldKey: const Key('profile-sex-sheet-field'),
-                  label: l10n.mineEditFieldSexAtBirth,
-                  hint: l10n.mineEditFieldSexAtBirth,
-                  value: slot.value,
-                  values: HealthSexAtBirth.values,
-                  labelBuilder: (v) => _sexLabel(l10n, v),
-                  onChanged: (v) {
-                    if (v != null) slot.value = v;
-                  },
-                ),
-                buildInput: (value) =>
-                    HealthProfileUpdateInput(sexAtBirth: value),
+              );
+            },
+          ),
+          menu: [
+            for (final value in HealthSexAtBirth.values)
+              FSelectTile<HealthSexAtBirth>(
+                title: Text(_sexLabel(l10n, value)),
+                value: value,
               ),
-            );
-          },
+          ],
         ),
         FTile(
           key: const Key('profile-height-row'),
-          title: Text(l10n.mineEditFieldHeightCm),
-          details: AppTileValue(
-            profile.heightCm == null
-                ? l10n.profileEmptyValue
-                : profile.heightCm!.toStringAsFixed(0),
-          ),
+          title: Text(l10n.profileFieldHeight),
+          details: AppTileValue(_heightLabel(l10n, profile.heightCm, imperial)),
           suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
-              _editText(
+              _edit<double>(
                 context: context,
                 ref: ref,
-                title: l10n.mineEditFieldHeightCm,
-                hint: l10n.profileHeightHint,
-                initialValue: profile.heightCm?.toStringAsFixed(0) ?? '',
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+                title: l10n.profileFieldHeight,
+                slot: SheetValueSlot<double>(profile.heightCm ?? 170),
+                body: (sheetContext, slot) => HeightPickerSheetBody(
+                  slot: slot,
+                  imperial: imperial,
+                  suffixes: imperial
+                      ? [l10n.profileUnitFt, l10n.profileUnitIn]
+                      : [l10n.profileUnitCm],
                 ),
                 buildInput: (value) =>
-                    HealthProfileUpdateInput(heightCm: num.tryParse(value)),
+                    HealthProfileUpdateInput(heightCm: value.round()),
               ),
             );
           },
         ),
         FTile(
           key: const Key('profile-weight-row'),
-          title: Text(l10n.mineEditFieldWeightKg),
+          title: Text(l10n.profileFieldWeight),
+          details: AppTileValue(_weightLabel(l10n, profile.weightKg, imperial)),
+          suffix: const Icon(SemanticIcons.actionNext),
+          onPress: () {
+            unawaited(
+              _edit<double>(
+                context: context,
+                ref: ref,
+                title: l10n.profileFieldWeight,
+                slot: SheetValueSlot<double>(profile.weightKg ?? 65),
+                body: (sheetContext, slot) => WeightPickerSheetBody(
+                  slot: slot,
+                  imperial: imperial,
+                  suffixes: [
+                    imperial ? l10n.profileUnitLb : l10n.profileUnitKg,
+                  ],
+                ),
+                buildInput: (value) =>
+                    HealthProfileUpdateInput(weightKg: value.round()),
+              ),
+            );
+          },
+        ),
+        FSelectMenuTile<HealthActivityLevel>(
+          key: const Key('profile-activity-level-row'),
+          title: Text(l10n.profileFieldActivityLevel),
           details: AppTileValue(
-            profile.weightKg == null
+            activity == null
                 ? l10n.profileEmptyValue
-                : profile.weightKg!.toStringAsFixed(0),
+                : _activityLabel(l10n, activity),
           ),
-          suffix: const Icon(SemanticIcons.actionNext),
-          onPress: () {
-            unawaited(
-              _editText(
-                context: context,
-                ref: ref,
-                title: l10n.mineEditFieldWeightKg,
-                hint: l10n.profileWeightHint,
-                initialValue: profile.weightKg?.toStringAsFixed(0) ?? '',
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+          selectControl: FMultiValueControl<HealthActivityLevel>.managedRadio(
+            initial: activity,
+            onChange: (selection) {
+              if (selection.isEmpty) return;
+              unawaited(
+                _submit(
+                  context: context,
+                  ref: ref,
+                  input: HealthProfileUpdateInput(
+                    activityLevel: selection.first,
+                  ),
                 ),
-                buildInput: (value) =>
-                    HealthProfileUpdateInput(weightKg: num.tryParse(value)),
+              );
+            },
+          ),
+          menu: [
+            for (final value in HealthActivityLevel.values)
+              FSelectTile<HealthActivityLevel>(
+                title: Text(_activityLabel(l10n, value)),
+                value: value,
               ),
-            );
-          },
+          ],
         ),
-        FTile(
-          key: const Key('profile-blood-type-row'),
-          title: Text(l10n.mineEditFieldBloodType),
-          details: AppTileValue(profile.bloodType ?? l10n.profileEmptyValue),
-          suffix: const Icon(SemanticIcons.actionNext),
-          onPress: () {
-            unawaited(
-              _edit<String>(
-                context: context,
-                ref: ref,
-                title: l10n.mineEditFieldBloodType,
-                slot: SheetValueSlot<String>(
-                  profile.bloodType ?? _bloodTypeOptions.first,
-                ),
-                body: (sheetContext, slot) => _EnumSheet<String>(
-                  fieldKey: const Key('profile-blood-type-sheet-field'),
-                  label: l10n.mineEditFieldBloodType,
-                  hint: l10n.profileBloodTypeHint,
-                  value: slot.value,
-                  values: _bloodTypeOptions,
-                  labelBuilder: (v) => v,
-                  onChanged: (v) {
-                    if (v != null) slot.value = v;
-                  },
-                ),
-                buildInput: (value) =>
-                    HealthProfileUpdateInput(bloodType: value),
-              ),
-            );
-          },
-        ),
-        FTile(
+        FSelectMenuTile<HealthUnitSystem>(
           key: const Key('profile-unit-system-row'),
           title: Text(l10n.mineEditFieldUnitSystem),
           details: AppTileValue(
@@ -481,74 +488,52 @@ class _HealthProfileCard extends ConsumerWidget {
                 ? l10n.mineEditUnitSystemMetric
                 : l10n.mineEditUnitSystemImperial,
           ),
-          suffix: const Icon(SemanticIcons.actionNext),
-          onPress: () {
-            unawaited(
-              _edit<HealthUnitSystem>(
-                context: context,
-                ref: ref,
-                title: l10n.mineEditFieldUnitSystem,
-                slot: SheetValueSlot<HealthUnitSystem>(
-                  unit ?? HealthUnitSystem.metric,
+          selectControl: FMultiValueControl<HealthUnitSystem>.managedRadio(
+            initial: unit,
+            onChange: (selection) {
+              if (selection.isEmpty) return;
+              unawaited(
+                _submit(
+                  context: context,
+                  ref: ref,
+                  input: HealthProfileUpdateInput(unitSystem: selection.first),
                 ),
-                body: (sheetContext, slot) => _EnumSheet<HealthUnitSystem>(
-                  fieldKey: const Key('profile-unit-system-sheet-field'),
-                  label: l10n.mineEditFieldUnitSystem,
-                  hint: l10n.mineEditFieldUnitSystemHint,
-                  value: slot.value,
-                  values: HealthUnitSystem.values,
-                  labelBuilder: (v) => v == HealthUnitSystem.metric
+              );
+            },
+          ),
+          menu: [
+            for (final value in HealthUnitSystem.values)
+              FSelectTile<HealthUnitSystem>(
+                // 菜单项右侧标注该单位制对应的度量单位,便于用户按习惯选择。
+                title: Text(
+                  value == HealthUnitSystem.metric
                       ? l10n.mineEditUnitSystemMetric
                       : l10n.mineEditUnitSystemImperial,
-                  onChanged: (v) {
-                    if (v != null) slot.value = v;
-                  },
                 ),
-                buildInput: (value) =>
-                    HealthProfileUpdateInput(unitSystem: value),
+                details: Text(
+                  value == HealthUnitSystem.metric
+                      ? '${l10n.profileUnitCm} · ${l10n.profileUnitKg}'
+                      : '${l10n.profileUnitFt} · ${l10n.profileUnitIn} · '
+                            '${l10n.profileUnitLb}',
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+                value: value,
               ),
-            );
-          },
+          ],
         ),
-        FTile(
-          key: const Key('profile-emergency-name-row'),
-          title: Text(l10n.mineEditFieldEmergencyContactName),
-          details: AppTileValue(
-            profile.emergencyContactName ?? l10n.profileEmptyValue,
-          ),
-          suffix: const Icon(SemanticIcons.actionNext),
-          onPress: () {
+        // 饮食偏好:菜单内连续勾选只更新 pending 集合,菜单收起时一次性提交。
+        _DietaryPreferencesRow(
+          diets: diets,
+          onCommit: (value) {
             unawaited(
-              _editText(
+              _submit(
                 context: context,
                 ref: ref,
-                title: l10n.mineEditFieldEmergencyContactName,
-                hint: l10n.profileEmergencyNameHint,
-                initialValue: profile.emergencyContactName ?? '',
-                buildInput: (value) =>
-                    HealthProfileUpdateInput(emergencyContactName: value),
-              ),
-            );
-          },
-        ),
-        FTile(
-          key: const Key('profile-emergency-phone-row'),
-          title: Text(l10n.mineEditFieldEmergencyContactPhone),
-          details: AppTileValue(
-            profile.emergencyContactPhone ?? l10n.profileEmptyValue,
-          ),
-          suffix: const Icon(SemanticIcons.actionNext),
-          onPress: () {
-            unawaited(
-              _editText(
-                context: context,
-                ref: ref,
-                title: l10n.mineEditFieldEmergencyContactPhone,
-                hint: l10n.profileEmergencyPhoneHint,
-                initialValue: profile.emergencyContactPhone ?? '',
-                keyboardType: TextInputType.phone,
-                buildInput: (value) =>
-                    HealthProfileUpdateInput(emergencyContactPhone: value),
+                input: HealthProfileUpdateInput(
+                  dietaryPreferences: value.toList(),
+                ),
               ),
             );
           },
@@ -558,42 +543,8 @@ class _HealthProfileCard extends ConsumerWidget {
   }
 }
 
-/// 下拉型单字段编辑器。
-class _EnumSheet<T> extends StatelessWidget {
-  const _EnumSheet({
-    required this.fieldKey,
-    required this.label,
-    required this.hint,
-    required this.value,
-    required this.values,
-    required this.labelBuilder,
-    required this.onChanged,
-  });
-
-  final Key fieldKey;
-  final String label;
-  final String hint;
-  final T? value;
-  final List<T> values;
-  final String Function(T value) labelBuilder;
-  final ValueChanged<T?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return FSelect<T>.rich(
-      key: fieldKey,
-      label: Text(label),
-      hint: hint,
-      format: labelBuilder,
-      control: FSelectControl.lifted(value: value, onChange: onChanged),
-      children: values
-          .map((v) => FSelectItem.item(title: Text(labelBuilder(v)), value: v))
-          .toList(),
-    );
-  }
-}
-
-/// 数值单字段编辑器。
+/// 数值/枚举单字段编辑器组件在 `widgets/shared/`（quantity_sheet /
+/// enum_select_sheet）；本页只负责行展示与提交。
 
 String _sexLabel(AppLocalizations l10n, HealthSexAtBirth sex) {
   return switch (sex) {
@@ -602,6 +553,108 @@ String _sexLabel(AppLocalizations l10n, HealthSexAtBirth sex) {
     HealthSexAtBirth.intersex => l10n.mineEditSexAtBirthIntersex,
     HealthSexAtBirth.unknown => l10n.mineEditSexAtBirthUnknown,
   };
+}
+
+String _activityLabel(AppLocalizations l10n, HealthActivityLevel level) {
+  return switch (level) {
+    HealthActivityLevel.sedentary => l10n.profileActivitySedentary,
+    HealthActivityLevel.lightlyActive => l10n.profileActivityLightlyActive,
+    HealthActivityLevel.moderatelyActive =>
+      l10n.profileActivityModeratelyActive,
+    HealthActivityLevel.veryActive => l10n.profileActivityVeryActive,
+    HealthActivityLevel.extremelyActive => l10n.profileActivityExtremelyActive,
+  };
+}
+
+String _dietLabel(AppLocalizations l10n, HealthDietaryPreference pref) {
+  return switch (pref) {
+    HealthDietaryPreference.vegetarian => l10n.profileDietVegetarian,
+    HealthDietaryPreference.vegan => l10n.profileDietVegan,
+    HealthDietaryPreference.lowCarb => l10n.profileDietLowCarb,
+    HealthDietaryPreference.lowSalt => l10n.profileDietLowSalt,
+    HealthDietaryPreference.lowFat => l10n.profileDietLowFat,
+    HealthDietaryPreference.highProtein => l10n.profileDietHighProtein,
+    HealthDietaryPreference.keto => l10n.profileDietKeto,
+    HealthDietaryPreference.halal => l10n.profileDietHalal,
+    HealthDietaryPreference.other => l10n.profileDietOther,
+  };
+}
+
+/// 身高展示:英制 `5'7"`，公制 `170 cm`。
+String _heightLabel(AppLocalizations l10n, double? cm, bool imperial) {
+  if (cm == null) return l10n.profileEmptyValue;
+  if (imperial) {
+    final converted = cmToFeetInches(cm);
+    return '${converted.feet}\'${converted.inches}"';
+  }
+  return '${cm.round()} ${l10n.profileUnitCm}';
+}
+
+/// 体重展示:英制 lb，公制 kg。
+String _weightLabel(AppLocalizations l10n, double? kg, bool imperial) {
+  if (kg == null) return l10n.profileEmptyValue;
+  if (imperial) return '${kgToLb(kg).round()} ${l10n.profileUnitLb}';
+  return '${kg.round()} ${l10n.profileUnitKg}';
+}
+
+/// 饮食偏好行:菜单内连续勾选只累积 pending 集合(勾选期间 cutout 下 details
+/// 原地更新),菜单收起时一次性提交——避免每勾一项就 PATCH + 快照重取一次。
+class _DietaryPreferencesRow extends StatefulWidget with FTileMixin {
+  const _DietaryPreferencesRow({required this.diets, required this.onCommit});
+
+  /// 服务端当前值(null = 未设置)。
+  final List<HealthDietaryPreference>? diets;
+  final ValueChanged<Set<HealthDietaryPreference>> onCommit;
+
+  @override
+  State<_DietaryPreferencesRow> createState() => _DietaryPreferencesRowState();
+}
+
+class _DietaryPreferencesRowState extends State<_DietaryPreferencesRow> {
+  Set<HealthDietaryPreference>? _pending;
+
+  @override
+  void didUpdateWidget(_DietaryPreferencesRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 新快照落地后以服务端现值为准,清掉未决集合。
+    if (widget.diets != oldWidget.diets) {
+      _pending = null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final current = _pending ?? widget.diets;
+    return FSelectMenuTile<HealthDietaryPreference>(
+      key: const Key('profile-dietary-preferences-row'),
+      title: Text(l10n.profileFieldDietaryPreferences),
+      details: AppTileValue(
+        current == null || current.isEmpty
+            ? l10n.profileEmptyValue
+            : current.map((d) => _dietLabel(l10n, d)).join(', '),
+      ),
+      selectControl: FMultiValueControl<HealthDietaryPreference>.managed(
+        initial: widget.diets?.toSet() ?? <HealthDietaryPreference>{},
+        max: 5,
+        onChange: (selection) => setState(() => _pending = Set.of(selection)),
+      ),
+      autoHide: false,
+      menuOnTapHide: () {
+        final pending = _pending;
+        if (pending == null) return;
+        _pending = null;
+        widget.onCommit(pending);
+      },
+      menu: [
+        for (final value in HealthDietaryPreference.values)
+          FSelectTile<HealthDietaryPreference>(
+            title: Text(_dietLabel(l10n, value)),
+            value: value,
+          ),
+      ],
+    );
+  }
 }
 
 DateTime? _tryParseDate(String? value) {

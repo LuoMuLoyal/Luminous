@@ -30,13 +30,11 @@ class UpdateUserHealthContextProfileRequest {
 
     this.heightCm,
 
-    this.bloodType,
+    this.activityLevel,
+
+    this.dietaryPreferences,
 
     this.weightKg,
-
-    this.emergencyContactName,
-
-    this.emergencyContactPhone,
 
     this.onboardingCompleted,
   });
@@ -79,27 +77,26 @@ class UpdateUserHealthContextProfileRequest {
   @JsonKey(name: r'heightCm', required: false, includeIfNull: false)
   final int? heightCm;
 
-  /// Blood type. Use null to clear.
-  @JsonKey(name: r'bloodType', required: false, includeIfNull: false)
-  final String? bloodType;
+  /// Self-reported activity level. Use null to clear.
+  @JsonKey(
+    name: r'activityLevel',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue: UpdateUserHealthContextProfileRequestActivityLevelEnum
+        .unknownDefaultOpenApi,
+  )
+  final UpdateUserHealthContextProfileRequestActivityLevelEnum? activityLevel;
+
+  /// Dietary preferences. Stored in extras JSONB. Use null to clear.
+  @JsonKey(name: r'dietaryPreferences', required: false, includeIfNull: false)
+  final List<UpdateUserHealthContextProfileRequestDietaryPreferencesEnum>?
+  dietaryPreferences;
 
   /// Weight in kilograms. Stored in extras JSONB. Use null to clear.
   // minimum: 1
   // maximum: 500
   @JsonKey(name: r'weightKg', required: false, includeIfNull: false)
   final int? weightKg;
-
-  /// Emergency contact name. Stored in extras JSONB. Use null or empty string to clear.
-  @JsonKey(name: r'emergencyContactName', required: false, includeIfNull: false)
-  final String? emergencyContactName;
-
-  /// Emergency contact phone. Stored in extras JSONB. Use null or empty string to clear.
-  @JsonKey(
-    name: r'emergencyContactPhone',
-    required: false,
-    includeIfNull: false,
-  )
-  final String? emergencyContactPhone;
 
   /// Set true to complete onboarding (sets completedAt when missing). Set false to clear onboarding completion.
   @JsonKey(name: r'onboardingCompleted', required: false, includeIfNull: false)
@@ -115,10 +112,9 @@ class UpdateUserHealthContextProfileRequest {
           other.birthDate == birthDate &&
           other.sexAtBirth == sexAtBirth &&
           other.heightCm == heightCm &&
-          other.bloodType == bloodType &&
+          other.activityLevel == activityLevel &&
+          other.dietaryPreferences == dietaryPreferences &&
           other.weightKg == weightKg &&
-          other.emergencyContactName == emergencyContactName &&
-          other.emergencyContactPhone == emergencyContactPhone &&
           other.onboardingCompleted == onboardingCompleted;
 
   @override
@@ -129,10 +125,9 @@ class UpdateUserHealthContextProfileRequest {
       (birthDate == null ? 0 : birthDate.hashCode) +
       (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
       (heightCm == null ? 0 : heightCm.hashCode) +
-      (bloodType == null ? 0 : bloodType.hashCode) +
+      (activityLevel == null ? 0 : activityLevel.hashCode) +
+      (dietaryPreferences == null ? 0 : dietaryPreferences.hashCode) +
       (weightKg == null ? 0 : weightKg.hashCode) +
-      (emergencyContactName == null ? 0 : emergencyContactName.hashCode) +
-      (emergencyContactPhone == null ? 0 : emergencyContactPhone.hashCode) +
       onboardingCompleted.hashCode;
 
   factory UpdateUserHealthContextProfileRequest.fromJson(
@@ -179,6 +174,59 @@ enum UpdateUserHealthContextProfileRequestSexAtBirthEnum {
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
   const UpdateUserHealthContextProfileRequestSexAtBirthEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+/// Self-reported activity level. Use null to clear.
+enum UpdateUserHealthContextProfileRequestActivityLevelEnum {
+  @JsonValue(r'sedentary')
+  sedentary(r'sedentary'),
+  @JsonValue(r'lightlyActive')
+  lightlyActive(r'lightlyActive'),
+  @JsonValue(r'moderatelyActive')
+  moderatelyActive(r'moderatelyActive'),
+  @JsonValue(r'veryActive')
+  veryActive(r'veryActive'),
+  @JsonValue(r'extremelyActive')
+  extremelyActive(r'extremelyActive'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const UpdateUserHealthContextProfileRequestActivityLevelEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+enum UpdateUserHealthContextProfileRequestDietaryPreferencesEnum {
+  @JsonValue(r'vegetarian')
+  vegetarian(r'vegetarian'),
+  @JsonValue(r'vegan')
+  vegan(r'vegan'),
+  @JsonValue(r'lowCarb')
+  lowCarb(r'lowCarb'),
+  @JsonValue(r'lowSalt')
+  lowSalt(r'lowSalt'),
+  @JsonValue(r'lowFat')
+  lowFat(r'lowFat'),
+  @JsonValue(r'highProtein')
+  highProtein(r'highProtein'),
+  @JsonValue(r'keto')
+  keto(r'keto'),
+  @JsonValue(r'halal')
+  halal(r'halal'),
+  @JsonValue(r'other')
+  other(r'other'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const UpdateUserHealthContextProfileRequestDietaryPreferencesEnum(this.value);
 
   final String value;
 
