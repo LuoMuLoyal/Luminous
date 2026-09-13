@@ -343,13 +343,22 @@ class _EmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.only(top: Spacing.xl6),
-      child: StateMessageView(
-        title: l10n.notificationEmptyTitle,
-        description: l10n.notificationEmptyDescription,
-        icon: SemanticIcons.actionMessage,
-        tone: StateTone.neutral,
+    // 页面级空态直接铺在页面背景上(不套白色圆角卡片),与列表分支同一响应式留白;
+    // ResponsiveContentFrame 内部是 Center,这里显式顶对齐,空态不会被推到页面中部。
+    return ResponsiveContentFrame(
+      expand: true,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(top: Spacing.xl6),
+          child: StateMessageView(
+            title: l10n.notificationEmptyTitle,
+            description: l10n.notificationEmptyDescription,
+            icon: SemanticIcons.actionMessage,
+            tone: StateTone.neutral,
+            card: false,
+          ),
+        ),
       ),
     );
   }

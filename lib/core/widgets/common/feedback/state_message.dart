@@ -17,6 +17,8 @@ enum StateTone { neutral, success, warning, danger }
 /// Wrapped in [FCard] by default, with icon, title, and description vertically
 /// centered, and an optional outline button.
 /// Use [maxWidth] to constrain the card width, commonly used for centered popup-style prompts.
+/// Use `card: false` for page-level empty states that should sit directly on the
+/// page background instead of on a white card surface.
 class StateMessageView extends StatelessWidget {
   const StateMessageView({
     super.key,
@@ -29,6 +31,7 @@ class StateMessageView extends StatelessWidget {
     this.tone = StateTone.neutral,
     this.padding = const EdgeInsets.all(Spacing.xl),
     this.maxWidth,
+    this.card = true,
   });
 
   final String title;
@@ -43,6 +46,9 @@ class StateMessageView extends StatelessWidget {
   /// 若提供，则在外层套 [Center] + [ConstrainedBox] 限制最大宽度。
   final double? maxWidth;
 
+  /// 是否包一层 [FCard] 白色卡片面。默认 `true`。
+  final bool card;
+
   @override
   Widget build(BuildContext context) {
     final accent = switch (tone) {
@@ -53,53 +59,54 @@ class StateMessageView extends StatelessWidget {
     };
     final typography = context.theme.typography;
 
-    Widget message = FCard(
-      child: Padding(
-        padding: padding,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: accent.muted(context),
-                  shape: BoxShape.circle,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(Spacing.lg),
-                  child: Icon(icon, color: accent.solid(context), size: 28),
-                ),
-              ),
-              const SizedBox(height: Spacing.lg),
-              Text(
-                title,
-                style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-              ),
-              if (description != null) ...[
-                const SizedBox(height: Spacing.sm),
-                Text(
-                  description!,
-                  style: typography.body.sm.copyWith(
-                    color: SemanticColor.neutral.solid(context),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-              if (actionLabel != null && onAction != null) ...[
-                const SizedBox(height: Spacing.xl),
-                FButton(
-                  key: actionKey,
-                  onPress: onAction,
-                  variant: FButtonVariant.outline,
-                  child: Text(actionLabel!),
-                ),
-              ],
-            ],
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: accent.muted(context),
+            shape: BoxShape.circle,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.lg),
+            child: Icon(icon, color: accent.solid(context), size: 28),
           ),
         ),
-      ),
+        const SizedBox(height: Spacing.lg),
+        Text(
+          title,
+          style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
+          textAlign: TextAlign.center,
+        ),
+        if (description != null) ...[
+          const SizedBox(height: Spacing.sm),
+          Text(
+            description!,
+            style: typography.body.sm.copyWith(
+              color: SemanticColor.neutral.solid(context),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+        if (actionLabel != null && onAction != null) ...[
+          const SizedBox(height: Spacing.xl),
+          FButton(
+            key: actionKey,
+            onPress: onAction,
+            variant: FButtonVariant.outline,
+            child: Text(actionLabel!),
+          ),
+        ],
+      ],
     );
+
+    // 卡片面里用滚动视口收口(卡片高度有界);无卡片时直接铺开,避免纵向
+    // 滚动视口在有界高度里把内容区拉满整屏。
+    final body = Padding(
+      padding: padding,
+      child: card ? SingleChildScrollView(child: content) : content,
+    );
+    Widget message = card ? FCard(child: body) : body;
 
     if (maxWidth != null) {
       message = Center(

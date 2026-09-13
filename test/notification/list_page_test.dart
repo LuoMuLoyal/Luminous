@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/pages/list.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
@@ -42,6 +44,12 @@ void main() {
 
     expect(find.text(l10n.notificationEmptyTitle), findsOneWidget);
     expect(find.text(l10n.notificationEmptyDescription), findsOneWidget);
+    // 空态直接铺在页面背景上:不再套白色卡片面(FCard 会缩到内容宽并撑满可用高度)。
+    expect(find.byType(FCard), findsNothing);
+    // 且必须顶对齐:ResponsiveContentFrame 内部是 Center,漏掉顶对齐会把空态推到页面中部。
+    final icon = tester.getRect(find.byIcon(SemanticIcons.actionMessage));
+    final page = tester.getRect(find.byType(NotificationListPage));
+    expect(icon.center.dy, lessThan(page.height / 3));
   });
 
   testWidgets('NotificationListPage shows items', (tester) async {

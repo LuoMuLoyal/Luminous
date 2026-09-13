@@ -130,7 +130,7 @@ updated: 2026-09-13
 ## 反馈与通用组件
 
 - `Toast` 从 Forui theme 值解析颜色与图标处理，不依赖旧兼容主题层。
-- `StateMessageView`（`lib/core/widgets/common/feedback/state_message.dart`）的 `description` 参数为可选——仅需标题+图标的空态/错误态（如帮助页）不传重复描述文案。
+- `StateMessageView`（`lib/core/widgets/common/feedback/state_message.dart`）的 `description` 参数为可选——仅需标题+图标的空态/错误态（如帮助页）不传重复描述文案。页面级空态传 `card: false`：默认的 `FCard` 面在页面级布局里会缩到内容宽度(约页面 1/3)并因内部纵向滚动视口撑满可用高度，形成「盖在页面背景上的白色圆角矩形」；`card: false` 时内容直接铺在页面背景上，且不再套纵向滚动视口。
 - `StateErrorView`（同文件）通过 `LayoutBuilder` 检测父级是否有界高度：无界时 fallback 到 `SizedBox(height: 320)`，使 `SingleChildScrollView` 在 `SliverList` 或无 `Scaffold` 的测试环境中不会因 `Viewport` 获得无界高度而崩溃。
 - `_LoadingTimeoutWrapper`（`lib/core/widgets/common/feedback/page_state.dart`）同样以 `LayoutBuilder` 检测：有界高度时用 `Expanded` 填充，无界高度时用 `mainAxisSize: MainAxisSize.min` 不强制 `Expanded`，避免子 widget 的 `Expanded` 在无界 `Column` 中触发 `RenderFlex` 异常。
 - `resolvePageViewState`（同文件）直接按数据状态解析 loading/error/ready——**不再** 在 session restore 期间无条件返回 `PageViewStateLoading`。结合 `authGuarded` 的离线优先（restore 期间有 stored session 则走 cache-first fetch），有本地缓存数据的 provider 在冷启动时直接展示数据而非骨架屏（2026-09-10 修订）。
