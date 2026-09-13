@@ -9,8 +9,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
-import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/core/widgets/common/control/value_row.dart';
+import 'package:luminous/core/widgets/common/control/tile_value.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -37,30 +36,6 @@ class AccountManageLoading extends StatelessWidget {
       InlineSkeletonBlock(height: 116),
     ],
   );
-}
-
-/// 账号页的分组块：内容区用**纯白**，页面背景是 #FAFAFA 灰白，靠这个色差把分组浮起来。
-///
-/// 不画外边框；分隔线只出现在组内行与行之间。
-class _AccountValueCard extends StatelessWidget {
-  const _AccountValueCard({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
-      decoration: BoxDecoration(
-        color: context.theme.colors.card,
-        borderRadius: context.theme.style.borderRadius.lg,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
-      ),
-    );
-  }
 }
 
 /// 账号管理主列表
@@ -110,51 +85,58 @@ class AccountManageSection extends ConsumerWidget {
         // 账号信息分组
         SettingsSectionLabel(label: l10n.authAccountManageSectionAccount),
         SizedBox(height: context.titleContentGap),
-        _AccountValueCard(
+        FTileGroup(
+          physics: const NeverScrollableScrollPhysics(),
+          divider: FItemDivider.full,
           children: [
-            AppValueRow(
+            FTile(
               key: const Key('account-avatar-row'),
-              label: l10n.profileAvatarRowTitle,
-              value: '',
-              onPress: onEditProfile,
-              leading: AvatarView(
+              prefix: AvatarView(
                 avatarUrl: user.avatar,
                 size: 40,
                 iconSize: 20,
                 semanticLabel: l10n.profileAvatarLabel,
               ),
-            ),
-            const AppDivider(),
-            AppValueRow(
-              key: const Key('account-nickname-row'),
-              label: l10n.profileNicknameLabel,
-              value: user.nickname?.trim().isNotEmpty == true
-                  ? user.nickname!.trim()
-                  : l10n.authAccountManageUsernameNotSet,
-              isPlaceholder: user.nickname?.trim().isNotEmpty != true,
+              title: Text(l10n.profileAvatarRowTitle),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: onEditProfile,
             ),
-            const AppDivider(),
-            AppValueRow(
+            FTile(
+              key: const Key('account-nickname-row'),
+              title: Text(l10n.profileNicknameLabel),
+              details: AppTileValue(
+                user.nickname?.trim().isNotEmpty == true
+                    ? user.nickname!.trim()
+                    : l10n.authAccountManageUsernameNotSet,
+              ),
+              suffix: const Icon(SemanticIcons.actionNext),
+              onPress: onEditProfile,
+            ),
+            FTile(
               key: const Key('account-email-row'),
-              label: l10n.authAccountManageEmail,
-              value: user.email ?? l10n.authEmailMissing,
-              isPlaceholder: user.email == null,
-              onPress: onChangeEmail,
-              trailing: user.emailVerifiedAt != null
-                  ? Icon(
+              title: Text(l10n.authAccountManageEmail),
+              details: AppTileValue(user.email ?? l10n.authEmailMissing),
+              suffix: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (user.emailVerifiedAt != null) ...[
+                    Icon(
                       SemanticIcons.statusSuccess,
                       size: IconSizeTokens.md,
                       color: SemanticColor.success.solid(context),
-                    )
-                  : null,
+                    ),
+                    const SizedBox(width: Spacing.sm),
+                  ],
+                  const Icon(SemanticIcons.actionNext),
+                ],
+              ),
+              onPress: onChangeEmail,
             ),
-            const AppDivider(),
-            AppValueRow(
+            FTile(
               key: const Key('account-third-party-row'),
-              label: l10n.authAccountManageThirdParty,
-              value: _getThirdPartySubtitle(user, l10n),
-              isPlaceholder: user.linkedIdentities.isEmpty,
+              title: Text(l10n.authAccountManageThirdParty),
+              details: AppTileValue(_getThirdPartySubtitle(user, l10n)),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => _showThirdPartyDialog(context, ref),
             ),
           ],
@@ -164,36 +146,43 @@ class AccountManageSection extends ConsumerWidget {
         // 账号安全分组
         SettingsSectionLabel(label: l10n.authAccountManageSectionSecurity),
         SizedBox(height: context.titleContentGap),
-        _AccountValueCard(
+        FTileGroup(
+          physics: const NeverScrollableScrollPhysics(),
+          divider: FItemDivider.full,
           children: [
-            AppValueRow(
+            FTile(
               key: const Key('account-password-row'),
-              label: l10n.authAccountManagePassword,
-              value: user.hasPassword
-                  ? l10n.authAccountManagePasswordSet
-                  : l10n.authAccountManagePasswordNotSet,
+              title: Text(l10n.authAccountManagePassword),
+              details: AppTileValue(
+                user.hasPassword
+                    ? l10n.authAccountManagePasswordSet
+                    : l10n.authAccountManagePasswordNotSet,
+              ),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => _showPasswordDialog(context, ref),
             ),
-            const AppDivider(),
-            AppValueRow(
+            FTile(
               key: const Key('account-devices-row'),
-              label: l10n.authAccountManageLoginDevices,
-              value: l10n.authSessionsSectionSubtitle,
+              title: Text(l10n.authAccountManageLoginDevices),
+              details: AppTileValue(l10n.authSessionsSectionSubtitle),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: onManageSessions,
             ),
-            const AppDivider(),
-            AppValueRow(
+            FTile(
               key: const Key('account-security-center-row'),
-              label: l10n.authAccountManageSecurityCenter,
-              value: l10n.authAccountManageSecurityCenterSubtitle,
+              title: Text(l10n.authAccountManageSecurityCenter),
+              details: AppTileValue(
+                l10n.authAccountManageSecurityCenterSubtitle,
+              ),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: onManageSecurityCenter,
             ),
-            const AppDivider(),
-            AppValueRow(
+            FTile(
               key: const Key('account-delete-row'),
-              label: l10n.authAccountManageDeleteAccount,
-              value: l10n.authDeleteAccountSectionDescription,
-              labelColor: SemanticColor.destructive.solid(context),
+              variant: FItemVariant.destructive,
+              title: Text(l10n.authAccountManageDeleteAccount),
+              details: AppTileValue(l10n.authDeleteAccountSectionDescription),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => _showDeleteAccountDialog(context, ref),
             ),
           ],

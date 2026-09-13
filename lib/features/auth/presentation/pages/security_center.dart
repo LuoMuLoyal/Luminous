@@ -10,8 +10,7 @@ import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
-import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/core/widgets/common/control/value_row.dart';
+import 'package:luminous/core/widgets/common/control/tile_value.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_identity.dart';
@@ -30,49 +29,38 @@ class _AccountOverviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
-      decoration: BoxDecoration(
-        color: context.theme.colors.card,
-        borderRadius: context.theme.style.borderRadius.lg,
-        border: Border.all(
-          color: SemanticColor.neutral.border(context),
-          width: context.theme.style.borderWidth,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AppValueRow(
-            key: const Key('security-center-avatar-row'),
-            label: l10n.profileAvatarRowTitle,
-            value: '',
-            onPress: () => context.push(Routes.profile),
-            leading: AvatarView(
-              avatarUrl: user.avatar,
-              size: 40,
-              iconSize: 20,
-              semanticLabel: l10n.profileAvatarLabel,
-            ),
+    return FTileGroup(
+      physics: const NeverScrollableScrollPhysics(),
+      divider: FItemDivider.full,
+      children: [
+        FTile(
+          key: const Key('security-center-avatar-row'),
+          prefix: AvatarView(
+            avatarUrl: user.avatar,
+            size: 40,
+            iconSize: 20,
+            semanticLabel: l10n.profileAvatarLabel,
           ),
-          const AppDivider(),
-          AppValueRow(
-            key: const Key('security-center-nickname-row'),
-            label: l10n.profileNicknameLabel,
-            value: user.nickname?.trim().isNotEmpty == true
+          title: Text(l10n.profileAvatarRowTitle),
+          suffix: const Icon(SemanticIcons.actionNext),
+          onPress: () => context.push(Routes.profile),
+        ),
+        FTile(
+          key: const Key('security-center-nickname-row'),
+          title: Text(l10n.profileNicknameLabel),
+          details: AppTileValue(
+            user.nickname?.trim().isNotEmpty == true
                 ? user.nickname!.trim()
                 : l10n.profileEmptyValue,
-            isPlaceholder: user.nickname?.trim().isNotEmpty != true,
-            onPress: () => context.push(Routes.profile),
           ),
-          const AppDivider(),
-          AppValueRow(
-            label: l10n.authAccountManageEmail,
-            value: user.email ?? l10n.authEmailMissing,
-            isPlaceholder: user.email == null,
-          ),
-        ],
-      ),
+          suffix: const Icon(SemanticIcons.actionNext),
+          onPress: () => context.push(Routes.profile),
+        ),
+        FTile(
+          title: Text(l10n.authAccountManageEmail),
+          details: AppTileValue(user.email ?? l10n.authEmailMissing),
+        ),
+      ],
     );
   }
 }

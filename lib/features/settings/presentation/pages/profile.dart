@@ -15,8 +15,7 @@ import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_draft.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_viewer.dart';
-import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/core/widgets/common/control/value_row.dart';
+import 'package:luminous/core/widgets/common/control/tile_value.dart';
 import 'package:luminous/core/widgets/common/dialog/edit_sheet.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -169,47 +168,55 @@ class ProfilePage extends HookConsumerWidget {
             children: [
               _SectionLabel(label: l10n.profileUserSectionTitle),
               const SizedBox(height: Spacing.sm),
-              _ValueCard(
+              FTileGroup(
+                physics: const NeverScrollableScrollPhysics(),
+                divider: FItemDivider.full,
                 children: [
-                  AppValueRow(
+                  FTile(
                     key: const Key('profile-avatar-row'),
-                    label: l10n.profileAvatarRowTitle,
-                    value: '',
-                    onPress: () => unawaited(editAvatar()),
-                    leading: AvatarActionView(
+                    prefix: AvatarActionView(
                       avatarUrl: avatarRemoved.value ? null : user?.avatar,
                       bytes: avatarDraft.value?.bytes,
                       size: 40,
                       iconSize: 20,
                       showEditBadge: false,
                     ),
+                    title: Text(l10n.profileAvatarRowTitle),
+                    suffix: const Icon(SemanticIcons.actionNext),
+                    onPress: () => unawaited(editAvatar()),
                   ),
-                  const AppDivider(),
-                  AppValueRow(
+                  FTile(
                     key: const Key('profile-nickname-row'),
-                    label: l10n.profileNicknameLabel,
-                    value: user?.nickname?.trim().isNotEmpty == true
-                        ? user!.nickname!.trim()
-                        : l10n.profileEmptyValue,
-                    isPlaceholder: user?.nickname?.trim().isNotEmpty != true,
+                    title: Text(l10n.profileNicknameLabel),
+                    details: AppTileValue(
+                      user?.nickname?.trim().isNotEmpty == true
+                          ? user!.nickname!.trim()
+                          : l10n.profileEmptyValue,
+                    ),
+                    suffix: const Icon(SemanticIcons.actionNext),
                     onPress: () => unawaited(editNickname()),
                   ),
-                  const AppDivider(),
-                  AppValueRow(
+                  FTile(
                     key: const Key('profile-email-row'),
-                    label: l10n.authAccountManageEmail,
-                    value: user?.email ?? l10n.authEmailMissing,
-                    isPlaceholder: user?.email == null,
+                    title: Text(l10n.authAccountManageEmail),
+                    details: AppTileValue(user?.email ?? l10n.authEmailMissing),
                     // 邮箱走改邮箱页(验证码 + 密码),不是就地编辑。
-                    onPress: () =>
-                        unawaited(context.push(Routes.accountChangeEmail)),
-                    trailing: user?.emailVerifiedAt != null
-                        ? Icon(
+                    suffix: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (user?.emailVerifiedAt != null) ...[
+                          Icon(
                             SemanticIcons.statusSuccess,
                             size: IconSizeTokens.md,
                             color: SemanticColor.success.solid(context),
-                          )
-                        : null,
+                          ),
+                          const SizedBox(width: Spacing.sm),
+                        ],
+                        const Icon(SemanticIcons.actionNext),
+                      ],
+                    ),
+                    onPress: () =>
+                        unawaited(context.push(Routes.accountChangeEmail)),
                   ),
                 ],
               ),
@@ -314,13 +321,15 @@ class _HealthProfileCard extends ConsumerWidget {
     final sex = HealthSexAtBirth.fromValue(profile.sexAtBirth);
     final unit = HealthUnitSystem.fromValue(profile.unitSystem);
 
-    return _ValueCard(
+    return FTileGroup(
+      physics: const NeverScrollableScrollPhysics(),
+      divider: FItemDivider.full,
       children: [
-        AppValueRow(
+        FTile(
           key: const Key('profile-birthdate-row'),
-          label: l10n.mineEditFieldBirthDate,
-          value: profile.birthDate ?? l10n.profileEmptyValue,
-          isPlaceholder: profile.birthDate == null,
+          title: Text(l10n.mineEditFieldBirthDate),
+          details: AppTileValue(profile.birthDate ?? l10n.profileEmptyValue),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
               _edit<DateTime>(
@@ -346,12 +355,13 @@ class _HealthProfileCard extends ConsumerWidget {
             );
           },
         ),
-        const AppDivider(),
-        AppValueRow(
+        FTile(
           key: const Key('profile-sex-row'),
-          label: l10n.mineEditFieldSexAtBirth,
-          value: sex == null ? l10n.profileEmptyValue : _sexLabel(l10n, sex),
-          isPlaceholder: sex == null,
+          title: Text(l10n.mineEditFieldSexAtBirth),
+          details: AppTileValue(
+            sex == null ? l10n.profileEmptyValue : _sexLabel(l10n, sex),
+          ),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
               _edit<HealthSexAtBirth>(
@@ -378,14 +388,15 @@ class _HealthProfileCard extends ConsumerWidget {
             );
           },
         ),
-        const AppDivider(),
-        AppValueRow(
+        FTile(
           key: const Key('profile-height-row'),
-          label: l10n.mineEditFieldHeightCm,
-          value: profile.heightCm == null
-              ? l10n.profileEmptyValue
-              : profile.heightCm!.toStringAsFixed(0),
-          isPlaceholder: profile.heightCm == null,
+          title: Text(l10n.mineEditFieldHeightCm),
+          details: AppTileValue(
+            profile.heightCm == null
+                ? l10n.profileEmptyValue
+                : profile.heightCm!.toStringAsFixed(0),
+          ),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
               _editText(
@@ -403,14 +414,15 @@ class _HealthProfileCard extends ConsumerWidget {
             );
           },
         ),
-        const AppDivider(),
-        AppValueRow(
+        FTile(
           key: const Key('profile-weight-row'),
-          label: l10n.mineEditFieldWeightKg,
-          value: profile.weightKg == null
-              ? l10n.profileEmptyValue
-              : profile.weightKg!.toStringAsFixed(0),
-          isPlaceholder: profile.weightKg == null,
+          title: Text(l10n.mineEditFieldWeightKg),
+          details: AppTileValue(
+            profile.weightKg == null
+                ? l10n.profileEmptyValue
+                : profile.weightKg!.toStringAsFixed(0),
+          ),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
               _editText(
@@ -428,12 +440,11 @@ class _HealthProfileCard extends ConsumerWidget {
             );
           },
         ),
-        const AppDivider(),
-        AppValueRow(
+        FTile(
           key: const Key('profile-blood-type-row'),
-          label: l10n.mineEditFieldBloodType,
-          value: profile.bloodType ?? l10n.profileEmptyValue,
-          isPlaceholder: profile.bloodType == null,
+          title: Text(l10n.mineEditFieldBloodType),
+          details: AppTileValue(profile.bloodType ?? l10n.profileEmptyValue),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
               _edit<String>(
@@ -460,16 +471,17 @@ class _HealthProfileCard extends ConsumerWidget {
             );
           },
         ),
-        const AppDivider(),
-        AppValueRow(
+        FTile(
           key: const Key('profile-unit-system-row'),
-          label: l10n.mineEditFieldUnitSystem,
-          value: unit == null
-              ? l10n.profileEmptyValue
-              : unit == HealthUnitSystem.metric
-              ? l10n.mineEditUnitSystemMetric
-              : l10n.mineEditUnitSystemImperial,
-          isPlaceholder: unit == null,
+          title: Text(l10n.mineEditFieldUnitSystem),
+          details: AppTileValue(
+            unit == null
+                ? l10n.profileEmptyValue
+                : unit == HealthUnitSystem.metric
+                ? l10n.mineEditUnitSystemMetric
+                : l10n.mineEditUnitSystemImperial,
+          ),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
               _edit<HealthUnitSystem>(
@@ -498,12 +510,13 @@ class _HealthProfileCard extends ConsumerWidget {
             );
           },
         ),
-        const AppDivider(),
-        AppValueRow(
+        FTile(
           key: const Key('profile-emergency-name-row'),
-          label: l10n.mineEditFieldEmergencyContactName,
-          value: profile.emergencyContactName ?? l10n.profileEmptyValue,
-          isPlaceholder: profile.emergencyContactName == null,
+          title: Text(l10n.mineEditFieldEmergencyContactName),
+          details: AppTileValue(
+            profile.emergencyContactName ?? l10n.profileEmptyValue,
+          ),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
               _editText(
@@ -518,12 +531,13 @@ class _HealthProfileCard extends ConsumerWidget {
             );
           },
         ),
-        const AppDivider(),
-        AppValueRow(
+        FTile(
           key: const Key('profile-emergency-phone-row'),
-          label: l10n.mineEditFieldEmergencyContactPhone,
-          value: profile.emergencyContactPhone ?? l10n.profileEmptyValue,
-          isPlaceholder: profile.emergencyContactPhone == null,
+          title: Text(l10n.mineEditFieldEmergencyContactPhone),
+          details: AppTileValue(
+            profile.emergencyContactPhone ?? l10n.profileEmptyValue,
+          ),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () {
             unawaited(
               _editText(
@@ -616,30 +630,6 @@ class _SectionLabel extends StatelessWidget {
         style: context.theme.typography.body.md.copyWith(
           fontWeight: FontWeight.w700,
         ),
-      ),
-    );
-  }
-}
-
-/// 分组块:内容区用**纯白**,页面背景是 #FAFAFA 灰白,靠这个色差把分组浮起来。
-///
-/// 不画外边框;分隔线只出现在组内行与行之间。
-class _ValueCard extends StatelessWidget {
-  const _ValueCard({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
-      decoration: BoxDecoration(
-        color: context.theme.colors.card,
-        borderRadius: context.theme.style.borderRadius.lg,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
       ),
     );
   }
