@@ -9,11 +9,11 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/control/back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/pages/account_manage_helpers.dart';
 import 'package:luminous/features/auth/presentation/pages/account_manage_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AccountManagePage extends HookConsumerWidget {
@@ -99,50 +99,59 @@ class AccountManagePage extends HookConsumerWidget {
       });
     }
 
-    return AuthShell(
+    return PageScaffold(
       title: l10n.authAccountManageFormTitle,
-      leading: const AppBackButton(),
-      centerTitle: true,
-      // 页面自己按分组铺纯白内容块，不再套一层白色卡片。
-      formPanel: false,
-      form: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (resolvingSession) ...[
-            const AccountManageLoading(),
-          ] else if (signedOut) ...[
-            AuthRequiredDialogGate(
-              onLogin: () =>
-                  context.push(loginRouteForCurrentLocation(context)),
+      child: SingleChildScrollView(
+        child: ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.xl2
+                  : Spacing.xl3,
             ),
-          ] else ...[
-            // 账号管理列表（头像与昵称在个人信息页，这里只列出可管理项）
-            AccountManageSection(
-              user: user,
-              l10n: l10n,
-              accountState: accountState,
-              accountNotifier: accountNotifier,
-              emailController: emailController,
-              nicknameController: nicknameController,
-              oldPasswordController: oldPasswordController,
-              newPasswordController: newPasswordController,
-              deletePasswordController: deletePasswordController,
-              deleteCodeController: deleteCodeController,
-              onEditProfile: () => context.push(Routes.profile),
-              onVerifyEmail: () =>
-                  verifyEmailFlow(context, l10n, ref, user.email!),
-              onChangeEmail: () => context.push(Routes.accountChangeEmail),
-              onManageSessions: () => context.push(Routes.accountSessions),
-              onManageSecurityCenter: () =>
-                  context.push(Routes.accountSecurityCenter),
-            ),
-            const SizedBox(height: Spacing.xl2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (resolvingSession) ...[
+                  const AccountManageLoading(),
+                ] else if (signedOut) ...[
+                  AuthRequiredDialogGate(
+                    onLogin: () =>
+                        context.push(loginRouteForCurrentLocation(context)),
+                  ),
+                ] else ...[
+                  // 账号管理列表（头像与昵称在个人信息页，这里只列出可管理项）
+                  AccountManageSection(
+                    user: user,
+                    l10n: l10n,
+                    accountState: accountState,
+                    accountNotifier: accountNotifier,
+                    emailController: emailController,
+                    nicknameController: nicknameController,
+                    oldPasswordController: oldPasswordController,
+                    newPasswordController: newPasswordController,
+                    deletePasswordController: deletePasswordController,
+                    deleteCodeController: deleteCodeController,
+                    onEditProfile: () => context.push(Routes.profile),
+                    onVerifyEmail: () =>
+                        verifyEmailFlow(context, l10n, ref, user.email!),
+                    onChangeEmail: () =>
+                        context.push(Routes.accountChangeEmail),
+                    onManageSessions: () =>
+                        context.push(Routes.accountSessions),
+                    onManageSecurityCenter: () =>
+                        context.push(Routes.accountSecurityCenter),
+                  ),
+                  const SizedBox(height: Spacing.xl2),
 
-            // 底部服务入口
-            const SupportLinksSection(),
-          ],
-        ],
+                  // 底部服务入口
+                  const SupportLinksSection(),
+                ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

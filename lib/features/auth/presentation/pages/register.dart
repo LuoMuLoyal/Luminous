@@ -9,9 +9,10 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/register.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -33,209 +34,257 @@ class RegisterPage extends HookConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final typography = context.theme.typography;
 
-    return AuthShell(
+    return PageScaffold(
       title: l10n.authCreateAccountAction,
-      subtitle: l10n.authRegisterSubtitle,
-      logo: const AuthBrandLogo(),
       leading: const AppBackButton(fallbackRoute: Routes.home),
-      centerTitle: true,
-      form: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FTextFormField.email(
-              control: FTextFieldControl.managed(controller: emailController),
-              label: Text(l10n.authEmailLabel),
-              hint: l10n.authEmailHint,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => EmailInput.validate(
-                value,
-                requiredMessage: l10n.authEmailRequiredError,
-                invalidMessage: l10n.authEmailInvalidError,
-              ),
+      child: SingleChildScrollView(
+        child: ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.xl2
+                  : Spacing.xl3,
             ),
-            const SizedBox(height: Spacing.lg),
-            VerificationCodeField(
-              controller: codeController,
-              label: l10n.authCodeLabel,
-              hint: l10n.authCodeLabel,
-              buttonLabel: state.cooldownSeconds == null
-                  ? l10n.authSendCode
-                  : l10n.authSendCodeAgain(state.cooldownSeconds!),
-              isLoading: state.isSendingCode,
-              validator: (value) =>
-                  RequiredInput.validate(value, l10n.authCodeRequiredError),
-              onSendCode:
-                  (state.cooldownSeconds != null && state.cooldownSeconds! > 0)
-                  ? null
-                  : () async {
-                      final emailError = EmailInput.validate(
-                        emailController.text,
-                        requiredMessage: l10n.authEmailRequiredError,
-                        invalidMessage: l10n.authEmailInvalidError,
-                      );
-                      if (emailError != null) {
-                        formKey.currentState?.validate();
-                        return;
-                      }
-                      notifier.updateEmail(emailController.text);
-                      final ok = await notifier.sendCode();
-                      if (!ok && context.mounted) {
-                        final msg = ref.read(registerFormProvider).errorMessage;
-                        if (msg != null && msg.isNotEmpty) {
-                          await Toast.show(context, msg);
-                        }
-                      }
-                    },
-            ),
-            const SizedBox(height: Spacing.lg),
-            FTextFormField.password(
-              control: FTextFieldControl.managed(
-                controller: passwordController,
-              ),
-              label: Text(l10n.authPasswordLabel),
-              hint: l10n.authPasswordHint,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) =>
-                  RequiredInput.validate(value, l10n.authPasswordRequiredError),
-            ),
-            const SizedBox(height: Spacing.lg),
-            FTextFormField.password(
-              control: FTextFieldControl.managed(
-                controller: confirmPasswordController,
-              ),
-              label: Text(l10n.authConfirmPasswordLabel),
-              hint: l10n.authPasswordHint,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) {
-                final requiredError = RequiredInput.validate(
-                  value,
-                  l10n.authConfirmPasswordRequiredError,
-                );
-                if (requiredError != null) {
-                  return requiredError;
-                }
-                if ((value ?? '') != passwordController.text) {
-                  return l10n.authPasswordsDoNotMatchError;
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: Spacing.lg),
-            FTextFormField(
-              control: FTextFieldControl.managed(
-                controller: nicknameController,
-              ),
-              label: Text(l10n.authNicknameLabel),
-              hint: l10n.authNicknameHint,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-            ),
-            const SizedBox(height: Spacing.lg),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                FCheckbox(
-                  value: acceptedTerms.value,
-                  onChange: (value) => acceptedTerms.value = value,
-                  semanticsLabel: l10n.authTermsAgreement(
-                    l10n.authTermsOfService,
-                    l10n.authPrivacyPolicy,
-                  ),
-                ),
-                const SizedBox(width: Spacing.md),
-                Expanded(
-                  child: _TermsAgreementText(
-                    terms: l10n.authTermsOfService,
-                    privacy: l10n.authPrivacyPolicy,
-                    onTerms: () => context.push('${Routes.legal}/terms'),
-                    onPrivacy: () => context.push('${Routes.legal}/privacy'),
-                  ),
-                ),
-              ],
-            ),
-            if (!acceptedTerms.value)
-              Padding(
-                padding: const EdgeInsets.only(top: Spacing.sm),
-                child: Text(
-                  l10n.authRegisterTermsRequiredHint,
-                  style: typography.body.xs.copyWith(
-                    color: SemanticColor.destructive.solid(context),
-                  ),
-                ),
-              ),
-            const SizedBox(height: Spacing.xl2),
-            SizedBox(
-              width: double.infinity,
-              child: FButton(
-                onPress: state.isSubmitting || !acceptedTerms.value
-                    ? null
-                    : () async {
-                        if (!(formKey.currentState?.validate() ?? false)) {
-                          return;
-                        }
-                        notifier.updateEmail(emailController.text);
-                        notifier.updateCode(codeController.text);
-                        notifier.updatePassword(passwordController.text);
-                        notifier.updateConfirmPassword(
-                          confirmPasswordController.text,
-                        );
-                        notifier.updateNickname(nicknameController.text);
-                        final ok = await notifier.submit();
-                        if (!ok && context.mounted) {
-                          final msg =
-                              ref
-                                      .read(registerFormProvider)
-                                      .errorMessage
-                                      ?.isNotEmpty ==
-                                  true
-                              ? ref.read(registerFormProvider).errorMessage!
-                              : null;
-                          if (msg != null) {
-                            await Toast.show(context, msg);
-                          }
-                        }
-                        if (ok && context.mounted) {
-                          await Toast.show(context, l10n.authRegisterSuccess);
-                          if (!context.mounted) {
-                            return;
-                          }
-                          context.go(Routes.login);
-                        }
-                      },
-                child: state.isSubmitting
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: FCircularProgress(),
-                      )
-                    : Text(l10n.authCreateAccountAction),
-              ),
-            ),
-            const SizedBox(height: Spacing.md),
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: Spacing.sm,
-              runSpacing: Spacing.xs,
-              children: [
+                const Center(child: AuthBrandLogo()),
+                const SizedBox(height: Spacing.lg),
                 Text(
-                  l10n.authHaveAccountPrompt,
-                  style: typography.body.xs2.copyWith(
+                  l10n.authRegisterSubtitle,
+                  textAlign: TextAlign.center,
+                  style: context.theme.typography.body.md.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  size: FButtonSizeVariant.sm,
-                  mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push(Routes.login),
-                  child: Text(l10n.authSignIn, style: typography.body.xs2),
+                const SizedBox(height: Spacing.xl2),
+                Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FTextFormField.email(
+                        control: FTextFieldControl.managed(
+                          controller: emailController,
+                        ),
+                        label: Text(l10n.authEmailLabel),
+                        hint: l10n.authEmailHint,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) => EmailInput.validate(
+                          value,
+                          requiredMessage: l10n.authEmailRequiredError,
+                          invalidMessage: l10n.authEmailInvalidError,
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.lg),
+                      VerificationCodeField(
+                        controller: codeController,
+                        label: l10n.authCodeLabel,
+                        hint: l10n.authCodeLabel,
+                        buttonLabel: state.cooldownSeconds == null
+                            ? l10n.authSendCode
+                            : l10n.authSendCodeAgain(state.cooldownSeconds!),
+                        isLoading: state.isSendingCode,
+                        validator: (value) => RequiredInput.validate(
+                          value,
+                          l10n.authCodeRequiredError,
+                        ),
+                        onSendCode:
+                            (state.cooldownSeconds != null &&
+                                state.cooldownSeconds! > 0)
+                            ? null
+                            : () async {
+                                final emailError = EmailInput.validate(
+                                  emailController.text,
+                                  requiredMessage: l10n.authEmailRequiredError,
+                                  invalidMessage: l10n.authEmailInvalidError,
+                                );
+                                if (emailError != null) {
+                                  formKey.currentState?.validate();
+                                  return;
+                                }
+                                notifier.updateEmail(emailController.text);
+                                final ok = await notifier.sendCode();
+                                if (!ok && context.mounted) {
+                                  final msg = ref
+                                      .read(registerFormProvider)
+                                      .errorMessage;
+                                  if (msg != null && msg.isNotEmpty) {
+                                    await Toast.show(context, msg);
+                                  }
+                                }
+                              },
+                      ),
+                      const SizedBox(height: Spacing.lg),
+                      FTextFormField.password(
+                        control: FTextFieldControl.managed(
+                          controller: passwordController,
+                        ),
+                        label: Text(l10n.authPasswordLabel),
+                        hint: l10n.authPasswordHint,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) => RequiredInput.validate(
+                          value,
+                          l10n.authPasswordRequiredError,
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.lg),
+                      FTextFormField.password(
+                        control: FTextFieldControl.managed(
+                          controller: confirmPasswordController,
+                        ),
+                        label: Text(l10n.authConfirmPasswordLabel),
+                        hint: l10n.authPasswordHint,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          final requiredError = RequiredInput.validate(
+                            value,
+                            l10n.authConfirmPasswordRequiredError,
+                          );
+                          if (requiredError != null) {
+                            return requiredError;
+                          }
+                          if ((value ?? '') != passwordController.text) {
+                            return l10n.authPasswordsDoNotMatchError;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: Spacing.lg),
+                      FTextFormField(
+                        control: FTextFieldControl.managed(
+                          controller: nicknameController,
+                        ),
+                        label: Text(l10n.authNicknameLabel),
+                        hint: l10n.authNicknameHint,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                      ),
+                      const SizedBox(height: Spacing.lg),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FCheckbox(
+                            value: acceptedTerms.value,
+                            onChange: (value) => acceptedTerms.value = value,
+                            semanticsLabel: l10n.authTermsAgreement(
+                              l10n.authTermsOfService,
+                              l10n.authPrivacyPolicy,
+                            ),
+                          ),
+                          const SizedBox(width: Spacing.md),
+                          Expanded(
+                            child: _TermsAgreementText(
+                              terms: l10n.authTermsOfService,
+                              privacy: l10n.authPrivacyPolicy,
+                              onTerms: () =>
+                                  context.push('${Routes.legal}/terms'),
+                              onPrivacy: () =>
+                                  context.push('${Routes.legal}/privacy'),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (!acceptedTerms.value)
+                        Padding(
+                          padding: const EdgeInsets.only(top: Spacing.sm),
+                          child: Text(
+                            l10n.authRegisterTermsRequiredHint,
+                            style: typography.body.xs.copyWith(
+                              color: SemanticColor.destructive.solid(context),
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: Spacing.xl2),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FButton(
+                          onPress: state.isSubmitting || !acceptedTerms.value
+                              ? null
+                              : () async {
+                                  if (!(formKey.currentState?.validate() ??
+                                      false)) {
+                                    return;
+                                  }
+                                  notifier.updateEmail(emailController.text);
+                                  notifier.updateCode(codeController.text);
+                                  notifier.updatePassword(
+                                    passwordController.text,
+                                  );
+                                  notifier.updateConfirmPassword(
+                                    confirmPasswordController.text,
+                                  );
+                                  notifier.updateNickname(
+                                    nicknameController.text,
+                                  );
+                                  final ok = await notifier.submit();
+                                  if (!ok && context.mounted) {
+                                    final msg =
+                                        ref
+                                                .read(registerFormProvider)
+                                                .errorMessage
+                                                ?.isNotEmpty ==
+                                            true
+                                        ? ref
+                                              .read(registerFormProvider)
+                                              .errorMessage!
+                                        : null;
+                                    if (msg != null) {
+                                      await Toast.show(context, msg);
+                                    }
+                                  }
+                                  if (ok && context.mounted) {
+                                    await Toast.show(
+                                      context,
+                                      l10n.authRegisterSuccess,
+                                    );
+                                    if (!context.mounted) {
+                                      return;
+                                    }
+                                    context.go(Routes.login);
+                                  }
+                                },
+                          child: state.isSubmitting
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: FCircularProgress(),
+                                )
+                              : Text(l10n.authCreateAccountAction),
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.md),
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: Spacing.sm,
+                        runSpacing: Spacing.xs,
+                        children: [
+                          Text(
+                            l10n.authHaveAccountPrompt,
+                            style: typography.body.xs2.copyWith(
+                              color: SemanticColor.neutral.solid(context),
+                            ),
+                          ),
+                          FButton(
+                            variant: FButtonVariant.ghost,
+                            size: FButtonSizeVariant.sm,
+                            mainAxisSize: MainAxisSize.min,
+                            onPress: () => context.push(Routes.login),
+                            child: Text(
+                              l10n.authSignIn,
+                              style: typography.body.xs2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

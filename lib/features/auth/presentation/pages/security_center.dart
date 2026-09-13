@@ -9,14 +9,14 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
-import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/core/widgets/common/control/tile_value.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_identity.dart';
 import 'package:luminous/features/auth/presentation/pages/account_manage_helpers.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -79,127 +79,143 @@ class SecurityCenterPage extends ConsumerWidget {
     final resolvingSession = session.isLoading;
     final signedOut = !session.canAccessProtectedData || user == null;
 
-    return AuthShell(
+    return PageScaffold(
       title: l10n.authAccountManageSecurityCenter,
-      leading: const AppBackButton(),
-      centerTitle: true,
-      form: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (resolvingSession) ...[
-            const _SecurityCenterLoading(),
-          ] else if (signedOut) ...[
-            AuthRequiredDialogGate(
-              onLogin: () =>
-                  context.push(loginRouteForCurrentLocation(context)),
+      child: SingleChildScrollView(
+        child: ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.xl2
+                  : Spacing.xl3,
             ),
-          ] else ...[
-            // 账号概要：头像 + 昵称 / 邮箱，与个人信息页同一「左标签 / 右数据」观感，
-            // 点击回到个人信息页编辑。
-            _AccountOverviewCard(user: user),
-            const SizedBox(height: Spacing.xl2),
-
-            // 授权记录
-            LinkedIdentitiesSection(
-              user: user,
-              isSubmitting: accountState.isSubmitting,
-              onLinkWechat: () async {
-                await startWechatIdentityLink(context, l10n, ref);
-              },
-              onUnlink: (identity) async {
-                final confirmed = await confirmUnlinkIdentity(
-                  context,
-                  identity,
-                  l10n,
-                );
-                if (!confirmed || !context.mounted) return;
-                final password = await ref.read(
-                  sensitiveActionPasswordPromptProvider,
-                )(context);
-                if (password == null || !context.mounted) return;
-                final ok = await accountNotifier.unlinkIdentity(
-                  identityId: identity.id,
-                  password: password,
-                );
-                if (!ok && context.mounted) {
-                  await showAuthAccountFailureToast(context, ref, l10n);
-                  return;
-                }
-                if (ok && context.mounted) {
-                  await Toast.show(context, l10n.authIdentityUnlinkSuccess);
-                }
-              },
-              showWechatLink: false,
-            ),
-            const SizedBox(height: Spacing.xl2),
-
-            // 敏感操作记录
-            SettingsSectionLabel(
-              label: l10n.securityCenterSensitiveOperationsTitle,
-            ),
-            const SizedBox(height: Spacing.md),
-            _EmptyRecordCard(
-              message: l10n.securityCenterSensitiveOperationsEmpty,
-            ),
-            const SizedBox(height: Spacing.xl2),
-
-            // 登录记录
-            SettingsSectionLabel(label: l10n.securityCenterLoginHistoryTitle),
-            SizedBox(height: context.titleContentGap),
-            FTileGroup(
-              physics: const NeverScrollableScrollPhysics(),
-              divider: FItemDivider.full,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                FTile(
-                  prefix: Icon(
-                    SemanticIcons.statusPending,
-                    color: SemanticColor.neutral.solid(context),
-                    size: IconSizeTokens.md,
+                if (resolvingSession) ...[
+                  const _SecurityCenterLoading(),
+                ] else if (signedOut) ...[
+                  AuthRequiredDialogGate(
+                    onLogin: () =>
+                        context.push(loginRouteForCurrentLocation(context)),
                   ),
-                  title: Text(l10n.securityCenterLoginHistoryViewAll),
-                  subtitle: Text(
-                    l10n.securityCenterLoginHistoryViewAllSubtitle,
-                    style: TextStyle(
-                      color: SemanticColor.neutral.solid(context),
-                    ),
+                ] else ...[
+                  // 账号概要：头像 + 昵称 / 邮箱，与个人信息页同一「左标签 / 右数据」观感，
+                  // 点击回到个人信息页编辑。
+                  _AccountOverviewCard(user: user),
+                  const SizedBox(height: Spacing.xl2),
+
+                  // 授权记录
+                  LinkedIdentitiesSection(
+                    user: user,
+                    isSubmitting: accountState.isSubmitting,
+                    onLinkWechat: () async {
+                      await startWechatIdentityLink(context, l10n, ref);
+                    },
+                    onUnlink: (identity) async {
+                      final confirmed = await confirmUnlinkIdentity(
+                        context,
+                        identity,
+                        l10n,
+                      );
+                      if (!confirmed || !context.mounted) return;
+                      final password = await ref.read(
+                        sensitiveActionPasswordPromptProvider,
+                      )(context);
+                      if (password == null || !context.mounted) return;
+                      final ok = await accountNotifier.unlinkIdentity(
+                        identityId: identity.id,
+                        password: password,
+                      );
+                      if (!ok && context.mounted) {
+                        await showAuthAccountFailureToast(context, ref, l10n);
+                        return;
+                      }
+                      if (ok && context.mounted) {
+                        await Toast.show(
+                          context,
+                          l10n.authIdentityUnlinkSuccess,
+                        );
+                      }
+                    },
+                    showWechatLink: false,
                   ),
-                  suffix: const Icon(SemanticIcons.actionNext),
-                  onPress: () => context.push(Routes.accountSessions),
-                ),
+                  const SizedBox(height: Spacing.xl2),
+
+                  // 敏感操作记录
+                  SettingsSectionLabel(
+                    label: l10n.securityCenterSensitiveOperationsTitle,
+                  ),
+                  const SizedBox(height: Spacing.md),
+                  _EmptyRecordCard(
+                    message: l10n.securityCenterSensitiveOperationsEmpty,
+                  ),
+                  const SizedBox(height: Spacing.xl2),
+
+                  // 登录记录
+                  SettingsSectionLabel(
+                    label: l10n.securityCenterLoginHistoryTitle,
+                  ),
+                  SizedBox(height: context.titleContentGap),
+                  FTileGroup(
+                    physics: const NeverScrollableScrollPhysics(),
+                    divider: FItemDivider.full,
+                    children: [
+                      FTile(
+                        prefix: Icon(
+                          SemanticIcons.statusPending,
+                          color: SemanticColor.neutral.solid(context),
+                          size: IconSizeTokens.md,
+                        ),
+                        title: Text(l10n.securityCenterLoginHistoryViewAll),
+                        subtitle: Text(
+                          l10n.securityCenterLoginHistoryViewAllSubtitle,
+                          style: TextStyle(
+                            color: SemanticColor.neutral.solid(context),
+                          ),
+                        ),
+                        suffix: const Icon(SemanticIcons.actionNext),
+                        onPress: () => context.push(Routes.accountSessions),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: Spacing.xl2),
+
+                  // 账号保护（预留）
+                  SettingsSectionLabel(
+                    label: l10n.securityCenterAccountProtectionTitle,
+                  ),
+                  const SizedBox(height: Spacing.md),
+                  FTileGroup(
+                    physics: const NeverScrollableScrollPhysics(),
+                    divider: FItemDivider.full,
+                    children: [
+                      FTile(
+                        prefix: Icon(
+                          SemanticIcons.safetySafe,
+                          color: SemanticColor.neutral.solid(context),
+                          size: IconSizeTokens.md,
+                        ),
+                        title: Text(
+                          l10n.securityCenterAccountProtectionComingSoon,
+                        ),
+                        subtitle: Text(
+                          l10n.securityCenterAccountProtectionComingSoonSubtitle,
+                          style: TextStyle(
+                            color: SemanticColor.neutral.solid(context),
+                          ),
+                        ),
+                        suffix: const Icon(SemanticIcons.actionNext),
+                        onPress: () {}, // 预留入口，暂无具体功能
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
-            const SizedBox(height: Spacing.xl2),
-
-            // 账号保护（预留）
-            SettingsSectionLabel(
-              label: l10n.securityCenterAccountProtectionTitle,
-            ),
-            const SizedBox(height: Spacing.md),
-            FTileGroup(
-              physics: const NeverScrollableScrollPhysics(),
-              divider: FItemDivider.full,
-              children: [
-                FTile(
-                  prefix: Icon(
-                    SemanticIcons.safetySafe,
-                    color: SemanticColor.neutral.solid(context),
-                    size: IconSizeTokens.md,
-                  ),
-                  title: Text(l10n.securityCenterAccountProtectionComingSoon),
-                  subtitle: Text(
-                    l10n.securityCenterAccountProtectionComingSoonSubtitle,
-                    style: TextStyle(
-                      color: SemanticColor.neutral.solid(context),
-                    ),
-                  ),
-                  suffix: const Icon(SemanticIcons.actionNext),
-                  onPress: () {}, // 预留入口，暂无具体功能
-                ),
-              ],
-            ),
-          ],
-        ],
+          ),
+        ),
       ),
     );
   }

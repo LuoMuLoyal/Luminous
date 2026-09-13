@@ -125,7 +125,6 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 
 - `auth/presentation/providers/sessions.dart` `_revokeFailure` 用 `StackTrace.current` 构造 AsyncError（旧代码保留真实堆栈）：LucentFailure.cause 已携带原 DioException，可调试；真实堆栈透传需在 TaskEither Left 上携带 stackTrace（跨任务架构决策），暂缓，清理旧类型时一并评估。
 - `_resolve` 适配器在 `account.dart`/`oauth_login.dart`/`wechat_oauth.dart` 三处重复（4 行同构）：风格级，暂不抽取公共 helper。
-- `desktop_shell.dart` / `mobile_shell.dart` 的布局 if-else 分支结构一致（2026-09-07 shell 拆分遗留，`docs/logs/migration-log/2026-09-07.md` §shell 拆分）：两文件各自持有 `AuthPageHeader`/`AuthFormPanel` 装配顺序与响应式分支，属同型「风格级暂不抽取」问题；下个 `auth/presentation` 重构迭代统一收口。
 
 
 ## 2026-08-23 scan 迁移审查遗留（错误迁移 Task 4b）
