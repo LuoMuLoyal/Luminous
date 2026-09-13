@@ -28,9 +28,9 @@ void main() {
     });
 
     test('converts kg to lb with the exact factor', () {
-      // 1 kg = 2.2046226218 lb.
-      expect(weightInLb(1), closeTo(2.2046226218, 1e-9));
-      expect(weightInLb(60), closeTo(132.277357308, 1e-9));
+      // 1 kg ≈ 2.20462262185 lb（units_converter 系数,与旧常数差异 <1e-8）。
+      expect(weightInLb(1), closeTo(2.2046226218, 1e-6));
+      expect(weightInLb(60), closeTo(132.277357308, 1e-6));
       expect(weightInLb(0), 0);
     });
 
