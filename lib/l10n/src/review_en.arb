@@ -210,7 +210,6 @@
   "reviewClinicSummaryProfileNickname": "Nickname",
   "reviewClinicSummaryProfileAge": "Age",
   "reviewClinicSummaryProfileSex": "Sex",
-  "reviewClinicSummaryProfileBloodType": "Blood Type",
   "reviewClinicSummaryNotSet": "Not set",
   "reviewClinicSummaryLoading": "Generating clinic summary…",
   "reviewClinicSummaryLoadFailed": "Failed to load clinic summary, please try again later",

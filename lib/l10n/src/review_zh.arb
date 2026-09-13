@@ -217,7 +217,6 @@
   "reviewClinicSummaryProfileNickname": "昵称",
   "reviewClinicSummaryProfileAge": "年龄",
   "reviewClinicSummaryProfileSex": "性别",
-  "reviewClinicSummaryProfileBloodType": "血型",
   "reviewClinicSummaryNotSet": "未设置",
   "reviewClinicSummaryLoading": "正在生成诊所摘要…",
   "reviewClinicSummaryLoadFailed": "诊所摘要加载失败，请稍后重试",

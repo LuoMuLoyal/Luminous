@@ -85,10 +85,6 @@ class ClinicSummaryContent extends StatelessWidget {
             label: l10n.reviewClinicSummaryProfileSex,
             value: profile.sexAtBirth ?? l10n.reviewClinicSummaryNotSet,
           ),
-          MetaRow(
-            label: l10n.reviewClinicSummaryProfileBloodType,
-            value: profile.bloodType ?? l10n.reviewClinicSummaryNotSet,
-          ),
         ],
 
         // Allergies — not one of the six selectable fields, so it behaves

@@ -80,7 +80,6 @@ ClinicSummaryResponse _dto({
   List<String> selectedFields = const [],
   int? age = 30,
   String? sexAtBirth = 'male',
-  String? bloodType = 'A',
 }) {
   return ClinicSummaryResponse(
     generatedAt: '2026-07-01T10:30:00',
@@ -94,7 +93,6 @@ ClinicSummaryResponse _dto({
       nickname: 'Lumi',
       age: age,
       sexAtBirth: sexAtBirth,
-      bloodType: bloodType,
     ),
     allergies: identical(allergies, _defaultSections)
         ? <ClinicSummaryResponseAllergies>[
@@ -176,7 +174,6 @@ void main() {
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text('30'), findsOneWidget);
     expect(find.text('male'), findsOneWidget);
-    expect(find.text('A'), findsOneWidget);
 
     expect(
       find.text(l10n_.reviewClinicSummaryAllergiesSection),
@@ -346,13 +343,10 @@ void main() {
   });
 
   testWidgets('shows not-set for missing profile fields', (tester) async {
-    await pumpContent(
-      tester,
-      _dto(age: null, sexAtBirth: null, bloodType: null),
-    );
+    await pumpContent(tester, _dto(age: null, sexAtBirth: null));
 
     final l10n_ = l10n(tester);
-    expect(find.text(l10n_.reviewClinicSummaryNotSet), findsNWidgets(3));
+    expect(find.text(l10n_.reviewClinicSummaryNotSet), findsNWidgets(2));
   });
 
   testWidgets('maps known and unknown data ranges', (tester) async {
