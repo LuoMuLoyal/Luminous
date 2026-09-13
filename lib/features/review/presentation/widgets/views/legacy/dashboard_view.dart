@@ -382,23 +382,27 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FCard(
-      child: FTile(
-        prefix: FAvatar.raw(
-          child: Icon(
-            SemanticIcons.statusBlocked,
-            color: SemanticColor.primary.solid(context),
-            size: Spacing.lg,
+    return FTileGroup(
+      physics: const NeverScrollableScrollPhysics(),
+      divider: FItemDivider.full,
+      children: [
+        FTile(
+          prefix: FAvatar.raw(
+            child: Icon(
+              SemanticIcons.statusBlocked,
+              color: SemanticColor.primary.solid(context),
+              size: Spacing.lg,
+            ),
           ),
-        ),
-        title: Text(
-          AppLocalizations.of(context)!.reviewLockedFeaturesTitle,
-          style: context.theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w800,
+          title: Text(
+            AppLocalizations.of(context)!.reviewLockedFeaturesTitle,
+            style: context.theme.typography.body.sm.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
+          subtitle: Text(message),
         ),
-        subtitle: Text(message),
-      ),
+      ],
     );
   }
 }

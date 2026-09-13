@@ -28,19 +28,23 @@ class AccountHeader extends StatelessWidget {
     final subtitle =
         session.user?.email ?? (signedIn ? '' : l10n.mineAccountSignedOutMeta);
 
-    return FCard(
-      child: FTile(
-        title: Text(displayName),
-        subtitle: subtitle.isEmpty ? null : Text(subtitle),
-        prefix: AvatarView(
-          avatarUrl: session.user?.avatar,
-          size: IconSizeTokens.xl4,
-          iconSize: IconSizeTokens.xl2,
-          semanticLabel: l10n.profileAvatarLabel,
+    return FTileGroup(
+      physics: const NeverScrollableScrollPhysics(),
+      divider: FItemDivider.full,
+      children: [
+        FTile(
+          title: Text(displayName),
+          subtitle: subtitle.isEmpty ? null : Text(subtitle),
+          prefix: AvatarView(
+            avatarUrl: session.user?.avatar,
+            size: IconSizeTokens.xl4,
+            iconSize: IconSizeTokens.xl2,
+            semanticLabel: l10n.profileAvatarLabel,
+          ),
+          suffix: const Icon(SemanticIcons.actionNext),
+          onPress: onTap,
         ),
-        suffix: const Icon(SemanticIcons.actionNext),
-        onPress: onTap,
-      ),
+      ],
     );
   }
 }

@@ -325,38 +325,42 @@ class _PermissionCard extends StatelessWidget {
     };
     final typography = context.theme.typography;
 
-    return FCard(
-      child: FTile(
-        key: key,
-        prefix: Icon(icon, color: color),
-        title: Text(
-          title,
-          style: typography.body.sm.copyWith(
-            color: color,
-            fontWeight: FontWeight.w600,
+    return FTileGroup(
+      physics: const NeverScrollableScrollPhysics(),
+      divider: FItemDivider.full,
+      children: [
+        FTile(
+          key: key,
+          prefix: Icon(icon, color: color),
+          title: Text(
+            title,
+            style: typography.body.sm.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        subtitle: subtitle.isEmpty ? null : Text(subtitle),
-        suffix: state == NotificationPermissionState.granted
-            ? null
-            : ctaLabel != null
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    ctaLabel,
-                    style: typography.body.xs.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.w600,
+          subtitle: subtitle.isEmpty ? null : Text(subtitle),
+          suffix: state == NotificationPermissionState.granted
+              ? null
+              : ctaLabel != null
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      ctaLabel,
+                      style: typography.body.xs.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: Spacing.sm),
-                  const Icon(SemanticIcons.actionNext),
-                ],
-              )
-            : const Icon(SemanticIcons.actionNext),
-        onPress: state == NotificationPermissionState.granted ? null : onTap,
-      ),
+                    const SizedBox(width: Spacing.sm),
+                    const Icon(SemanticIcons.actionNext),
+                  ],
+                )
+              : const Icon(SemanticIcons.actionNext),
+          onPress: state == NotificationPermissionState.granted ? null : onTap,
+        ),
+      ],
     );
   }
 }
