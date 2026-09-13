@@ -182,3 +182,8 @@ operations.
 - Lucent 收敛认证错误映射并清理 PIN/elevation 残留后重新导出 OpenAPI（123 paths / 264 schemas）。
 - `AuthApi.listSessionsV1` 的返回类型由裸 `List<SessionDto>` 修正为分页/列表包装 `List<SessionListItemDto>`；生成客户端新增 `SessionListItemDto`。
 - Security PIN / elevation 相关端点与方法已在生成客户端中移除；敏感操作统一使用密码重新认证。
+
+## 2026-09-13 健康档案字段收敛
+
+- Lucent `pnpm export:openapi`(123 paths / 345 schemas)后执行 `dart run scripts/contract/bootstrap.dart`:`HealthContextResponseProfile` / `UpdateUserHealthContextProfileRequest` 移除 `bloodType` 与 `emergencyContact`(契约收敛,数据库列已 drop),新增 `activityLevel`(nullable 枚举,响应侧 optional 以兼容旧缓存)与 `dietaryPreferences`(nullable 字符串数组,extras JSONB 白名单 ≤5 项,响应侧 optional);`ClinicSummaryResponseProfile` 移除 `bloodType`。
+- 注意:响应 DTO 新增字段必须 `.nullable().optional()` 而非仅 `.nullable()`——生成客户端的 `fromJson` 把仅 nullable 的键当 required,旧离线缓存(无新键)解码会抛 `CheckedFromJsonException`。
