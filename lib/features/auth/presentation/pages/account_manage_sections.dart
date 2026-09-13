@@ -161,19 +161,17 @@ class AccountManageSection extends ConsumerWidget {
               suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => _showPasswordDialog(context, ref),
             ),
+            // 纯跳转行不写值：值列只放当前值，说明性文案留在目标页/弹窗里
+            // （登录设备的说明在会话页、注销风险提示在注销弹窗）。
             FTile(
               key: const Key('account-devices-row'),
               title: Text(l10n.authAccountManageLoginDevices),
-              details: AppTileValue(l10n.authSessionsSectionSubtitle),
               suffix: const Icon(SemanticIcons.actionNext),
               onPress: onManageSessions,
             ),
             FTile(
               key: const Key('account-security-center-row'),
               title: Text(l10n.authAccountManageSecurityCenter),
-              details: AppTileValue(
-                l10n.authAccountManageSecurityCenterSubtitle,
-              ),
               suffix: const Icon(SemanticIcons.actionNext),
               onPress: onManageSecurityCenter,
             ),
@@ -181,7 +179,6 @@ class AccountManageSection extends ConsumerWidget {
               key: const Key('account-delete-row'),
               variant: FItemVariant.destructive,
               title: Text(l10n.authAccountManageDeleteAccount),
-              details: AppTileValue(l10n.authDeleteAccountSectionDescription),
               suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => _showDeleteAccountDialog(context, ref),
             ),
