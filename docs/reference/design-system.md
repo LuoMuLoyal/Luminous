@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-12
+updated: 2026-09-13
 ---
 
 # Design System
@@ -137,8 +137,8 @@ updated: 2026-09-12
 - `IconActionButton`（`lib/core/widgets/common/control/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，`showBadge` 在右上角叠加红点（未读消息提醒等）；各模块顶栏统一引用 core 版本。
 - `showForuiDatePicker`（`lib/core/widgets/common/control/date_picker.dart`）是全 App 共享的日历日期选择器，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
 - 设置页统一引用 `settingsPageVerticalPadding(BuildContext)`（响应式垂直 padding）与 `SettingsSectionLabel`（分组标题：`typography.body.xs` + `w600` + `SemanticColor.neutral.solid(context)` + `Spacing.sm` 水平 padding），不再各自手写响应式三元表达式或分组标题实现。
-- 账号/资料列表统一用 `AppValueRow`（`lib/core/widgets/common/control/value_row.dart`）：左标签（`body.md` + `w500`）+ 右当前值（右对齐）+ 尾部箭头。列表行是读侧、点击后进入编辑面是写侧——**不再**把字段渲染成常驻可编辑输入框，也不用「图标+标题+副标题」的卡片组（2026-09-12 个人信息/账号管理改版）。**值列必须固定贴右**：标签 `Expanded` 吃掉剩余宽度，值+图标的列按自身内容定宽（`Flexible` + `LayoutBuilder` + `IntrinsicWidth`，上限行宽 55%）后贴右——把值和标签都放进共用 flex 的 `Expanded` 会在长标签行（如「出生日期（YYYY-MM-DD）」）把空闲空间算成 0，值列被压没（这个 bug 已踩过一次）。
-- 分组块靠**色差**区分，不画外边框：页面背景是 `SurfaceTokens.scaffoldBackground`（#FAFAFA 灰白），所以分组内容区取**纯白** `colors.card`（#FFFFFF）——取 `colors.secondary`（#F5F5F5）反而比页面更灰，看着像凹坑。分隔线只出现在组内行与行之间（`AppDivider`），组与组之间靠留白。
+- 账号/资料列表（个人信息、账号管理、账号安全中心概要）直接组合 Forui `FTileGroup` + `FTile`，不设行封装：`title` 放标签、`suffix` 放箭头（有状态图标时用 `Row(mainAxisSize: min)` 排在箭头左侧）、`prefix` 放头像、`onPress` 放跳转/编辑、注销行走 `variant: FItemVariant.destructive`。分组卡片、组内分隔线、按压/焦点反馈全部由 Forui 提供。列表行是读侧、点击后进入编辑面是写侧——**不再**把字段渲染成常驻可编辑输入框（2026-09-12 个人信息/账号管理改版，2026-09-13 收口到 Forui tile 并删除自绘行/自绘卡片）。**值列必须贴右且不被压没**：`details` 传 `AppTileValue`（`lib/core/widgets/common/control/tile_value.dart`），它把文本包成非 `Text` 的受限宽度组件——Forui 的 tile 内容布局在 `details` 是 `Text` 时优先给 `title`，长标签（或大字号缩放）会把值列压到 0 宽；包一层后值列先测量、标签退让，值列上限 55% 内容宽，两列都保住。值列文案只放**当前值**，不放说明性长句（跳转行不传 `details`，说明留在目标页或弹窗）。
+- 分组卡片统一用 `FTileGroup`（`physics: NeverScrollableScrollPhysics()` + `divider: FItemDivider.full`，嵌在页面滚动视图里），外观取主题 `tileGroupStyle`（`colors.card` 白底 + 1px subtle 描边 + 组内分隔线）；组与组之间靠留白。设置页与账号/资料页因此同一套观感，不再各自手写无边框白卡片。**单行卡片也是 `FTileGroup`，别写 `FCard(child: FTile(...))`**：没有 `FTileGroup` 祖先时 tile 取主题 `tileStyles`，其默认 `contentDecoration` 本身就是「白底 + 1px 描边 + r10」的卡片，套进 `FCard`（同色描边 + r14）就是双层卡片。
 - auth 壳的分组页面（账号管理）传 `AuthShell(formPanel: false)`：壳默认把 form 包进白色 `AuthFormPanel` 卡片，自带白色分组块的页面再套一层就是双层 surface。
 - 单字段编辑统一用 `showAppEditSheet` / `showValueEditSheet` / `showTextEditSheet`（`lib/core/widgets/common/dialog/edit_sheet.dart`）：标题居中、内容由 body 提供、底部取消/保存。文本型 sheet 自己持有 `TextEditingController` 并在自身 `State.dispose` 释放——调用方只 await 路由 pop，若由调用方释放会在退场动画期间触发「controller used after being disposed」。
 - 骨架 shimmer（`lib/core/widgets/common/feedback/skeleton.dart`）每帧只允许一个 `ShaderMask`：`SkeletonShimmer` 通过私有 `_ShimmerScope` 使嵌套实例直接返回 child，`StateSkeletonView` 也提供该作用域（实测每帧 `saveLayer` 从 ~22 降到 ~1）。
