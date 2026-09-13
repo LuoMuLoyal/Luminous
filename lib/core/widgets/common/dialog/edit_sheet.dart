@@ -128,6 +128,9 @@ Future<T?> showValueEditSheet<T>({
 /// the moment of confirmation. That is what keeps disposal correct: the caller
 /// never touches the controller, so it cannot dispose it while the route's exit
 /// transition is still listening.
+///
+/// [label] renders above the field; omit it when the sheet [title] already says
+/// the same thing, otherwise the copy repeats twice.
 Future<String?> showTextEditSheet({
   required BuildContext context,
   required String title,
@@ -144,7 +147,7 @@ Future<String?> showTextEditSheet({
     resizeToAvoidBottomInset: true,
     builder: (sheetContext) => _TextEditSheet(
       title: title,
-      label: label ?? title,
+      label: label,
       hint: hint,
       initialValue: initialValue,
       keyboardType: keyboardType,
@@ -162,15 +165,15 @@ class _TextSheetResult {
 class _TextEditSheet extends StatefulWidget {
   const _TextEditSheet({
     required this.title,
-    required this.label,
     required this.result,
+    this.label,
     this.hint,
     this.initialValue,
     this.keyboardType,
   });
 
   final String title;
-  final String label;
+  final String? label;
   final _TextSheetResult result;
   final String? hint;
   final String? initialValue;
@@ -228,7 +231,7 @@ class _TextEditSheetState extends State<_TextEditSheet> {
             FTextField(
               key: const Key('edit-sheet-text-field'),
               control: FTextFieldControl.managed(controller: _controller),
-              label: Text(widget.label),
+              label: widget.label == null ? null : Text(widget.label!),
               hint: widget.hint,
               keyboardType: widget.keyboardType,
               autofocus: true,
