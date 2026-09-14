@@ -23,6 +23,7 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/record_create_form.dart';
@@ -62,6 +63,7 @@ class RecordCreatePage extends HookConsumerWidget {
     final recordTime = useState(initialTime?.trim());
     final sleepBedtime = useState<TimeOfDay?>(null);
     final sleepWakeTime = useState<TimeOfDay?>(null);
+    final sleepKind = useState(SleepEntryKind.nightSleep);
     final sleepQuality = useState<String?>(null);
     final sleepDeepMinutes = useState<int?>(null);
     final sleepLightMinutes = useState<int?>(null);
@@ -99,14 +101,14 @@ class RecordCreatePage extends HookConsumerWidget {
       return null;
     }
 
-    /// 创建页没有类型选择，固定按夜间睡眠落库；小睡走快速录入。
+    /// 创建页可以选夜间睡眠或小睡；时段规则与快速录入一致。
     Map<String, dynamic>? sleepPayloadForKind(DailyRecordKind k) {
       if (k != DailyRecordKind.sleep) return null;
       return buildSleepPayload(
         recordDate: recordDate.value,
         bedtime: sleepBedtime.value,
         wakeTime: sleepWakeTime.value,
-        kind: SleepEntryKind.nightSleep,
+        kind: sleepKind.value,
         quality: sleepQuality.value,
         deepMinutes: sleepDeepMinutes.value,
         lightMinutes: sleepLightMinutes.value,
@@ -114,13 +116,14 @@ class RecordCreatePage extends HookConsumerWidget {
       );
     }
 
-    bool isValidSleepValue() {
-      if (kind.value != DailyRecordKind.sleep) return true;
-      final minutes = computeSleepDurationMinutes(
-        sleepBedtime.value,
-        sleepWakeTime.value,
+    /// 当前的睡眠草稿校验错误；非睡眠类型或草稿合法时为 null。
+    SleepEntryValidationError? sleepValidationError() {
+      if (kind.value != DailyRecordKind.sleep) return null;
+      return validateSleepEntry(
+        bedtime: sleepBedtime.value,
+        wakeTime: sleepWakeTime.value,
+        kind: sleepKind.value,
       );
-      return minutes != null && minutes > 0;
     }
 
     void onKindChanged(DailyRecordKind newKind) {
@@ -147,6 +150,7 @@ class RecordCreatePage extends HookConsumerWidget {
       if (newKind != DailyRecordKind.sleep) {
         sleepBedtime.value = null;
         sleepWakeTime.value = null;
+        sleepKind.value = SleepEntryKind.nightSleep;
         sleepQuality.value = null;
         sleepDeepMinutes.value = null;
         sleepLightMinutes.value = null;
@@ -228,12 +232,13 @@ class RecordCreatePage extends HookConsumerWidget {
     }
 
     Future<void> onSave(String dateStr) async {
-      if (kind.value == DailyRecordKind.sleep && !isValidSleepValue()) {
+      final sleepError = sleepValidationError();
+      if (sleepError != null) {
         if (!context.mounted) return;
         unawaited(
           Toast.show(
             context,
-            AppLocalizations.of(context)!.recordSleepInvalidValueToast,
+            sleepEntryErrorText(AppLocalizations.of(context)!, sleepError),
           ),
         );
         return;
@@ -389,10 +394,12 @@ class RecordCreatePage extends HookConsumerWidget {
                       : formatHourMinute(time.hour, time.minute),
                   sleepBedtime: sleepBedtime.value,
                   sleepWakeTime: sleepWakeTime.value,
+                  sleepKind: sleepKind.value,
                   sleepQuality: sleepQuality.value,
                   sleepDeepMinutes: sleepDeepMinutes.value,
                   sleepLightMinutes: sleepLightMinutes.value,
                   sleepRemMinutes: sleepRemMinutes.value,
+                  onSleepKindChanged: (v) => sleepKind.value = v,
                   onBedtimeChanged: (v) => sleepBedtime.value = v,
                   onWakeTimeChanged: (v) => sleepWakeTime.value = v,
                   onQualityChanged: (v) => sleepQuality.value = v,

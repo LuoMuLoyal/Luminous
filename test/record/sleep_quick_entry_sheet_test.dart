@@ -112,7 +112,7 @@ void main() {
       wakeTime: const TimeOfDay(hour: 7, minute: 0),
     );
 
-    await tester.tap(find.text(l10n.recordQuickSleepNapAction));
+    await tester.tap(find.text(l10n.recordSleepKindNap));
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('sleep-quick-entry-error')), findsNothing);
@@ -133,10 +133,7 @@ void main() {
       wakeTime: const TimeOfDay(hour: 7, minute: 0),
     );
 
-    expect(
-      find.text(l10n.recordQuickSleepNapCrossesMidnightError),
-      findsOneWidget,
-    );
+    expect(find.text(l10n.recordSleepEntryNapCrossesMidnight), findsOneWidget);
     final button = tester.widget<FButton>(
       find.byKey(const Key('sleep-quick-entry-save')),
     );
@@ -151,7 +148,7 @@ void main() {
       wakeTime: const TimeOfDay(hour: 22, minute: 0),
     );
 
-    expect(find.text(l10n.recordQuickSleepNightTooLongError), findsOneWidget);
+    expect(find.text(l10n.recordSleepEntryNightTooLong), findsOneWidget);
     final button = tester.widget<FButton>(
       find.byKey(const Key('sleep-quick-entry-save')),
     );

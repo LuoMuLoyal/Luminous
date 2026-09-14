@@ -829,6 +829,65 @@ void main() {
     },
   );
 
+  testWidgets('Record edit page saves a nap after switching the sleep type', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(480, 1200);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final repo = _FakeDailyRecordRepository(
+      itemOccurredAt: '2026-06-06',
+      itemKind: DailyRecordKind.sleep,
+      itemTitle: null,
+      itemValue: null,
+      itemUnit: null,
+      itemNote: null,
+      itemPayload: {
+        'durationMinutes': 30,
+        'sleepType': 'nightSleep',
+        'startedAt': DateTime(2026, 6, 6, 13).toUtc().toIso8601String(),
+        'endedAt': DateTime(2026, 6, 6, 13, 30).toUtc().toIso8601String(),
+      },
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
+        ],
+        child: TestForuiRouterApp(routerConfig: _buildEditTestRouter()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    await tester.tap(find.text(l10n.recordSleepKindNap));
+    await tester.pumpAndSettle();
+
+    final saveButton = find.byKey(const Key('record-edit-save-action'));
+    await tester.ensureVisible(saveButton);
+    await tester.pumpAndSettle();
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 3));
+
+    final input = repo.lastUpdateInput;
+    expect(input, isNotNull);
+    expect(input!.payload, {
+      'startedAt': DateTime(2026, 6, 6, 13).toUtc().toIso8601String(),
+      'endedAt': DateTime(2026, 6, 6, 13, 30).toUtc().toIso8601String(),
+      'durationMinutes': 30,
+      'sleepType': 'nap',
+    });
+  });
+
   testWidgets('Record edit page shows delete confirmation and deletes', (
     tester,
   ) async {

@@ -270,9 +270,3 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 ## 2026-09-12 头像计划的唯一写入路径
 
 - 账号页 `/account` 与 Profile 页 `/profile` 都曾能改头像 URL；两处 URL 文本输入已全部退役，头像只能经 Profile 的 `showAvatarActionsDialog`（查看/拍照/相册/移除）+ 本地草稿 + 预签名上传写入。不要新增第三条头像写入路径，也不要把 URL 文本输入加回来。
-
-## 2026-09-14 睡眠录入遗留
-
-- 创建/编辑页没有睡眠类型选择：睡眠一次性录入只有快速录入 sheet 能选「夜间睡眠 / 午睡」，`RecordCreatePage`
-  与编辑页固定写 `nightSleep`（编辑页会保留载入记录的 `sleepType`）。经这两条路径补记午睡会被记成夜间睡眠。
-  - 方案：把 `FTabs` 类型选择同时接进创建/编辑表单的 `SleepStructuredFields`，或让创建页直接复用快速录入 sheet。

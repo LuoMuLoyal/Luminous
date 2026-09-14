@@ -120,22 +120,6 @@ class _SleepQuickEntrySheetBodyState extends State<SleepQuickEntrySheetBody> {
     );
   }
 
-  String? _errorText(AppLocalizations l10n, SleepEntryValidationError? error) {
-    return switch (error) {
-      null => null,
-      SleepEntryValidationError.missingTimes =>
-        l10n.recordQuickSleepMissingTimesError,
-      SleepEntryValidationError.wakeNotAfterBedtime =>
-        l10n.recordQuickSleepInvalidDurationToast,
-      SleepEntryValidationError.napCrossesMidnight =>
-        l10n.recordQuickSleepNapCrossesMidnightError,
-      SleepEntryValidationError.napTooLong =>
-        l10n.recordQuickSleepNapTooLongError,
-      SleepEntryValidationError.nightSleepTooLong =>
-        l10n.recordQuickSleepNightTooLongError,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -146,7 +130,7 @@ class _SleepQuickEntrySheetBodyState extends State<SleepQuickEntrySheetBody> {
       kind: _kind,
     );
     final durationMinutes = computeSleepDurationMinutes(_bedtime, _wakeTime);
-    final errorText = _errorText(l10n, error);
+    final errorText = error == null ? null : sleepEntryErrorText(l10n, error);
 
     return SafeArea(
       child: DecoratedBox(
@@ -196,14 +180,11 @@ class _SleepQuickEntrySheetBodyState extends State<SleepQuickEntrySheetBody> {
                         onChange: _selectKind,
                       ),
                       children: [
-                        FTabEntry(
-                          label: Text(l10n.recordQuickSleepNightAction),
-                          child: const SizedBox.shrink(),
-                        ),
-                        FTabEntry(
-                          label: Text(l10n.recordQuickSleepNapAction),
-                          child: const SizedBox.shrink(),
-                        ),
+                        for (final kind in _kinds)
+                          FTabEntry(
+                            label: Text(sleepEntryKindLabel(l10n, kind)),
+                            child: const SizedBox.shrink(),
+                          ),
                       ],
                     ),
                     const SizedBox(height: Spacing.lg),

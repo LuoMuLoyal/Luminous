@@ -70,7 +70,7 @@
   "recordCreateValueVital": "数值（如 120/80）",
   "recordCreateValueSymptom": "严重程度 / 感受",
   "recordCreateValueSleep": "时长（如 8h）",
-  "recordSleepInvalidValueToast": "请选择就寝和起床时间",
+  "recordSleepEntryMissingTimes": "请选择就寝和起床时间",
   "recordSleepBedtimeLabel": "就寝时间",
   "recordSleepWakeTimeLabel": "起床时间",
   "recordSleepQualityLabel": "睡眠质量",
@@ -192,8 +192,8 @@
       }
     }
   },
-  "recordQuickSleepNightAction": "夜间睡眠",
-  "recordQuickSleepNapAction": "午睡",
+  "recordSleepKindNight": "夜间睡眠",
+  "recordSleepKindNap": "午睡",
   "recordQuickSleepSheetTitle": "记录睡眠",
   "recordQuickSleepRecordedOn": "记为 {month}月{day}日 睡眠",
   "@recordQuickSleepRecordedOn": {
@@ -206,11 +206,10 @@
       }
     }
   },
-  "recordQuickSleepMissingTimesError": "请选择就寝和起床时间",
-  "recordQuickSleepInvalidDurationToast": "醒来时间必须晚于入睡时间",
-  "recordQuickSleepNapCrossesMidnightError": "小睡不能跨天，请调整时间",
-  "recordQuickSleepNapTooLongError": "小睡不能超过 3 小时",
-  "recordQuickSleepNightTooLongError": "夜间睡眠不能超过 16 小时",
+  "recordSleepEntryWakeNotAfterBedtime": "醒来时间必须晚于入睡时间",
+  "recordSleepEntryNapCrossesMidnight": "小睡不能跨天，请调整时间",
+  "recordSleepEntryNapTooLong": "小睡不能超过 3 小时",
+  "recordSleepEntryNightTooLong": "夜间睡眠不能超过 16 小时",
   "recordQuickMealConfirmTitle": "确认餐食记录",
   "recordFastEntryMultiSelectAction": "多选",
   "recordFastEntryPartialFailedToast": "已记录 {savedCount} 项，{failedCount} 项失败",

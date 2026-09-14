@@ -16,8 +16,10 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/application/usecases/record_detail_actions.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/providers/record_edit_controller.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/edit/edit_parts.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/edit_actions.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
@@ -147,7 +149,14 @@ class RecordEditPage extends HookConsumerWidget {
           await Toast.show(context, l10n.mineEditSavedToast);
           if (context.mounted) popEditOrGoHome(context);
         case RecordEditSaveResult.invalidSleep:
-          await Toast.show(context, l10n.recordSleepInvalidValueToast);
+          await Toast.show(
+            context,
+            sleepEntryErrorText(
+              l10n,
+              controller.sleepValidationError() ??
+                  SleepEntryValidationError.missingTimes,
+            ),
+          );
         case RecordEditSaveResult.failed:
           await Toast.show(context, l10n.recordCreateFailedToast);
       }
@@ -298,12 +307,14 @@ class RecordEditPage extends HookConsumerWidget {
                           const SizedBox(height: Spacing.md),
                           SleepStructuredFields(
                             l10n: l10n,
+                            sleepKind: state.sleepKind,
                             bedtime: state.bedtime,
                             wakeTime: state.wakeTime,
                             quality: state.sleepQuality,
                             deepMinutes: state.deepMinutes,
                             lightMinutes: state.lightMinutes,
                             remMinutes: state.remMinutes,
+                            onSleepKindChanged: controller.setSleepKind,
                             onBedtimeChanged: controller.setBedtime,
                             onWakeTimeChanged: controller.setWakeTime,
                             onQualityChanged: controller.setSleepQuality,

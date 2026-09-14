@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/kind_icon_field.dart';
@@ -34,10 +35,12 @@ class RecordCreateForm extends StatelessWidget {
     required this.onTimeChanged,
     required this.sleepBedtime,
     required this.sleepWakeTime,
+    required this.sleepKind,
     required this.sleepQuality,
     required this.sleepDeepMinutes,
     required this.sleepLightMinutes,
     required this.sleepRemMinutes,
+    required this.onSleepKindChanged,
     required this.onBedtimeChanged,
     required this.onWakeTimeChanged,
     required this.onQualityChanged,
@@ -67,10 +70,12 @@ class RecordCreateForm extends StatelessWidget {
   final ValueChanged<FTime?> onTimeChanged;
   final TimeOfDay? sleepBedtime;
   final TimeOfDay? sleepWakeTime;
+  final SleepEntryKind sleepKind;
   final String? sleepQuality;
   final int? sleepDeepMinutes;
   final int? sleepLightMinutes;
   final int? sleepRemMinutes;
+  final ValueChanged<SleepEntryKind> onSleepKindChanged;
   final ValueChanged<TimeOfDay?> onBedtimeChanged;
   final ValueChanged<TimeOfDay?> onWakeTimeChanged;
   final ValueChanged<String?> onQualityChanged;
@@ -126,12 +131,14 @@ class RecordCreateForm extends StatelessWidget {
           const SizedBox(height: Spacing.md),
           SleepStructuredFields(
             l10n: l10n,
+            sleepKind: sleepKind,
             bedtime: sleepBedtime,
             wakeTime: sleepWakeTime,
             quality: sleepQuality,
             deepMinutes: sleepDeepMinutes,
             lightMinutes: sleepLightMinutes,
             remMinutes: sleepRemMinutes,
+            onSleepKindChanged: onSleepKindChanged,
             onBedtimeChanged: onBedtimeChanged,
             onWakeTimeChanged: onWakeTimeChanged,
             onQualityChanged: onQualityChanged,

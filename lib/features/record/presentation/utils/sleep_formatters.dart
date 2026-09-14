@@ -1,5 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+/// 睡眠类型文案：夜间睡眠 / 午睡。
+String sleepEntryKindLabel(AppLocalizations l10n, SleepEntryKind kind) {
+  return switch (kind) {
+    SleepEntryKind.nightSleep => l10n.recordSleepKindNight,
+    SleepEntryKind.nap => l10n.recordSleepKindNap,
+  };
+}
+
+/// 睡眠录入校验错误 → 用户可见文案。
+String sleepEntryErrorText(
+  AppLocalizations l10n,
+  SleepEntryValidationError error,
+) {
+  return switch (error) {
+    SleepEntryValidationError.missingTimes => l10n.recordSleepEntryMissingTimes,
+    SleepEntryValidationError.wakeNotAfterBedtime =>
+      l10n.recordSleepEntryWakeNotAfterBedtime,
+    SleepEntryValidationError.napCrossesMidnight =>
+      l10n.recordSleepEntryNapCrossesMidnight,
+    SleepEntryValidationError.napTooLong => l10n.recordSleepEntryNapTooLong,
+    SleepEntryValidationError.nightSleepTooLong =>
+      l10n.recordSleepEntryNightTooLong,
+  };
+}
 
 /// 睡眠质量选项（payload `quality` 的线上取值 + 展示文案）。
 class SleepQuality {

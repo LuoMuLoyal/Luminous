@@ -70,7 +70,7 @@
   "recordCreateValueVital": "Value (e.g. 120/80)",
   "recordCreateValueSymptom": "Severity / feeling",
   "recordCreateValueSleep": "Duration (e.g. 8h)",
-  "recordSleepInvalidValueToast": "Please select bedtime and wake time",
+  "recordSleepEntryMissingTimes": "Please select bedtime and wake time",
   "recordSleepBedtimeLabel": "Bedtime",
   "recordSleepWakeTimeLabel": "Wake time",
   "recordSleepQualityLabel": "Sleep quality",
@@ -192,8 +192,8 @@
       }
     }
   },
-  "recordQuickSleepNightAction": "Night sleep",
-  "recordQuickSleepNapAction": "Nap",
+  "recordSleepKindNight": "Night sleep",
+  "recordSleepKindNap": "Nap",
   "recordQuickSleepSheetTitle": "Log sleep",
   "recordQuickSleepRecordedOn": "Filed as sleep on {month}/{day}",
   "@recordQuickSleepRecordedOn": {
@@ -206,11 +206,10 @@
       }
     }
   },
-  "recordQuickSleepMissingTimesError": "Pick a bedtime and wake time.",
-  "recordQuickSleepInvalidDurationToast": "Wake time must be after sleep start.",
-  "recordQuickSleepNapCrossesMidnightError": "A nap cannot cross midnight.",
-  "recordQuickSleepNapTooLongError": "A nap cannot exceed 3 hours.",
-  "recordQuickSleepNightTooLongError": "Night sleep cannot exceed 16 hours.",
+  "recordSleepEntryWakeNotAfterBedtime": "Wake time must be after sleep start.",
+  "recordSleepEntryNapCrossesMidnight": "A nap cannot cross midnight.",
+  "recordSleepEntryNapTooLong": "A nap cannot exceed 3 hours.",
+  "recordSleepEntryNightTooLong": "Night sleep cannot exceed 16 hours.",
   "recordQuickMealConfirmTitle": "Confirm meal record",
   "recordFastEntryMultiSelectAction": "Multi-select",
   "recordFastEntryPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",

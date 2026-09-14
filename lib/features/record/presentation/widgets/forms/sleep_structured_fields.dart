@@ -11,12 +11,14 @@ class SleepStructuredFields extends StatelessWidget {
   const SleepStructuredFields({
     super.key,
     required this.l10n,
+    required this.sleepKind,
     this.bedtime,
     this.wakeTime,
     this.quality,
     this.deepMinutes,
     this.lightMinutes,
     this.remMinutes,
+    required this.onSleepKindChanged,
     required this.onBedtimeChanged,
     required this.onWakeTimeChanged,
     required this.onQualityChanged,
@@ -25,7 +27,10 @@ class SleepStructuredFields extends StatelessWidget {
     required this.onRemMinutesChanged,
   });
 
+  static const _kinds = [SleepEntryKind.nightSleep, SleepEntryKind.nap];
+
   final AppLocalizations l10n;
+  final SleepEntryKind sleepKind;
   final TimeOfDay? bedtime;
   final TimeOfDay? wakeTime;
   final String? quality;
@@ -33,6 +38,7 @@ class SleepStructuredFields extends StatelessWidget {
   final int? lightMinutes;
   final int? remMinutes;
 
+  final ValueChanged<SleepEntryKind> onSleepKindChanged;
   final ValueChanged<TimeOfDay?> onBedtimeChanged;
   final ValueChanged<TimeOfDay?> onWakeTimeChanged;
   final ValueChanged<String?> onQualityChanged;
@@ -47,6 +53,21 @@ class SleepStructuredFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        FTabs(
+          key: const Key('sleep-kind-tabs'),
+          control: FTabControl.lifted(
+            index: _kinds.indexOf(sleepKind),
+            onChange: (index) => onSleepKindChanged(_kinds[index]),
+          ),
+          children: [
+            for (final kind in _kinds)
+              FTabEntry(
+                label: Text(sleepEntryKindLabel(l10n, kind)),
+                child: const SizedBox.shrink(),
+              ),
+          ],
+        ),
+        const SizedBox(height: Spacing.lg),
         Row(
           children: [
             Expanded(

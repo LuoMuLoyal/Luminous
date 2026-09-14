@@ -42,6 +42,7 @@ class RecordEditState {
     this.occurredTime,
     this.bedtime,
     this.wakeTime,
+    this.sleepKind = SleepEntryKind.nightSleep,
     this.sleepQuality,
     this.deepMinutes,
     this.lightMinutes,
@@ -81,6 +82,7 @@ class RecordEditState {
 
   final TimeOfDay? bedtime;
   final TimeOfDay? wakeTime;
+  final SleepEntryKind sleepKind;
   final String? sleepQuality;
   final int? deepMinutes;
   final int? lightMinutes;
@@ -113,6 +115,7 @@ class RecordEditState {
     String? occurredTime,
     TimeOfDay? bedtime,
     TimeOfDay? wakeTime,
+    SleepEntryKind? sleepKind,
     String? sleepQuality,
     int? deepMinutes,
     int? lightMinutes,
@@ -141,6 +144,7 @@ class RecordEditState {
       occurredTime: occurredTime ?? this.occurredTime,
       bedtime: bedtime ?? this.bedtime,
       wakeTime: wakeTime ?? this.wakeTime,
+      sleepKind: sleepKind ?? this.sleepKind,
       sleepQuality: sleepQuality ?? this.sleepQuality,
       deepMinutes: deepMinutes ?? this.deepMinutes,
       lightMinutes: lightMinutes ?? this.lightMinutes,
@@ -165,11 +169,6 @@ class RecordEditController extends Notifier<RecordEditState> {
   /// Immutable snapshot captured right after a successful load, used for
   /// dirty detection. Never mutated afterwards (states are immutable).
   RecordEditState? _loadedSnapshot;
-
-  /// `sleepType` read from the loaded record's payload. The edit form has no
-  /// type selector, so the loaded value is preserved verbatim on save instead
-  /// of being forced back to `nightSleep`.
-  String? _sleepType;
 
   /// Whether the form differs from the loaded record.
   ///
@@ -219,7 +218,6 @@ class RecordEditController extends Notifier<RecordEditState> {
       final deep = record.payload?['deepMinutes'];
       final light = record.payload?['lightMinutes'];
       final rem = record.payload?['remMinutes'];
-      _sleepType = record.payload?['sleepType'] as String?;
 
       state = RecordEditState(
         loading: false,
@@ -238,6 +236,7 @@ class RecordEditController extends Notifier<RecordEditState> {
         occurredTime: record.occurredTime?.trim(),
         bedtime: _extractTimeOfDay(startAt),
         wakeTime: _extractTimeOfDay(endAt),
+        sleepKind: SleepEntryKind.fromPayload(record.payload?['sleepType']),
         sleepQuality: record.payload?['quality'] as String?,
         deepMinutes: deep is num && deep > 0 ? deep.round() : null,
         lightMinutes: light is num && light > 0 ? light.round() : null,
@@ -258,7 +257,6 @@ class RecordEditController extends Notifier<RecordEditState> {
   }
 
   void setKind(DailyRecordKind kind) {
-    _sleepType = null;
     state = state.copyWith(
       kind: kind,
       bedtime: null,
@@ -276,6 +274,8 @@ class RecordEditController extends Notifier<RecordEditState> {
 
   void setBedtime(TimeOfDay? value) => state = state.copyWith(bedtime: value);
   void setWakeTime(TimeOfDay? value) => state = state.copyWith(wakeTime: value);
+  void setSleepKind(SleepEntryKind value) =>
+      state = state.copyWith(sleepKind: value);
   void setSleepQuality(String? value) =>
       state = state.copyWith(sleepQuality: value);
   void setDeepMinutes(int? value) => state = state.copyWith(deepMinutes: value);
@@ -346,11 +346,27 @@ class RecordEditController extends Notifier<RecordEditState> {
     return state.initialSleepDuration;
   }
 
-  bool isValidSleepValue() {
-    if (state.kind != DailyRecordKind.sleep) return true;
-    final minutes = resolvedSleepDurationMinutes();
-    return minutes != null && minutes > 0;
+  /// 当前睡眠草稿的校验错误；非睡眠类型或草稿合法时为 null。
+  SleepEntryValidationError? sleepValidationError() {
+    if (state.kind != DailyRecordKind.sleep) return null;
+
+    // 设备导入的记录可能只有时长、没有时刻（`durationMinutes`）；这类记录仍要能
+    // 只改备注后保存，因此两个时刻都为空且有可用时长时不报错。
+    if (state.bedtime == null &&
+        state.wakeTime == null &&
+        (state.initialSleepDuration ?? 0) > 0) {
+      return null;
+    }
+
+    return validateSleepEntry(
+      bedtime: state.bedtime,
+      wakeTime: state.wakeTime,
+      kind: state.sleepKind,
+    );
   }
+
+  bool isValidSleepValue() =>
+      state.kind != DailyRecordKind.sleep || sleepValidationError() == null;
 
   Future<RecordEditSaveResult> save(
     String recordId, {
@@ -446,7 +462,7 @@ class RecordEditController extends Notifier<RecordEditState> {
   }
 
   Map<String, dynamic>? _buildSleepPayload() {
-    final kind = SleepEntryKind.fromPayload(_sleepType);
+    final kind = state.sleepKind;
     final occurredAt = state.occurredAt ?? clock.now();
     final payload = buildSleepPayload(
       recordDate: occurredAt,
