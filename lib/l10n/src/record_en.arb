@@ -203,21 +203,26 @@
       }
     }
   },
-  "recordQuickSleepStartedToast": "Sleep tracking started",
-  "recordQuickSleepTypeTitle": "What kind of sleep is this?",
   "recordQuickSleepNightAction": "Night sleep",
   "recordQuickSleepNapAction": "Nap",
-  "recordQuickSleepApproximateDurationLabel": "Approximate duration (minutes, optional)",
-  "recordQuickSleepLoadFailedToast": "Could not load sleep records. Try again.",
+  "recordQuickSleepSheetTitle": "Log sleep",
+  "recordQuickSleepRecordedOn": "Filed as sleep on {month}/{day}",
+  "@recordQuickSleepRecordedOn": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickSleepMissingTimesError": "Pick a bedtime and wake time.",
   "recordQuickSleepInvalidDurationToast": "Wake time must be after sleep start.",
-  "recordQuickSleepSelectStartTitle": "Select the sleep to end",
-  "recordQuickSleepMergeTitle": "Merge into one sleep record?",
-  "recordQuickSleepMergeBody": "The wake time has been saved. You can merge the start and wake facts into one complete sleep record.",
-  "recordQuickSleepStartLabel": "Start",
-  "recordQuickSleepWakeLabel": "Wake",
+  "recordQuickSleepNapCrossesMidnightError": "A nap cannot cross midnight.",
+  "recordQuickSleepNapTooLongError": "A nap cannot exceed 3 hours.",
+  "recordQuickSleepNightTooLongError": "Night sleep cannot exceed 16 hours.",
   "recordQuickSleepInProgressBadge": "Active",
-  "recordQuickSleepKeepSeparateAction": "Keep separate",
-  "recordQuickSleepMergeAction": "Merge",
   "recordQuickMealConfirmTitle": "Confirm meal record",
   "recordFastEntryMultiSelectAction": "Multi-select",
   "recordFastEntryPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",

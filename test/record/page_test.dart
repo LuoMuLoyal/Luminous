@@ -994,7 +994,9 @@ void main() {
     expect(repo.deleteCalledWith, 'test-id-1');
   });
 
-  testWidgets('Record sleep quick action creates a start fact', (tester) async {
+  testWidgets('Record sleep quick action logs one complete sleep record', (
+    tester,
+  ) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(480, 1200);
     addTearDown(() {
@@ -1002,44 +1004,49 @@ void main() {
       tester.view.resetPhysicalSize();
     });
     final dailyRepo = _FakeDailyRecordRepository();
-    final currentDateTime = DateTime(2026, 6, 6, 9, 45);
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await _pumpRecordRouter(
       tester,
       dailyRecordRepository: dailyRepo,
       selectedDate: DateTime(2026, 6, 6),
-      currentDateTime: currentDateTime,
+      currentDateTime: DateTime(2026, 6, 6, 9, 45),
     );
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('record-quick-sleep')));
     await tester.pumpAndSettle();
 
-    expect(find.text(l10n.recordQuickSleepTypeTitle), findsOneWidget);
-    await tester.tap(find.text(l10n.recordQuickSleepNightAction));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(l10n.commonConfirm));
+    // One-shot sheet: the record date is written out and nothing is saved yet.
+    expect(find.text(l10n.recordQuickSleepSheetTitle), findsOneWidget);
+    expect(find.text(l10n.recordQuickSleepRecordedOn(6, 6)), findsOneWidget);
+    expect(dailyRepo.createdInputs, isEmpty);
+
+    await tester.tap(find.byKey(const Key('sleep-quick-entry-save')));
     await tester.pumpAndSettle();
 
-    expect(find.byType(RecordCreatePage), findsNothing);
-    final input = dailyRepo.createInput;
-    expect(input, isNotNull);
-    expect(input!.kind, DailyRecordKind.sleep);
+    expect(dailyRepo.createdInputs, hasLength(1));
+    final input = dailyRepo.createdInputs.single;
+    final payload = input.payload!;
+    expect(input.kind, DailyRecordKind.sleep);
     expect(input.occurredAt, '2026-06-06');
-    expect(input.occurredTime, '09:45');
-    expect(input.title, isNull);
-    expect(input.value, isNull);
-    expect(input.unit, isNull);
+    expect(input.occurredTime, '07:00');
     expect(input.note, isNull);
-    expect(input.payload, {
-      'sleepEvent': 'start',
-      'eventAt': currentDateTime.toUtc().toIso8601String(),
-      'sleepType': 'nightSleep',
-    });
+    expect(payload['durationMinutes'], 480);
+    expect(payload['sleepType'], 'nightSleep');
+    expect(payload.containsKey('startAt'), isFalse);
+    expect(payload.containsKey('sleepEvent'), isFalse);
+    expect(
+      DateTime.parse(payload['startedAt']! as String).toLocal(),
+      DateTime(2026, 6, 5, 23),
+    );
+    expect(
+      DateTime.parse(payload['endedAt']! as String).toLocal(),
+      DateTime(2026, 6, 6, 7),
+    );
   });
 
-  testWidgets('Record sleep quick action records wake and merges confirmed', (
+  testWidgets('Record sleep quick action prefills from the latest record', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -1053,13 +1060,15 @@ void main() {
       recordsByDate: {
         '2026-06-05': [
           _dailyRecord(
-            id: 'sleep-start-1',
+            id: 'nap-1',
             kind: DailyRecordKind.sleep,
             occurredAt: '2026-06-05',
-            occurredTime: '23:15',
+            occurredTime: '13:30',
             payload: {
-              'sleepEvent': 'start',
-              'eventAt': DateTime.utc(2026, 6, 5, 15, 15).toIso8601String(),
+              'sleepType': 'nap',
+              'durationMinutes': 30,
+              'startedAt': DateTime(2026, 6, 5, 13).toUtc().toIso8601String(),
+              'endedAt': DateTime(2026, 6, 5, 13, 30).toUtc().toIso8601String(),
             },
           ),
         ],
@@ -1071,35 +1080,23 @@ void main() {
       tester,
       dailyRecordRepository: dailyRepo,
       selectedDate: DateTime(2026, 6, 6),
-      currentDateTime: DateTime.utc(2026, 6, 5, 23, 10),
+      currentDateTime: DateTime(2026, 6, 6, 9, 45),
     );
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('record-quick-sleep')));
     await tester.pumpAndSettle();
 
-    expect(find.text('合并为一条睡眠记录？'), findsOneWidget);
-    expect(dailyRepo.createdInputs, hasLength(1));
-    expect(dailyRepo.createdInputs.first.payload, {
-      'sleepEvent': 'wake',
-      'eventAt': DateTime.utc(2026, 6, 5, 23, 10).toIso8601String(),
-      'startedRecordId': 'sleep-start-1',
-    });
-
-    await tester.tap(find.text('合并'));
+    await tester.tap(find.byKey(const Key('sleep-quick-entry-save')));
     await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 2));
 
-    expect(dailyRepo.createdInputs, hasLength(2));
-    expect(dailyRepo.createdInputs.last.kind, DailyRecordKind.sleep);
-    expect(dailyRepo.createdInputs.last.occurredAt, '2026-06-06');
-    expect(dailyRepo.createdInputs.last.payload, {
-      'durationMinutes': 475,
-      'sleepType': 'nightSleep',
-      'startedAt': DateTime.utc(2026, 6, 5, 15, 15).toIso8601String(),
-      'endedAt': DateTime.utc(2026, 6, 5, 23, 10).toIso8601String(),
-    });
-    expect(dailyRepo.deletedIds, ['sleep-start-1', 'created-id-1']);
+    // Type and clock times both follow the latest sleep record.
+    final input = dailyRepo.createdInputs.single;
+    expect(input.kind, DailyRecordKind.sleep);
+    expect(input.occurredAt, '2026-06-06');
+    expect(input.occurredTime, '13:30');
+    expect(input.payload!['sleepType'], 'nap');
+    expect(input.payload!['durationMinutes'], 30);
   });
 
   testWidgets('Record mobile note quick action opens fast entry first', (

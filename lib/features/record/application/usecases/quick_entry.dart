@@ -52,13 +52,10 @@ Future<void> handleQuickAction(
   }
 
   if (action.type == RecordEntryType.sleep) {
-    await handleSleepQuickAction(
+    await handleSleepQuickEntry(
       context,
       ref,
       selectedDate: selectedDate,
-      now: now,
-      occurredAt: date,
-      occurredTime: currentTime,
       canAccessProtectedData: canAccessProtectedData,
       isAuthLoading: isAuthLoading,
     );
