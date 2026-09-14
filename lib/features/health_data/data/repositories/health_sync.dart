@@ -210,13 +210,9 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
     }
 
     final start =
-        _parsePayloadTime(payload?['startedAt']) ??
-        _parsePayloadTime(payload?['startAt']) ??
-        _recordDateTime(record);
+        _parsePayloadTime(payload?['startedAt']) ?? _recordDateTime(record);
     final end =
-        _parsePayloadTime(payload?['endedAt']) ??
-        _parsePayloadTime(payload?['endAt']) ??
-        _recordDateTime(record);
+        _parsePayloadTime(payload?['endedAt']) ?? _recordDateTime(record);
     if (start == null || end == null) return null;
 
     final Object? value;

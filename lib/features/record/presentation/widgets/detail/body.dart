@@ -15,13 +15,13 @@ import 'package:luminous/features/record/presentation/controllers/meal_analysis_
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/utils/detail_labels.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
+import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/hero_avatar.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/image.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/info_rows.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/source_badge.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/surface.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/water_progress.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_status_badge.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_summary_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -378,8 +378,8 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
 
     final rows = <DetailRowData>[];
 
-    final startAt = payload['startAt'] as String?;
-    final endAt = payload['endAt'] as String?;
+    final startAt = payload['startedAt'] as String?;
+    final endAt = payload['endedAt'] as String?;
     if (startAt != null && endAt != null) {
       final startDt = DateTime.tryParse(startAt);
       final endDt = DateTime.tryParse(endAt);

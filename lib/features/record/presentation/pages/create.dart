@@ -21,11 +21,11 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/record_create_form.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordCreatePage extends HookConsumerWidget {
@@ -99,47 +99,19 @@ class RecordCreatePage extends HookConsumerWidget {
       return null;
     }
 
-    Map<String, dynamic>? buildSleepPayload(DailyRecordKind k) {
+    /// 创建页没有类型选择，固定按夜间睡眠落库；小睡走快速录入。
+    Map<String, dynamic>? sleepPayloadForKind(DailyRecordKind k) {
       if (k != DailyRecordKind.sleep) return null;
-      final minutes = computeSleepDurationMinutes(
-        sleepBedtime.value,
-        sleepWakeTime.value,
+      return buildSleepPayload(
+        recordDate: recordDate.value,
+        bedtime: sleepBedtime.value,
+        wakeTime: sleepWakeTime.value,
+        kind: SleepEntryKind.nightSleep,
+        quality: sleepQuality.value,
+        deepMinutes: sleepDeepMinutes.value,
+        lightMinutes: sleepLightMinutes.value,
+        remMinutes: sleepRemMinutes.value,
       );
-      if (minutes == null || minutes <= 0) return null;
-      final payload = <String, dynamic>{'durationMinutes': minutes};
-      final bedTime = sleepBedtime.value;
-      final wakeTime = sleepWakeTime.value;
-      if (bedTime != null && wakeTime != null) {
-        final date = recordDate.value;
-        final wake = DateTime(
-          date.year,
-          date.month,
-          date.day,
-          wakeTime.hour,
-          wakeTime.minute,
-        );
-        var bed = DateTime(
-          date.year,
-          date.month,
-          date.day,
-          bedTime.hour,
-          bedTime.minute,
-        );
-        if (!bed.isBefore(wake)) bed = bed.subtract(const Duration(days: 1));
-        payload['startAt'] = bed.toUtc().toIso8601String();
-        payload['endAt'] = wake.toUtc().toIso8601String();
-      }
-      if (sleepQuality.value != null) payload['quality'] = sleepQuality.value;
-      if (sleepDeepMinutes.value != null && sleepDeepMinutes.value! > 0) {
-        payload['deepMinutes'] = sleepDeepMinutes.value;
-      }
-      if (sleepLightMinutes.value != null && sleepLightMinutes.value! > 0) {
-        payload['lightMinutes'] = sleepLightMinutes.value;
-      }
-      if (sleepRemMinutes.value != null && sleepRemMinutes.value! > 0) {
-        payload['remMinutes'] = sleepRemMinutes.value;
-      }
-      return payload;
     }
 
     bool isValidSleepValue() {
@@ -317,7 +289,7 @@ class RecordCreatePage extends HookConsumerWidget {
                     : null,
                 unit: rules.showUnit ? unitTextForKind(kind.value) : null,
                 note: optionalText(noteController),
-                payload: buildSleepPayload(kind.value),
+                payload: sleepPayloadForKind(kind.value),
                 attachments: attachments,
               ),
             )

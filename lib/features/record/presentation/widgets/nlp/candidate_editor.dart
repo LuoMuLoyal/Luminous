@@ -4,9 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
+import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordNlpCandidateEditor extends HookWidget {
@@ -280,9 +282,9 @@ class _SleepCandidateFields extends StatelessWidget {
     );
     final quality = payload['quality'] as String?;
 
-    // Extract bedtime/wakeTime from payload startAt/endAt if available.
-    final bedtime = _extractTimeOfDay(payload['startAt']);
-    final wakeTime = _extractTimeOfDay(payload['endAt']);
+    // Extract bedtime/wakeTime from the canonical payload instants.
+    final bedtime = _extractTimeOfDay(payload['startedAt']);
+    final wakeTime = _extractTimeOfDay(payload['endedAt']);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -296,15 +298,15 @@ class _SleepCandidateFields extends StatelessWidget {
                 control: FTimeFieldControl.lifted(
                   time: bedtime?.toFTime(),
                   onChange: (value) {
-                    final nextPayload = Map<String, dynamic>.from(payload);
-                    final time = value?.toTimeOfDay();
-                    if (time != null) {
-                      nextPayload['startAt'] = _timeOfDayToPayload(time);
-                    } else {
-                      nextPayload.remove('startAt');
-                    }
-                    _syncDurationMinutes(nextPayload, time, wakeTime);
-                    onChanged(item.copyWith(payload: nextPayload));
+                    onChanged(
+                      item.copyWith(
+                        payload: _withSleepTimes(
+                          payload,
+                          bedtime: value?.toTimeOfDay(),
+                          wakeTime: wakeTime,
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -317,15 +319,15 @@ class _SleepCandidateFields extends StatelessWidget {
                 control: FTimeFieldControl.lifted(
                   time: wakeTime?.toFTime(),
                   onChange: (value) {
-                    final nextPayload = Map<String, dynamic>.from(payload);
-                    final time = value?.toTimeOfDay();
-                    if (time != null) {
-                      nextPayload['endAt'] = _timeOfDayToPayload(time);
-                    } else {
-                      nextPayload.remove('endAt');
-                    }
-                    _syncDurationMinutes(nextPayload, bedtime, time);
-                    onChanged(item.copyWith(payload: nextPayload));
+                    onChanged(
+                      item.copyWith(
+                        payload: _withSleepTimes(
+                          payload,
+                          bedtime: bedtime,
+                          wakeTime: value?.toTimeOfDay(),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -335,7 +337,8 @@ class _SleepCandidateFields extends StatelessWidget {
         if (bedtime != null && wakeTime != null) ...[
           const SizedBox(height: Spacing.md),
           Text(
-            '${l10n.recordSleepDurationLabel}: ${_formatDuration(computeSleepDurationMinutes(bedtime, wakeTime) ?? 0, l10n)}',
+            '${l10n.recordSleepDurationLabel}: '
+            '${formatSleepDurationLabel(computeSleepDurationMinutes(bedtime, wakeTime) ?? 0, l10n)}',
             style: context.theme.typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
@@ -374,51 +377,42 @@ class _SleepCandidateFields extends StatelessWidget {
     );
   }
 
-  /// Extracts a [TimeOfDay] from a payload value that may be an ISO string
-  /// or an hour:minute map.
+  /// Extracts a [TimeOfDay] from a canonical ISO instant payload value.
   TimeOfDay? _extractTimeOfDay(Object? value) {
-    if (value is String) {
-      final dt = DateTime.tryParse(value);
-      if (dt != null) {
-        final local = dt.toLocal();
-        return TimeOfDay(hour: local.hour, minute: local.minute);
-      }
-      return null;
-    }
-    if (value is Map) {
-      final hour = value['hour'];
-      final minute = value['minute'];
-      if (hour is int && minute is int) {
-        return TimeOfDay(hour: hour, minute: minute);
-      }
-    }
-    return null;
+    if (value is! String) return null;
+    final dt = DateTime.tryParse(value);
+    if (dt == null) return null;
+    final local = dt.toLocal();
+    return TimeOfDay(hour: local.hour, minute: local.minute);
   }
 
-  /// Converts a [TimeOfDay] to a storable payload map.
-  Map<String, int> _timeOfDayToPayload(TimeOfDay time) {
-    return {'hour': time.hour, 'minute': time.minute};
-  }
+  /// Rewrites the canonical sleep keys (`startedAt`/`endedAt`/`durationMinutes`)
+  /// from the edited clock times, resolved against the candidate's wake date.
+  Map<String, dynamic> _withSleepTimes(
+    Map<String, dynamic> payload, {
+    required TimeOfDay? bedtime,
+    required TimeOfDay? wakeTime,
+  }) {
+    final next = Map<String, dynamic>.from(payload)
+      ..remove('startedAt')
+      ..remove('endedAt')
+      ..remove('durationMinutes');
 
-  /// Updates `durationMinutes` in the payload based on bedtime and wake time.
-  void _syncDurationMinutes(
-    Map<String, dynamic> payload,
-    TimeOfDay? bedtime,
-    TimeOfDay? wakeTime,
-  ) {
-    final minutes = computeSleepDurationMinutes(bedtime, wakeTime);
-    if (minutes != null && minutes > 0) {
-      payload['durationMinutes'] = minutes;
-    } else {
-      payload.remove('durationMinutes');
-    }
-  }
+    final recordDate = parseRecordDate(item.occurredAt);
+    if (bedtime == null || wakeTime == null || recordDate == null) return next;
 
-  String _formatDuration(int minutes, AppLocalizations l10n) {
-    final h = minutes ~/ 60;
-    final m = minutes % 60;
-    if (m == 0) return '$h${l10n.todayVitalSleepUnit}';
-    return '$h${l10n.todayVitalSleepUnit} $m${l10n.recordSleepMinutesUnit}';
+    final window = resolveSleepWindow(
+      recordDate: recordDate,
+      bedtime: bedtime,
+      wakeTime: wakeTime,
+      kind: SleepEntryKind.fromPayload(payload['sleepType']),
+    );
+    if (window == null) return next;
+
+    next['startedAt'] = window.startedAt.toUtc().toIso8601String();
+    next['endedAt'] = window.endedAt.toUtc().toIso8601String();
+    next['durationMinutes'] = window.durationMinutes;
+    return next;
   }
 }
 

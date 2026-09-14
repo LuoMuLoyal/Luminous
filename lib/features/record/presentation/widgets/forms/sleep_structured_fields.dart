@@ -3,21 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/record/domain/services/sleep_entry.dart';
+import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-class SleepQuality {
-  const SleepQuality(this.key, this.label);
-
-  final String key;
-  final String label;
-}
-
-List<SleepQuality> sleepQualityOptions(AppLocalizations l10n) => [
-  SleepQuality('poor', l10n.recordSleepQualityPoor),
-  SleepQuality('fair', l10n.recordSleepQualityFair),
-  SleepQuality('good', l10n.recordSleepQualityGood),
-  SleepQuality('excellent', l10n.recordSleepQualityExcellent),
-];
 
 class SleepStructuredFields extends StatelessWidget {
   const SleepStructuredFields({
@@ -87,7 +75,8 @@ class SleepStructuredFields extends StatelessWidget {
         if (durationMinutes != null) ...[
           const SizedBox(height: Spacing.md),
           Text(
-            '${l10n.recordSleepDurationLabel}: ${_formatDuration(durationMinutes, l10n)}',
+            '${l10n.recordSleepDurationLabel}: '
+            '${formatSleepDurationLabel(durationMinutes, l10n)}',
             style: context.theme.typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
             ),
@@ -148,33 +137,6 @@ class SleepStructuredFields extends StatelessWidget {
     );
   }
 }
-
-int? computeSleepDurationMinutes(TimeOfDay? bedtime, TimeOfDay? wakeTime) {
-  if (bedtime == null || wakeTime == null) return null;
-  final bedMinutes = bedtime.hour * 60 + bedtime.minute;
-  final wakeMinutes = wakeTime.hour * 60 + wakeTime.minute;
-  var diff = wakeMinutes - bedMinutes;
-  if (diff < 0) diff += 24 * 60;
-  // Same bedtime and wake time is ambiguous — treat as invalid rather
-  // than a full 24-hour sleep.
-  if (diff == 0) return null;
-  return diff;
-}
-
-String _formatDuration(int minutes, AppLocalizations l10n) {
-  final h = minutes ~/ 60;
-  final m = minutes % 60;
-  if (m == 0) return '$h${l10n.todayVitalSleepUnit}';
-  return '$h${l10n.todayVitalSleepUnit} $m${l10n.recordSleepMinutesUnit}';
-}
-
-String? formatSleepTimeRange(TimeOfDay? bedtime, TimeOfDay? wakeTime) {
-  if (bedtime == null || wakeTime == null) return null;
-  return '${_fmt(bedtime)} – ${_fmt(wakeTime)}';
-}
-
-String _fmt(TimeOfDay t) =>
-    '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
 extension _SleepTimeOfDay on TimeOfDay {
   FTime toFTime() => FTime(hour, minute);

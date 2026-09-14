@@ -10,11 +10,11 @@ import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 
 /// Outcome of a save attempt, mapped to user-facing feedback by the page.
 enum RecordEditSaveResult { saved, invalidSleep, failed }
@@ -166,6 +166,11 @@ class RecordEditController extends Notifier<RecordEditState> {
   /// dirty detection. Never mutated afterwards (states are immutable).
   RecordEditState? _loadedSnapshot;
 
+  /// `sleepType` read from the loaded record's payload. The edit form has no
+  /// type selector, so the loaded value is preserved verbatim on save instead
+  /// of being forced back to `nightSleep`.
+  String? _sleepType;
+
   /// Whether the form differs from the loaded record.
   ///
   /// Text fields are passed in because they live in page-level controllers.
@@ -209,11 +214,12 @@ class RecordEditController extends Notifier<RecordEditState> {
       final result = await repo.get(recordId).run();
       final record = result.fold((failure) => throw failure, (item) => item);
       final mealAnalysis = parseMealAnalysisViewData(record.payload);
-      final startAt = record.payload?['startAt'] as String?;
-      final endAt = record.payload?['endAt'] as String?;
+      final startAt = record.payload?['startedAt'] as String?;
+      final endAt = record.payload?['endedAt'] as String?;
       final deep = record.payload?['deepMinutes'];
       final light = record.payload?['lightMinutes'];
       final rem = record.payload?['remMinutes'];
+      _sleepType = record.payload?['sleepType'] as String?;
 
       state = RecordEditState(
         loading: false,
@@ -252,6 +258,7 @@ class RecordEditController extends Notifier<RecordEditState> {
   }
 
   void setKind(DailyRecordKind kind) {
+    _sleepType = null;
     state = state.copyWith(
       kind: kind,
       bedtime: null,
@@ -439,39 +446,35 @@ class RecordEditController extends Notifier<RecordEditState> {
   }
 
   Map<String, dynamic>? _buildSleepPayload() {
+    final kind = SleepEntryKind.fromPayload(_sleepType);
+    final occurredAt = state.occurredAt ?? clock.now();
+    final payload = buildSleepPayload(
+      recordDate: occurredAt,
+      bedtime: state.bedtime,
+      wakeTime: state.wakeTime,
+      kind: kind,
+      quality: state.sleepQuality,
+      deepMinutes: state.deepMinutes,
+      lightMinutes: state.lightMinutes,
+      remMinutes: state.remMinutes,
+    );
+    if (payload != null) return payload;
+
+    // Records imported from a device may carry a duration without clock times;
+    // keep that duration editable rather than dropping the payload entirely.
     final minutes = resolvedSleepDurationMinutes();
     if (minutes == null || minutes <= 0) return null;
-    final payload = <String, dynamic>{'durationMinutes': minutes};
-    final bedTime = state.bedtime;
-    final wakeTime = state.wakeTime;
-    if (bedTime != null && wakeTime != null) {
-      final occurredAt = state.occurredAt ?? clock.now();
-      final wake = DateTime(
-        occurredAt.year,
-        occurredAt.month,
-        occurredAt.day,
-        wakeTime.hour,
-        wakeTime.minute,
-      );
-      var bed = DateTime(
-        occurredAt.year,
-        occurredAt.month,
-        occurredAt.day,
-        bedTime.hour,
-        bedTime.minute,
-      );
-      if (!bed.isBefore(wake)) bed = bed.subtract(const Duration(days: 1));
-      payload['startAt'] = bed.toUtc().toIso8601String();
-      payload['endAt'] = wake.toUtc().toIso8601String();
-    }
-    if (state.sleepQuality != null) payload['quality'] = state.sleepQuality;
-    final deep = state.deepMinutes;
-    if (deep != null && deep > 0) payload['deepMinutes'] = deep;
-    final light = state.lightMinutes;
-    if (light != null && light > 0) payload['lightMinutes'] = light;
-    final rem = state.remMinutes;
-    if (rem != null && rem > 0) payload['remMinutes'] = rem;
-    return payload;
+    return <String, dynamic>{
+      'durationMinutes': minutes,
+      'sleepType': kind.wireValue,
+      if (state.sleepQuality != null) 'quality': state.sleepQuality,
+      if (state.deepMinutes != null && state.deepMinutes! > 0)
+        'deepMinutes': state.deepMinutes,
+      if (state.lightMinutes != null && state.lightMinutes! > 0)
+        'lightMinutes': state.lightMinutes,
+      if (state.remMinutes != null && state.remMinutes! > 0)
+        'remMinutes': state.remMinutes,
+    };
   }
 
   Map<String, dynamic>? _buildMealPayload() {

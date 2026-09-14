@@ -822,7 +822,10 @@ void main() {
       final input = repo.lastUpdateInput;
       expect(input, isNotNull);
       expect(input!.note, 'edit-preserve-time');
-      expect(input.payload, {'durationMinutes': 480});
+      expect(input.payload, {
+        'durationMinutes': 480,
+        'sleepType': 'nightSleep',
+      });
     },
   );
 
