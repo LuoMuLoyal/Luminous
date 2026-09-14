@@ -156,27 +156,6 @@ class _MoodSettings extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        FSelect<String>.rich(
-          key: const Key('quick-type-mood-default-level'),
-          label: Text(l10n.recordQuickSettingsMoodDefaultLevel),
-          format: (value) => moodLevelLabel(l10n, value),
-          control: FSelectControl.lifted(
-            value: prefs.moodDefaultLevel,
-            onChange: (value) {
-              if (value != null) {
-                unawaited(controller.setMoodDefaultLevel(value));
-              }
-            },
-          ),
-          children: [
-            for (final level in kMoodLevelOptions)
-              FSelectItem.item(
-                title: Text(moodLevelLabel(l10n, level)),
-                value: level,
-              ),
-          ],
-        ),
-        const SizedBox(height: Spacing.md),
         FSelect<QuickEntryMoodBadgeMode>.rich(
           key: const Key('quick-type-mood-badge'),
           label: Text(l10n.recordQuickSettingsMoodBadge),

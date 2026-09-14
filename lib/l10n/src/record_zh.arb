@@ -158,8 +158,6 @@
   "recordQuickSettingsMoodBadge": "情绪角标",
   "recordQuickSettingsMoodBadgeLatest": "今日最新",
   "recordQuickSettingsMoodBadgeHidden": "不显示",
-  "recordQuickSettingsMoodDefaultLevel": "默认心情",
-  "recordQuickSettingsMoodDefaultLevelHint": "快速记录弹窗中会高亮默认心情选项",
   "recordQuickSettingsMedicationAutoRecord": "仅一种药时自动记录",
   "recordQuickSettingsMedicationAutoRecordHint": "关闭后，即使只有一种药也会弹出选择确认",
   "recordQuickSettingsMedicationAlreadyRecordedHint": "已记录时显示提示",

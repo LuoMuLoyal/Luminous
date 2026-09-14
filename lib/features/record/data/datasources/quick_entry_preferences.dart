@@ -14,7 +14,6 @@ const _kSymptomDefaultSeverity =
     PrefKeys.recordQuickEntrySymptomDefaultSeverity;
 const _kSymptomEnabledChoices = PrefKeys.recordQuickEntrySymptomEnabledChoices;
 const _kMoodBadgeMode = PrefKeys.recordQuickEntryMoodBadgeMode;
-const _kMoodDefaultLevel = PrefKeys.recordQuickEntryMoodDefaultLevel;
 const _kMedicationAutoRecordSingle =
     PrefKeys.recordQuickEntryMedicationAutoRecordSingle;
 const _kMedicationShowAlreadyRecordedHint =
@@ -73,7 +72,6 @@ class QuickEntryPreferences {
     this.symptomDefaultSeverity = 'mild',
     this.symptomEnabledChoices = const [],
     this.moodBadgeMode = QuickEntryMoodBadgeMode.latest,
-    this.moodDefaultLevel = 'good',
     this.medicationAutoRecordSingle = true,
     this.medicationShowAlreadyRecordedHint = true,
     this.customIcons = const {},
@@ -112,10 +110,6 @@ class QuickEntryPreferences {
   /// How the mood quick-entry tile should summarize today's mood.
   final QuickEntryMoodBadgeMode moodBadgeMode;
 
-  /// Default mood level applied when highlighting a choice in the fast-entry
-  /// dialog. One of `'great'`, `'good'`, `'okay'`, `'bad'`, `'terrible'`.
-  final String moodDefaultLevel;
-
   /// Whether a single current medicine should be auto-recorded on tap.
   final bool medicationAutoRecordSingle;
 
@@ -138,7 +132,6 @@ class QuickEntryPreferences {
     String? symptomDefaultSeverity,
     List<String>? symptomEnabledChoices,
     QuickEntryMoodBadgeMode? moodBadgeMode,
-    String? moodDefaultLevel,
     bool? medicationAutoRecordSingle,
     bool? medicationShowAlreadyRecordedHint,
     Map<String, String>? customIcons,
@@ -156,7 +149,6 @@ class QuickEntryPreferences {
       symptomEnabledChoices:
           symptomEnabledChoices ?? this.symptomEnabledChoices,
       moodBadgeMode: moodBadgeMode ?? this.moodBadgeMode,
-      moodDefaultLevel: moodDefaultLevel ?? this.moodDefaultLevel,
       medicationAutoRecordSingle:
           medicationAutoRecordSingle ?? this.medicationAutoRecordSingle,
       medicationShowAlreadyRecordedHint:
@@ -194,7 +186,6 @@ class QuickEntryPreferencesController
     final symptomEnabledChoices =
         prefs.getStringList(_kSymptomEnabledChoices) ?? const [];
     final moodBadgeMode = _parseMoodBadgeMode(prefs.getString(_kMoodBadgeMode));
-    final moodDefaultLevel = prefs.getString(_kMoodDefaultLevel) ?? 'good';
     final medicationAutoRecordSingle =
         prefs.getBool(_kMedicationAutoRecordSingle) ?? true;
     final medicationShowAlreadyRecordedHint =
@@ -234,7 +225,6 @@ class QuickEntryPreferencesController
       symptomDefaultSeverity: symptomDefaultSeverity,
       symptomEnabledChoices: symptomEnabledChoices,
       moodBadgeMode: moodBadgeMode,
-      moodDefaultLevel: moodDefaultLevel,
       medicationAutoRecordSingle: medicationAutoRecordSingle,
       medicationShowAlreadyRecordedHint: medicationShowAlreadyRecordedHint,
       customIcons: customIcons,
@@ -332,13 +322,6 @@ class QuickEntryPreferencesController
     await prefs.setStringList(_kSymptomEnabledChoices, choices);
   }
 
-  Future<void> setMoodDefaultLevel(String level) async {
-    final current = state.asData?.value ?? const QuickEntryPreferences();
-    state = AsyncData(current.copyWith(moodDefaultLevel: level));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kMoodDefaultLevel, level);
-  }
-
   Future<void> setMoodBadgeMode(QuickEntryMoodBadgeMode mode) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(moodBadgeMode: mode));
@@ -426,7 +409,6 @@ class QuickEntryPreferencesController
     await prefs.remove(_kSymptomDefaultSeverity);
     await prefs.remove(_kSymptomEnabledChoices);
     await prefs.remove(_kMoodBadgeMode);
-    await prefs.remove(_kMoodDefaultLevel);
     await prefs.remove(_kMedicationAutoRecordSingle);
     await prefs.remove(_kMedicationShowAlreadyRecordedHint);
     await prefs.remove(_kCustomIcons);
