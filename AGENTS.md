@@ -8,7 +8,7 @@ area expects. The pre-commit hook runs the same tool in **report-only** mode —
 "code staged but no docs/ staged → commit blocked" gate is retired (two-week observation
 before the mapping is removed entirely; tracked in `docs/TODO.md`). Structural
 guarantees live in `--verify` (pre-push / daily): doc-map references, link integrity,
-front-matter, 90-day freshness, readership, README budget. The migration-log overwrite
+front-matter, 90-day freshness, readership. The migration-log overwrite
 check in pre-commit still blocks.
 
 ### Standing rules

@@ -94,7 +94,7 @@ Future<void> runPrePushChecks(ToolContext context) async {
   stdout.writeln('');
 
   // Structural docs governance (doc-map references, link integrity,
-  // front-matter, freshness, readership, README budget).
+  // front-matter, freshness, readership).
   await runLoggedCommand(
     'dart',
     ['run', 'scripts/docs/verify.dart', '--verify'],

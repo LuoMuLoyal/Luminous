@@ -44,7 +44,7 @@ YYYY-MM-DD-short-task-name.md
   — Agentic → Proactive → 伴身演进客户端任务清单:语义搜索/扫药视觉增强接入、assistant 能力组件化并贯穿 today/review/medicine 主流程、Proactive 推送承接与偏好开关、跨端会话一致(远期);与 `Lucent/plans/2026-09-02-agentic-proactive-evolution.md` 配套
 
 - 文档治理改进计划（2026-08-31，实施完毕文件已删）
-  — 四问审计与归档、docs 去编号重建、feature/core README 全量、可执行约束（七规则 CLI 包 + analysis_options 收紧 + 正文路径校验 + README ≤60 断言）与 doc-map 退役全部落地；两周观察期、七规则收敛与 IDE 插件集成等遗留项见 `docs/TODO.md`「2026-08-31 文档治理遗留」
+  — 四问审计与归档、docs 去编号重建、feature/core README 全量、可执行约束（七规则 CLI 包 + analysis_options 收紧 + 正文路径校验）与 doc-map 退役全部落地；两周观察期、七规则收敛与 IDE 插件集成等遗留项见 `docs/TODO.md`「2026-08-31 文档治理遗留」
 
 - [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
   — 中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门
