@@ -9,11 +9,15 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
 import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
+import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
+import 'package:luminous/features/record/presentation/quick_entry/symptom_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/symptom_quick_entry_sheet.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_quick_entry_sheet.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class QuickEntryExecutor {
@@ -46,6 +50,11 @@ class QuickEntryExecutor {
 
     if (kind == DailyRecordKind.water) {
       await _recordWater(context);
+      return;
+    }
+
+    if (kind == DailyRecordKind.symptom) {
+      await _recordSymptom(context, route);
       return;
     }
 
@@ -116,6 +125,114 @@ class QuickEntryExecutor {
     );
   }
 
+  /// 症状：sheet 只收集选择，落库与撤销都在这里（application 层）做。
+  ///
+  /// 撤销 toast 的 action 用的是页面 context：若让 sheet 自己落库 + 弹 toast，等用户点
+  /// 撤销时 sheet 的 context 已失活，撤销会静默失效。
+  Future<void> _recordSymptom(
+    QuickEntryExecutionContext context,
+    String moreRoute,
+  ) async {
+    final buildContext = context.buildContext;
+    final l10n = AppLocalizations.of(buildContext)!;
+    final choices = filterSymptomChoices(
+      recordFastEntryChoicesFor(DailyRecordKind.symptom, l10n),
+      enabledCodes: preferences.symptomEnabledChoices,
+    );
+    // 设置层保证至少启用一项；真被全部停用时不做任何事。
+    if (choices.isEmpty) return;
+
+    final outcome = await showSymptomQuickEntrySheet(
+      buildContext,
+      recordDate: context.selectedDate,
+      choices: choices,
+      initialSeverity: preferences.symptomDefaultSeverity,
+    );
+    if (outcome == null || !buildContext.mounted) return;
+
+    switch (outcome) {
+      case SymptomQuickEntryMore():
+        unawaited(buildContext.push(moreRoute));
+      case SymptomQuickEntrySelection(:final choices, :final severity):
+        await _saveSymptomSelection(context, choices, severity);
+    }
+  }
+
+  Future<void> _saveSymptomSelection(
+    QuickEntryExecutionContext context,
+    List<RecordFastChoice> choices,
+    String severity,
+  ) async {
+    final buildContext = context.buildContext;
+    final l10n = AppLocalizations.of(buildContext)!;
+    final severityLabel = symptomSeverityLabel(l10n, severity);
+    final flow = SymptomQuickEntryFlow(
+      createRecord: createRecord,
+      emitDataChange: emitDataChange,
+      registerUndo: (_) {},
+    );
+    final recordContext = QuickEntryRecordContext(
+      occurredAt: context.occurredAt,
+      occurredTime: context.occurredTime,
+    );
+    final selections = [
+      for (final choice in choices)
+        SymptomQuickChoice(
+          title: choice.title ?? choice.label,
+          value: severityLabel,
+          note: choice.note,
+          payload: <String, dynamic>{...?choice.payload, 'severity': severity},
+        ),
+    ];
+
+    QuickEntryUndoAction? undo;
+    var message = l10n.recordQuickSavedToast;
+    try {
+      if (selections.length == 1) {
+        final item = await flow.recordSingle(recordContext, selections.single);
+        undo = QuickEntryUndoAction.deleteDailyRecord(recordId: item.id);
+      } else {
+        final result = await flow.recordBatch(recordContext, selections);
+        if (result.succeeded.isEmpty) {
+          if (!buildContext.mounted) return;
+          await Toast.show(buildContext, l10n.recordCreateFailedToast);
+          return;
+        }
+        undo = result.batchUndo;
+        if (result.failed.isNotEmpty) {
+          message = l10n.recordFastEntryPartialFailedToast(
+            result.succeeded.length,
+            result.failed.length,
+          );
+        }
+      }
+    } catch (e, st) {
+      appTalker.error('QuickEntryExecutor: symptom record failed: $e', st);
+      if (!buildContext.mounted) return;
+      await Toast.show(buildContext, l10n.recordCreateFailedToast);
+      return;
+    }
+
+    final action = undo;
+    if (!buildContext.mounted) return;
+    if (action == null) {
+      await Toast.show(buildContext, message);
+      return;
+    }
+    await Toast.showWithAction(
+      buildContext,
+      message,
+      l10n.recordQuickUndoAction,
+      // The undo action fires on a later user tap; the calling page may have
+      // been popped in between, so guard before using the context (deactivated
+      // context trips the `_dependents.isEmpty` assertion).
+      () {
+        if (!buildContext.mounted) return;
+        unawaited(_undo(buildContext, action));
+      },
+    );
+  }
+
   Future<void> _undo(
     BuildContext buildContext,
     QuickEntryUndoAction action,
@@ -148,11 +265,9 @@ class QuickEntryExecutor {
   }
 
   bool _usesLegacyFastEntry(DailyRecordKind kind) {
+    // water / symptom 各有专用入口（下方分支已拦截）；这里只剩情绪与备注。
     return switch (kind) {
-      DailyRecordKind.water ||
-      DailyRecordKind.symptom ||
-      DailyRecordKind.mood ||
-      DailyRecordKind.note => true,
+      DailyRecordKind.mood || DailyRecordKind.note => true,
       _ => false,
     };
   }

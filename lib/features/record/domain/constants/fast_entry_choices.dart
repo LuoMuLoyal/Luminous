@@ -39,6 +39,18 @@ String? recordFastChoiceCode(RecordFastChoice choice) {
   return code is String && code.isNotEmpty ? code : null;
 }
 
+/// 按偏好里的启用目录码筛出症状项；[enabledCodes] 为空表示全部启用。
+List<RecordFastChoice> filterSymptomChoices(
+  List<RecordFastChoice> choices, {
+  required List<String> enabledCodes,
+}) {
+  if (enabledCodes.isEmpty) return choices;
+  final enabled = enabledCodes.toSet();
+  return choices
+      .where((choice) => enabled.contains(recordFastChoiceCode(choice)))
+      .toList(growable: false);
+}
+
 /// Returns the quick-entry choices for the given record [kind].
 List<RecordFastChoice> recordFastEntryChoicesFor(
   DailyRecordKind kind,

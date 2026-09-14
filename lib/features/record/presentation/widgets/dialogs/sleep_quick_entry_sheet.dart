@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/pill_chip.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
@@ -306,7 +307,8 @@ class _SleepQuickEntrySheetBodyState extends State<SleepQuickEntrySheetBody> {
                   runSpacing: Spacing.sm,
                   children: [
                     for (final option in sleepQualityOptions(l10n))
-                      _QualityChip(
+                      PillChip(
+                        key: Key('sleep-quick-quality-${option.key}'),
                         label: option.label,
                         selected: _quality == option.key,
                         onPress: () => _toggleQuality(option.key),
@@ -328,50 +330,6 @@ class _SleepQuickEntrySheetBodyState extends State<SleepQuickEntrySheetBody> {
                   child: Text(l10n.mineEditSaveAction),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// 单个睡眠质量 pill chip。
-class _QualityChip extends StatelessWidget {
-  const _QualityChip({
-    required this.label,
-    required this.selected,
-    required this.onPress,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onPress;
-
-  @override
-  Widget build(BuildContext context) {
-    final tone = selected ? SemanticColor.primary : SemanticColor.neutral;
-    return Semantics(
-      selected: selected,
-      button: true,
-      child: FTappable(
-        onPress: onPress,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: tone.muted(context),
-            borderRadius: context.theme.style.borderRadius.pill,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.md,
-              vertical: Spacing.sm,
-            ),
-            child: Text(
-              label,
-              style: context.theme.typography.body.sm.copyWith(
-                color: tone.solid(context),
-                fontWeight: FontWeight.w600,
-              ),
             ),
           ),
         ),

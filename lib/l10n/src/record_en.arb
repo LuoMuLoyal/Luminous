@@ -209,6 +209,18 @@
   "recordSleepEntryNapTooLong": "A nap cannot exceed 3 hours.",
   "recordSleepEntryNightTooLong": "Night sleep cannot exceed 16 hours.",
   "recordQuickMealConfirmTitle": "Confirm meal record",
+  "recordSymptomSheetTitle": "Log symptom",
+  "recordSymptomSeverityLabel": "Severity",
+  "recordSymptomSingleSelectHint": "Tap a symptom to save it",
+  "recordSymptomMultiSelectHint": "Pick the symptoms to record",
+  "recordSymptomRecordCount": "Log {count}",
+  "@recordSymptomRecordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordFastEntryMultiSelectAction": "Multi-select",
   "recordFastEntryPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
   "@recordFastEntryPartialFailedToast": {

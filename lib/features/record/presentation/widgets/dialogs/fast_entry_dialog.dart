@@ -9,16 +9,12 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
-import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
-import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
-import 'package:luminous/features/record/presentation/quick_entry/symptom_flow.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordFastEntryDialog extends ConsumerStatefulWidget {
@@ -44,17 +40,12 @@ class RecordFastEntryDialog extends ConsumerStatefulWidget {
 
 class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
   bool _saving = false;
-  bool _multiSelect = false;
-  final Set<int> _selectedIndexes = <int>{};
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final typeLabel = dailyRecordKindLabel(l10n, widget.kind);
-    final prefs =
-        ref.watch(quickEntryPreferencesProvider).asData?.value ??
-        const QuickEntryPreferences();
-    final choices = _resolveChoices(prefs, l10n);
+    final choices = recordFastEntryChoicesFor(widget.kind, l10n);
 
     return FDialog(
       key: Key('record-fast-entry-${widget.kind.name}'),
@@ -88,9 +79,9 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
                     ),
                     label: choices[index].label,
                     prefix: choices[index].prefix,
-                    selected: _selectedIndexes.contains(index),
+                    selected: false,
                     enabled: !_saving,
-                    onTap: () => _handleChoiceTap(index, choices[index]),
+                    onTap: () => unawaited(_saveChoice(choices[index])),
                   ),
               ],
             ),
@@ -102,40 +93,17 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (_supportsMultiSelect) ...[
-                  FButton(
-                    variant: FButtonVariant.ghost,
-                    key: const Key('record-fast-entry-multi-select-action'),
-                    onPress: _saving || _multiSelect
-                        ? null
-                        : () => setState(() => _multiSelect = true),
-                    child: Text(l10n.recordFastEntryMultiSelectAction),
-                  ),
-                  const SizedBox(width: Spacing.md),
-                ],
-                if (!_multiSelect) ...[
-                  FButton(
-                    variant: FButtonVariant.ghost,
-                    key: const Key('record-fast-entry-more-action'),
-                    onPress: _saving ? null : _openMore,
-                    child: Text(l10n.recordFastEntryMoreAction),
-                  ),
-                  const SizedBox(width: Spacing.md),
-                ],
-                if (_multiSelect) ...[
-                  FButton(
-                    key: const Key('record-fast-entry-confirm-action'),
-                    onPress: _saving || _selectedIndexes.isEmpty
-                        ? null
-                        : () => _saveSelectedChoices(choices),
-                    child: Text(l10n.commonConfirm),
-                  ),
-                  const SizedBox(width: Spacing.md),
-                ],
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  key: const Key('record-fast-entry-more-action'),
+                  onPress: _saving ? null : _openMore,
+                  child: Text(l10n.recordFastEntryMoreAction),
+                ),
+                const SizedBox(width: Spacing.md),
                 FButton(
                   variant: FButtonVariant.ghost,
                   key: const Key('record-fast-entry-cancel-action'),
-                  onPress: _saving ? null : _cancel,
+                  onPress: _saving ? null : () => Navigator.of(context).pop(),
                   child: Text(l10n.commonCancel),
                 ),
               ],
@@ -144,67 +112,6 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
         ),
       ),
     );
-  }
-
-  bool get _supportsMultiSelect => widget.kind == DailyRecordKind.symptom;
-
-  /// Returns fast-entry choices, applying user preferences for symptom.
-  List<RecordFastChoice> _resolveChoices(
-    QuickEntryPreferences prefs,
-    AppLocalizations l10n,
-  ) {
-    final base = recordFastEntryChoicesFor(widget.kind, l10n);
-    if (widget.kind != DailyRecordKind.symptom) {
-      return base;
-    }
-
-    // Filter by enabled choice **codes** (empty = all enabled).
-    final enabled = prefs.symptomEnabledChoices.toSet();
-    final filtered = enabled.isEmpty
-        ? base
-        : base.where((c) => enabled.contains(recordFastChoiceCode(c))).toList();
-
-    // 严重度码进 payload（数据真相，服务端读它）；本地化文案只看展示（value）。
-    final severity = prefs.symptomDefaultSeverity;
-    return [
-      for (final choice in filtered)
-        RecordFastChoice(
-          label: choice.label,
-          prefix: choice.prefix,
-          title: choice.title,
-          value: symptomSeverityLabel(l10n, severity),
-          unit: choice.unit,
-          note: choice.note,
-          payload: <String, dynamic>{...?choice.payload, 'severity': severity},
-        ),
-    ];
-  }
-
-  void _handleChoiceTap(int index, RecordFastChoice choice) {
-    if (!_multiSelect) {
-      unawaited(_saveChoice(choice));
-      return;
-    }
-
-    setState(() {
-      if (_selectedIndexes.contains(index)) {
-        _selectedIndexes.remove(index);
-      } else {
-        _selectedIndexes.add(index);
-      }
-    });
-  }
-
-  void _cancel() {
-    if (_multiSelect) {
-      setState(() {
-        _multiSelect = false;
-        _selectedIndexes.clear();
-      });
-      return;
-    }
-
-    Navigator.of(context).pop();
   }
 
   Future<void> _openMore() async {
@@ -274,75 +181,10 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
     }
   }
 
-  Future<void> _saveSelectedChoices(List<RecordFastChoice> choices) async {
-    final selectedChoices = [
-      for (final index in _selectedIndexes) _symptomChoiceFor(choices[index]),
-    ];
-
-    setState(() => _saving = true);
-    final repository = ref.read(dailyRecordRepositoryProvider);
-    final result =
-        await SymptomQuickEntryFlow(
-          createRecord: (input) async => (await repository.create(input).run())
-              .fold((failure) => throw failure, (item) => item),
-          emitDataChange: (topic) =>
-              ref.read(dataChangeBusProvider.notifier).emit(topic),
-          registerUndo: (_) {},
-        ).recordBatch(
-          QuickEntryRecordContext(
-            occurredAt: widget.occurredAt,
-            occurredTime: formatRecordTimeValue(widget.currentDateTime),
-          ),
-          selectedChoices,
-        );
-
-    if (!mounted) return;
-    if (result.failed.isEmpty) {
-      unawaited(
-        Toast.show(
-          context,
-          AppLocalizations.of(context)!.recordCreateSavedToast,
-        ),
-      );
-      Navigator.of(context).pop();
-      return;
-    }
-
-    final failedTitles = result.failed.map((choice) => choice.title).toSet();
-    setState(() {
-      _saving = false;
-      _selectedIndexes
-        ..clear()
-        ..addAll(
-          choices.indexed
-              .where((entry) => failedTitles.contains(entry.$2.title))
-              .map((entry) => entry.$1),
-        );
-    });
-
-    unawaited(
-      Toast.show(
-        context,
-        AppLocalizations.of(context)!.recordFastEntryPartialFailedToast(
-          result.succeeded.length,
-          result.failed.length,
-        ),
-      ),
-    );
-  }
-
-  SymptomQuickChoice _symptomChoiceFor(RecordFastChoice choice) {
-    return SymptomQuickChoice(
-      title: choice.title ?? choice.label,
-      value: choice.value,
-      note: choice.note,
-      payload: choice.payload,
-    );
-  }
-
   bool _offersImmediateUndo(DailyRecordKind kind) {
     return switch (kind) {
-      DailyRecordKind.symptom || DailyRecordKind.mood => true,
+      // 症状走专用 sheet（撤销在 application 层执行）。
+      DailyRecordKind.mood => true,
       _ => false,
     };
   }

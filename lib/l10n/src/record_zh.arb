@@ -209,6 +209,18 @@
   "recordSleepEntryNapTooLong": "小睡不能超过 3 小时",
   "recordSleepEntryNightTooLong": "夜间睡眠不能超过 16 小时",
   "recordQuickMealConfirmTitle": "确认餐食记录",
+  "recordSymptomSheetTitle": "记录症状",
+  "recordSymptomSeverityLabel": "严重程度",
+  "recordSymptomSingleSelectHint": "点一个症状即保存",
+  "recordSymptomMultiSelectHint": "选择要记录的症状（可多选）",
+  "recordSymptomRecordCount": "记录 {count} 条",
+  "@recordSymptomRecordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordFastEntryMultiSelectAction": "多选",
   "recordFastEntryPartialFailedToast": "已记录 {savedCount} 项，{failedCount} 项失败",
   "@recordFastEntryPartialFailedToast": {

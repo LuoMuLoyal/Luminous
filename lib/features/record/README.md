@@ -34,7 +34,11 @@
 - repository 边界:可恢复失败 = `TaskEither` Left;timeline/summary 等次要输入失败降级为空(产品行为,仅记
   appTalker),协议违例继续抛出(test/record/data/repositories/lucent_repository_test.dart)。
 - 快速录入 UX:单击 = 记录 + 可撤销(`QuickEntryUndoService`),长按 = 该类型设置;成功后 emit
-  `DataChangeTopic.dailyRecords` 驱动跨页刷新(test/record/quick_entry/)。
+  `DataChangeTopic.dailyRecords` 驱动跨页刷新(test/record/quick_entry/)。症状走专用底部 sheet(单击即存、
+  多选批量亦可撤销),情绪与备注仍走 `RecordFastEntryDialog`。
+- 症状:payload `symptom`(目录码) + `severity`(`mild`/`moderate`/`severe`/`unknown`)是**数据真相**;
+  记录级 `title`/`value` 只是展示文案(时间线/详情渲染用),规则与统计不得解析它们。`unknown` 表示用户判断
+  不了,服务端跳过该条而不是记最小严重度。
 - 睡眠:一次性录入(类型/就寝/起床/质量/备注 → 一条记录,时长算出),归属日 = **起床日**并在界面写出,
   小睡为显式类型、必须同日且 ≤3 小时,夜间睡眠 ≤16 小时;payload 键位唯一出处
   `domain/services/sleep_entry.dart`(断言见 test/record/domain/services/sleep_entry_test.dart、

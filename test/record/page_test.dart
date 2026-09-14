@@ -1261,7 +1261,7 @@ void main() {
     expect(dailyRepo.createInput?.unit, 'ml');
   });
 
-  testWidgets('Record symptom quick action opens fast entry and saves', (
+  testWidgets('Record symptom quick action opens the sheet and saves', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -1285,12 +1285,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsNothing);
-    expect(find.byKey(const Key('record-fast-entry-symptom')), findsOneWidget);
+    expect(find.byKey(const Key('symptom-quick-choices')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-symptom')), findsNothing);
 
-    await tester.tap(
-      find.byKey(const Key('record-fast-entry-choice-symptom-0')),
-    );
+    // 严重度行可改，且作用于随后点选的那次记录。
+    await tester.tap(find.byKey(const Key('symptom-quick-severity-moderate')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('symptom-quick-choice-headache')));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
 
@@ -1300,11 +1301,11 @@ void main() {
     expect(input.occurredAt, '2026-06-06');
     expect(input.occurredTime, '09:45');
     expect(input.title, '头痛');
-    expect(input.value, '轻度');
+    expect(input.value, '中度');
     expect(input.unit, isNull);
     expect(input.note, isNull);
-    // 数据真相在 payload：症状目录码 + 严重度码（服务端只读这两个）。
-    expect(input.payload, {'symptom': 'headache', 'severity': 'mild'});
+    // 数据真相在 payload：症状目录码 + 本次严重度码（服务端只读这两个）。
+    expect(input.payload, {'symptom': 'headache', 'severity': 'moderate'});
   });
 
   testWidgets(
@@ -1330,23 +1331,17 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(
-        find.byKey(const Key('record-fast-entry-multi-select-action')),
+        find.byKey(const Key('symptom-quick-multi-select-action')),
       );
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const Key('record-fast-entry-choice-symptom-0')),
-      );
-      await tester.tap(
-        find.byKey(const Key('record-fast-entry-choice-symptom-2')),
-      );
+      await tester.tap(find.byKey(const Key('symptom-quick-choice-headache')));
+      await tester.tap(find.byKey(const Key('symptom-quick-choice-dizzy')));
       await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.byKey(const Key('record-fast-entry-confirm-action')),
-      );
+      await tester.tap(find.byKey(const Key('symptom-quick-confirm-action')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('record-fast-entry-symptom')), findsNothing);
+      expect(find.byKey(const Key('symptom-quick-choices')), findsNothing);
       expect(dailyRepo.createdInputs, hasLength(2));
       expect(dailyRepo.createdInputs.map((input) => input.title), ['头痛', '头晕']);
       expect(dailyRepo.createdInputs.map((input) => input.value), ['轻度', '轻度']);
@@ -1377,7 +1372,7 @@ void main() {
     await tester.tap(find.byKey(const Key('record-quick-symptom')));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('record-fast-entry-more-action')));
+    await tester.tap(find.byKey(const Key('symptom-quick-more-action')));
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsOneWidget);

@@ -42,7 +42,7 @@ void main() {
     );
 
     test(
-      'batch confirmation records selected symptoms without registering undo',
+      'batch confirmation returns one undo action per created record',
       () async {
         final created = <DailyRecordCreateInput>[];
         final emitted = <String>[];
@@ -73,9 +73,13 @@ void main() {
         expect(created, hasLength(2));
         expect(created.map((input) => input.title), ['头痛', '发热']);
         expect(emitted, [DataChangeTopic.dailyRecords]);
+        // registerUndo 不再由批量路径直接调用（撤销由 application 层合成）。
         expect(undoActions, isEmpty);
         expect(result.succeeded.map((choice) => choice.title), ['头痛', '发热']);
         expect(result.failed, isEmpty);
+        // 每条成功记录各带一个撤销动作，可合成一次批量撤销。
+        expect(result.undoActions, hasLength(2));
+        expect(result.batchUndo, isNotNull);
       },
     );
 
