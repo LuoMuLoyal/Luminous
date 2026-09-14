@@ -9,6 +9,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -158,10 +159,11 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
         side: FLayout.btt,
         useSafeArea: true,
         mainAxisMaxRatio: null,
-        builder: (ctx) => SafeArea(
+        builder: (ctx) => SheetSurface(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SheetDragHandle(),
               Padding(
                 padding: const EdgeInsets.all(Spacing.lg),
                 child: Row(
@@ -252,31 +254,40 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
         side: FLayout.btt,
         useSafeArea: true,
         mainAxisMaxRatio: null,
-        builder: (ctx) => SafeArea(
-          child: BarcodeScanResultSheet(
-            item: item,
-            l10n: l10n,
-            onAddToBox: () => addMedicineToBoxWithPrecheck(
-              context,
-              ref: ref,
-              source: 'cn',
-              sourceRefId: item.id,
-              displayName: item.name,
-            ),
-            onViewInstructions: () {
-              Navigator.pop(ctx);
-              unawaited(
-                MedicineDetailRoute(source: 'cn', id: item.id).push(context),
-              );
-            },
-            onOpenReminder: (boxItem) {
-              Navigator.pop(ctx);
-              unawaited(
-                MedicineReminderDetailRoute(
-                  medicineId: boxItem.id,
-                ).push(context),
-              );
-            },
+        builder: (ctx) => SheetSurface(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SheetDragHandle(),
+              BarcodeScanResultSheet(
+                item: item,
+                l10n: l10n,
+                onAddToBox: () => addMedicineToBoxWithPrecheck(
+                  context,
+                  ref: ref,
+                  source: 'cn',
+                  sourceRefId: item.id,
+                  displayName: item.name,
+                ),
+                onViewInstructions: () {
+                  Navigator.pop(ctx);
+                  unawaited(
+                    MedicineDetailRoute(
+                      source: 'cn',
+                      id: item.id,
+                    ).push(context),
+                  );
+                },
+                onOpenReminder: (boxItem) {
+                  Navigator.pop(ctx);
+                  unawaited(
+                    MedicineReminderDetailRoute(
+                      medicineId: boxItem.id,
+                    ).push(context),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_quick_entry_sheet.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  late AppLocalizations l10n;
+
+  setUpAll(() async {
+    l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+  });
+
   Future<void> openSheet(WidgetTester tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
@@ -123,6 +132,43 @@ void main() {
       expect(result!.unit, 'ml');
     },
   );
+
+  testWidgets('WaterQuickEntrySheet uses the shared surface and can expand', (
+    tester,
+  ) async {
+    await openSheet(tester);
+
+    // Forui's sheet paints no background of its own; the shared SheetSurface
+    // owns it, and `useSafeArea: true` already insets the top, so an inner
+    // SafeArea would leave an unpainted strip along the sheet's bottom edge.
+    expect(find.byType(SheetSurface), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(SheetSurface),
+        matching: find.byType(SafeArea),
+      ),
+      findsNothing,
+    );
+
+    final route = ModalRoute.of(tester.element(find.byType(SheetSurface)));
+    expect(route, isA<FModalSheetRoute<WaterQuickEntryResult>>());
+    expect(
+      (route! as FModalSheetRoute<WaterQuickEntryResult>).mainAxisMaxRatio,
+      isNull,
+    );
+
+    final before = tester.getSize(find.byType(SheetSurface)).height;
+    await tester.drag(
+      find.text(l10n.recordWaterQuickEntryTitle),
+      const Offset(0, -200),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getSize(find.byType(SheetSurface)).height,
+      greaterThan(before),
+    );
+  });
 
   testWidgets('WaterQuickEntrySheet returns null on dismiss via outside tap', (
     tester,

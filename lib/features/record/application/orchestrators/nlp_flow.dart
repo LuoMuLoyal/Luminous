@@ -34,7 +34,7 @@ Future<void> openNlpSheet({
     side: FLayout.btt,
     useSafeArea: true,
     resizeToAvoidBottomInset: true,
-    mainAxisMaxRatio: 0.85,
+    mainAxisMaxRatio: null,
     builder: (sheetContext) =>
         RecordNlpSheet(occurredAt: formatRecordDate(selectedDate)),
   );

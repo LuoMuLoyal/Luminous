@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -6,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/candidate_review.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/retry_panel.dart';
@@ -15,23 +17,27 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// Structure:
 /// ```
-/// DecoratedBox (bg: colors.background, border: top)
-///  └─ Column
-///       ├─ _DragHandle
-///       ├─ _SheetHeader (title + close)
-///       ├─ Expanded → SingleChildScrollView
-///       │    └─ Column (text field, actions, candidates, error/progress)
-///       └─ _SheetFooter (save button, fixed at bottom)
+/// SheetSurface (colors.card + 圆角顶边)
+///  └─ DraggableScrollableSheet (往上拖可展开)
+///       └─ Column
+///            ├─ SheetDragHandle
+///            ├─ header (title + close)
+///            ├─ Expanded → SingleChildScrollView
+///            │    └─ Column (text field, actions, candidates, error/progress)
+///            └─ footer (save button, fixed at bottom)
 /// ```
 class RecordNlpSheet extends HookConsumerWidget {
   const RecordNlpSheet({super.key, required this.occurredAt});
+
+  /// sheet 的初始/最小高度（占可用高度比例）；往上拖可展开到整屏。
+  static const _initialSize = 0.85;
+  static const _minSize = 0.6;
 
   final String occurredAt;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     final state = ref.watch(recordNlpControllerProvider);
     final controller = useTextEditingController(text: state.draft);
@@ -180,205 +186,203 @@ class RecordNlpSheet extends HookConsumerWidget {
       ref.read(recordNlpControllerProvider.notifier).reset();
     }
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.background,
-        border: Border(
-          top: BorderSide(
-            color: SemanticColor.neutral.border(context),
-            width: 1,
+    return SheetSurface(
+      child: DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: _initialSize,
+        minChildSize: _minSize,
+        maxChildSize: 1,
+        snap: true,
+        builder: (context, scrollController) => ScrollConfiguration(
+          // 让鼠标/触控板也能拖动（桌面与 Web）。
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: const {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad,
+            },
           ),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Drag handle
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.sm),
-              child: Container(
-                width: Spacing.xl6,
-                height: Spacing.xs,
-                decoration: BoxDecoration(
-                  color: SemanticColor.neutral.solid(context),
-                  borderRadius: context.theme.style.borderRadius.xs2,
-                ),
-              ),
-            ),
-          ),
-          // Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              Spacing.lg,
-              Spacing.sm,
-              Spacing.sm,
-              Spacing.sm,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.recordNlpSheetTitle,
-                    style: typography.body.lg.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                FButton.icon(
-                  variant: FButtonVariant.ghost,
-                  onPress: () => Navigator.of(context).pop(),
-                  child: const Icon(SemanticIcons.actionClose),
-                ),
-              ],
-            ),
-          ),
-          // Scrollable content
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: Spacing.lg,
-                vertical: Spacing.sm,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.recordNlpSheetSubtitle,
-                    style: typography.body.xs.copyWith(
-                      color: SemanticColor.neutral.solid(context),
-                    ),
-                  ),
-                  const SizedBox(height: Spacing.lg),
-                  FTextField(
-                    key: const Key('record-nlp-input-field'),
-                    control: FTextFieldControl.managed(
-                      controller: controller,
-                      onChange: (value) => ref
-                          .read(recordNlpControllerProvider.notifier)
-                          .updateDraft(value.text),
-                    ),
-                    minLines: 3,
-                    maxLines: 6,
-                    enabled: !state.isGenerating && !state.isSaving,
-                    hint: l10n.recordNlpInputHint,
-                  ),
-                  const SizedBox(height: Spacing.lg),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FButton(
-                          variant: FButtonVariant.outline,
-                          key: const Key('record-nlp-reset-action'),
-                          onPress: state.isGenerating || state.isSaving
-                              ? null
-                              : handleReset,
-                          child: Text(l10n.recordNlpResetAction),
-                        ),
-                      ),
-                      const SizedBox(width: Spacing.md),
-                      Expanded(
-                        child: FButton(
-                          key: const Key('record-nlp-generate-action'),
-                          onPress: state.isGenerating || state.isSaving
-                              ? null
-                              : handleGenerate,
-                          child: Text(
-                            state.isGenerating
-                                ? l10n.recordNlpGeneratingAction
-                                : l10n.recordNlpGenerateAction,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (state.hasResult) ...[
-                    const SizedBox(height: Spacing.xl),
-                    RecordNlpCandidateReview(
-                      state: state,
-                      onToggleSelected: (index, selected) => ref
-                          .read(recordNlpControllerProvider.notifier)
-                          .toggleCandidateSelected(index, selected),
-                      onUpdateCandidate: (index, candidate) => ref
-                          .read(recordNlpControllerProvider.notifier)
-                          .updateCandidateAt(index, candidate),
-                      onRemove: (index) => ref
-                          .read(recordNlpControllerProvider.notifier)
-                          .removeCandidateAt(index),
-                    ),
-                    if (state.hasFailedCandidates) ...[
-                      const SizedBox(height: Spacing.lg),
-                      RecordNlpRetryPanel(
-                        failedCount: state.failedCount,
-                        enabled: !state.isSaving,
-                        onRetry: handleRetryFailed,
-                      ),
-                    ],
-                  ] else if (state.status == RecordNlpStatus.generating) ...[
-                    const SizedBox(height: Spacing.xl),
-                    const FProgress(),
-                  ] else if (state.status == RecordNlpStatus.error) ...[
-                    const SizedBox(height: Spacing.xl),
-                    Row(
-                      children: [
-                        Icon(
-                          SemanticIcons.statusError,
-                          color: SemanticColor.destructive.solid(context),
-                          size: 18,
-                        ),
-                        const SizedBox(width: Spacing.sm),
-                        Expanded(
-                          child: Text(
-                            state.errorMessage ??
-                                l10n.recordNlpGenerateFailedToast,
-                            style: typography.body.sm.copyWith(
-                              color: SemanticColor.destructive.solid(context),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-          // Fixed footer with save button
-          if (state.hasResult)
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: colors.background,
-                border: Border(
-                  top: BorderSide(
-                    color: SemanticColor.neutral.border(context),
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: Padding(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SheetDragHandle(),
+              // Header
+              Padding(
                 padding: const EdgeInsets.fromLTRB(
                   Spacing.lg,
-                  Spacing.md,
-                  Spacing.lg,
-                  Spacing.lg,
+                  Spacing.sm,
+                  Spacing.sm,
+                  Spacing.sm,
                 ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FButton(
-                    key: const Key('record-nlp-save-selected-action'),
-                    onPress: state.isSaving ? null : handleSaveSelected,
-                    child: Text(
-                      state.isSaving
-                          ? l10n.recordNlpSavingAction
-                          : l10n.recordNlpSaveSelectedAction(
-                              state.selectedCount,
-                            ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.recordNlpSheetTitle,
+                        style: typography.body.lg.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
+                    FButton.icon(
+                      variant: FButtonVariant.ghost,
+                      onPress: () => Navigator.of(context).pop(),
+                      child: const Icon(SemanticIcons.actionClose),
+                    ),
+                  ],
+                ),
+              ),
+              // Scrollable content
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.lg,
+                    vertical: Spacing.sm,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.recordNlpSheetSubtitle,
+                        style: typography.body.xs.copyWith(
+                          color: SemanticColor.neutral.solid(context),
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.lg),
+                      FTextField(
+                        key: const Key('record-nlp-input-field'),
+                        control: FTextFieldControl.managed(
+                          controller: controller,
+                          onChange: (value) => ref
+                              .read(recordNlpControllerProvider.notifier)
+                              .updateDraft(value.text),
+                        ),
+                        minLines: 3,
+                        maxLines: 6,
+                        enabled: !state.isGenerating && !state.isSaving,
+                        hint: l10n.recordNlpInputHint,
+                      ),
+                      const SizedBox(height: Spacing.lg),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FButton(
+                              variant: FButtonVariant.outline,
+                              key: const Key('record-nlp-reset-action'),
+                              onPress: state.isGenerating || state.isSaving
+                                  ? null
+                                  : handleReset,
+                              child: Text(l10n.recordNlpResetAction),
+                            ),
+                          ),
+                          const SizedBox(width: Spacing.md),
+                          Expanded(
+                            child: FButton(
+                              key: const Key('record-nlp-generate-action'),
+                              onPress: state.isGenerating || state.isSaving
+                                  ? null
+                                  : handleGenerate,
+                              child: Text(
+                                state.isGenerating
+                                    ? l10n.recordNlpGeneratingAction
+                                    : l10n.recordNlpGenerateAction,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (state.hasResult) ...[
+                        const SizedBox(height: Spacing.xl),
+                        RecordNlpCandidateReview(
+                          state: state,
+                          onToggleSelected: (index, selected) => ref
+                              .read(recordNlpControllerProvider.notifier)
+                              .toggleCandidateSelected(index, selected),
+                          onUpdateCandidate: (index, candidate) => ref
+                              .read(recordNlpControllerProvider.notifier)
+                              .updateCandidateAt(index, candidate),
+                          onRemove: (index) => ref
+                              .read(recordNlpControllerProvider.notifier)
+                              .removeCandidateAt(index),
+                        ),
+                        if (state.hasFailedCandidates) ...[
+                          const SizedBox(height: Spacing.lg),
+                          RecordNlpRetryPanel(
+                            failedCount: state.failedCount,
+                            enabled: !state.isSaving,
+                            onRetry: handleRetryFailed,
+                          ),
+                        ],
+                      ] else if (state.status ==
+                          RecordNlpStatus.generating) ...[
+                        const SizedBox(height: Spacing.xl),
+                        const FProgress(),
+                      ] else if (state.status == RecordNlpStatus.error) ...[
+                        const SizedBox(height: Spacing.xl),
+                        Row(
+                          children: [
+                            Icon(
+                              SemanticIcons.statusError,
+                              color: SemanticColor.destructive.solid(context),
+                              size: 18,
+                            ),
+                            const SizedBox(width: Spacing.sm),
+                            Expanded(
+                              child: Text(
+                                state.errorMessage ??
+                                    l10n.recordNlpGenerateFailedToast,
+                                style: typography.body.sm.copyWith(
+                                  color: SemanticColor.destructive.solid(
+                                    context,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ),
-            ),
-        ],
+              // Fixed footer with save button
+              if (state.hasResult)
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: SemanticColor.neutral.border(context),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      Spacing.lg,
+                      Spacing.md,
+                      Spacing.lg,
+                      Spacing.lg,
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: FButton(
+                        key: const Key('record-nlp-save-selected-action'),
+                        onPress: state.isSaving ? null : handleSaveSelected,
+                        child: Text(
+                          state.isSaving
+                              ? l10n.recordNlpSavingAction
+                              : l10n.recordNlpSaveSelectedAction(
+                                  state.selectedCount,
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
