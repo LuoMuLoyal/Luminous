@@ -83,36 +83,6 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: Spacing.xl2),
-              SettingsSectionLabel(label: l10n.recordQuickSettingsDefaults),
-              SizedBox(height: context.titleContentGap),
-              FSelect<int>.rich(
-                key: const Key('record-quick-settings-sleep-duration'),
-                label: Text(l10n.recordQuickSettingsSleepDefaultDuration),
-                format: (value) =>
-                    l10n.recordQuickSettingsSleepDurationHours(value ~/ 60),
-                control: FSelectControl.lifted(
-                  value: prefs.sleepDefaultDurationMinutes,
-                  onChange: (value) {
-                    if (value != null) {
-                      unawaited(
-                        controller.setSleepDefaultDurationMinutes(value),
-                      );
-                    }
-                  },
-                ),
-                children: [
-                  for (final minutes in kSleepDurationOptions)
-                    FSelectItem.item(
-                      title: Text(
-                        l10n.recordQuickSettingsSleepDurationHours(
-                          minutes ~/ 60,
-                        ),
-                      ),
-                      value: minutes,
-                    ),
-                ],
-              ),
-              const SizedBox(height: Spacing.xl2),
               FSelect<QuickEntryWaterDefault>.rich(
                 key: const Key('record-quick-settings-water-default'),
                 label: Text(l10n.recordQuickSettingsWaterDefault),
@@ -199,18 +169,6 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 divider: FItemDivider.full,
                 children: [
-                  FTile(
-                    key: const Key('record-quick-settings-sleep-badge'),
-                    title: Text(l10n.recordQuickSettingsSleepBadge),
-                    subtitle: Text(l10n.recordQuickSettingsSleepBadgeHint),
-                    suffix: FSwitch(
-                      value: prefs.sleepInProgressBadgeEnabled,
-                      onChange: controller.setSleepInProgressBadgeEnabled,
-                    ),
-                    onPress: () => controller.setSleepInProgressBadgeEnabled(
-                      !prefs.sleepInProgressBadgeEnabled,
-                    ),
-                  ),
                   FTile(
                     key: const Key('record-quick-settings-mood-badge'),
                     title: Text(l10n.recordQuickSettingsMoodBadge),

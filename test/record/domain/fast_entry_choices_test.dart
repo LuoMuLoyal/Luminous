@@ -145,29 +145,6 @@ void main() {
       });
     });
 
-    group('DailyRecordKind.sleep', () {
-      test('returns 4 sleep duration choices', () {
-        final choices = recordFastEntryChoicesFor(DailyRecordKind.sleep, l10n);
-        expect(choices, hasLength(4));
-      });
-
-      test('labels are in hours format (6h, 7h, 8h, 9h)', () {
-        final choices = recordFastEntryChoicesFor(DailyRecordKind.sleep, l10n);
-        expect(choices[0].label, '6h');
-        expect(choices[1].label, '7h');
-        expect(choices[2].label, '8h');
-        expect(choices[3].label, '9h');
-      });
-
-      test('payload contains durationMinutes', () {
-        final choices = recordFastEntryChoicesFor(DailyRecordKind.sleep, l10n);
-        expect(choices[0].payload, {'durationMinutes': 360});
-        expect(choices[1].payload, {'durationMinutes': 420});
-        expect(choices[2].payload, {'durationMinutes': 480});
-        expect(choices[3].payload, {'durationMinutes': 540});
-      });
-    });
-
     group('DailyRecordKind.mood', () {
       test('returns 5 mood choices', () {
         final choices = recordFastEntryChoicesFor(DailyRecordKind.mood, l10n);

@@ -17,7 +17,6 @@ void main() {
       expect(prefs.waterDefault, QuickEntryWaterDefault.ml250);
       expect(prefs.waterCustomMl, 250);
       expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
-      expect(prefs.sleepInProgressBadgeEnabled, isTrue);
     });
 
     test('copyWith creates new instance with updated values', () {
@@ -30,7 +29,6 @@ void main() {
         waterDefault: QuickEntryWaterDefault.custom,
         waterCustomMl: 300,
         waterBadgeMode: QuickEntryWaterBadgeMode.dailyCount,
-        sleepInProgressBadgeEnabled: false,
       );
 
       expect(updated.dynamicSortEnabled, isTrue);
@@ -40,7 +38,6 @@ void main() {
       expect(updated.waterDefault, QuickEntryWaterDefault.custom);
       expect(updated.waterCustomMl, 300);
       expect(updated.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
-      expect(updated.sleepInProgressBadgeEnabled, isFalse);
 
       // Original unchanged
       expect(original.dynamicSortEnabled, isFalse);
@@ -50,7 +47,6 @@ void main() {
       expect(original.waterDefault, QuickEntryWaterDefault.ml250);
       expect(original.waterCustomMl, 250);
       expect(original.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
-      expect(original.sleepInProgressBadgeEnabled, isTrue);
     });
 
     test('copyWith partial update preserves other fields', () {
@@ -61,7 +57,6 @@ void main() {
         frequency: {'water': 3},
         waterDefault: QuickEntryWaterDefault.ml500,
         waterBadgeMode: QuickEntryWaterBadgeMode.hidden,
-        sleepInProgressBadgeEnabled: false,
       );
 
       final updated = original.copyWith(collapsed: false);
@@ -73,7 +68,6 @@ void main() {
       expect(updated.waterDefault, QuickEntryWaterDefault.ml500);
       expect(updated.waterCustomMl, 250);
       expect(updated.waterBadgeMode, QuickEntryWaterBadgeMode.hidden);
-      expect(updated.sleepInProgressBadgeEnabled, isFalse);
     });
   });
 
@@ -99,7 +93,6 @@ void main() {
       expect(prefs.frequency, isEmpty);
       expect(prefs.waterDefault, QuickEntryWaterDefault.ml250);
       expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
-      expect(prefs.sleepInProgressBadgeEnabled, isTrue);
     });
 
     test('build loads stored values from SharedPreferences', () async {
@@ -125,7 +118,6 @@ void main() {
       expect(prefs.frequency, {'meal': 5, 'water': 3});
       expect(prefs.waterDefault, QuickEntryWaterDefault.ml500);
       expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
-      expect(prefs.sleepInProgressBadgeEnabled, isFalse);
     });
 
     test(
@@ -282,22 +274,6 @@ void main() {
       expect(
         prefs.getString('record.quickEntry.water.badgeMode'),
         'dailyCount',
-      );
-    });
-
-    test('setSleepInProgressBadgeEnabled updates state and persists', () async {
-      await readPrefs();
-
-      final controller = container.read(quickEntryPreferencesProvider.notifier);
-      await controller.setSleepInProgressBadgeEnabled(false);
-
-      final state = container.read(quickEntryPreferencesProvider).requireValue;
-      expect(state.sleepInProgressBadgeEnabled, isFalse);
-
-      final prefs = await SharedPreferences.getInstance();
-      expect(
-        prefs.getBool('record.quickEntry.sleep.inProgressBadgeEnabled'),
-        isFalse,
       );
     });
 

@@ -40,10 +40,6 @@ void main() {
       find.byKey(const Key('record-quick-settings-water-badge')),
       findsOneWidget,
     );
-    expect(
-      find.byKey(const Key('record-quick-settings-sleep-badge')),
-      findsOneWidget,
-    );
   });
 
   testWidgets('manual reorder row explains disabled state under dynamic sort', (

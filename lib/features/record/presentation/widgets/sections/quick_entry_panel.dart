@@ -118,7 +118,6 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
   ) {
     return switch (action.type) {
       RecordEntryType.water => _waterBadge(prefs, l10n, summary, timeline),
-      RecordEntryType.sleep => _sleepBadge(prefs, l10n, timeline),
       RecordEntryType.mood => _moodBadge(prefs, l10n, timeline),
       _ => null,
     };
@@ -147,21 +146,6 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
         ? ''
         : recordCopy(l10n, waterSummary.unitKey!);
     return '${waterSummary.value}$unit';
-  }
-
-  String? _sleepBadge(
-    QuickEntryPreferences prefs,
-    AppLocalizations l10n,
-    List<RecordTimelineEntry> timeline,
-  ) {
-    if (!prefs.sleepInProgressBadgeEnabled) return null;
-    final inProgress = timeline.any(
-      (entry) =>
-          entry.type == RecordEntryType.sleep &&
-          entry.value == null &&
-          entry.valueKey == null,
-    );
-    return inProgress ? l10n.recordQuickSleepInProgressBadge : null;
   }
 
   String? _moodBadge(

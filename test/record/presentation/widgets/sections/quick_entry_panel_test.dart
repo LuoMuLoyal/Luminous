@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/grid.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry_panel.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -129,9 +130,7 @@ void main() {
       );
     });
 
-    testWidgets('renders water and sleep badges from dashboard data', (
-      tester,
-    ) async {
+    testWidgets('renders the water badge and no sleep badge', (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(480, 1200);
       addTearDown(() {
@@ -142,9 +141,6 @@ void main() {
       final dashboard = RecordDashboard.signedOut(DateTime(2026, 7, 21));
       final waterAction = dashboard.quickActions.firstWhere(
         (action) => action.type == RecordEntryType.water,
-      );
-      final sleepAction = dashboard.quickActions.firstWhere(
-        (action) => action.type == RecordEntryType.sleep,
       );
 
       await tester.pumpWidget(
@@ -166,16 +162,7 @@ void main() {
                     ),
                   ],
                 ),
-                timeline: [
-                  RecordTimelineEntry(
-                    time: '23:10',
-                    type: RecordEntryType.sleep,
-                    icon: sleepAction.icon,
-                    accent: sleepAction.accent,
-                    softColor: sleepAction.softColor,
-                    titleKey: sleepAction.titleKey,
-                  ),
-                ],
+                timeline: const <RecordTimelineEntry>[],
               ),
             ),
           ),
@@ -184,7 +171,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('500 ml'), findsOneWidget);
-      expect(find.text(l10n.recordQuickSleepInProgressBadge), findsOneWidget);
+      // Sleep no longer carries a tile badge: only the water badge remains.
+      expect(find.byType(QuickBadge), findsOneWidget);
     });
 
     testWidgets('default quick actions include medication and mood', (

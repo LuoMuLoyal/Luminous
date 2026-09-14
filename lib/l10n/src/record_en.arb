@@ -146,8 +146,6 @@
   "recordQuickSettingsWaterBadgeDailyTotal": "Daily total",
   "recordQuickSettingsWaterBadgeDailyCount": "Daily count",
   "recordQuickSettingsWaterBadgeHidden": "Hidden",
-  "recordQuickSettingsSleepBadge": "Sleep in-progress badge",
-  "recordQuickSettingsSleepBadgeHint": "Show an in-progress marker on the sleep quick-entry tile.",
   "recordQuickSettingsIcons": "Custom Icons",
   "recordQuickSettingsCustomIconTitle": "Change icon",
   "recordQuickSettingsCustomIconHint": "Tap a type's icon to change how it appears in quick record",
@@ -162,15 +160,6 @@
   "recordQuickSettingsMoodBadgeHidden": "Hidden",
   "recordQuickSettingsMoodDefaultLevel": "Default mood",
   "recordQuickSettingsMoodDefaultLevelHint": "The default mood is highlighted in the quick-entry dialog.",
-  "recordQuickSettingsSleepDefaultDuration": "Default sleep duration",
-  "recordQuickSettingsSleepDurationHours": "{hours} hours",
-  "@recordQuickSettingsSleepDurationHours": {
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
   "recordQuickSettingsMedicationAutoRecord": "Auto-record when only one medicine",
   "recordQuickSettingsMedicationAutoRecordHint": "When off, a selection dialog appears even for a single medicine.",
   "recordQuickSettingsMedicationAlreadyRecordedHint": "Show hint when already recorded",
@@ -181,7 +170,7 @@
   "recordQuickSettingsMealRule": "Meal: single tap opens the camera; confirmation saves.",
   "recordQuickSettingsSymptomRule": "Symptom: single select saves; multi-select confirms.",
   "recordQuickSettingsMoodRule": "Mood: selecting one mood saves immediately.",
-  "recordQuickSettingsSleepRule": "Sleep: single tap starts or ends a sleep record.",
+  "recordQuickSettingsSleepRule": "Sleep: fill in bedtime and wake time once, then save.",
   "recordQuickSavedToast": "Quick record saved",
   "recordQuickUndoAction": "Undo",
   "recordQuickUndoFailedToast": "Undo failed. Refresh and check the record.",
@@ -222,7 +211,6 @@
   "recordQuickSleepNapCrossesMidnightError": "A nap cannot cross midnight.",
   "recordQuickSleepNapTooLongError": "A nap cannot exceed 3 hours.",
   "recordQuickSleepNightTooLongError": "Night sleep cannot exceed 16 hours.",
-  "recordQuickSleepInProgressBadge": "Active",
   "recordQuickMealConfirmTitle": "Confirm meal record",
   "recordFastEntryMultiSelectAction": "Multi-select",
   "recordFastEntryPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
