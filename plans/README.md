@@ -32,8 +32,6 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
-- [`2026-09-14-sleep-quick-entry-one-shot.md`](2026-09-14-sleep-quick-entry-one-shot.md)
-  — 睡眠快速录入由「start → wake → 合并」状态机改为一次性录入：sheet 收 类型/就寝/起床/质量/备注，时长算出、界面显式写出归属日（wake-date 约定）、就寝最多跨一个午夜、小睡为显式类型；不留向后兼容——删除三处睡眠弹窗与 merge 流程，payload 键位收敛到 startedAt/endedAt，Lucent 校验收掉 sleepEvent 逃生口，并清掉「进行中徽标」「默认时长」两处死配置
 - [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md)
   — Record 内嵌迷你趋势:快捷面板下新增近 7/30 天类别覆盖率行 + 单类别折线(周|月切换、空档≠0、数据不足引导);Wave 1 客户端逐日聚合(不跨 feature 消费 review),Wave 2 接 Lucent 聚合契约;与 review 页重组计划构成阶段 1 的另一半
 - [`2026-09-07-review-page-restructure.md`](2026-09-07-review-page-restructure.md)
