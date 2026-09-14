@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -27,6 +28,15 @@ class RecordFastChoice {
   final String? unit;
   final String? note;
   final Map<String, dynamic>? payload;
+}
+
+/// 快速选项的稳定码（症状目前取 payload `symptom` 的目录码）。
+///
+/// 偏好里「启用了哪些症状」必须存码：以前存的是本地化标题，切换语言后
+/// 目录文案变了，已存的标题匹配不上，弹窗会直接变空。
+String? recordFastChoiceCode(RecordFastChoice choice) {
+  final code = choice.payload?['symptom'];
+  return code is String && code.isNotEmpty ? code : null;
 }
 
 /// Returns the quick-entry choices for the given record [kind].
@@ -76,25 +86,29 @@ List<RecordFastChoice> recordFastEntryChoicesFor(
       ),
     ],
     DailyRecordKind.symptom => [
+      // 目录码进 payload（数据真相）；严重度由调用方按当前设置补进 payload，
+      // 本地化文案只作展示。
       RecordFastChoice(
         label: l10n.recordFastChoiceSymptomHeadache,
         title: l10n.recordFastChoiceSymptomHeadache,
-        value: l10n.recordFastChoiceSeverityMild,
+        payload: <String, dynamic>{'symptom': SymptomCode.headache.wireValue},
       ),
       RecordFastChoice(
         label: l10n.recordFastChoiceSymptomStomachache,
         title: l10n.recordFastChoiceSymptomStomachache,
-        value: l10n.recordFastChoiceSeverityMild,
+        payload: <String, dynamic>{
+          'symptom': SymptomCode.stomachache.wireValue,
+        },
       ),
       RecordFastChoice(
         label: l10n.recordFastChoiceSymptomDizzy,
         title: l10n.recordFastChoiceSymptomDizzy,
-        value: l10n.recordFastChoiceSeverityMild,
+        payload: <String, dynamic>{'symptom': SymptomCode.dizzy.wireValue},
       ),
       RecordFastChoice(
         label: l10n.recordFastChoiceSymptomFever,
         title: l10n.recordFastChoiceSymptomFever,
-        value: l10n.recordFastChoiceSeverityMild,
+        payload: <String, dynamic>{'symptom': SymptomCode.fever.wireValue},
       ),
     ],
     DailyRecordKind.note => [

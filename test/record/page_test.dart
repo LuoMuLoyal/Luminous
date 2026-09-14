@@ -1303,6 +1303,8 @@ void main() {
     expect(input.value, '轻度');
     expect(input.unit, isNull);
     expect(input.note, isNull);
+    // 数据真相在 payload：症状目录码 + 严重度码（服务端只读这两个）。
+    expect(input.payload, {'symptom': 'headache', 'severity': 'mild'});
   });
 
   testWidgets(
@@ -1348,6 +1350,10 @@ void main() {
       expect(dailyRepo.createdInputs, hasLength(2));
       expect(dailyRepo.createdInputs.map((input) => input.title), ['头痛', '头晕']);
       expect(dailyRepo.createdInputs.map((input) => input.value), ['轻度', '轻度']);
+      expect(dailyRepo.createdInputs.map((input) => input.payload), [
+        {'symptom': 'headache', 'severity': 'mild'},
+        {'symptom': 'dizzy', 'severity': 'mild'},
+      ]);
     },
   );
 

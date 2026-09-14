@@ -244,13 +244,16 @@ class _SymptomSettings extends StatelessWidget {
                 FilterChip(
                   label: Text(choice.label),
                   selected:
-                      enabledSet.isEmpty || enabledSet.contains(choice.title),
+                      enabledSet.isEmpty ||
+                      enabledSet.contains(recordFastChoiceCode(choice)),
                   onSelected: (selected) {
+                    final code = recordFastChoiceCode(choice);
+                    if (code == null) return;
                     unawaited(
                       controller.setSymptomEnabledChoices(
                         toggleSymptomChoice(
                           currentChoices: prefs.symptomEnabledChoices,
-                          choiceTitle: choice.title ?? choice.label,
+                          choiceCode: code,
                           selected: selected,
                           l10n: l10n,
                         ),

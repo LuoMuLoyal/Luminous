@@ -248,6 +248,7 @@
   "recordFastChoiceSymptomFever": "发热",
   "recordFastChoiceSeverityMild": "轻度",
   "recordFastChoiceSeverityModerate": "中度",
+  "recordFastChoiceSeverityUnknown": "无法判断",
   "recordFastChoiceSeveritySevere": "重度",
   "recordFastChoiceNoteStable": "今天状态平稳",
   "recordFastChoiceNoteTired": "今天有点累",

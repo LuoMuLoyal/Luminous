@@ -18,6 +18,7 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/quick_entry/symptom_flow.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordFastEntryDialog extends ConsumerStatefulWidget {
@@ -157,34 +158,26 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
       return base;
     }
 
-    // Filter by enabled choices (empty = all enabled).
+    // Filter by enabled choice **codes** (empty = all enabled).
     final enabled = prefs.symptomEnabledChoices.toSet();
     final filtered = enabled.isEmpty
         ? base
-        : base.where((c) => enabled.contains(c.title)).toList();
+        : base.where((c) => enabled.contains(recordFastChoiceCode(c))).toList();
 
-    // Apply default severity.
-    final severityLabel = _severityLabel(l10n, prefs.symptomDefaultSeverity);
+    // 严重度码进 payload（数据真相，服务端读它）；本地化文案只看展示（value）。
+    final severity = prefs.symptomDefaultSeverity;
     return [
       for (final choice in filtered)
         RecordFastChoice(
           label: choice.label,
           prefix: choice.prefix,
           title: choice.title,
-          value: severityLabel,
+          value: symptomSeverityLabel(l10n, severity),
           unit: choice.unit,
           note: choice.note,
-          payload: choice.payload,
+          payload: <String, dynamic>{...?choice.payload, 'severity': severity},
         ),
     ];
-  }
-
-  String _severityLabel(AppLocalizations l10n, String severity) {
-    return switch (severity) {
-      'moderate' => l10n.recordFastChoiceSeverityModerate,
-      'severe' => l10n.recordFastChoiceSeveritySevere,
-      _ => l10n.recordFastChoiceSeverityMild,
-    };
   }
 
   void _handleChoiceTap(int index, RecordFastChoice choice) {

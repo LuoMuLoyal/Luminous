@@ -248,6 +248,7 @@
   "recordFastChoiceSymptomFever": "Fever",
   "recordFastChoiceSeverityMild": "Mild",
   "recordFastChoiceSeverityModerate": "Moderate",
+  "recordFastChoiceSeverityUnknown": "Unknown",
   "recordFastChoiceSeveritySevere": "Severe",
   "recordFastChoiceNoteStable": "Stable today",
   "recordFastChoiceNoteTired": "Feeling tired today",

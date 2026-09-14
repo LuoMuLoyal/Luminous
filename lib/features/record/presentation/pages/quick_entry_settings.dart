@@ -214,13 +214,17 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                         label: Text(choice.label),
                         selected:
                             prefs.symptomEnabledChoices.isEmpty ||
-                            prefs.symptomEnabledChoices.contains(choice.title),
+                            prefs.symptomEnabledChoices.contains(
+                              recordFastChoiceCode(choice),
+                            ),
                         onSelected: (selected) {
+                          final code = recordFastChoiceCode(choice);
+                          if (code == null) return;
                           unawaited(
                             controller.setSymptomEnabledChoices(
                               toggleSymptomChoice(
                                 currentChoices: prefs.symptomEnabledChoices,
-                                choiceTitle: choice.title ?? choice.label,
+                                choiceCode: code,
                                 selected: selected,
                                 l10n: l10n,
                               ),

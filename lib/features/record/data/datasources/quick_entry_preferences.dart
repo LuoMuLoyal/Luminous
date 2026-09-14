@@ -100,11 +100,15 @@ class QuickEntryPreferences {
   final QuickEntryWaterBadgeMode waterBadgeMode;
 
   /// Default severity applied to symptom quick-entry choices.
-  /// One of `'mild'`, `'moderate'`, `'severe'`.
+  /// One of `'mild'`, `'moderate'`, `'severe'`, `'unknown'`.
   final String symptomDefaultSeverity;
 
-  /// Symptom choice titles that are enabled in the fast-entry dialog.
-  /// Empty list means all preset choices are enabled.
+  /// Symptom **catalog codes** that are enabled in the fast-entry dialog
+  /// (payload `symptom` values, e.g. `'headache'`).
+  /// Empty list means all catalog entries are enabled.
+  ///
+  /// Codes, not localized labels: storing labels broke the dialog whenever the
+  /// app language changed.
   final List<String> symptomEnabledChoices;
 
   /// How the mood quick-entry tile should summarize today's mood.

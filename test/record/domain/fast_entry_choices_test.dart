@@ -112,13 +112,20 @@ void main() {
         expect(choices[3].label, l10n.recordFastChoiceSymptomFever);
       });
 
-      test('default severity is mild', () {
+      test('choices carry symptom catalog codes', () {
         final choices = recordFastEntryChoicesFor(
           DailyRecordKind.symptom,
           l10n,
         );
-        for (final c in choices) {
-          expect(c.value, l10n.recordFastChoiceSeverityMild);
+        expect(choices.map(recordFastChoiceCode), [
+          'headache',
+          'stomachache',
+          'dizzy',
+          'fever',
+        ]);
+        // 严重度由调用方按设置补进 payload；基础列表不带展示值。
+        for (final choice in choices) {
+          expect(choice.value, isNull);
         }
       });
     });
