@@ -25,7 +25,6 @@ import 'package:luminous/features/record/presentation/widgets/forms/edit_actions
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/kind_icon_field.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/meal_confirm_action.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/dish_editor.dart';
@@ -332,16 +331,6 @@ class RecordEditPage extends HookConsumerWidget {
                             onDishRemoved: controller.removeDish,
                             onDishAdded: controller.addDish,
                           ),
-                          if (state.canConfirmMealAnalysis) ...[
-                            const SizedBox(height: Spacing.md),
-                            MealConfirmAction(
-                              l10n: l10n,
-                              confirmed: state.confirmMealAnalysis,
-                              onToggle: () => controller.setConfirmMealAnalysis(
-                                !state.confirmMealAnalysis,
-                              ),
-                            ),
-                          ],
                         ],
                         const SizedBox(height: Spacing.md),
                         DailyRecordImageAttachmentField(

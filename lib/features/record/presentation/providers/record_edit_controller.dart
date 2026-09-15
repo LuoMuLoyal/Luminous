@@ -49,8 +49,6 @@ class RecordEditState {
     this.remMinutes,
     this.initialSleepDuration,
     this.dishNames = const [],
-    this.canConfirmMealAnalysis = false,
-    this.confirmMealAnalysis = false,
     this.saving = false,
     this.deleting = false,
   });
@@ -88,9 +86,8 @@ class RecordEditState {
   final int? lightMinutes;
   final int? remMinutes;
 
+  /// 可编辑的菜名列表(契约 v2:客户端唯一能改的餐食字段)。
   final List<String> dishNames;
-  final bool canConfirmMealAnalysis;
-  final bool confirmMealAnalysis;
 
   /// Loaded sleep duration (minutes) used as a fallback when the current
   /// bedtime/wake-time fields cannot produce a duration.
@@ -121,8 +118,6 @@ class RecordEditState {
     int? lightMinutes,
     int? remMinutes,
     List<String>? dishNames,
-    bool? canConfirmMealAnalysis,
-    bool? confirmMealAnalysis,
     int? initialSleepDuration,
     bool? saving,
     bool? deleting,
@@ -150,9 +145,6 @@ class RecordEditState {
       lightMinutes: lightMinutes ?? this.lightMinutes,
       remMinutes: remMinutes ?? this.remMinutes,
       dishNames: dishNames ?? this.dishNames,
-      canConfirmMealAnalysis:
-          canConfirmMealAnalysis ?? this.canConfirmMealAnalysis,
-      confirmMealAnalysis: confirmMealAnalysis ?? this.confirmMealAnalysis,
       initialSleepDuration: initialSleepDuration ?? this.initialSleepDuration,
       saving: saving ?? this.saving,
       deleting: deleting ?? this.deleting,
@@ -195,7 +187,6 @@ class RecordEditController extends Notifier<RecordEditState> {
     if (state.deepMinutes != snap.deepMinutes) return true;
     if (state.lightMinutes != snap.lightMinutes) return true;
     if (state.remMinutes != snap.remMinutes) return true;
-    if (state.confirmMealAnalysis != snap.confirmMealAnalysis) return true;
     if (state.attachmentsChanged != snap.attachmentsChanged) return true;
     if (state.selectedImage != snap.selectedImage) return true;
     return false;
@@ -212,7 +203,6 @@ class RecordEditController extends Notifier<RecordEditState> {
       final repo = ref.read(dailyRecordRepositoryProvider);
       final result = await repo.get(recordId).run();
       final record = result.fold((failure) => throw failure, (item) => item);
-      final mealAnalysis = parseMealAnalysisViewData(record.payload);
       final startAt = record.payload?['startedAt'] as String?;
       final endAt = record.payload?['endedAt'] as String?;
       final deep = record.payload?['deepMinutes'];
@@ -242,12 +232,7 @@ class RecordEditController extends Notifier<RecordEditState> {
         lightMinutes: light is num && light > 0 ? light.round() : null,
         remMinutes: rem is num && rem > 0 ? rem.round() : null,
         initialSleepDuration: _positiveInt(record.payload?['durationMinutes']),
-        dishNames: parseMealDishDraftNames(record.payload),
-        canConfirmMealAnalysis:
-            mealAnalysis != null &&
-            (mealAnalysis.status == 'unconfirmed' ||
-                mealAnalysis.status == 'confirmed'),
-        confirmMealAnalysis: false,
+        dishNames: parseMealDishNames(record.payload),
       );
       _loadedSnapshot = state;
     } catch (e) {
@@ -299,9 +284,6 @@ class RecordEditController extends Notifier<RecordEditState> {
     final next = [...state.dishNames]..removeAt(index);
     state = state.copyWith(dishNames: next);
   }
-
-  void setConfirmMealAnalysis(bool value) =>
-      state = state.copyWith(confirmMealAnalysis: value);
 
   void setSelectedImage(PendingDailyRecordImage? image) {
     state = state.copyWith(
@@ -493,21 +475,17 @@ class RecordEditController extends Notifier<RecordEditState> {
     };
   }
 
+  /// 只有菜名是客户端可改的餐食字段:整份列表标记 `user`,服务端据此知道
+  /// 这些名字来自用户而不是模型。改菜名**不触发**重新分析。
   Map<String, dynamic>? _buildMealPayload() {
     final dishes = state.dishNames
         .map((item) => item.trim())
         .where((item) => item.isNotEmpty)
-        .map((item) => <String, dynamic>{'rawName': item})
+        .map((item) => <String, dynamic>{'name': item, 'source': 'user'})
         .toList(growable: false);
-    final payload = <String, dynamic>{
-      'mealInput': <String, dynamic>{'recognizedDishes': dishes},
+    return <String, dynamic>{
+      'mealAnalysis': <String, dynamic>{'dishes': dishes},
     };
-    if (state.confirmMealAnalysis) {
-      payload['mealAnalysis'] = <String, dynamic>{
-        'analysisStatus': 'confirmed',
-      };
-    }
-    return payload;
   }
 }
 

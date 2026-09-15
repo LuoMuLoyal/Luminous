@@ -96,9 +96,10 @@ DailyRecordItem _item({
   String? note,
   Map<String, dynamic>? payload,
   String? mealAnalysisStatus,
-  String? mealAnalysisCoverage,
-  String? mealShortDescription,
-  List<String> mealTopFoods = const [],
+  String? mealHeadline,
+  int? mealCalorieMin,
+  int? mealCalorieMax,
+  String? mealCalorieBucket,
   List<DailyRecordAttachment> attachments = const [],
 }) {
   return DailyRecordItem(
@@ -112,9 +113,10 @@ DailyRecordItem _item({
     note: note,
     payload: payload,
     mealAnalysisStatus: mealAnalysisStatus,
-    mealAnalysisCoverage: mealAnalysisCoverage,
-    mealShortDescription: mealShortDescription,
-    mealTopFoods: mealTopFoods,
+    mealHeadline: mealHeadline,
+    mealCalorieMin: mealCalorieMin,
+    mealCalorieMax: mealCalorieMax,
+    mealCalorieBucket: mealCalorieBucket,
     attachments: attachments,
     createdAt: '2026-07-14T08:30:00Z',
     updatedAt: '2026-07-14T08:30:00Z',
@@ -489,7 +491,7 @@ void main() {
           _item(
             kind: DailyRecordKind.meal,
             title: null,
-            mealShortDescription: 'Rice with chicken',
+            mealHeadline: 'Rice with chicken',
           ),
         ],
         total: 1,
@@ -682,20 +684,17 @@ void main() {
       expect(dashboard.timeline.first.value, isNull);
     });
 
-    test('uses mealShortDescription for meal value', () async {
+    test('uses the meal headline for the timeline title', () async {
       dailyRepo.fetchRecordsResult = DailyRecordListData(
         items: [
-          _item(
-            kind: DailyRecordKind.meal,
-            mealShortDescription: 'Light breakfast',
-          ),
+          _item(kind: DailyRecordKind.meal, mealHeadline: 'Light breakfast'),
         ],
         total: 1,
       );
 
       final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
-      expect(dashboard.timeline.first.value, 'Light breakfast');
+      expect(dashboard.timeline.first.rawTitle, 'Light breakfast');
     });
   });
 
@@ -780,13 +779,13 @@ void main() {
 
   // ── _toTimelineEntry — meal badge key mapping ────────────────
   group('meal badge key mapping', () {
-    final cases = [
-      ('confirmed', RecordCopyKey.timelineMealConfirmedBadge),
+    // 「已分析」不再有角标:右侧位置让给粗化热量区间。
+    final cases = <(String, RecordCopyKey?)>[
       ('analysis_failed', RecordCopyKey.timelineMealFailedBadge),
       ('analyzing', RecordCopyKey.timelineMealAnalyzingBadge),
-      ('unconfirmed', RecordCopyKey.timelineMealEstimateBadge),
-      ('', RecordCopyKey.timelineMealEstimateBadge),
-      ('unknown_status', RecordCopyKey.timelineMealEstimateBadge),
+      ('analyzed', null),
+      ('', null),
+      ('unknown_status', null),
     ];
 
     for (final (status, expectedKey) in cases) {
@@ -881,14 +880,16 @@ void main() {
     });
   });
 
-  // ── _toTimelineEntry — meal detail (topFoods) ────────────────
-  group('meal topFoods detail', () {
-    test('builds rawDetail from mealTopFoods', () async {
+  // ── _toTimelineEntry — meal calorie interval label ───────────
+  group('meal calorie interval label', () {
+    test('coarsens the interval to hundreds', () async {
       dailyRepo.fetchRecordsResult = DailyRecordListData(
         items: [
           _item(
             kind: DailyRecordKind.meal,
-            mealTopFoods: ['Rice', 'Chicken', 'Vegetables'],
+            mealAnalysisStatus: 'analyzed',
+            mealCalorieMin: 452,
+            mealCalorieMax: 748,
           ),
         ],
         total: 1,
@@ -896,20 +897,43 @@ void main() {
 
       final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
-      expect(dashboard.timeline.first.rawDetail, isNotNull);
-      expect(dashboard.timeline.first.rawDetail, contains('Rice'));
-      expect(dashboard.timeline.first.rawDetail, contains('Chicken'));
-      expect(dashboard.timeline.first.rawDetail, contains('Vegetables'));
+      expect(dashboard.timeline.first.mealCalorieLabel, '500–700');
+      // 结论本身走标题/第二行,区间不再塞进 detail。
+      expect(dashboard.timeline.first.rawDetail, isNull);
     });
 
-    test('rawDetail is null when mealTopFoods is empty', () async {
+    test('omits the label while the analysis is still running', () async {
       dailyRepo.fetchRecordsResult = DailyRecordListData(
-        items: [_item(kind: DailyRecordKind.meal, mealTopFoods: [])],
+        items: [
+          _item(
+            kind: DailyRecordKind.meal,
+            mealAnalysisStatus: 'analyzing',
+            mealCalorieMin: 500,
+            mealCalorieMax: 800,
+          ),
+        ],
         total: 1,
       );
 
       final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
+      expect(
+        dashboard.timeline.first.badgeKey,
+        RecordCopyKey.timelineMealAnalyzingBadge,
+      );
+    });
+
+    test('mealCalorieLabel is null without a usable interval', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(kind: DailyRecordKind.meal, mealAnalysisStatus: 'analyzed'),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.mealCalorieLabel, isNull);
       expect(dashboard.timeline.first.rawDetail, isNull);
     });
 
@@ -940,13 +964,18 @@ void main() {
     test('rawDetail is null for non-meal kinds even with topFoods', () async {
       dailyRepo.fetchRecordsResult = DailyRecordListData(
         items: [
-          _item(kind: DailyRecordKind.water, mealTopFoods: ['Rice']),
+          _item(
+            kind: DailyRecordKind.water,
+            mealCalorieMin: 500,
+            mealCalorieMax: 800,
+          ),
         ],
         total: 1,
       );
 
       final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
+      expect(dashboard.timeline.first.mealCalorieLabel, isNull);
       expect(dashboard.timeline.first.rawDetail, isNull);
     });
   });

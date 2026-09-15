@@ -43,15 +43,17 @@ class DailyRecordListResponseItems {
 
     required this.mealAnalysisStatus,
 
-    required this.mealAnalysisCoverage,
-
     required this.mealAnalysisUpdatedAt,
 
     required this.mealAnalysisFailureReason,
 
-    required this.mealShortDescription,
+    required this.mealHeadline,
 
-    required this.mealTopFoods,
+    required this.mealCalorieMin,
+
+    required this.mealCalorieMax,
+
+    required this.mealCalorieBucket,
 
     required this.attachments,
 
@@ -105,23 +107,19 @@ class DailyRecordListResponseItems {
   @JsonKey(name: r'source', required: true, includeIfNull: true)
   final String? source_;
 
-  /// Structured payload for kind-specific data. For sleep: { startedAt, endedAt, durationMinutes, sleepType?, quality?, deepMinutes?, lightMinutes?, remMinutes? }. For symptom: { symptom?: string, severity?: \"mild\"|\"moderate\"|\"severe\"|\"unknown\", customLabel?: string }. For vital: { vitalType, value, unit, secondaryValue?, secondaryUnit? }. For activity: { activityType, value, unit }.
+  /// Structured payload for kind-specific data. For sleep: { startedAt, endedAt, durationMinutes, sleepType?, quality?, deepMinutes?, lightMinutes?, remMinutes? }. For symptom: { symptom?: string, severity?: \"mild\"|\"moderate\"|\"severe\"|\"unknown\", customLabel?: string }. For vital: { vitalType, value, unit, secondaryValue?, secondaryUnit? }. For activity: { activityType, value, unit }. For meal (detail reads only): { mealAnalysis: { version, analysisStatus, analyzedAt, sourceRevision, model, promptVersion, locale, failureReason, calorieRange, dishes, items, facets } }.
   @JsonKey(name: r'payload', required: true, includeIfNull: true)
   final Map<String, Object>? payload;
 
-  /// Meal analysis status for meal records.
+  /// Meal analysis status: \"analyzing\", \"analyzed\", or \"analysis_failed\".
   @JsonKey(name: r'mealAnalysisStatus', required: true, includeIfNull: true)
   final String? mealAnalysisStatus;
-
-  /// Meal analysis coverage for meal records.
-  @JsonKey(name: r'mealAnalysisCoverage', required: true, includeIfNull: true)
-  final String? mealAnalysisCoverage;
 
   /// Meal analysis updated timestamp (ISO 8601).
   @JsonKey(name: r'mealAnalysisUpdatedAt', required: true, includeIfNull: true)
   final String? mealAnalysisUpdatedAt;
 
-  /// Display-safe meal analysis failure reason.
+  /// Stable failure reason code (image_count_invalid, vision_unavailable, model_failed, model_timeout, invalid_output).
   @JsonKey(
     name: r'mealAnalysisFailureReason',
     required: true,
@@ -129,13 +127,27 @@ class DailyRecordListResponseItems {
   )
   final String? mealAnalysisFailureReason;
 
-  /// Short meal description for list reads.
-  @JsonKey(name: r'mealShortDescription', required: true, includeIfNull: true)
-  final String? mealShortDescription;
+  /// Most important meal finding, for the list row.
+  @JsonKey(name: r'mealHeadline', required: true, includeIfNull: true)
+  final String? mealHeadline;
 
-  /// Top recognized foods for list reads.
-  @JsonKey(name: r'mealTopFoods', required: true, includeIfNull: false)
-  final List<String> mealTopFoods;
+  /// Estimated energy interval lower bound (kcal).
+  @JsonKey(name: r'mealCalorieMin', required: true, includeIfNull: true)
+  final num? mealCalorieMin;
+
+  /// Estimated energy interval upper bound (kcal).
+  @JsonKey(name: r'mealCalorieMax', required: true, includeIfNull: true)
+  final num? mealCalorieMax;
+
+  /// Coarse energy bucket derived from the interval.
+  @JsonKey(
+    name: r'mealCalorieBucket',
+    required: true,
+    includeIfNull: true,
+    unknownEnumValue:
+        DailyRecordListResponseItemsMealCalorieBucketEnum.unknownDefaultOpenApi,
+  )
+  final DailyRecordListResponseItemsMealCalorieBucketEnum? mealCalorieBucket;
 
   @JsonKey(name: r'attachments', required: true, includeIfNull: false)
   final List<DailyRecordListResponseItemsAttachments> attachments;
@@ -164,11 +176,12 @@ class DailyRecordListResponseItems {
           other.source_ == source_ &&
           other.payload == payload &&
           other.mealAnalysisStatus == mealAnalysisStatus &&
-          other.mealAnalysisCoverage == mealAnalysisCoverage &&
           other.mealAnalysisUpdatedAt == mealAnalysisUpdatedAt &&
           other.mealAnalysisFailureReason == mealAnalysisFailureReason &&
-          other.mealShortDescription == mealShortDescription &&
-          other.mealTopFoods == mealTopFoods &&
+          other.mealHeadline == mealHeadline &&
+          other.mealCalorieMin == mealCalorieMin &&
+          other.mealCalorieMax == mealCalorieMax &&
+          other.mealCalorieBucket == mealCalorieBucket &&
           other.attachments == attachments &&
           other.createdAt == createdAt &&
           other.updatedAt == updatedAt;
@@ -187,13 +200,14 @@ class DailyRecordListResponseItems {
       (source_ == null ? 0 : source_.hashCode) +
       (payload == null ? 0 : payload.hashCode) +
       (mealAnalysisStatus == null ? 0 : mealAnalysisStatus.hashCode) +
-      (mealAnalysisCoverage == null ? 0 : mealAnalysisCoverage.hashCode) +
       (mealAnalysisUpdatedAt == null ? 0 : mealAnalysisUpdatedAt.hashCode) +
       (mealAnalysisFailureReason == null
           ? 0
           : mealAnalysisFailureReason.hashCode) +
-      (mealShortDescription == null ? 0 : mealShortDescription.hashCode) +
-      mealTopFoods.hashCode +
+      (mealHeadline == null ? 0 : mealHeadline.hashCode) +
+      (mealCalorieMin == null ? 0 : mealCalorieMin.hashCode) +
+      (mealCalorieMax == null ? 0 : mealCalorieMax.hashCode) +
+      (mealCalorieBucket == null ? 0 : mealCalorieBucket.hashCode) +
       attachments.hashCode +
       createdAt.hashCode +
       updatedAt.hashCode;
@@ -230,6 +244,25 @@ enum DailyRecordListResponseItemsKindEnum {
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
   const DailyRecordListResponseItemsKindEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+/// Coarse energy bucket derived from the interval.
+enum DailyRecordListResponseItemsMealCalorieBucketEnum {
+  @JsonValue(r'low')
+  low(r'low'),
+  @JsonValue(r'medium')
+  medium(r'medium'),
+  @JsonValue(r'high')
+  high(r'high'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const DailyRecordListResponseItemsMealCalorieBucketEnum(this.value);
 
   final String value;
 

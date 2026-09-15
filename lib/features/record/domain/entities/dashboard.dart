@@ -229,6 +229,10 @@ abstract class RecordTimelineEntry with _$RecordTimelineEntry {
     String? imageUrl,
     IconData? trailingIcon,
 
+    /// 餐食条目的粗化热量区间(只有数字与连接符,例如 `500–800`),由视图层
+    /// 套上本地化文案后显示在右侧角标位;没有可用的区间时为 null。
+    String? mealCalorieLabel,
+
     /// When non-null, the view should use this raw string instead of resolving
     /// [titleKey] through [recordCopy].
     String? rawTitle,
@@ -302,9 +306,7 @@ enum RecordCopyKey {
   timelineMealLunch,
   timelineMealName,
   timelineMealNutrition,
-  timelineMealEstimateBadge,
   timelineMealAnalyzingBadge,
-  timelineMealConfirmedBadge,
   timelineMealFailedBadge,
   timelineAiBadge,
   timelineBloodPressure,

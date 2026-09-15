@@ -36,12 +36,8 @@ String recordCopy(AppLocalizations l10n, RecordCopyKey key) {
     RecordCopyKey.timelineMealLunch => l10n.recordTimelineMealLunch,
     RecordCopyKey.timelineMealName => l10n.recordTimelineMealName,
     RecordCopyKey.timelineMealNutrition => l10n.recordTimelineMealNutrition,
-    RecordCopyKey.timelineMealEstimateBadge =>
-      l10n.recordMealAnalysisStatusUnconfirmed,
     RecordCopyKey.timelineMealAnalyzingBadge =>
       l10n.recordMealAnalysisStatusAnalyzing,
-    RecordCopyKey.timelineMealConfirmedBadge =>
-      l10n.recordMealAnalysisStatusConfirmed,
     RecordCopyKey.timelineMealFailedBadge =>
       l10n.recordMealAnalysisStatusFailed,
     RecordCopyKey.timelineAiBadge => l10n.recordTimelineAiBadge,
@@ -143,4 +139,15 @@ List<String> toggleSymptomChoice({
     current.remove(choiceCode);
   }
   return current.toList();
+}
+
+/// 时间线条目右侧角标的文案:优先 `badgeKey`,其次是餐食条目的粗化热量区间
+/// (区间文案在这里套上本地化,数据层只提供数字)。没有角标内容时返回 null。
+String? timelineBadgeLabel(AppLocalizations l10n, RecordTimelineEntry entry) {
+  final badgeKey = entry.badgeKey;
+  if (badgeKey != null) return recordCopy(l10n, badgeKey);
+
+  final rangeLabel = entry.mealCalorieLabel;
+  if (rangeLabel == null) return null;
+  return l10n.recordMealCalorieRangeApprox(rangeLabel);
 }

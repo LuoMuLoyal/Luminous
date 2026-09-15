@@ -28,11 +28,16 @@ abstract class DailyRecordItem with _$DailyRecordItem {
     String? source,
     Map<String, dynamic>? payload,
     String? mealAnalysisStatus,
-    String? mealAnalysisCoverage,
     String? mealAnalysisUpdatedAt,
     String? mealAnalysisFailureReason,
-    String? mealShortDescription,
-    @Default(<String>[]) List<String> mealTopFoods,
+
+    /// 最重要的一条结论(列表条目那一行);完整结论在 payload 里。
+    String? mealHeadline,
+
+    /// 热量区间(粗化到百位展示);`bucket` 只作配色语义。
+    int? mealCalorieMin,
+    int? mealCalorieMax,
+    String? mealCalorieBucket,
     @Default([]) List<DailyRecordAttachment> attachments,
     required String createdAt,
     required String updatedAt,

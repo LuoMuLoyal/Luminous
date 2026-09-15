@@ -23,9 +23,9 @@ import '../auth/test_helpers.dart';
 import '../helpers/test_forui_app.dart';
 
 class _FakeRepo extends DailyRecordRepository {
-  /// Analysis status returned by [get]; starts unconfirmed and flips to
-  /// confirmed after a successful [update], mirroring the PATCH chain.
-  String _analysisStatus = 'unconfirmed';
+  /// Analysis status returned by [get]; starts failed so the detail page can
+  /// offer 「重新分析」, then flips to analyzing after a successful [update].
+  String _analysisStatus = 'analysis_failed';
 
   /// When true, [update] throws so tests can pin the failure contract.
   bool updateThrows = false;
@@ -40,44 +40,57 @@ class _FakeRepo extends DailyRecordRepository {
       occurredAt: '2026-06-10',
       title: '午餐',
       payload: {
-        'mealInput': {
-          'recognizedDishes': [
-            {'rawName': '西红柿炒鸡蛋'},
-            {'rawName': '米饭'},
-          ],
-        },
         'mealAnalysis': {
+          'version': 2,
           'analysisStatus': _analysisStatus,
-          'coverage': 'partial',
-          'mealDescription': '一份米饭配西红柿炒鸡蛋',
-          'recognizedDishes': [
-            {
-              'dishKey': 'dish-1',
-              'rawName': '西红柿炒鸡蛋',
-              'normalizedDishName': '西红柿炒鸡蛋',
-            },
-            {'dishKey': 'dish-2', 'rawName': '米饭', 'normalizedDishName': '米饭'},
+          'analyzedAt': _analysisStatus == 'analyzed'
+              ? '2026-06-10T08:00:00.000Z'
+              : null,
+          'sourceRevision': 1,
+          'model': _analysisStatus == 'analyzed' ? 'vision-model' : null,
+          'promptVersion': 'meal-analysis.v2',
+          'locale': 'zh-CN',
+          'failureReason': _analysisStatus == 'analysis_failed'
+              ? 'model_timeout'
+              : null,
+          'calorieRange': _analysisStatus == 'analyzed'
+              ? {'min': 520, 'max': 780, 'unit': 'kcal', 'bucket': 'medium'}
+              : null,
+          'dishes': [
+            {'name': '西红柿炒鸡蛋', 'source': 'model'},
+            {'name': '米饭', 'source': 'model'},
           ],
-          'resolvedIngredients': [
+          'items': [
             {
-              'dishKey': 'dish-1',
-              'ingredientName': '西红柿',
-              'matchedFoodName': '西红柿',
+              'rank': 1,
+              'kind': 'protein',
+              'polarity': 'good',
+              'headline': '蛋白充足',
+              'detail': '这一餐的蛋白质摄入充足',
             },
           ],
-          'compositionMatches': [
-            {
-              'dishKey': 'dish-1',
-              'ingredientName': '西红柿',
-              'matchedFoodName': '西红柿',
-              'matchMethod': 'exact',
-            },
-          ],
-          'nutritionEstimate': {'energyKcal': 320, 'proteinG': 16.2},
-          'mealCommentary': '这一餐营养结果为保守估算。',
+          'facets': {'protein': 'ok'},
         },
       },
-      attachments: const <DailyRecordAttachment>[],
+      mealAnalysisStatus: _analysisStatus,
+      mealHeadline: _analysisStatus == 'analyzed' ? '蛋白充足' : null,
+      mealCalorieMin: _analysisStatus == 'analyzed' ? 520 : null,
+      mealCalorieMax: _analysisStatus == 'analyzed' ? 780 : null,
+      mealCalorieBucket: _analysisStatus == 'analyzed' ? 'medium' : null,
+      attachments: const <DailyRecordAttachment>[
+        DailyRecordAttachment(
+          id: 'att-1',
+          kind: DailyRecordAttachmentKind.image,
+          objectKey: 'daily-records/u1/lunch.jpg',
+          bucket: 'lucent-dev',
+          provider: 'tencent-cos',
+          fileName: 'lunch.jpg',
+          contentType: 'image/jpeg',
+          sizeBytes: 2048,
+          publicUrl: 'https://cdn.example.com/lunch.jpg',
+          createdAt: '2026-06-10T08:00:00.000Z',
+        ),
+      ],
       createdAt: '2026-06-10T08:00:00.000Z',
       updatedAt: '2026-06-10T08:00:00.000Z',
     );
@@ -120,7 +133,7 @@ class _FakeRepo extends DailyRecordRepository {
     if (updateThrows) {
       return TaskEither.left(LucentFailure.unknown(message: 'update failed'));
     }
-    _analysisStatus = 'confirmed';
+    _analysisStatus = 'analyzing';
     return TaskEither.right(_mealItem(id));
   }
 
@@ -278,12 +291,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump();
     expect(find.byType(RecordDetailPage), findsOneWidget);
-    expect(find.textContaining('确认'), findsWidgets);
+    expect(find.textContaining('分析失败'), findsWidgets);
     expect(find.text('餐食分析'), findsOneWidget);
     expect(find.textContaining('西红柿炒鸡蛋'), findsWidgets);
-    expect(find.textContaining('西红柿'), findsWidgets);
-    expect(find.textContaining('热量'), findsOneWidget);
-    expect(find.textContaining('保守估算'), findsWidgets);
+    expect(find.textContaining('分析超时'), findsOneWidget);
+    expect(find.text('重新分析'), findsOneWidget);
   });
 
   testWidgets('water detail shows daily progress and adjacent navigation', (
@@ -539,8 +551,8 @@ void main() {
     expect(find.textContaining('fl oz'), findsNothing);
   });
 
-  testWidgets('meal detail shows confirm action for unconfirmed analysis and '
-      'confirming patches analysisStatus', (tester) async {
+  testWidgets('meal detail retries a failed analysis by re-submitting the '
+      'existing image', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
     final repo = _FakeRepo();
     final container = ProviderContainer(
@@ -576,29 +588,30 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump();
 
-    final confirmAction = find.byKey(const Key('meal-analysis-confirm-action'));
-    expect(confirmAction, findsOneWidget);
+    final retryAction = find.byKey(const Key('meal-analysis-retry-action'));
+    expect(retryAction, findsOneWidget);
+    expect(find.textContaining('分析超时'), findsOneWidget);
 
-    // The confirm action sits below the fold inside the page's scroll view.
-    await tester.ensureVisible(confirmAction);
+    // The retry action sits below the fold inside the page's scroll view.
+    await tester.ensureVisible(retryAction);
     await tester.pump();
-    await tester.tap(confirmAction);
+    await tester.tap(retryAction);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump();
 
-    // update was called with the confirmed analysisStatus patch.
+    // 重试 = 把已有那张图重新提交,服务端据此递增 revision 后重新入队。
     expect(repo.lastUpdateId, 'test-id');
-    final payload = repo.lastUpdateInput!.payload! as Map<String, dynamic>;
+    final attachments = repo.lastUpdateInput!.attachments as List<dynamic>;
+    expect(attachments, hasLength(1));
     expect(
-      (payload['mealAnalysis'] as Map<String, dynamic>)['analysisStatus'],
-      'confirmed',
+      (attachments.single as DailyRecordAttachmentInput).objectKey,
+      'daily-records/u1/lunch.jpg',
     );
 
-    // After the detail reloads the badge reads confirmed and the confirm
-    // action is gone.
-    expect(confirmAction, findsNothing);
-    expect(find.textContaining('已确认'), findsOneWidget);
+    // 重新加载后状态变成分析中,重试入口消失。
+    expect(retryAction, findsNothing);
+    expect(find.textContaining('分析中'), findsWidgets);
 
     // DataChangeBus emitted dailyRecords so the keepAlive recordDashboard
     // refreshes the timeline badge on return to the record page.
@@ -610,7 +623,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 2000));
   });
 
-  testWidgets('meal detail confirm failure keeps the confirm action and shows '
+  testWidgets('meal detail retry failure keeps the retry action and shows '
       'an error toast', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
     final repo = _FakeRepo()..updateThrows = true;
@@ -643,21 +656,21 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump();
 
-    final confirmAction = find.byKey(const Key('meal-analysis-confirm-action'));
-    expect(confirmAction, findsOneWidget);
+    final retryAction = find.byKey(const Key('meal-analysis-retry-action'));
+    expect(retryAction, findsOneWidget);
 
-    // The confirm action sits below the fold inside the page's scroll view.
-    await tester.ensureVisible(confirmAction);
+    // The retry action sits below the fold inside the page's scroll view.
+    await tester.ensureVisible(retryAction);
     await tester.pump();
-    await tester.tap(confirmAction);
+    await tester.tap(retryAction);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump();
 
-    // State unchanged: the confirm action is still present and the error
+    // State unchanged: the retry action is still present and the error
     // toast is shown.
-    expect(confirmAction, findsOneWidget);
-    expect(find.text('确认失败，请稍后再试'), findsOneWidget);
+    expect(retryAction, findsOneWidget);
+    expect(find.text('重新分析失败，请稍后再试'), findsOneWidget);
 
     // Drain the error toast auto-dismiss timer.
     await tester.pump(const Duration(milliseconds: 2000));

@@ -47,6 +47,11 @@
   (test/record/type_mapping_test.dart)。
 - 记录类型图标/强调色只取 `SemanticIcons` / `SemanticColor` token(`domain/entities/dashboard.dart` 的
   `defaultQuickActions`)。
+- 餐食分析(契约 v2,一次多模态分析直出):列表条目取 `mealHeadline`(最重要的一条结论)+ 粗化到百位的热量区间
+  (`mealCalorieMin|Max`,文案在视图层本地化),**不再有估算/已确认角标**(状态只有
+  `analyzing | analyzed | analysis_failed`);详情页取 payload 的 `items`(rank 序)与 `dishes`。
+  **客户端唯一可编辑的餐食字段是菜名**(`payload.mealAnalysis.dishes`,整份标记 `source: 'user'`,改菜名不重算
+  结论与区间),没有人工确认这一步;失败态的「重新分析」= 把记录已有的那张图作为 attachment 重新 PATCH。
 - 日期 wire 契约:本地时区 `yyyy-MM-dd`(`data/providers/record_access.dart`)。
 
 ## 依赖禁区

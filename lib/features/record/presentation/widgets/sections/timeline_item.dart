@@ -120,6 +120,7 @@ class TimelineCard extends StatelessWidget {
     final detail =
         entry.rawDetail ??
         (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
+    final badgeLabel = timelineBadgeLabel(l10n, entry);
     final typography = context.theme.typography;
     final borderRadius = context.theme.style.borderRadius;
 
@@ -171,7 +172,7 @@ class TimelineCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        if (entry.badgeKey != null) ...[
+                        if (badgeLabel != null) ...[
                           const SizedBox(width: Spacing.md),
                           // 桌面端时间线列较窄：badge 参与 flex 收缩，过长时
                           // 省略号截断，避免 RenderFlex 溢出（e2e 桌面宽度回归）。
@@ -199,7 +200,7 @@ class TimelineCard extends StatelessWidget {
                                         // Row 仍按无界宽度测量而溢出。
                                         Flexible(
                                           child: Text(
-                                            recordCopy(l10n, entry.badgeKey!),
+                                            badgeLabel,
                                             style: context
                                                 .theme
                                                 .typography

@@ -161,12 +161,10 @@ void main() {
 
         expect(result.total, 1);
         final item = result.items.single;
-        expect(item.mealAnalysisStatus, 'unconfirmed');
-        expect(item.mealAnalysisCoverage, 'partial');
+        expect(item.mealAnalysisStatus, 'analyzed');
         expect(item.mealAnalysisUpdatedAt, '2026-07-01T10:00:00.000Z');
         expect(item.mealAnalysisFailureReason, isNull);
-        expect(item.mealShortDescription, '一份米饭配鸡胸肉');
-        expect(item.mealTopFoods, <String>['米饭', '鸡胸肉']);
+        expect(item.mealHeadline, '一份米饭配鸡胸肉');
       },
     );
 
@@ -178,12 +176,10 @@ void main() {
         expect(result.summaries, hasLength(1));
         final latest = result.summaries.single.latest;
         expect(latest, isNotNull);
-        expect(latest!.mealAnalysisStatus, 'unconfirmed');
-        expect(latest.mealAnalysisCoverage, 'partial');
+        expect(latest!.mealAnalysisStatus, 'analyzed');
         expect(latest.mealAnalysisUpdatedAt, '2026-07-01T10:00:00.000Z');
         expect(latest.mealAnalysisFailureReason, isNull);
-        expect(latest.mealShortDescription, '一份米饭配鸡胸肉');
-        expect(latest.mealTopFoods, <String>['米饭', '鸡胸肉']);
+        expect(latest.mealHeadline, '一份米饭配鸡胸肉');
       },
     );
 
@@ -215,12 +211,10 @@ void main() {
       () async {
         final item = await dataSource.get('record-1');
 
-        expect(item.mealAnalysisStatus, 'unconfirmed');
-        expect(item.mealAnalysisCoverage, 'partial');
+        expect(item.mealAnalysisStatus, 'analyzed');
         expect(item.mealAnalysisUpdatedAt, '2026-07-01T10:00:00.000Z');
         expect(item.mealAnalysisFailureReason, isNull);
-        expect(item.mealShortDescription, '一份米饭配鸡胸肉');
-        expect(item.mealTopFoods, <String>['米饭', '鸡胸肉']);
+        expect(item.mealHeadline, '一份米饭配鸡胸肉');
       },
     );
 
@@ -401,16 +395,35 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
       'source': 'manual',
       'payload': <String, Object?>{
         'mealAnalysis': <String, Object?>{
-          'analysisStatus': 'unconfirmed',
-          'coverage': 'partial',
+          'analysisStatus': 'analyzed',
+          'calorieRange': <String, Object?>{
+            'min': 520,
+            'max': 780,
+            'unit': 'kcal',
+            'bucket': 'medium',
+          },
+          'dishes': <Object?>[
+            <String, Object?>{'name': '米饭', 'source': 'model'},
+            <String, Object?>{'name': '鸡胸肉', 'source': 'model'},
+          ],
+          'items': <Object?>[
+            <String, Object?>{
+              'rank': 1,
+              'kind': 'protein',
+              'polarity': 'good',
+              'headline': '蛋白充足',
+              'detail': '这一餐的蛋白质摄入充足',
+            },
+          ],
         },
       },
-      'mealAnalysisStatus': 'unconfirmed',
-      'mealAnalysisCoverage': 'partial',
+      'mealAnalysisStatus': 'analyzed',
       'mealAnalysisUpdatedAt': '2026-07-01T10:00:00.000Z',
       'mealAnalysisFailureReason': null,
-      'mealShortDescription': '一份米饭配鸡胸肉',
-      'mealTopFoods': <String>['米饭', '鸡胸肉'],
+      'mealHeadline': '一份米饭配鸡胸肉',
+      'mealCalorieMin': 520,
+      'mealCalorieMax': 780,
+      'mealCalorieBucket': 'medium',
       'attachments': attachments.map((raw) {
         final attachment = raw as Map<String, Object?>;
         return <String, Object?>{

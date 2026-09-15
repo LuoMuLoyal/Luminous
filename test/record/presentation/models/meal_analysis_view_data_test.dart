@@ -2,162 +2,96 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 
 void main() {
-  // ── MealDishViewData.displayName ──────────────────────────────
-  group('MealDishViewData.displayName', () {
-    test('returns normalizedDishName when it is non-null', () {
-      const data = MealDishViewData(
-        dishKey: 'd1',
-        rawName: 'Raw Name',
-        normalizedDishName: 'Normalized',
-      );
-      expect(data.displayName, 'Normalized');
+  group('MealAnalysisViewData status', () {
+    MealAnalysisViewData build(String status) => MealAnalysisViewData(
+      status: status,
+      failureReason: null,
+      calorieRange: null,
+      dishes: const [],
+      items: const [],
+    );
+
+    test('exposes the three v2 statuses', () {
+      expect(build('analyzing').isAnalyzing, isTrue);
+      expect(build('analyzing').isAnalyzed, isFalse);
+      expect(build('analyzed').isAnalyzed, isTrue);
+      expect(build('analysis_failed').hasFailed, isTrue);
+      expect(build('analysis_failed').isAnalyzing, isFalse);
     });
 
-    test('returns rawName when normalizedDishName is null', () {
-      const data = MealDishViewData(
-        dishKey: 'd1',
-        rawName: 'Raw Name',
-        normalizedDishName: null,
-      );
-      expect(data.displayName, 'Raw Name');
-    });
-
-    test('returns rawName when normalizedDishName is empty string', () {
-      // displayName uses ?? so empty string is non-null → returns ''
-      const data = MealDishViewData(
-        dishKey: 'd1',
-        rawName: 'Raw Name',
-        normalizedDishName: '',
-      );
-      expect(data.displayName, '');
-    });
-  });
-
-  // ── MealNutritionViewData.hasAnyValue ─────────────────────────
-  group('MealNutritionViewData.hasAnyValue', () {
-    test('returns false when both energyKcal and proteinG are null', () {
-      const data = MealNutritionViewData(energyKcal: null, proteinG: null);
-      expect(data.hasAnyValue, isFalse);
-    });
-
-    test('returns true when only energyKcal is non-null', () {
-      const data = MealNutritionViewData(energyKcal: 250, proteinG: null);
-      expect(data.hasAnyValue, isTrue);
-    });
-
-    test('returns true when only proteinG is non-null', () {
-      const data = MealNutritionViewData(energyKcal: null, proteinG: 10);
-      expect(data.hasAnyValue, isTrue);
-    });
-
-    test('returns true when both are non-null', () {
-      const data = MealNutritionViewData(energyKcal: 500, proteinG: 20);
-      expect(data.hasAnyValue, isTrue);
-    });
-
-    test('returns true when energyKcal is zero (non-null)', () {
-      const data = MealNutritionViewData(energyKcal: 0, proteinG: null);
-      expect(data.hasAnyValue, isTrue);
-    });
-
-    test('returns true when proteinG is zero (non-null)', () {
-      const data = MealNutritionViewData(energyKcal: null, proteinG: 0);
-      expect(data.hasAnyValue, isTrue);
-    });
-  });
-
-  // ── MealAnalysisViewData construction ─────────────────────────
-  group('MealAnalysisViewData', () {
-    test('can be constructed with all nullable fields null', () {
+    test('headline is the first (most important) finding', () {
       const data = MealAnalysisViewData(
-        status: null,
-        coverage: null,
-        mealDescription: null,
-        mealCommentary: null,
+        status: 'analyzed',
         failureReason: null,
-        isEstimate: false,
-        recognizedDishes: [],
-        resolvedIngredients: [],
-        compositionMatches: [],
-        nutritionEstimate: null,
-        inputDishes: [],
-      );
-      expect(data.status, isNull);
-      expect(data.coverage, isNull);
-      expect(data.mealDescription, isNull);
-      expect(data.mealCommentary, isNull);
-      expect(data.failureReason, isNull);
-      expect(data.isEstimate, isFalse);
-      expect(data.recognizedDishes, isEmpty);
-      expect(data.resolvedIngredients, isEmpty);
-      expect(data.compositionMatches, isEmpty);
-      expect(data.nutritionEstimate, isNull);
-      expect(data.inputDishes, isEmpty);
-    });
-
-    test('can be constructed with all fields populated', () {
-      const dish = MealDishViewData(
-        dishKey: 'd1',
-        rawName: 'Chicken',
-        normalizedDishName: 'Grilled Chicken',
-      );
-      const ingredient = MealIngredientViewData(
-        dishKey: 'd1',
-        ingredientName: 'Salt',
-        matchedFoodName: 'Sodium Chloride',
-      );
-      const match = MealMatchViewData(
-        dishKey: 'd1',
-        ingredientName: 'Salt',
-        matchedFoodName: 'Sodium Chloride',
-        matchMethod: 'exact',
-      );
-      const nutrition = MealNutritionViewData(energyKcal: 300, proteinG: 25);
-      const draft = MealDishDraftViewData(rawName: 'Chicken');
-
-      const data = MealAnalysisViewData(
-        status: 'confirmed',
-        coverage: 'complete',
-        mealDescription: 'Grilled chicken with rice',
-        mealCommentary: 'Balanced meal',
-        failureReason: null,
-        isEstimate: false,
-        recognizedDishes: [dish],
-        resolvedIngredients: [ingredient],
-        compositionMatches: [match],
-        nutritionEstimate: nutrition,
-        inputDishes: [draft],
+        calorieRange: null,
+        dishes: [],
+        items: [
+          MealInsightViewData(
+            rank: 1,
+            kind: 'fried',
+            polarity: 'watch',
+            headline: '油炸偏多',
+            detail: '午饭油炸食品摄入偏多',
+          ),
+          MealInsightViewData(
+            rank: 2,
+            kind: 'vegetable',
+            polarity: 'good',
+            headline: '蔬菜丰富',
+            detail: '蔬菜种类丰富',
+          ),
+        ],
       );
 
-      expect(data.status, 'confirmed');
-      expect(data.coverage, 'complete');
-      expect(data.mealDescription, 'Grilled chicken with rice');
-      expect(data.mealCommentary, 'Balanced meal');
-      expect(data.failureReason, isNull);
-      expect(data.isEstimate, isFalse);
-      expect(data.recognizedDishes, hasLength(1));
-      expect(data.recognizedDishes.first.displayName, 'Grilled Chicken');
-      expect(data.resolvedIngredients, hasLength(1));
-      expect(data.resolvedIngredients.first.ingredientName, 'Salt');
-      expect(data.compositionMatches, hasLength(1));
-      expect(data.compositionMatches.first.matchMethod, 'exact');
-      expect(data.nutritionEstimate, isNotNull);
-      expect(data.nutritionEstimate!.hasAnyValue, isTrue);
-      expect(data.inputDishes, hasLength(1));
-      expect(data.inputDishes.first.rawName, 'Chicken');
+      expect(data.headline, '油炸偏多');
+      expect(build('analyzed').headline, isNull);
     });
   });
 
-  // ── MealDishDraftViewData ─────────────────────────────────────
-  group('MealDishDraftViewData', () {
-    test('stores rawName correctly', () {
-      const draft = MealDishDraftViewData(rawName: 'Test Dish');
-      expect(draft.rawName, 'Test Dish');
+  group('MealCalorieRangeViewData.coarseLabel', () {
+    test('rounds both bounds to hundreds', () {
+      const range = MealCalorieRangeViewData(
+        min: 452,
+        max: 748,
+        bucket: 'medium',
+      );
+      expect(range.coarseLabel, '500–700');
     });
 
-    test('stores empty string rawName', () {
-      const draft = MealDishDraftViewData(rawName: '');
-      expect(draft.rawName, '');
+    test('keeps already-round bounds and clamps at zero', () {
+      expect(
+        const MealCalorieRangeViewData(
+          min: 500,
+          max: 800,
+          bucket: 'medium',
+        ).coarseLabel,
+        '500–800',
+      );
+      expect(
+        const MealCalorieRangeViewData(
+          min: 0,
+          max: 120,
+          bucket: 'low',
+        ).coarseLabel,
+        '0–100',
+      );
+    });
+  });
+
+  group('MealDishViewData', () {
+    test('flags user edits by source', () {
+      expect(
+        const MealDishViewData(name: '西兰花', source: 'user').isUserEdited,
+        isTrue,
+      );
+      expect(
+        const MealDishViewData(name: '红烧肉', source: 'model').isUserEdited,
+        isFalse,
+      );
+      expect(
+        const MealDishViewData(name: '红烧肉', source: null).isUserEdited,
+        isFalse,
+      );
     });
   });
 }

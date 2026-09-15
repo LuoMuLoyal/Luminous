@@ -22,7 +22,6 @@ import 'package:luminous/features/record/presentation/widgets/detail/info_rows.d
 import 'package:luminous/features/record/presentation/widgets/detail/source_badge.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/surface.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/water_progress.dart';
-import 'package:luminous/features/record/presentation/widgets/meal/analysis_status_badge.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_summary_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -38,9 +37,9 @@ class RecordDetailBody extends ConsumerStatefulWidget {
 class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
   late final MealAnalysisPoller _poller;
 
-  /// Guards against re-entrant meal-analysis confirm requests while one is in
+  /// Guards against re-entrant meal-analysis retry requests while one is in
   /// flight; the summary card shows a loading state while this is true.
-  bool _isConfirming = false;
+  bool _isRetrying = false;
 
   @override
   void initState() {
@@ -206,55 +205,13 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
         ),
         if (record.kind == DailyRecordKind.meal && mealAnalysis != null) ...[
           const SizedBox(height: Spacing.lg),
-          if (mealAnalysis.status == 'analyzing')
-            DetailSurface(
-              child: Row(
-                children: [
-                  MealAnalysisStatusBadge(
-                    status: mealAnalysis.status,
-                    coverage: mealAnalysis.coverage,
-                    large: true,
-                  ),
-                  const SizedBox(width: Spacing.md),
-                  Expanded(
-                    child: Text(
-                      l10n.recordMealAnalysisStatusAnalyzing,
-                      style: typography.body.xs.copyWith(
-                        color: SemanticColor.neutral.solid(context),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          else if (mealAnalysis.status == 'analysis_failed')
-            DetailSurface(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MealAnalysisStatusBadge(
-                    status: mealAnalysis.status,
-                    coverage: mealAnalysis.coverage,
-                    large: true,
-                  ),
-                  if (nonEmpty(mealAnalysis.failureReason) != null) ...[
-                    const SizedBox(height: Spacing.md),
-                    Text(
-                      mealAnalysis.failureReason!,
-                      style: typography.body.xs.copyWith(
-                        color: SemanticColor.neutral.solid(context),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            )
-          else
-            MealAnalysisSummaryCard(
-              data: mealAnalysis,
-              onConfirm: _handleConfirmMealAnalysis,
-              isConfirming: _isConfirming,
-            ),
+          // 三种状态都由结果卡承载:分析中只给状态,失败给原因与「重新分析」,
+          // 已分析给区间卡 + 全部结论 + 菜名。
+          MealAnalysisSummaryCard(
+            data: mealAnalysis,
+            onRetry: _handleRetryMealAnalysis,
+            isRetrying: _isRetrying,
+          ),
         ],
         if (imageAttachment != null) ...[
           const SizedBox(height: Spacing.lg),
@@ -354,16 +311,16 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
     );
   }
 
-  void _handleConfirmMealAnalysis() {
-    if (_isConfirming) return;
-    setState(() => _isConfirming = true);
+  void _handleRetryMealAnalysis() {
+    if (_isRetrying) return;
+    setState(() => _isRetrying = true);
     unawaited(
-      confirmMealAnalysis(
+      retryMealAnalysis(
         ref: ref,
         context: context,
-        recordId: widget.record.id,
+        record: widget.record,
       ).whenComplete(() {
-        if (mounted) setState(() => _isConfirming = false);
+        if (mounted) setState(() => _isRetrying = false);
       }),
     );
   }

@@ -1862,26 +1862,43 @@ void main() {
         itemNote: null,
         itemPayload: const {
           'mealAnalysis': {
-            'analysisStatus': 'unconfirmed',
-            'coverage': 'partial',
-            'mealDescription': '一份米饭配鸡胸肉',
+            'analysisStatus': 'analyzed',
+            'calorieRange': {
+              'min': 520,
+              'max': 780,
+              'unit': 'kcal',
+              'bucket': 'medium',
+            },
+            'dishes': [
+              {'name': '米饭', 'source': 'model'},
+              {'name': '鸡胸肉', 'source': 'model'},
+            ],
+            'items': [
+              {
+                'rank': 1,
+                'kind': 'protein',
+                'polarity': 'good',
+                'headline': '蛋白充足',
+                'detail': '这一餐的蛋白质摄入充足',
+              },
+            ],
           },
         },
-        itemMealAnalysisStatus: 'unconfirmed',
-        itemMealAnalysisCoverage: 'partial',
-        itemMealShortDescription: '一份米饭配鸡胸肉',
-        itemMealTopFoods: const ['米饭', '鸡胸肉'],
+        itemMealAnalysisStatus: 'analyzed',
+        itemMealShortDescription: '蛋白充足',
+        itemMealCalorieMin: 520,
+        itemMealCalorieMax: 780,
+        itemMealCalorieBucket: 'medium',
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
-      expect(dashboard.timeline.single.rawTitle, '一份米饭配鸡胸肉');
-      expect(dashboard.timeline.single.rawDetail, '识别菜品：米饭、鸡胸肉');
-      expect(
-        dashboard.timeline.single.badgeKey,
-        RecordCopyKey.timelineMealEstimateBadge,
-      );
+      // 标题行 = 最重要的一条结论;第二行 = 那句话本身;区间走右侧角标位。
+      expect(dashboard.timeline.single.rawTitle, '蛋白充足');
+      expect(dashboard.timeline.single.value, '这一餐的蛋白质摄入充足');
+      expect(dashboard.timeline.single.badgeKey, isNull);
+      expect(dashboard.timeline.single.mealCalorieLabel, '500–800');
     },
   );
 
@@ -2196,9 +2213,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     this.itemNote = 'This is a note',
     this.itemPayload,
     this.itemMealAnalysisStatus,
-    this.itemMealAnalysisCoverage,
     this.itemMealShortDescription,
-    this.itemMealTopFoods = const <String>[],
+    this.itemMealCalorieMin,
+    this.itemMealCalorieMax,
+    this.itemMealCalorieBucket,
     this.withAttachment = false,
     this.fetchThrows = false,
     this.generatedCandidates,
@@ -2215,9 +2233,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final String? itemNote;
   final Map<String, dynamic>? itemPayload;
   final String? itemMealAnalysisStatus;
-  final String? itemMealAnalysisCoverage;
   final String? itemMealShortDescription;
-  final List<String> itemMealTopFoods;
+  final int? itemMealCalorieMin;
+  final int? itemMealCalorieMax;
+  final String? itemMealCalorieBucket;
   final bool withAttachment;
   final bool fetchThrows;
   final DailyRecordCandidateResult? generatedCandidates;
@@ -2267,9 +2286,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
             note: itemNote,
             payload: itemPayload,
             mealAnalysisStatus: itemMealAnalysisStatus,
-            mealAnalysisCoverage: itemMealAnalysisCoverage,
-            mealShortDescription: itemMealShortDescription,
-            mealTopFoods: itemMealTopFoods,
+            mealHeadline: itemMealShortDescription,
+            mealCalorieMin: itemMealCalorieMin,
+            mealCalorieMax: itemMealCalorieMax,
+            mealCalorieBucket: itemMealCalorieBucket,
             source: 'manual',
             createdAt: DateTime.now().toIso8601String(),
             updatedAt: DateTime.now().toIso8601String(),
@@ -2309,9 +2329,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
         note: itemNote,
         payload: itemPayload,
         mealAnalysisStatus: itemMealAnalysisStatus,
-        mealAnalysisCoverage: itemMealAnalysisCoverage,
-        mealShortDescription: itemMealShortDescription,
-        mealTopFoods: itemMealTopFoods,
+        mealHeadline: itemMealShortDescription,
+        mealCalorieMin: itemMealCalorieMin,
+        mealCalorieMax: itemMealCalorieMax,
+        mealCalorieBucket: itemMealCalorieBucket,
         source: 'manual',
         attachments: withAttachment
             ? [
@@ -2377,9 +2398,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
         note: input.note,
         payload: input.payload,
         mealAnalysisStatus: itemMealAnalysisStatus,
-        mealAnalysisCoverage: itemMealAnalysisCoverage,
-        mealShortDescription: itemMealShortDescription,
-        mealTopFoods: itemMealTopFoods,
+        mealHeadline: itemMealShortDescription,
+        mealCalorieMin: itemMealCalorieMin,
+        mealCalorieMax: itemMealCalorieMax,
+        mealCalorieBucket: itemMealCalorieBucket,
         source: 'manual',
         createdAt: DateTime.now().toIso8601String(),
         updatedAt: DateTime.now().toIso8601String(),

@@ -62,7 +62,7 @@
   "recordWaterQuickEntryTitle": "记录饮水",
   "recordWaterQuickEntryManualHint": "输入毫升数",
   "recordCreateFieldTitleOptional": "标题",
-"recordCreateFieldTitle": "标题",
+  "recordCreateFieldTitle": "标题",
   "recordCreateFieldNote": "备注",
   "recordCreateKindNote": "备注",
   "recordCreateValueWater": "饮水量",
@@ -435,25 +435,8 @@
   "recordDetailNextAction": "下一条",
   "recordMealAnalysisSectionTitle": "餐食分析",
   "recordMealAnalysisStatusAnalyzing": "分析中",
-  "recordMealAnalysisStatusUnconfirmed": "待确认",
-  "recordMealAnalysisStatusConfirmed": "已确认",
   "recordMealAnalysisStatusFailed": "分析失败",
-  "recordMealAnalysisCoveragePartial": "部分覆盖",
-  "recordMealAnalysisCoverageComplete": "完整覆盖",
-  "recordMealAnalysisCoverageNone": "未覆盖",
-  "recordMealAnalysisRecognizedDishes": "识别菜品",
-  "recordMealAnalysisResolvedIngredients": "拆解食材",
-  "recordMealAnalysisCompositionMatches": "成分表命中",
-  "recordMealAnalysisNutritionEstimate": "营养估算",
-  "recordMealAnalysisNutritionEnergy": "热量",
   "recordMealAnalysisEnergyUnit": "kcal",
-  "recordMealAnalysisMatchArrow": "→",
-  "recordMealAnalysisNutritionProtein": "蛋白质",
-  "recordMealAnalysisEstimateDisclaimer": "当前结果仅作保守估算，请以实际情况为准。",
-  "recordMealConfirmAction": "确认当前菜品结果",
-  "recordMealConfirmActionSelected": "保存时确认当前菜品结果",
-  "recordMealConfirmFailedToast": "确认失败，请稍后再试",
-  "recordMealDishEditorHelperText": "仅编辑菜品层，食材和营养将由系统重新估算。",
   "recordMealDishAddAction": "添加菜品",
   "recordMealDishRemoveAction": "删除菜品",
   "recordMealDishFieldLabel": "菜品 {index}",
@@ -602,5 +585,70 @@
   "recordCreateSectionBasicTitle": "基本信息",
   "recordCreateSectionDetailsTitle": "记录内容",
   "recordDragDateChanged": "记录日期已更新",
-  "recordDragDateError": "日期更新失败，请重试"
+  "recordDragDateError": "日期更新失败，请重试",
+  "recordMealAnalysisStatusAnalyzed": "已分析",
+  "@recordMealAnalysisStatusAnalyzed": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisCalorieRangeTitle": "热量区间",
+  "@recordMealAnalysisCalorieRangeTitle": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealCalorieRangeApprox": "约 {range} kcal",
+  "@recordMealCalorieRangeApprox": {
+    "description": "Coarse energy interval, e.g. 500-800.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "recordMealAnalysisInsightsTitle": "饮食分析",
+  "@recordMealAnalysisInsightsTitle": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisAnalyzingHint": "正在分析这张照片…",
+  "@recordMealAnalysisAnalyzingHint": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisDishesTitle": "菜名（可编辑）",
+  "@recordMealAnalysisDishesTitle": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisDishesHint": "改菜名不会重算分析与热量。",
+  "@recordMealAnalysisDishesHint": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisRetryAction": "重新分析",
+  "@recordMealAnalysisRetryAction": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisRetryFailedToast": "重新分析失败，请稍后再试",
+  "@recordMealAnalysisRetryFailedToast": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureImageCount": "图片数量不对，无法分析",
+  "@recordMealAnalysisFailureImageCount": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureVisionUnavailable": "图片分析服务暂不可用",
+  "@recordMealAnalysisFailureVisionUnavailable": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureModelFailed": "分析失败，请稍后再试",
+  "@recordMealAnalysisFailureModelFailed": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureModelTimeout": "分析超时，请重试",
+  "@recordMealAnalysisFailureModelTimeout": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureInvalidOutput": "图片内容无法识别",
+  "@recordMealAnalysisFailureInvalidOutput": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisRetryingToast": "已重新提交分析",
+  "@recordMealAnalysisRetryingToast": {
+    "description": "Meal analysis retry feedback."
+  }
 }

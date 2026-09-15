@@ -163,25 +163,24 @@ RecordTimelineEntry toTimelineEntry(DailyRecordItem record) {
   final String? rawTitle;
   if (record.title != null) {
     rawTitle = record.title;
-  } else if (kind == DailyRecordKind.meal &&
-      record.mealShortDescription != null) {
-    rawTitle = record.mealShortDescription;
+  } else if (kind == DailyRecordKind.meal && record.mealHeadline != null) {
+    rawTitle = record.mealHeadline;
   } else if (kind == DailyRecordKind.note || kind == DailyRecordKind.mood) {
     rawTitle = null;
   } else {
     rawTitle = '${kind.name} ${record.value ?? ''}'.trim();
   }
 
-  final mealDetail =
-      kind == DailyRecordKind.meal && record.mealTopFoods.isNotEmpty
-      ? '识别菜品：${record.mealTopFoods.join('、')}'
+  // 餐食条目:第二行给完整一点的那条结论,右侧角标给粗化后的热量区间
+  // (数据层只给数字,文案由视图层本地化)。
+  final mealInsight = kind == DailyRecordKind.meal
+      ? mealView?.items.firstOrNull
       : null;
-
   final mealValue = kind == DailyRecordKind.meal
-      ? (record.mealShortDescription ??
-            record.value ??
-            mealView?.mealDescription ??
-            record.note)
+      ? (mealInsight?.detail ?? record.value ?? record.note)
+      : null;
+  final mealCalorieLabel = kind == DailyRecordKind.meal
+      ? _mealCalorieLabel(record)
       : null;
 
   return RecordTimelineEntry(
@@ -198,9 +197,10 @@ RecordTimelineEntry toTimelineEntry(DailyRecordItem record) {
         ? '${record.value}${record.unit != null ? ' ${record.unit}' : ''}'
         : sleepPayloadValue(kind, record.payload) ?? record.note,
     valueKey: moodValueKey,
-    rawDetail: mealDetail,
+    rawDetail: null,
     detailKey: record.note != null && record.value != null ? null : null,
     badgeKey: mealBadgeKey(record),
+    mealCalorieLabel: mealCalorieLabel,
     imageUrl: record.attachments
         .where(
           (attachment) => attachment.kind == DailyRecordAttachmentKind.image,
@@ -249,9 +249,22 @@ RecordCopyKey? moodValueKeyFor(
 RecordCopyKey? mealBadgeKey(DailyRecordItem record) {
   if (record.kind != DailyRecordKind.meal) return null;
   return switch (record.mealAnalysisStatus) {
-    'confirmed' => RecordCopyKey.timelineMealConfirmedBadge,
-    'analysis_failed' => RecordCopyKey.timelineMealFailedBadge,
     'analyzing' => RecordCopyKey.timelineMealAnalyzingBadge,
-    _ => RecordCopyKey.timelineMealEstimateBadge,
+    'analysis_failed' => RecordCopyKey.timelineMealFailedBadge,
+    // 「已分析」不再有角标:右侧位置留给热量区间,结论本身就在标题行。
+    _ => null,
   };
+}
+
+/// 粗化到百位的区间文案(只有数字与连接符);缺任一端时返回 null。
+String? _mealCalorieLabel(DailyRecordItem record) {
+  final min = record.mealCalorieMin;
+  final max = record.mealCalorieMax;
+  if (min == null || max == null) return null;
+  return '${_roundToHundreds(min)}–${_roundToHundreds(max)}';
+}
+
+int _roundToHundreds(int value) {
+  final rounded = (value / 100).round() * 100;
+  return rounded < 0 ? 0 : rounded;
 }

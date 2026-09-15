@@ -18,11 +18,12 @@ void main() {
       String? source = 'manual',
       Map<String, dynamic>? payload = const {'key': 'value'},
       String? mealAnalysisStatus,
-      String? mealAnalysisCoverage,
       String? mealAnalysisUpdatedAt,
       String? mealAnalysisFailureReason,
-      String? mealShortDescription,
-      List<String> mealTopFoods = const [],
+      String? mealHeadline,
+      int? mealCalorieMin,
+      int? mealCalorieMax,
+      String? mealCalorieBucket,
       List<DailyRecordAttachment> attachments = const [],
       String createdAt = '2026-07-10T08:30:00.000Z',
       String updatedAt = '2026-07-10T08:30:00.000Z',
@@ -39,11 +40,12 @@ void main() {
         source: source,
         payload: payload,
         mealAnalysisStatus: mealAnalysisStatus,
-        mealAnalysisCoverage: mealAnalysisCoverage,
         mealAnalysisUpdatedAt: mealAnalysisUpdatedAt,
         mealAnalysisFailureReason: mealAnalysisFailureReason,
-        mealShortDescription: mealShortDescription,
-        mealTopFoods: mealTopFoods,
+        mealHeadline: mealHeadline,
+        mealCalorieMin: mealCalorieMin,
+        mealCalorieMax: mealCalorieMax,
+        mealCalorieBucket: mealCalorieBucket,
         attachments: attachments,
         createdAt: createdAt,
         updatedAt: updatedAt,
@@ -104,7 +106,6 @@ void main() {
         expect(restored.source, isNull);
         expect(restored.payload, isNull);
         expect(restored.mealAnalysisStatus, isNull);
-        expect(restored.mealTopFoods, isEmpty);
         expect(restored.attachments, isEmpty);
         expect(restored.createdAt, '2026-07-10T00:00:00.000Z');
         expect(restored.updatedAt, '2026-07-10T00:00:00.000Z');
@@ -139,11 +140,9 @@ void main() {
           value: null,
           unit: null,
           mealAnalysisStatus: 'completed',
-          mealAnalysisCoverage: 'full',
           mealAnalysisUpdatedAt: '2026-07-10T12:30:00.000Z',
           mealAnalysisFailureReason: null,
-          mealShortDescription: '米饭配炒菜',
-          mealTopFoods: ['米饭', '青菜', '鸡蛋'],
+          mealHeadline: '米饭配炒菜',
         );
 
         final json = DailyRecordJsonCodec.itemToJson(item);
@@ -151,11 +150,9 @@ void main() {
 
         expect(restored.kind, DailyRecordKind.meal);
         expect(restored.mealAnalysisStatus, 'completed');
-        expect(restored.mealAnalysisCoverage, 'full');
         expect(restored.mealAnalysisUpdatedAt, '2026-07-10T12:30:00.000Z');
         expect(restored.mealAnalysisFailureReason, isNull);
-        expect(restored.mealShortDescription, '米饭配炒菜');
-        expect(restored.mealTopFoods, ['米饭', '青菜', '鸡蛋']);
+        expect(restored.mealHeadline, '米饭配炒菜');
       });
 
       test('round-trips a meal record with analysis failure', () {
@@ -164,7 +161,7 @@ void main() {
           kind: DailyRecordKind.meal,
           mealAnalysisStatus: 'failed',
           mealAnalysisFailureReason: 'image_too_blurry',
-          mealShortDescription: null,
+          mealHeadline: null,
         );
 
         final json = DailyRecordJsonCodec.itemToJson(item);
@@ -172,7 +169,7 @@ void main() {
 
         expect(restored.mealAnalysisStatus, 'failed');
         expect(restored.mealAnalysisFailureReason, 'image_too_blurry');
-        expect(restored.mealShortDescription, isNull);
+        expect(restored.mealHeadline, isNull);
       });
 
       test('round-trips all DailyRecordKind values', () {
@@ -206,24 +203,41 @@ void main() {
         expect(restored.payload, isNull);
       });
 
-      test('round-trips empty mealTopFoods list', () {
-        final item = createItem(mealTopFoods: []);
+      test('round-trips the meal projection fields', () {
+        final item = createItem(
+          kind: DailyRecordKind.meal,
+          mealAnalysisStatus: 'analyzed',
+          mealHeadline: '油炸偏多',
+          mealCalorieMin: 520,
+          mealCalorieMax: 780,
+          mealCalorieBucket: 'medium',
+        );
 
         final json = DailyRecordJsonCodec.itemToJson(item);
         final restored = DailyRecordJsonCodec.itemFromJson(json);
 
-        expect(restored.mealTopFoods, isEmpty);
+        expect(restored.mealHeadline, '油炸偏多');
+        expect(restored.mealCalorieMin, 520);
+        expect(restored.mealCalorieMax, 780);
+        expect(restored.mealCalorieBucket, 'medium');
       });
 
-      test('round-trips null mealTopFoods in JSON as empty list', () {
+      test('reads a payload without meal projection keys as null', () {
         final item = createItem();
         final json = DailyRecordJsonCodec.itemToJson(item);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        jsonMap.remove('mealTopFoods');
+        jsonMap.remove('mealHeadline');
+        jsonMap.remove('mealCalorieMin');
+        jsonMap.remove('mealCalorieMax');
+        jsonMap.remove('mealCalorieBucket');
         final modifiedJson = jsonEncode(jsonMap);
 
         final restored = DailyRecordJsonCodec.itemFromJson(modifiedJson);
-        expect(restored.mealTopFoods, isEmpty);
+
+        expect(restored.mealHeadline, isNull);
+        expect(restored.mealCalorieMin, isNull);
+        expect(restored.mealCalorieMax, isNull);
+        expect(restored.mealCalorieBucket, isNull);
       });
     });
 
@@ -340,7 +354,10 @@ void main() {
         expect(map, containsPair('note', '感觉良好'));
         expect(map, containsPair('source', 'manual'));
         expect(map, containsPair('payload', isNotNull));
-        expect(map, containsPair('mealTopFoods', isA<List>()));
+        expect(map, containsPair('mealHeadline', isNull));
+        expect(map, containsPair('mealCalorieMin', isNull));
+        expect(map, containsPair('mealCalorieMax', isNull));
+        expect(map, containsPair('mealCalorieBucket', isNull));
         expect(map, containsPair('attachments', isA<List>()));
         expect(map, containsPair('createdAt', '2026-07-10T08:30:00.000Z'));
         expect(map, containsPair('updatedAt', '2026-07-10T08:30:00.000Z'));

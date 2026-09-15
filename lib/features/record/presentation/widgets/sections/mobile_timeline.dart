@@ -168,6 +168,7 @@ class _TimelineRow extends StatelessWidget {
         unit == null ? value : '$value $unit',
       if (detail != null && detail.isNotEmpty) detail,
     ].join(' · ');
+    final badgeLabel = timelineBadgeLabel(l10n, entry);
     final typography = context.theme.typography;
 
     return Padding(
@@ -271,7 +272,7 @@ class _TimelineRow extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (entry.badgeKey != null) ...[
+                    if (badgeLabel != null) ...[
                       const SizedBox(width: Spacing.sm),
                       FBadge.raw(
                         builder: (context, style) {
@@ -292,7 +293,7 @@ class _TimelineRow extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    recordCopy(l10n, entry.badgeKey!),
+                                    badgeLabel,
                                     style: context.theme.typography.body.xs
                                         .copyWith(
                                           color: colors.foreground,

@@ -1,85 +1,90 @@
+/// View data for one meal analysis (contract v2).
+///
+/// v2 是**一次多模态分析直出**:热量区间 + 按重要性排序的结论 + 可编辑菜名。
+/// 没有成分分解、没有食物成分表接地、没有人工确认——状态只有
+/// `analyzing | analyzed | analysis_failed`。
 class MealAnalysisViewData {
   const MealAnalysisViewData({
     required this.status,
-    required this.coverage,
-    required this.mealDescription,
-    required this.mealCommentary,
     required this.failureReason,
-    required this.isEstimate,
-    required this.recognizedDishes,
-    required this.resolvedIngredients,
-    required this.compositionMatches,
-    required this.nutritionEstimate,
-    required this.inputDishes,
+    required this.calorieRange,
+    required this.dishes,
+    required this.items,
   });
 
   final String? status;
-  final String? coverage;
-  final String? mealDescription;
-  final String? mealCommentary;
+
+  /// 稳定失败原因码(`image_count_invalid` / `vision_unavailable` /
+  /// `model_failed` / `model_timeout` / `invalid_output`);客户端据此做 l10n。
   final String? failureReason;
-  final bool isEstimate;
-  final List<MealDishViewData> recognizedDishes;
-  final List<MealIngredientViewData> resolvedIngredients;
-  final List<MealMatchViewData> compositionMatches;
-  final MealNutritionViewData? nutritionEstimate;
-  final List<MealDishDraftViewData> inputDishes;
+
+  final MealCalorieRangeViewData? calorieRange;
+
+  /// 菜名(模型识别 + 用户改名);用户可编辑的只有这一份列表。
+  final List<MealDishViewData> dishes;
+
+  /// 按 `rank` 排序的结论,同一条既有列表用的 `headline` 也有一句话的 `detail`。
+  final List<MealInsightViewData> items;
+
+  bool get isAnalyzing => status == 'analyzing';
+  bool get hasFailed => status == 'analysis_failed';
+  bool get isAnalyzed => status == 'analyzed';
+
+  /// 列表条目那一行:最重要的一条结论。
+  String? get headline => items.isEmpty ? null : items.first.headline;
+}
+
+class MealCalorieRangeViewData {
+  const MealCalorieRangeViewData({
+    required this.min,
+    required this.max,
+    required this.bucket,
+  });
+
+  final int min;
+  final int max;
+
+  /// `low` / `medium` / `high`,只作配色语义。
+  final String? bucket;
+
+  /// 粗化到百位的展示区间(四舍五入),例如 `500–800`。
+  String get coarseLabel => '${_roundToHundreds(min)}–${_roundToHundreds(max)}';
 }
 
 class MealDishViewData {
-  const MealDishViewData({
-    required this.dishKey,
-    required this.rawName,
-    required this.normalizedDishName,
-  });
+  const MealDishViewData({required this.name, required this.source});
 
-  final String? dishKey;
-  final String rawName;
-  final String? normalizedDishName;
+  final String name;
 
-  String get displayName => normalizedDishName ?? rawName;
+  /// `model`(识别结果)或 `user`(用户改过名)。
+  final String? source;
+
+  bool get isUserEdited => source == 'user';
 }
 
-class MealIngredientViewData {
-  const MealIngredientViewData({
-    required this.dishKey,
-    required this.ingredientName,
-    required this.matchedFoodName,
+class MealInsightViewData {
+  const MealInsightViewData({
+    required this.rank,
+    required this.kind,
+    required this.polarity,
+    required this.headline,
+    required this.detail,
   });
 
-  final String? dishKey;
-  final String ingredientName;
-  final String? matchedFoodName;
+  final int rank;
+
+  /// 封闭词表(carb/fat/protein/vegetable/fruit/fried/sugar/sodium/portion/
+  /// balance/other)——机器语义的唯一来源。
+  final String? kind;
+
+  /// `good` / `watch` / `neutral`。
+  final String? polarity;
+
+  final String headline;
+  final String detail;
 }
 
-class MealMatchViewData {
-  const MealMatchViewData({
-    required this.dishKey,
-    required this.ingredientName,
-    required this.matchedFoodName,
-    required this.matchMethod,
-  });
-
-  final String? dishKey;
-  final String ingredientName;
-  final String? matchedFoodName;
-  final String? matchMethod;
-}
-
-class MealNutritionViewData {
-  const MealNutritionViewData({
-    required this.energyKcal,
-    required this.proteinG,
-  });
-
-  final num? energyKcal;
-  final num? proteinG;
-
-  bool get hasAnyValue => energyKcal != null || proteinG != null;
-}
-
-class MealDishDraftViewData {
-  const MealDishDraftViewData({required this.rawName});
-
-  final String rawName;
+int _roundToHundreds(int value) {
+  final rounded = (value / 100).round() * 100;
+  return rounded < 0 ? 0 : rounded;
 }

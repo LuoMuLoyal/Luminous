@@ -20,11 +20,12 @@ class DailyRecordJsonCodec {
       'source': item.source,
       'payload': item.payload,
       'mealAnalysisStatus': item.mealAnalysisStatus,
-      'mealAnalysisCoverage': item.mealAnalysisCoverage,
       'mealAnalysisUpdatedAt': item.mealAnalysisUpdatedAt,
       'mealAnalysisFailureReason': item.mealAnalysisFailureReason,
-      'mealShortDescription': item.mealShortDescription,
-      'mealTopFoods': item.mealTopFoods,
+      'mealHeadline': item.mealHeadline,
+      'mealCalorieMin': item.mealCalorieMin,
+      'mealCalorieMax': item.mealCalorieMax,
+      'mealCalorieBucket': item.mealCalorieBucket,
       'attachments': item.attachments.map(_attachmentToJson).toList(),
       'createdAt': item.createdAt,
       'updatedAt': item.updatedAt,
@@ -48,15 +49,12 @@ class DailyRecordJsonCodec {
       source: map['source'] as String?,
       payload: map['payload'] as Map<String, dynamic>?,
       mealAnalysisStatus: map['mealAnalysisStatus'] as String?,
-      mealAnalysisCoverage: map['mealAnalysisCoverage'] as String?,
       mealAnalysisUpdatedAt: map['mealAnalysisUpdatedAt'] as String?,
       mealAnalysisFailureReason: map['mealAnalysisFailureReason'] as String?,
-      mealShortDescription: map['mealShortDescription'] as String?,
-      mealTopFoods:
-          (map['mealTopFoods'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const <String>[],
+      mealHeadline: map['mealHeadline'] as String?,
+      mealCalorieMin: (map['mealCalorieMin'] as num?)?.toInt(),
+      mealCalorieMax: (map['mealCalorieMax'] as num?)?.toInt(),
+      mealCalorieBucket: map['mealCalorieBucket'] as String?,
       attachments:
           (map['attachments'] as List<dynamic>?)
               ?.map((e) => _attachmentFromJson(e as Map<String, dynamic>))

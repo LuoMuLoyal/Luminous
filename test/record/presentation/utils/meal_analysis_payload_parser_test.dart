@@ -1,420 +1,211 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
+
+/// v2 分析结果的 payload 形状(服务端 `mealAnalysis` 全字段)。
+Map<String, dynamic> mealPayload({
+  String status = 'analyzed',
+  Map<String, dynamic>? calorieRange = const {
+    'min': 520,
+    'max': 780,
+    'unit': 'kcal',
+    'bucket': 'medium',
+  },
+  List<Map<String, dynamic>> dishes = const [
+    {'name': '红烧肉', 'source': 'model'},
+    {'name': '青菜', 'source': 'user'},
+  ],
+  List<Map<String, dynamic>> items = const [
+    {
+      'rank': 1,
+      'kind': 'fried',
+      'polarity': 'watch',
+      'headline': '油炸偏多',
+      'detail': '午饭油炸食品摄入偏多',
+    },
+  ],
+  String? failureReason,
+}) {
+  return <String, dynamic>{
+    'mealAnalysis': <String, dynamic>{
+      'version': 2,
+      'analysisStatus': status,
+      'analyzedAt': '2026-09-15T12:31:04.000Z',
+      'sourceRevision': 3,
+      'model': 'vision-model',
+      'promptVersion': 'meal-analysis.v2',
+      'locale': 'zh-CN',
+      'failureReason': failureReason,
+      'calorieRange': calorieRange,
+      'dishes': dishes,
+      'items': items,
+      'facets': <String, dynamic>{'fried': 'high'},
+    },
+  };
+}
 
 void main() {
   group('parseMealAnalysisViewData', () {
-    test('returns null for null payload', () {
+    test('returns null without a mealAnalysis object', () {
       expect(parseMealAnalysisViewData(null), isNull);
-    });
-
-    test('returns null for empty map', () {
-      expect(parseMealAnalysisViewData({}), isNull);
-    });
-
-    test('returns null when both analysis and input are null', () {
+      expect(parseMealAnalysisViewData(const {}), isNull);
+      expect(parseMealAnalysisViewData(const {'mealInput': {}}), isNull);
       expect(
-        parseMealAnalysisViewData({'mealAnalysis': null, 'mealInput': null}),
+        parseMealAnalysisViewData(const {
+          'mealAnalysis': {'analysisStatus': null},
+        }),
         isNull,
       );
     });
 
-    test('parses complete payload with all fields', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {
-          'analysisStatus': 'confirmed',
-          'coverage': 'complete',
-          'mealDescription': 'Rice with chicken',
-          'mealCommentary': 'Balanced meal',
-          'failureReason': null,
-          'recognizedDishes': [
+    test('parses status, failure reason, range, dishes and findings', () {
+      final data = parseMealAnalysisViewData(mealPayload())!;
+
+      expect(data.status, 'analyzed');
+      expect(data.isAnalyzed, isTrue);
+      expect(data.failureReason, isNull);
+      expect(data.calorieRange, isNotNull);
+      expect(data.calorieRange!.min, 520);
+      expect(data.calorieRange!.max, 780);
+      expect(data.calorieRange!.bucket, 'medium');
+      expect(data.dishes, hasLength(2));
+      expect(data.dishes.first.name, '红烧肉');
+      expect(data.dishes.first.isUserEdited, isFalse);
+      expect(data.dishes.last.isUserEdited, isTrue);
+      expect(data.items, hasLength(1));
+      expect(data.items.first.headline, '油炸偏多');
+      expect(data.items.first.polarity, 'watch');
+      expect(data.headline, '油炸偏多');
+    });
+
+    test('sorts findings by rank', () {
+      final data = parseMealAnalysisViewData(
+        mealPayload(
+          items: const [
             {
-              'dishKey': 'd1',
-              'rawName': 'Chicken Rice',
-              'normalizedDishName': 'chicken_rice',
+              'rank': 3,
+              'kind': 'carb',
+              'polarity': 'watch',
+              'headline': '碳水偏少',
+              'detail': '晚饭碳水较少',
+            },
+            {
+              'rank': 1,
+              'kind': 'fried',
+              'polarity': 'watch',
+              'headline': '油炸偏多',
+              'detail': '午饭油炸偏多',
             },
           ],
-          'resolvedIngredients': [
+        ),
+      )!;
+
+      expect(data.items.map((item) => item.headline).toList(), [
+        '油炸偏多',
+        '碳水偏少',
+      ]);
+    });
+
+    test('keeps the failure state and its reason code', () {
+      final data = parseMealAnalysisViewData(
+        mealPayload(
+          status: 'analysis_failed',
+          calorieRange: null,
+          dishes: const [],
+          items: const [],
+          failureReason: 'model_timeout',
+        ),
+      )!;
+
+      expect(data.hasFailed, isTrue);
+      expect(data.failureReason, 'model_timeout');
+      expect(data.calorieRange, isNull);
+      expect(data.dishes, isEmpty);
+      expect(data.headline, isNull);
+    });
+
+    test('drops findings without both headline and detail', () {
+      final data = parseMealAnalysisViewData(
+        mealPayload(
+          items: const [
             {
-              'dishKey': 'd1',
-              'ingredientName': 'Chicken',
-              'matchedFoodName': 'Chicken breast',
+              'rank': 1,
+              'kind': 'fried',
+              'polarity': 'watch',
+              'headline': '油炸偏多',
+              'detail': '   ',
+            },
+            {
+              'rank': 2,
+              'kind': 'carb',
+              'polarity': 'watch',
+              'headline': '碳水偏少',
+              'detail': '晚饭碳水较少',
             },
           ],
-          'compositionMatches': [
-            {
-              'dishKey': 'd1',
-              'ingredientName': 'Rice',
-              'matchedFoodName': 'White rice',
-              'matchMethod': 'exact',
-            },
+        ),
+      )!;
+
+      expect(data.items, hasLength(1));
+      expect(data.items.first.headline, '碳水偏少');
+    });
+
+    test('drops dish entries without a usable name', () {
+      final data = parseMealAnalysisViewData(
+        mealPayload(
+          dishes: const [
+            {'name': '  ', 'source': 'model'},
+            {'source': 'model'},
+            {'name': ' 青菜 ', 'source': 'user'},
           ],
-          'nutritionEstimate': {'energyKcal': 520, 'proteinG': 25},
-        },
-        'mealInput': {
-          'recognizedDishes': [
-            {'rawName': 'Chicken Rice'},
+        ),
+      )!;
+
+      expect(data.dishes, hasLength(1));
+      expect(data.dishes.first.name, '青菜');
+    });
+
+    test('ignores a malformed range and non-map array entries', () {
+      final data = parseMealAnalysisViewData(<String, dynamic>{
+        'mealAnalysis': <String, dynamic>{
+          'analysisStatus': 'analyzed',
+          'calorieRange': <String, dynamic>{'min': 520},
+          'dishes': <dynamic>[
+            'nonsense',
+            <String, dynamic>{'name': '红烧肉'},
           ],
+          'items': <dynamic>['nonsense'],
         },
-      });
+      })!;
 
-      expect(result, isNotNull);
-      expect(result!.status, 'confirmed');
-      expect(result.coverage, 'complete');
-      expect(result.mealDescription, 'Rice with chicken');
-      expect(result.mealCommentary, 'Balanced meal');
-      expect(result.failureReason, isNull);
-      expect(result.isEstimate, isFalse);
-
-      // Recognized dishes
-      expect(result.recognizedDishes.length, 1);
-      expect(result.recognizedDishes.first.dishKey, 'd1');
-      expect(result.recognizedDishes.first.rawName, 'Chicken Rice');
-      expect(result.recognizedDishes.first.normalizedDishName, 'chicken_rice');
-      expect(result.recognizedDishes.first.displayName, 'chicken_rice');
-
-      // Resolved ingredients
-      expect(result.resolvedIngredients.length, 1);
-      expect(result.resolvedIngredients.first.dishKey, 'd1');
-      expect(result.resolvedIngredients.first.ingredientName, 'Chicken');
-      expect(
-        result.resolvedIngredients.first.matchedFoodName,
-        'Chicken breast',
-      );
-
-      // Composition matches
-      expect(result.compositionMatches.length, 1);
-      expect(result.compositionMatches.first.ingredientName, 'Rice');
-      expect(result.compositionMatches.first.matchedFoodName, 'White rice');
-      expect(result.compositionMatches.first.matchMethod, 'exact');
-
-      // Nutrition estimate
-      expect(result.nutritionEstimate, isNotNull);
-      expect(result.nutritionEstimate!.energyKcal, 520);
-      expect(result.nutritionEstimate!.proteinG, 25);
-
-      // Input dishes
-      expect(result.inputDishes.length, 1);
-      expect(result.inputDishes.first.rawName, 'Chicken Rice');
+      expect(data.calorieRange, isNull);
+      expect(data.dishes, hasLength(1));
+      expect(data.items, isEmpty);
     });
 
-    test('isEstimate is true when status is unconfirmed', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {
-          'analysisStatus': 'unconfirmed',
-          'coverage': 'complete',
-        },
-      });
+    test('reads the analyzing placeholder as an empty result', () {
+      final data = parseMealAnalysisViewData(
+        mealPayload(
+          status: 'analyzing',
+          calorieRange: null,
+          dishes: const [],
+          items: const [],
+        ),
+      )!;
 
-      expect(result!.isEstimate, isTrue);
-    });
-
-    test('isEstimate is true when coverage is not complete', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {'analysisStatus': 'confirmed', 'coverage': 'partial'},
-      });
-
-      expect(result!.isEstimate, isTrue);
-    });
-
-    test(
-      'isEstimate is true when both status and coverage indicate estimate',
-      () {
-        final result = parseMealAnalysisViewData({
-          'mealAnalysis': {
-            'analysisStatus': 'unconfirmed',
-            'coverage': 'partial',
-          },
-        });
-
-        expect(result!.isEstimate, isTrue);
-      },
-    );
-
-    test(
-      'isEstimate is false when status is confirmed and coverage is complete',
-      () {
-        final result = parseMealAnalysisViewData({
-          'mealAnalysis': {
-            'analysisStatus': 'confirmed',
-            'coverage': 'complete',
-          },
-        });
-
-        expect(result!.isEstimate, isFalse);
-      },
-    );
-
-    test('filters out nutritionEstimate with no values', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {
-          'nutritionEstimate': {'energyKcal': null, 'proteinG': null},
-        },
-      });
-
-      expect(result!.nutritionEstimate, isNull);
-    });
-
-    test('keeps nutritionEstimate when at least one value is present', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {
-          'nutritionEstimate': {'energyKcal': 300, 'proteinG': null},
-        },
-      });
-
-      expect(result!.nutritionEstimate, isNotNull);
-      expect(result.nutritionEstimate!.energyKcal, 300);
-      expect(result.nutritionEstimate!.proteinG, isNull);
-    });
-
-    test(
-      'filters out recognized dishes without rawName or normalizedDishName',
-      () {
-        final result = parseMealAnalysisViewData({
-          'mealAnalysis': {
-            'recognizedDishes': [
-              {'dishKey': 'd1'}, // no rawName or normalizedDishName
-              {'dishKey': 'd2', 'rawName': 'Valid Dish'},
-              {'normalizedDishName': 'normalized_only'},
-            ],
-          },
-        });
-
-        expect(result!.recognizedDishes.length, 2);
-        expect(result.recognizedDishes[0].rawName, 'Valid Dish');
-        expect(result.recognizedDishes[1].rawName, 'normalized_only');
-      },
-    );
-
-    test('uses rawName as displayName when normalizedDishName is absent', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {
-          'recognizedDishes': [
-            {'rawName': 'Raw Dish Name'},
-          ],
-        },
-      });
-
-      expect(result!.recognizedDishes.first.rawName, 'Raw Dish Name');
-      expect(result.recognizedDishes.first.normalizedDishName, isNull);
-      expect(result.recognizedDishes.first.displayName, 'Raw Dish Name');
-    });
-
-    test('parses input dishes from mealInput when present', () {
-      final result = parseMealAnalysisViewData({
-        'mealInput': {
-          'recognizedDishes': [
-            {'rawName': 'Input Dish 1'},
-            {'normalizedDishName': 'Input Dish 2'},
-          ],
-        },
-      });
-
-      expect(result!.inputDishes.length, 2);
-      expect(result.inputDishes[0].rawName, 'Input Dish 1');
-      expect(result.inputDishes[1].rawName, 'Input Dish 2');
-    });
-
-    test(
-      'falls back to analysis recognizedDishes when input list is empty',
-      () {
-        final result = parseMealAnalysisViewData({
-          'mealAnalysis': {
-            'recognizedDishes': [
-              {'rawName': 'From Analysis'},
-            ],
-          },
-          'mealInput': {'recognizedDishes': []},
-        });
-
-        expect(result!.inputDishes.length, 1);
-        expect(result.inputDishes.first.rawName, 'From Analysis');
-      },
-    );
-
-    test(
-      'falls back to analysis recognizedDishes when input has no recognizedDishes',
-      () {
-        final result = parseMealAnalysisViewData({
-          'mealAnalysis': {
-            'recognizedDishes': [
-              {'normalizedDishName': 'Analysis Dish'},
-            ],
-          },
-          'mealInput': {},
-        });
-
-        expect(result!.inputDishes.length, 1);
-        expect(result.inputDishes.first.rawName, 'Analysis Dish');
-      },
-    );
-
-    test('filters out input dishes without rawName and normalizedDishName', () {
-      final result = parseMealAnalysisViewData({
-        'mealInput': {
-          'recognizedDishes': [
-            {'dishKey': 'd1'}, // no rawName or normalizedDishName
-            {'rawName': 'Valid'},
-          ],
-        },
-      });
-
-      expect(result!.inputDishes.length, 1);
-      expect(result.inputDishes.first.rawName, 'Valid');
-    });
-
-    test('filters out resolved ingredients without ingredientName', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {
-          'resolvedIngredients': [
-            {'dishKey': 'd1'}, // no ingredientName
-            {'ingredientName': 'Salt', 'matchedFoodName': 'Table salt'},
-          ],
-        },
-      });
-
-      expect(result!.resolvedIngredients.length, 1);
-      expect(result.resolvedIngredients.first.ingredientName, 'Salt');
-      expect(result.resolvedIngredients.first.matchedFoodName, 'Table salt');
-    });
-
-    test('filters out composition matches without ingredientName', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {
-          'compositionMatches': [
-            {'dishKey': 'd1'}, // no ingredientName
-            {
-              'ingredientName': 'Sugar',
-              'matchedFoodName': 'White sugar',
-              'matchMethod': 'fuzzy',
-            },
-          ],
-        },
-      });
-
-      expect(result!.compositionMatches.length, 1);
-      expect(result.compositionMatches.first.ingredientName, 'Sugar');
-      expect(result.compositionMatches.first.matchMethod, 'fuzzy');
-    });
-
-    test('returns empty lists when array fields are missing', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {'analysisStatus': 'confirmed'},
-      });
-
-      expect(result!.recognizedDishes, isEmpty);
-      expect(result.resolvedIngredients, isEmpty);
-      expect(result.compositionMatches, isEmpty);
-      expect(result.inputDishes, isEmpty);
-      expect(result.nutritionEstimate, isNull);
-    });
-
-    test('parses payload with only mealInput (no mealAnalysis)', () {
-      final result = parseMealAnalysisViewData({
-        'mealInput': {
-          'recognizedDishes': [
-            {'rawName': 'Input Only Dish'},
-          ],
-        },
-      });
-
-      expect(result, isNotNull);
-      expect(result!.status, isNull);
-      expect(result.coverage, isNull);
-      expect(result.inputDishes.length, 1);
-      expect(result.inputDishes.first.rawName, 'Input Only Dish');
-    });
-
-    test('handles non-map entries in arrays gracefully', () {
-      final result = parseMealAnalysisViewData({
-        'mealAnalysis': {
-          'recognizedDishes': [
-            'not a map',
-            null,
-            {'rawName': 'Valid'},
-          ],
-        },
-      });
-
-      expect(result!.recognizedDishes.length, 1);
-      expect(result.recognizedDishes.first.rawName, 'Valid');
+      expect(data.isAnalyzing, isTrue);
+      expect(data.calorieRange, isNull);
+      expect(data.headline, isNull);
     });
   });
 
-  group('parseMealDishDraftNames', () {
-    test('returns empty list for null payload', () {
-      expect(parseMealDishDraftNames(null), isEmpty);
+  group('parseMealDishNames', () {
+    test('returns the dish names in order', () {
+      expect(parseMealDishNames(mealPayload()), ['红烧肉', '青菜']);
     });
 
-    test('returns empty list when no recognizedDishes', () {
-      expect(parseMealDishDraftNames({}), isEmpty);
-    });
-
-    test('returns raw names from input dishes', () {
-      final result = parseMealDishDraftNames({
-        'mealInput': {
-          'recognizedDishes': [
-            {'rawName': 'Dish A'},
-            {'normalizedDishName': 'Dish B'},
-          ],
-        },
-      });
-
-      expect(result, ['Dish A', 'Dish B']);
-    });
-
-    test('falls back to analysis recognizedDishes', () {
-      final result = parseMealDishDraftNames({
-        'mealAnalysis': {
-          'recognizedDishes': [
-            {'rawName': 'Analysis Dish'},
-          ],
-        },
-      });
-
-      expect(result, ['Analysis Dish']);
-    });
-  });
-
-  group('MealNutritionViewData.hasAnyValue', () {
-    test('returns false when both values are null', () {
-      const data = MealNutritionViewData(energyKcal: null, proteinG: null);
-      expect(data.hasAnyValue, isFalse);
-    });
-
-    test('returns true when energyKcal is present', () {
-      const data = MealNutritionViewData(energyKcal: 100, proteinG: null);
-      expect(data.hasAnyValue, isTrue);
-    });
-
-    test('returns true when proteinG is present', () {
-      const data = MealNutritionViewData(energyKcal: null, proteinG: 20);
-      expect(data.hasAnyValue, isTrue);
-    });
-
-    test('returns true when both values are present', () {
-      const data = MealNutritionViewData(energyKcal: 100, proteinG: 20);
-      expect(data.hasAnyValue, isTrue);
-    });
-  });
-
-  group('MealDishViewData.displayName', () {
-    test('returns normalizedDishName when available', () {
-      const dish = MealDishViewData(
-        dishKey: 'd1',
-        rawName: 'raw',
-        normalizedDishName: 'normalized',
-      );
-      expect(dish.displayName, 'normalized');
-    });
-
-    test('returns rawName when normalizedDishName is null', () {
-      const dish = MealDishViewData(
-        dishKey: 'd1',
-        rawName: 'raw',
-        normalizedDishName: null,
-      );
-      expect(dish.displayName, 'raw');
+    test('returns an empty list without an analysis', () {
+      expect(parseMealDishNames(null), isEmpty);
+      expect(parseMealDishNames(const {}), isEmpty);
     });
   });
 }

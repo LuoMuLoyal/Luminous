@@ -8,21 +8,17 @@ class MealAnalysisStatusBadge extends StatelessWidget {
   const MealAnalysisStatusBadge({
     super.key,
     required this.status,
-    this.coverage,
     this.large = false,
   });
 
   final String? status;
-  final String? coverage;
   final bool large;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final (label, color, icon) = _statusSpec(context, l10n, status);
-    final coverageLabel = _coverageLabel(l10n, coverage);
-    final text = coverageLabel == null ? label : '$label · $coverageLabel';
+    final (label, color, icon) = _statusSpec(l10n, status);
     final palette = color.palette(context);
     final foreground = palette.solid;
 
@@ -45,7 +41,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
               Icon(icon, color: foreground, size: Spacing.md),
               const SizedBox(width: Spacing.xs),
               Text(
-                text,
+                label,
                 style: large
                     ? context.theme.typography.body.sm.copyWith(
                         color: foreground,
@@ -66,8 +62,8 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     );
   }
 
+  /// v2 只有三个状态:`analyzing` / `analyzed` / `analysis_failed`。
   (String, SemanticColor, IconData) _statusSpec(
-    BuildContext context,
     AppLocalizations l10n,
     String? currentStatus,
   ) {
@@ -77,30 +73,16 @@ class MealAnalysisStatusBadge extends StatelessWidget {
         SemanticColor.primary,
         SemanticIcons.statusPending,
       ),
-      'confirmed' => (
-        l10n.recordMealAnalysisStatusConfirmed,
-        SemanticColor.primary,
-        SemanticIcons.reportAdherence,
-      ),
       'analysis_failed' => (
         l10n.recordMealAnalysisStatusFailed,
         SemanticColor.destructive,
         SemanticIcons.statusError,
       ),
       _ => (
-        l10n.recordMealAnalysisStatusUnconfirmed,
+        l10n.recordMealAnalysisStatusAnalyzed,
         SemanticColor.primary,
-        SemanticIcons.actionHelp,
+        SemanticIcons.reportAdherence,
       ),
-    };
-  }
-
-  String? _coverageLabel(AppLocalizations l10n, String? currentCoverage) {
-    return switch (currentCoverage) {
-      'complete' => l10n.recordMealAnalysisCoverageComplete,
-      'none' => l10n.recordMealAnalysisCoverageNone,
-      'partial' => l10n.recordMealAnalysisCoveragePartial,
-      _ => null,
     };
   }
 }

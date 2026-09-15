@@ -28,11 +28,11 @@ class MealDishEditorSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          l10n.recordMealAnalysisRecognizedDishes,
+          l10n.recordMealAnalysisDishesTitle,
           style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.sm),
-        Text(l10n.recordMealDishEditorHelperText, style: typography.body.xs),
+        Text(l10n.recordMealAnalysisDishesHint, style: typography.body.xs),
         const SizedBox(height: Spacing.md),
         for (var index = 0; index < dishNames.length; index += 1) ...[
           Row(

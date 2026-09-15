@@ -32,18 +32,22 @@ class _FakeRecordRepo extends DailyRecordRepository {
         occurredAt: '2026-06-10',
         title: 'Test Meal',
         payload: const {
-          'mealInput': {
-            'recognizedDishes': [
-              {'rawName': '西红柿炒鸡蛋'},
-              {'rawName': '米饭'},
-            ],
-          },
           'mealAnalysis': {
-            'analysisStatus': 'unconfirmed',
-            'recognizedDishes': [
-              {'rawName': '西红柿炒鸡蛋'},
-              {'rawName': '米饭'},
+            'version': 2,
+            'analysisStatus': 'analyzed',
+            'analyzedAt': '2026-06-10T08:00:00.000Z',
+            'sourceRevision': 1,
+            'model': 'vision-model',
+            'promptVersion': 'meal-analysis.v2',
+            'locale': 'zh-CN',
+            'failureReason': null,
+            'calorieRange': null,
+            'dishes': [
+              {'name': '西红柿炒鸡蛋', 'source': 'model'},
+              {'name': '米饭', 'source': 'model'},
             ],
+            'items': [],
+            'facets': {},
           },
         },
         attachments: const <DailyRecordAttachment>[],
@@ -145,10 +149,6 @@ void main() {
     await tester.tap(find.byKey(const Key('meal-dish-add-action')));
     await tester.pump();
     await tester.enterText(find.byKey(const Key('meal-dish-field-1')), '青菜');
-    await tester.ensureVisible(find.byKey(const Key('meal-confirm-action')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('meal-confirm-action')));
-    await tester.pumpAndSettle();
     await tester.ensureVisible(
       find.byKey(const Key('record-edit-save-action')),
     );
@@ -158,15 +158,14 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
 
     final payload = repo.lastUpdateInput?.payload as Map<String, dynamic>?;
-    final mealInput = payload?['mealInput'] as Map<String, dynamic>?;
-    final dishes = mealInput?['recognizedDishes'] as List<dynamic>?;
+    final analysis = payload?['mealAnalysis'] as Map<String, dynamic>?;
+    final dishes = analysis?['dishes'] as List<dynamic>?;
     expect(dishes, [
-      {'rawName': '番茄炒蛋'},
-      {'rawName': '青菜'},
+      {'name': '番茄炒蛋', 'source': 'user'},
+      {'name': '青菜', 'source': 'user'},
     ]);
-    expect(payload?['mealAnalysis'], <String, dynamic>{
-      'analysisStatus': 'confirmed',
-    });
+    // 客户端只提交菜名:分析状态与结论由服务端独占,不再有确认字段。
+    expect(analysis?.containsKey('analysisStatus'), isFalse);
   });
 
   testWidgets('unsaved changes prompt before leaving', (tester) async {

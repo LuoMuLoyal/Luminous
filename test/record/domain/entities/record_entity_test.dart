@@ -117,11 +117,9 @@ void main() {
       expect(item.source, isNull);
       expect(item.payload, isNull);
       expect(item.mealAnalysisStatus, isNull);
-      expect(item.mealAnalysisCoverage, isNull);
       expect(item.mealAnalysisUpdatedAt, isNull);
       expect(item.mealAnalysisFailureReason, isNull);
-      expect(item.mealShortDescription, isNull);
-      expect(item.mealTopFoods, isEmpty);
+      expect(item.mealHeadline, isNull);
       expect(item.attachments, isEmpty);
     });
 
@@ -145,11 +143,9 @@ void main() {
         source: 'manual',
         payload: {'key': 'value'},
         mealAnalysisStatus: 'confirmed',
-        mealAnalysisCoverage: 'complete',
         mealAnalysisUpdatedAt: '2026-07-14T12:35:00Z',
         mealAnalysisFailureReason: null,
-        mealShortDescription: 'Rice with chicken',
-        mealTopFoods: ['Rice', 'Chicken'],
+        mealHeadline: 'Rice with chicken',
         attachments: [attachment],
         createdAt: '2026-07-14T12:30:00Z',
         updatedAt: '2026-07-14T12:35:00Z',
@@ -165,10 +161,8 @@ void main() {
       expect(item.source, 'manual');
       expect(item.payload, {'key': 'value'});
       expect(item.mealAnalysisStatus, 'confirmed');
-      expect(item.mealAnalysisCoverage, 'complete');
       expect(item.mealAnalysisUpdatedAt, '2026-07-14T12:35:00Z');
-      expect(item.mealShortDescription, 'Rice with chicken');
-      expect(item.mealTopFoods, ['Rice', 'Chicken']);
+      expect(item.mealHeadline, 'Rice with chicken');
       expect(item.attachments, hasLength(1));
       expect(
         item.attachments.first.displayUrl,

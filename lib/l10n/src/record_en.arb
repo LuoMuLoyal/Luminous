@@ -62,7 +62,7 @@
   "recordWaterQuickEntryTitle": "Log water",
   "recordWaterQuickEntryManualHint": "Enter ml amount",
   "recordCreateFieldTitleOptional": "Title",
-"recordCreateFieldTitle": "Title",
+  "recordCreateFieldTitle": "Title",
   "recordCreateFieldNote": "Note",
   "recordCreateKindNote": "Note",
   "recordCreateValueWater": "Water amount",
@@ -435,25 +435,8 @@
   "recordDetailNextAction": "Next",
   "recordMealAnalysisSectionTitle": "Meal analysis",
   "recordMealAnalysisStatusAnalyzing": "Analyzing",
-  "recordMealAnalysisStatusUnconfirmed": "Needs confirmation",
-  "recordMealAnalysisStatusConfirmed": "Confirmed",
   "recordMealAnalysisStatusFailed": "Analysis failed",
-  "recordMealAnalysisCoveragePartial": "Partial coverage",
-  "recordMealAnalysisCoverageComplete": "Complete coverage",
-  "recordMealAnalysisCoverageNone": "No coverage",
-  "recordMealAnalysisRecognizedDishes": "Recognized dishes",
-  "recordMealAnalysisResolvedIngredients": "Resolved ingredients",
-  "recordMealAnalysisCompositionMatches": "Composition matches",
-  "recordMealAnalysisNutritionEstimate": "Nutrition estimate",
-  "recordMealAnalysisNutritionEnergy": "Energy",
   "recordMealAnalysisEnergyUnit": "kcal",
-  "recordMealAnalysisMatchArrow": "→",
-  "recordMealAnalysisNutritionProtein": "Protein",
-  "recordMealAnalysisEstimateDisclaimer": "This result is a conservative estimate and may not fully match the actual meal.",
-  "recordMealConfirmAction": "Confirm current dish result",
-  "recordMealConfirmActionSelected": "Will confirm current dish result on save",
-  "recordMealConfirmFailedToast": "Failed to confirm, please try again",
-  "recordMealDishEditorHelperText": "Only edit dishes here. Ingredients and nutrition will be re-estimated by the system.",
   "recordMealDishAddAction": "Add dish",
   "recordMealDishRemoveAction": "Remove dish",
   "recordMealDishFieldLabel": "Dish {index}",
@@ -602,5 +585,70 @@
   "recordCreateSectionBasicTitle": "Basic info",
   "recordCreateSectionDetailsTitle": "Record details",
   "recordDragDateChanged": "Record date updated",
-  "recordDragDateError": "Failed to update date. Please try again."
+  "recordDragDateError": "Failed to update date. Please try again.",
+  "recordMealAnalysisStatusAnalyzed": "Analyzed",
+  "@recordMealAnalysisStatusAnalyzed": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisCalorieRangeTitle": "Energy range",
+  "@recordMealAnalysisCalorieRangeTitle": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealCalorieRangeApprox": "≈ {range} kcal",
+  "@recordMealCalorieRangeApprox": {
+    "description": "Coarse energy interval, e.g. 500-800.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "recordMealAnalysisInsightsTitle": "Meal findings",
+  "@recordMealAnalysisInsightsTitle": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisAnalyzingHint": "Analyzing this photo…",
+  "@recordMealAnalysisAnalyzingHint": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisDishesTitle": "Dishes (editable)",
+  "@recordMealAnalysisDishesTitle": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisDishesHint": "Renaming does not re-run the analysis or the energy estimate.",
+  "@recordMealAnalysisDishesHint": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisRetryAction": "Analyze again",
+  "@recordMealAnalysisRetryAction": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisRetryFailedToast": "Could not restart the analysis. Try again later.",
+  "@recordMealAnalysisRetryFailedToast": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureImageCount": "Needs exactly one photo",
+  "@recordMealAnalysisFailureImageCount": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureVisionUnavailable": "Photo analysis is unavailable",
+  "@recordMealAnalysisFailureVisionUnavailable": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureModelFailed": "Analysis failed. Try again later",
+  "@recordMealAnalysisFailureModelFailed": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureModelTimeout": "Analysis timed out. Try again",
+  "@recordMealAnalysisFailureModelTimeout": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisFailureInvalidOutput": "The photo could not be read",
+  "@recordMealAnalysisFailureInvalidOutput": {
+    "description": "Meal analysis v2 UI copy."
+  },
+  "recordMealAnalysisRetryingToast": "Analysis restarted",
+  "@recordMealAnalysisRetryingToast": {
+    "description": "Meal analysis retry feedback."
+  }
 }

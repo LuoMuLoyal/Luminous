@@ -108,39 +108,54 @@ Future<bool?> _showDeleteConfirmDialog(
   );
 }
 
-/// Confirms the meal-analysis result in place, reusing the same PATCH
-/// `analysisStatus='confirmed'` chain as the edit page. On success the
-/// detail provider is invalidated so the badge flips to confirmed and the
-/// DataChangeBus broadcasts [DataChangeTopic.dailyRecords] so keepAlive
-/// dashboards (e.g. the record timeline) refresh; on failure the state is
-/// untouched and an error toast is shown.
-Future<void> confirmMealAnalysis({
+/// 重新分析一条失败/想重跑的餐食记录。
+///
+/// 服务端把「patch 里恰好带一张图片」当作一次新的分析请求(sourceRevision 递增后
+/// 重新入队),所以重试不需要专门的端点:把记录已有的那张图原样提交即可。
+/// 成功后就地刷新详情并广播 [DataChangeTopic.dailyRecords];失败只提示,不改状态。
+Future<void> retryMealAnalysis({
   required WidgetRef ref,
   required BuildContext context,
-  required String recordId,
+  required DailyRecordItem record,
 }) async {
   final l10n = AppLocalizations.of(context)!;
+  final attachments = record.attachments
+      .where((item) => item.kind == DailyRecordAttachmentKind.image)
+      .map(
+        (item) => DailyRecordAttachmentInput(
+          objectKey: item.objectKey,
+          bucket: item.bucket,
+          provider: item.provider,
+          fileName: item.fileName,
+          contentType: item.contentType,
+          sizeBytes: item.sizeBytes,
+          width: item.width,
+          height: item.height,
+          publicUrl: item.publicUrl,
+        ),
+      )
+      .toList(growable: false);
+
+  // 没有可重跑的图片时服务端不会入队,直接给失败提示而不是假装成功。
+  if (attachments.length != 1) {
+    await Toast.show(context, l10n.recordMealAnalysisRetryFailedToast);
+    return;
+  }
+
   try {
     final result = await ref
         .read(dailyRecordRepositoryProvider)
-        .update(
-          recordId,
-          const DailyRecordUpdateInput(
-            payload: <String, dynamic>{
-              'mealAnalysis': <String, dynamic>{'analysisStatus': 'confirmed'},
-            },
-          ),
-        )
+        .update(record.id, DailyRecordUpdateInput(attachments: attachments))
         .run();
     result.fold((failure) => throw failure, (_) {});
-    if (!context.mounted) return;
-    ref.invalidate(dailyRecordDetailProvider(recordId));
+    ref.invalidate(dailyRecordDetailProvider(record.id));
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.dailyRecords);
-    await Toast.show(context, l10n.recordCreateSavedToast);
-  } catch (e, st) {
-    ref.read(talkerProvider).error('_confirmMealAnalysis: failed: $e', st);
     if (!context.mounted) return;
-    await Toast.show(context, l10n.recordMealConfirmFailedToast);
+    await Toast.show(context, l10n.recordMealAnalysisRetryingToast);
+  } catch (e, st) {
+    ref.read(talkerProvider).error('retryMealAnalysis: failed: $e', st);
+    if (!context.mounted) return;
+    await Toast.show(context, l10n.recordMealAnalysisRetryFailedToast);
   }
 }
 
