@@ -61,14 +61,15 @@ POST /daily-records(meal, 1 张图) → markMealAnalysisQueued(analyzing)
 
 `facets`（封闭词表，如 `{ fried: 'high', vegetable: 'high', carb: 'low' }`）是机器语义的唯一来源：规则、周报、图表读它，
 **不再从 title/value/note 或文案里猜**。模型生成的 `headline/detail` 按请求语言生成并记 `locale`；
-用户切语言时用**结构化结果重渲染文案**（纯文本调用，不需要重新识图）。历史记录的 `locale` 与新语言不一致时，
-详情页可提供「重新生成文案」或不重生成（首版：不重生成，仅在分析时按当时语言生成）。
+模型生成的 `headline/detail` 在那次分析的**当时语言**下生成并记 `locale`：切语言属罕见操作，**不回溯重生成、
+也不提供重生成入口**（结构化 `facets` 与区间不受语言影响，规则与聚合照常）。
 
 ### 决策 4：分析必须会失败
 
 超时（vision 调用必须有 timeout）、模型报错、JSON 解析失败，一律落 `analysis_failed` + `failureReason` 码（不再是「空结果 = 成功」）；
 写回前复检 `sourceRevision`；`confirmed` 由服务端校验「分析已完成且属于当前 revision」，否则拒绝。
-`analyzing` 加过期回收（超过 N 分钟视为失败，可重试）。
+`analyzing` 加过期回收（超过 N 分钟视为失败，可重试）。详情页对 `analysis_failed` 提供**「重新分析」**入口
+（重新入队 + `sourceRevision` 递增），否则删确认之后用户没有任何补救手段。
 
 ### 决策 5：删掉对照成分表那条链
 
@@ -76,18 +77,27 @@ POST /daily-records(meal, 1 张图) → markMealAnalysisQueued(analyzing)
 食物成分表在餐食链路上的使用一并去掉。产品未上线，不做历史数据迁移，不留兼容读取。
 （重复餐食的成本下降由「每餐一次多模态调用」本身承担，模板学习不再是必需品。）
 
+### 决策 6：删掉人工「确认」这一步
+
+洞察文案与区间已经够用，确认动作不再有价值：状态收敛为 `analyzing | analyzed | analysis_failed`，
+`confirmed` / `unconfirmed` 与 `mealAnalysisCoverage` 一并删除；编辑页只保留**可编辑的菜名列表**，
+确认开关与详情页确认按钮消失；模板学习（只学 `confirmed`）随成分表链路一起删；下游（reports dashboard 计数、
+assistant 的 `meal_estimate`/`meal_coverage` 标签、today-analysis 判定）统一改按
+`analyzed / analysis_failed` + 热量档位统计。
+
 ### 新契约（草案）
 
 ```jsonc
 payload.mealAnalysis = {
   "version": 2,
-  "analysisStatus": "analyzing | unconfirmed | confirmed | analysis_failed",
+  "analysisStatus": "analyzing | analyzed | analysis_failed",
   "analyzedAt": "2026-09-15T12:31:04Z",
   "sourceRevision": 3,
   "model": "vision-role-name",
   "promptVersion": "meal-analysis.v2",
   "locale": "zh",
   "calorieRange": { "min": 520, "max": 780, "unit": "kcal", "bucket": "medium" },
+  "dishes": [ { "name": "红烧肉", "source": "model" }, { "name": "青菜", "source": "user" } ],
   "items": [
     { "rank": 1, "kind": "fried",     "polarity": "watch", "headline": "油炸偏多",
       "detail": "午饭油炸食品摄入偏多，建议晚饭多摄入蔬菜" },
@@ -100,6 +110,9 @@ payload.mealAnalysis = {
 }
 ```
 
+`dishes` 只存菜名（模型识别 + 用户改名，`source` 区分），**不存任何营养成分**；改菜名不重算已生成的
+`items` / `calorieRange`（详情页对此有明确措辞；「用修正后的菜名做纯文本重算」列为后续可选）。
+
 列表/条目所需的投影字段（解决「列表 payload 恒 null」）：保留 `mealAnalysisStatus/Coverage/UpdatedAt/FailureReason`，
 **新增** `mealHeadline`（= `items[0].headline`）与 `mealCalorieMin/mealCalorieMax/mealCalorieBucket`。
 
@@ -107,9 +120,9 @@ payload.mealAnalysis = {
 
 | 消费方 | 取什么 |
 |---|---|
-| Record 列表条目 | `mealHeadline`（一行）+ 区间角标（`bucket` 决定颜色语义） |
-| 记录详情页 | `items` 全部（rank 序，`good/watch` 配色）+ 区间卡 + 失败态（l10n 原因文案） |
-| assistant 工具 | 最近 N 餐的 `{date, mealType, calorieRange, items[]}` digest —— **不再重复识图**即可回答「我最近饮食怎么样」 |
+| Record 列表条目 | `mealHeadline`（一行）+ **粗化区间**（`约 500–800 kcal`，四舍五入到百位；`bucket` 供配色） |
+| 记录详情页 | `items` 全部（rank 序，`good/watch` 配色）+ 区间卡 + **可编辑菜名列表** + 失败态（l10n 原因文案 + 重试） |
+| assistant 工具 | `days` / `limit` 由**模型自定**（服务端封顶最近 15 天）的 `{date, mealType, calorieRange, items[]}` digest —— **不再重复识图** |
 | today-suggestion 规则 | `facets` 封闭词表（替换咖啡因的 title/note 关键词启发式） |
 | reports（dashboard / ai-summary） | 区间聚合（周/月）+ 高频 `kind` 统计 + items 摘录 |
 
@@ -119,7 +132,7 @@ payload.mealAnalysis = {
 
 ```text
 ┌──────────────────────────────────────────────┐
-│ 🍽  午饭                          520–780 kcal│
+│ 🍽  午饭                       约 500–800 kcal│
 │     油炸偏多                                  │
 └──────────────────────────────────────────────┘
 ```
@@ -140,7 +153,10 @@ payload.mealAnalysis = {
 │ ⚠ 碳水偏少                                    │
 │   晚饭碳水摄入量较少                          │
 │                                              │
-│ 分析失败时：分析失败 · 图片无法识别（重试）    │
+│ 菜名（可编辑）                                │
+│ 红烧肉 · 青菜                                 │
+│                                              │
+│ 分析失败时：分析失败 · 图片无法识别   [重新分析]│
 └──────────────────────────────────────────────┘
 ```
 
@@ -172,7 +188,7 @@ tool: read_meal_analysis(days: 7)
 - `records.service.ts`：`confirmed` 服务端校验；热列投影新增 `mealHeadline`/`mealCalorie*`。
 - DTO describe 补 meal payload 契约（`record-item.dto.ts` / `create-record.dto.ts` / `update-record.dto.ts`）；
   `pnpm export:openapi` + Prisma migration（新增热列）。
-- `assistant` 读取工具：新增/改造 meal digest（`tools/records/query.service.ts`）。
+- ssistant 读取工具：meal digest（	ools/records/query.service.ts），工具参数含 days/limit（服务端封顶 15 天）。
 - `today-suggestion`：咖啡因与饮食规则改读 `facets`（替换 title/note 关键词启发式）。
 - `today-analysis` / `reports`：改读新结构与区间；失败文案进 i18n。
 - 测试：vision（结构化输出、超时、坏 JSON 必须失败）、worker（revision 竞态、失败落库、过期回收）、
@@ -183,7 +199,7 @@ tool: read_meal_analysis(days: 7)
 - 生成物：`dart run scripts/contract/bootstrap.dart`（新响应形状）。
 - 列表/时间线：条目渲染 `mealHeadline` + 区间角标（替换 `record_mappers.dart:177` 的硬编码中文 `'识别菜品：'`）。
 - 详情页：`items` 全量渲染（rank 序 + `good/watch` 语义色）+ 区间卡；失败态改用 l10n 原因文案（不再直出后端原串）。
-- 编辑页/详情页确认：只发「确认」意图，不再让客户端决定 `confirmed` 的业务校验；两份确认 UI 收敛成一份。
+- 编辑页只保留菜名编辑（去掉确认开关）；详情页去掉确认按钮、失败态加「重新分析」。
 - 快速记录确认弹窗补必填校验（`meal_confirmation.dart` 当前可落空记录）。
 - 清理：`fast_entry_choices.dart` 的四餐死配置、未使用的 `recordMealCountValue`/`recordMealLogging`、
   长按设置里 meal 文案错配的 `_ =>` 回落；确认逻辑两份实现合一。
@@ -192,9 +208,9 @@ tool: read_meal_analysis(days: 7)
 
 ## 六、阶段与提交拆分（每阶段一个原子提交，各自独立可回滚）
 
-1. `refactor(daily-records)!: 餐食分析改读结构化结论与热量区间`（Lucent：类型/校验/投影 + 删除成分表链路，BREAKING）
+1. `refactor(daily-records)!: 餐食分析改读结构化结论与热量区间`（Lucent：类型/校验/投影 + 删除成分表与确认链路 + Prisma 迁移新热列，BREAKING）
 2. `feat(daily-records): 多模态一次分析产出区间与排序结论`（Lucent：vision 结构化输出 + 超时/失败/revision 复检）
-3. `feat(record): 列表与详情按需消费餐食结论`（Luminous：生成物 + 条目 headline/区间 + 详情 items + 失败文案）
+3. `feat(record): 列表与详情按需消费餐食结论`（Luminous：生成物 + 条目 headline/粗化区间 + 详情 items/菜名编辑/重试 + 失败文案 l10n）
 4. `feat(assistant): 餐食分析 digest 工具,避免重复识图`（Lucent）
 5. `refactor(today-suggestion): 饮食信号改读餐食 facets,删除文本启发式`（Lucent）
 6. `refactor(record): 餐食确认与快速录入收口`（Luminous：必填校验、确认合一、清死配置与未用 l10n）
@@ -209,9 +225,16 @@ tool: read_meal_analysis(days: 7)
 - **数据迁移**：未上线，不迁移、不兼容；`version: 2` 只用于未来区分。
 - **不再有成分级明细**：`nutritionEstimate`（宏量营养素克数）随之删除——若将来需要，按「模型直出 + 明确标注为估算」重做，而不是回到成分表。
 
-## 八、待拍板
+## 八、已定（2026-09-15 复核，全部拍板）
 
-1. 详情页是否提供「重新生成文案」入口（切语言/不满意时）？
-2. 列表条目是否显示区间数字，还是只用档位颜色（`bucket`）？
-3. assistant digest 的默认窗口与上限（例如最近 7 天、最多 20 餐）？
-4. 是否保留「确认（confirmed）」这一步——若洞察文案已足够，确认动作是否还有产品价值？
+1. **热量区间独立成字段**（不进 `items`），形态 `{min, max, unit, bucket}`，UI 不给单值。
+2. **列表条目**：`mealHeadline` + **粗化区间**（四舍五入到百位，形如「约 500–800 kcal」）；`bucket` 只作配色语义。
+3. **菜名列表可编辑**：`dishes[{name, source}]`（`source` = model/user），只存名字、不存营养成分；
+   改菜名**不重算** `items`/`calorieRange`（后续可选：用修正后的菜名做纯文本重算）。
+4. **文案语言**：按分析当时的用户语言生成并存 `locale`，不回溯重生成、不提供重生成入口。
+5. **删掉人工确认**：状态收敛 `analyzing | analyzed | analysis_failed`，`confirmed`/`unconfirmed` 与
+   `mealAnalysisCoverage` 删除，确认 UI 与模板学习删除，下游统一按新口径统计。
+6. **失败可救**：`analysis_failed` 详情页提供「重新分析」（重新入队 + revision 递增）；`analyzing` 有超时回收。
+7. **assistant 窗口**：`days`/`limit` 由模型决定，服务端封顶最近 15 天。
+8. **删掉对照成分表那条链**：decomposition / grounding / matcher / template-learning 整体删除，不做兼容与迁移。
+9. **消费方不变式**：列表接口必须能拿到 headline 与区间（投影字段），payload 不再只在详情接口返回。
