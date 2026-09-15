@@ -32,7 +32,8 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
-  — 症状链路：症状与严重度改为 payload 稳定码（修掉「严重度对后端不可见 → deteriorating_symptom 恒不命中」与「已启用症状按本地化标题存 → 切语言后弹窗变空」）、症状快录改底部 sheet 并支持一次点击带严重度与批量撤销、目录扩到常见症状 + 其它自由输入、设置面收口去 Material FilterChip；含改后文本图像与双仓改动清单
+- [`2026-09-15-meal-analysis-rearchitecture.md`](2026-09-15-meal-analysis-rearchitecture.md)
+  — 餐食分析链路重构：实测证伪「拆菜→对照成分表算热量」，改为一次多模态分析直出「热量区间（独立字段，不进 items）+ 按重要性排序的结论 items（headline/detail 两段式）」；消费方按需切片（列表取 headline、详情取全部、assistant 取 digest 不再识图）、facets 封闭词表供规则与周报、分析必须会失败（超时/坏 JSON/revision 复检）；含改后文本图像与双仓改动清单
 - [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md)
   — Record 内嵌迷你趋势:快捷面板下新增近 7/30 天类别覆盖率行 + 单类别折线(周|月切换、空档≠0、数据不足引导);Wave 1 客户端逐日聚合(不跨 feature 消费 review),Wave 2 接 Lucent 聚合契约;与 review 页重组计划构成阶段 1 的另一半
 - [`2026-09-07-review-page-restructure.md`](2026-09-07-review-page-restructure.md)
