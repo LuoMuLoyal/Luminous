@@ -9,7 +9,7 @@ import 'package:lucent_api/lucent_api.dart';
 const Set<String> kAllowlistedSuggestionRuleCodes = {
   'water_behind_target',
   'sleep_shortfall',
-  'caffeine_sleep_correlation',
+  'diet_imbalance',
   'mood_sleep_correlation',
   'missed_dose_pending',
   'coverage_explanation',

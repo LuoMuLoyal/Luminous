@@ -22,10 +22,10 @@ void main() {
       );
     });
 
-    test('returns coffee icon for "coffee"', () {
+    test('returns meal icon for "utensils"', () {
       expect(
-        SuggestionIconMapping.resolve('coffee'),
-        SemanticIcons.recordCaffeine,
+        SuggestionIconMapping.resolve('utensils'),
+        SemanticIcons.recordMeal,
       );
     });
 

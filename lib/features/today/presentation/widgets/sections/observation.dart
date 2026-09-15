@@ -449,7 +449,7 @@ IconData _iconFor(String icon) {
     'droplets' => SemanticIcons.recordWater,
     'moon' => SemanticIcons.recordMoon,
     'activity' => SemanticIcons.recordActivity,
-    'coffee' => SemanticIcons.recordCaffeine,
+    'utensils' => SemanticIcons.recordMeal,
     'user' => SemanticIcons.profileUser,
     'clipboard' => SemanticIcons.recordClipboard,
     'alert-triangle' => SemanticIcons.statusWarning,

@@ -128,6 +128,8 @@ enum AssistantCapabilitiesResponseToolsNameEnum {
   getCurrentMedicines(r'get_current_medicines'),
   @JsonValue(r'get_sleep_summary_by_range')
   getSleepSummaryByRange(r'get_sleep_summary_by_range'),
+  @JsonValue(r'get_meal_analysis_digest')
+  getMealAnalysisDigest(r'get_meal_analysis_digest'),
   @JsonValue(r'search_cn_medicine_products')
   searchCnMedicineProducts(r'search_cn_medicine_products'),
   @JsonValue(r'get_cn_medicine_detail')

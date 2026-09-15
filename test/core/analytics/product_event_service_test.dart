@@ -285,7 +285,7 @@ void main() {
           ),
         ).thenThrow(_networkError());
 
-        service.trackSuggestionImpression('caffeine_sleep_correlation');
+        service.trackSuggestionImpression('diet_imbalance');
 
         await Future<void>.delayed(Duration.zero);
 
@@ -306,7 +306,7 @@ void main() {
         expect(payload['name'], 'suggestion_impression');
         expect(payload['surface'], 'today');
         expect(payload['result'], 'success');
-        expect(payload['suggestionRuleCode'], 'caffeine_sleep_correlation');
+        expect(payload['suggestionRuleCode'], 'diet_imbalance');
         expect(payload['appVersion'], '1.2.3');
         expect(payload['platform'], 'android');
         expect(payload['occurredAt'], '2026-08-14T08:00:00.000Z');
