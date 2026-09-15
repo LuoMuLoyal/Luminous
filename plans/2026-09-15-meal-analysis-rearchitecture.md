@@ -208,8 +208,20 @@ tool: read_meal_analysis(days: 7)
 
 ## 六、阶段与提交拆分（每阶段一个原子提交，各自独立可回滚）
 
-1. `refactor(daily-records)!: 餐食分析改读结构化结论与热量区间`（Lucent：类型/校验/投影 + 删除成分表与确认链路 + Prisma 迁移新热列，BREAKING）
-2. `feat(daily-records): 多模态一次分析产出区间与排序结论`（Lucent：vision 结构化输出 + 超时/失败/revision 复检）
+**P0 拆成两刀**（形状切换必须一次落完，但「产出侧」与「契约/投影侧」可以分开，两刀都能单独编译与回滚）：
+
+- **P0-1｜产出侧切换（Lucent，BREAKING）**：`vision.service.ts` 改成一次多模态调用直出
+  `{calorieRange, dishes, items, facets}`（结构化输出 + timeout + 错误上抛）；`worker.service.ts` 写回前复检
+  `sourceRevision`、失败落 `analysis_failed`、超时回收；`meal-analysis.types.ts` 换 v2 结构（含 zod 校验与服务端
+  规范化：rank 排序裁剪、区间纠正）；删除 `meal-dish/*`、`meal-ingredient/*`、`meal-analysis/matcher.service.ts`、
+  模板学习与 `meal-payload-writer.service.ts` 的成分分支；`records.service.ts` 删掉 `confirmed` 分支（服务端不再接受
+  客户端决定状态）；同步重写相关 `*.spec.ts`。
+- **P0-2｜契约与投影侧（Lucent）**：Prisma 迁移新增 `mealHeadline` / `mealCalorieMin` / `mealCalorieMax` /
+  `mealCalorieBucket`（删除 coverage 相关列与字段），`withMealHotFields` 投影新字段；DTO describe 补 meal payload
+  契约；`pnpm export:openapi`。
+
+1. efactor(daily-records)!: 餐食分析改由多模态一次产出区间与排序结论（P0-1：产出侧切换 + 删除成分表与确认链路，BREAKING）
+2. efactor(daily-records): 餐食分析投影热列与 payload 契约（P0-2：Prisma 迁移 + 投影 + DTO/OpenAPI）
 3. `feat(record): 列表与详情按需消费餐食结论`（Luminous：生成物 + 条目 headline/粗化区间 + 详情 items/菜名编辑/重试 + 失败文案 l10n）
 4. `feat(assistant): 餐食分析 digest 工具,避免重复识图`（Lucent）
 5. `refactor(today-suggestion): 饮食信号改读餐食 facets,删除文本启发式`（Lucent）
