@@ -29,7 +29,7 @@ void main() {
     test('replaceByDate inserts and fetchByDate returns items', () async {
       const date = '2026-07-10';
       const jsonItem =
-          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
       await dao.replaceByDate(date, jsonItems: [jsonItem]);
 
@@ -41,9 +41,9 @@ void main() {
     test('replaceByDate with kind filter only replaces matching rows', () async {
       const date = '2026-07-10';
       const waterItem =
-          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
       const sleepItem =
-          '{"id":"rec2","kind":"sleep","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"8","unit":"h","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec2","kind":"sleep","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"8","unit":"h","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
       // Insert both items
       await dao.replaceByDate(date, jsonItems: [waterItem, sleepItem]);
@@ -51,7 +51,7 @@ void main() {
 
       // Replace only water items
       const newWaterItem =
-          '{"id":"rec3","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"750","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec3","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"750","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
       await dao.replaceByDate(date, kind: 'water', jsonItems: [newWaterItem]);
 
       // Sleep item should still be there
@@ -69,7 +69,7 @@ void main() {
       () async {
         const date = '2026-07-10';
         const jsonItem =
-            '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+            '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
         await dao.replaceByDate(date, jsonItems: [jsonItem]);
         expect(await dao.fetchByDate(date), hasLength(1));
@@ -82,7 +82,7 @@ void main() {
     test('insertOptimistic inserts with pending syncStatus', () async {
       const date = '2026-07-10';
       const jsonItem =
-          '{"id":"local_123","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":"local","payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"local_123","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":"local","payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
       final id = await dao.insertOptimistic(date, jsonItem);
       expect(id, 'local_123');
@@ -94,9 +94,9 @@ void main() {
     test('confirmSync replaces optimistic copy with server response', () async {
       const date = '2026-07-10';
       const localJson =
-          '{"id":"local_123","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":"local","payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"local_123","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":"local","payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
       const serverJson =
-          '{"id":"server_456","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":"api","payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:01.000Z","updatedAt":"2026-07-10T00:00:01.000Z"}';
+          '{"id":"server_456","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":"api","payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:01.000Z","updatedAt":"2026-07-10T00:00:01.000Z"}';
 
       await dao.insertOptimistic(date, localJson);
       await dao.confirmSync('local_123', serverJson);
@@ -109,7 +109,7 @@ void main() {
     test('deleteById removes cached record', () async {
       const date = '2026-07-10';
       const jsonItem =
-          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
       await dao.replaceByDate(date, jsonItems: [jsonItem]);
       expect(await dao.fetchByDate(date), hasLength(1));
@@ -121,9 +121,9 @@ void main() {
     test('cleanup removes old synced rows but preserves pending', () async {
       const date = '2026-07-10';
       const syncedJson =
-          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
       const pendingJson =
-          '{"id":"local_123","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":"local","payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"local_123","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":"local","payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
       await dao.replaceByDate(date, jsonItems: [syncedJson]);
       await dao.insertOptimistic(date, pendingJson);
@@ -143,7 +143,7 @@ void main() {
     test('watchByDate emits updates reactively', () async {
       const date = '2026-07-10';
       const jsonItem =
-          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
       final stream = dao.watchByDate(date);
       final firstEmission = await stream.first;

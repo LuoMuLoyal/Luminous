@@ -1885,7 +1885,7 @@ void main() {
           },
         },
         itemMealAnalysisStatus: 'analyzed',
-        itemMealShortDescription: '蛋白充足',
+        itemMealHeadline: '蛋白充足',
         itemMealCalorieMin: 520,
         itemMealCalorieMax: 780,
         itemMealCalorieBucket: 'medium',
@@ -2213,7 +2213,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     this.itemNote = 'This is a note',
     this.itemPayload,
     this.itemMealAnalysisStatus,
-    this.itemMealShortDescription,
+    this.itemMealHeadline,
     this.itemMealCalorieMin,
     this.itemMealCalorieMax,
     this.itemMealCalorieBucket,
@@ -2233,7 +2233,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final String? itemNote;
   final Map<String, dynamic>? itemPayload;
   final String? itemMealAnalysisStatus;
-  final String? itemMealShortDescription;
+  final String? itemMealHeadline;
   final int? itemMealCalorieMin;
   final int? itemMealCalorieMax;
   final String? itemMealCalorieBucket;
@@ -2286,7 +2286,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
             note: itemNote,
             payload: itemPayload,
             mealAnalysisStatus: itemMealAnalysisStatus,
-            mealHeadline: itemMealShortDescription,
+            mealHeadline: itemMealHeadline,
             mealCalorieMin: itemMealCalorieMin,
             mealCalorieMax: itemMealCalorieMax,
             mealCalorieBucket: itemMealCalorieBucket,
@@ -2329,7 +2329,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
         note: itemNote,
         payload: itemPayload,
         mealAnalysisStatus: itemMealAnalysisStatus,
-        mealHeadline: itemMealShortDescription,
+        mealHeadline: itemMealHeadline,
         mealCalorieMin: itemMealCalorieMin,
         mealCalorieMax: itemMealCalorieMax,
         mealCalorieBucket: itemMealCalorieBucket,
@@ -2398,7 +2398,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
         note: input.note,
         payload: input.payload,
         mealAnalysisStatus: itemMealAnalysisStatus,
-        mealHeadline: itemMealShortDescription,
+        mealHeadline: itemMealHeadline,
         mealCalorieMin: itemMealCalorieMin,
         mealCalorieMax: itemMealCalorieMax,
         mealCalorieBucket: itemMealCalorieBucket,

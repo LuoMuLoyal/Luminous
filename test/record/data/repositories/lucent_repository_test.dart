@@ -485,7 +485,7 @@ void main() {
       expect(dashboard.timeline.first.rawTitle, 'Morning Water');
     });
 
-    test('uses mealShortDescription for meal when title is null', () async {
+    test('uses mealHeadline for meal when title is null', () async {
       dailyRepo.fetchRecordsResult = DailyRecordListData(
         items: [
           _item(
@@ -961,23 +961,26 @@ void main() {
       expect(dashboard.timeline.first.type, RecordEntryType.activity);
     });
 
-    test('rawDetail is null for non-meal kinds even with topFoods', () async {
-      dailyRepo.fetchRecordsResult = DailyRecordListData(
-        items: [
-          _item(
-            kind: DailyRecordKind.water,
-            mealCalorieMin: 500,
-            mealCalorieMax: 800,
-          ),
-        ],
-        total: 1,
-      );
+    test(
+      'rawDetail is null for non-meal kinds even with a calorie interval',
+      () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [
+            _item(
+              kind: DailyRecordKind.water,
+              mealCalorieMin: 500,
+              mealCalorieMax: 800,
+            ),
+          ],
+          total: 1,
+        );
 
-      final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
+        final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
-      expect(dashboard.timeline.first.mealCalorieLabel, isNull);
-      expect(dashboard.timeline.first.rawDetail, isNull);
-    });
+        expect(dashboard.timeline.first.mealCalorieLabel, isNull);
+        expect(dashboard.timeline.first.rawDetail, isNull);
+      },
+    );
   });
 
   // ── _toTimelineEntry — time label formatting ─────────────────

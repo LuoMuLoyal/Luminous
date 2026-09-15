@@ -11,7 +11,7 @@ AppDatabase _createTestDatabase() {
 }
 
 const _dailyRecordJson =
-    '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+    '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"500","unit":"ml","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
 const _doseLogJson =
     '{"id":"log1","currentMedicineId":"med1","reminderId":"rem1","status":"taken","scheduledFor":"2026-07-10","scheduledTime":"08:00","doseText":"1片","note":null,"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
@@ -159,7 +159,7 @@ void main() {
       await dao.replaceByDate(date, jsonItems: [_dailyRecordJson]);
 
       const updatedJson =
-          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"750","unit":"ml","note":"updated","source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec1","kind":"water","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"750","unit":"ml","note":"updated","source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
       await dao.updateData('rec1', updatedJson);
 
@@ -178,7 +178,7 @@ void main() {
     test('fetchByDate with kind filter returns only matching records', () async {
       const date = '2026-07-10';
       const sleepJson =
-          '{"id":"rec2","kind":"sleep","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"8","unit":"h","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+          '{"id":"rec2","kind":"sleep","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"8","unit":"h","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealHeadline":null,"mealCalorieMin":null,"mealCalorieMax":null,"mealCalorieBucket":null,"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
       await dao.replaceByDate(date, jsonItems: [_dailyRecordJson, sleepJson]);
 
