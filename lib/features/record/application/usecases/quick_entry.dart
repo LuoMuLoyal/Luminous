@@ -11,6 +11,8 @@ import 'package:luminous/features/record/application/usecases/quick_entry_medica
 import 'package:luminous/features/record/application/usecases/quick_entry_sleep.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/data/providers/symptom_catalog.dart';
+import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
@@ -93,6 +95,9 @@ Future<void> handleQuickAction(
     emitDataChange: (topic) =>
         ref.read(dataChangeBusProvider.notifier).emit(topic),
     preferences: prefs,
+    loadSymptomCatalog: () =>
+        ref.read(symptomCatalogProvider).asData?.value ??
+        const <SymptomCatalogEntry>[],
   ).execute(
     QuickEntryExecutionContext(
       buildContext: context,

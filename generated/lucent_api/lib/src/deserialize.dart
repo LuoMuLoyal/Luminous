@@ -273,6 +273,8 @@ import 'package:lucent_api/src/model/suggestion_explanation_response.dart';
 import 'package:lucent_api/src/model/suggestion_feedback_response.dart';
 import 'package:lucent_api/src/model/suggestion_history_response.dart';
 import 'package:lucent_api/src/model/suggestion_history_response_items.dart';
+import 'package:lucent_api/src/model/symptom_catalog_response.dart';
+import 'package:lucent_api/src/model/symptom_catalog_response_items.dart';
 import 'package:lucent_api/src/model/today_analysis_async_job_data.dart';
 import 'package:lucent_api/src/model/today_analysis_async_result_data.dart';
 import 'package:lucent_api/src/model/today_analysis_async_result_data_analysis.dart';
@@ -1509,6 +1511,12 @@ ReturnType deserialize<ReturnType, BaseType>(
       return SuggestionHistoryResponseItems.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'SymptomCatalogResponse':
+      return SymptomCatalogResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'SymptomCatalogResponseItems':
+      return SymptomCatalogResponseItems.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'TodayAnalysisAsyncJobData':
       return TodayAnalysisAsyncJobData.fromJson(value as Map<String, dynamic>)

@@ -93,12 +93,12 @@ void main() {
     });
 
     group('DailyRecordKind.symptom', () {
-      test('returns 4 symptom choices', () {
+      test('returns every catalog symptom choice', () {
         final choices = recordFastEntryChoicesFor(
           DailyRecordKind.symptom,
           l10n,
         );
-        expect(choices, hasLength(4));
+        expect(choices, hasLength(9));
       });
 
       test('labels match l10n strings', () {
@@ -122,6 +122,11 @@ void main() {
           'stomachache',
           'dizzy',
           'fever',
+          'nausea',
+          'cough',
+          'fatigue',
+          'insomnia',
+          'other',
         ]);
         // 严重度由调用方按设置补进 payload；基础列表不带展示值。
         for (final choice in choices) {

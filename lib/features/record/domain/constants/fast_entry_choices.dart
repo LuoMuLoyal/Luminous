@@ -99,29 +99,13 @@ List<RecordFastChoice> recordFastEntryChoicesFor(
     ],
     DailyRecordKind.symptom => [
       // 目录码进 payload（数据真相）；严重度由调用方按当前设置补进 payload，
-      // 本地化文案只作展示。
-      RecordFastChoice(
-        label: l10n.recordFastChoiceSymptomHeadache,
-        title: l10n.recordFastChoiceSymptomHeadache,
-        payload: <String, dynamic>{'symptom': SymptomCode.headache.wireValue},
-      ),
-      RecordFastChoice(
-        label: l10n.recordFastChoiceSymptomStomachache,
-        title: l10n.recordFastChoiceSymptomStomachache,
-        payload: <String, dynamic>{
-          'symptom': SymptomCode.stomachache.wireValue,
-        },
-      ),
-      RecordFastChoice(
-        label: l10n.recordFastChoiceSymptomDizzy,
-        title: l10n.recordFastChoiceSymptomDizzy,
-        payload: <String, dynamic>{'symptom': SymptomCode.dizzy.wireValue},
-      ),
-      RecordFastChoice(
-        label: l10n.recordFastChoiceSymptomFever,
-        title: l10n.recordFastChoiceSymptomFever,
-        payload: <String, dynamic>{'symptom': SymptomCode.fever.wireValue},
-      ),
+      // 本地化文案只作展示。目录源在后端，这里是与后端同码同序的兜底清单。
+      for (final entry in fallbackSymptomCatalog(l10n))
+        RecordFastChoice(
+          label: entry.label,
+          title: entry.label,
+          payload: <String, dynamic>{'symptom': entry.code},
+        ),
     ],
     DailyRecordKind.note => [
       RecordFastChoice(
@@ -174,4 +158,52 @@ List<RecordFastChoice> recordFastEntryChoicesFor(
     ],
     _ => const [],
   };
+}
+
+/// 症状目录的本地兜底清单（与 Lucent `SYMPTOM_CATALOG_CODES` 同码同序）。
+///
+/// 后端目录（`symptomCatalogProvider`）拉取失败时用它渲染；目录项文案优先取本地
+/// 文案（换语言即时生效），后端新增的未知码用后端给的 label。
+List<SymptomCatalogEntry> fallbackSymptomCatalog(AppLocalizations l10n) => [
+  for (final code in SymptomCode.values)
+    SymptomCatalogEntry(code: code.wireValue, label: _symptomLabel(l10n, code)),
+];
+
+/// 客户端认识的目录码 → 本地文案；未知码返回 null（回落后端 label 或码本身）。
+String? symptomCodeLabel(AppLocalizations l10n, String code) {
+  final known = SymptomCode.fromWire(code);
+  return known == null ? null : _symptomLabel(l10n, known);
+}
+
+String _symptomLabel(AppLocalizations l10n, SymptomCode code) {
+  return switch (code) {
+    SymptomCode.headache => l10n.recordFastChoiceSymptomHeadache,
+    SymptomCode.stomachache => l10n.recordFastChoiceSymptomStomachache,
+    SymptomCode.dizzy => l10n.recordFastChoiceSymptomDizzy,
+    SymptomCode.fever => l10n.recordFastChoiceSymptomFever,
+    SymptomCode.nausea => l10n.recordFastChoiceSymptomNausea,
+    SymptomCode.cough => l10n.recordFastChoiceSymptomCough,
+    SymptomCode.fatigue => l10n.recordFastChoiceSymptomFatigue,
+    SymptomCode.insomnia => l10n.recordFastChoiceSymptomInsomnia,
+    SymptomCode.other => l10n.recordFastChoiceSymptomOther,
+  };
+}
+
+/// 后端目录 → 快速录入选项。
+///
+/// 顺序与成员资格以后端为准，文案优先取本地文案（换语言即时生效），后端新增的未知码
+/// 用后端给的 label；后端目录为空（离线/拉取失败）时回落本地兜底清单。
+List<RecordFastChoice> resolveSymptomChoices({
+  required List<SymptomCatalogEntry> catalog,
+  required AppLocalizations l10n,
+}) {
+  final entries = catalog.isEmpty ? fallbackSymptomCatalog(l10n) : catalog;
+  return [
+    for (final entry in entries)
+      RecordFastChoice(
+        label: symptomCodeLabel(l10n, entry.code) ?? entry.label,
+        title: symptomCodeLabel(l10n, entry.code) ?? entry.label,
+        payload: <String, dynamic>{'symptom': entry.code},
+      ),
+  ];
 }

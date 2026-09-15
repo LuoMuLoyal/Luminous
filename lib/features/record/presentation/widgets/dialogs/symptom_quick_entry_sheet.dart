@@ -20,10 +20,14 @@ class SymptomQuickEntrySelection extends SymptomQuickEntryOutcome {
   const SymptomQuickEntrySelection({
     required this.choices,
     required this.severity,
+    this.customLabel,
   });
 
   final List<RecordFastChoice> choices;
   final String severity;
+
+  /// 仅当选择里含「其它」时给出的自定义症状名。
+  final String? customLabel;
 }
 
 /// 用户点了「更多」：交给调用方跳创建页（sheet 自己不导航）。
@@ -81,13 +85,27 @@ class _SymptomQuickEntrySheetBodyState
 
   late String _severity = widget.initialSeverity;
   final Set<int> _selectedIndexes = <int>{};
+  final TextEditingController _otherController = TextEditingController();
   bool _multiSelect = false;
+  bool _otherInput = false;
+
+  @override
+  void dispose() {
+    _otherController.dispose();
+    super.dispose();
+  }
 
   void _selectSeverity(String severity) => setState(() => _severity = severity);
 
   void _handleChoiceTap(int index) {
+    final choice = widget.choices[index];
     if (!_multiSelect) {
-      _submit([widget.choices[index]]);
+      // 「其它」需要用户补一个名称，先就地展开输入框而不是立即落库。
+      if (recordFastChoiceCode(choice) == SymptomCode.other.wireValue) {
+        setState(() => _otherInput = true);
+        return;
+      }
+      _submit([choice]);
       return;
     }
     setState(() {
@@ -97,10 +115,23 @@ class _SymptomQuickEntrySheetBodyState
     });
   }
 
-  void _submit(List<RecordFastChoice> choices) {
-    Navigator.of(
-      context,
-    ).pop(SymptomQuickEntrySelection(choices: choices, severity: _severity));
+  void _submit(List<RecordFastChoice> choices, {String? customLabel}) {
+    Navigator.of(context).pop(
+      SymptomQuickEntrySelection(
+        choices: choices,
+        severity: _severity,
+        customLabel: customLabel,
+      ),
+    );
+  }
+
+  void _submitOther() {
+    final text = _otherController.text.trim();
+    if (text.isEmpty) return;
+    final choice = widget.choices.firstWhere(
+      (item) => recordFastChoiceCode(item) == SymptomCode.other.wireValue,
+    );
+    _submit([choice], customLabel: text);
   }
 
   void _openMore() {
@@ -220,11 +251,29 @@ class _SymptomQuickEntrySheetBodyState
                         variant: _selectedIndexes.contains(index)
                             ? FButtonVariant.primary
                             : FButtonVariant.outline,
-                        onPress: () => _handleChoiceTap(index),
+                        onPress:
+                            _multiSelect &&
+                                recordFastChoiceCode(widget.choices[index]) ==
+                                    SymptomCode.other.wireValue
+                            ? null
+                            : () => _handleChoiceTap(index),
                         child: Text(widget.choices[index].label),
                       ),
                   ],
                 ),
+                if (_otherInput) ...[
+                  const SizedBox(height: Spacing.lg),
+                  // 「其它」就地展开：输入为空时保存置灰。
+                  FTextField(
+                    key: const Key('symptom-quick-other-field'),
+                    control: FTextFieldControl.managed(
+                      controller: _otherController,
+                      onChange: (_) => setState(() {}),
+                    ),
+                    label: Text(l10n.recordSymptomCustomLabel),
+                    autofocus: true,
+                  ),
+                ],
                 const SizedBox(height: Spacing.xl),
                 if (_multiSelect)
                   Row(
@@ -249,6 +298,29 @@ class _SymptomQuickEntrySheetBodyState
                               selectedChoices.length,
                             ),
                           ),
+                        ),
+                      ),
+                    ],
+                  )
+                else if (_otherInput)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FButton(
+                          variant: FButtonVariant.outline,
+                          key: const Key('symptom-quick-other-back-action'),
+                          onPress: () => setState(() => _otherInput = false),
+                          child: Text(l10n.commonBack),
+                        ),
+                      ),
+                      const SizedBox(width: Spacing.lg),
+                      Expanded(
+                        child: FButton(
+                          key: const Key('symptom-quick-other-save-action'),
+                          onPress: _otherController.text.trim().isEmpty
+                              ? null
+                              : _submitOther,
+                          child: Text(l10n.mineEditSaveAction),
                         ),
                       ),
                     ],

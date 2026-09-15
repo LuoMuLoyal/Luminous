@@ -165,4 +165,47 @@ void main() {
 
     expect(captured.single, isNull);
   });
+
+  testWidgets('「其它」reveals an inline input and returns the typed name', (
+    tester,
+  ) async {
+    final captured = await openSheet(tester);
+
+    await tester.tap(find.byKey(const Key('symptom-quick-choice-other')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('symptom-quick-other-field')), findsOneWidget);
+
+    // 输入为空时保存置灰。
+    final saveButton = tester.widget<FButton>(
+      find.byKey(const Key('symptom-quick-other-save-action')),
+    );
+    expect(saveButton.onPress, isNull);
+
+    await tester.enterText(
+      find.byKey(const Key('symptom-quick-other-field')),
+      '偏头痛',
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('symptom-quick-other-save-action')));
+    await tester.pumpAndSettle();
+
+    final selection = captured.single! as SymptomQuickEntrySelection;
+    expect(selection.customLabel, '偏头痛');
+    expect(recordFastChoiceCode(selection.choices.single), 'other');
+  });
+
+  testWidgets('「其它」is unavailable while multi-selecting', (tester) async {
+    await openSheet(tester);
+
+    await tester.tap(
+      find.byKey(const Key('symptom-quick-multi-select-action')),
+    );
+    await tester.pumpAndSettle();
+
+    final otherChip = tester.widget<FButton>(
+      find.byKey(const Key('symptom-quick-choice-other')),
+    );
+    expect(otherChip.onPress, isNull);
+  });
 }

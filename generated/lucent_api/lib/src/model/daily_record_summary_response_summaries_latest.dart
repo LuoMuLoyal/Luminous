@@ -105,7 +105,7 @@ class DailyRecordSummaryResponseSummariesLatest {
   @JsonKey(name: r'source', required: true, includeIfNull: true)
   final String? source_;
 
-  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality?, deepMinutes?, lightMinutes?, remMinutes? }. For vital: { vitalType, value, unit, secondaryValue?, secondaryUnit? }. For activity: { activityType, value, unit }.
+  /// Structured payload for kind-specific data. For sleep: { startedAt, endedAt, durationMinutes, sleepType?, quality?, deepMinutes?, lightMinutes?, remMinutes? }. For symptom: { symptom?: string, severity?: \"mild\"|\"moderate\"|\"severe\"|\"unknown\", customLabel?: string }. For vital: { vitalType, value, unit, secondaryValue?, secondaryUnit? }. For activity: { activityType, value, unit }.
   @JsonKey(name: r'payload', required: true, includeIfNull: true)
   final Map<String, Object>? payload;
 

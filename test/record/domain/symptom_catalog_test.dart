@@ -9,12 +9,18 @@ void main() {
         'stomachache',
         'dizzy',
         'fever',
+        'nausea',
+        'cough',
+        'fatigue',
+        'insomnia',
+        'other',
       ]);
     });
 
     test('parses wire values and rejects unknown ones', () {
       expect(SymptomCode.fromWire('headache'), SymptomCode.headache);
-      expect(SymptomCode.fromWire('nausea'), isNull);
+      expect(SymptomCode.fromWire('nausea'), SymptomCode.nausea);
+      expect(SymptomCode.fromWire('sore_throat'), isNull);
       expect(SymptomCode.fromWire(null), isNull);
       expect(SymptomCode.fromWire(3), isNull);
     });

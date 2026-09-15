@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// 症状目录码 —— 与每日记录 payload `symptom` 的线上取值一一对应。
 ///
 /// 目录的最终来源是 Lucent 的症状目录端点；这份清单同时充当离线/拉取失败时的
@@ -6,7 +8,12 @@ enum SymptomCode {
   headache,
   stomachache,
   dizzy,
-  fever;
+  fever,
+  nausea,
+  cough,
+  fatigue,
+  insomnia,
+  other;
 
   /// payload `symptom` 的线上取值。
   String get wireValue => name;
@@ -19,6 +26,15 @@ enum SymptomCode {
     }
     return null;
   }
+}
+
+/// 目录项：稳定码 + 展示文案。
+@immutable
+class SymptomCatalogEntry {
+  const SymptomCatalogEntry({required this.code, required this.label});
+
+  final String code;
+  final String label;
 }
 
 /// 症状严重度码 —— 与 payload `severity` 的线上取值一一对应。

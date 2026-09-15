@@ -10,6 +10,7 @@ import 'package:luminous/features/record/application/usecases/quick_entry_undo.d
 import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
+import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/quick_entry/symptom_flow.dart';
@@ -26,12 +27,16 @@ class QuickEntryExecutor {
     required this.deleteDailyRecord,
     required this.emitDataChange,
     required this.preferences,
+    required this.loadSymptomCatalog,
   });
 
   final CreateDailyRecord createRecord;
   final DeleteDailyRecord deleteDailyRecord;
   final EmitDataChange emitDataChange;
   final QuickEntryPreferences preferences;
+
+  /// 读取当前已缓存的后端症状目录；为空时调用方回落本地兜底清单。
+  final List<SymptomCatalogEntry> Function() loadSymptomCatalog;
 
   Future<void> execute(QuickEntryExecutionContext context) async {
     final buildContext = context.buildContext;
@@ -135,8 +140,11 @@ class QuickEntryExecutor {
   ) async {
     final buildContext = context.buildContext;
     final l10n = AppLocalizations.of(buildContext)!;
+    // 不等网络：首屏用本地目录立刻打开 sheet，后端目录（顺序/未知码）由 provider
+    // 在后台刷新，下一次打开生效。
+    final catalog = loadSymptomCatalog();
     final choices = filterSymptomChoices(
-      recordFastEntryChoicesFor(DailyRecordKind.symptom, l10n),
+      resolveSymptomChoices(catalog: catalog, l10n: l10n),
       enabledCodes: preferences.symptomEnabledChoices,
     );
     // 设置层保证至少启用一项；真被全部停用时不做任何事。
@@ -153,16 +161,26 @@ class QuickEntryExecutor {
     switch (outcome) {
       case SymptomQuickEntryMore():
         unawaited(buildContext.push(moreRoute));
-      case SymptomQuickEntrySelection(:final choices, :final severity):
-        await _saveSymptomSelection(context, choices, severity);
+      case SymptomQuickEntrySelection(
+        :final choices,
+        :final severity,
+        :final customLabel,
+      ):
+        await _saveSymptomSelection(
+          context,
+          choices,
+          severity,
+          customLabel: customLabel,
+        );
     }
   }
 
   Future<void> _saveSymptomSelection(
     QuickEntryExecutionContext context,
     List<RecordFastChoice> choices,
-    String severity,
-  ) async {
+    String severity, {
+    String? customLabel,
+  }) async {
     final buildContext = context.buildContext;
     final l10n = AppLocalizations.of(buildContext)!;
     final severityLabel = symptomSeverityLabel(l10n, severity);
@@ -178,10 +196,17 @@ class QuickEntryExecutor {
     final selections = [
       for (final choice in choices)
         SymptomQuickChoice(
-          title: choice.title ?? choice.label,
+          title: _isOtherSymptom(choice)
+              ? (customLabel ?? choice.title ?? choice.label)
+              : (choice.title ?? choice.label),
           value: severityLabel,
           note: choice.note,
-          payload: <String, dynamic>{...?choice.payload, 'severity': severity},
+          payload: <String, dynamic>{
+            ...?choice.payload,
+            'severity': severity,
+            if (_isOtherSymptom(choice) && customLabel != null)
+              'customLabel': customLabel,
+          },
         ),
     ];
 
@@ -232,6 +257,9 @@ class QuickEntryExecutor {
       },
     );
   }
+
+  bool _isOtherSymptom(RecordFastChoice choice) =>
+      recordFastChoiceCode(choice) == SymptomCode.other.wireValue;
 
   Future<void> _undo(
     BuildContext buildContext,
