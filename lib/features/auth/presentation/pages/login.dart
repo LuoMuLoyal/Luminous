@@ -310,10 +310,7 @@ class LoginPage extends HookConsumerWidget {
                           runSpacing: Spacing.xs,
                           children: [
                             Text(
-                              l10n
-                                  .authLoginTermsAgreement('', '')
-                                  .trimRight()
-                                  .replaceAll(RegExp(r'\s+(and|与)\s*$'), ''),
+                              l10n.authLoginTermsAgreementPrefix,
                               style: typography.body.xs2.copyWith(
                                 color: SemanticColor.neutral.solid(context),
                               ),
@@ -333,7 +330,7 @@ class LoginPage extends HookConsumerWidget {
                               ),
                             ),
                             Text(
-                              l10n.localeName.startsWith('zh') ? '与' : 'and',
+                              l10n.authTermsConjunction,
                               style: typography.body.xs2.copyWith(
                                 color: SemanticColor.neutral.solid(context),
                               ),

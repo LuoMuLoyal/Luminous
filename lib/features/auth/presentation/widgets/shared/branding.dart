@@ -36,15 +36,10 @@ class AuthTermsNotice extends StatelessWidget {
       color: SemanticColor.primary.solid(context),
       fontWeight: FontWeight.w600,
     );
-    final String leadText = l10n.authTermsAgreement('', '');
-    final String connector = l10n.localeName.startsWith('zh') ? '与' : ' and ';
+    final String leadText = l10n.authTermsAgreementPrefix;
+    final String connector = l10n.authTermsConjunction;
     final String termsLabel = l10n.authTermsOfService;
     final String privacyLabel = l10n.authPrivacyPolicy;
-
-    final String trimmedLead = leadText.trimRight().replaceAll(
-      RegExp(r'\s+(and|与)\s*$'),
-      '',
-    );
 
     return Center(
       child: Padding(
@@ -55,7 +50,7 @@ class AuthTermsNotice extends StatelessWidget {
           runAlignment: WrapAlignment.center,
           children: [
             Text(
-              trimmedLead,
+              leadText,
               style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),

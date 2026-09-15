@@ -49,6 +49,9 @@
   "authRegisterSubtitle": "Join Luminous and start your health journal",
   "authForgotPasswordSubtitle": "We'll send a verification code to your email, then set a new password",
   "authEmailVerifyLinkHint": "A verification email has been sent. Please tap the link in the email to complete verification.",
+  "authTermsAgreementPrefix": "By creating an account, you agree to the",
+  "authLoginTermsAgreementPrefix": "By signing in, you agree to the",
+  "authTermsConjunction": "and",
   "authTermsAgreement": "By creating an account, you agree to the {terms} and {privacy}",
   "@authTermsAgreement": {
     "placeholders": {
@@ -60,18 +63,7 @@
       }
     }
   },
-  "authLoginTermsAgreement": "By signing in, you agree to the {terms} and {privacy}",
   "authOrOtherLogin": "or continue with",
-  "@authLoginTermsAgreement": {
-    "placeholders": {
-      "terms": {
-        "type": "String"
-      },
-      "privacy": {
-        "type": "String"
-      }
-    }
-  },
   "authTermsOfService": "Terms of Service",
   "authPrivacyPolicy": "Privacy Policy",
   "authChangeEmailFormTitle": "Change email",

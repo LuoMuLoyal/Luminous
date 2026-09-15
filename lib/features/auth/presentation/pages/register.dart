@@ -352,13 +352,14 @@ class _TermsAgreementTextState extends State<_TermsAgreementText> {
         TextSpan(
           style: baseStyle,
           children: [
-            TextSpan(text: l10n.authTermsAgreement('', '')),
+            TextSpan(text: l10n.authTermsAgreementPrefix),
+            const TextSpan(text: ' '),
             TextSpan(
               text: widget.terms,
               style: linkStyle,
               recognizer: _termsRecognizer,
             ),
-            const TextSpan(text: ' / '),
+            TextSpan(text: ' ${l10n.authTermsConjunction} '),
             TextSpan(
               text: widget.privacy,
               style: linkStyle,
