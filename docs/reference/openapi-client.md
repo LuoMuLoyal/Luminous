@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-08-31
+updated: 2026-09-15
 ---
 
 # Lucent OpenAPI Client
@@ -46,7 +46,7 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 123 paths / 337 schemas (OpenAPI 命名改革后:operationId 与组件名全语义化,无 `Controller`/`V1`/`Dto`/`_inner` 机械名;`ProblemDetailsDto`/`SseProblemDetailsDto` 作为 RFC 9457 错误契约有意保留)。
+- Last known Lucent export: 124 paths / 347 schemas (OpenAPI 命名改革后:operationId 与组件名全语义化,无 `Controller`/`V1`/`Dto`/`_inner` 机械名;`ProblemDetailsDto`/`SseProblemDetailsDto` 作为 RFC 9457 错误契约有意保留)。
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
@@ -57,6 +57,11 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
   Today AI analysis, report AI summary, public support resources/app info, data export requests,
   notifications, legal documents, and assistant streaming REST DTOs, and medicine risk check
   (static + LLM) DTOs.
+- 餐食分析 v2（区间 + 排序结论 + facets）与建议规则码不进生成物形状:列表项的餐食字段是
+  `mealAnalysisStatus` / `mealHeadline` / `mealCalorieMin|Max|Bucket` / `mealAnalysisFailureReason`,
+  完整 `items` / `dishes` 只在详情 `payload`;建议卡的 `ruleId` / `subtype` / `icon` 在 DTO 里是自由
+  字符串,规则码白名单由客户端 `kAllowlistedSuggestionRuleCodes` 与服务端 `SUGGESTION_RULE_CODE_ALLOWLIST`
+  成对维护。助手工具名是枚举(含 `unknownDefaultOpenApi` 回落),新增工具要重生成客户端。
 - Event review endpoints live in the generated `ReportsApi`:
   `getCurrentReview` (no event → `EventReviewNullableResponse` with null
   `data`, not a 404), `listReviews` (status/cursor/limit, opaque
