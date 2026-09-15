@@ -216,6 +216,8 @@ tool: read_meal_analysis(days: 7)
   规范化：rank 排序裁剪、区间纠正）；删除 `meal-dish/*`、`meal-ingredient/*`、`meal-analysis/matcher.service.ts`、
   模板学习与 `meal-payload-writer.service.ts` 的成分分支；`records.service.ts` 删掉 `confirmed` 分支（服务端不再接受
   客户端决定状态）；同步重写相关 `*.spec.ts`。
+  **状态词表的 Prisma enum 迁移也属于这一刀**：产出侧从此只写 `analyzed`，词表不换则类型与数据库都对不上
+  （旧的 `unconfirmed`/`confirmed` 就地映射为 `analyzed`）。
 - **P0-2｜契约与投影侧（Lucent）**：Prisma 迁移新增 `mealHeadline` / `mealCalorieMin` / `mealCalorieMax` /
   `mealCalorieBucket`（删除 coverage 相关列与字段），`withMealHotFields` 投影新字段；DTO describe 补 meal payload
   契约；`pnpm export:openapi`。
