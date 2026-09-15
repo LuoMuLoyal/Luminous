@@ -27,6 +27,24 @@ class _FakeDownloader implements OcrModelDownloader {
   }
 }
 
+/// Downloader stub that writes part of the payload and then fails, standing in
+/// for a connection dropped mid-download.
+class _FailingDownloader implements OcrModelDownloader {
+  final downloaded = <String>[];
+
+  @override
+  Future<void> download(
+    String urlPath,
+    String savePath, {
+    void Function(int received, int total)? onReceiveProgress,
+  }) async {
+    downloaded.add(urlPath);
+    // Write a truncated file first: this is exactly what dio can leave behind.
+    await File(savePath).writeAsBytes(List<int>.filled(512, 0x41));
+    throw const SocketException('connection dropped');
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -71,6 +89,24 @@ void main() {
         expect(fakeDownloader.downloaded, hasLength(1));
       },
     );
+
+    test('deletes the partial file when the download itself fails', () async {
+      final fakeDownloader = _FailingDownloader();
+      final manager = OcrModelManager.forTesting(fakeDownloader, tempDir);
+
+      await expectLater(
+        manager.downloadModels(),
+        throwsA(isA<SocketException>()),
+      );
+
+      // 半截文件必须删掉:下一轮的"已下载"判定只看 length > 0,
+      // 留着会让截断的文件被当成完整模型交给 OCR 引擎。
+      expect(
+        File('${modelDir().path}/det_inference.onnx').existsSync(),
+        isFalse,
+      );
+      expect(fakeDownloader.downloaded, hasLength(1));
+    });
 
     test('accepts a download whose digest matches the pinned hash', () async {
       // Inject a verifier that returns the pinned digest per file, simulating

@@ -53,19 +53,15 @@ updated: 2026-09-15
 
 ## 2. P1 — 真 bug 与行为缺口
 
-### 2-1. OCR 模型下载失败不清理半截文件【09-12 W-1】P1·S
-
-`ocr_model_manager.dart:192-204`：`_downloader.download` 抛错时无人删 `targetPath`（dio 5.11.1 多数情况自删临时文件，但代码无兜底、无"downloader 抛错"测试）。下载 + `_verifyOrDelete` 包 try/catch：失败 `if (file.existsSync()) await file.delete().catchError(...)` + `appTalker.error` 后 rethrow；`test/scan/ocr_model_manager_test.dart` 补 fake downloader 抛 `DioException` 用例（断言文件不存在）。顺带：`_verifyOrDelete:256` 的 `catchError` 补一行日志。
-
-### 2-2. 路由守卫 redirect 零覆盖【09-11 S-2】P1·M
+### 2-1. 路由守卫 redirect 零覆盖【09-11 S-2】P1·M
 
 `test/app/router_test.dart:103-106` 用 `configuration.routes` 裸重建 GoRouter——**redirect 守卫从未被测试走过**（fallbackHome 漏传 bug 长期漏测的根因）。新增 redirect 组：ProviderContainer override `authSessionProvider` 三态（signed-out / signed-in / isRestoring），读真 `appRouterProvider` 断言：signed-out 访问受保护路由 → /login；signed-in + bare /login + returnTo=null → /；returnTo 保留。全程不用 `configuration.routes` 重建。
 
-### 2-3. 单位换算新函数零测试【09-14 W2】P1·S
+### 2-2. 单位换算新函数零测试【09-14 W2】P1·S
 
 `test/health_context/unit_conversion_test.dart` 补 `kgToLb` / `lbToKg` / `cmToFeetInches` / `feetInchesToCm`：`150→(4,11)`、`160→(5,3)`、`182.88→(6,0)`、`59.5` 小数英寸进位、`260→(8,2)` 超界行为固化；`cmToFeetInches(feetInchesToCm(5,7))`、`lbToKg(kgToLb(60))` round-trip（1e-6 容差与既有 group 一致）。
 
-### 2-4. legacy profile_edit 页退役【09-14 S1】P1·M
+### 2-3. legacy profile_edit 页退役【09-14 S1】P1·M
 
 核实修正：legacy 页**不是**"只剩能打开"——mine tab 有 5 个活入口（lucent.dart:214、archive_handlers.dart:9、account_hero.dart:341/346/351）。两套编辑页并存（`/mine/profile/edit` vs `/profile`）语义重复，新页是规范实现。分两步：
 
@@ -257,7 +253,7 @@ health_event 三个 sheet（check_in/end_event/start_event，**均有大段注�
 
 ## 7. 执行顺序与验收
 
-- **Wave 1（P1 主干）**：2-1 → 2-2 → 2-3 → 2-4。每项落地即跑对应目录 `flutter test`。
+- **Wave 1（P1 主干）**：2-1 → 2-2 → 2-3。每项落地即跑对应目录 `flutter test`。
 - **Wave 2（P2·A）**：3-1 → 3-2（含 §5-5 的 session_store / quick_entry_sleep 同类点）→ 3-4 → 3-5 → 3-3 → 3-6 → 3-7 → 3-8 → 3-9 → 3-10 → 3-11；3-12（合同级）与 §3-9/§4-19/§4-20 按 09-08 建议合批：同一测试文件（account_settings_page_test 改名 + key 去重 + 断言补强）一批做。
 - **Wave 3（P2·B + 同类补扫 + 流程）**：§4 按 1-25 顺手清；§5 同类补扫按 §5-2（84 组 l10n 审计，独立一批，需列消费点脚本）→ §5-3（TODO 登记）→ §5-4（真实时钟第二类逐文件评估）；§5-6 是"逐命中定性后不改"的记录，**不要**为一致性去加日志改代码；最后 §5-5 之外的流程两句进 AGENTS.md。
 - **收尾验收**：`flutter analyze` 零 issue；`flutter test` 全量绿；`dart run scripts/docs/verify.dart --warning-only` 无新增告警；l10n 相关改动后 `arb_tools.dart merge` + `flutter gen-l10n` + `docs/reference/localization.md` 同步；本计划全部项实施完毕后按约定整文件删除并在迁移日志登记。

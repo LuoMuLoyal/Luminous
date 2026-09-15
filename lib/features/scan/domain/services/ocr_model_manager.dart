@@ -189,19 +189,28 @@ class OcrModelManager {
       final url = '$_modelBaseUrl/$fileName';
       appTalker.info('Downloading OCR model: $url → $targetPath');
 
-      await _downloader.download(
-        url,
-        targetPath,
-        onReceiveProgress: (received, total) {
-          if (total > 0) {
-            final fileProgress = received / total;
-            final overallProgress = (completed + fileProgress) / totalSteps;
-            onProgress?.call(overallProgress);
-          }
-        },
-      );
+      try {
+        await _downloader.download(
+          url,
+          targetPath,
+          onReceiveProgress: (received, total) {
+            if (total > 0) {
+              final fileProgress = received / total;
+              final overallProgress = (completed + fileProgress) / totalSteps;
+              onProgress?.call(overallProgress);
+            }
+          },
+        );
 
-      await _verifyOrDelete(file, fileName);
+        await _verifyOrDelete(file, fileName);
+      } catch (e) {
+        // A failed download may leave a partial file behind, and the
+        // "already downloaded" check above only looks at length > 0 — so
+        // without this cleanup the next run would treat the truncated file
+        // as complete and hand it to the OCR engine.
+        await _deleteQuietly(file, reason: 'incomplete download of $fileName');
+        rethrow;
+      }
       completed++;
       onProgress?.call(completed / totalSteps);
     }
@@ -253,8 +262,22 @@ class OcrModelManager {
         'expected $expectedDigest, got $actual — deleting file',
       );
       // Never keep a tampered/incomplete file for a later run to load.
-      await file.delete().catchError((_) => file);
+      await _deleteQuietly(file, reason: 'integrity check failed');
       throw OcrModelIntegrityException(fileName, expectedDigest, actual);
+    }
+  }
+
+  /// Deletes [file] if it exists, logging (rather than throwing) when the
+  /// delete itself fails. Cleanup runs on an error path, so a delete failure
+  /// must never mask the original error — but leaving a stale file behind is
+  /// worth knowing about, since the next run may load it.
+  Future<void> _deleteQuietly(File file, {required String reason}) async {
+    if (!file.existsSync()) return;
+    try {
+      await file.delete();
+      appTalker.warning('OCR model: deleted $file ($reason)');
+    } catch (e) {
+      appTalker.error('OCR model: failed to delete $file ($reason)', e);
     }
   }
 
