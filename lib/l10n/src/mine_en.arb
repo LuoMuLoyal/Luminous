@@ -191,6 +191,7 @@
   "mineEditDeleteConfirmTitle": "Confirm delete?",
   "mineEditDeleteConfirmMessage": "This cannot be undone. Are you sure?",
   "mineEditSavedToast": "Saved",
+  "mineEditSaveFailedToast": "Couldn't save. Please try again.",
   "mineEditDeletedToast": "Deleted",
   "mineEditFieldBirthDate": "Birth date (YYYY-MM-DD)",
   "mineEditFieldHeightCm": "Height (cm)",

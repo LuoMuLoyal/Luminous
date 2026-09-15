@@ -22,7 +22,13 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
   @override
   HealthProfileFormState build() => const HealthProfileFormState();
 
-  Future<void> save(HealthProfileUpdateInput input) async {
+  /// Persists [input]; returns whether the write succeeded.
+  ///
+  /// Callers must branch on the result instead of assuming success — the
+  /// failure path stores [HealthProfileFormState.errorMessage] and returns
+  /// `false`, so a caller that toasts unconditionally would report a save
+  /// that never happened.
+  Future<bool> save(HealthProfileUpdateInput input) async {
     state = const HealthProfileFormState(isSaving: true);
 
     try {
@@ -33,6 +39,7 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.healthContext);
       state = const HealthProfileFormState(saved: true);
+      return true;
     } catch (e) {
       ref
           .read(talkerProvider)
@@ -41,6 +48,7 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
         isSaving: false,
         errorMessage: e.toString(),
       );
+      return false;
     }
   }
 }

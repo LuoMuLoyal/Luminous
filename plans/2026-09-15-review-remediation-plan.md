@@ -204,18 +204,18 @@ updated: 2026-09-15
 方法：把已确认条目抽象成模式，逐类全库 grep + 逐命中读上下文判定。**下表"不改"项同样重要**——
 它们是扫描命中但经核实属于合理设计，执行时不要为"一致性"去动。
 
-### 5-1. `_submit` 假成功同型：`profile_edit.dart` 只听 saved 无 error 分支【P1·S】
+### 5-1. ~~`_submit` 假成功同型：`profile_edit.dart` 只听 saved 无 error 分支~~ —— **执行时复核为误报**【记录用】
 
-`health_edit_forms.dart` 四个 Notifier 的 `saved`/`errorMessage` 语义是**正确**的（Allergy 65-110、
-Condition、CurrentMedicine 均失败置 `errorMessage` 而不置 `saved`，且 `allergy_edit.dart:131-145`
-的 listener 同时处理 `saved`→toast+pop、`errorMessage`→toast）。真正的同型缺口有两处：
+补扫时判定 `mine/presentation/pages/profile_edit.dart:92-93` 只监听 `saved`、缺 `errorMessage` 分支；
+**开工复核推翻**：该文件 88-100 行的 `ref.listen` 内 96-99 行**已有** `errorMessage` 变化时的失败 toast。
+当时误判源于只读了 92-93 两行的窗口。故本项不成立，§2-2 的真实范围仍只有 `settings/profile.dart:277` 一处。
 
-- `mine/presentation/pages/profile_edit.dart:92-93` 只监听 `saved` → toast，**无 `errorMessage` 分支**，
-  失败时静默留在页面。与 §2-2 同批修：补 `errorMessage` 变化时的失败 toast（复用新 `mineEditSaveFailed`）。
-- `settings/profile.dart:277` 的 `onChanged()` 无条件调用即 §2-2 本体。
+`health_edit_forms.dart` 四个 Notifier 的 `saved`/`errorMessage` 语义本身是**正确**的（Allergy 65-110、
+Condition、CurrentMedicine 均失败置 `errorMessage` 而不置 `saved`，mine 侧三个 edit 页的 listener
+也都同时处理两者）。
 
-另：`medicine/presentation/pages/reminder/detail.dart:361-372` 是**正确范式**（`success` 三元 toast），
-可作为修复 §2-2 / §5-1 时的参照写法。
+`medicine/presentation/pages/reminder/detail.dart:361-372` 是**正确范式**（`success` 三元 toast），
+可作为修复 §2-2 时的参照写法。
 
 ### 5-2. l10n 同文案双份键远不止 auth 三组：全库 84 组【P2·M】
 
@@ -306,7 +306,7 @@ health_event 三个 sheet（check_in/end_event/start_event，**均有大段注�
 
 ## 7. 执行顺序与验收
 
-- **Wave 1（P0+P1 主干）**：1-1 → 2-2（假成功，含 §5-1 的 `profile_edit.dart` 同型缺口）→ 2-3 → 2-4 → 2-5 → 2-1 → 2-6 → 2-7 → 2-9 → 2-8 → 2-10。每项落地即跑对应目录 `flutter test`；1-1 的 `missingCoreProfileFields` 值需先与 Lucent 侧确认。
+- **Wave 1（P0+P1 主干）**：1-1 → 2-2（假成功，真实范围仅 `settings/profile.dart:277` 一处，§5-1 已复核为误报）→ 2-3 → 2-4 → 2-5 → 2-1 → 2-6 → 2-7 → 2-9 → 2-8 → 2-10。每项落地即跑对应目录 `flutter test`；1-1 的 `missingCoreProfileFields` 值需先与 Lucent 侧确认。
 - **Wave 2（P2·A）**：3-1 → 3-2（含 §5-5 的 session_store / quick_entry_sleep 同类点）→ 3-4 → 3-5 → 3-3 → 3-6 → 3-7 → 3-8 → 3-9 → 3-10 → 3-11；3-12（合同级）与 §3-9/§4-19/§4-20 按 09-08 建议合批：同一测试文件（account_settings_page_test 改名 + key 去重 + 断言补强）一批做。
 - **Wave 3（P2·B + 同类补扫 + 流程）**：§4 按 1-25 顺手清；§5 同类补扫按 §5-2（84 组 l10n 审计，独立一批，需列消费点脚本）→ §5-3（TODO 登记）→ §5-4（真实时钟第二类逐文件评估）；§5-6 是"逐命中定性后不改"的记录，**不要**为一致性去加日志改代码；最后 §5-5 之外的流程两句进 AGENTS.md。
 - **收尾验收**：`flutter analyze` 零 issue；`flutter test` 全量绿；`dart run scripts/docs/verify.dart --warning-only` 无新增告警；l10n 相关改动后 `arb_tools.dart merge` + `flutter gen-l10n` + `docs/reference/localization.md` 同步；本计划全部项实施完毕后按约定整文件删除并在迁移日志登记。

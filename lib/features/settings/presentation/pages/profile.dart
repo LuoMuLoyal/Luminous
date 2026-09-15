@@ -273,8 +273,18 @@ class _HealthProfileCard extends ConsumerWidget {
     if (!context.mounted) return;
     final state = ref.read(healthProfileFormProvider);
     if (state.isSaving) return;
-    await ref.read(healthProfileFormProvider.notifier).save(input);
-    onChanged();
+    final l10n = AppLocalizations.of(context)!;
+    final saved = await ref
+        .read(healthProfileFormProvider.notifier)
+        .save(input);
+    if (!context.mounted) return;
+    // 失败时不能走「已保存」提示——写入错误已进 state.errorMessage,
+    // 如实反馈失败,避免用户以为改动已落库。
+    await Toast.show(
+      context,
+      saved ? l10n.mineEditSavedToast : l10n.mineEditSaveFailedToast,
+    );
+    if (saved) onChanged();
   }
 
   /// 弹出一个由 [slot] 承载当前值的 sheet,确认后把值交给 [buildInput]。

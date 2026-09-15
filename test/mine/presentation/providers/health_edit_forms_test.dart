@@ -191,10 +191,11 @@ void main() {
 
     test('save succeeds and sets saved state', () async {
       final c = buildContainer();
-      await c
+      final saved = await c
           .read(healthProfileFormProvider.notifier)
           .save(const HealthProfileUpdateInput());
 
+      expect(saved, isTrue);
       final state = c.read(healthProfileFormProvider);
       expect(state.isSaving, isFalse);
       expect(state.saved, isTrue);
@@ -206,10 +207,12 @@ void main() {
       fakeRepo.throwOnNext = Exception('Update failed');
 
       final c = buildContainer();
-      await c
+      final saved = await c
           .read(healthProfileFormProvider.notifier)
           .save(const HealthProfileUpdateInput());
 
+      // 返回值必须为 false——调用方据此决定是否提示「已保存」。
+      expect(saved, isFalse);
       final state = c.read(healthProfileFormProvider);
       expect(state.isSaving, isFalse);
       expect(state.saved, isFalse);

@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/settings/presentation/pages/profile.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -101,6 +105,44 @@ void main() {
     expect(find.byKey(const Key('quantity-sheet-picker')), findsOneWidget);
   });
 
+  testWidgets('Failed health field save reports failure instead of success', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final repository = _FailingWriteRepository();
+    final container = _container(repository: repository);
+
+    await tester.pumpWidget(_app(container, showToaster: true));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('profile-height-row')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('quantity-sheet-picker')), findsOneWidget);
+    // Confirm the sheet without moving the wheel: the write goes out and fails.
+    final confirmButton = find.widgetWithText(FButton, l10n.mineEditSaveAction);
+    expect(confirmButton, findsOneWidget);
+    await tester.tap(confirmButton);
+    // Toast 展示 1.8s 后自动消失，不能 pumpAndSettle（会等到它退场再断言）。
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(repository.updateProfileCalls, greaterThan(0));
+    // The regression this guards against toasted "已保存" on a failed write.
+    expect(find.text(l10n.mineEditSavedToast), findsNothing);
+    expect(find.text(l10n.mineEditSaveFailedToast), findsOneWidget);
+
+    // Drain the toast's 1.8s auto-dismiss timer before the test ends.
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('Profile rows pin the value and chevron to the group edge', (
     tester,
   ) async {
@@ -149,10 +191,15 @@ void main() {
 
 const _storedAvatarUrl = 'https://cdn.example.com/avatar.png';
 
-ProviderContainer _container({FakeLucentAuthRepository? remote}) {
+ProviderContainer _container({
+  FakeLucentAuthRepository? remote,
+  HealthContextRepository? repository,
+}) {
   final container = ProviderContainer(
     overrides: [
       if (remote != null) authRepositoryProvider.overrideWithValue(remote),
+      if (repository != null)
+        healthContextRepositoryProvider.overrideWithValue(repository),
       authSessionProvider.overrideWith(() => _AvatarAuthSessionNotifier()),
       healthContextSnapshotProvider.overrideWith(
         (ref) => Future.value(_snapshot),
@@ -163,10 +210,34 @@ ProviderContainer _container({FakeLucentAuthRepository? remote}) {
   return container;
 }
 
-Widget _app(ProviderContainer container) {
+/// Repository whose profile writes always fail, so the page's failure feedback
+/// can be asserted. Reads keep returning the fixture snapshot.
+class _FailingWriteRepository implements HealthContextRepository {
+  int updateProfileCalls = 0;
+
+  @override
+  TaskEither<LucentFailure, HealthContextSnapshot> fetchHealthContext() =>
+      TaskEither.right(_snapshot);
+
+  @override
+  TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
+    HealthProfileUpdateInput input,
+  ) {
+    updateProfileCalls++;
+    return TaskEither.left(
+      const LucentFailure(kind: LucentFailureKind.network, message: 'offline'),
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+Widget _app(ProviderContainer container, {bool showToaster = false}) {
   return UncontrolledProviderScope(
     container: container,
     child: TestForuiRouterApp(
+      showToaster: showToaster,
       routerConfig: GoRouter(
         initialLocation: '/profile',
         routes: [

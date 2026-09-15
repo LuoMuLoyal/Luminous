@@ -191,6 +191,7 @@
   "mineEditDeleteConfirmTitle": "确认删除？",
   "mineEditDeleteConfirmMessage": "删除后无法恢复，确定要继续吗？",
   "mineEditSavedToast": "已保存",
+  "mineEditSaveFailedToast": "保存失败，请稍后重试",
   "mineEditDeletedToast": "已删除",
   "mineEditFieldBirthDate": "出生日期 (YYYY-MM-DD)",
   "mineEditFieldHeightCm": "身高 (cm)",
