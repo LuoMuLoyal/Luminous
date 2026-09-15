@@ -83,6 +83,19 @@ final class LucentFailure {
     );
   }
 
+  factory LucentFailure.business({
+    required String message,
+    String? code,
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: LucentFailureKind.business,
+      message: message,
+      code: code,
+      cause: cause,
+    );
+  }
+
   factory LucentFailure.unknown({
     required String message,
     NetworkErrorCode networkErrorCode = NetworkErrorCode.unknown,

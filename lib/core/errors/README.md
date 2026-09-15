@@ -25,6 +25,9 @@
 - kind 只能经工厂归类:`fromProblemDetails` / `fromSseProblemDetails` 按 status 与 SSE code
   判定(401/403→authentication、5xx→server、4xx→business),不散落手写判断
   (`test/core/errors/lucent_failure_test.dart`)。
+- 客户端本地校验(不满足格式/大小/类型等)用 `LucentFailure.business` 归类,不用 `network`
+  ——把「用户输入不合要求」记成网络或服务端故障会污染错误率与告警
+  (例:`features/auth/data/services/avatar_uploader.dart`)。
 - `ProblemDetails` 仍是 wire 表示,`LucentFailure` 只归一化不替代(类注释明示)。
 - 面向用户:任何 error 上屏前必须过 `userMessageFromError` / `LucentErrorMapper.fromObject`,
   禁止 `error.toString()`;有 `networkErrorCode` 且能取 l10n 时映射优先。
