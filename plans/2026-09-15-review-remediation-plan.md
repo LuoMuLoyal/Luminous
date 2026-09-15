@@ -10,7 +10,8 @@ updated: 2026-09-15
 本计划**逐条对照 2026-09-15 工作树（HEAD=98e62f4a）核实过**，剔除了已修复项、误报与过时项，
 行号均为核实当日实际行号，执行时以符号定位为准。
 
-核实方法：5 路并行子代理逐条判定（CONFIRMED / PARTIAL / ALREADY-FIXED / FALSE-POSITIVE / STALE）+ 主线程复核关键项。
+核实方法：5 路并行子代理逐条判定（CONFIRMED / PARTIAL / ALREADY-FIXED / FALSE-POSITIVE / STALE）+ 主线程复核关键项；
+本计划成文后又按"问题类别"对全库做了一轮同型补扫（结果见 §5，其中 §5-6 是扫描命中但经核实不改的记录）。
 各日判定统计：09-08：2 ALREADY-FIXED（死代码三件套见 251036b5、avatarController）、1 已决策（pre-push）、1 FALSE-POSITIVE（S-4）；
 09-09：2 STALE、3 项为流程约定（并入 §5）；09-10：1 PARTIAL、4 CONFIRMED；
 09-11：13 CONFIRMED、3 PARTIAL、2 ALREADY-FIXED、1 STALE；09-12：12 CONFIRMED、4 PARTIAL、1 ALREADY-FIXED、1 FALSE-POSITIVE；
@@ -162,13 +163,13 @@ updated: 2026-09-15
 
 `weightInLb` 是 archive_sections.dart:70 的现役接口，非"旧别名"。直接让 archive_sections 改用 `kgToLb` 后删掉该函数（消多余间接层）；同步 unit_conversion_test 删对应 group。
 
-### 3-12. 生成模型 `ReportSummaryAsync/Stream*` 清理【09-08 W-2】P2·M（跨仓，合同级）
-
-`bootstrap.dart:666-687` 的 reviewModels 列出的 async 8 + stream 7 个模型在 lib/test/integration_test **零消费**（实际 SSE 走 `ai_summary_remote.dart:49-51` 原始 `LucentSseClient.postJson`，结果只用 `ReportSummaryResponse`）；review 页 AI 摘要主路径已退役（docs/TODO.md「延后」段），legacy 兼容页仅消费 `ReportSummaryResponse`。**不能**直接从 reviewModels 删——`_filteredClients` 要求 models 与 reports_api.dart import 闭包一致并 fail-fast（bootstrap.dart:730-736），Lucent openapi.json 仍暴露 enqueue/stream 两端点。正确路径：Lucent 侧决策删除两端点（或登记延后）→ `pnpm export:openapi` → `dart run scripts/contract/bootstrap.dart` 重跑后模型自然消失。属跨仓合同决策，与 docs/TODO.md 的「Review AI 摘要复核」项合并执行，本计划只登记不实施。
-
 ### 3-11. auth 页骨架收敛 AuthScrollBody【09-14 "重复造轮子"修正案】P2·S
 
 报告的 padding 参数方案不成立（见 §0）。改为 auth feature 内加 `AuthScrollBody`（~10 行 StatelessWidget 包 `SingleChildScrollView → ResponsiveContentFrame → Padding(vertical: width<mobile?xl2:xl3) → Column`），6 页（login/register/forgot_password/change_email/account_manage/security_center）各减 ~6 行；这是行为组合而非样式 preset，符合 AGENTS.md wrapper 例外。与 §4-7 骨架测试同批做。
+
+### 3-12. 生成模型 `ReportSummaryAsync/Stream*` 清理【09-08 W-2】P2·M（跨仓，合同级）
+
+`bootstrap.dart:666-687` 的 reviewModels 列出的 async 8 + stream 7 个模型在 lib/test/integration_test **零消费**（实际 SSE 走 `ai_summary_remote.dart:49-51` 原始 `LucentSseClient.postJson`，结果只用 `ReportSummaryResponse`）；review 页 AI 摘要主路径已退役（docs/TODO.md「延后」段），legacy 兼容页仅消费 `ReportSummaryResponse`。**不能**直接从 reviewModels 删——`_filteredClients` 要求 models 与 reports_api.dart import 闭包一致并 fail-fast（bootstrap.dart:730-736），Lucent openapi.json 仍暴露 enqueue/stream 两端点。正确路径：Lucent 侧决策删除两端点（或登记延后）→ `pnpm export:openapi` → `dart run scripts/contract/bootstrap.dart` 重跑后模型自然消失。属跨仓合同决策，与 docs/TODO.md 的「Review AI 摘要复核」项合并执行，本计划只登记不实施。
 
 ## 4. P2·B — 文档注释与测试补强
 
@@ -198,15 +199,115 @@ updated: 2026-09-15
 24. **FakeSupportRepository 去重**【09-08 S-5】：test/mine/account_settings_page_test.dart:437-442 与 test/settings/help_settings_page_test.dart:165 两份重复，抽 `test/helpers/fake_support_repository.dart`。P2·S
 25. **showWechatLink 调用点注释**【09-08 S-6】：account_identity.dart:125-127 参数 doc + login.dart:359 已可发现，可选不加。P2·S
 
-## 5. 流程约定（写进 AGENTS.md，不涉及代码）
+## 5. 同类问题补扫（本计划成文后按问题类别对全库重扫的增量）
+
+方法：把已确认条目抽象成模式，逐类全库 grep + 逐命中读上下文判定。**下表"不改"项同样重要**——
+它们是扫描命中但经核实属于合理设计，执行时不要为"一致性"去动。
+
+### 5-1. `_submit` 假成功同型：`profile_edit.dart` 只听 saved 无 error 分支【P1·S】
+
+`health_edit_forms.dart` 四个 Notifier 的 `saved`/`errorMessage` 语义是**正确**的（Allergy 65-110、
+Condition、CurrentMedicine 均失败置 `errorMessage` 而不置 `saved`，且 `allergy_edit.dart:131-145`
+的 listener 同时处理 `saved`→toast+pop、`errorMessage`→toast）。真正的同型缺口有两处：
+
+- `mine/presentation/pages/profile_edit.dart:92-93` 只监听 `saved` → toast，**无 `errorMessage` 分支**，
+  失败时静默留在页面。与 §2-2 同批修：补 `errorMessage` 变化时的失败 toast（复用新 `mineEditSaveFailed`）。
+- `settings/profile.dart:277` 的 `onChanged()` 无条件调用即 §2-2 本体。
+
+另：`medicine/presentation/pages/reminder/detail.dart:361-372` 是**正确范式**（`success` 三元 toast），
+可作为修复 §2-2 / §5-1 时的参照写法。
+
+### 5-2. l10n 同文案双份键远不止 auth 三组：全库 84 组【P2·M】
+
+§3-9 只处理了 auth 的 3 组，实际按「同一 zh 分片内值完全相同（长度 ≥2，剔除 `@` 元数据）」扫描得
+**84 组**（assistant 3、auth 14、common 3、medicine 17、mine 6、network 2、notification 2、
+record 13、review 15、settings 6、today 3；含三/四份同值的）。**不能一键全删**——需按语义分三类处置：
+
+1. **有意区分（保留）**：编辑态 vs 页面标题（`authChangeEmailFormTitle`/`authEmailChangeAction`）、
+   列表 vs 详情（`legalListTitle`/`legalDetailTitle`）、入口 vs 页标题（`assistantEntryTitle`/`assistantPageTitle`
+   ——已核实分别被 today/review 顶栏与 assistant 页消费）、
+   `medicineQuickSafetyCheckTitle`（medicine 页快捷操作卡，4 处消费）vs `medicineRiskCheckPageTitle`
+   （risk_check 页标题，2 处消费）、`scanViewReminderAction`（scan 侧 2 处 + 测试 6 处）vs
+   `medicineDetailOpenReminderAction`（medicine_detail_content:115 单点）。
+   判定口径：**两个键的消费点分属不同 UI 语境就保留**；写脚本时必须把消费点列出来逐个看，不能只看文案。
+2. **纯重复（删一留一）**：`authAccountManageSupport*` vs `authAccountManage*`（§3-9，已核实页面用
+   `Support*`、测试用旧键，属真重复）；其余读消费点时若发现"同一 UI 语境两个键"即归此类。
+3. **枚举/状态同值（保留）**：`reviewStatusUnknown`/`reviewReviewStatusUnknown`/`reviewReviewOutcomeUnknown`、
+   `medicineDoseStatusTaken` 等，不同实体各有语义，删一个会迫使跨实体复用同一键。
+
+执行方式：写一次性脚本列出 62 组 + 各自全部消费点（`lib/` 与 `test/`），人工按上述三类标注后批量处置；
+合并 + gen-l10n + `localization.md` 同步。**不要**为省事按键名前缀自动删。
+
+### 5-3. `TODO(...)` 标记未登记 docs/TODO.md【P2·S】
+
+AGENTS.md 的 Deferred marker 约定要求"保留标记 + **同时**有 TODO 条目"。实测 lib/ 有 14 处 TODO，
+其中 13 处 `TODO(archive)`（medicine safety_tips/safety_tip/workspace 死代码保留）、
+1 处 `TODO(lint-cleanup)`（`lucent_dashboard.dart:3`，已有 `// tracked-by-TODO-...` 跟踪串且在
+docs/TODO.md:110-113 有对应条目）、1 处 `TODO(cleanup)`（`database.dart:97` sqlite_master 防御检查）、
+1 处账号管理微信（§2-3 已覆盖）。
+
+**缺口**：`TODO(archive)` ×13（分布在 7 个 medicine 文件：safety_tips_remote 1、lucent_workspace 3、
+dose_log 1、safety_tip 1、workspace 5、safety_tips 1、safety_tip_style 1）与 `TODO(cleanup)` ×1
+在 docs/TODO.md **零命中**。修复：在 docs/TODO.md「延后（有明确原因）」段追加一条
+「medicine 历史 dashboard 原型残留与 safety_tips 死代码保留」（说明保留原因 = 兼容历史形状 /
+未来随机安全贴士可能复用），并把 `database.dart:97` 的 sqlite_master 防御检查一并登记或直接删除该 TODO
+（若检查已无必要）。
+
+### 5-4. 测试真实时钟：§4-15 只覆盖 6 处，实际 16 文件【P2·M】
+
+全库 `Future.delayed` 分布 16 个测试文件。按性质分三类：
+
+- **必须修（与 §4-15 同类：等待一个本可等待的 Future/状态）**：`auth_guarded_test.dart` ×3、
+  `risk_check_provider_test.dart`/`risk_check_providers_test.dart`、`session_gate_test.dart` —— 已在 §4-15。
+- **可改用 `tester.pump(Duration)`（widget 环境）**：`legal_providers_test.dart` ×2、
+  `suggestion_provider_test.dart` ×2、`ai_analysis_provider_test.dart` ×2、`profile_sync_test.dart` ×1、
+  `safety_tips_provider_test.dart` ×1、`cached_dose_log_data_source_test.dart` ×6、
+  `lucent_repository_test.dart` ×4、`worker_test.dart` ×1、`dao_test.dart` ×1、`sse_test.dart` ×2、
+  `message_handler_test.dart` ×2 —— 逐个评估，pure-Dart 测试（非 widget）只能保留真实 delay。
+- **有意真时钟（不改）**：`form_mixin_test.dart` ×9（cooldown 是 `Timer.periodic` 1 秒真实节拍，
+  测试断言 1050ms 后减 1；lib 侧无注入钩子，改造成本 > 收益）、`medicine_search_notifier_test.dart` ×18
+  （450ms debounce，已列入 §6「明确不做」）、`test_helpers.dart` ×2（helper 内部）。
+
+处置：本计划只把第一类做完（§4-15），第二类**逐文件评估后修**（列为 P2·M 单独一批），第三类明确记录不动。
+
+### 5-5. 反序列化硬 cast：§3-2 之外的同类点【P2·S】
+
+- `lib/core/network/client/session_store.dart:307-308`：`decoded['accessToken'] as String?` 在
+  `jsonDecode` 已 try/catch + `is! Map` 守卫之后，**但键值是数字/嵌套对象时仍抛**。同 §3-2 加
+  `_stringOrNull(Object?)` 容错 helper（返回 null 即视为无 token）。
+- `lib/features/record/application/usecases/quick_entry_sleep.dart:191`：`record.payload?[key] as String?`
+  在 `DateTime.tryParse` 前硬 cast，payload 类型异常直接抛。改 `payload?[key] is String ? ... : null`。
+- **不改（自产自销，写入端同为本地 codec，类型受控）**：`daily_record_json_codec.dart`（约 20 处
+  `as String?`/`as int?`）、`dose_log_cached.dart:272-281`、`suggestion_json_codec.dart`（已是
+  `_asString`/`_safeInt` 容错风格，无需动）、`ai_remote.dart:67-107`（响应来自自家 Lucent，
+  problem+json 合同已知；`sourceVersion ?? 0` 是版本比较的显式降级，语义正确）。
+- **不改（Stream cast 非数据 cast）**：`sse.dart:133` 的 `byteStream.cast<List<int>>()`。
+
+### 5-6. 静默 catch：10 处 `catch (_)` + 6 处无日志 `catch (e)` 逐个定性 —— **均不改**【记录用】
+
+`catch (_)`：`pending_sync.dart:222`（JSON 解析失败返回 null，注释在方法语义内）、
+`dio_client.dart:218`（Sentry 探测，返回 false 即"未启用"，无诊断价值）、
+`local_date.dart:26`（快照未就绪取时区，返回 null 触发 fallback）、
+`local_date.dart:49`（**已有注释**解释保留后端默认时区）、
+health_event 三个 sheet（check_in/end_event/start_event，**均有大段注释**说明"统一投影到 submitError state"）、
+`meal_analysis_poller.dart:66`（**已有注释**说明退避策略）、
+`suggestion_primary_card.dart:353`（**已有注释**"cast 是防御性的，预期不抛"）。
+
+无日志 `catch (e)`：`health_sync_controller.dart:41/66/84`（错误写入 `state.error`，UI 展示）、
+`change_record_date.dart:35`（toast 提示）、`history.dart:148`（写入 `_loadMoreError`，UI 展示）、
+`account.dart:126`（`_fail` 内部有 `talker.error`，第 196 行已核实）、
+`lucent_daily.dart:190`（rethrow + `_enqueueWriteFailure`）、`lucent_daily.dart:307`（`appTalker.error`）、
+`retry_interceptor.dart:81`/`auth_interceptor.dart:179`（`handler.next(e)` 下传，拦截器不该吞也不该噪）。
+
+## 6. 流程约定（写进 AGENTS.md，不涉及代码）
 
 1. **同日收口文件选择**【09-09 #2】：在 Luminous/AGENTS.md Migration-log 节补一句——「收口旧 review 清单时优先新开当日日期的日志文件」。
 2. **日志验证段口径**【09-09 #3】：新条目验证段写「执行的命令 + 结论」，不写精确数字（与既有"不写需要持续同步的精确数字"规则对齐）；旧日志不回填。
 
-## 6. 执行顺序与验收
+## 7. 执行顺序与验收
 
-- **Wave 1（P0+P1 主干）**：1-1 → 2-2（假成功）→ 2-3 → 2-4 → 2-5 → 2-1 → 2-6 → 2-7 → 2-9 → 2-8 → 2-10。每项落地即跑对应目录 `flutter test`；1-1 的 `missingCoreProfileFields` 值需先与 Lucent 侧确认。
-- **Wave 2（P2·A）**：3-1 → 3-2 → 3-4 → 3-5 → 3-3 → 3-6 → 3-7 → 3-8 → 3-9 → 3-10 → 3-11；3-12（合同级）与 §3-9/§4-19/§4-20 按 09-08 建议合批：同一测试文件（account_settings_page_test 改名 + key 去重 + 断言补强）一批做。
-- **Wave 3（P2·B + 流程）**：§4 按 1-25 顺手清（可与 Wave 2 并行），§5 两句进 AGENTS.md。
+- **Wave 1（P0+P1 主干）**：1-1 → 2-2（假成功，含 §5-1 的 `profile_edit.dart` 同型缺口）→ 2-3 → 2-4 → 2-5 → 2-1 → 2-6 → 2-7 → 2-9 → 2-8 → 2-10。每项落地即跑对应目录 `flutter test`；1-1 的 `missingCoreProfileFields` 值需先与 Lucent 侧确认。
+- **Wave 2（P2·A）**：3-1 → 3-2（含 §5-5 的 session_store / quick_entry_sleep 同类点）→ 3-4 → 3-5 → 3-3 → 3-6 → 3-7 → 3-8 → 3-9 → 3-10 → 3-11；3-12（合同级）与 §3-9/§4-19/§4-20 按 09-08 建议合批：同一测试文件（account_settings_page_test 改名 + key 去重 + 断言补强）一批做。
+- **Wave 3（P2·B + 同类补扫 + 流程）**：§4 按 1-25 顺手清；§5 同类补扫按 §5-2（84 组 l10n 审计，独立一批，需列消费点脚本）→ §5-3（TODO 登记）→ §5-4（真实时钟第二类逐文件评估）；§5-6 是"逐命中定性后不改"的记录，**不要**为一致性去加日志改代码；最后 §5-5 之外的流程两句进 AGENTS.md。
 - **收尾验收**：`flutter analyze` 零 issue；`flutter test` 全量绿；`dart run scripts/docs/verify.dart --warning-only` 无新增告警；l10n 相关改动后 `arb_tools.dart merge` + `flutter gen-l10n` + `docs/reference/localization.md` 同步；本计划全部项实施完毕后按约定整文件删除并在迁移日志登记。
-- **明确不做**（除非另行立项）：avatar 真草稿化重构（09-13 W-2 后半）、450ms debounce 注入钩子、card/scrollable 参数拆分、tab_branch_container late 改写、authGuarded 新 lint 规则、pre-push 回滚加 test、reviewModels 手工删模型（走 3-12 合同级路径）。
+- **明确不做**（除非另行立项）：avatar 真草稿化重构（09-13 W-2 后半）、450ms debounce 注入钩子、cooldown 真时钟测试改造（§5-4 第三类）、card/scrollable 参数拆分、tab_branch_container late 改写、authGuarded 新 lint 规则、pre-push 回滚加 test、reviewModels 手工删模型（走 3-12 合同级路径）、§5-6 的静默 catch 追改。
