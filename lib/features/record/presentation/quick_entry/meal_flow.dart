@@ -50,6 +50,16 @@ class MealQuickImageUnsupportedException implements Exception {
   const MealQuickImageUnsupportedException();
 }
 
+/// Thrown by [MealQuickEntryFlow.saveDraft] when the draft carries no content
+/// at all (no title / value / note / image): an empty meal record must never be
+/// written. Callers surface it as a "fill something in" toast.
+class MealQuickEntryEmptyException implements Exception {
+  const MealQuickEntryEmptyException();
+
+  @override
+  String toString() => 'MealQuickEntryEmptyException';
+}
+
 class MealQuickImage {
   const MealQuickImage({
     required this.bytes,
@@ -158,6 +168,15 @@ class MealQuickEntryFlow {
   }
 
   Future<DailyRecordItem> saveDraft(MealQuickEntryDraft draft) async {
+    final title = _optional(draft.title);
+    final value = _optional(draft.value);
+    final note = _optional(draft.note);
+    // 无任何有意义内容的空餐食记录不允许落库（UI 侧同时禁用提交按钮，
+    // 这里是领域侧的第二道闸）。
+    if (title == null && value == null && note == null && draft.image == null) {
+      throw const MealQuickEntryEmptyException();
+    }
+
     final attachments = <DailyRecordAttachmentInput>[];
     final image = draft.image;
     if (image != null) {
@@ -178,9 +197,9 @@ class MealQuickEntryFlow {
         kind: DailyRecordKind.meal,
         occurredAt: draft.occurredAt,
         occurredTime: draft.occurredTime,
-        title: _optional(draft.title),
-        value: _optional(draft.value),
-        note: _optional(draft.note),
+        title: title,
+        value: value,
+        note: note,
         attachments: attachments,
       ),
     );

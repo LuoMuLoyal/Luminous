@@ -85,13 +85,24 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
     );
   }
 
+  /// Rule copy per type. Every branch is explicit on purpose: a wildcard here
+  /// silently rendered the meal copy for note / vitals / activity / heart rate /
+  /// weight long-press dialogs.
   String _ruleText(AppLocalizations l10n, RecordEntryType type) {
     return switch (type) {
+      RecordEntryType.meal => l10n.recordQuickSettingsMealRule,
       RecordEntryType.medication => l10n.recordQuickSettingsMedicationRule,
       RecordEntryType.symptom => l10n.recordQuickSettingsSymptomRule,
       RecordEntryType.mood => l10n.recordQuickSettingsMoodRule,
       RecordEntryType.sleep => l10n.recordQuickSettingsSleepRule,
-      _ => l10n.recordQuickSettingsMealRule,
+      // water / vitals / activity / heartRate / weight / note have no dedicated
+      // rule copy (water renders its own settings surface above).
+      RecordEntryType.water ||
+      RecordEntryType.vitals ||
+      RecordEntryType.activity ||
+      RecordEntryType.heartRate ||
+      RecordEntryType.weight ||
+      RecordEntryType.note => l10n.recordQuickSettingsGeneralRule,
     };
   }
 }

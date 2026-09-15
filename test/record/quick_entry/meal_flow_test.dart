@@ -142,6 +142,80 @@ void main() {
         expect(created?.value, '手动记录');
       },
     );
+
+    test(
+      'saveDraft rejects a draft with no title, value, note or image',
+      () async {
+        var createCalls = 0;
+        final flow = MealQuickEntryFlow(
+          pickImage: (_) async => null,
+          uploadImage: (_) async => throw StateError('unused'),
+          createRecord: (input) async {
+            createCalls += 1;
+            return _record(id: 'meal-1', input: input);
+          },
+          emitDataChange: (_) {},
+        );
+
+        await expectLater(
+          flow.saveDraft(
+            const MealQuickEntryDraft(
+              occurredAt: '2026-07-28',
+              occurredTime: '12:30',
+            ),
+          ),
+          throwsA(isA<MealQuickEntryEmptyException>()),
+        );
+        expect(createCalls, 0, reason: '空餐食记录不得落库');
+      },
+    );
+
+    test('saveDraft rejects whitespace-only text as empty', () async {
+      final flow = MealQuickEntryFlow(
+        pickImage: (_) async => null,
+        uploadImage: (_) async => throw StateError('unused'),
+        createRecord: (input) async => _record(id: 'meal-1', input: input),
+        emitDataChange: (_) {},
+      );
+
+      await expectLater(
+        flow.saveDraft(
+          const MealQuickEntryDraft(
+            occurredAt: '2026-07-28',
+            occurredTime: '12:30',
+            title: '  ',
+            value: '',
+            note: '\n',
+          ),
+        ),
+        throwsA(isA<MealQuickEntryEmptyException>()),
+      );
+    });
+
+    test('saveDraft accepts a note-only draft and trims it', () async {
+      DailyRecordCreateInput? created;
+      final flow = MealQuickEntryFlow(
+        pickImage: (_) async => null,
+        uploadImage: (_) async => throw StateError('unused'),
+        createRecord: (input) async {
+          created = input;
+          return _record(id: 'meal-1', input: input);
+        },
+        emitDataChange: (_) {},
+      );
+
+      await flow.saveDraft(
+        const MealQuickEntryDraft(
+          occurredAt: '2026-07-28',
+          occurredTime: '12:30',
+          note: '  少油  ',
+        ),
+      );
+
+      expect(created?.title, isNull);
+      expect(created?.value, isNull);
+      expect(created?.note, '少油');
+    });
   });
 }
 

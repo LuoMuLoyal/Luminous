@@ -70,28 +70,6 @@ void main() {
       });
     });
 
-    group('DailyRecordKind.meal', () {
-      test('returns 4 meal type choices', () {
-        final choices = recordFastEntryChoicesFor(DailyRecordKind.meal, l10n);
-        expect(choices, hasLength(4));
-      });
-
-      test('labels match l10n strings', () {
-        final choices = recordFastEntryChoicesFor(DailyRecordKind.meal, l10n);
-        expect(choices[0].label, l10n.recordFastChoiceMealBreakfast);
-        expect(choices[1].label, l10n.recordFastChoiceMealLunch);
-        expect(choices[2].label, l10n.recordFastChoiceMealDinner);
-        expect(choices[3].label, l10n.recordFastChoiceMealSnack);
-      });
-
-      test('title matches label for meal choices', () {
-        final choices = recordFastEntryChoicesFor(DailyRecordKind.meal, l10n);
-        for (final c in choices) {
-          expect(c.title, c.label);
-        }
-      });
-    });
-
     group('DailyRecordKind.symptom', () {
       test('returns every catalog symptom choice', () {
         final choices = recordFastEntryChoicesFor(
@@ -199,6 +177,12 @@ void main() {
     });
 
     group('unmapped kinds return empty list', () {
+      // 餐食不再有硬编码快录选项：走相机 / 手动确认弹窗。
+      test('meal returns empty', () {
+        final choices = recordFastEntryChoicesFor(DailyRecordKind.meal, l10n);
+        expect(choices, isEmpty);
+      });
+
       test('vital returns empty', () {
         final choices = recordFastEntryChoicesFor(DailyRecordKind.vital, l10n);
         expect(choices, isEmpty);

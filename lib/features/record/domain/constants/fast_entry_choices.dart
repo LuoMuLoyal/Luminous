@@ -79,24 +79,6 @@ List<RecordFastChoice> recordFastEntryChoicesFor(
         unit: l10n.recordWaterUnitTimes,
       ),
     ],
-    DailyRecordKind.meal => [
-      RecordFastChoice(
-        label: l10n.recordFastChoiceMealBreakfast,
-        title: l10n.recordFastChoiceMealBreakfast,
-      ),
-      RecordFastChoice(
-        label: l10n.recordFastChoiceMealLunch,
-        title: l10n.recordFastChoiceMealLunch,
-      ),
-      RecordFastChoice(
-        label: l10n.recordFastChoiceMealDinner,
-        title: l10n.recordFastChoiceMealDinner,
-      ),
-      RecordFastChoice(
-        label: l10n.recordFastChoiceMealSnack,
-        title: l10n.recordFastChoiceMealSnack,
-      ),
-    ],
     DailyRecordKind.symptom => [
       // 目录码进 payload（数据真相）；严重度由调用方按当前设置补进 payload，
       // 本地化文案只作展示。目录源在后端，这里是与后端同码同序的兜底清单。
@@ -156,6 +138,8 @@ List<RecordFastChoice> recordFastEntryChoicesFor(
         payload: <String, dynamic>{'moodLevel': 1, 'moodLabel': 'terrible'},
       ),
     ],
+    // 餐食没有选项式快录：单击走相机 + 确认弹窗（`MealQuickConfirmationDialog`），
+    // 长按走无照片手动录入，落库路径都不经过这里。
     _ => const [],
   };
 }

@@ -36,15 +36,37 @@ class _MealQuickConfirmationDialogState
     _titleController = TextEditingController(text: widget.draft.title ?? '');
     _valueController = TextEditingController(text: widget.draft.value ?? '');
     _noteController = TextEditingController(text: widget.draft.note ?? '');
+    // The confirm button is enabled/disabled from the field contents, so every
+    // edit has to rebuild the dialog.
+    _titleController.addListener(_onFieldChanged);
+    _valueController.addListener(_onFieldChanged);
+    _noteController.addListener(_onFieldChanged);
   }
 
   @override
   void dispose() {
+    _titleController.removeListener(_onFieldChanged);
+    _valueController.removeListener(_onFieldChanged);
+    _noteController.removeListener(_onFieldChanged);
     _titleController.dispose();
     _valueController.dispose();
     _noteController.dispose();
     super.dispose();
   }
+
+  void _onFieldChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// An empty meal record carries no information: the photo is the only
+  /// content when both the quick fields and every text field are blank.
+  bool get _hasContent =>
+      widget.draft.image != null ||
+      _titleController.text.trim().isNotEmpty ||
+      _valueController.text.trim().isNotEmpty ||
+      _noteController.text.trim().isNotEmpty;
+
+  bool get _canSave => !_saving && _hasContent;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +129,7 @@ class _MealQuickConfirmationDialogState
             const SizedBox(width: Spacing.md),
             FButton(
               key: const Key('record-quick-meal-confirm-action'),
-              onPress: _saving ? null : _save,
+              onPress: _canSave ? _save : null,
               child: Text(l10n.commonConfirm),
             ),
           ],
@@ -118,6 +140,8 @@ class _MealQuickConfirmationDialogState
 
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
+    // 空输入不允许提交（按钮此时已置灰，这里再挡一次）。
+    if (!_canSave) return;
     setState(() => _saving = true);
     try {
       await widget.flow.saveDraft(
@@ -127,6 +151,12 @@ class _MealQuickConfirmationDialogState
           note: _noteController.text,
         ),
       );
+    } on MealQuickEntryEmptyException {
+      // 领域侧的第二道闸：理论上与上面的按钮置灰同构，兜住任何绕过 UI 的调用。
+      if (!mounted) return;
+      setState(() => _saving = false);
+      unawaited(Toast.show(context, l10n.recordQuickMealEmptyToast));
+      return;
     } catch (e, st) {
       appTalker.error('MealQuickConfirmation: saveDraft failed: $e', st);
       if (!mounted) return;

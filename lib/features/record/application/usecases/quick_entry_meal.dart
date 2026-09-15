@@ -36,9 +36,20 @@ Future<void> showMealConfirmationDialog(
   );
 }
 
+/// Which quick-entry gesture asked for the meal confirmation dialog.
+enum MealQuickEntrySource {
+  /// Single tap: open the camera first; a cancelled camera writes nothing.
+  camera,
+
+  /// Long press: manual no-photo meal entry (per the quick-entry UX spec, long
+  /// press is the manual fallback for the camera-first path).
+  manual,
+}
+
 Future<void> handleMealQuickAction(
   BuildContext context,
   WidgetRef ref, {
+  required MealQuickEntrySource source,
   required DateTime now,
   required String occurredAt,
   required String occurredTime,
@@ -57,68 +68,55 @@ Future<void> handleMealQuickAction(
   final l10n = AppLocalizations.of(context)!;
   final repository = ref.read(dailyRecordRepositoryProvider);
   final flow = _buildFlow(ref, repository);
+  final entryContext = MealQuickEntryContext(
+    occurredAt: occurredAt,
+    occurredTime: occurredTime,
+    defaultTitle: defaultMealTitle(l10n, now),
+  );
 
-  late final MealQuickEntryOutcome outcome;
+  // Null means "abort without confirming": the camera was cancelled or failed.
+  final draft = switch (source) {
+    MealQuickEntrySource.manual => flow.buildManualDraft(entryContext),
+    MealQuickEntrySource.camera => await _pickCameraDraft(
+      context,
+      ref,
+      flow,
+      entryContext,
+      l10n,
+    ),
+  };
+
+  if (draft == null || !context.mounted) return;
+  await showMealConfirmationDialog(context, flow: flow, draft: draft);
+}
+
+/// Runs the camera-first path and returns the draft to confirm, or null when
+/// the user cancelled the picker / it failed (a toast is shown for the latter).
+Future<MealQuickEntryDraft?> _pickCameraDraft(
+  BuildContext context,
+  WidgetRef ref,
+  MealQuickEntryFlow flow,
+  MealQuickEntryContext entryContext,
+  AppLocalizations l10n,
+) async {
+  final MealQuickEntryOutcome outcome;
   try {
-    outcome = await flow.startWithCamera(
-      MealQuickEntryContext(
-        occurredAt: occurredAt,
-        occurredTime: occurredTime,
-        defaultTitle: defaultMealTitle(l10n, now),
-      ),
-    );
+    outcome = await flow.startWithCamera(entryContext);
   } on MealQuickImageUnsupportedException {
-    if (!context.mounted) return;
+    if (!context.mounted) return null;
     await Toast.show(context, l10n.recordImageUnsupportedToast);
-    return;
+    return null;
   } catch (e, st) {
     ref
         .read(talkerProvider)
         .error('handleMealQuickAction startWithCamera failed: $e', st);
-    if (!context.mounted) return;
+    if (!context.mounted) return null;
     await Toast.show(context, l10n.recordImagePickFailedToast);
-    return;
+    return null;
   }
 
-  if (!context.mounted || outcome.type == MealQuickEntryOutcomeType.cancelled) {
-    return;
-  }
-  final draft = outcome.draft;
-  if (draft == null) return;
-  await showMealConfirmationDialog(context, flow: flow, draft: draft);
-}
-
-/// Long-press meal entry: manual no-photo meal recording (per the quick-entry
-/// UX spec, long press is the manual fallback for the camera-first path).
-Future<void> handleMealQuickActionManual(
-  BuildContext context,
-  WidgetRef ref, {
-  required DateTime now,
-  required String occurredAt,
-  required String occurredTime,
-  required bool canAccessProtectedData,
-  required bool isAuthLoading,
-}) async {
-  if (!canAccessProtectedData) {
-    if (isAuthLoading) return;
-    await showAuthRequiredDialog(
-      context,
-      onLogin: () => context.push(loginRouteForCurrentLocation(context)),
-    );
-    return;
-  }
-
-  final l10n = AppLocalizations.of(context)!;
-  final repository = ref.read(dailyRecordRepositoryProvider);
-  final flow = _buildFlow(ref, repository);
-  final draft = flow.buildManualDraft(
-    MealQuickEntryContext(
-      occurredAt: occurredAt,
-      occurredTime: occurredTime,
-      defaultTitle: defaultMealTitle(l10n, now),
-    ),
-  );
-  await showMealConfirmationDialog(context, flow: flow, draft: draft);
+  if (outcome.type == MealQuickEntryOutcomeType.cancelled) return null;
+  return outcome.draft;
 }
 
 MealQuickEntryFlow _buildFlow(WidgetRef ref, DailyRecordRepository repository) {

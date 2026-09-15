@@ -68,6 +68,7 @@ Future<void> handleQuickAction(
     await handleMealQuickAction(
       context,
       ref,
+      source: MealQuickEntrySource.camera,
       now: now,
       occurredAt: date,
       occurredTime: currentTime,
@@ -132,9 +133,10 @@ Future<void> handleQuickActionLongPress(
   final session = ref.read(authSessionProvider);
 
   if (action.type == RecordEntryType.meal) {
-    await handleMealQuickActionManual(
+    await handleMealQuickAction(
       context,
       ref,
+      source: MealQuickEntrySource.manual,
       now: now,
       occurredAt: date,
       occurredTime: currentTime,

@@ -169,6 +169,7 @@
   "recordQuickSettingsSymptomRule": "Symptom: single select saves; multi-select confirms.",
   "recordQuickSettingsMoodRule": "Mood: selecting one mood saves immediately.",
   "recordQuickSettingsSleepRule": "Sleep: fill in bedtime and wake time once, then save.",
+  "recordQuickSettingsGeneralRule": "Single tap opens the entry dialog; fill it in to save.",
   "recordQuickSavedToast": "Quick record saved",
   "recordQuickUndoAction": "Undo",
   "recordQuickUndoFailedToast": "Undo failed. Refresh and check the record.",
@@ -209,6 +210,7 @@
   "recordSleepEntryNapTooLong": "A nap cannot exceed 3 hours.",
   "recordSleepEntryNightTooLong": "Night sleep cannot exceed 16 hours.",
   "recordQuickMealConfirmTitle": "Confirm meal record",
+  "recordQuickMealEmptyToast": "Add a name, a note, or a photo before saving.",
   "recordSymptomSheetTitle": "Log symptom",
   "recordSymptomSeverityLabel": "Severity",
   "recordSymptomSingleSelectHint": "Tap a symptom to save it",
@@ -553,15 +555,6 @@
   "recordPainModerate": "Moderate",
   "recordViewTrendAction": "View trend",
   "recordDietTitle": "Meal records",
-  "recordMealCountValue": "{count, plural, =0{0 meals today} =1{1 meal today} other{{count} meals today}}",
-  "@recordMealCountValue": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "recordMealLogging": "Logging",
   "recordDietRecordAction": "Log meal",
   "recordDentalRecordTitle": "Dental",
   "recordEyeRecordTitle": "Eye",

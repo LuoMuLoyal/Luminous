@@ -36,6 +36,10 @@
 - 快速录入 UX:单击 = 记录 + 可撤销(`QuickEntryUndoService`),长按 = 该类型设置;成功后 emit
   `DataChangeTopic.dailyRecords` 驱动跨页刷新(test/record/quick_entry/)。症状走专用底部 sheet(单击即存、
   多选批量亦可撤销),情绪与备注仍走 `RecordFastEntryDialog`。
+- 餐食快录:单击 = 先开相机(取消则不写入)、长按 = 无照片手动录入,两条路径都进同一个确认弹窗(入口
+  `handleMealQuickAction(source:)`);标题/数值/备注/照片全空时确认按钮置灰,`MealQuickEntryFlow.saveDraft`
+  在领域侧同样拒绝空 draft——空餐食记录永不落库
+  (test/record/application/usecases/quick_entry_meal_test.dart、test/record/presentation/widgets/dialogs/meal_confirmation_test.dart)。
 - 症状:payload `symptom`(目录码) + `severity`(`mild`/`moderate`/`severe`/`unknown`)是**数据真相**;
   记录级 `title`/`value` 只是展示文案(时间线/详情渲染用),规则与统计不得解析它们。`unknown` 表示用户判断
   不了,服务端跳过该条而不是记最小严重度。

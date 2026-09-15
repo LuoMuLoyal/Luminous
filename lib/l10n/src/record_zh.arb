@@ -169,6 +169,7 @@
   "recordQuickSettingsSymptomRule": "症状：单选立即保存，多选确认保存",
   "recordQuickSettingsMoodRule": "情绪：点选一个情绪立即保存",
   "recordQuickSettingsSleepRule": "睡眠：一次填写入睡与起床时间后保存",
+  "recordQuickSettingsGeneralRule": "单击打开录入弹窗，填写后保存",
   "recordQuickSavedToast": "已快速记录",
   "recordQuickUndoAction": "撤销",
   "recordQuickUndoFailedToast": "撤销失败，请刷新后确认",
@@ -209,6 +210,7 @@
   "recordSleepEntryNapTooLong": "小睡不能超过 3 小时",
   "recordSleepEntryNightTooLong": "夜间睡眠不能超过 16 小时",
   "recordQuickMealConfirmTitle": "确认餐食记录",
+  "recordQuickMealEmptyToast": "请填写名称、备注或添加照片后再保存",
   "recordSymptomSheetTitle": "记录症状",
   "recordSymptomSeverityLabel": "严重程度",
   "recordSymptomSingleSelectHint": "点一个症状即保存",
@@ -553,15 +555,6 @@
   "recordPainModerate": "中等",
   "recordViewTrendAction": "查看趋势",
   "recordDietTitle": "饮食记录",
-  "recordMealCountValue": "今日 {count} 餐",
-  "@recordMealCountValue": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "recordMealLogging": "记录中",
   "recordDietRecordAction": "记录饮食",
   "recordDentalRecordTitle": "牙科记录",
   "recordEyeRecordTitle": "眼科记录",

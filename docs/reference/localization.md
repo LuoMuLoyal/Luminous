@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-13
+updated: 2026-09-15
 ---
 
 # Localization
@@ -40,6 +40,8 @@ flutter gen-l10n
 - 不在页面/widget 硬编码用户可见文案；新增文案必须同时进 zh/en 分片。
 - **占位符/复数**：占位符类型在分片 `@key` 元数据中声明（int/String/num），如 `{days}`、`{count}`；复数用 plural 语义键；已格式化数值（如 fl oz 换算、ml 汇总）在 Dart 侧完成后以 String 占位传入。模板 locale 是 **zh**（`l10n.yaml` 的 `template-arb-file: app_zh.arb`），`@key` 元数据必须落在 `*_zh.arb` 分片上——只写在 `*_en.arb` 时 `flutter gen-l10n` 会以「placeholder 在 en 是 int、在 template 是 Object」报错；建议 zh/en 两侧都写，保持一致。
 - 删除拥有它的 UI 时同步删除 l10n 键；延迟（deferred）代码的键仅当代码仍被引用且带注释时保留。
+  删键前先全仓检索（源码 + 测试，生成物不算引用），再 merge + `flutter gen-l10n`；只删一份语言会在生成时报
+  placeholder / 缺键错误。
 - 页面文案克制：仅必要的标题/标签/值/状态/动作，不做解释性、引导性或营销式文案。
 - 动作迁到其他 tab 时删除旧 tab 的动作文案，不保留失活标签。
 
