@@ -1,37 +1,13 @@
 {
-  "mineSectionTitle": "Personal workspace",
-  "mineSectionSubtitle": "Identity, goals, and privacy controls will share one calm surface here.",
   "mineHeaderNotifications": "Notifications",
   "mineHeaderSettings": "Settings",
   "mineAccountDisplayName": "Lumi User",
   "mineAccountGuestDisplayName": "Guest",
   "mineAccountSignedIn": "Signed in",
   "mineAccountSignedOut": "Signed out",
-  "mineAccountMeta": "Member until: 2026-05-20",
   "mineAccountSignedOutMeta": "Sign in to sync profile, reminders, and personalized health data",
-  "mineAccountManageAction": "Manage account",
   "mineAccountEmailVerified": "Email verified",
   "mineAccountEmailUnverified": "Email unverified",
-  "mineAccountPasswordSet": "Password set",
-  "mineAccountPasswordUnset": "No password",
-  "mineAccountLinkedIdentityCount": "{count} linked",
-  "@mineAccountLinkedIdentityCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "mineAccountLinkedIdentityNone": "No linked identity",
-  "mineAccountLastLogin": "Last login {date}",
-  "@mineAccountLastLogin": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "mineAccountLastLoginNone": "Last login --",
   "mineAccountStudentRole": "User",
   "mineSignedOutNoticeTitle": "You are not signed in",
   "mineSignedOutNoticeDescription": "Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.",
@@ -86,15 +62,11 @@
   "mineArchiveCompleted": "Complete",
   "mineArchiveNeedsFill": "Needs info",
   "mineCompletenessGapTitle": "Complete your health profile",
-  "mineCompletenessGapSubtitle": "Missing items below may affect safety check accuracy",
   "mineCompletenessGapBasicInfo": "Basic info",
-  "mineCompletenessGapBasicInfoDesc": "Birth date and height are used for dosage calculations",
   "mineCompletenessGapSexAtBirth": "Sex at birth",
   "mineCompletenessGapWeight": "Weight",
   "mineCompletenessGapAllergy": "Allergies",
-  "mineCompletenessGapAllergyDesc": "Missing allergy data may affect medication safety alerts",
   "mineCompletenessGapMedicine": "Current meds",
-  "mineCompletenessGapMedicineDesc": "Missing medication data affects drug interaction checks",
   "mineReadinessGapDescBasicInfo": "Birth date and height are essential for dosage calculations",
   "mineReadinessGapDescSexAtBirth": "Sex at birth affects drug selection and safe dosing",
   "mineReadinessGapDescWeight": "Weight is a key parameter for dosage calculations",
@@ -112,16 +84,8 @@
   "minePrivacyReportTitle": "Report sharing",
   "minePrivacyReportSubtitle": "Health reports and trend analysis",
   "mineAiPrivacySectionTitle": "AI & Privacy",
-  "minePrivacyAiTitle": "AI summaries and advice",
-  "minePrivacyAiSubtitle": "Daily summaries, trend advice",
-  "minePrivacyOnlyMe": "Only me",
-  "minePrivacyShareAfterGrant": "Share after grant",
   "mineReminderSectionTitle": "Reminder settings",
-  "mineReminderMedicineTitle": "Medication",
   "mineReminderWaterTitle": "Water",
-  "mineReminderSleepTitle": "Sleep",
-  "mineReminderLocalOnly": "Local only",
-  "mineReminderEnabled": "Enabled",
   "mineNotificationReminderSectionTitle": "Notifications & reminders",
   "mineNotificationInboxTitle": "Notification inbox",
   "mineNotificationInboxUnreadSummary": "{count} unread",
@@ -133,29 +97,13 @@
     }
   },
   "mineNotificationInboxSignedOutSummary": "Sign in to view",
-  "mineReminderSleepOff": "Off",
-  "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
-  "@mineReminderSleepSummary": {
-    "placeholders": {
-      "bedtime": {
-        "type": "String"
-      },
-      "wakeTime": {
-        "type": "String"
-      }
-    }
-  },
   "mineAccountSettingsTitle": "Account and settings",
-  "mineSettingLanguageTitle": "Language",
-  "mineSettingLanguageValue": "English",
   "mineSettingExportTitle": "Data export",
   "mineSettingExportValue": "Export my health data",
   "mineSettingHelpTitle": "Help and feedback",
-  "mineSettingHelpValue": "FAQ and feedback",
   "mineSettingAboutTitle": "About Luminous",
   "minePrivacyNoticeTitle": "Sensitive data is protected by default, and grants can be revoked anytime",
   "minePrivacyNoticeAction": "View privacy policy",
-  "mineProfileUnknownValue": "Not set",
   "mineProfileAgeYears": "{age}y",
   "@mineProfileAgeYears": {
     "placeholders": {
@@ -199,19 +147,9 @@
       }
     }
   },
-  "mineCompletionSubtitle": "Good progress. Keep filling it out for more precise suggestions.",
-  "mineSummaryTitle": "Health context summary",
-  "mineSummaryUpdatedAt": "Updated 2025-05-15",
-  "mineSummaryAge": "Age",
-  "mineSummaryAllergies": "Allergies",
-  "mineSummaryConditions": "Conditions",
-  "mineSummaryMedicines": "Current meds",
-  "mineSummaryMissingInfo": "Missing info: birth date, height, unit system",
-  "mineSummaryCompleteAction": "Complete",
   "mineReadinessPreviewTitle": "Your personal profile is still locked",
   "mineReadinessPreviewDescription": "Sign in to view your real basic info, allergies, and current medications.",
   "mineReadinessPreviewBadge": "Preview",
-  "mineReadinessSignedInBadge": "Signed in",
   "mineReadinessIncompleteTitle": "{count} key items still missing",
   "@mineReadinessIncompleteTitle": {
     "placeholders": {
@@ -220,20 +158,10 @@
       }
     }
   },
-  "mineReadinessIncompleteDescription": "Adding these details improves safety reminders, sharing controls, and summaries.",
   "mineReadinessReadyTitle": "Your profile is mostly ready",
   "mineReadinessReadyDescription": "Keep your health archive current and manage sharing or account access from here.",
   "mineReadinessManageAction": "Manage profile",
-  "mineAccountPrivacySectionTitle": "Account and privacy",
   "mineProfileTitle": "Health profile",
-  "mineProfileBasicInfoTitle": "Basic info",
-  "mineProfileBasicInfoSubtitle": "Personal basics",
-  "mineProfileAllergiesTitle": "Allergies",
-  "mineProfileAllergiesSubtitle": "2 records",
-  "mineProfileConditionsTitle": "Conditions",
-  "mineProfileConditionsSubtitle": "1 record",
-  "mineProfileMedicinesTitle": "Current meds",
-  "mineProfileMedicinesSubtitle": "3 medicines",
   "mineSettingsThemeTitle": "Theme",
   "mineSettingsAccountTitle": "Account and security",
   "mineSettingsLanguageTitle": "Language",
@@ -266,8 +194,6 @@
   "mineEditDeletedToast": "Deleted",
   "mineEditFieldBirthDate": "Birth date (YYYY-MM-DD)",
   "mineEditFieldHeightCm": "Height (cm)",
-  "mineEditFieldLocale": "Locale",
-  "mineEditFieldTimezone": "Timezone",
   "mineEditFieldUnitSystem": "Unit system",
   "mineEditFieldSexAtBirth": "Sex at birth",
   "mineEditFieldWeightKg": "Weight (kg)",
@@ -277,25 +203,19 @@
   "mineEditSexAtBirthUnknown": "Unknown",
   "mineEditUnitSystemMetric": "Metric",
   "mineEditUnitSystemImperial": "Imperial",
-  "mineEditFieldOnboardingCompleted": "Onboarding completed",
   "mineEditFieldKind": "Kind",
   "mineEditFieldLabel": "Label",
   "mineEditFieldReaction": "Reaction",
   "mineEditFieldSeverity": "Severity",
   "mineEditFieldNote": "Note",
-  "mineEditFieldRecordedAt": "Recorded at",
   "mineEditFieldStatus": "Status",
   "mineEditFieldDiagnosedAt": "Diagnosed at (YYYY-MM-DD)",
-  "mineEditFieldSource": "Source",
-  "mineEditFieldSourceRefId": "Source ref ID",
   "mineEditFieldDisplayName": "Display name",
   "mineEditFieldStrengthText": "Strength",
   "mineEditFieldDoseText": "Dose",
   "mineEditFieldRoute": "Route",
   "mineEditFieldStartedAt": "Started at (YYYY-MM-DD)",
-  "mineEditFieldEndedAt": "Ended at (YYYY-MM-DD)",
   "mineSettingsAdvancedTitle": "Advanced settings",
-  "mineReminderDisabled": "Disabled",
   "mineExportStatusRequested": "Requested",
   "mineExportStatusPending": "Processing",
   "mineExportStatusCompleted": "Completed",
@@ -358,10 +278,6 @@
   "mineConditionStatusActive": "Active",
   "mineConditionStatusResolved": "Resolved",
   "mineConditionStatusSuspected": "Suspected",
-  "mineMedicineSourceDrugbank": "DrugBank",
-  "mineMedicineSourceCn": "Chinese Pharmacopoeia",
-  "mineMedicineSourceManual": "Manual",
-  "mineArchiveRecordListTitle": "Records",
   "mineArchiveAddNewAction": "Add new record",
   "mineArchiveEmptyTitle": "Health data available after sign in",
   "mineArchiveEmptyDescription": "Sign in to sync your basic info, allergies, conditions, and medications.",

@@ -1,28 +1,8 @@
 {
-  "recordPageDescription": "Calendar, timeline, and multi-type daily records will grow here.",
-  "recordSectionTitle": "Daily timeline",
-  "recordSectionSubtitle": "The first rebuild step for Record is structure, not logic.",
   "recordTodayAction": "Today",
   "recordPreviousDayAction": "Previous day",
   "recordNextDayAction": "Next day",
   "recordPickDateAction": "Pick date",
-  "recordSearchAction": "Search",
-  "recordFilterAction": "Filter",
-  "recordSwitchDateAction": "Switch date",
-  "recordDatePillLabel": "{month}/{day} · {weekday}",
-  "@recordDatePillLabel": {
-    "placeholders": {
-      "month": {
-        "type": "int"
-      },
-      "day": {
-        "type": "int"
-      },
-      "weekday": {
-        "type": "String"
-      }
-    }
-  },
   "recordTodayEntriesTitle": "{count, plural, =0{Today entries · 0} =1{Today entry · 1} other{Today entries · {count}}}",
   "@recordTodayEntriesTitle": {
     "placeholders": {
@@ -51,7 +31,6 @@
     }
   },
   "recordAddAction": "Record",
-  "recordAddCompactAction": "Record",
   "recordCreateFieldKind": "Kind",
   "recordCreateFieldDate": "Date",
   "recordCreateFieldTime": "Time",
@@ -81,10 +60,8 @@
   "recordSleepDeepMinutesLabel": "Deep sleep (min)",
   "recordSleepLightMinutesLabel": "Light sleep (min)",
   "recordSleepRemMinutesLabel": "REM sleep (min)",
-  "recordSleepDetailsSectionTitle": "Sleep details",
   "recordSleepDurationLabel": "Duration",
   "recordSleepTimeRangeLabel": "Time range",
-  "recordSleepNotSet": "Not set",
   "recordSleepMinutesUnit": "min",
   "recordCreateFailedToast": "Record was not saved.",
   "recordCreateSavedToast": "Record saved.",
@@ -103,14 +80,8 @@
   "recordImageUnsupportedToast": "Only JPG, PNG, WEBP, or GIF images are supported.",
   "recordImagePickFailedToast": "Image was not selected.",
   "recordQuickSectionTitle": "Quick record",
-  "recordQuickDynamicSortTooltip": "When enabled, quick entries are automatically sorted by usage frequency",
-  "recordQuickDynamicSortLabel": "Dynamic sort",
-  "recordQuickEditOrder": "Custom order",
   "recordQuickSortDisableDynamicFirst": "Please disable dynamic sorting before editing order",
-  "recordQuickReorderTitle": "Drag to reorder",
   "recordQuickReorderHint": "Long press and drag to reorder",
-  "recordQuickReorderDone": "Done",
-  "recordQuickReorderCancel": "Cancel",
   "recordQuickHelpTooltip": "Quick record help",
   "recordQuickSettingsTitle": "Quick record settings",
   "recordQuickSettingsSorting": "Sorting",
@@ -118,7 +89,6 @@
   "recordQuickSettingsManualOrderHint": "Turn off dynamic sorting to edit quick-entry order.",
   "recordQuickSettingsResetOrder": "Reset to default order",
   "recordQuickSettingsResetOrderHint": "Only clears manual order; other quick settings stay unchanged.",
-  "recordQuickSettingsDefaults": "Default actions",
   "recordQuickSettingsWaterDefault": "Water default amount",
   "recordQuickSettingsWaterCustom": "Custom",
   "recordQuickSettingsWaterCustomValue": "Custom ({ml} ml)",
@@ -133,21 +103,12 @@
   "recordQuickSettingsWaterCustomDialogLabel": "Amount (ml)",
   "recordQuickSettingsWaterCustomDialogHint": "Enter the ml to log per quick entry",
   "recordQuickSettingsWaterCustomDialogInvalid": "Enter a number greater than 0",
-  "recordQuickSettingsWaterAmount": "{amount} ml",
-  "@recordQuickSettingsWaterAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "int"
-      }
-    }
-  },
   "recordQuickSettingsDisplay": "Display",
   "recordQuickSettingsWaterBadge": "Water badge",
   "recordQuickSettingsWaterBadgeDailyTotal": "Daily total",
   "recordQuickSettingsWaterBadgeDailyCount": "Daily count",
   "recordQuickSettingsWaterBadgeHidden": "Hidden",
   "recordQuickSettingsIcons": "Custom Icons",
-  "recordQuickSettingsCustomIconTitle": "Change icon",
   "recordQuickSettingsCustomIconHint": "Tap a type's icon to change how it appears in quick record",
   "recordQuickIconChangeAction": "Change icon",
   "recordQuickIconResetAction": "Reset icon",
@@ -162,7 +123,6 @@
   "recordQuickSettingsMedicationAutoRecordHint": "When off, a selection dialog appears even for a single medicine.",
   "recordQuickSettingsMedicationAlreadyRecordedHint": "Show hint when already recorded",
   "recordQuickSettingsMedicationAlreadyRecordedHintDesc": "When off, no toast is shown if a nearby dose is already recorded.",
-  "recordQuickSettingsMedicationManageAction": "Manage medicines",
   "recordQuickSettingsRules": "Rules",
   "recordQuickSettingsMedicationRule": "Medication: smart selection from medicine box and nearby reminder slots.",
   "recordQuickSettingsMealRule": "Meal: single tap opens the camera; confirmation saves.",
@@ -279,9 +239,6 @@
   "recordFastChoiceMoodOkay": "Okay",
   "recordFastChoiceMoodBad": "Not great",
   "recordFastChoiceMoodTerrible": "Terrible",
-  "recordAiInputHint": "My stomach feels a bit bloated after eating...",
-  "recordAiBadge": "AI",
-  "recordNlpFabAction": "Natural language",
   "recordNlpHeaderAction": "AI Record",
   "recordNlpSheetTitle": "Natural-language input",
   "recordNlpSheetSubtitle": "Parse into candidate records first, then save after confirmation.",
@@ -302,7 +259,6 @@
     }
   },
   "recordNlpRemoveAction": "Remove",
-  "recordNlpSaveAllAction": "Save all",
   "recordNlpSaveSelectedAction": "Save selected ({count})",
   "@recordNlpSaveSelectedAction": {
     "placeholders": {
@@ -323,7 +279,6 @@
   "recordNlpInputRequiredToast": "Enter a short record note first.",
   "recordNlpGenerateFailedToast": "Parsing failed. Please check your input and try again.",
   "recordNlpEmptyCandidatesToast": "No candidate records were parsed this time.",
-  "recordNlpNoCandidatesToSaveToast": "There are no candidate records to save.",
   "recordNlpNoCandidatesSelectedToast": "Select at least one candidate record first.",
   "recordNlpSavedToast": "{count, plural, =0{Saved 0 records} =1{Saved 1 record} other{Saved {count} records}}",
   "@recordNlpSavedToast": {
@@ -370,8 +325,6 @@
       }
     }
   },
-  "recordSummarySectionTitle": "Day summary",
-  "recordSummaryDateLabel": "May 15, 2025 (Thu)",
   "recordTimelineSectionTitle": "Timeline",
   "recordTimelineViewAllAction": "View all records",
   "recordTimelineCollapseAction": "Collapse",
@@ -379,7 +332,6 @@
   "recordTimelineEmptyDescription": "Log your water, medication, or sleep to get started",
   "recordTimelineEmptyAction": "New record",
   "recordTimelineClearFilter": "Clear filter",
-  "recordTrendsSectionTitle": "Trends",
   "recordNewEntrySectionTitle": "New record",
   "recordFilterSectionTitle": "Record types",
   "recordFilterMobileTitle": "Record filter",
@@ -395,9 +347,6 @@
   },
   "recordFilterClearAction": "Clear",
   "recordAllTypesAction": "All types",
-  "recordVoiceInputTitle": "Voice input",
-  "recordGuideHint": "Tip: steady records help you understand your health better",
-  "recordGuideAction": "View record guide",
   "recordDetailTitle": "Record details",
   "recordDetailErrorTitle": "Record details did not load this time",
   "recordDetailValueLabel": "Value",
@@ -462,21 +411,7 @@
   "recordDeleteConfirmTitle": "Delete Record",
   "recordDeletedToast": "Deleted",
   "recordDeleteFailedToast": "Delete failed",
-  "recordMonthLabel": "May 2025",
-  "recordOpenDateAction": "Open date",
   "recordNotEnabledLabel": "Off",
-  "recordVoiceAction": "Voice record (hold to talk)",
-  "recordVoiceEntryTitle": "Voice input",
-  "recordVoiceListeningHint": "Listening...",
-  "recordVoiceTapToStart": "Tap to speak",
-  "recordVoiceUseText": "Use this text",
-  "recordOcrEntryTitle": "Photo recognition",
-  "recordOcrCameraAction": "Take photo",
-  "recordOcrGalleryAction": "Choose from gallery",
-  "recordOcrRecognizingHint": "Recognizing text...",
-  "recordOcrRecognitionFailed": "Text recognition failed. Try another photo.",
-  "recordOcrRetakeAction": "Retake",
-  "recordMicPermissionDenied": "Microphone permission denied. Please enable it in system settings.",
   "recordErrorTitle": "Record did not load this time",
   "recordErrorDescription": "The data boundary is wired, so try fetching it again.",
   "recordRefreshErrorToast": "Refresh failed, please try again",
@@ -536,40 +471,10 @@
   "recordRange7Days": "Last 7 days",
   "recordRange30Days": "Last 30 days",
   "recordFoodImagePlaceholder": "Meal image placeholder",
-  "recordSymptomTrackingSectionTitle": "Symptom tracking",
-  "recordSymptomHeadache": "Headache",
-  "recordSymptomLoggedAt": "Logged today at {time}",
-  "@recordSymptomLoggedAt": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "recordBodyPartLabel": "Body part",
-  "recordBodyPartForehead": "Head (forehead)",
-  "recordAccompanyingSymptomsLabel": "Other symptoms",
-  "recordSymptomNausea": "Mild nausea",
-  "recordSymptomLightSensitive": "Light sensitive",
-  "recordPainRatingLabel": "Pain rating",
-  "recordPainModerate": "Moderate",
-  "recordViewTrendAction": "View trend",
-  "recordDietTitle": "Meal records",
-  "recordDietRecordAction": "Log meal",
-  "recordDentalRecordTitle": "Dental",
-  "recordEyeRecordTitle": "Eye",
-  "recordHearingRecordTitle": "Hearing",
-  "recordZeroCountLabel": "0 records",
   "recordFastChoiceWater250ml": "250 ml",
   "recordFastChoiceWater500ml": "500 ml",
   "recordFastChoiceWater1Cup": "1 cup",
   "recordFastChoiceWater1Time": "1 time",
-  "recordVoiceStopListening": "Stop recording",
-  "recordSpeechUnavailable": "Speech recognition is unavailable on this device.",
-  "recordSpeechLocaleUnsupported": "Speech recognition does not support the current language.",
-  "recordVoiceErrorHint": "Recognition error. Please try again.",
-  "recordVoiceEditHint": "You can edit the recognized text here",
-  "recordOcrEmptyResult": "No text recognized. Try another photo.",
   "recordBackToTodayAction": "Back to today",
   "recordDiscardChangesTitle": "Discard changes",
   "recordDiscardChangesMessage": "You have unsaved changes. Leave anyway?",

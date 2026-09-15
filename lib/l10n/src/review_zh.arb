@@ -4,7 +4,6 @@
   "reviewGenerateAction": "生成总结",
   "reviewContinueRecordAction": "继续记录",
   "reviewSyncAction": "同步",
-  "reviewSnapshotStatus": "当前显示上次报告快照",
   "reviewSnapshotHint": "点击生成或同步后更新",
   "reviewReadinessPreviewBadge": "预览",
   "reviewReadinessInsufficientBadge": "数据不足",
@@ -47,9 +46,6 @@
       }
     }
   },
-  "reviewScoreHelpTooltip": "基于近期记录、用药依从性和生命体征趋势的综合评分。",
-  "reviewScoreTitle": "健康评分",
-  "reviewScoreOutOf": "/ {max}",
   "@reportScoreOutOf": {
     "placeholders": {
       "max": {
@@ -57,8 +53,6 @@
       }
     }
   },
-  "reviewScoreTitlePreview": "报告预览评分",
-  "reviewScoreOutOfPreview": "预览 / {max}",
   "@reportScoreOutOfPreview": {
     "placeholders": {
       "max": {
@@ -66,7 +60,6 @@
       }
     }
   },
-  "reviewScoreBody": "报告数据接入前仅作预览",
   "reviewMetricMedicationTitle": "用药完成率",
   "reviewMetricSleepTitle": "睡眠",
   "reviewMetricWaterTitle": "饮水",
@@ -80,25 +73,15 @@
   "reviewRangeLast30Days": "近 30 天",
   "reviewPeriodWeek": "周",
   "reviewPeriodMonth": "月",
-  "reviewTrendSleepLabel": "睡眠(小时)",
-  "reviewTrendWaterLabel": "饮水(L)",
-  "reviewTrendMedicationLabel": "用药完成率(%)",
-  "reviewTrendDateLabels": "5/19|5/20|5/21|5/22|5/23|5/24|5/25",
-  "reviewViewDetailsAction": "查看详细数据",
   "reviewFindingsSectionTitle": "重点发现",
   "reviewSuggestionHistorySectionTitle": "历史建议回顾",
   "reviewSuggestionHistoryEmptyTitle": "最近还没有主动建议",
   "reviewSuggestionHistoryEmptyBody": "当系统产生新的 AI 主动建议后，这里会显示最近的回顾记录。",
-  "reviewSuggestionHistoryLoadingError": "历史建议加载失败，请稍后重试",
   "reviewSuggestionHistoryActiveBadge": "进行中",
   "reviewSuggestionHistoryExpiredBadge": "已过期",
   "reviewSuggestionHistoryDismissedBadge": "已忽略",
   "reviewSuggestionHistoryViewAll": "查看全部",
   "reviewSuggestionHistoryCollapse": "收起",
-  "reviewFindingCoffeeTitle": "咖啡因影响睡眠",
-  "reviewFindingCoffeeBody": "下午摄入咖啡后睡眠时长下降",
-  "reviewFindingMedicineTitle": "按时用药稳定",
-  "reviewFindingMedicineBody": "连续 7 天按时用药状态良好",
   "reviewAiSummaryTitle": "总结",
   "reviewAiSummarySubtitle": "基于本周记录的智能分析",
   "reviewAiSummarySubtitleLast30Days": "基于近 30 天记录的智能分析",
@@ -109,11 +92,6 @@
   "reviewAiSummaryGeneratingHintCustom": "正在生成所选时段 AI 总结",
   "reviewAiSummaryErrorHint": "本周 AI 总结生成失败，当前先保留报告快照。",
   "reviewAiSummaryDisabledHint": "你已在设置中关闭 AI 总结，当前只显示报告快照。",
-  "reviewViewAdviceAction": "查看建议",
-  "reviewAiBulletSleep": "睡眠质量整体良好，周末略有波动，保持规律作息有助于提升精力。",
-  "reviewAiBulletWater": "饮水达成率中等，部分天数偏低，记得随身带水，少量多次补水。",
-  "reviewAiBulletMedicine": "用药达成率较高，继续保持按时服药的好习惯。",
-  "reviewAiBulletDiet": "饮食多为均衡搭配，但水果与蔬菜摄入偏少，可适当增加。",
   "reviewExportSectionTitle": "导出摘要",
   "reviewExportHospitalTitle": "给校医院",
   "reviewExportHospitalSubtitle": "导出健康摘要",
@@ -131,16 +109,7 @@
   "reviewExportLinkMissingToast": "导出已完成，但下载链接暂时不可用。",
   "reviewExportOpenFailedToast": "导出已完成，但无法打开下载链接。",
   "reviewPatternSectionTitle": "健康模式分析",
-  "reviewPatternDietWaterTitle": "饮食与饮水",
-  "reviewPatternDietWaterStatus": "良好搭配",
-  "reviewPatternDietWaterBody": "饮水充足时，精力更容易保持稳定",
-  "reviewPatternMedicationTitle": "用药依从性",
-  "reviewPatternMedicationStatus": "表现优秀",
-  "reviewPatternMedicationBody": "按时服药有助于维持健康状态",
   "reviewReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议。",
-  "reviewDataInsufficientTitle": "数据不足，暂无法生成完整报告",
-  "reviewDataInsufficientMessage": "持续记录健康数据（饮水、睡眠、症状等），系统会自动生成趋势分析和 AI 总结。",
-  "reviewDataInsufficientMetricsHint": "当前有 {count} 项指标数据不足，继续记录即可补齐。",
   "@reportDataInsufficientMetricsHint": {
     "placeholders": {
       "count": {
@@ -157,21 +126,12 @@
   "reviewErrorTitle": "报告页暂时没有加载出来",
   "reviewErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次。",
   "reviewPreviewBannerMessage": "登录后查看你的真实周报、AI 总结和导出结果。",
-  "reviewSignedOutInlineHint": "登录后查看你的真实周报、AI 总结和导出结果。",
-  "reviewTrendPreviewTitle": "健康趋势",
-  "reviewTrendPreviewBody": "登录后查看饮水、睡眠和用药依从趋势。",
   "reviewFindingsPreviewTitle": "重点发现",
   "reviewFindingsPreviewBody": "登录后查看基于你记录的重点发现。",
   "reviewSuggestionHistoryPreviewTitle": "历史建议回顾",
   "reviewSuggestionHistoryPreviewBody": "登录后查看历史主动建议。",
-  "reviewExportPreviewTitle": "导出预览",
-  "reviewExportPreviewBody": "登录后解锁周报和分享预览。",
-  "reviewPatternSleepTitle": "睡眠变化",
-  "reviewPatternSleepStatus": "持续观察",
-  "reviewPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠",
   "reviewStatusInsufficientData": "数据不足",
   "reviewStatusUnknown": "未知",
-  "reviewSuggestionHistoryDetailTitle": "建议详情",
   "reviewSuggestionHistoryDetailRuleId": "规则 ID",
   "reviewSuggestionHistoryDetailRuleVersion": "规则版本",
   "reviewSuggestionHistoryDetailTriggerType": "触发方式",
@@ -181,17 +141,11 @@
   "reviewSuggestionHistoryDetailFeedbackAt": "反馈时间",
   "reviewSuggestionHistoryDetailExpiredAt": "过期时间",
   "reviewSuggestionHistoryDetailNoFeedback": "未反馈",
-  "reviewSuggestionTypeConfirmedRisk": "确认风险",
-  "reviewSuggestionTypeCompliance": "依从性",
-  "reviewSuggestionTypeTrend": "趋势",
-  "reviewSuggestionTypeBehaviorAdvice": "行为建议",
-  "reviewSuggestionTypeCoverage": "覆盖率",
   "reviewSuggestionTriggerTypeEvent": "事件触发",
   "reviewSuggestionTriggerTypeTimer": "定时触发",
   "reviewSuggestionConfidenceHigh": "高",
   "reviewSuggestionConfidenceMedium": "中",
   "reviewSuggestionConfidenceLow": "低",
-  "reviewClinicSummaryPreviewTitle": "诊所摘要预览",
   "reviewClinicSummaryGeneratedAt": "生成时间",
   "reviewClinicSummaryDataRange": "数据范围",
   "reviewClinicSummaryProfileSection": "个人信息（已脱敏）",
@@ -199,21 +153,19 @@
   "reviewClinicSummaryConditionsSection": "疾病记录",
   "reviewClinicSummaryMedicinesSection": "当前用药",
   "reviewClinicSummaryFindingsSection": "关键发现",
-"reviewClinicSummaryWaterSection": "饮水记录",
-"reviewClinicSummaryWaterUnit": "ml",
-"reviewClinicSummarySleepSection": "睡眠记录",
-"reviewClinicSummarySleepUnit": "分钟",
-"reviewClinicSummaryNotesSection": "备注",
-"reviewClinicSummaryNotesPrivacyWarning": "创建公开分享链接后，持有链接者可查看备注原文。",
+  "reviewClinicSummaryWaterSection": "饮水记录",
+  "reviewClinicSummaryWaterUnit": "ml",
+  "reviewClinicSummarySleepSection": "睡眠记录",
+  "reviewClinicSummarySleepUnit": "分钟",
+  "reviewClinicSummaryNotesSection": "备注",
+  "reviewClinicSummaryNotesPrivacyWarning": "创建公开分享链接后，持有链接者可查看备注原文。",
   "reviewClinicSummaryDisclaimerSection": "免责声明",
-  "reviewClinicSummaryEmpty": "暂无可生成的摘要数据",
   "reviewClinicSummaryDownloadPdf": "下载 PDF",
   "reviewClinicSummaryShare": "分享摘要",
   "reviewClinicSummaryPdfEmpty": "PDF 内容为空",
   "reviewClinicSummaryPdfFailed": "PDF 下载失败，请稍后再试",
   "reviewClinicSummarySharedTitle": "诊所摘要",
   "reviewClinicSummarySharedExpired": "分享链接已过期或失效",
-  "reviewClinicSummarySharedDownloadPdf": "下载 PDF",
   "reviewClinicSummaryProfileNickname": "昵称",
   "reviewClinicSummaryProfileAge": "年龄",
   "reviewClinicSummaryProfileSex": "性别",
@@ -302,17 +254,6 @@
       }
     }
   },
-  "reviewCoverageStripLabel": "{name} {coverage}",
-  "@reviewCoverageStripLabel": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "coverage": {
-        "type": "String"
-      }
-    }
-  },
   "reviewNoteworthyTitle": "值得注意",
   "reviewNoteworthyAbstainLabel": "这段时间没有新增值得注意的变化。",
   "reviewNoteworthyWindow": "{start} → {end}",
@@ -327,7 +268,6 @@
     }
   },
   "reviewTrendGapNote": "未记录的天不计入走势。",
-  "reviewExportFailedWithReason": "导出失败：{reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {
       "reason": {
@@ -374,7 +314,6 @@
       }
     }
   },
-  "reviewReviewCheckInAction": "确认今天结果",
   "reviewReviewCheckInDoneToday": "今天已确认：{outcome}",
   "@reviewReviewCheckInDoneToday": {
     "placeholders": {
@@ -392,7 +331,6 @@
     }
   },
   "reviewActiveEventGoTodayCheckIn": "去今日 check-in",
-  "reviewReviewEndEventAction": "结束观察",
   "reviewReviewReasonNoObservations": "这段时间内还没有观察记录。",
   "reviewReviewReasonInsufficientCoverage": "有记录但还不足以看出变化趋势。",
   "reviewReviewReasonNoCompletedActions": "还没有已确认的服药或结果记录。",
@@ -564,7 +502,6 @@
   "reviewReviewHistoryLoadMoreFailed": "加载更多失败。",
   "reviewReviewNoEventTitle": "现在没有进行中的观察",
   "reviewReviewNoEventDescription": "开始一段健康观察后，这里会按「发生了什么、有什么变化、完成了什么、接下来怎么办」帮你回顾整个过程。",
-  "reviewReviewStartObservationAction": "开始健康观察",
   "reviewRecordGuideTitle": "继续记录，几周后能看到趋势",
   "reviewRecordGuideDescription": "本周已记录 {observed}/{expected} 天。连续记录饮水、睡眠或用药后，这里会呈现健康趋势与值得注意的变化。",
   "@reviewRecordGuideDescription": {
@@ -579,7 +516,6 @@
   },
   "reviewRecordGuideGoRecordAction": "去记录",
   "reviewRecordGuideEmptyRangeDescription": "当前周期暂无记录天数，请去记录后再来看趋势。",
-  "reviewPreviewOverviewTitle": "记录后你会看到什么",
   "reviewPreviewCoverageTitle": "覆盖率概览",
   "reviewPreviewCoverageBody": "每周/每月各健康维度的记录天数，一眼看出记录够不够。",
   "reviewPreviewNoteworthyTitle": "值得注意的变化",

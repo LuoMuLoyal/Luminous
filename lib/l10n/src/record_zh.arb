@@ -1,28 +1,8 @@
 {
-  "recordPageDescription": "日历、时间线与多类型每日记录会从这里生长出来。",
-  "recordSectionTitle": "每日时间线",
-  "recordSectionSubtitle": "记录页的第一步先搭结构，不急着恢复旧逻辑。",
   "recordTodayAction": "今天",
   "recordPreviousDayAction": "上一天",
   "recordNextDayAction": "下一天",
   "recordPickDateAction": "选择日期",
-  "recordSearchAction": "搜索",
-  "recordFilterAction": "筛选",
-  "recordSwitchDateAction": "切换日期",
-  "recordDatePillLabel": "{month} 月 {day} 日  星期{weekday}",
-  "@recordDatePillLabel": {
-    "placeholders": {
-      "month": {
-        "type": "int"
-      },
-      "day": {
-        "type": "int"
-      },
-      "weekday": {
-        "type": "String"
-      }
-    }
-  },
   "recordTodayEntriesTitle": "今日记录 · {count} 条",
   "@recordTodayEntriesTitle": {
     "placeholders": {
@@ -51,7 +31,6 @@
     }
   },
   "recordAddAction": "记录",
-  "recordAddCompactAction": "记录",
   "recordCreateFieldKind": "类型",
   "recordCreateFieldDate": "日期",
   "recordCreateFieldTime": "时间",
@@ -81,10 +60,8 @@
   "recordSleepDeepMinutesLabel": "深度睡眠（分钟）",
   "recordSleepLightMinutesLabel": "浅度睡眠（分钟）",
   "recordSleepRemMinutesLabel": "REM 睡眠（分钟）",
-  "recordSleepDetailsSectionTitle": "睡眠详情",
   "recordSleepDurationLabel": "时长",
   "recordSleepTimeRangeLabel": "时间段",
-  "recordSleepNotSet": "未设置",
   "recordSleepMinutesUnit": "分钟",
   "recordCreateFailedToast": "记录未保存",
   "recordCreateSavedToast": "记录已保存",
@@ -103,14 +80,8 @@
   "recordImageUnsupportedToast": "仅支持 JPG、PNG、WEBP 或 GIF 图片",
   "recordImagePickFailedToast": "图片未选择",
   "recordQuickSectionTitle": "快速记录",
-  "recordQuickDynamicSortTooltip": "开启后，按使用频率自动排列快捷入口",
-  "recordQuickDynamicSortLabel": "动态排序",
-  "recordQuickEditOrder": "自定义顺序",
   "recordQuickSortDisableDynamicFirst": "请先关闭动态排序再编辑顺序",
-  "recordQuickReorderTitle": "拖拽排序",
   "recordQuickReorderHint": "长按拖拽调整顺序",
-  "recordQuickReorderDone": "完成",
-  "recordQuickReorderCancel": "取消",
   "recordQuickHelpTooltip": "快速记录说明",
   "recordQuickSettingsTitle": "快速记录设置",
   "recordQuickSettingsSorting": "排序",
@@ -118,7 +89,6 @@
   "recordQuickSettingsManualOrderHint": "关闭动态排序后可调整快捷入口顺序",
   "recordQuickSettingsResetOrder": "重置为默认顺序",
   "recordQuickSettingsResetOrderHint": "仅清除手动顺序，不影响其他快捷设置",
-  "recordQuickSettingsDefaults": "默认动作",
   "recordQuickSettingsWaterDefault": "饮水默认量",
   "recordQuickSettingsWaterCustom": "自定义",
   "recordQuickSettingsWaterCustomValue": "自定义 ({ml} ml)",
@@ -133,21 +103,12 @@
   "recordQuickSettingsWaterCustomDialogLabel": "毫升数",
   "recordQuickSettingsWaterCustomDialogHint": "输入每次快捷记录写入的毫升数",
   "recordQuickSettingsWaterCustomDialogInvalid": "请输入大于 0 的数字",
-  "recordQuickSettingsWaterAmount": "{amount} ml",
-  "@recordQuickSettingsWaterAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "int"
-      }
-    }
-  },
   "recordQuickSettingsDisplay": "显示",
   "recordQuickSettingsWaterBadge": "饮水角标",
   "recordQuickSettingsWaterBadgeDailyTotal": "今日累计量",
   "recordQuickSettingsWaterBadgeDailyCount": "今日次数",
   "recordQuickSettingsWaterBadgeHidden": "不显示",
   "recordQuickSettingsIcons": "自定义图标",
-  "recordQuickSettingsCustomIconTitle": "更换图标",
   "recordQuickSettingsCustomIconHint": "点击各类型图标即可更换快捷记录的显示图标",
   "recordQuickIconChangeAction": "更换图标",
   "recordQuickIconResetAction": "恢复默认图标",
@@ -162,7 +123,6 @@
   "recordQuickSettingsMedicationAutoRecordHint": "关闭后，即使只有一种药也会弹出选择确认",
   "recordQuickSettingsMedicationAlreadyRecordedHint": "已记录时显示提示",
   "recordQuickSettingsMedicationAlreadyRecordedHintDesc": "关闭后，附近用药已记录时不再弹出提示",
-  "recordQuickSettingsMedicationManageAction": "管理药品",
   "recordQuickSettingsRules": "规则",
   "recordQuickSettingsMedicationRule": "用药：按药箱和当前时间附近提醒智能选择",
   "recordQuickSettingsMealRule": "餐食：单击打开相机，确认后保存",
@@ -279,9 +239,6 @@
   "recordFastChoiceMoodOkay": "一般",
   "recordFastChoiceMoodBad": "不太好",
   "recordFastChoiceMoodTerrible": "很糟",
-  "recordAiInputHint": "刚吃完饭胃有点胀...",
-  "recordAiBadge": "AI",
-  "recordNlpFabAction": "自然语言",
   "recordNlpHeaderAction": "智能记录",
   "recordNlpSheetTitle": "自然语言录入",
   "recordNlpSheetSubtitle": "先解析成候选记录，确认后再保存。",
@@ -302,7 +259,6 @@
     }
   },
   "recordNlpRemoveAction": "移除",
-  "recordNlpSaveAllAction": "保存全部",
   "recordNlpSaveSelectedAction": "保存选中项（{count}）",
   "@recordNlpSaveSelectedAction": {
     "placeholders": {
@@ -323,7 +279,6 @@
   "recordNlpInputRequiredToast": "先输入一段记录描述。",
   "recordNlpGenerateFailedToast": "解析失败，请检查内容后重试。",
   "recordNlpEmptyCandidatesToast": "这次没有解析出可保存的候选记录。",
-  "recordNlpNoCandidatesToSaveToast": "没有可保存的候选记录。",
   "recordNlpNoCandidatesSelectedToast": "先选中至少一条候选记录。",
   "recordNlpSavedToast": "已保存 {count} 条记录",
   "@recordNlpSavedToast": {
@@ -370,8 +325,6 @@
       }
     }
   },
-  "recordSummarySectionTitle": "当天摘要",
-  "recordSummaryDateLabel": "2025年5月15日（周四）",
   "recordTimelineSectionTitle": "时间线",
   "recordTimelineViewAllAction": "查看全部记录",
   "recordTimelineCollapseAction": "收起",
@@ -379,7 +332,6 @@
   "recordTimelineEmptyDescription": "快记一条饮水、用药或睡眠吧",
   "recordTimelineEmptyAction": "新建记录",
   "recordTimelineClearFilter": "清除筛选",
-  "recordTrendsSectionTitle": "趋势查看",
   "recordNewEntrySectionTitle": "新建记录",
   "recordFilterSectionTitle": "记录类型",
   "recordFilterMobileTitle": "记录筛选",
@@ -395,9 +347,6 @@
   },
   "recordFilterClearAction": "清除",
   "recordAllTypesAction": "全部类型",
-  "recordVoiceInputTitle": "语音输入",
-  "recordGuideHint": "小贴士：坚持记录有助于更好地了解自己的健康状态",
-  "recordGuideAction": "查看记录指南",
   "recordDetailTitle": "记录详情",
   "recordDetailErrorTitle": "记录详情暂时没有加载出来",
   "recordDetailValueLabel": "数值",
@@ -462,21 +411,7 @@
   "recordDeleteConfirmTitle": "删除记录",
   "recordDeletedToast": "已删除",
   "recordDeleteFailedToast": "删除失败",
-  "recordMonthLabel": "2025年5月",
-  "recordOpenDateAction": "查看日期",
   "recordNotEnabledLabel": "未开启",
-  "recordVoiceAction": "语音记录（长按说话）",
-  "recordVoiceEntryTitle": "语音录入",
-  "recordVoiceListeningHint": "正在聆听...",
-  "recordVoiceTapToStart": "点击说话",
-  "recordVoiceUseText": "使用此文本",
-  "recordOcrEntryTitle": "拍照识别",
-  "recordOcrCameraAction": "拍照",
-  "recordOcrGalleryAction": "从相册选择",
-  "recordOcrRecognizingHint": "正在识别文字...",
-  "recordOcrRecognitionFailed": "文字识别失败了，换一张更清晰的图片再试。",
-  "recordOcrRetakeAction": "重新选择",
-  "recordMicPermissionDenied": "麦克风权限未授权，请在系统设置中开启。",
   "recordErrorTitle": "记录页暂时没有加载出来",
   "recordErrorDescription": "数据边界已经接好，可以重新拉取一次。",
   "recordRefreshErrorToast": "刷新失败，请重试",
@@ -536,40 +471,10 @@
   "recordRange7Days": "近 7 天",
   "recordRange30Days": "近 30 天",
   "recordFoodImagePlaceholder": "餐图占位",
-  "recordSymptomTrackingSectionTitle": "症状跟踪",
-  "recordSymptomHeadache": "头痛",
-  "recordSymptomLoggedAt": "今天 {time} 记录",
-  "@recordSymptomLoggedAt": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "recordBodyPartLabel": "部位",
-  "recordBodyPartForehead": "头部（前额）",
-  "recordAccompanyingSymptomsLabel": "伴随症状",
-  "recordSymptomNausea": "轻微恶心",
-  "recordSymptomLightSensitive": "对光敏感",
-  "recordPainRatingLabel": "疼痛评分",
-  "recordPainModerate": "中等",
-  "recordViewTrendAction": "查看趋势",
-  "recordDietTitle": "饮食记录",
-  "recordDietRecordAction": "记录饮食",
-  "recordDentalRecordTitle": "牙科记录",
-  "recordEyeRecordTitle": "眼科记录",
-  "recordHearingRecordTitle": "听力记录",
-  "recordZeroCountLabel": "0 条记录",
   "recordFastChoiceWater250ml": "250 ml",
   "recordFastChoiceWater500ml": "500 ml",
   "recordFastChoiceWater1Cup": "1 杯",
   "recordFastChoiceWater1Time": "1 次",
-  "recordVoiceStopListening": "停止录音",
-  "recordSpeechUnavailable": "语音识别不可用，请检查设备是否支持。",
-  "recordSpeechLocaleUnsupported": "当前语言暂不支持语音识别。",
-  "recordVoiceErrorHint": "识别出错，请重试。",
-  "recordVoiceEditHint": "可在此编辑识别结果",
-  "recordOcrEmptyResult": "未识别到文字，请尝试更换图片",
   "recordBackToTodayAction": "回到今天",
   "recordDiscardChangesTitle": "放弃修改",
   "recordDiscardChangesMessage": "当前内容尚未保存，确定离开吗？",

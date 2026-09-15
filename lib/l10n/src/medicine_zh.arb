@@ -1,5 +1,4 @@
 {
-  "medicineHeaderAddToast": "会打开添加药品与识别入口。",
   "medicineSafetyGuardLabel": "安全守护",
   "medicineNotificationsTooltip": "用药提醒",
   "medicineHomeSearchHint": "搜索药品或症状",
@@ -24,22 +23,16 @@
       }
     }
   },
-  "medicineDoseDueStatus": "待服用",
   "medicineAdherenceDetail": "今日已到期剂次中已确认占比",
   "medicineNoMedicineTitle": "暂无药品",
   "medicineNoMedicineBody": "先添加药品后显示提醒",
   "medicineSafetyEngineTitle": "安全检查预览",
-  "medicineSafetyAllRecordsAction": "来源说明",
   "medicineQuickOperationTitle": "用药操作",
   "medicineQuickAddTitle": "添加药品",
   "medicineQuickAddSubtitle": "手动添加",
-  "medicineQuickRecordTitle": "记录服药",
-  "medicineQuickRecordSubtitle": "记录用药情况",
   "medicineQuickSafetyCheckTitle": "风险检查",
   "medicineQuickSafetyCheckSubtitle": "相互作用与禁忌",
-  "medicineQuickSafetyCheckToast": "会打开相互作用和禁忌检查。",
   "medicineRiskCheckPageTitle": "风险检查",
-  "medicineRiskCheckSummaryTitle": "检查概览",
   "medicineRiskCheckCurrentMedicinesLabel": "当前用药",
   "medicineRiskCheckCheckedMedicinesLabel": "已检查",
   "medicineRiskCheckFindingsLabel": "风险提示",
@@ -55,8 +48,6 @@
     }
   },
   "medicineRiskCheckCollapse": "收起",
-  "medicineRiskCheckNoFindingsTitle": "暂未发现明确风险提示",
-  "medicineRiskCheckNoFindingsBody": "当前已检查药物里没有发现明确风险提示，但仍需结合医生建议与说明书确认。",
   "medicineRiskCheckViewAction": "查看",
   "medicineRiskCheckAllClearAlertTitle": "风险检查已完成",
   "medicineRiskCheckAllClearAlertBody": "当前已检查药物里没有发现明确风险提示",
@@ -164,14 +155,6 @@
       }
     }
   },
-  "medicineRiskCheckFindingBodyGeneric": "{primary} 存在需要确认的风险信息",
-  "@medicineRiskCheckFindingBodyGeneric": {
-    "placeholders": {
-      "primary": {
-        "type": "String"
-      }
-    }
-  },
   "medicineRiskCheckFindingEvidenceFallback": "详情来自药品资料，请在风险检查页进一步确认。",
   "medicineRiskCheckCoverageReasonManualEntry": "手动录入，暂无标准药品资料",
   "medicineRiskCheckCoverageReasonMissingSourceRef": "缺少来源编号，无法拉取药品详情",
@@ -208,38 +191,13 @@
       }
     }
   },
-  "medicineRiskCheckContextPregnancy": "孕期",
-  "medicineRiskCheckContextLactation": "哺乳期",
-  "medicineRiskCheckContextPediatric": "儿童",
-  "medicineRiskCheckContextGeriatric": "老年人",
   "medicineRiskCheckContextAlcohol": "酒精",
   "medicineRiskCheckContextCaffeine": "咖啡因",
-  "medicineRiskConclusionContraindicated": "禁用",
-  "medicineRiskConclusionAvoid": "避免使用",
-  "medicineRiskConclusionCaution": "慎用",
-  "medicineRiskConclusionConsultClinician": "咨询医生",
-  "medicineRiskConclusionInsufficientInformation": "信息不足",
-  "medicineQuickRecordToast": "会打开服药记录入口。",
-  "medicineRecordsTitle": "用药记录",
-  "medicineAllMedicinesFilter": "全部药品",
-  "medicineLastSevenDaysFilter": "近 7 天",
-  "medicineViewMoreRecordsAction": "查看更多记录",
-  "medicineRecordTodayLabel": "今天",
-  "medicineRecordPreviousDate": "5/19",
-  "medicineRecordOlderDate": "5/18",
-  "medicineRecordOnTimeStatus": "按时服用",
   "medicineRecordScheduledStatus": "计划中",
   "medicineReferenceNoticeTitle": "仅供参考，必要时咨询医生或药师",
-  "medicineReferenceNoticeBody": "本应用不提供诊断服务，如有不适请及时就医。",
-  "medicineSafetyTipsTitle": "用药安全小贴士",
-  "medicineSafetyTipsRefreshAction": "换一换",
   "medicineErrorTitle": "用药页暂时没有加载出来",
   "medicineErrorDescription": "请检查网络连接后重试。",
-  "medicineHeroMetricTodayCountLabel": "今日需服用",
-  "medicineHeroMetricTodayCountUnit": "种",
   "medicineHeroMetricAdherenceLabel": "按时服用率",
-  "medicineHeroMetricAdherenceUnit": "%",
-  "medicineQuickActionSectionTitle": "识别与录入",
   "medicineQuickActionCameraTitle": "拍照识别药品",
   "medicineQuickActionCameraSubtitle": "识别包装、药盒与处方标签",
   "medicineQuickActionBarcodeTitle": "扫描条形码",
@@ -304,7 +262,6 @@
   "medicineReminderStartDateLabel": "开始日期",
   "medicineReminderEndDateLabel": "结束日期",
   "medicineReminderDateNotSet": "未设置",
-  "medicineReminderClearDateAction": "清除日期",
   "medicineReminderMethodLabel": "提醒方式",
   "medicineReminderNotificationOn": "提醒通知",
   "medicineReminderNotificationOff": "提醒关闭",
@@ -356,7 +313,7 @@
   "medicineReminderDeletedToast": "用药提醒已删除",
   "medicineReminderDeleteFailedToast": "删除用药提醒失败",
   "medicineReminderSaveFailedToast": "保存用药提醒失败",
-"medicineReminderToggleFailedToast": "切换提醒状态失败",
+  "medicineReminderToggleFailedToast": "切换提醒状态失败",
   "medicineReminderMedicineRequiredToast": "请选择药品",
   "medicineReminderTimeRequiredToast": "请至少添加一个服用时间",
   "medicineReminderDuplicateTimeToast": "该时间已存在，请选择其他时间",
@@ -372,7 +329,6 @@
   "medicineStatusStable": "稳定服用",
   "medicineStatusNeedsCheckin": "待打卡",
   "medicineSafetyPanelTitle": "用药安全",
-  "medicineSafetyPanelSubtitle": "高风险提醒和依从性风险会集中在这里。",
   "medicineSafetyPanelEmptyTitle": "暂无安全数据",
   "medicineSafetyPanelEmptyBody": "添加药品后即可进行相互作用与禁忌检查。",
   "medicineAlertInteractionTitle": "相互作用提醒",
@@ -399,46 +355,28 @@
   "medicineAlertSpecialGroupSafetyBody": "记录特殊用药条件以获得更谨慎的安全提示",
   "medicineAlertSpecialGroupSafetyDetail": "孕期、哺乳期、儿童或其他特殊人群用药请优先遵医嘱",
   "medicineAlertSpecialGroupSafetyStatus": "未记录",
-  "medicinePromiseTitle": "安全边界",
-  "medicinePromiseBody": "这个页面会主动帮你发现风险，但不会伪装成诊断结论。",
   "medicinePromisePointBoundary": "结果仅供参考，不替代医生诊断与治疗。",
   "medicinePromisePointSpecialGroup": "孕期、哺乳期、儿童、精神类药物更高优先级警示。",
   "medicinePromisePointPrivacy": "处方、拍照和敏感药物信息遵循最小暴露原则。",
   "medicinePromisePointDiagnosis": "我们不诊断、不替代医生、不编造药品事实。",
-  "medicinePromiseAction": "了解更多安全说明",
-  "medicineViewPlanToast": "会打开完整的今日用药列表与历史记录。",
   "medicineOpenPlanItemToast": "会打开药品详情、提醒设置和历史服用记录。",
-  "medicineOpenPromiseToast": "会打开安全边界、特殊人群提示和隐私处理说明。",
-  "medicineQuickActionCameraToast": "会调用相机拍摄药盒、药板或标签并开始识别。",
-  "medicineQuickActionBarcodeToast": "会打开扫码流程，识别条形码并补齐药品信息。",
-  "medicineAlertInteractionToast": "会打开相互作用详情与风险说明。",
-  "medicineAlertOtherToast": "会打开其他安全提醒详情。",
-  "medicineAlertAlcoholRiskToast": "会打开酒精预览的来源说明。",
-  "medicineAlertCoffeeReminderToast": "会打开咖啡因预览的来源说明。",
-  "medicineAlertDuplicateCheckToast": "会打开重复来源预览说明。",
-  "medicineAlertSpecialGroupSafetyToast": "会打开特殊人群用药安全提示。",
   "medicineSearchPageTitle": "搜索药品",
   "medicineSearchAssistantTitle": "用药助手",
-  "medicineSearchMyBoxTab": "我的药箱",
   "medicineSearchFieldHint": "搜索药品、成分、疾病、症状...",
   "medicineSearchSourceCn": "药品说明书（cn）",
   "medicineSearchSourceDrugbank": "药物知识（DrugBank）",
-  "medicineSearchSwitchSource": "切换数据源",
   "medicineSearchRecentTitle": "最近搜索",
   "medicineSearchClearAction": "清空",
   "medicineSearchPhotoAction": "拍照识别",
   "medicineSearchBarcodeAction": "扫描条形码",
   "medicineSearchPhotoToast": "会打开相机识别药盒、药板或说明书。",
   "medicineSearchBarcodeToast": "会打开扫码流程，识别条形码并补齐药品信息。",
-  "medicineSearchScanHint": "会打开扫码或拍照识别入口。",
   "medicineSearchCategoryTitle": "热门常备药分类",
   "medicineSearchCategoryPainFever": "退烧止痛",
   "medicineSearchCategoryColdCough": "感冒咳嗽",
   "medicineSearchCategoryStomach": "肠胃",
   "medicineSearchCategorySupplement": "维矿补充",
   "medicineSearchCategoryChronic": "慢病常用",
-  "medicineSearchReferenceNotice": "药品信息仅供参考，具体用药请遵医嘱",
-  "medicineSearchResultTitle": "搜索结果",
   "medicineSearchResultCount": "共找到 {count} 条结果",
   "@medicineSearchResultCount": {
     "placeholders": {
@@ -447,7 +385,6 @@
       }
     }
   },
-  "medicineSearchMatchedBy": "命中",
   "medicineSearchMatchedByType": "匹配方式：{type}",
   "@medicineSearchMatchedByType": {
     "placeholders": {
@@ -460,7 +397,6 @@
   "medicineSearchMatchName": "名称",
   "medicineSearchAddToBoxAction": "加入药箱",
   "medicineSearchAlreadyAddedLabel": "已添加",
-  "medicineSearchAddToast": "会加入药箱并进入用药提醒设置。",
   "medicineSearchAddedToBoxToast": "已加入药箱",
   "medicineSearchGoToReminderAction": "去设提醒",
   "medicineSearchPrecheckTitle": "添加前风险检查",
@@ -472,10 +408,7 @@
   "medicineSearchPrecheckScopeAllergy": "过敏交叉检查",
   "medicineSearchPrecheckScopeInteraction": "当前用药相互作用",
   "medicineSearchPrecheckScopeContraindication": "说明书禁忌",
-  "medicineSearchOpenDetailToast": "会打开药品详情页。",
   "medicineSearchPreviewTitle": "选中项预览",
-  "medicineSearchSafetyLead": "你当前的过敏史 / 特殊用药条件 / 现用药可能影响此药使用",
-  "medicineSearchSafetyAction": "查看详情页获取完整信息",
   "medicineSearchNoResultTitle": "无结果？",
   "medicineSearchNoResultKeyword": "检查关键词",
   "medicineSearchNoResultSwitch": "切换数据源",
@@ -512,12 +445,6 @@
       "drug": {}
     }
   },
-  "medicineRiskCheckRedFlagPregnancyContraindication": "孕期/哺乳期用药警告：{drug} 标注为禁忌，请务必咨询医生后再使用。",
-  "@medicineRiskCheckRedFlagPregnancyContraindication": {
-    "placeholders": {
-      "drug": {}
-    }
-  },
   "medicineRiskCheckRedFlagInformationGap": "无法确认 {drug} 的安全性，建议线下核对药品说明书或咨询药师。",
   "@medicineRiskCheckRedFlagInformationGap": {
     "placeholders": {
@@ -525,7 +452,6 @@
     }
   },
   "medicineRiskCheckRedFlagActionSevereAllergy": "请立即联系急救（120），不要自行处理",
-  "medicineRiskCheckRedFlagActionPregnancyContraindication": "请停止自行用药，尽快咨询医生或药师",
   "medicineRiskCheckRedFlagActionInformationGap": "当前处于高风险状态，部分药品无法自动检查，建议尽快线下确认",
   "scanResultTitle": "识别结果",
   "scanNoResultTitle": "未能识别到药品信息",
@@ -564,10 +490,9 @@
     }
   },
   "scanMatchTypeApprovalNumber": "批准文号匹配",
-  "scanMatchTypeBarcode": "条码匹配",
   "scanMatchTypeNameFuzzy": "名称模糊匹配",
   "scanGuideHint": "将药品盒条码对准扫描框",
-"scanRecognizingHint": "识别中…",
+  "scanRecognizingHint": "识别中…",
   "scanPermissionDeniedTitle": "相机权限被拒绝",
   "scanPermissionDeniedHint": "请在系统设置中开启相机权限以使用扫码功能",
   "scanPermissionOpenSettings": "去系统设置开启",
@@ -603,7 +528,6 @@
     }
   },
   "medicineRiskScoreDangerDescription": "检测到严重风险，请立即处理",
-  "medicineRiskFindingRecommendation": "建议",
   "medicineRiskOverallRecommendation": "总体建议",
   "medicineRiskCheckLastUpdated": "最后更新: {time}",
   "@medicineRiskCheckLastUpdated": {

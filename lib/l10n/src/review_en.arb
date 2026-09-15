@@ -4,7 +4,6 @@
   "reviewGenerateAction": "Generate summary",
   "reviewContinueRecordAction": "Keep recording",
   "reviewSyncAction": "Sync",
-  "reviewSnapshotStatus": "Showing the last report snapshot",
   "reviewSnapshotHint": "Generate or sync to update",
   "reviewReadinessPreviewBadge": "Preview",
   "reviewReadinessInsufficientBadge": "Insufficient data",
@@ -47,9 +46,6 @@
       }
     }
   },
-  "reviewScoreHelpTooltip": "A composite score based on your recent records, medication adherence, and vital trends.",
-  "reviewScoreTitle": "Health score",
-  "reviewScoreOutOf": "/ {max}",
   "@reportScoreOutOf": {
     "placeholders": {
       "max": {
@@ -57,8 +53,6 @@
       }
     }
   },
-  "reviewScoreTitlePreview": "Report preview score",
-  "reviewScoreOutOfPreview": "preview / {max}",
   "@reportScoreOutOfPreview": {
     "placeholders": {
       "max": {
@@ -66,7 +60,6 @@
       }
     }
   },
-  "reviewScoreBody": "Preview only until report data is connected",
   "reviewMetricMedicationTitle": "Medication",
   "reviewMetricSleepTitle": "Sleep",
   "reviewMetricWaterTitle": "Water",
@@ -80,25 +73,15 @@
   "reviewRangeLast30Days": "Last 30 days",
   "reviewPeriodWeek": "Week",
   "reviewPeriodMonth": "Month",
-  "reviewTrendSleepLabel": "Sleep (h)",
-  "reviewTrendWaterLabel": "Water (L)",
-  "reviewTrendMedicationLabel": "Medication (%)",
-  "reviewTrendDateLabels": "5/19|5/20|5/21|5/22|5/23|5/24|5/25",
-  "reviewViewDetailsAction": "View detailed data",
   "reviewFindingsSectionTitle": "Key findings",
   "reviewSuggestionHistorySectionTitle": "Suggestion history",
   "reviewSuggestionHistoryEmptyTitle": "No proactive suggestions yet",
   "reviewSuggestionHistoryEmptyBody": "Once the system issues new AI proactive suggestions, the latest review trail will appear here.",
-  "reviewSuggestionHistoryLoadingError": "Failed to load suggestion history, please try again later",
   "reviewSuggestionHistoryActiveBadge": "Active",
   "reviewSuggestionHistoryExpiredBadge": "Expired",
   "reviewSuggestionHistoryDismissedBadge": "Dismissed",
   "reviewSuggestionHistoryViewAll": "View all",
   "reviewSuggestionHistoryCollapse": "Show less",
-  "reviewFindingCoffeeTitle": "Caffeine affects sleep",
-  "reviewFindingCoffeeBody": "Sleep duration dropped after afternoon coffee.",
-  "reviewFindingMedicineTitle": "Medication routine is steady",
-  "reviewFindingMedicineBody": "Medication was taken on time for seven consecutive days.",
   "reviewAiSummaryTitle": "Summary",
   "reviewAiSummarySubtitle": "Smart analysis based on this week's records",
   "reviewAiSummarySubtitleLast30Days": "Smart analysis based on the last 30 days of records",
@@ -109,11 +92,6 @@
   "reviewAiSummaryGeneratingHintCustom": "Generating the selected period AI summary",
   "reviewAiSummaryErrorHint": "This week's AI summary could not be generated, so the report snapshot is kept for now.",
   "reviewAiSummaryDisabledHint": "AI summaries are disabled in settings, so only the report snapshot is shown.",
-  "reviewViewAdviceAction": "View advice",
-  "reviewAiBulletSleep": "Sleep quality was good overall, with slight weekend variation. A steady routine can help energy.",
-  "reviewAiBulletWater": "Water completion was moderate, with a few lower days. Carry water and drink small amounts often.",
-  "reviewAiBulletMedicine": "Medication adherence stayed high. Keep the on-time routine.",
-  "reviewAiBulletDiet": "Meals were mostly balanced, but fruit and vegetable intake could increase.",
   "reviewExportSectionTitle": "Export summary",
   "reviewExportHospitalTitle": "For clinic",
   "reviewExportHospitalSubtitle": "Export health summary",
@@ -131,16 +109,7 @@
   "reviewExportLinkMissingToast": "The export finished, but the download link is unavailable right now.",
   "reviewExportOpenFailedToast": "The export finished, but the download link could not be opened.",
   "reviewPatternSectionTitle": "Health pattern analysis",
-  "reviewPatternDietWaterTitle": "Diet and water",
-  "reviewPatternDietWaterStatus": "Good pairing",
-  "reviewPatternDietWaterBody": "Energy is easier to keep steady when hydration is enough.",
-  "reviewPatternMedicationTitle": "Medication adherence",
-  "reviewPatternMedicationStatus": "Excellent",
-  "reviewPatternMedicationBody": "Taking medicine on time helps maintain health status.",
   "reviewReferenceNotice": "This report is for reference only and is not diagnosis or treatment advice.",
-  "reviewDataInsufficientTitle": "Insufficient data to generate a full report",
-  "reviewDataInsufficientMessage": "Keep recording health data (water, sleep, symptoms, etc.) and the system will automatically generate trend analysis and AI summaries.",
-  "reviewDataInsufficientMetricsHint": "{count} metric(s) currently lack data. Keep recording to fill them in.",
   "reviewFindingsEmptyTitle": "No key findings yet",
   "reviewFindingsEmptyBody": "Keep recording health data and the system will automatically discover notable changes and trends.",
   "reviewExportInsufficientReason": "Export is unavailable with insufficient data. Please add more records first.",
@@ -150,21 +119,12 @@
   "reviewErrorTitle": "Report did not load this time",
   "reviewErrorDescription": "Report data did not load this time. Try syncing again.",
   "reviewPreviewBannerMessage": "Sign in to view your real weekly report, AI summary, and exports.",
-  "reviewSignedOutInlineHint": "Sign in to view your real weekly report, AI summary, and exports.",
-  "reviewTrendPreviewTitle": "Health trends",
-  "reviewTrendPreviewBody": "Sign in to see trends for water, sleep, and medication adherence.",
   "reviewFindingsPreviewTitle": "Key findings",
   "reviewFindingsPreviewBody": "Sign in to see notable changes based on your records.",
   "reviewSuggestionHistoryPreviewTitle": "Suggestion history",
   "reviewSuggestionHistoryPreviewBody": "Sign in to review past proactive suggestions.",
-  "reviewExportPreviewTitle": "Export preview",
-  "reviewExportPreviewBody": "Sign in to unlock weekly reports and sharing previews.",
-  "reviewPatternSleepTitle": "Sleep changes",
-  "reviewPatternSleepStatus": "Watch trend",
-  "reviewPatternSleepBody": "Evening caffeine and schedule changes may affect sleep",
   "reviewStatusInsufficientData": "Insufficient data",
   "reviewStatusUnknown": "Unknown",
-  "reviewSuggestionHistoryDetailTitle": "Suggestion Detail",
   "reviewSuggestionHistoryDetailRuleId": "Rule ID",
   "reviewSuggestionHistoryDetailRuleVersion": "Rule Version",
   "reviewSuggestionHistoryDetailTriggerType": "Trigger Type",
@@ -174,17 +134,11 @@
   "reviewSuggestionHistoryDetailFeedbackAt": "Feedback At",
   "reviewSuggestionHistoryDetailExpiredAt": "Expired At",
   "reviewSuggestionHistoryDetailNoFeedback": "Not yet",
-  "reviewSuggestionTypeConfirmedRisk": "Confirmed Risk",
-  "reviewSuggestionTypeCompliance": "Compliance",
-  "reviewSuggestionTypeTrend": "Trend",
-  "reviewSuggestionTypeBehaviorAdvice": "Behavior Advice",
-  "reviewSuggestionTypeCoverage": "Coverage",
   "reviewSuggestionTriggerTypeEvent": "Event",
   "reviewSuggestionTriggerTypeTimer": "Timer",
   "reviewSuggestionConfidenceHigh": "High",
   "reviewSuggestionConfidenceMedium": "Medium",
   "reviewSuggestionConfidenceLow": "Low",
-  "reviewClinicSummaryPreviewTitle": "Clinic Summary Preview",
   "reviewClinicSummaryGeneratedAt": "Generated At",
   "reviewClinicSummaryDataRange": "Data Range",
   "reviewClinicSummaryProfileSection": "Profile (De-identified)",
@@ -192,21 +146,19 @@
   "reviewClinicSummaryConditionsSection": "Conditions",
   "reviewClinicSummaryMedicinesSection": "Current Medications",
   "reviewClinicSummaryFindingsSection": "Key Findings",
-"reviewClinicSummaryWaterSection": "Water Intake",
-"reviewClinicSummaryWaterUnit": "ml",
-"reviewClinicSummarySleepSection": "Sleep",
-"reviewClinicSummarySleepUnit": "min",
-"reviewClinicSummaryNotesSection": "Notes",
-"reviewClinicSummaryNotesPrivacyWarning": "Anyone with the share link can read the notes in plain text.",
+  "reviewClinicSummaryWaterSection": "Water Intake",
+  "reviewClinicSummaryWaterUnit": "ml",
+  "reviewClinicSummarySleepSection": "Sleep",
+  "reviewClinicSummarySleepUnit": "min",
+  "reviewClinicSummaryNotesSection": "Notes",
+  "reviewClinicSummaryNotesPrivacyWarning": "Anyone with the share link can read the notes in plain text.",
   "reviewClinicSummaryDisclaimerSection": "Disclaimer",
-  "reviewClinicSummaryEmpty": "No summary data available to generate",
   "reviewClinicSummaryDownloadPdf": "Download PDF",
   "reviewClinicSummaryShare": "Share summary",
   "reviewClinicSummaryPdfEmpty": "PDF content is empty",
   "reviewClinicSummaryPdfFailed": "PDF download failed, please try again later",
   "reviewClinicSummarySharedTitle": "Clinic Summary",
   "reviewClinicSummarySharedExpired": "Share link has expired or is invalid",
-  "reviewClinicSummarySharedDownloadPdf": "Download PDF",
   "reviewClinicSummaryProfileNickname": "Nickname",
   "reviewClinicSummaryProfileAge": "Age",
   "reviewClinicSummaryProfileSex": "Sex",
@@ -295,17 +247,6 @@
       }
     }
   },
-  "reviewCoverageStripLabel": "{name} {coverage}",
-  "@reviewCoverageStripLabel": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "coverage": {
-        "type": "String"
-      }
-    }
-  },
   "reviewNoteworthyTitle": "Things to note",
   "reviewNoteworthyAbstainLabel": "No notable changes in this period.",
   "reviewNoteworthyWindow": "{start} – {end}",
@@ -320,7 +261,6 @@
     }
   },
   "reviewTrendGapNote": "Days without records are excluded from the trend.",
-  "reviewExportFailedWithReason": "Export failed: {reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {
       "reason": {
@@ -367,7 +307,6 @@
       }
     }
   },
-  "reviewReviewCheckInAction": "Confirm today's result",
   "reviewReviewCheckInDoneToday": "Today confirmed: {outcome}",
   "@reviewReviewCheckInDoneToday": {
     "placeholders": {
@@ -385,7 +324,6 @@
     }
   },
   "reviewActiveEventGoTodayCheckIn": "Go to today's check-in",
-  "reviewReviewEndEventAction": "End observation",
   "reviewReviewReasonNoObservations": "No observations were recorded during this window.",
   "reviewReviewReasonInsufficientCoverage": "Some records exist, but not enough to compute a trend.",
   "reviewReviewReasonNoCompletedActions": "No confirmed doses or check-ins yet.",
@@ -557,7 +495,6 @@
   "reviewReviewHistoryLoadMoreFailed": "Failed to load more.",
   "reviewReviewNoEventTitle": "No observation in progress",
   "reviewReviewNoEventDescription": "Start a health observation and this page will review what happened, what changed, what you completed, and what's next.",
-  "reviewReviewStartObservationAction": "Start health observation",
   "reviewRecordGuideTitle": "Keep recording to see trends",
   "reviewRecordGuideDescription": "You have recorded {observed}/{expected} days this week. Track water, sleep, or medication consistently and trends plus notable changes will appear here.",
   "@reviewRecordGuideDescription": {
@@ -572,7 +509,6 @@
   },
   "reviewRecordGuideGoRecordAction": "Go to record",
   "reviewRecordGuideEmptyRangeDescription": "No recorded days in this period yet. Start recording to see trends here.",
-  "reviewPreviewOverviewTitle": "What you'll see after recording",
   "reviewPreviewCoverageTitle": "Coverage overview",
   "reviewPreviewCoverageBody": "See at a glance how many days each health dimension was recorded in the week or month.",
   "reviewPreviewNoteworthyTitle": "Noteworthy changes",

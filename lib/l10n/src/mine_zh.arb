@@ -1,37 +1,13 @@
 {
-  "mineSectionTitle": "个人工作区",
-  "mineSectionSubtitle": "身份、目标与隐私控制统一呈现在这个安静的页面中。",
   "mineHeaderNotifications": "通知",
   "mineHeaderSettings": "设置",
   "mineAccountDisplayName": "Lumi 用户",
   "mineAccountGuestDisplayName": "访客",
   "mineAccountSignedIn": "已登录",
   "mineAccountSignedOut": "未登录",
-  "mineAccountMeta": "会员到期：2026-05-20",
   "mineAccountSignedOutMeta": "登录后可同步档案、提醒与个性化健康数据",
-  "mineAccountManageAction": "管理账号",
   "mineAccountEmailVerified": "邮箱已验证",
   "mineAccountEmailUnverified": "邮箱未验证",
-  "mineAccountPasswordSet": "已设置密码",
-  "mineAccountPasswordUnset": "未设置密码",
-  "mineAccountLinkedIdentityCount": "已绑定 {count} 个",
-  "@mineAccountLinkedIdentityCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "mineAccountLinkedIdentityNone": "未绑定第三方",
-  "mineAccountLastLogin": "上次登录 {date}",
-  "@mineAccountLastLogin": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "mineAccountLastLoginNone": "上次登录 --",
   "mineAccountStudentRole": "用户",
   "mineSignedOutNoticeTitle": "当前未登录",
   "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。",
@@ -86,15 +62,11 @@
   "mineArchiveCompleted": "已完善",
   "mineArchiveNeedsFill": "待补充",
   "mineCompletenessGapTitle": "完善健康档案",
-  "mineCompletenessGapSubtitle": "以下信息缺失可能影响安全检查精度",
   "mineCompletenessGapBasicInfo": "基础信息",
-  "mineCompletenessGapBasicInfoDesc": "出生日期与身高用于剂量计算",
   "mineCompletenessGapSexAtBirth": "生理性别",
   "mineCompletenessGapWeight": "体重",
   "mineCompletenessGapAllergy": "过敏史",
-  "mineCompletenessGapAllergyDesc": "缺失可能影响用药安全提醒",
   "mineCompletenessGapMedicine": "当前用药",
-  "mineCompletenessGapMedicineDesc": "缺失将影响药物相互作用检查",
   "mineReadinessGapDescBasicInfo": "出生日期和身高是剂量计算的基础",
   "mineReadinessGapDescSexAtBirth": "生理性别影响药物选择和安全剂量",
   "mineReadinessGapDescWeight": "体重是剂量计算的关键参数",
@@ -112,16 +84,8 @@
   "minePrivacyReportTitle": "报告分享",
   "minePrivacyReportSubtitle": "健康报告、趋势分析",
   "mineAiPrivacySectionTitle": "AI 与隐私",
-  "minePrivacyAiTitle": "AI 总结与建议",
-  "minePrivacyAiSubtitle": "每日总结、趋势建议",
-  "minePrivacyOnlyMe": "仅自己可见",
-  "minePrivacyShareAfterGrant": "授权后分享",
   "mineReminderSectionTitle": "提醒设置",
-  "mineReminderMedicineTitle": "用药提醒",
   "mineReminderWaterTitle": "饮水提醒",
-  "mineReminderSleepTitle": "睡眠提醒",
-  "mineReminderLocalOnly": "仅本地",
-  "mineReminderEnabled": "已开启",
   "mineNotificationReminderSectionTitle": "通知与提醒",
   "mineNotificationInboxTitle": "通知收件箱",
   "mineNotificationInboxUnreadSummary": "{count} 条未读",
@@ -133,29 +97,13 @@
     }
   },
   "mineNotificationInboxSignedOutSummary": "登录后查看",
-  "mineReminderSleepOff": "未开启",
-  "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
-  "@mineReminderSleepSummary": {
-    "placeholders": {
-      "bedtime": {
-        "type": "String"
-      },
-      "wakeTime": {
-        "type": "String"
-      }
-    }
-  },
   "mineAccountSettingsTitle": "账号与设置",
-  "mineSettingLanguageTitle": "语言设置",
-  "mineSettingLanguageValue": "简体中文",
   "mineSettingExportTitle": "数据导出",
   "mineSettingExportValue": "导出我的健康数据",
   "mineSettingHelpTitle": "帮助与反馈",
-  "mineSettingHelpValue": "常见问题与意见反馈",
   "mineSettingAboutTitle": "关于 Luminous",
   "minePrivacyNoticeTitle": "敏感数据默认保护，可随时撤回授权",
   "minePrivacyNoticeAction": "查看隐私政策",
-  "mineProfileUnknownValue": "未设置",
   "mineProfileAgeYears": "{age}岁",
   "@mineProfileAgeYears": {
     "placeholders": {
@@ -199,19 +147,9 @@
       }
     }
   },
-  "mineCompletionSubtitle": "完成度良好，继续完善更准确的建议",
-  "mineSummaryTitle": "健康上下文摘要",
-  "mineSummaryUpdatedAt": "更新于 2025-05-15",
-  "mineSummaryAge": "年龄",
-  "mineSummaryAllergies": "过敏",
-  "mineSummaryConditions": "慢病/条件",
-  "mineSummaryMedicines": "当前用药",
-  "mineSummaryMissingInfo": "缺失信息：生日、身高、单位制",
-  "mineSummaryCompleteAction": "去完善",
   "mineReadinessPreviewTitle": "个人档案尚未解锁",
   "mineReadinessPreviewDescription": "登录后查看你的真实基础信息、过敏史和当前用药。",
   "mineReadinessPreviewBadge": "预览",
-  "mineReadinessSignedInBadge": "已登录",
   "mineReadinessIncompleteTitle": "还差 {count} 项关键信息",
   "@mineReadinessIncompleteTitle": {
     "placeholders": {
@@ -220,20 +158,10 @@
       }
     }
   },
-  "mineReadinessIncompleteDescription": "补充这些信息后，安全提醒、分享控制和摘要会更准确。",
   "mineReadinessReadyTitle": "档案已基本就绪",
   "mineReadinessReadyDescription": "继续维护你的健康档案，并管理分享与账户授权。",
   "mineReadinessManageAction": "管理档案",
-  "mineAccountPrivacySectionTitle": "账户与隐私",
   "mineProfileTitle": "健康档案",
-  "mineProfileBasicInfoTitle": "基础资料",
-  "mineProfileBasicInfoSubtitle": "个人基本信息",
-  "mineProfileAllergiesTitle": "过敏史",
-  "mineProfileAllergiesSubtitle": "2 项记录",
-  "mineProfileConditionsTitle": "基础病史",
-  "mineProfileConditionsSubtitle": "1 项记录",
-  "mineProfileMedicinesTitle": "当前用药",
-  "mineProfileMedicinesSubtitle": "3 种药品",
   "mineSettingsThemeTitle": "主题",
   "mineSettingsAccountTitle": "账号与安全",
   "mineSettingsLanguageTitle": "语言",
@@ -266,8 +194,6 @@
   "mineEditDeletedToast": "已删除",
   "mineEditFieldBirthDate": "出生日期 (YYYY-MM-DD)",
   "mineEditFieldHeightCm": "身高 (cm)",
-  "mineEditFieldLocale": "语言",
-  "mineEditFieldTimezone": "时区",
   "mineEditFieldUnitSystem": "单位制",
   "mineEditFieldSexAtBirth": "生理性别",
   "mineEditFieldWeightKg": "体重 (kg)",
@@ -277,25 +203,19 @@
   "mineEditSexAtBirthUnknown": "未知",
   "mineEditUnitSystemMetric": "公制",
   "mineEditUnitSystemImperial": "英制",
-  "mineEditFieldOnboardingCompleted": "完成新手引导",
   "mineEditFieldKind": "类型",
   "mineEditFieldLabel": "名称",
   "mineEditFieldReaction": "反应",
   "mineEditFieldSeverity": "严重程度",
   "mineEditFieldNote": "备注",
-  "mineEditFieldRecordedAt": "记录时间",
   "mineEditFieldStatus": "状态",
   "mineEditFieldDiagnosedAt": "诊断日期 (YYYY-MM-DD)",
-  "mineEditFieldSource": "来源",
-  "mineEditFieldSourceRefId": "来源ID",
   "mineEditFieldDisplayName": "药品名称",
   "mineEditFieldStrengthText": "规格",
   "mineEditFieldDoseText": "剂量",
   "mineEditFieldRoute": "给药途径",
   "mineEditFieldStartedAt": "开始日期 (YYYY-MM-DD)",
-  "mineEditFieldEndedAt": "结束日期 (YYYY-MM-DD)",
   "mineSettingsAdvancedTitle": "高级设置",
-  "mineReminderDisabled": "已关闭",
   "mineExportStatusRequested": "已提交",
   "mineExportStatusPending": "处理中",
   "mineExportStatusCompleted": "已完成",
@@ -358,10 +278,6 @@
   "mineConditionStatusActive": "活动中",
   "mineConditionStatusResolved": "已痊愈",
   "mineConditionStatusSuspected": "疑似",
-  "mineMedicineSourceDrugbank": "DrugBank",
-  "mineMedicineSourceCn": "中国药典",
-  "mineMedicineSourceManual": "手动",
-  "mineArchiveRecordListTitle": "记录列表",
   "mineArchiveAddNewAction": "添加新记录",
   "mineArchiveEmptyTitle": "健康数据需登录后查看",
   "mineArchiveEmptyDescription": "登录后同步基础信息、过敏史、疾病和用药记录。",
