@@ -132,6 +132,33 @@ void main() {
       container.dispose();
     });
 
+    test('treats a throwing session store as no stored session', () async {
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: true, isAuthenticated: false),
+            ),
+          ),
+          lucentSessionStoreProvider.overrideWithValue(
+            _ThrowingSessionStore('platform channel unavailable'),
+          ),
+        ],
+      );
+
+      // 读失败仍然保守回退成"无会话"（保持既有语义），但也必须留下日志——
+      // 静默吞掉会把"store 注册错/通道坏了"这类真问题伪装成"用户没登录"。
+      final future = container.read(_testFetchProvider.future);
+      bool completed = false;
+      unawaited(future.whenComplete(() => completed = true));
+
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      expect(completed, isFalse);
+
+      container.dispose();
+    });
+
     test('propagates fetch errors', () async {
       final container = ProviderContainer(
         overrides: [
@@ -318,6 +345,20 @@ class _FakeSessionNotifier extends AuthSessionNotifier {
 
   @override
   Future<void> logout() async {}
+}
+
+/// A session store whose reads always throw, standing in for an unavailable
+/// platform channel.
+class _ThrowingSessionStore implements LucentSessionStore {
+  _ThrowingSessionStore(this.message);
+
+  final String message;
+
+  @override
+  Future<String?> readRefreshToken() async => throw StateError(message);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 // Test providers that use authGuarded

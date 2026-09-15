@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 
 /// Auth-guard helper for use inside provider functions.
@@ -87,11 +88,21 @@ Future<T> authGuarded<T>({
 /// A store read failure (e.g. platform channel unavailable in tests) is
 /// treated as "no stored session" — the caller falls back to the old
 /// blocking behaviour rather than firing unauthenticated requests.
+///
+/// The failure is still logged: the conservative fallback is intentional, but
+/// swallowing it silently would also hide genuine programming errors (a
+/// mis-registered store, a broken platform channel) that only look like
+/// "no session stored".
 Future<bool> _hasStoredSession(Ref ref) async {
   try {
     final store = ref.read(lucentSessionStoreProvider);
     return await store.readRefreshToken() != null;
-  } catch (_) {
+  } catch (e, st) {
+    appTalker.warning(
+      'authGuarded: readRefreshToken failed; treating as no stored session',
+      e,
+      st,
+    );
     return false;
   }
 }
