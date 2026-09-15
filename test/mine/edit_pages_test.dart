@@ -50,8 +50,6 @@ void main() {
     final payload = healthProfileUpdatePayload(input!);
     expect(payload, containsPair('birthDate', '1999-01-01'));
     expect(payload, containsPair('heightCm', 170));
-    // 血型已随契约收敛退场,legacy 页不再发送该字段。
-    expect(payload.containsKey('bloodType'), isFalse);
   });
 
   testWidgets('Profile edit shows login dialog when signed out', (

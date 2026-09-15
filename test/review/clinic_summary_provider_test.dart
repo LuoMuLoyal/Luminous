@@ -133,12 +133,7 @@ Map<String, dynamic> _summaryJson({
     'coverage': _coverageJson(),
     'dataRange': 'last_7_days',
     if (sections.contains('profile'))
-      'profile': {
-        'nickname': 'Lumi',
-        'age': 30,
-        'sexAtBirth': 'male',
-        'bloodType': 'A',
-      },
+      'profile': {'nickname': 'Lumi', 'age': 30, 'sexAtBirth': 'male'},
     if (sections.contains('allergies'))
       'allergies': [
         {'label': '青霉素', 'reaction': '皮疹', 'severity': 'moderate'},

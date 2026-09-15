@@ -2683,7 +2683,7 @@ HealthContextSnapshot _healthSnapshot({
       activeAllergyCount: 2,
       conditionCount: 1,
       currentMedicineCount: 3,
-      missingCoreProfileFields: ['bloodType'],
+      missingCoreProfileFields: ['birthDate'],
     ),
     profile: HealthProfile(
       birthDate: '1999-01-15',

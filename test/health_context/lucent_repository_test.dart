@@ -205,7 +205,7 @@ HealthContextResponse _buildDto({
 }
 
 String _encodeSnapshot() {
-  return '{"summary":{"age":null,"onboardingCompleted":true,"activeAllergyCount":0,"conditionCount":0,"currentMedicineCount":0,"missingCoreProfileFields":[]},"profile":{"birthDate":null,"sexAtBirth":null,"heightCm":null,"bloodType":null,"locale":null,"timezone":null,"unitSystem":null,"onboardingCompletedAt":null,"extras":{}},"allergies":[],"conditions":[],"currentMedicines":[]}';
+  return '{"summary":{"age":null,"onboardingCompleted":true,"activeAllergyCount":0,"conditionCount":0,"currentMedicineCount":0,"missingCoreProfileFields":[]},"profile":{"birthDate":null,"sexAtBirth":null,"heightCm":null,"activityLevel":null,"dietaryPreferences":null,"locale":null,"timezone":null,"unitSystem":null,"onboardingCompletedAt":null,"extras":{}},"allergies":[],"conditions":[],"currentMedicines":[]}';
 }
 
 // ── Tests ───────────────────────────────────────────────────────

@@ -40,23 +40,16 @@ updated: 2026-09-15
 
 ## 1. P0 — 契约一致性（先做）
 
-### 1-1. 测试 fixture 清理已下线的 `bloodType` / `emergencyContact`【09-14 C1】P0·M
+### 1-1. 测试 fixture 与真实契约的一致性【09-14 C1，已清理后留下的口径】
 
-契约已删（d660cc4b），wire DTO `disallowUnrecognizedKeys: false` 静默忽略多余键，测试虽绿但 fixture 已与真实响应脱节。8 个文件：
+已下线的字段（`bloodType` / `emergencyContact`）曾在 8 个测试文件里留存：wire DTO
+`disallowUnrecognizedKeys: false` 宽松解析不会报错，测试继续绿，但 fixture 已与真实响应脱节——
+同类"契约收敛后测试没跟着收敛"的问题读代码发现不了，只能靠对后端契约逐字段核对。
 
-1. JSON fixture 删 `'bloodType'` / `'emergencyContact'` 键，补 `activityLevel: null` / `dietaryPreferences: null`（驱动新字段解码路径）：
-   - `test/settings/data/datasources/profile_remote_test.dart:71,76`
-   - `test/health_context/remote_data_source_test.dart:454,459`
-   - `test/health_context/lucent_repository_test.dart:208`（JSON 字符串内同步处理）
-   - `test/review/clinic_summary_provider_test.dart:140`（`'bloodType': 'A'` 直接删）
-2. `missingCoreProfileFields: ['bloodType']` → `['activityLevel']`（3 处）：
-   - `test/mine/data/repositories/lucent_test.dart:18`
-   - `test/mine/page_test.dart:1215`
-   - `test/record/page_test.dart:2686`
-   - ⚠️ 前置：与 Lucent `user-health-context` 模块确认后端实际会返回的缺口字段名（该列表值由后端决定；activityLevel 可空性与新契约一致才可作占位）。
-3. `test/mine/edit_pages_test.dart:54` 恒真断言 `expect(payload.containsKey('bloodType'), isFalse)` 直接删除（legacy 编辑页已无该字段，断言无覆盖价值）。
-
-验证：4 个涉及目录 `flutter test` 绿。
+- 已清理 8 处（3 处 `missingCoreProfileFields: ['bloodType']` 改为真实缺口字段、1 处对已退场字段的
+  恒真断言、1 处 clinic summary 冗余字段、3 处 JSON fixture 补 `activityLevel`/`dietaryPreferences`）。
+- 后续新增/修改 fixture 时：字段名与可空性以 Lucent 的 zod schema / types 为准
+  （如 `CORE_PROFILE_FIELDS`、`clinicSummaryProfileSchema`），不要凭 DTO 生成物反推业务取值。
 
 ## 2. P1 — 真 bug 与行为缺口
 
@@ -72,18 +65,6 @@ updated: 2026-09-15
 ```
 
 `appTalker` 走 `core/logger` 既有 provider；不改返回语义。
-
-### 2-2. `_submit` 失败仍 toast「已保存」（假成功）【09-13 S-12】P1·S
-
-实锤链路：`health_edit_forms.dart:25-45` 的 `HealthProfileFormNotifier.save` 失败时吞异常写入 `state.errorMessage` 后正常返回 void；`profile.dart:268-278` `_submit` 无条件调 `onChanged()` → 固定 toast `mineEditSavedToast`。断网时用户看到「已保存」。
-
-修复：`save` 改返回 `Future<bool>`（成功 true / catch false，errorMessage 照旧写入 state）；`_submit` 仅成功时 `onChanged()`，失败 `Toast.show(l10n.mineEditSaveFailed)`（新 ARB 键走 `lib/l10n/src/` 分片）。同文件 `Allergy/Condition/CurrentMedicine` 三个 Notifier 同款改法一并做（profile 页之外 mine 编辑页消费 `saved`/`errorMessage` 的地方核对一遍，`profile_edit.dart` 有 listener 弹 toast 逻辑不受影响）。
-
-### 2-3. `onLinkWechat` 空 TODO 死分支【09-08 C-1 余留 / 09-12 W-4 / 09-13 C-1+W-4，三连报】P1·S
-
-`account_manage_sections.dart:213-215` 空 `async {}` + `:239 showWechatLink: false`；`LinkedIdentitiesSection`（account_identity.dart:115）把 `onLinkWechat` 设为 required，强迫两个调用方都传——security_center.dart:113-115 传真实现，账号管理传空函数，两条链路已漂移。
-
-修复：`onLinkWechat` 改可空，`showWechatLink: true && onLinkWechat != null` 才渲染绑定按钮；账号管理侧删掉空函数调用（不再传）。**不**在空 callback 里补 toast——微信入口因企业资质整体隐藏是有意决策（docs/TODO.md 2026-09-06 段），死代码路径应编译期消灭而不是给不可达路径加提示。
 
 ### 2-4. login/register 条款前缀 l10n hack【09-13 W-1】P1·S
 
@@ -204,18 +185,18 @@ updated: 2026-09-15
 方法：把已确认条目抽象成模式，逐类全库 grep + 逐命中读上下文判定。**下表"不改"项同样重要**——
 它们是扫描命中但经核实属于合理设计，执行时不要为"一致性"去动。
 
-### 5-1. ~~`_submit` 假成功同型：`profile_edit.dart` 只听 saved 无 error 分支~~ —— **执行时复核为误报**【记录用】
+### 5-1. 假成功同型扫查结论
 
-补扫时判定 `mine/presentation/pages/profile_edit.dart:92-93` 只监听 `saved`、缺 `errorMessage` 分支；
-**开工复核推翻**：该文件 88-100 行的 `ref.listen` 内 96-99 行**已有** `errorMessage` 变化时的失败 toast。
-当时误判源于只读了 92-93 两行的窗口。故本项不成立，§2-2 的真实范围仍只有 `settings/profile.dart:277` 一处。
+`settings/profile.dart` 的 `_submit` 是唯一一处真实假成功点（已修）。补扫时曾判定
+`mine/presentation/pages/profile_edit.dart:92-93` 只监听 `saved`、缺 `errorMessage` 分支；**开工复核推翻**：
+该文件 88-100 行的 `ref.listen` 内 96-99 行**已有** `errorMessage` 变化时的失败 toast，当时误判源于只读了两行。
 
 `health_edit_forms.dart` 四个 Notifier 的 `saved`/`errorMessage` 语义本身是**正确**的（Allergy 65-110、
 Condition、CurrentMedicine 均失败置 `errorMessage` 而不置 `saved`，mine 侧三个 edit 页的 listener
 也都同时处理两者）。
 
 `medicine/presentation/pages/reminder/detail.dart:361-372` 是**正确范式**（`success` 三元 toast），
-可作为修复 §2-2 时的参照写法。
+后续同类修复可作参照写法。
 
 ### 5-2. l10n 同文案双份键远不止 auth 三组：全库 84 组【P2·M】
 
@@ -306,7 +287,7 @@ health_event 三个 sheet（check_in/end_event/start_event，**均有大段注�
 
 ## 7. 执行顺序与验收
 
-- **Wave 1（P0+P1 主干）**：1-1 → 2-2（假成功，真实范围仅 `settings/profile.dart:277` 一处，§5-1 已复核为误报）→ 2-3 → 2-4 → 2-5 → 2-1 → 2-6 → 2-7 → 2-9 → 2-8 → 2-10。每项落地即跑对应目录 `flutter test`；1-1 的 `missingCoreProfileFields` 值需先与 Lucent 侧确认。
+- **Wave 1（P1 主干）**：2-4 → 2-5 → 2-1 → 2-6 → 2-7 → 2-9 → 2-8 → 2-10。每项落地即跑对应目录 `flutter test`。
 - **Wave 2（P2·A）**：3-1 → 3-2（含 §5-5 的 session_store / quick_entry_sleep 同类点）→ 3-4 → 3-5 → 3-3 → 3-6 → 3-7 → 3-8 → 3-9 → 3-10 → 3-11；3-12（合同级）与 §3-9/§4-19/§4-20 按 09-08 建议合批：同一测试文件（account_settings_page_test 改名 + key 去重 + 断言补强）一批做。
 - **Wave 3（P2·B + 同类补扫 + 流程）**：§4 按 1-25 顺手清；§5 同类补扫按 §5-2（84 组 l10n 审计，独立一批，需列消费点脚本）→ §5-3（TODO 登记）→ §5-4（真实时钟第二类逐文件评估）；§5-6 是"逐命中定性后不改"的记录，**不要**为一致性去加日志改代码；最后 §5-5 之外的流程两句进 AGENTS.md。
 - **收尾验收**：`flutter analyze` 零 issue；`flutter test` 全量绿；`dart run scripts/docs/verify.dart --warning-only` 无新增告警；l10n 相关改动后 `arb_tools.dart merge` + `flutter gen-l10n` + `docs/reference/localization.md` 同步；本计划全部项实施完毕后按约定整文件删除并在迁移日志登记。
