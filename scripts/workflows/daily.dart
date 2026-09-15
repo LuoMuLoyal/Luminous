@@ -29,18 +29,10 @@ Future<void> main(List<String> args) async {
 }
 
 Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
-  await runLoggedCommand(
-    'dart',
-    ['run', 'scripts/docs/verify.dart', '--warning-only'],
-    workingDirectory: context.repoRoot,
-    stepName: 'dart run scripts/docs/verify.dart --warning-only',
-  );
-  stdout.writeln('');
-
-  // Full-tree governance check (doc-map references, link integrity,
-  // front-matter, freshness, readership, feature coverage). Blocking —
-  // daily checks keep the per-rule coverage report advisory above, but
-  // structural doc-governance problems fail the run.
+  // Full-tree governance check (link integrity, front-matter, freshness,
+  // readership, feature README coverage). Blocking — structural
+  // doc-governance problems fail the run. The former per-rule coverage
+  // report step was retired together with docs/doc-map.yaml (2026-09-15).
   await runLoggedCommand(
     'dart',
     ['run', 'scripts/docs/verify.dart', '--verify'],

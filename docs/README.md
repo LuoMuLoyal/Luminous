@@ -32,7 +32,9 @@ docs/ 的唯一索引:只回答「去哪找什么」。阅读规则与文档规�
 - [MigrationLog](logs/MigrationLog.md) — 变更日志入口,逐日条目在 `logs/migration-log/`(logs/)
 - [Removed_From_Active_Scope](archive/Removed_From_Active_Scope.md) — 归档范围说明(archive/)
 
-`doc-map.yaml` 是变更覆盖映射,由 `scripts/docs/verify.dart` 消费。
+`doc-map.yaml` 变更覆盖映射已于 2026-09-15 观察期满退役；文档治理检查由
+`scripts/docs/verify.dart --verify`（链接/元数据/新鲜度/阅读入口/feature README 覆盖）
+与 `scripts/docs/links.dart`（正文路径）承接。
 
 ## 放置规则
 

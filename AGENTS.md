@@ -2,14 +2,15 @@
 
 ## Documentation Rules
 
-After every code change, run `dart run scripts/docs/verify.dart --warning-only`.
-It reads `docs/doc-map.yaml` and prints a per-rule report of which docs each touched code
-area expects. The pre-commit hook runs the same tool in **report-only** mode — the old
-"code staged but no docs/ staged → commit blocked" gate is retired (two-week observation
-before the mapping is removed entirely; tracked in `docs/TODO.md`). Structural
-guarantees live in `--verify` (pre-push / daily): doc-map references, link integrity,
-front-matter, 90-day freshness, readership. The migration-log overwrite
-check in pre-commit still blocks.
+The doc-freshness advisory `dart run scripts/docs/verify.dart` prints stale
+`status: active` docs (front-matter `updated` >90 days, unarchived
+`status: stale`) and never blocks. The code→docs coverage mapping
+(doc-map.yaml and the pre-commit doc-touch report) was retired on
+2026-09-15 after its two-week observation window (tracked in `docs/TODO.md`).
+Structural guarantees live in `--verify` (pre-push / daily): doc link
+integrity, front-matter completeness, 90-day freshness, doc readership, and
+`lib/features/*` README coverage. The migration-log overwrite check in
+pre-commit still blocks.
 
 ### Standing rules
 
@@ -26,8 +27,8 @@ check in pre-commit still blocks.
   （冻结新增手写"现状叙事"文档：断言进测试，约束进 feature README。）
 - **Closing a TODO**: delete the line from `docs/TODO.md`.
 - **Finishing a plan**: delete the entire section from `plans/*.md`.
-- **Doc lifecycle**: active docs older than 90 days without updates, or unreferenced by
-  `doc-map.yaml` / doc links, are flagged by `dart run scripts/docs/verify.dart --verify`
+- **Doc lifecycle**: active docs older than 90 days without updates, or not
+  linked from any other doc, are flagged by `dart run scripts/docs/verify.dart --verify`
   — review, update, or archive them to `docs/archive/`. Docs marked `status: frozen` are
   exempt from the 90-day freshness checks.
 - **Front-matter**: every active content doc must carry YAML front-matter
@@ -59,7 +60,7 @@ dart run scripts/contract/bootstrap.dart        # 生成物准备(全新 clone/A
 dart run scripts/docs/generate.dart               # 再生成 reference/generated 清单(token/路由/feature 变更后)
 dart run scripts/workflows/daily.dart           # 仓库安全级检查(analyze+test+文档+生成文档新鲜度)
 dart run scripts/workflows/fullstack.dart       # 全栈检查(需 Lucent 运行时)
-dart run scripts/docs/verify.dart --warning-only   # 文档覆盖报告(--verify 全量治理)
+dart run scripts/docs/verify.dart               # 文档新鲜度通报(--verify 全量治理)
 Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Location   # 七条自定义规则扫描(warn 观察模式)
 ```
 

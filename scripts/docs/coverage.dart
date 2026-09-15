@@ -2,298 +2,23 @@ import 'dart:io';
 
 import '../support.dart';
 
-class DocCoverageConfig {
-  const DocCoverageConfig(this.rules);
+/// 低频稳定叙事(explanation/、product/)只要求携带 `updated`,不做 90 天
+/// 陈旧告警(它们按设计只减不增)。`status: stale` 标记仍会被报告。
+const List<String> stalenessExemptPatterns = [
+  'docs/explanation/**',
+  'docs/product/**',
+];
 
-  final List<DocCoverageRule> rules;
-}
+/// Days after which an `status: active` doc is considered stale.
+const int staleDocThresholdDays = 90;
 
-class DocCoverageRule {
-  const DocCoverageRule({
-    required this.name,
-    required this.codePatterns,
-    required this.requiredDocs,
-    this.anyOfDocs = const [],
-    this.infoDocs = const [],
-  });
-
-  final String name;
-  final List<String> codePatterns;
-
-  /// docs_required — ALL of these must be touched.
-  final List<String> requiredDocs;
-
-  /// docs_any_of — AT LEAST ONE of these must be touched.
-  final List<String> anyOfDocs;
-
-  /// docs_info — informational only, missing is not a warning.
-  final List<String> infoDocs;
-}
-
-class DocCoverageReport {
-  const DocCoverageReport(this.matchedRules);
-
-  final List<DocCoverageMatch> matchedRules;
-
-  /// True when a required or any-of target is missing for a matched rule.
-  bool get hasWarnings => matchedRules.any(
-    (match) =>
-        match.missingRequired.isNotEmpty || match.missingAnyOf.isNotEmpty,
-  );
-
-  /// True when an info-level target is missing for a matched rule.
-  bool get hasInfos =>
-      matchedRules.any((match) => match.missingInfo.isNotEmpty);
-}
-
-class DocCoverageMatch {
-  const DocCoverageMatch({
-    required this.ruleName,
-    required this.touchedCodeFiles,
-    required this.missingRequired,
-    required this.missingAnyOf,
-    required this.missingInfo,
-  });
-
-  final String ruleName;
-  final List<String> touchedCodeFiles;
-  final List<String> missingRequired;
-  final List<String> missingAnyOf;
-  final List<String> missingInfo;
-}
-
-DocCoverageConfig loadDocCoverageConfig(File file) {
-  if (!file.existsSync()) {
-    throw StateError('Doc coverage config not found: ${file.path}');
-  }
-  return parseDocCoverageConfig(file.readAsStringSync());
-}
-
-DocCoverageConfig parseDocCoverageConfig(String source) {
-  final rules = <DocCoverageRule>[];
-  String? currentName;
-  List<String>? currentCodePatterns;
-  List<String>? currentRequiredDocs;
-  List<String>? currentAnyOfDocs;
-  List<String>? currentInfoDocs;
-  _RuleSection? currentSection;
-
-  void commitRule() {
-    if (currentName == null) {
-      return;
-    }
-    rules.add(
-      DocCoverageRule(
-        name: currentName,
-        codePatterns: List.unmodifiable(currentCodePatterns ?? const []),
-        requiredDocs: List.unmodifiable(currentRequiredDocs ?? const []),
-        anyOfDocs: List.unmodifiable(currentAnyOfDocs ?? const []),
-        infoDocs: List.unmodifiable(currentInfoDocs ?? const []),
-      ),
-    );
-  }
-
-  final lines = source.split(RegExp(r'\r?\n'));
-  for (final rawLine in lines) {
-    final line = rawLine.trimRight();
-    final trimmed = line.trimLeft();
-    if (trimmed.isEmpty || trimmed.startsWith('#') || trimmed == 'rules:') {
-      continue;
-    }
-
-    if (trimmed.startsWith('- name:')) {
-      commitRule();
-      currentName = trimmed.substring('- name:'.length).trim();
-      currentCodePatterns = <String>[];
-      currentRequiredDocs = <String>[];
-      currentAnyOfDocs = <String>[];
-      currentInfoDocs = <String>[];
-      currentSection = null;
-      continue;
-    }
-
-    if (trimmed == 'code:') {
-      currentSection = _RuleSection.code;
-      continue;
-    }
-
-    if (trimmed == 'docs_required:') {
-      currentSection = _RuleSection.docsRequired;
-      continue;
-    }
-
-    if (trimmed == 'docs_any_of:') {
-      currentSection = _RuleSection.anyOf;
-      continue;
-    }
-
-    if (trimmed == 'docs_info:') {
-      currentSection = _RuleSection.info;
-      continue;
-    }
-
-    if (trimmed.startsWith('- ')) {
-      final value = trimmed.substring(2).trim();
-      switch (currentSection) {
-        case _RuleSection.code:
-          currentCodePatterns?.add(value);
-        case _RuleSection.docsRequired:
-          currentRequiredDocs?.add(value);
-        case _RuleSection.anyOf:
-          currentAnyOfDocs?.add(value);
-        case _RuleSection.info:
-          currentInfoDocs?.add(value);
-        case null:
-          throw FormatException(
-            'Unexpected list item outside a rule section: $line',
-          );
-      }
-      continue;
-    }
-
-    throw FormatException('Unsupported doc coverage config line: $line');
-  }
-
-  commitRule();
-  return DocCoverageConfig(List.unmodifiable(rules));
-}
-
-DocCoverageReport buildDocCoverageReport({
-  required DocCoverageConfig config,
-  required List<String> changedFiles,
-  required List<String> documentedFiles,
-}) {
-  final normalizedChangedFiles = changedFiles.map(_normalizePath).toSet();
-  final normalizedDocFiles = documentedFiles.map(_normalizePath).toSet();
-  final matches = <DocCoverageMatch>[];
-
-  for (final rule in config.rules) {
-    final touchedCodeFiles = normalizedChangedFiles
-        .where(
-          (file) => rule.codePatterns.any(
-            (pattern) => _matchesPattern(file, pattern),
-          ),
-        )
-        .toList(growable: false);
-    if (touchedCodeFiles.isEmpty) {
-      continue;
-    }
-
-    final missingRequired = rule.requiredDocs
-        .map(_normalizePath)
-        .where(
-          (docPattern) => !normalizedDocFiles.any(
-            (docFile) => _matchesPattern(docFile, docPattern),
-          ),
-        )
-        .toList(growable: false);
-
-    final anyOfTouched = rule.anyOfDocs.any(
-      (pattern) => normalizedDocFiles.any(
-        (docFile) => _matchesPattern(docFile, _normalizePath(pattern)),
-      ),
-    );
-    final missingAnyOf = rule.anyOfDocs.isEmpty || anyOfTouched
-        ? const <String>[]
-        : rule.anyOfDocs.map(_normalizePath).toList(growable: false);
-
-    final missingInfo = rule.infoDocs
-        .map(_normalizePath)
-        .where(
-          (docPattern) => !normalizedDocFiles.any(
-            (docFile) => _matchesPattern(docFile, docPattern),
-          ),
-        )
-        .toList(growable: false);
-
-    matches.add(
-      DocCoverageMatch(
-        ruleName: rule.name,
-        touchedCodeFiles: touchedCodeFiles,
-        missingRequired: missingRequired,
-        missingAnyOf: missingAnyOf,
-        missingInfo: missingInfo,
-      ),
-    );
-  }
-
-  return DocCoverageReport(List.unmodifiable(matches));
-}
-
-String renderDocCoverageReport(DocCoverageReport report) {
-  if (report.matchedRules.isEmpty) {
-    return 'Documentation coverage: no mapped code changes detected.';
-  }
-
-  if (!report.hasWarnings && !report.hasInfos) {
-    return 'Documentation coverage: all mapped doc targets were updated.';
-  }
-
-  final buffer = StringBuffer('Documentation coverage warnings:\n');
-  for (final match in report.matchedRules) {
-    if (match.missingRequired.isEmpty &&
-        match.missingAnyOf.isEmpty &&
-        match.missingInfo.isEmpty) {
-      continue;
-    }
-    buffer.writeln('- Rule: ${match.ruleName}');
-    buffer.writeln('  Code changes: ${match.touchedCodeFiles.join(', ')}');
-    if (match.missingRequired.isNotEmpty) {
-      buffer.writeln(
-        '  Required docs not updated: ${match.missingRequired.join(', ')}',
-      );
-    }
-    if (match.missingAnyOf.isNotEmpty) {
-      buffer.writeln(
-        '  Update at least one of: ${match.missingAnyOf.join(', ')}',
-      );
-    }
-    if (match.missingInfo.isNotEmpty) {
-      buffer.writeln(
-        '  Suggested docs (optional): ${match.missingInfo.join(', ')}',
-      );
-    }
-  }
-  if (report.hasWarnings) {
-    buffer.write('This is warning-only and does not block the workflow.');
-  } else {
-    buffer.write('No required docs missing — suggestions only.');
-  }
-  return buffer.toString();
-}
-
-Future<List<String>> collectChangedFiles(
-  Directory repoRoot, {
-  required bool stagedOnly,
-}) async {
-  final changed = await captureCommandLines('git', [
-    'diff',
-    if (stagedOnly) '--cached',
-    '--name-only',
-    '--diff-filter=ACMR',
-  ], workingDirectory: repoRoot);
-
-  if (stagedOnly) {
-    return changed;
-  }
-
-  final untracked = await captureCommandLines('git', [
-    'ls-files',
-    '--others',
-    '--exclude-standard',
-  ], workingDirectory: repoRoot);
-
-  return {...changed, ...untracked}.toList(growable: false);
-}
-
-String defaultDocCoverageConfigPath(Directory repoRoot) =>
-    '${repoRoot.path}${Platform.pathSeparator}docs${Platform.pathSeparator}doc-map.yaml';
-
-String _normalizePath(String path) => path.replaceAll('\\', '/');
+// --- Glob matching -------------------------------------------------------
+// `*` matches a single path segment; `**` matches multiple segments.
+// Used by the front-matter / active-doc pattern lists below.
 
 bool _matchesPattern(String path, String pattern) {
-  final normalizedPath = _normalizePath(path);
-  final normalizedPattern = _normalizePath(pattern);
+  final normalizedPath = path.replaceAll('\\', '/');
+  final normalizedPattern = pattern.replaceAll('\\', '/');
   final regex = _globToRegExp(normalizedPattern);
   return regex.hasMatch(normalizedPath);
 }
@@ -322,18 +47,6 @@ RegExp _globToRegExp(String pattern) {
   buffer.write(r'$');
   return RegExp(buffer.toString());
 }
-
-enum _RuleSection { code, docsRequired, anyOf, info }
-
-/// 低频稳定叙事(explanation/、product/)只要求携带 `updated`,不做 90 天
-/// 陈旧告警(它们按设计只减不增)。`status: stale` 标记仍会被报告。
-const List<String> stalenessExemptPatterns = [
-  'docs/explanation/**',
-  'docs/product/**',
-];
-
-/// Days after which an `status: active` doc is considered stale.
-const int staleDocThresholdDays = 90;
 
 // --- Front-matter & freshness -----------------------------------------
 
@@ -428,7 +141,7 @@ DocFreshnessReport analyzeDocFreshness({
   );
 }
 
-// --- Verify mode (mirrors Lucent's doc-coverage-lib) --------------------
+// --- Verify mode ---------------------------------------------------------
 
 /// Active docs that MUST stay fresh — everything outside the archive and the
 /// migration logs. Paths follow the de-numbered layout (explanation/,
@@ -496,52 +209,6 @@ List<String> findDocsMissingFrontMatter(
       .toList(growable: false);
 }
 
-/// Literal (non-glob) doc paths referenced by rules that do not exist.
-List<String> findDocMapOrphans(
-  DocCoverageConfig config,
-  List<String> availableFiles,
-) {
-  final orphans = <String>[];
-  for (final rule in config.rules) {
-    for (final pattern in [
-      ...rule.requiredDocs,
-      ...rule.anyOfDocs,
-      ...rule.infoDocs,
-    ]) {
-      if (pattern.contains('*')) {
-        continue;
-      }
-      if (!availableFiles.contains(pattern)) {
-        orphans.add('${rule.name}: "$pattern" does not exist');
-      }
-    }
-  }
-  return orphans;
-}
-
-/// Glob doc patterns referenced by rules that match no existing file.
-List<String> findDocMapGlobOrphans(
-  DocCoverageConfig config,
-  List<String> availableFiles,
-) {
-  final orphans = <String>[];
-  for (final rule in config.rules) {
-    for (final pattern in [
-      ...rule.requiredDocs,
-      ...rule.anyOfDocs,
-      ...rule.infoDocs,
-    ]) {
-      if (!pattern.contains('*')) {
-        continue;
-      }
-      if (!availableFiles.any((file) => _matchesPattern(file, pattern))) {
-        orphans.add('${rule.name}: glob "$pattern" matches no existing file');
-      }
-    }
-  }
-  return orphans;
-}
-
 /// Docs with a standing reader channel (README nav / subdir READMEs) —
 /// exempt from the readership check.
 const List<String> exemptUnreferencedPatterns = [
@@ -553,7 +220,7 @@ const List<String> exemptUnreferencedPatterns = [
 
 /// Active docs subject to the readership rule: every `status: active` doc
 /// outside the standing channels (READMEs, ADR/how-to, generated and log
-/// trees) must be listed in doc-map or linked from another doc.
+/// trees) must be linked from another doc.
 /// Selection is path-based — no front-matter `quadrant` involvement.
 List<String> readershipSubjectPaths(
   List<String> activeDocs,
@@ -582,64 +249,32 @@ List<String> readershipSubjectPaths(
       .toList(growable: false);
 }
 
-/// Subject docs neither referenced by any doc-map rule nor linked from
-/// another doc in the vault ([linkedPaths]).
+/// Subject docs not linked from any other doc in the vault ([linkedPaths]).
 List<String> findUnreferencedActiveDocs({
-  required DocCoverageConfig config,
   required List<String> subjectPaths,
   required Set<String> linkedPaths,
 }) {
   return subjectPaths
-      .where((path) {
-        if (linkedPaths.contains(path)) {
-          return false;
-        }
-        return !config.rules.any((rule) {
-          return [
-            ...rule.requiredDocs,
-            ...rule.anyOfDocs,
-            ...rule.infoDocs,
-          ].any((pattern) => _matchesPattern(path, pattern));
-        });
-      })
+      .where((path) => !linkedPaths.contains(path))
       .toList(growable: false);
 }
 
-/// Feature dirs under `lib/features/*` intentionally exempt from doc-map
-/// coverage. Keep this list minimal — prefer adding a doc-map rule over an
-/// exemption. Document the reason next to each entry.
+/// Feature dirs under `lib/features/*` intentionally exempt from README
+/// coverage. Keep this list minimal — document the reason next to each entry.
 const List<String> exemptFeaturePatterns = <String>[];
 
-/// Feature dirs under `lib/features/*` not matched by any rule's `code` glob.
+/// Feature dirs under `lib/features/*` without a code-adjacent `README.md`.
 ///
-/// New features must ship with a doc-map rule so their changes are governed.
-/// [exemptions] is injectable so the branch is testable; defaults to the
-/// documented exemption list.
-///
-/// The probe is `lib/features/<dir>/**`, matched syntactically against each
-/// rule pattern. Documented limitation: a rule whose code glob only covers
-/// real files (e.g. `lib/features/*/data/**`) does not syntactically match
-/// the probe, so it would not recognize the feature as covered — keep rules'
-/// code globs at the feature-directory level.
+/// New features must ship with a `lib/features/<dir>/README.md` so their
+/// changes are governed. `readmeExists` is injectable so the branch is
+/// testable; [exemptions] skips documented exceptions.
 List<String> findUncoveredFeatureDirs(
-  List<DocCoverageRule> rules,
-  List<String> featureDirs, {
+  List<String> featureDirs,
+  bool Function(String dir) readmeExists, {
   List<String> exemptions = exemptFeaturePatterns,
 }) {
   return featureDirs
-      .where((dir) {
-        if (exemptions.contains(dir)) {
-          return false;
-        }
-        // Features have no `<name>.module.ts`; probe the whole directory so both
-        // glob and literal code patterns can match.
-        final probe = 'lib/features/$dir/**';
-        return !rules.any((rule) {
-          return rule.codePatterns.any(
-            (pattern) => _matchesPattern(probe, pattern),
-          );
-        });
-      })
+      .where((dir) => !exemptions.contains(dir) && !readmeExists(dir))
       .toList(growable: false);
 }
 

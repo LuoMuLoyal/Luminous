@@ -93,8 +93,8 @@ Future<void> runPrePushChecks(ToolContext context) async {
   );
   stdout.writeln('');
 
-  // Structural docs governance (doc-map references, link integrity,
-  // front-matter, freshness, readership).
+  // Structural docs governance (link integrity, front-matter, freshness,
+  // readership, feature README coverage).
   await runLoggedCommand(
     'dart',
     ['run', 'scripts/docs/verify.dart', '--verify'],
@@ -126,26 +126,17 @@ Future<void> runPreCommitChecks(ToolContext context) async {
   }
 
   // ── Documentation check (report-only, observation) ──────────────
-  // Phase 4 of the doc-governance plan retired the "code staged but no
-  // docs/ file staged → exit(1)" pre-commit gate: the per-rule doc-touch
-  // mapping now runs as a report (--warning-only), while --verify
-  // (pre-push / daily) keeps the structural guarantees. After a two-week
-  // observation window the mapping is removed entirely (see docs/TODO.md).
-  // Bypass with SKIP_DOC_CHECK=1 or `git commit --no-verify`.
-  await runLoggedCommand(
-    'dart',
-    ['run', 'scripts/docs/verify.dart', '--staged', '--warning-only'],
-    workingDirectory: context.repoRoot,
-    stepName: 'doc-check (report-only)',
-  );
+  // The coverage-mapping report step was retired on 2026-09-15 together
+  // with docs/doc-map.yaml (docs/TODO.md, two-week observation window
+  // elapsed): the structural guarantees in --verify (pre-push / daily)
+  // plus the blocking link check below cover its value.
   stdout.writeln('');
 
   // ── Link integrity (blocking) ──────────────────────────────────
   // Broken doc links fail the commit regardless of SKIP_DOC_CHECK.
   // --changed scopes the scan to the git change set (full vault fallback
   // when the change set deletes/renames docs) for fast commit feedback.
-  // Scope note: the coverage check above judges only the staged snapshot
-  // (--staged), while the link scan reads staged + unstaged + untracked —
+  // Scope note: the link scan reads staged + unstaged + untracked —
   // link resolution sees the working tree, and a not-yet-staged deletion
   // already breaks links, so the scan cannot be narrower.
   await runLoggedCommand(

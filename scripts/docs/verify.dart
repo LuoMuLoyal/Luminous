@@ -4,22 +4,22 @@ import 'links.dart';
 import 'coverage.dart';
 import '../support.dart';
 
-/// Documentation coverage check for Luminous.
+/// Documentation governance check for Luminous.
 ///
-/// By default this script **blocks** (exit 1) when code files are staged/changed
-/// but no `docs/` files are included. Use `--warning-only` for a non-blocking
-/// report (e.g. in daily checks).
+/// The code→docs coverage mapping (doc-map.yaml, per-rule report) was retired
+/// on 2026-09-15 after its two-week observation window (docs/TODO.md): the
+/// structural guarantees in `--verify` cover its value, and per-feature doc
+/// duties live in each `lib/features/<feature>/README.md` plus the AGENTS.md
+/// doc rules.
 ///
-/// `--verify` runs a full governance check on the whole docs tree (mirroring
-/// Lucent's `check-docs-updated.ts --verify`): doc-map references exist, doc
-/// links resolve, front-matter completeness, 90-day freshness (`status: frozen`
-/// exempt), doc readership (every `status: active` doc outside standing
-/// channels must be listed in doc-map or linked from another doc), and
-/// `lib/features/*` doc-map coverage. Exit(1) on any problem.
+/// `--verify` runs the full governance check on the whole docs tree:
+/// doc link integrity, front-matter completeness, 90-day freshness
+/// (`status: frozen` exempt), doc readership (every `status: active` doc
+/// must be linked from another doc), and `lib/features/*` README coverage.
+/// Exit(1) on any problem.
 ///
-/// `SKIP_DOC_CHECK=1` bypasses the blocking coverage path only — it does not
-/// apply to `--verify` (or `--warning-only`). `git commit --no-verify` bypasses
-/// the whole hook.
+/// Without `--verify` the script prints a doc freshness advisory and never
+/// blocks (consumed by daily checks via `--warning-only`).
 Future<void> main(List<String> args) async {
   final context = ToolContext.fromScript(Platform.script);
 
@@ -53,59 +53,6 @@ Future<void> main(List<String> args) async {
       }
       stdout.writeln('');
     }
-
-    // Bypass (only meaningful in blocking mode).
-    if (!options.warningOnly && Platform.environment['SKIP_DOC_CHECK'] == '1') {
-      stdout.writeln('[doc-check] Skipped (SKIP_DOC_CHECK=1)');
-      return;
-    }
-
-    final configFile = resolveExistingFile(
-      options.configPath ?? defaultDocCoverageConfigPath(context.repoRoot),
-      repoRoot: context.repoRoot,
-    );
-    final config = loadDocCoverageConfig(configFile);
-    final changedFiles = await collectChangedFiles(
-      context.repoRoot,
-      stagedOnly: options.stagedOnly,
-    );
-
-    if (changedFiles.isEmpty) {
-      stdout.writeln('Documentation coverage: no changed files detected.');
-      return;
-    }
-
-    final documentedFiles = changedFiles
-        .map((file) => file.replaceAll('\\', '/'))
-        .where((file) => file.startsWith('docs/'))
-        .toList(growable: false);
-
-    final report = buildDocCoverageReport(
-      config: config,
-      changedFiles: changedFiles,
-      documentedFiles: documentedFiles,
-    );
-    stdout.writeln(renderDocCoverageReport(report));
-
-    // Default: block the commit if code files are staged/changed but NO
-    // documentation files are included. Per-rule warnings about specific
-    // missing docs are printed above but do not independently block.
-    //
-    // --warning-only: skip the blocking check, just print the report.
-    if (!options.warningOnly && report.matchedRules.isNotEmpty) {
-      final hasCodeChanges = report.matchedRules.any(
-        (m) => m.touchedCodeFiles.isNotEmpty,
-      );
-      if (hasCodeChanges && documentedFiles.isEmpty) {
-        stderr.writeln('');
-        stderr.writeln(
-          'Documentation check failed: code files are staged/changed but no '
-          'documentation files (docs/) are included.\n'
-          'Bypass with SKIP_DOC_CHECK=1 or --no-verify.',
-        );
-        exitCode = 1;
-      }
-    }
   } on ProcessException catch (error) {
     stderr.writeln(error.message);
     exitCode = error.errorCode;
@@ -121,18 +68,11 @@ Future<void> main(List<String> args) async {
 }
 
 _ParsedArgs _parseArgs(List<String> args) {
-  var stagedOnly = false;
   var warningOnly = false;
   var verify = false;
-  String? configPath;
   var showHelp = false;
 
-  for (var index = 0; index < args.length; index += 1) {
-    final argument = args[index];
-    if (argument == '--staged') {
-      stagedOnly = true;
-      continue;
-    }
+  for (final argument in args) {
     if (argument == '--warning-only') {
       warningOnly = true;
       continue;
@@ -145,71 +85,45 @@ _ParsedArgs _parseArgs(List<String> args) {
       showHelp = true;
       continue;
     }
-    if (argument == '--config') {
-      if (index + 1 >= args.length) {
-        throw const FormatException('Missing value for argument: --config');
-      }
-      configPath = args[index + 1];
-      index += 1;
-      continue;
-    }
-    if (argument.startsWith('--config=')) {
-      final value = argument.substring('--config='.length);
-      if (value.isEmpty) {
-        throw const FormatException('Missing value for argument: --config');
-      }
-      configPath = value;
-      continue;
-    }
     throw FormatException('Unexpected argument: $argument');
   }
 
   return _ParsedArgs(
-    stagedOnly: stagedOnly,
     warningOnly: warningOnly,
     verify: verify,
-    configPath: configPath,
     showHelp: showHelp,
   );
 }
 
 class _ParsedArgs {
   const _ParsedArgs({
-    required this.stagedOnly,
     required this.warningOnly,
     required this.verify,
-    required this.configPath,
     required this.showHelp,
   });
 
-  final bool stagedOnly;
   final bool warningOnly;
   final bool verify;
-  final String? configPath;
   final bool showHelp;
 }
 
 const _usage = '''
 Usage: dart run scripts/docs/verify.dart [options]
 
-By default this script blocks (exit 1) when code files are staged/changed
-but no docs/ files are included.
+Without --verify this script prints a doc freshness advisory and never
+blocks. The code→docs coverage mapping (doc-map.yaml) was retired on
+2026-09-15 after its two-week observation window.
 
 Options:
-  --staged            Read staged changes instead of the working tree.
-  --warning-only      Do not block; just print the per-rule report.
-  --verify            Verify doc-map references, doc link integrity,
-                      front-matter metadata, stale active docs, doc
-                      readership, and feature-dir coverage (every
-                      lib/features/* dir must be matched by a doc-map rule).
-                      Docs marked 'status: frozen' are exempt from the
-                      freshness checks; exit(1) on problems.
-  --config <path>     Use an explicit doc coverage config path.
+  --warning-only      Alias of the default advisory mode.
+  --verify            Verify doc link integrity, front-matter metadata,
+                      stale active docs, doc readership (every
+                      'status: active' doc linked from another doc), and
+                      feature README coverage (every lib/features/* dir
+                      must ship a README). Docs marked 'status: frozen'
+                      are exempt from the freshness checks; exit(1) on
+                      problems.
   --help              Show this help text.
-
-Environment:
-  SKIP_DOC_CHECK=1    Bypass the blocking coverage check only (ignored with
-                      --warning-only; --verify always runs).
 ''';
 
 /// Collects `docs/**/*.md` contents (excluding `.obsidian/`) keyed by
@@ -289,8 +203,7 @@ Set<String> _collectVaultLinkedPaths(VaultIndex vault) {
   return linked;
 }
 
-/// Full-tree documentation governance check (--verify). Mirrors Lucent's
-/// `check-docs-updated.ts --verify`.
+/// Full-tree documentation governance check (--verify).
 Future<void> _runVerify(ToolContext context) async {
   final docsDir = Directory(
     '${context.repoRoot.path}${Platform.pathSeparator}docs',
@@ -301,19 +214,10 @@ Future<void> _runVerify(ToolContext context) async {
     return;
   }
 
-  final configFile = resolveExistingFile(
-    defaultDocCoverageConfigPath(context.repoRoot),
-    repoRoot: context.repoRoot,
-  );
-  final config = loadDocCoverageConfig(configFile);
   final availableDocs = _collectDocPaths(docsDir);
   final problems = <String>[];
 
-  // (a) Doc-map reference existence (literal + glob orphans).
-  problems.addAll(findDocMapOrphans(config, availableDocs));
-  problems.addAll(findDocMapGlobOrphans(config, availableDocs));
-
-  // (b) Link integrity — wikilinks and relative links must resolve
+  // (a) Link integrity — wikilinks and relative links must resolve
   // (same resolution semantics as links.dart). Archive snapshots are exempt
   // from outgoing-link checks (see VaultIndex.checkableMarkdownFiles).
   final vault = VaultIndex(docsDir);
@@ -321,7 +225,7 @@ Future<void> _runVerify(ToolContext context) async {
     problems.addAll(checkDocFileLinks(vault, file));
   }
 
-  // (c) Front-matter completeness on the required patterns.
+  // (b) Front-matter completeness on the required patterns.
   final activeDocs = availableDocs.where(isActiveDoc).toList(growable: false);
   final contentByPath = <String, String>{
     for (final doc in activeDocs)
@@ -337,7 +241,7 @@ Future<void> _runVerify(ToolContext context) async {
     ),
   );
 
-  // (d) Freshness — front-matter `updated` staleness and `status: stale`
+  // (c) Freshness — front-matter `updated` staleness and `status: stale`
   // archiving, scoped to active docs (archive/ and migration logs are not
   // active, so an archived doc is never told to archive itself). `status:
   // frozen` docs are exempt via [isFrozenDoc].
@@ -358,23 +262,21 @@ Future<void> _runVerify(ToolContext context) async {
     ),
   );
 
-  // (e) Readership — subject docs must be in doc-map or linked from another
-  // doc.
+  // (d) Readership — subject docs must be linked from another doc.
   final linkedPaths = _collectVaultLinkedPaths(vault);
   final subjects = readershipSubjectPaths(activeDocs, contentByPath);
   problems.addAll(
     findUnreferencedActiveDocs(
-      config: config,
       subjectPaths: subjects,
       linkedPaths: linkedPaths,
     ).map(
       (path) =>
-          '$path: unreferenced — add a doc-map reference or a link from another doc',
+          '$path: unreferenced — add a link from another doc or archive it',
     ),
   );
 
-  // (f) Feature-dir coverage — every lib/features/* dir must be matched by a
-  // rule's code glob (or a documented exemption).
+  // (e) Feature README coverage — every lib/features/* dir must ship a
+  // code-adjacent README (or a documented exemption).
   final featuresDir = Directory(
     '${context.repoRoot.path}${Platform.pathSeparator}lib'
     '${Platform.pathSeparator}features',
@@ -386,9 +288,15 @@ Future<void> _runVerify(ToolContext context) async {
         .map((dir) => dir.path.split(Platform.pathSeparator).last)
         .toList(growable: false);
     problems.addAll(
-      findUncoveredFeatureDirs(config.rules, featureDirs).map(
+      findUncoveredFeatureDirs(
+        featureDirs,
+        (dir) => File(
+          '${featuresDir.path}${Platform.pathSeparator}$dir'
+          '${Platform.pathSeparator}README.md',
+        ).existsSync(),
+      ).map(
         (dir) =>
-            '$dir: feature dir not covered by any doc-map rule — add a rule or a documented exemption',
+            '$dir: feature dir has no lib/features/$dir/README.md — add one or a documented exemption',
       ),
     );
   }
@@ -402,8 +310,8 @@ Future<void> _runVerify(ToolContext context) async {
     return;
   }
   stdout.writeln(
-    'Doc verification passed (doc-map references, link integrity, '
-    'front-matter, freshness, readership, feature coverage).',
+    'Doc verification passed (link integrity, front-matter, freshness, '
+    'readership, feature README coverage).',
   );
 }
 

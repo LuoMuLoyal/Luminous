@@ -1,226 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../scripts/docs/coverage.dart';
 
 void main() {
-  group('parseDocCoverageConfig', () {
-    test('parses rule blocks with code and required docs', () {
-      final config = parseDocCoverageConfig('''
-rules:
-  - name: auth
-    code:
-      - lib/features/auth/**
-      - lib/app/router.dart
-    docs_required:
-      - docs/explanation/Project_Governance.md
-      - docs/reference/routing.md
-''');
-
-      expect(config.rules, hasLength(1));
-      expect(config.rules.single.name, 'auth');
-      expect(
-        config.rules.single.codePatterns,
-        equals(['lib/features/auth/**', 'lib/app/router.dart']),
-      );
-      expect(
-        config.rules.single.requiredDocs,
-        equals([
-          'docs/explanation/Project_Governance.md',
-          'docs/reference/routing.md',
-        ]),
-      );
-      expect(config.rules.single.anyOfDocs, isEmpty);
-      expect(config.rules.single.infoDocs, isEmpty);
-    });
-
-    test('parses docs_any_of and docs_info sections', () {
-      final config = parseDocCoverageConfig('''
-rules:
-  - name: core-network
-    code:
-      - lib/core/network/**
-    docs_required:
-      - docs/logs/migration-log/*.md
-    docs_any_of:
-      - docs/reference/data-layer.md
-      - docs/reference/OpenApi_Client.md
-    docs_info:
-      - docs/TODO.md
-''');
-
-      expect(config.rules, hasLength(1));
-      expect(config.rules.single.requiredDocs, [
-        'docs/logs/migration-log/*.md',
-      ]);
-      expect(config.rules.single.anyOfDocs, [
-        'docs/reference/data-layer.md',
-        'docs/reference/OpenApi_Client.md',
-      ]);
-      expect(config.rules.single.infoDocs, ['docs/TODO.md']);
-    });
-  });
-
-  group('buildDocCoverageReport', () {
-    test('reports missing required docs for matched code changes', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'auth',
-          codePatterns: ['lib/features/auth/**'],
-          requiredDocs: [
-            'docs/explanation/Project_Governance.md',
-            'docs/reference/Localization.md',
-          ],
-        ),
-      ]);
-
-      final report = buildDocCoverageReport(
-        config: config,
-        changedFiles: ['lib/features/auth/presentation/login_page.dart'],
-        documentedFiles: ['docs/explanation/Project_Governance.md'],
-      );
-
-      expect(report.hasWarnings, isTrue);
-      expect(report.matchedRules, hasLength(1));
-      expect(report.matchedRules.single.missingRequired, [
-        'docs/reference/Localization.md',
-      ]);
-    });
-
-    test('flags missing any-of docs when none of them is touched', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'record',
-          codePatterns: ['lib/features/record/**'],
-          requiredDocs: ['docs/logs/migration-log/*.md'],
-          anyOfDocs: [
-            'docs/reference/routing.md',
-            'docs/reference/state-management.md',
-          ],
-        ),
-      ]);
-
-      final report = buildDocCoverageReport(
-        config: config,
-        changedFiles: ['lib/features/record/presentation/page.dart'],
-        documentedFiles: ['docs/logs/migration-log/2026-08-02.md'],
-      );
-
-      expect(report.hasWarnings, isTrue);
-      expect(report.matchedRules.single.missingRequired, isEmpty);
-      expect(report.matchedRules.single.missingAnyOf, [
-        'docs/reference/routing.md',
-        'docs/reference/state-management.md',
-      ]);
-    });
-
-    test('satisfies any-of when at least one target is touched', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'record',
-          codePatterns: ['lib/features/record/**'],
-          requiredDocs: ['docs/logs/migration-log/*.md'],
-          anyOfDocs: [
-            'docs/reference/routing.md',
-            'docs/reference/state-management.md',
-          ],
-        ),
-      ]);
-
-      final report = buildDocCoverageReport(
-        config: config,
-        changedFiles: ['lib/features/record/presentation/page.dart'],
-        documentedFiles: [
-          'docs/logs/migration-log/2026-08-02.md',
-          'docs/reference/routing.md',
-        ],
-      );
-
-      expect(report.hasWarnings, isFalse);
-      expect(report.matchedRules.single.missingAnyOf, isEmpty);
-    });
-
-    test('info docs are reported but do not produce warnings', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'core-config',
-          codePatterns: ['lib/core/config/**'],
-          requiredDocs: ['docs/logs/migration-log/*.md'],
-          infoDocs: ['docs/TODO.md'],
-        ),
-      ]);
-
-      final report = buildDocCoverageReport(
-        config: config,
-        changedFiles: ['lib/core/config/feature_flags.dart'],
-        documentedFiles: ['docs/logs/migration-log/2026-08-02.md'],
-      );
-
-      expect(report.hasWarnings, isFalse);
-      expect(report.hasInfos, isTrue);
-      expect(report.matchedRules.single.missingInfo, ['docs/TODO.md']);
-    });
-
-    test('ignores doc-only changes', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'routing',
-          codePatterns: ['lib/app/router.dart'],
-          requiredDocs: ['docs/reference/routing.md'],
-        ),
-      ]);
-
-      final report = buildDocCoverageReport(
-        config: config,
-        changedFiles: ['docs/reference/routing.md'],
-        documentedFiles: ['docs/reference/routing.md'],
-      );
-
-      expect(report.hasWarnings, isFalse);
-      expect(report.matchedRules, isEmpty);
-    });
-  });
-
-  group('renderDocCoverageReport', () {
-    test('renders a readable warning summary', () {
-      const report = DocCoverageReport([
-        DocCoverageMatch(
-          ruleName: 'auth',
-          touchedCodeFiles: ['lib/features/auth/presentation/login_page.dart'],
-          missingRequired: ['docs/explanation/Project_Governance.md'],
-          missingAnyOf: [],
-          missingInfo: [],
-        ),
-      ]);
-
-      final output = renderDocCoverageReport(report);
-
-      expect(output, contains('Documentation coverage warnings'));
-      expect(output, contains('auth'));
-      expect(output, contains('docs/explanation/Project_Governance.md'));
-      expect(output, contains('Required docs not updated'));
-    });
-
-    test('renders any-of and info sections', () {
-      const report = DocCoverageReport([
-        DocCoverageMatch(
-          ruleName: 'record',
-          touchedCodeFiles: ['lib/features/record/presentation/page.dart'],
-          missingRequired: [],
-          missingAnyOf: ['docs/reference/routing.md'],
-          missingInfo: ['docs/TODO.md'],
-        ),
-      ]);
-
-      final output = renderDocCoverageReport(report);
-
-      expect(output, contains('Update at least one of'));
-      expect(output, contains('Suggested docs (optional)'));
-      expect(output, contains('This is warning-only and does not block'));
-    });
-  });
-
   group('analyzeDocFreshness', () {
     test('flags active docs whose updated is older than the threshold', () {
       final report = analyzeDocFreshness(
@@ -378,50 +160,19 @@ updated: 2026-01-01
     });
   });
 
-  group('findDocMapOrphans', () {
-    test('flags literal doc references that do not exist', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'auth',
-          codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/logs/migration-log/*.md'],
-          anyOfDocs: ['docs/reference/Missing.md'],
-        ),
-      ]);
+  group('isActiveDoc / isFrontMatterRequired', () {
+    test('classifies the de-numbered layout', () {
+      expect(isActiveDoc('docs/README.md'), isTrue);
+      expect(isActiveDoc('docs/TODO.md'), isTrue);
+      expect(isActiveDoc('docs/reference/routing.md'), isTrue);
+      expect(isActiveDoc('docs/howto/add-localization.md'), isTrue);
+      expect(isActiveDoc('docs/reference/adr/0001-x.md'), isTrue);
+      expect(isActiveDoc('docs/logs/migration-log/2026-09-15.md'), isFalse);
+      expect(isActiveDoc('docs/archive/old-note.md'), isFalse);
 
-      final orphans = findDocMapOrphans(config, ['docs/TODO.md']);
-
-      expect(orphans, ['auth: "docs/reference/Missing.md" does not exist']);
-    });
-
-    test('skips glob patterns', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'auth',
-          codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/logs/migration-log/*.md'],
-        ),
-      ]);
-
-      expect(findDocMapOrphans(config, []), isEmpty);
-    });
-  });
-
-  group('findDocMapGlobOrphans', () {
-    test('flags glob patterns that match no existing file', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'auth',
-          codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/howto/*.md'],
-        ),
-      ]);
-
-      final orphans = findDocMapGlobOrphans(config, ['docs/TODO.md']);
-
-      expect(orphans, [
-        'auth: glob "docs/howto/*.md" matches no existing file',
-      ]);
+      expect(isFrontMatterRequired('docs/reference/routing.md'), isTrue);
+      expect(isFrontMatterRequired('docs/reference/adr/0001-x.md'), isFalse);
+      expect(isFrontMatterRequired('docs/README.md'), isFalse);
     });
   });
 
@@ -468,17 +219,8 @@ updated: 2026-01-01
   });
 
   group('findUnreferencedActiveDocs', () {
-    test('flags subjects not in doc-map and not linked from other docs', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'record',
-          codePatterns: ['lib/features/record/**'],
-          requiredDocs: ['docs/reference/routing.md'],
-        ),
-      ]);
-
+    test('flags subjects not linked from other docs', () {
       final unreferenced = findUnreferencedActiveDocs(
-        config: config,
         subjectPaths: [
           'docs/reference/routing.md',
           'docs/reference/Forui_Reference.md',
@@ -489,19 +231,10 @@ updated: 2026-01-01
       expect(unreferenced, ['docs/reference/Forui_Reference.md']);
     });
 
-    test('doc-map listing satisfies the reference requirement', () {
-      const config = DocCoverageConfig([
-        DocCoverageRule(
-          name: 'app-shell',
-          codePatterns: ['lib/features/shell/**'],
-          requiredDocs: ['docs/reference/Forui_Reference.md'],
-        ),
-      ]);
-
+    test('a linked subject passes the readership rule', () {
       final unreferenced = findUnreferencedActiveDocs(
-        config: config,
-        subjectPaths: ['docs/reference/Forui_Reference.md'],
-        linkedPaths: <String>{},
+        subjectPaths: ['docs/reference/routing.md'],
+        linkedPaths: <String>{'docs/reference/routing.md'},
       );
 
       expect(unreferenced, isEmpty);
@@ -509,65 +242,26 @@ updated: 2026-01-01
   });
 
   group('findUncoveredFeatureDirs', () {
-    test('flags feature dirs not matched by any rule', () {
-      const rules = [
-        DocCoverageRule(
-          name: 'auth',
-          codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/logs/migration-log/*.md'],
-        ),
-      ];
-
+    test('flags feature dirs without a README', () {
       expect(
-        findUncoveredFeatureDirs(rules, ['auth', 'health_data', 'shell']),
+        findUncoveredFeatureDirs([
+          'auth',
+          'health_data',
+          'shell',
+        ], (dir) => dir == 'auth'),
         ['health_data', 'shell'],
       );
     });
 
     test('exemptions are honored', () {
-      const rules = [
-        DocCoverageRule(
-          name: 'auth',
-          codePatterns: ['lib/features/auth/**'],
-          requiredDocs: ['docs/logs/migration-log/*.md'],
-        ),
-      ];
-
       expect(
-        findUncoveredFeatureDirs(rules, ['legacy'], exemptions: ['legacy']),
+        findUncoveredFeatureDirs(
+          ['legacy'],
+          (_) => false,
+          exemptions: ['legacy'],
+        ),
         isEmpty,
       );
-    });
-  });
-
-  group('loadDocCoverageConfig', () {
-    test('loads config from disk', () {
-      final tempRoot = Directory.systemTemp.createTempSync(
-        'luminous-doc-coverage-test-',
-      );
-      addTearDown(() {
-        if (tempRoot.existsSync()) {
-          tempRoot.deleteSync(recursive: true);
-        }
-      });
-
-      final configFile =
-          File('${tempRoot.path}${Platform.pathSeparator}doc-map.yaml')
-            ..writeAsStringSync('''
-rules:
-  - name: current
-    code:
-      - lib/features/review/**
-    docs_required:
-      - docs/explanation/Project_Governance.md
-''');
-
-      final config = loadDocCoverageConfig(configFile);
-
-      expect(config.rules.single.name, 'current');
-      expect(config.rules.single.requiredDocs, [
-        'docs/explanation/Project_Governance.md',
-      ]);
     });
   });
 }

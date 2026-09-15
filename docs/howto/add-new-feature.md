@@ -86,7 +86,6 @@ flutter test test/{feature}/                        # feature 测试通过
 ### 7. 更新文档
 
 - 追加 `docs/logs/migration-log/YYYY-MM-DD.md` 条目（只追加，不覆写）
-- 在 `docs/doc-map.yaml` 登记 feature → 文档映射规则
-- per-feature 约束写入 `lib/features/{feature}/README.md`
+- per-feature 约束写入 `lib/features/{feature}/README.md`（`docs:verify` 检查 feature README 覆盖）
 - 重大架构决策在 `docs/reference/adr/` 下创建 ADR
 - 不创建 `Active_*` / `*_Snapshot` 式现状文档
