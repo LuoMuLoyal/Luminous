@@ -32,6 +32,9 @@ YYYY-MM-DD-short-task-name.md
 4. Delete the plan file once it is no longer the active source of work.
 
 ## Current Plans
+
+- [`2026-09-15-review-remediation-plan.md`](2026-09-15-review-remediation-plan.md)
+  — 09-08~09-14 七份每日审查报告（源文件已删）逐条对照 2026-09-15 工作树核实的修复计划：P0 测试 fixture 清理已下线 bloodType/emergencyContact 字段；P1 覆盖 _submit 假成功、onLinkWechat 死分支、terms l10n hack、头像/OCR 上传链路、redirect 测试盲区、legacy profile_edit 退役等；并显式列出误报与已修复项（死代码三件套、OAuth 五页重复、pre-push 摘 test 等）防止返工
 - 餐食分析链路重构计划（2026-09-15，实施完毕文件已删）
   — 实测证伪「拆菜→对照成分表算热量」，改为一次多模态分析直出「热量区间（独立字段，不进 items）+ 按重要性排序的结论 items（headline/detail 两段式）」；消费方按需切片（列表取 headline、详情取全部、assistant 取 digest 不再识图）、facets 封闭词表供规则与周报、分析必须会失败（超时/坏 JSON/revision 复检）；结论沉淀在 Lucent ADR-0020 与两仓迁移日志
 - [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md)
