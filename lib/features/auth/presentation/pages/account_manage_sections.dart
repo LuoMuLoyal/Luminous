@@ -210,9 +210,9 @@ class AccountManageSection extends ConsumerWidget {
       builder: (context) => LinkedIdentitiesSection(
         user: user,
         isSubmitting: accountState.isSubmitting,
-        onLinkWechat: () async {
-          // TODO: 实现微信绑定
-        },
+        // 微信绑定入口在本页隐藏（企业资质到位前不开放），不传回调即可——
+        // 组件只在 showWechatLink 且回调非空时渲染按钮。
+        onLinkWechat: null,
         onUnlink: (identity) async {
           final confirmed = await confirmUnlinkIdentity(
             context,

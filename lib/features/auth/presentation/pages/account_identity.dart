@@ -119,7 +119,11 @@ class LinkedIdentitiesSection extends StatelessWidget {
 
   final AuthUser user;
   final bool isSubmitting;
-  final Future<void> Function() onLinkWechat;
+
+  /// Runs the WeChat binding flow. Null when the host page hides the entry
+  /// point ([showWechatLink] `false`): the button is then not rendered at all,
+  /// so no caller has to pass a no-op callback that can never run.
+  final Future<void> Function()? onLinkWechat;
   final Future<void> Function(AuthLinkedIdentity identity) onUnlink;
 
   /// Shows the "绑定微信" button. When `false` the button is removed but the
@@ -129,6 +133,7 @@ class LinkedIdentitiesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final linkWechat = onLinkWechat;
     return _SectionColumn(
       title: l10n.authLinkedIdentitiesSectionTitle,
       children: [
@@ -143,11 +148,11 @@ class LinkedIdentitiesSection extends StatelessWidget {
               onUnlink: () => onUnlink(identity),
             ),
           ),
-        if (showWechatLink)
+        if (showWechatLink && linkWechat != null)
           FButton(
             key: const Key('wechat-identity-link-button'),
             variant: FButtonVariant.outline,
-            onPress: isSubmitting ? null : () => onLinkWechat(),
+            onPress: isSubmitting ? null : () => linkWechat(),
             child: isSubmitting
                 ? const SizedBox(
                     width: 18,
