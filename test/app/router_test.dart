@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/notification/presentation/routes.dart';
@@ -94,6 +96,94 @@ class _FakeMedicineSearchNotifier extends MedicineSearchNotifier {
   @override
   MedicineSearchState build() => const MedicineSearchState();
 }
+
+/// Session notifier whose state is fixed at construction, so the redirect
+/// guard can be exercised in each of its three decision states.
+class _FixedAuthSessionNotifier extends AuthSessionNotifier {
+  _FixedAuthSessionNotifier(this._state);
+
+  final AuthSessionState _state;
+
+  @override
+  AuthSessionState build() => _state;
+
+  @override
+  Future<void> restore() async {}
+
+  @override
+  Future<void> applySession(AuthSession session) async {}
+
+  @override
+  void applyUser(AuthUser user) {}
+
+  @override
+  void clearLocalSession() {}
+
+  @override
+  Future<void> logout() async {}
+}
+
+/// Pumps the **real** [appRouterProvider] with a fixed session state.
+///
+/// Deliberately not built from `configuration.routes`: that drops `redirect`
+/// and `fallbackHome`, which is exactly how the guard went untested.
+Future<ProviderContainer> _pumpRealRouter(
+  WidgetTester tester, {
+  required AuthSessionState session,
+  required String initialLocation,
+}) async {
+  SharedPreferences.setMockInitialValues(const <String, Object>{});
+  final container = ProviderContainer(
+    overrides: [
+      authSessionProvider.overrideWith(
+        () => _FixedAuthSessionNotifier(session),
+      ),
+      medicineSearchNotifierProvider.overrideWith(
+        () => _FakeMedicineSearchNotifier(),
+      ),
+    ],
+  );
+  addTearDown(container.dispose);
+
+  await tester.pumpWidget(
+    UncontrolledProviderScope(
+      container: container,
+      child: TestForuiRouterApp(
+        routerConfig: container.read(appRouterProvider),
+      ),
+    ),
+  );
+  // 目标页可能有持续动画/骨架屏,pumpAndSettle 会超时;只推进到路由稳定。
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 350));
+
+  // `initialLocation` is exercised by navigating rather than rebuilding the
+  // router: rebuilding would discard the guard under test.
+  container.read(appRouterProvider).go(initialLocation);
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 350));
+  return container;
+}
+
+AuthSessionState _signedOut() =>
+    const AuthSessionState(isLoading: false, isAuthenticated: false);
+
+AuthSessionState _signedIn() => AuthSessionState(
+  isLoading: false,
+  isAuthenticated: true,
+  user: AuthUser(
+    id: 'user-1',
+    email: 'user@example.com',
+    nickname: 'Lumi',
+    avatar: null,
+    emailVerifiedAt: null,
+    createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+    updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+  ),
+);
+
+AuthSessionState _restoring() =>
+    const AuthSessionState(isLoading: true, isAuthenticated: false);
 
 Widget _testableRouter({
   required String initialLocation,
@@ -262,6 +352,63 @@ void main() {
 
       expect(find.byType(NavigationBar), findsNothing);
       expect(find.byType(SearchPage), findsOneWidget);
+    });
+  });
+
+  group('redirect guard', () {
+    testWidgets('signed out is sent to /login for a protected route', (
+      tester,
+    ) async {
+      final container = await _pumpRealRouter(
+        tester,
+        session: _signedOut(),
+        initialLocation: '/account',
+      );
+
+      expect(container.read(appRouterProvider).state.matchedLocation, '/login');
+    });
+
+    testWidgets('signed out may browse a public tab', (tester) async {
+      final container = await _pumpRealRouter(
+        tester,
+        session: _signedOut(),
+        initialLocation: Routes.record,
+      );
+
+      // 公开路由保持预览语义:未登录也停留原页,不被踢到 /login。
+      expect(
+        container.read(appRouterProvider).state.matchedLocation,
+        Routes.record,
+      );
+    });
+
+    testWidgets('signed in is sent away from /login to the home tab', (
+      tester,
+    ) async {
+      final container = await _pumpRealRouter(
+        tester,
+        session: _signedIn(),
+        initialLocation: Routes.login,
+      );
+
+      expect(container.read(appRouterProvider).state.matchedLocation, '/');
+
+      // 首页会拉取健康快照,其请求超时定时器(5s)要排空再结束测试。
+      await tester.pump(const Duration(seconds: 6));
+    });
+
+    testWidgets('restoring session is never redirected', (tester) async {
+      final container = await _pumpRealRouter(
+        tester,
+        session: _restoring(),
+        initialLocation: '/account',
+      );
+
+      // 恢复期间不改写位置,避免冷启动闪烁在登录页与目标页之间。
+      expect(
+        container.read(appRouterProvider).state.matchedLocation,
+        '/account',
+      );
     });
   });
 
