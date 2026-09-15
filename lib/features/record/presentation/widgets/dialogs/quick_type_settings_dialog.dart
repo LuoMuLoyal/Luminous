@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/pill_chip.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
+import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_custom_amount_dialog.dart';
@@ -241,12 +243,12 @@ class _SymptomSettings extends StatelessWidget {
             runSpacing: Spacing.sm,
             children: [
               for (final choice in allChoices)
-                FilterChip(
-                  label: Text(choice.label),
+                PillChip(
+                  label: choice.label,
                   selected:
                       enabledSet.isEmpty ||
                       enabledSet.contains(recordFastChoiceCode(choice)),
-                  onSelected: (selected) {
+                  onPress: () {
                     final code = recordFastChoiceCode(choice);
                     if (code == null) return;
                     unawaited(
@@ -254,7 +256,7 @@ class _SymptomSettings extends StatelessWidget {
                         toggleSymptomChoice(
                           currentChoices: prefs.symptomEnabledChoices,
                           choiceCode: code,
-                          selected: selected,
+                          selected: !enabledSet.contains(code),
                           l10n: l10n,
                         ),
                       ),
@@ -269,9 +271,7 @@ class _SymptomSettings extends StatelessWidget {
   }
 
   List<String> _symptomSeverityOptions(AppLocalizations l10n) => [
-    'mild',
-    'moderate',
-    'severe',
+    for (final severity in SymptomSeverity.ordered) severity.wireValue,
   ];
 }
 

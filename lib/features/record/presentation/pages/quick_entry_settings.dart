@@ -6,10 +6,12 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/pill_chip.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
+import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/utils/quick_entry_settings_dialogs.dart';
@@ -185,7 +187,9 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                   },
                 ),
                 children: [
-                  for (final option in ['mild', 'moderate', 'severe'])
+                  for (final option in SymptomSeverity.ordered.map(
+                    (s) => s.wireValue,
+                  ))
                     FSelectItem.item(
                       title: Text(symptomSeverityLabel(l10n, option)),
                       value: option,
@@ -210,14 +214,10 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                       DailyRecordKind.symptom,
                       l10n,
                     ))
-                      FilterChip(
-                        label: Text(choice.label),
-                        selected:
-                            prefs.symptomEnabledChoices.isEmpty ||
-                            prefs.symptomEnabledChoices.contains(
-                              recordFastChoiceCode(choice),
-                            ),
-                        onSelected: (selected) {
+                      PillChip(
+                        label: choice.label,
+                        selected: _isSymptomEnabled(prefs, choice),
+                        onPress: () {
                           final code = recordFastChoiceCode(choice);
                           if (code == null) return;
                           unawaited(
@@ -225,7 +225,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                               toggleSymptomChoice(
                                 currentChoices: prefs.symptomEnabledChoices,
                                 choiceCode: code,
-                                selected: selected,
+                                selected: !_isSymptomEnabled(prefs, choice),
                                 l10n: l10n,
                               ),
                             ),
@@ -327,4 +327,10 @@ class QuickEntrySettingsPage extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// 空集表示「全部启用」，因此未配置时每一项都算已选。
+bool _isSymptomEnabled(QuickEntryPreferences prefs, RecordFastChoice choice) {
+  return prefs.symptomEnabledChoices.isEmpty ||
+      prefs.symptomEnabledChoices.contains(recordFastChoiceCode(choice));
 }
