@@ -143,6 +143,37 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('Failed avatar removal reports failure instead of success', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final remote = FakeLucentAuthRepository()..failUpdateAccountProfile = true;
+    final container = _container(remote: remote);
+
+    await tester.pumpWidget(_app(container, showToaster: true));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('profile-avatar-row')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.profileAvatarRemove));
+    // Toast 展示 1.8s 后自动消失，不能 pumpAndSettle（会等到它退场再断言）。
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // 回归点：移除失败此前完全静默，用户以为已移除。
+    expect(find.text(l10n.profileAvatarSaveFailed), findsOneWidget);
+    expect(find.text(l10n.mineEditSavedToast), findsNothing);
+
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('Profile rows pin the value and chevron to the group edge', (
     tester,
   ) async {

@@ -100,10 +100,13 @@ class ProfilePage extends HookConsumerWidget {
             avatar: null,
           );
           if (!context.mounted) return;
+          await Toast.show(
+            context,
+            ok ? l10n.mineEditSavedToast : l10n.profileAvatarSaveFailed,
+          );
           if (ok) {
             avatarDraft.value = null;
             avatarRemoved.value = true;
-            await Toast.show(context, l10n.mineEditSavedToast);
           }
           return;
         }
@@ -121,10 +124,13 @@ class ProfilePage extends HookConsumerWidget {
           nickname: user?.nickname,
         );
         if (!context.mounted) return;
+        await Toast.show(
+          context,
+          ok ? l10n.mineEditSavedToast : l10n.profileAvatarSaveFailed,
+        );
         if (ok) {
           avatarDraft.value = draft;
           avatarRemoved.value = false;
-          await Toast.show(context, l10n.mineEditSavedToast);
         }
       }
 

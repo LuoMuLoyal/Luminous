@@ -274,5 +274,6 @@
   "profileDietHalal": "Halal",
   "profileDietOther": "Other",
   "profileAvatarRowTitle": "Avatar",
-  "profileAvatarTooLarge": "Image is too large. Choose one under 5 MB."
+  "profileAvatarTooLarge": "Image is too large. Choose one under 5 MB.",
+  "profileAvatarSaveFailed": "Couldn't save the avatar. Please try again."
 }

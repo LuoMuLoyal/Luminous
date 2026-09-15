@@ -274,5 +274,6 @@
   "profileDietHalal": "清真",
   "profileDietOther": "其他",
   "profileAvatarRowTitle": "头像",
-  "profileAvatarTooLarge": "图片太大，请选择 5 MB 以内的图片。"
+  "profileAvatarTooLarge": "图片太大，请选择 5 MB 以内的图片。",
+  "profileAvatarSaveFailed": "头像保存失败，请稍后重试"
 }

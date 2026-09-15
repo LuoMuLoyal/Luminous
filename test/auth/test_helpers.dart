@@ -80,6 +80,10 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   String? changeEmailPassword;
   String? updateProfileNickname;
   String? updateProfileAvatar;
+
+  /// When true, [updateAccountProfile] fails, so callers can assert their
+  /// failure feedback instead of only the happy path.
+  bool failUpdateAccountProfile = false;
   String? changePasswordPassword;
   String? changePasswordNewPassword;
   String? deleteAccountPassword;
@@ -265,6 +269,14 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   }) {
     updateProfileNickname = nickname;
     updateProfileAvatar = avatar;
+    if (failUpdateAccountProfile) {
+      return TaskEither.left(
+        const LucentFailure(
+          kind: LucentFailureKind.network,
+          message: 'offline',
+        ),
+      );
+    }
     return TaskEither.right(
       AuthUser(
         id: 'user-1',
