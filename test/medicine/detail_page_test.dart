@@ -83,6 +83,29 @@ const _sequenceSummaryDetail = MedicineDetail(
   ),
 );
 
+/// Structure descriptors with a deliberate mix of populated and absent fields,
+/// plus rule verdicts stored as the source's 0/1 flags.
+const _structureDetail = MedicineDetail(
+  id: 'DB00945',
+  source: 'drugbank',
+  name: 'Aspirin',
+  kind: 'drugbank',
+  structure: MedicineStructure(
+    smiles: 'CC(=O)Oc1ccccc1C(=O)O',
+    inchiKey: 'BSYNRYMUTXBXSQ-UHFFFAOYSA-N',
+    formula: 'C9H8O4',
+    molecularWeight: 180.1573,
+    logP: 1.3101,
+    polarSurfaceArea: 63.6,
+    donorCount: 1,
+    acceptorCount: 4,
+    rotatableBondCount: 2,
+    ruleOfFive: 1,
+    veberRule: 0,
+    salts: ['Acetylsalicylic acid'],
+  ),
+);
+
 const _longToxicityDetail = MedicineDetail(
   id: 'DB00619',
   source: 'drugbank',
@@ -396,6 +419,51 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('P00533'), findsOneWidget);
+  });
+
+  testWidgets('renders structure descriptors grouped and formatted', (
+    tester,
+  ) async {
+    await _pumpDetailPage(
+      tester,
+      source: 'drugbank',
+      id: 'DB00945',
+      detail: _structureDetail,
+    );
+
+    await _expandSection(tester, l10n.medicineDetailSectionStructure);
+
+    expect(find.text(l10n.medicineDetailStructureFormula), findsOneWidget);
+    expect(find.text('C9H8O4'), findsOneWidget);
+    expect(find.text('CC(=O)Oc1ccccc1C(=O)O'), findsOneWidget);
+    expect(find.text('BSYNRYMUTXBXSQ-UHFFFAOYSA-N'), findsOneWidget);
+
+    // Numbers are rounded for reading rather than dumped at full precision.
+    expect(find.text('180.16'), findsOneWidget);
+    expect(find.text('1.31'), findsOneWidget);
+
+    // Rule verdicts are shown as words, not the source's 0/1 flags.
+    expect(find.text(l10n.medicineDetailStructurePass), findsOneWidget);
+    expect(find.text(l10n.medicineDetailStructureFail), findsOneWidget);
+
+    expect(find.text('Acetylsalicylic acid'), findsOneWidget);
+
+    // Absent descriptors leave no empty label behind.
+    expect(find.text(l10n.medicineDetailStructureInchi), findsNothing);
+    expect(find.text(l10n.medicineDetailStructureExactMass), findsNothing);
+  });
+
+  testWidgets('omits the structure section when there is no structure', (
+    tester,
+  ) async {
+    await _pumpDetailPage(
+      tester,
+      source: 'drugbank',
+      id: 'DB01050',
+      detail: _drugbankDetail,
+    );
+
+    expect(find.text(l10n.medicineDetailSectionStructure), findsNothing);
   });
 
   testWidgets('shows skeleton while detail is loading', (tester) async {

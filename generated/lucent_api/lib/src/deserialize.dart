@@ -178,6 +178,7 @@ import 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.
 import 'package:lucent_api/src/model/medicine_detail_response_external_identifiers.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_sequence_summary.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_structure.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job_result.dart';
@@ -1118,6 +1119,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineDetailResponseSequenceSummary':
       return MedicineDetailResponseSequenceSummary.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineDetailResponseStructure':
+      return MedicineDetailResponseStructure.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

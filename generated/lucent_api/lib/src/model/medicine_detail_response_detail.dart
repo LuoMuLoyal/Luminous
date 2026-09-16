@@ -10,6 +10,7 @@ import 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.
 import 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_sequence_summary.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_structure.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -74,6 +75,8 @@ class MedicineDetailResponseDetail {
     required this.externalLinks,
 
     required this.sequenceSummary,
+
+    required this.structure,
 
     required this.approvalNumber,
 
@@ -191,6 +194,9 @@ class MedicineDetailResponseDetail {
   @JsonKey(name: r'sequenceSummary', required: true, includeIfNull: true)
   final MedicineDetailResponseSequenceSummary? sequenceSummary;
 
+  @JsonKey(name: r'structure', required: true, includeIfNull: true)
+  final MedicineDetailResponseStructure? structure;
+
   @JsonKey(name: r'approvalNumber', required: true, includeIfNull: true)
   final String? approvalNumber;
 
@@ -280,6 +286,7 @@ class MedicineDetailResponseDetail {
           other.externalIdentifiers == externalIdentifiers &&
           other.externalLinks == externalLinks &&
           other.sequenceSummary == sequenceSummary &&
+          other.structure == structure &&
           other.approvalNumber == approvalNumber &&
           other.manufacturer == manufacturer &&
           other.packageSpec == packageSpec &&
@@ -328,6 +335,7 @@ class MedicineDetailResponseDetail {
       (externalIdentifiers == null ? 0 : externalIdentifiers.hashCode) +
       (externalLinks == null ? 0 : externalLinks.hashCode) +
       (sequenceSummary == null ? 0 : sequenceSummary.hashCode) +
+      (structure == null ? 0 : structure.hashCode) +
       (approvalNumber == null ? 0 : approvalNumber.hashCode) +
       (manufacturer == null ? 0 : manufacturer.hashCode) +
       (packageSpec == null ? 0 : packageSpec.hashCode) +

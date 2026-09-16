@@ -180,6 +180,7 @@ class MedicineDetailSections {
       ..._externalIdentifiers(),
       ..._externalLinks(),
       ..._sequences(),
+      ..._structure(),
       ..._referenceRows(),
     ];
   }
@@ -287,6 +288,22 @@ class MedicineDetailSections {
     ];
   }
 
+  /// Computed structure descriptors.
+  ///
+  /// Small scalars, so they ride along with the detail payload and simply
+  /// render — nothing here is fetched on demand.
+  List<MedicineDetailSection> _structure() {
+    final structure = detail.structure;
+    if (structure == null || structure.isEmpty) return const [];
+    return [
+      MedicineDetailSection(
+        tier: Tier.reference,
+        title: l10n.medicineDetailSectionStructure,
+        body: DetailSectionBody.structure(structure, l10n),
+      ),
+    ];
+  }
+
   /// Provenance rows the payload already carried but the page never rendered.
   /// Each is short enough to stand as its own self-titled section.
   List<MedicineDetailSection> _referenceRows() {
@@ -330,6 +347,10 @@ sealed class DetailSectionBody {
   const factory DetailSectionBody.sequences(
     MedicineDetailSequenceSummary summary,
   ) = SequencesSectionBody;
+  const factory DetailSectionBody.structure(
+    MedicineStructure structure,
+    AppLocalizations l10n,
+  ) = StructureSectionBody;
 }
 
 class TextSectionBody extends DetailSectionBody {
@@ -357,6 +378,12 @@ class ReferencesSectionBody extends DetailSectionBody {
 class SequencesSectionBody extends DetailSectionBody {
   const SequencesSectionBody(this.summary);
   final MedicineDetailSequenceSummary summary;
+}
+
+class StructureSectionBody extends DetailSectionBody {
+  const StructureSectionBody(this.structure, this.l10n);
+  final MedicineStructure structure;
+  final AppLocalizations l10n;
 }
 
 class MedicineDetailSection {

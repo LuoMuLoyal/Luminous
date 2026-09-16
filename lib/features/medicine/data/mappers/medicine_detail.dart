@@ -98,7 +98,52 @@ class MedicineDetailMapper {
           )
           .toList(growable: false),
       sequenceSummary: _sequenceSummary(detail.sequenceSummary),
+      structure: _structure(detail.structure),
     );
+  }
+
+  /// A structure block with nothing in it is the same as no structure.
+  MedicineStructure? _structure(MedicineDetailResponseStructure? structure) {
+    if (structure == null) return null;
+
+    final mapped = MedicineStructure(
+      smiles: _trimToNull(structure.smiles),
+      inchiKey: _trimToNull(structure.inchiKey),
+      inchiIdentifier: _trimToNull(structure.inchiIdentifier),
+      formula: _trimToNull(structure.formula),
+      iupacName: _trimToNull(structure.iupacName),
+      molecularWeight: _toDouble(structure.molecularWeight),
+      exactMass: _toDouble(structure.exactMass),
+      logP: _toDouble(structure.logP),
+      polarSurfaceArea: _toDouble(structure.polarSurfaceArea),
+      polarizability: _toDouble(structure.polarizability),
+      refractivity: _toDouble(structure.refractivity),
+      alogpsLogP: _toDouble(structure.alogpsLogP),
+      alogpsLogS: _toDouble(structure.alogpsLogS),
+      alogpsSolubility: _trimToNull(structure.alogpsSolubility),
+      pka: _toDouble(structure.pka),
+      pkaStrongestAcidic: _toDouble(structure.pkaStrongestAcidic),
+      pkaStrongestBasic: _toDouble(structure.pkaStrongestBasic),
+      formalCharge: structure.formalCharge,
+      physiologicalCharge: structure.physiologicalCharge,
+      neutralCharge: structure.neutralCharge,
+      averageNeutralMicrospeciesCharge: _toDouble(
+        structure.averageNeutralMicrospeciesCharge,
+      ),
+      atomCount: structure.atomCount,
+      ringCount: structure.ringCount,
+      rotatableBondCount: structure.rotatableBondCount,
+      acceptorCount: structure.acceptorCount,
+      donorCount: structure.donorCount,
+      ruleOfFive: structure.ruleOfFive,
+      veberRule: structure.veberRule,
+      ghoseFilter: structure.ghoseFilter,
+      mddrLikeRule: structure.mddrLikeRule,
+      bioavailability: structure.bioavailability,
+      salts: _stringList(structure.salts),
+    );
+
+    return mapped.isEmpty ? null : mapped;
   }
 
   /// Drops blank entries from an optional string list.
@@ -133,6 +178,9 @@ class MedicineDetailMapper {
         MedicineDetailResponseSource_Enum.drugbank => 'drugbank',
         MedicineDetailResponseSource_Enum.unknownDefaultOpenApi => 'drugbank',
       };
+
+  /// OpenAPI `number` arrives as Dart `num`; the entity models these as double.
+  double? _toDouble(num? value) => value?.toDouble();
 
   String? _trimToNull(String? value) {
     if (value == null) return null;

@@ -97,6 +97,7 @@ MedicineDetailResponseDetail _minimalDetail() => MedicineDetailResponseDetail(
   externalLinks: null,
   targets: null,
   sequenceSummary: null,
+  structure: null,
   approvalNumber: null,
   manufacturer: null,
   packageSpec: null,

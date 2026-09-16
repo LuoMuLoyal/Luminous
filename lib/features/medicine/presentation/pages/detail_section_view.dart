@@ -60,7 +60,243 @@ class DetailSectionView extends StatelessWidget {
         medicineId: medicineId,
         source: source,
       ),
+      StructureSectionBody(:final structure) => MedicineStructureView(
+        structure: structure,
+        l10n: l10n,
+      ),
     };
+  }
+}
+
+/// Computed structure descriptors, grouped so 30-odd numbers stay readable.
+///
+/// Identifiers get a copy affordance because they are the values people
+/// actually paste elsewhere; the rest are label/value rows.
+class MedicineStructureView extends StatelessWidget {
+  const MedicineStructureView({
+    super.key,
+    required this.structure,
+    required this.l10n,
+  });
+
+  final MedicineStructure structure;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _StructureRows(
+          rows: <(String, String?)>[
+            (l10n.medicineDetailStructureFormula, structure.formula),
+            (
+              l10n.medicineDetailStructureWeight,
+              _number(structure.molecularWeight),
+            ),
+            (
+              l10n.medicineDetailStructureExactMass,
+              _number(structure.exactMass, digits: 4),
+            ),
+            (l10n.medicineDetailStructureSmiles, structure.smiles),
+            (l10n.medicineDetailStructureInchiKey, structure.inchiKey),
+            (l10n.medicineDetailStructureInchi, structure.inchiIdentifier),
+            (l10n.medicineDetailStructureIupac, structure.iupacName),
+          ].where((row) => row.$2 != null).toList(growable: false),
+          l10n: l10n,
+          copyable: true,
+        ),
+        _group(l10n.medicineDetailStructureSurfaceGroup, [
+          (l10n.medicineDetailStructureAtoms, _int(structure.atomCount)),
+          (l10n.medicineDetailStructureRings, _int(structure.ringCount)),
+          (
+            l10n.medicineDetailStructureRotatable,
+            _int(structure.rotatableBondCount),
+          ),
+          (
+            l10n.medicineDetailStructureAcceptors,
+            _int(structure.acceptorCount),
+          ),
+          (l10n.medicineDetailStructureDonors, _int(structure.donorCount)),
+          (
+            l10n.medicineDetailStructureTpsa,
+            _number(structure.polarSurfaceArea),
+          ),
+          (
+            l10n.medicineDetailStructurePolarizability,
+            _number(structure.polarizability, digits: 1),
+          ),
+          (
+            l10n.medicineDetailStructureRefractivity,
+            _number(structure.refractivity, digits: 1),
+          ),
+        ]),
+        _group(l10n.medicineDetailStructureLogpGroup, [
+          (l10n.medicineDetailStructureLogp, _number(structure.logP)),
+          (
+            l10n.medicineDetailStructureAlogpsLogp,
+            _number(structure.alogpsLogP),
+          ),
+          (
+            l10n.medicineDetailStructureAlogpsLogs,
+            _number(structure.alogpsLogS),
+          ),
+          (l10n.medicineDetailStructureSolubility, structure.alogpsSolubility),
+        ]),
+        _group(l10n.medicineDetailStructureChargeGroup, [
+          (
+            l10n.medicineDetailStructureFormalCharge,
+            _signedInt(structure.formalCharge),
+          ),
+          (
+            l10n.medicineDetailStructurePhysiologicalCharge,
+            _signedInt(structure.physiologicalCharge),
+          ),
+          (
+            l10n.medicineDetailStructurePkaAcidic,
+            _number(structure.pkaStrongestAcidic),
+          ),
+          (
+            l10n.medicineDetailStructurePkaBasic,
+            _number(structure.pkaStrongestBasic),
+          ),
+        ]),
+        _group(l10n.medicineDetailStructureRulesGroup, [
+          (
+            l10n.medicineDetailStructureRuleOfFive,
+            _verdict(structure.ruleOfFive),
+          ),
+          (l10n.medicineDetailStructureVeber, _verdict(structure.veberRule)),
+          (l10n.medicineDetailStructureGhose, _verdict(structure.ghoseFilter)),
+          (l10n.medicineDetailStructureMddr, _verdict(structure.mddrLikeRule)),
+        ]),
+        if (structure.salts.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: Spacing.sm),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Spacing.xs),
+                  child: Text(
+                    l10n.medicineDetailStructureSalts,
+                    style: context.theme.typography.body.xs.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: SemanticColor.neutral.solid(context),
+                    ),
+                  ),
+                ),
+                _ChipFlow(values: structure.salts),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _group(String title, List<(String, String?)> rows) {
+    final filled = rows.where((row) => row.$2 != null).toList(growable: false);
+    if (filled.isEmpty) return const SizedBox.shrink();
+    return _StructureRows(rows: filled, l10n: l10n, heading: title);
+  }
+
+  String? _int(int? value) => value?.toString();
+
+  String? _signedInt(int? value) =>
+      value == null ? null : (value > 0 ? '+$value' : '$value');
+
+  String? _number(double? value, {int digits = 2}) {
+    if (value == null) return null;
+    return value.toStringAsFixed(digits);
+  }
+
+  /// The source stores rule verdicts as 0/1 flags.
+  String? _verdict(int? value) => switch (value) {
+    1 => l10n.medicineDetailStructurePass,
+    0 => l10n.medicineDetailStructureFail,
+    _ => null,
+  };
+}
+
+/// A group of label/value rows, optionally with a heading and copy buttons.
+class _StructureRows extends StatelessWidget {
+  const _StructureRows({
+    required this.rows,
+    required this.l10n,
+    this.heading,
+    this.copyable = false,
+  });
+
+  final List<(String, String?)> rows;
+  final AppLocalizations l10n;
+  final String? heading;
+  final bool copyable;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (heading != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.xs),
+              child: Text(
+                heading!,
+                style: typography.body.xs.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: SemanticColor.neutral.solid(context),
+                ),
+              ),
+            ),
+          for (final (label, value) in rows)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      label,
+                      style: typography.body.xs.copyWith(
+                        color: SemanticColor.neutral.solid(context),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.sm),
+                  Expanded(
+                    flex: 5,
+                    child: Text(value!, style: typography.body.sm),
+                  ),
+                  if (copyable) ...[
+                    const SizedBox(width: Spacing.xs),
+                    FTappable(
+                      onPress: () async {
+                        await Clipboard.setData(ClipboardData(text: value));
+                        if (context.mounted) {
+                          await Toast.show(
+                            context,
+                            l10n.medicineDetailReferenceCopied,
+                          );
+                        }
+                      },
+                      child: Icon(
+                        FLucideIcons.copy,
+                        size: IconSizeTokens.sm,
+                        color: SemanticColor.primary.solid(context),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
 

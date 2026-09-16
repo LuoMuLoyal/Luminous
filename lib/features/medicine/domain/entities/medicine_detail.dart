@@ -55,6 +55,7 @@ class MedicineDetail {
     this.externalIdentifiers = const [],
     this.externalLinks = const [],
     this.sequenceSummary,
+    this.structure,
   });
 
   final String id;
@@ -126,6 +127,132 @@ class MedicineDetail {
   /// Counts only — the sequence text itself lives behind a separate request
   /// because it runs to tens of thousands of characters per drug.
   final MedicineDetailSequenceSummary? sequenceSummary;
+
+  /// Computed structure descriptors, or null when the source has no structure.
+  final MedicineStructure? structure;
+}
+
+/// Computed structure descriptors of a drug.
+///
+/// Every field is nullable: coverage in the source runs from complete (formula,
+/// molecular weight) down to about 15% (pKa). The source's "traditional IUPAC"
+/// column is deliberately not modelled — it names the wrong compound for most
+/// drugs upstream.
+class MedicineStructure {
+  const MedicineStructure({
+    this.smiles,
+    this.inchiKey,
+    this.inchiIdentifier,
+    this.formula,
+    this.iupacName,
+    this.molecularWeight,
+    this.exactMass,
+    this.logP,
+    this.polarSurfaceArea,
+    this.polarizability,
+    this.refractivity,
+    this.alogpsLogP,
+    this.alogpsLogS,
+    this.alogpsSolubility,
+    this.pka,
+    this.pkaStrongestAcidic,
+    this.pkaStrongestBasic,
+    this.formalCharge,
+    this.physiologicalCharge,
+    this.neutralCharge,
+    this.averageNeutralMicrospeciesCharge,
+    this.atomCount,
+    this.ringCount,
+    this.rotatableBondCount,
+    this.acceptorCount,
+    this.donorCount,
+    this.ruleOfFive,
+    this.veberRule,
+    this.ghoseFilter,
+    this.mddrLikeRule,
+    this.bioavailability,
+    this.salts = const [],
+  });
+
+  // Identity and identifiers.
+  final String? smiles;
+  final String? inchiKey;
+  final String? inchiIdentifier;
+  final String? formula;
+  final String? iupacName;
+
+  // Mass.
+  final double? molecularWeight;
+  final double? exactMass;
+
+  // Physicochemical.
+  final double? logP;
+  final double? polarSurfaceArea;
+  final double? polarizability;
+  final double? refractivity;
+  final double? alogpsLogP;
+  final double? alogpsLogS;
+  final String? alogpsSolubility;
+  final double? pka;
+  final double? pkaStrongestAcidic;
+  final double? pkaStrongestBasic;
+
+  // Charge.
+  final int? formalCharge;
+  final int? physiologicalCharge;
+  final int? neutralCharge;
+  final double? averageNeutralMicrospeciesCharge;
+
+  // Size and shape.
+  final int? atomCount;
+  final int? ringCount;
+  final int? rotatableBondCount;
+  final int? acceptorCount;
+  final int? donorCount;
+
+  // Drug-likeness verdicts, stored by the source as 0/1 flags.
+  final int? ruleOfFive;
+  final int? veberRule;
+  final int? ghoseFilter;
+  final int? mddrLikeRule;
+  final int? bioavailability;
+
+  final List<String> salts;
+
+  /// True when every descriptor is absent, i.e. the block carries nothing.
+  bool get isEmpty =>
+      smiles == null &&
+      inchiKey == null &&
+      inchiIdentifier == null &&
+      formula == null &&
+      iupacName == null &&
+      molecularWeight == null &&
+      exactMass == null &&
+      logP == null &&
+      polarSurfaceArea == null &&
+      polarizability == null &&
+      refractivity == null &&
+      alogpsLogP == null &&
+      alogpsLogS == null &&
+      alogpsSolubility == null &&
+      pka == null &&
+      pkaStrongestAcidic == null &&
+      pkaStrongestBasic == null &&
+      formalCharge == null &&
+      physiologicalCharge == null &&
+      neutralCharge == null &&
+      averageNeutralMicrospeciesCharge == null &&
+      atomCount == null &&
+      ringCount == null &&
+      rotatableBondCount == null &&
+      acceptorCount == null &&
+      donorCount == null &&
+      ruleOfFive == null &&
+      veberRule == null &&
+      ghoseFilter == null &&
+      mddrLikeRule == null &&
+      bioavailability == null &&
+      salts.isEmpty;
 }
 
 /// Availability counts for the medicine's sequences.

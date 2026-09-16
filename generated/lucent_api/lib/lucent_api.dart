@@ -215,6 +215,7 @@ export 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.
 export 'package:lucent_api/src/model/medicine_detail_response_external_identifiers.dart';
 export 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
 export 'package:lucent_api/src/model/medicine_detail_response_sequence_summary.dart';
+export 'package:lucent_api/src/model/medicine_detail_response_structure.dart';
 export 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 export 'package:lucent_api/src/model/medicine_recognition_job.dart';
 export 'package:lucent_api/src/model/medicine_recognition_job_result.dart';
