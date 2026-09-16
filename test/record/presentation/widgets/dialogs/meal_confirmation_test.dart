@@ -251,6 +251,45 @@ void main() {
 
     await tester.pump(const Duration(seconds: 2));
   });
+
+  testWidgets('typing that does not change canSave still updates the button', (
+    tester,
+  ) async {
+    // 输入监听现在只在「确认按钮可点状态」翻转时重建,`_saving` 也参与该状态。
+    // 这条用例锁住:在已有内容的基础上继续输入(可点状态不变)之后,
+    // 按钮仍然反映最新内容,并且提交拿到的是最新文本。
+    final created = await openDialog(
+      tester,
+      draft: const MealQuickEntryDraft(
+        occurredAt: '2026-07-28',
+        occurredTime: '12:30',
+        title: '午餐',
+      ),
+    );
+
+    expect(confirmButton(tester).onPress, isNotNull);
+
+    // 可点状态始终为 true,期间不应丢失对最新文本的读取。
+    await tester.enterText(
+      find.byKey(const Key('record-quick-meal-value-field')),
+      '番茄',
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('record-quick-meal-value-field')),
+      '番茄炒蛋',
+    );
+    await tester.pumpAndSettle();
+
+    expect(confirmButton(tester).onPress, isNotNull);
+
+    await tester.tap(find.byKey(const Key('record-quick-meal-confirm-action')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(created.single.value, '番茄炒蛋');
+    await tester.pump(const Duration(seconds: 2));
+  });
 }
 
 DailyRecordItem _record(DailyRecordCreateInput input) {
