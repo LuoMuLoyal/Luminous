@@ -541,6 +541,10 @@
   "@recordMealAnalysisFailureModelTimeout": {
     "description": "Meal analysis v2 UI copy."
   },
+  "recordMealAnalysisFailureJobLost": "分析中断了，请重试",
+  "@recordMealAnalysisFailureJobLost": {
+    "description": "Meal analysis v2 UI copy."
+  },
   "recordMealAnalysisFailureInvalidOutput": "图片内容无法识别",
   "@recordMealAnalysisFailureInvalidOutput": {
     "description": "Meal analysis v2 UI copy."

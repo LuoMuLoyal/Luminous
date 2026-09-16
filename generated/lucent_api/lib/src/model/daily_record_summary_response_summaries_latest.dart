@@ -119,7 +119,7 @@ class DailyRecordSummaryResponseSummariesLatest {
   @JsonKey(name: r'mealAnalysisUpdatedAt', required: true, includeIfNull: true)
   final String? mealAnalysisUpdatedAt;
 
-  /// Stable failure reason code (image_count_invalid, vision_unavailable, model_failed, model_timeout, invalid_output).
+  /// Stable failure reason code (image_count_invalid, vision_unavailable, model_failed, model_timeout, job_lost, invalid_output).
   @JsonKey(
     name: r'mealAnalysisFailureReason',
     required: true,

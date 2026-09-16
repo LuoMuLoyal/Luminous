@@ -17,7 +17,8 @@ class MealAnalysisViewData {
   final String? status;
 
   /// 稳定失败原因码(`image_count_invalid` / `vision_unavailable` /
-  /// `model_failed` / `model_timeout` / `invalid_output`);客户端据此做 l10n。
+  /// `model_failed` / `model_timeout` / `job_lost` / `invalid_output`);
+  /// 客户端据此做 l10n。
   final String? failureReason;
 
   final MealCalorieRangeViewData? calorieRange;

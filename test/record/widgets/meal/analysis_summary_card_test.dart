@@ -168,6 +168,7 @@ void main() {
         'vision_unavailable': l10n.recordMealAnalysisFailureVisionUnavailable,
         'model_failed': l10n.recordMealAnalysisFailureModelFailed,
         'model_timeout': l10n.recordMealAnalysisFailureModelTimeout,
+        'job_lost': l10n.recordMealAnalysisFailureJobLost,
         'invalid_output': l10n.recordMealAnalysisFailureInvalidOutput,
       };
 

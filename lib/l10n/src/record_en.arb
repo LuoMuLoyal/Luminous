@@ -541,6 +541,10 @@
   "@recordMealAnalysisFailureModelTimeout": {
     "description": "Meal analysis v2 UI copy."
   },
+  "recordMealAnalysisFailureJobLost": "Analysis was interrupted. Try again",
+  "@recordMealAnalysisFailureJobLost": {
+    "description": "Meal analysis v2 UI copy."
+  },
   "recordMealAnalysisFailureInvalidOutput": "The photo could not be read",
   "@recordMealAnalysisFailureInvalidOutput": {
     "description": "Meal analysis v2 UI copy."

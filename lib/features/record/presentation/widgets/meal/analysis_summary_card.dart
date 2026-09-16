@@ -132,6 +132,7 @@ String mealAnalysisFailureCopy(AppLocalizations l10n, String? reasonCode) {
     'image_count_invalid' => l10n.recordMealAnalysisFailureImageCount,
     'vision_unavailable' => l10n.recordMealAnalysisFailureVisionUnavailable,
     'model_timeout' => l10n.recordMealAnalysisFailureModelTimeout,
+    'job_lost' => l10n.recordMealAnalysisFailureJobLost,
     'invalid_output' => l10n.recordMealAnalysisFailureInvalidOutput,
     _ => l10n.recordMealAnalysisFailureModelFailed,
   };
