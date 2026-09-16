@@ -188,6 +188,99 @@ void main() {
               as Options;
       expect(options.headers?[Headers.contentLengthHeader], 99);
     });
+
+    /// Object storage answers in its own error format (XML/HTML), never RFC 9457
+    /// `application/problem+json`, so the central mapper would degrade every
+    /// storage failure to `unknown`. The PUT classifies its own failures.
+    group('failure classification', () {
+      Future<LucentFailure> failureOf(DioException error) async {
+        when(
+          () => dio.put(
+            any(),
+            data: any(named: 'data'),
+            options: any(named: 'options'),
+          ),
+        ).thenThrow(error);
+        try {
+          await putPresignedObject(
+            dio,
+            upload: PresignedUpload.fromFileUpload(_presign()),
+            bytes: Uint8List.fromList([1, 2, 3]),
+            contentType: 'image/jpeg',
+          );
+          fail('expected the PUT to fail');
+        } on LucentFailure catch (failure) {
+          return failure;
+        }
+      }
+
+      DioException withResponse({
+        required int status,
+        required DioExceptionType type,
+      }) {
+        final options = RequestOptions(path: 'https://upload.example.com/p');
+        return DioException(
+          requestOptions: options,
+          type: type,
+          response: Response<dynamic>(
+            requestOptions: options,
+            statusCode: status,
+            data: '<Error><Code>AccessDenied</Code></Error>',
+          ),
+        );
+      }
+
+      test('403 is a retryable business failure carrying its status', () async {
+        final failure = await failureOf(
+          withResponse(status: 403, type: DioExceptionType.badResponse),
+        );
+
+        // 403 是签名 URL 的正常终点(过期/签名不匹配),提示"重试"才有意义,
+        // 记成 server 或 network 会读成"我们坏了"。
+        expect(failure.kind, LucentFailureKind.business);
+        expect(failure.statusCode, 403);
+        expect(failure.retryable, isTrue);
+      });
+
+      test('other HTTP errors from storage are server failures', () async {
+        final failure = await failureOf(
+          withResponse(status: 500, type: DioExceptionType.badResponse),
+        );
+
+        expect(failure.kind, LucentFailureKind.server);
+        expect(failure.statusCode, 500);
+      });
+
+      test(
+        'a transport error without a response is a network failure',
+        () async {
+          final failure = await failureOf(
+            DioException(
+              requestOptions: RequestOptions(
+                path: 'https://upload.example.com/p',
+              ),
+              type: DioExceptionType.connectionError,
+            ),
+          );
+
+          expect(failure.kind, LucentFailureKind.network);
+          expect(failure.networkErrorCode, NetworkErrorCode.connectionError);
+        },
+      );
+
+      test('carries the request traceId through', () async {
+        final options = RequestOptions(path: 'https://upload.example.com/p');
+        options.extra['traceId'] = 'trace-abc';
+        final failure = await failureOf(
+          DioException(
+            requestOptions: options,
+            type: DioExceptionType.connectionError,
+          ),
+        );
+
+        expect(failure.traceId, 'trace-abc');
+      });
+    });
   });
 
   group('requirePublicUrl', () {

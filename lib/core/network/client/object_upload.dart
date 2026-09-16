@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 
 /// A presigned direct-to-object-storage upload: the credentials the backend
 /// signed, plus where the object will live once it is PUT.
@@ -142,6 +143,11 @@ Future<PresignedUpload> presignFileUpload(
 /// - it must **not** go through the 401 refresh path — object storage cannot
 ///   refresh a session, and a refresh triggered by a storage 403 would spend
 ///   the single-use refresh token for nothing.
+///
+/// On failure the thrown [DioException] is re-classified into a [LucentFailure]
+/// (see [_uploadFailure]): object storage speaks its own error format, so the
+/// central mapper — which requires RFC 9457 `application/problem+json` — would
+/// otherwise degrade every storage error to `unknown`.
 Future<void> putPresignedObject(
   Dio dio, {
   required PresignedUpload upload,
@@ -149,21 +155,63 @@ Future<void> putPresignedObject(
   required String contentType,
   int? sizeBytes,
 }) async {
-  // Deliberately untyped `put`: the response body is object storage's, not
-  // ours, and nothing reads it.
-  await dio.put(
-    upload.uploadUrl,
-    data: bytes,
-    options: Options(
-      headers: <String, Object?>{
-        ...upload.headers,
-        Headers.contentLengthHeader: sizeBytes ?? bytes.length,
-      },
-      contentType: upload.headers[Headers.contentTypeHeader] ?? contentType,
-      extra: const <String, Object?>{
-        'skipAuthorization': true,
-        'skipAuthRefresh': true,
-      },
-    ),
+  try {
+    // Deliberately untyped `put`: the response body is object storage's, not
+    // ours, and nothing reads it.
+    await dio.put(
+      upload.uploadUrl,
+      data: bytes,
+      options: Options(
+        headers: <String, Object?>{
+          ...upload.headers,
+          Headers.contentLengthHeader: sizeBytes ?? bytes.length,
+        },
+        contentType: upload.headers[Headers.contentTypeHeader] ?? contentType,
+        extra: const <String, Object?>{
+          'skipAuthorization': true,
+          'skipAuthRefresh': true,
+        },
+      ),
+    );
+  } on DioException catch (error) {
+    throw _uploadFailure(error);
+  }
+}
+
+/// Classifies a presigned-PUT failure.
+///
+/// A 403 is the normal end of a signed URL's life (they expire, and the object
+/// store also reports a signature/header mismatch this way). It is retryable in
+/// the sense that means something to the user — re-presign and PUT again — so it
+/// is reported as a business failure carrying its status, rather than as a
+/// server or network fault that would read as "we broke".
+LucentFailure _uploadFailure(DioException error) {
+  final status = error.response?.statusCode;
+  final traceId = error.requestOptions.extra['traceId'] as String?;
+  if (status == 403) {
+    return LucentFailure(
+      kind: LucentFailureKind.business,
+      message: 'The upload link has expired. Please try again.',
+      statusCode: status,
+      retryable: true,
+      traceId: traceId,
+      cause: error,
+    );
+  }
+  if (error.response != null) {
+    return LucentFailure(
+      kind: LucentFailureKind.server,
+      message: 'Upload failed. Please try again later.',
+      statusCode: status,
+      traceId: traceId,
+      cause: error,
+    );
+  }
+  // No response: the PUT never reached storage (DNS, refused, timeout, reset).
+  return LucentFailure.network(
+    message: 'Upload failed. Please check your connection.',
+    networkErrorCode: LucentErrorMapper.errorCodeFromDioType(error.type),
+    traceId: traceId,
+    cause: error,
   );
 }

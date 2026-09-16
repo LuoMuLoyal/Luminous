@@ -6,6 +6,25 @@ import 'package:luminous/core/network/contract/problem_details.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 abstract final class LucentErrorMapper {
+  /// Maps a Dio failure type to its [NetworkErrorCode].
+  ///
+  /// Exposed so non-Problem-Details transports (object storage's presigned PUT)
+  /// can classify connectivity failures with the same vocabulary as the
+  /// central mapper instead of inventing their own.
+  static NetworkErrorCode errorCodeFromDioType(DioExceptionType type) {
+    return switch (type) {
+      DioExceptionType.connectionTimeout => NetworkErrorCode.connectionTimeout,
+      DioExceptionType.sendTimeout => NetworkErrorCode.sendTimeout,
+      DioExceptionType.receiveTimeout => NetworkErrorCode.receiveTimeout,
+      DioExceptionType.transformTimeout => NetworkErrorCode.receiveTimeout,
+      DioExceptionType.badCertificate => NetworkErrorCode.badCertificate,
+      DioExceptionType.connectionError => NetworkErrorCode.connectionError,
+      DioExceptionType.cancel => NetworkErrorCode.cancelled,
+      DioExceptionType.badResponse => NetworkErrorCode.badResponse,
+      DioExceptionType.unknown => NetworkErrorCode.unknown,
+    };
+  }
+
   /// Converts a transport error into the target application failure type.
   ///
   /// HTTP errors must be RFC 9457 Problem Details with the
@@ -29,7 +48,7 @@ abstract final class LucentErrorMapper {
 
       return LucentFailure.network(
         message: _networkMessage(error.type),
-        networkErrorCode: _errorCodeFromDioType(error.type),
+        networkErrorCode: errorCodeFromDioType(error.type),
         traceId: _traceIdFor(error),
         cause: error,
       );
@@ -98,20 +117,6 @@ abstract final class LucentErrorMapper {
       DioExceptionType.cancel => 'Request was cancelled.',
       DioExceptionType.badResponse => 'Request failed. Please try again later.',
       DioExceptionType.unknown => 'An unexpected network error occurred.',
-    };
-  }
-
-  static NetworkErrorCode _errorCodeFromDioType(DioExceptionType type) {
-    return switch (type) {
-      DioExceptionType.connectionTimeout => NetworkErrorCode.connectionTimeout,
-      DioExceptionType.sendTimeout => NetworkErrorCode.sendTimeout,
-      DioExceptionType.receiveTimeout => NetworkErrorCode.receiveTimeout,
-      DioExceptionType.transformTimeout => NetworkErrorCode.receiveTimeout,
-      DioExceptionType.badCertificate => NetworkErrorCode.badCertificate,
-      DioExceptionType.connectionError => NetworkErrorCode.connectionError,
-      DioExceptionType.cancel => NetworkErrorCode.cancelled,
-      DioExceptionType.badResponse => NetworkErrorCode.badResponse,
-      DioExceptionType.unknown => NetworkErrorCode.unknown,
     };
   }
 }
