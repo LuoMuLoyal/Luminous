@@ -39,6 +39,7 @@ const _drugbankDetail = MedicineDetail(
   name: 'Ibuprofen',
   subtitle: 'Small molecule',
   kind: 'drugbank',
+  indication: 'For mild pain.',
   description: 'A nonsteroidal anti-inflammatory drug.',
   halfLife: '2 hours',
   drugInteractions: [
@@ -47,6 +48,44 @@ const _drugbankDetail = MedicineDetail(
       description: 'May increase bleeding risk.',
     ),
   ],
+);
+
+/// Imatinib-like shape: a well-studied target with more PDB entries than the
+/// preview shows.
+const _targetDetail = MedicineDetail(
+  id: 'DB00619',
+  source: 'drugbank',
+  name: 'Imatinib',
+  kind: 'drugbank',
+  targets: [
+    MedicineDetailTarget(
+      name: 'Tyrosine-protein kinase ABL1',
+      geneName: 'ABL1',
+      uniprotId: 'P00519',
+      species: 'Humans',
+      pdbIds: ['1ABC', '2DEF', '3GHI', '4JKL', '5MNO', '6FGH', '7XYZ', '8UVW'],
+      actions: ['inhibitor'],
+      relationKind: 'target',
+    ),
+  ],
+);
+
+const _longToxicityDetail = MedicineDetail(
+  id: 'DB00619',
+  source: 'drugbank',
+  name: 'Imatinib',
+  kind: 'drugbank',
+  toxicity:
+      'LD50 in rats is 500 mg/kg. '
+      'Severe adverse reactions include hepatotoxicity, fluid retention, and '
+      'cytopenias. Monitor liver function before and during treatment, and '
+      'reduce the dose when transaminases rise above five times the upper '
+      'limit of normal. Patients with severe congestive heart failure should '
+      'be evaluated before starting therapy, and weight gain should be '
+      'investigated promptly. Pleural effusion and pulmonary edema have been '
+      'reported, and pericardial effusion requires dose interruption until '
+      'resolution. Growth retardation has been observed in paediatric '
+      'patients on prolonged therapy, so height should be monitored.',
 );
 
 const _emptyCnDetail = MedicineDetail(
@@ -78,14 +117,15 @@ void main() {
     // Reference notice.
     expect(find.text(l10n.medicineReferenceNoticeTitle), findsOneWidget);
 
-    // Present sections render (indications is the first item, expanded).
+    // Indications is the highest-frequency field: it renders and is expanded
+    // by default. Contraindications is safety-tier, so it renders collapsed.
     expect(find.text(l10n.medicineDetailSectionIndications), findsOneWidget);
-    expect(find.text('用于缓解轻至中度疼痛'), findsOneWidget);
+    expect(_revealOf(tester, '用于缓解轻至中度疼痛'), 1);
     expect(
       find.text(l10n.medicineDetailSectionContraindications),
       findsOneWidget,
     );
-    expect(find.text('对本品过敏者禁用'), findsOneWidget);
+    expect(_revealOf(tester, '对本品过敏者禁用'), 0);
 
     // Empty field sections are not rendered at all.
     expect(find.text(l10n.medicineDetailSectionStorage), findsNothing);
@@ -103,16 +143,17 @@ void main() {
 
     expect(find.text('Ibuprofen'), findsOneWidget);
 
-    // Description is the first section (expanded).
+    // Every populated section is reachable from its accordion header, whether
+    // or not it starts expanded.
     expect(find.text(l10n.medicineDetailSectionDescription), findsOneWidget);
-    expect(find.text('A nonsteroidal anti-inflammatory drug.'), findsOneWidget);
     expect(find.text(l10n.medicineDetailSectionHalfLife), findsOneWidget);
-    expect(find.text('2 hours'), findsOneWidget);
     expect(
       find.text(l10n.medicineDetailSectionDrugInteractions),
       findsOneWidget,
     );
-    expect(find.textContaining('DB00795'), findsOneWidget);
+
+    // The interaction count is surfaced in the header badge.
+    expect(find.text('1'), findsWidgets);
   });
 
   testWidgets('shows error view with retry on load failure', (tester) async {
@@ -166,6 +207,102 @@ void main() {
       expect(find.text(l10n.medicineSearchAlreadyAddedLabel), findsNothing);
     },
   );
+
+  testWidgets(
+    'opens only indications by default and keeps the rest collapsed',
+    (tester) async {
+      await _pumpDetailPage(
+        tester,
+        source: 'drugbank',
+        id: 'DB01050',
+        detail: _drugbankDetail,
+      );
+
+      // Indications is the highest-frequency field, so it is the one section
+      // whose body is visible without interaction.
+      expect(find.text('For mild pain.'), findsOneWidget);
+
+      // Description and half-life start collapsed. FAccordion keeps collapsed
+      // children in the tree and clips them via FCollapsible, so assert on that
+      // widget's reveal value rather than expecting the text to be absent.
+      for (final body in [
+        'A nonsteroidal anti-inflammatory drug.',
+        '2 hours',
+      ]) {
+        expect(
+          _revealOf(tester, body),
+          0,
+          reason: '$body should start collapsed',
+        );
+      }
+    },
+  );
+
+  testWidgets('expands a collapsed section on tap', (tester) async {
+    await _pumpDetailPage(
+      tester,
+      source: 'drugbank',
+      id: 'DB01050',
+      detail: _drugbankDetail,
+    );
+
+    expect(_revealOf(tester, '2 hours'), 0);
+
+    await tester.tap(find.text(l10n.medicineDetailSectionHalfLife));
+    await tester.pumpAndSettle();
+
+    expect(_revealOf(tester, '2 hours'), 1);
+  });
+
+  testWidgets('renders targets with actions and bounds the PDB preview', (
+    tester,
+  ) async {
+    await _pumpDetailPage(
+      tester,
+      source: 'drugbank',
+      id: 'DB00619',
+      detail: _targetDetail,
+    );
+
+    await tester.tap(find.text(l10n.medicineDetailSectionTargets));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tyrosine-protein kinase ABL1'), findsOneWidget);
+    expect(find.text('inhibitor'), findsOneWidget);
+    expect(find.textContaining('ABL1'), findsWidgets);
+    expect(find.textContaining('P00519'), findsWidgets);
+
+    // Only the first 6 PDB ids show; the rest collapse behind a "+N more"
+    // affordance, which is what keeps an 80-structure target readable.
+    expect(find.text('1ABC'), findsOneWidget);
+    expect(find.text('6FGH'), findsOneWidget);
+    expect(find.text('7XYZ'), findsNothing);
+    expect(find.text(l10n.medicineDetailTargetPdbMore(2)), findsOneWidget);
+
+    await tester.tap(find.text(l10n.medicineDetailTargetPdbMore(2)));
+    await tester.pumpAndSettle();
+
+    expect(find.text('7XYZ'), findsOneWidget);
+  });
+
+  testWidgets('clamps long prose behind an expand affordance', (tester) async {
+    await _pumpDetailPage(
+      tester,
+      source: 'drugbank',
+      id: 'DB00619',
+      detail: _longToxicityDetail,
+    );
+
+    await tester.tap(find.text(l10n.medicineDetailSectionToxicity));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.medicineDetailExpandLongText), findsOneWidget);
+
+    await tester.tap(find.text(l10n.medicineDetailExpandLongText));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.medicineDetailCollapseLongText), findsOneWidget);
+  });
 
   testWidgets('shows skeleton while detail is loading', (tester) async {
     final completer = Completer<MedicineDetail>();
@@ -279,6 +416,18 @@ Future<void> _pumpDetailPage(
   } else {
     await tester.pump();
   }
+}
+
+/// The reveal value of the accordion body containing [text]: 0 while the
+/// section is collapsed, 1 once it is expanded.
+double _revealOf(WidgetTester tester, String text) {
+  return tester
+      .widget<FCollapsible>(
+        find
+            .ancestor(of: find.text(text), matching: find.byType(FCollapsible))
+            .first,
+      )
+      .value;
 }
 
 class _FakeHealthContextRepository implements HealthContextRepository {

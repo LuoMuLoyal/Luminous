@@ -41,7 +41,12 @@
   `_isRunningStatic/_isRunningLlm`);`runPrecheck` 无副作用不落记录。
 - 测试锚点:`test/medicine/reminder_notification_planner_test.dart`、
   `reminder_delivery_reporter_test.dart`、`cached_dose_log_data_source_test.dart`、
-  `workspace_repository_test.dart`。
+  `workspace_repository_test.dart`、`detail_page_test.dart`(详情页分区默认展开口径)。
+- 详情页分区顺序即阅读频次:`pages/detail_sections.dart` 的 `Tier` 是唯一排序真源
+  (primary→safety→clinical→pharmacokinetics→reference),**只有 `Tier.primary` 默认展开**。
+  分区顺序/默认展开的断言进 `detail_page_test.dart`,勿在文档里另立一份顺序表。
+- 折叠分区的正文仍在 widget 树内(Forui `FAccordion` 用 `FCollapsible` 裁剪,不是移除);
+  判定"是否展开"要断言 `FCollapsible.value`,不能断言文案不存在。
 
 ## 依赖禁区
 

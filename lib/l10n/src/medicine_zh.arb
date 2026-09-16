@@ -624,6 +624,30 @@
   "medicineDetailSectionSynonyms": "同义词",
   "medicineDetailSectionFoodInteractions": "食物相互作用",
   "medicineDetailSectionDrugInteractions": "药物相互作用",
+  "medicineDetailSectionTargets": "作用靶点",
+  "medicineDetailSectionExternalIdentifiers": "外部标识",
+  "medicineDetailSectionExternalLinks": "参考链接",
+  "medicineDetailSectionBarcode": "条形码",
+  "medicineDetailSectionNationalDrugCode": "国家药品编码",
+  "medicineDetailSectionSource": "来源",
+  "medicineDetailTargetGene": "基因",
+  "medicineDetailTargetUniprot": "UniProt",
+  "medicineDetailTargetPdb": "PDB 结构",
+  "medicineDetailTargetPdbMore": "另有 {count} 个",
+  "@medicineDetailTargetPdbMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailRelationTarget": "靶点",
+  "medicineDetailRelationEnzyme": "酶",
+  "medicineDetailRelationCarrier": "载体",
+  "medicineDetailRelationTransporter": "转运体",
+  "medicineDetailReferenceCopied": "已复制",
+  "medicineDetailExpandLongText": "展开全文",
+  "medicineDetailCollapseLongText": "收起",
   "medicineDetailRiskCheckEntry": "查看我的用药风险检查",
   "medicineDetailOpenReminderAction": "查看提醒详情"
 }

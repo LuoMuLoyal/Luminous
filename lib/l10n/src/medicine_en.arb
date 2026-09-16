@@ -617,6 +617,30 @@
   "medicineDetailSectionSynonyms": "Synonyms",
   "medicineDetailSectionFoodInteractions": "Food interactions",
   "medicineDetailSectionDrugInteractions": "Drug interactions",
+  "medicineDetailSectionTargets": "Targets",
+  "medicineDetailSectionExternalIdentifiers": "External identifiers",
+  "medicineDetailSectionExternalLinks": "Reference links",
+  "medicineDetailSectionBarcode": "Barcode",
+  "medicineDetailSectionNationalDrugCode": "National drug code",
+  "medicineDetailSectionSource": "Source",
+  "medicineDetailTargetGene": "Gene",
+  "medicineDetailTargetUniprot": "UniProt",
+  "medicineDetailTargetPdb": "PDB structures",
+  "medicineDetailTargetPdbMore": "+{count} more",
+  "@medicineDetailTargetPdbMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailRelationTarget": "Target",
+  "medicineDetailRelationEnzyme": "Enzyme",
+  "medicineDetailRelationCarrier": "Carrier",
+  "medicineDetailRelationTransporter": "Transporter",
+  "medicineDetailReferenceCopied": "Copied",
+  "medicineDetailExpandLongText": "Show more",
+  "medicineDetailCollapseLongText": "Show less",
   "medicineDetailRiskCheckEntry": "Check my medicine risk",
   "medicineDetailOpenReminderAction": "View reminder details"
 }

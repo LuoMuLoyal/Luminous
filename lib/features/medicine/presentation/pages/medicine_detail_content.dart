@@ -17,6 +17,8 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
+import 'package:luminous/features/medicine/presentation/pages/detail_section_view.dart';
+import 'package:luminous/features/medicine/presentation/pages/detail_sections.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_detail_shared.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -52,9 +54,7 @@ class MedicineDetailContent extends ConsumerWidget {
     );
     final isAdded = currentMedicine != null;
 
-    final sections = source == 'drugbank'
-        ? _drugbankSections(l10n)
-        : _cnSections(l10n);
+    final sections = MedicineDetailSections(detail, l10n).build();
 
     return ResponsiveContentFrame(
       child: SingleChildScrollView(
@@ -78,11 +78,13 @@ class MedicineDetailContent extends ConsumerWidget {
               if (sections.isNotEmpty)
                 FAccordion(
                   children: [
-                    for (var index = 0; index < sections.length; index += 1)
+                    for (final section in sections)
                       FAccordionItem(
-                        title: Text(sections[index].title),
-                        initiallyExpanded: index == 0,
-                        child: Text(sections[index].body),
+                        title: _SectionHeader(section: section),
+                        // Only the highest-frequency section opens by default;
+                        // everything below is opt-in so the page stays short.
+                        initiallyExpanded: section.tier == Tier.primary,
+                        child: DetailSectionView(section: section, l10n: l10n),
                       ),
                   ],
                 )
@@ -120,98 +122,6 @@ class MedicineDetailContent extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  List<DetailSection> _cnSections(AppLocalizations l10n) {
-    return [
-      _section(l10n.medicineDetailSectionIndications, detail.indications),
-      _section(l10n.medicineDetailSectionIngredients, detail.ingredients),
-      _section(l10n.medicineDetailSectionProperties, detail.properties),
-      _section(
-        l10n.medicineDetailSectionContraindications,
-        detail.contraindications,
-      ),
-      _section(l10n.medicineDetailSectionPrecautions, detail.precautions),
-      _section(l10n.medicineDetailSectionDosage, detail.dosage),
-      _section(
-        l10n.medicineDetailSectionAdverseReactions,
-        detail.adverseReactions,
-      ),
-      _section(l10n.medicineDetailSectionStorage, detail.storage),
-      _section(
-        l10n.medicineDetailSectionPharmacology,
-        detail.pharmacologyToxicology,
-      ),
-      _section(
-        l10n.medicineDetailSectionPharmacokinetics,
-        detail.pharmacokinetics,
-      ),
-      _section(l10n.medicineDetailSectionOverdose, detail.overdose),
-      _section(l10n.medicineDetailSectionValidity, detail.validityPeriod),
-    ].whereType<DetailSection>().toList(growable: false);
-  }
-
-  List<DetailSection> _drugbankSections(AppLocalizations l10n) {
-    return [
-      _section(l10n.medicineDetailSectionDescription, detail.description),
-      _section(l10n.medicineDetailSectionIndications, detail.indication),
-      _section(l10n.medicineDetailSectionMechanism, detail.mechanismOfAction),
-      _section(
-        l10n.medicineDetailSectionPharmacodynamics,
-        detail.pharmacodynamics,
-      ),
-      _section(l10n.medicineDetailSectionToxicity, detail.toxicity),
-      _section(l10n.medicineDetailSectionDrugType, detail.drugType),
-      _section(l10n.medicineDetailSectionState, detail.state),
-      _section(l10n.medicineDetailSectionMetabolism, detail.metabolism),
-      _section(l10n.medicineDetailSectionAbsorption, detail.absorption),
-      _section(l10n.medicineDetailSectionHalfLife, detail.halfLife),
-      _section(l10n.medicineDetailSectionProteinBinding, detail.proteinBinding),
-      _section(
-        l10n.medicineDetailSectionElimination,
-        detail.routeOfElimination,
-      ),
-      _section(
-        l10n.medicineDetailSectionDistribution,
-        detail.volumeOfDistribution,
-      ),
-      _section(l10n.medicineDetailSectionClearance, detail.clearance),
-      _listSection(l10n.medicineDetailSectionCategories, detail.categories),
-      _listSection(l10n.medicineDetailSectionGroups, detail.groups),
-      _listSection(l10n.medicineDetailSectionAtc, detail.atcCodes),
-      _listSection(l10n.medicineDetailSectionSynonyms, detail.synonyms),
-      _listSection(
-        l10n.medicineDetailSectionFoodInteractions,
-        detail.foodInteractions,
-      ),
-      _interactionsSection(
-        l10n.medicineDetailSectionDrugInteractions,
-        detail.drugInteractions,
-      ),
-    ].whereType<DetailSection>().toList(growable: false);
-  }
-
-  DetailSection? _section(String title, String? body) {
-    if (body == null || body.trim().isEmpty) return null;
-    return DetailSection(title: title, body: body);
-  }
-
-  DetailSection? _listSection(String title, List<String> items) {
-    if (items.isEmpty) return null;
-    final body = items.join(', ');
-    if (body.trim().isEmpty) return null;
-    return DetailSection(title: title, body: body);
-  }
-
-  DetailSection? _interactionsSection(
-    String title,
-    List<MedicineDetailInteraction> items,
-  ) {
-    if (items.isEmpty) return null;
-    final body = items
-        .map((item) => '${item.drugbankId}: ${item.description}')
-        .join('\n\n');
-    return DetailSection(title: title, body: body);
   }
 
   Future<void> _addToCurrentMedicines(
@@ -296,12 +206,28 @@ class MedicineDetailContent extends ConsumerWidget {
   }
 }
 
-/// Data class for medicine detail sections.
-class DetailSection {
-  const DetailSection({required this.title, required this.body});
+/// Accordion header showing the section title plus, when the payload has more
+/// than one entry, a count badge so the user can judge whether to expand.
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.section});
 
-  final String title;
-  final String body;
+  final MedicineDetailSection section;
+
+  @override
+  Widget build(BuildContext context) {
+    final count = section.count;
+    if (count == null) {
+      return Text(section.title);
+    }
+
+    return Row(
+      children: [
+        Expanded(child: Text(section.title)),
+        const SizedBox(width: Spacing.xs),
+        FBadge(variant: FBadgeVariant.secondary, child: Text('$count')),
+      ],
+    );
+  }
 }
 
 /// Header card widget displaying medicine name, source badge, and metadata rows.
