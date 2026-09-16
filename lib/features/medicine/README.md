@@ -47,6 +47,14 @@
   分区顺序/默认展开的断言进 `detail_page_test.dart`,勿在文档里另立一份顺序表。
 - 折叠分区的正文仍在 widget 树内(Forui `FAccordion` 用 `FCollapsible` 裁剪,不是移除);
   判定"是否展开"要断言 `FCollapsible.value`,不能断言文案不存在。
+- **切换折叠项时不要 `setState` 重建整个 accordion**:Forui 的 `InheritedAccordionData`
+  把整个 expanded 集合作为通知依据,重建会让每个 item 重跑 `didChangeDependencies`,
+  命中 `case _` 分支把 `AnimationController.value` 重置回 `initiallyExpanded`
+  —— 用户刚展开的分区会立刻弹回。现口径:展开集合放进 `ValueNotifier`,只有真正需要
+  知道展开态的子树(序列区)用 `ValueListenableBuilder` 订阅。
+- 序列正文**默认不加载**:详情响应只带 `sequenceSummary` 计数,正文走
+  `GET /medicines/:id/sequences`(实测单药可达 96 KB)。因 accordion 会预先构建折叠项,
+  "被构建"≠"被打开",所以门控挂在展开集合上而非构建时。
 
 ## 依赖禁区
 

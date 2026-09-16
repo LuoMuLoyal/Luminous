@@ -630,6 +630,45 @@
   "medicineDetailSectionBarcode": "条形码",
   "medicineDetailSectionNationalDrugCode": "国家药品编码",
   "medicineDetailSectionSource": "来源",
+  "medicineDetailSectionSequences": "序列",
+  "medicineDetailSequencesDrugChains": "本品 {count} 条链",
+  "@medicineDetailSequencesDrugChains": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailSequencesTargets": "{count} 条靶点序列",
+  "@medicineDetailSequencesTargets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailSequencesDrugHeading": "本品序列",
+  "medicineDetailSequencesTargetsHeading": "靶点序列",
+  "medicineDetailSequenceProtein": "蛋白序列",
+  "medicineDetailSequenceGene": "编码序列",
+  "medicineDetailSequenceResidues": "{count} 个氨基酸",
+  "@medicineDetailSequenceResidues": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailSequenceBases": "{count} 个碱基",
+  "@medicineDetailSequenceBases": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailSequencesEmpty": "该药品暂无序列数据。",
+  "medicineDetailSequencesError": "序列加载失败。",
   "medicineDetailTargetGene": "基因",
   "medicineDetailTargetUniprot": "UniProt",
   "medicineDetailTargetPdb": "PDB 结构",

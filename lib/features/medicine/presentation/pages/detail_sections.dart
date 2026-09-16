@@ -179,6 +179,7 @@ class MedicineDetailSections {
       ),
       ..._externalIdentifiers(),
       ..._externalLinks(),
+      ..._sequences(),
       ..._referenceRows(),
     ];
   }
@@ -269,6 +270,23 @@ class MedicineDetailSections {
     ];
   }
 
+  /// Sequences, advertised by count only.
+  ///
+  /// The text itself is never in the detail payload — the section body fetches
+  /// it on demand, so this only decides whether the section is worth showing.
+  List<MedicineDetailSection> _sequences() {
+    final summary = detail.sequenceSummary;
+    if (summary == null || summary.isEmpty) return const [];
+    return [
+      MedicineDetailSection(
+        tier: Tier.reference,
+        title: l10n.medicineDetailSectionSequences,
+        count: summary.total,
+        body: DetailSectionBody.sequences(summary),
+      ),
+    ];
+  }
+
   /// Provenance rows the payload already carried but the page never rendered.
   /// Each is short enough to stand as its own self-titled section.
   List<MedicineDetailSection> _referenceRows() {
@@ -309,6 +327,9 @@ sealed class DetailSectionBody {
     List<MedicineDetailExternalReference> values,
     AppLocalizations l10n,
   ) = ReferencesSectionBody;
+  const factory DetailSectionBody.sequences(
+    MedicineDetailSequenceSummary summary,
+  ) = SequencesSectionBody;
 }
 
 class TextSectionBody extends DetailSectionBody {
@@ -331,6 +352,11 @@ class ReferencesSectionBody extends DetailSectionBody {
   const ReferencesSectionBody(this.values, this.l10n);
   final List<MedicineDetailExternalReference> values;
   final AppLocalizations l10n;
+}
+
+class SequencesSectionBody extends DetailSectionBody {
+  const SequencesSectionBody(this.summary);
+  final MedicineDetailSequenceSummary summary;
 }
 
 class MedicineDetailSection {

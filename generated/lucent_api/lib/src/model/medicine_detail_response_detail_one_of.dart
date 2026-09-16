@@ -6,6 +6,7 @@
 import 'package:lucent_api/src/model/medicine_detail_response_external_identifiers.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_sequence_summary.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -69,6 +70,8 @@ class MedicineDetailResponseDetailOneOf {
     required this.externalIdentifiers,
 
     required this.externalLinks,
+
+    required this.sequenceSummary,
   });
 
   @JsonKey(name: r'kind', required: true, includeIfNull: false)
@@ -143,6 +146,9 @@ class MedicineDetailResponseDetailOneOf {
   @JsonKey(name: r'externalLinks', required: true, includeIfNull: true)
   final List<MedicineDetailResponseExternalLinks>? externalLinks;
 
+  @JsonKey(name: r'sequenceSummary', required: true, includeIfNull: true)
+  final MedicineDetailResponseSequenceSummary? sequenceSummary;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -170,7 +176,8 @@ class MedicineDetailResponseDetailOneOf {
           other.drugInteractions == drugInteractions &&
           other.targets == targets &&
           other.externalIdentifiers == externalIdentifiers &&
-          other.externalLinks == externalLinks;
+          other.externalLinks == externalLinks &&
+          other.sequenceSummary == sequenceSummary;
 
   @override
   int get hashCode =>
@@ -197,7 +204,8 @@ class MedicineDetailResponseDetailOneOf {
       (drugInteractions == null ? 0 : drugInteractions.hashCode) +
       (targets == null ? 0 : targets.hashCode) +
       (externalIdentifiers == null ? 0 : externalIdentifiers.hashCode) +
-      (externalLinks == null ? 0 : externalLinks.hashCode);
+      (externalLinks == null ? 0 : externalLinks.hashCode) +
+      (sequenceSummary == null ? 0 : sequenceSummary.hashCode);
 
   factory MedicineDetailResponseDetailOneOf.fromJson(
     Map<String, dynamic> json,

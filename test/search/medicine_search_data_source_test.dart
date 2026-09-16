@@ -112,6 +112,7 @@ Map<String, dynamic> _detailBody() {
       'externalIdentifiers': null,
       'externalLinks': null,
       'targets': null,
+      'sequenceSummary': null,
       'approvalNumber': null,
       'manufacturer': null,
       'packageSpec': null,

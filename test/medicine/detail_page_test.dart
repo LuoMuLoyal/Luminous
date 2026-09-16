@@ -70,6 +70,19 @@ const _targetDetail = MedicineDetail(
   ],
 );
 
+/// Advertises sequences without carrying any: the counts are all the detail
+/// response contains.
+const _sequenceSummaryDetail = MedicineDetail(
+  id: 'DB00002',
+  source: 'drugbank',
+  name: 'Cetuximab',
+  kind: 'drugbank',
+  sequenceSummary: MedicineDetailSequenceSummary(
+    drugChainCount: 2,
+    targetSequenceCount: 56,
+  ),
+);
+
 const _longToxicityDetail = MedicineDetail(
   id: 'DB00619',
   source: 'drugbank',
@@ -248,8 +261,7 @@ void main() {
 
     expect(_revealOf(tester, '2 hours'), 0);
 
-    await tester.tap(find.text(l10n.medicineDetailSectionHalfLife));
-    await tester.pumpAndSettle();
+    await _expandSection(tester, l10n.medicineDetailSectionHalfLife);
 
     expect(_revealOf(tester, '2 hours'), 1);
   });
@@ -264,8 +276,7 @@ void main() {
       detail: _targetDetail,
     );
 
-    await tester.tap(find.text(l10n.medicineDetailSectionTargets));
-    await tester.pumpAndSettle();
+    await _expandSection(tester, l10n.medicineDetailSectionTargets);
 
     expect(find.text('Tyrosine-protein kinase ABL1'), findsOneWidget);
     expect(find.text('inhibitor'), findsOneWidget);
@@ -293,8 +304,7 @@ void main() {
       detail: _longToxicityDetail,
     );
 
-    await tester.tap(find.text(l10n.medicineDetailSectionToxicity));
-    await tester.pumpAndSettle();
+    await _expandSection(tester, l10n.medicineDetailSectionToxicity);
 
     expect(find.text(l10n.medicineDetailExpandLongText), findsOneWidget);
 
@@ -302,6 +312,90 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.medicineDetailCollapseLongText), findsOneWidget);
+  });
+
+  testWidgets('shows the sequence summary without fetching it', (tester) async {
+    var fetchCount = 0;
+
+    await _pumpDetailPage(
+      tester,
+      source: 'drugbank',
+      id: 'DB00002',
+      detail: _sequenceSummaryDetail,
+      overrides: [
+        medicineSequencesProvider('drugbank', 'DB00002').overrideWith((ref) {
+          fetchCount += 1;
+          return const MedicineSequences(id: 'DB00002', source: 'drugbank');
+        }),
+      ],
+    );
+
+    // The section advertises what it holds...
+    expect(find.text(l10n.medicineDetailSectionSequences), findsOneWidget);
+    expect(
+      find.text(
+        '${l10n.medicineDetailSequencesDrugChains(2)} · '
+        '${l10n.medicineDetailSequencesTargets(56)}',
+      ),
+      findsOneWidget,
+    );
+
+    // ...but the accordion builds collapsed children, so a fetch here would
+    // mean the 96 KB payload rides along with every page load.
+    expect(fetchCount, 0);
+  });
+
+  testWidgets('fetches sequences only once the section is opened', (
+    tester,
+  ) async {
+    var fetchCount = 0;
+
+    await _pumpDetailPage(
+      tester,
+      source: 'drugbank',
+      id: 'DB00002',
+      detail: _sequenceSummaryDetail,
+      overrides: [
+        medicineSequencesProvider('drugbank', 'DB00002').overrideWith((ref) {
+          fetchCount += 1;
+          return const MedicineSequences(
+            id: 'DB00002',
+            source: 'drugbank',
+            drug: [
+              MedicineDrugSequence(
+                description: 'heavy chain',
+                length: 12,
+                sequence: 'QVQLKQSGPGLV',
+              ),
+            ],
+            targets: [
+              MedicineTargetSequence(
+                uniprotId: 'P00533',
+                targetName: 'Epidermal growth factor receptor',
+                dataset: 'protein_fasta',
+                length: 12,
+                sequence: 'MRPSGTAGAALL',
+              ),
+            ],
+          );
+        }),
+      ],
+    );
+
+    expect(fetchCount, 0);
+
+    await _expandSection(tester, l10n.medicineDetailSectionSequences);
+
+    expect(fetchCount, 1);
+    expect(find.text('heavy chain'), findsOneWidget);
+    expect(find.text('Epidermal growth factor receptor'), findsOneWidget);
+    // Protein and coding sequence are labelled so the two readings of a gene
+    // are not confused for one another.
+    expect(
+      find.textContaining(l10n.medicineDetailSequenceProtein),
+      findsOneWidget,
+    );
+    expect(find.textContaining('P00533'), findsOneWidget);
   });
 
   testWidgets('shows skeleton while detail is loading', (tester) async {
@@ -428,6 +522,18 @@ double _revealOf(WidgetTester tester, String text) {
             .first,
       )
       .value;
+}
+
+/// Opens an accordion section by its header label.
+///
+/// The page scrolls, so a lower section header can start below the fold and a
+/// bare `tap` would miss it.
+Future<void> _expandSection(WidgetTester tester, String label) async {
+  final header = find.text(label);
+  await tester.ensureVisible(header);
+  await tester.pumpAndSettle();
+  await tester.tap(header);
+  await tester.pumpAndSettle();
 }
 
 class _FakeHealthContextRepository implements HealthContextRepository {

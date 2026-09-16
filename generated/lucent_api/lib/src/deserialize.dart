@@ -177,6 +177,7 @@ import 'package:lucent_api/src/model/medicine_detail_response_detail_one_of1.dar
 import 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_external_identifiers.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_sequence_summary.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job_result.dart';
@@ -203,6 +204,9 @@ import 'package:lucent_api/src/model/medicine_safety_tip_item.dart';
 import 'package:lucent_api/src/model/medicine_search_response.dart';
 import 'package:lucent_api/src/model/medicine_search_response_items.dart';
 import 'package:lucent_api/src/model/medicine_search_response_pagination.dart';
+import 'package:lucent_api/src/model/medicine_sequence_response.dart';
+import 'package:lucent_api/src/model/medicine_sequence_response_drug.dart';
+import 'package:lucent_api/src/model/medicine_sequence_response_targets.dart';
 import 'package:lucent_api/src/model/notification_detail_response.dart';
 import 'package:lucent_api/src/model/notification_list_response.dart';
 import 'package:lucent_api/src/model/notification_list_response_items.dart';
@@ -1112,6 +1116,11 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'MedicineDetailResponseSequenceSummary':
+      return MedicineDetailResponseSequenceSummary.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'MedicineDetailResponseTargets':
       return MedicineDetailResponseTargets.fromJson(
             value as Map<String, dynamic>,
@@ -1229,6 +1238,19 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineSearchResponsePagination':
       return MedicineSearchResponsePagination.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineSequenceResponse':
+      return MedicineSequenceResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineSequenceResponseDrug':
+      return MedicineSequenceResponseDrug.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineSequenceResponseTargets':
+      return MedicineSequenceResponseTargets.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
+import 'package:luminous/core/widgets/common/feedback/state_message.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/detail_sections.dart';
+import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Renders a [MedicineDetailSection] body according to its kind.
@@ -17,10 +21,24 @@ class DetailSectionView extends StatelessWidget {
     super.key,
     required this.section,
     required this.l10n,
+    this.shouldLoad = false,
+    this.medicineId,
+    this.source = 'drugbank',
   });
 
   final MedicineDetailSection section;
   final AppLocalizations l10n;
+
+  /// Whether a section that fetches its own data on demand (currently only
+  /// sequences) may fire that request.
+  ///
+  /// The accordion builds collapsed children eagerly, so "was built" is not the
+  /// same as "the user opened it" — the page lifts the accordion's expanded set
+  /// and flips this instead.
+  final bool shouldLoad;
+
+  final String? medicineId;
+  final String source;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +53,289 @@ class DetailSectionView extends StatelessWidget {
         references: values,
         l10n: l10n,
       ),
+      SequencesSectionBody(:final summary) => MedicineSequencesSection(
+        summary: summary,
+        l10n: l10n,
+        shouldLoad: shouldLoad,
+        medicineId: medicineId,
+        source: source,
+      ),
     };
+  }
+}
+
+/// Sequences of the drug itself and of its targets.
+///
+/// Fetches nothing until [shouldLoad] turns true, then shows a skeleton while
+/// the (potentially tens-of-thousands-of-characters) payload is in flight.
+class MedicineSequencesSection extends ConsumerWidget {
+  const MedicineSequencesSection({
+    super.key,
+    required this.summary,
+    required this.l10n,
+    required this.shouldLoad,
+    this.medicineId,
+    this.source = 'drugbank',
+    this.sequencesOverride,
+  });
+
+  final MedicineDetailSequenceSummary summary;
+  final AppLocalizations l10n;
+  final bool shouldLoad;
+  final String? medicineId;
+  final String source;
+
+  /// Test seam: supplies the payload without hitting the network.
+  final AsyncValue<MedicineSequences>? sequencesOverride;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final summaryLine = _summaryLine();
+
+    if (!shouldLoad || (medicineId == null && sequencesOverride == null)) {
+      // Not opened yet: say what is waiting without paying for it.
+      return Text(summaryLine, style: context.theme.typography.body.sm);
+    }
+
+    final AsyncValue<MedicineSequences> sequences =
+        sequencesOverride ??
+        ref.watch(medicineSequencesProvider(source, medicineId!));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          summaryLine,
+          style: context.theme.typography.body.sm.copyWith(
+            color: SemanticColor.neutral.solid(context),
+          ),
+        ),
+        const SizedBox(height: Spacing.sm),
+        sequences.when(
+          loading: () => const _SequenceSkeleton(),
+          error: (error, stackTrace) => StateMessageView(
+            title: l10n.medicineDetailSequencesError,
+            icon: SemanticIcons.statusError,
+            tone: StateTone.danger,
+            actionLabel: l10n.todayRetryAction,
+            onAction: () =>
+                ref.invalidate(medicineSequencesProvider(source, medicineId!)),
+          ),
+          data: (data) => _SequenceLists(data: data, l10n: l10n),
+        ),
+      ],
+    );
+  }
+
+  String _summaryLine() {
+    final parts = <String>[
+      if (summary.drugChainCount > 0)
+        l10n.medicineDetailSequencesDrugChains(summary.drugChainCount),
+      if (summary.targetSequenceCount > 0)
+        l10n.medicineDetailSequencesTargets(summary.targetSequenceCount),
+    ];
+    return parts.join(' · ');
+  }
+}
+
+class _SequenceSkeleton extends StatelessWidget {
+  const _SequenceSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        InlineSkeletonBlock(height: 16),
+        SizedBox(height: Spacing.xs),
+        InlineSkeletonBlock(height: 16),
+        SizedBox(height: Spacing.xs),
+        InlineSkeletonBlock(height: 16),
+      ],
+    );
+  }
+}
+
+class _SequenceLists extends StatelessWidget {
+  const _SequenceLists({required this.data, required this.l10n});
+
+  final MedicineSequences data;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+
+    if (data.isEmpty) {
+      return Text(l10n.medicineDetailSequencesEmpty, style: typography.body.sm);
+    }
+
+    final grouped = data.targetsByUniprotId;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (data.drug.isNotEmpty) ...[
+          _Heading(l10n.medicineDetailSequencesDrugHeading),
+          for (final chain in data.drug)
+            _SequenceCard(
+              title: chain.description,
+              meta: l10n.medicineDetailSequenceResidues(chain.length),
+              sequence: chain.sequence,
+              l10n: l10n,
+            ),
+        ],
+        if (grouped.isNotEmpty) ...[
+          _Heading(l10n.medicineDetailSequencesTargetsHeading),
+          for (final entry in grouped.entries)
+            _SequenceCard(
+              title: entry.value.first.targetName ?? entry.key,
+              meta: [
+                entry.key,
+                for (final sequence in entry.value)
+                  '${_datasetLabel(sequence)} · ${_lengthLabel(sequence)}',
+              ].join(' · '),
+              // A target's protein and coding sequence are two readings of the
+              // same gene; the protein is what the drug actually binds.
+              sequence: entry.value
+                  .firstWhere(
+                    (sequence) => !sequence.isGene,
+                    orElse: () => entry.value.first,
+                  )
+                  .sequence,
+              l10n: l10n,
+            ),
+        ],
+      ],
+    );
+  }
+
+  String _datasetLabel(MedicineTargetSequence sequence) => sequence.isGene
+      ? l10n.medicineDetailSequenceGene
+      : l10n.medicineDetailSequenceProtein;
+
+  String _lengthLabel(MedicineTargetSequence sequence) => sequence.isGene
+      ? l10n.medicineDetailSequenceBases(sequence.length)
+      : l10n.medicineDetailSequenceResidues(sequence.length);
+}
+
+class _Heading extends StatelessWidget {
+  const _Heading(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: Spacing.sm, bottom: Spacing.xs),
+      child: Text(
+        text,
+        style: context.theme.typography.body.xs.copyWith(
+          fontWeight: FontWeight.w700,
+          color: SemanticColor.neutral.solid(context),
+        ),
+      ),
+    );
+  }
+}
+
+/// One sequence: a header with its length, then the residues in a monospaced
+/// block that can be selected or copied.
+class _SequenceCard extends StatelessWidget {
+  const _SequenceCard({
+    required this.title,
+    required this.meta,
+    required this.sequence,
+    required this.l10n,
+  });
+
+  final String title;
+  final String meta;
+  final String sequence;
+  final AppLocalizations l10n;
+
+  /// Residues per rendered line. A single unbroken line of protein is
+  /// unreadable and impossible to compare against a reference.
+  static const _lineWidth = 60;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
+      child: FCard(
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: typography.body.sm.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: Spacing.xs),
+                        Text(
+                          meta,
+                          style: typography.body.xs.copyWith(
+                            color: SemanticColor.neutral.solid(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  FTappable(
+                    onPress: () async {
+                      await Clipboard.setData(ClipboardData(text: sequence));
+                      if (context.mounted) {
+                        await Toast.show(
+                          context,
+                          l10n.medicineDetailReferenceCopied,
+                        );
+                      }
+                    },
+                    child: Icon(
+                      FLucideIcons.copy,
+                      size: IconSizeTokens.sm,
+                      color: SemanticColor.primary.solid(context),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: Spacing.sm),
+              SelectableText(
+                _wrap(sequence, _lineWidth),
+                style: typography.body.xs.copyWith(
+                  fontFamily: 'monospace',
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static String _wrap(String sequence, int width) {
+    final buffer = StringBuffer();
+    for (var index = 0; index < sequence.length; index += width) {
+      if (index > 0) buffer.write('\n');
+      final end = index + width > sequence.length
+          ? sequence.length
+          : index + width;
+      buffer.write(sequence.substring(index, end));
+    }
+    return buffer.toString();
   }
 }
 

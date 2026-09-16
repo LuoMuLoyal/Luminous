@@ -8,6 +8,7 @@ import 'package:lucent_api/src/model/medicine_detail_response_external_identifie
 import 'package:lucent_api/src/model/medicine_detail_response_detail_one_of1.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_sequence_summary.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -71,6 +72,8 @@ class MedicineDetailResponseDetail {
     required this.externalIdentifiers,
 
     required this.externalLinks,
+
+    required this.sequenceSummary,
 
     required this.approvalNumber,
 
@@ -185,6 +188,9 @@ class MedicineDetailResponseDetail {
   @JsonKey(name: r'externalLinks', required: true, includeIfNull: true)
   final List<MedicineDetailResponseExternalLinks>? externalLinks;
 
+  @JsonKey(name: r'sequenceSummary', required: true, includeIfNull: true)
+  final MedicineDetailResponseSequenceSummary? sequenceSummary;
+
   @JsonKey(name: r'approvalNumber', required: true, includeIfNull: true)
   final String? approvalNumber;
 
@@ -273,6 +279,7 @@ class MedicineDetailResponseDetail {
           other.targets == targets &&
           other.externalIdentifiers == externalIdentifiers &&
           other.externalLinks == externalLinks &&
+          other.sequenceSummary == sequenceSummary &&
           other.approvalNumber == approvalNumber &&
           other.manufacturer == manufacturer &&
           other.packageSpec == packageSpec &&
@@ -320,6 +327,7 @@ class MedicineDetailResponseDetail {
       (targets == null ? 0 : targets.hashCode) +
       (externalIdentifiers == null ? 0 : externalIdentifiers.hashCode) +
       (externalLinks == null ? 0 : externalLinks.hashCode) +
+      (sequenceSummary == null ? 0 : sequenceSummary.hashCode) +
       (approvalNumber == null ? 0 : approvalNumber.hashCode) +
       (manufacturer == null ? 0 : manufacturer.hashCode) +
       (packageSpec == null ? 0 : packageSpec.hashCode) +

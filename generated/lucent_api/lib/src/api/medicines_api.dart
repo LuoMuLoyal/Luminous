@@ -16,6 +16,7 @@ import 'package:lucent_api/src/model/medicine_risk_check_record_response.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_item.dart';
 import 'package:lucent_api/src/model/medicine_search_response.dart';
+import 'package:lucent_api/src/model/medicine_sequence_response.dart';
 import 'package:lucent_api/src/model/recognize_request.dart';
 import 'package:lucent_api/src/model/run_risk_check_request.dart';
 
@@ -336,6 +337,95 @@ class MedicinesApi {
     }
 
     return Response<List<MedicineSafetyTipItem>>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Get medicine sequences (drug chains and target sequences)
+  ///
+  ///
+  /// Parameters:
+  /// * [id] - Medicine id in the selected source
+  /// * [source_]
+  /// * [xBypassCache] - Set to true/1/no-cache to bypass medicines read cache for this request only.
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [MedicineSequenceResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<MedicineSequenceResponse>> getSequences({
+    required String id,
+    String? source_,
+    String? xBypassCache,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/medicines/{id}/sequences'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        if (xBypassCache != null) r'x-bypass-cache': xBypassCache,
+        ...?headers,
+      },
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _queryParameters = <String, dynamic>{
+      if (source_ != null) r'source': source_,
+    };
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      queryParameters: _queryParameters,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    MedicineSequenceResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<MedicineSequenceResponse, MedicineSequenceResponse>(
+              rawData,
+              'MedicineSequenceResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineSequenceResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

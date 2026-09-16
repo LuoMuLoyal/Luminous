@@ -24,7 +24,7 @@ import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Core content widget for medicine detail page.
-class MedicineDetailContent extends ConsumerWidget {
+class MedicineDetailContent extends ConsumerStatefulWidget {
   const MedicineDetailContent({
     super.key,
     required this.detail,
@@ -35,7 +35,46 @@ class MedicineDetailContent extends ConsumerWidget {
   final String source;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MedicineDetailContent> createState() =>
+      _MedicineDetailContentState();
+}
+
+class _MedicineDetailContentState extends ConsumerState<MedicineDetailContent> {
+  /// Accordion items the user has opened.
+  ///
+  /// Lifted out of the accordion because a collapsed item's child is still
+  /// built — without this, the sequence section would fire its request on page
+  /// load instead of on demand.
+  ///
+  /// Held in a notifier rather than widget state on purpose: rebuilding the
+  /// accordion on every toggle makes Forui re-run each item's
+  /// `didChangeDependencies`, which resets the item to `initiallyExpanded` and
+  /// collapses the section the user just opened. Only the sequence child
+  /// listens, so the accordion itself is never rebuilt.
+  final ValueNotifier<Set<int>> _expandedSections = ValueNotifier(const {});
+
+  late final FAccordionControl _accordionControl;
+
+  @override
+  void initState() {
+    super.initState();
+    // Created once (not per build) so the accordion keeps its expanded state
+    // across rebuilds.
+    _accordionControl = FAccordionManagedControl(
+      onChange: (expanded) => _expandedSections.value = expanded,
+    );
+  }
+
+  @override
+  void dispose() {
+    _expandedSections.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final detail = widget.detail;
+    final source = widget.source;
     final l10n = AppLocalizations.of(context)!;
 
     final snapshotAsync = ref.watch(healthContextSnapshotProvider);
@@ -77,14 +116,22 @@ class MedicineDetailContent extends ConsumerWidget {
               const SizedBox(height: Spacing.lg),
               if (sections.isNotEmpty)
                 FAccordion(
+                  control: _accordionControl,
                   children: [
-                    for (final section in sections)
+                    for (var index = 0; index < sections.length; index += 1)
                       FAccordionItem(
-                        title: _SectionHeader(section: section),
+                        title: _SectionHeader(section: sections[index]),
                         // Only the highest-frequency section opens by default;
                         // everything below is opt-in so the page stays short.
-                        initiallyExpanded: section.tier == Tier.primary,
-                        child: DetailSectionView(section: section, l10n: l10n),
+                        initiallyExpanded: sections[index].tier == Tier.primary,
+                        child: _SectionBody(
+                          section: sections[index],
+                          l10n: l10n,
+                          index: index,
+                          expandedSections: _expandedSections,
+                          medicineId: detail.id,
+                          source: source,
+                        ),
                       ),
                   ],
                 )
@@ -142,14 +189,14 @@ class MedicineDetailContent extends ConsumerWidget {
     }
 
     final repository = ref.read(healthContextRepositoryProvider);
-    final medicineSource = source == 'drugbank'
+    final medicineSource = widget.source == 'drugbank'
         ? HealthMedicineSource.drugbank
         : HealthMedicineSource.cn;
 
     final input = CurrentMedicineWriteInput(
       source: medicineSource,
-      sourceRefId: detail.id,
-      displayName: detail.name,
+      sourceRefId: widget.detail.id,
+      displayName: widget.detail.name,
     );
 
     try {
@@ -164,7 +211,9 @@ class MedicineDetailContent extends ConsumerWidget {
 
       if (context.mounted) {
         final newMedicine = updatedSnapshot.currentMedicines.firstWhereOrNull(
-          (m) => m.sourceRefId == detail.id && m.source == medicineSource.name,
+          (m) =>
+              m.sourceRefId == widget.detail.id &&
+              m.source == medicineSource.name,
         );
         if (newMedicine == null) return;
         unawaited(
@@ -203,6 +252,47 @@ class MedicineDetailContent extends ConsumerWidget {
         );
       }
     }
+  }
+}
+
+/// Renders one accordion body.
+///
+/// Only sections that fetch their own data (sequences) subscribe to the
+/// expanded-set notifier; every other section renders straight through so a
+/// long page is not rebuilt on each toggle.
+class _SectionBody extends StatelessWidget {
+  const _SectionBody({
+    required this.section,
+    required this.l10n,
+    required this.index,
+    required this.expandedSections,
+    required this.medicineId,
+    required this.source,
+  });
+
+  final MedicineDetailSection section;
+  final AppLocalizations l10n;
+  final int index;
+  final ValueNotifier<Set<int>> expandedSections;
+  final String medicineId;
+  final String source;
+
+  @override
+  Widget build(BuildContext context) {
+    if (section.body is! SequencesSectionBody) {
+      return DetailSectionView(section: section, l10n: l10n);
+    }
+
+    return ValueListenableBuilder<Set<int>>(
+      valueListenable: expandedSections,
+      builder: (context, expanded, _) => DetailSectionView(
+        section: section,
+        l10n: l10n,
+        shouldLoad: expanded.contains(index),
+        medicineId: medicineId,
+        source: source,
+      ),
+    );
   }
 }
 

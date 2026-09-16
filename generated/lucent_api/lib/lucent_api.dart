@@ -214,6 +214,7 @@ export 'package:lucent_api/src/model/medicine_detail_response_detail_one_of1.dar
 export 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.dart';
 export 'package:lucent_api/src/model/medicine_detail_response_external_identifiers.dart';
 export 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
+export 'package:lucent_api/src/model/medicine_detail_response_sequence_summary.dart';
 export 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 export 'package:lucent_api/src/model/medicine_recognition_job.dart';
 export 'package:lucent_api/src/model/medicine_recognition_job_result.dart';
@@ -240,6 +241,9 @@ export 'package:lucent_api/src/model/medicine_safety_tip_item.dart';
 export 'package:lucent_api/src/model/medicine_search_response.dart';
 export 'package:lucent_api/src/model/medicine_search_response_items.dart';
 export 'package:lucent_api/src/model/medicine_search_response_pagination.dart';
+export 'package:lucent_api/src/model/medicine_sequence_response.dart';
+export 'package:lucent_api/src/model/medicine_sequence_response_drug.dart';
+export 'package:lucent_api/src/model/medicine_sequence_response_targets.dart';
 export 'package:lucent_api/src/model/notification_detail_response.dart';
 export 'package:lucent_api/src/model/notification_list_response.dart';
 export 'package:lucent_api/src/model/notification_list_response_items.dart';

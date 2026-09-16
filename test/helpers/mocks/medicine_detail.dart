@@ -39,6 +39,7 @@ class TestMedicineDetailDataDtoDetail extends MedicineDetailResponseDetail {
         externalIdentifiers: null,
         externalLinks: null,
         targets: null,
+        sequenceSummary: null,
         approvalNumber: null,
         manufacturer: null,
         packageSpec: null,

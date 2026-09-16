@@ -623,6 +623,45 @@
   "medicineDetailSectionBarcode": "Barcode",
   "medicineDetailSectionNationalDrugCode": "National drug code",
   "medicineDetailSectionSource": "Source",
+  "medicineDetailSectionSequences": "Sequences",
+  "medicineDetailSequencesDrugChains": "{count} drug chains",
+  "@medicineDetailSequencesDrugChains": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailSequencesTargets": "{count} target sequences",
+  "@medicineDetailSequencesTargets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailSequencesDrugHeading": "This medicine",
+  "medicineDetailSequencesTargetsHeading": "Targets",
+  "medicineDetailSequenceProtein": "Protein",
+  "medicineDetailSequenceGene": "Coding sequence",
+  "medicineDetailSequenceResidues": "{count} aa",
+  "@medicineDetailSequenceResidues": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailSequenceBases": "{count} bp",
+  "@medicineDetailSequenceBases": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineDetailSequencesEmpty": "No sequences are available for this medicine.",
+  "medicineDetailSequencesError": "Could not load sequences.",
   "medicineDetailTargetGene": "Gene",
   "medicineDetailTargetUniprot": "UniProt",
   "medicineDetailTargetPdb": "PDB structures",

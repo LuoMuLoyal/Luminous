@@ -97,6 +97,7 @@ class MedicineDetailMapper {
             ),
           )
           .toList(growable: false),
+      sequenceSummary: _sequenceSummary(detail.sequenceSummary),
     );
   }
 
@@ -107,6 +108,19 @@ class MedicineDetailMapper {
         .map((value) => value.trim())
         .where((value) => value.isNotEmpty)
         .toList(growable: false);
+  }
+
+  /// A summary with nothing in it is the same as no summary: the section only
+  /// exists to tell the user whether expanding it is worth anything.
+  MedicineDetailSequenceSummary? _sequenceSummary(
+    MedicineDetailResponseSequenceSummary? summary,
+  ) {
+    if (summary == null) return null;
+    final mapped = MedicineDetailSequenceSummary(
+      drugChainCount: summary.drugChainCount,
+      targetSequenceCount: summary.targetSequenceCount,
+    );
+    return mapped.isEmpty ? null : mapped;
   }
 
   /// Normalizes the source enum to the `cn`/`drugbank` wire string. The

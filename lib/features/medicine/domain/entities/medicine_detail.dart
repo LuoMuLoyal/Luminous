@@ -54,6 +54,7 @@ class MedicineDetail {
     this.targets = const [],
     this.externalIdentifiers = const [],
     this.externalLinks = const [],
+    this.sequenceSummary,
   });
 
   final String id;
@@ -119,6 +120,93 @@ class MedicineDetail {
 
   /// Outbound reference links (Drugs.com, RxList, ...).
   final List<MedicineDetailExternalReference> externalLinks;
+
+  /// How many sequences exist for this medicine, or null when there are none.
+  ///
+  /// Counts only — the sequence text itself lives behind a separate request
+  /// because it runs to tens of thousands of characters per drug.
+  final MedicineDetailSequenceSummary? sequenceSummary;
+}
+
+/// Availability counts for the medicine's sequences.
+class MedicineDetailSequenceSummary {
+  const MedicineDetailSequenceSummary({
+    this.drugChainCount = 0,
+    this.targetSequenceCount = 0,
+  });
+
+  /// Sequences belonging to the drug itself (biologics have one per chain).
+  final int drugChainCount;
+
+  /// Sequences of the drug's targets (protein and coding gene).
+  final int targetSequenceCount;
+
+  int get total => drugChainCount + targetSequenceCount;
+
+  bool get isEmpty => total == 0;
+}
+
+/// One sequence of the drug itself, e.g. an antibody heavy chain.
+class MedicineDrugSequence {
+  const MedicineDrugSequence({
+    required this.description,
+    required this.length,
+    required this.sequence,
+  });
+
+  /// Chain description exactly as the source spells it.
+  final String description;
+
+  final int length;
+  final String sequence;
+}
+
+/// One sequence of a drug target, either its protein or its coding gene.
+class MedicineTargetSequence {
+  const MedicineTargetSequence({
+    required this.uniprotId,
+    required this.dataset,
+    required this.length,
+    required this.sequence,
+    this.targetName,
+  });
+
+  final String uniprotId;
+
+  /// Which sequence this is: `protein_fasta` or `gene_fasta`.
+  final String dataset;
+
+  final String? targetName;
+  final int length;
+  final String sequence;
+
+  bool get isGene => dataset == 'gene_fasta';
+}
+
+/// The full sequence payload for one medicine, fetched on demand.
+class MedicineSequences {
+  const MedicineSequences({
+    required this.id,
+    required this.source,
+    this.drug = const [],
+    this.targets = const [],
+  });
+
+  final String id;
+  final String source;
+  final List<MedicineDrugSequence> drug;
+  final List<MedicineTargetSequence> targets;
+
+  bool get isEmpty => drug.isEmpty && targets.isEmpty;
+
+  /// Target sequences grouped by UniProt id, in first-seen order.
+  Map<String, List<MedicineTargetSequence>> get targetsByUniprotId {
+    final grouped = <String, List<MedicineTargetSequence>>{};
+    for (final target in targets) {
+      grouped.putIfAbsent(target.uniprotId, () => []).add(target);
+    }
+    return grouped;
+  }
 }
 
 /// A single DrugBank drug-interaction entry shown on the detail page.
