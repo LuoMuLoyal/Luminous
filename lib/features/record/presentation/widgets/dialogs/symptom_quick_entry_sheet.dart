@@ -142,6 +142,10 @@ class _SymptomQuickEntrySheetBodyState
     setState(() {
       _multiSelect = false;
       _selectedIndexes.clear();
+      // 与「其它」的 Back 一致:离开输入态就把草稿文字清掉,避免下次点开时
+      // 残留上一次的输入。
+      _otherController.clear();
+      _otherInput = false;
     });
   }
 
@@ -309,7 +313,12 @@ class _SymptomQuickEntrySheetBodyState
                         child: FButton(
                           variant: FButtonVariant.outline,
                           key: const Key('symptom-quick-other-back-action'),
-                          onPress: () => setState(() => _otherInput = false),
+                          // 连同已输入的文字一起清掉:留着旧文字的话,再次点开
+                          // 「其它」要先手动删干净才能保存自己这次想填的内容。
+                          onPress: () => setState(() {
+                            _otherController.clear();
+                            _otherInput = false;
+                          }),
                           child: Text(l10n.commonBack),
                         ),
                       ),

@@ -208,4 +208,59 @@ void main() {
     );
     expect(otherChip.onPress, isNull);
   });
+
+  testWidgets('「其它」Back clears the draft so the next open starts empty', (
+    tester,
+  ) async {
+    await openSheet(tester);
+
+    await tester.tap(find.byKey(const Key('symptom-quick-choice-other')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('symptom-quick-other-field')),
+      '偏头痛',
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('symptom-quick-other-back-action')));
+    await tester.pumpAndSettle();
+
+    // 再次点开「其它」:上一次的草稿不该还在,否则要先手动删干净才能保存。
+    await tester.tap(find.byKey(const Key('symptom-quick-choice-other')));
+    await tester.pumpAndSettle();
+
+    // 空输入 ⇒ 内容不显示,保存置灰。
+    expect(find.text('偏头痛'), findsNothing);
+    final saveButton = tester.widget<FButton>(
+      find.byKey(const Key('symptom-quick-other-save-action')),
+    );
+    expect(saveButton.onPress, isNull);
+  });
+
+  testWidgets('leaving multi-select clears any「其它」draft', (tester) async {
+    await openSheet(tester);
+
+    await tester.tap(find.byKey(const Key('symptom-quick-choice-other')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('symptom-quick-other-field')),
+      '偏头痛',
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('symptom-quick-other-back-action')));
+    await tester.pumpAndSettle();
+
+    // 进多选再退回单选,草稿同样应当被清掉。
+    await tester.tap(
+      find.byKey(const Key('symptom-quick-multi-select-action')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('symptom-quick-back-action')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('symptom-quick-choice-other')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('偏头痛'), findsNothing);
+  });
 }
