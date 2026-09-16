@@ -30,12 +30,28 @@ class _HeightPickerSheetBodyState extends State<HeightPickerSheetBody> {
 
   late final List<int> _indexes = _initialIndexes();
 
+  /// `imperial` 在 sheet 打开后视为不可变:滚轮项数、单位后缀与换算方向都按它
+  /// 生成,中途切换需要重建滚轮并重算索引。真要支持切换,走 `didUpdateWidget`
+  /// 重建 `_indexes`,不要就地改这个 late final。
   List<int> _initialIndexes() {
     if (widget.imperial) {
       final converted = cmToFeetInches(widget.slot.value);
-      return [converted.feet.clamp(1, _maxFeet) - 1, converted.inches];
+      final feet = converted.feet.clamp(1, _maxFeet);
+      // 旧数据可能超出滚轮范围(如 260cm 够 9ft),显示已 clamp 到边界;此时
+      // 必须把 slot 一并写成边界值,否则用户不动滚轮直接确认会把越界值原样
+      // 回写。仅越界才回写:滚轮英寸取整,无条件回写会让每次打开 sheet 都
+      // 轻微改写身高。
+      if (feet != converted.feet) {
+        widget.slot.value = feetInchesToCm(feet, converted.inches);
+      }
+      return [feet - 1, converted.inches];
     }
-    return [widget.slot.value.round().clamp(_minCm, _maxCm) - _minCm];
+    final cm = widget.slot.value.round().clamp(_minCm, _maxCm);
+    // 同上:厘米分支边界为 250,超出时确认会回写越界值。
+    if (cm.toDouble() != widget.slot.value) {
+      widget.slot.value = cm.toDouble();
+    }
+    return [cm - _minCm];
   }
 
   void _onChange(List<int> indexes) {
@@ -108,12 +124,22 @@ class _WeightPickerSheetBodyState extends State<WeightPickerSheetBody> {
 
   late final List<int> _indexes = _initialIndexes();
 
+  /// `imperial` 在 sheet 打开后视为不可变(同身高 body 的说明)。
   List<int> _initialIndexes() {
     if (widget.imperial) {
       final lb = kgToLb(widget.slot.value).round().clamp(_minLb, _maxLb);
+      // 见身高 body:仅当取值真的越界(clamp 命中)才同步 slot。滚轮按整数磅
+      // 取值,若在此无条件回写,光是打开 sheet 就会把 60kg 变成 59.87kg。
+      if (lb == _minLb || lb == _maxLb) {
+        widget.slot.value = lbToKg(lb.toDouble());
+      }
       return [lb - _minLb];
     }
-    return [widget.slot.value.round().clamp(_minKg, _maxKg) - _minKg];
+    final kg = widget.slot.value.round().clamp(_minKg, _maxKg);
+    if (kg.toDouble() != widget.slot.value) {
+      widget.slot.value = kg.toDouble();
+    }
+    return [kg - _minKg];
   }
 
   void _onChange(List<int> indexes) {

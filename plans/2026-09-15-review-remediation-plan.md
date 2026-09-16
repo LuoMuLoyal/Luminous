@@ -62,43 +62,39 @@ updated: 2026-09-15
 
 ## 3. P2·A — 正确性收口（低成本，尽快）
 
-### 3-1. quantity_sheet clamp 不回写 + late final 隐患【09-13 W-5 + 09-14 S-3 同处】P2·S
-
-`quantity_sheet.dart:31-39 / 109-117`：初值 clamp 到边界后 `slot.value` 保持旧值，脏数据（如 260cm）直接确认会原样回写。`_initialIndexes` 检测 clamp 命中时同步 `widget.slot.value = 边界值`；两处 `late final _indexes` 上补注释「imperial 在 sheet 打开后不可变；如需切换改 didUpdateWidget」。
-
-### 3-2. `_DietaryPreferencesRow` 引用比较【09-13 S-10】P2·S
+### 3-1. `_DietaryPreferencesRow` 引用比较【09-13 S-10】P2·S
 
 `profile.dart:617-623` 改 `const ListEquality().equals(...)`（collection 包已是依赖）；或父层 `useMemoized` 缓存列表引用。取前者，一行。
 
-### 3-3. `_wireValue` List 分支 assert【09-13 S-11】P2·S
+### 3-2. `_wireValue` List 分支 assert【09-13 S-11】P2·S
 
 `snapshot.dart:255-265` else 分支加 `assert(item is String || item is num || item is bool, ...)`，debug 期暴露未来 List<DateTime>/List<Map> 误用。
 
-### 3-4. avatar 裁剪失败用 SnackBar【09-12 W-6 附带发现】P2·S
+### 3-3. avatar 裁剪失败用 SnackBar【09-12 W-6 附带发现】P2·S
 
 `avatar_draft.dart:159-164` `_showCropFailure` 用 ScaffoldMessenger/SnackBar，违反"轻反馈用 AppToast"约定。迁 `Toast.show(l10n.profileAvatarCropFailed)`（新 ARB 键）；`bytes.isEmpty` 分支补 `Toast.show(l10n.profileAvatarEmptyFile)`；取消路径维持静默（主动取消不提示是合理 UX）。
 
-### 3-5. OCR `_DigestAccumulator` 简化【09-12 S-3】P2·S
+### 3-4. OCR `_DigestAccumulator` 简化【09-12 S-3】P2·S
 
 `ocr_model_manager.dart:72-96` 换 `sha256.bind(file.openRead()).first`（crypto 3.x 公开 API），删 accumulator 类。行为等价，verifier fake 不受影响。
 
-### 3-6. unit_conversion 回退路径测试【09-13 S-4】P2·S
+### 3-5. unit_conversion 回退路径测试【09-13 S-4】P2·S
 
 回退常数是文档化设计（unit_conversion.dart:13-16），保留；补一个单测断言「包返回 null 时走本地公式」路径，把降级策略钉进测试。
 
-### 3-7. l10n 双份同文案键去重【09-08 W-7 真实内核】P2·S
+### 3-6. l10n 双份同文案键去重【09-08 W-7 真实内核】P2·S
 
 `authAccountManageCustomerService/Feedback/HelpCenter` 与 `authAccountManageSupport*` 三对同文案键并存（auth_zh.arb:227-235）。页面已全用 `Support*` 前缀（account_manage_sections.dart:362-376）；测试用旧前缀（account_settings_page_test.dart:51-53）。删旧三键（zh+en 分片），测试改用 `Support*` 键，merge + gen-l10n，同步 localization.md。零引用键清理前跑一次 grep 确认。
 
-### 3-8. `weightInLb` 定位澄清【09-13 S-13】P2·S
+### 3-7. `weightInLb` 定位澄清【09-13 S-13】P2·S
 
 `weightInLb` 是 archive_sections.dart:70 的现役接口，非"旧别名"。直接让 archive_sections 改用 `kgToLb` 后删掉该函数（消多余间接层）；同步 unit_conversion_test 删对应 group。
 
-### 3-9. auth 页骨架收敛 AuthScrollBody【09-14 "重复造轮子"修正案】P2·S
+### 3-8. auth 页骨架收敛 AuthScrollBody【09-14 "重复造轮子"修正案】P2·S
 
 报告的 padding 参数方案不成立（见 §0）。改为 auth feature 内加 `AuthScrollBody`（~10 行 StatelessWidget 包 `SingleChildScrollView → ResponsiveContentFrame → Padding(vertical: width<mobile?xl2:xl3) → Column`），6 页（login/register/forgot_password/change_email/account_manage/security_center）各减 ~6 行；这是行为组合而非样式 preset，符合 AGENTS.md wrapper 例外。与 §4-7 骨架测试同批做。
 
-### 3-10. 生成模型 `ReportSummaryAsync/Stream*` 清理【09-08 W-2】P2·M（跨仓，合同级）
+### 3-9. 生成模型 `ReportSummaryAsync/Stream*` 清理【09-08 W-2】P2·M（跨仓，合同级）
 
 `bootstrap.dart:666-687` 的 reviewModels 列出的 async 8 + stream 7 个模型在 lib/test/integration_test **零消费**（实际 SSE 走 `ai_summary_remote.dart:49-51` 原始 `LucentSseClient.postJson`，结果只用 `ReportSummaryResponse`）；review 页 AI 摘要主路径已退役（docs/TODO.md「延后」段），legacy 兼容页仅消费 `ReportSummaryResponse`。**不能**直接从 reviewModels 删——`_filteredClients` 要求 models 与 reports_api.dart import 闭包一致并 fail-fast（bootstrap.dart:730-736），Lucent openapi.json 仍暴露 enqueue/stream 两端点。正确路径：Lucent 侧决策删除两端点（或登记延后）→ `pnpm export:openapi` → `dart run scripts/contract/bootstrap.dart` 重跑后模型自然消失。属跨仓合同决策，与 docs/TODO.md 的「Review AI 摘要复核」项合并执行，本计划只登记不实施。
 
@@ -110,7 +106,7 @@ updated: 2026-09-15
 4. **profile.dart:546-547 幽灵文件注释**【09-13 W-3】：enum_select_sheet.dart 不存在，改「枚举字段走内嵌 FSelectMenuTile，数值（身高/体重）走 quantity_sheet」。P2·S
 5. **state_message.dart `card` 参数 docstring**【09-14 S4 + 09-13 S-2/S-3】：补「`card: false` 时不包裹滚动视口，调用方需自行保证外层可滚动」；card/scrollable 参数拆分不做（唯一调用方 notification/list.dart 行为正确）。P2·S
 6. **auth_guarded.dart doc 签名演进说明**【09-10 #4】：Usage 段前加一段「async since 2026-09-10；同步上下文不能 try/catch AuthRequiredException，用 FutureProvider/AsyncNotifier」。P2·S
-7. **login_page_test 骨架断言**【09-14 S5】：窄/宽屏断言 Padding vertical == xl2/xl3（配合 §3-10 的 AuthScrollBody 则断言 wrapper）；勿断言已删除的类名。P2·S
+7. **login_page_test 骨架断言**【09-14 S5】：窄/宽屏断言 Padding vertical == xl2/xl3（配合 §3-9 的 AuthScrollBody 则断言 wrapper）；勿断言已删除的类名。P2·S
 8. **box_scan_preview.dart:25 注释**【09-13 S-9】：补「父级 SingleChildScrollView 已带滚动，FTileGroup 须禁用自身滚动避免双滚动」。P2·S
 9. **icon_picker_sheet.dart:164-171**【09-13 S-8】：手绘 handle 换 `SheetDragHandle` + 补标题行；不套完整 showAppEditSheet（即点即选无确认语义）。P2·S
 10. **security_center.dart:194-211 预留入口**【09-08 W-4 / 09-13 W-6】：`onPress: null` 渲染禁用态并去 `actionNext` 箭头，保留 ComingSoon 文案。P2·S
@@ -238,7 +234,7 @@ health_event 三个 sheet（check_in/end_event/start_event，**均有大段注�
 ## 7. 执行顺序与验收
 
 - **Wave 1（P1 主干）**：2-1。每项落地即跑对应目录 `flutter test`。
-- **Wave 2（P2·A）**：3-1 → 3-2 → 3-3 → 3-4 → 3-5 → 3-6 → 3-7 → 3-8 → 3-9；3-10（合同级）与 §3-9/§4-19/§4-20 按 09-08 建议合批：同一测试文件（account_settings_page_test 改名 + key 去重 + 断言补强）一批做。
+- **Wave 2（P2·A）**：3-1 → 3-2 → 3-3 → 3-4 → 3-5 → 3-6 → 3-7 → 3-8；3-9（合同级）与 §3-9/§4-19/§4-20 按 09-08 建议合批：同一测试文件（account_settings_page_test 改名 + key 去重 + 断言补强）一批做。
 - **Wave 3（P2·B + 同类补扫 + 流程）**：§4 按 1-25 顺手清；§5 同类补扫按 §5-2（84 组 l10n 审计，独立一批，需列消费点脚本）→ §5-3（TODO 登记）→ §5-4（真实时钟第二类逐文件评估）；§5-6 是"逐命中定性后不改"的记录，**不要**为一致性去加日志改代码；最后 §5-5 之外的流程两句进 AGENTS.md。
 - **收尾验收**：`flutter analyze` 零 issue；`flutter test` 全量绿；`dart run scripts/docs/verify.dart --warning-only` 无新增告警；l10n 相关改动后 `arb_tools.dart merge` + `flutter gen-l10n` + `docs/reference/localization.md` 同步；本计划全部项实施完毕后按约定整文件删除并在迁移日志登记。
-- **明确不做**（除非另行立项）：avatar 真草稿化重构（09-13 W-2 后半）、450ms debounce 注入钩子、cooldown 真时钟测试改造（§5-4 第三类）、card/scrollable 参数拆分、tab_branch_container late 改写、authGuarded 新 lint 规则、pre-push 回滚加 test、reviewModels 手工删模型（走 3-10 合同级路径）、§5-6 的静默 catch 追改。
+- **明确不做**（除非另行立项）：avatar 真草稿化重构（09-13 W-2 后半）、450ms debounce 注入钩子、cooldown 真时钟测试改造（§5-4 第三类）、card/scrollable 参数拆分、tab_branch_container late 改写、authGuarded 新 lint 规则、pre-push 回滚加 test、reviewModels 手工删模型（走 3-9 合同级路径）、§5-6 的静默 catch 追改。
