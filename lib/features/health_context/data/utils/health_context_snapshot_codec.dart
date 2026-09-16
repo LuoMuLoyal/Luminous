@@ -44,34 +44,39 @@ abstract final class HealthContextSnapshotCodec {
   }
 
   /// Decodes a JSON string from cache storage into a [HealthContextSnapshot].
+  ///
+  /// Scalar reads are defensive: a cache row written by an older build (or a
+  /// hand-corrupted one) can hold a different JSON type than the current shape.
+  /// A hard `as` cast would throw on that single field and take the whole
+  /// snapshot — and therefore the whole fetch — down with it, even though the
+  /// entry is only a cache and the network copy is right there. Wrong-typed
+  /// values are dropped instead; the caller refetches and rewrites the row.
   static HealthContextSnapshot decode(String json) {
     final map = jsonDecode(json) as Map<String, dynamic>;
     final s = map['summary'] as Map<String, dynamic>;
     final p = map['profile'] as Map<String, dynamic>;
     return HealthContextSnapshot(
       summary: HealthSummary(
-        age: s['age'] as int?,
+        age: _asInt(s['age']),
         onboardingCompleted: s['onboardingCompleted'] as bool,
         activeAllergyCount: s['activeAllergyCount'] as int,
         conditionCount: s['conditionCount'] as int,
         currentMedicineCount: s['currentMedicineCount'] as int,
-        missingCoreProfileFields:
-            (s['missingCoreProfileFields'] as List<dynamic>).cast<String>(),
+        missingCoreProfileFields: _asStringList(s['missingCoreProfileFields']),
       ),
       profile: HealthProfile(
-        birthDate: p['birthDate'] as String?,
-        sexAtBirth: p['sexAtBirth'] as String?,
-        heightCm: p['heightCm'] as double?,
-        weightKg: p['weightKg'] is num
-            ? (p['weightKg'] as num).toDouble()
-            : null,
-        activityLevel: p['activityLevel'] as String?,
-        dietaryPreferences: (p['dietaryPreferences'] as List<dynamic>?)
-            ?.cast<String>(),
-        locale: p['locale'] as String?,
-        timezone: p['timezone'] as String?,
-        unitSystem: p['unitSystem'] as String?,
-        onboardingCompletedAt: p['onboardingCompletedAt'] as String?,
+        birthDate: _asString(p['birthDate']),
+        sexAtBirth: _asString(p['sexAtBirth']),
+        heightCm: _asDouble(p['heightCm']),
+        weightKg: _asDouble(p['weightKg']),
+        activityLevel: _asString(p['activityLevel']),
+        dietaryPreferences: p['dietaryPreferences'] == null
+            ? null
+            : _asStringList(p['dietaryPreferences']),
+        locale: _asString(p['locale']),
+        timezone: _asString(p['timezone']),
+        unitSystem: _asString(p['unitSystem']),
+        onboardingCompletedAt: _asString(p['onboardingCompletedAt']),
         extras: Map<String, dynamic>.from(p['extras'] as Map? ?? const {}),
       ),
       allergies: (map['allergies'] as List<dynamic>)
@@ -84,6 +89,26 @@ abstract final class HealthContextSnapshotCodec {
           .map((e) => _medicineFromJson(e as Map<String, dynamic>))
           .toList(),
     );
+  }
+
+  static String? _asString(Object? value) => value is String ? value : null;
+
+  static int? _asInt(Object? value) => value is int ? value : null;
+
+  static double? _asDouble(Object? value) =>
+      value is num ? value.toDouble() : null;
+
+  /// Reads a string list, dropping any element that is not a string.
+  ///
+  /// `List.cast<String>()` defers the check to first element access, so the
+  /// throw lands far from the offending value; mapping eagerly keeps a bad
+  /// element local to itself.
+  static List<String> _asStringList(Object? value) {
+    if (value is! List) return const <String>[];
+    return value
+        .map((e) => e is String ? e : e?.toString())
+        .whereType<String>()
+        .toList();
   }
 
   static Map<String, dynamic> _allergyToJson(AllergyItem a) => {
