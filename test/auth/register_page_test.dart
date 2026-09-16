@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -8,6 +9,7 @@ import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/auth/presentation/pages/register.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 import 'test_helpers.dart';
 
@@ -94,5 +96,56 @@ void main() {
     expect(remote.registerNickname, 'Lumi');
     expect(container.read(authSessionProvider).isAuthenticated, isFalse);
     expect(find.byType(LoginPage), findsOneWidget);
+  });
+
+  testWidgets('terms checkbox announces the same text it renders', (
+    tester,
+  ) async {
+    final remote = FakeLucentAuthRepository();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [authRepositoryProvider.overrideWithValue(remote)],
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/register',
+            routes: [
+              GoRoute(
+                path: '/register',
+                builder: (context, state) => const RegisterPage(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    // Semantics 默认不建树,需显式开启才能断言读屏标签。
+    // 必须在测试体内 dispose:addTearDown 跑在框架的句柄校验之后。
+    final handle = tester.ensureSemantics();
+    await tester.pumpAndSettle();
+
+    // 标签挂在 FCheckbox 内部的语义节点上,收集整棵子树里出现的所有 label。
+    final labels = <String>[];
+    void collect(SemanticsNode node) {
+      if (node.label.isNotEmpty) labels.add(node.label);
+      node.visitChildren((child) {
+        collect(child);
+        return true;
+      });
+    }
+
+    collect(tester.getSemantics(find.byType(FCheckbox)));
+
+    // 读屏标签由可见文案的同一批键拼装,而不是另写一句;这里锁住两者一致,
+    // 避免将来只改可见文案、读屏仍念旧句。
+    final joined = labels.join(' ');
+    expect(joined, contains(l10n.authTermsAgreementPrefix));
+    expect(joined, contains(l10n.authTermsOfService));
+    expect(joined, contains(l10n.authPrivacyPolicy));
+    expect(joined, contains(l10n.authTermsConjunction));
+
+    handle.dispose();
   });
 }

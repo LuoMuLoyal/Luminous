@@ -52,17 +52,6 @@
   "authTermsAgreementPrefix": "By creating an account, you agree to the",
   "authLoginTermsAgreementPrefix": "By signing in, you agree to the",
   "authTermsConjunction": "and",
-  "authTermsAgreement": "By creating an account, you agree to the {terms} and {privacy}",
-  "@authTermsAgreement": {
-    "placeholders": {
-      "terms": {
-        "type": "String"
-      },
-      "privacy": {
-        "type": "String"
-      }
-    }
-  },
   "authOrOtherLogin": "or continue with",
   "authTermsOfService": "Terms of Service",
   "authPrivacyPolicy": "Privacy Policy",

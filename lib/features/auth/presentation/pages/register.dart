@@ -168,10 +168,15 @@ class RegisterPage extends HookConsumerWidget {
                           FCheckbox(
                             value: acceptedTerms.value,
                             onChange: (value) => acceptedTerms.value = value,
-                            semanticsLabel: l10n.authTermsAgreement(
+                            // 读屏用与可见文案同源的键拼装,而不是单独维护一句
+                            // 「完整句」:后者一旦与可见文案分叉,读屏用户听到的
+                            // 同意内容就和屏幕上显示的不一致。
+                            semanticsLabel: [
+                              l10n.authTermsAgreementPrefix,
                               l10n.authTermsOfService,
+                              l10n.authTermsConjunction,
                               l10n.authPrivacyPolicy,
-                            ),
+                            ].join(' '),
                           ),
                           const SizedBox(width: Spacing.md),
                           Expanded(

@@ -52,17 +52,6 @@
   "authTermsAgreementPrefix": "创建即表示同意",
   "authLoginTermsAgreementPrefix": "登录即代表同意",
   "authTermsConjunction": "与",
-  "authTermsAgreement": "创建即表示同意{terms}与{privacy}",
-  "@authTermsAgreement": {
-    "placeholders": {
-      "terms": {
-        "type": "String"
-      },
-      "privacy": {
-        "type": "String"
-      }
-    }
-  },
   "authOrOtherLogin": "其他方式登录",
   "authTermsOfService": "服务条款",
   "authPrivacyPolicy": "隐私政策",
