@@ -51,6 +51,9 @@ class MedicineDetail {
     this.synonyms = const [],
     this.foodInteractions = const [],
     this.drugInteractions = const [],
+    this.targets = const [],
+    this.externalIdentifiers = const [],
+    this.externalLinks = const [],
   });
 
   final String id;
@@ -107,6 +110,15 @@ class MedicineDetail {
   final List<String> synonyms;
   final List<String> foodInteractions;
   final List<MedicineDetailInteraction> drugInteractions;
+
+  /// Proteins/genes this drug acts on, with action labels.
+  final List<MedicineDetailTarget> targets;
+
+  /// External cross-reference identifiers (PubChem, KEGG, ChEBI, ...).
+  final List<MedicineDetailExternalReference> externalIdentifiers;
+
+  /// Outbound reference links (Drugs.com, RxList, ...).
+  final List<MedicineDetailExternalReference> externalLinks;
 }
 
 /// A single DrugBank drug-interaction entry shown on the detail page.
@@ -118,4 +130,51 @@ class MedicineDetailInteraction {
 
   final String drugbankId;
   final String description;
+}
+
+/// A target (protein/gene) the drug acts on.
+class MedicineDetailTarget {
+  const MedicineDetailTarget({
+    required this.name,
+    this.geneName,
+    this.uniprotId,
+    this.uniprotTitle,
+    this.species,
+    this.pdbIds = const [],
+    this.actions = const [],
+    this.knownAction,
+    this.relationKind,
+  });
+
+  final String name;
+  final String? geneName;
+  final String? uniprotId;
+  final String? uniprotTitle;
+  final String? species;
+
+  /// Known PDB structure identifiers — can be long (80+ for well-studied
+  /// kinases), so the UI shows a bounded preview.
+  final List<String> pdbIds;
+
+  /// Action labels such as `inhibitor` / `agonist`.
+  final List<String> actions;
+
+  final String? knownAction;
+
+  /// Relationship kind: target, enzyme, carrier, transporter.
+  final String? relationKind;
+}
+
+/// A labelled external reference — either an identifier or an outbound URL.
+class MedicineDetailExternalReference {
+  const MedicineDetailExternalReference({
+    required this.resource,
+    required this.value,
+  });
+
+  /// Source resource label, e.g. `PubChem Compound` or `Drugs.com`.
+  final String resource;
+
+  /// The identifier text or the URL, depending on which list it came from.
+  final String value;
 }

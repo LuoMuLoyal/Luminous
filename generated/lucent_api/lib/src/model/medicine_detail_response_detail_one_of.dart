@@ -3,7 +3,10 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_api/src/model/medicine_detail_response_external_identifiers.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -60,6 +63,8 @@ class MedicineDetailResponseDetailOneOf {
     required this.foodInteractions,
 
     required this.drugInteractions,
+
+    required this.targets,
 
     required this.externalIdentifiers,
 
@@ -129,11 +134,14 @@ class MedicineDetailResponseDetailOneOf {
   @JsonKey(name: r'drugInteractions', required: true, includeIfNull: true)
   final List<MedicineDetailResponseDrugInteractions>? drugInteractions;
 
+  @JsonKey(name: r'targets', required: true, includeIfNull: true)
+  final List<MedicineDetailResponseTargets>? targets;
+
   @JsonKey(name: r'externalIdentifiers', required: true, includeIfNull: true)
-  final Object? externalIdentifiers;
+  final List<MedicineDetailResponseExternalIdentifiers>? externalIdentifiers;
 
   @JsonKey(name: r'externalLinks', required: true, includeIfNull: true)
-  final Object? externalLinks;
+  final List<MedicineDetailResponseExternalLinks>? externalLinks;
 
   @override
   bool operator ==(Object other) =>
@@ -160,6 +168,7 @@ class MedicineDetailResponseDetailOneOf {
           other.synonyms == synonyms &&
           other.foodInteractions == foodInteractions &&
           other.drugInteractions == drugInteractions &&
+          other.targets == targets &&
           other.externalIdentifiers == externalIdentifiers &&
           other.externalLinks == externalLinks;
 
@@ -186,6 +195,7 @@ class MedicineDetailResponseDetailOneOf {
       (synonyms == null ? 0 : synonyms.hashCode) +
       (foodInteractions == null ? 0 : foodInteractions.hashCode) +
       (drugInteractions == null ? 0 : drugInteractions.hashCode) +
+      (targets == null ? 0 : targets.hashCode) +
       (externalIdentifiers == null ? 0 : externalIdentifiers.hashCode) +
       (externalLinks == null ? 0 : externalLinks.hashCode);
 

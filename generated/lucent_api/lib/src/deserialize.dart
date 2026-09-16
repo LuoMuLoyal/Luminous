@@ -175,6 +175,9 @@ import 'package:lucent_api/src/model/medicine_detail_response_detail.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_detail_one_of.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_detail_one_of1.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_drug_interactions.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_external_identifiers.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_external_links.dart';
+import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job_result.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response.dart';
@@ -1096,6 +1099,21 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineDetailResponseDrugInteractions':
       return MedicineDetailResponseDrugInteractions.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineDetailResponseExternalIdentifiers':
+      return MedicineDetailResponseExternalIdentifiers.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineDetailResponseExternalLinks':
+      return MedicineDetailResponseExternalLinks.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineDetailResponseTargets':
+      return MedicineDetailResponseTargets.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

@@ -111,6 +111,7 @@ Map<String, dynamic> _detailBody() {
       'drugInteractions': null,
       'externalIdentifiers': null,
       'externalLinks': null,
+      'targets': null,
       'approvalNumber': null,
       'manufacturer': null,
       'packageSpec': null,

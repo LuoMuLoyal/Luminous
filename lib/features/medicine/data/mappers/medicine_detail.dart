@@ -66,7 +66,47 @@ class MedicineDetailMapper {
             ),
           )
           .toList(growable: false),
+      targets: (detail.targets ?? const [])
+          .map(
+            (item) => MedicineDetailTarget(
+              name: item.name,
+              geneName: _trimToNull(item.geneName),
+              uniprotId: _trimToNull(item.uniprotId),
+              uniprotTitle: _trimToNull(item.uniprotTitle),
+              species: _trimToNull(item.species),
+              pdbIds: _stringList(item.pdbIds),
+              actions: _stringList(item.actions),
+              knownAction: _trimToNull(item.knownAction),
+              relationKind: _trimToNull(item.relationKind),
+            ),
+          )
+          .toList(growable: false),
+      externalIdentifiers: (detail.externalIdentifiers ?? const [])
+          .map(
+            (item) => MedicineDetailExternalReference(
+              resource: item.resource,
+              value: item.identifier,
+            ),
+          )
+          .toList(growable: false),
+      externalLinks: (detail.externalLinks ?? const [])
+          .map(
+            (item) => MedicineDetailExternalReference(
+              resource: item.resource,
+              value: item.url,
+            ),
+          )
+          .toList(growable: false),
     );
+  }
+
+  /// Drops blank entries from an optional string list.
+  List<String> _stringList(List<String>? values) {
+    if (values == null) return const [];
+    return values
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toList(growable: false);
   }
 
   /// Normalizes the source enum to the `cn`/`drugbank` wire string. The
