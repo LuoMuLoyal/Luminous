@@ -1,3 +1,5 @@
+import 'package:luminous/features/record/domain/constants/meal_calorie_range.dart';
+
 /// View data for one meal analysis (contract v2).
 ///
 /// v2 是**一次多模态分析直出**:热量区间 + 按重要性排序的结论 + 可编辑菜名。
@@ -48,7 +50,10 @@ class MealCalorieRangeViewData {
   final String? bucket;
 
   /// 粗化到百位的展示区间(四舍五入),例如 `500–800`。
-  String get coarseLabel => '${_roundToHundreds(min)}–${_roundToHundreds(max)}';
+  ///
+  /// 与列表角标同口径:实现集中在 [formatCoarseCalorieRange],不要在这里就地
+  /// 重算,否则详情页与列表会对同一条记录显示不同的区间。
+  String get coarseLabel => formatCoarseCalorieRange(min: min, max: max);
 }
 
 class MealDishViewData {
@@ -82,9 +87,4 @@ class MealInsightViewData {
 
   final String headline;
   final String detail;
-}
-
-int _roundToHundreds(int value) {
-  final rounded = (value / 100).round() * 100;
-  return rounded < 0 ? 0 : rounded;
 }

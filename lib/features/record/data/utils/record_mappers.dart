@@ -1,4 +1,5 @@
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/record/domain/constants/meal_calorie_range.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
@@ -261,10 +262,5 @@ String? _mealCalorieLabel(DailyRecordItem record) {
   final min = record.mealCalorieMin;
   final max = record.mealCalorieMax;
   if (min == null || max == null) return null;
-  return '${_roundToHundreds(min)}–${_roundToHundreds(max)}';
-}
-
-int _roundToHundreds(int value) {
-  final rounded = (value / 100).round() * 100;
-  return rounded < 0 ? 0 : rounded;
+  return formatCoarseCalorieRange(min: min, max: max);
 }
