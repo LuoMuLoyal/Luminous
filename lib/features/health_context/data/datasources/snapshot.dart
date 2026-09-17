@@ -257,10 +257,21 @@ Object? _wireValue(Object? value) {
     return value.value;
   }
   if (value is List) {
-    return [
-      for (final item in value)
-        item is HealthContextWireEnum ? item.value : item,
-    ];
+    return [for (final item in value) _wireListElement(item)];
   }
   return value;
+}
+
+Object? _wireListElement(Object? item) {
+  // List 元素只支持可枚举/可 JSON 化的标量。未来若引入 List<DateTime> /
+  // List<Map> 之类负载,这里会在 debug 期立刻暴露,避免把不可 JSON 化的
+  // 对象直接塞进 wire payload。
+  assert(
+    item is String ||
+        item is num ||
+        item is bool ||
+        item is HealthContextWireEnum,
+    'unexpected List element in wire payload: ${item.runtimeType}',
+  );
+  return item is HealthContextWireEnum ? item.value : item;
 }
