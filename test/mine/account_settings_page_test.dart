@@ -48,9 +48,12 @@ void main() {
     expect(find.text(l10n.authAccountManageDeleteAccount), findsOneWidget);
 
     // 底部服务入口
-    expect(find.text(l10n.authAccountManageCustomerService), findsOneWidget);
-    expect(find.text(l10n.authAccountManageFeedback), findsOneWidget);
-    expect(find.text(l10n.authAccountManageHelpCenter), findsOneWidget);
+    expect(
+      find.text(l10n.authAccountManageSupportCustomerService),
+      findsOneWidget,
+    );
+    expect(find.text(l10n.authAccountManageSupportFeedback), findsOneWidget);
+    expect(find.text(l10n.authAccountManageSupportHelpCenter), findsOneWidget);
   });
 
   testWidgets(
