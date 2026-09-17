@@ -32,6 +32,13 @@ abstract interface class LucentSessionStore {
   Future<void> clear();
 }
 
+/// Returns [value] as a trimmed string only when it really is a String.
+///
+/// The persisted payload is JSON we wrote ourselves, but a corrupted or
+/// hand-edited store can still hold a number/object under these keys; a bare
+/// `as String?` would throw instead of degrading to "no token".
+String? _stringOrNull(Object? value) => value is String ? value : null;
+
 /// Trims [value]; returns null when the result is empty (or the input is null).
 String? _trimmed(String? value) {
   final text = value?.trim();
@@ -304,7 +311,7 @@ LucentSessionTokens? _decodePayload(String raw) {
   if (decoded is! Map) return null;
 
   return LucentSessionTokens(
-    accessToken: _trimmed(decoded['accessToken'] as String?) ?? '',
-    refreshToken: _trimmed(decoded['refreshToken'] as String?) ?? '',
+    accessToken: _trimmed(_stringOrNull(decoded['accessToken'])) ?? '',
+    refreshToken: _trimmed(_stringOrNull(decoded['refreshToken'])) ?? '',
   );
 }
