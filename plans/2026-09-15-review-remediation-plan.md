@@ -51,48 +51,11 @@ updated: 2026-09-15
 - 后续新增/修改 fixture 时：字段名与可空性以 Lucent 的 zod schema / types 为准
   （如 `CORE_PROFILE_FIELDS`、`clinicSummaryProfileSchema`），不要凭 DTO 生成物反推业务取值。
 
-## 2. P1 — 真 bug 与行为缺口
-
-### 2-1. legacy profile_edit 页退役【09-14 S1】P1·M
-
-核实修正：legacy 页**不是**"只剩能打开"——mine tab 有 5 个活入口（lucent.dart:214、archive_handlers.dart:9、account_hero.dart:341/346/351）。两套编辑页并存（`/mine/profile/edit` vs `/profile`）语义重复，新页是规范实现。分两步：
-
-1. 5 个入口改指 `Routes.profile`（账号信息/性别/体重三个 readiness gap 均已有对应 sheet 行）。
-2. 跑 `test/mine` 绿后删 `MineProfileEditRoute`（routes.dart:22-30 + routes.g.dart 重生成）+ `profile_edit.dart` + `edit_pages_test.dart` 等孤儿测试。
-
 ## 3. P2·A — 正确性收口（低成本，尽快）
-
-### 3-1. `_DietaryPreferencesRow` 引用比较【09-13 S-10】P2·S
-
-`profile.dart:617-623` 改 `const ListEquality().equals(...)`（collection 包已是依赖）；或父层 `useMemoized` 缓存列表引用。取前者，一行。
-
-### 3-2. `_wireValue` List 分支 assert【09-13 S-11】P2·S
-
-`snapshot.dart:255-265` else 分支加 `assert(item is String || item is num || item is bool, ...)`，debug 期暴露未来 List<DateTime>/List<Map> 误用。
-
-### 3-3. avatar 裁剪失败用 SnackBar【09-12 W-6 附带发现】P2·S
-
-`avatar_draft.dart:159-164` `_showCropFailure` 用 ScaffoldMessenger/SnackBar，违反"轻反馈用 AppToast"约定。迁 `Toast.show(l10n.profileAvatarCropFailed)`（新 ARB 键）；`bytes.isEmpty` 分支补 `Toast.show(l10n.profileAvatarEmptyFile)`；取消路径维持静默（主动取消不提示是合理 UX）。
-
-### 3-4. OCR `_DigestAccumulator` 简化【09-12 S-3】P2·S
-
-`ocr_model_manager.dart:72-96` 换 `sha256.bind(file.openRead()).first`（crypto 3.x 公开 API），删 accumulator 类。行为等价，verifier fake 不受影响。
 
 ### 3-5. unit_conversion 回退路径测试【09-13 S-4】P2·S
 
 回退常数是文档化设计（unit_conversion.dart:13-16），保留；补一个单测断言「包返回 null 时走本地公式」路径，把降级策略钉进测试。
-
-### 3-6. l10n 双份同文案键去重【09-08 W-7 真实内核】P2·S
-
-`authAccountManageCustomerService/Feedback/HelpCenter` 与 `authAccountManageSupport*` 三对同文案键并存（auth_zh.arb:227-235）。页面已全用 `Support*` 前缀（account_manage_sections.dart:362-376）；测试用旧前缀（account_settings_page_test.dart:51-53）。删旧三键（zh+en 分片），测试改用 `Support*` 键，merge + gen-l10n，同步 localization.md。零引用键清理前跑一次 grep 确认。
-
-### 3-7. `weightInLb` 定位澄清【09-13 S-13】P2·S
-
-`weightInLb` 是 archive_sections.dart:70 的现役接口，非"旧别名"。直接让 archive_sections 改用 `kgToLb` 后删掉该函数（消多余间接层）；同步 unit_conversion_test 删对应 group。
-
-### 3-8. auth 页骨架收敛 AuthScrollBody【09-14 "重复造轮子"修正案】P2·S
-
-报告的 padding 参数方案不成立（见 §0）。改为 auth feature 内加 `AuthScrollBody`（~10 行 StatelessWidget 包 `SingleChildScrollView → ResponsiveContentFrame → Padding(vertical: width<mobile?xl2:xl3) → Column`），6 页（login/register/forgot_password/change_email/account_manage/security_center）各减 ~6 行；这是行为组合而非样式 preset，符合 AGENTS.md wrapper 例外。与 §4-7 骨架测试同批做。
 
 ### 3-9. 生成模型 `ReportSummaryAsync/Stream*` 清理【09-08 W-2】P2·M（跨仓，合同级）
 
@@ -106,7 +69,7 @@ updated: 2026-09-15
 4. **profile.dart:546-547 幽灵文件注释**【09-13 W-3】：enum_select_sheet.dart 不存在，改「枚举字段走内嵌 FSelectMenuTile，数值（身高/体重）走 quantity_sheet」。P2·S
 5. **state_message.dart `card` 参数 docstring**【09-14 S4 + 09-13 S-2/S-3】：补「`card: false` 时不包裹滚动视口，调用方需自行保证外层可滚动」；card/scrollable 参数拆分不做（唯一调用方 notification/list.dart 行为正确）。P2·S
 6. **auth_guarded.dart doc 签名演进说明**【09-10 #4】：Usage 段前加一段「async since 2026-09-10；同步上下文不能 try/catch AuthRequiredException，用 FutureProvider/AsyncNotifier」。P2·S
-7. **login_page_test 骨架断言**【09-14 S5】：窄/宽屏断言 Padding vertical == xl2/xl3（配合 §3-9 的 AuthScrollBody 则断言 wrapper）；勿断言已删除的类名。P2·S
+7. **login_page_test 骨架断言**【09-14 S5】：窄/宽屏断言 Padding vertical == xl2/xl3（配合已落地的 AuthScrollBody 则断言 wrapper）；勿断言已删除的类名。P2·S
 8. **box_scan_preview.dart:25 注释**【09-13 S-9】：补「父级 SingleChildScrollView 已带滚动，FTileGroup 须禁用自身滚动避免双滚动」。P2·S
 9. **icon_picker_sheet.dart:164-171**【09-13 S-8】：手绘 handle 换 `SheetDragHandle` + 补标题行；不套完整 showAppEditSheet（即点即选无确认语义）。P2·S
 10. **security_center.dart:194-211 预留入口**【09-08 W-4 / 09-13 W-6】：`onPress: null` 渲染禁用态并去 `actionNext` 箭头，保留 ComingSoon 文案。P2·S
@@ -118,7 +81,7 @@ updated: 2026-09-15
 16. **account_manage.dart:81-100 双路径**【09-12 S-5】：useEffect 依赖改 `[wechatCode, wechatState, session.isLoading]` 后删 build 内兜底注册；现有 OAuth 回调测试验证。P2·S
 17. **AvatarView 40px border**【09-12 S-7】：视觉复核后 account_manage_sections.dart:94-99 传 `borderColor: Colors.transparent` 或维持默认；不加 dense 模式。P2·S
 18. **analyze_trace 0x0A 快检**【09-12 S-2】：可选，工具脚本不在门禁内；时间富余再做。P2·S
-19. **测试文件改名**【09-08 W-6】：`test/mine/account_settings_page_test.dart` 实测的是 `AccountManagePage`，`git mv` 为 `account_manage_page_test.dart`（与 §3-9 同文件，一批做）。P2·S
+19. **测试文件改名**【09-08 W-6】：`test/mine/account_settings_page_test.dart` 实测的是 `AccountManagePage`，`git mv` 为 `account_manage_page_test.dart`（与 §4-20 同文件，一批做）。P2·S
 20. **account_manage 测试补强**【09-08 W-1】P2·M：widget 测试进对话框输密码提交、断言 remote 收到的字段与登录态清理（provider 层副作用已由 test/auth/.../account_provider_test.dart:560-610 覆盖，此处补 UI 链路）。
 21. **oauth_wechat.dart:92-96 冗余状态位**【09-08 S-1】：`startWechatMobileLogin` 内层 `isStartingWechat: true` 与外层入口（L35-40）重复，删内层重复设置。P2·S
 22. **notification.dart 同步契约注释**【09-08 S-2】：remote_sync mixin doc 补「失败回滚 state 后 rethrow，调用方需 catch」（notification.dart:161-166 现行为）；页面未 catch 属预期（上层兜底），doc 说清即可。P2·S
@@ -144,9 +107,9 @@ Condition、CurrentMedicine 均失败置 `errorMessage` 而不置 `saved`，mine
 `medicine/presentation/pages/reminder/detail.dart:361-372` 是**正确范式**（`success` 三元 toast），
 后续同类修复可作参照写法。
 
-### 5-2. l10n 同文案双份键远不止 auth 三组：全库 84 组【P2·M】
+### 5-2. l10n 同文案双份键：全库 84 组【P2·M】
 
-§3-9 只处理了 auth 的 3 组，实际按「同一 zh 分片内值完全相同（长度 ≥2，剔除 `@` 元数据）」扫描得
+auth 的 3 组已处理。其余按「同一 zh 分片内值完全相同（长度 ≥2，剔除 `@` 元数据）」扫描共得
 **84 组**（assistant 3、auth 14、common 3、medicine 17、mine 6、network 2、notification 2、
 record 13、review 15、settings 6、today 3；含三/四份同值的）。**不能一键全删**——需按语义分三类处置：
 
@@ -157,12 +120,11 @@ record 13、review 15、settings 6、today 3；含三/四份同值的）。**不
    （risk_check 页标题，2 处消费）、`scanViewReminderAction`（scan 侧 2 处 + 测试 6 处）vs
    `medicineDetailOpenReminderAction`（medicine_detail_content:115 单点）。
    判定口径：**两个键的消费点分属不同 UI 语境就保留**；写脚本时必须把消费点列出来逐个看，不能只看文案。
-2. **纯重复（删一留一）**：`authAccountManageSupport*` vs `authAccountManage*`（§3-9，已核实页面用
-   `Support*`、测试用旧键，属真重复）；其余读消费点时若发现"同一 UI 语境两个键"即归此类。
+2. **纯重复（删一留一）**：读消费点时若发现"同一 UI 语境两个键"即归此类，删无人引用的那个。
 3. **枚举/状态同值（保留）**：`reviewStatusUnknown`/`reviewReviewStatusUnknown`/`reviewReviewOutcomeUnknown`、
    `medicineDoseStatusTaken` 等，不同实体各有语义，删一个会迫使跨实体复用同一键。
 
-执行方式：写一次性脚本列出 62 组 + 各自全部消费点（`lib/` 与 `test/`），人工按上述三类标注后批量处置；
+执行方式：写一次性脚本列出各组 + 各自全部消费点（`lib/` 与 `test/`），人工按上述三类标注后批量处置；
 合并 + gen-l10n + `localization.md` 同步。**不要**为省事按键名前缀自动删。
 
 ### 5-3. `TODO(...)` 标记未登记 docs/TODO.md【P2·S】
@@ -197,10 +159,10 @@ dose_log 1、safety_tip 1、workspace 5、safety_tips 1、safety_tip_style 1）�
 
 处置：本计划只把第一类做完（§4-15），第二类**逐文件评估后修**（列为 P2·M 单独一批），第三类明确记录不动。
 
-### 5-5. 反序列化硬 cast：§3-2 之外的同类点【P2·S】
+### 5-5. 反序列化硬 cast 的同类点【P2·S】
 
 - `lib/core/network/client/session_store.dart:307-308`：`decoded['accessToken'] as String?` 在
-  `jsonDecode` 已 try/catch + `is! Map` 守卫之后，**但键值是数字/嵌套对象时仍抛**。同 §3-2 加
+  `jsonDecode` 已 try/catch + `is! Map` 守卫之后，**但键值是数字/嵌套对象时仍抛**。加
   `_stringOrNull(Object?)` 容错 helper（返回 null 即视为无 token）。
 - `lib/features/record/application/usecases/quick_entry_sleep.dart:191`：`record.payload?[key] as String?`
   在 `DateTime.tryParse` 前硬 cast，payload 类型异常直接抛。改 `payload?[key] is String ? ... : null`。
@@ -233,8 +195,6 @@ health_event 三个 sheet（check_in/end_event/start_event，**均有大段注�
 
 ## 7. 执行顺序与验收
 
-- **Wave 1（P1 主干）**：2-1。每项落地即跑对应目录 `flutter test`。
-- **Wave 2（P2·A）**：3-1 → 3-2 → 3-3 → 3-4 → 3-5 → 3-6 → 3-7 → 3-8；3-9（合同级）与 §3-9/§4-19/§4-20 按 09-08 建议合批：同一测试文件（account_settings_page_test 改名 + key 去重 + 断言补强）一批做。
-- **Wave 3（P2·B + 同类补扫 + 流程）**：§4 按 1-25 顺手清；§5 同类补扫按 §5-2（84 组 l10n 审计，独立一批，需列消费点脚本）→ §5-3（TODO 登记）→ §5-4（真实时钟第二类逐文件评估）；§5-6 是"逐命中定性后不改"的记录，**不要**为一致性去加日志改代码；最后 §5-5 之外的流程两句进 AGENTS.md。
+- **剩余顺序**：§3-5 → §3-9（合同级，与 docs/TODO.md 的「Review AI 摘要复核」项合并，只登记不实施）→ §4 按 1-25 顺手清（§4-19/§4-20 同一测试文件合批）→ §5-2（84 组 l10n 审计，独立一批，需列消费点脚本）→ §5-3（TODO 登记）→ §5-4（真实时钟第二类逐文件评估）→ §5-5 → §6 流程两句进 AGENTS.md。§5-6 是"逐命中定性后不改"的记录，**不要**为一致性去加日志改代码。
 - **收尾验收**：`flutter analyze` 零 issue；`flutter test` 全量绿；`dart run scripts/docs/verify.dart --warning-only` 无新增告警；l10n 相关改动后 `arb_tools.dart merge` + `flutter gen-l10n` + `docs/reference/localization.md` 同步；本计划全部项实施完毕后按约定整文件删除并在迁移日志登记。
 - **明确不做**（除非另行立项）：avatar 真草稿化重构（09-13 W-2 后半）、450ms debounce 注入钩子、cooldown 真时钟测试改造（§5-4 第三类）、card/scrollable 参数拆分、tab_branch_container late 改写、authGuarded 新 lint 规则、pre-push 回滚加 test、reviewModels 手工删模型（走 3-9 合同级路径）、§5-6 的静默 catch 追改。
