@@ -190,8 +190,9 @@ class SecurityCenterPage extends ConsumerWidget {
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
-                  suffix: const Icon(SemanticIcons.actionNext),
-                  onPress: () {}, // 预留入口，暂无具体功能
+                  // 预留入口：能力未上线，渲染为禁用态并去掉前进箭头，
+                  // 避免给出"可点击但无反应"的错误暗示。
+                  onPress: null,
                 ),
               ],
             ),
