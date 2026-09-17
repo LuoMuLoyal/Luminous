@@ -248,6 +248,7 @@
   "profileAvatarCropProcessing": "Processing…",
   "profileAvatarCropDone": "Use this avatar",
   "profileAvatarCropFailed": "Avatar cropping failed. Try again.",
+  "profileAvatarEmptyFile": "The image is empty. Please pick another one.",
   "profileNicknameHint": "Enter a nickname",
   "profileEmptyValue": "Not set",
   "profileFieldHeight": "Height",

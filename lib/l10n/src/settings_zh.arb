@@ -248,6 +248,7 @@
   "profileAvatarCropProcessing": "处理中…",
   "profileAvatarCropDone": "使用此头像",
   "profileAvatarCropFailed": "头像裁剪失败，请重试",
+  "profileAvatarEmptyFile": "图片为空，请重新选择",
   "profileNicknameHint": "请输入昵称",
   "profileEmptyValue": "未设置",
   "profileFieldHeight": "身高",

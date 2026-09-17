@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -44,7 +47,14 @@ Future<AvatarDraft?> pickAvatarDraft(
   if (image == null) return null;
 
   final bytes = await image.readAsBytes();
-  if (bytes.isEmpty) return null;
+  if (bytes.isEmpty) {
+    // 空文件(读取失败/损坏)按失败处理,给一条轻提示,不让用户以为选图成功。
+    if (context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      unawaited(Toast.show(context, l10n.profileAvatarEmptyFile));
+    }
+    return null;
+  }
   if (kIsWeb) {
     return AvatarDraft(
       bytes: bytes,
@@ -158,8 +168,8 @@ class _AvatarCropperState extends State<AvatarCropper> {
 
   void _showCropFailure(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.profileAvatarCropFailed)));
+    // 轻量反馈统一走 Toast（AGENTS.md「轻反馈用 AppToast」约定）,
+    // 不在这里用 ScaffoldMessenger/SnackBar——对话框之上做全局提示。
+    unawaited(Toast.show(context, l10n.profileAvatarCropFailed));
   }
 }
