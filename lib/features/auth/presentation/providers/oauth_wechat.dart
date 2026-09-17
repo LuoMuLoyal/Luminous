@@ -89,11 +89,9 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       final code = await _wechat.tryMobileAuth();
       if (code == null) return null;
 
-      state = state.copyWith(
-        isStartingWechat: true,
-        isCompletingWechat: true,
-        errorMessage: null,
-      );
+      // isStartingWechat 由入口 startWechatLogin 置位（与 desktop 分支一致），
+      // 这里只负责把"正在完成登录"标记打开。
+      state = state.copyWith(isCompletingWechat: true, errorMessage: null);
       final s = await _resolve(_remote.loginWithWechatMobile(code: code));
       await ref.read(authSessionProvider.notifier).applySession(s);
       state = state.copyWith(
