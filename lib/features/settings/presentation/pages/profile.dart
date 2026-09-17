@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -633,7 +634,12 @@ class _DietaryPreferencesRowState extends State<_DietaryPreferencesRow> {
   void didUpdateWidget(_DietaryPreferencesRow oldWidget) {
     super.didUpdateWidget(oldWidget);
     // 新快照落地后以服务端现值为准,清掉未决集合。
-    if (widget.diets != oldWidget.diets) {
+    // List 逐元素比较（const ListEquality）：服务端每次 PATCH 都返回新数组引用，
+    // 若按 `!=` 引用比较，任何一次刷新都会被当成"值变化"而清掉未决勾选。
+    if (!const ListEquality<HealthDietaryPreference>().equals(
+      widget.diets,
+      oldWidget.diets,
+    )) {
       _pending = null;
     }
   }
