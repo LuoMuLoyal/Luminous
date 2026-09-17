@@ -70,29 +70,10 @@ typedef OcrModelVerifier = Future<String> Function(File file);
 
 /// Default verifier: SHA-256 of the file contents.
 Future<String> _sha256OfFile(File file) async {
-  // Collect the final digest via the accumulator pattern: crypto 3.x
-  // `startChunkedConversion` requires an output `Sink<Digest>`; we feed it
-  // into an accumulator that captures the digest produced on close.
-  final output = _DigestAccumulator();
-  final chunked = sha256.startChunkedConversion(output);
-  await for (final chunk in file.openRead()) {
-    chunked.add(chunk);
-  }
-  chunked.close();
-  return output.digest!.toString();
-}
-
-/// Accumulates the single [Digest] produced by a chunked hash conversion.
-class _DigestAccumulator implements Sink<Digest> {
-  Digest? digest;
-
-  @override
-  void add(Digest data) {
-    digest = data;
-  }
-
-  @override
-  void close() {}
+  // `sha256.bind(stream).first` 直接取唯一的 digest（crypto 3.x 公开 API）,
+  // 不需要手动维护 chunked conversion + accumulator。
+  final digest = await sha256.bind(file.openRead()).first;
+  return digest.toString();
 }
 
 /// Manages the on-demand download and storage of PaddleOCR ONNX model files.
