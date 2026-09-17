@@ -67,7 +67,7 @@ String buildArchiveProfileMeta(
       l10n.mineProfileHeightCm(profile.heightCm?.round() ?? 0),
     if (profile.weightKg != null)
       isImperialUnitSystem(profile.unitSystem)
-          ? l10n.mineProfileWeightLb(weightInLb(profile.weightKg)?.round() ?? 0)
+          ? l10n.mineProfileWeightLb(kgToLb(profile.weightKg!).round())
           : l10n.mineProfileWeightKg(profile.weightKg?.round() ?? 0),
   ];
   if (parts.isEmpty) return l10n.mineArchiveBasicSubtitle;

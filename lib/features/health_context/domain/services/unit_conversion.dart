@@ -38,9 +38,6 @@ double kgToLb(double kg) {
   return kg.convertFromTo(MASS.kilograms, MASS.pounds) ?? kg * _kgToLbFactor;
 }
 
-/// 旧接口别名：档案区既有调用点。
-double? weightInLb(double? kg) => kg == null ? null : kgToLb(kg);
-
 /// 体重 lb → kg 换算（编辑 sheet 英制输入回写公制存储用，不取整）。
 double lbToKg(double lb) {
   return lb.convertFromTo(MASS.pounds, MASS.kilograms) ?? lb / _kgToLbFactor;
