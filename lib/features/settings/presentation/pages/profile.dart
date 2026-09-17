@@ -560,8 +560,9 @@ class _HealthProfileCard extends ConsumerWidget {
   }
 }
 
-/// 数值/枚举单字段编辑器组件在 `widgets/shared/`（quantity_sheet /
-/// enum_select_sheet）；本页只负责行展示与提交。
+/// 单字段编辑器：数值（身高/体重）走 `widgets/shared/quantity_sheet`，
+/// 枚举（性别/活动水平/单位制/饮食偏好）走内嵌 `FSelectMenuTile`，昵称走
+/// `showTextEditSheet`；本页只负责行展示与提交。
 
 String _sexLabel(AppLocalizations l10n, HealthSexAtBirth sex) {
   return switch (sex) {

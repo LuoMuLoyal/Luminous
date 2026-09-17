@@ -81,7 +81,8 @@ abstract final class MarkdownStyle {
   /// F-4 视觉模板（2026-08-17 扩展）：
   /// - h1-h6 完整字号阶梯：h1→lg、h2→md、h3→sm（同正文、加粗区分），
   ///   h4→xs、h5→xs2、h6→xs2（h6 再降一档字重收尾）。
-  /// - 列表缩进走 `Spacing` token（level5=20/级），bullet 与文字间距 level2=6。
+  /// - 列表缩进走 `Spacing` token（listIndent=Spacing.xl 20/级），bullet 与文字间距
+  ///   listBulletPadding=Spacing.sm 6。
   /// - 表格列宽 `IntrinsicColumnWidth`：flutter_markdown_plus 检测到该列宽类型时
   ///   自动把表格包进横向 `SingleChildScrollView`，窄屏可横向滚动而不是挤压列。
   /// - 引用块 primary 4px 左侧色条 + primary subtle 底色。

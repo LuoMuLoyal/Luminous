@@ -277,8 +277,8 @@ class _SectionColumn extends StatelessWidget {
     container: true,
     header: true,
     label: title,
-    // 账号页移除内层 FCard 后，各模块与外层 AuthShell 面板共用同一层背景，
-    // 用语义容器 + header 为读屏用户划分模块边界（review 2026-09-06 §5）。
+    // 账号页移除内层 FCard 后，各模块与认证页标准骨架（PageScaffold）共用同一层
+    // 背景，用语义容器 + header 为读屏用户划分模块边界（review 2026-09-06 §5）。
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
