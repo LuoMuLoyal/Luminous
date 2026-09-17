@@ -188,7 +188,10 @@ Future<List<DailyRecordItem>> _fetchRecentSleepRecords(
 
 DateTime _eventAt(DailyRecordItem record) {
   for (final key in const ['endedAt', 'startedAt']) {
-    final parsed = DateTime.tryParse(record.payload?[key] as String? ?? '');
+    // payload 是本地写入的 JSON，但类型仍可能被旧版本/异常数据写坏；
+    // 非 String 时按"该键无值"处理，让循环落到下一个候选。
+    final raw = record.payload?[key];
+    final parsed = DateTime.tryParse(raw is String ? raw : '');
     if (parsed != null) return parsed;
   }
   return parseRecordDateTime(
