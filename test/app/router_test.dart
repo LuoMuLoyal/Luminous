@@ -279,7 +279,6 @@ void main() {
       '/record/create',
       '/record/123',
       '/record/123/edit',
-      '/mine/profile/edit',
       '/mine/allergy/new',
       '/mine/allergy/123/edit',
       '/mine/condition/new',

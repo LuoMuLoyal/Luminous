@@ -18,7 +18,6 @@ import 'package:luminous/features/mine/data/providers/mine.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/mine/presentation/pages/page.dart';
-import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
@@ -573,8 +572,9 @@ void main() {
             routes: [
               GoRoute(path: '/', builder: (context, state) => const MinePage()),
               GoRoute(
-                path: '/mine/profile/edit',
-                builder: (context, state) => const ProfileEditPage(),
+                path: '/profile',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('profile-page')),
               ),
             ],
           ),
@@ -593,7 +593,7 @@ void main() {
     await tester.tap(basicInfo);
     await tester.pumpAndSettle();
 
-    expect(find.text(l10n.mineEditProfileTitle), findsOneWidget);
+    expect(find.text('profile-page'), findsOneWidget);
   });
 
   testWidgets('Mine archive meta shows weight in kg for metric unit system', (
@@ -703,8 +703,9 @@ void main() {
             routes: [
               GoRoute(path: '/', builder: (context, state) => const MinePage()),
               GoRoute(
-                path: '/mine/profile/edit',
-                builder: (context, state) => const ProfileEditPage(),
+                path: '/profile',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('profile-page')),
               ),
               GoRoute(
                 path: '/login',
@@ -740,7 +741,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(MinePage), findsOneWidget);
-    expect(find.byType(ProfileEditPage), findsNothing);
+    expect(find.text('profile-page'), findsNothing);
     expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
     expect(find.text('尚未登录'), findsOneWidget);
     expect(find.text('是否去登录'), findsOneWidget);
@@ -751,7 +752,7 @@ void main() {
 
     expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
     expect(find.byType(MinePage), findsOneWidget);
-    expect(find.byType(ProfileEditPage), findsNothing);
+    expect(find.text('profile-page'), findsNothing);
 
     await tester.ensureVisible(basicInfo);
     await tester.pumpAndSettle();
@@ -762,7 +763,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('login-page:/'), findsOneWidget);
-    expect(find.byType(ProfileEditPage), findsNothing);
+    expect(find.text('profile-page'), findsNothing);
   });
 
   test('Mine dashboard uses auth and health-context data', () async {

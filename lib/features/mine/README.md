@@ -7,7 +7,7 @@
 - 不管:健康档案数据契约归 `health_context`(读快照、写经 `HealthContextRepository` + `write_inputs.dart`);数据导出页归 `settings`(`Routes.settingsExport`);帮助/FAQ 归 `settings`,支持资源归 `support` feature;登录会话归 `core/auth`。
 
 ## 对外契约
-- 路由:tab `Routes.mine`;子页为 `presentation/routes.dart` 的 TypedGoRoute:`MineProfileEditRoute`、`MineAllergy(New|Edit)Route`、`MineCondition(New|Edit)Route`、`MineMedicine(New|Edit)Route`、`MineSyncFailuresRoute`(new 形式有常量 `Routes.mineProfileEdit`/`mineAllergyNew`/`mineConditionNew`/`mineMedicineNew`/`mineSyncFailures`,见 `lib/app/router.dart`)。
+- 路由:tab `Routes.mine`;子页为 `presentation/routes.dart` 的 TypedGoRoute:`MineAllergy(New|Edit)Route`、`MineCondition(New|Edit)Route`、`MineMedicine(New|Edit)Route`、`MineSyncFailuresRoute`(new 形式有常量 `Routes.mineAllergyNew`/`mineConditionNew`/`mineMedicineNew`/`mineSyncFailures`,见 `lib/app/router.dart`)。档案基本信息编辑收敛到 `settings` 的 `/profile`(`Routes.profile`)。
 - 导出:`mineRepositoryProvider`(`data/providers/mine.dart`)、`MineRepository`(`domain/repositories/profile.dart`)、`MineDashboard` 及子模型、`mineDashboardProvider`(`presentation/providers/dashboard.dart`)。
 - 被依赖:lib 内无其他 feature 消费(仅 `lib/app/router.dart` 装配;测试侧 `test/mine/`、`test/auth/session_gate_test.dart`、`integration_test/support/e2e_test_helpers.dart`)。
 

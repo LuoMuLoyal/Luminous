@@ -317,10 +317,9 @@ class _StateBadge extends StatelessWidget {
 enum _ReadinessGapType { basicInfo, sexAtBirth, weight, allergy, medicine }
 
 class _ReadinessGap {
-  const _ReadinessGap({required this.type, required this.route});
+  const _ReadinessGap({required this.type});
 
   final _ReadinessGapType type;
-  final String route;
 
   String label(AppLocalizations l10n) {
     return switch (type) {
@@ -336,29 +335,14 @@ class _ReadinessGap {
 List<_ReadinessGap> _deriveGaps(MineProfileSnapshot profile) {
   return [
     if (!profile.basicInfoCompleted)
-      const _ReadinessGap(
-        type: _ReadinessGapType.basicInfo,
-        route: Routes.mineProfileEdit,
-      ),
+      const _ReadinessGap(type: _ReadinessGapType.basicInfo),
     if (profile.sexAtBirth == null)
-      const _ReadinessGap(
-        type: _ReadinessGapType.sexAtBirth,
-        route: Routes.mineProfileEdit,
-      ),
+      const _ReadinessGap(type: _ReadinessGapType.sexAtBirth),
     if (profile.weightKg == null)
-      const _ReadinessGap(
-        type: _ReadinessGapType.weight,
-        route: Routes.mineProfileEdit,
-      ),
+      const _ReadinessGap(type: _ReadinessGapType.weight),
     if (profile.allergyCount == 0)
-      const _ReadinessGap(
-        type: _ReadinessGapType.allergy,
-        route: Routes.mineAllergyNew,
-      ),
+      const _ReadinessGap(type: _ReadinessGapType.allergy),
     if (profile.currentMedicineCount == 0)
-      const _ReadinessGap(
-        type: _ReadinessGapType.medicine,
-        route: Routes.mineMedicineNew,
-      ),
+      const _ReadinessGap(type: _ReadinessGapType.medicine),
   ];
 }

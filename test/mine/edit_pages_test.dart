@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -15,71 +14,10 @@ import 'package:luminous/features/health_context/domain/repositories/snapshot.da
 import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
-import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 
 import '../helpers/test_forui_app.dart';
 
 void main() {
-  // ── Profile ──
-
-  testWidgets('Profile edit saves domain input from pre-filled snapshot', (
-    tester,
-  ) async {
-    final fakeRepo = _FakeHealthContextRepository();
-
-    await tester.pumpWidget(_app(fakeRepo, const ProfileEditPage()));
-
-    await tester.tap(find.text('open-profile-edit'));
-    await tester.pumpAndSettle();
-
-    // Birth date is pre-filled as 1999-01-01 from the snapshot and rendered
-    // via FDateField.calendar (which internally builds an FTextField). Height
-    // is the only standalone FTextField on the page — target it by key.
-    await tester.enterText(
-      find.byKey(const Key('profile-height-field')),
-      '170',
-    );
-    final saveButton = find.byKey(const Key('profile-save-button'));
-    await tester.ensureVisible(saveButton);
-    await tester.pumpAndSettle();
-    await tester.tap(saveButton);
-    await tester.pump(const Duration(seconds: 2));
-
-    final input = fakeRepo.profileUpdate;
-    expect(input, isNotNull);
-    final payload = healthProfileUpdatePayload(input!);
-    expect(payload, containsPair('birthDate', '1999-01-01'));
-    expect(payload, containsPair('heightCm', 170));
-  });
-
-  testWidgets('Profile edit shows login dialog when signed out', (
-    tester,
-  ) async {
-    final fakeRepo = _FakeHealthContextRepository();
-
-    await tester.pumpWidget(
-      _app(
-        fakeRepo,
-        const ProfileEditPage(),
-        authSessionNotifier: _SignedOutAuthSessionNotifier.new,
-      ),
-    );
-
-    await tester.tap(find.text('open-profile-edit'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(ProfileEditPage), findsOneWidget);
-    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
-    expect(find.text('尚未登录'), findsOneWidget);
-    expect(find.text('是否去登录'), findsOneWidget);
-
-    await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
-    await tester.pumpAndSettle();
-
-    expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
-    expect(find.text('编辑档案'), findsOneWidget);
-  });
-
   // ── Allergy ──
 
   testWidgets('Allergy create saves with label', (tester) async {
@@ -308,13 +246,10 @@ Widget _app(
   _FakeHealthContextRepository fakeRepo,
   Widget page, {
   HealthContextSnapshot snapshot = _snapshot,
-  AuthSessionNotifier Function()? authSessionNotifier,
 }) {
   return ProviderScope(
     overrides: [
-      authSessionProvider.overrideWith(
-        authSessionNotifier ?? _SignedInAuthSessionNotifier.new,
-      ),
+      authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
       healthContextRepositoryProvider.overrideWithValue(fakeRepo),
     ],
@@ -362,15 +297,7 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
-  @override
-  AuthSessionState build() {
-    return const AuthSessionState(isAuthenticated: false, isLoading: false);
-  }
-}
-
 class _FakeHealthContextRepository implements HealthContextRepository {
-  HealthProfileUpdateInput? profileUpdate;
   HealthAllergyWriteInput? allergyCreate;
   HealthAllergyUpdateInput? allergyUpdate;
   String? allergyDeleted;
@@ -388,10 +315,7 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   @override
   TaskEither<LucentFailure, HealthContextSnapshot> updateProfile(
     HealthProfileUpdateInput input,
-  ) {
-    profileUpdate = input;
-    return TaskEither.right(_snapshot);
-  }
+  ) => TaskEither.right(_snapshot);
 
   @override
   TaskEither<LucentFailure, HealthContextSnapshot> createAllergy(

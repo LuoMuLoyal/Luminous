@@ -4,7 +4,6 @@ import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
-import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/sync_failures.dart';
 
 part 'routes.g.dart';
@@ -16,16 +15,6 @@ class MineSyncFailuresRoute extends GoRouteData with $MineSyncFailuresRoute {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return slidePage(key: state.pageKey, child: const SyncFailuresPage());
-  }
-}
-
-@TypedGoRoute<MineProfileEditRoute>(path: '/mine/profile/edit')
-class MineProfileEditRoute extends GoRouteData with $MineProfileEditRoute {
-  const MineProfileEditRoute();
-
-  @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(key: state.pageKey, child: const ProfileEditPage());
   }
 }
 

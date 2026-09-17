@@ -211,7 +211,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       statusKey: profile.basicInfoCompleted
           ? MineCopyKey.archiveCompleted
           : MineCopyKey.archiveNeedsFill,
-      route: '/mine/profile/edit',
+      route: Routes.profile,
     ),
     MineArchiveEntry(
       icon: SemanticIcons.recordWater,

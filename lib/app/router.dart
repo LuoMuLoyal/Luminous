@@ -95,7 +95,6 @@ class Routes {
   static const medicineRiskCheck = '/medicine/risk-check';
   static const medicineRemindersNew = '/medicine/reminders/new';
 
-  static const mineProfileEdit = '/mine/profile/edit';
   static const mineAllergyNew = '/mine/allergy/new';
   static const mineConditionNew = '/mine/condition/new';
   static const mineMedicineNew = '/mine/medicine/new';

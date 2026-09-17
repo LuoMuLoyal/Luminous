@@ -122,7 +122,7 @@ class MockMineRepository implements MineRepository {
       titleKey: MineCopyKey.archiveBasicTitle,
       subtitleKey: MineCopyKey.archiveBasicSubtitle,
       statusKey: MineCopyKey.archiveCompleted,
-      route: '/mine/profile/edit',
+      route: '/profile',
     ),
     const MineArchiveEntry(
       icon: SemanticIcons.recordWater,
