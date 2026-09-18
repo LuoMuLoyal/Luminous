@@ -266,6 +266,8 @@ Object? _wireListElement(Object? item) {
   // List 元素只支持可枚举/可 JSON 化的标量。未来若引入 List<DateTime> /
   // List<Map> 之类负载,这里会在 debug 期立刻暴露,避免把不可 JSON 化的
   // 对象直接塞进 wire payload。
+  // 注意:assert 仅 debug 期生效,release 期不会拦截——届时坏元素会落到
+  // JSON 序列化才报 JsonUnsupportedObjectError,错误位置偏离 wire 这一层。
   assert(
     item is String ||
         item is num ||
