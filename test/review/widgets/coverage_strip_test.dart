@@ -104,6 +104,45 @@ void main() {
     expect(find.text('--'), findsOneWidget);
   });
 
+  testWidgets('sparse metric hides the delta instead of contradicting itself', (
+    tester,
+  ) async {
+    // The backend's sufficiency bar is stricter than this card's, so it can
+    // send a real delta for a period the card still calls too sparse. Showing
+    // both put "--" and a movement figure on the same card.
+    await pumpStrip(
+      tester,
+      metrics: [
+        metric(
+          delta: '+0.0',
+          direction: ReviewMetricDirection.flat,
+          observed: const ReviewObservedMetric(
+            value: null,
+            state: ReviewObservedMetricState.unknown,
+            coverage: ReviewObservedMetricCoverage.none,
+            sources: [],
+            observedCount: 0,
+            expectedCount: 7,
+            windowStart: '',
+            windowEnd: '',
+          ),
+        ),
+      ],
+    );
+
+    expect(find.text('数据太少'), findsOneWidget);
+    expect(find.text('+0.0'), findsNothing);
+  });
+
+  testWidgets('non-sparse metric still renders its delta', (tester) async {
+    await pumpStrip(
+      tester,
+      metrics: [metric(delta: '+0.4', observed: sufficientObserved)],
+    );
+
+    expect(find.text('+0.4'), findsOneWidget);
+  });
+
   testWidgets('tapping a card calls onTap with its kind', (tester) async {
     ReviewDataKind? tapped;
     await pumpStrip(

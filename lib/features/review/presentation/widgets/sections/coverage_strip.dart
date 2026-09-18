@@ -144,7 +144,13 @@ class _CoverageCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (metric.delta.isNotEmpty && metric.delta != '--')
+                  // The delta is gated on `sparse` as well: the main value
+                  // already reads "--" there, and showing a movement figure
+                  // next to it asserts a conclusion the card just said it
+                  // cannot draw. The backend's own sufficiency bar is
+                  // stricter than this card's, so it can send a real delta
+                  // for a period this card still treats as too sparse.
+                  if (!sparse && metric.delta.isNotEmpty && metric.delta != '--')
                     _DeltaLabel(metric: metric),
                 ],
               ),
