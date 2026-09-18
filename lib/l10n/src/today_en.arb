@@ -40,7 +40,7 @@
       }
     }
   },
-  "todayWaterOverviewMl": "{value} / {target} ml",
+  "todayWaterOverviewMl": "{value}/{target} ml",
   "@todayWaterOverviewMl": {
     "placeholders": {
       "value": {
@@ -96,6 +96,7 @@
       }
     }
   },
+  "todayMedicationOverviewNone": "No medication plan",
   "todayMetricDegraded": "Temporarily unavailable",
   "todayDrinkWaterAction": "Drink water",
   "todayPrimarySuggestionSectionTitle": "Do this first",
@@ -166,9 +167,9 @@
   "todayPreviewBannerMessage": "Sign in to see today's data",
   "todaySuggestionShowEvidence": "Show basis",
   "todaySuggestionHideEvidence": "Hide",
-  "todaySuggestionLaterAction": "Later",
+  "todaySuggestionLaterAction": "Remind me later",
   "todaySuggestionNotApplicableAction": "Not applicable",
-  "todaySuggestionAcceptedAction": "Accepted",
+  "todaySuggestionAcceptedAction": "Mark as done",
   "todaySuggestionSuppressAction": "Don't show again",
   "todaySuggestionFeedbackSuccess": "Feedback submitted",
   "todaySuggestionFeedbackError": "Feedback failed, please try again later",

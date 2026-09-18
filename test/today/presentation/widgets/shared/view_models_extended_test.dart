@@ -205,7 +205,7 @@ void main() {
         ),
       );
 
-      expect(buildOverviewItems(l10n, dashboard)[1].value, '500 / 2000 ml');
+      expect(buildOverviewItems(l10n, dashboard)[1].value, '500/2000 ml');
     },
   );
 

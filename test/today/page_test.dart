@@ -92,7 +92,7 @@ void main() {
     );
     await _settleDashboard(tester);
 
-    // 稍后处理 区块没有卡片时不占位：它的槽位不能保留自己的下间距，否则
+    // 稍后提醒 区块没有卡片时不占位：它的槽位不能保留自己的下间距，否则
     // 「优先处理」卡片与「今日摘要」标题之间会出现 2×Spacing.xl 的幽灵空隙。
     final emptyStateBottom = tester
         .getRect(find.byType(SuggestionEmptyState))

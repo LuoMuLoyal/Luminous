@@ -95,8 +95,8 @@ void main() {
 
       // The primary card has feedbackOptions: accepted, later, notApplicable
       // (no suppress). Verify they appear in the canonical order.
-      final acceptedFinder = find.text('已采纳');
-      final laterFinder = find.text('稍后处理');
+      final acceptedFinder = find.text('标记为已完成');
+      final laterFinder = find.text('稍后提醒');
       final notApplicableFinder = find.text('不适用');
       final suppressFinder = find.text('不再看到');
 
@@ -143,8 +143,8 @@ void main() {
       await tester.pumpWidget(customDataApp(bundle));
       await settle(tester);
 
-      expect(find.text('已采纳'), findsNothing);
-      expect(find.text('稍后处理'), findsNothing);
+      expect(find.text('标记为已完成'), findsNothing);
+      expect(find.text('稍后提醒'), findsNothing);
       expect(find.text('不适用'), findsNothing);
       expect(find.text('不再看到'), findsNothing);
     });
@@ -179,8 +179,8 @@ void main() {
       await tester.pumpWidget(customDataApp(bundle));
       await settle(tester);
 
-      expect(find.text('已采纳'), findsNothing);
-      expect(find.text('稍后处理'), findsNothing);
+      expect(find.text('标记为已完成'), findsNothing);
+      expect(find.text('稍后提醒'), findsNothing);
     });
 
     testWidgets('button labels come from ARB not hardcoded', (tester) async {
@@ -189,8 +189,8 @@ void main() {
       );
       await settle(tester);
 
-      expect(find.text('Accepted'), findsOneWidget);
-      expect(find.text('Later'), findsOneWidget);
+      expect(find.text('Mark as done'), findsOneWidget);
+      expect(find.text('Remind me later'), findsOneWidget);
       expect(find.text('Not applicable'), findsOneWidget);
     });
   });

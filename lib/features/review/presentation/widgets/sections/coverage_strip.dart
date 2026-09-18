@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/scroll_fade.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -43,19 +44,24 @@ class ReviewCoverageStrip extends StatelessWidget {
           sortKey: const OrdinalSortKey(0.1),
           child: SizedBox(
             height: 120,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.zero,
-              itemCount: metrics.length,
-              separatorBuilder: (_, _) => const SizedBox(width: Spacing.md),
-              itemBuilder: (context, index) {
-                final metric = metrics[index];
-                return _CoverageCard(
-                  key: Key('review-coverage-card-${metric.kind.name}'),
-                  metric: metric,
-                  onTap: onTap,
-                );
-              },
+            child: HorizontalScrollFade(
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                // Trailing space keeps the last card clear of the viewport
+                // edge instead of sitting flush against it (which read as a
+                // clipped card).
+                padding: const EdgeInsets.only(right: Spacing.md),
+                itemCount: metrics.length,
+                separatorBuilder: (_, _) => const SizedBox(width: Spacing.md),
+                itemBuilder: (context, index) {
+                  final metric = metrics[index];
+                  return _CoverageCard(
+                    key: Key('review-coverage-card-${metric.kind.name}'),
+                    metric: metric,
+                    onTap: onTap,
+                  );
+                },
+              ),
             ),
           ),
         ),

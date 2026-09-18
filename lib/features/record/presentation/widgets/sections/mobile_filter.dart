@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/scroll_fade.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -78,36 +79,40 @@ class RecordMobileFilter extends StatelessWidget {
         const SizedBox(height: Spacing.md),
         SizedBox(
           height: 36,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.zero,
-            itemCount: filters.length + (allSelected ? 0 : 1),
-            separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
-            itemBuilder: (context, index) {
-              // When a filter is active, prepend a "全部" chip.
-              if (!allSelected && index == 0) {
+          child: HorizontalScrollFade(
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              // Trailing space keeps the last chip clear of the viewport edge
+              // so it is not flush against (and visually clipped by) it.
+              padding: const EdgeInsets.only(right: Spacing.md),
+              itemCount: filters.length + (allSelected ? 0 : 1),
+              separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
+              itemBuilder: (context, index) {
+                // When a filter is active, prepend a "全部" chip.
+                if (!allSelected && index == 0) {
+                  return _FilterChip(
+                    chipKey: const Key('record-filter-all'),
+                    label: l10n.recordFilterAllAction,
+                    icon: null,
+                    selected: false,
+                    onTap: onFilterSelected == null
+                        ? null
+                        : () => onFilterSelected!(null),
+                  );
+                }
+                final filterIndex = allSelected ? index : index - 1;
+                final filter = filters[filterIndex];
                 return _FilterChip(
-                  chipKey: const Key('record-filter-all'),
-                  label: l10n.recordFilterAllAction,
-                  icon: null,
-                  selected: false,
-                  onTap: onFilterSelected == null
+                  chipKey: Key('record-filter-${filter.type.name}'),
+                  label: mobileFilterLabel(l10n, filter),
+                  icon: filter.icon,
+                  selected: filter.selected,
+                  onTap: filter.locked || onFilterSelected == null
                       ? null
-                      : () => onFilterSelected!(null),
+                      : () => onFilterSelected!(filter.type),
                 );
-              }
-              final filterIndex = allSelected ? index : index - 1;
-              final filter = filters[filterIndex];
-              return _FilterChip(
-                chipKey: Key('record-filter-${filter.type.name}'),
-                label: mobileFilterLabel(l10n, filter),
-                icon: filter.icon,
-                selected: filter.selected,
-                onTap: filter.locked || onFilterSelected == null
-                    ? null
-                    : () => onFilterSelected!(filter.type),
-              );
-            },
+              },
+            ),
           ),
         ),
       ],

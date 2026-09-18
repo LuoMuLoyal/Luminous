@@ -178,8 +178,13 @@ List<TodayOverviewItem> buildOverviewItems(
     TodayOverviewItem(
       icon: SemanticIcons.recordMedicine,
       label: l10n.todayMedicationOverviewLabel,
+      // With no medication plan there is nothing to be "0/0" against; the
+      // ratio form would read as "all doses missed today" instead of "none
+      // scheduled".
       value: medicationDegraded
           ? l10n.todayMetricDegraded
+          : dashboard.medication.medicineCount == 0
+          ? l10n.todayMedicationOverviewNone
           : l10n.todayMedicationOverviewCount(
               safeMedicationDone,
               dashboard.medication.medicineCount,

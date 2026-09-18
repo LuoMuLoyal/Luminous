@@ -40,7 +40,7 @@
       }
     }
   },
-  "todayWaterOverviewMl": "{value} / {target} ml",
+  "todayWaterOverviewMl": "{value}/{target} ml",
   "@todayWaterOverviewMl": {
     "placeholders": {
       "value": {
@@ -96,6 +96,7 @@
       }
     }
   },
+  "todayMedicationOverviewNone": "暂无用药计划",
   "todayMetricDegraded": "暂不可用",
   "todayDrinkWaterAction": "去喝水",
   "todayPrimarySuggestionSectionTitle": "优先处理",
@@ -166,9 +167,9 @@
   "todayPreviewBannerMessage": "登录后查看你的今日数据",
   "todaySuggestionShowEvidence": "查看依据",
   "todaySuggestionHideEvidence": "收起",
-  "todaySuggestionLaterAction": "稍后处理",
+  "todaySuggestionLaterAction": "稍后提醒",
   "todaySuggestionNotApplicableAction": "不适用",
-  "todaySuggestionAcceptedAction": "已采纳",
+  "todaySuggestionAcceptedAction": "标记为已完成",
   "todaySuggestionSuppressAction": "不再看到",
   "todaySuggestionFeedbackSuccess": "反馈已提交",
   "todaySuggestionFeedbackError": "反馈提交失败，请稍后再试",
