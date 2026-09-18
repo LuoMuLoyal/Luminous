@@ -177,4 +177,71 @@ void main() {
     // The entry stays on screen so the user can retry again.
     expect(find.text('daily_record'), findsOneWidget);
   });
+
+  testWidgets('discard removes the entry only after the user confirms', (
+    tester,
+  ) async {
+    final dao = _MockPendingSyncDao();
+    final worker = _MockSyncWorker();
+
+    when(() => dao.remove('pending-1')).thenAnswer((_) async {});
+
+    await tester.pumpWidget(_app(dao: dao, worker: worker));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('sync-failed-entry-discard')));
+    await tester.pumpAndSettle();
+
+    // The destructive confirmation is mandatory: nothing is deleted yet.
+    expect(find.text('丢弃这一项？'), findsOneWidget);
+    verifyNever(() => dao.remove(any()));
+
+    await tester.tap(find.text('丢弃').last);
+    await tester.pumpAndSettle();
+
+    verify(() => dao.remove('pending-1')).called(1);
+    // Discarding must not trigger the retry flush — the entry is gone, and
+    // re-sending it is exactly what the user chose not to do.
+    verifyNever(() => worker.flush());
+  });
+
+  testWidgets('cancelling the discard confirmation keeps the entry', (
+    tester,
+  ) async {
+    final dao = _MockPendingSyncDao();
+    final worker = _MockSyncWorker();
+
+    await tester.pumpWidget(_app(dao: dao, worker: worker));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('sync-failed-entry-discard')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('取消'));
+    await tester.pumpAndSettle();
+
+    verifyNever(() => dao.remove(any()));
+    expect(find.text('daily_record'), findsOneWidget);
+  });
+
+  testWidgets('surfaces an error when the discard cannot be persisted', (
+    tester,
+  ) async {
+    final dao = _MockPendingSyncDao();
+    final worker = _MockSyncWorker();
+
+    when(
+      () => dao.remove('pending-1'),
+    ).thenThrow(StateError('database is closed'));
+
+    await tester.pumpWidget(_app(dao: dao, worker: worker));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('sync-failed-entry-discard')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('丢弃').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('无法丢弃该项，请稍后再试。'), findsOneWidget);
+  });
 }

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/mine/presentation/mappers/sync_error_user_message.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -12,10 +13,20 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// The user-facing message is shown first; the raw exception and the
 /// structured trace fields stay behind the collapsed diagnostics section.
+///
+/// [onDiscard] removes the item from the local queue. It is offered because a
+/// permanent failure is not necessarily retryable: when the server keeps
+/// rejecting the payload's identity, replaying it byte-identically will never
+/// succeed, so the user needs a way to clear the entry rather than watch it
+/// sit in the queue forever.
 class SyncFailedEntryCard extends StatefulWidget {
-  const SyncFailedEntryCard({super.key, required this.entry});
+  const SyncFailedEntryCard({super.key, required this.entry, this.onDiscard});
 
   final PendingSyncEntry entry;
+
+  /// Called after the user confirms discarding this entry. When null, no
+  /// discard action is rendered.
+  final Future<void> Function()? onDiscard;
 
   @override
   State<SyncFailedEntryCard> createState() => _SyncFailedEntryCardState();
@@ -24,6 +35,7 @@ class SyncFailedEntryCard extends StatefulWidget {
 class _SyncFailedEntryCardState extends State<SyncFailedEntryCard> {
   bool _diagnosticsExpanded = false;
   bool _copied = false;
+  bool _isDiscarding = false;
 
   String _buildDiagnosticsText(AppLocalizations l10n) {
     final details = widget.entry.errorDetails;
@@ -58,6 +70,36 @@ class _SyncFailedEntryCardState extends State<SyncFailedEntryCard> {
     setState(() {
       _copied = false;
     });
+  }
+
+  /// Confirms and performs the discard. Discarding destroys the only copy of
+  /// an unsynced local change, so it is gated behind an explicit confirmation
+  /// and reports failures inline rather than pretending the entry is gone.
+  Future<void> _discard() async {
+    final onDiscard = widget.onDiscard;
+    if (onDiscard == null || _isDiscarding) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDangerConfirmationDialog(
+      context: context,
+      title: l10n.mineSyncFailedDetailsDiscardTitle,
+      message: l10n.mineSyncFailedDetailsDiscardDescription,
+      confirmLabel: l10n.mineSyncFailedDetailsDiscardConfirm,
+    );
+    if (!confirmed || !mounted) return;
+
+    setState(() {
+      _isDiscarding = true;
+    });
+    try {
+      await onDiscard();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDiscarding = false;
+        });
+      }
+    }
   }
 
   @override
@@ -134,6 +176,25 @@ class _SyncFailedEntryCardState extends State<SyncFailedEntryCard> {
               onCopy: () => _copyDiagnostics(l10n),
               details: details,
               raw: widget.entry.lastError,
+            ),
+          ],
+          if (widget.onDiscard != null) ...[
+            const SizedBox(height: Spacing.md),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: FButton(
+                key: const Key('sync-failed-entry-discard'),
+                variant: FButtonVariant.outline,
+                size: FButtonSizeVariant.sm,
+                onPress: _isDiscarding ? null : _discard,
+                child: _isDiscarding
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: FCircularProgress(),
+                      )
+                    : Text(l10n.mineSyncFailedDetailsDiscard),
+              ),
             ),
           ],
         ],

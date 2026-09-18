@@ -65,6 +65,30 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
     }
   }
 
+  /// Removes one entry from the local queue.
+  ///
+  /// Retry cannot clear a payload the server keeps rejecting, so the user
+  /// needs a terminal action; the confirmation lives in the card, which owns
+  /// the button. Failures surface through the same footer error slot as a
+  /// failed retry so the two paths report in one place.
+  Future<void> _discard(PendingSyncEntry entry) async {
+    try {
+      await ref.read(pendingSyncDaoProvider).remove(entry.id);
+      ref.invalidate(syncFailedCountProvider);
+      ref.invalidate(mineSyncFailedEntriesProvider);
+    } catch (e, st) {
+      ref
+          .read(talkerProvider)
+          .error('SyncFailuresPage._discard: $e', st);
+      if (!mounted) return;
+      setState(() {
+        _retryError = AppLocalizations.of(
+          context,
+        )!.mineSyncFailedDetailsDiscardFailed;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -129,7 +153,10 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
           ),
           const SizedBox(height: Spacing.md),
           for (final entry in entries) ...[
-            SyncFailedEntryCard(entry: entry),
+            SyncFailedEntryCard(
+              entry: entry,
+              onDiscard: () => _discard(entry),
+            ),
             if (entry != entries.last) const SizedBox(height: Spacing.md),
           ],
         ],
