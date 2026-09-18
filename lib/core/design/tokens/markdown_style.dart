@@ -13,6 +13,10 @@ import 'package:luminous/core/design/tokens/spacing.dart';
 ///   气泡背景感知。
 ///
 /// 6 处 Markdown 渲染点均应从本工厂取样式，避免各点本地 `copyWith` 漂移。
+///
+/// token name ↔ 设计 token 对照表（注释引用与代码字段保持一致）：
+/// - `listIndent` ↔ `Spacing.xl`（列表缩进，20/级）
+/// - `listBulletPadding` ↔ `Spacing.sm`（bullet 与文字间距，右 6）
 abstract final class MarkdownStyle {
   /// 正式文档（法律文书 / FAQ）：宽松行距、强标题层级、中性引用。
   ///
