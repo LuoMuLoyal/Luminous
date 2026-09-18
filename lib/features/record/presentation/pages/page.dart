@@ -233,7 +233,11 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         child: RefreshIndicator(
           onRefresh: () => _refreshAll(context),
           child: SingleChildScrollView(
-            key: const Key('record-dashboard-scrollable'),
+            // PageStorageKey (not a plain Key) so the offset survives a
+            // reload: recording an item re-fetches the timeline and shortens
+            // it, and with a plain key the view silently reset to zero — which
+            // reads as the content jumping down the screen.
+            key: const PageStorageKey<String>('record-dashboard-scrollable'),
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding: contentVerticalPadding,

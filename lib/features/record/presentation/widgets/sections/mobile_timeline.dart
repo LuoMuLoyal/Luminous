@@ -368,13 +368,17 @@ class _MobileTimelineEmptyState extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: Spacing.xl2,
-            vertical: Spacing.xl4,
+            vertical: Spacing.xl2,
           ),
           child: Column(
             children: [
+              // Kept close to the height of a populated timeline row: a taller
+              // empty card meant adding the first record shrank the content
+              // below the viewport, so the page appeared to jump and the
+              // timeline scrolled out of reach.
               Icon(
                 SemanticIcons.actionAdd,
-                size: Spacing.xl4,
+                size: Spacing.xl3,
                 color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.lg),
