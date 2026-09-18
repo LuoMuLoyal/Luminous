@@ -134,6 +134,8 @@ enum AssistantCapabilitiesResponseToolsNameEnum {
   searchCnMedicineProducts(r'search_cn_medicine_products'),
   @JsonValue(r'get_cn_medicine_detail')
   getCnMedicineDetail(r'get_cn_medicine_detail'),
+  @JsonValue(r'search_cn_medicine_knowledge')
+  searchCnMedicineKnowledge(r'search_cn_medicine_knowledge'),
   @JsonValue(r'search_medicine_leaflets')
   searchMedicineLeaflets(r'search_medicine_leaflets'),
   @JsonValue(r'search_medical_qa_corpus')
