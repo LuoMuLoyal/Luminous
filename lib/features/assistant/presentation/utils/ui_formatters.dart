@@ -21,8 +21,6 @@ String localizeToolName(String toolId, BuildContext context) {
     'get_current_medicines' => l10n.assistantToolCurrentMedicines,
     'get_sleep_summary_by_range' => l10n.assistantToolSleepByRange,
     'get_meal_analysis_digest' => l10n.assistantToolMealAnalysisDigest,
-    'search_medicine_leaflets' => l10n.assistantToolSearchMedicineLeaflets,
-    'search_medical_qa_corpus' => l10n.assistantToolSearchMedicalQaCorpus,
     'resolve_drugbank_entity' => l10n.assistantToolResolveDrugbankEntity,
     'search_drugbank_passages' => l10n.assistantToolSearchDrugbankPassages,
     'search_cn_medicine_products' => l10n.assistantToolSearchCnMedicineProducts,
@@ -51,6 +49,7 @@ String assistantToolDisabledReasonText(
     'context_disabled' => l10n.assistantToolDisabledContext,
     'model_not_configured' => l10n.assistantToolDisabledModel,
     'not_implemented' => l10n.assistantToolDisabledNotImplemented,
+    'retrieval_unavailable' => l10n.assistantToolDisabledRetrievalUnavailable,
     '' =>
       implemented
           ? l10n.assistantToolDisabledGeneric
@@ -193,12 +192,45 @@ enum AssistantKnowledgeSourceType { leaflet, drugbank, medicalQa }
 
 /// Maps a tool id to its knowledge source tier, or null for non-knowledge
 /// tools (record/sleep/profile reads, proposals, etc.).
-AssistantKnowledgeSourceType? knowledgeSourceTypeOf(String toolId) {
+///
+/// [sourceTables] is the envelope's `source.tables` for that tool, when the
+/// caller has it. It is only consulted for `search_cn_medicine_knowledge`,
+/// which serves **two** tiers depending on its `source` argument: the backend
+/// names its retrieval table `<workspace>:lightrag_chunks`, so the prefix
+/// before `:` is the discriminator.
+///
+/// That tool defaults to [AssistantKnowledgeSourceType.medicalQa] when the
+/// tables are missing or unrecognised (e.g. historical messages persisted
+/// before the merge). That is deliberate: over-showing the low-trust hint on
+/// package-insert content is a cosmetic inaccuracy, whereas dropping it on
+/// open-corpus content would hide a safety-relevant warning.
+AssistantKnowledgeSourceType? knowledgeSourceTypeOf(
+  String toolId, {
+  List<String>? sourceTables,
+}) {
   return switch (toolId) {
-    'search_medicine_leaflets' => AssistantKnowledgeSourceType.leaflet,
+    'search_cn_medicine_knowledge' =>
+      _lightragTierOf(sourceTables) ??
+          AssistantKnowledgeSourceType.medicalQa,
     'resolve_drugbank_entity' ||
     'search_drugbank_passages' => AssistantKnowledgeSourceType.drugbank,
-    'search_medical_qa_corpus' => AssistantKnowledgeSourceType.medicalQa,
     _ => null,
   };
+}
+
+/// Resolves the LightRAG tier from `<workspace>:lightrag_chunks` table names.
+AssistantKnowledgeSourceType? _lightragTierOf(List<String>? sourceTables) {
+  if (sourceTables == null || sourceTables.isEmpty) {
+    return null;
+  }
+  for (final table in sourceTables) {
+    final workspace = table.split(':').first;
+    if (workspace == 'qa') {
+      return AssistantKnowledgeSourceType.medicalQa;
+    }
+    if (workspace == 'leaflet') {
+      return AssistantKnowledgeSourceType.leaflet;
+    }
+  }
+  return null;
 }

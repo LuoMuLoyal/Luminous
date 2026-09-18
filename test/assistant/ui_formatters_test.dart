@@ -117,10 +117,34 @@ void main() {
   });
 
   group('knowledgeSourceTypeOf', () {
-    test('leaflet tool → leaflet tier', () {
+    test('prose tool resolves its tier from the retrieval workspace table', () {
       expect(
-        knowledgeSourceTypeOf('search_medicine_leaflets'),
+        knowledgeSourceTypeOf(
+          'search_cn_medicine_knowledge',
+          sourceTables: const <String>['leaflet:lightrag_chunks'],
+        ),
         AssistantKnowledgeSourceType.leaflet,
+      );
+      expect(
+        knowledgeSourceTypeOf(
+          'search_cn_medicine_knowledge',
+          sourceTables: const <String>['qa:lightrag_chunks'],
+        ),
+        AssistantKnowledgeSourceType.medicalQa,
+      );
+    });
+    test('prose tool defaults to the low-trust tier without tables', () {
+      // 宁可对说明书内容多显示一次低可信提示,也不能对开放语料漏掉它。
+      expect(
+        knowledgeSourceTypeOf('search_cn_medicine_knowledge'),
+        AssistantKnowledgeSourceType.medicalQa,
+      );
+      expect(
+        knowledgeSourceTypeOf(
+          'search_cn_medicine_knowledge',
+          sourceTables: const <String>['unknown_table'],
+        ),
+        AssistantKnowledgeSourceType.medicalQa,
       );
     });
     test('drugbank tools → drugbank tier', () {
@@ -131,12 +155,6 @@ void main() {
       expect(
         knowledgeSourceTypeOf('search_drugbank_passages'),
         AssistantKnowledgeSourceType.drugbank,
-      );
-    });
-    test('medical QA tool → medicalQa tier', () {
-      expect(
-        knowledgeSourceTypeOf('search_medical_qa_corpus'),
-        AssistantKnowledgeSourceType.medicalQa,
       );
     });
     test('non-knowledge tools → null', () {
@@ -177,6 +195,14 @@ void main() {
           implemented: true,
         ),
         '尚未实现',
+      );
+      expect(
+        assistantToolDisabledReasonText(
+          zh,
+          'retrieval_unavailable',
+          implemented: true,
+        ),
+        '检索服务暂不可用',
       );
     });
 

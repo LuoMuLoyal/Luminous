@@ -406,7 +406,7 @@ void main() {
                   messages: <AssistantMessage>[
                     _message(
                       content: '**assistant reply**',
-                      usedTools: const <String>['search_medicine_leaflets'],
+                      usedTools: const <String>['search_cn_medicine_knowledge'],
                       replaced: true,
                     ),
                   ],

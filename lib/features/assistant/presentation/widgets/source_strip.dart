@@ -122,7 +122,8 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
 
   bool get _hasMedicalQaTool => widget.usedTools.any(
     (tool) =>
-        knowledgeSourceTypeOf(tool) == AssistantKnowledgeSourceType.medicalQa,
+        knowledgeSourceTypeOf(tool, sourceTables: _sourceTablesFor(tool)) ==
+        AssistantKnowledgeSourceType.medicalQa,
   );
 
   /// Inline spans for the collapsed row: localized tool names separated by
@@ -140,7 +141,10 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
         spans.add(const TextSpan(text: ' · '));
       }
       spans.add(TextSpan(text: _toolDisplayName(tool)));
-      final tier = knowledgeSourceTypeOf(tool);
+      final tier = knowledgeSourceTypeOf(
+        tool,
+        sourceTables: _sourceTablesFor(tool),
+      );
       if (tier != null) {
         spans.add(
           WidgetSpan(
@@ -180,6 +184,11 @@ class _AssistantSourceStripState extends State<AssistantSourceStrip> {
     }
     return null;
   }
+
+  /// `source.tables` for [tool], used to disambiguate the trust tier of
+  /// `search_cn_medicine_knowledge` (it serves both the package-insert and the
+  /// open-corpus tier depending on the `source` argument it was called with).
+  List<String>? _sourceTablesFor(String tool) => _detailFor(tool)?.sourceTables;
 }
 
 /// Read-only per-tool envelope card inside the expanded source strip.

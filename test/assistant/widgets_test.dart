@@ -184,16 +184,21 @@ void main() {
         _shell(
           const AssistantSourceStrip(
             usedTools: <String>[
-              'search_medicine_leaflets',
+              'search_cn_medicine_knowledge',
               'resolve_drugbank_entity',
             ],
-            toolDetails: <AssistantToolDetail>[],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'search_cn_medicine_knowledge',
+                sourceTables: <String>['leaflet:lightrag_chunks'],
+              ),
+            ],
           ),
         ),
       );
 
       expect(find.textContaining('参考来源:'), findsOneWidget);
-      expect(find.textContaining('中文说明书检索'), findsOneWidget);
+      expect(find.textContaining('中医药知识检索'), findsOneWidget);
       expect(find.textContaining('DrugBank 实体定位'), findsOneWidget);
       expect(find.byKey(const Key('assistant-source-tool-')), findsNothing);
     });
@@ -202,37 +207,38 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['search_medicine_leaflets'],
+            usedTools: <String>['search_cn_medicine_knowledge'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'search_medicine_leaflets',
+                name: 'search_cn_medicine_knowledge',
                 label: '布洛芬缓释胶囊',
+                sourceTables: <String>['leaflet:lightrag_chunks'],
               ),
             ],
           ),
         ),
       );
 
-      expect(find.textContaining('参考来源: 中文说明书检索(布洛芬缓释胶囊)'), findsOneWidget);
+      expect(find.textContaining('参考来源: 中医药知识检索(布洛芬缓释胶囊)'), findsOneWidget);
     });
 
     testWidgets('expands to show envelope fields', (tester) async {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['search_medicine_leaflets'],
+            usedTools: <String>['search_cn_medicine_knowledge'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'search_medicine_leaflets',
+                name: 'search_cn_medicine_knowledge',
                 label: '布洛芬缓释胶囊',
                 coverageStatus: 'complete',
                 coverageReason: null,
                 confidenceLevel: 'high',
                 confidenceReason: '向量检索命中',
                 ambiguities: <String>['候选A', '候选B'],
-                sourceTool: 'search_medicine_leaflets',
+                sourceTool: 'search_cn_medicine_knowledge',
                 sourceGeneratedAt: '2026-08-17T10:00:00.000Z',
-                sourceTables: <String>['cn_medicine_leaflets'],
+                sourceTables: <String>['leaflet:lightrag_chunks'],
                 disclaimer: '仅供参考，不构成诊疗建议。',
               ),
             ],
@@ -246,7 +252,7 @@ void main() {
       expect(find.textContaining('覆盖: 完整'), findsOneWidget);
       expect(find.textContaining('置信: 高 向量检索命中'), findsOneWidget);
       expect(find.textContaining('不确定项: 候选A, 候选B'), findsOneWidget);
-      expect(find.textContaining('来源: cn_medicine_leaflets'), findsOneWidget);
+      expect(find.textContaining('来源: leaflet:lightrag_chunks'), findsOneWidget);
       expect(find.textContaining('生成时间: '), findsOneWidget);
       expect(find.text('仅供参考，不构成诊疗建议。'), findsOneWidget);
     });
@@ -272,18 +278,22 @@ void main() {
         _shell(
           const AssistantSourceStrip(
             usedTools: <String>[
-              'search_medicine_leaflets',
+              'search_cn_medicine_knowledge',
               'resolve_drugbank_entity',
-              'search_medical_qa_corpus',
             ],
-            toolDetails: <AssistantToolDetail>[],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'search_cn_medicine_knowledge',
+                sourceTables: <String>['leaflet:lightrag_chunks'],
+              ),
+            ],
           ),
         ),
       );
 
       expect(find.text('说明书'), findsOneWidget);
       expect(find.text('DrugBank'), findsOneWidget);
-      expect(find.text('医疗问答'), findsOneWidget);
+      expect(find.text('医疗问答'), findsNothing);
     });
 
     testWidgets('shows low-trust hint in collapsed state for medical QA tool', (
@@ -292,8 +302,13 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['search_medical_qa_corpus'],
-            toolDetails: <AssistantToolDetail>[],
+            usedTools: <String>['search_cn_medicine_knowledge'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'search_cn_medicine_knowledge',
+                sourceTables: <String>['qa:lightrag_chunks'],
+              ),
+            ],
           ),
         ),
       );

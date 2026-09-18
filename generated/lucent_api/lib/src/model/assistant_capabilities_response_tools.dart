@@ -136,10 +136,6 @@ enum AssistantCapabilitiesResponseToolsNameEnum {
   getCnMedicineDetail(r'get_cn_medicine_detail'),
   @JsonValue(r'search_cn_medicine_knowledge')
   searchCnMedicineKnowledge(r'search_cn_medicine_knowledge'),
-  @JsonValue(r'search_medicine_leaflets')
-  searchMedicineLeaflets(r'search_medicine_leaflets'),
-  @JsonValue(r'search_medical_qa_corpus')
-  searchMedicalQaCorpus(r'search_medical_qa_corpus'),
   @JsonValue(r'resolve_drugbank_entity')
   resolveDrugbankEntity(r'resolve_drugbank_entity'),
   @JsonValue(r'get_drugbank_detail')
@@ -196,6 +192,8 @@ enum AssistantCapabilitiesResponseToolsDisabledReasonEnum {
   modelNotConfigured(r'model_not_configured'),
   @JsonValue(r'not_implemented')
   notImplemented(r'not_implemented'),
+  @JsonValue(r'retrieval_unavailable')
+  retrievalUnavailable(r'retrieval_unavailable'),
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

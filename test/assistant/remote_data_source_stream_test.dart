@@ -160,18 +160,18 @@ void main() {
     test('parses toolDetails from result event', () async {
       final sseText = [
         _sseEvent('result', {
-          'usedTools': ['search_medicine_leaflets'],
+          'usedTools': ['search_cn_medicine_knowledge'],
           'toolDetails': [
             {
-              'name': 'search_medicine_leaflets',
+              'name': 'search_cn_medicine_knowledge',
               'label': '布洛芬缓释胶囊',
               'coverage': {'status': 'complete', 'reason': null},
               'confidence': {'level': 'high', 'reason': '向量检索命中'},
               'ambiguities': ['候选A'],
               'source': {
-                'tool': 'search_medicine_leaflets',
+                'tool': 'search_cn_medicine_knowledge',
                 'generatedAt': '2026-08-17T00:00:00.000Z',
-                'tables': ['cn_medicine_leaflets'],
+                'tables': ['leaflet:lightrag_chunks'],
               },
               'disclaimer': '仅供参考',
             },
@@ -188,18 +188,18 @@ void main() {
       final result = events[0] as AssistantRemoteResultEvent;
       expect(result.toolDetails, hasLength(1));
       final detail = result.toolDetails[0];
-      expect(detail['name'], 'search_medicine_leaflets');
+      expect(detail['name'], 'search_cn_medicine_knowledge');
       expect(detail['label'], '布洛芬缓释胶囊');
       expect((detail['coverage'] as Map)['status'], 'complete');
       expect((detail['confidence'] as Map)['level'], 'high');
-      expect((detail['source'] as Map)['tables'], ['cn_medicine_leaflets']);
+      expect((detail['source'] as Map)['tables'], ['leaflet:lightrag_chunks']);
       expect(detail['disclaimer'], '仅供参考');
     });
 
     test('toolDetails is empty when result omits the field', () async {
       final sseText = [
         _sseEvent('result', {
-          'usedTools': ['search_medicine_leaflets'],
+          'usedTools': ['search_cn_medicine_knowledge'],
         }),
         _sseEvent('done', null),
       ].join();
