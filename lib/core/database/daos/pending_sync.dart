@@ -144,6 +144,35 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
     if (rows == 0) return;
   }
 
+  /// Records a failure the server declared non-retryable, exhausting the
+  /// item's retry budget in one step.
+  ///
+  /// `fetchReady` only returns rows with `retryCount < maxRetry`, so setting
+  /// the counter to the cap parks the item as permanently failed without
+  /// spending the remaining attempts. `retryCount` is set to `maxRetry`
+  /// rather than incremented because the value is reported in the UI as
+  /// "attempts"; for a payload the server will keep rejecting, further
+  /// attempts are not going to happen, so reporting the budget as spent is
+  /// what the user needs to see.
+  Future<void> markPermanentlyFailed(
+    String id, {
+    required String raw,
+    PendingSyncErrorDetails? details,
+  }) async {
+    final detailsJson = details?.toJson();
+    await (update(pendingSyncItems)..where((t) => t.id.equals(id))).write(
+      PendingSyncItemsCompanion.custom(
+        isSyncing: const Variable(false),
+        retryCount: pendingSyncItems.maxRetry,
+        lastAttemptAt: Variable(DateTime.now()),
+        lastError: Variable(raw),
+        lastErrorDetails: Variable(
+          detailsJson == null ? null : jsonEncode(detailsJson),
+        ),
+      ),
+    );
+  }
+
   /// Removes a successfully synced item.
   Future<void> remove(String id) async {
     await (delete(pendingSyncItems)..where((t) => t.id.equals(id))).go();

@@ -153,6 +153,112 @@ void main() {
       verifyNever(() => mockDao.remove(any()));
     });
 
+    test('parks a non-retryable DioException instead of spending attempts', () async {
+      final entry = _createEntry(id: 'rejected-001', retryCount: 1, maxRetry: 5);
+      when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
+      when(() => mockDao.markSyncing('rejected-001')).thenAnswer((_) async {});
+      when(
+        () => mockDao.markPermanentlyFailed(
+          'rejected-001',
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      ).thenAnswer((_) async {});
+
+      worker.registerHandler('daily_record', (e) async {
+        throw DioException(
+          requestOptions: RequestOptions(path: '/api/v1/test'),
+          type: DioExceptionType.badResponse,
+          response: Response<dynamic>(
+            requestOptions: RequestOptions(path: '/api/v1/test'),
+            statusCode: 400,
+            headers: Headers.fromMap({
+              Headers.contentTypeHeader: ['application/problem+json'],
+            }),
+            data: const {
+              'type': 'https://api.lumos.example/problems/dose-log-target',
+              'code': 'DOSE_LOG_TARGET_UNRESOLVED',
+              'title': 'Dose log target could not be matched',
+              'detail': 'The request does not identify which dose log it '
+                  'refers to.',
+              'retryable': false,
+            },
+          ),
+        );
+      });
+
+      await worker.flush();
+
+      verify(
+        () => mockDao.markPermanentlyFailed(
+          'rejected-001',
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      ).called(1);
+      // The item must not also consume a regular retry, or it would surface
+      // as "still retrying" when the server has already given a final answer.
+      verifyNever(
+        () => mockDao.markFailed(
+          any(),
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      );
+      verifyNever(() => mockDao.remove(any()));
+    });
+
+    test('keeps retrying when the server declares the failure retryable', () async {
+      final entry = _createEntry(id: 'retryable-001', retryCount: 1, maxRetry: 5);
+      when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
+      when(() => mockDao.markSyncing('retryable-001')).thenAnswer((_) async {});
+      when(
+        () => mockDao.markFailed(
+          'retryable-001',
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      ).thenAnswer((_) async {});
+
+      worker.registerHandler('daily_record', (e) async {
+        throw DioException(
+          requestOptions: RequestOptions(path: '/api/v1/test'),
+          type: DioExceptionType.badResponse,
+          response: Response<dynamic>(
+            requestOptions: RequestOptions(path: '/api/v1/test'),
+            statusCode: 503,
+            headers: Headers.fromMap({
+              Headers.contentTypeHeader: ['application/problem+json'],
+            }),
+            data: const {
+              'type': 'https://api.lumos.example/problems/dependency',
+              'code': 'DEPENDENCY_UNAVAILABLE',
+              'title': 'Service unavailable',
+              'detail': 'Upstream is unavailable.',
+              'retryable': true,
+            },
+          ),
+        );
+      });
+
+      await worker.flush();
+
+      verify(
+        () => mockDao.markFailed(
+          'retryable-001',
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      ).called(1);
+      verifyNever(
+        () => mockDao.markPermanentlyFailed(
+          any(),
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      );
+    });
+
     test('marks failed on generic exception and does not remove', () async {
       final entry = _createEntry(id: 'generic-fail');
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);

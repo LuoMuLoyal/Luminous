@@ -98,15 +98,32 @@ class SyncWorker {
       await pendingSyncDao.remove(entry.id);
       talker.info('SyncWorker: synced ${entry.entityType} ${entry.id}');
     } on DioException catch (e) {
-      final isPermanentlyFailed = entry.retryCount + 1 >= entry.maxRetry;
       final failure = LucentErrorMapper.fromObject(e);
+      final details = PendingSyncErrorDetails.fromLucentFailure(
+        failure,
+        e.toString(),
+      );
+      // A server-declared non-retryable failure (semantic rejection) will
+      // reproduce byte-identically on every replay, so park it now instead of
+      // spending the remaining attempts. Without an explicit `retryable`,
+      // fall back to the attempt budget — the previous behaviour.
+      if (details.retryable == false) {
+        await pendingSyncDao.markPermanentlyFailed(
+          entry.id,
+          raw: e.toString(),
+          details: details,
+        );
+        talker.error(
+          'SyncWorker: item ${entry.id} rejected as non-retryable '
+          '(${failure.code ?? 'no code'}): $e',
+        );
+        return;
+      }
+      final isPermanentlyFailed = entry.retryCount + 1 >= entry.maxRetry;
       await pendingSyncDao.markFailed(
         entry.id,
         raw: e.toString(),
-        details: PendingSyncErrorDetails.fromLucentFailure(
-          failure,
-          e.toString(),
-        ),
+        details: details,
       );
       if (isPermanentlyFailed) {
         talker.error(

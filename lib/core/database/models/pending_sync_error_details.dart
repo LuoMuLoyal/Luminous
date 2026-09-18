@@ -24,6 +24,7 @@ abstract class PendingSyncErrorDetails with _$PendingSyncErrorDetails {
     String? traceId,
     NetworkErrorCode? networkErrorCode,
     LucentFailureKind? kind,
+    bool? retryable,
     String? raw,
   }) = _PendingSyncErrorDetails;
 
@@ -59,6 +60,7 @@ abstract class PendingSyncErrorDetails with _$PendingSyncErrorDetails {
       traceId: failure.traceId,
       networkErrorCode: failure.networkErrorCode,
       kind: failure.kind,
+      retryable: failure.retryable,
       raw: raw,
     );
   }
