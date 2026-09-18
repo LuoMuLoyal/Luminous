@@ -13,7 +13,20 @@ import 'package:luminous/features/assistant/presentation/providers/conversation_
 
 part 'conversation.freezed.dart';
 
-enum AssistantSendErrorType { server, streamInterrupted, emptyResult, unknown }
+/// Why a send/regenerate attempt failed, as far as the user needs to know.
+///
+/// [dependency] and [modelRejected] split what used to be one blanket
+/// `server` bucket: the former is a transient model outage worth retrying,
+/// the latter means the model refuses this request outright, so offering
+/// "Continue generating" would only reproduce the same failure.
+enum AssistantSendErrorType {
+  server,
+  streamInterrupted,
+  emptyResult,
+  dependency,
+  modelRejected,
+  unknown,
+}
 
 @freezed
 abstract class AssistantState with _$AssistantState {

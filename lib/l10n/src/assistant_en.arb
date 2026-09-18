@@ -52,6 +52,8 @@
   "assistantErrorStreamInterrupted": "The connection was interrupted. Check your network and try again.",
   "assistantErrorEmptyResult": "AI did not return a valid response. Please try again.",
   "assistantErrorServer": "The server encountered an issue. Please try again later.",
+  "assistantErrorDependency": "The AI model is temporarily unavailable. Please try again later.",
+  "assistantErrorModelRejected": "The AI model rejected this request, so retrying will not help. Please start a new conversation.",
   "assistantToolTodayRecords": "Today records",
   "assistantToolRecordsByDate": "Records by date",
   "assistantToolRecordsByRange": "Records by range",

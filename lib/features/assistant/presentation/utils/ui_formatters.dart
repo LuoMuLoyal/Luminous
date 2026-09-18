@@ -146,6 +146,8 @@ String sendErrorDescription(
       l10n.assistantErrorStreamInterrupted,
     AssistantSendErrorType.emptyResult => l10n.assistantErrorEmptyResult,
     AssistantSendErrorType.server => l10n.assistantErrorServer,
+    AssistantSendErrorType.dependency => l10n.assistantErrorDependency,
+    AssistantSendErrorType.modelRejected => l10n.assistantErrorModelRejected,
     AssistantSendErrorType.unknown || null => fallback,
   };
 }
@@ -155,6 +157,8 @@ IconData sendErrorIcon(AssistantSendErrorType? errorType) {
     AssistantSendErrorType.streamInterrupted => SemanticIcons.statusUnavailable,
     AssistantSendErrorType.emptyResult => SemanticIcons.safetyLongTerm,
     AssistantSendErrorType.server => SemanticIcons.statusUnavailable,
+    AssistantSendErrorType.dependency => SemanticIcons.statusUnavailable,
+    AssistantSendErrorType.modelRejected => SemanticIcons.statusError,
     AssistantSendErrorType.unknown || null => SemanticIcons.statusError,
   };
 }

@@ -122,6 +122,14 @@ mixin MessageSending on Notifier<AssistantState>, ConversationStreams {
           error.networkErrorCode == NetworkErrorCode.cancelled) {
         return AssistantSendErrorType.streamInterrupted;
       }
+      // 服务端把上游模型故障单列为 dependency(见 Lucent stream-orchestrator
+      // 的 classifyProviderFailure):retryable 为 false 表示模型直接拒绝该请求,
+      // 重试没有意义,不应再渲染「继续生成」;否则是暂时性故障,可提示重试。
+      if (_dependencyCodes.contains(error.code)) {
+        return error.retryable == false
+            ? AssistantSendErrorType.modelRejected
+            : AssistantSendErrorType.dependency;
+      }
       return AssistantSendErrorType.server;
     }
     if (error is DioException) {
@@ -137,6 +145,14 @@ mixin MessageSending on Notifier<AssistantState>, ConversationStreams {
     }
     return AssistantSendErrorType.unknown;
   }
+
+  /// Problem Details codes that indicate the upstream model, not our server,
+  /// failed. Emitted by the backend's provider-failure classifier.
+  static const _dependencyCodes = {
+    'DEPENDENCY_UNAVAILABLE',
+    'DEPENDENCY_BAD_GATEWAY',
+    'DEPENDENCY_TIMEOUT',
+  };
 
   bool hasPendingUserMessage(String input) {
     if (state.messages.isEmpty) {

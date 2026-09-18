@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -542,5 +543,81 @@ void main() {
         expect(state.conversationError, isNotNull);
       },
     );
+  });
+
+  group('AssistantController.classifySendError', () {
+    AssistantController buildController() {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final container = buildContainer(FakeAssistantRepository());
+      addTearDown(container.dispose);
+      return container.read(assistantControllerProvider.notifier);
+    }
+
+    test('routes a retryable model outage to dependency, not server', () {
+      final controller = buildController();
+
+      expect(
+        controller.classifySendError(
+          const LucentFailure(
+            kind: LucentFailureKind.server,
+            message: 'model unavailable',
+            code: 'DEPENDENCY_UNAVAILABLE',
+            statusCode: 503,
+            retryable: true,
+          ),
+        ),
+        AssistantSendErrorType.dependency,
+      );
+    });
+
+    test('routes a non-retryable model rejection to modelRejected', () {
+      final controller = buildController();
+
+      // Retrying an identical request cannot succeed here, so the UI must not
+      // offer "Continue generating".
+      expect(
+        controller.classifySendError(
+          const LucentFailure(
+            kind: LucentFailureKind.server,
+            message: 'model rejected the request',
+            code: 'DEPENDENCY_UNAVAILABLE',
+            statusCode: 400,
+            retryable: false,
+          ),
+        ),
+        AssistantSendErrorType.modelRejected,
+      );
+    });
+
+    test('keeps an ordinary server failure classified as server', () {
+      final controller = buildController();
+
+      expect(
+        controller.classifySendError(
+          const LucentFailure(
+            kind: LucentFailureKind.server,
+            message: 'boom',
+            code: 'INTERNAL_ERROR',
+            statusCode: 500,
+          ),
+        ),
+        AssistantSendErrorType.server,
+      );
+    });
+
+    test('still classifies a cancelled stream as interrupted', () {
+      final controller = buildController();
+
+      expect(
+        controller.classifySendError(
+          const LucentFailure(
+            kind: LucentFailureKind.network,
+            message: 'cancelled',
+            networkErrorCode: NetworkErrorCode.cancelled,
+          ),
+        ),
+        AssistantSendErrorType.streamInterrupted,
+      );
+    });
   });
 }

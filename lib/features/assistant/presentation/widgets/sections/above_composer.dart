@@ -22,6 +22,13 @@ class AssistantAboveComposer extends StatelessWidget {
   final String? sendError;
   final AssistantSendErrorType? sendErrorType;
   final VoidCallback? onRetry;
+
+  /// Whether a retry is worth offering. A model rejection is deterministic,
+  /// so "Continue generating" would replay the same request into the same
+  /// refusal — the copy explains the situation instead.
+  bool get _canRetry =>
+      onRetry != null && sendErrorType != AssistantSendErrorType.modelRejected;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -52,10 +59,10 @@ class AssistantAboveComposer extends StatelessWidget {
             description: sendErrorDescription(l10n, sendErrorType, sendError!),
             icon: sendErrorIcon(sendErrorType),
             tone: StateTone.warning,
-            actionLabel: onRetry != null
+            actionLabel: _canRetry
                 ? l10n.assistantContinueGeneratingAction
                 : null,
-            onAction: onRetry,
+            onAction: _canRetry ? onRetry : null,
             actionKey: const Key('assistant-retry-action'),
             padding: const EdgeInsets.all(Spacing.lg),
           ),
