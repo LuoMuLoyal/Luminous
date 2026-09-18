@@ -918,8 +918,8 @@ void main() {
       expect(find.text('尚未实现'), findsOneWidget);
       // 未知 disabledReason 显示原文,不硬造。
       expect(find.text('some_future_reason'), findsOneWidget);
-      // 计数 1 / 4。
-      expect(find.text('1 / 4'), findsOneWidget);
+      // 计数经 ARB 渲染,不再硬编码。
+      expect(find.text('可用 1 / 4'), findsOneWidget);
     });
 
     testWidgets('renders empty tools list gracefully', (tester) async {
@@ -953,7 +953,7 @@ void main() {
         ),
       );
 
-      expect(find.text('0 / 0'), findsOneWidget);
+      expect(find.text('可用 0 / 0'), findsOneWidget);
     });
   });
 

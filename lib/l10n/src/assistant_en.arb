@@ -145,6 +145,19 @@
   "assistantToolDisabledNotImplemented": "Not implemented yet",
   "assistantToolSearchCnMedicineProducts": "Chinese medicine product search",
   "assistantToolCnMedicineDetail": "Chinese medicine product detail",
+  "assistantToolMealAnalysisDigest": "Meal analysis digest",
+  "assistantToolSearchCnMedicineKnowledge": "Chinese medicine knowledge search",
+  "assistantCapabilitiesToolsCount": "{enabled} of {total} available",
+  "@assistantCapabilitiesToolsCount": {
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "assistantToolDrugbankDetail": "DrugBank detail",
   "assistantSourceDataAsOfLabel": "Data as of",
   "assistantSourceVersionLabel": "Version"

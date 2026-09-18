@@ -145,6 +145,19 @@
   "assistantToolDisabledNotImplemented": "尚未实现",
   "assistantToolSearchCnMedicineProducts": "中文药品检索",
   "assistantToolCnMedicineDetail": "中文药品详情",
+  "assistantToolMealAnalysisDigest": "饮食分析摘要",
+  "assistantToolSearchCnMedicineKnowledge": "中医药知识检索",
+  "assistantCapabilitiesToolsCount": "可用 {enabled} / {total}",
+  "@assistantCapabilitiesToolsCount": {
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "assistantToolDrugbankDetail": "DrugBank 详情",
   "assistantSourceDataAsOfLabel": "数据截至",
   "assistantSourceVersionLabel": "版本"

@@ -120,7 +120,10 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${capabilities.enabledToolCount} / ${tools.length}',
+                  l10n.assistantCapabilitiesToolsCount(
+                    capabilities.enabledToolCount,
+                    tools.length,
+                  ),
                   style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
