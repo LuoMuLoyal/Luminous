@@ -136,6 +136,13 @@
     }
   },
   "settingsNotificationsAdvanceOff": "关闭",
+  "settingsNotificationsAdvanceLeadOff": "不提前提醒",
+  "settingsNotificationsAdvanceLeadMinutes": "提前 {minutes} 分钟",
+  "@settingsNotificationsAdvanceLeadMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "settingsAccessibilityTitle": "无障碍",
   "settingsAccessibilitySubtitle": "字体大小、动画、对比度",
   "settingsAccessibilityFontSizeSection": "字体大小",

@@ -157,6 +157,7 @@ abstract final class SemanticIcons {
   static const actionImage = FLucideIcons.image;
   static const actionCalendar = FLucideIcons.calendar;
   static const actionMessage = FLucideIcons.messageSquare;
+  static const actionMail = FLucideIcons.mail;
   static const actionSend = FLucideIcons.send;
   static const actionMinus = FLucideIcons.minus;
   static const actionThemeLight = FLucideIcons.sun;

@@ -150,5 +150,7 @@
     }
   },
   "mineHealthSyncTitle": "Import from Health App",
-  "mineHealthSyncSubtitle": "Sync Apple Health / Health Connect data"
+  "mineHealthSyncSubtitle": "Sync Apple Health / Health Connect data",
+  "mineHealthSyncSubtitleIos": "Sync Apple Health data",
+  "mineHealthSyncSubtitleAndroid": "Sync Health Connect data"
 }

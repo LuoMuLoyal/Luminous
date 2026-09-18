@@ -365,14 +365,16 @@ class SupportLinksSection extends ConsumerWidget {
             ),
             Expanded(
               child: _SupportLink(
-                icon: SemanticIcons.actionSettings,
+                // A settings glyph here was indistinguishable from the help
+                // entry next to it; feedback sends mail, so it reads as one.
+                icon: SemanticIcons.actionMail,
                 label: l10n.authAccountManageSupportFeedback,
                 onTap: () => _openFeedback(context, l10n, supportEmail),
               ),
             ),
             Expanded(
               child: _SupportLink(
-                icon: SemanticIcons.actionSettings,
+                icon: SemanticIcons.actionHelp,
                 label: l10n.authAccountManageSupportHelpCenter,
                 onTap: () => _openHelpCenter(context),
               ),

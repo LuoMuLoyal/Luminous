@@ -23,27 +23,32 @@ class NotificationListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final listAsync = ref.watch(notificationListControllerProvider);
+    // Only offered when it would actually do something: with nothing unread —
+    // including an empty inbox — a disabled button is still a dead control
+    // occupying the header.
+    final hasUnread = listAsync.maybeWhen(
+      data: (page) => page.items.any((item) => !item.isRead),
+      orElse: () => false,
+    );
 
     return PageScaffold(
       title: l10n.notificationListTitle,
       actions: [
-        _MarkAllReadButton(
-          onPressed: () async {
-            final controller = ref.read(
-              notificationListControllerProvider.notifier,
-            );
-            await controller.markAllAsRead();
-            if (context.mounted) {
-              unawaited(
-                Toast.show(context, l10n.notificationMarkAllReadSuccess),
+        if (hasUnread)
+          _MarkAllReadButton(
+            onPressed: () async {
+              final controller = ref.read(
+                notificationListControllerProvider.notifier,
               );
-            }
-          },
-          hasUnread: listAsync.maybeWhen(
-            data: (page) => page.items.any((item) => !item.isRead),
-            orElse: () => false,
+              await controller.markAllAsRead();
+              if (context.mounted) {
+                unawaited(
+                  Toast.show(context, l10n.notificationMarkAllReadSuccess),
+                );
+              }
+            },
+            hasUnread: true,
           ),
-        ),
       ],
       child: listAsync.when(
         data: (page) {

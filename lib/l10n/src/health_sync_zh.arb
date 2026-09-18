@@ -150,5 +150,7 @@
     }
   },
   "mineHealthSyncTitle": "从健康 App 导入",
-  "mineHealthSyncSubtitle": "同步 Apple 健康 / Health Connect 数据"
+  "mineHealthSyncSubtitle": "同步 Apple 健康 / Health Connect 数据",
+  "mineHealthSyncSubtitleIos": "同步 Apple 健康数据",
+  "mineHealthSyncSubtitleAndroid": "同步 Health Connect 数据"
 }

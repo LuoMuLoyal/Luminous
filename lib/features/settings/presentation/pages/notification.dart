@@ -329,36 +329,63 @@ class _PermissionCard extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       divider: FItemDivider.full,
       children: [
-        FTile(
+        // `FTile` truncates its own title/subtitle by design, which cut this
+        // permission hint off mid-sentence — and it is the only explanation
+        // of how to grant notifications. `FTile.raw` is Forui's documented
+        // escape hatch for content that must lay out at full height.
+        FTile.raw(
           key: key,
-          prefix: Icon(icon, color: color),
-          title: Text(
-            title,
-            style: typography.body.sm.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          subtitle: subtitle.isEmpty ? null : Text(subtitle),
-          suffix: state == NotificationPermissionState.granted
-              ? null
-              : ctaLabel != null
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
+          onPress: state == NotificationPermissionState.granted ? null : onTap,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: color),
+              const SizedBox(width: Spacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      ctaLabel,
-                      style: typography.body.xs.copyWith(
+                      title,
+                      style: typography.body.sm.copyWith(
                         color: color,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(width: Spacing.sm),
-                    const Icon(SemanticIcons.actionNext),
+                    if (subtitle.isNotEmpty) ...[
+                      const SizedBox(height: Spacing.xs),
+                      Text(
+                        subtitle,
+                        style: typography.body.xs.copyWith(
+                          color: SemanticColor.neutral.solid(context),
+                        ),
+                      ),
+                    ],
                   ],
-                )
-              : const Icon(SemanticIcons.actionNext),
-          onPress: state == NotificationPermissionState.granted ? null : onTap,
+                ),
+              ),
+              if (state != NotificationPermissionState.granted) ...[
+                const SizedBox(width: Spacing.sm),
+                if (ctaLabel != null)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        ctaLabel,
+                        style: typography.body.xs.copyWith(
+                          color: color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: Spacing.sm),
+                      const Icon(SemanticIcons.actionNext),
+                    ],
+                  )
+                else
+                  const Icon(SemanticIcons.actionNext),
+              ],
+            ],
+          ),
         ),
       ],
     );

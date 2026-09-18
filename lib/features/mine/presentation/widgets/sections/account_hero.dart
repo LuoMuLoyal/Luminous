@@ -211,13 +211,19 @@ class MineAccountHero extends StatelessWidget {
       };
     }
 
-    // Multiple gaps — show a combined summary
+    // Multiple gaps — show a combined summary. The separator and the
+    // "and more" suffix are localized: this sentence is otherwise translated,
+    // so hardcoding the CJK enumeration comma and 「等」 produced mixed-script
+    // text in English.
     final labels = gaps.map((g) => _gapLabel(l10n, g)).toList();
+    final separator = l10n.mineReadinessGapListSeparator;
     if (labels.length <= 3) {
-      return l10n.mineReadinessGapDescMultiple(labels.join('、'));
+      return l10n.mineReadinessGapDescMultiple(labels.join(separator));
     }
     return l10n.mineReadinessGapDescMultiple(
-      '${labels.sublist(0, 3).join('、')}等',
+      l10n.mineReadinessGapListTruncated(
+        labels.sublist(0, 3).join(separator),
+      ),
     );
   }
 

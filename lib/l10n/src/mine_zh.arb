@@ -80,6 +80,15 @@
       }
     }
   },
+  "mineReadinessGapListSeparator": "、",
+  "mineReadinessGapListTruncated": "{items}等",
+  "@mineReadinessGapListTruncated": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
   "mineCompletenessGapAction": "去完善",
   "minePrivacyReportTitle": "报告分享",
   "minePrivacyReportSubtitle": "健康报告、趋势分析",

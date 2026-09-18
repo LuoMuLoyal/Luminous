@@ -94,9 +94,12 @@ class MineNotificationsReminderSection extends ConsumerWidget {
   ) {
     final enabledCount = _enabledReminderCount(settings);
     final enabledSummary = l10n.settingsNotificationsSummary(enabledCount);
+    // The second segment is a different dimension (how far ahead reminders
+    // fire), so it carries its own wording — the bare "Off" read as a
+    // contradiction of the "enabled" count beside it.
     final advanceSummary = settings.reminderAdvanceMinutes <= 0
-        ? l10n.settingsNotificationsAdvanceOff
-        : l10n.settingsNotificationsAdvanceMinutes(
+        ? l10n.settingsNotificationsAdvanceLeadOff
+        : l10n.settingsNotificationsAdvanceLeadMinutes(
             settings.reminderAdvanceMinutes,
           );
     return '$enabledSummary · $advanceSummary';

@@ -177,20 +177,24 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                 const SizedBox(height: Spacing.xl),
                 SettingsSectionLabel(label: l10n.settingsAiPrivacySectionTitle),
                 SizedBox(height: context.titleContentGap),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _privacyNote(context, l10n.settingsAiPrivacyMemoryNote),
-                      const SizedBox(height: Spacing.sm),
-                      _privacyNote(context, l10n.settingsAiPrivacyContextNote),
-                      const SizedBox(height: Spacing.sm),
-                      _privacyNote(
-                        context,
-                        l10n.settingsAiPrivacyHistoricalNote,
-                      ),
-                    ],
+                // Carded like every other block on this page: as bare text the
+                // paragraph had no boundary against the switch group above it.
+                FCard(
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.xl),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _privacyNote(context, l10n.settingsAiPrivacyMemoryNote),
+                        const SizedBox(height: Spacing.md),
+                        _privacyNote(context, l10n.settingsAiPrivacyContextNote),
+                        const SizedBox(height: Spacing.md),
+                        _privacyNote(
+                          context,
+                          l10n.settingsAiPrivacyHistoricalNote,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

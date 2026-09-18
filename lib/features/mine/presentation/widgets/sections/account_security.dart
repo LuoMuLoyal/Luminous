@@ -67,7 +67,11 @@ class MineAccountSecuritySection extends ConsumerWidget {
                 ),
                 title: Text(l10n.mineHealthSyncTitle),
                 subtitle: Text(
-                  l10n.mineHealthSyncSubtitle,
+                  // Each platform has its own health store; naming the other
+                  // one on Android is simply wrong.
+                  Platform.isIOS
+                      ? l10n.mineHealthSyncSubtitleIos
+                      : l10n.mineHealthSyncSubtitleAndroid,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

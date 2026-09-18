@@ -80,6 +80,15 @@
       }
     }
   },
+  "mineReadinessGapListSeparator": ", ",
+  "mineReadinessGapListTruncated": "{items}, and more",
+  "@mineReadinessGapListTruncated": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
   "mineCompletenessGapAction": "Complete",
   "minePrivacyReportTitle": "Report sharing",
   "minePrivacyReportSubtitle": "Health reports and trend analysis",
@@ -165,7 +174,7 @@
   "mineSettingsThemeTitle": "Theme",
   "mineSettingsAccountTitle": "Account and security",
   "mineSettingsLanguageTitle": "Language",
-  "mineSettingsNotificationsTitle": "Notifications",
+  "mineSettingsNotificationsTitle": "Notification settings",
   "mineErrorTitle": "Mine did not load this time",
   "mineErrorDescription": "The structure is wired. Try fetching the data again.",
   "mineActionToast": "{action}: this will open the related details or settings flow later.",
