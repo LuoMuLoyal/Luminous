@@ -158,7 +158,7 @@ class MineAccountHero extends StatelessWidget {
                   for (final gap in gaps.take(2))
                     FBadge(
                       variant: FBadgeVariant.secondary,
-                      child: Text(gap.label(l10n)),
+                      child: Text(_gapLabel(l10n, gap)),
                     ),
                   if (gapCount > 2)
                     FBadge(
@@ -191,7 +191,7 @@ class MineAccountHero extends StatelessWidget {
     AppLocalizations l10n,
     bool isPreview,
     bool isIncomplete,
-    List<_ReadinessGap> gaps,
+    Set<_ReadinessGapType> gaps,
   ) {
     if (isPreview) {
       return l10n.mineReadinessPreviewDescription;
@@ -202,7 +202,7 @@ class MineAccountHero extends StatelessWidget {
 
     // If only one gap, show its specific description
     if (gaps.length == 1) {
-      return switch (gaps.first.type) {
+      return switch (gaps.first) {
         _ReadinessGapType.basicInfo => l10n.mineReadinessGapDescBasicInfo,
         _ReadinessGapType.sexAtBirth => l10n.mineReadinessGapDescSexAtBirth,
         _ReadinessGapType.weight => l10n.mineReadinessGapDescWeight,
@@ -212,7 +212,7 @@ class MineAccountHero extends StatelessWidget {
     }
 
     // Multiple gaps — show a combined summary
-    final labels = gaps.map((g) => g.label(l10n)).toList();
+    final labels = gaps.map((g) => _gapLabel(l10n, g)).toList();
     if (labels.length <= 3) {
       return l10n.mineReadinessGapDescMultiple(labels.join('、'));
     }
@@ -224,7 +224,7 @@ class MineAccountHero extends StatelessWidget {
   void _handlePrimaryAction(
     BuildContext context,
     bool isPreview,
-    List<_ReadinessGap> gaps,
+    Set<_ReadinessGapType> gaps,
   ) {
     if (isPreview) {
       unawaited(context.push(loginRouteForCurrentLocation(context)));
@@ -316,33 +316,23 @@ class _StateBadge extends StatelessWidget {
 
 enum _ReadinessGapType { basicInfo, sexAtBirth, weight, allergy, medicine }
 
-class _ReadinessGap {
-  const _ReadinessGap({required this.type});
-
-  final _ReadinessGapType type;
-
-  String label(AppLocalizations l10n) {
-    return switch (type) {
-      _ReadinessGapType.basicInfo => l10n.mineCompletenessGapBasicInfo,
-      _ReadinessGapType.sexAtBirth => l10n.mineCompletenessGapSexAtBirth,
-      _ReadinessGapType.weight => l10n.mineCompletenessGapWeight,
-      _ReadinessGapType.allergy => l10n.mineCompletenessGapAllergy,
-      _ReadinessGapType.medicine => l10n.mineCompletenessGapMedicine,
-    };
-  }
+/// gap 文案选择：与入口统一导航到 /profile 无关，纯由类型驱动。
+String _gapLabel(AppLocalizations l10n, _ReadinessGapType type) {
+  return switch (type) {
+    _ReadinessGapType.basicInfo => l10n.mineCompletenessGapBasicInfo,
+    _ReadinessGapType.sexAtBirth => l10n.mineCompletenessGapSexAtBirth,
+    _ReadinessGapType.weight => l10n.mineCompletenessGapWeight,
+    _ReadinessGapType.allergy => l10n.mineCompletenessGapAllergy,
+    _ReadinessGapType.medicine => l10n.mineCompletenessGapMedicine,
+  };
 }
 
-List<_ReadinessGap> _deriveGaps(MineProfileSnapshot profile) {
-  return [
-    if (!profile.basicInfoCompleted)
-      const _ReadinessGap(type: _ReadinessGapType.basicInfo),
-    if (profile.sexAtBirth == null)
-      const _ReadinessGap(type: _ReadinessGapType.sexAtBirth),
-    if (profile.weightKg == null)
-      const _ReadinessGap(type: _ReadinessGapType.weight),
-    if (profile.allergyCount == 0)
-      const _ReadinessGap(type: _ReadinessGapType.allergy),
-    if (profile.currentMedicineCount == 0)
-      const _ReadinessGap(type: _ReadinessGapType.medicine),
-  ];
+Set<_ReadinessGapType> _deriveGaps(MineProfileSnapshot profile) {
+  return <_ReadinessGapType>{
+    if (!profile.basicInfoCompleted) _ReadinessGapType.basicInfo,
+    if (profile.sexAtBirth == null) _ReadinessGapType.sexAtBirth,
+    if (profile.weightKg == null) _ReadinessGapType.weight,
+    if (profile.allergyCount == 0) _ReadinessGapType.allergy,
+    if (profile.currentMedicineCount == 0) _ReadinessGapType.medicine,
+  };
 }

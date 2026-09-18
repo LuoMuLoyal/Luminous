@@ -66,6 +66,7 @@ String buildArchiveProfileMeta(
     if (profile.heightCm != null)
       l10n.mineProfileHeightCm(profile.heightCm?.round() ?? 0),
     if (profile.weightKg != null)
+      // weightKg! 安全:上方 if 已保证非 null,无需再走 kgToLb 的 null 兜底。
       isImperialUnitSystem(profile.unitSystem)
           ? l10n.mineProfileWeightLb(kgToLb(profile.weightKg!).round())
           : l10n.mineProfileWeightKg(profile.weightKg?.round() ?? 0),
