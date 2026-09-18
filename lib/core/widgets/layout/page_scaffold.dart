@@ -64,6 +64,16 @@ class PageScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final content = useSafeArea ? SafeArea(top: false, child: child) : child;
+
+    // Forui 的 `_RenderScaffold.performLayout` 为 footer 预留
+    // `max(insets.bottom, footerHeight)`,即底部 inset 已在 scaffold 层被计入
+    // 一次;但它不像 Material `Scaffold` 那样对主体 `removeViewInsets`。于是
+    // 主体内再消费一次底部 inset 的组件(AI chat 的 composer 会给自身加底部
+    // 内边距)会把同一份 inset 算两遍,视口被压到不足 inset + 输入区高度时
+    // 即产生溢出。这里去掉底部 inset(正是 Forui 缺失、Material 具备的语义),
+    // 布局收缩本身仍由 FScaffold 负责。
+    // `resizeToAvoidBottomInset: false` 时 scaffold 未消费 inset,保留给主体自行处理。
     return FScaffold(
       childPad: false,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
@@ -74,7 +84,13 @@ class PageScaffold extends StatelessWidget {
         suffixes: actions,
         style: headerStyle,
       ),
-      child: useSafeArea ? SafeArea(top: false, child: child) : child,
+      child: resizeToAvoidBottomInset
+          ? MediaQuery.removeViewInsets(
+              context: context,
+              removeBottom: true,
+              child: content,
+            )
+          : content,
     );
   }
 }

@@ -99,7 +99,9 @@ void main() {
       );
 
       final scaffold = tester.widget<FScaffold>(find.byType(FScaffold));
-      expect(scaffold.child, isA<SafeArea>());
+      // The body is wrapped in SafeArea and then in a bottom-inset removal
+      // (see the inset tests below), so look through the wrapper.
+      expect((scaffold.child as MediaQuery).child, isA<SafeArea>());
     });
 
     testWidgets('can disable SafeArea', (tester) async {
@@ -114,7 +116,56 @@ void main() {
       );
 
       final scaffold = tester.widget<FScaffold>(find.byType(FScaffold));
-      expect(scaffold.child, isA<Text>());
+      expect((scaffold.child as MediaQuery).child, isA<Text>());
+    });
+
+    testWidgets('removes the bottom view inset so it is not counted twice', (
+      tester,
+    ) async {
+      // Forui already reserves `max(insets.bottom, footerHeight)` in its own
+      // layout; leaving that inset in the body's MediaQuery made an inner
+      // composer pad for it a second time and overflow the viewport.
+      await tester.pumpWidget(
+        _appShell(
+          const MediaQuery(
+            data: MediaQueryData(viewInsets: EdgeInsets.only(bottom: 320)),
+            child: PageScaffold(title: 'Page', child: Text('Body')),
+          ),
+        ),
+      );
+
+      final scaffold = tester.widget<FScaffold>(find.byType(FScaffold));
+      expect((scaffold.child as MediaQuery).data.viewInsets.bottom, 0);
+    });
+
+    testWidgets('keeps the bottom inset when the scaffold does not consume it', (
+      tester,
+    ) async {
+      // With resizeToAvoidBottomInset false Forui never reserves the inset,
+      // so the body must still see it and handle it itself.
+      await tester.pumpWidget(
+        _appShell(
+          const MediaQuery(
+            data: MediaQueryData(viewInsets: EdgeInsets.only(bottom: 320)),
+            child: PageScaffold(
+              title: 'Page',
+              resizeToAvoidBottomInset: false,
+              child: Text('Body'),
+            ),
+          ),
+        ),
+      );
+
+      final scaffold = tester.widget<FScaffold>(find.byType(FScaffold));
+      // Not wrapped in the inset remover, so the inset reaches the body and
+      // the body remains responsible for it.
+      expect(scaffold.child, isA<SafeArea>());
+      expect(
+        MediaQuery.of(
+          tester.element(find.text('Body')),
+        ).viewInsets.bottom,
+        320,
+      );
     });
   });
 }
