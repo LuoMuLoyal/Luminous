@@ -26,7 +26,7 @@
   "assistantConversationSearchEmptyTitle": "No matching chats",
   "assistantConversationSearchEmptyDescription": "Try another search term.",
   "assistantSendErrorTitle": "This reply did not complete",
-  "assistantComposerPlaceholder": "For example: Based on my recent sleep and medicines, what should I pay attention to?",
+  "assistantComposerPlaceholder": "Ask about your health data…",
   "assistantNewConversationAction": "New chat",
   "assistantRecentConversationsAction": "Recent chats",
   "assistantRecentConversationsEmptyTitle": "No chat history yet",

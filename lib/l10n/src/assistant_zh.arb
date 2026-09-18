@@ -26,7 +26,7 @@
   "assistantConversationSearchEmptyTitle": "没有匹配的会话",
   "assistantConversationSearchEmptyDescription": "换一个关键词试试。",
   "assistantSendErrorTitle": "这次回复没有完成",
-  "assistantComposerPlaceholder": "比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。",
+  "assistantComposerPlaceholder": "问问你的健康数据…",
   "assistantNewConversationAction": "新对话",
   "assistantRecentConversationsAction": "最近会话",
   "assistantRecentConversationsEmptyTitle": "还没有历史会话",

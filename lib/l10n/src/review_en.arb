@@ -260,6 +260,20 @@
       }
     }
   },
+  "reviewNoteworthyWindowWithRange": "{range} · {start} – {end}",
+  "@reviewNoteworthyWindowWithRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
   "reviewTrendGapNote": "Days without records are excluded from the trend.",
   "@reportExportFailedWithReason": {
     "placeholders": {

@@ -71,7 +71,9 @@ class AssistantComposerHost extends StatelessWidget {
             controller: controller,
             placeholder: l10n.assistantComposerPlaceholder,
             maxLines: 5,
-            submitOnEnter: false,
+            // The package default handles Enter (send) vs Shift+Enter
+            // (newline); suppressing it also disabled the shortcut on
+            // hardware keyboards, which is the expected behaviour there.
             enabled: canSendMessages && !isSending,
             isStreaming: false,
             clearOnSend: true,

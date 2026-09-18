@@ -19,6 +19,7 @@ void main() {
     required List<ReviewFinding> findings,
     String startDate = '2026-08-01',
     String endDate = '2026-08-07',
+    ReviewDashboardRange? range,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
@@ -36,6 +37,7 @@ void main() {
               l10n: l10n,
               startDate: startDate,
               endDate: endDate,
+              range: range,
             ),
           ),
         ),
@@ -73,8 +75,32 @@ void main() {
     expect(find.text('值得注意'), findsOneWidget);
     expect(find.text('咖啡因影响睡眠'), findsOneWidget);
     expect(find.text('下午摄入咖啡后睡眠时长下降'), findsOneWidget);
-    expect(find.text('2026-08-01 → 2026-08-07'), findsOneWidget);
+    // The window is localized rather than echoing the server's ISO strings.
+    expect(find.text('8月1日 → 8月7日'), findsOneWidget);
     expect(find.text('这段时间没有新增值得注意的变化。'), findsNothing);
+  });
+
+  testWidgets('prefixes the window with the selected range label', (
+    tester,
+  ) async {
+    await pumpNoteworthy(
+      tester,
+      findings: [finding()],
+      range: ReviewDashboardRange.last7Days,
+    );
+
+    // The semantic label saves the user from converting start/end dates.
+    expect(find.text('近 7 天 · 8月1日 → 8月7日'), findsOneWidget);
+  });
+
+  testWidgets('omits the range label for a custom window', (tester) async {
+    await pumpNoteworthy(
+      tester,
+      findings: [finding()],
+      range: ReviewDashboardRange.custom,
+    );
+
+    expect(find.text('8月1日 → 8月7日'), findsOneWidget);
   });
 
   testWidgets('limits to two cards and aggregates title/body for mixed set', (

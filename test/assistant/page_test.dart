@@ -640,32 +640,33 @@ void main() {
     expect(repository.sentMessageBatches.single.single.content, '帮我看看睡眠');
   });
 
-  testWidgets('page composer keeps editing on hardware Enter shortcuts', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _RecordingAssistantRepository();
+  testWidgets(
+    'page composer sends on hardware Enter and keeps Shift+Enter newline',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final repository = _RecordingAssistantRepository();
 
-    await tester.pumpWidget(_buildTestApp(repository: repository));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(_buildTestApp(repository: repository));
+      await tester.pumpAndSettle();
 
-    await tester.enterText(_assistantInputTextField(), 'keep editing');
-    await tester.tap(_assistantInputTextField());
-    await tester.pump();
+      await tester.enterText(_assistantInputTextField(), 'send me');
+      await tester.tap(_assistantInputTextField());
+      await tester.pump();
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter, character: '\n');
-    await tester.pump();
-    await tester.sendKeyDownEvent(LogicalKeyboardKey.control);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter, character: '\n');
-    await tester.sendKeyUpEvent(LogicalKeyboardKey.control);
-    await tester.pump();
+      // Shift+Enter inserts a newline instead of sending.
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter, character: '\n');
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
+      await tester.pump();
+      expect(repository.sentMessageBatches, isEmpty);
 
-    expect(repository.sentMessageBatches, isEmpty);
-    expect(
-      tester.widget<TextField>(_assistantInputTextField()).controller?.text,
-      'keep editing',
-    );
-  });
+      // Plain Enter sends — what a hardware keyboard user expects.
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter, character: '\n');
+      await tester.pumpAndSettle();
+
+      expect(repository.sentMessageBatches, isNotEmpty);
+    },
+  );
 
   testWidgets('page composer preserves the FlowUI input contract', (
     tester,
@@ -680,11 +681,12 @@ void main() {
     final composer = tester.widget<FlowComposer>(find.byType(FlowComposer));
     expect(composer.enabled, isTrue);
     expect(composer.isStreaming, isFalse);
-    expect(composer.submitOnEnter, isFalse);
+    // Package default: Enter sends, Shift+Enter makes a newline.
+    expect(composer.submitOnEnter, isTrue);
 
     final textField = tester.widget<TextField>(_assistantInputTextField());
     expect(textField.maxLines, 5);
-    expect(textField.decoration?.hintText, '比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。');
+    expect(textField.decoration?.hintText, '问问你的健康数据…');
   });
 
   testWidgets('normal assistant page uses the FlowChatScreen composition', (

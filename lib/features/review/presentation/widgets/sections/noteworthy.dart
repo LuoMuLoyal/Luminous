@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:forui/forui.dart';
+import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -17,6 +18,7 @@ class ReviewNoteworthySection extends StatelessWidget {
     required this.l10n,
     required this.startDate,
     required this.endDate,
+    this.range,
   });
 
   /// 当前周期的 findings；为空时展示弃权占位。
@@ -25,6 +27,10 @@ class ReviewNoteworthySection extends StatelessWidget {
   final AppLocalizations l10n;
   final String startDate;
   final String endDate;
+
+  /// 当前选择的时间范围。已知时在日期前加「最近 7 天 / 最近 30 天」语义标签，
+  /// 用户不必自行换算起止日期。
+  final ReviewDashboardRange? range;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +60,7 @@ class ReviewNoteworthySection extends StatelessWidget {
                   key: Key('review-noteworthy-${finding.kind.name}-$index'),
                   finding: finding,
                   l10n: l10n,
-                  window: _windowLabel(),
+                  window: _windowLabel(context),
                 ),
                 if (index < shown.length - 1)
                   const SizedBox(height: Spacing.md),
@@ -66,7 +72,37 @@ class ReviewNoteworthySection extends StatelessWidget {
     );
   }
 
-  String _windowLabel() => l10n.reviewNoteworthyWindow(startDate, endDate);
+  /// 数据窗口文案：`最近 7 天 · 9月5日 – 9月11日`。
+  ///
+  /// 日期按 locale 格式化（此前直接透出服务端的 ISO 串）；范围已知时前置语义
+  /// 标签，省去用户自行换算。
+  String _windowLabel(BuildContext context) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final start = _formatWindowDate(startDate, locale);
+    final end = _formatWindowDate(endDate, locale);
+    final rangeLabel = _rangeLabel();
+    if (rangeLabel == null) {
+      return l10n.reviewNoteworthyWindow(start, end);
+    }
+    return l10n.reviewNoteworthyWindowWithRange(rangeLabel, start, end);
+  }
+
+  String? _rangeLabel() {
+    return switch (range) {
+      ReviewDashboardRange.last7Days => l10n.reviewRangeLast7Days,
+      ReviewDashboardRange.last30Days => l10n.reviewRangeLast30Days,
+      ReviewDashboardRange.custom || null => null,
+    };
+  }
+
+  /// Parses the server's `YYYY-MM-DD` window bound; falls back to the raw
+  /// string when it is a placeholder or otherwise unparseable, so a missing
+  /// window never renders as an empty label.
+  static String _formatWindowDate(String raw, String locale) {
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) return raw;
+    return DateFormat.MMMd(locale).format(parsed);
+  }
 }
 
 class _NoteworthyCard extends StatelessWidget {

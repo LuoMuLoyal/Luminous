@@ -267,6 +267,20 @@
       }
     }
   },
+  "reviewNoteworthyWindowWithRange": "{range} · {start} → {end}",
+  "@reviewNoteworthyWindowWithRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
   "reviewTrendGapNote": "未记录的天不计入走势。",
   "@reportExportFailedWithReason": {
     "placeholders": {

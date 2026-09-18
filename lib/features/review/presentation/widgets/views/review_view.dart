@@ -178,6 +178,7 @@ class ReviewView extends StatelessWidget {
         l10n: l10n,
         startDate: findingsWindowStart,
         endDate: findingsWindowEnd,
+        range: periodRange,
       ),
       if (review == null) ...[
         // P0-5：无进行中事件时不再提供「开始观察」动作（收口 Today）。
