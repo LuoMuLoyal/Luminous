@@ -32,6 +32,10 @@ const _avatarContentTypes = <String, String>{
 
 /// Picks an image and returns a local avatar draft. Web intentionally skips
 /// cropping and uses the original bytes as the product fallback.
+///
+/// 调用方需保证传入的 [context] 在 await 边界后仍 mounted（例如来自
+/// dialog / showModalBottomSheet 内部），否则空文件/裁剪失败等反馈
+/// Toast 会静默不显示。
 Future<AvatarDraft?> pickAvatarDraft(
   BuildContext context, {
   required AvatarAction action,
@@ -132,7 +136,7 @@ class _AvatarCropperState extends State<AvatarCropper> {
               if (result is CropSuccess) {
                 Navigator.of(context).pop(result.croppedImage);
               } else {
-                _showCropFailure(context);
+                _showCropFailure();
               }
             },
           ),
@@ -166,7 +170,11 @@ class _AvatarCropperState extends State<AvatarCropper> {
     );
   }
 
-  void _showCropFailure(BuildContext context) {
+  void _showCropFailure() {
+    // 直接使用 State.context 而非收 BuildContext 参数：调用方（onCropped
+    // 回调）已由 `if (!mounted) return;` 保证走到这里时 State 仍挂载，
+    // 避免从 dispose 路径误传已失效的 context 给 Toast。
+    if (!mounted) return;
     final l10n = AppLocalizations.of(context)!;
     // 轻量反馈统一走 Toast（AGENTS.md「轻反馈用 AppToast」约定）,
     // 不在这里用 ScaffoldMessenger/SnackBar——对话框之上做全局提示。
