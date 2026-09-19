@@ -142,6 +142,8 @@ enum AssistantCapabilitiesResponseToolsNameEnum {
   getDrugbankDetail(r'get_drugbank_detail'),
   @JsonValue(r'search_drugbank_passages')
   searchDrugbankPassages(r'search_drugbank_passages'),
+  @JsonValue(r'reason_over_ontology')
+  reasonOverOntology(r'reason_over_ontology'),
   @JsonValue(r'propose_create_daily_record')
   proposeCreateDailyRecord(r'propose_create_daily_record'),
   @JsonValue(r'propose_update_daily_record')

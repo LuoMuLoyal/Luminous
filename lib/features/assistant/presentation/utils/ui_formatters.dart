@@ -23,6 +23,7 @@ String localizeToolName(String toolId, BuildContext context) {
     'get_meal_analysis_digest' => l10n.assistantToolMealAnalysisDigest,
     'resolve_drugbank_entity' => l10n.assistantToolResolveDrugbankEntity,
     'search_drugbank_passages' => l10n.assistantToolSearchDrugbankPassages,
+    'reason_over_ontology' => l10n.assistantToolReasonOverOntology,
     'search_cn_medicine_products' => l10n.assistantToolSearchCnMedicineProducts,
     'search_cn_medicine_knowledge' =>
       l10n.assistantToolSearchCnMedicineKnowledge,
@@ -210,10 +211,10 @@ AssistantKnowledgeSourceType? knowledgeSourceTypeOf(
 }) {
   return switch (toolId) {
     'search_cn_medicine_knowledge' =>
-      _lightragTierOf(sourceTables) ??
-          AssistantKnowledgeSourceType.medicalQa,
+      _lightragTierOf(sourceTables) ?? AssistantKnowledgeSourceType.medicalQa,
     'resolve_drugbank_entity' ||
-    'search_drugbank_passages' => AssistantKnowledgeSourceType.drugbank,
+    'search_drugbank_passages' ||
+    'reason_over_ontology' => AssistantKnowledgeSourceType.drugbank,
     _ => null,
   };
 }
