@@ -77,9 +77,7 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
       ref.invalidate(syncFailedCountProvider);
       ref.invalidate(mineSyncFailedEntriesProvider);
     } catch (e, st) {
-      ref
-          .read(talkerProvider)
-          .error('SyncFailuresPage._discard: $e', st);
+      ref.read(talkerProvider).error('SyncFailuresPage._discard: $e', st);
       if (!mounted) return;
       setState(() {
         _retryError = AppLocalizations.of(
@@ -153,10 +151,7 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
           ),
           const SizedBox(height: Spacing.md),
           for (final entry in entries) ...[
-            SyncFailedEntryCard(
-              entry: entry,
-              onDiscard: () => _discard(entry),
-            ),
+            SyncFailedEntryCard(entry: entry, onDiscard: () => _discard(entry)),
             if (entry != entries.last) const SizedBox(height: Spacing.md),
           ],
         ],

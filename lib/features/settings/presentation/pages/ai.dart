@@ -187,7 +187,10 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       children: [
                         _privacyNote(context, l10n.settingsAiPrivacyMemoryNote),
                         const SizedBox(height: Spacing.md),
-                        _privacyNote(context, l10n.settingsAiPrivacyContextNote),
+                        _privacyNote(
+                          context,
+                          l10n.settingsAiPrivacyContextNote,
+                        ),
                         const SizedBox(height: Spacing.md),
                         _privacyNote(
                           context,

@@ -221,9 +221,7 @@ class MineAccountHero extends StatelessWidget {
       return l10n.mineReadinessGapDescMultiple(labels.join(separator));
     }
     return l10n.mineReadinessGapDescMultiple(
-      l10n.mineReadinessGapListTruncated(
-        labels.sublist(0, 3).join(separator),
-      ),
+      l10n.mineReadinessGapListTruncated(labels.sublist(0, 3).join(separator)),
     );
   }
 

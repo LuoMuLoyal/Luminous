@@ -252,7 +252,10 @@ void main() {
       expect(find.textContaining('覆盖: 完整'), findsOneWidget);
       expect(find.textContaining('置信: 高 向量检索命中'), findsOneWidget);
       expect(find.textContaining('不确定项: 候选A, 候选B'), findsOneWidget);
-      expect(find.textContaining('来源: leaflet:lightrag_chunks'), findsOneWidget);
+      expect(
+        find.textContaining('来源: leaflet:lightrag_chunks'),
+        findsOneWidget,
+      );
       expect(find.textContaining('生成时间: '), findsOneWidget);
       expect(find.text('仅供参考，不构成诊疗建议。'), findsOneWidget);
     });

@@ -25,13 +25,12 @@ void main() {
         ),
       );
 
-      final rawNames =
-          lucent.AssistantCapabilitiesResponseToolsNameEnum.values
-              .map((value) => value.value)
-              // The codegen fallback for an unrecognized wire value, not a
-              // real tool.
-              .where((value) => value != 'unknown_default_open_api')
-              .toList();
+      final rawNames = lucent.AssistantCapabilitiesResponseToolsNameEnum.values
+          .map((value) => value.value)
+          // The codegen fallback for an unrecognized wire value, not a
+          // real tool.
+          .where((value) => value != 'unknown_default_open_api')
+          .toList();
 
       expect(rawNames, isNotEmpty);
 

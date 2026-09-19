@@ -138,34 +138,33 @@ void main() {
       expect((scaffold.child as MediaQuery).data.viewInsets.bottom, 0);
     });
 
-    testWidgets('keeps the bottom inset when the scaffold does not consume it', (
-      tester,
-    ) async {
-      // With resizeToAvoidBottomInset false Forui never reserves the inset,
-      // so the body must still see it and handle it itself.
-      await tester.pumpWidget(
-        _appShell(
-          const MediaQuery(
-            data: MediaQueryData(viewInsets: EdgeInsets.only(bottom: 320)),
-            child: PageScaffold(
-              title: 'Page',
-              resizeToAvoidBottomInset: false,
-              child: Text('Body'),
+    testWidgets(
+      'keeps the bottom inset when the scaffold does not consume it',
+      (tester) async {
+        // With resizeToAvoidBottomInset false Forui never reserves the inset,
+        // so the body must still see it and handle it itself.
+        await tester.pumpWidget(
+          _appShell(
+            const MediaQuery(
+              data: MediaQueryData(viewInsets: EdgeInsets.only(bottom: 320)),
+              child: PageScaffold(
+                title: 'Page',
+                resizeToAvoidBottomInset: false,
+                child: Text('Body'),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      final scaffold = tester.widget<FScaffold>(find.byType(FScaffold));
-      // Not wrapped in the inset remover, so the inset reaches the body and
-      // the body remains responsible for it.
-      expect(scaffold.child, isA<SafeArea>());
-      expect(
-        MediaQuery.of(
-          tester.element(find.text('Body')),
-        ).viewInsets.bottom,
-        320,
-      );
-    });
+        final scaffold = tester.widget<FScaffold>(find.byType(FScaffold));
+        // Not wrapped in the inset remover, so the inset reaches the body and
+        // the body remains responsible for it.
+        expect(scaffold.child, isA<SafeArea>());
+        expect(
+          MediaQuery.of(tester.element(find.text('Body'))).viewInsets.bottom,
+          320,
+        );
+      },
+    );
   });
 }

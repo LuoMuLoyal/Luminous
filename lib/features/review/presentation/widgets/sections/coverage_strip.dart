@@ -156,7 +156,9 @@ class _CoverageCard extends StatelessWidget {
                   // cannot draw. The backend's own sufficiency bar is
                   // stricter than this card's, so it can send a real delta
                   // for a period this card still treats as too sparse.
-                  if (!sparse && metric.delta.isNotEmpty && metric.delta != '--')
+                  if (!sparse &&
+                      metric.delta.isNotEmpty &&
+                      metric.delta != '--')
                     _DeltaLabel(metric: metric),
                 ],
               ),
