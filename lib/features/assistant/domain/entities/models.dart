@@ -302,7 +302,30 @@ abstract class AssistantToolDetail with _$AssistantToolDetail {
     // 后端 buildToolDetails 可选透传;无数据时为 null,来源条不渲染该行。
     String? confidenceNote,
     String? sourceVersion,
+    // 溯源引用:本体推理(reason_over_ontology)为每条行返回其所依赖断言的
+    // 可回溯 id。其它工具无此字段;列表为空时来源条不渲染引用区。
+    @Default(<AssistantToolCitation>[]) List<AssistantToolCitation> citations,
   }) = _AssistantToolDetail;
+}
+
+/// 一条溯源引用。
+///
+/// [id] 形如 `lucent:drugbank_drugs/DB00004/drug_interactions/DB14766`:它指向
+/// 来源表与来源行,所以引用本身就是可核对的凭据,而不是一句"来自 DrugBank"。
+/// [sourceQuote] 是来源原文,[checksum] 指回导入期写入的哈希链。
+@freezed
+abstract class AssistantToolCitation with _$AssistantToolCitation {
+  const factory AssistantToolCitation({
+    required String id,
+    String? entityType,
+    String? sourceDocument,
+    String? sourceLocation,
+    String? sourceQuote,
+    String? agentId,
+    double? confidence,
+    int? sequenceId,
+    String? checksum,
+  }) = _AssistantToolCitation;
 }
 
 @freezed

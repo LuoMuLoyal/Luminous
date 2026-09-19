@@ -315,7 +315,47 @@ class LucentAssistantRepository implements AssistantRepository {
       confidenceNote: json['confidenceNote']?.toString(),
       sourceVersion: json['sourceVersion']?.toString(),
       disclaimer: json['disclaimer']?.toString(),
+      citations: _mapCitations(json['citations']),
     );
+  }
+
+  /// 溯源引用列表。缺字段或形状不对时返回空表——引用区整块不渲染,
+  /// 而不是让一条坏引用把整张工具卡打掉。
+  List<AssistantToolCitation> _mapCitations(Object? value) {
+    if (value is! List) {
+      return const <AssistantToolCitation>[];
+    }
+    final citations = <AssistantToolCitation>[];
+    for (final item in value) {
+      final map = _mapStringKeyedMap(item);
+      if (map == null) {
+        continue;
+      }
+      final id = map['id']?.toString() ?? '';
+      if (id.isEmpty) {
+        continue;
+      }
+      citations.add(
+        AssistantToolCitation(
+          id: id,
+          entityType: map['entityType']?.toString(),
+          sourceDocument: map['sourceDocument']?.toString(),
+          sourceLocation: map['sourceLocation']?.toString(),
+          sourceQuote: map['sourceQuote']?.toString(),
+          agentId: map['agentId']?.toString(),
+          confidence: switch (map['confidence']) {
+            final num value => value.toDouble(),
+            _ => null,
+          },
+          sequenceId: switch (map['sequenceId']) {
+            final num value => value.toInt(),
+            _ => null,
+          },
+          checksum: map['checksum']?.toString(),
+        ),
+      );
+    }
+    return List<AssistantToolCitation>.unmodifiable(citations);
   }
 
   AssistantProposedAction? _mapProposedActionFromJson(

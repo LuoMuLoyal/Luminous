@@ -260,6 +260,72 @@ void main() {
       expect(find.text('仅供参考，不构成诊疗建议。'), findsOneWidget);
     });
 
+    testWidgets('renders provenance citations when the tool returned them', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['reason_over_ontology'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'reason_over_ontology',
+                sourceTables: <String>['lucent_graph (Apache AGE)'],
+                citations: <AssistantToolCitation>[
+                  AssistantToolCitation(
+                    id: 'lucent:drugbank_drugs/DB00682/drug_interactions/DB00945',
+                    sourceDocument: 'lucent.drugbank_drugs.drug_interactions',
+                    sourceLocation: 'drugbank_id=DB00682, drugbankId=DB00945',
+                    sourceQuote: '出血风险可能升高。',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-source-strip')));
+      await tester.pump();
+
+      expect(find.text('溯源引用'), findsOneWidget);
+      expect(find.text('出血风险可能升高。'), findsOneWidget);
+      expect(
+        find.text(
+          'lucent.drugbank_drugs.drug_interactions · '
+          'drugbank_id=DB00682, drugbankId=DB00945',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('lucent:drugbank_drugs/DB00682/drug_interactions/DB00945'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('omits the citations section when there are none', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantSourceStrip(
+            usedTools: <String>['get_user_profile'],
+            toolDetails: <AssistantToolDetail>[
+              AssistantToolDetail(
+                name: 'get_user_profile',
+                sourceTables: <String>['users'],
+              ),
+            ],
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('assistant-source-strip')));
+      await tester.pump();
+
+      expect(find.text('溯源引用'), findsNothing);
+    });
+
     testWidgets('shows placeholder when tool has no details', (tester) async {
       await tester.pumpWidget(
         _shell(

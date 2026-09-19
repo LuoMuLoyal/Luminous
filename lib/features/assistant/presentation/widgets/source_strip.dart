@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -296,6 +298,24 @@ class _ToolDetailCard extends StatelessWidget {
                     ),
                   ),
                 ),
+              if (detail.citations.isNotEmpty) ...[
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  l10n.assistantSourceCitationsLabel,
+                  style: typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: Spacing.xs),
+                for (final citation in detail.citations)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: Spacing.xs),
+                    child: _CitationRow(
+                      citation: citation,
+                      copiedLabel: l10n.medicineDetailReferenceCopied,
+                    ),
+                  ),
+              ],
               if (disclaimer != null && disclaimer.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: Spacing.xs),
@@ -414,6 +434,67 @@ class _SourceTierBadge extends StatelessWidget {
             height: 1.2,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// One provenance citation: the assertion's statement, its provenance id and
+/// the source row it resolves to.
+///
+/// Tapping copies the id — an audit is performed by pasting that id into the
+/// provenance lookup, so the id is the one part of this row that has to be
+/// transportable rather than merely readable.
+class _CitationRow extends StatelessWidget {
+  const _CitationRow({required this.citation, required this.copiedLabel});
+
+  final AssistantToolCitation citation;
+  final String copiedLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+    final muted = typography.body.xs.copyWith(
+      color: SemanticColor.neutral.solid(context),
+    );
+    final statement = (citation.sourceQuote ?? '').trim();
+    final source = [
+      if ((citation.sourceDocument ?? '').isNotEmpty) citation.sourceDocument!,
+      if ((citation.sourceLocation ?? '').isNotEmpty) citation.sourceLocation!,
+    ].join(' · ');
+
+    return FTappable(
+      onPress: () async {
+        await Clipboard.setData(ClipboardData(text: citation.id));
+        if (context.mounted) {
+          await Toast.show(context, copiedLabel);
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (statement.isNotEmpty)
+            Text(
+              statement,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: typography.body.sm,
+            ),
+          if (source.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(source, style: muted),
+            ),
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              citation.id,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: muted,
+            ),
+          ),
+        ],
       ),
     );
   }

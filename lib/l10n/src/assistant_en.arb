@@ -160,5 +160,6 @@
   },
   "assistantToolDrugbankDetail": "DrugBank detail",
   "assistantSourceDataAsOfLabel": "Data as of",
-  "assistantSourceVersionLabel": "Version"
+  "assistantSourceVersionLabel": "Version",
+  "assistantSourceCitationsLabel": "Citations"
 }

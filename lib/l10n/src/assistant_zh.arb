@@ -160,5 +160,6 @@
   },
   "assistantToolDrugbankDetail": "DrugBank 详情",
   "assistantSourceDataAsOfLabel": "数据截至",
-  "assistantSourceVersionLabel": "版本"
+  "assistantSourceVersionLabel": "版本",
+  "assistantSourceCitationsLabel": "溯源引用"
 }

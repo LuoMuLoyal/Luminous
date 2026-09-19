@@ -754,6 +754,72 @@ void main() {
       // F-14:缺失时保持 null,来源条不渲染该行。
       expect(detail.confidenceNote, isNull);
       expect(detail.sourceVersion, isNull);
+      expect(detail.citations, isEmpty);
+    });
+
+    test('maps provenance citations into the tool detail', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'done',
+              usedTools: const ['reason_over_ontology'],
+              generatedAt: DateTime(2026, 9, 19),
+              proposedActions: const [],
+              toolDetails: [
+                {
+                  'name': 'reason_over_ontology',
+                  'citations': [
+                    {
+                      'id':
+                          'lucent:drugbank_drugs/DB00682/drug_interactions/DB00945',
+                      'entityType': 'graph_assertion',
+                      'sourceDocument':
+                          'lucent.drugbank_drugs.drug_interactions',
+                      'sourceLocation':
+                          'drugbank_id=DB00682, drugbankId=DB00945',
+                      'sourceQuote': '出血风险可能升高。',
+                      'agentId': 'drugbank:full database.xml@2026-03-05',
+                      'confidence': 1,
+                      'sequenceId': 42,
+                      'checksum': 'checksum-42',
+                    },
+                    // 形状不对的条目被跳过,不影响其余引用。
+                    {'sourceDocument': 'no id'},
+                  ],
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'go',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      final citations = result.message.toolDetails.single.citations;
+
+      expect(citations, hasLength(1));
+      expect(
+        citations.single.id,
+        'lucent:drugbank_drugs/DB00682/drug_interactions/DB00945',
+      );
+      expect(citations.single.entityType, 'graph_assertion');
+      expect(
+        citations.single.sourceDocument,
+        'lucent.drugbank_drugs.drug_interactions',
+      );
+      expect(citations.single.sourceQuote, '出血风险可能升高。');
+      expect(citations.single.confidence, 1.0);
+      expect(citations.single.sequenceId, 42);
+      expect(citations.single.checksum, 'checksum-42');
     });
 
     test('maps create_daily_record proposed action', () async {
