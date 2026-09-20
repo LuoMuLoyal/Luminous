@@ -133,6 +133,30 @@ void main() {
         AssistantKnowledgeSourceType.medicalQa,
       );
     });
+    test('mixed workspaces resolve to the least-trusted tier present', () {
+      // 同一次检索跨两个工作区时,不能按后端给的表顺序取第一个命中:
+      // 先出现 qa 就会把说明书内容误标为开放语料。以低可信档为准。
+      expect(
+        knowledgeSourceTypeOf(
+          'search_cn_medicine_knowledge',
+          sourceTables: const <String>[
+            'qa:lightrag_chunks',
+            'leaflet:lightrag_chunks',
+          ],
+        ),
+        AssistantKnowledgeSourceType.medicalQa,
+      );
+      expect(
+        knowledgeSourceTypeOf(
+          'search_cn_medicine_knowledge',
+          sourceTables: const <String>[
+            'leaflet:lightrag_chunks',
+            'qa:lightrag_chunks',
+          ],
+        ),
+        AssistantKnowledgeSourceType.medicalQa,
+      );
+    });
     test('prose tool defaults to the low-trust tier without tables', () {
       // 宁可对说明书内容多显示一次低可信提示,也不能对开放语料漏掉它。
       expect(

@@ -205,6 +205,12 @@ enum AssistantKnowledgeSourceType { leaflet, drugbank, medicalQa }
 /// before the merge). That is deliberate: over-showing the low-trust hint on
 /// package-insert content is a cosmetic inaccuracy, whereas dropping it on
 /// open-corpus content would hide a safety-relevant warning.
+///
+/// The same fail-safe direction decides a *mixed* result: when one retrieval
+/// covers both workspaces, the least-trusted workspace present is reported
+/// (see [_lightragTierOf]) — showing the alert badge on package-insert
+/// content is a cosmetic inaccuracy, missing it on open-corpus content would
+/// hide a safety-relevant warning.
 AssistantKnowledgeSourceType? knowledgeSourceTypeOf(
   String toolId, {
   List<String>? sourceTables,
@@ -220,18 +226,38 @@ AssistantKnowledgeSourceType? knowledgeSourceTypeOf(
 }
 
 /// Resolves the LightRAG tier from `<workspace>:lightrag_chunks` table names.
+///
+/// A single retrieval can span **both** workspaces, so the whole list is
+/// scanned and the *lowest* trust tier present wins — the same fail-safe
+/// direction as the missing-tables default in [knowledgeSourceTypeOf].
+/// Returning the first hit instead made the answer depend on the backend's
+/// row order: `qa` before `leaflet` reported the package-insert content as
+/// open corpus and *dropped* the safety-relevant warning, which is the one
+/// failure mode the default above exists to prevent.
+///
+/// Ranking is explicit rather than the enum's declaration order, so a tier
+/// inserted into [AssistantKnowledgeSourceType] later cannot silently change
+/// which workspace wins.
 AssistantKnowledgeSourceType? _lightragTierOf(List<String>? sourceTables) {
   if (sourceTables == null || sourceTables.isEmpty) {
     return null;
   }
+  var lowest = 0;
   for (final table in sourceTables) {
-    final workspace = table.split(':').first;
-    if (workspace == 'qa') {
-      return AssistantKnowledgeSourceType.medicalQa;
-    }
-    if (workspace == 'leaflet') {
-      return AssistantKnowledgeSourceType.leaflet;
+    final rank = switch (table.split(':').first) {
+      'leaflet' => 2,
+      'qa' => 1,
+      _ => 0,
+    };
+    // 0 means "unrecognised" and must not participate in the "lowest" choice:
+    // a single junk row next to a real one leaves the real tier intact.
+    if (rank != 0 && (lowest == 0 || rank < lowest)) {
+      lowest = rank;
     }
   }
-  return null;
+  return switch (lowest) {
+    2 => AssistantKnowledgeSourceType.leaflet,
+    1 => AssistantKnowledgeSourceType.medicalQa,
+    _ => null,
+  };
 }
