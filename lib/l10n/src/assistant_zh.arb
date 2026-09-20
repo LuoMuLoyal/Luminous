@@ -68,6 +68,7 @@
   "assistantToolResolveDrugbankEntity": "DrugBank 实体定位",
   "assistantToolSearchDrugbankPassages": "DrugBank 片段检索",
   "assistantToolReasonOverOntology": "DrugBank 本体推理",
+  "assistantToolReasonOverRules": "DrugBank 规则推导",
   "assistantToolProposeCreateRecord": "保存建议",
   "assistantToolProposeUpdateRecord": "修改建议",
   "assistantToolProposeDeleteRecord": "删除建议",

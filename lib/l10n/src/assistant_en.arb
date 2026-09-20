@@ -68,6 +68,7 @@
   "assistantToolResolveDrugbankEntity": "DrugBank entity resolve",
   "assistantToolSearchDrugbankPassages": "DrugBank passage search",
   "assistantToolReasonOverOntology": "DrugBank ontology reasoning",
+  "assistantToolReasonOverRules": "DrugBank rule inference",
   "assistantToolProposeCreateRecord": "Save proposal",
   "assistantToolProposeUpdateRecord": "Update proposal",
   "assistantToolProposeDeleteRecord": "Delete proposal",

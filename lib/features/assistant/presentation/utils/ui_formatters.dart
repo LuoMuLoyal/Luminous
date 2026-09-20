@@ -24,6 +24,7 @@ String localizeToolName(String toolId, BuildContext context) {
     'resolve_drugbank_entity' => l10n.assistantToolResolveDrugbankEntity,
     'search_drugbank_passages' => l10n.assistantToolSearchDrugbankPassages,
     'reason_over_ontology' => l10n.assistantToolReasonOverOntology,
+    'reason_over_rules' => l10n.assistantToolReasonOverRules,
     'search_cn_medicine_products' => l10n.assistantToolSearchCnMedicineProducts,
     'search_cn_medicine_knowledge' =>
       l10n.assistantToolSearchCnMedicineKnowledge,
