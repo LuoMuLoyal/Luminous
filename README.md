@@ -2,7 +2,7 @@
 
 [![Backend: Lucent](https://img.shields.io/badge/backend-LuoMuLoyal%2FLucent-2563eb?logo=github)](https://github.com/LuoMuLoyal/Lucent)
 
-Flutter 主动式个人健康助手。以用药安全和短期健康事件为入口，在记录稀疏时仍提供有证据的主动建议与事件回顾。
+Flutter 主动式个人健康助手。以低负担的稀疏记录与用户授权的数据构建可检查的个人上下文，在日 / 周 / 月尺度发现值得注意的变化，给出有证据、可解释、可执行的建议；证据不足时明确弃权。用药安全与短期健康事件是其中证据要求最高的一条主线，不是产品天花板。
 
 Current version: **0.1.0-dev**
 
@@ -13,7 +13,7 @@ Current version: **0.1.0-dev**
 - [Contributing](CONTRIBUTING.md) — development setup, conventions, and PR process
 - [Code of Conduct](.github/CODE_OF_CONDUCT.md) — community standards
 - [Security Policy](SECURITY.md) — vulnerability reporting
-- [Product language](CONTEXT.md) — canonical health-event, sparse-record, guidance, and review terms
+- [Product language](docs/reference/glossary.md) — canonical health-event, sparse-record, guidance, and review terms
 - [Issues](https://github.com/LuoMuLoyal/Luminous/issues) — bug reports and feature requests
 
 ## AI Workflow
@@ -29,11 +29,24 @@ Current version: **0.1.0-dev**
 
 ## Baseline
 
-- Tabs: `today / record / medicine / review / mine`
+- Tabs: `today / record / medicine / review / mine` — Today is the action panel, Record is the
+  sparse-record fact panel, Medicine is the drug workspace, Review is longitudinal insight, Mine
+  holds profile and settings. Each tab's boundaries live in its feature README.
+- Product constraints that the whole app enforces:
+  - Missing data means **unknown**, never zero — no dimension may infer "didn't take the medicine"
+    or "didn't drink" from an absent record.
+  - Every conclusion carries coverage (`observedCount` / `expectedCount`); when evidence is thin the
+    system **abstains** rather than emitting a weaker claim.
+  - AI handles understanding, summarising, explaining and reminder copy only. It never diagnoses,
+    prescribes, or decides drug risk — safety conclusions come from rules, leaflets, curated data or
+    human review.
+  - Assistant writes are **proposal-based**: any write requires explicit user confirmation.
 - Design tokens: color / type / spacing / radius / breakpoints / animation
 - UI framework: [Forui](https://forui.dev)（2026-07 从 Material Design 全量迁移）
 - API client: `generated/lucent_api`
 - Network layer: `lib/core/network/`
+- Local persistence: Drift, with a pending-sync queue used by the write paths that need offline
+  replay (`lib/core/database/`).
 - i18n: Flutter `gen-l10n` — ARB fragments live in `lib/l10n/src/`; main `app_zh.arb` / `app_en.arb` are **generated** via `dart scripts/l10n/arb_tools.dart merge` — never edit them directly.
 - WeChat OAuth: Android/iOS uses the WeChat SDK through `fluwx` to obtain an auth code and then calls Lucent's mobile callback endpoint. Desktop login starts a loopback callback listener, asks Lucent for an authorize URL with that callback URI, opens the system browser, verifies the returned `state`, and completes login automatically when Lucent redirects back with `code` and `state`. Web login passes `/login/oauth/wechat` as the callback path. Manual callback paste remains as a fallback.
 
@@ -84,8 +97,8 @@ If you want shorter full-stack commands, copy `.env.example` to `.env`, fill in 
 
 ## CI
 
-- GitHub Actions workflow: `.github/workflows/flutter-ci.yml`
-- Current CI scope: Lucent OpenAPI export, generated-source bootstrap, `flutter analyze`, `dart format --set-exit-if-changed`, `flutter test`, hosted Lucent OpenAPI contract-sync verification, and `flutter build apk --release`
+- GitHub Actions workflow: `.github/workflows/luminous-ci.yml` (build/release lane: `luminous-cd.yml`)
+- Current CI scope: ARB fragment merge, generated-source bootstrap, generated API client build, generated-docs check, `flutter analyze`, `flutter test --coverage`, and a release APK build on `main`.
 - Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
 - `integration_test/` currently contains two different lanes:
   - offline/mock-driven integration flows that exercise the real app shell and feature pages without a Lucent runtime
