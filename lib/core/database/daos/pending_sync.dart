@@ -126,22 +126,14 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
     required String raw,
     PendingSyncErrorDetails? details,
   }) async {
-    final detailsJson = details?.toJson();
-    final rows = await (update(pendingSyncItems)..where((t) => t.id.equals(id)))
-        .write(
-          PendingSyncItemsCompanion.custom(
-            isSyncing: const Variable(false),
-            retryCount: pendingSyncItems.retryCount + const Variable(1),
-            lastAttemptAt: Variable(DateTime.now()),
-            lastError: Variable(raw),
-            lastErrorDetails: Variable(
-              detailsJson == null ? null : jsonEncode(detailsJson),
-            ),
-          ),
-        );
-
-    // Nothing to update if the item no longer exists (e.g. already synced).
-    if (rows == 0) return;
+    await _writeFailureState(
+      id,
+      raw: raw,
+      details: details,
+      // Increment at the database level so concurrent callers cannot race on
+      // the read-then-write value.
+      retryCount: pendingSyncItems.retryCount + const Variable(1),
+    );
   }
 
   /// Records a failure the server declared non-retryable, exhausting the
@@ -159,11 +151,33 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
     required String raw,
     PendingSyncErrorDetails? details,
   }) async {
+    await _writeFailureState(
+      id,
+      raw: raw,
+      details: details,
+      retryCount: pendingSyncItems.maxRetry,
+    );
+  }
+
+  /// Shared tail of both failure writers: releases the syncing flag, stamps
+  /// the attempt time, stores the raw text and the structured details.
+  ///
+  /// Only [retryCount] differs between [markFailed] (spend one attempt) and
+  /// [markPermanentlyFailed] (jump to the cap). Keeping the rest in one place
+  /// means the two paths cannot drift apart in what they record — a row
+  /// written by either must be readable by [fetchPermanentlyFailed] and by
+  /// [PendingSyncEntry] alike.
+  Future<void> _writeFailureState(
+    String id, {
+    required String raw,
+    PendingSyncErrorDetails? details,
+    required Expression<int> retryCount,
+  }) async {
     final detailsJson = details?.toJson();
     await (update(pendingSyncItems)..where((t) => t.id.equals(id))).write(
       PendingSyncItemsCompanion.custom(
         isSyncing: const Variable(false),
-        retryCount: pendingSyncItems.maxRetry,
+        retryCount: retryCount,
         lastAttemptAt: Variable(DateTime.now()),
         lastError: Variable(raw),
         lastErrorDetails: Variable(
