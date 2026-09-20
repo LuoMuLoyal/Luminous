@@ -178,17 +178,12 @@ List<TodayOverviewItem> buildOverviewItems(
     TodayOverviewItem(
       icon: SemanticIcons.recordMedicine,
       label: l10n.todayMedicationOverviewLabel,
-      // With no medication plan there is nothing to be "0/0" against; the
-      // ratio form would read as "all doses missed today" instead of "none
-      // scheduled".
-      value: medicationDegraded
-          ? l10n.todayMetricDegraded
-          : dashboard.medication.medicineCount == 0
-          ? l10n.todayMedicationOverviewNone
-          : l10n.todayMedicationOverviewCount(
-              safeMedicationDone,
-              dashboard.medication.medicineCount,
-            ),
+      value: _medicationOverviewValue(
+        l10n,
+        dashboard.medication,
+        degraded: medicationDegraded,
+        doneCount: safeMedicationDone,
+      ),
       color: SemanticColor.primary,
       isDegraded: medicationDegraded,
     ),
@@ -210,6 +205,27 @@ List<TodayOverviewItem> buildOverviewItems(
       isDegraded: sleepDegraded,
     ),
   ];
+}
+
+/// Medication cell of the overview row.
+///
+/// Degraded wins over everything else: the number cannot be trusted, so the
+/// cell must not present a ratio as if it were measured. With no medication
+/// plan there is nothing to be "0/0" against either — the ratio form would
+/// read as "all doses missed today" instead of "none scheduled".
+String _medicationOverviewValue(
+  AppLocalizations l10n,
+  TodayMedicationSummary medication, {
+  required bool degraded,
+  required int doneCount,
+}) {
+  if (degraded) {
+    return l10n.todayMetricDegraded;
+  }
+  if (medication.medicineCount == 0) {
+    return l10n.todayMedicationOverviewNone;
+  }
+  return l10n.todayMedicationOverviewCount(doneCount, medication.medicineCount);
 }
 
 String _waterOverviewValue(AppLocalizations l10n, TodayWaterSummary water) {
