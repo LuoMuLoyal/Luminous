@@ -103,6 +103,34 @@ void main() {
     expect(find.text('8月1日 → 8月7日'), findsOneWidget);
   });
 
+  testWidgets('reads an ISO window bound as a date literal, not an instant', (
+    tester,
+  ) async {
+    // 服务端约定为当地日期字面量;若按 instant 解析,UTC 之后的时区会把
+    // 8月17日渲染成 8月16日(或反之),卡片日期与数据窗口对不上。
+    await pumpNoteworthy(
+      tester,
+      findings: [finding()],
+      startDate: '2026-08-17T00:00:00.000Z',
+      endDate: '2026-08-23T00:00:00.000Z',
+    );
+
+    expect(find.text('8月17日 → 8月23日'), findsOneWidget);
+  });
+
+  testWidgets('echoes an unparseable window bound instead of dropping it', (
+    tester,
+  ) async {
+    await pumpNoteworthy(
+      tester,
+      findings: [finding()],
+      startDate: '----.--.--',
+      endDate: 'not-a-date',
+    );
+
+    expect(find.text('----.--.-- → not-a-date'), findsOneWidget);
+  });
+
   testWidgets('limits to two cards and aggregates title/body for mixed set', (
     tester,
   ) async {

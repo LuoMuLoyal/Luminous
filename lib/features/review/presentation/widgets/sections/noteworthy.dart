@@ -95,14 +95,52 @@ class ReviewNoteworthySection extends StatelessWidget {
     };
   }
 
-  /// Parses the server's `YYYY-MM-DD` window bound; falls back to the raw
+  /// Formats the server's `YYYY-MM-DD` window bound; falls back to the raw
   /// string when it is a placeholder or otherwise unparseable, so a missing
   /// window never renders as an empty label.
+  ///
+  /// The contract is a **local date literal**, not an instant: the backend
+  /// builds it with `parseDateOnly`/`formatDateOnly` (UTC-normalized day
+  /// arithmetic) and the value names the calendar day the user lived through.
+  /// `DateTime.parse` would reinterpret it as an instant — and for the ISO
+  /// form (`2026-08-17T00:00:00.000Z`) `DateFormat` renders it in the device
+  /// timezone, so a user behind UTC would see the previous day on the card.
+  /// Reading the leading date components avoids both problems: the literal is
+  /// echoed back exactly as the backend stated it.
   static String _formatWindowDate(String raw, String locale) {
-    final parsed = DateTime.tryParse(raw);
-    if (parsed == null) return raw;
+    final dateOnly = _dateOnlyPrefix(raw);
+    if (dateOnly == null) return raw;
+    final parsed = DateTime(dateOnly.$1, dateOnly.$2, dateOnly.$3);
     return DateFormat.MMMd(locale).format(parsed);
   }
+
+  /// Extracts the leading `YYYY-MM-DD` calendar date from [raw].
+  ///
+  /// Returns null when [raw] is a placeholder (`----.--.--`) or carries no
+  /// parseable date prefix, so the caller can echo the raw string instead.
+  static (int, int, int)? _dateOnlyPrefix(String raw) {
+    final match = _dateOnlyPrefixPattern.firstMatch(raw.trim());
+    if (match == null) return null;
+    final year = int.tryParse(match.group(1)!);
+    final month = int.tryParse(match.group(2)!);
+    final day = int.tryParse(match.group(3)!);
+    if (year == null || month == null || day == null) return null;
+    // DateTime normalizes out-of-range values instead of throwing (month 13
+    // becomes January of the next year), which would silently render a wrong
+    // day; reject them and fall back to the raw string.
+    if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+    final candidate = DateTime(year, month, day);
+    if (candidate.year != year ||
+        candidate.month != month ||
+        candidate.day != day) {
+      return null;
+    }
+    return (year, month, day);
+  }
+
+  static final RegExp _dateOnlyPrefixPattern = RegExp(
+    r'^(\d{4})-(\d{2})-(\d{2})',
+  );
 }
 
 class _NoteworthyCard extends StatelessWidget {
