@@ -278,6 +278,40 @@ void main() {
       },
     );
 
+    test(
+      'keeps flushing remaining items when the failure write itself throws',
+      () async {
+        // A throwing failure write must not escape _replayEntry: the entry
+        // would stay marked as syncing and silently vanish from the queue,
+        // and every item after it would be abandoned for this flush.
+        final failing = _createEntry(id: 'write-fail-001');
+        final healthy = _createEntry(id: 'write-ok-002');
+        when(
+          () => mockDao.fetchReady(),
+        ).thenAnswer((_) async => [failing, healthy]);
+        when(() => mockDao.markSyncing(any())).thenAnswer((_) async {});
+        when(() => mockDao.remove(any())).thenAnswer((_) async {});
+        when(
+          () => mockDao.markFailed(
+            'write-fail-001',
+            raw: any(named: 'raw'),
+            details: any(named: 'details'),
+          ),
+        ).thenThrow(StateError('database is closed'));
+
+        worker.registerHandler('daily_record', (e) async {
+          if (e.id == 'write-fail-001') {
+            throw StateError('handler exploded');
+          }
+        });
+
+        await worker.flush();
+
+        verify(() => mockDao.markSyncing('write-ok-002')).called(1);
+        verify(() => mockDao.remove('write-ok-002')).called(1);
+      },
+    );
+
     test('marks failed on generic exception and does not remove', () async {
       final entry = _createEntry(id: 'generic-fail');
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);

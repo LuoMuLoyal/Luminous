@@ -108,10 +108,14 @@ class SyncWorker {
       // spending the remaining attempts. Without an explicit `retryable`,
       // fall back to the attempt budget — the previous behaviour.
       if (details.retryable == false) {
-        await pendingSyncDao.markPermanentlyFailed(
+        await _recordFailure(
           entry.id,
-          raw: e.toString(),
-          details: details,
+          write: () => pendingSyncDao.markPermanentlyFailed(
+            entry.id,
+            raw: e.toString(),
+            details: details,
+          ),
+          error: e,
         );
         talker.error(
           'SyncWorker: item ${entry.id} rejected as non-retryable '
@@ -120,10 +124,14 @@ class SyncWorker {
         return;
       }
       final isPermanentlyFailed = entry.retryCount + 1 >= entry.maxRetry;
-      await pendingSyncDao.markFailed(
+      await _recordFailure(
         entry.id,
-        raw: e.toString(),
-        details: details,
+        write: () => pendingSyncDao.markFailed(
+          entry.id,
+          raw: e.toString(),
+          details: details,
+        ),
+        error: e,
       );
       if (isPermanentlyFailed) {
         talker.error(
@@ -138,15 +146,49 @@ class SyncWorker {
       }
     } catch (e) {
       final failure = LucentErrorMapper.fromObject(e);
-      await pendingSyncDao.markFailed(
+      await _recordFailure(
         entry.id,
-        raw: e.toString(),
-        details: PendingSyncErrorDetails.fromLucentFailure(
-          failure,
-          e.toString(),
+        write: () => pendingSyncDao.markFailed(
+          entry.id,
+          raw: e.toString(),
+          details: PendingSyncErrorDetails.fromLucentFailure(
+            failure,
+            e.toString(),
+          ),
         ),
+        error: e,
       );
       talker.error('SyncWorker: item ${entry.id} unexpected error: $e');
+    }
+  }
+
+  /// Persists a failed attempt without letting a database write failure escape
+  /// the replay loop.
+  ///
+  /// Every failure branch above has to leave a durable trace: an entry whose
+  /// failure state is never written stays "isSyncing = true", so
+  /// [PendingSyncDao.fetchReady] filters it out and the item silently
+  /// disappears from both the retry queue and the permanently-failed list.
+  /// A throwing write (disk full, database closed, constraint change) would
+  /// otherwise bubble out of [_replayEntry] and abandon the remaining items.
+  ///
+  /// [PendingSyncDao.resetForRetry] is the recovery path: it clears
+  /// "isSyncing" and the retry counter, so the item is eligible again. When
+  /// even that write fails the worker keeps running and the next [flush]
+  /// reports the same error rather than dying.
+  Future<void> _recordFailure(
+    String entryId, {
+    required Future<void> Function() write,
+    required Object error,
+  }) async {
+    try {
+      await write();
+    } catch (writeError, stackTrace) {
+      talker.error(
+        'SyncWorker: failed to persist the failure state of item $entryId '
+        'for $error: $writeError',
+        stackTrace,
+      );
     }
   }
 }
