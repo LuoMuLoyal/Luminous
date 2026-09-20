@@ -822,6 +822,88 @@ void main() {
       expect(citations.single.checksum, 'checksum-42');
     });
 
+    test(
+      'skips a non-list citations payload without dropping the tool card',
+      () async {
+        final repo = LucentAssistantRepository(
+          dataSource: _FakeAssistantRemoteDataSource(
+            stream: Stream.fromIterable([
+              AssistantRemoteResultEvent(
+                conversationId: 'c1',
+                content: 'done',
+                usedTools: const ['reason_over_ontology'],
+                generatedAt: DateTime(2026, 9, 19),
+                proposedActions: const [],
+                toolDetails: [
+                  {
+                    'name': 'reason_over_ontology',
+                    // 后端把 citations 写成对象(而非列表):引用区不渲染,
+                    // 但工具卡本身必须保留。
+                    'citations': {'id': 'not-a-list'},
+                  },
+                ],
+              ),
+            ]),
+          ),
+        );
+
+        final events = await repo.streamMessages([
+          AssistantMessage(
+            role: AssistantMessageRole.user,
+            content: 'go',
+            createdAt: dummyDateTime,
+          ),
+        ]).toList();
+
+        final result = events[0] as AssistantGenerationResultEvent;
+        final detail = result.message.toolDetails.single;
+        expect(detail.name, 'reason_over_ontology');
+        expect(detail.citations, isEmpty);
+      },
+    );
+
+    test(
+      'skips non-map citation entries and keeps the well-formed ones',
+      () async {
+        final repo = LucentAssistantRepository(
+          dataSource: _FakeAssistantRemoteDataSource(
+            stream: Stream.fromIterable([
+              AssistantRemoteResultEvent(
+                conversationId: 'c1',
+                content: 'done',
+                usedTools: const ['reason_over_ontology'],
+                generatedAt: DateTime(2026, 9, 19),
+                proposedActions: const [],
+                toolDetails: [
+                  {
+                    'name': 'reason_over_ontology',
+                    'citations': [
+                      'not-a-map',
+                      {'id': 'kept-1', 'sourceQuote': '保留的引用。'},
+                      {'id': ''},
+                    ],
+                  },
+                ],
+              ),
+            ]),
+          ),
+        );
+
+        final events = await repo.streamMessages([
+          AssistantMessage(
+            role: AssistantMessageRole.user,
+            content: 'go',
+            createdAt: dummyDateTime,
+          ),
+        ]).toList();
+
+        final result = events[0] as AssistantGenerationResultEvent;
+        final citations = result.message.toolDetails.single.citations;
+        expect(citations, hasLength(1));
+        expect(citations.single.id, 'kept-1');
+      },
+    );
+
     test('maps create_daily_record proposed action', () async {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(

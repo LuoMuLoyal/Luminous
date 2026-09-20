@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
@@ -321,18 +322,36 @@ class LucentAssistantRepository implements AssistantRepository {
 
   /// 溯源引用列表。缺字段或形状不对时返回空表——引用区整块不渲染,
   /// 而不是让一条坏引用把整张工具卡打掉。
+  ///
+  /// 容错不等于静默:每一条被丢弃的引用都写一条 debug 日志(带原因与原始值),
+  /// 后端把 `id` 改名或把 `citations` 改成非列表时,开发者能在日志里定位,
+  /// 而不是只看到来源条少了一块。
   List<AssistantToolCitation> _mapCitations(Object? value) {
+    if (value == null) {
+      return const <AssistantToolCitation>[];
+    }
     if (value is! List) {
+      appTalker.debug(
+        'AssistantRepository.citations: expected a list, got '
+        '${value.runtimeType}',
+      );
       return const <AssistantToolCitation>[];
     }
     final citations = <AssistantToolCitation>[];
     for (final item in value) {
       final map = _mapStringKeyedMap(item);
       if (map == null) {
+        appTalker.debug(
+          'AssistantRepository.citations: skipping non-map item '
+          '(${item.runtimeType}): $item',
+        );
         continue;
       }
       final id = map['id']?.toString() ?? '';
       if (id.isEmpty) {
+        appTalker.debug(
+          'AssistantRepository.citations: skipping entry without an id: $map',
+        );
         continue;
       }
       citations.add(
