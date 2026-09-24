@@ -1,161 +1,178 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_detail_remote.dart';
-import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockMedicinesApi extends Mock implements MedicinesApi {}
+class _MockDio extends Mock implements Dio {}
 
-/// Builds a zod detail DTO whose full required-nullable surface defaults to
-/// null so tests only set the fields they assert on.
-MedicineDetailResponseDetail _detail({
-  String kind = 'cnProduct',
-  List<String> groups = const [],
-  List<String> categories = const [],
-  List<String> atcCodes = const [],
-  List<String> synonyms = const [],
-  List<String> foodInteractions = const [],
-  List<MedicineDetailResponseDrugInteractions>? drugInteractions,
-  String? approvalNumber,
-  String? manufacturer,
-  String? packageSpec,
-  String? brandName,
-  String? ingredients,
-  String? properties,
-  String? indications,
-  String? dosage,
-  String? adverseReactions,
-  String? contraindications,
-  String? precautions,
-  String? pharmacologyToxicology,
-  String? pharmacokinetics,
-  String? overdose,
-  String? storage,
-  String? validityPeriod,
-  String? drugType,
-  String? state,
-  String? description,
-  String? indication,
-  String? mechanismOfAction,
-  String? pharmacodynamics,
-  String? toxicity,
-  String? metabolism,
-  String? absorption,
-  String? halfLife,
-  String? proteinBinding,
-  String? routeOfElimination,
-  String? volumeOfDistribution,
-  String? clearance,
-  List<MedicineDetailResponseExternalIdentifiers>? externalIdentifiers,
-  List<MedicineDetailResponseExternalLinks>? externalLinks,
-  List<MedicineDetailResponseTargets>? targets,
-  MedicineDetailResponseSequenceSummary? sequenceSummary,
-  MedicineDetailResponseStructure? structure,
-  String? barcode,
-  String? nationalDrugCode,
-  String? sourceUrl,
-  String? imageUrl,
-}) {
-  return MedicineDetailResponseDetail(
-    kind: kind,
-    groups: groups,
-    categories: categories,
-    atcCodes: atcCodes,
-    synonyms: synonyms,
-    foodInteractions: foodInteractions,
-    drugInteractions: drugInteractions,
-    approvalNumber: approvalNumber,
-    manufacturer: manufacturer,
-    packageSpec: packageSpec,
-    brandName: brandName,
-    ingredients: ingredients,
-    properties: properties,
-    indications: indications,
-    dosage: dosage,
-    adverseReactions: adverseReactions,
-    contraindications: contraindications,
-    precautions: precautions,
-    pharmacologyToxicology: pharmacologyToxicology,
-    pharmacokinetics: pharmacokinetics,
-    overdose: overdose,
-    storage: storage,
-    validityPeriod: validityPeriod,
-    drugType: drugType,
-    state: state,
-    description: description,
-    indication: indication,
-    mechanismOfAction: mechanismOfAction,
-    pharmacodynamics: pharmacodynamics,
-    toxicity: toxicity,
-    metabolism: metabolism,
-    absorption: absorption,
-    halfLife: halfLife,
-    proteinBinding: proteinBinding,
-    routeOfElimination: routeOfElimination,
-    volumeOfDistribution: volumeOfDistribution,
-    clearance: clearance,
-    externalIdentifiers: externalIdentifiers,
-    externalLinks: externalLinks,
-    targets: targets,
-    sequenceSummary: sequenceSummary,
-    structure: structure,
-    barcode: barcode,
-    nationalDrugCode: nationalDrugCode,
-    sourceUrl: sourceUrl,
-    imageUrl: imageUrl,
-  );
-}
+/// A detail response carrying only the DrugBank family, exactly as the backend
+/// serves `source=drugbank`: the CN package-insert keys are simply absent.
+///
+/// This is the shape that the generated `MedicineDetailResponse.detail`
+/// wrapper cannot decode (it requires both families), so these fixtures are
+/// what keeps that regression from silently returning as a permanent loading
+/// state.
+const _drugbankBody = <String, dynamic>{
+  'id': 'DB00945',
+  'source': 'drugbank',
+  'name': 'Acetylsalicylic acid',
+  'subtitle': null,
+  'detail': <String, dynamic>{
+    'kind': 'drugbank',
+    'drugType': null,
+    'state': null,
+    'description': null,
+    'indication': null,
+    'mechanismOfAction': null,
+    'pharmacodynamics': null,
+    'toxicity': null,
+    'metabolism': null,
+    'absorption': null,
+    'halfLife': null,
+    'proteinBinding': null,
+    'routeOfElimination': null,
+    'volumeOfDistribution': null,
+    'clearance': null,
+    'groups': <String>[],
+    'categories': <String>[],
+    'atcCodes': <String>[],
+    'synonyms': <String>[],
+    'foodInteractions': <String>[],
+    'drugInteractions': null,
+    'targets': <dynamic>[],
+    'externalIdentifiers': <dynamic>[],
+    'externalLinks': <dynamic>[],
+    'sequenceSummary': null,
+    'structure': null,
+  },
+};
+
+/// A detail response carrying only the CN package-insert family.
+const _cnBody = <String, dynamic>{
+  'id': '4dbb23eb3668d330',
+  'source': 'cn',
+  'name': '复方忍冬藤阿司匹林片',
+  'subtitle': '0.3g*24片 / 长春新安药业有限公司',
+  'detail': <String, dynamic>{
+    'kind': 'cnProduct',
+    'approvalNumber': '国药准字H22021959',
+    'manufacturer': '长春新安药业有限公司',
+    'packageSpec': '0.3g*24片',
+    'brandName': null,
+    'ingredients': null,
+    'properties': null,
+    'indications': '用于感冒引起的头痛',
+    'dosage': null,
+    'adverseReactions': null,
+    'contraindications': null,
+    'precautions': null,
+    'pharmacologyToxicology': null,
+    'pharmacokinetics': null,
+    'overdose': null,
+    'storage': null,
+    'validityPeriod': null,
+    'barcode': null,
+    'nationalDrugCode': null,
+    'sourceUrl': null,
+    'imageUrl': null,
+  },
+};
 
 void main() {
-  late _MockMedicinesApi api;
+  late _MockDio dio;
   late MedicineDetailRemoteDataSource dataSource;
 
   setUp(() {
-    api = _MockMedicinesApi();
-    dataSource = MedicineDetailRemoteDataSource(api: api);
+    dio = _MockDio();
+    dataSource = MedicineDetailRemoteDataSource(
+      api: MedicinesApi(dio),
+      dio: dio,
+    );
   });
 
-  test('maps the direct resource to MedicineDetail', () async {
+  void stubDetail(Map<String, dynamic> body) {
     when(
-      () => api.getDetail(
-        id: any(named: 'id'),
-        source_: any(named: 'source_'),
+      () => dio.request<dynamic>(
+        any(),
+        options: any(named: 'options'),
+        queryParameters: any(named: 'queryParameters'),
       ),
     ).thenAnswer(
-      (_) async => Response<MedicineDetailResponse>(
-        data: MedicineDetailResponse(
-          id: 'cn_1',
-          source_: MedicineDetailResponseSource_Enum.cn,
-          name: '布洛芬片',
-          subtitle: null,
-          detail: _detail(indications: '用于缓解轻至中度疼痛'),
-        ),
-        requestOptions: RequestOptions(path: '/api/v1/medicines/cn_1'),
+      (_) async => Response<dynamic>(
+        data: jsonDecode(jsonEncode(body)),
+        requestOptions: RequestOptions(path: '/api/v1/medicines/DB00945'),
         statusCode: 200,
       ),
     );
+  }
 
-    final result = await dataSource.fetchDetail(id: 'cn_1', source: 'cn');
-
-    expect(result, isA<MedicineDetail>());
-    expect(result.id, 'cn_1');
-    expect(result.name, '布洛芬片');
-    expect(result.indications, '用于缓解轻至中度疼痛');
-
-    verify(() => api.getDetail(id: 'cn_1', source_: 'cn')).called(1);
+  test('the generated union wrapper cannot decode a one-sided payload', () {
+    // Documents *why* `fetchDetail` parses the body itself. The generator
+    // emits `MedicineDetailResponseDetail` as a flat object requiring every
+    // field of both `oneOf` variants (checked: true), while the response model
+    // declares that wrapper for `detail`. A real payload only carries one
+    // family, so the generated path throws for every medicine — this guards
+    // against "simplifying" the data source back onto `api.getDetail`.
+    expect(
+      () => MedicineDetailResponse.fromJson(
+        jsonDecode(jsonEncode(_drugbankBody)) as Map<String, dynamic>,
+      ),
+      throwsA(isA<CheckedFromJsonException>()),
+    );
   });
 
-  test('throws empty response error when the resource is null', () async {
+  test('decodes a drugbank payload without the CN keys', () async {
+    stubDetail(_drugbankBody);
+
+    final result = await dataSource.fetchDetail(
+      id: 'DB00945',
+      source: 'drugbank',
+    );
+
+    expect(result.id, 'DB00945');
+    expect(result.source, 'drugbank');
+    expect(result.kind, 'drugbank');
+    expect(result.name, 'Acetylsalicylic acid');
+    // The absent CN family stays null rather than throwing.
+    expect(result.approvalNumber, isNull);
+    expect(result.manufacturer, isNull);
+  });
+
+  test('decodes a cn payload without the DrugBank keys', () async {
+    stubDetail(_cnBody);
+
+    final result = await dataSource.fetchDetail(
+      id: '4dbb23eb3668d330',
+      source: 'cn',
+    );
+
+    expect(result.id, '4dbb23eb3668d330');
+    expect(result.source, 'cn');
+    expect(result.kind, 'cnProduct');
+    expect(result.name, '复方忍冬藤阿司匹林片');
+    expect(result.approvalNumber, '国药准字H22021959');
+    expect(result.manufacturer, '长春新安药业有限公司');
+    expect(result.indications, '用于感冒引起的头痛');
+    // The absent DrugBank family stays null.
+    expect(result.mechanismOfAction, isNull);
+    expect(result.targets, isEmpty);
+  });
+
+  test('throws empty response error when the body is not an object', () async {
     when(
-      () => api.getDetail(
-        id: any(named: 'id'),
-        source_: any(named: 'source_'),
+      () => dio.request<dynamic>(
+        any(),
+        options: any(named: 'options'),
+        queryParameters: any(named: 'queryParameters'),
       ),
     ).thenAnswer(
-      (_) async => Response<MedicineDetailResponse>(
+      (_) async => Response<dynamic>(
         data: null,
         requestOptions: RequestOptions(path: '/'),
       ),
@@ -172,6 +189,27 @@ void main() {
               NetworkErrorCode.emptyResponse,
             )
             .having((e) => e.message, 'message', contains('Empty')),
+      ),
+    );
+  });
+
+  test('rejects an unknown detail kind instead of guessing', () async {
+    stubDetail(<String, dynamic>{
+      'id': 'x',
+      'source': 'cn',
+      'name': 'n',
+      'subtitle': null,
+      'detail': <String, dynamic>{'kind': 'somethingElse'},
+    });
+
+    await expectLater(
+      dataSource.fetchDetail(id: 'x', source: 'cn'),
+      throwsA(
+        isA<LucentFailure>().having(
+          (e) => e.message,
+          'message',
+          contains('somethingElse'),
+        ),
       ),
     );
   });

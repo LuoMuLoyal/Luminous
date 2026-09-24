@@ -10,9 +10,10 @@ part 'medicine_detail.g.dart';
 /// its own cache layer.
 @riverpod
 Future<MedicineDetail> medicineDetail(Ref ref, String source, String id) {
-  final api = ref.watch(lucentClientProvider).medicines;
+  final client = ref.watch(lucentDioClientProvider);
   return MedicineDetailRemoteDataSource(
-    api: api,
+    api: client.client.medicines,
+    dio: client.dio,
   ).fetchDetail(id: id, source: source);
 }
 
@@ -25,8 +26,9 @@ Future<MedicineDetail> medicineDetail(Ref ref, String source, String id) {
 /// therefore gated on the section's expanded state rather than on being built.
 @riverpod
 Future<MedicineSequences> medicineSequences(Ref ref, String source, String id) {
-  final api = ref.watch(lucentClientProvider).medicines;
+  final client = ref.watch(lucentDioClientProvider);
   return MedicineDetailRemoteDataSource(
-    api: api,
+    api: client.client.medicines,
+    dio: client.dio,
   ).fetchSequences(id: id, source: source);
 }
