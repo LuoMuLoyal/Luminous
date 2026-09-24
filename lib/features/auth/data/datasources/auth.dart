@@ -249,43 +249,6 @@ class LucentAuthRepository implements AuthRepository {
   }
 
   @override
-  TaskEither<LucentFailure, OAuthAuthorizeData> createWeiboAuthorizeUrl({
-    String? callbackUri,
-  }) {
-    return TaskEither.tryCatch(() async {
-      final trimmedWeiboCallbackUri = _trimOrNull(callbackUri);
-      final response = await _client.auth.createWeiboAuthorizeUrl(
-        createWeiboAuthorizeUrlRequest: CreateWeiboAuthorizeUrlRequest(
-          callbackUri: trimmedWeiboCallbackUri,
-        ),
-      );
-      return _mapAuthorizeData(
-        _requireBody(response.data, 'createWeiboAuthorizeUrl'),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-
-  @override
-  TaskEither<LucentFailure, AuthSession> loginWithWeibo({
-    required String code,
-    required String state,
-  }) {
-    return TaskEither.tryCatch(() async {
-      final response = await _client.auth.loginWithWeibo(
-        loginWithWeiboRequest: LoginWithWeiboRequest(
-          code: code.trim(),
-          state: state.trim(),
-        ),
-      );
-      final session = AuthMapper.toSessionFromLogin(
-        _requireBody(response.data, 'loginWithWeibo'),
-      );
-      await _persistSession(session);
-      return session;
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-
-  @override
   TaskEither<LucentFailure, OAuthAuthorizeData> createGoogleAuthorizeUrl({
     String? callbackUri,
   }) {

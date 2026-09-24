@@ -205,6 +205,7 @@ is the machine projection; the interpretive contract lives in
 | `actionImage` | `` | `FLucideIcons.image` |  |
 | `actionCalendar` | `` | `FLucideIcons.calendar` |  |
 | `actionMessage` | `` | `FLucideIcons.messageSquare` |  |
+| `actionMail` | `` | `FLucideIcons.mail` |  |
 | `actionSend` | `` | `FLucideIcons.send` |  |
 | `actionMinus` | `` | `FLucideIcons.minus` |  |
 | `actionThemeLight` | `` | `FLucideIcons.sun` |  |

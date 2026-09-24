@@ -12,6 +12,7 @@ import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/candidate_merger.dart';
+import 'package:luminous/features/scan/domain/services/candidate_search.dart';
 import 'package:luminous/features/scan/domain/services/medicine_ocr_extractor.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -35,24 +36,7 @@ Future<List<MedicineMatchResult>> processPhoto(
       const MedicineOcrExtractor().extractCandidates(ocrBlocks),
     );
 
-    final results = <MedicineMatchResult>[];
-    for (final candidate in candidates) {
-      final searchResult = await repo.search(candidate.query).run();
-      final items = searchResult.fold(
-        (failure) => throw failure,
-        (items) => items,
-      );
-      for (final item in items) {
-        results.add(
-          MedicineMatchResult(
-            name: item.name,
-            id: item.id,
-            confidence: candidate.confidence,
-            matchType: candidate.matchType,
-          ),
-        );
-      }
-    }
+    final results = await searchCandidates(repo, candidates);
 
     // 不同候选 query 可能搜到同一药品，按稳定药品 id 合并（id 缺失按名称
     // 兜底），弹窗不再出现重复候选。

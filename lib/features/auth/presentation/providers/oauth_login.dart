@@ -13,9 +13,8 @@ part 'oauth_apple.dart';
 part 'oauth_google.dart';
 part 'oauth_qq.dart';
 part 'oauth_wechat.dart';
-part 'oauth_weibo.dart';
 
-/// State for OAuth login flows (WeChat, QQ, Weibo, Google, Apple).
+/// State for OAuth login flows (WeChat, QQ, Google, Apple).
 ///
 /// Managed by [OAuthLoginController]. This is intentionally a plain Dart class
 /// (not freezed) to avoid build_runner dependencies and keep the OAuth state
@@ -30,10 +29,6 @@ class OAuthLoginState {
     this.isCompletingQq = false,
     this.qqAuthorizeUrl,
     this.qqState,
-    this.isStartingWeibo = false,
-    this.isCompletingWeibo = false,
-    this.weiboAuthorizeUrl,
-    this.weiboState,
     this.isStartingGoogle = false,
     this.isCompletingGoogle = false,
     this.googleAuthorizeUrl,
@@ -51,11 +46,6 @@ class OAuthLoginState {
   final bool isCompletingQq;
   final String? qqAuthorizeUrl;
   final String? qqState;
-
-  final bool isStartingWeibo;
-  final bool isCompletingWeibo;
-  final String? weiboAuthorizeUrl;
-  final String? weiboState;
 
   final bool isStartingGoogle;
   final bool isCompletingGoogle;
@@ -77,10 +67,6 @@ class OAuthLoginState {
     bool? isCompletingQq,
     Object? qqAuthorizeUrl = _sentinel,
     Object? qqState = _sentinel,
-    bool? isStartingWeibo,
-    bool? isCompletingWeibo,
-    Object? weiboAuthorizeUrl = _sentinel,
-    Object? weiboState = _sentinel,
     bool? isStartingGoogle,
     bool? isCompletingGoogle,
     Object? googleAuthorizeUrl = _sentinel,
@@ -103,14 +89,6 @@ class OAuthLoginState {
           ? this.qqAuthorizeUrl
           : qqAuthorizeUrl as String?,
       qqState: qqState == _sentinel ? this.qqState : qqState as String?,
-      isStartingWeibo: isStartingWeibo ?? this.isStartingWeibo,
-      isCompletingWeibo: isCompletingWeibo ?? this.isCompletingWeibo,
-      weiboAuthorizeUrl: weiboAuthorizeUrl == _sentinel
-          ? this.weiboAuthorizeUrl
-          : weiboAuthorizeUrl as String?,
-      weiboState: weiboState == _sentinel
-          ? this.weiboState
-          : weiboState as String?,
       isStartingGoogle: isStartingGoogle ?? this.isStartingGoogle,
       isCompletingGoogle: isCompletingGoogle ?? this.isCompletingGoogle,
       googleAuthorizeUrl: googleAuthorizeUrl == _sentinel
@@ -148,18 +126,13 @@ abstract class OAuthLoginControllerBase extends Notifier<OAuthLoginState> {
   }
 }
 
-/// Manages all OAuth login flows (WeChat, QQ, Weibo, Google, Apple).
+/// Manages all OAuth login flows (WeChat, QQ, Google, Apple).
 ///
 /// Provider-specific methods are defined as mixins in part files
-/// (`oauth_wechat.dart`, `oauth_qq.dart`, `oauth_weibo.dart`,
-/// `oauth_google.dart`, `oauth_apple.dart`).
+/// (`oauth_wechat.dart`, `oauth_qq.dart`, `oauth_google.dart`,
+/// `oauth_apple.dart`).
 class OAuthLoginController extends OAuthLoginControllerBase
-    with
-        OAuthWechatMixin,
-        OAuthQqMixin,
-        OAuthWeiboMixin,
-        OAuthGoogleMixin,
-        OAuthAppleMixin {
+    with OAuthWechatMixin, OAuthQqMixin, OAuthGoogleMixin, OAuthAppleMixin {
   @override
   OAuthLoginState build() => const OAuthLoginState();
 

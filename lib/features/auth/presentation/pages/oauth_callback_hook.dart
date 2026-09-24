@@ -19,8 +19,6 @@ void useOAuthCallbackHandler({
   required String? wechatState,
   required String? qqCode,
   required String? qqState,
-  required String? weiboCode,
-  required String? weiboState,
   required String? googleCode,
   required String? googleState,
   required String? returnTo,
@@ -50,19 +48,6 @@ void useOAuthCallbackHandler({
               goAfterLogin(context, returnTo: returnTo, fallbackHome: true);
             }
           }),
-        );
-      });
-    }
-    if ((weiboCode?.isNotEmpty ?? false) && (weiboState?.isNotEmpty ?? false)) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        unawaited(
-          oauthController
-              .completeWeiboLogin(code: weiboCode!, state: weiboState!)
-              .then((s) {
-                if (s != null && context.mounted) {
-                  goAfterLogin(context, returnTo: returnTo, fallbackHome: true);
-                }
-              }),
         );
       });
     }

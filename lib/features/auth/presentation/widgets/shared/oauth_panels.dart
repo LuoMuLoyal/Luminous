@@ -19,9 +19,6 @@ abstract final class OAuthBrandColors {
   /// Tencent QQ blue — #12B7F5.
   static const Color qq = Color(0xFF12B7F5);
 
-  /// Weibo red — #E6162D.
-  static const Color weibo = Color(0xFFE6162D);
-
   /// Google blue — #4285F4.
   static const Color google = Color(0xFF4285F4);
 
@@ -49,12 +46,6 @@ class OAuthButtonRow extends StatefulWidget {
     required this.qqAuthorizeUrl,
     required this.onQqStart,
     required this.onQqComplete,
-    required this.weiboCallbackController,
-    required this.isStartingWeibo,
-    required this.isCompletingWeibo,
-    required this.weiboAuthorizeUrl,
-    required this.onWeiboStart,
-    required this.onWeiboComplete,
     required this.googleCallbackController,
     required this.isStartingGoogle,
     required this.isCompletingGoogle,
@@ -64,7 +55,6 @@ class OAuthButtonRow extends StatefulWidget {
     required this.isStartingApple,
     required this.onAppleSignIn,
     this.showWechat = true,
-    this.showWeibo = true,
   });
 
   // WeChat
@@ -83,14 +73,6 @@ class OAuthButtonRow extends StatefulWidget {
   final VoidCallback onQqStart;
   final VoidCallback onQqComplete;
 
-  // Weibo
-  final TextEditingController weiboCallbackController;
-  final bool isStartingWeibo;
-  final bool isCompletingWeibo;
-  final String? weiboAuthorizeUrl;
-  final VoidCallback onWeiboStart;
-  final VoidCallback onWeiboComplete;
-
   // Google
   final TextEditingController googleCallbackController;
   final bool isStartingGoogle;
@@ -107,11 +89,6 @@ class OAuthButtonRow extends StatefulWidget {
   /// underlying flow available. Used to gate WeChat sign-in until the
   /// app has the required enterprise qualification (see docs/TODO.md).
   final bool showWechat;
-
-  /// Hides the Weibo entry (button + callback input) while keeping the
-  /// underlying flow available. Used to remove Weibo from the UI until a
-  /// full removal is done (see docs/TODO.md).
-  final bool showWeibo;
 
   @override
   State<OAuthButtonRow> createState() => _OAuthButtonRowState();
@@ -195,17 +172,6 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                 onPressed: widget.onQqStart,
               ),
               const SizedBox(width: Spacing.lg),
-              if (widget.showWeibo) ...[
-                _OAuthCircleButton(
-                  buttonKey: const Key('weibo-login-start-button'),
-                  assetPath: 'assets/icon/oauth/weibo.svg',
-                  backgroundColor: OAuthBrandColors.weibo,
-                  isLoading: widget.isStartingWeibo,
-                  disabled: widget.isStartingWeibo || widget.isCompletingWeibo,
-                  onPressed: widget.onWeiboStart,
-                ),
-                const SizedBox(width: Spacing.lg),
-              ],
               _OAuthCircleButton(
                 buttonKey: const Key('google-login-start-button'),
                 assetPath: 'assets/icon/oauth/google-color.svg',
@@ -285,33 +251,6 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                     child: FCircularProgress(),
                   )
                 : Text(l10n.authQqCompleteAction),
-          ),
-        ],
-        // Weibo callback input (shown when authorizeUrl is set)
-        if (widget.showWeibo &&
-            widget.weiboAuthorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.lg),
-          FTextField(
-            key: const Key('weibo-callback-input'),
-            control: FTextFieldControl.managed(
-              controller: widget.weiboCallbackController,
-            ),
-            label: Text(l10n.authWeiboCallbackLabel),
-            hint: l10n.authWeiboCallbackHint,
-            keyboardType: TextInputType.url,
-          ),
-          const SizedBox(height: Spacing.md),
-          FButton(
-            key: const Key('weibo-complete-button'),
-            onPress: widget.isCompletingWeibo ? null : widget.onWeiboComplete,
-            size: FButtonSizeVariant.sm,
-            child: widget.isCompletingWeibo
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: FCircularProgress(),
-                  )
-                : Text(l10n.authWeiboCompleteAction),
           ),
         ],
         // Google callback input (shown when authorizeUrl is set)

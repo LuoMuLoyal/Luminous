@@ -27,8 +27,6 @@ class LoginPage extends HookConsumerWidget {
     this.wechatState,
     this.qqCode,
     this.qqState,
-    this.weiboCode,
-    this.weiboState,
     this.googleCode,
     this.googleState,
     this.returnTo,
@@ -38,8 +36,6 @@ class LoginPage extends HookConsumerWidget {
   final String? wechatState;
   final String? qqCode;
   final String? qqState;
-  final String? weiboCode;
-  final String? weiboState;
   final String? googleCode;
   final String? googleState;
   final String? returnTo;
@@ -52,7 +48,6 @@ class LoginPage extends HookConsumerWidget {
     final codeController = useTextEditingController();
     final wechatCallbackController = useTextEditingController();
     final qqCallbackController = useTextEditingController();
-    final weiboCallbackController = useTextEditingController();
     final googleCallbackController = useTextEditingController();
 
     final state = ref.watch(loginFormProvider);
@@ -71,8 +66,6 @@ class LoginPage extends HookConsumerWidget {
       wechatState: wechatState,
       qqCode: qqCode,
       qqState: qqState,
-      weiboCode: weiboCode,
-      weiboState: weiboState,
       googleCode: googleCode,
       googleState: googleState,
       returnTo: returnTo,
@@ -334,9 +327,8 @@ class LoginPage extends HookConsumerWidget {
                   ),
                 ),
                 OAuthButtonRow(
-                  // WeChat/Weibo 入口暂隐藏（保留底层流程，见 docs/TODO.md）。
+                  // WeChat 入口暂隐藏（保留底层流程，见 docs/TODO.md）。
                   showWechat: false,
-                  showWeibo: false,
                   wechatCallbackController: wechatCallbackController,
                   isStartingWechat: oauthState.isStartingWechat,
                   isCompletingWechat: oauthState.isCompletingWechat,
@@ -373,25 +365,6 @@ class LoginPage extends HookConsumerWidget {
                     l10n,
                     callbackController: qqCallbackController,
                     fallbackState: oauthState.qqState,
-                    returnTo: returnTo,
-                  ),
-                  weiboCallbackController: weiboCallbackController,
-                  isStartingWeibo: oauthState.isStartingWeibo,
-                  isCompletingWeibo: oauthState.isCompletingWeibo,
-                  weiboAuthorizeUrl: oauthState.weiboAuthorizeUrl,
-                  onWeiboStart: () => startWeiboLogin(
-                    context,
-                    ref,
-                    oauthController,
-                    l10n,
-                    returnTo: returnTo,
-                  ),
-                  onWeiboComplete: () => completeWeiboLoginFromInput(
-                    context,
-                    oauthController,
-                    l10n,
-                    callbackController: weiboCallbackController,
-                    fallbackState: oauthState.weiboState,
                     returnTo: returnTo,
                   ),
                   googleCallbackController: googleCallbackController,

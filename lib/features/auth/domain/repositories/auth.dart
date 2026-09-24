@@ -60,15 +60,6 @@ abstract interface class AuthRepository {
     required String state,
   });
 
-  TaskEither<LucentFailure, OAuthAuthorizeData> createWeiboAuthorizeUrl({
-    String? callbackUri,
-  });
-
-  TaskEither<LucentFailure, AuthSession> loginWithWeibo({
-    required String code,
-    required String state,
-  });
-
   TaskEither<LucentFailure, OAuthAuthorizeData> createGoogleAuthorizeUrl({
     String? callbackUri,
   });

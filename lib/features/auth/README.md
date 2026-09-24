@@ -5,11 +5,11 @@
 公共规则(l10n、TaskEither 仓库边界、跨 feature import 禁令)见仓库根 AGENTS.md,本文件只写本目录特有约定。
 
 ## 职责与边界
-- 管:邮箱密码/验证码登录注册、OAuth(微信/Apple/QQ/微博/Google;微信分移动 SDK 与桌面 loopback 双通道)、会话恢复/刷新、设备会话查看与吊销、改邮箱/改密码/注销账号。
+- 管:邮箱密码/验证码登录注册、OAuth(微信/Apple/QQ/Google;微信分移动 SDK 与桌面 loopback 双通道)、会话恢复/刷新、设备会话查看与吊销、改邮箱/改密码/注销账号。
 - 不管:路由 redirect 守卫(lib/app/router.dart)、token 持久化(`lucentSessionStoreProvider` 属 lib/core/network)、`authGuarded` 工厂(lib/core/providers/)。
 
 ## 对外契约
-- 路由(presentation/routes.dart):`Routes.login` / `loginOauthWechat|Qq|Weibo|Google` / `register` / `forgotPassword` / `resetPassword` / `account` / `accountOauthWechat` / `accountChangeEmail` / `accountSessions`。
+- 路由(presentation/routes.dart):`Routes.login` / `loginOauthWechat|Qq|Google` / `register` / `forgotPassword` / `resetPassword` / `account` / `accountOauthWechat` / `accountChangeEmail` / `accountSessions`。
 - 导出:domain/entities/session.dart(`AuthUser`/`AuthSession`/`AuthLinkedIdentity`,core/auth 消费)、data/providers/auth.dart(`authRepositoryProvider`)、presentation/services/wechat_oauth.dart(平台感知微信 OAuth,登录与身份绑定共用)。
 - 被依赖:core/auth/session_provider.dart 与 session_state.dart(`authSessionProvider` 建在其上)、app/router.dart redirect、mine/settings 的账号入口(pushAuthRequiredRoute 进 `/account`)。
 

@@ -34,22 +34,6 @@ String? webQqCallbackUri({String? returnTo}) {
   ).toString();
 }
 
-/// Builds the Weibo OAuth callback URI for web platforms.
-///
-/// Returns `null` on non-web platforms.
-String? webWeiboCallbackUri({String? returnTo}) {
-  if (!kIsWeb) return null;
-  final base = Uri.base;
-  final rt = safeReturnTo(returnTo);
-  return Uri(
-    scheme: base.scheme,
-    host: base.host,
-    port: base.hasPort ? base.port : null,
-    path: Routes.loginOauthWeibo,
-    queryParameters: rt == null ? null : {'returnTo': rt},
-  ).toString();
-}
-
 /// Builds the Google OAuth callback URI for web platforms.
 ///
 /// Returns `null` on non-web platforms.

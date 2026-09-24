@@ -127,60 +127,6 @@ Future<void> completeQqLoginFromInput(
 }
 
 // =========================
-//  Weibo
-// =========================
-
-Future<void> startWeiboLogin(
-  BuildContext context,
-  WidgetRef ref,
-  OAuthLoginController oauthController,
-  AppLocalizations l10n, {
-  String? returnTo,
-}) async {
-  final authorizeUrl = await oauthController.startWeiboLogin(
-    webCallbackUri: webWeiboCallbackUri(returnTo: returnTo),
-  );
-  if (authorizeUrl == null || !context.mounted) return;
-
-  final opened = await ref
-      .read(externalUrlLauncherProvider)
-      .open(Uri.parse(authorizeUrl));
-  if (!context.mounted) return;
-  if (!opened) {
-    await Toast.show(context, l10n.authWeiboBrowserOpenFailed);
-    return;
-  }
-  await Toast.show(context, l10n.authWeiboAuthorizeOpened);
-}
-
-Future<void> completeWeiboLoginFromInput(
-  BuildContext context,
-  OAuthLoginController oauthController,
-  AppLocalizations l10n, {
-  required TextEditingController callbackController,
-  required String? fallbackState,
-  String? returnTo,
-}) async {
-  final callback = OAuthCallbackParser.parse(
-    callbackController.text,
-    fallbackState,
-  );
-  if (callback == null) {
-    final message = callbackController.text.trim().isEmpty
-        ? l10n.authWeiboCallbackRequiredToast
-        : l10n.authWeiboCallbackInvalidToast;
-    await Toast.show(context, message);
-    return;
-  }
-  final session = await oauthController.completeWeiboLogin(
-    code: callback.code,
-    state: callback.state,
-  );
-  if (session == null || !context.mounted) return;
-  goAfterLogin(context, returnTo: returnTo, fallbackHome: true);
-}
-
-// =========================
 //  Google
 // =========================
 

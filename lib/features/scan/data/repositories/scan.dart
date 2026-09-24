@@ -5,10 +5,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/repositories/scan.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -24,12 +22,11 @@ part 'scan.g.dart';
 /// (auth `_requireBody` precedent).
 ///
 /// [uploadImage] goes through the typed generated client plus the shared
-/// object-storage transport (`presignFileUpload` / `putPresignedObject`).
-/// [recognizeMedicine] still posts through raw [Dio] and parses the body by
-/// hand, because that endpoint declares no response schema yet — a protocol
-/// violation there stays a thrown `StateError` / `FormatException` (logged via
-/// [appTalker] for diagnosability) and surfaces as a Left carrying
-/// `LucentFailureKind.unknown`.
+/// object-storage transport (`presignFileUpload` / `putPresignedObject`), and
+/// [recognizeMedicine] uses the typed generated client too: the endpoint's
+/// `MedicineRecognitionResponse` schema landed 2026-09-24, so the hand-written
+/// Dio + `coerceToStringMap` parsing (and its `StateError` / `FormatException`
+/// protocol-violation path) is gone.
 class LucentScanRepository implements ScanRepository {
   const LucentScanRepository({
     required this.api,
@@ -104,11 +101,10 @@ class LucentScanRepository implements ScanRepository {
     String imageUrl,
   ) {
     return TaskEither.tryCatch(() async {
-      final response = await dio.post<Object>(
-        LucentApiPaths.medicinesRecognize,
-        data: <String, Object?>{'imageUrl': imageUrl},
+      final response = await api.recognize(
+        recognizeRequest: RecognizeRequest(imageUrl: imageUrl),
       );
-      final data = coerceToStringMap(response.data);
+      final data = response.data;
       if (data == null) {
         // Empty success body: transport-level failure (auth precedent).
         throw LucentFailure.network(
@@ -116,29 +112,9 @@ class LucentScanRepository implements ScanRepository {
           networkErrorCode: NetworkErrorCode.emptyResponse,
         );
       }
-      final name = data['name'];
-      final approvalNumber = data['approvalNumber'];
-      if (name != null && name is! String) {
-        appTalker.error(
-          'LucentScanRepository.recognizeMedicine: name is not a string: '
-          '$name',
-        );
-        throw const FormatException(
-          'Recognize medicine response name must be a string.',
-        );
-      }
-      if (approvalNumber != null && approvalNumber is! String) {
-        appTalker.error(
-          'LucentScanRepository.recognizeMedicine: approvalNumber is not a '
-          'string: $approvalNumber',
-        );
-        throw const FormatException(
-          'Recognize medicine response approvalNumber must be a string.',
-        );
-      }
       return MedicineRecognitionResult(
-        name: name as String? ?? '',
-        approvalNumber: approvalNumber as String?,
+        name: data.name ?? '',
+        approvalNumber: data.approvalNumber,
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }

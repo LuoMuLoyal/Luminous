@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/src/model/enqueue_medicine_recognition_request.dart';
 import 'package:lucent_api/src/model/medicine_detail_response.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
+import 'package:lucent_api/src/model/medicine_recognition_response.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_item.dart';
@@ -449,9 +450,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineRecognitionResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> recognize({
+  Future<Response<MedicineRecognitionResponse>> recognize({
     required RecognizeRequest recognizeRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -491,7 +492,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineRecognitionResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineRecognitionResponse,
+              MedicineRecognitionResponse
+            >(rawData, 'MedicineRecognitionResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineRecognitionResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Poll async medicine recognition status

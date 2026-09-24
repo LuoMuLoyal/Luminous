@@ -171,9 +171,7 @@ void main() {
     expect(remote.sentCodeScene, AuthVerificationScene.login);
   });
 
-  testWidgets('Login page hides WeChat and Weibo OAuth entries', (
-    tester,
-  ) async {
+  testWidgets('Login page hides WeChat OAuth entry', (tester) async {
     final remote = FakeLucentAuthRepository();
     final launcher = _FakeExternalUrlLauncher();
 
@@ -199,9 +197,8 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // WeChat / Weibo UI 入口已隐藏（底层流程保留，见 docs/TODO.md）。
+    // WeChat UI 入口已隐藏（底层流程保留，见 docs/TODO.md）。
     expect(find.byKey(const Key('wechat-login-start-button')), findsNothing);
-    expect(find.byKey(const Key('weibo-login-start-button')), findsNothing);
     // QQ / Google 入口仍显示。
     expect(find.byKey(const Key('qq-login-start-button')), findsOneWidget);
     expect(find.byKey(const Key('google-login-start-button')), findsOneWidget);

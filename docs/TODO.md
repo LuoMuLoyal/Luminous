@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-09-15
+updated: 2026-09-24
 ---
 
 # Luminous TODO
 
-Last updated: 2026-09-15
+Last updated: 2026-09-24
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -30,8 +30,8 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
 - 纯数字药品查询的精确匹配
   - 当前前后端均不追加不可靠的数字特判；待有可验证的条码/批准文号语义后再立项
 
-- 微博与 Google OAuth 图标
-  - 修复登录页两者的图标显示问题
+- Google OAuth 图标
+  - 修复登录页 Google 图标的显示问题
 
 ## 2026-09-08 Review 页重组后置依赖登记（Review Page Restructure 波次）
 
@@ -52,23 +52,12 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
     （Lucent）→ `dart run scripts/contract/bootstrap.dart`（Luminous）→ 按新实体改
     mapper 与 UI（替换 legacy scalar 趋势渲染、趋势空档可视化、证据展开、反馈）
 
-## 2026-09-06 OAuth 登入门槛调整（UI 隐藏 / 全链路移除待办）
+## 2026-09-06 OAuth 登入门槛调整（UI 隐藏）
 
 - 微信登录与微信身份绑定入口已在 UI 层面隐藏（登录页 `OAuthButtonRow` 与账号设置页
   `LinkedIdentitiesSection`），底层流程与代码全部保留，后续恢复只需改回显示参数。
   - 微信开放平台「网站应用」需企业认证（300 元/年），当前无企业资质故隐藏；
     待有资质后恢复入口并配置 `WECHAT_WEB_*` / `WECHAT_MOBILE_*` 环境变量
-- 微博登录入口已在 UI 层面隐藏（登录页 `OAuthButtonRow`），底层流程保留。
-  - **全链路移除（未做，保留待办）**：微博不够主流，计划后续彻底删除——
-    - Lucent：`src/modules/auth/providers/weibo-oauth.provider.ts`、`oauth.controller.ts`
-      的 weibo 端点、`oauth.dto.ts` 的 weibo schema、`oauth.config.ts` 的 weibo 项、
-      `EnvKey.WEIBO_*` 环境变量、`state.service.ts` 的 weibo 回跳路径、相关测试；
-      重新导出 OpenAPI 并同步 `Lucent/docs/reference/environment-variables.md`
-    - Luminous：登录页 `OAuthButtonRow` 的 weibo 按钮/回调区、`oauth_panels.dart` 的
-      `OAuthBrandColors.weibo` 与 `showWeibo` 参数、`oauth_login.dart` 的
-      `startWeiboLogin` / `completeWeiboLogin`、`auth.dart` 域仓储与数据源的 weibo 方法、
-      路由 `/login/oauth/weibo`、l10n fragment 的 `authWeibo*` 文案、`assets/icon/oauth/weibo.svg`、
-      相关测试；重新生成 API client 与 l10n
 
 ## 延后（有明确原因）
 
@@ -116,42 +105,7 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 
 - Lucent `AuthTokenService.listSessions()` 当前将每条会话的 `isCurrent` 固定为 `false`，Luminous 已实现收到 `isCurrent=true` 时撤销后登出的分支，但当前设备无法在会话列表中被标识；后续需在不暴露 refresh token 的前提下补齐服务端当前会话识别。
 
-## 2026-08-23 网络层收口审查遗留（错误迁移 Task 1）
-
-- RetryInterceptor 链级 `retryAfter` 断言缺失：`retryable=false` 已有链级测试证明映射到达策略层，`retryAfter` 延迟优先级仅由 RetryPolicy 单测覆盖；补链级用例需真实计时（易抖），暂缓。
-- 畸形错误体端到端暴露形态：畸形 401/503 body 最终以 `DioException(error: FormatException)` 暴露（dio 归一化既有行为）；Auth/Retry 已保证不崩溃且 401 清 session 语义正确，端到端暴露形态属既有设计，后续任务跟踪。
-
-## 2026-08-23 认证迁移审查遗留（错误迁移 Task 2）
-
-- `auth/presentation/providers/sessions.dart` `_revokeFailure` 用 `StackTrace.current` 构造 AsyncError（旧代码保留真实堆栈）：LucentFailure.cause 已携带原 DioException，可调试；真实堆栈透传需在 TaskEither Left 上携带 stackTrace（跨任务架构决策），暂缓，清理旧类型时一并评估。
-- `_resolve` 适配器在 `account.dart`/`oauth_login.dart`/`wechat_oauth.dart` 三处重复（4 行同构）：风格级，暂不抽取公共 helper。
-
-
-## 2026-08-23 scan 迁移审查遗留（错误迁移 Task 4b）
-
-- box_scan AI 流（uploadImage/recognizeMedicine/search 任一 Left → 失败弹窗）无独立 widget 测试：AI 路径涉及真实文件 I/O，按既有排除清单不在 widget 测试覆盖内，仅 repository 层覆盖；如需补需先拆文件 I/O。
-- 两页对 network/business 失败展示同一通用文案（分类仅在日志）：迁移前既有行为；未来可考虑按 kind 区分文案（如 auth 失败引导登录）。
-- box_scan OCR 路径单个候选 search Left 会中断候选循环（不继续其余候选）：迁移前既有行为，可选优化为跳过失败候选。
-- 非 problem+json 错误体导致的 FormatException 从 `.run()` 逃逸时无 repository 层日志（由页面 catch 记录）：mapper 既有行为，页面通用 catch 已吸收，无未处理异常。
-
-## 2026-08-23 legal 迁移审查遗留（错误迁移 Task 5c）
-
-- `legal_list_page_test.dart` `pumpPage` 的 `Object? error` 参数现仅作 null 判定标志（传入值被丢弃）：纯遗留装饰，可改 `bool fail`，非必须。
-
-## 2026-08-23 SSE 迁移审查遗留（错误迁移 Task 7）
-
-- `NetworkErrorCode.invalidSsePayload` 运行时已无产生点（枚举 + l10n + pending sync 序列化保留以兼容历史持久化行）：若未来清理 legacy pending-sync 数据后可评估移除。
-- `_ErrorSseAdapter` 测试辅助类在 assistant/today/report 三个测试文件各复制一份（沿用每文件自带惯例）：可选收敛到 test/helpers/。
-
 ## 2026-09-11 上传链路与主题信号遗留
-
-- `scan` 的 `recognizeMedicine` 仍手写 Dio 解析（等后端补响应 schema）
-  - 现状：`uploadImage` 已改走类型化 `files/upload` + 共享直传（见当日迁移日志）；但
-    `POST /medicines/recognize` 在 OpenAPI 里同样没有响应 schema，客户端仍手写 Dio +
-    `coerceToStringMap` 解 `name` / `approvalNumber`，协议违例只能抛 `StateError` 归
-    `Left(unknown)`（`lib/features/scan/data/repositories/scan.dart`）
-  - 前置：Lucent 为该端点注册响应 schema 并 `pnpm export:openapi`（已登记在 Lucent `docs/TODO.md`）
-  - 方案：契约齐了之后换成类型化客户端，并评估 `lib/core/network/map_utils.dart` 是否还有消费方
 
 - 对象存储的孤儿对象清理（跨仓）
   - 现状：`/user/files/upload` 只签发上传凭证，后端没有删除对象的端点；用户上传头像/附件后放弃

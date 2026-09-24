@@ -71,6 +71,7 @@ void main() {
     registerFallbackValue(
       CreateUploadRequest(contentType: 'image/jpeg', sizeBytes: 1),
     );
+    registerFallbackValue(RecognizeRequest(imageUrl: ''));
   });
 
   setUp(() {
@@ -465,21 +466,33 @@ void main() {
   });
 
   group('LucentScanRepository.recognizeMedicine', () {
-    test('returns recognized data', () async {
-      final responseData = {
-        'name': '布洛芬缓释胶囊',
-        'approvalNumber': '国药准字H20044321',
-      };
+    Response<MedicineRecognitionResponse> recognitionResponse(
+      MedicineRecognitionResponse? data,
+    ) => Response<MedicineRecognitionResponse>(
+      data: data,
+      statusCode: 200,
+      requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
+    );
 
+    MedicineRecognitionResponse recognized({
+      String? name = '布洛芬缓释胶囊',
+      String? approvalNumber = '国药准字H20044321',
+    }) => MedicineRecognitionResponse(
+      name: name,
+      approvalNumber: approvalNumber,
+      specification: null,
+      manufacturer: null,
+    );
+
+    void stubRecognize(MedicineRecognitionResponse? data) {
       when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
-      ).thenAnswer(
-        (_) async => Response<Object>(
-          data: responseData,
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
-        ),
-      );
+        () =>
+            mockApi.recognize(recognizeRequest: any(named: 'recognizeRequest')),
+      ).thenAnswer((_) async => recognitionResponse(data));
+    }
+
+    test('returns the typed response fields', () async {
+      stubRecognize(recognized());
 
       final result = await expectTaskRight(
         repo.recognizeMedicine('https://cdn.example.com/img.jpg'),
@@ -489,16 +502,18 @@ void main() {
       expect(result.approvalNumber, '国药准字H20044321');
     });
 
-    test('empty response body maps to Left(network, emptyResponse)', () async {
-      when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
-      ).thenAnswer(
-        (_) async => Response<Object>(
-          data: null,
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
-        ),
+    test('a null name maps to an empty string', () async {
+      stubRecognize(recognized(name: null));
+
+      final result = await expectTaskRight(
+        repo.recognizeMedicine('https://cdn.example.com/img.jpg'),
       );
+
+      expect(result.name, '');
+    });
+
+    test('empty response body maps to Left(network, emptyResponse)', () async {
+      stubRecognize(null);
 
       final failure = await expectTaskLeft(
         repo.recognizeMedicine('https://cdn.example.com/img.jpg'),
@@ -508,58 +523,15 @@ void main() {
       expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
     });
 
-    test('non-string name maps to Left(unknown) protocol violation', () async {
+    test('sends the image URL as the typed request body', () async {
       when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
-      ).thenAnswer(
-        (_) async => Response<Object>(
-          data: const {'name': 42, 'approvalNumber': 'x'},
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
-        ),
-      );
-
-      final failure = await expectTaskLeft(
-        repo.recognizeMedicine('https://cdn.example.com/img.jpg'),
-      );
-
-      expect(failure.kind, LucentFailureKind.unknown);
-      expect(failure.cause, isA<FormatException>());
-    });
-
-    test(
-      'non-string approvalNumber maps to Left(unknown) protocol violation',
-      () async {
-        when(
-          () => mockDio.post<Object>(any(), data: any(named: 'data')),
-        ).thenAnswer(
-          (_) async => Response<Object>(
-            data: const {'name': '布洛芬', 'approvalNumber': 123},
-            statusCode: 200,
-            requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
-          ),
-        );
-
-        final failure = await expectTaskLeft(
-          repo.recognizeMedicine('https://cdn.example.com/img.jpg'),
-        );
-
-        expect(failure.kind, LucentFailureKind.unknown);
-        expect(failure.cause, isA<FormatException>());
-      },
-    );
-
-    test('sends imageUrl in request body', () async {
-      when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+        () =>
+            mockApi.recognize(recognizeRequest: any(named: 'recognizeRequest')),
       ).thenAnswer((invocation) async {
-        final data = invocation.namedArguments[#data] as Map<String, Object?>;
-        expect(data['imageUrl'], 'https://cdn.example.com/img.jpg');
-        return Response<Object>(
-          data: {'name': 'Test'},
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
-        );
+        final request =
+            invocation.namedArguments[#recognizeRequest] as RecognizeRequest;
+        expect(request.imageUrl, 'https://cdn.example.com/img.jpg');
+        return recognitionResponse(recognized());
       });
 
       await expectTaskRight(
@@ -569,7 +541,8 @@ void main() {
 
     test('404 Problem Details keeps code and status as a Left', () async {
       when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+        () =>
+            mockApi.recognize(recognizeRequest: any(named: 'recognizeRequest')),
       ).thenThrow(_problemDetails404(code: 'RECOGNIZE_FAILED'));
 
       final failure = await expectTaskLeft(
@@ -583,7 +556,8 @@ void main() {
 
     test('network timeout maps to a network connectivity Left', () async {
       when(
-        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+        () =>
+            mockApi.recognize(recognizeRequest: any(named: 'recognizeRequest')),
       ).thenThrow(_connectionTimeout());
 
       final failure = await expectTaskLeft(

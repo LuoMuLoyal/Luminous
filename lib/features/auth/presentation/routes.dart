@@ -70,29 +70,6 @@ class LoginOauthQqRoute extends GoRouteData with $LoginOauthQqRoute {
   }
 }
 
-@TypedGoRoute<LoginOauthWeiboRoute>(path: '/login/oauth/weibo')
-class LoginOauthWeiboRoute extends GoRouteData with $LoginOauthWeiboRoute {
-  const LoginOauthWeiboRoute({this.code, this.state, this.returnTo});
-
-  final String? code;
-
-  final String? state;
-
-  final String? returnTo;
-
-  @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return fadePage(
-      key: state.pageKey,
-      child: LoginPage(
-        weiboCode: code,
-        weiboState: this.state,
-        returnTo: returnTo,
-      ),
-    );
-  }
-}
-
 @TypedGoRoute<LoginOauthGoogleRoute>(path: '/login/oauth/google')
 class LoginOauthGoogleRoute extends GoRouteData with $LoginOauthGoogleRoute {
   const LoginOauthGoogleRoute({this.code, this.state, this.returnTo});

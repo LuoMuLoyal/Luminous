@@ -52,7 +52,6 @@ import 'package:lucent_api/src/model/create_request_request.dart';
 import 'package:lucent_api/src/model/create_upload_request.dart';
 import 'package:lucent_api/src/model/create_wechat_web_authorize_url_request.dart';
 import 'package:lucent_api/src/model/create_wechat_web_identity_link_authorize_url_request.dart';
-import 'package:lucent_api/src/model/create_weibo_authorize_url_request.dart';
 import 'package:lucent_api/src/model/daily_record_candidate_response.dart';
 import 'package:lucent_api/src/model/daily_record_candidate_response_items.dart';
 import 'package:lucent_api/src/model/daily_record_image_upload_response.dart';
@@ -167,7 +166,6 @@ import 'package:lucent_api/src/model/login_with_google_request.dart';
 import 'package:lucent_api/src/model/login_with_qq_request.dart';
 import 'package:lucent_api/src/model/login_with_wechat_mobile_request.dart';
 import 'package:lucent_api/src/model/login_with_wechat_web_request.dart';
-import 'package:lucent_api/src/model/login_with_weibo_request.dart';
 import 'package:lucent_api/src/model/logout_request.dart';
 import 'package:lucent_api/src/model/mark_request.dart';
 import 'package:lucent_api/src/model/medicine_detail_response.dart';
@@ -182,6 +180,7 @@ import 'package:lucent_api/src/model/medicine_detail_response_structure.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job_result.dart';
+import 'package:lucent_api/src/model/medicine_recognition_response.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response_items.dart';
 import 'package:lucent_api/src/model/medicine_reminder_response.dart';
@@ -603,11 +602,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'CreateWechatWebIdentityLinkAuthorizeUrlRequest':
       return CreateWechatWebIdentityLinkAuthorizeUrlRequest.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'CreateWeiboAuthorizeUrlRequest':
-      return CreateWeiboAuthorizeUrlRequest.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1076,9 +1070,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'LoginWithWechatWebRequest':
       return LoginWithWechatWebRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'LoginWithWeiboRequest':
-      return LoginWithWeiboRequest.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'LogoutRequest':
       return LogoutRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1139,6 +1130,9 @@ ReturnType deserialize<ReturnType, BaseType>(
       return MedicineRecognitionJobResult.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'MedicineRecognitionResponse':
+      return MedicineRecognitionResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'MedicineReminderListResponse':
       return MedicineReminderListResponse.fromJson(

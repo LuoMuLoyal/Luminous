@@ -12,7 +12,6 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/src/model/create_google_authorize_url_request.dart';
 import 'package:lucent_api/src/model/create_qq_authorize_url_request.dart';
 import 'package:lucent_api/src/model/create_wechat_web_authorize_url_request.dart';
-import 'package:lucent_api/src/model/create_weibo_authorize_url_request.dart';
 import 'package:lucent_api/src/model/forgot_password_request.dart';
 import 'package:lucent_api/src/model/forgot_password_response.dart';
 import 'package:lucent_api/src/model/login_request.dart';
@@ -22,7 +21,6 @@ import 'package:lucent_api/src/model/login_with_google_request.dart';
 import 'package:lucent_api/src/model/login_with_qq_request.dart';
 import 'package:lucent_api/src/model/login_with_wechat_mobile_request.dart';
 import 'package:lucent_api/src/model/login_with_wechat_web_request.dart';
-import 'package:lucent_api/src/model/login_with_weibo_request.dart';
 import 'package:lucent_api/src/model/logout_request.dart';
 import 'package:lucent_api/src/model/o_auth_authorize_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
@@ -254,93 +252,6 @@ class AuthApi {
 
     try {
       _bodyData = jsonEncode(createWechatWebAuthorizeUrlRequest);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    final _response = await _dio.request<Object>(
-      _path,
-      data: _bodyData,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    OAuthAuthorizeResponse? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<OAuthAuthorizeResponse, OAuthAuthorizeResponse>(
-              rawData,
-              'OAuthAuthorizeResponse',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<OAuthAuthorizeResponse>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
-  }
-
-  /// Create Weibo OAuth authorize URL
-  ///
-  ///
-  /// Parameters:
-  /// * [createWeiboAuthorizeUrlRequest]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future] containing a [Response] with a [OAuthAuthorizeResponse] as data
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<OAuthAuthorizeResponse>> createWeiboAuthorizeUrl({
-    required CreateWeiboAuthorizeUrlRequest createWeiboAuthorizeUrlRequest,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/auth/oauth/weibo/authorize';
-    final _options = Options(
-      method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      contentType: 'application/json',
-      validateStatus: validateStatus,
-    );
-
-    dynamic _bodyData;
-
-    try {
-      _bodyData = jsonEncode(createWeiboAuthorizeUrlRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),
@@ -1020,93 +931,6 @@ class AuthApi {
 
     try {
       _bodyData = jsonEncode(loginWithWechatWebRequest);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    final _response = await _dio.request<Object>(
-      _path,
-      data: _bodyData,
-      options: _options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    LoginResponse? _responseData;
-
-    try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<LoginResponse, LoginResponse>(
-              rawData,
-              'LoginResponse',
-              growable: true,
-            );
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<LoginResponse>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
-  }
-
-  /// Weibo OAuth callback login
-  ///
-  ///
-  /// Parameters:
-  /// * [loginWithWeiboRequest]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future] containing a [Response] with a [LoginResponse] as data
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<LoginResponse>> loginWithWeibo({
-    required LoginWithWeiboRequest loginWithWeiboRequest,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/v1/auth/oauth/weibo/callback';
-    final _options = Options(
-      method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
-      contentType: 'application/json',
-      validateStatus: validateStatus,
-    );
-
-    dynamic _bodyData;
-
-    try {
-      _bodyData = jsonEncode(loginWithWeiboRequest);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _options.compose(_dio.options, _path),

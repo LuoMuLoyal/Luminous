@@ -53,7 +53,7 @@ lib/
 │
 ├── features/              # Business feature modules (17)
 │   ├── assistant/         # AI health assistant chat
-│   ├── auth/              # Login, register, OAuth (WeChat, Apple, QQ, Weibo, Google)
+│   ├── auth/              # Login, register, OAuth (WeChat, Apple, QQ, Google)
 │   ├── health_context/    # User health profile (onboarding, allergies, conditions)
 │   ├── health_data/       # Health platform data import and sync
 │   ├── health_event/      # User-confirmed health event lifecycle and daily outcomes
