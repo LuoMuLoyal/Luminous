@@ -47,13 +47,14 @@ class LucentScanRepository implements ScanRepository {
         page: 1,
         pageSize: 20,
       );
-      if (response.data == null) {
+      final data = response.data;
+      if (data == null) {
         throw LucentFailure.network(
           message: 'Medicine search response was empty.',
           networkErrorCode: NetworkErrorCode.emptyResponse,
         );
       }
-      return response.data!.items
+      return data.items
           .map(
             (item) => ScanSearchResult(
               id: item.id,

@@ -130,11 +130,13 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
     for (final metric in metrics) {
       dates.add(_formatDate(metric.recordedAt));
-      if (metric.startAt != null) {
-        dates.add(_formatDate(metric.startAt!));
+      final startAt = metric.startAt;
+      if (startAt != null) {
+        dates.add(_formatDate(startAt));
       }
-      if (metric.endAt != null) {
-        dates.add(_formatDate(metric.endAt!));
+      final endAt = metric.endAt;
+      if (endAt != null) {
+        dates.add(_formatDate(endAt));
       }
     }
 

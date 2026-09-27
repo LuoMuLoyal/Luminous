@@ -89,17 +89,17 @@ RecordDaySummary toDaySummary(
         // unit (e.g. "72 bpm") when present, falling back to the record
         // count with the "times" unit.
         final latest = summary.latest;
+        final latestValue = latest?.value;
+        final latestUnit = latest?.unit;
         final hasLatestValue =
-            latest != null &&
-            latest.value != null &&
-            latest.value!.trim().isNotEmpty;
+            latestValue != null && latestValue.trim().isNotEmpty;
         items.add(
           RecordSummaryItem(
             type: type,
             icon: SemanticIcons.profileCondition,
             titleKey: RecordCopyKey.summaryLatestVitalTitle,
             value: hasLatestValue
-                ? '${latest.value}${latest.unit != null && latest.unit!.trim().isNotEmpty ? ' ${latest.unit}' : ''}'
+                ? '$latestValue${latestUnit != null && latestUnit.trim().isNotEmpty ? ' $latestUnit' : ''}'
                 : summary.count.toString(),
             unitKey: hasLatestValue ? null : RecordCopyKey.summaryTimesUnit,
             detailKey: null,

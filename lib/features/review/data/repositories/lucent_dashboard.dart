@@ -104,8 +104,9 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
 
   void _refreshInBackground(ReviewDashboardQuery query, String cacheKey) {
     final now = DateTime.now();
-    if (_lastRefresh != null &&
-        now.difference(_lastRefresh!) < backgroundRefreshThrottle) {
+    final lastRefresh = _lastRefresh;
+    if (lastRefresh != null &&
+        now.difference(lastRefresh) < backgroundRefreshThrottle) {
       return;
     }
     _lastRefresh = now;
@@ -124,6 +125,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
 
   ReviewMetric _mapMetric(lucent.ReportDashboardResponseMetrics dto) {
     final kind = _mapDataKind(dto.kind.value);
+    final observedMetric = dto.observedMetric;
     return ReviewMetric(
       kind: kind,
       icon: _metricIcon(kind),
@@ -134,9 +136,9 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
       delta: dto.delta,
       direction: _mapDirection(dto.direction.value),
       sparkline: dto.sparkline.map((value) => value.toDouble()).toList(),
-      observedMetric: dto.observedMetric == null
+      observedMetric: observedMetric == null
           ? null
-          : _mapObservedMetric(dto.observedMetric!),
+          : _mapObservedMetric(observedMetric),
     );
   }
 
@@ -176,6 +178,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
 
   ReviewTrendSeries _mapTrend(lucent.ReportDashboardResponseTrends dto) {
     final kind = _mapDataKind(dto.kind.value);
+    final observedMetric = dto.observedMetric;
     return ReviewTrendSeries(
       kind: kind,
       color: _metricColor(kind),
@@ -184,11 +187,11 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
       currentValue: dto.currentValue,
       // 新客户端将 trends/metrics 的 observedMetric 提升为独立类型
       // （JSON 形状一致），经 JSON 往返复用 _mapObservedMetric。
-      observedMetric: dto.observedMetric == null
+      observedMetric: observedMetric == null
           ? null
           : _mapObservedMetric(
               lucent.ReportDashboardResponseMetricsObservedMetric.fromJson(
-                dto.observedMetric!.toJson(),
+                observedMetric.toJson(),
               ),
             ),
     );

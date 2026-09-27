@@ -125,6 +125,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   // ── Mapping helpers ────────────────────────────────────────────────────
 
   TodaySuggestionBundle _mapBundle(TodaySuggestionsResponse dto) {
+    final primary = dto.primary;
     return TodaySuggestionBundle(
       generatedAt: dto.generatedAt,
       materializationStatus: TodaySuggestionMaterializationStatus.fromJson(
@@ -133,7 +134,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       sourceVersion: _safeInt(dto.sourceVersion) ?? 0,
       computedAt: _parseDateTime(dto.computedAt),
       retryAfterSeconds: _safeInt(dto.retryAfterSeconds),
-      primary: dto.primary != null ? _mapPrimaryCard(dto.primary!) : null,
+      primary: primary != null ? _mapPrimaryCard(primary) : null,
       secondary: dto.secondary?.map(_mapCard).toList(growable: false),
       observations: dto.observations
           ?.map(
@@ -228,6 +229,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   TodaySuggestionHistoryItem _mapHistoryItem(
     SuggestionHistoryResponseItems dto,
   ) {
+    final feedback = dto.feedback;
     return TodaySuggestionHistoryItem(
       id: dto.id,
       date: dto.date,
@@ -243,9 +245,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       confidence: _mapConfidenceFromString(dto.confidence.value),
       generatedAt: dto.generatedAt,
       subtype: dto.subtype,
-      feedback: dto.feedback != null
-          ? _mapFeedbackFromString(dto.feedback!)
-          : null,
+      feedback: feedback != null ? _mapFeedbackFromString(feedback) : null,
       feedbackAt: dto.feedbackAt,
       expiredAt: dto.expiredAt,
     );

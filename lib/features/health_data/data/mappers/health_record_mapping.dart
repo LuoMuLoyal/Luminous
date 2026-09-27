@@ -117,6 +117,10 @@ fieldsForMetric(HealthMetric metric) {
     return payload;
   }
 
+  // 睡眠起止时刻先绑到局部变量，集合元素守卫里就不必用 `!` 强解包。
+  final startAt = metric.startAt;
+  final endAt = metric.endAt;
+
   return switch (metric.type) {
     HealthMetricType.heartRate => (
       '心率',
@@ -227,10 +231,8 @@ fieldsForMetric(HealthMetric metric) {
       null,
       withExternalId({
         if (metric.sleepType != null) 'sleepType': metric.sleepType,
-        if (metric.startAt != null)
-          'startedAt': metric.startAt!.toUtc().toIso8601String(),
-        if (metric.endAt != null)
-          'endedAt': metric.endAt!.toUtc().toIso8601String(),
+        if (startAt != null) 'startedAt': startAt.toUtc().toIso8601String(),
+        if (endAt != null) 'endedAt': endAt.toUtc().toIso8601String(),
         'durationMinutes':
             metric.sleepDuration?.inMinutes ?? metric.value.round(),
         if (metric.deepMinutes != null) 'deepMinutes': metric.deepMinutes,
@@ -328,10 +330,14 @@ class SleepAggregator {
   void add(HealthDataPoint point) {
     final minutes = point.dateTo.difference(point.dateFrom).inMinutes;
     if (minutes <= 0) return;
-    if (_start == null || point.dateFrom.isBefore(_start!)) {
+    final currentStart = _start;
+    if (currentStart == null || point.dateFrom.isBefore(currentStart)) {
       _start = point.dateFrom;
     }
-    if (_end == null || point.dateTo.isAfter(_end!)) _end = point.dateTo;
+    final currentEnd = _end;
+    if (currentEnd == null || point.dateTo.isAfter(currentEnd)) {
+      _end = point.dateTo;
+    }
 
     switch (point.type) {
       case HealthDataType.SLEEP_ASLEEP:
@@ -359,21 +365,21 @@ class SleepAggregator {
 
   /// Merges the aggregated data into a single [HealthMetric].
   HealthMetric? merge() {
-    if (_totalMinutes <= 0 || _start == null || _end == null) return null;
+    final start = _start;
+    final end = _end;
+    if (_totalMinutes <= 0 || start == null || end == null) return null;
     return HealthMetric(
       type: HealthMetricType.sleep,
       value: _totalMinutes.toDouble(),
       unit: 'min',
-      recordedAt: _end!,
+      recordedAt: end,
       externalId: _externalId,
       source: _source,
       sourceId: _sourceId,
       sourcePlatform: _sourcePlatform,
-      startAt: _start,
-      endAt: _end,
-      sleepType: _end!.difference(_start!).inMinutes <= 180
-          ? 'nap'
-          : 'nightSleep',
+      startAt: start,
+      endAt: end,
+      sleepType: end.difference(start).inMinutes <= 180 ? 'nap' : 'nightSleep',
       sleepDuration: Duration(minutes: _totalMinutes),
       deepMinutes: _deepMinutes == 0 ? null : _deepMinutes,
       lightMinutes: _lightMinutes == 0 ? null : _lightMinutes,

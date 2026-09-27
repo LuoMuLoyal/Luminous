@@ -16,11 +16,13 @@ class MedicineRiskCheckMapper {
   MedicineRiskCheckRecords recordsDtoToDomain(
     MedicineRiskCheckRecordsResponse dto,
   ) {
+    final staticRecord = dto.static_;
+    final llmRecord = dto.llm;
     return MedicineRiskCheckRecords(
-      staticRecord: dto.static_ == null
+      staticRecord: staticRecord == null
           ? null
-          : _listRecordToDomain(dto.static_!),
-      llmRecord: dto.llm == null ? null : _llmRecordToDomain(dto.llm!),
+          : _listRecordToDomain(staticRecord),
+      llmRecord: llmRecord == null ? null : _llmRecordToDomain(llmRecord),
     );
   }
 

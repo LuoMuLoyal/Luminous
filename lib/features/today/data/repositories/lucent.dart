@@ -403,15 +403,17 @@ class LucentTodayRepository implements TodayRepository {
         return <String>{};
       },
       (reminders) {
-        return reminders
-            .where((reminder) {
-              final medicineId = reminder.currentMedicineId;
-              return medicineId != null &&
-                  allMedicineIds.contains(medicineId) &&
-                  reminder.matchesDate(today);
-            })
-            .map((reminder) => reminder.currentMedicineId!)
-            .toSet();
+        // 单次遍历同时完成过滤与非空收敛，避免 where 之后再 `!` 断言。
+        final medicineIds = <String>{};
+        for (final reminder in reminders) {
+          final medicineId = reminder.currentMedicineId;
+          if (medicineId != null &&
+              allMedicineIds.contains(medicineId) &&
+              reminder.matchesDate(today)) {
+            medicineIds.add(medicineId);
+          }
+        }
+        return medicineIds;
       },
     );
   }

@@ -191,16 +191,18 @@ class LucentHealthEventRepository implements HealthEventRepository {
   }
 
   HealthEvent _map(api.HealthEventListResponseItems dto) {
+    final outcome = dto.outcome;
+    final checkIn = dto.checkIn;
     return HealthEvent(
       id: dto.id,
       title: dto.title,
       status: _mapStatus(dto.status),
       startedAt: dto.startedAt,
       endedAt: dto.endedAt,
-      outcome: dto.outcome == null ? null : _mapOutcome(dto.outcome!),
+      outcome: outcome == null ? null : _mapOutcome(outcome),
       reasonRecordId: dto.reasonRecordId,
       currentMedicineIds: List<String>.unmodifiable(dto.currentMedicineIds),
-      checkIn: dto.checkIn == null ? null : _mapCheckIn(dto.checkIn!),
+      checkIn: checkIn == null ? null : _mapCheckIn(checkIn),
       coverage: HealthEventCoverage(
         checkInCount: dto.coverage.checkInCount,
         firstCheckInDate: dto.coverage.firstCheckInDate,

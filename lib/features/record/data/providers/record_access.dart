@@ -35,6 +35,11 @@ DailyRecordRepository dailyRecordRepository(Ref ref) {
   syncWorker.registerHandler('daily_record', (entry) async {
     final payload = jsonDecode(entry.payload) as Map<String, dynamic>;
 
+    // 队列条目由本地乐观写入产生，entityId 缺失说明本地状态已损坏；
+    // 直接跳过该条而不是抛 TypeError 中断整批重放（坏数据不得升级为崩溃）。
+    final entityId = entry.entityId;
+    if (entityId == null) return;
+
     switch (entry.operation) {
       case 'create':
         // Replay create: reconstruct input from the optimistic item JSON
@@ -52,13 +57,13 @@ DailyRecordRepository dailyRecordRepository(Ref ref) {
         final remote = await dataSource.create(input);
         // Replace optimistic copy with confirmed server response
         await dao.confirmSync(
-          entry.entityId!,
+          entityId,
           DailyRecordJsonCodec.itemToJson(remote),
         );
 
       case 'delete':
-        await dataSource.delete(entry.entityId!);
-        await dao.deleteById(entry.entityId!);
+        await dataSource.delete(entityId);
+        await dao.deleteById(entityId);
 
       case 'update':
         // For update, we only have the ID in payload — fetch latest and re-apply

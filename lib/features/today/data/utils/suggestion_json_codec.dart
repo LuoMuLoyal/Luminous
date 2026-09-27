@@ -8,13 +8,14 @@ import 'package:luminous/features/today/domain/entities/suggestion.dart';
 /// AI analysis text (TodaySuggestionExplanation) is NOT cached.
 class TodaySuggestionJsonCodec {
   static String bundleToJson(TodaySuggestionBundle bundle) {
+    final primary = bundle.primary;
     return jsonEncode({
       'generatedAt': bundle.generatedAt,
       'materializationStatus': bundle.materializationStatus.toJson(),
       'sourceVersion': bundle.sourceVersion,
       'computedAt': bundle.computedAt?.toUtc().toIso8601String(),
       'retryAfterSeconds': bundle.retryAfterSeconds,
-      'primary': bundle.primary != null ? _cardToJson(bundle.primary!) : null,
+      'primary': primary != null ? _cardToJson(primary) : null,
       'secondary': bundle.secondary?.map(_cardToJson).toList(),
       'observations': bundle.observations?.map(_cardToJson).toList(),
     });

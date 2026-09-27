@@ -29,10 +29,12 @@ class WechatDesktopOAuthCallbackListener {
       final state = request.uri.queryParameters['state']?.trim();
       final isCallbackPath = request.uri.path == '/oauth/wechat';
       if (isCallbackPath &&
-          code?.isNotEmpty == true &&
-          state?.isNotEmpty == true) {
+          code != null &&
+          code.isNotEmpty &&
+          state != null &&
+          state.isNotEmpty) {
         if (!completer.isCompleted) {
-          completer.complete(WechatOAuthCallback(code: code!, state: state!));
+          completer.complete(WechatOAuthCallback(code: code, state: state));
         }
         await _closeResponse(request.response, statusCode: HttpStatus.ok);
         return;

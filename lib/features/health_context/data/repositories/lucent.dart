@@ -209,8 +209,9 @@ class LucentHealthContextRepository implements HealthContextRepository {
 
   void _refreshInBackground() {
     final now = DateTime.now();
-    if (_lastRefreshAttempt != null &&
-        now.difference(_lastRefreshAttempt!) < backgroundRefreshThrottle) {
+    final lastRefreshAttempt = _lastRefreshAttempt;
+    if (lastRefreshAttempt != null &&
+        now.difference(lastRefreshAttempt) < backgroundRefreshThrottle) {
       return;
     }
     _lastRefreshAttempt = now;

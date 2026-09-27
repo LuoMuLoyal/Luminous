@@ -60,17 +60,14 @@ class DailyRecordRemoteDataSource {
     final response = await api.summary(date: date);
     final dto = _requireData(response.data, operation: 'fetchSummary');
     return DailyRecordSummaryData(
-      summaries: dto.summaries
-          .mapIndexed(
-            (_, s) => DailyRecordSummary(
-              kind: _parseKind(s.kind.value),
-              count: s.count,
-              latest: s.latest != null
-                  ? _toItem(_canonicalLatest(s.latest!))
-                  : null,
-            ),
-          )
-          .toList(),
+      summaries: dto.summaries.mapIndexed((_, s) {
+        final latest = s.latest;
+        return DailyRecordSummary(
+          kind: _parseKind(s.kind.value),
+          count: s.count,
+          latest: latest == null ? null : _toItem(_canonicalLatest(latest)),
+        );
+      }).toList(),
     );
   }
 

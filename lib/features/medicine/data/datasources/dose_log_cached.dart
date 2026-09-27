@@ -217,8 +217,9 @@ class CachedDoseLogDataSource implements DoseLogRepository {
 
   void _refreshInBackground(String date) {
     final now = DateTime.now();
-    if (_lastRefreshAttempt != null &&
-        now.difference(_lastRefreshAttempt!) < const Duration(seconds: 60)) {
+    final lastRefreshAttempt = _lastRefreshAttempt;
+    if (lastRefreshAttempt != null &&
+        now.difference(lastRefreshAttempt) < const Duration(seconds: 60)) {
       return;
     }
     _lastRefreshAttempt = now;

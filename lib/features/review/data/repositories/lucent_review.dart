@@ -219,8 +219,9 @@ class LucentReviewRepository implements ReviewRepository {
 
   void _refreshCurrentInBackground() {
     final now = DateTime.now();
-    if (_lastCurrentRefresh != null &&
-        now.difference(_lastCurrentRefresh!) < backgroundRefreshThrottle) {
+    final lastRefresh = _lastCurrentRefresh;
+    if (lastRefresh != null &&
+        now.difference(lastRefresh) < backgroundRefreshThrottle) {
       return;
     }
     _lastCurrentRefresh = now;
@@ -246,8 +247,9 @@ class LucentReviewRepository implements ReviewRepository {
     required String cacheKey,
   }) {
     final now = DateTime.now();
-    if (_lastHistoryRefresh != null &&
-        now.difference(_lastHistoryRefresh!) < backgroundRefreshThrottle) {
+    final lastRefresh = _lastHistoryRefresh;
+    if (lastRefresh != null &&
+        now.difference(lastRefresh) < backgroundRefreshThrottle) {
       return;
     }
     _lastHistoryRefresh = now;
@@ -316,6 +318,7 @@ class LucentReviewRepository implements ReviewRepository {
   }
 
   ReviewEvent _mapEvent(lucent.EventReviewDataEvent dto) {
+    final outcome = dto.outcome;
     return ReviewEvent(
       id: dto.id,
       kind: _mapKind(dto.kind),
@@ -323,12 +326,13 @@ class LucentReviewRepository implements ReviewRepository {
       status: _mapStatus(dto.status),
       startedAt: dto.startedAt,
       endedAt: dto.endedAt,
-      outcome: dto.outcome == null ? null : _mapOutcome(dto.outcome!),
+      outcome: outcome == null ? null : _mapOutcome(outcome),
       currentMedicineIds: dto.currentMedicineIds,
     );
   }
 
   ReviewSection _mapSection(lucent.EventReviewDataSectionsWhatHappened dto) {
+    final facts = dto.facts;
     return ReviewSection(
       state: switch (dto.state) {
         _SectionStateEnum.available => ReviewSectionState.available,
@@ -338,7 +342,7 @@ class LucentReviewRepository implements ReviewRepository {
       // 原因码按原文保留；未知码在生成 DTO 反序列化层已被折叠为
       // unknown_default_open_api 占位符，这里保留占位原文而不是折叠成 null。
       reasonCode: dto.reasonCode?.value,
-      facts: dto.facts == null ? null : _mapFacts(dto.facts!),
+      facts: facts == null ? null : _mapFacts(facts),
     );
   }
 
@@ -356,6 +360,7 @@ class LucentReviewRepository implements ReviewRepository {
   ReviewCheckInCoverage _mapCheckInCoverage(
     lucent.EventReviewDataCoverageCheckIns dto,
   ) {
+    final todayCheckIn = dto.todayCheckIn;
     return ReviewCheckInCoverage(
       state: _mapCoverageState(dto.state.value),
       coverage: _mapCoverageLevel(dto.coverage.value),
@@ -366,9 +371,9 @@ class LucentReviewRepository implements ReviewRepository {
       expectedCount: dto.expectedCount?.toInt(),
       firstCheckInDate: dto.firstCheckInDate,
       lastCheckInDate: dto.lastCheckInDate,
-      todayCheckIn: dto.todayCheckIn == null
+      todayCheckIn: todayCheckIn == null
           ? null
-          : _mapTodayCheckIn(dto.todayCheckIn!),
+          : _mapTodayCheckIn(todayCheckIn),
       windowStart: dto.windowStart,
       windowEnd: dto.windowEnd,
     );

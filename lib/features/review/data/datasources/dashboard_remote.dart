@@ -16,12 +16,16 @@ class ReviewDashboardRemoteDataSource {
   Future<lucent.ReportDashboardResponse> fetchDashboard(
     ReviewDashboardQuery query,
   ) async {
+    final startDate = query.startDate;
+    final endDate = query.endDate;
     final response = await api.getDashboard(
       range: query.range.apiValue,
-      startDate: query.isCustom
-          ? _dateOnlyFormat.format(query.startDate!)
+      startDate: query.isCustom && startDate != null
+          ? _dateOnlyFormat.format(startDate)
           : null,
-      endDate: query.isCustom ? _dateOnlyFormat.format(query.endDate!) : null,
+      endDate: query.isCustom && endDate != null
+          ? _dateOnlyFormat.format(endDate)
+          : null,
     );
     return _requireData(response.data, operation: 'fetchDashboard');
   }
