@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -108,8 +109,12 @@ class SleepStructuredFields extends StatelessWidget {
           key: const Key('sleep-quality-field'),
           label: Text(l10n.recordSleepQualityLabel),
           hint: l10n.recordSleepQualityLabel,
+          // 未知 quality（服务端新值/脏数据）回退为原始 key，不抛 StateError。
           format: (value) =>
-              sleepQualityOptions(l10n).firstWhere((q) => q.key == value).label,
+              sleepQualityOptions(
+                l10n,
+              ).where((q) => q.key == value).map((q) => q.label).firstOrNull ??
+              value,
           control: FSelectControl.lifted(
             value: quality,
             onChange: onQualityChanged,

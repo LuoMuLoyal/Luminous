@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
@@ -128,9 +129,14 @@ class _SymptomQuickEntrySheetBodyState
   void _submitOther() {
     final text = _otherController.text.trim();
     if (text.isEmpty) return;
-    final choice = widget.choices.firstWhere(
-      (item) => recordFastChoiceCode(item) == SymptomCode.other.wireValue,
-    );
+    // 「其它」可能不在用户启用的快捷项里（设置页可关闭），无匹配时不应抛
+    // StateError —— 直接放弃提交并留在当前界面。
+    final choice = widget.choices
+        .where(
+          (item) => recordFastChoiceCode(item) == SymptomCode.other.wireValue,
+        )
+        .firstOrNull;
+    if (choice == null) return;
     _submit([choice], customLabel: text);
   }
 
