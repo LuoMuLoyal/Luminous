@@ -34,6 +34,8 @@ class SearchPage extends ConsumerWidget {
         addedMedicineIds: addedMedicineIds,
         onQueryChanged: (q) =>
             ref.read(medicineSearchNotifierProvider.notifier).updateQuery(q),
+        onQuerySubmitted: (_) =>
+            ref.read(medicineSearchNotifierProvider.notifier).submitQuery(),
         onSourceSwitched: (s) =>
             ref.read(medicineSearchNotifierProvider.notifier).switchSource(s),
         onResultSelected: (id) =>

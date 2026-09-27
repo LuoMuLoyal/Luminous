@@ -40,6 +40,7 @@ class MedicineSearchView extends ConsumerWidget {
     super.key,
     required this.state,
     required this.onQueryChanged,
+    required this.onQuerySubmitted,
     required this.onSourceSwitched,
     required this.onResultSelected,
     required this.onRetry,
@@ -49,6 +50,7 @@ class MedicineSearchView extends ConsumerWidget {
 
   final MedicineSearchState state;
   final ValueChanged<String> onQueryChanged;
+  final ValueChanged<String> onQuerySubmitted;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
   final VoidCallback onRetry;
@@ -84,6 +86,7 @@ class MedicineSearchView extends ConsumerWidget {
                     onClearRecentSearches: () =>
                         ref.read(recentSearchesProvider.notifier).clearAll(),
                     onQueryChanged: onQueryChanged,
+                    onQuerySubmitted: onQuerySubmitted,
                     onSourceSwitched: onSourceSwitched,
                     onResultSelected: onResultSelected,
                     onRetry: onRetry,
@@ -97,6 +100,7 @@ class MedicineSearchView extends ConsumerWidget {
                     onClearRecentSearches: () =>
                         ref.read(recentSearchesProvider.notifier).clearAll(),
                     onQueryChanged: onQueryChanged,
+                    onQuerySubmitted: onQuerySubmitted,
                     onSourceSwitched: onSourceSwitched,
                     onResultSelected: onResultSelected,
                     onRetry: onRetry,
@@ -167,6 +171,7 @@ class _MobileSearchLayout extends StatelessWidget {
     required this.recentKeywords,
     required this.onClearRecentSearches,
     required this.onQueryChanged,
+    required this.onQuerySubmitted,
     required this.onSourceSwitched,
     required this.onResultSelected,
     required this.onRetry,
@@ -179,6 +184,7 @@ class _MobileSearchLayout extends StatelessWidget {
   final List<String> recentKeywords;
   final VoidCallback onClearRecentSearches;
   final ValueChanged<String> onQueryChanged;
+  final ValueChanged<String> onQuerySubmitted;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
   final VoidCallback onRetry;
@@ -200,7 +206,12 @@ class _MobileSearchLayout extends StatelessWidget {
       key: const PageStorageKey<String>('medicine-search-scroll'),
       padding: const EdgeInsets.only(bottom: Spacing.xl2),
       children: [
-        SearchInput(l10n: l10n, query: state.query, onChanged: onQueryChanged),
+        SearchInput(
+          l10n: l10n,
+          query: state.query,
+          onChanged: onQueryChanged,
+          onSubmitted: onQuerySubmitted,
+        ),
         if (state.isSearching)
           const Padding(
             padding: EdgeInsets.only(top: Spacing.sm),
@@ -276,6 +287,7 @@ class _DesktopSearchLayout extends StatelessWidget {
     required this.recentKeywords,
     required this.onClearRecentSearches,
     required this.onQueryChanged,
+    required this.onQuerySubmitted,
     required this.onSourceSwitched,
     required this.onResultSelected,
     required this.onRetry,
@@ -288,6 +300,7 @@ class _DesktopSearchLayout extends StatelessWidget {
   final List<String> recentKeywords;
   final VoidCallback onClearRecentSearches;
   final ValueChanged<String> onQueryChanged;
+  final ValueChanged<String> onQuerySubmitted;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
   final VoidCallback onRetry;
@@ -314,6 +327,7 @@ class _DesktopSearchLayout extends StatelessWidget {
             recentKeywords: recentKeywords,
             onClearRecentSearches: onClearRecentSearches,
             onQueryChanged: onQueryChanged,
+            onQuerySubmitted: onQuerySubmitted,
             onSourceSwitched: onSourceSwitched,
             onResultSelected: onResultSelected,
             onAddToCurrentMedicines: onAddToCurrentMedicines,
@@ -337,6 +351,7 @@ class _DesktopSearchPanel extends StatelessWidget {
     required this.recentKeywords,
     required this.onClearRecentSearches,
     required this.onQueryChanged,
+    required this.onQuerySubmitted,
     required this.onSourceSwitched,
     required this.onResultSelected,
     this.onAddToCurrentMedicines,
@@ -348,6 +363,7 @@ class _DesktopSearchPanel extends StatelessWidget {
   final List<String> recentKeywords;
   final VoidCallback onClearRecentSearches;
   final ValueChanged<String> onQueryChanged;
+  final ValueChanged<String> onQuerySubmitted;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
   final void Function(MedicineSearchResult result)? onAddToCurrentMedicines;
@@ -374,6 +390,7 @@ class _DesktopSearchPanel extends StatelessWidget {
               l10n: l10n,
               query: state.query,
               onChanged: onQueryChanged,
+              onSubmitted: onQuerySubmitted,
             ),
             const SizedBox(height: Spacing.lg),
             SourceSwitch(

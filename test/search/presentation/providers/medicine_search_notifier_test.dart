@@ -325,6 +325,162 @@ void main() {
     });
   });
 
+  // ── submitQuery ──────────────────────────────────────────────
+  group('submitQuery', () {
+    test(
+      'commits the query immediately without waiting for the debounce',
+      () async {
+        repo.searchResults = [_result('m1')];
+
+        final notifier = container.read(
+          medicineSearchNotifierProvider.notifier,
+        );
+        await notifier.updateQuery('aspirin');
+
+        // No timer wait: submit must fire the request itself.
+        await notifier.submitQuery();
+
+        expect(repo.lastSearchQuery, 'aspirin');
+        final state = container.read(medicineSearchNotifierProvider);
+        expect(state.results, hasLength(1));
+        expect(state.isSearching, isFalse);
+      },
+    );
+
+    test('does not search when the query is empty', () async {
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.submitQuery();
+
+      expect(repo.lastSearchQuery, isNull);
+      expect(container.read(medicineSearchNotifierProvider).results, isEmpty);
+    });
+
+    test('does not search when the query is whitespace-only', () async {
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('   ');
+      await notifier.submitQuery();
+
+      expect(repo.lastSearchQuery, isNull);
+    });
+
+    test('cancels the pending debounce so the query is searched once', () async {
+      repo.searchResults = [_result('m1')];
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
+      await notifier.submitQuery();
+
+      // The debounce timer armed by updateQuery must not fire a second search.
+      repo.lastSearchQuery = null;
+      await Future.delayed(const Duration(milliseconds: 450));
+      expect(repo.lastSearchQuery, isNull);
+    });
+  });
+
+  // ── stale response guard ─────────────────────────────────────
+  group('stale response guard', () {
+    test(
+      'a slower earlier search cannot overwrite the newer search results',
+      () async {
+        final notifier = container.read(
+          medicineSearchNotifierProvider.notifier,
+        );
+
+        // Search for "a" and hold it in flight.
+        final gate = Completer<void>();
+        repo.searchGate = gate;
+        repo.searchResults = [_result('stale')];
+        await notifier.updateQuery('a');
+        final staleFuture = notifier.submitQuery();
+
+        // User keeps typing; the newer query supersedes the in-flight one.
+        repo.searchGate = null;
+        repo.searchResults = [_result('fresh')];
+        final freshFuture = notifier.updateQuery('aspirin');
+        await Future.delayed(const Duration(milliseconds: 450));
+        await freshFuture;
+
+        // Now release the stale request — it must be discarded.
+        gate.complete();
+        await staleFuture;
+
+        final state = container.read(medicineSearchNotifierProvider);
+        expect(state.query, 'aspirin');
+        expect(state.results, hasLength(1));
+        expect(state.results.first.id, 'fresh');
+        expect(state.selectedResultId, 'fresh');
+      },
+    );
+
+    test('a stale search failure cannot clear the newer results', () async {
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+
+      final gate = Completer<void>();
+      repo.searchGate = gate;
+      repo.searchFailure = LucentFailure.network(
+        message: 'Network request failed.',
+        networkErrorCode: NetworkErrorCode.connectionError,
+      );
+      await notifier.updateQuery('a');
+      final staleFuture = notifier.submitQuery();
+
+      repo.searchGate = null;
+      repo.searchFailure = null;
+      repo.searchResults = [_result('fresh')];
+      await notifier.updateQuery('aspirin');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      gate.complete();
+      await staleFuture;
+
+      final state = container.read(medicineSearchNotifierProvider);
+      expect(state.errorMessage, isNull);
+      expect(state.results, hasLength(1));
+      expect(state.results.first.id, 'fresh');
+    });
+
+    test('an abandoned prefix is not recorded as a recent search', () async {
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+
+      final gate = Completer<void>();
+      repo.searchGate = gate;
+      repo.searchResults = [_result('stale')];
+      await notifier.updateQuery('a');
+      final staleFuture = notifier.submitQuery();
+
+      repo.searchGate = null;
+      repo.searchResults = [_result('fresh')];
+      await notifier.updateQuery('aspirin');
+      await Future.delayed(const Duration(milliseconds: 450));
+
+      gate.complete();
+      await staleFuture;
+
+      final recent = await container.read(recentSearchesProvider.future);
+      expect(recent, contains('aspirin'));
+      expect(recent, isNot(contains('a')));
+    });
+
+    test('clearing the query discards an in-flight search', () async {
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+
+      final gate = Completer<void>();
+      repo.searchGate = gate;
+      repo.searchResults = [_result('stale')];
+      await notifier.updateQuery('aspirin');
+      final pending = notifier.submitQuery();
+
+      await notifier.updateQuery('');
+      gate.complete();
+      await pending;
+
+      final state = container.read(medicineSearchNotifierProvider);
+      expect(state.query, '');
+      expect(state.results, isEmpty);
+      expect(state.isSearching, isFalse);
+    });
+  });
+
   // ── selectResult ─────────────────────────────────────────────
   group('selectResult', () {
     test('updates selectedResultId and fetches detail', () async {

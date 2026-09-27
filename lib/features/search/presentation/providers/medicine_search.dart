@@ -34,6 +34,14 @@ const _searchDebounceDuration = Duration(milliseconds: 400);
 class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
   Timer? _debounceTimer;
 
+  /// Monotonic id of the most recently *started* search. Cancelling the debounce
+  /// timer only prevents a request from being sent — it cannot recall one that
+  /// is already in flight. Without this guard a slow response for an abandoned
+  /// prefix (e.g. `a`) would land after the response for the current query
+  /// (e.g. `aspirin`) and overwrite results, `selectedResultId` and
+  /// `detailPreview` with stale data.
+  int _searchGeneration = 0;
+
   @override
   MedicineSearchState build() {
     ref.onDispose(() => _debounceTimer?.cancel());
@@ -46,13 +54,32 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
     if (query.trim().isNotEmpty) {
       _debounceTimer = Timer(_searchDebounceDuration, _doSearch);
     } else {
-      state = state.copyWith(results: const [], errorMessage: null);
+      // Bump the generation so any in-flight search for the cleared query is
+      // discarded instead of repopulating the now-empty result list, and clear
+      // isSearching here — the discarded search returns early without doing it.
+      _searchGeneration += 1;
+      state = state.copyWith(
+        results: const [],
+        errorMessage: null,
+        isSearching: false,
+      );
     }
+  }
+
+  /// Commits the current query immediately, skipping the debounce wait.
+  ///
+  /// Bound to the keyboard's search action: pressing enter is an explicit
+  /// "search now" and must not be held back by the pending debounce timer.
+  Future<void> submitQuery() async {
+    _debounceTimer?.cancel();
+    if (state.query.trim().isEmpty) return;
+    await _doSearch();
   }
 
   Future<void> switchSource(MedicineSearchSource source) async {
     state = state.copyWith(source: source, results: const []);
     if (state.query.trim().isNotEmpty) {
+      _debounceTimer?.cancel();
       await _doSearch();
     }
   }
@@ -77,6 +104,7 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
     // what was actually searched, even if the user keeps typing mid-flight
     // (F-12 review P2-1).
     final searchedQuery = state.query.trim();
+    final generation = ++_searchGeneration;
     state = state.copyWith(isSearching: true, errorMessage: null);
     try {
       final either = await ref
@@ -88,6 +116,10 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
             onTimeout: () =>
                 throw TimeoutException('Search timed out. Please try again.'),
           );
+
+      // A newer search started while this one was in flight: its state is the
+      // one the user is waiting for, so drop this response entirely.
+      if (generation != _searchGeneration) return;
 
       final results = either.fold((failure) {
         ref
@@ -106,6 +138,10 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
           ? null
           : await _fetchDetailPreview(results.first);
 
+      // The detail preview is a second await; re-check before committing so a
+      // newer search that started meanwhile still wins.
+      if (generation != _searchGeneration) return;
+
       state = state.copyWith(
         results: results,
         isSearching: false,
@@ -122,6 +158,7 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
             .addKeyword(searchedQuery);
       }
     } catch (e) {
+      if (generation != _searchGeneration) return;
       ref
           .read(talkerProvider)
           .error('MedicineSearchNotifier._doSearch: failed: $e');

@@ -10,11 +10,16 @@ class SearchInput extends HookWidget {
     required this.l10n,
     required this.query,
     required this.onChanged,
+    this.onSubmitted,
   });
 
   final AppLocalizations l10n;
   final String query;
   final ValueChanged<String> onChanged;
+
+  /// Fired by the keyboard's search action. Distinct from [onChanged] so an
+  /// explicit submit can bypass the debounce instead of re-arming it.
+  final ValueChanged<String>? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +49,7 @@ class SearchInput extends HookWidget {
       ),
       hint: l10n.medicineSearchFieldHint,
       textInputAction: TextInputAction.search,
-      onSubmit: onChanged,
+      onSubmit: (value) => (onSubmitted ?? onChanged)(value),
       prefixBuilder: (context, style, variants) => FTextField.prefixIconBuilder(
         context,
         style,
