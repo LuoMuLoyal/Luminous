@@ -85,7 +85,7 @@ What becomes easier or harder as a result of this decision?
   - Date: 2026-08-07
 - [0008](0008-desktop-independent-web-product-route.md)
   - Title: 桌面端采用独立 Web 产品路线
-  - Status: accepted
+  - Status: accepted (amended 2026-09-27: 客户端代码归属由 Lucent 改为 Luminary)
   - Date: 2026-08-16
 - [0009](0009-local-database-encryption.md)
   - Title: 本地数据库静态加密 — 引入时机与目标路线
