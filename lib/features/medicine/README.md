@@ -34,6 +34,10 @@
   Right;provider 层 Left 投影为 `AsyncValue.error`(ADR-0005)。
 - 药箱单一事实源:列表派生自 health_context `currentMedicines(isCurrent)`,medicine 不
   本地存药箱;次级输入失败降级为空,不整体失败(`lucent_workspace.dart` 头注释)。
+- **Take/Skip 只对已排程槽位显示**:`plan.items` 覆盖全部 current 药品,无提醒药的
+  `slots` 为空、`todayStatus` 由缺省 dose log 派生为 `pending`——`pending` 不等于
+  「有待服用剂次」。`_TodayPlanRow` 的按钮门控是 `canMark && slots.isNotEmpty`,仅靠
+  `buildMedicineDoseMarkRequest` 会让药箱里每味药都长出打卡按钮。
 - 本地提醒 resync 全量替换:先 cancel SharedPreferences 旧通知 id 再重排;通知 id 由
   `reminderId@时刻` FNV-1a 稳定派生(31-bit 正数);投递回执按 `reminderId|date|time`
   服务端幂等 + 会话内去重(`presentation/providers/reminder_delivery_reporter.dart`)。

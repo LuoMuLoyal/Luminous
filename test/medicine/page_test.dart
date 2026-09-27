@@ -220,6 +220,84 @@ void main() {
     expect(find.text(l10n.medicineDoseStatusSkipped), findsAtLeastNWidgets(1));
   });
 
+  testWidgets('Medicine without a reminder hides today dose action buttons', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const _StaticMedicineWorkspaceRepository(_noReminderWorkspace),
+          ),
+        ],
+        child: const TestForuiApp(home: MedicinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // The medicine is still listed in the drugbox and the today plan, but with
+    // no reminder configured there is no scheduled dose to confirm.
+    expect(find.text('Metformin'), findsAtLeastNWidgets(1));
+    expect(
+      find.byKey(const Key('medicine-plan-dose-action-taken')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('medicine-plan-dose-action-skipped')),
+      findsNothing,
+    );
+  });
+
+  testWidgets(
+    'Medicine with a pending reminder still shows dose action buttons',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            notificationUnreadCountProvider.overrideWith((ref) async => 0),
+            medicineWorkspaceRepositoryProvider.overrideWithValue(
+              const _StaticMedicineWorkspaceRepository(
+                _singlePendingSlotWorkspace,
+              ),
+            ),
+          ],
+          child: const TestForuiApp(home: MedicinePage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(
+        find.byKey(const Key('medicine-plan-dose-action-taken')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('medicine-plan-dose-action-skipped')),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets(
     'Medicine all-overdue pending slot shows no-pending-dose empty state',
     (tester) async {
@@ -1412,6 +1490,37 @@ const _riskResult = MedicineRiskCheckResult(
 
 // 单药单槽 08:00 pending（reminderId/scheduledTime 齐全），用于验证主页打卡
 // mark 参数传递与撤销反向 mark(planned)。
+// 无提醒药：slots 为空，todayStatus 由缺省 dose log 派生为 pending。
+// 用于验证「没设提醒就不该显示 Take/Skip」——pending 不再等同于「有待服用剂次」。
+const _noReminderWorkspace = MedicineWorkspace(
+  hero: MedicineHero(
+    metricDosesToday: '0',
+    metricAdherence: '--',
+    metricNextDose: '--',
+  ),
+  quickActions: <MedicineQuickAction>[],
+  plan: MedicinePlanSurface(
+    items: <MedicinePlanItem>[
+      MedicinePlanItem(
+        color: SemanticColor.primary,
+        nameKey: MedicineCopyKey.genericName,
+        dosageKey: MedicineCopyKey.genericDosage,
+        scheduleKey: MedicineCopyKey.genericSchedule,
+        rawName: 'Metformin',
+        rawDosage: '500 mg',
+        rawSchedule: 'Once daily',
+        slots: <MedicineDoseSlot>[],
+        stateKey: MedicineCopyKey.doseStatusPending,
+        stateColor: SemanticColor.primary,
+        todayStatus: MedicineDoseStatus.pending,
+        currentMedicineId: 'med-1',
+      ),
+    ],
+  ),
+  alerts: <MedicineAlert>[],
+  promisePoints: <MedicinePromisePoint>[],
+);
+
 const _singlePendingSlotWorkspace = MedicineWorkspace(
   hero: MedicineHero(
     metricDosesToday: '1',

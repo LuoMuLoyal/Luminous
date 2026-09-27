@@ -118,6 +118,13 @@ class _TodayPlanRow extends StatelessWidget {
     final canMark =
         onMarkDose != null && takenRequest != null && skippedRequest != null;
     final hasReminder = item.currentMedicineId != null;
+    // Take/Skip are dose actions against a *scheduled* slot: without a reminder
+    // there is nothing to confirm, so an unscheduled medicine must not offer
+    // them. `buildMedicineDoseMarkRequest` alone is not enough — a medicine
+    // with no reminders derives `todayStatus == pending` from the absent dose
+    // log, which would otherwise render the buttons for every drugbox item.
+    final hasScheduledSlots = item.slots.isNotEmpty;
+    final showDoseActions = canMark && hasScheduledSlots;
     final typography = context.theme.typography;
 
     final rowContent = Padding(
@@ -189,7 +196,7 @@ class _TodayPlanRow extends StatelessWidget {
               ),
             ],
           ),
-          if (canMark) ...[
+          if (showDoseActions) ...[
             const SizedBox(height: Spacing.md),
             Row(
               children: [
