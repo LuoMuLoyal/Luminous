@@ -36,6 +36,17 @@ import 'common.dart';
 ///   shared tab chrome that every tab root composes, so its widgets are
 ///   cross-cutting UI infrastructure rather than one feature's presentation
 ///   internals.
+///
+/// Sub-rule 3 additionally exempts the two **app-level integration seams** under
+/// `core/`, which are cross-feature by nature and cannot be feature-free:
+///
+/// - `lib/core/auth/` — the session state that gates the whole app must observe
+///   the auth feature's providers and entities.
+/// - `lib/core/push/` — the push coordinator must react to other features'
+///   state (unread counts, today's AI analysis) to route a notification.
+///
+/// These are whitelisted as *directories*, not as "any core file may import
+/// features": every other `core/` path still reports.
 final class LayeredImportRule extends AnalysisRule {
   static const LintCode _code = LintCode(
     'layered_import',
@@ -115,8 +126,10 @@ final class LayeredImportRule extends AnalysisRule {
       return;
     }
 
-    // Sub-rule 2: core -> feature.
-    if (isCorePath(importer) && targetFeature != null) {
+    // Sub-rule 3: core -> feature.
+    if (isCorePath(importer) &&
+        targetFeature != null &&
+        !_isAppLevelIntegrationSeam(importer)) {
       report(directive.uri, ['core must not import feature "$targetFeature"']);
       return;
     }
@@ -133,6 +146,16 @@ final class LayeredImportRule extends AnalysisRule {
   ) {
     if (targetFeature == 'shell') return true;
     return target.contains('/presentation/providers/');
+  }
+
+  /// Whether [importer] (a `lib/core/...` path) is one of the two app-level
+  /// integration seams allowed to reach into features.
+  ///
+  /// Scoped to these exact directories so the exemption cannot creep: a new
+  /// `core/` file that imports a feature still reports.
+  static bool _isAppLevelIntegrationSeam(String importer) {
+    return importer.startsWith('lib/core/auth/') ||
+        importer.startsWith('lib/core/push/');
   }
 }
 

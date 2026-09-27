@@ -8,7 +8,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/accessibility/settings.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/database/cache_cleanup.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
@@ -23,6 +22,7 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/medicine/presentation/providers/reminder_delivery_reporter.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/features/settings/application/sleep_reminder_notification_coordinator.dart';
+import 'package:luminous/features/settings/data/providers/cache_cleanup.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 

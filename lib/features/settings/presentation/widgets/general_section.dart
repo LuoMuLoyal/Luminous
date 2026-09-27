@@ -7,7 +7,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
-import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
+import 'package:luminous/features/settings/data/providers/data_storage.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';

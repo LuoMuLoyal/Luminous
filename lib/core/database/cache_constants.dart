@@ -9,7 +9,7 @@
 /// The app uses a cache-first pattern: cached data is returned immediately
 /// (if available), then a background refresh fetches fresh data from the
 /// network. There is no per-cache TTL expiration — `cachedAt` is stored for
-/// cleanup purposes only. The [cacheCleanup] provider purges old synced
+/// cleanup purposes only. The cache cleanup provider purges old synced
 /// rows based on the user's data retention preference (30/90/forever).
 ///
 /// ## Sync strategy

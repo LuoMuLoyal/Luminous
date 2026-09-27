@@ -17,7 +17,7 @@ import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
+import 'package:luminous/features/settings/data/providers/data_storage.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync.dart';
 import 'package:luminous/features/settings/presentation/routes.dart';

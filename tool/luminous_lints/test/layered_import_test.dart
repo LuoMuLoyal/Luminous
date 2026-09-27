@@ -194,8 +194,9 @@ final usesTarget = ShellDeferredContent;
 
   Future<void>
   test_coreImportingFeaturePresentationProvider_isReported() async {
-    // The provider carve-out applies to sub-rule 2 only: core must stay
-    // feature-free regardless of which layer it would import.
+    // The provider carve-out applies to sub-rule 2 only, and the app-level
+    // integration seams are scoped to core/auth and core/push: any other core
+    // file must stay feature-free.
     final path = convertPath('/home/test/lib/core/utils/date.dart');
     newFile(path, r'''
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
@@ -203,5 +204,41 @@ import 'package:luminous/features/settings/presentation/providers/user_settings.
 final usesTarget = userSettingsControllerProvider;
 ''');
     await assertDiagnosticsInFile(path, [lint(7, 78)]);
+  }
+
+  Future<void> test_coreAuthImportingFeature_isNotReported() async {
+    // core/auth is the app-level session seam: it must observe the auth
+    // feature's providers/entities to drive the whole app's login state.
+    final path = convertPath('/home/test/lib/core/auth/session_provider.dart');
+    newFile(path, r'''
+import 'package:luminous/features/record/domain/entities/daily.dart';
+
+final usesTarget = DailyRecord;
+''');
+    await assertNoDiagnosticsInFile(path);
+  }
+
+  Future<void> test_corePushImportingFeature_isNotReported() async {
+    // core/push is the app-level push seam: it must react to other features'
+    // state to route an incoming notification.
+    final path = convertPath('/home/test/lib/core/push/message_handler.dart');
+    newFile(path, r'''
+import 'package:luminous/features/record/domain/entities/daily.dart';
+
+final usesTarget = DailyRecord;
+''');
+    await assertNoDiagnosticsInFile(path);
+  }
+
+  Future<void> test_coreDatabaseImportingFeature_isReported() async {
+    // A core path that is neither seam still reports, so the exemption cannot
+    // creep to new core directories.
+    final path = convertPath('/home/test/lib/core/database/cleanup.dart');
+    newFile(path, r'''
+import 'package:luminous/features/record/domain/entities/daily.dart';
+
+final usesTarget = DailyRecord;
+''');
+    await assertDiagnosticsInFile(path, [lint(7, 61)]);
   }
 }

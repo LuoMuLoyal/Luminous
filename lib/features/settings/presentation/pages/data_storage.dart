@@ -5,7 +5,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
+import 'package:luminous/features/settings/data/providers/data_storage.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';

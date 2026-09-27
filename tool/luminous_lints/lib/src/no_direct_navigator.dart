@@ -121,8 +121,8 @@ final class NoDirectNavigatorRule extends AnalysisRule {
   /// - an accessor bound to a local first:
   ///   `final navigator = Navigator.of(c, rootNavigator: true); navigator.pop();`
   static bool _isOverlayDismissal(MethodInvocation invocation) {
-    if (_overlayDismissMembers.contains(invocation.methodName.name))
-      return true;
+    final name = invocation.methodName.name;
+    if (_overlayDismissMembers.contains(name)) return true;
 
     if (_isNavigatorAccessor(invocation)) {
       final parent = invocation.parent;
