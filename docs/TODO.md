@@ -217,7 +217,8 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 
 ## 2026-08-31 文档治理遗留（doc-governance-overhaul 收尾）
 
-- 七规则观察期收敛（`tool/luminous_lints`，warn 观察基线 185 处：no_direct_navigator 122、layered_import 63、enum_parse_unknown_branch 0、no_raw_datetime_parse 0、no_bang_on_response_data 0、first_where_requires_or_else 0、empty_catch_requires_comment 0）：各规则清零后按计划逐条转 error（`--fatal` 门禁接入 pre-push）
+- 七规则观察期收敛（`tool/luminous_lints`，warn 观察基线 159 处：no_direct_navigator 122、layered_import 37、enum_parse_unknown_branch 0、no_raw_datetime_parse 0、no_bang_on_response_data 0、first_where_requires_or_else 0、empty_catch_requires_comment 0）：各规则清零后按计划逐条转 error（`--fatal` 门禁接入 pre-push）
+- `layered_import` 剩余 37 处真实违规待重构：presentation→presentation 跨 feature 页面/widget 17 处（settings/shared widget、medicine/routes、health_event/sheets 等）、data→data 10 处、core→feature 10 处
 - 七规则 IDE 插件集成：主包依赖图 freezed 钉 analyzer 12.x，而 analysis server 要求插件与其内置 analyzer 一致（14.1.0）；主包升级兼容 analyzer 14 后在 `analysis_options.yaml` 的 `plugins:` 接入 `luminous_lints`（当前仅 CLI 观察）
 
 ## 2026-09-12 头像计划的唯一写入路径

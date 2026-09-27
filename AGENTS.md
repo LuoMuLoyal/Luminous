@@ -199,7 +199,11 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
   改用 `parseDateTimeOrNull` / `parseDateTimeOrEpoch`(`lib/core/utils/date_format.dart`)。
 - `layered_import` — 跨 feature 的 data→data 与 presentation→presentation 禁令
   (与上文 Cross-Feature Import Rules 一一对应);feature 间消费 domain/provider
-  公共接缝是 sanctioned 形态,规则不报。
+  公共接缝是 sanctioned 形态,规则不报。子规则 2 有两处显式豁免,与上文口径对齐:
+  **presentation/provider 接缝**(任何 `.../presentation/providers/...`)与
+  **shell 基础设施**(`features/shell/presentation/`,所有 tab root 共用的外壳);
+  跨 feature 的普通 presentation widget/page 仍照报。豁免只作用于子规则 2,
+  `core → feature` 不受影响。
 
 ## Data Layer
 

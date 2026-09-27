@@ -28,6 +28,14 @@ class LayeredImportRuleTest extends AnalysisRuleTest {
         'class SettingsBanner {}',
       )
       ..addFile(
+        'lib/features/settings/presentation/providers/user_settings.dart',
+        'final userSettingsControllerProvider = 0;',
+      )
+      ..addFile(
+        'lib/features/shell/presentation/deferred_content.dart',
+        'class ShellDeferredContent {}',
+      )
+      ..addFile(
         'lib/features/health_context/data/providers/health_context.dart',
         'final healthContextSnapshotProvider = 0;',
       )
@@ -152,5 +160,48 @@ import 'package:luminous/features/record/domain/entities/daily.dart';
 final usesTarget = DailyRecord();
 ''');
     await assertNoDiagnosticsInFile(path);
+  }
+
+  Future<void>
+  test_presentationImportingOtherFeaturePresentationProvider_isNotReported() async {
+    // Sanctioned by AGENTS.md: a feature's presentation layer may consume
+    // another feature's provider seam.
+    final path = convertPath(
+      '/home/test/lib/features/record/presentation/page.dart',
+    );
+    newFile(path, r'''
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
+
+final usesTarget = userSettingsControllerProvider;
+''');
+    await assertNoDiagnosticsInFile(path);
+  }
+
+  Future<void> test_presentationImportingShellWidget_isNotReported() async {
+    // Shell holds the shared tab chrome every tab root composes, so its
+    // widgets are cross-cutting infrastructure rather than one feature's
+    // presentation internals.
+    final path = convertPath(
+      '/home/test/lib/features/record/presentation/page.dart',
+    );
+    newFile(path, r'''
+import 'package:luminous/features/shell/presentation/deferred_content.dart';
+
+final usesTarget = ShellDeferredContent;
+''');
+    await assertNoDiagnosticsInFile(path);
+  }
+
+  Future<void>
+  test_coreImportingFeaturePresentationProvider_isReported() async {
+    // The provider carve-out applies to sub-rule 2 only: core must stay
+    // feature-free regardless of which layer it would import.
+    final path = convertPath('/home/test/lib/core/utils/date.dart');
+    newFile(path, r'''
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
+
+final usesTarget = userSettingsControllerProvider;
+''');
+    await assertDiagnosticsInFile(path, [lint(7, 78)]);
   }
 }

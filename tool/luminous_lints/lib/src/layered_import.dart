@@ -24,6 +24,18 @@ import 'common.dart';
 /// providers consumed from presentation) are sanctioned by AGENTS.md and not
 /// reported. Both `package:luminous/...` and relative import URIs are
 /// analyzed.
+///
+/// Two carve-outs keep sub-rule 2 aligned with that documented contract:
+///
+/// - **Presentation providers** (`.../presentation/providers/...`): AGENTS.md
+///   sanctions consuming another feature's provider seam from presentation; the
+///   rule reports the *layer* an import lives in, and for `Notifier` providers
+///   the layer directory and the seam coincide. Flagging these would contradict
+///   the contract the rule is meant to enforce.
+/// - **Shell infrastructure** (`features/shell/presentation/`): shell holds the
+///   shared tab chrome that every tab root composes, so its widgets are
+///   cross-cutting UI infrastructure rather than one feature's presentation
+///   internals.
 final class LayeredImportRule extends AnalysisRule {
   static const LintCode _code = LintCode(
     'layered_import',
@@ -94,7 +106,8 @@ final class LayeredImportRule extends AnalysisRule {
         isPresentationLayerPath(target) &&
         importerFeature != null &&
         targetFeature != null &&
-        importerFeature != targetFeature) {
+        importerFeature != targetFeature &&
+        !_isSanctionedPresentationSeam(target, targetFeature)) {
       report(directive.uri, [
         'presentation layer of feature "$importerFeature" must not import '
             'the presentation layer of feature "$targetFeature"',
@@ -107,6 +120,19 @@ final class LayeredImportRule extends AnalysisRule {
       report(directive.uri, ['core must not import feature "$targetFeature"']);
       return;
     }
+  }
+
+  /// Whether importing [target] from another feature's presentation layer is a
+  /// sanctioned seam rather than a layering violation.
+  ///
+  /// See the class doc: presentation providers are the documented cross-feature
+  /// provider seam, and shell widgets are shared tab chrome.
+  static bool _isSanctionedPresentationSeam(
+    String target,
+    String targetFeature,
+  ) {
+    if (targetFeature == 'shell') return true;
+    return target.contains('/presentation/providers/');
   }
 }
 
