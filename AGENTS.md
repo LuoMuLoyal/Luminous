@@ -181,9 +181,11 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
 `*.freezed.dart`):它们是 gitignored 的 build_runner 产物,报在它们上面既无法靠改代码
 消除,也会随生成器版本漂移——按上文"不得手改生成文件"的口径,规则同样不报。
 
-- `no_direct_navigator` — 直接使用 Material `Navigator.*`(GoRouter 是唯一导航入口)。
-  白名单仅 `lib/core/router/` 与 `lib/features/shell/`;弹层内部的 `pop(value)` 结果
-  返回是既有惯用法,lint 接入 CI 前单独评估(见 `docs/TODO.md`)。
+- `no_direct_navigator` — 直接使用 Material `Navigator.*` 做**路由**导航(GoRouter 是唯一
+  导航入口)。白名单 `lib/core/router/` 与 `lib/features/shell/`;**弹层关闭**
+  (`pop` / `maybePop`,含 `Navigator.of(...)` 取到的 `NavigatorState` 句柄,以及围绕它的
+  `canPop()` 守卫)是既有惯用法、GoRouter 无对应能力,规则不报;`push`/`pushNamed`/
+  `pushReplacement` 等路由导航一律照报。
 - `first_where_requires_or_else` — 无 `orElse` 的 `firstWhere` 在无匹配时抛
   `StateError`;提供 `orElse` 即通过。
 - `no_bang_on_response_data` — data 层 `!` 强解包(典型 `response.data!`),坏 payload
