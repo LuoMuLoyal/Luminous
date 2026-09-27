@@ -11,11 +11,9 @@ Last updated: 2026-09-24
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
-## 产品闭环（程序已收口，仅剩延后项）
+## 产品闭环（仅剩延后项）
 
-Product Loop Program（历史决策见已被新产品方向取代的 `0007-event-led-sparse-record-product-loop.md`）已实施完毕，
-计划文件已删：健康事件、主动建议、稀疏记录语义、事件优先回顾与隐私克制的闭环测量全部落地，
-就诊摘要支持字段级隐私选择与可撤销分享。以下为延后项。
+Product Loop Program 的延后项如下。
 
 ### 平台与验证
 
@@ -35,8 +33,7 @@ Product Loop Program（历史决策见已被新产品方向取代的 `0007-event
 
 ## 2026-09-08 Review 页重组后置依赖登记（Review Page Restructure 波次）
 
-Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下为不在本期客户端范围的
-后置依赖，仅登记跟踪；落地后做一次 Wave 2 客户端适配并删除本条。
+以下为不在本期客户端范围的后置依赖，仅登记跟踪；落地后做一次 Wave 2 客户端适配并删除本条。
 
 - Review 洞察的预置上下文入口（agentic 计划承接）
   - 现状：顶栏 [问助手] 为通用 `/assistant` 入口（与 today 同语义），不携带
@@ -54,9 +51,9 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 
 ## 2026-09-06 OAuth 登入门槛调整（UI 隐藏）
 
-- 微信登录与微信身份绑定入口已在 UI 层面隐藏（登录页 `OAuthButtonRow` 与账号设置页
-  `LinkedIdentitiesSection`），底层流程与代码全部保留，后续恢复只需改回显示参数。
-  - 微信开放平台「网站应用」需企业认证（300 元/年），当前无企业资质故隐藏；
+- 微信登录与微信身份绑定入口在 UI 层面隐藏（登录页 `OAuthButtonRow` 与账号设置页
+  `LinkedIdentitiesSection`），底层流程与代码保留，恢复只需改回显示参数。
+  - 阻塞：微信开放平台「网站应用」需企业认证（300 元/年），当前无企业资质；
     待有资质后恢复入口并配置 `WECHAT_WEB_*` / `WECHAT_MOBILE_*` 环境变量
 
 ## 延后（有明确原因）
@@ -179,13 +176,6 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 - 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/presentation/pages/detail.dart`（853 行）、`record/presentation/widgets/sections/quick_entry_panel.dart`（565 行）、`record/presentation/pages/edit.dart`（511 行）、`report/presentation/pages/page.dart`（438 行）、`settings/presentation/pages/page.dart`（184 行）
 - 剩余约 80 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
-## 实验性功能（当前冻结）
-
-- GenUI（Generative UI）渲染引擎
-  - 现状：`proposedActions` 已是 GenUI 雏形（4 种固定类型 + 1 个固定卡片 `AssistantProposalCard`）
-  - 历史设想：扩展为开放式 UI 组件 JSON schema，由客户端渲染结构化组件树；该设想未获当前用户任务支持
-  - 决策：保留现有方向与 Feature Flag，不删除，也不在当前阶段推进；重新启动需单独证明用户任务和受控渲染边界
-
 ## Not in P0-P3 Scope
 
 - Women-health / period management
@@ -217,10 +207,6 @@ Review 页重组（洞察优先 + 覆盖感知）客户端侧已收口，以下�
 
 ## 2026-08-31 文档治理遗留（doc-governance-overhaul 收尾）
 
-- 七规则观察期收敛（`tool/luminous_lints`，warn 观察基线 27 处，全部为 `layered_import`；其余六条规则均已清零）：`layered_import` 清零后按计划逐条转 error（`--fatal` 门禁接入 pre-push）
-- `layered_import` 剩余 27 处真实违规待重构：presentation→presentation 跨 feature 页面/widget 17 处（settings/shared widget、medicine/routes、health_event/sheets 等）、data→data 10 处。`core→feature` 已清零（`core/auth`、`core/push` 定为应用级集成接缝并白名单）
+- 七规则观察期收敛（`tool/luminous_lints`，warn 观察基线 27 处，全部为 `layered_import`）：`layered_import` 清零后按计划逐条转 error（`--fatal` 门禁接入 pre-push）
+- `layered_import` 剩余 27 处真实违规待重构：presentation→presentation 跨 feature 页面/widget 17 处（settings/shared widget、medicine/routes、health_event/sheets 等）、data→data 10 处
 - 七规则 IDE 插件集成：主包依赖图 freezed 钉 analyzer 12.x，而 analysis server 要求插件与其内置 analyzer 一致（14.1.0）；主包升级兼容 analyzer 14 后在 `analysis_options.yaml` 的 `plugins:` 接入 `luminous_lints`（当前仅 CLI 观察）
-
-## 2026-09-12 头像计划的唯一写入路径
-
-- 账号页 `/account` 与 Profile 页 `/profile` 都曾能改头像 URL；两处 URL 文本输入已全部退役，头像只能经 Profile 的 `showAvatarActionsDialog`（查看/拍照/相册/移除）+ 本地草稿 + 预签名上传写入。不要新增第三条头像写入路径，也不要把 URL 文本输入加回来。
