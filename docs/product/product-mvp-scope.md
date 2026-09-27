@@ -56,7 +56,7 @@ MVP 不包含：
 - 女性健康、经期管理。
 - 心理健康正式模块。
 - 智能硬件。
-- 当前 MVP 不包含桌面/Web 产品化；但桌面与 Web 不是永久删除项，其“大屏纵向健康阅读”角色及 Next.js + Tauri 2 候选技术路线另行调研。
+- 当前 MVP 不包含桌面/Web 产品化；但桌面与 Web 不是永久删除项，其“大屏纵向健康阅读”角色及 Next.js + Tauri 2 技术路线已定（见 [ADR-0008](../reference/adr/0008-desktop-independent-web-product-route.md)：客户端归属 Luminary，后端能力由 Lucent 提供），排在 0.1.0 之后启动。
 - 家庭协作。
 - 儿童用药。
 - 慢病完整管理。

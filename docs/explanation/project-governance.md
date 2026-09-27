@@ -33,9 +33,9 @@ updated: 2026-09-02
 
 - 移动端是当前产品表面。
 - 底部 tab 为 `today / record / medicine / review / mine` 五个运行时入口；`report` 的用户任务和名称已改为「回顾」（review，`lib/features/review/`、`Routes.review`），`/report` 保留为兼容路由。
-- 现有 Flutter Web 应用保持当前维护边界；未来 Web 产品可能承担大屏纵向洞察，Next.js 是候选实现而非已定方案，完成独立调研前不扩展认证产品壳或追求功能对等。
+- 现有 Flutter Web 应用保持当前维护边界；未来 Web 产品承担大屏纵向洞察，采用 Next.js + Tauri 2 路线（见 [ADR-0008](../reference/adr/0008-desktop-independent-web-product-route.md)），完成实现前不扩展认证产品壳或追求功能对等。
 - `Luminous-site` 当前是竞赛/营销首页，不做签入式报告预览。
-- 现有 Flutter 桌面端保留，当前只维护共享代码回归；这不是永久放弃桌面产品。未来桌面产品初步考虑用 Tauri 2 承载 Web 大屏体验，但用户任务、数据边界和技术路线尚未决策。
+- 现有 Flutter 桌面端保留，当前只维护共享代码回归；这不是永久放弃桌面产品。桌面产品由 Tauri 2 承载 Web 大屏体验，客户端归属 Luminary、后端能力由 Lucent 提供（见 ADR-0008）；具体用户任务与数据边界待实现时决策。
 
 ## 工作阶段总纲
 
