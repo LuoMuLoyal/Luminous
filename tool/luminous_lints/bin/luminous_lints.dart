@@ -76,6 +76,14 @@ void main(List<String> args) async {
       result.unit.accept(
         _RuleDriverVisitor(
           filePath: path,
+          unitUri: result
+              .unit
+              .declaredFragment
+              ?.element
+              .firstFragment
+              .libraryFragment
+              ?.source
+              .uri,
           report: (rule, node, arguments) {
             final lineInfo = result.unit.lineInfo;
             final loc = lineInfo.getLocation(node.offset);
@@ -162,9 +170,18 @@ class _Finding {
 }
 
 final class _RuleDriverVisitor extends RecursiveAstVisitor<void> {
-  _RuleDriverVisitor({required this.filePath, required this.report});
+  _RuleDriverVisitor({
+    required this.filePath,
+    required this.unitUri,
+    required this.report,
+  });
 
   final String filePath;
+
+  /// The URI of the unit being linted, used by rules that must tell a host-app
+  /// declaration from a dependency's (see `enum_parse_unknown_branch`).
+  final Uri? unitUri;
+
   final void Function(String rule, AstNode node, List<Object> arguments) report;
 
   @override
@@ -222,6 +239,7 @@ final class _RuleDriverVisitor extends RecursiveAstVisitor<void> {
     EnumParseUnknownBranchRule.checkSwitch(
       node: node,
       filePath: filePath,
+      unitUri: unitUri,
       report: (n) => report('enum_parse_unknown_branch', n, const []),
     );
     super.visitSwitchStatement(node);

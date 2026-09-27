@@ -190,8 +190,11 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
   必须映射为 domain failure;仅扫描含 `/data/` 的路径,presentation 层不适用。
 - `empty_catch_requires_comment` — 空 catch 块静默吞错;块内有注释、日志或 rethrow
   即通过。注意 `onError: (_) {}` 形态不在覆盖内,评审时需人工把关。
-- `enum_parse_unknown_branch` — enum switch **语句**缺 fallback 分支(新枚举值与未知
-  服务端载荷必须 fail safe);Dart 3 switch 表达式豁免(编译器保证穷尽)。
+- `enum_parse_unknown_branch` — enum switch **语句**缺 fallback 分支;仅扫描**服务端来源**
+  的枚举(即生成客户端 `package:lucent_api/` 的枚举,服务端可能返回本客户端未见过的新值),
+  且须含 `unknown` / `unknownDefaultOpenApi` 分支或 `_`/`default`。本仓自有枚举是白盒:
+  调用点与枚举一起编译,漏分支会在编译期暴露,补 `default` 反而变成吞掉新值的死代码,
+  规则不报。Dart 3 switch 表达式豁免(编译器保证穷尽)。
 - `no_raw_datetime_parse` — 裸 `DateTime.parse` 在畸形输入上抛 `FormatException`;
   改用 `parseDateTimeOrNull` / `parseDateTimeOrEpoch`(`lib/core/utils/date_format.dart`)。
 - `layered_import` — 跨 feature 的 data→data 与 presentation→presentation 禁令

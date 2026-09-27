@@ -9,16 +9,23 @@ import 'package:analyzer/error/error.dart';
 
 import 'common.dart';
 
-/// Switch statements over an enum value must carry an unknown-safe fallback
-/// branch: a `default` clause, a wildcard (`_`) pattern, a `null` pattern, or
-/// an explicit branch for an enum constant named `unknown`.
+/// Switch statements over a **server-derived** enum value must carry an
+/// unknown-safe fallback branch: a `default` clause, a wildcard (`_`) pattern, a
+/// `null` pattern, or an explicit branch for an enum constant named `unknown`
+/// (including the OpenAPI generator's `unknownDefaultOpenApi` sentinel).
 ///
-/// New enum values and unknown server payloads must fail safe instead of
-/// falling through silently. Switch statements are not exhaustiveness-checked
-/// by the compiler, so a silently-skipped new value is a real runtime risk.
-/// Dart 3 switch **expressions** are exempt: the compiler enforces
-/// exhaustiveness there, so adding an enum value breaks compilation at every
-/// matching site instead of falling through.
+/// Only enums declared outside the host app count as server-derived — in
+/// practice the enums of the generated API client. Those are the only ones that
+/// can carry a value the host app has never heard of, because the server may
+/// return a variant added after this client was built.
+///
+/// Switches over the host app's own enums are deliberately **not** reported:
+/// such an enum is white-box, every matching switch is compiled together with
+/// it, and a switch statement over an enum with no fallback is a genuine
+/// compile-time invitation to handle a newly added constant. Adding a `default`
+/// there would be dead code that silently swallows that future constant instead
+/// of surfacing it as a break at every site.
+///
 /// A switch whose scrutinee type cannot be resolved is skipped.
 final class EnumParseUnknownBranchRule extends AnalysisRule {
   static const LintCode _code = LintCode(
@@ -34,8 +41,8 @@ final class EnumParseUnknownBranchRule extends AnalysisRule {
     : super(
         name: 'enum_parse_unknown_branch',
         description:
-            'Flags switches over enum values that lack a default, wildcard, '
-            'null, or explicit unknown branch.',
+            'Flags switches over server-derived (generated-client) enum values '
+            'that lack a default, wildcard, null, or explicit unknown branch.',
       );
 
   @override
@@ -56,6 +63,7 @@ final class EnumParseUnknownBranchRule extends AnalysisRule {
   static void checkSwitch({
     required AstNode node,
     required String filePath,
+    required Uri? unitUri,
     required void Function(AstNode node) report,
   }) {
     if (libRelativePath(filePath) == null) return;
@@ -72,16 +80,54 @@ final class EnumParseUnknownBranchRule extends AnalysisRule {
         return;
     }
 
-    if (!switchesOverEnum(scrutinee)) return;
+    if (!switchesOverServerDerivedEnum(scrutinee, unitUri)) return;
     if (hasFallback) return;
     report(node);
   }
 
-  /// Whether the switch scrutinee's static type is an enum type.
-  static bool switchesOverEnum(Expression scrutinee) {
+  /// Whether the scrutinee's static type is an enum declared **outside** the
+  /// package that [unitUri] belongs to — the only kind that can carry a value
+  /// this code never saw.
+  ///
+  /// Local enums are white-box: their switches compile together with the enum,
+  /// so a missing fallback surfaces a newly added constant at compile time
+  /// rather than silently mis-handling a runtime value.
+  static bool switchesOverServerDerivedEnum(
+    Expression scrutinee,
+    Uri? unitUri,
+  ) {
     final type = scrutinee.staticType;
     if (type is! InterfaceType) return false;
-    return type.element is EnumElement;
+    final element = type.element;
+    if (element is! EnumElement) return false;
+    return !_isInSamePackageAs(element, unitUri);
+  }
+
+  /// Whether [element] is declared by the same package as the linted unit.
+  ///
+  /// Package identity is compared as the *library* part of each URI rather than
+  /// against the literal string `luminous`: the same source tree resolves to
+  /// `package:luminous/...` in the real app and to `package:test/...` under
+  /// `analyzer_testing`, and the rule must behave identically in both. A
+  /// dependency such as the generated API client (`package:lucent_api/...`) has
+  /// a different library prefix, and so counts as external.
+  static bool _isInSamePackageAs(Element element, Uri? unitUri) {
+    final uri = element.firstFragment.libraryFragment?.source.uri;
+    if (uri == null) return false;
+    if (uri.scheme != 'package') return true;
+    final enumPackage = _packageOf(uri.path);
+    final unitPackage = unitUri?.scheme == 'package'
+        ? _packageOf(unitUri!.path)
+        : null;
+    if (enumPackage == null || unitPackage == null) return false;
+    return enumPackage == unitPackage;
+  }
+
+  /// Extracts the package name from a `package:` URI path
+  /// (`lucent_api/src/model/x.dart` → `lucent_api`).
+  static String? _packageOf(String path) {
+    final slash = path.indexOf('/');
+    return slash <= 0 ? null : path.substring(0, slash);
   }
 
   static bool _memberHasFallback(SwitchMember member) {
@@ -131,15 +177,36 @@ final class EnumParseUnknownBranchRule extends AnalysisRule {
 
   /// Whether [expression] refers to a constant named `unknown` (for example
   /// `Status.unknown` or a top-level `unknown` constant).
+  ///
+  /// Also accepts the OpenAPI generator's unknown-value sentinel
+  /// `unknownDefaultOpenApi` (and any name merely *starting* with `unknown`):
+  /// the generated client collapses every unrecognised server value into that
+  /// single constant, so branching on it is exactly the unknown-safe handling
+  /// this rule asks for. Matching only the exact lexeme `unknown` would report
+  /// sites that already handle the unknown case correctly.
+  ///
+  /// Three spellings must be covered, because the same constant parses
+  /// differently by arity:
+  /// - `unknown` / `Status.unknown` — [SimpleIdentifier] / [PrefixedIdentifier];
+  /// - `lucent.Status.unknownDefaultOpenApi` — a three-segment qualified name
+  ///   is a [PropertyAccess], not a [PrefixedIdentifier].
   static bool _isUnknownExpression(Expression expression) {
     if (expression is SimpleIdentifier) {
-      return expression.token.lexeme.toLowerCase() == 'unknown';
+      return _startsWithUnknown(expression.token.lexeme);
     }
     if (expression is PrefixedIdentifier) {
-      return expression.identifier.token.lexeme.toLowerCase() == 'unknown';
+      return _startsWithUnknown(expression.identifier.token.lexeme);
+    }
+    if (expression is PropertyAccess) {
+      return _startsWithUnknown(expression.propertyName.token.lexeme);
     }
     return false;
   }
+
+  /// Whether [name] marks an unknown-safe constant: `unknown`,
+  /// `unknownDefaultOpenApi`, and any other `unknown*` variant.
+  static bool _startsWithUnknown(String name) =>
+      name.toLowerCase().startsWith('unknown');
 }
 
 final class _UnitVisitor extends SimpleAstVisitor<void> {
@@ -153,22 +220,41 @@ final class _UnitVisitor extends SimpleAstVisitor<void> {
     final filePath =
         context.currentUnit?.file.path ?? context.definingUnit.file.path;
     unit.accept(
-      _RecursiveSwitchVisitor(filePath: filePath, report: rule.reportAtNode),
+      _RecursiveSwitchVisitor(
+        filePath: filePath,
+        // The unit's own URI identifies which package we are linting, so the
+        // rule can tell a host-app enum from a dependency's without hardcoding
+        // the app's package name.
+        unitUri: unit
+            .declaredFragment
+            ?.element
+            .firstFragment
+            .libraryFragment
+            ?.source
+            .uri,
+        report: rule.reportAtNode,
+      ),
     );
   }
 }
 
 final class _RecursiveSwitchVisitor extends RecursiveAstVisitor<void> {
   final String filePath;
+  final Uri? unitUri;
   final void Function(AstNode node) report;
 
-  _RecursiveSwitchVisitor({required this.filePath, required this.report});
+  _RecursiveSwitchVisitor({
+    required this.filePath,
+    required this.unitUri,
+    required this.report,
+  });
 
   @override
   void visitSwitchStatement(SwitchStatement node) {
     EnumParseUnknownBranchRule.checkSwitch(
       node: node,
       filePath: filePath,
+      unitUri: unitUri,
       report: report,
     );
     super.visitSwitchStatement(node);
@@ -179,6 +265,7 @@ final class _RecursiveSwitchVisitor extends RecursiveAstVisitor<void> {
     EnumParseUnknownBranchRule.checkSwitch(
       node: node,
       filePath: filePath,
+      unitUri: unitUri,
       report: report,
     );
     super.visitSwitchExpression(node);

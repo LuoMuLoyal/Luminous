@@ -8,6 +8,17 @@ void main() {
   });
 }
 
+/// Covers the host-app half of the rule's contract: switches over the app's own
+/// enums are deliberately **not** reported, because such an enum is white-box —
+/// every matching switch compiles together with it, so a new constant surfaces
+/// as a compile error at each site instead of being silently swallowed by a
+/// `default`. Reporting them would push dead code into 17 call sites.
+///
+/// The server-derived half (the generated API client's enums, which *can* carry
+/// a value this code has never seen) is exercised by the repository scan
+/// itself: `dart run bin/luminous_lints.dart` reports zero
+/// `enum_parse_unknown_branch` findings only as long as the generated-client
+/// enums keep their `unknownDefaultOpenApi` fallbacks.
 @reflectiveTest
 class EnumParseUnknownBranchRuleTest extends AnalysisRuleTest {
   @override
@@ -16,9 +27,8 @@ class EnumParseUnknownBranchRuleTest extends AnalysisRuleTest {
     super.setUp();
   }
 
-  Future<void> test_exhaustiveSwitchWithoutFallback_isReported() async {
-    await assertDiagnostics(
-      r'''
+  Future<void> test_localEnumWithoutFallback_isNotReported() async {
+    await assertNoDiagnostics(r'''
 enum Status { active, archived }
 
 void f(Status s) {
@@ -29,12 +39,25 @@ void f(Status s) {
       break;
   }
 }
-''',
-      [lint(55, 92)],
-    );
+''');
   }
 
-  Future<void> test_switchWithWildcard_isNotReported() async {
+  Future<void> test_localEnumWithUnknownConstant_isNotReported() async {
+    await assertNoDiagnostics(r'''
+enum Status { active, unknown }
+
+void f(Status s) {
+  switch (s) {
+    case Status.active:
+      break;
+    case Status.unknown:
+      break;
+  }
+}
+''');
+  }
+
+  Future<void> test_localEnumWithWildcard_isNotReported() async {
     await assertNoDiagnostics(r'''
 enum Status { active, archived }
 
@@ -49,7 +72,7 @@ void f(Status s) {
 ''');
   }
 
-  Future<void> test_switchWithDefault_isNotReported() async {
+  Future<void> test_localEnumWithDefault_isNotReported() async {
     await assertNoDiagnostics(r'''
 enum Status { active, archived }
 
@@ -78,17 +101,6 @@ String f(Status s) => switch (s) {
 ''');
   }
 
-  Future<void> test_switchExpressionWithWildcard_isNotReported() async {
-    await assertNoDiagnostics(r'''
-enum Status { active, archived }
-
-String f(Status s) => switch (s) {
-  Status.active => 'a',
-  _ => 'unknown',
-};
-''');
-  }
-
   Future<void> test_switchOverNonEnum_isNotReported() async {
     await assertNoDiagnostics(r'''
 void f(int value) {
@@ -96,6 +108,27 @@ void f(int value) {
     case 1:
       break;
     case 2:
+      break;
+  }
+}
+''');
+  }
+
+  /// A locally declared enum still skips the rule even when the switch carries
+  /// no fallback and the enum is passed across a library boundary, mirroring
+  /// the real host-app call sites (`DailyRecordKind`, `SoftIconVariant`, ...).
+  Future<void> test_localEnumAcrossLibrary_isNotReported() async {
+    newFile('$testPackageLibPath/status.dart', r'''
+enum Status { active, archived }
+''');
+    await assertNoDiagnostics(r'''
+import 'status.dart';
+
+void f(Status s) {
+  switch (s) {
+    case Status.active:
+      break;
+    case Status.archived:
       break;
   }
 }
