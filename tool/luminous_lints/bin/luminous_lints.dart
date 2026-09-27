@@ -63,6 +63,13 @@ void main(List<String> args) async {
   for (final context in collection.contexts) {
     for (final path in context.contextRoot.analyzedFiles()) {
       if (!path.endsWith('.dart')) continue;
+      // Generated sources are not hand-editable: `*.g.dart` (json_serializable)
+      // and `*.freezed.dart` are gitignored build output reproduced by
+      // build_runner, so a finding there cannot be fixed in code — it would
+      // silently reappear on the next build and drift with generator versions.
+      // The repository rule is "never hand-edit generated files", so the linter
+      // must not report on them either.
+      if (_isGeneratedSource(path)) continue;
       final result = await context.currentSession.getResolvedUnit(path);
       if (result is! ResolvedUnitResult) continue;
       fileCount++;
@@ -127,6 +134,15 @@ String _relativize(String path) {
   final normalized = path.replaceAll('\\', '/');
   final index = normalized.indexOf('/lib/');
   return index < 0 ? normalized : normalized.substring(index + 1);
+}
+
+/// Whether [path] is a generated Dart source rather than hand-written code.
+///
+/// Matches the repository's generated-file contract (see AGENTS.md): `.g.dart`
+/// and `.freezed.dart` are build output excluded from the lint scan.
+bool _isGeneratedSource(String path) {
+  final normalized = path.replaceAll('\\', '/');
+  return normalized.endsWith('.g.dart') || normalized.endsWith('.freezed.dart');
 }
 
 class _Finding {

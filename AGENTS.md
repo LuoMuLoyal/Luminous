@@ -177,7 +177,9 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
 ### Custom Lint Rules(`tool/luminous_lints`)
 
 七条规则的一句话清单(默认 warn 观察模式,`--fatal` 才作门禁;规则细节见
-`tool/luminous_lints/lib/src/`):
+`tool/luminous_lints/lib/src/`)。**扫描范围排除生成文件**(`*.g.dart` /
+`*.freezed.dart`):它们是 gitignored 的 build_runner 产物,报在它们上面既无法靠改代码
+消除,也会随生成器版本漂移——按上文"不得手改生成文件"的口径,规则同样不报。
 
 - `no_direct_navigator` — 直接使用 Material `Navigator.*`(GoRouter 是唯一导航入口)。
   白名单仅 `lib/core/router/` 与 `lib/features/shell/`;弹层内部的 `pop(value)` 结果

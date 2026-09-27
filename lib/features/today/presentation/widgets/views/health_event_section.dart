@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -176,9 +177,13 @@ class HealthEventSection extends ConsumerWidget {
   _readReasonRecordOptions(WidgetRef ref) async {
     try {
       final userTimezone = await readUserTimezone(ref);
-      final today = DateTime.parse(
-        localDateKey(DateTime.now(), timeZoneName: userTimezone),
-      );
+      // 只需"当地今天"这一天，日期键用于查询；用安全解析避免裸 DateTime.parse
+      // 在畸形输入上抛 FormatException（localDateKey 正常返回 yyyy-MM-dd）。
+      final today =
+          parseDateTimeOrNull(
+            localDateKey(DateTime.now(), timeZoneName: userTimezone),
+          ) ??
+          DateTime.now();
       final records = await ref
           .read(dailyRecordListForDateProvider(today).future)
           .timeout(const Duration(seconds: 2));
