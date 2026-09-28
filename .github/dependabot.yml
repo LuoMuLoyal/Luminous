@@ -1,5 +1,47 @@
 version: 2
+
+# Dependabot 配置。
+#
+# ## 本仓的 pubspec 分布（4 个，不是 1 个）
+#
+# Flutter 仓库默认只配根目录，但这里有四个独立的 package：
+#
+# | 目录 | 是什么 | 是否纳入 |
+# |---|---|---|
+# | `/` | 主 app | ✅ |
+# | `/generated/lucent_api` | 生成的 API 客户端 | ✅ |
+# | `/tool/luminous_lints` | 自研分析器插件 | ✅（见下方 ignore） |
+# | `/pkgs/paddle_ocr_native-0.1.1` | **本地定制 fork** | ❌ **故意不纳入** |
+#
+# ## 为什么 `pkgs/paddle_ocr_native-0.1.1` 故意不纳入
+#
+# 它不是"我们的代码"，而是 `paddle_ocr_native` 0.1.1 的**本地修改版**
+# （上游：https://github.com/flespark/paddle_ocr_native，改动是把 ONNX 模型
+# 从 APK 里挪出去改为按需下载，见该目录 README 与根 pubspec.yaml 的注释）。
+#
+# 根 `pubspec.yaml` 通过 `dependency_overrides` 指向它。若让 Dependabot 接管：
+#
+#   1. 它会尝试把版本往上游 0.1.x/0.2.x 推，而**上游没有我们的改动**——
+#      合并即丢掉模型懒下载，表现为 APK 体积暴涨或 OCR 找不到模型。
+#   2. 它升级的是这个 vendored 目录的 `pubspec.yaml` 依赖，那部分改动
+#      本应由"重新 vendor 上游新版 + 重打补丁"完成，不是自动 PR 能做的。
+#
+# 升级路径是**人工**的：等上游发新版 → 重新 vendor → 重放补丁 → 更新
+# 根 pubspec 的 `dependency_overrides` 版本号。
+#
+# ## 关于 lockfile
+#
+# `generated/lucent_api/pubspec.lock` 被 .gitignore 排除。这不影响本配置生效：
+# dependabot-core 的 pub file fetcher 只**要求** `pubspec.yaml`
+# （`required_files_in?` 仅检查它），lockfile 是"存在则一并读取"。
+# 详见 https://github.com/dependabot/dependabot-core/blob/main/pub/lib/dependabot/pub/file_fetcher.rb
+#
+# 但要知道代价：**没有 lockfile 时 Dependabot 无法解析传递依赖**，
+# 只能看到 `pubspec.yaml` 里直接声明的那几个包。好处是也不会去动
+# 生成物目录里的传递版本。
+
 updates:
+  # ── 主 app ──────────────────────────────────────────────
   - package-ecosystem: pub
     directory: '/'
     schedule:
@@ -8,7 +50,22 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
+    commit-message:
+      # Flutter 的依赖升级通常是 chore；带 breaking 的由评审判断
+      prefix: 'chore'
+      include: scope
+    groups:
+      # 把"同一生态的小改动"合成一个 PR：Flutter 依赖树很深，
+      # 逐个开 PR 会产生大量互相冲突的分支（同一份 pubspec.lock）。
+      # 只归类 patch/minor，major 仍然单独开——那需要人工判断。
+      pub-patch-and-minor:
+        patterns:
+          - '*'
+        update-types:
+          - patch
+          - minor
 
+  # ── 生成的 API 客户端 ────────────────────────────────────
   - package-ecosystem: pub
     directory: '/generated/lucent_api'
     schedule:
@@ -18,7 +75,64 @@ updates:
     labels:
       - dependencies
       - generated-client
+    commit-message:
+      prefix: 'chore'
+      include: scope
+    groups:
+      api-client-patch-and-minor:
+        patterns:
+          - '*'
+        update-types:
+          - patch
+          - minor
+    ignore:
+      # 只挡 major，patch/minor 照常走上面的 group。
+      #
+      # 依据：generated/lucent_api 由 scripts/contract/bootstrap.dart 再生成，
+      # 但该脚本**刻意不覆盖 pubspec.yaml**——生成器模板文件（pubspec.yaml /
+      # .gitignore / README）不在拷贝范围内，以保留仓库跟踪的 SDK 约束。
+      # 所以这里的 pubspec 是**手维护**的，Dependabot 改它不会被冲掉。
+      #
+      # 仍需挡 major 的原因：该目录的依赖版本由 OpenAPI 生成器与 Lucent 契约
+      # 间接决定，跨大版本往往要先确认生成器是否支持（本轮已因此卡过一次），
+      # 所以大版本升级走人工。
+      - dependency-name: '*'
+        update-types:
+          - version-update:semver-major
 
+  # ── 自研分析器插件 ───────────────────────────────────────
+  #
+  # 这个目录**必须**有 ignore：它的三个 analyzer 相关依赖被刻意钉死，
+  # 与 Flutter 内置的 Dart SDK 版本联动，自动升级会让插件在 analysis server
+  # 里加载失败（in-process 加载，版本不匹配直接报错）。
+  - package-ecosystem: pub
+    directory: '/tool/luminous_lints'
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: 'chore'
+      include: scope
+    ignore:
+      # 与 Flutter 3.47.1 内置 Dart 3.13.1 的 analyzer 14.1.0 对齐，
+      # 见该目录 pubspec.yaml 的注释。升级时机 = 升级 Flutter 时人工同步。
+      - dependency-name: 'analyzer'
+      - dependency-name: 'analysis_server_plugin'
+      - dependency-name: 'analyzer_testing'
+    groups:
+      # 剩下的（lints / test / test_reflective_loader / meta）都是低风险
+      lint-tooling:
+        patterns:
+          - '*'
+        update-types:
+          - patch
+          - minor
+
+  # ── GitHub Actions ───────────────────────────────────────
   - package-ecosystem: github-actions
     directory: '/'
     schedule:
@@ -28,3 +142,10 @@ updates:
     labels:
       - dependencies
       - ci
+    commit-message:
+      prefix: 'chore'
+      include: scope
+    groups:
+      github-actions:
+        patterns:
+          - '*'
