@@ -19,7 +19,7 @@ class VerifyEmailRequest {
   /// Returns a new [VerifyEmailRequest] instance.
   VerifyEmailRequest({required this.token});
 
-  /// Better Auth 邮件验证 token
+  /// Lucent 签发的邮件验证 token
   @JsonKey(name: r'token', required: true, includeIfNull: false)
   final String token;
 
