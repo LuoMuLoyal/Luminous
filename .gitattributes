@@ -15,6 +15,16 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 
+# Flutter regenerates these registrants with LF on every `flutter pub get`, so
+# pin LF here. Without a rule they fell back to `* text=auto`, which checked
+# them out as CRLF and left five files permanently "modified" with no content
+# difference on every run.
+linux/flutter/generated_plugins.cmake text eol=lf
+linux/flutter/generated_plugin_registrant.cc text eol=lf
+windows/flutter/generated_plugins.cmake text eol=lf
+windows/flutter/generated_plugin_registrant.cc text eol=lf
+macos/Flutter/GeneratedPluginRegistrant.swift text eol=lf
+
 generated/lucent_api/lib/api/** linguist-generated
 
 *.png binary

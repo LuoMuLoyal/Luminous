@@ -40,6 +40,19 @@ Future<void> bootstrapGeneratedSources(
   bool skipPubGet = false,
   bool skipAppCodegen = false,
 }) async {
+  // Must precede `flutter pub get`: that command runs Flutter's synthetic
+  // localizations package step, which needs `lib/l10n/app_{zh,en}.arb`. Those
+  // are merge products and gitignored, so a fresh clone has only
+  // `lib/l10n/src/` and pub get fails on the missing `template-arb-file`. The
+  // merge is idempotent, so running it unconditionally is safe.
+  await runLoggedCommand(
+    'dart',
+    ['scripts/l10n/arb_tools.dart', 'merge'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart scripts/l10n/arb_tools.dart merge',
+  );
+  stdout.writeln('');
+
   if (!skipPubGet) {
     await runLoggedCommand(
       'flutter',
