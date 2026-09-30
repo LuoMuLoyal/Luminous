@@ -1,6 +1,6 @@
 # 工程与后端平台 功能盘点与审计
 
-> 范围：`Lucent/src/admin/`、`Lucent/src/mail/`、`Lucent/src/modules/files/`、`Lucent/src/llm-runtime/`、`Lucent/src/common/queue/`、`Lucent/src/common/metrics/`、`Lucent/src/modules/product-events/`、`Lucent/src/modules/testing-support/`、`Lucent/deploy/`；参考 `Lucent/plans/`（2026-08-14-saas-modules-and-node-monorepo、2026-07-24-worker-separation-and-cron-repeatable、2026-08-02-rnacos-runtime-config-tuning）、`Luminous/plans/`（2026-08-14-flutter-3.47-upgrade-plan、2026-08-14-product-surface-route）、`Lucent/docs/00-current/TODO.md`、`Lucent/docs/01-reference/architecture.md`。客户端证据取自 `Luminous/lib/core/analytics/` 与 record 特性上传链路。
+> 范围：`Lucent/src/admin/`、`Lucent/src/mail/`、`Lucent/src/modules/files/`、`Lucent/src/llm-runtime/`、`Lucent/src/common/queue/`、`Lucent/src/common/metrics/`、`Lucent/src/modules/product-events/`、`Lucent/src/modules/testing-support/`、`Lucent/deploy/`；参考 `Lucent/plans/`（2026-07-24-worker-separation-and-cron-repeatable、2026-08-02-rnacos-runtime-config-tuning；原列的 2026-08-14-saas-modules-and-node-monorepo 已于 2026-09-30 废置删除）、`Luminous/plans/`（2026-08-14-flutter-3.47-upgrade-plan、2026-08-14-product-surface-route）、`Lucent/docs/00-current/TODO.md`、`Lucent/docs/01-reference/architecture.md`。客户端证据取自 `Luminous/lib/core/analytics/` 与 record 特性上传链路。
 >
 > 评估基准：`Luminous/docs/01-product/Product_Vision.md` —— 手机端是当前首发与验证表面，最小伙伴闭环由低负担输入、个人上下文、Today、纵向洞察、上下文 AI 与反馈学习共同组成；桌面/Web 方向待研究。平台/工程能力按"它对 C 端真实用户的支撑作用"与"投入是否与单产品 0.1.0 前阶段匹配"两条线审判。
 
@@ -96,7 +96,12 @@
 - 改造方案：降级为"环境变量 + 重启"。真正该先建的是餐食识别的离线评测集（标注图片 + 指标对比脚本）；当评测流程存在、且证明参数需要以天为粒度频繁调整时，再回来启用热配置。该计划第 431 行的自我声明（质量提升靠 A/B 而非调参通道）就是暂缓它的最好论据。
 - 优先级：P2
 
-### F-13 SaaS 模块（plans/2026-08-14-saas-modules-and-node-monorepo.md 第三节）
+> **注（2026-09-30）**：本文 F-13/F-14 所评估的 `Lucent/plans/2026-08-14-saas-modules-and-node-monorepo.md`
+> 已废置删除。其「SaaS 模块」部分（F-13）未被本仓其他计划承接；「Node monorepo 合并」（F-14）
+> 的形态改由 `Lucent/plans/2026-09-30-admin-console.md` 裁决（`apps/api` + `apps/admin`，
+> 不收编 website/docs）。下方 F-13/F-14 的评估结论作为**当时的判断留档**保留，不代表当前方向。
+
+### F-13 SaaS 模块（原 plans/2026-08-14-saas-modules-and-node-monorepo.md 第三节，来源计划已废置删除）
 
 - 现状（按计划评估）：web 微信扫码 OAuth（工作台前置）、`GET /me/dashboard` 聚合 API、subscription/billing 延后到商业化、多租户明确不做、admin 复用现有模块。
 - 实际作用：OAuth 与 dashboard 是桌面工作台（F-16）的前置依赖，本身不直接服务手机端用户。计划里两个判断是对的：多租户/角色不做（照护场景由可撤销分享覆盖），billing 只做契约不接真实支付。这两个"不做"比"做"更值钱。
@@ -105,7 +110,7 @@
 - 改造方案：维持"0.1.0 不阻塞"的排序不变——0.1.0 移动端验证完成前不动工。动工时只做 OAuth + 单页 dashboard 两件，subscription/billing 继续延后；合规评估（个保法/数据出境）在 SaaS 上线前启动，不提前花钱。
 - 优先级：P2
 
-### F-14 Node monorepo 合并（plans/2026-08-14-saas-modules-and-node-monorepo.md 第四节）
+### F-14 Node monorepo 合并（原 plans/2026-08-14-saas-modules-and-node-monorepo.md 第四节，来源计划已废置删除）
 
 - 现状（按计划评估）：Lucent 为根收编 website/docs/saas 为 pnpm workspace，统一工具链与 CI，追求跨仓原子提交。
 - 实际作用：原子提交的真实需求来自"后端合同 + 工作台 + 文档 + 官网一次改完"——但工作台尚不存在，website/docs 变更频率低，当前三分仓没有产生过实际协作摩擦的证据。合并的收益是结构性的、成本是即时的（迁移、CI 重排、文档门禁兼容、git 历史处理）。

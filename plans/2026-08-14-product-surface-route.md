@@ -6,7 +6,7 @@ Updated: 2026-08-16
 > 状态:方向已决策(ADR-0012 accepted),0.1.0 后启动执行。背景源于产品定位讨论:项目从大学竞赛产物转向正式产品。
 > 权威决策:`docs/reference/adr/0008-desktop-independent-web-product-route.md`(accepted)。
 > 相关讨论草稿见 `plans/adr-015-luminous-desktop-deprecation-and-monorepo-evolution.md`(临时草稿,非正式 ADR,2026-08-14 讨论记录);
-> 配套后端计划见 `Lucent/plans/2026-08-14-saas-modules-and-node-monorepo.md`。
+> 配套后端计划见 `Lucent/plans/2026-09-30-admin-console.md`(原 `Lucent/plans/2026-08-14-saas-modules-and-node-monorepo.md` 已于 2026-09-30 废置删除)。
 > 本文档为方向性计划;具体执行细节在执行前按任务拆分子计划。
 
 ## 一、目标

@@ -91,7 +91,7 @@ Created: 2026-08-16
 - **离线评测集归属**:P2-B 提到餐食识别离线评测集是 scan-search/识别域的建设内容,本计划只登记它是 F-12 热配置的启用前置,不重复展开建设方案。
 - **桌面/Web 形态**:ADR-0012 已接受；独立 Next.js + Tauri MVP 在 0.1.0 后启动，本计划只登记工程侧触发条件(P1-A)。
 - **Flutter 3.47 升级**:执行方案全文引用 [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md),本计划只固化「跟次版本等 patch」的策略惯例(P2-E)。
-- **被引用的 Lucent 侧计划**(评估对象,不在本仓):`Lucent/plans/2026-07-24-worker-separation-and-cron-repeatable.md`、`2026-08-02-rnacos-runtime-config-tuning.md`、`2026-08-14-saas-modules-and-node-monorepo.md`——均维持暂缓,触发条件见本文 P2-A/B/C/D。
+- **被引用的 Lucent 侧计划**(评估对象,不在本仓):`Lucent/plans/2026-07-24-worker-separation-and-cron-repeatable.md`、`2026-08-02-rnacos-runtime-config-tuning.md`——均维持暂缓,触发条件见本文 P2-A/B/C/D。原列的 `Lucent/plans/2026-08-14-saas-modules-and-node-monorepo.md` 已于 2026-09-30 废置删除,monorepo 形态现由 `Lucent/plans/2026-09-30-admin-console.md` 裁决。
 - **隐私横切约束**:90 天事件删除由 F-2 每日数据保留清理执行、F-7 枚举-only 埋点遵守,均为保留项,其他计划涉及埋点/事件时不得破坏该约束。
 
 ## 五、本计划内执行顺序
