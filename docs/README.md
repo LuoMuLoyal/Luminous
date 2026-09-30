@@ -20,7 +20,7 @@ docs/ 的唯一索引:只回答「去哪找什么」。阅读规则与文档规�
 - [Forui Reference](reference/forui-reference.md) — Forui 本地约定(reference/)
 - [Localization](reference/localization.md) — l10n 工作流与分片划分(reference/)
 - [OpenAPI Client](reference/openapi-client.md) — API 客户端合同规则(reference/)
-- [Glossary](reference/glossary.md) — 术语表(reference/)
+- [Glossary](reference/Glossary.md) — 术语表(reference/)
 - [ADR](reference/adr/README.md) — 架构决策记录,存量只读(reference/adr/)
 - generated/ — 机器生成清单(design tokens / routes / features),禁手编,变更由 CI diff 校验(reference/generated/)
 

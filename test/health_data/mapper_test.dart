@@ -251,8 +251,12 @@ void main() {
 
       expect(input.payload, {
         'sleepType': 'nap',
-        'startedAt': '2026-07-13T05:00:00.000Z',
-        'endedAt': '2026-07-13T06:00:00.000Z',
+        // Derived from the local inputs above via `toUtc()`: the mapper converts
+        // to UTC, so a hardcoded instant would only hold on a machine whose
+        // offset matches the literal. CI runs UTC (offset 0) — a fixed string
+        // passed locally at UTC+8 and failed there.
+        'startedAt': DateTime(2026, 7, 13, 13).toUtc().toIso8601String(),
+        'endedAt': DateTime(2026, 7, 13, 14).toUtc().toIso8601String(),
         'durationMinutes': 60,
         'quality': 'good',
         'externalId': 'nap-1',

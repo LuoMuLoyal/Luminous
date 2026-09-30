@@ -108,6 +108,53 @@ void main() {
 
       expect(checkDocFileLinks(vault, vault.markdownFiles.single), isEmpty);
     });
+
+    test('resolves links when the vault sits on a POSIX absolute path', () {
+      // Regression: path normalization used to strip the leading separator of
+      // absolute POSIX paths, so `/tmp/vault/a.md` became `tmp/vault/a.md` and
+      // no longer matched the `docsDir` prefix — every vault-relative link was
+      // reported broken on Linux/macOS while Windows (`C:/...`, no leading
+      // separator) passed. CI runs ubuntu-latest, where this surfaced.
+      //
+      // The vault is built under a real temp dir so the end-to-end assertions
+      // hold everywhere; the POSIX normalization shape is pinned separately
+      // below, because a Windows temp path can never exercise it.
+      final vault = _createVault({
+        'a.md': '# A\nSee [b](b.md).\n',
+        'sub/c.md': '# C\nSee [d](../b.md).\n',
+        'b.md': '# B\n',
+      });
+      final aFile = vault.markdownFiles.firstWhere(
+        (file) => vault.relativePath(file) == 'a.md',
+      );
+      final cFile = vault.markdownFiles.firstWhere(
+        (file) => vault.relativePath(file) == 'sub/c.md',
+      );
+
+      expect(vault.resolveRelativeLink('b.md', fromFile: aFile), 'b.md');
+      expect(vault.resolveRelativeLink('../b.md', fromFile: cFile), 'b.md');
+      expect(checkDocFileLinks(vault, aFile), isEmpty);
+      expect(checkDocFileLinks(vault, cFile), isEmpty);
+    });
+
+    test('normalization preserves the POSIX absolute root marker', () {
+      // Pins the platform-independent half of the regression above. Without
+      // this, `normalizeDocPath('/tmp/v/a.md')` returning 'tmp/v/a.md' would
+      // only be caught on a POSIX runner.
+      expect(normalizeDocPath('/tmp/vault/a.md'), '/tmp/vault/a.md');
+      expect(normalizeDocPath('/tmp/vault/sub/../b.md'), '/tmp/vault/b.md');
+      expect(normalizeDocPath('/tmp/vault//a.md'), '/tmp/vault/a.md');
+      expect(normalizeDocPath('/a.md'), '/a.md');
+
+      // The vault-containment comparison must therefore succeed.
+      const base = '/tmp/vault';
+      expect(normalizeDocPath('/tmp/vault/a.md').startsWith('$base/'), isTrue);
+
+      // Relative and Windows absolute paths keep their existing behaviour.
+      expect(normalizeDocPath('a/b.md'), 'a/b.md');
+      expect(normalizeDocPath('./a.md'), 'a.md');
+      expect(normalizeDocPath('C:/Temp/vault/a.md'), 'C:/Temp/vault/a.md');
+    });
   });
 
   group('checkDocFileLinks repo path existence', () {

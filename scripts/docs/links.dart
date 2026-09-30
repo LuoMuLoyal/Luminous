@@ -617,7 +617,22 @@ class VaultIndex {
   }
 }
 
+/// Normalizes a slash-separated path: collapses `//`, resolves `.`/`..`, and
+/// preserves a leading `/` so POSIX absolute paths keep their root marker.
+///
+/// Public (not private) so tests can pin the POSIX shape on every platform —
+/// Windows temp paths carry no leading separator, so a regression here would
+/// otherwise only ever show up in CI.
+String normalizeDocPath(String path) => _normalizePath(path);
+
 String _normalizePath(String path) {
+  // A leading separator marks a POSIX absolute path (`/tmp/...`). It must be
+  // preserved: dropping it turned `/tmp/vault/a.md` into `tmp/vault/a.md`,
+  // which then failed the `startsWith('$base/')` vault-containment check
+  // below and made every vault-relative link look broken on Linux/macOS.
+  // Windows absolute paths (`C:/...`) carry no leading separator and are
+  // unaffected either way.
+  final isAbsolute = path.startsWith('/');
   final parts = <String>[];
   for (final segment in path.split('/')) {
     if (segment.isEmpty || segment == '.') {
@@ -633,7 +648,7 @@ String _normalizePath(String path) {
       parts.add(segment);
     }
   }
-  return parts.join('/');
+  return '${isAbsolute ? '/' : ''}${parts.join('/')}';
 }
 
 const _usage = '''
