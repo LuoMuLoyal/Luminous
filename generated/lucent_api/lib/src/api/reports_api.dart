@@ -655,9 +655,9 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [range]
-  /// * [startDate]
-  /// * [endDate]
+  /// * [range] - Supported report aggregation range.
+  /// * [startDate] - Required when range is \"custom\". ISO 8601 date string (YYYY-MM-DD).
+  /// * [endDate] - Required when range is \"custom\". ISO 8601 date string (YYYY-MM-DD).
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -962,9 +962,9 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
-  /// * [status]
-  /// * [cursor]
-  /// * [limit]
+  /// * [status] - Filter events by status. No time range is required.
+  /// * [cursor] - Opaque cursor for pagination: composite of the last item startedAt ISO 8601 value and id joined with \"|\", as returned by nextCursor. Must not be constructed by the client.
+  /// * [limit] - Page size (1-100).
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request

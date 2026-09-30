@@ -119,7 +119,7 @@ class MedicinesApi {
   ///
   /// Parameters:
   /// * [id] - Medicine id in the selected source
-  /// * [source_]
+  /// * [source_] - Knowledge source selector.
   /// * [xBypassCache] - Set to true/1/no-cache to bypass medicines read cache for this request only.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -354,7 +354,7 @@ class MedicinesApi {
   ///
   /// Parameters:
   /// * [id] - Medicine id in the selected source
-  /// * [source_]
+  /// * [source_] - Knowledge source selector.
   /// * [xBypassCache] - Set to true/1/no-cache to bypass medicines read cache for this request only.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -661,10 +661,10 @@ class MedicinesApi {
   ///
   ///
   /// Parameters:
-  /// * [source_]
-  /// * [q]
-  /// * [page]
-  /// * [pageSize]
+  /// * [source_] - Knowledge source selector.
+  /// * [q] - Search keyword.
+  /// * [page] - Page number, 1-based.
+  /// * [pageSize] - Page size.
   /// * [xBypassCache] - Set to true/1/no-cache to bypass medicines read cache for this request only.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request

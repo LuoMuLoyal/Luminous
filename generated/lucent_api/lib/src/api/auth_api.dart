@@ -1043,8 +1043,8 @@ class AuthApi {
   ///
   ///
   /// Parameters:
-  /// * [code]
-  /// * [state]
+  /// * [code] - OAuth 授权码
+  /// * [state] - 授权时生成的 state
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request

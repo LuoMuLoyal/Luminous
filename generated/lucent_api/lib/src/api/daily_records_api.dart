@@ -484,10 +484,10 @@ class DailyRecordsApi {
   ///
   ///
   /// Parameters:
-  /// * [date]
+  /// * [date] - Date in YYYY-MM-DD format.
   /// * [kind]
-  /// * [page]
-  /// * [pageSize]
+  /// * [page] - Page number (1-based).
+  /// * [pageSize] - Page size (1-100).
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request

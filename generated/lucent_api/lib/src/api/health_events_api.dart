@@ -26,7 +26,7 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [date]
+  /// * [date] - Calendar date in YYYY-MM-DD format.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -187,7 +187,7 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [id]
+  /// * [id] - Health event id.
   /// * [endRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -281,8 +281,8 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [id]
-  /// * [date]
+  /// * [id] - Health event id.
+  /// * [date] - Calendar date in YYYY-MM-DD format.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -363,7 +363,7 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [date]
+  /// * [date] - Calendar date in YYYY-MM-DD format.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -438,8 +438,8 @@ class HealthEventsApi {
   ///
   ///
   /// Parameters:
-  /// * [id]
-  /// * [date]
+  /// * [id] - Health event id.
+  /// * [date] - Calendar date in YYYY-MM-DD format.
   /// * [upsertCheckInRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
