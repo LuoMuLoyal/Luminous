@@ -65,6 +65,9 @@ import 'package:luminous/features/settings/data/providers/notification_permissio
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/domain/repositories/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../test/helpers/feature_mocks.dart';
@@ -110,6 +113,8 @@ Future<ProviderContainer> pumpOfflineApp(
   MedicineWorkspaceRepository? medicineWorkspaceRepository,
   DoseLogRemoteDataSource? doseLogRemoteDataSource,
   LegalRepository? legalRepository,
+  TodayRepository? todayRepository,
+  TodaySuggestionBundle? todaySuggestionBundle,
 }) async {
   SharedPreferences.setMockInitialValues(const <String, Object>{});
   final prefs = await SharedPreferences.getInstance();
@@ -161,6 +166,10 @@ Future<ProviderContainer> pumpOfflineApp(
       medicineRiskCheckRepositoryProvider.overrideWithValue(
         medicineRiskCheckRepository ?? const E2eMedicineRiskCheckRepository(),
       ),
+      if (todaySuggestionBundle != null)
+        todaySuggestionProvider.overrideWith(
+          () => _FixtureTodaySuggestionNotifier(todaySuggestionBundle),
+        ),
       if (notificationPermissionService != null)
         notificationPermissionServiceProvider.overrideWithValue(
           notificationPermissionService,
@@ -171,7 +180,11 @@ Future<ProviderContainer> pumpOfflineApp(
         doseLogRemoteDataSourceProvider.overrideWithValue(
           doseLogRemoteDataSource,
         ),
-      todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
+      // Default to the empty-state mock; callers that need populated dashboard
+      // content pass [todayRepository] instead (see screenshot fixtures).
+      todayRepositoryProvider.overrideWithValue(
+        todayRepository ?? const MockTodayRepository(),
+      ),
       if (reportRepository != null)
         reviewRepositoryProvider.overrideWithValue(reportRepository),
       if (healthEventRepository != null)
@@ -347,6 +360,17 @@ class _NoopRestoreAuthSessionNotifier extends AuthSessionNotifier {
 
   @override
   Future<void> restore() async {}
+}
+
+/// Serves a fixed, fully-populated suggestion bundle so screenshot captures
+/// show real suggestion cards instead of the empty state.
+class _FixtureTodaySuggestionNotifier extends TodaySuggestionNotifier {
+  _FixtureTodaySuggestionNotifier(this._bundle);
+
+  final TodaySuggestionBundle _bundle;
+
+  @override
+  Future<TodaySuggestionBundle?> build() async => _bundle;
 }
 
 class SignedInAuthSessionNotifier extends AuthSessionNotifier {
