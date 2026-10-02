@@ -12,8 +12,6 @@ import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_interactive.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -133,16 +131,21 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Title and primary action share the top line: the title is
+                  // the first thing the user reads, and the CTA is the first
+                  // thing they can act on.
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      TodayGlyphTile(
-                        icon: SuggestionIconMapping.resolve(card.icon),
-                        color: colorFor(card.cardTone),
-                        size: IconSizeTokens.xl2,
-                        radius: context.theme.style.borderRadius.sm.topLeft.x,
-                        filled: true,
+                      Expanded(
+                        child: Text(
+                          card.title,
+                          style: typography.display.xl.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: Spacing.md),
                       FButton(
                         onPress: () =>
                             openRoute(context, card.primaryAction.route),
@@ -150,16 +153,10 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                             ? FButtonVariant.primary
                             : FButtonVariant.secondary,
                         size: FButtonSizeVariant.sm,
+                        mainAxisSize: MainAxisSize.min,
                         child: Text(card.primaryAction.label),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: Spacing.lg),
-                  Text(
-                    card.title,
-                    style: typography.display.xl.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
                   ),
                   const SizedBox(height: Spacing.sm),
                   Text(
@@ -169,39 +166,6 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  if (card.secondaryActions != null &&
-                      card.secondaryActions!.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.md),
-                    Wrap(
-                      spacing: Spacing.sm,
-                      runSpacing: Spacing.sm,
-                      children: [
-                        for (final action in card.secondaryActions!)
-                          FButton(
-                            onPress: _loadingActionIds.contains(action.actionId)
-                                ? null
-                                : () => _handleSecondaryAction(action),
-                            variant: FButtonVariant.ghost,
-                            size: FButtonSizeVariant.xs,
-                            mainAxisSize: MainAxisSize.min,
-                            child: _loadingActionIds.contains(action.actionId)
-                                ? Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const SizedBox(
-                                        width: Spacing.lg,
-                                        height: Spacing.lg,
-                                        child: FCircularProgress.loader(),
-                                      ),
-                                      const SizedBox(width: Spacing.sm),
-                                      Text(action.label),
-                                    ],
-                                  )
-                                : Text(action.label),
-                          ),
-                      ],
-                    ),
-                  ],
                   if (card.subtype == 'water' && widget.dashboard != null) ...[
                     const SizedBox(height: Spacing.md),
                     WaterProgressBar(
@@ -209,10 +173,46 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                     ),
                   ],
                   const SizedBox(height: Spacing.md),
-                  EvidenceToggleButton(
-                    expanded: _evidenceExpanded,
-                    onTap: _toggleEvidence,
-                    l10n: l10n,
+                  // The backend exposes secondary actions and the evidence
+                  // toggle as two independent surfaces; both are low-emphasis
+                  // ghost affordances under the reason, so they share one row
+                  // instead of each claiming a full line.
+                  Wrap(
+                    spacing: Spacing.sm,
+                    runSpacing: Spacing.sm,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      for (final action
+                          in card.secondaryActions ??
+                              const <TodaySuggestionAction>[])
+                        FButton(
+                          onPress: _loadingActionIds.contains(action.actionId)
+                              ? null
+                              : () => _handleSecondaryAction(action),
+                          variant: FButtonVariant.ghost,
+                          size: FButtonSizeVariant.xs,
+                          mainAxisSize: MainAxisSize.min,
+                          child: _loadingActionIds.contains(action.actionId)
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const SizedBox(
+                                      width: Spacing.lg,
+                                      height: Spacing.lg,
+                                      child: FCircularProgress.loader(),
+                                    ),
+                                    const SizedBox(width: Spacing.sm),
+                                    Text(action.label),
+                                  ],
+                                )
+                              : Text(action.label),
+                        ),
+                      EvidenceToggleButton(
+                        expanded: _evidenceExpanded,
+                        onTap: _toggleEvidence,
+                        l10n: l10n,
+                      ),
+                    ],
                   ),
                   AnimatedBuilder(
                     animation: _animation,

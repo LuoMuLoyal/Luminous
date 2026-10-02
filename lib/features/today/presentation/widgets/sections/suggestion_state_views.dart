@@ -75,43 +75,29 @@ class SuggestionSkeleton extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header row: icon + title
+              // Header row: title + primary action
               Row(
                 children: [
+                  Expanded(
+                    child: Container(
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: colors.secondary,
+                        borderRadius: borderRadius.xs,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.md),
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary,
-                      borderRadius: borderRadius.sm,
+                      borderRadius: borderRadius.pill,
                     ),
-                    child: const SizedBox.square(dimension: Spacing.xl3),
-                  ),
-                  const SizedBox(width: Spacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: colors.secondary,
-                            borderRadius: borderRadius.xs,
-                          ),
-                        ),
-                        const SizedBox(height: Spacing.sm),
-                        Container(
-                          height: 12,
-                          width: 120,
-                          decoration: BoxDecoration(
-                            color: colors.secondary,
-                            borderRadius: borderRadius.xs,
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: const SizedBox(width: 80, height: 32),
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.lg),
+              const SizedBox(height: Spacing.sm),
               // Reason lines
               Container(
                 height: 14,
@@ -129,17 +115,25 @@ class SuggestionSkeleton extends StatelessWidget {
                   borderRadius: borderRadius.xs,
                 ),
               ),
-              const SizedBox(height: Spacing.xl),
-              // Action row
+              const SizedBox(height: Spacing.lg),
+              // Secondary action + evidence toggle, on one line
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary,
                       borderRadius: borderRadius.pill,
                     ),
-                    child: const SizedBox(width: 80, height: 32),
+                    child: const SizedBox(width: 64, height: 24),
+                  ),
+                  const SizedBox(width: Spacing.sm),
+                  Container(
+                    width: 56,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: colors.secondary,
+                      borderRadius: borderRadius.xs,
+                    ),
                   ),
                 ],
               ),

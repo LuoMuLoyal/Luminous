@@ -18,6 +18,7 @@ import 'package:luminous/features/medicine/domain/entities/dose_log.dart'
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -518,6 +519,84 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('此提醒基于您的用药计划，不能替代医生或药师建议。'), findsOneWidget);
+    });
+  });
+
+  // ── Card Layout ───────────────────────────────────────────────────────
+
+  group('Primary card layout', () {
+    testWidgets('title sits on the same line as the primary action', (
+      tester,
+    ) async {
+      await tester.pumpWidget(dataApp());
+      await settle(tester);
+
+      final titleCenter = tester.getCenter(find.text('上午的阿托伐他汀尚未确认'));
+      final actionCenter = tester.getCenter(find.text('去确认'));
+
+      // Same header row: the two share a vertical band. Their centers need not
+      // match exactly (the title may wrap to two lines), but the action must
+      // not sit below the title's bottom edge.
+      final titleRect = tester.getRect(find.text('上午的阿托伐他汀尚未确认'));
+      expect(actionCenter.dy, lessThan(titleRect.bottom));
+
+      // The title still starts at the card's left content edge; the action is
+      // to its right.
+      expect(titleCenter.dx, lessThan(actionCenter.dx));
+    });
+
+    testWidgets('no icon tile is rendered in the header', (tester) async {
+      await tester.pumpWidget(dataApp());
+      await settle(tester);
+
+      // TodayGlyphTile is only used by the secondary suggestion cards now.
+      expect(find.byType(TodayGlyphTile), findsNothing);
+    });
+
+    testWidgets('secondary action and evidence toggle share one row', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        buildApp(
+          () => _BundleNotifier(
+            testSuggestionBundle.copyWith(
+              primary: testSuggestionBundle.primary!.copyWith(
+                secondaryActions: const [
+                  TodaySuggestionAction(
+                    actionId: 'go_confirm_reminder',
+                    label: '查看提醒',
+                    route: '/medicine',
+                    authRequired: true,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await settle(tester);
+
+      final secondaryRect = tester.getRect(find.text('查看提醒'));
+      final evidenceRect = tester.getRect(
+        find.text(l10n.todaySuggestionShowEvidence),
+      );
+
+      // Left-to-right on the same line, not stacked.
+      expect(secondaryRect.left, lessThan(evidenceRect.left));
+      expect(secondaryRect.center.dy, closeTo(evidenceRect.center.dy, 1));
+    });
+
+    testWidgets('evidence toggle keeps its own row without secondary actions', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(dataApp());
+      await settle(tester);
+
+      expect(find.text(l10n.todaySuggestionShowEvidence), findsOneWidget);
     });
   });
 

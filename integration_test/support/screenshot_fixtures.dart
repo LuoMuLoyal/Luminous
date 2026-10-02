@@ -129,16 +129,16 @@ class FixtureTodayRepository implements TodayRepository {
 /// The primary card: an adherence warning naming the actual medicine and the
 /// real scheduled time it refers to.
 TodaySuggestionCard fixturePrimarySuggestion() {
-  return const TodaySuggestionCard(
+  return TodaySuggestionCard(
     id: 'fixture-suggestion-1',
     type: TodaySuggestionType.compliance,
-    cardTone: TodaySuggestionCardTone.warning,
+    cardTone: TodaySuggestionCardTone.urgent,
     icon: 'pill',
     title: '午间这次降压药还没确认服用',
     reason:
         '苯磺酸氨氯地平片按计划应在 12:30 服用，现在已经过去 40 分钟，'
         '近 7 天有 2 天出现午后漏服。',
-    evidence: [
+    evidence: const [
       TodaySuggestionEvidence(
         kind: TodaySuggestionEvidenceKind.reminder,
         label: '今日计划',
@@ -157,30 +157,38 @@ TodaySuggestionCard fixturePrimarySuggestion() {
       ),
     ],
     boundary: '仅依据你记录的用药与血压数据，不构成诊疗建议。',
-    primaryAction: TodaySuggestionAction(
-      actionId: 'confirm-dose',
-      label: '确认已服用',
+    primaryAction: const TodaySuggestionAction(
+      actionId: 'go_confirm',
+      label: '去确认',
       route: '/medicine',
       authRequired: true,
     ),
+    // Mirrors `missed_dose_pending`: the secondary action is `skip_dose`, whose
+    // server-localized label is 跳过此次. Using a label that collides with a
+    // feedback option (e.g. 稍后提醒) would render the same word twice, once per
+    // action surface.
     secondaryActions: [
       TodaySuggestionAction(
-        actionId: 'later',
-        label: '稍后提醒',
-        route: '/medicine/reminders/fixture-med-1',
+        actionId: 'skip_dose',
+        label: '跳过此次',
+        route:
+            '/medicine?action=skip&currentMedicineId=fixture-med-1'
+            '&reminderId=fixture-rem-1&scheduledFor=${_todayIso()}'
+            '&scheduledTime=12:30',
         authRequired: true,
       ),
     ],
     confidence: TodaySuggestionConfidence.high,
-    ruleId: 'compliance.missed_dose',
+    ruleId: 'missed_dose_pending',
     ruleVersion: '2.1.0',
     triggerType: TodaySuggestionTriggerType.timer,
     lifecycleState: TodaySuggestionLifecycleState.active,
     notificationEligible: true,
-    feedbackOptions: [
+    feedbackOptions: const [
       TodaySuggestionFeedback.accepted,
       TodaySuggestionFeedback.later,
       TodaySuggestionFeedback.notApplicable,
+      TodaySuggestionFeedback.suppress,
     ],
   );
 }
