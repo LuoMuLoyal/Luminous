@@ -90,6 +90,7 @@ dart run scripts/workflows/daily.dart
 
 ## CI/CD
 
-- `luminous-cd.yml` 在 Flutter Web 构建前校验 secrets 存在性：`LUCENT_BASE_URL` 必填非空，防止空字符串注入 `--dart-define`。
-- `luminous-cd.yml` 的 Flutter Web 发布构建为纯 dart2js + canvaskit（不用 `--wasm`：wasm 默认渲染器 skwasm 在移动浏览器有布局 bug），服务移动 web 主战场（安卓 Chrome / 鸿蒙过渡）；桌面/大屏 Web 冻结，不扩展构建形态。
+- `deploy-web.yml` 在 Flutter Web 构建前校验 secrets 存在性：`LUCENT_BASE_URL` 必填非空，防止空字符串注入 `--dart-define`。
+- `deploy-web.yml` 的 Flutter Web 发布构建为纯 dart2js + canvaskit（不用 `--wasm`：wasm 默认渲染器 skwasm 在移动浏览器有布局 bug），服务移动 web 主战场（安卓 Chrome / 鸿蒙过渡）；桌面/大屏 Web 冻结，不扩展构建形态。
+- workflow 按关注点拆分（`ci.yml` 门禁 / `deploy-web.yml` 发布），见 `.github/workflows/README.md`。
 - 环境变量明细见 [AI_Development_Workflow](ai-development-workflow.md)。

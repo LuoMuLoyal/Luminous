@@ -59,7 +59,7 @@ flutter run \
 
 ## CI/CD Environment Variables
 
-`.github/workflows/luminous-cd.yml` 构建期用 `--dart-define` 注入以下变量（配置位置：Repository Settings → Secrets and variables → Actions）：
+`.github/workflows/deploy-web.yml` 构建期用 `--dart-define` 注入以下变量（配置位置：Repository Settings → Secrets and variables → Actions）：
 
 | Variable | Source | Description |
 |----------|--------|-------------|

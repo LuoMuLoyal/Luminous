@@ -1,4 +1,8 @@
-name: luminous-ci
+name: CI
+
+# 代码门禁：analyze / 单测 / 生成物一致性 / 文档校验。
+# Web 发布在 deploy-web.yml。
+# 拆分理由见 .github/workflows/README.md。
 
 on:
   workflow_dispatch:
@@ -13,7 +17,7 @@ permissions:
   contents: read
 
 jobs:
-  ci:
+  verify:
     name: Flutter CI
     runs-on: ubuntu-latest
     timeout-minutes: 35
@@ -64,8 +68,41 @@ jobs:
       - name: Run tests
         run: flutter test --coverage --reporter=github
 
+  build-apk:
+    name: Build APK (release)
+    # 只在 main 的 push 上产出安装包；PR / 手动触发不跑，省时间。
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      PUB_HOSTED_URL: https://pub.dev
+      FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.1
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Bootstrap generated sources
+        run: dart run scripts/contract/bootstrap.dart --skip-client
+
+      - name: Compile drift web worker
+        run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
+
       - name: Build APK (release)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           flutter build apk --release \
             --target-platform android-arm64 \

@@ -1,4 +1,8 @@
-name: luminous-cd
+name: Deploy web
+
+# 构建 Flutter Web 并发布到 GitHub Pages。
+# 代码门禁在 ci.yml。
+# 拆分理由见 .github/workflows/README.md。
 
 on:
   workflow_dispatch:
@@ -11,7 +15,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: luminous-cd-${{ github.ref }}
+  group: luminous-deploy-web-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

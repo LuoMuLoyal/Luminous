@@ -97,9 +97,11 @@ If you want shorter full-stack commands, copy `.env.example` to `.env`, fill in 
 
 ## CI
 
-- GitHub Actions workflow: `.github/workflows/luminous-ci.yml` (build/release lane: `luminous-cd.yml`)
+- GitHub Actions workflows: `.github/workflows/ci.yml` (validation + release APK) and
+  `.github/workflows/deploy-web.yml` (Flutter Web → GitHub Pages). See
+  `.github/workflows/README.md`.
 - Current CI scope: ARB fragment merge, generated-source bootstrap, generated API client build, generated-docs check, `flutter analyze`, `flutter test --coverage`, and a release APK build on `main`.
-- Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
+- `deploy-web.yml` builds and publishes Flutter Web to GitHub Pages; it auto-triggers on `push` to `refactor` (not `main`).
 - `integration_test/` currently contains two different lanes:
   - offline/mock-driven integration flows that exercise the real app shell and feature pages without a Lucent runtime
   - full-stack mobile lanes that require an Android emulator plus a locally reachable Lucent test runtime
