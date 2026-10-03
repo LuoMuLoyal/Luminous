@@ -184,6 +184,7 @@
   "todaySuggestionLoadingHint": "Loading today's suggestions…",
   "todaySuggestionErrorHint": "Failed to load suggestions, please retry",
   "todaySuggestionRetryAction": "Retry",
+  "todaySuggestionOpenUnavailableToast": "This entry is unavailable right now. Please try again later.",
   "todaySuggestionSecondaryErrorHint": "Failed to load more suggestions",
   "todaySuggestionAiExplainMaxRetry": "AI explanation is temporarily unavailable, please try again later",
   "todaySuggestionFeedbackSubmitted": "Submitted",

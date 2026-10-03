@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -447,6 +449,22 @@ List<TodayQuickActionItem> buildQuickActionItems(
 /// Always uses [context.push] so the user can navigate back from the
 /// destination — [context.go] would replace the current route and leave
 /// no back path, which is inconsistent with the rest of the app.
+///
+/// 服务端下发的 route 不一定存在于客户端路由表(例如 `complete_profile` 动作指向
+/// `/mine/profile/edit`,该 location 在客户端没有定义)。不校验时 go_router 会把
+/// 它渲染成 "Page Not Found" 崩溃页;这里先与路由表对账,对不上就只提示、不导航。
 void openRoute(BuildContext context, String route) {
+  final uri = Uri.tryParse(route);
+  final configuration = GoRouter.of(context).configuration;
+  if (uri == null || configuration.findMatch(uri).isError) {
+    appTalker.error('openRoute: unknown client route "$route"');
+    unawaited(
+      Toast.show(
+        context,
+        AppLocalizations.of(context)!.todaySuggestionOpenUnavailableToast,
+      ),
+    );
+    return;
+  }
   unawaited(context.push(route));
 }
