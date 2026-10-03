@@ -397,6 +397,7 @@ class _SimulatedAuthSessionNotifier extends AuthSessionNotifier {
 Future<ProviderContainer> _pumpPage(
   WidgetTester tester, {
   AssistantConversation? assistantConversation,
+  bool signedIn = true,
 }) async {
   // ignore: invalid_use_of_visible_for_testing_member -- this file is a test-run generator.
   SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -409,7 +410,8 @@ Future<ProviderContainer> _pumpPage(
   final container = ProviderContainer(
     retry: (_, _) => null,
     overrides: [
-      authSessionProvider.overrideWith(_SimulatedAuthSessionNotifier.new),
+      if (signedIn)
+        authSessionProvider.overrideWith(_SimulatedAuthSessionNotifier.new),
 
       // Five-tab shell surfaces.
       todayRepositoryProvider.overrideWithValue(
@@ -581,6 +583,7 @@ class _ExtraCapture {
     required this.note,
     this.assistantConversation,
     this.prepare,
+    this.signedOut = false,
   });
 
   final String fileName;
@@ -594,6 +597,15 @@ class _ExtraCapture {
 
   /// Runs after navigation; the place to open drawers/dialogs and pump.
   final Future<void> Function(WidgetTester tester)? prepare;
+
+  /// Renders the app signed out.
+  ///
+  /// Every catalog capture renders the simulated signed-in user, and the router
+  /// sends an authenticated session away from `/login`. Auth surfaces therefore
+  /// cannot use the shared session override: with it they redirect before the
+  /// golden is taken, which shows up as a capture of the shell rather than the
+  /// form.
+  final bool signedOut;
 }
 
 final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
@@ -691,6 +703,30 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
       await tester.tap(find.textContaining('从列表选择其他匹配'));
       await _settle(tester);
     },
+  ),
+  const _ExtraCapture(
+    fileName: '55_auth_login.png',
+    group: 'auth',
+    page: 'login',
+    route: '/login',
+    note: '登录页：邮箱凭据登录 + 第三方登录入口（未登录态）',
+    signedOut: true,
+  ),
+  const _ExtraCapture(
+    fileName: '56_auth_register.png',
+    group: 'auth',
+    page: 'register',
+    route: '/register',
+    note: '注册页：邮箱注册与验证码入口（未登录态）',
+    signedOut: true,
+  ),
+  const _ExtraCapture(
+    fileName: '57_auth_forgot-password.png',
+    group: 'auth',
+    page: 'forgot-password',
+    route: '/forgot-password',
+    note: '找回密码页：邮箱验证码重置流程入口（未登录态）',
+    signedOut: true,
   ),
 ];
 
@@ -857,6 +893,7 @@ void main() {
     required String route,
     AssistantConversation? assistantConversation,
     Future<void> Function(WidgetTester tester)? prepare,
+    bool signedOut = false,
     required void Function(int textWidgetCount) record,
   }) async {
     tester.view.physicalSize = const Size(
@@ -869,6 +906,7 @@ void main() {
     final container = await _pumpPage(
       tester,
       assistantConversation: assistantConversation,
+      signedIn: !signedOut,
     );
 
     // Navigate by route rather than tapping through the UI: the catalog is
@@ -958,6 +996,7 @@ void main() {
         route: extra.route,
         assistantConversation: extra.assistantConversation,
         prepare: extra.prepare,
+        signedOut: extra.signedOut,
         record: (count) => manifest.writeln(
           '| `${extra.fileName}` | ${extra.group} | ${extra.page} | '
           '`${extra.route}` | $count | ${extra.note} |',
