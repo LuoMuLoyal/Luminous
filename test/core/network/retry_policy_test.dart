@@ -170,4 +170,36 @@ void main() {
       const Duration(seconds: 4),
     );
   });
+
+  test('clamps an implausible Retry-After header instead of waiting hours', () {
+    // Lucent 的 Redis throttler storage 把毫秒当成秒交给 @nestjs/throttler，
+    // 实测 60s 的封禁到达客户端是 `Retry-After: 58233`；不钳制就会让这一次
+    // 请求（以及等它的页面）睡 16 小时。
+    final error = failure(
+      statusCode: 429,
+      headers: {
+        'retry-after': ['58233'],
+      },
+    );
+
+    expect(policy.delay(error, attempt: 0), RetryPolicy.maxRetryAfter);
+  });
+
+  test('clamps an implausible Problem Details retryAfter', () {
+    final problem = ProblemDetails.fromJson({
+      'type': 'https://api.lumos.example/problems/rate-limited',
+      'title': 'Too many requests',
+      'code': 'RATE_LIMITED',
+      'retryAfter': 58233,
+    });
+    final lucentFailure = LucentFailure.fromProblemDetails(
+      problem,
+      statusCode: 429,
+    );
+
+    expect(
+      policy.delay(failure(statusCode: 429, error: lucentFailure), attempt: 0),
+      RetryPolicy.maxRetryAfter,
+    );
+  });
 }

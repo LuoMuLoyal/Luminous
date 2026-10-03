@@ -13,6 +13,16 @@ final class RetryPolicy {
 
   final Set<int> retryableStatusCodes;
 
+  /// Upper bound for a server-provided retry delay.
+  ///
+  /// `Retry-After` is server-controlled and has been observed wrong by 1000×:
+  /// Lucent's Redis throttler storage hands the block TTL (milliseconds) to
+  /// `@nestjs/throttler`, which serializes it as `Retry-After` seconds, so a
+  /// ~60 s block arrives as `Retry-After: 58233`. Waiting that long parks the
+  /// request — and the page waiting on it — for ~16 hours, so a delay longer
+  /// than any network blip this policy exists to smooth over is clamped.
+  static const Duration maxRetryAfter = Duration(seconds: 60);
+
   bool shouldRetry(DioException error, RequestOptions options) {
     final retryOverride = options.extra['retryEnabled'];
     if (retryOverride == false) return false;
@@ -52,17 +62,21 @@ final class RetryPolicy {
   }) {
     final failure = error.error;
     if (failure is LucentFailure && failure.retryAfter != null) {
-      return failure.retryAfter!;
+      return _clamp(failure.retryAfter!);
     }
 
     final retryAfterHeader = error.response?.headers.value('Retry-After');
     final retryAfterSeconds = _parseRetryAfterHeader(retryAfterHeader);
     if (retryAfterSeconds != null) {
-      return Duration(seconds: retryAfterSeconds);
+      return _clamp(Duration(seconds: retryAfterSeconds));
     }
 
     return fallback?.call(attempt) ??
         Duration(milliseconds: 500 * (1 << attempt));
+  }
+
+  static Duration _clamp(Duration delay) {
+    return delay > maxRetryAfter ? maxRetryAfter : delay;
   }
 
   static bool _hasIdempotencyKey(RequestOptions options) {
