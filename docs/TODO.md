@@ -187,6 +187,22 @@ Product Loop Program 的延后项如下。
   - 方案：为 SSE 单独提供 fetch + ReadableStream 的 `HttpClientAdapter`（或 Web 分支改用
     EventSource / `package:http` BrowserClient），需评估与鉴权拦截器、401 刷新路径的兼容性。
 
+## 2026-10-04 窄屏 + 大字号下的溢出（真机 sweep）
+
+- 真机（vivo X200s，逻辑宽约 360dp）在窄屏 / 1.15–1.3 字缩放下出现多处 `RenderFlex` 溢出
+  与过度换行；Pixel 8 Pro 模拟器（约 448dp）与现有 widget 测试（多为 390x844 @ 1.0）
+  都覆盖不到。已修的是「未知路由」这一处崩溃（`openRoute` 现在先与路由表对账，
+  不再渲染 go_router 的 Page Not Found）；布局类仍待处理：
+  - 统一收敛模式：`Row` 里 trailing 的 chip / 按钮 / 图标不得独占固有宽度——文案侧给
+    `Expanded`/`Flexible` + ellipsis，窄屏大字号时让 chip 换行（`Wrap`）或下移一行。
+    首批命中：Today 主建议卡标题行（`suggestion_primary_card.dart` 的 title + 主操作按钮）、
+    `_ObservationTile`（`observation.dart`，For reference 徽章把标题挤成多行）、
+    `SignInHintBanner`（`core/widgets/common/feedback/page_state.dart`）。
+  - 对话框 / 日历：body 必须可滚动、按钮标签 `Flexible` + ellipsis。首批命中：记录页
+    「Quick record help」（底溢出）、无药品弹窗（按钮右溢出）、日期选择器头部（右溢出）。
+  - 补 sweep 测试：五标签页与主要子页在 360x800 / 320x720 × 字缩放 1.3 下断言无溢出
+    （现无任何测试覆盖 ≤360dp 或 >1.0 缩放）。
+
 ## 2026-10-04 助手能力口径（面板「全局可用」与本轮工具子集不一致）
 
 - 真机反馈：能力面板显示工具全部可用，但问「你在吗」时助手回答「这次运行里我也没有可用的记录类
