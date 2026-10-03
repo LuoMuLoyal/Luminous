@@ -3,12 +3,12 @@
 Luminous itself is licensed under the [MIT License](LICENSE).
 
 Luminous is built on third-party open-source software. This file records the components the app
-depends on and the platforms it targets, together with their licences. It is a notice of provenance,
-not a modification of any upstream licence: each package remains under its own terms, and the
-upstream `LICENSE` file inside each package is authoritative.
+depends on and the platforms it targets, together with their licences. It records provenance. It
+does not modify any upstream licence: each package remains under its own terms, and the upstream
+`LICENSE` file inside each package is authoritative.
 
 Version ranges below follow `pubspec.yaml`. Patch-level versions move as dependencies are updated
-and are deliberately not pinned here — resolve the exact version from `pubspec.lock` for any given
+and are deliberately not pinned here; resolve the exact version from `pubspec.lock` for any given
 checkout.
 
 ## Framework and language
