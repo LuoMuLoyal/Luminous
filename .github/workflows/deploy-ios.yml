@@ -145,8 +145,9 @@ jobs:
           path: build/symbols-ios
           if-no-files-found: warn
 
-      # Podfile.lock 未入库（Windows 上无法 pod install），首次跑通后从产物里
-      # 取回并提交，可固定 onnxruntime-objc / OpenCV / JPush 的解析版本。
+      # ios/Podfile.lock 已入库（由 2026-10-03 首次成功构建的解析结果提交），CI 的
+      # pod install 会沿用锁定版本；这里的产物用于对比版本漂移——Podfile / pubspec 改动
+      # 后 pod install 会重写 lock，产物即那份新的锁文件。
       # 用 always()：pod install 在 build 阶段内部执行，构建若在链接期失败，
       # Podfile.lock 其实已经生成——不带 always() 就会跳过上传，依赖冲突类问题
       # 拿不到依赖树（2026-10-03 的 libwebp 重复符号就是这种情况）。
