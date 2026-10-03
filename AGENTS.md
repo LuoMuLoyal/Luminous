@@ -61,7 +61,7 @@ dart run scripts/docs/generate.dart               # 再生成 reference/generate
 dart run scripts/workflows/daily.dart           # 仓库安全级检查(analyze+test+文档+生成文档新鲜度)
 dart run scripts/workflows/fullstack.dart       # 全栈检查(需 Lucent 运行时)
 dart run scripts/docs/verify.dart               # 文档新鲜度通报(--verify 全量治理)
-Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Location   # 七条自定义规则扫描(warn 观察模式)
+Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Location   # 八条自定义规则扫描(warn 观察模式)
 ```
 
 窄命令迭代，收尾前跑宽检查(`scripts/workflows/daily.dart`)。
@@ -88,7 +88,7 @@ Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Locatio
 3. **application → domain allowed** — the `application/` layer may import other features'
    `domain/` layer (interfaces + entities) for cross-feature orchestration.
 
-这三条禁令由 `layered_import` 规则在 `lib/` 上扫描(见 Testing 一节的七规则 CLI)。
+这三条禁令由 `layered_import` 规则在 `lib/` 上扫描(见 Testing 一节的八规则 CLI)。
 feature 间消费 domain/provider 公共接缝是 sanctioned 形态，规则不报。
 
 ## Barrel Exports
@@ -158,7 +158,7 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
 - Mock repositories: `Mock*Repository`. Test helpers: `test/helpers/`.
 - Tests never launch real device capabilities; inject platform-interface fakes
   (e.g. `PermissionHandlerPlatform`, `MobileScannerPlatform`, `PaddleOcrNativePlatform`).
-- **七条自定义规则(`tool/luminous_lints`)**：扫描命令见 Commands(默认 warn 观察模式,
+- **八条自定义规则(`tool/luminous_lints`)**：扫描命令见 Commands(默认 warn 观察模式,
   永远 exit 0;`--fatal` 才作门禁)。观察期收敛后按计划逐条转 error。规则包自身测试
   `cd tool/luminous_lints && dart test`。当前未接入 IDE 插件(依赖图 analyzer 版本与
   analysis server 不一致,接入待主包升级后重评)。
@@ -176,7 +176,7 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
 
 ### Custom Lint Rules(`tool/luminous_lints`)
 
-七条规则的一句话清单(默认 warn 观察模式,`--fatal` 才作门禁;规则细节见
+八条规则的一句话清单(默认 warn 观察模式,`--fatal` 才作门禁;规则细节见
 `tool/luminous_lints/lib/src/`)。**扫描范围排除生成文件**(`*.g.dart` /
 `*.freezed.dart`):它们是 gitignored 的 build_runner 产物,报在它们上面既无法靠改代码
 消除,也会随生成器版本漂移——按上文"不得手改生成文件"的口径,规则同样不报。
@@ -206,6 +206,13 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
   **shell 基础设施**(`features/shell/presentation/`,所有 tab root 共用的外壳);
   跨 feature 的普通 presentation widget/page 仍照报。豁免只作用于子规则 2,
   `core → feature` 不受影响。
+- `non_shrinking_row_child` — `Row` 里同时出现文本(`Text`/`Expanded`/`Flexible`)与
+  **非 flex 的固有宽度组件**(`FBadge` / `PillChip` / `TintedStatusBadge` / `FButton`
+  或名字匹配 `_?\w*(Badge|Chip|Pill|Tag)\w*` 的本地组件):`RenderFlex` 先给非 flex 子节点
+  无界主轴约束,它们会占满固有宽度,把文字挤成多行或直接右溢出(真机 360dp + 大字号
+  必现)。改成 `Wrap`(放不下自动换行)或把尾部组件包进 `Flexible`,并对按钮/徽章标签加
+  `maxLines: 1` + `overflow: ellipsis`。`Wrap`/`OverflowBar`、尾部已 `Flexible`/
+  `Expanded`/限宽 `ConstrainedBox` 的形态不报。
 
 ## Data Layer
 
