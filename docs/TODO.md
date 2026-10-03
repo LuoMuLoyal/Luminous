@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-09-24
+updated: 2026-10-03
 ---
 
 # Luminous TODO
 
-Last updated: 2026-09-24
+Last updated: 2026-10-03
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -56,6 +56,46 @@ Product Loop Program 的延后项如下。
   - 阻塞：微信开放平台「网站应用」需企业认证（300 元/年），当前无企业资质；
     待有资质后恢复入口并配置 `WECHAT_WEB_*` / `WECHAT_MOBILE_*` 环境变量
 
+## 2026-10-03 移动端产物缺口（开发机为 Windows，iOS 只能靠 CI 验证）
+
+- Android 产物没有 release 签名
+  - 现状：`deploy-android.yml` 产出的 APK 在仓库没有 `android/key.properties` 时走 debug
+    签名（`android/app/build.gradle.kts` 的 `hasReleaseSigning` 分支），可安装但不可上架
+  - 方案：把 keystore 与 storePassword / keyAlias / keyPassword 配成 GitHub Secrets，
+    在 workflow 里生成 `key.properties` 后再构建
+
+- iOS 签名分发与 TestFlight 未接入
+  - 现状：`deploy-ios.yml` 在托管 `macos-latest` 上用 `--no-codesign` 只产出未签名 IPA
+    （`luminous-ios-unsigned-ipa`）；CI 里没有 Apple 证书与描述文件，
+    产不出可分发 IPA，也传不了 TestFlight
+  - 方案：把开发者证书（`.p12` + 密码）、App Store Connect API Key、描述文件配成 GitHub
+    Secrets，改成 `flutter build ipa --export-method app-store` 并接入上传；同时在 Apple
+    账号侧把 App ID 的 HealthKit / Sign in with Apple / Push Notifications 能力开出来
+    （`ios/Runner/Runner.entitlements` 已声明 `com.apple.developer.healthkit`、
+    `com.apple.developer.applesignin` 与 `aps-environment`，账号侧未开则签名报错）
+
+- 微信 Universal Link 的 Associated Domains 未配置
+  - 现状：`Info.plist` 的 URL Scheme 走 `$(WECHAT_MOBILE_APP_ID)`，但 entitlements 里没有
+    `com.apple.developer.associated-domains`；微信登录入口当前在 UI 层隐藏（见 2026-09-06 条目）
+  - 方案：拿到企业资质后补 `applinks:<domain>` 到 entitlements，并在 Apple 账号与
+    `WECHAT_IOS_UNIVERSAL_LINK` 变量两侧配好
+
+- iOS 系统权限文案未本地化
+  - 现状：`Info.plist` 的 `NSHealthShareUsageDescription` / `NSCameraUsageDescription` /
+    `NSPhotoLibrary*UsageDescription` 是中文硬编码，英文用户在系统权限弹窗里看到中文
+  - 方案：补 `en.lproj/InfoPlist.strings` 与 `zh-Hans.lproj/InfoPlist.strings`，
+    并把两个 variant 加进 pbxproj 的 Resources 与 knownRegions
+
+- `ios/Podfile.lock` 未入库
+  - 现状：Windows 上无法 `pod install`，锁文件从未生成，CI 每次重新解析
+    onnxruntime-objc / OpenCV / Yams / JPush 的版本
+  - 方案：首次 `deploy-ios.yml` 跑通后从 `luminous-ios-podfile-lock` 产物取回并提交
+
+- 推送与隐私清单待上架前确认
+  - 现状：`NSUserTrackingUsageDescription` 未声明；Runner 自身没有 `PrivacyInfo.xcprivacy`
+    （`paddle_ocr_native` 自带一份）
+  - 方案：按 JPush SDK 实际调用的 API 决定是否需要 ATT 文案，并补 App 级隐私清单
+
 ## 延后（有明确原因）
 
 - Review 建议历史与 AI 摘要主路径下线（Review Page Restructure P0-7）
@@ -73,7 +113,7 @@ Product Loop Program 的延后项如下。
   - 依据：用药改造计划 3.3 节 F-2 与 2026-08-16 决策记录「处方 OCR、药箱停用/归档语义增强均为 0.1.0 后事项」；0.1.0 后按既有 P0→P1→P2 与全局依赖顺序恢复
 
 - Flutter 3.47.1 升级（analyze/APK/Web 已通过，全量测试被语义回归阻塞）
-  - 当前 `refactor` 已含全部配置类改动：fluwx 6.0.2 / health 13.3.2 / jpush 3.5.1、AGP 9.1.0 + Gradle 9.3.1 + built-in Kotlin、iOS 15.0 / macOS 12.0 部署目标、CI 版本、`LUMOS_GRADLE_MIRROR=aliyun` 镜像兜底（默认关闭）
+  - 当前 `refactor` 已含全部配置类改动：fluwx 6.0.2 / health 13.3.2 / jpush 3.5.1、AGP 9.1.0 + Gradle 9.3.1 + built-in Kotlin、iOS 16.0 / macOS 12.0 部署目标、CI 版本、`LUMOS_GRADLE_MIRROR=aliyun` 镜像兜底（默认关闭）
   - 阻塞：flutter/flutter#191095 semantics 回归（MergeSemantics 嵌套兄弟 merge 组断言）在 3.47.1 上仍可复现；analyze、Android release、Web release 已通过，待上游修复后重跑全量测试再合并
 
 - forui 0.25.0 toast dismiss 的 dispose-during-notifyListeners 风险
