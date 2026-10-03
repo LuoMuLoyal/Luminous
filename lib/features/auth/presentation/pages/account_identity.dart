@@ -227,15 +227,24 @@ class LinkedIdentityTile extends StatelessWidget {
                 ],
               ),
             ),
-            FButton(
-              variant: FButtonVariant.ghost,
-              size: FButtonSizeVariant.sm,
-              mainAxisSize: MainAxisSize.min,
-              onPress: canUnlink && !isSubmitting ? () => onUnlink() : null,
-              child: Text(
-                canUnlink
-                    ? l10n.authIdentityUnlinkAction
-                    : l10n.authIdentityUnlinkDisabledAction,
+            // 解绑按钮是固有宽度:给宽度上限 + 标签省略,左侧身份信息才不会被挤。
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 160),
+              child: FButton(
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: canUnlink && !isSubmitting ? () => onUnlink() : null,
+                child: Flexible(
+                  child: Text(
+                    canUnlink
+                        ? l10n.authIdentityUnlinkAction
+                        : l10n.authIdentityUnlinkDisabledAction,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
           ],

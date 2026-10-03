@@ -40,7 +40,8 @@ class QuickEntryHeader extends StatelessWidget {
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-      scrollable: false,
+      // 这里刻意不再传 scrollable: false:6 条规则在窄屏 + 大字号下高于弹窗上限,
+      // 显式关掉滚动会直接底溢(DialogShell 默认 true)。
       builder: (dialogContext) => Column(
         key: const Key('record-quick-help-dialog'),
         mainAxisSize: MainAxisSize.min,
@@ -63,7 +64,15 @@ class QuickEntryHeader extends StatelessWidget {
             child: FButton(
               variant: FButtonVariant.ghost,
               onPress: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.commonConfirm),
+              // FButton 内部 Row 给非 flex 子节点无界主轴约束:标签省略。
+              child: Flexible(
+                child: Text(
+                  l10n.commonConfirm,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ),
         ],

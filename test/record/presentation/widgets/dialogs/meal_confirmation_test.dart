@@ -60,7 +60,6 @@ void main() {
               onPress: () => showAppDialog<void>(
                 context: context,
                 maxWidth: 460,
-                scrollable: false,
                 builder: (_) =>
                     MealQuickConfirmationDialog(flow: flow, draft: draft),
               ),
@@ -77,7 +76,12 @@ void main() {
   }
 
   FButton confirmButton(WidgetTester tester) => tester.widget<FButton>(
-    find.byKey(const Key('record-quick-meal-confirm-action')),
+    // 确认按钮走共享的 DialogActionRow/DialogActionButton:key 落在
+    // DialogActionButton 上,真正的 FButton 是它的子树。
+    find.descendant(
+      of: find.byKey(const Key('record-quick-meal-confirm-action')),
+      matching: find.byType(FButton),
+    ),
   );
 
   testWidgets('an empty draft cannot be submitted', (tester) async {
@@ -217,7 +221,6 @@ void main() {
               onPress: () => showAppDialog<void>(
                 context: context,
                 maxWidth: 460,
-                scrollable: false,
                 builder: (_) => MealQuickConfirmationDialog(
                   flow: flow,
                   draft: const MealQuickEntryDraft(

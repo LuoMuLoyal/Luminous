@@ -111,7 +111,12 @@ class MineAccountHero extends StatelessWidget {
               ),
             ),
             const SizedBox(height: Spacing.lg),
-            Row(
+            // 完成度标签 + 百分比:Row 里非 flex 的百分比块先占固有宽度,长文案
+            // 会被挤到右溢出;Wrap 让百分比在放不下时换行。
+            Wrap(
+              spacing: Spacing.sm,
+              runSpacing: Spacing.xs,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text(
                   mineCopy(l10n, dashboard.completion.titleKey),
@@ -119,7 +124,6 @@ class MineAccountHero extends StatelessWidget {
                     color: SemanticColor.neutral.solid(context),
                   ),
                 ),
-                const SizedBox(width: Spacing.sm),
                 SkeletonSlot(
                   skeleton: InlineSkeletonBlock(
                     height: 22,
@@ -158,12 +162,20 @@ class MineAccountHero extends StatelessWidget {
                   for (final gap in gaps.take(2))
                     FBadge(
                       variant: FBadgeVariant.secondary,
-                      child: Text(_gapLabel(l10n, gap)),
+                      child: Text(
+                        _gapLabel(l10n, gap),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   if (gapCount > 2)
                     FBadge(
                       variant: FBadgeVariant.secondary,
-                      child: Text(l10n.mineReadinessGapMore(gapCount - 2)),
+                      child: Text(
+                        l10n.mineReadinessGapMore(gapCount - 2),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                 ],
               ),
@@ -177,7 +189,16 @@ class MineAccountHero extends StatelessWidget {
                     ? FButtonVariant.outline
                     : FButtonVariant.primary,
                 onPress: () => _handlePrimaryAction(context, isPreview, gaps),
-                child: Text(actionLabel),
+                // FButton 内部 Row 给非 flex 子节点无界主轴约束,标签必须
+                // Flexible + 省略,否则长文案按固有宽度溢出按钮。
+                child: Flexible(
+                  child: Text(
+                    actionLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
           ],
@@ -284,6 +305,8 @@ class _StateBadge extends StatelessWidget {
         variant: FBadgeVariant.secondary,
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: typography.body.xs.copyWith(fontWeight: FontWeight.w700),
         ),
       );
@@ -297,6 +320,8 @@ class _StateBadge extends StatelessWidget {
         variant: FBadgeVariant.primary,
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: typography.body.xs.copyWith(
             fontWeight: FontWeight.w700,
             color: SemanticColor.primary.foreground(context),
@@ -309,6 +334,8 @@ class _StateBadge extends StatelessWidget {
       variant: FBadgeVariant.secondary,
       child: Text(
         label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: typography.body.xs.copyWith(
           fontWeight: FontWeight.w700,
           color: SemanticColor.warning.solid(context),

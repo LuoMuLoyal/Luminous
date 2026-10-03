@@ -345,17 +345,26 @@ class _MedicineRecognizeDialogState
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: null,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      SemanticIcons.statusDone,
-                      size: IconSizeTokens.sm,
-                      color: SemanticColor.primary.solid(context),
-                    ),
-                    const SizedBox(width: Spacing.sm),
-                    Text(l10n.medicineSearchAlreadyAddedLabel),
-                  ],
+                // FButton 内部 Row 给非 flex 子节点无界主轴约束:整块内容 Flexible。
+                child: Flexible(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        SemanticIcons.statusDone,
+                        size: IconSizeTokens.sm,
+                        color: SemanticColor.primary.solid(context),
+                      ),
+                      const SizedBox(width: Spacing.sm),
+                      Flexible(
+                        child: Text(
+                          l10n.medicineSearchAlreadyAddedLabel,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             if (res == null)

@@ -78,7 +78,16 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
           child: FButton(
             variant: FButtonVariant.ghost,
             onPress: () => Navigator.of(context).pop(),
-            child: Text(l10n.commonConfirm),
+            // FButton 内部 Row 给非 flex 子节点无界主轴约束:标签必须
+            // Flexible + 省略,否则长文案按固有宽度溢出按钮。
+            child: Flexible(
+              child: Text(
+                l10n.commonConfirm,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
         ),
       ],

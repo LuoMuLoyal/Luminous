@@ -25,7 +25,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   final l10n = AppLocalizations.of(context)!;
   final method = await showAppDialog<MedicineScanMethod>(
     context: context,
-    scrollable: false,
+    // 两个方法条目在窄屏 + 大字号下有真实高度:走 DialogShell 默认滚动。
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +153,7 @@ Future<void> _startPhotoScan(
       showAppDialog<void>(
         context: context,
         barrierDismissible: false,
-        scrollable: false,
+        // 识别结果列表可长:交给 DialogShell 默认滚动,不再显式关掉。
         builder: (dialogContext) => MedicineRecognizeDialog(
           imagePath: photo.path,
           method: method,

@@ -78,10 +78,14 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
                     style: typography.display.xl,
                   ),
                 ),
-                FButton.icon(
-                  variant: FButtonVariant.ghost,
-                  onPress: () => Navigator.of(context).pop(),
-                  child: const Icon(SemanticIcons.actionClose),
+                // 关闭按钮是固有宽度:给宽度上限,标题(Expanded)才不会被挤。
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 56),
+                  child: FButton.icon(
+                    variant: FButtonVariant.ghost,
+                    onPress: () => Navigator.of(context).pop(),
+                    child: const Icon(SemanticIcons.actionClose),
+                  ),
                 ),
               ],
             ),

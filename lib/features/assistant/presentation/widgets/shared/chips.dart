@@ -23,7 +23,7 @@ class AssistantToolChip extends StatelessWidget {
         ),
         labelTextStyle: .delta(color: SemanticColor.neutral.solid(context)),
       ),
-      child: Text(label),
+      child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
     );
   }
 }

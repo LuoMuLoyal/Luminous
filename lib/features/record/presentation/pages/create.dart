@@ -460,7 +460,7 @@ class RecordCreatePage extends HookConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final result = await showAppDialog<bool>(
       context: context,
-      scrollable: false,
+      // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
       builder: (dialogContext) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -475,19 +475,18 @@ class RecordCreatePage extends HookConsumerWidget {
             style: dialogContext.theme.dialogStyle.bodyTextStyle,
           ),
           const SizedBox(height: Spacing.xl),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FButton(
+          // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+          DialogActionRow(
+            actions: [
+              DialogActionButton(
+                label: l10n.authCancelAction,
                 variant: FButtonVariant.ghost,
                 onPress: () => Navigator.of(dialogContext).pop(false),
-                child: Text(l10n.authCancelAction),
               ),
-              const SizedBox(width: Spacing.md),
-              FButton(
+              DialogActionButton(
+                label: l10n.recordDiscardChangesAction,
                 variant: FButtonVariant.destructive,
                 onPress: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.recordDiscardChangesAction),
               ),
             ],
           ),

@@ -39,11 +39,24 @@ class RecordNlpRetryPanel extends StatelessWidget {
               ),
             ),
             const SizedBox(width: Spacing.md),
-            FButton(
-              variant: FButtonVariant.outline,
-              key: const Key('record-nlp-retry-failed-action'),
-              onPress: enabled ? onRetry : null,
-              child: Text(l10n.recordNlpRetryFailedAction),
+            // 重试按钮是固有宽度:给宽度上限 + 标签省略,左侧提示文字
+            // (Expanded)才不会被挤到多行。
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 160),
+              child: FButton(
+                variant: FButtonVariant.outline,
+                key: const Key('record-nlp-retry-failed-action'),
+                mainAxisSize: MainAxisSize.min,
+                onPress: enabled ? onRetry : null,
+                child: Flexible(
+                  child: Text(
+                    l10n.recordNlpRetryFailedAction,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
             ),
           ],
         ),

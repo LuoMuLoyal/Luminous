@@ -32,40 +32,56 @@ class RecordMobileFilter extends StatelessWidget {
           )
         : Row(
             children: [
-              Text(
-                l10n.recordFilterActiveLabel(
-                  activeFilter
-                      .map((f) => mobileFilterLabel(l10n, f))
-                      .join(' · '),
-                ),
-                style: typography.display.xl.copyWith(
-                  fontWeight: FontWeight.w700,
+              // 标题是长文案,而尾部按钮是固有宽度:标题必须 Expanded + 省略,
+              // 否则它先按固有宽度占位、把清除按钮顶出右缘。
+              Expanded(
+                child: Text(
+                  l10n.recordFilterActiveLabel(
+                    activeFilter
+                        .map((f) => mobileFilterLabel(l10n, f))
+                        .join(' · '),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: typography.display.xl.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-              const Spacer(),
               if (onFilterSelected != null)
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  size: FButtonSizeVariant.xs,
-                  mainAxisSize: MainAxisSize.min,
-                  onPress: () => onFilterSelected!(null),
-                  child: Row(
+                // 清除按钮是固有宽度:给宽度上限 + 标签省略,标题(Expanded)
+                // 才不会被挤。
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 160),
+                  child: FButton(
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.xs,
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        SemanticIcons.actionClose,
-                        size: Spacing.lg,
-                        color: SemanticColor.neutral.solid(context),
+                    onPress: () => onFilterSelected!(null),
+                    child: Flexible(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            SemanticIcons.actionClose,
+                            size: Spacing.lg,
+                            color: SemanticColor.neutral.solid(context),
+                          ),
+                          const SizedBox(width: Spacing.xs),
+                          Flexible(
+                            child: Text(
+                              l10n.recordFilterClearAction,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: SemanticColor.neutral.solid(context),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: Spacing.xs),
-                      Text(
-                        l10n.recordFilterClearAction,
-                        style: TextStyle(
-                          color: SemanticColor.neutral.solid(context),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
             ],

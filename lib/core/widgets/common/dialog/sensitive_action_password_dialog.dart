@@ -97,19 +97,19 @@ class _SensitiveActionPasswordDialogContent extends HookConsumerWidget {
             ),
           ],
           const SizedBox(height: Spacing.xl),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FButton(
+          // 按钮是固有宽度:放进 Row 会先占满固有宽度,把右缘顶出弹窗
+          // (360dp + 大字号必现)。DialogActionRow 用 Wrap + 标签省略。
+          DialogActionRow(
+            actions: [
+              DialogActionButton(
+                label: l10n.authCancelAction,
                 variant: FButtonVariant.ghost,
                 onPress: () => Navigator.of(context).pop(),
-                child: Text(l10n.authCancelAction),
               ),
-              const SizedBox(width: Spacing.md),
-              FButton(
+              DialogActionButton(
                 key: const Key('sensitive-action-password-confirm'),
+                label: l10n.authSensitiveActionPasswordDialogConfirm,
                 onPress: handleConfirm,
-                child: Text(l10n.authSensitiveActionPasswordDialogConfirm),
               ),
             ],
           ),

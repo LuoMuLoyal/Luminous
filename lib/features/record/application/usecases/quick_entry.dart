@@ -150,7 +150,7 @@ Future<void> handleQuickActionLongPress(
   await showAppDialog<void>(
     context: context,
     maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-    scrollable: false,
+    // 设置项高度随字号增长:走 DialogShell 默认滚动,不再显式关掉。
     builder: (dialogContext) =>
         QuickEntryTypeSettingsDialog(action: action, l10n: l10n),
   );

@@ -161,7 +161,16 @@ class _WaterQuickEntrySheetState extends State<_WaterQuickEntrySheet> {
                           ),
                         ),
                         onPress: () => _selectAmount(ml),
-                        child: Text('+$ml${l10n.recordWaterUnitMl}'),
+                        // 网格单元宽度有界 + mainAxisSize.max:标签 Flexible 省略,
+                        // 长本地化文案不会把按钮顶出格子。
+                        child: Flexible(
+                          child: Text(
+                            '+$ml${l10n.recordWaterUnitMl}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -197,10 +206,23 @@ class _WaterQuickEntrySheetState extends State<_WaterQuickEntrySheet> {
                         ),
                       ),
                       const SizedBox(width: Spacing.md),
-                      FButton(
-                        key: const Key('water-quick-entry-manual-confirm'),
-                        onPress: _submitManual,
-                        child: Text(l10n.commonConfirm),
+                      // 确认按钮是固有宽度:给宽度上限 + 标签省略,左侧输入框
+                      // (Expanded)才不会被挤。
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 160),
+                        child: FButton(
+                          key: const Key('water-quick-entry-manual-confirm'),
+                          mainAxisSize: MainAxisSize.min,
+                          onPress: _submitManual,
+                          child: Flexible(
+                            child: Text(
+                              l10n.commonConfirm,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

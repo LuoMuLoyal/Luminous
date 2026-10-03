@@ -312,12 +312,25 @@ class _AssociationOptions extends StatelessWidget {
                   ),
                 ),
               ),
-              FButton(
-                key: retryKey,
-                variant: FButtonVariant.ghost,
-                size: FButtonSizeVariant.xs,
-                onPress: onRetry,
-                child: Text(l10n.todayHealthEventOptionsRetryAction),
+              // 重试按钮是固有宽度:给宽度上限 + 标签省略,左侧失败提示
+              // (Expanded)才不会被挤到多行。
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 160),
+                child: FButton(
+                  key: retryKey,
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.xs,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: onRetry,
+                  child: Flexible(
+                    child: Text(
+                      l10n.todayHealthEventOptionsRetryAction,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

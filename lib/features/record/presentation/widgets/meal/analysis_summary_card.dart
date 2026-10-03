@@ -50,7 +50,14 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                MealAnalysisStatusBadge(status: data.status, large: true),
+                // 状态徽章是固有宽度:给宽度上限,标题(Expanded)才不会被挤。
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 160),
+                  child: MealAnalysisStatusBadge(
+                    status: data.status,
+                    large: true,
+                  ),
+                ),
               ],
             ),
             if (data.isAnalyzing) ...[
@@ -266,6 +273,8 @@ class _DishChip extends StatelessWidget {
         ),
         child: Text(
           dish.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: typography.body.xs.copyWith(color: color.solid(context)),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -141,19 +142,18 @@ class _MealQuickConfirmationDialogState
           const Center(child: FProgress()),
         ],
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.commonCancel,
               variant: FButtonVariant.ghost,
               onPress: _saving ? null : () => Navigator.of(context).pop(),
-              child: Text(l10n.commonCancel),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
               key: const Key('record-quick-meal-confirm-action'),
+              label: l10n.commonConfirm,
               onPress: _canSave ? _save : null,
-              child: Text(l10n.commonConfirm),
             ),
           ],
         ),

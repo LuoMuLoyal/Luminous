@@ -91,10 +91,17 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                               SemanticIcons.actionImage,
                               size: IconSizeTokens.md,
                             ),
-                            child: Text(
-                              hasAttachment
-                                  ? l10n.recordImageReplaceAction
-                                  : l10n.recordImagePickAction,
+                            // 按钮在 Wrap 里宽度有界:标签必须 Flexible + 省略,
+                            // 否则图标 + 标签按固有宽度顶出按钮右缘(sweep 实测 320dp)。
+                            child: Flexible(
+                              child: Text(
+                                hasAttachment
+                                    ? l10n.recordImageReplaceAction
+                                    : l10n.recordImagePickAction,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                           if (onCameraPick != null)
@@ -105,7 +112,14 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                                 SemanticIcons.actionCamera,
                                 size: IconSizeTokens.md,
                               ),
-                              child: Text(l10n.recordImageCameraAction),
+                              child: Flexible(
+                                child: Text(
+                                  l10n.recordImageCameraAction,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
                           if (hasAttachment)
                             FButton(
@@ -115,7 +129,14 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                                 SemanticIcons.actionClose,
                                 size: IconSizeTokens.md,
                               ),
-                              child: Text(l10n.recordImageRemoveAction),
+                              child: Flexible(
+                                child: Text(
+                                  l10n.recordImageRemoveAction,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
                         ],
                       ),

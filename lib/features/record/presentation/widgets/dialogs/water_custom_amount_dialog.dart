@@ -114,19 +114,18 @@ class _WaterCustomAmountBodyState extends State<_WaterCustomAmountBody> {
           onSubmit: (_) => _submit(),
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.commonCancel,
               variant: FButtonVariant.ghost,
               onPress: () => Navigator.of(context).pop(),
-              child: Text(l10n.commonCancel),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
               key: const Key('water-custom-ml-confirm'),
+              label: l10n.commonConfirm,
               onPress: _submit,
-              child: Text(l10n.commonConfirm),
             ),
           ],
         ),

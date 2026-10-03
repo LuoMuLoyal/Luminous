@@ -142,7 +142,7 @@ class RecordNlpSheet extends HookConsumerWidget {
         builder: (dialogContext, style, animation) => DialogShell(
           maxWidth: 360,
           padding: const EdgeInsets.all(Spacing.lg),
-          scrollable: false,
+          // 走 DialogShell 默认滚动:窄屏 + 大字号下确认文案 + 按钮可能超过弹窗上限。
           builder: (innerContext) => Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -161,19 +161,17 @@ class RecordNlpSheet extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: Spacing.lg),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FButton(
+              // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+              DialogActionRow(
+                actions: [
+                  DialogActionButton(
+                    label: l10n.commonCancel,
                     variant: FButtonVariant.ghost,
                     onPress: () => Navigator.of(dialogContext).pop(false),
-                    child: Text(l10n.commonCancel),
                   ),
-                  const SizedBox(width: Spacing.sm),
-                  FButton(
-                    variant: FButtonVariant.primary,
+                  DialogActionButton(
+                    label: l10n.recordNlpResetConfirmAction,
                     onPress: () => Navigator.of(dialogContext).pop(true),
-                    child: Text(l10n.recordNlpResetConfirmAction),
                   ),
                 ],
               ),
@@ -224,10 +222,14 @@ class RecordNlpSheet extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    FButton.icon(
-                      variant: FButtonVariant.ghost,
-                      onPress: () => Navigator.of(context).pop(),
-                      child: const Icon(SemanticIcons.actionClose),
+                    // 关闭按钮是固有宽度:给宽度上限,标题(Expanded)才不会被挤。
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 56),
+                      child: FButton.icon(
+                        variant: FButtonVariant.ghost,
+                        onPress: () => Navigator.of(context).pop(),
+                        child: const Icon(SemanticIcons.actionClose),
+                      ),
                     ),
                   ],
                 ),

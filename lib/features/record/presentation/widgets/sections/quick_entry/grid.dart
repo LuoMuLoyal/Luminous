@@ -177,6 +177,8 @@ class QuickBadge extends StatelessWidget {
         ),
         child: Text(
           text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs3.copyWith(
             color: SemanticColor.primary.foreground(context),
             fontWeight: FontWeight.w700,

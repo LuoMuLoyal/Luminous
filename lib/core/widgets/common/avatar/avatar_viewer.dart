@@ -29,6 +29,10 @@ Future<void> _showAvatarViewerSurface(BuildContext context, Widget content) {
     return showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+      // 查看面板是固定 420dp 的 InteractiveViewer:这里必须保留 scrollable: false
+      // (外层滚动会抢走纵向拖拽,图片就没法拖动),因此显式给出 maxHeight——
+      // 没有上限的 scrollable: false 正是 DialogShell 断言禁止的组合。
+      maxHeight: 420 + Spacing.xl * 2,
       scrollable: false,
       builder: (_) => content,
     );

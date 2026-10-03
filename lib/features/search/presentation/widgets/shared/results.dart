@@ -35,15 +35,17 @@ class SearchResultTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            // 徽章是 FBadge(内部 IntrinsicWidth):放进 Row 会先占满固有宽度,
+            // 把药品名挤成多行。Wrap 放不下时让徽章换到下一行。
+            Wrap(
+              spacing: Spacing.md,
+              runSpacing: Spacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Expanded(
-                  child: Text(
-                    result.name,
-                    style: typography.body.lg.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                Text(
+                  result.name,
+                  style: typography.body.lg.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 _SourceBadge(source: result.source, l10n: l10n),
@@ -94,22 +96,40 @@ class SearchResultTile extends StatelessWidget {
                     ? FButton(
                         onPress: null,
                         variant: FButtonVariant.outline,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              SemanticIcons.statusDone,
-                              size: IconSizeTokens.sm,
-                              color: SemanticColor.primary.solid(context),
-                            ),
-                            const SizedBox(width: Spacing.sm),
-                            Text(l10n.medicineSearchAlreadyAddedLabel),
-                          ],
+                        // FButton 内部是 Row,给非 flex 子节点无界主轴约束:
+                        // Flexible 必须包在内容外,否则图标 + 标签按固有宽度溢出。
+                        child: Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                SemanticIcons.statusDone,
+                                size: IconSizeTokens.sm,
+                                color: SemanticColor.primary.solid(context),
+                              ),
+                              const SizedBox(width: Spacing.sm),
+                              Flexible(
+                                child: Text(
+                                  l10n.medicineSearchAlreadyAddedLabel,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       )
                     : FButton(
                         onPress: onAddToCurrentMedicines,
-                        child: Text(l10n.medicineSearchAddToBoxAction),
+                        child: Flexible(
+                          child: Text(
+                            l10n.medicineSearchAddToBoxAction,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
               ),
             ),
@@ -140,7 +160,11 @@ class _SourceBadge extends StatelessWidget {
           borderRadius: context.theme.style.borderRadius.xs,
         ),
       ),
-      child: Text(sourceLabel(l10n, source)),
+      child: Text(
+        sourceLabel(l10n, source),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }
@@ -161,7 +185,7 @@ class _TagPill extends StatelessWidget {
         ),
         labelTextStyle: .delta(color: SemanticColor.primary.solid(context)),
       ),
-      child: Text(label),
+      child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
     );
   }
 }

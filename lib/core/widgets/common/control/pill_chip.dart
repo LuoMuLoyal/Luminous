@@ -37,8 +37,12 @@ class PillChip extends StatelessWidget {
               horizontal: Spacing.md,
               vertical: Spacing.sm,
             ),
+            // 窄屏 + 大字号下标签必须省略而不是把 pill 撑到溢出:Wrap 里的 chip
+            // 无界宽度,裸 Text 按固有宽度排版会把整行顶出右缘。
             child: Text(
               label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: context.theme.typography.body.sm.copyWith(
                 color: tone.solid(context),
                 fontWeight: FontWeight.w600,

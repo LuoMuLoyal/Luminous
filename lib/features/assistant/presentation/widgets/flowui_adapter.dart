@@ -370,7 +370,7 @@ class AssistantFlowUiAdapter {
     final confirmed = await showAppDialog<bool>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-      scrollable: false,
+      // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,18 +385,17 @@ class AssistantFlowUiAdapter {
             style: context.theme.typography.body.sm,
           ),
           const SizedBox(height: Spacing.xl),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FButton(
+          // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+          DialogActionRow(
+            actions: [
+              DialogActionButton(
+                label: l10n.commonCancel,
                 variant: FButtonVariant.ghost,
                 onPress: () => Navigator.of(context).pop(false),
-                child: Text(l10n.commonCancel),
               ),
-              const SizedBox(width: Spacing.md),
-              FButton(
+              DialogActionButton(
+                label: l10n.assistantMarkdownLinkOpenAction,
                 onPress: () => Navigator.of(context).pop(true),
-                child: Text(l10n.assistantMarkdownLinkOpenAction),
               ),
             ],
           ),
@@ -463,6 +462,8 @@ class _ReplacedBadge extends StatelessWidget {
         child: Text(
           label,
           key: const Key('assistant-replaced-label'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs3.copyWith(
             color: SemanticColor.neutral.solid(context),
             height: 1.2,

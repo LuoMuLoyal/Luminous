@@ -45,17 +45,29 @@ class VerificationCodeField extends StatelessWidget {
         const SizedBox(width: Spacing.md),
         Padding(
           padding: const EdgeInsets.only(top: 26),
-          child: IntrinsicWidth(
-            child: FButton(
-              variant: FButtonVariant.outline,
-              onPress: isLoading ? null : onSendCode,
-              child: isLoading
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : Text(buttonLabel),
+          // 发码按钮撑满固有宽度会把左侧输入框挤窄:给宽度上限(仍在
+          // IntrinsicWidth 内,标签换文时不跳动),超长文案由标签省略兜住。
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 160),
+            child: IntrinsicWidth(
+              child: FButton(
+                variant: FButtonVariant.outline,
+                onPress: isLoading ? null : onSendCode,
+                child: isLoading
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: FCircularProgress(),
+                      )
+                    : Flexible(
+                        child: Text(
+                          buttonLabel,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+              ),
             ),
           ),
         ),

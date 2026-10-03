@@ -53,14 +53,26 @@ class ConnectivityBanner extends ConsumerWidget {
                   ),
                 ),
               ),
-              FButton(
-                variant: FButtonVariant.ghost,
-                onPress: () => ref.read(authSessionProvider.notifier).restore(),
-                child: Text(
-                  l10n.commonRetry,
-                  style: typography.body.sm.copyWith(
-                    color: warningPalette.foreground,
-                    fontWeight: FontWeight.w600,
+              // 重试按钮给宽度上限 + 标签省略:Row 先给非 flex 子节点无界主轴约束,
+              // 裸 FButton 会按固有宽度把左侧提示文字挤没或自己右溢。
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 160),
+                child: FButton(
+                  variant: FButtonVariant.ghost,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: () =>
+                      ref.read(authSessionProvider.notifier).restore(),
+                  child: Flexible(
+                    child: Text(
+                      l10n.commonRetry,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: typography.body.sm.copyWith(
+                        color: warningPalette.foreground,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ),

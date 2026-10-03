@@ -79,17 +79,27 @@ class DataExportPage extends ConsumerWidget {
         width: double.infinity,
         child: FButton(
           onPress: null,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(
-                width: 18,
-                height: 18,
-                child: Center(child: FCircularProgress()),
-              ),
-              const SizedBox(width: Spacing.sm),
-              Text(l10n.settingsExportStatusLoading),
-            ],
+          // FButton 内部 Row 给非 flex 子节点无界主轴约束:整块内容必须
+          // Flexible 收口,标签再省略,长文案才不会顶出按钮。
+          child: Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: Center(child: FCircularProgress()),
+                ),
+                const SizedBox(width: Spacing.sm),
+                Flexible(
+                  child: Text(
+                    l10n.settingsExportStatusLoading,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -103,13 +113,21 @@ class DataExportPage extends ConsumerWidget {
             Uri.parse(downloadUrl),
             mode: LaunchMode.externalApplication,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(SemanticIcons.actionExpand, size: IconSizeTokens.md),
-              const SizedBox(width: Spacing.sm),
-              Text(l10n.mineExportDownloadButton),
-            ],
+          child: Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(SemanticIcons.actionExpand, size: IconSizeTokens.md),
+                const SizedBox(width: Spacing.sm),
+                Flexible(
+                  child: Text(
+                    l10n.mineExportDownloadButton,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -122,13 +140,21 @@ class DataExportPage extends ConsumerWidget {
         child: FButton(
           variant: FButtonVariant.outline,
           onPress: () => _requestExport(context, ref),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(SemanticIcons.actionMore, size: IconSizeTokens.md),
-              const SizedBox(width: Spacing.sm),
-              Text(l10n.mineExportRegenerateButton),
-            ],
+          child: Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(SemanticIcons.actionMore, size: IconSizeTokens.md),
+                const SizedBox(width: Spacing.sm),
+                Flexible(
+                  child: Text(
+                    l10n.mineExportRegenerateButton,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -142,10 +168,15 @@ class DataExportPage extends ConsumerWidget {
                 status == DataExportUiStatus.unavailable
             ? () => _requestExport(context, ref)
             : null,
-        child: Text(
-          status == DataExportUiStatus.idle
-              ? l10n.settingsExportRequestButton
-              : l10n.mineExportStatusPending,
+        child: Flexible(
+          child: Text(
+            status == DataExportUiStatus.idle
+                ? l10n.settingsExportRequestButton
+                : l10n.mineExportStatusPending,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

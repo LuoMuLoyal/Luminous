@@ -8,6 +8,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
@@ -90,21 +91,20 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
               const Center(child: FProgress()),
             ],
             const SizedBox(height: Spacing.xl),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
-                  variant: FButtonVariant.ghost,
+            // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+            DialogActionRow(
+              actions: [
+                DialogActionButton(
                   key: const Key('record-fast-entry-more-action'),
-                  onPress: _saving ? null : _openMore,
-                  child: Text(l10n.recordFastEntryMoreAction),
-                ),
-                const SizedBox(width: Spacing.md),
-                FButton(
+                  label: l10n.recordFastEntryMoreAction,
                   variant: FButtonVariant.ghost,
+                  onPress: _saving ? null : _openMore,
+                ),
+                DialogActionButton(
                   key: const Key('record-fast-entry-cancel-action'),
+                  label: l10n.commonCancel,
+                  variant: FButtonVariant.ghost,
                   onPress: _saving ? null : () => Navigator.of(context).pop(),
-                  child: Text(l10n.commonCancel),
                 ),
               ],
             ),
@@ -235,7 +235,14 @@ class _QuickChoiceChip extends StatelessWidget {
       variant: selected ? FButtonVariant.primary : FButtonVariant.outline,
       onPress: enabled ? onTap : null,
       prefix: prefix,
-      child: Text(label),
+      child: Flexible(
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }

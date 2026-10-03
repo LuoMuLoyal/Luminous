@@ -429,6 +429,8 @@ class _SourceTierBadge extends StatelessWidget {
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs3.copyWith(
             color: foreground,
             height: 1.2,

@@ -30,7 +30,7 @@ Future<void> showMealConfirmationDialog(
   await showAppDialog<void>(
     context: context,
     maxWidth: 460,
-    scrollable: false,
+    // 确认卡片高度随内容增长:走 DialogShell 默认滚动,不再显式关掉。
     builder: (dialogContext) =>
         MealQuickConfirmationDialog(flow: flow, draft: draft),
   );

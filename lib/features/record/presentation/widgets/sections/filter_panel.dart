@@ -38,31 +38,40 @@ class RecordFilterPanel extends StatelessWidget {
                   ),
                 ),
                 if (onFilterSelected != null)
-                  FButton(
-                    variant: FButtonVariant.ghost,
-                    size: FButtonSizeVariant.xs,
-                    mainAxisSize: MainAxisSize.min,
-                    onPress: () => onFilterSelected!(null),
-                    child: Row(
+                  // 全选按钮是固有宽度:给宽度上限 + 标签省略,标题(Expanded)
+                  // 才不会被挤到多行。
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 160),
+                    child: FButton(
+                      variant: FButtonVariant.ghost,
+                      size: FButtonSizeVariant.xs,
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          l10n.recordFilterSelectAll,
-                          style: TextStyle(
-                            color: colors.foreground,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                      onPress: () => onFilterSelected!(null),
+                      child: Flexible(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                l10n.recordFilterSelectAll,
+                                style: TextStyle(
+                                  color: colors.foreground,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: Spacing.xs),
+                            Icon(
+                              SemanticIcons.statusAllDone,
+                              size: IconSizeTokens.sm,
+                              color: colors.foreground,
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: Spacing.xs),
-                        Icon(
-                          SemanticIcons.statusAllDone,
-                          size: IconSizeTokens.sm,
-                          color: colors.foreground,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
               ],

@@ -162,7 +162,7 @@ class PrivacySection extends ConsumerWidget {
     return await showAppDialog<bool>(
           context: context,
           maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-          scrollable: false,
+          // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
           builder: (context) => Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,18 +177,17 @@ class PrivacySection extends ConsumerWidget {
                 style: context.theme.typography.body.sm,
               ),
               const SizedBox(height: Spacing.xl),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FButton(
+              // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+              DialogActionRow(
+                actions: [
+                  DialogActionButton(
+                    label: l10n.settingsDataSharingCancelAction,
                     variant: FButtonVariant.ghost,
                     onPress: () => Navigator.of(context).pop(false),
-                    child: Text(l10n.settingsDataSharingCancelAction),
                   ),
-                  const SizedBox(width: Spacing.sm),
-                  FButton(
+                  DialogActionButton(
+                    label: l10n.settingsDataSharingConfirmAction,
                     onPress: () => Navigator.of(context).pop(true),
-                    child: Text(l10n.settingsDataSharingConfirmAction),
                   ),
                 ],
               ),

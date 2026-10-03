@@ -23,6 +23,8 @@ class SourceBadge extends StatelessWidget {
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs3.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),

@@ -21,7 +21,8 @@ void main() {
               child: FButton(
                 onPress: () => showAppDialog<void>(
                   context: context,
-                  scrollable: false,
+                  // 生产调用点(QuickEntryTypeSettingsDialog)已改为 DialogShell
+                  // 默认滚动:设置项数量 + 字号会撑高,关掉滚动会底溢。
                   builder: (_) => QuickEntryTypeSettingsDialog(
                     action: action,
                     l10n: AppLocalizations.of(context)!,

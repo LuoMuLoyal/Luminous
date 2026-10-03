@@ -76,7 +76,7 @@ Future<bool> confirmUnlinkIdentity(
     maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
       MediaQuery.sizeOf(context).width,
     ),
-    scrollable: false,
+    // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
     builder: (context) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,23 +95,20 @@ Future<bool> confirmUnlinkIdentity(
           style: context.theme.typography.body.sm,
         ),
         const SizedBox(height: Spacing.xl2),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.authCancelAction,
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              mainAxisSize: MainAxisSize.min,
               onPress: () => Navigator.of(context).pop(false),
-              child: Text(l10n.authCancelAction),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
+              label: l10n.authIdentityUnlinkAction,
               variant: FButtonVariant.destructive,
               size: FButtonSizeVariant.sm,
-              mainAxisSize: MainAxisSize.min,
               onPress: () => Navigator.of(context).pop(true),
-              child: Text(l10n.authIdentityUnlinkAction),
             ),
           ],
         ),

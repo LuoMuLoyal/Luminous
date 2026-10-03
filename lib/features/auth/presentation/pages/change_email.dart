@@ -161,17 +161,27 @@ class ChangeEmailPage extends HookConsumerWidget {
                               ),
                             ),
                           ),
-                          FButton(
-                            variant: FButtonVariant.ghost,
-                            size: FButtonSizeVariant.sm,
-                            mainAxisSize: MainAxisSize.min,
-                            onPress: () => context.push(
-                              !isSignedIn ? Routes.login : Routes.home,
-                            ),
-                            child: Text(
-                              !isSignedIn
-                                  ? l10n.authSignIn
-                                  : l10n.authBackHomeAction,
+                          // 跳转按钮是固有宽度:给宽度上限 + 标签省略,左侧提示
+                          // 文字(Expanded)才不会被挤到多行。
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 160),
+                            child: FButton(
+                              variant: FButtonVariant.ghost,
+                              size: FButtonSizeVariant.sm,
+                              mainAxisSize: MainAxisSize.min,
+                              onPress: () => context.push(
+                                !isSignedIn ? Routes.login : Routes.home,
+                              ),
+                              child: Flexible(
+                                child: Text(
+                                  !isSignedIn
+                                      ? l10n.authSignIn
+                                      : l10n.authBackHomeAction,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
                           ),
                         ],

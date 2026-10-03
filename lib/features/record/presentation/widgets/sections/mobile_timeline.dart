@@ -72,30 +72,47 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
                 ),
               ),
             ),
+            // 尾部按钮是固有宽度:给宽度上限 + 标签省略,标题(Expanded)才不会被挤。
             if (!isToday && widget.onBackToToday != null)
-              FButton(
-                key: const Key('record-back-to-today'),
-                variant: FButtonVariant.ghost,
-                size: FButtonSizeVariant.sm,
-                mainAxisSize: MainAxisSize.min,
-                onPress: widget.onBackToToday,
-                child: Text(
-                  widget.l10n.recordBackToTodayAction,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 160),
+                child: FButton(
+                  key: const Key('record-back-to-today'),
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: widget.onBackToToday,
+                  child: Flexible(
+                    child: Text(
+                      widget.l10n.recordBackToTodayAction,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ),
                 ),
               ),
             if (hasOverflow)
-              FButton(
-                key: const Key('record-timeline-toggle'),
-                variant: FButtonVariant.ghost,
-                size: FButtonSizeVariant.sm,
-                mainAxisSize: MainAxisSize.min,
-                onPress: () => setState(() => _expanded = !_expanded),
-                child: Text(
-                  _expanded
-                      ? widget.l10n.recordTimelineCollapseAction
-                      : widget.l10n.recordTimelineViewAllAction,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 160),
+                child: FButton(
+                  key: const Key('record-timeline-toggle'),
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: () => setState(() => _expanded = !_expanded),
+                  child: Flexible(
+                    child: Text(
+                      _expanded
+                          ? widget.l10n.recordTimelineCollapseAction
+                          : widget.l10n.recordTimelineViewAllAction,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ),
                 ),
               ),
           ],
@@ -250,13 +267,69 @@ class _TimelineRow extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            label,
-                            style: typography.body.sm.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          // 徽章是 FBadge(内部 IntrinsicWidth):留在 Row 里会先占满
+                          // 固有宽度;320dp + 大字号下它与时间列、尾部箭头叠加就会把本行
+                          // 顶出右缘(sweep 实测)。Wrap 让徽章放不下时换到标题下一行。
+                          Wrap(
+                            spacing: Spacing.sm,
+                            runSpacing: Spacing.xs,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Text(
+                                label,
+                                style: typography.body.sm.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (badgeLabel != null)
+                                FBadge.raw(
+                                  builder: (context, style) {
+                                    return DecoratedBox(
+                                      decoration: ShapeDecoration(
+                                        color: colors.secondary,
+                                        shape: RoundedSuperellipseBorder(
+                                          borderRadius: context
+                                              .theme
+                                              .style
+                                              .borderRadius
+                                              .xs,
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: Spacing.sm,
+                                          vertical: Spacing.xs,
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                badgeLabel,
+                                                style: context
+                                                    .theme
+                                                    .typography
+                                                    .body
+                                                    .xs
+                                                    .copyWith(
+                                                      color: colors.foreground,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      letterSpacing: 0,
+                                                    ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                            ],
                           ),
                           if (subtitle.isNotEmpty) ...[
                             const SizedBox(height: Spacing.xs),
@@ -272,44 +345,6 @@ class _TimelineRow extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (badgeLabel != null) ...[
-                      const SizedBox(width: Spacing.sm),
-                      FBadge.raw(
-                        builder: (context, style) {
-                          return DecoratedBox(
-                            decoration: ShapeDecoration(
-                              color: colors.secondary,
-                              shape: RoundedSuperellipseBorder(
-                                borderRadius:
-                                    context.theme.style.borderRadius.xs,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: Spacing.sm,
-                                vertical: Spacing.xs,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    badgeLabel,
-                                    style: context.theme.typography.body.xs
-                                        .copyWith(
-                                          color: colors.foreground,
-                                          fontWeight: FontWeight.w700,
-                                          letterSpacing: 0,
-                                        ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
                     const SizedBox(width: Spacing.sm),
                     Icon(
                       SemanticIcons.actionNext,
@@ -400,16 +435,25 @@ class _MobileTimelineEmptyState extends StatelessWidget {
                 size: FButtonSizeVariant.sm,
                 mainAxisSize: MainAxisSize.min,
                 onPress: onCreate,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      SemanticIcons.actionAdd,
-                      size: IconSizeTokens.sm,
-                    ),
-                    const SizedBox(width: Spacing.sm),
-                    Text(l10n.recordTimelineEmptyAction),
-                  ],
+                // FButton 内部 Row 给非 flex 子节点无界主轴约束:标签 Flexible + 省略。
+                child: Flexible(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        SemanticIcons.actionAdd,
+                        size: IconSizeTokens.sm,
+                      ),
+                      const SizedBox(width: Spacing.sm),
+                      Flexible(
+                        child: Text(
+                          l10n.recordTimelineEmptyAction,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               if (hasActiveFilter && onClearFilter != null) ...[
@@ -419,7 +463,14 @@ class _MobileTimelineEmptyState extends StatelessWidget {
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
                   onPress: onClearFilter,
-                  child: Text(l10n.recordTimelineClearFilter),
+                  child: Flexible(
+                    child: Text(
+                      l10n.recordTimelineClearFilter,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               ],
             ],

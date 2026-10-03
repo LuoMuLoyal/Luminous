@@ -93,7 +93,7 @@ Future<bool?> showModelDownloadDialog(
 ) async {
   return showAppDialog<bool>(
     context: context,
-    scrollable: false,
+    // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,18 +108,17 @@ Future<bool?> showModelDownloadDialog(
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.scanModelDownloadCancel,
               variant: FButtonVariant.outline,
               onPress: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.scanModelDownloadCancel),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
+              label: l10n.scanModelDownloadConfirm,
               onPress: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.scanModelDownloadConfirm),
             ),
           ],
         ),
@@ -138,7 +137,7 @@ Future<void> showModelDownloadFailedDialog(
 }) async {
   await showAppDialog<void>(
     context: context,
-    scrollable: false,
+    // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,21 +152,20 @@ Future<void> showModelDownloadFailedDialog(
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.scanCloseAction,
               variant: FButtonVariant.outline,
               onPress: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.scanCloseAction),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
+              label: l10n.scanModelDownloadRetry,
               onPress: () {
                 Navigator.of(dialogContext).pop();
                 unawaited(onRetry());
               },
-              child: Text(l10n.scanModelDownloadRetry),
             ),
           ],
         ),
@@ -187,7 +185,7 @@ Future<void> showOcrUnavailableDialog(
 }) async {
   await showAppDialog<void>(
     context: context,
-    scrollable: false,
+    // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,16 +200,16 @@ Future<void> showOcrUnavailableDialog(
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.scanCloseAction,
               variant: FButtonVariant.outline,
               onPress: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.scanCloseAction),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
+              label: l10n.scanOcrUnavailableUseAi,
               onPress: () {
                 Navigator.of(dialogContext).pop();
                 // Jump straight to the AI camera flow (F-7) instead of
@@ -220,7 +218,6 @@ Future<void> showOcrUnavailableDialog(
                 // login prompt before the camera opens.
                 unawaited(onUseAi());
               },
-              child: Text(l10n.scanOcrUnavailableUseAi),
             ),
           ],
         ),
@@ -249,7 +246,7 @@ Future<void> showScanFailureDialog(
 }) async {
   await showAppDialog<void>(
     context: context,
-    scrollable: false,
+    // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,24 +261,23 @@ Future<void> showScanFailureDialog(
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.scanRetakeAction,
               variant: FButtonVariant.outline,
               onPress: () {
                 Navigator.of(dialogContext).pop();
                 unawaited(onRetry());
               },
-              child: Text(l10n.scanRetakeAction),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
+              label: l10n.scanManualSearchAction,
               onPress: () {
                 Navigator.of(dialogContext).pop();
                 unawaited(onManualSearch());
               },
-              child: Text(l10n.scanManualSearchAction),
             ),
           ],
         ),
@@ -297,7 +293,7 @@ void showProcessingOverlay(BuildContext context, MedicineScanMethod method) {
     showAppDialog<void>(
       context: context,
       barrierDismissible: false,
-      scrollable: false,
+      // 处理中浮层也不锁滚动:文案换行到两三行时不会底溢。
       builder: (_) => PopScope(
         canPop: false,
         child: Column(

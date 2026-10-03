@@ -446,19 +446,18 @@ class _RenameConversationDialogState extends State<_RenameConversationDialog> {
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
             ),
             const SizedBox(height: Spacing.xl),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
+            // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+            DialogActionRow(
+              actions: [
+                DialogActionButton(
+                  label: widget.cancelLabel,
                   variant: FButtonVariant.ghost,
                   onPress: () => Navigator.of(context).pop(),
-                  child: Text(widget.cancelLabel),
                 ),
-                const SizedBox(width: Spacing.md),
-                FButton(
+                DialogActionButton(
                   key: const Key('assistant-conversation-rename-confirm'),
+                  label: widget.confirmLabel,
                   onPress: () => Navigator.of(context).pop(_controller.text),
-                  child: Text(widget.confirmLabel),
                 ),
               ],
             ),

@@ -320,6 +320,8 @@ class _TypeChip extends StatelessWidget {
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.sm.copyWith(
             color: color.solid(context),
             fontWeight: FontWeight.w600,
@@ -357,7 +359,15 @@ class _ActionBar extends StatelessWidget {
             SemanticIcons.actionExternalLink,
             size: IconSizeTokens.md,
           ),
-          child: Text(l10n.notificationActionNavigate),
+          // FButton 内部 Row 给非 flex 子节点无界主轴约束:标签 Flexible + 省略。
+          child: Flexible(
+            child: Text(
+              l10n.notificationActionNavigate,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
       if (detail.action?.isNotEmpty ?? false) const SizedBox(width: Spacing.md),
       FButton(
@@ -369,10 +379,15 @@ class _ActionBar extends StatelessWidget {
               : SemanticIcons.statusAllDone,
           size: 18,
         ),
-        child: Text(
-          detail.isRead
-              ? l10n.notificationActionMarkUnread
-              : l10n.notificationActionMarkRead,
+        child: Flexible(
+          child: Text(
+            detail.isRead
+                ? l10n.notificationActionMarkUnread
+                : l10n.notificationActionMarkRead,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
       const SizedBox(width: Spacing.md),
@@ -380,7 +395,14 @@ class _ActionBar extends StatelessWidget {
         variant: FButtonVariant.destructive,
         onPress: () => _showDeleteConfirm(context, onDelete),
         prefix: const Icon(SemanticIcons.actionDelete, size: IconSizeTokens.md),
-        child: Text(l10n.notificationActionDelete),
+        child: Flexible(
+          child: Text(
+            l10n.notificationActionDelete,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     ];
 
@@ -395,7 +417,7 @@ class _ActionBar extends StatelessWidget {
         maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
           MediaQuery.sizeOf(context).width,
         ),
-        scrollable: false,
+        // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
         builder: (context) => Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -410,22 +432,21 @@ class _ActionBar extends StatelessWidget {
               style: context.theme.typography.body.sm,
             ),
             const SizedBox(height: Spacing.xl),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
+            // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+            DialogActionRow(
+              actions: [
+                DialogActionButton(
+                  label: l10n.notificationDeleteConfirmCancel,
                   variant: FButtonVariant.ghost,
                   onPress: () => Navigator.of(context).pop(),
-                  child: Text(l10n.notificationDeleteConfirmCancel),
                 ),
-                const SizedBox(width: Spacing.md),
-                FButton(
+                DialogActionButton(
+                  label: l10n.notificationDeleteConfirmConfirm,
                   variant: FButtonVariant.destructive,
                   onPress: () {
                     Navigator.of(context).pop();
                     onDelete();
                   },
-                  child: Text(l10n.notificationDeleteConfirmConfirm),
                 ),
               ],
             ),

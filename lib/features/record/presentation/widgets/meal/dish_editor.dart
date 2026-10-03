@@ -49,14 +49,18 @@ class MealDishEditorSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: Spacing.md),
-              Tooltip(
-                message: l10n.recordMealDishRemoveAction,
-                child: FButton.icon(
-                  key: Key('meal-dish-remove-$index'),
-                  onPress: enabled ? () => onDishRemoved(index) : null,
-                  child: Icon(
-                    SemanticIcons.actionDelete,
-                    semanticLabel: l10n.recordMealDishRemoveAction,
+              // 删除按钮是固有宽度:给宽度上限,输入框(Expanded)才不会被挤。
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 56),
+                child: Tooltip(
+                  message: l10n.recordMealDishRemoveAction,
+                  child: FButton.icon(
+                    key: Key('meal-dish-remove-$index'),
+                    onPress: enabled ? () => onDishRemoved(index) : null,
+                    child: Icon(
+                      SemanticIcons.actionDelete,
+                      semanticLabel: l10n.recordMealDishRemoveAction,
+                    ),
                   ),
                 ),
               ),

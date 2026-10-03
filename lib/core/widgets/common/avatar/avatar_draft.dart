@@ -89,6 +89,9 @@ Future<Uint8List?> showAvatarCropper(
   return showAppDialog<Uint8List?>(
     context: context,
     maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+    // 裁剪面板是固定 320dp 的交互面:保留 scrollable: false(外层滚动会抢走
+    // 裁剪框的拖拽),因此按「标题 + 320dp 画布 + 按钮行 + 弹窗内边距」给出上限。
+    maxHeight: 320 + Spacing.xl * 2 + 100,
     scrollable: false,
     builder: (_) => AvatarCropper(bytes: bytes),
   );
@@ -142,27 +145,24 @@ class _AvatarCropperState extends State<AvatarCropper> {
           ),
         ),
         const SizedBox(height: Spacing.lg),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.commonCancel,
               variant: FButtonVariant.ghost,
               onPress: _cropping ? null : () => Navigator.of(context).pop(),
-              child: Text(l10n.commonCancel),
             ),
-            const SizedBox(width: Spacing.sm),
-            FButton(
+            DialogActionButton(
+              label: _cropping
+                  ? l10n.profileAvatarCropProcessing
+                  : l10n.profileAvatarCropDone,
               onPress: _cropping
                   ? null
                   : () {
                       setState(() => _cropping = true);
                       _controller.crop();
                     },
-              child: Text(
-                _cropping
-                    ? l10n.profileAvatarCropProcessing
-                    : l10n.profileAvatarCropDone,
-              ),
             ),
           ],
         ),

@@ -94,7 +94,15 @@ class StateMessageView extends StatelessWidget {
             key: actionKey,
             onPress: onAction,
             variant: FButtonVariant.outline,
-            child: Text(actionLabel!),
+            // FButton 内部 Row 给非 flex 子节点无界主轴约束:标签 Flexible + 省略。
+            child: Flexible(
+              child: Text(
+                actionLabel!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
         ],
       ],

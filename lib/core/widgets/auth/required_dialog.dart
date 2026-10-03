@@ -57,7 +57,8 @@ Future<void> showAuthRequiredDialog(
   final l10n = AppLocalizations.of(context)!;
   await showAppDialog<void>(
     context: context,
-    scrollable: false,
+    // 走 DialogShell 默认的 scrollable: true:窄屏 + 大字号下提示文案 + 两个按钮
+    // 可能高于弹窗上限,关掉滚动会直接底溢。
     builder: (dialogContext) => Column(
       key: const Key('auth-required-dialog'),
       mainAxisSize: MainAxisSize.min,
@@ -73,23 +74,23 @@ Future<void> showAuthRequiredDialog(
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
-              variant: FButtonVariant.ghost,
+        // 两个按钮都是固有宽度:放进 Row 会先占满固有宽度再把右边顶出弹窗
+        // (360dp + 大字号必现)。DialogActionRow 用 Wrap,放不下时换行。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
               key: const Key('auth-required-cancel-action'),
+              label: l10n.authCancelAction,
+              variant: FButtonVariant.ghost,
               onPress: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.authCancelAction),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
               key: const Key('auth-required-login-action'),
+              label: l10n.authGoLogin,
               onPress: () {
                 Navigator.of(dialogContext).pop();
                 onLogin();
               },
-              child: Text(l10n.authGoLogin),
             ),
           ],
         ),

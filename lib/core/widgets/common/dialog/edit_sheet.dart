@@ -60,7 +60,16 @@ Future<bool> showAppEditSheet({
                     onPress: isSaving
                         ? null
                         : () => Navigator.of(sheetContext).pop(false),
-                    child: Text(cancelLabel ?? l10n.commonCancel),
+                    // FButton 内部 Row 给非 flex 子节点无界主轴约束:标签必须
+                    // Flexible + 省略,否则长文案按固有宽度溢出半个按钮宽。
+                    child: Flexible(
+                      child: Text(
+                        cancelLabel ?? l10n.commonCancel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: Spacing.lg),
@@ -76,7 +85,14 @@ Future<bool> showAppEditSheet({
                             child: FCircularProgress(),
                           )
                         : null,
-                    child: Text(confirmLabel ?? l10n.mineEditSaveAction),
+                    child: Flexible(
+                      child: Text(
+                        confirmLabel ?? l10n.mineEditSaveAction,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -243,14 +259,28 @@ class _TextEditSheetState extends State<_TextEditSheet> {
                   child: FButton(
                     variant: FButtonVariant.outline,
                     onPress: () => Navigator.of(context).pop(false),
-                    child: Text(l10n.commonCancel),
+                    child: Flexible(
+                      child: Text(
+                        l10n.commonCancel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: Spacing.lg),
                 Expanded(
                   child: FButton(
                     onPress: _confirm,
-                    child: Text(l10n.mineEditSaveAction),
+                    child: Flexible(
+                      child: Text(
+                        l10n.mineEditSaveAction,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 ),
               ],

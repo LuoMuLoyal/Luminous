@@ -127,10 +127,23 @@ class _CandidateTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: enabled ? onRemove : null,
-                  child: Text(l10n.recordNlpRemoveAction),
+                // 移除按钮是固有宽度:给宽度上限 + 标签省略,候选文字
+                // (Expanded)才不会被挤到多行。
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 160),
+                  child: FButton(
+                    variant: FButtonVariant.ghost,
+                    mainAxisSize: MainAxisSize.min,
+                    onPress: enabled ? onRemove : null,
+                    child: Flexible(
+                      child: Text(
+                        l10n.recordNlpRemoveAction,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

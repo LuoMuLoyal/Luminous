@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/pill_chip.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
@@ -267,7 +268,14 @@ class _SymptomQuickEntrySheetBodyState
                                     SymptomCode.other.wireValue
                             ? null
                             : () => _handleChoiceTap(index),
-                        child: Text(widget.choices[index].label),
+                        child: Flexible(
+                          child: Text(
+                            widget.choices[index].label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -293,7 +301,14 @@ class _SymptomQuickEntrySheetBodyState
                           variant: FButtonVariant.outline,
                           key: const Key('symptom-quick-back-action'),
                           onPress: _exitMultiSelect,
-                          child: Text(l10n.commonBack),
+                          child: Flexible(
+                            child: Text(
+                              l10n.commonBack,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: Spacing.lg),
@@ -303,9 +318,14 @@ class _SymptomQuickEntrySheetBodyState
                           onPress: selectedChoices.isEmpty
                               ? null
                               : () => _submit(selectedChoices),
-                          child: Text(
-                            l10n.recordSymptomRecordCount(
-                              selectedChoices.length,
+                          child: Flexible(
+                            child: Text(
+                              l10n.recordSymptomRecordCount(
+                                selectedChoices.length,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
@@ -325,7 +345,14 @@ class _SymptomQuickEntrySheetBodyState
                             _otherController.clear();
                             _otherInput = false;
                           }),
-                          child: Text(l10n.commonBack),
+                          child: Flexible(
+                            child: Text(
+                              l10n.commonBack,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: Spacing.lg),
@@ -335,34 +362,40 @@ class _SymptomQuickEntrySheetBodyState
                           onPress: _otherController.text.trim().isEmpty
                               ? null
                               : _submitOther,
-                          child: Text(l10n.mineEditSaveAction),
+                          child: Flexible(
+                            child: Text(
+                              l10n.mineEditSaveAction,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   )
                 else
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FButton(
-                        variant: FButtonVariant.ghost,
+                  // 三个按钮都是固有宽度:Row 会先给它们无界主轴约束、把右缘
+                  // 顶出 sheet;DialogActionRow 用 Wrap + 标签省略。
+                  DialogActionRow(
+                    actions: [
+                      DialogActionButton(
                         key: const Key('symptom-quick-multi-select-action'),
+                        label: l10n.recordFastEntryMultiSelectAction,
+                        variant: FButtonVariant.ghost,
                         onPress: () => setState(() => _multiSelect = true),
-                        child: Text(l10n.recordFastEntryMultiSelectAction),
                       ),
-                      const SizedBox(width: Spacing.md),
-                      FButton(
-                        variant: FButtonVariant.ghost,
+                      DialogActionButton(
                         key: const Key('symptom-quick-more-action'),
-                        onPress: _openMore,
-                        child: Text(l10n.recordFastEntryMoreAction),
-                      ),
-                      const SizedBox(width: Spacing.md),
-                      FButton(
+                        label: l10n.recordFastEntryMoreAction,
                         variant: FButtonVariant.ghost,
+                        onPress: _openMore,
+                      ),
+                      DialogActionButton(
                         key: const Key('symptom-quick-cancel-action'),
+                        label: l10n.commonCancel,
+                        variant: FButtonVariant.ghost,
                         onPress: () => Navigator.of(context).pop(),
-                        child: Text(l10n.commonCancel),
                       ),
                     ],
                   ),

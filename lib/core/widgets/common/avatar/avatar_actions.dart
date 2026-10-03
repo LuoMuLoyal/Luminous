@@ -23,7 +23,8 @@ Future<AvatarAction?> showAvatarActionsDialog(
 }) {
   return showAppDialog<AvatarAction>(
     context: context,
-    scrollable: false,
+    // 走 DialogShell 默认的 scrollable: true:动作行随字号增高,窄屏上可能高于
+    // 弹窗上限,关掉滚动会底溢。
     builder: (context) =>
         _AvatarActionsDialog(hasAvatar: avatarUrl?.trim().isNotEmpty == true),
   );

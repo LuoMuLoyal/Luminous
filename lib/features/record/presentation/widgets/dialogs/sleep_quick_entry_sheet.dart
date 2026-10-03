@@ -327,7 +327,15 @@ class _SleepQuickEntrySheetBodyState extends State<SleepQuickEntrySheetBody> {
                 FButton(
                   key: const Key('sleep-quick-entry-save'),
                   onPress: error == null ? _submit : null,
-                  child: Text(l10n.mineEditSaveAction),
+                  // FButton 内部 Row 给非 flex 子节点无界主轴约束:标签省略。
+                  child: Flexible(
+                    child: Text(
+                      l10n.mineEditSaveAction,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               ],
             ),

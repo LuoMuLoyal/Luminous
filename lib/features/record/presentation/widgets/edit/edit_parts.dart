@@ -103,7 +103,7 @@ void popEditOrGoHome(BuildContext context) {
 Future<bool?> confirmDiscardEdit(BuildContext context, AppLocalizations l10n) {
   return showAppDialog<bool>(
     context: context,
-    scrollable: false,
+    // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,20 +118,19 @@ Future<bool?> confirmDiscardEdit(BuildContext context, AppLocalizations l10n) {
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.recordEditKeepEditingAction,
               variant: FButtonVariant.ghost,
               onPress: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.recordEditKeepEditingAction),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
               key: const Key('record-edit-discard-confirm'),
+              label: l10n.recordEditDiscardAction,
               variant: FButtonVariant.destructive,
               onPress: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.recordEditDiscardAction),
             ),
           ],
         ),

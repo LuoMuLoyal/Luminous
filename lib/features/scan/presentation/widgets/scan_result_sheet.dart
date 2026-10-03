@@ -103,13 +103,17 @@ class BarcodeScanResultSheetState
                   ),
                 ),
               ),
-              FButton.icon(
-                variant: FButtonVariant.ghost,
-                size: FButtonSizeVariant.sm,
-                onPress: () => Navigator.pop(context),
-                child: const Icon(
-                  SemanticIcons.actionClose,
-                  size: IconSizeTokens.md,
+              // 关闭按钮是固有宽度:给宽度上限,标题(Expanded)才不会被挤。
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 56),
+                child: FButton.icon(
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.sm,
+                  onPress: () => Navigator.pop(context),
+                  child: const Icon(
+                    SemanticIcons.actionClose,
+                    size: IconSizeTokens.md,
+                  ),
                 ),
               ),
             ],

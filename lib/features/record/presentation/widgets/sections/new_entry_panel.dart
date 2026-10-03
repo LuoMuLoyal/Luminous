@@ -264,11 +264,16 @@ class _NewEntryChip extends StatelessWidget {
         children: [
           Icon(action.icon, color: action.accent.solid(context), size: 16),
           const SizedBox(width: Spacing.sm),
-          Text(
-            label,
-            style: context.theme.typography.body.xs.copyWith(
-              color: action.accent.solid(context),
-              fontWeight: FontWeight.w600,
+          // 标签在 Wrap 里宽度有上限:Flexible + 省略,长文案不会把 chip 顶出右缘。
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.theme.typography.body.xs.copyWith(
+                color: action.accent.solid(context),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

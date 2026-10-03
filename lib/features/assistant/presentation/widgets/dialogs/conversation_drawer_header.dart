@@ -32,22 +32,29 @@ class AssistantConversationDrawerHeader extends StatelessWidget {
               child: Text(title, style: context.theme.typography.display.xl),
             ),
             if (onNewConversation != null) ...[
-              FTooltip(
-                tipBuilder: (context, controller) =>
-                    Text(l10n.assistantNewConversationAction),
-                child: FButton.icon(
-                  key: const Key('assistant-sidebar-new-conversation'),
-                  variant: FButtonVariant.primary,
-                  onPress: onNewConversation,
-                  child: const Icon(SemanticIcons.actionAdd, size: 18),
+              // 图标按钮是固有宽度:给宽度上限,标题(Expanded)才不会被挤。
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 56),
+                child: FTooltip(
+                  tipBuilder: (context, controller) =>
+                      Text(l10n.assistantNewConversationAction),
+                  child: FButton.icon(
+                    key: const Key('assistant-sidebar-new-conversation'),
+                    variant: FButtonVariant.primary,
+                    onPress: onNewConversation,
+                    child: const Icon(SemanticIcons.actionAdd, size: 18),
+                  ),
                 ),
               ),
               const SizedBox(width: Spacing.sm),
             ],
-            FButton.icon(
-              variant: FButtonVariant.ghost,
-              onPress: onClose,
-              child: const Icon(SemanticIcons.actionClose),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 56),
+              child: FButton.icon(
+                variant: FButtonVariant.ghost,
+                onPress: onClose,
+                child: const Icon(SemanticIcons.actionClose),
+              ),
             ),
           ],
         ),

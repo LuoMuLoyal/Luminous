@@ -63,31 +63,40 @@ class RecordTimelinePanel extends StatelessWidget {
                 ],
                 const Spacer(),
                 if (onClearFilter != null)
-                  FButton(
-                    variant: FButtonVariant.ghost,
-                    size: FButtonSizeVariant.xs,
-                    mainAxisSize: MainAxisSize.min,
-                    onPress: onClearFilter!,
-                    child: Row(
+                  // 清理按钮是固有宽度:给宽度上限 + 标签省略,标题与日期
+                  // 才不会被挤。
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 160),
+                    child: FButton(
+                      variant: FButtonVariant.ghost,
+                      size: FButtonSizeVariant.xs,
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          l10n.recordAllTypesAction,
-                          style: TextStyle(
-                            color: colors.foreground,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                      onPress: onClearFilter!,
+                      child: Flexible(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                l10n.recordAllTypesAction,
+                                style: TextStyle(
+                                  color: colors.foreground,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: Spacing.xs),
+                            Icon(
+                              SemanticIcons.actionExpand,
+                              size: Spacing.lg,
+                              color: colors.foreground,
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: Spacing.xs),
-                        Icon(
-                          SemanticIcons.actionExpand,
-                          size: Spacing.lg,
-                          color: colors.foreground,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
               ],
@@ -250,16 +259,25 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
                     size: FButtonSizeVariant.sm,
                     mainAxisSize: MainAxisSize.min,
                     onPress: onCreate,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          SemanticIcons.actionAdd,
-                          size: IconSizeTokens.sm,
-                        ),
-                        const SizedBox(width: Spacing.sm),
-                        Text(l10n.recordTimelineEmptyAction),
-                      ],
+                    // FButton 内部 Row 给非 flex 子节点无界主轴约束:标签 Flexible + 省略。
+                    child: Flexible(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            SemanticIcons.actionAdd,
+                            size: IconSizeTokens.sm,
+                          ),
+                          const SizedBox(width: Spacing.sm),
+                          Flexible(
+                            child: Text(
+                              l10n.recordTimelineEmptyAction,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   if (onClearFilter != null)
@@ -268,7 +286,14 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
                       size: FButtonSizeVariant.sm,
                       mainAxisSize: MainAxisSize.min,
                       onPress: onClearFilter,
-                      child: Text(l10n.recordTimelineClearFilter),
+                      child: Flexible(
+                        child: Text(
+                          l10n.recordTimelineClearFilter,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                 ],
               ),

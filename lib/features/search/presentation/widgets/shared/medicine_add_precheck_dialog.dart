@@ -158,14 +158,28 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
           FButton(
             key: const Key('medicine-search-precheck-confirm'),
             onPress: () => Navigator.of(context).pop(true),
-            child: Text(l10n.medicineSearchPrecheckConfirmAction),
+            child: Flexible(
+              child: Text(
+                l10n.medicineSearchPrecheckConfirmAction,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
           const SizedBox(height: Spacing.md),
           FButton(
             key: const Key('medicine-search-precheck-cancel'),
             variant: FButtonVariant.secondary,
             onPress: () => Navigator.of(context).pop(false),
-            child: Text(l10n.medicineReminderCancelAction),
+            child: Flexible(
+              child: Text(
+                l10n.medicineReminderCancelAction,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
         ],
       ),

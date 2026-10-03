@@ -71,7 +71,7 @@ Future<bool?> _showDeleteConfirmDialog(
 ) {
   return showAppDialog<bool>(
     context: context,
-    scrollable: false,
+    // 短内容走 DialogShell 默认滚动:窄屏 + 大字号下不会底溢。
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,20 +86,19 @@ Future<bool?> _showDeleteConfirmDialog(
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        // 按钮是固有宽度:Row 会让它们先占满固有宽度并把右缘顶出弹窗。
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.authCancelAction,
               variant: FButtonVariant.ghost,
               onPress: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.authCancelAction),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
+            DialogActionButton(
               key: const Key('record-delete-confirm-action'),
+              label: l10n.recordDeleteAction,
               variant: FButtonVariant.destructive,
               onPress: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.recordDeleteAction),
             ),
           ],
         ),
