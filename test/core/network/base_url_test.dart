@@ -40,5 +40,22 @@ void main() {
       EnvReader.setTestValue(EnvKey.lucentBaseUrl, '  https://api.test.com  ');
       expect(LucentBaseUrl.value, equals('https://api.test.com'));
     });
+
+    test('configured is null when LUCENT_BASE_URL is not set', () {
+      EnvReader.clearTestValues();
+      expect(LucentBaseUrl.configured, isNull);
+    });
+
+    test('configured returns the pinned URL, trimmed', () {
+      EnvReader.setTestValue(EnvKey.lucentBaseUrl, '  https://api.test.com  ');
+      expect(LucentBaseUrl.configured, equals('https://api.test.com'));
+    });
+
+    test('configured is null for a whitespace-only value', () {
+      EnvReader.setTestValue(EnvKey.lucentBaseUrl, '   ');
+      expect(LucentBaseUrl.configured, isNull);
+      // value still yields the debug fallback rather than an empty URL.
+      expect(LucentBaseUrl.value, equals('http://127.0.0.1:3000'));
+    });
   });
 }

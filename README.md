@@ -77,6 +77,14 @@ dart run scripts/workflows/fullstack.dart
 dart run scripts/hooks/git.dart install
 ```
 
+Backend base URL (`LUCENT_BASE_URL`) is a **compile-time** input read through `--dart-define` /
+`--dart-define-from-file=.env`; editing `.env` needs a fresh `flutter run` because a hot restart
+does not re-read defines. Release builds require it. Debug builds that pin it default to that URL
+everywhere, physical devices included; with nothing pinned, Android falls back to
+`http://10.0.2.2:3000` (the emulator-only alias for the host loopback, which a physical device
+cannot reach). Debug builds can also switch endpoints at runtime in 我的 → 设置 → 高级 → API 端点
+(`DeveloperSettingsController`) — an explicit choice there still wins over the pinned define.
+
 ## Generated Sources Policy
 
 - App-side generated runtime sources stay local and are

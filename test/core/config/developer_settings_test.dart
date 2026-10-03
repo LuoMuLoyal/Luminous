@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/developer_settings.dart';
+import 'package:luminous/core/config/env_keys.dart';
+import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker;
@@ -167,6 +169,43 @@ void main() {
       expect(state.logLevel, LogLevel.info);
     });
 
+    test(
+      'honours compile-time LUCENT_BASE_URL when nothing is stored',
+      () async {
+        // A real-device debug build pinned with --dart-define must not be
+        // redirected to the emulator-only 10.0.2.2 local preset.
+        EnvReader.setTestValue(
+          EnvKey.lucentBaseUrl,
+          'http://192.168.1.50:3000',
+        );
+        addTearDown(EnvReader.clearTestValues);
+        container = buildContainer();
+
+        final state = await container.read(
+          developerSettingsControllerProvider.future,
+        );
+
+        expect(state.apiEndpoint, ApiEndpoint.custom);
+        expect(state.customApiUrl, 'http://192.168.1.50:3000');
+        expect(state.resolvedBaseUrl, 'http://192.168.1.50:3000');
+      },
+    );
+
+    test('a stored endpoint choice wins over LUCENT_BASE_URL', () async {
+      EnvReader.setTestValue(EnvKey.lucentBaseUrl, 'http://192.168.1.50:3000');
+      addTearDown(EnvReader.clearTestValues);
+      container = buildContainer(
+        initialValues: const <String, Object>{'developer.apiEndpoint': 'local'},
+      );
+
+      final state = await container.read(
+        developerSettingsControllerProvider.future,
+      );
+
+      expect(state.apiEndpoint, ApiEndpoint.local);
+      expect(state.resolvedBaseUrl, 'http://127.0.0.1:3000');
+    });
+
     test('loads persisted apiEndpoint', () async {
       container = buildContainer(
         initialValues: const <String, Object>{
@@ -310,5 +349,22 @@ void main() {
         expect(preferences.containsKey('developer.logLevel'), isFalse);
       },
     );
+
+    test('restores the compile-time endpoint, not the local preset', () async {
+      EnvReader.setTestValue(EnvKey.lucentBaseUrl, 'http://192.168.1.50:3000');
+      addTearDown(EnvReader.clearTestValues);
+      container = buildContainer(
+        initialValues: const <String, Object>{'developer.apiEndpoint': 'local'},
+      );
+
+      await container.read(developerSettingsControllerProvider.future);
+      await container
+          .read(developerSettingsControllerProvider.notifier)
+          .reset();
+
+      final state = container.read(developerSettingsControllerProvider);
+      expect(state.value?.apiEndpoint, ApiEndpoint.custom);
+      expect(state.value?.customApiUrl, 'http://192.168.1.50:3000');
+    });
   });
 }

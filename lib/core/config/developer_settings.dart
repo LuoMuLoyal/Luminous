@@ -77,13 +77,32 @@ class DeveloperSettingsController
 
   talker.Talker get _talker => ref.read(talkerProvider);
 
+  /// The endpoint to use while the developer has never made a choice.
+  ///
+  /// A build that pins `LUCENT_BASE_URL` (`--dart-define` /
+  /// `--dart-define-from-file`) keeps that URL: the local preset is only
+  /// correct on emulators/simulators/desktop, so defaulting an Android
+  /// physical device to the emulator-only `10.0.2.2` alias silently breaks
+  /// every request with a connection timeout.
+  static ApiEndpoint get _defaultEndpoint =>
+      LucentBaseUrl.configured == null ? ApiEndpoint.local : ApiEndpoint.custom;
+
+  static String get _defaultCustomApiUrl => LucentBaseUrl.configured ?? '';
+
+  static DeveloperSettingsState get _defaultState => DeveloperSettingsState(
+    apiEndpoint: _defaultEndpoint,
+    customApiUrl: _defaultCustomApiUrl,
+  );
+
   @override
   Future<DeveloperSettingsState> build() async {
     final preferences = await SharedPreferences.getInstance();
-    final endpoint = ApiEndpoint.fromStorage(
-      preferences.getString(_apiEndpointKey),
-    );
-    final customUrl = preferences.getString(_customApiUrlKey) ?? '';
+    final storedEndpoint = preferences.getString(_apiEndpointKey);
+    final endpoint = storedEndpoint == null
+        ? _defaultEndpoint
+        : ApiEndpoint.fromStorage(storedEndpoint);
+    final customUrl =
+        preferences.getString(_customApiUrlKey) ?? _defaultCustomApiUrl;
     final level = LogLevel.fromString(preferences.getString(_logLevelKey));
 
     // Apply log level immediately.
@@ -130,7 +149,7 @@ class DeveloperSettingsController
   }
 
   Future<void> reset() async {
-    state = const AsyncData(DeveloperSettingsState());
+    state = AsyncData(_defaultState);
     _applyLogLevel(LogLevel.info);
     final preferences = await SharedPreferences.getInstance();
     await preferences.remove(_apiEndpointKey);
