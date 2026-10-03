@@ -215,9 +215,16 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                       ? SizedBox(
                           width: IconSizeTokens.md,
                           height: IconSizeTokens.md,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: SemanticColor.neutral.solid(context),
+                          // Material 的 CircularProgressIndicator 会带 Material
+                          // 语义(圆形描边/颜色);这里用 Forui 的加载图标,尺寸与
+                          // 颜色对齐原来的 20px 中性色。
+                          child: FCircularProgress(
+                            style: .delta(
+                              iconStyle: .delta(
+                                color: SemanticColor.neutral.solid(context),
+                                size: IconSizeTokens.md,
+                              ),
+                            ),
                           ),
                         )
                       : const Icon(SemanticIcons.actionRefresh),
