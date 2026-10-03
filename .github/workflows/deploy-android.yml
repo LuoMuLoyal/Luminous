@@ -30,7 +30,7 @@ jobs:
       JPUSH_APP_KEY: ${{ secrets.JPUSH_APP_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -40,7 +40,7 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
@@ -92,14 +92,14 @@ jobs:
             --dart-define=WECHAT_MOBILE_APP_ID="${WECHAT_MOBILE_APP_ID}"
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: luminous-android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
 
       - name: Upload Dart symbols
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: luminous-android-symbols
           path: build/symbols
