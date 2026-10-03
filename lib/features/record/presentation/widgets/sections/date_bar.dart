@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/control/date_picker.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -170,32 +170,14 @@ class _CalendarPickerButton extends StatelessWidget {
   }
 
   Future<void> _showCalendarPicker(BuildContext context) async {
-    final picked = await showFDialog<DateTime?>(
-      context: context,
-      builder: (dialogContext, style, animation) => DialogShell(
-        maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
-          MediaQuery.sizeOf(context).width,
-        ),
-        padding: const EdgeInsets.all(Spacing.lg),
-        builder: (_) => SizedBox(
-          height: 400,
-          child: FCalendar.splitGrid(
-            control: FGridSplitCalendarControl(
-              start: RecordDateBar._minDate,
-              end: RecordDateBar._maxDate,
-            ),
-            selectionControl: FDateSelectionControl.managedSingle(
-              initial: selectedDate,
-              onChange: (date) {
-                if (date != null) {
-                  onDateSelected?.call(_dateOnly(date));
-                }
-                Navigator.of(dialogContext).pop(date);
-              },
-            ),
-          ),
-        ),
-      ),
+    // 走共享的 showForuiDatePicker(FCalendar.grid,单标签头部):原先手搓的
+    // FCalendar.splitGrid 需要 7×44=308dp 的日期网格,而 360dp 真机上弹窗内容
+    // 只剩 ~240dp,Forui 的分栏头部(月/年 + 两个翻页按钮)因此右溢出。
+    final picked = await showForuiDatePicker(
+      context,
+      initial: selectedDate,
+      first: RecordDateBar._minDate,
+      last: RecordDateBar._maxDate,
     );
     if (picked != null) {
       onDateSelected?.call(_dateOnly(picked));

@@ -10,7 +10,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/control/date_picker.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -86,32 +86,12 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     DateTime selectedDate,
   ) async {
     final today = _dateOnly(clock.now());
-    final picked = await showFDialog<DateTime?>(
-      context: context,
-      builder: (dialogContext, style, animation) => DialogShell(
-        maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
-          MediaQuery.sizeOf(context).width,
-        ),
-        padding: const EdgeInsets.all(Spacing.lg),
-        builder: (_) => SizedBox(
-          height: 400,
-          child: FCalendar.splitGrid(
-            control: FGridSplitCalendarControl(
-              start: kCalendarMinDate,
-              end: today.add(const Duration(days: 365)),
-            ),
-            selectionControl: FDateSelectionControl.managedSingle(
-              initial: selectedDate,
-              onChange: (date) {
-                if (date != null) {
-                  _setSelectedDate(_dateOnly(date));
-                }
-                Navigator.of(dialogContext).pop(date);
-              },
-            ),
-          ),
-        ),
-      ),
+    // 与 RecordDateBar 同一理由:共享的 FCalendar.grid 弹窗不会在 360dp 上溢出。
+    final picked = await showForuiDatePicker(
+      context,
+      initial: selectedDate,
+      first: kCalendarMinDate,
+      last: today.add(const Duration(days: 365)),
     );
     if (picked != null) {
       _setSelectedDate(_dateOnly(picked));
