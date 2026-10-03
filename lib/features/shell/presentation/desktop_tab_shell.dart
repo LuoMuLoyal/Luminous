@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 
 /// Desktop tab page unified shell.
 ///
@@ -36,7 +37,7 @@ class DesktopTabShell extends StatelessWidget {
   /// 某些页面（如 Today）可能自行管理滚动，设为 false。
   final bool scrollable;
 
-  /// 下拉刷新回调。不为 null 时用 RefreshIndicator 包裹滚动容器。
+  /// 下拉刷新回调。不为 null 时用 [ForuiRefreshIndicator] 包裹滚动容器。
   /// Report 和 Mine 页面需要此功能。
   final Future<void> Function()? onRefresh;
 
@@ -101,7 +102,7 @@ class DesktopTabShell extends StatelessWidget {
     );
 
     if (onRefresh != null) {
-      return RefreshIndicator(onRefresh: onRefresh!, child: scrollView);
+      return ForuiRefreshIndicator(onRefresh: onRefresh!, child: scrollView);
     }
 
     return scrollView;

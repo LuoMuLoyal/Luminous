@@ -11,6 +11,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
@@ -356,7 +357,7 @@ class _ReportMobileShell extends StatelessWidget {
             child: Semantics(
               container: true,
               sortKey: const OrdinalSortKey(0),
-              child: RefreshIndicator(
+              child: ForuiRefreshIndicator(
                 onRefresh: onRefresh,
                 // 桌面/平板端约束内容最大宽度，消除宽屏全宽长条；padding
                 // 交由 ListView 自身管理，避免双重水平边距。

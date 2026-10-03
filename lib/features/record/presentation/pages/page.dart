@@ -11,6 +11,7 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/application/orchestrators/nlp_flow.dart';
@@ -230,7 +231,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final scaffoldBody = SafeArea(
       top: false,
       child: ResponsiveContentFrame(
-        child: RefreshIndicator(
+        child: ForuiRefreshIndicator(
           onRefresh: () => _refreshAll(context),
           child: SingleChildScrollView(
             // PageStorageKey (not a plain Key) so the offset survives a

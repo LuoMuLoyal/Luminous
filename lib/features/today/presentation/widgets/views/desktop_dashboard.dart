@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/feedback/page_state.dart';
+import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/quick_actions.dart';
@@ -86,7 +87,7 @@ class DesktopTodayDashboard extends StatelessWidget {
       children: [
         const TodayTopBar(),
         Expanded(
-          child: RefreshIndicator(
+          child: ForuiRefreshIndicator(
             onRefresh: onRefresh,
             child: CustomScrollView(
               key: const PageStorageKey<String>(

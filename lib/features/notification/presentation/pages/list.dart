@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -56,7 +57,7 @@ class NotificationListPage extends ConsumerWidget {
           if (items.isEmpty) {
             return const _EmptyView();
           }
-          return RefreshIndicator(
+          return ForuiRefreshIndicator(
             onRefresh: () =>
                 ref.read(notificationListControllerProvider.notifier).refresh(),
             child: ResponsiveContentFrame(

@@ -19,6 +19,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/core/widgets/common/feedback/page_state.dart';
+import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/feedback/state_message.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
@@ -152,7 +153,7 @@ class LegacyDashboardCompatPage extends ConsumerWidget {
           children: [
             header,
             Expanded(
-              child: RefreshIndicator(
+              child: ForuiRefreshIndicator(
                 onRefresh: onRefresh,
                 child: ListView(
                   key: const PageStorageKey<String>(
