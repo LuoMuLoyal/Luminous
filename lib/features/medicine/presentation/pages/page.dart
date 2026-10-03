@@ -95,43 +95,35 @@ class MedicinePage extends ConsumerWidget {
                   onRetry: () => ref.invalidate(medicineWorkspaceProvider),
                 ),
               ),
-        emptyInsufficientBuilder: (empty) => isDesktop
-            ? DesktopTabShell(
-                title: l10n.tabMedicine,
-                suffixes: const [
-                  _MedicineSafeGuardPill(),
-                  _MedicineNotificationButton(),
-                ],
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const _MedicineMobileSearchBar(),
-                    const SizedBox(height: Spacing.lg),
-                    Expanded(
-                      child: StateMessageView(
-                        title: l10n.medicineEmptyAddFirstTitle,
-                        description: l10n.medicineEmptyAddFirstDescription,
-                        icon: SemanticIcons.medicineBottle,
-                        actionLabel: l10n.medicineQuickAddTitle,
-                        onAction: () => pushAuthRequiredRoute(
-                          context,
-                          Routes.medicineSearch,
-                        ),
-                      ),
-                    ),
+        emptyInsufficientBuilder: (_) {
+          // 0 药状态沿用完整仪表盘：药箱 / 今日用药计划 / 安全引擎 / 快捷操作
+          // 各自渲染空态，而不是用整页提示替换掉全部组件。此分支只在数据已
+          // 加载且 `plan.items` 为空时进入，因此 `requireValue` 安全。
+          final dashboard = MedicineMobileDashboardView(
+            workspace: workspaceAsync.requireValue,
+            onMarkDose: (request) => _markDose(context, ref, request),
+            onOpenReminder: (currentMedicineId) =>
+                _openReminder(context, ref, currentMedicineId),
+            onCreateReminder: () => _openReminder(context, ref, null),
+          );
+          return isDesktop
+              ? DesktopTabShell(
+                  title: l10n.tabMedicine,
+                  suffixes: const [
+                    _MedicineSafeGuardPill(),
+                    _MedicineNotificationButton(),
                   ],
-                ),
-              )
-            : _MedicineMobileShell(
-                child: StateMessageView(
-                  title: l10n.medicineEmptyAddFirstTitle,
-                  description: l10n.medicineEmptyAddFirstDescription,
-                  icon: SemanticIcons.medicineBottle,
-                  actionLabel: l10n.medicineQuickAddTitle,
-                  onAction: () =>
-                      pushAuthRequiredRoute(context, Routes.medicineSearch),
-                ),
-              ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _MedicineMobileSearchBar(),
+                      const SizedBox(height: Spacing.lg),
+                      dashboard,
+                    ],
+                  ),
+                )
+              : _MedicineMobileShell(child: dashboard);
+        },
         readyBuilder: (workspace, isPreview) {
           final onSignIn = isPreview
               ? () => context.push(loginRouteForCurrentLocation(context))

@@ -1051,7 +1051,7 @@ void main() {
   );
 
   testWidgets(
-    'Medicine signed-in empty workspace keeps add-first empty state',
+    'Medicine signed-in empty workspace shows full dashboard empty states',
     (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(390, 844);
@@ -1089,8 +1089,29 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
-      expect(find.text(l10n.medicineEmptyAddFirstTitle), findsOneWidget);
+      // 0 药不再用整页「添加第一种药物」替换仪表盘：组件各自渲染空态。
+      expect(find.text(l10n.medicineEmptyAddFirstTitle), findsNothing);
       expect(find.byType(SignInHintBanner), findsNothing);
+
+      for (final key in <String>[
+        'medicine-current-medications',
+        'medicine-today-plan',
+        'medicine-safety-summary',
+        'medicine-action-hub',
+      ]) {
+        final finder = find.byKey(Key(key));
+        await tester.scrollUntilVisible(
+          finder,
+          240,
+          scrollable: _medicineMobileScrollable(),
+        );
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(finder, findsOneWidget);
+      }
+
+      expect(find.text(l10n.medicineNoMedicineTitle), findsOneWidget);
+      expect(find.text(l10n.medicineTodayPlanEmpty), findsOneWidget);
+      expect(find.text(l10n.medicineSafetyPanelEmptyTitle), findsOneWidget);
     },
   );
 
