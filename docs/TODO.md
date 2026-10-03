@@ -68,8 +68,7 @@ Product Loop Program 的延后项如下。
     2026-12-02 起转为只读
   - 方案：给 vendored 的 `paddle_ocr_native` 补 `Package.swift`（本仓自有包，可自主改），
     跟踪 `flutter_image_compress_common` 上游的 SPM 支持，然后重新打开 SwiftPM 并定位
-    `libwebp` 的两个提供方——首次构建跑通后可从 `luminous-ios-podfile-lock` 产物读
-    `Podfile.lock` 依赖树
+    `libwebp` 的两个提供方（`ios/Podfile.lock` 已入库，可直接看依赖树）
 
 - Android 产物没有 release 签名
   - 现状：`deploy-android.yml` 产出的 APK 在仓库没有 `android/key.properties` 时走 debug
@@ -98,11 +97,6 @@ Product Loop Program 的延后项如下。
     `NSPhotoLibrary*UsageDescription` 是中文硬编码，英文用户在系统权限弹窗里看到中文
   - 方案：补 `en.lproj/InfoPlist.strings` 与 `zh-Hans.lproj/InfoPlist.strings`，
     并把两个 variant 加进 pbxproj 的 Resources 与 knownRegions
-
-- `ios/Podfile.lock` 未入库
-  - 现状：Windows 上无法 `pod install`，锁文件从未生成，CI 每次重新解析
-    onnxruntime-objc / OpenCV / Yams / JPush 的版本
-  - 方案：首次 `deploy-ios.yml` 跑通后从 `luminous-ios-podfile-lock` 产物取回并提交
 
 - 推送与隐私清单待上架前确认
   - 现状：`NSUserTrackingUsageDescription` 未声明；Runner 自身没有 `PrivacyInfo.xcprivacy`
