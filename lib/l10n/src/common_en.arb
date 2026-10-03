@@ -50,5 +50,8 @@
   "iconPickerCategoryBody": "Body",
   "iconPickerCategoryGeneral": "General",
   "iconPickerSearchHint": "Search icons",
-  "iconPickerEmpty": "No icons found"
+  "iconPickerEmpty": "No icons found",
+  "commonRouteNotFoundTitle": "Page not found",
+  "commonRouteNotFoundDescription": "This screen can't be opened right now. Go home to continue.",
+  "commonGoHomeAction": "Go home"
 }

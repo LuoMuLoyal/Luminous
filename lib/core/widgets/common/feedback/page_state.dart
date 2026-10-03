@@ -280,11 +280,23 @@ class SignInHintBanner extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.md),
-          FButton(
-            variant: FButtonVariant.ghost,
-            size: FButtonSizeVariant.sm,
-            onPress: onSignIn,
-            child: Text(l10n.statePreviewSignInAction),
+          // 按钮给宽度上限 + 标签省略:窄屏大字号下不允许它按固有宽度把提示文字挤没
+          // 或自身溢出(FButton 内部 Row 对非 flex 子节点是无界主轴约束)。
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 160),
+            child: FButton(
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.sm,
+              onPress: onSignIn,
+              child: Flexible(
+                child: Text(
+                  l10n.statePreviewSignInAction,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
           ),
         ],
       ),

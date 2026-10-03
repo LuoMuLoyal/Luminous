@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/widgets/common/feedback/route_not_found.dart';
 import 'package:luminous/features/assistant/presentation/routes.dart'
     as assistant_routes;
 import 'package:luminous/features/auth/presentation/routes.dart' as auth_routes;
@@ -231,6 +232,12 @@ GoRouter appRouter(Ref ref) => GoRouter(
     }
     return null;
   },
+  // 未知 location(例如服务端下发的深链)不再渲染 go_router 默认的
+  // "Page Not Found + GoException" 原屏,而是给一个可返回的页面。
+  errorBuilder: (context, state) => RouteNotFoundPage(
+    location: state.uri.toString(),
+    onGoHome: (context) => context.go(Routes.home),
+  ),
   routes: [
     StatefulShellRoute(
       builder: (context, state, navigationShell) =>

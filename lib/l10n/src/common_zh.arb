@@ -50,5 +50,8 @@
   "iconPickerCategoryBody": "身体",
   "iconPickerCategoryGeneral": "通用",
   "iconPickerSearchHint": "搜索图标",
-  "iconPickerEmpty": "未找到图标"
+  "iconPickerEmpty": "未找到图标",
+  "commonRouteNotFoundTitle": "页面不存在",
+  "commonRouteNotFoundDescription": "这个入口暂时打不开，返回首页继续使用。",
+  "commonGoHomeAction": "返回首页"
 }

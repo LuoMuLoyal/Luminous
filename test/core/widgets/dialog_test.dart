@@ -92,6 +92,9 @@ void main() {
               return ElevatedButton(
                 onPressed: () => showAppDialog(
                   context: context,
+                  // 非滚动对话框必须给出 maxHeight(否则内容高于弹窗上限会底溢,
+                  // DialogShell 对此有 assert);这里给一个明确的短内容上限。
+                  maxHeight: 200,
                   scrollable: false,
                   builder: (_) => const Text('Fixed'),
                 ),
