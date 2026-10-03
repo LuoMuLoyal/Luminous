@@ -1,9 +1,10 @@
 name: luminous_lints
 description: >-
   In-house analyzer plugin for the Luminous app. Encodes the recurring code
-  issues found in historical review reports as seven analysis rules
+  issues found in historical review reports as eight analysis rules
   (layered imports, navigation, Iterable.firstWhere, response data
-  unwrapping, empty catches, enum switch exhaustiveness, raw date parsing).
+  unwrapping, empty catches, enum switch exhaustiveness, raw date parsing,
+  intrinsically-sized Row children).
 version: 0.1.0
 publish_to: none
 

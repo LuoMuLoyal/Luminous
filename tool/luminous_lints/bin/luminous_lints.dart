@@ -244,4 +244,14 @@ final class _RuleDriverVisitor extends RecursiveAstVisitor<void> {
     );
     super.visitSwitchStatement(node);
   }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    NonShrinkingRowChildRule.checkInstanceCreation(
+      node: node,
+      filePath: filePath,
+      report: (n, arguments) => report('non_shrinking_row_child', n, arguments),
+    );
+    super.visitInstanceCreationExpression(node);
+  }
 }
