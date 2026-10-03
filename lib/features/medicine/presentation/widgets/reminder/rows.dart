@@ -87,11 +87,17 @@ class ValueActionRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: Spacing.md),
-            Text(
-              value,
-              textAlign: TextAlign.right,
-              style: typography.body.sm.copyWith(
-                color: SemanticColor.neutral.solid(context),
+            // 值文本过长时会顶掉左侧标题:限宽 + 省略号,右侧图标位置不变。
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 160),
+              child: Text(
+                value,
+                textAlign: TextAlign.right,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: typography.body.sm.copyWith(
+                  color: SemanticColor.neutral.solid(context),
+                ),
               ),
             ),
             const SizedBox(width: Spacing.sm),
@@ -214,12 +220,16 @@ class UnavailableMethodRow extends StatelessWidget {
                 children: [
                   Text(
                     title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: typography.body.sm.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                   Text(
                     subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: typography.body.sm.copyWith(
                       color: SemanticColor.neutral.solid(context),
                     ),
@@ -228,7 +238,19 @@ class UnavailableMethodRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: Spacing.md),
-            FBadge(variant: FBadgeVariant.secondary, child: Text(status)),
+            // 徽标固有宽度:不设宽度上限会先占满固有宽度,把左侧文本挤成
+            // 多行并向右溢出;限宽 + chip 内 ellipsis 让它收缩省略。
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 120),
+              child: FBadge(
+                variant: FBadgeVariant.secondary,
+                child: Text(
+                  status,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
           ],
         ),
       ),

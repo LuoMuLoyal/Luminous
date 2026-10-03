@@ -214,9 +214,14 @@ class _DeliveryLogRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.md),
-          TintedStatusBadge(
-            color: color,
-            label: deliveryStatusLabel(l10n, log.status),
+          // 徽标是固有宽度组件,裸放进 Row 会挤掉左侧 Expanded 文本的宽度;
+          // 限宽 + chip 内 ellipsis 让它收缩省略,右对齐位置不变。
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 120),
+            child: TintedStatusBadge(
+              color: color,
+              label: deliveryStatusLabel(l10n, log.status),
+            ),
           ),
         ],
       ),
@@ -277,7 +282,12 @@ class _TodayLogRow extends StatelessWidget {
               ),
             ),
           ),
-          TintedStatusBadge(color: color, label: label),
+          const SizedBox(width: Spacing.md),
+          // 同上:限宽而不是让徽标占满固有宽度。
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 120),
+            child: TintedStatusBadge(color: color, label: label),
+          ),
         ],
       ),
     );

@@ -249,7 +249,17 @@ class SuggestionMaterializationNotice extends StatelessWidget {
               onPress: onRetry,
               variant: FButtonVariant.ghost,
               size: FButtonSizeVariant.xs,
-              child: Text(l10n.todaySuggestionRetryAction),
+              // 该 Row 给非 flex 子节点无界主轴约束:标签 Flexible 必须配
+              // mainAxisSize.min,否则 RenderFlex 断言失败。
+              mainAxisSize: MainAxisSize.min,
+              child: Flexible(
+                child: Text(
+                  l10n.todaySuggestionRetryAction,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ],
         ],

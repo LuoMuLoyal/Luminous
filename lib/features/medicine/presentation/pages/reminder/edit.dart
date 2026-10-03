@@ -204,6 +204,9 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       final initial = FTime(latest?.hour ?? 8, latest?.minute ?? 0);
       final picked = await showAppDialog<FTime?>(
         context: context,
+        // 时间滚轮高度固定:保留 scrollable: false(外层滚动会抢走滚轮拖拽),
+        // 按「标题 + 预览 + 200dp 滚轮 + 按钮行 + 弹窗内边距」给出留裕量的上限。
+        maxHeight: 480,
         scrollable: false,
         builder: (_) => ReminderTimePickerDialog(initial: initial),
       );

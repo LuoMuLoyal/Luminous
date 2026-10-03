@@ -9,6 +9,9 @@ Future<bool?> showMedicineReminderDeleteDialog(BuildContext context) {
 
   return showAppDialog<bool>(
     context: context,
+    // 内容高度固定且很短:保留 scrollable: false(避免无谓的滚动层),
+    // 按「标题 + 正文 + 按钮行 + 弹窗内边距」给出留裕量的上限,满足 DialogShell 断言。
+    maxHeight: 400,
     scrollable: false,
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
@@ -24,20 +27,18 @@ Future<bool?> showMedicineReminderDeleteDialog(BuildContext context) {
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FButton(
+        DialogActionRow(
+          actions: [
+            DialogActionButton(
+              label: l10n.medicineReminderCancelAction,
               variant: FButtonVariant.ghost,
               onPress: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.medicineReminderCancelAction),
             ),
-            const SizedBox(width: Spacing.md),
-            FButton(
-              variant: FButtonVariant.destructive,
+            DialogActionButton(
               key: const Key('medicine-reminder-delete-confirm-button'),
+              label: l10n.medicineReminderConfirmDeleteAction,
+              variant: FButtonVariant.destructive,
               onPress: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.medicineReminderConfirmDeleteAction),
             ),
           ],
         ),

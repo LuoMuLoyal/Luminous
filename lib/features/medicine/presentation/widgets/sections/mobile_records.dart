@@ -152,6 +152,8 @@ class _TodayPlanRow extends StatelessWidget {
                     const SizedBox(height: Spacing.xs),
                     Text(
                       _itemPlanDetail(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
@@ -183,6 +185,8 @@ class _TodayPlanRow extends StatelessWidget {
                             ),
                             child: Text(
                               _slotSummary(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: typography.body.xs.copyWith(
                                 color: colors.foreground,
                                 fontWeight: FontWeight.w600,

@@ -29,16 +29,17 @@ class ReminderTimePickerDialog extends HookWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Title row with close button
-        Row(
+        // 关闭按钮是固有宽度组件:标题放在 Wrap 里(spaceBetween 保持左标题
+        // 右关闭),按钮在放不下时换行而不是把标题挤出右缘。
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: Spacing.md,
+          runSpacing: Spacing.sm,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Expanded(
-              child: Text(
-                l10n.medicineReminderTimePickerTitle,
-                style: typography.body.xl2.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+            Text(
+              l10n.medicineReminderTimePickerTitle,
+              style: typography.body.xl2.copyWith(fontWeight: FontWeight.w700),
             ),
             FButton.icon(
               onPress: () => Navigator.of(context).pop(),

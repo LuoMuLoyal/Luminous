@@ -134,18 +134,21 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                   // Title and primary action share the top line: the title is
                   // the first thing the user reads, and the CTA is the first
                   // thing they can act on.
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  //
+                  // 用 Wrap 而不是 Row:Row 里非 flex 的按钮会先占满固有宽度,再把
+                  // 标题挤成多行 / 自己溢出右缘(360dp + 大字号必现);Wrap 让 CTA
+                  // 在放不下时换到标题下一行,标题也不再被挤压。
+                  Wrap(
+                    spacing: Spacing.md,
+                    runSpacing: Spacing.sm,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Expanded(
-                        child: Text(
-                          card.title,
-                          style: typography.display.xl.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                      Text(
+                        card.title,
+                        style: typography.display.xl.copyWith(
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(width: Spacing.md),
                       FButton(
                         onPress: () =>
                             openRoute(context, card.primaryAction.route),
@@ -154,7 +157,14 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                             : FButtonVariant.secondary,
                         size: FButtonSizeVariant.sm,
                         mainAxisSize: MainAxisSize.min,
-                        child: Text(card.primaryAction.label),
+                        child: Flexible(
+                          child: Text(
+                            card.primaryAction.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
                     ],
                   ),

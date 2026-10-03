@@ -144,17 +144,21 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 ),
               ],
               // --- Expand/collapse bullets + action button in one row ---
+              // 按钮是固有宽度,放进 Row 会先占满固有宽度并把展开链接挤出右缘;
+              // Wrap 靠右对齐,放不下时按钮换到下一行而不是溢出。
               if (hasAiContent) ...[
                 const SizedBox(height: Spacing.sm),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                Wrap(
+                  alignment: WrapAlignment.end,
+                  spacing: Spacing.md,
+                  runSpacing: Spacing.sm,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     _AiExpandButton(
                       onTap: _toggleAi,
                       l10n: l10n,
                       isCollapse: _aiExpanded,
                     ),
-                    const Spacer(),
                     if (!isPreview)
                       FButton(
                         onPress: isRefreshing
@@ -168,7 +172,14 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                         variant: FButtonVariant.ghost,
                         size: FButtonSizeVariant.xs,
                         mainAxisSize: MainAxisSize.min,
-                        child: Text(actionLabel),
+                        child: Flexible(
+                          child: Text(
+                            actionLabel,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -188,7 +199,14 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                     variant: FButtonVariant.ghost,
                     size: FButtonSizeVariant.xs,
                     mainAxisSize: MainAxisSize.min,
-                    child: Text(actionLabel),
+                    child: Flexible(
+                      child: Text(
+                        actionLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -336,7 +354,17 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
               onPress: onRetry,
               variant: FButtonVariant.ghost,
               size: FButtonSizeVariant.xs,
-              child: Text(l10n.todayRetryAction),
+              // 该 Row 给非 flex 子节点无界主轴约束:标签 Flexible 必须配
+              // mainAxisSize.min,否则 RenderFlex 断言失败。
+              mainAxisSize: MainAxisSize.min,
+              child: Flexible(
+                child: Text(
+                  l10n.todayRetryAction,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ],
         ],

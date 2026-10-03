@@ -310,11 +310,20 @@ class _SectionHeader extends StatelessWidget {
       return Text(section.title);
     }
 
-    return Row(
+    // 数量徽标是固有宽度组件(FBadge 内部 IntrinsicWidth):放进 Row 会先占满
+    // 固有宽度,把标题挤成多行;Wrap + spaceBetween 保持左标题右徽标的形态,
+    // 放不下时徽标换到下一行。
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      spacing: Spacing.xs,
+      runSpacing: Spacing.xs,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Expanded(child: Text(section.title)),
-        const SizedBox(width: Spacing.xs),
-        FBadge(variant: FBadgeVariant.secondary, child: Text('$count')),
+        Text(section.title),
+        FBadge(
+          variant: FBadgeVariant.secondary,
+          child: Text('$count', maxLines: 1, overflow: TextOverflow.ellipsis),
+        ),
       ],
     );
   }
@@ -338,18 +347,20 @@ class HeaderCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            // 来源徽标是固有宽度组件:放进 Row 会先把药品名挤成多行;Wrap +
+            // spaceBetween 保持左药名右徽标,放不下时徽标换到下一行。
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: Spacing.sm,
+              runSpacing: Spacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Expanded(
-                  child: Text(
-                    detail.name,
-                    style: typography.body.lg.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                Text(
+                  detail.name,
+                  style: typography.body.lg.copyWith(
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(width: Spacing.sm),
                 SourceBadge(source: source, l10n: l10n),
               ],
             ),
@@ -411,13 +422,21 @@ class MetaRow extends StatelessWidget {
             width: Spacing.xl4,
             child: Text(
               label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
           const SizedBox(width: Spacing.md),
-          Expanded(child: Text(value, style: typography.body.xs)),
+          Expanded(
+            child: Text(
+              value,
+              style: typography.body.xs,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );

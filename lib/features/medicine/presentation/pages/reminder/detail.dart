@@ -146,33 +146,38 @@ class _ReminderDetailBody extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(Spacing.lg),
-            child: Row(
+            // 状态徽标是固有宽度组件(FBadge.raw):放进 Row 会先占满固有宽度,
+            // 把药名/剂量挤成多行;Wrap + spaceBetween 保持左信息右徽标,
+            // 放不下时徽标换到下一行。
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: Spacing.md,
+              runSpacing: Spacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.medicine.displayName,
-                        style: typography.body.md.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.medicine.displayName,
+                      style: typography.body.md.copyWith(
+                        fontWeight: FontWeight.w800,
                       ),
-                      const SizedBox(height: Spacing.xs),
-                      Text(
-                        medicineDoseText(l10n, data.medicine),
-                        style: typography.body.xs.copyWith(
-                          color: SemanticColor.neutral.solid(context),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: Spacing.xs),
+                    Text(
+                      medicineDoseText(l10n, data.medicine),
+                      style: typography.body.xs.copyWith(
+                        color: SemanticColor.neutral.solid(context),
                       ),
-                    ],
-                  ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: Spacing.md),
                 FBadge.raw(
                   builder: (context, style) {
                     final pillColor = isActive

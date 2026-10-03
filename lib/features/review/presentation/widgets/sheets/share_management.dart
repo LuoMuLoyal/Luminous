@@ -235,7 +235,12 @@ class _ShareRow extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (revoked) ...[
-              Row(
+              // 徽标是固有宽度组件:与后面的时间文本放进 Wrap,放不下时时间
+              // 换行而不是被挤出右缘。
+              Wrap(
+                spacing: Spacing.sm,
+                runSpacing: Spacing.xs,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   FBadge.raw(
                     style: .delta(
@@ -253,6 +258,8 @@ class _ShareRow extends ConsumerWidget {
                       ),
                       child: Text(
                         l10n.reviewShareRevokedBadge,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: context.theme.typography.body.xs.copyWith(
                           color: SemanticColor.neutral.solid(context),
                           fontWeight: FontWeight.w700,
@@ -260,13 +267,10 @@ class _ShareRow extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: Spacing.sm),
-                  Expanded(
-                    child: Text(
-                      formatDateTimeFull(share.revokedAt!, locale),
-                      style: context.theme.typography.body.xs.copyWith(
-                        color: SemanticColor.neutral.solid(context),
-                      ),
+                  Text(
+                    formatDateTimeFull(share.revokedAt!, locale),
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: SemanticColor.neutral.solid(context),
                     ),
                   ),
                 ],

@@ -25,13 +25,21 @@ class MetaRow extends StatelessWidget {
             width: 80,
             child: Text(
               label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
           ),
           const SizedBox(width: Spacing.md),
-          Expanded(child: Text(value, style: typography.body.xs)),
+          Expanded(
+            child: Text(
+              value,
+              style: typography.body.xs,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );

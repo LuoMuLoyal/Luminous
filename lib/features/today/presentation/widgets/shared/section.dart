@@ -38,35 +38,40 @@ class TodaySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        // 标题 + 动作按钮:按钮(FButton 内部 Row(mainAxisSize: min))是固有
+        // 宽度,放进 Row 会先把 Expanded 标题挤成多行 / 自己向右溢出;Wrap 让
+        // 按钮在放不下时换到标题下一行。标题/副标题仍叠在同一个 Column 里,
+        // 保持原有「副标题在标题下方」的层次。
+        Wrap(
+          spacing: Spacing.md,
+          runSpacing: Spacing.sm,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: typography.display.xl.copyWith(
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: typography.display.xl.copyWith(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0,
                   ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: Spacing.xs),
-                    Text(
-                      subtitle!,
-                      style: typography.body.xs2.copyWith(
-                        color: SemanticColor.neutral.solid(context),
-                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: Spacing.xs),
+                  Text(
+                    subtitle!,
+                    style: typography.body.xs2.copyWith(
+                      color: SemanticColor.neutral.solid(context),
                     ),
-                  ],
+                  ),
                 ],
-              ),
+              ],
             ),
-            if (actionLabel != null) ...[
-              const SizedBox(width: Spacing.md),
+            if (actionLabel != null)
               FButton(
                 variant: FButtonVariant.ghost,
                 size: FButtonSizeVariant.xs,
@@ -75,7 +80,7 @@ class TodaySection extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    actionText,
+                    Flexible(child: actionText),
                     const SizedBox(width: Spacing.xs),
                     Icon(
                       SemanticIcons.actionNext,
@@ -85,7 +90,6 @@ class TodaySection extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
           ],
         ),
         SizedBox(height: context.titleContentGap),

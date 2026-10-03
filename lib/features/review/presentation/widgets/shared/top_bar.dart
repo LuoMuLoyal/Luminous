@@ -170,17 +170,21 @@ class ReviewActionBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: Spacing.md),
-        FTooltip(
-          tipBuilder: (context, controller) => Text(l10n.reviewSyncAction),
-          child: FButton(
-            key: const Key('report-top-sync-action'),
-            variant: FButtonVariant.secondary,
-            onPress: isSyncing ? null : onSync,
-            child: Icon(
-              isSyncing
-                  ? SemanticIcons.aiAnalyzing
-                  : SemanticIcons.actionRefresh,
-              size: 16,
+        // 图标按钮是固有宽度:给宽度上限,左侧 Expanded 主按钮才不会被挤到溢出。
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 56),
+          child: FTooltip(
+            tipBuilder: (context, controller) => Text(l10n.reviewSyncAction),
+            child: FButton(
+              key: const Key('report-top-sync-action'),
+              variant: FButtonVariant.secondary,
+              onPress: isSyncing ? null : onSync,
+              child: Icon(
+                isSyncing
+                    ? SemanticIcons.aiAnalyzing
+                    : SemanticIcons.actionRefresh,
+                size: 16,
+              ),
             ),
           ),
         ),

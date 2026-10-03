@@ -211,12 +211,23 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                   ),
                   if (widget.onRetry != null) ...[
                     const SizedBox(width: Spacing.md),
-                    FButton(
-                      key: const Key('review-history-retry'),
-                      variant: FButtonVariant.outline,
-                      size: FButtonSizeVariant.sm,
-                      onPress: widget.onRetry,
-                      child: Text(l10n.todayRetryAction),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 160),
+                      child: FButton(
+                        key: const Key('review-history-retry'),
+                        variant: FButtonVariant.outline,
+                        size: FButtonSizeVariant.sm,
+                        mainAxisSize: MainAxisSize.min,
+                        onPress: widget.onRetry,
+                        child: Flexible(
+                          child: Text(
+                            l10n.todayRetryAction,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ],
@@ -343,12 +354,25 @@ class _LoadMoreErrorRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: Spacing.md),
-        FButton(
-          key: const Key('review-history-load-more-retry'),
-          variant: FButtonVariant.outline,
-          size: FButtonSizeVariant.sm,
-          onPress: onRetry,
-          child: Text(l10n.todayRetryAction),
+        // 重试按钮是固有宽度:给宽度上限,左侧 Expanded 提示文字才不会被挤到
+        // 多行;按钮标签再包一层 Flexible + 省略号。
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 160),
+          child: FButton(
+            key: const Key('review-history-load-more-retry'),
+            variant: FButtonVariant.outline,
+            size: FButtonSizeVariant.sm,
+            mainAxisSize: MainAxisSize.min,
+            onPress: onRetry,
+            child: Flexible(
+              child: Text(
+                l10n.todayRetryAction,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -381,13 +405,38 @@ class _HistoryEventRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  event.title,
-                  style: typography.body.sm.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                // 徽标是固有宽度组件(FBadge.raw 内部 IntrinsicWidth 语义),裸放进
+                // Row 会先占满固有宽度,把标题挤成多行;改放标题同一个 Wrap 里,
+                // 放不下时徽标换到标题下一行(与 Today 观察卡同一形态)。
+                Wrap(
+                  spacing: Spacing.sm,
+                  runSpacing: Spacing.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      event.title,
+                      style: typography.body.sm.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (isActive)
+                      _HistoryStatusChip(
+                        label: l10n.reviewReviewStatusActive,
+                        tone: SemanticColor.primary,
+                      )
+                    else if (event.outcome != null)
+                      _HistoryStatusChip(
+                        label: reviewOutcomeLabel(l10n, event.outcome!),
+                        tone: switch (event.outcome!) {
+                          ReviewEventOutcome.improved => SemanticColor.success,
+                          ReviewEventOutcome.unchanged => SemanticColor.neutral,
+                          ReviewEventOutcome.worsened => SemanticColor.warning,
+                          ReviewEventOutcome.unknown => SemanticColor.neutral,
+                        },
+                      ),
+                  ],
                 ),
                 const SizedBox(height: Spacing.xs),
                 Text(
@@ -399,22 +448,6 @@ class _HistoryEventRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: Spacing.md),
-          if (isActive)
-            _HistoryStatusChip(
-              label: l10n.reviewReviewStatusActive,
-              tone: SemanticColor.primary,
-            )
-          else if (event.outcome != null)
-            _HistoryStatusChip(
-              label: reviewOutcomeLabel(l10n, event.outcome!),
-              tone: switch (event.outcome!) {
-                ReviewEventOutcome.improved => SemanticColor.success,
-                ReviewEventOutcome.unchanged => SemanticColor.neutral,
-                ReviewEventOutcome.worsened => SemanticColor.warning,
-                ReviewEventOutcome.unknown => SemanticColor.neutral,
-              },
-            ),
           // 可点入详情的行右侧补 chevron 指向性；只读行不加，避免暗示可点。
           if (onTap != null) ...[
             const SizedBox(width: Spacing.sm),
@@ -456,6 +489,8 @@ class _HistoryStatusChip extends StatelessWidget {
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs2.copyWith(
             color: tone.solid(context),
             fontWeight: FontWeight.w600,

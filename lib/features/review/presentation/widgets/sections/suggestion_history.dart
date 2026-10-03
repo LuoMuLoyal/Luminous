@@ -88,7 +88,12 @@ class _ReviewSuggestionHistorySectionState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            // 标题 + 展开按钮:按钮固有宽度会挤掉标题,改为 Wrap 换行。
+            // spacing 取 Spacing.md,与原 icon 与标题的间距一致。
+            Wrap(
+              spacing: Spacing.md,
+              runSpacing: Spacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 ExcludeSemantics(
                   child: Icon(
@@ -97,13 +102,10 @@ class _ReviewSuggestionHistorySectionState
                     color: SemanticColor.primary.solid(context),
                   ),
                 ),
-                const SizedBox(width: Spacing.md),
-                Expanded(
-                  child: Text(
-                    l10n.reviewSuggestionHistorySectionTitle,
-                    style: typography.body.md.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                Text(
+                  l10n.reviewSuggestionHistorySectionTitle,
+                  style: typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 if (hasMore)
@@ -111,11 +113,19 @@ class _ReviewSuggestionHistorySectionState
                     key: const Key('review-suggestion-history-toggle'),
                     variant: FButtonVariant.ghost,
                     size: FButtonSizeVariant.sm,
+                    // Wrap 给子节点无界主轴约束:标签 Flexible 必须配
+                    // mainAxisSize.min,否则 RenderFlex 断言失败。
+                    mainAxisSize: MainAxisSize.min,
                     onPress: () => setState(() => _showAll = !_showAll),
-                    child: Text(
-                      _showAll
-                          ? l10n.reviewSuggestionHistoryCollapse
-                          : l10n.reviewSuggestionHistoryViewAll,
+                    child: Flexible(
+                      child: Text(
+                        _showAll
+                            ? l10n.reviewSuggestionHistoryCollapse
+                            : l10n.reviewSuggestionHistoryViewAll,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
               ],
@@ -227,6 +237,8 @@ class _SuggestionBadge extends StatelessWidget {
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs.copyWith(
             color: color,
             fontWeight: FontWeight.w700,

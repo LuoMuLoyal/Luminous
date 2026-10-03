@@ -128,26 +128,60 @@ class _RiskCheckTabs extends StatelessWidget {
       children: [
         FTabEntry(
           label: Text(l10n.medicineRiskCheckTabStatic),
-          child: CheckTabContent(
-            record: records.staticRecord,
-            checkType: MedicineRiskCheckType.static_,
-            l10n: l10n,
-            onRunCheck: onRunStatic,
-            isRunning: isRunningStatic,
+          child: _ScrollableTabChild(
+            child: CheckTabContent(
+              record: records.staticRecord,
+              checkType: MedicineRiskCheckType.static_,
+              l10n: l10n,
+              onRunCheck: onRunStatic,
+              isRunning: isRunningStatic,
+            ),
           ),
         ),
         FTabEntry(
           label: Text(l10n.medicineRiskCheckTabLlm),
-          child: CheckTabContent(
-            record: records.llmRecord,
-            checkType: MedicineRiskCheckType.llm,
-            l10n: l10n,
-            onRunCheck: onRunLlm,
-            isRunning: isRunningLlm,
-            llmUnavailable: llmUnavailable,
+          child: _ScrollableTabChild(
+            child: CheckTabContent(
+              record: records.llmRecord,
+              checkType: MedicineRiskCheckType.llm,
+              l10n: l10n,
+              onRunCheck: onRunLlm,
+              isRunning: isRunningLlm,
+              llmUnavailable: llmUnavailable,
+            ),
           ),
         ),
       ],
+    );
+  }
+}
+
+/// `FTabs(expands: true)` 给 tab 子节点的是**固定高度**且自身不滚动:
+/// 360dp 真机 + 1.3 字号下 TabHeader + RiskScoreHero + MetricGrid 等内容高于
+/// tab 视口,内容 Column 直接竖向溢出(实测 360x800 溢出 30px、320x720 溢出
+/// 156px)。这里让 tab 内容自己滚动;内容不足一屏时用 [ConstrainedBox] 的
+/// minHeight 撑满视口,空态/加载态仍能垂直居中。
+///
+/// 顺带让 `Scrollable.ensureVisible`(MetricGrid 的「查看发现/覆盖」跳转)
+/// 有了可用的祖先滚动体。
+class _ScrollableTabChild extends StatelessWidget {
+  const _ScrollableTabChild({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: constraints.maxHeight.isFinite
+                ? constraints.maxHeight
+                : 0,
+          ),
+          child: child,
+        ),
+      ),
     );
   }
 }

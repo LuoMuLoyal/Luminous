@@ -119,7 +119,12 @@ class EventHeaderSection extends StatelessWidget {
             ],
             if (!isActive && event.outcome != null) ...[
               const SizedBox(height: Spacing.md),
-              Row(
+              // 标签 + 结果徽标:徽标是固有宽度组件,放进 Row 会先把左侧标签
+              // 挤到右边溢出;Wrap 在放不下时让徽标换到下一行。
+              Wrap(
+                spacing: Spacing.sm,
+                runSpacing: Spacing.sm,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     l10n.reviewReviewOutcomeLabel,
@@ -127,7 +132,6 @@ class EventHeaderSection extends StatelessWidget {
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),
-                  const SizedBox(width: Spacing.sm),
                   _ReviewStatusChip(
                     label: reviewOutcomeLabel(l10n, event.outcome!),
                     tone: _outcomeTone(event.outcome!),
@@ -153,13 +157,14 @@ class EventHeaderSection extends StatelessWidget {
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   onPress: onGoTodayCheckIn,
-                  // Forui 按钮内部 Row 对大字号不收缩，包一层 Expanded 让其
+                  // Forui 按钮内部 Row 对大字号不收缩，包一层 Flexible 让其
                   // 受约束并省略号截断，避免长文本横溢。
-                  child: Expanded(
+                  child: Flexible(
                     child: Text(
                       l10n.reviewActiveEventGoTodayCheckIn,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),

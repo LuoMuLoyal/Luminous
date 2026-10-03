@@ -135,6 +135,8 @@ class _DrugBoxHeader extends StatelessWidget {
               const SizedBox(height: Spacing.xs),
               Text(
                 l10n.medicineDrugboxTotalPrefix,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
@@ -143,36 +145,44 @@ class _DrugBoxHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: Spacing.md),
-        FButton(
-          variant: FButtonVariant.ghost,
-          size: FButtonSizeVariant.xs,
-          mainAxisSize: MainAxisSize.min,
-          onPress: () => pushAuthRequiredRoute(
-            context,
-            hasMedicines ? Routes.mineMedicineNew : Routes.medicineSearch,
-          ),
-          child: Row(
+        // 按钮是固有宽度:给宽度上限,左侧 Expanded 的统计文案才不会被挤到多行。
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 160),
+          child: FButton(
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.xs,
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                hasMedicines
-                    ? l10n.medicineManageMedicinesAction
-                    : l10n.medicineQuickAddTitle,
-                style: TextStyle(
-                  color: colors.foreground,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
+            onPress: () => pushAuthRequiredRoute(
+              context,
+              hasMedicines ? Routes.mineMedicineNew : Routes.medicineSearch,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Forui 按钮内部 Row 给非 flex 子节点无界主轴约束,裸 Text 会按
+                // 固有宽度排版并在窄屏溢出;Flexible 让它收缩并省略。
+                Flexible(
+                  child: Text(
+                    hasMedicines
+                        ? l10n.medicineManageMedicinesAction
+                        : l10n.medicineQuickAddTitle,
+                    style: TextStyle(
+                      color: colors.foreground,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(width: Spacing.xs),
-              Icon(
-                SemanticIcons.actionNext,
-                size: Spacing.lg,
-                color: colors.foreground,
-              ),
-            ],
+                const SizedBox(width: Spacing.xs),
+                Icon(
+                  SemanticIcons.actionNext,
+                  size: Spacing.lg,
+                  color: colors.foreground,
+                ),
+              ],
+            ),
           ),
         ),
       ],

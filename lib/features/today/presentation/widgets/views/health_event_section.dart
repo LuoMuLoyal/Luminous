@@ -50,13 +50,25 @@ class HealthEventSection extends ConsumerWidget {
                   ),
                 ),
               ),
-              FButton(
-                key: const Key('health-event-retry'),
-                variant: FButtonVariant.outline,
-                size: FButtonSizeVariant.sm,
-                onPress: () =>
-                    ref.read(activeHealthEventProvider.notifier).refresh(),
-                child: Text(l10n.todaySuggestionRetryAction),
+              // 重试按钮是固有宽度:给宽度上限,左侧 Expanded 文案才不会被挤。
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 140),
+                child: FButton(
+                  key: const Key('health-event-retry'),
+                  variant: FButtonVariant.outline,
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: () =>
+                      ref.read(activeHealthEventProvider.notifier).refresh(),
+                  child: Flexible(
+                    child: Text(
+                      l10n.todaySuggestionRetryAction,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -96,7 +108,8 @@ class HealthEventSection extends ConsumerWidget {
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-      scrollable: false,
+      // 表单高度随关联选项数量变化,不设 scrollable: false(内容高于弹窗上限时
+      // 需要外层滚动,固定 maxHeight 会裁掉提交按钮)。
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setSheetState) => StartEventSheet(
           heading: l10n.todayHealthEventStartTitle,
@@ -225,7 +238,7 @@ class HealthEventSection extends ConsumerWidget {
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-      scrollable: false,
+      // 同 _openStart:表单高度可变,交给 DialogShell 默认的外层滚动。
       builder: (dialogContext) => CheckInSheet(
         heading: l10n.todayHealthEventCheckInTitle,
         subtitle: l10n.todayHealthEventCheckInSubtitle,
@@ -264,7 +277,7 @@ class HealthEventSection extends ConsumerWidget {
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-      scrollable: false,
+      // 同 _openStart:表单高度可变,交给 DialogShell 默认的外层滚动。
       builder: (dialogContext) => EndEventSheet(
         heading: l10n.todayHealthEventEndTitle,
         subtitle: l10n.todayHealthEventEndSubtitle,

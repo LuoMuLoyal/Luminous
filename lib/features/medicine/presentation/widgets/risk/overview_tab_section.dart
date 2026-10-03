@@ -28,21 +28,32 @@ class TabHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final timeStr = medicineRiskCheckFormatTime(record.updatedAt);
 
-    return Row(
+    // 运行按钮是固有宽度组件:放进 Row 会先占满固有宽度,把左侧「最后更新」
+    // 文本挤成多行;Wrap + spaceBetween 保持左信息右按钮,放不下时按钮换行。
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      spacing: Spacing.sm,
+      runSpacing: Spacing.xs,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Icon(
-          SemanticIcons.doseSlot,
-          size: IconSizeTokens.sm,
-          color: SemanticColor.neutral.solid(context),
-        ),
-        const SizedBox(width: Spacing.xs),
-        Expanded(
-          child: Text(
-            l10n.medicineRiskCheckLastUpdated(timeStr),
-            style: context.theme.typography.body.xs.copyWith(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              SemanticIcons.doseSlot,
+              size: IconSizeTokens.sm,
               color: SemanticColor.neutral.solid(context),
             ),
-          ),
+            const SizedBox(width: Spacing.xs),
+            Flexible(
+              child: Text(
+                l10n.medicineRiskCheckLastUpdated(timeStr),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: SemanticColor.neutral.solid(context),
+                ),
+              ),
+            ),
+          ],
         ),
         if (isRunning)
           const SizedBox.square(
@@ -53,11 +64,17 @@ class TabHeader extends StatelessWidget {
           FButton(
             variant: FButtonVariant.ghost,
             size: .sm,
+            mainAxisSize: MainAxisSize.min,
             onPress: onRun,
-            child: Text(
-              isLlm
-                  ? l10n.medicineRiskCheckRunLlm
-                  : l10n.medicineRiskCheckRunStatic,
+            child: Flexible(
+              child: Text(
+                isLlm
+                    ? l10n.medicineRiskCheckRunLlm
+                    : l10n.medicineRiskCheckRunStatic,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
       ],

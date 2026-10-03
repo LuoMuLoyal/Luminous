@@ -70,6 +70,8 @@ class RiskFindingItem extends StatelessWidget {
               children: [
                 Text(
                   medicineRiskFindingTitle(l10n, finding),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
@@ -97,19 +99,24 @@ class RiskFindingItem extends StatelessWidget {
           ),
           const SizedBox(width: Spacing.md),
           // Severity + context pills.
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _SeverityPill(
-                color: color,
-                icon: medicineRiskSeverityIcon(finding.severity),
-                label: medicineRiskSeverityLabel(l10n, finding.severity),
-              ),
-              if (contextLabel.isNotEmpty) ...[
-                const SizedBox(height: Spacing.xs),
-                _ContextPill(label: contextLabel),
+          // 徽标列是固有宽度:限宽后才不会先占满固有宽度、把左侧 Expanded
+          // 文本挤成多行;右对齐位置不变。
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 140),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _SeverityPill(
+                  color: color,
+                  icon: medicineRiskSeverityIcon(finding.severity),
+                  label: medicineRiskSeverityLabel(l10n, finding.severity),
+                ),
+                if (contextLabel.isNotEmpty) ...[
+                  const SizedBox(height: Spacing.xs),
+                  _ContextPill(label: contextLabel),
+                ],
               ],
-            ],
+            ),
           ),
         ],
       ),

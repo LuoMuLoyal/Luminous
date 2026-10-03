@@ -36,6 +36,10 @@ Future<ReviewDashboardQuery?> showReviewRangePickerDialog(
 
   return showAppDialog<ReviewDashboardQuery>(
     context: context,
+    // 日历面板高度固定:保留 scrollable: false(外层滚动会抢走日历翻页),
+    // 按「标题 + 360dp 日历 + 按钮行 + 弹窗内边距」给出留裕量的上限,
+    // 满足 DialogShell 断言。
+    maxHeight: 560,
     scrollable: false,
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
@@ -217,19 +221,17 @@ Future<ReviewDashboardQuery?> _showCalendarBottomSheet(
                   ),
                 ),
                 const SizedBox(height: Spacing.lg),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FButton(
+                DialogActionRow(
+                  actions: [
+                    DialogActionButton(
+                      label: l10n.commonCancel,
                       variant: FButtonVariant.ghost,
                       onPress: () => Navigator.of(sheetContext).pop(null),
-                      child: Text(l10n.commonCancel),
                     ),
-                    const SizedBox(width: Spacing.md),
-                    FButton(
+                    DialogActionButton(
+                      label: l10n.commonConfirm,
                       onPress: () =>
                           Navigator.of(sheetContext).pop(rangeController.value),
-                      child: Text(l10n.commonConfirm),
                     ),
                   ],
                 ),
@@ -295,19 +297,17 @@ Future<ReviewDashboardQuery?> _showCalendarDialog(
               ),
             ),
             const SizedBox(height: Spacing.lg),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
+            DialogActionRow(
+              actions: [
+                DialogActionButton(
+                  label: l10n.commonCancel,
                   variant: FButtonVariant.ghost,
                   onPress: () => Navigator.of(calendarContext).pop(null),
-                  child: Text(l10n.commonCancel),
                 ),
-                const SizedBox(width: Spacing.md),
-                FButton(
+                DialogActionButton(
+                  label: l10n.commonConfirm,
                   onPress: () =>
                       Navigator.of(calendarContext).pop(rangeController.value),
-                  child: Text(l10n.commonConfirm),
                 ),
               ],
             ),

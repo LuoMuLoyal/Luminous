@@ -270,6 +270,8 @@ class _LifecycleBadge extends StatelessWidget {
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs.copyWith(
             color: color,
             fontWeight: FontWeight.w700,

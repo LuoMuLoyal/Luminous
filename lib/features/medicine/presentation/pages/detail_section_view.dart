@@ -647,7 +647,10 @@ class _ChipFlow extends StatelessWidget {
       runSpacing: Spacing.xs,
       children: [
         for (final value in values)
-          FBadge(variant: FBadgeVariant.outline, child: Text(value)),
+          FBadge(
+            variant: FBadgeVariant.outline,
+            child: Text(value, maxLines: 1, overflow: TextOverflow.ellipsis),
+          ),
       ],
     );
   }
@@ -727,21 +730,21 @@ class _TargetCardState extends State<_TargetCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            // 靶点名 + 关系徽标:徽标是固有宽度组件,放进 Row 会先把左侧名称
+            // 挤成多行 / 向右溢出;Wrap 在放不下时让徽标换到下一行。
+            Wrap(
+              spacing: Spacing.xs,
+              runSpacing: Spacing.xs,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Expanded(
-                  child: Text(
-                    target.name,
-                    style: typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                Text(
+                  target.name,
+                  style: typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                if (target.relationKind != null) ...[
-                  const SizedBox(width: Spacing.xs),
+                if (target.relationKind != null)
                   _RelationBadge(kind: target.relationKind!, l10n: l10n),
-                ],
               ],
             ),
             if (meta.isNotEmpty) ...[
@@ -760,7 +763,14 @@ class _TargetCardState extends State<_TargetCard> {
                 runSpacing: Spacing.xs,
                 children: [
                   for (final action in target.actions)
-                    FBadge(variant: FBadgeVariant.primary, child: Text(action)),
+                    FBadge(
+                      variant: FBadgeVariant.primary,
+                      child: Text(
+                        action,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                 ],
               ),
             ],
@@ -778,7 +788,14 @@ class _TargetCardState extends State<_TargetCard> {
                 runSpacing: Spacing.xs,
                 children: [
                   for (final pdbId in visiblePdb)
-                    FBadge(variant: FBadgeVariant.outline, child: Text(pdbId)),
+                    FBadge(
+                      variant: FBadgeVariant.outline,
+                      child: Text(
+                        pdbId,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   if (hiddenPdb > 0 && !_showAllPdb)
                     FTappable(
                       onPress: () => setState(() => _showAllPdb = true),
@@ -786,6 +803,8 @@ class _TargetCardState extends State<_TargetCard> {
                         variant: FBadgeVariant.outline,
                         child: Text(
                           l10n.medicineDetailTargetPdbMore(hiddenPdb),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
@@ -815,7 +834,10 @@ class _RelationBadge extends StatelessWidget {
       _ => kind,
     };
 
-    return FBadge(variant: FBadgeVariant.secondary, child: Text(label));
+    return FBadge(
+      variant: FBadgeVariant.secondary,
+      child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+    );
   }
 }
 

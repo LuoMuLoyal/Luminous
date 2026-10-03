@@ -23,6 +23,8 @@ class SourceBadge extends StatelessWidget {
         source == 'drugbank'
             ? l10n.medicineSearchSourceDrugbank
             : l10n.medicineSearchSourceCn,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

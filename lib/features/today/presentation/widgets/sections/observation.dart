@@ -185,11 +185,24 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.item.title,
-                    style: typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                  // 徽章是 IntrinsicWidth(FBadge 内部),放进 Row 会先占满固有宽度、
+                  // 把标题挤成多行;Wrap 让它在放不下时换到标题下一行。
+                  Wrap(
+                    spacing: Spacing.sm,
+                    runSpacing: Spacing.xs,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        widget.item.title,
+                        style: typography.body.sm.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      _ConfidenceBadge(
+                        label: widget.item.tag,
+                        confidence: widget.item.confidence,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: Spacing.xs),
                   Text(
@@ -205,14 +218,6 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                     _buildSuppressButton(context, l10n),
                   ],
                 ],
-              ),
-            ),
-            const SizedBox(width: Spacing.sm),
-            Padding(
-              padding: const EdgeInsets.only(top: Spacing.xs),
-              child: _ConfidenceBadge(
-                label: widget.item.tag,
-                confidence: widget.item.confidence,
               ),
             ),
             if (widget.item.onPress != null) ...[
@@ -363,11 +368,23 @@ class _ObservationErrorState extends StatelessWidget {
               ),
             ),
           ),
-          FButton(
-            onPress: onRetry,
-            variant: FButtonVariant.secondary,
-            size: FButtonSizeVariant.xs,
-            child: Text(l10n.todayRetryAction),
+          // 重试按钮是固有宽度:给宽度上限,左侧 Expanded 文案才不会被挤成多行。
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 140),
+            child: FButton(
+              onPress: onRetry,
+              variant: FButtonVariant.secondary,
+              size: FButtonSizeVariant.xs,
+              mainAxisSize: MainAxisSize.min,
+              child: Flexible(
+                child: Text(
+                  l10n.todayRetryAction,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -422,6 +439,8 @@ class _ConfidenceBadge extends StatelessWidget {
       variant: variant,
       child: Text(
         label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: context.theme.typography.body.xs.copyWith(
           fontWeight: FontWeight.w600,
         ),
