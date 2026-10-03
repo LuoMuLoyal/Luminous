@@ -223,3 +223,56 @@ void setTabletScreenSize(WidgetTester tester) {
     tester.view.resetPhysicalSize();
   });
 }
+
+/// Sets the test device to a compact phone screen size (360×800).
+///
+/// This is the narrow end of the mainstream Android range and the width
+/// layout regressions usually show up at. Combine it with
+/// [scaledForTextScale] to reproduce the real-device worst case.
+/// Resets automatically via [addTearDown].
+void setCompactPhoneScreenSize(WidgetTester tester) {
+  tester.view.devicePixelRatio = 1.0;
+  tester.view.physicalSize = const Size(360, 800);
+  addTearDown(() {
+    tester.view.resetDevicePixelRatio();
+    tester.view.resetPhysicalSize();
+  });
+}
+
+/// Sets the test device to a narrow phone screen size (320×720, iPhone SE 1st
+/// generation-like).
+///
+/// The narrowest logical width the app still supports. Resets automatically
+/// via [addTearDown].
+void setNarrowPhoneScreenSize(WidgetTester tester) {
+  tester.view.devicePixelRatio = 1.0;
+  tester.view.physicalSize = const Size(320, 720);
+  addTearDown(() {
+    tester.view.resetDevicePixelRatio();
+    tester.view.resetPhysicalSize();
+  });
+}
+
+// ── Text Scale Helpers ──────────────────────────────────────────
+
+/// Applies a linear text scale to [child] the way the app itself does.
+///
+/// The app ignores the system font scale and instead sets
+/// `MediaQuery.textScaler` from its own accessibility setting, so wrapping the
+/// pumped page is the faithful way to reproduce a given scale in a widget
+/// test. `1.0` returns [child] untouched; every other scale copies the ambient
+/// [MediaQueryData] (keeping the view size) and overrides only the
+/// [TextScaler].
+Widget scaledForTextScale(Widget child, double scale) {
+  if (scale == 1.0) {
+    return child;
+  }
+  return Builder(
+    builder: (context) => MediaQuery(
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(scale)),
+      child: child,
+    ),
+  );
+}
