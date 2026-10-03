@@ -32,6 +32,30 @@ class LayoutScale {
 /// Resolves a [LayoutScale] from the current screen width, plus fixed layout
 /// constants for dialogs.
 abstract final class LayoutScaleResolver {
+  /// 窄屏上允许的最大字号缩放。
+  ///
+  /// App 有意不跟随系统字号，只用自身 4 档（0.85/1.0/1.15/1.3，见
+  /// `core/accessibility/settings.dart`）。但 1.3 档在 ≤360dp 的机器上等于把可用
+  /// 宽度再砍 23%：真机（vivo X200s ≈360dp）据此出现成片溢出，而 Pixel 8 Pro
+  /// 模拟器（≈448dp）一直看不出问题。
+  ///
+  /// 与其让每个布局各自兜最坏组合，不如在**生效字号**这一处收口：窄屏降档。
+  /// 这样 1.3 档在最窄机型上退化为 1.15 / 1.0，布局按 1.15 设计即可安全。
+  static double effectiveTextScale(double screenWidth, double preferredScale) {
+    if (screenWidth <= 320) return preferredScale.clamp(0.85, 1.0);
+    if (screenWidth < Breakpoints.compact) {
+      return preferredScale.clamp(0.85, 1.15);
+    }
+    return preferredScale;
+  }
+
+  /// 当前宽度是否属于"最窄机型"档（≤[Breakpoints.compact]，即 360dp）。
+  ///
+  /// 视觉上需要在一行放多个元素的地方（标题 + 徽章/动作、双按钮行）应该据此
+  /// 退化为换行/堆叠，而不是继续挤在一行。
+  static bool isCompact(double screenWidth) =>
+      screenWidth <= Breakpoints.compact;
+
   /// Standard dialog max width (calendar pickers, form dialogs).
   static const double dialogMaxWidth = 360;
 

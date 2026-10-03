@@ -120,7 +120,14 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     }
 
     final textScaler = accessibility != null
-        ? TextScaler.linear(accessibility.fontSize.scaleFactor)
+        // 窄屏（≤360dp）上把生效字号降档：1.3 档在 360dp 机器上等于把可用宽度
+        // 再砍 23%，是成片溢出的最坏组合；布局按 1.15 设计即可安全。
+        ? TextScaler.linear(
+            LayoutScaleResolver.effectiveTextScale(
+              MediaQuery.sizeOf(context).width,
+              accessibility.fontSize.scaleFactor,
+            ),
+          )
         : TextScaler.noScaling;
     final reduceAnimations = accessibility?.reduceAnimations ?? false;
 
