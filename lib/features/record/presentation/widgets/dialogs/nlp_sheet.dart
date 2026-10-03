@@ -273,7 +273,17 @@ class RecordNlpSheet extends HookConsumerWidget {
                               onPress: state.isGenerating || state.isSaving
                                   ? null
                                   : handleReset,
-                              child: Text(l10n.recordNlpResetAction),
+                              // 按钮内部内容是 Row(Row 给非 flex 子节点无界主轴约束),
+                              // 长标签(如 en 的 "Parse candidates")会按固有宽度排版
+                              // 并溢出按钮右缘;Flexible + ellipsis 让标签随可用宽度收敛。
+                              child: Flexible(
+                                child: Text(
+                                  l10n.recordNlpResetAction,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(width: Spacing.md),
@@ -283,10 +293,15 @@ class RecordNlpSheet extends HookConsumerWidget {
                               onPress: state.isGenerating || state.isSaving
                                   ? null
                                   : handleGenerate,
-                              child: Text(
-                                state.isGenerating
-                                    ? l10n.recordNlpGeneratingAction
-                                    : l10n.recordNlpGenerateAction,
+                              child: Flexible(
+                                child: Text(
+                                  state.isGenerating
+                                      ? l10n.recordNlpGeneratingAction
+                                      : l10n.recordNlpGenerateAction,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                           ),
