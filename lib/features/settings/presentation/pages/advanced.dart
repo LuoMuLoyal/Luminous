@@ -15,6 +15,7 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/data/providers/data_storage.dart';
@@ -220,6 +221,11 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
       showFSheet(
         context: context,
         side: FLayout.btt,
+        // 本 sheet 在「自定义」被选中时还要塞下 URL 输入框，超过 Forui 默认的
+        // 9/16 上限就会 RenderFlex overflow（实测真机溢出 2.3px，确认按钮被裁掉）。
+        // 与仓库内其他含滚动子节点的 sheet 一致：交出不限制的主轴比例，由 body
+        // 自己滚动。
+        mainAxisMaxRatio: null,
         builder: (context) => _EndpointSheet(
           current: dev.apiEndpoint,
           customUrl: dev.customApiUrl,
@@ -257,6 +263,7 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
       showFSheet(
         context: context,
         side: FLayout.btt,
+        mainAxisMaxRatio: null,
         builder: (context) => _LogLevelSheet(
           current: current,
           l10n: l10n,
@@ -314,8 +321,10 @@ class _EndpointSheetState extends State<_EndpointSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
+    // `showFSheet` 不画 sheet 自身的背景，body 必须自带不透明表面，否则内容
+    // 直接叠在被压暗的页面上（真机上就是"sheet 背景透明"）。
+    final body = SafeArea(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -336,11 +345,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
                 for (final endpoint in ApiEndpoint.values)
                   FTile(
                     title: Text(_endpointLabel(widget.l10n, endpoint)),
-                    subtitle: Text(
-                      endpoint == ApiEndpoint.custom
-                          ? widget.l10n.settingsDevApiEndpointCustomHint
-                          : endpoint.defaultUrl,
-                    ),
+                    subtitle: Text(_urlLabel(endpoint)),
                     suffix: SettingsSelectionIcon(
                       selected: endpoint == _selected,
                     ),
@@ -375,6 +380,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
         ),
       ),
     );
+    return SheetSurface(child: body);
   }
 
   String _endpointLabel(AppLocalizations l10n, ApiEndpoint endpoint) {
@@ -384,6 +390,23 @@ class _EndpointSheetState extends State<_EndpointSheet> {
       ApiEndpoint.production => l10n.settingsDevApiEndpointProduction,
       ApiEndpoint.custom => l10n.settingsDevApiEndpointCustom,
     };
+  }
+
+  /// 该预设在本机实际解析出的 URL。
+  ///
+  /// 不能直接用 `endpoint.defaultUrl`：`local` 在 Android 上解析为
+  /// `10.0.2.2`（模拟器专用别名），而 defaultUrl 写的是 `127.0.0.1`。此前
+  /// sheet 显示 127.0.0.1、页面行显示 10.0.2.2，同一件事两个值，真机上极难
+  /// 判断到底打的是哪个地址。走 [DeveloperSettingsState.resolvedBaseUrl]
+  /// 复用同一份解析逻辑。
+  String _urlLabel(ApiEndpoint endpoint) {
+    if (endpoint == ApiEndpoint.custom) {
+      return widget.l10n.settingsDevApiEndpointCustomHint;
+    }
+    return DeveloperSettingsState(
+      apiEndpoint: endpoint,
+      customApiUrl: _customController.text,
+    ).resolvedBaseUrl;
   }
 }
 
@@ -404,8 +427,8 @@ class _LogLevelSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
+    final body = SafeArea(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -435,6 +458,7 @@ class _LogLevelSheet extends StatelessWidget {
         ),
       ),
     );
+    return SheetSurface(child: body);
   }
 
   String _levelLabel(AppLocalizations l10n, LogLevel level) {

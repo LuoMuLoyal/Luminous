@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';
@@ -483,6 +484,71 @@ void main() {
         find.byKey(const Key('advanced-settings-row-reset-defaults')),
         findsOneWidget,
       );
+    });
+
+    testWidgets('API endpoint sheet fits a phone viewport on every preset', (
+      tester,
+    ) async {
+      // 真机（1080x2400 @3x = 360x800 逻辑像素）上 sheet 曾溢出 2.3px，确认按钮
+      // 被裁掉，导致改不了端点。这里用同一逻辑尺寸回归：任一 preset 下内容都必须
+      // 放得下（Custom 还多一个 URL 输入框，是最坏情况）。
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.reset);
+
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpPage(tester, const AdvancedSettingsPage());
+
+      await tester.tap(find.byKey(const Key('dev-settings-row-api-endpoint')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.settingsDevApiEndpointLocal), findsOneWidget);
+      expect(find.text(l10n.settingsDevApiEndpointCustom), findsOneWidget);
+
+      // Forui 的 sheet 本身不画背景，body 必须自带 SheetSurface，否则内容
+      // 直接叠在被压暗的页面上（真机表现就是 sheet 背景透明）。
+      expect(find.byType(SheetSurface), findsOneWidget);
+
+      // 「本地开发」这一行必须显示本机真正会用的地址（Android = 10.0.2.2），
+      // 而不是 preset 里写死的 127.0.0.1。
+      expect(
+        find.descendant(
+          of: find.ancestor(
+            of: find.text(l10n.settingsDevApiEndpointLocal),
+            matching: find.byType(FTile),
+          ),
+          matching: find.text('http://10.0.2.2:3000'),
+        ),
+        findsOneWidget,
+      );
+
+      final confirm = find.widgetWithText(
+        FButton,
+        l10n.settingsDevApiEndpointConfirm,
+      );
+      expect(confirm, findsOneWidget);
+      expect(
+        tester.getRect(confirm).bottom,
+        lessThanOrEqualTo(800.0),
+        reason: '确认按钮被 sheet 底部裁掉就无法切换端点',
+      );
+
+      // 切到「自定义」——多出 URL 输入框，仍然不能溢出。
+      await tester.tap(find.text(l10n.settingsDevApiEndpointCustom));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.settingsDevApiEndpointCustomUrl), findsOneWidget);
+      expect(confirm, findsOneWidget);
+      expect(tester.getRect(confirm).bottom, lessThanOrEqualTo(800.0));
+    });
+
+    testWidgets('log level sheet also paints its own surface', (tester) async {
+      await pumpPage(tester, const AdvancedSettingsPage());
+
+      await tester.tap(find.byKey(const Key('dev-settings-row-log-level')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SheetSurface), findsOneWidget);
     });
   });
 }

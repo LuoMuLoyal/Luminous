@@ -5,6 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:luminous/core/config/feature_flags.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
@@ -205,7 +206,7 @@ class _ProviderSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
+    final body = SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
@@ -239,5 +240,6 @@ class _ProviderSheet extends ConsumerWidget {
         ),
       ),
     );
+    return SheetSurface(child: body);
   }
 }

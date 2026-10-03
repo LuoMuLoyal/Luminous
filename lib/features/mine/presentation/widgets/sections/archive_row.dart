@@ -8,6 +8,7 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/control/soft_icon.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
@@ -159,79 +160,81 @@ class ArchiveRow extends ConsumerWidget with FTileMixin {
       showFSheet<void>(
         context: context,
         side: FLayout.btt,
-        builder: (sheetContext) => SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  Spacing.lg,
-                  Spacing.lg,
-                  Spacing.lg,
-                  Spacing.sm,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        mineCopy(l10n, entry.titleKey),
-                        style: context.theme.typography.body.lg.copyWith(
-                          fontWeight: FontWeight.w700,
+        builder: (sheetContext) => SheetSurface(
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.lg,
+                    Spacing.lg,
+                    Spacing.lg,
+                    Spacing.sm,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          mineCopy(l10n, entry.titleKey),
+                          style: context.theme.typography.body.lg.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      icon: const Icon(SemanticIcons.actionClose, size: 20),
-                      onPressed: () => Navigator.of(sheetContext).pop(),
-                    ),
-                  ],
-                ),
-              ),
-              const AppDivider(),
-              Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.lg,
-                    vertical: Spacing.sm,
-                  ),
-                  itemCount: records.length,
-                  separatorBuilder: (_, __) => const AppDivider(),
-                  itemBuilder: (context, index) {
-                    final record = records[index];
-                    return ArchiveRecordListTile(
-                      title: record.title,
-                      subtitle: record.subtitle,
-                      onTap: () {
-                        Navigator.of(sheetContext).pop();
-                        unawaited(
-                          pushAuthRequiredRoute(context, record.editRoute),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              const AppDivider(),
-              Padding(
-                padding: const EdgeInsets.all(Spacing.lg),
-                child: FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: () {
-                    Navigator.of(sheetContext).pop();
-                    unawaited(pushAuthRequiredRoute(context, newRoute));
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(SemanticIcons.actionAdd, size: 16),
-                      const SizedBox(width: Spacing.sm),
-                      Text(l10n.mineArchiveAddNewAction),
+                      IconButton(
+                        icon: const Icon(SemanticIcons.actionClose, size: 20),
+                        onPressed: () => Navigator.of(sheetContext).pop(),
+                      ),
                     ],
                   ),
                 ),
-              ),
-            ],
+                const AppDivider(),
+                Flexible(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Spacing.lg,
+                      vertical: Spacing.sm,
+                    ),
+                    itemCount: records.length,
+                    separatorBuilder: (_, __) => const AppDivider(),
+                    itemBuilder: (context, index) {
+                      final record = records[index];
+                      return ArchiveRecordListTile(
+                        title: record.title,
+                        subtitle: record.subtitle,
+                        onTap: () {
+                          Navigator.of(sheetContext).pop();
+                          unawaited(
+                            pushAuthRequiredRoute(context, record.editRoute),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const AppDivider(),
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.lg),
+                  child: FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: () {
+                      Navigator.of(sheetContext).pop();
+                      unawaited(pushAuthRequiredRoute(context, newRoute));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(SemanticIcons.actionAdd, size: 16),
+                        const SizedBox(width: Spacing.sm),
+                        Text(l10n.mineArchiveAddNewAction),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
