@@ -19,6 +19,7 @@ import 'package:luminous/features/assistant/presentation/pages/page.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/assistant_greeting.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
+import 'package:luminous/features/assistant/presentation/widgets/views/empty_conversation.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -726,7 +727,10 @@ void main() {
 
     final screen = tester.widget<FlowChatScreen>(find.byType(FlowChatScreen));
 
-    expect(screen.empty, isTrue);
+    // 空态改由本仓的 AssistantEmptyConversation 渲染：flow_ui 的 empty 分支把
+    // greeting 放进 Expanded(Center(...))，小视口下会溢出并压住描述文字。
+    expect(screen.empty, isFalse);
+    expect(screen.thread, isA<AssistantEmptyConversation>());
     expect(find.byType(AssistantSvgGreeting), findsOneWidget);
     expect(find.text('开始和 Luminous 聊天'), findsOneWidget);
     expect(find.text('可以问我最近的睡眠、记录和用药情况。'), findsOneWidget);

@@ -16,11 +16,10 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/above_composer.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/assistant_greeting.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/composer_host.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/empty_support.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
+import 'package:luminous/features/assistant/presentation/widgets/views/empty_conversation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// The main body of the assistant page. It watches the assistant controller
@@ -187,8 +186,10 @@ class AssistantPageBody extends ConsumerWidget {
           horizontal: width < Breakpoints.mobile ? Spacing.md : Spacing.lg,
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: width < Breakpoints.mobile ? Spacing.md : Spacing.lg,
+          // 顶部不留内边距:会话区/空态紧贴顶栏,避免顶栏与首条消息之间出现
+          // 一条页面底色的空白带。底部内边距保留给 composer 与手势条。
+          padding: EdgeInsets.only(
+            bottom: width < Breakpoints.mobile ? Spacing.md : Spacing.lg,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,54 +239,63 @@ class AssistantPageBody extends ConsumerWidget {
                         .read(assistantControllerProvider.notifier)
                         .loadLatestConversation(),
                   ),
+                  const SizedBox(height: Spacing.md),
                 ],
-                const SizedBox(height: Spacing.md),
                 Expanded(
-                  child: FlowChatScreen(
-                    key: const Key('assistant-flow-chat-screen'),
-                    empty:
-                        !hasConversation &&
-                        capabilities.canSendMessages &&
-                        !isSending,
-                    greeting: AssistantSvgGreeting(
-                      text: l10n.assistantWelcomeTitle,
+                  // flow_ui 的 FlowChatScreen 自带 SafeArea:页面主体已经在
+                  // FHeader 之下,再消费一次顶部 inset 会在顶栏与首条消息之间
+                  // 留出一条空白带。这里去掉顶部 inset,让会话区紧贴顶栏。
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: FlowChatScreen(
+                      key: const Key('assistant-flow-chat-screen'),
+                      // 空态改由 AssistantEmptyConversation 渲染(有界、可滚动),
+                      // 不再使用 flow_ui 的 empty 分支。
+                      empty: false,
+                      thread:
+                          !hasConversation &&
+                              capabilities.canSendMessages &&
+                              !isSending
+                          ? AssistantEmptyConversation(
+                              onStarterPrompt: handleStarterPrompt,
+                              showMemoryHint:
+                                  capabilities.assistantMemoryEnabled,
+                              showDisclaimerExpanded:
+                                  recentConversations.isEmpty,
+                            )
+                          : AssistantConversationMessageList(
+                              capabilities: capabilities,
+                              scrollController: scrollController,
+                              onConfirmProposal: onConfirmProposal,
+                              onDismissProposal: onDismissProposal,
+                              onRegenerateProposal: onRegenerateProposal,
+                              onRegenerate: onRegenerate,
+                              onResend: onResend,
+                            ),
+                      composer: AssistantComposerHost(
+                        controller: inputController,
+                        isSending: isSending,
+                        canSendMessages: capabilities.canSendMessages,
+                        onSend: onSend,
+                      ),
+                      aboveComposer: isOpeningConversation || sendError != null
+                          ? AssistantAboveComposer(
+                              isOpeningConversation: isOpeningConversation,
+                              sendError: sendError,
+                              sendErrorType: sendErrorType,
+                              onRetry: lastFailedInput != null
+                                  ? () => ref
+                                        .read(
+                                          assistantControllerProvider.notifier,
+                                        )
+                                        .retryLastMessage()
+                                  : onRetry,
+                            )
+                          : null,
+                      threadController: scrollController,
+                      jumpToLatestTooltip: l10n.assistantJumpToLatestTooltip,
                     ),
-                    suggestions: AssistantEmptySupport(
-                      onStarterPrompt: handleStarterPrompt,
-                      showMemoryHint: capabilities.assistantMemoryEnabled,
-                      showDisclaimerExpanded: recentConversations.isEmpty,
-                    ),
-                    thread: AssistantConversationMessageList(
-                      capabilities: capabilities,
-                      scrollController: scrollController,
-                      onConfirmProposal: onConfirmProposal,
-                      onDismissProposal: onDismissProposal,
-                      onRegenerateProposal: onRegenerateProposal,
-                      onRegenerate: onRegenerate,
-                      onResend: onResend,
-                    ),
-                    composer: AssistantComposerHost(
-                      controller: inputController,
-                      isSending: isSending,
-                      canSendMessages: capabilities.canSendMessages,
-                      onSend: onSend,
-                    ),
-                    aboveComposer: isOpeningConversation || sendError != null
-                        ? AssistantAboveComposer(
-                            isOpeningConversation: isOpeningConversation,
-                            sendError: sendError,
-                            sendErrorType: sendErrorType,
-                            onRetry: lastFailedInput != null
-                                ? () => ref
-                                      .read(
-                                        assistantControllerProvider.notifier,
-                                      )
-                                      .retryLastMessage()
-                                : onRetry,
-                          )
-                        : null,
-                    threadController: scrollController,
-                    jumpToLatestTooltip: l10n.assistantJumpToLatestTooltip,
                   ),
                 ),
               ],
