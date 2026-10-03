@@ -29,23 +29,21 @@ Future<void> showAssistantCapabilitiesSheet(
     );
   }
 
-  return showModalBottomSheet<void>(
+  // Forui 的 showFSheet 不画背景,必须由 SheetSurface 提供不透明表面;
+  // Material 的 showModalBottomSheet 会带上 Material surface 色与把手,
+  // 与其余 Forui sheet 不一致。
+  return showFSheet<void>(
     context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: context.theme.style.borderRadius.md.topLeft,
-      ),
-    ),
-    builder: (context) => FractionallySizedBox(
-      heightFactor: 0.85,
+    side: FLayout.btt,
+    mainAxisMaxRatio: 0.85,
+    builder: (sheetContext) => SheetSurface(
       child: AssistantCapabilitiesPanel(capabilities: capabilities),
     ),
   );
 }
 
 /// F-10 能力详情面板:顶部能力摘要(助手开关 / 持久化记忆 / RAG),下方列出
-/// 全部工具(22 项)及各自状态 —— enabled 显示「可用」,disabled 显示
+/// 全部工具及各自状态 —— enabled 显示「可用」,disabled 显示
 /// disabledReason 翻译(未知值显示原文)。
 class AssistantCapabilitiesPanel extends StatelessWidget {
   const AssistantCapabilitiesPanel({super.key, required this.capabilities});
