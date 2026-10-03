@@ -109,7 +109,8 @@ now represent direct resources, nullable reads, arrays, and OpenAPI `oneOf` unio
   `LucentFailure`, with stream termination status kept separate from HTTP status.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
-- `AUTH_TOKEN_EXPIRED` triggers refresh and retry.
+- `AUTH_TOKEN_EXPIRED` and `AUTH_REQUIRED` trigger refresh and retry (see
+  [data-layer.md](data-layer.md) for the refreshable-code allow-list).
 - Dio errors are unwrapped through `LucentErrorMapper`.
 - Do not run ad-hoc OpenAPI generator commands (`openapi-generator-cli` / `npx`) for normal work;
   `dart run scripts/contract/bootstrap.dart` is the single regeneration entry (see

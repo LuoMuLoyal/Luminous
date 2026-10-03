@@ -127,6 +127,16 @@ final class LucentFailure {
 
   bool get isTokenExpired => code == 'AUTH_TOKEN_EXPIRED';
 
+  /// The backend error code returned when a request carries no access token the
+  /// guard can accept: missing header, malformed token, or a signature that no
+  /// longer verifies (`JWT_ACCESS_SECRET` rotated).
+  ///
+  /// Refreshable — the opaque refresh token outlives the access token, so a
+  /// stored one can still renew the session (see `AuthInterceptor`).
+  static const kAuthRequiredCode = 'AUTH_REQUIRED';
+
+  bool get isAuthRequired => code == kAuthRequiredCode;
+
   bool get isRefreshTokenInvalid => code == 'AUTH_REFRESH_TOKEN_INVALID';
 
   /// The backend error code returned when an OAuth-only user has no local

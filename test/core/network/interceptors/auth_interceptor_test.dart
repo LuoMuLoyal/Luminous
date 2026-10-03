@@ -621,8 +621,8 @@ void main() {
         // Expected
       }
 
-      // A 401 whose Problem Details code is not AUTH_TOKEN_EXPIRED is not a
-      // refresh candidate: no refresh attempt, session cleared, callback fired.
+      // A 401 whose Problem Details code is not one a refresh can repair is not
+      // a refresh candidate: no refresh attempt, session cleared, callback fired.
       expect(mainAdapter.callCount, 1);
       expect(refreshAdapter.callCount, 0);
       expect(sessionExpiredCalled, isTrue);
@@ -630,14 +630,64 @@ void main() {
     });
 
     test(
-      'does not refresh for 401 with AUTH_REQUIRED code and clears session',
+      'refreshes on 401 with AUTH_REQUIRED code and replays the request',
       () async {
         final store = _MemorySessionStore();
         await store.write(
           const LucentSessionTokens(
-            accessToken: 'bad-token',
+            accessToken: 'token-signed-with-a-rotated-key',
             refreshToken: 'valid-refresh-token',
           ),
+        );
+
+        bool sessionExpiredCalled = false;
+        final mainAdapter = _MockAdapter()
+          ..enqueueError(
+            statusCode: 401,
+            data: _authRequiredBody,
+            statusMessage: 'Unauthorized',
+          )
+          ..enqueueSuccess(data: {'ok': true});
+
+        final refreshAdapter = _MockAdapter()..enqueueRefreshSuccess();
+
+        final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+        dio.httpClientAdapter = mainAdapter;
+        dio.interceptors.add(
+          AuthInterceptor(
+            dio: dio,
+            sessionStore: store,
+            refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+              ..httpClientAdapter = refreshAdapter,
+            onSessionExpired: () async {
+              sessionExpiredCalled = true;
+            },
+          ),
+        );
+
+        final response = await dio.get<Object>('/api/v1/test');
+
+        // AUTH_REQUIRED 是 JWT guard 对「这个 access token 我没法接受」的统一答复
+        // （缺头/畸形/签名随 JWT_ACCESS_SECRET 轮换失效）。refresh token 是服务端
+        // 存的不透明串，仍然能续期，所以这里要刷新 + 重放，而不是直接登出。
+        expect(response.statusCode, 200);
+        expect(refreshAdapter.callCount, 1);
+        expect(mainAdapter.callCount, 2);
+        expect(
+          mainAdapter.capturedRequests.last.headers['Authorization'],
+          'Bearer new-access-token',
+        );
+        expect(sessionExpiredCalled, isFalse);
+        expect((await store.read())?.accessToken, 'new-access-token');
+      },
+    );
+
+    test(
+      'clears the session on AUTH_REQUIRED when no refresh token is stored',
+      () async {
+        final store = _MemorySessionStore();
+        await store.write(
+          const LucentSessionTokens(accessToken: 'bad-token', refreshToken: ''),
         );
 
         bool sessionExpiredCalled = false;
@@ -670,7 +720,7 @@ void main() {
           // Expected
         }
 
-        // AUTH_REQUIRED is not a refresh candidate: no refresh, session cleared.
+        // 没有 refresh token 就没有可续期的凭据：不刷、清会话。
         expect(mainAdapter.callCount, 1);
         expect(refreshAdapter.callCount, 0);
         expect(sessionExpiredCalled, isTrue);

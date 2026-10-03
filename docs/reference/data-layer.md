@@ -61,10 +61,16 @@ Widget
 - `lib/core/network/client/interceptors/auth_interceptor.dart`: token injection + 401 refresh + retry +
   session clear. Refresh outcomes are typed (`_RefreshOutcome`): the refresh token being rejected
   (Problem Details 401/403) is an auth failure that clears the session and notifies the auth layer,
-  while network/timeout/5xx/empty-body failures are transient and keep the session. **Only
-  `AUTH_TOKEN_EXPIRED` triggers a refresh** (positive allow-list); `AUTH_REQUIRED`,
-  `AUTH_REFRESH_TOKEN_INVALID`, `AUTH_WRONG_PASSWORD`, and plain 401/403 never refresh — a plain
-  401 clears the session, a 403 does not. Concurrent requests share a single refresh; a definitive
+  while network/timeout/5xx/empty-body failures are transient and keep the session. **Refreshable
+  401 codes are an allow-list of two** (`_isRefreshableCode`): `AUTH_TOKEN_EXPIRED` (the access token
+  aged out) and `AUTH_REQUIRED` (the JWT guard rejecting a token it cannot accept at all — missing
+  header, malformed, or a signature invalidated by `JWT_ACCESS_SECRET` rotation). The refresh token
+  is opaque and stored server-side, so it still renews such a session; treating `AUTH_REQUIRED` as
+  terminal would force-log-out every device holding a token issued before a key rotation.
+  `AUTH_REFRESH_TOKEN_INVALID`, `AUTH_WRONG_PASSWORD`, `AUTH_PASSWORD_NOT_SET` and any other 401 code
+  never refresh (a refresh cannot repair them and would spend the single-use refresh token) — those
+  clear the session, while a 403 does not. A refreshable 401 with **no stored refresh token** also
+  clears the session. Concurrent requests share a single refresh; a definitive
   refresh failure clears the session and passes the **original** `LucentFailure` back to the caller.
   The `onSessionExpired` callback is guarded (a throwing callback is logged and the original error
   still resolves). **SSE (`ResponseType.stream`) exception**: for a streamed 401 whose body cannot

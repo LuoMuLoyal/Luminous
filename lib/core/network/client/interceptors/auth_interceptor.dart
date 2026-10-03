@@ -245,11 +245,12 @@ class AuthInterceptor extends Interceptor {
       return false;
     }
 
-    // Only an explicit AUTH_TOKEN_EXPIRED Problem Details code marks the
-    // session as refreshable. Every other auth failure (AUTH_REQUIRED,
-    // AUTH_REFRESH_TOKEN_INVALID, AUTH_WRONG_PASSWORD, plain 401/403) is
-    // not a refresh candidate and falls through to the 401 session-clear
-    // path below.
+    // Only codes the refresh token can actually repair mark the session as
+    // refreshable. Every other auth failure (AUTH_REFRESH_TOKEN_INVALID,
+    // AUTH_WRONG_PASSWORD, AUTH_PASSWORD_NOT_SET, plain 401/403) is a
+    // definitive rejection and falls through to the 401 session-clear path
+    // below — spending the single-use refresh token on it would burn the
+    // session for nothing.
     LucentFailure? failure;
     try {
       failure = LucentErrorMapper.fromObject(error);
@@ -270,13 +271,28 @@ class AuthInterceptor extends Interceptor {
       }
       failure = null;
     }
-    if (failure == null || !failure.isTokenExpired) {
+    if (failure == null || !_isRefreshableCode(failure)) {
       return false;
     }
 
     final refreshToken = await _sessionStore.readRefreshToken();
     return refreshToken != null && refreshToken.isNotEmpty;
   }
+
+  /// Whether a 401 Problem Details code is worth spending a refresh attempt on.
+  ///
+  /// `AUTH_TOKEN_EXPIRED` is the ordinary case — the access token aged out.
+  /// `AUTH_REQUIRED` is the same JWT guard rejecting a token it cannot accept
+  /// at all (missing header, malformed, or a signature that stopped verifying
+  /// because `JWT_ACCESS_SECRET` was rotated); the refresh token is opaque and
+  /// stored server-side, so it still renews such a session. Treating
+  /// `AUTH_REQUIRED` as terminal force-logged-out every device holding an
+  /// access token issued before a key rotation, instead of refreshing it.
+  ///
+  /// Codes outside this set are definitive: a refresh attempt cannot change the
+  /// outcome and would consume the single-use refresh token.
+  bool _isRefreshableCode(LucentFailure failure) =>
+      failure.isTokenExpired || failure.isAuthRequired;
 
   /// Whether the response content-type is `application/problem+json`.
   bool _hasProblemJsonContentType(DioException error) {

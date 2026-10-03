@@ -47,6 +47,13 @@
   (`claimSessionForRefresh` 原子抢占),并行两次刷新必有一次 401,而 401 分支会清掉本来
   有效的会话(test/core/network/interceptors/auth_interceptor_test.dart 的
   `_SingleUseRefreshAdapter` 用例锁定)。
+- 401 刷新的触发面是**两个码的白名单**(`_isRefreshableCode`):`AUTH_TOKEN_EXPIRED`(access
+  token 自然过期)与 `AUTH_REQUIRED`(guard 认定这个 access token 完全不可接受——缺头/畸形/
+  `JWT_ACCESS_SECRET` 轮换导致签名失效)。refresh token 是服务端保存的不透明串,这两种都能
+  续期;把 `AUTH_REQUIRED` 当终态会在密钥轮换时把全网持有旧 token 的设备直接登出。
+  `AUTH_REFRESH_TOKEN_INVALID` / `AUTH_WRONG_PASSWORD` / `AUTH_PASSWORD_NOT_SET` 及其余 401
+  不刷新——刷新修不好它们,只会白耗一次性 refresh token;可刷新但本地没有 refresh token 时
+  同样清会话(test/core/network/interceptors/auth_interceptor_test.dart 锁定)。
 - 会话 token 必须**原子落盘**:`LucentSessionTokens` 以单键 JSON 载荷写入(`session_store.dart`),
   不得拆成两次写。读者观察到「新 access + 旧 refresh」的半更新对,就会把已消费的 refresh token
   再次提交,触发上一条同样的 401 清会话(test/core/network/session_store_test.dart 锁定)。
