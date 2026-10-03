@@ -11,12 +11,17 @@ part 'developer_settings.freezed.dart';
 
 /// API endpoint presets available for developer switching.
 ///
-/// Only visible in debug builds. In release, [ApiEndpoint.production]
-/// is always used regardless of the stored preference.
+/// Debug-only surface: [lucentBaseUrlProvider] returns [LucentBaseUrl.value]
+/// (the compile-time `LUCENT_BASE_URL`) in release builds and never consults a
+/// stored preference, so these URLs never decide where a shipped app talks.
 enum ApiEndpoint {
   local('local', 'http://127.0.0.1:3000'),
+  // 没有预发布环境（三台机器是同一套生产拓扑，见工作区 DEPLOY-SYSTEM-INFO.md），
+  // 该预设仍是占位值：选中只会指向手机/模拟器自身。
   staging('staging', 'http://127.0.0.1:3000'),
-  production('production', 'http://127.0.0.1:3000'),
+  // 已部署主站。地址**不入库**（仓库是公开的），由构建期 `LUCENT_PROD_BASE_URL`
+  // 注入，见 DeveloperSettingsState.resolvedBaseUrl；`defaultUrl` 因此留空。
+  production('production', ''),
   custom('custom', '');
 
   const ApiEndpoint(this.storageValue, this.defaultUrl);
@@ -52,6 +57,10 @@ abstract class DeveloperSettingsState with _$DeveloperSettingsState {
   /// For [ApiEndpoint.custom], returns [customApiUrl] if non-empty,
   /// otherwise falls back to the compile-time default.
   ///
+  /// For [ApiEndpoint.production], returns the build-injected
+  /// `LUCENT_PROD_BASE_URL`, falling back to the compile-time
+  /// `LUCENT_BASE_URL` (which is the production host in any real build).
+  ///
   /// For [ApiEndpoint.local], uses `10.0.2.2` on Android emulators (where
   /// `127.0.0.1` refers to the emulator itself) and `127.0.0.1` elsewhere.
   String get resolvedBaseUrl {
@@ -59,6 +68,9 @@ abstract class DeveloperSettingsState with _$DeveloperSettingsState {
       final custom = customApiUrl.trim();
       if (custom.isNotEmpty) return custom;
       return LucentBaseUrl.value;
+    }
+    if (apiEndpoint == ApiEndpoint.production) {
+      return LucentBaseUrl.productionConfigured ?? LucentBaseUrl.value;
     }
     if (apiEndpoint == ApiEndpoint.local) {
       return defaultTargetPlatform == TargetPlatform.android

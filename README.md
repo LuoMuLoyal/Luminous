@@ -83,7 +83,24 @@ does not re-read defines. Release builds require it. Debug builds that pin it de
 everywhere, physical devices included; with nothing pinned, Android falls back to
 `http://10.0.2.2:3000` (the emulator-only alias for the host loopback, which a physical device
 cannot reach). Debug builds can also switch endpoints at runtime in 我的 → 设置 → 高级 → API 端点
-(`DeveloperSettingsController`) — an explicit choice there still wins over the pinned define.
+(`DeveloperSettingsController`) — an explicit choice there still wins over the pinned define. That
+section exists in debug builds only, and the 「生产」preset resolves the build-injected
+`LUCENT_PROD_BASE_URL` (falling back to `LUCENT_BASE_URL`): the deployed host address is **not**
+stored in this repository — keep it in the untracked `.env` / CI secret. `local` and `staging`
+resolve to loopback, so neither is reachable from a physical device.
+
+## Environment files
+
+Two untracked files, one template each (`.gitignore` ignores `.env` / `.env.*` but re-includes
+`*.example`):
+
+| Use | Template (tracked) | Local file (untracked) | Consumed by |
+|---|---|---|---|
+| App runtime (`flutter run`) | `.env.example` | `.env` | `.vscode/launch.json` "Luminous" |
+| Full-stack E2E lane | `.env.e2e.example` | `.env.e2e` | `scripts/workflows/fullstack.dart` (and the "Luminous (Full-stack E2E Env)" launch config) |
+
+The E2E file is self-contained on purpose: `--dart-define-from-file` accepts exactly one file, so
+it carries the `E2E_*` account **and** the `LUCENT_BASE_URL` the app under test uses.
 
 ## Generated Sources Policy
 
@@ -101,7 +118,7 @@ cannot reach). Debug builds can also switch endpoints at runtime in 我的 → �
 dart run scripts/contract/bootstrap.dart
 ```
 
-If you want shorter full-stack commands, copy `.env.example` to `.env`, fill in the
+If you want shorter full-stack commands, copy `.env.e2e.example` to `.env.e2e`, fill in the
 `E2E_*` entries, and run `dart run scripts/workflows/fullstack.dart`.
 
 ## CI
@@ -128,7 +145,7 @@ If you want shorter full-stack commands, copy `.env.example` to `.env`, fill in 
   `dart run scripts/workflows/daily.dart`
   `dart run scripts/workflows/fullstack.dart`
 - `scripts/workflows/fullstack.dart` starts Lucent test runtime through `pnpm --dir ../Lucent test:runtime:start`, checks `GET http://127.0.0.1:3000/api/v1/health`, then runs the five Android-emulator lanes sequentially.
-- `scripts/workflows/fullstack.dart` now prefers `.env` via `--dart-define-from-file` when that file exists, and still falls back to `.env.fullstack-e2e` for older local setups.
+- `scripts/workflows/fullstack.dart` prefers the E2E define file `.env.e2e` via `--dart-define-from-file` when it exists, and still falls back to `.env.fullstack-e2e` for older local setups (the app-development `.env` is deliberately not a candidate — it carries no `E2E_*` account).
 - Shared repo hooks live in `.githooks/`. After cloning, run `dart run scripts/hooks/git.dart install` once to point `core.hooksPath` at that folder. Hooks are kept lightweight: `commit-msg` validates Conventional Commits format; `pre-commit` formats staged Dart files and runs `flutter analyze`; `pre-push` runs `flutter analyze` and `dart format --set-exit-if-changed` (full test suite runs in CI).
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a local Android emulator plus a Lucent test runtime started from `../Lucent`, including test database state and cross-repo orchestration.
 - OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, first run `pnpm export:openapi` in `../Lucent` to materialize `Lucent/docs/reference/generated/openapi.json`, then run `dart run scripts/contract/bootstrap.dart` in `Luminous`. `dart run scripts/contract/verify_openapi.dart` remains the lightweight gate for verifying the target OpenAPI path and generated-client layout.

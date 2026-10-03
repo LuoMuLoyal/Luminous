@@ -127,7 +127,10 @@ String? _resolveActiveDefineFile(
     return file.path;
   }
 
-  final defaultFiles = <String>['.env', '.env.fullstack-e2e'];
+  // E2E lane 只认 E2E 自包含的那份 define 文件：app 日常开发的 `.env` 不含
+  // E2E_* 账号，选中它只会让 assertUsable() 报缺变量。`.env.fullstack-e2e` 是
+  // 拆分前的历史文件名，继续兼容。
+  final defaultFiles = <String>['.env.e2e', '.env.fullstack-e2e'];
   for (final name in defaultFiles) {
     final file = File('${repoRoot.path}${Platform.pathSeparator}$name');
     if (file.existsSync()) {
@@ -183,5 +186,6 @@ Options:
   --password <password>   Full-stack test account password.
   --record-date <date>    Test record date in YYYY-MM-DD.
   --define-file <path>    Optional .env-style dart-define file.
+                          Default: .env.e2e, else .env.fullstack-e2e.
   --help                  Show this help text.
 ''';

@@ -45,6 +45,8 @@ abstract final class EnvReader {
     switch (key) {
       case EnvKey.lucentBaseUrl:
         return const String.fromEnvironment('LUCENT_BASE_URL');
+      case EnvKey.lucentProdBaseUrl:
+        return const String.fromEnvironment('LUCENT_PROD_BASE_URL');
       case EnvKey.e2eLucentBaseUrl:
         return const String.fromEnvironment('E2E_LUCENT_BASE_URL');
       case EnvKey.wechatMobileAppId:

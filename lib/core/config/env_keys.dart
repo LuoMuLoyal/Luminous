@@ -1,5 +1,6 @@
 enum EnvKey {
   lucentBaseUrl('LUCENT_BASE_URL'),
+  lucentProdBaseUrl('LUCENT_PROD_BASE_URL'),
   e2eLucentBaseUrl('E2E_LUCENT_BASE_URL'),
   wechatMobileAppId('WECHAT_MOBILE_APP_ID'),
   wechatIosUniversalLink('WECHAT_IOS_UNIVERSAL_LINK'),

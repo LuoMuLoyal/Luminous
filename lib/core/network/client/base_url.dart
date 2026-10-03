@@ -18,6 +18,17 @@ abstract final class LucentBaseUrl {
     return normalized.isEmpty ? null : normalized;
   }
 
+  /// The `LUCENT_PROD_BASE_URL` pinned by the build, or `null` when unset.
+  ///
+  /// The deployed host address never lives in the repository (it would be
+  /// published with the repo): it is injected at build time through `.env` /
+  /// CI secrets and read back by the 「生产」developer preset. See
+  /// `DeveloperSettingsState.resolvedBaseUrl`.
+  static String? get productionConfigured {
+    final normalized = EnvReader.string(EnvKey.lucentProdBaseUrl).trim();
+    return normalized.isEmpty ? null : normalized;
+  }
+
   static String get value {
     final pinned = configured;
     if (pinned != null) return pinned;

@@ -56,7 +56,8 @@ void main() {
     test('defaultUrl values are correct', () {
       expect(ApiEndpoint.local.defaultUrl, 'http://127.0.0.1:3000');
       expect(ApiEndpoint.staging.defaultUrl, 'http://127.0.0.1:3000');
-      expect(ApiEndpoint.production.defaultUrl, 'http://127.0.0.1:3000');
+      // 生产地址不入库：由构建期 LUCENT_PROD_BASE_URL 注入。
+      expect(ApiEndpoint.production.defaultUrl, '');
       expect(ApiEndpoint.custom.defaultUrl, '');
     });
 
@@ -79,8 +80,23 @@ void main() {
       expect(state.resolvedBaseUrl, 'http://127.0.0.1:3000');
     });
 
-    test('returns defaultUrl for production endpoint', () {
+    test('returns the injected LUCENT_PROD_BASE_URL for production', () {
+      EnvReader.setTestValue(
+        EnvKey.lucentProdBaseUrl,
+        'https://api.prod.example.test',
+      );
+      addTearDown(EnvReader.clearTestValues);
+
       const state = DeveloperSettingsState(apiEndpoint: ApiEndpoint.production);
+      expect(state.resolvedBaseUrl, 'https://api.prod.example.test');
+    });
+
+    test('production falls back to the pinned base URL when unset', () {
+      EnvReader.clearTestValues();
+
+      const state = DeveloperSettingsState(apiEndpoint: ApiEndpoint.production);
+      // 没注入 LUCENT_PROD_BASE_URL 时退回编译期 LUCENT_BASE_URL
+      // （本用例的 setUp 固定为非 Android 平台，故为 127.0.0.1）。
       expect(state.resolvedBaseUrl, 'http://127.0.0.1:3000');
     });
 
