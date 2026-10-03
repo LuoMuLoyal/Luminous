@@ -230,23 +230,25 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
           current: dev.apiEndpoint,
           customUrl: dev.customApiUrl,
           l10n: l10n,
-          onSelect: (endpoint) async {
-            await ref
-                .read(developerSettingsControllerProvider.notifier)
-                .setApiEndpoint(endpoint);
+          // sheet 是「选完再确认」的交互，所以自定义 URL 只在确认时落盘。
+          // 此前只在点「自定义」那一行时写一次输入框内容，之后敲进去的地址
+          // 从来没有被保存：确认后 endpoint=custom 但 customApiUrl 仍是空，
+          // resolvedBaseUrl 回落到 LucentBaseUrl.value，看起来就是
+          // 「点了确认但根本没换」。
+          onConfirm: (endpoint, customUrl) async {
+            final notifier = ref.read(
+              developerSettingsControllerProvider.notifier,
+            );
+            if (customUrl.isNotEmpty) {
+              await notifier.setCustomApiUrl(customUrl);
+            }
+            await notifier.setApiEndpoint(endpoint);
             if (context.mounted) Navigator.of(context).pop();
             // Log out to clear stale session for the previous endpoint.
             await ref.read(authSessionProvider.notifier).logout();
             if (context.mounted) {
               await Toast.show(context, l10n.settingsDevApiEndpointSwitched);
             }
-          },
-          onCustomUrlChanged: (url) {
-            unawaited(
-              ref
-                  .read(developerSettingsControllerProvider.notifier)
-                  .setCustomApiUrl(url),
-            );
           },
         ),
       ),
@@ -288,15 +290,16 @@ class _EndpointSheet extends StatefulWidget {
     required this.current,
     required this.customUrl,
     required this.l10n,
-    required this.onSelect,
-    required this.onCustomUrlChanged,
+    required this.onConfirm,
   });
 
   final ApiEndpoint current;
   final String customUrl;
   final AppLocalizations l10n;
-  final Future<void> Function(ApiEndpoint) onSelect;
-  final void Function(String) onCustomUrlChanged;
+
+  /// Applies the picked preset together with the URL currently typed in the
+  /// custom field (empty when the field was left blank).
+  final Future<void> Function(ApiEndpoint endpoint, String customUrl) onConfirm;
 
   @override
   State<_EndpointSheet> createState() => _EndpointSheetState();
@@ -349,12 +352,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
                     suffix: SettingsSelectionIcon(
                       selected: endpoint == _selected,
                     ),
-                    onPress: () {
-                      setState(() => _selected = endpoint);
-                      if (endpoint == ApiEndpoint.custom) {
-                        widget.onCustomUrlChanged(_customController.text);
-                      }
-                    },
+                    onPress: () => setState(() => _selected = endpoint),
                   ),
               ],
             ),
@@ -372,7 +370,8 @@ class _EndpointSheetState extends State<_EndpointSheet> {
             SizedBox(
               width: double.infinity,
               child: FButton(
-                onPress: () => widget.onSelect(_selected),
+                onPress: () =>
+                    widget.onConfirm(_selected, _customController.text.trim()),
                 child: Text(widget.l10n.settingsDevApiEndpointConfirm),
               ),
             ),

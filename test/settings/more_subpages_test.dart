@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
@@ -549,6 +550,40 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SheetSurface), findsOneWidget);
+    });
+
+    testWidgets('confirming a custom endpoint persists the typed URL', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpPage(tester, const AdvancedSettingsPage());
+
+      await tester.tap(find.byKey(const Key('dev-settings-row-api-endpoint')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(l10n.settingsDevApiEndpointCustom));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(FTextField),
+        'http://192.168.1.50:3000',
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.widgetWithText(FButton, l10n.settingsDevApiEndpointConfirm),
+      );
+      await tester.pumpAndSettle();
+
+      // 输入框里敲的地址必须落盘：否则 endpoint=custom 而 customApiUrl 为空，
+      // resolvedBaseUrl 回落到编译期默认值 —— 「点了确认但根本没换」。
+      final preferences = await SharedPreferences.getInstance();
+      expect(preferences.getString(PrefKeys.developerApiEndpoint), 'custom');
+      expect(
+        preferences.getString(PrefKeys.developerCustomApiUrl),
+        'http://192.168.1.50:3000',
+      );
     });
   });
 }
