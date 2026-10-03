@@ -85,11 +85,16 @@ jobs:
         # appears at the top, body stays blank (fixed 2026-07-23, regressed
         # 2026-08-15 by adding --wasm). Plain dart2js + canvaskit renders
         # correctly on desktop and mobile; see web/flutter_bootstrap.js.
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL || 'support@luminous.app' }}
         run: |
           flutter build web --release \
             --base-href "/${{ github.event.repository.name }}/" \
-            --dart-define=LUCENT_BASE_URL=${{ secrets.LUCENT_BASE_URL }} \
-            --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }} \
+            --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
+            --dart-define=SENTRY_DSN="${SENTRY_DSN}" \
+            --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}" \
             --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=${{ vars.LUMINOUS_EXPERIMENTAL_AI_RUNTIME || 'false' }} \
             --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=${{ vars.LUMINOUS_AI_RUNTIME_PROVIDER || 'openai' }} \
             --dart-define=LUMINOUS_ENABLE_GEN_UI=${{ vars.LUMINOUS_ENABLE_GEN_UI || 'false' }}
