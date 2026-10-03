@@ -1,0 +1,155 @@
+name: Deploy iOS
+
+# 发布：构建未签名 IPA。
+# 开发机是 Windows，本地无法编译 iOS；CI 的 macOS runner 同时是唯一的编译验证面。
+# 签名分发 / TestFlight 需要 Apple 证书与描述文件，未接入（见 docs/TODO.md）。
+# 代码门禁在 ci.yml；Android / Web 发布在 deploy-android.yml / deploy-web.yml。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: luminous-deploy-ios-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-ios-unsigned:
+    name: Build iOS (unsigned)
+    runs-on: macos-latest
+    timeout-minutes: 60
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      PUB_HOSTED_URL: https://pub.dev
+      FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
+      # ios/Flutter/Wechat.xcconfig 由 secret 生成；Info.plist 的
+      # CFBundleURLSchemes 引用 $(WECHAT_MOBILE_APP_ID)。
+      WECHAT_MOBILE_APP_ID: ${{ secrets.WECHAT_MOBILE_APP_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.1
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      # paddle_ocr_native 的 onnxruntime-objc / OpenCV / Yams 是二进制 pod，
+      # 缓存 spec 仓库与下载包，避免每次重跑都重新拉取。
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ~/.cocoapods
+          key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile', 'pkgs/**/*.podspec') }}
+          restore-keys: pods-${{ runner.os }}-
+
+      - name: Print toolchain versions
+        run: |
+          flutter --version
+          xcodebuild -version
+          pod --version
+
+      - name: Validate required secrets
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          JPUSH_APP_KEY: ${{ secrets.JPUSH_APP_KEY }}
+        run: |
+          if [ -z "${LUCENT_BASE_URL}" ]; then
+            echo "::error::Secret LUCENT_BASE_URL is not set; a release IPA without it cannot reach Lucent."
+            exit 1
+          fi
+          if [ -z "${WECHAT_MOBILE_APP_ID}" ]; then
+            echo "::warning::WECHAT_MOBILE_APP_ID is not set — using the example placeholder; WeChat login stays disabled."
+          fi
+          if [ -z "${JPUSH_APP_KEY}" ]; then
+            echo "::warning::JPUSH_APP_KEY is not set — push stays silently disabled."
+          fi
+
+      - name: Bootstrap generated sources
+        run: dart run scripts/contract/bootstrap.dart --skip-client
+
+      # generated/lucent_api 是独立 package：根 build_runner 不会替它生成各 model 的
+      # part 文件（`part '*.g.dart'`，且 *.g.dart 被 gitignore）。
+      # 缺这一步 flutter build 会直接编译失败。
+      - name: Build generated API client
+        run: |
+          cd generated/lucent_api
+          dart pub get
+          dart run build_runner build --delete-conflicting-outputs
+          cd ../..
+
+      # ios/Flutter/Wechat.xcconfig 被 gitignore（含真实 AppId 的文件不入库），
+      # 但 Info.plist 的 CFBundleURLSchemes 引用 $(WECHAT_MOBILE_APP_ID)：
+      # 变量未定义时 URL Scheme 会展开成空串。没有 secret 就用示例占位值，
+      # 只影响微信登录（当前 UI 已隐藏），不影响编译。
+      - name: Provide WeChat iOS xcconfig
+        run: |
+          if [ -n "${WECHAT_MOBILE_APP_ID}" ]; then
+            printf 'WECHAT_MOBILE_APP_ID = %s\n' "$WECHAT_MOBILE_APP_ID" > ios/Flutter/Wechat.xcconfig
+          else
+            cp ios/Flutter/Wechat.example.xcconfig ios/Flutter/Wechat.xcconfig
+          fi
+
+      - name: Build iOS (release, no codesign)
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL || 'support@luminous.app' }}
+          JPUSH_APP_KEY: ${{ secrets.JPUSH_APP_KEY }}
+          WECHAT_IOS_UNIVERSAL_LINK: ${{ vars.WECHAT_IOS_UNIVERSAL_LINK }}
+        run: |
+          flutter build ios --release --no-codesign \
+            --obfuscate \
+            --split-debug-info=build/symbols-ios \
+            --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
+            --dart-define=SENTRY_DSN="${SENTRY_DSN}" \
+            --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}" \
+            --dart-define=JPUSH_APP_KEY="${JPUSH_APP_KEY}" \
+            --dart-define=WECHAT_MOBILE_APP_ID="${WECHAT_MOBILE_APP_ID}" \
+            --dart-define=WECHAT_IOS_UNIVERSAL_LINK="${WECHAT_IOS_UNIVERSAL_LINK}"
+
+      # flutter build ios --no-codesign 只产出 Runner.app；打成 Payload/*.ipa
+      # 后可由本机重签名工具安装（免费 Apple ID 也可重签）。
+      - name: Package unsigned IPA
+        run: |
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -R Runner.app Payload/
+          zip -qry Luminous-unsigned.ipa Payload
+          ls -lh Luminous-unsigned.ipa
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: luminous-ios-unsigned-ipa
+          path: build/ios/iphoneos/Luminous-unsigned.ipa
+          if-no-files-found: error
+
+      - name: Upload Dart symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: luminous-ios-symbols
+          path: build/symbols-ios
+          if-no-files-found: warn
+
+      # Podfile.lock 未入库（Windows 上无法 pod install），首次跑通后从产物里
+      # 取回并提交，可固定 onnxruntime-objc / OpenCV / JPush 的解析版本。
+      - name: Upload Podfile.lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: luminous-ios-podfile-lock
+          path: ios/Podfile.lock
+          if-no-files-found: warn

@@ -1,7 +1,8 @@
 name: CI
 
-# 代码门禁：analyze / 单测 / 生成物一致性 / 文档校验。
-# Web 发布在 deploy-web.yml。
+# 代码门禁：只做校验，不产出任何发布产物。
+# ARB 合并 / 生成物准备 / 生成客户端 / 生成文档一致性 / analyze / 全量单测。
+# 发布各自独立：deploy-android.yml / deploy-ios.yml / deploy-web.yml。
 # 拆分理由见 .github/workflows/README.md。
 
 on:
@@ -49,15 +50,15 @@ jobs:
       - name: Bootstrap generated sources
         run: dart run scripts/contract/bootstrap.dart --skip-client
 
+      # generated/lucent_api 是独立 package：根 build_runner 不会替它生成各 model 的
+      # part 文件（`part '*.g.dart'`，且 *.g.dart 被 gitignore）。
+      # 缺这一步 analyze / test 都会在编译期失败。
       - name: Build generated API client
         run: |
           cd generated/lucent_api
           dart pub get
           dart run build_runner build --delete-conflicting-outputs
           cd ../..
-
-      - name: Compile drift web worker
-        run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
       - name: Verify generated docs
         run: dart run scripts/docs/generate.dart --check
@@ -67,44 +68,3 @@ jobs:
 
       - name: Run tests
         run: flutter test --coverage --reporter=github
-
-  build-apk:
-    name: Build APK (release)
-    # 只在 main 的 push 上产出安装包；PR / 手动触发不跑，省时间。
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      PUB_HOSTED_URL: https://pub.dev
-      FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: 3.47.1
-          cache: true
-
-      - name: Cache pub packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.pub-cache
-          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
-          restore-keys: pub-${{ runner.os }}-
-
-      - name: Bootstrap generated sources
-        run: dart run scripts/contract/bootstrap.dart --skip-client
-
-      - name: Compile drift web worker
-        run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
-
-      - name: Build APK (release)
-        run: |
-          flutter build apk --release \
-            --target-platform android-arm64 \
-            --obfuscate \
-            --split-debug-info=build/symbols

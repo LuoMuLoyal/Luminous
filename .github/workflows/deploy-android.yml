@@ -1,0 +1,106 @@
+name: Deploy Android
+
+# 发布：构建 release APK 并上传产物。
+# 代码门禁在 ci.yml；iOS / Web 发布在 deploy-ios.yml / deploy-web.yml。
+# 触发：main push 或手动 workflow_dispatch（手动可在任意分支出包）。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: luminous-deploy-android-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    name: Build APK (release)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      PUB_HOSTED_URL: https://pub.dev
+      FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
+      # JPush 原生侧：android/app/build.gradle.kts 读 -PJPUSH_APP_KEY 或该环境变量，
+      # 经 manifest placeholders 填 JPUSH_APPKEY / JPUSH_CHANNEL。
+      JPUSH_APP_KEY: ${{ secrets.JPUSH_APP_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.1
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Validate required secrets
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          WECHAT_MOBILE_APP_ID: ${{ secrets.WECHAT_MOBILE_APP_ID }}
+        run: |
+          if [ -z "${LUCENT_BASE_URL}" ]; then
+            echo "::error::Secret LUCENT_BASE_URL is not set; a release APK without it cannot reach Lucent."
+            exit 1
+          fi
+          if [ -z "${JPUSH_APP_KEY}" ]; then
+            echo "::warning::JPUSH_APP_KEY is not set — push stays silently disabled."
+          fi
+          if [ -z "${WECHAT_MOBILE_APP_ID}" ]; then
+            echo "::warning::WECHAT_MOBILE_APP_ID is not set — WeChat login stays disabled."
+          fi
+
+      - name: Bootstrap generated sources
+        run: dart run scripts/contract/bootstrap.dart --skip-client
+
+      # generated/lucent_api 是独立 package：根 build_runner 不会替它生成各 model 的
+      # part 文件（`part '*.g.dart'`，且 *.g.dart 被 gitignore）。
+      # 缺这一步 flutter build 会直接编译失败。
+      - name: Build generated API client
+        run: |
+          cd generated/lucent_api
+          dart pub get
+          dart run build_runner build --delete-conflicting-outputs
+          cd ../..
+
+      - name: Build APK (release)
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL || 'support@luminous.app' }}
+          WECHAT_MOBILE_APP_ID: ${{ secrets.WECHAT_MOBILE_APP_ID }}
+        run: |
+          flutter build apk --release \
+            --target-platform android-arm64 \
+            --obfuscate \
+            --split-debug-info=build/symbols \
+            --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
+            --dart-define=SENTRY_DSN="${SENTRY_DSN}" \
+            --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}" \
+            --dart-define=WECHAT_MOBILE_APP_ID="${WECHAT_MOBILE_APP_ID}"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: luminous-android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+      - name: Upload Dart symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: luminous-android-symbols
+          path: build/symbols
+          if-no-files-found: warn
