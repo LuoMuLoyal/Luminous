@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-10-03
+updated: 2026-10-04
 ---
 
 # Luminous TODO
 
-Last updated: 2026-10-03
+Last updated: 2026-10-04
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -192,6 +192,16 @@ Product Loop Program 的延后项如下。
     assistant / reports / today-analysis 三条 SSE 共用同一客户端，同等受影响。
   - 方案：为 SSE 单独提供 fetch + ReadableStream 的 `HttpClientAdapter`（或 Web 分支改用
     EventSource / `package:http` BrowserClient），需评估与鉴权拦截器、401 刷新路径的兼容性。
+
+## 2026-10-04 助手能力口径（面板「全局可用」与本轮工具子集不一致）
+
+- 真机反馈：能力面板显示工具全部可用，但问「你在吗」时助手回答「这次运行里我也没有可用的记录类
+  工具」。根因在后端（关键词路由命中 `simple_chat` + 该分支提示词字面声明本轮没有数据工具），
+  已登记在 `Lucent/docs/TODO.md`。
+- 客户端口径待补：`AssistantCapabilitiesPanel`（`features/assistant/presentation/widgets/dialogs/
+  capabilities_panel.dart`）只表达「全局可用」，缺少「本轮实际提供给模型的子集」这一维度，
+  因此面板与助手自述会互相矛盾。可选做法：面板注明「工具按每轮选取」；或等后端在 capabilities
+  响应里加字段区分全局/本轮后再改文案（需契约变更）。
 
 ## 2026-09-02 代码审查遗留（08-30 / 09-01 review）
 
