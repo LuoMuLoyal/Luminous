@@ -11,9 +11,10 @@ Current version: **0.1.0-dev**
 - [Roadmap](ROADMAP.md) — planned evolution and version milestones
 - [Changelog](CHANGELOG.md) — release-level change history
 - [Contributing](CONTRIBUTING.md) — development setup, conventions, and PR process
-- [Code of Conduct](.github/CODE_OF_CONDUCT.md) — community standards
+- [Code of Conduct](CODE_OF_CONDUCT.md) — community standards
 - [Security Policy](SECURITY.md) — vulnerability reporting
-- [Product language](docs/reference/glossary.md) — canonical health-event, sparse-record, guidance, and review terms
+- [Licence](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md) — project licence and dependency licences
+- [Product language](docs/reference/Glossary.md) — canonical health-event, sparse-record, guidance, and review terms
 - [Issues](https://github.com/LuoMuLoyal/Luminous/issues) — bug reports and feature requests
 
 ## AI Workflow

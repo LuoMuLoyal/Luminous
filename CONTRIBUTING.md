@@ -262,7 +262,7 @@ After every code change, update the following:
 | Current UI/data/runtime state change| feature `README.md` + tests              | Assert, no narrative |
 | Closing a TODO item                 | `docs/TODO.md`                           | Delete the line    |
 | Finishing a plan section            | `plans/*.md`                              | Delete section     |
-| Visible text / l10n change          | `docs/reference/Localization.md`         | Sync update        |
+| Visible text / l10n change          | `docs/reference/localization.md`         | Sync update        |
 
 Rules:
 
@@ -337,7 +337,7 @@ dart run scripts/contract/verify_openapi.dart
 ## Code of Conduct
 
 By participating in this project, you agree to abide by the
-[Code of Conduct](.github/CODE_OF_CONDUCT.md). Please be respectful and
+[Code of Conduct](CODE_OF_CONDUCT.md). Please be respectful and
 constructive in all interactions.
 
 ---
