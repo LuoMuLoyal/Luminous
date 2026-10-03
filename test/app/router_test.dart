@@ -409,6 +409,73 @@ void main() {
         '/account',
       );
     });
+
+    testWidgets('signed out can change the app language', (tester) async {
+      final container = await _pumpRealRouter(
+        tester,
+        session: _signedOut(),
+        initialLocation: Routes.settingsLanguage,
+      );
+
+      // 语言偏好是本地状态,未登录也要能改,不再被踢到 /login。
+      expect(
+        container.read(appRouterProvider).state.matchedLocation,
+        Routes.settingsLanguage,
+      );
+    });
+
+    testWidgets('signed out is still sent to /login for data export', (
+      tester,
+    ) async {
+      final container = await _pumpRealRouter(
+        tester,
+        session: _signedOut(),
+        initialLocation: Routes.settingsExport,
+      );
+
+      expect(container.read(appRouterProvider).state.matchedLocation, '/login');
+    });
+  });
+
+  group('public route surface', () {
+    test('local-only settings sub-pages need no session', () {
+      const publicLocations = <String>[
+        Routes.settingsTheme,
+        Routes.settingsLanguage,
+        Routes.settingsAccessibility,
+        Routes.settingsHelp,
+        Routes.settingsAbout,
+        Routes.settingsDataStorage,
+        Routes.settingsMore,
+        Routes.settingsFeatureFlags,
+        Routes.settingsNotifications,
+        Routes.settingsNotificationsSleep,
+        Routes.settingsNotificationsDnd,
+        Routes.recordQuickEntrySettings,
+        Routes.recordQuickEntryReorder,
+      ];
+
+      for (final location in publicLocations) {
+        expect(isPublicLocation(location), isTrue, reason: location);
+      }
+    });
+
+    test('account-bound locations stay behind the guard', () {
+      const guardedLocations = <String>[
+        Routes.profile,
+        Routes.account,
+        Routes.accountChangeEmail,
+        Routes.accountSessions,
+        Routes.accountSecurityCenter,
+        Routes.settingsExport,
+        Routes.settingsAi,
+        Routes.recordCreate,
+      ];
+
+      for (final location in guardedLocations) {
+        expect(isPublicLocation(location), isFalse, reason: location);
+      }
+    });
   });
 
   group('typed route .location generates correct URL', () {

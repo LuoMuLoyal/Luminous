@@ -112,6 +112,15 @@ The following routes are accessible without signing in so the app can be opened 
 - `/mine/sync/failures` — 同步失败页（列入 `_publicRoutePrefixes`）：只展示本地待同步队列的
   诊断信息，不触达服务端数据；Mine 页在未登录预览态同样渲染失败横幅（`MineSyncFailedBanner`
   消费 `syncFailedCountProvider`），故点击后保持可直接查看，不重定向到 `/login`。
+- 只读写本地状态的设置子页（列入 `_publicRoutePrefixes`）：`/settings/theme`、
+  `/settings/language`、`/settings/accessibility`、`/settings/help`、`/settings/about`、
+  `/settings/data-storage`、`/settings/more`（含 `/settings/more/feature-flags`）、
+  `/settings/notifications`（含 `/sleep`、`/dnd`）、`/record/quick-entry-settings`（含 `/reorder`）。
+  `/settings` 本身已公开并渲染这些入口行，把目标页留在守卫内只会让未登录用户点进去后静默
+  跳 `/login`——语言/主题/字号/缓存这类偏好不依赖账号；通知偏好未登录时走
+  `NotificationSettingsController` 的本地分支（不做远端同步），快速记录设置存在
+  `SharedPreferences`。账号绑定的设置仍受守卫：`/profile`、`/account*`、`/settings/export`、
+  `/settings/ai`——后两者的入口行自身用 `pushAuthRequiredRoute` 弹登录引导。
 
 All other routes require an authenticated session. The redirect guard sends unauthenticated users
 to `/login` only when they reach a non-public, non-auth route, and it redirects authenticated users

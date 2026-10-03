@@ -138,7 +138,33 @@ const _publicRoutePrefixes = <String>[
   // 页在未登录预览态也会渲染失败横幅，保持点击后可直接查看（与改造前
   // 的详情对话框行为一致）。
   Routes.mineSyncFailures,
+  // 只读写本地状态的设置子页。`/settings` 本身已是公开路由并渲染这些
+  // 入口，把目标页留在守卫内只会让未登录用户点进去后静默跳 /login——
+  // 语言、主题、字号、缓存这类偏好从来不需要账号。通知偏好未登录时
+  // `NotificationSettingsController` 走本地分支（不做远端同步），快速
+  // 记录设置存在 SharedPreferences（`/settings/more` 前缀同时覆盖
+  // feature-flags）。账号绑定的设置仍留在守卫内：`/profile`、`/account*`、
+  // `/settings/export`、`/settings/ai`，其中后两者的入口行本身用
+  // `pushAuthRequiredRoute` 弹登录引导。
+  Routes.settingsTheme,
+  Routes.settingsLanguage,
+  Routes.settingsAccessibility,
+  Routes.settingsHelp,
+  Routes.settingsAbout,
+  Routes.settingsDataStorage,
+  Routes.settingsMore,
+  Routes.settingsNotifications,
+  Routes.recordQuickEntrySettings,
 ];
+
+/// 该 location 是否允许未登录访问。
+///
+/// 由 redirect 守卫使用；同时对外暴露给路由守卫测试，使「哪些入口属于
+/// 公开面」可以被断言，而不必在测试里把每个页面都 pump 一遍。
+@visibleForTesting
+bool isPublicLocation(String location) =>
+    _publicRoutePrefixes.any((prefix) => location.startsWith(prefix)) ||
+    _publicRootRoutes.contains(location);
 
 /// Top-level routes that can be visited while signed out so the user can
 /// preview the app before deciding to sign in.
@@ -191,9 +217,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
         location.startsWith('/login') ||
         location.startsWith('/register') ||
         location.startsWith('/forgot-password');
-    final isPublicRoute =
-        _publicRoutePrefixes.any((prefix) => location.startsWith(prefix)) ||
-        _publicRootRoutes.contains(location);
+    final isPublicRoute = isPublicLocation(location);
 
     // Public routes (including the main shell tabs) are accessible without
     // signing in so the app opens in preview mode. All other routes require
