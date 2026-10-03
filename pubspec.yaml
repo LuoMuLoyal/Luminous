@@ -168,6 +168,12 @@ flutter_native_splash:
   web: true
 
 flutter:
+  # iOS：paddle_ocr_native（本仓 vendored fork）与 flutter_image_compress_common 尚未支持
+  # Swift Package Manager，二者走 CocoaPods、其余插件走 SwiftPM 时，链接期报
+  # 460 duplicate symbols（libwebp 同时来自 CocoaPod 与 SwiftPM 依赖）。
+  # 项目级关闭 SwiftPM，让 iOS 依赖统一走 CocoaPods；迁移计划见 docs/TODO.md。
+  config:
+    enable-swift-package-manager: false
   uses-material-design: true
   generate: true
   assets:
