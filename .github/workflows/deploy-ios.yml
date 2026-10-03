@@ -31,7 +31,7 @@ jobs:
       WECHAT_MOBILE_APP_ID: ${{ secrets.WECHAT_MOBILE_APP_ID }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -41,7 +41,7 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
@@ -50,7 +50,7 @@ jobs:
       # paddle_ocr_native 的 onnxruntime-objc / OpenCV / Yams 是二进制 pod，
       # 缓存 spec 仓库与下载包，避免每次重跑都重新拉取。
       - name: Cache CocoaPods
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cocoapods
           key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile', 'pkgs/**/*.podspec') }}
@@ -132,14 +132,14 @@ jobs:
           ls -lh Luminous-unsigned.ipa
 
       - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: luminous-ios-unsigned-ipa
           path: build/ios/iphoneos/Luminous-unsigned.ipa
           if-no-files-found: error
 
       - name: Upload Dart symbols
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: luminous-ios-symbols
           path: build/symbols-ios
@@ -152,7 +152,7 @@ jobs:
       # 拿不到依赖树（2026-10-03 的 libwebp 重复符号就是这种情况）。
       - name: Upload Podfile.lock
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: luminous-ios-podfile-lock
           path: ios/Podfile.lock
