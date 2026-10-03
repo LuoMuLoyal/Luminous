@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-02
+updated: 2026-10-03
 ---
 
 # Project Governance
@@ -90,7 +90,10 @@ dart run scripts/workflows/daily.dart
 
 ## CI/CD
 
-- `deploy-web.yml` 在 Flutter Web 构建前校验 secrets 存在性：`LUCENT_BASE_URL` 必填非空，防止空字符串注入 `--dart-define`。
+- 三个发布工作流都先校验 `LUCENT_BASE_URL` 非空再构建：必填缺失直接失败，避免发出访问不到后端的包；可选变量（`SENTRY_DSN`、`SUPPORT_EMAIL`、`JPUSH_APP_KEY`、`WECHAT_*`）缺失只 warning 并关闭对应能力。
 - `deploy-web.yml` 的 Flutter Web 发布构建为纯 dart2js + canvaskit（不用 `--wasm`：wasm 默认渲染器 skwasm 在移动浏览器有布局 bug），服务移动 web 主战场（安卓 Chrome / 鸿蒙过渡）；桌面/大屏 Web 冻结，不扩展构建形态。
-- workflow 按关注点拆分（`ci.yml` 门禁 / `deploy-web.yml` 发布），见 `.github/workflows/README.md`。
+- workflow 按关注点拆分：`ci.yml` 只做门禁，发布按平台拆成 `deploy-android.yml` / `deploy-ios.yml` / `deploy-web.yml`，见 `.github/workflows/README.md`。校验与产物分属不同文件，产物失败不牵连 PR 门禁，权限也各自最小化。
+- `deploy-ios.yml` 跑在 GitHub 托管 `macos-latest` 上，用 `flutter build ios --release --no-codesign` 产出未签名 IPA：开发机是 Windows，本地无法编译 iOS，CI 同时是唯一的编译验证面。签名分发与 TestFlight 需要 Apple 证书与描述文件，未接入（见 `docs/TODO.md`）。
+- 发布工作流把 secret 先落到 job/step 的 `env:`，再以 `--dart-define=KEY="${KEY}"` 引用，不把 secret 直接插进命令行。
+- 四个 workflow 都必须先 `Bootstrap generated sources` 再 `Build generated API client`：`generated/lucent_api` 是独立 package，根 `build_runner` 不会替它生成被 gitignore 的 `*.g.dart`，缺这步 `flutter build` / `flutter analyze` 在编译期直接失败。
 - 环境变量明细见 [AI_Development_Workflow](ai-development-workflow.md)。

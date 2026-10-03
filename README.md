@@ -98,10 +98,11 @@ If you want shorter full-stack commands, copy `.env.example` to `.env`, fill in 
 
 ## CI
 
-- GitHub Actions workflows: `.github/workflows/ci.yml` (validation + release APK) and
-  `.github/workflows/deploy-web.yml` (Flutter Web → GitHub Pages). See
-  `.github/workflows/README.md`.
-- Current CI scope: ARB fragment merge, generated-source bootstrap, generated API client build, generated-docs check, `flutter analyze`, `flutter test --coverage`, and a release APK build on `main`.
+- GitHub Actions workflows are split by concern: `.github/workflows/ci.yml` is validation only; each release lives in its own file — `deploy-android.yml` (release APK), `deploy-ios.yml` (unsigned IPA on a macOS runner), `deploy-web.yml` (Flutter Web → GitHub Pages). See `.github/workflows/README.md`.
+- `ci.yml` scope: ARB fragment merge, generated-source bootstrap, generated API client build, generated-docs check, `flutter analyze`, `flutter test --coverage`. It produces no release artifacts, so it runs on every push and pull request.
+- Releases trigger on `push` to their branch (`main` for Android/iOS, `refactor` for Web) or on manual `workflow_dispatch`, which can run from any branch.
+- iOS is built on GitHub-hosted `macos-latest` with `flutter build ios --release --no-codesign`, so the Windows development host does not need Xcode: the workflow produces an unsigned `luminous-ios-unsigned-ipa` artifact plus Dart symbols. Re-sign locally (Sideloadly / AltStore with your own Apple ID) to install it on a device. Signing certificates / provisioning profiles and TestFlight distribution are not wired up yet — see `docs/TODO.md`.
+- Release build inputs come from repository secrets/variables: `LUCENT_BASE_URL` (required — the run fails rather than shipping an artifact that cannot reach the API), plus optional `SENTRY_DSN`, `SUPPORT_EMAIL`, `JPUSH_APP_KEY`, `WECHAT_MOBILE_APP_ID`, `WECHAT_IOS_UNIVERSAL_LINK`. Missing optional values only disable the matching feature and emit a warning.
 - `deploy-web.yml` builds and publishes Flutter Web to GitHub Pages; it auto-triggers on `push` to `refactor` (not `main`).
 - `integration_test/` currently contains two different lanes:
   - offline/mock-driven integration flows that exercise the real app shell and feature pages without a Lucent runtime

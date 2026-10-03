@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-08-31
+updated: 2026-10-03
 ---
 
 # AI Development Workflow
@@ -59,15 +59,25 @@ flutter run \
 
 ## CI/CD Environment Variables
 
-`.github/workflows/deploy-web.yml` 构建期用 `--dart-define` 注入以下变量（配置位置：Repository Settings → Secrets and variables → Actions）：
+配置位置：Repository Settings → Secrets and variables → Actions。工作流拆分与触发见
+[workflows README](../../.github/workflows/README.md)。`ci.yml` 只做校验，不注入任何
+运行期变量；下表由发布工作流消费。
 
-| Variable | Source | Description |
-|----------|--------|-------------|
-| `LUCENT_BASE_URL` | GitHub Secrets | Backend API base URL（必填，构建前做非空校验） |
-| `SENTRY_DSN` | GitHub Secrets | Sentry DSN（可选：未设置则禁用 Sentry；已设置但不符合 `https://<key>@<host>/<project>` 格式则构建失败） |
-| `LUMINOUS_EXPERIMENTAL_AI_RUNTIME` | GitHub Variables | Enable experimental AI runtime（默认 `false`） |
-| `LUMINOUS_AI_RUNTIME_PROVIDER` | GitHub Variables | AI runtime provider（工作流回退值 `openai`，运行时按 `none` 处理） |
-| `LUMINOUS_ENABLE_GEN_UI` | GitHub Variables | Enable GenUI features（默认 `false`） |
+| Variable | Source | 消费方 | Description |
+|----------|--------|--------|-------------|
+| `LUCENT_BASE_URL` | GitHub Secrets | `deploy-android` / `deploy-ios` / `deploy-web` | Backend API base URL。三个发布工作流都要求非空，缺失直接失败 |
+| `SENTRY_DSN` | GitHub Secrets | 同上 | Sentry DSN（可选：未设置则禁用 Sentry） |
+| `SUPPORT_EMAIL` | GitHub Variables | 同上 | 帮助页反馈邮箱，默认 `support@luminous.app`（后端 `AppInfo.supportEmail` 优先） |
+| `JPUSH_APP_KEY` | GitHub Secrets | `deploy-android` / `deploy-ios` | JPush AppKey；Android 侧同时作为 Gradle 环境变量填 manifest，缺失则推送静默禁用 |
+| `WECHAT_MOBILE_APP_ID` | GitHub Secrets | `deploy-android` / `deploy-ios` | 微信开放平台 AppId；iOS 侧同时写入 `ios/Flutter/Wechat.xcconfig` 供 `CFBundleURLSchemes` 展开 |
+| `WECHAT_IOS_UNIVERSAL_LINK` | GitHub Variables | `deploy-ios` | 微信 Universal Link；仍需在 Apple 账号侧配置 Associated Domains 才可用 |
+| `LUMINOUS_EXPERIMENTAL_AI_RUNTIME` | GitHub Variables | `deploy-web` | Enable experimental AI runtime（默认 `false`） |
+| `LUMINOUS_AI_RUNTIME_PROVIDER` | GitHub Variables | `deploy-web` | AI runtime provider（工作流回退值 `openai`，运行时按 `none` 处理） |
+| `LUMINOUS_ENABLE_GEN_UI` | GitHub Variables | `deploy-web` | Enable GenUI features（默认 `false`） |
+
+`deploy-web.yml` 另外在构建前校验：`SENTRY_DSN` 若已设置，必须符合
+`https://<key>@<host>/<project>` 格式，否则构建失败。最后三个 `LUMINOUS_*` 是 Web
+实验运行时开关，只由 Web 发布注入；移动端发布保持产品默认（关闭）。
 
 ## Verification Expectations
 
