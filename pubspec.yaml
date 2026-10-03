@@ -62,7 +62,7 @@ dependencies:
   fl_chart: ^1.2.0
   table_calendar: ^3.2.0
   cached_network_image: ^3.4.1
-  shimmer: ^3.0.0
+  shimmer: ^4.0.0
   flutter_animate: ^4.5.2
   lucent_api:
     path: generated/lucent_api
