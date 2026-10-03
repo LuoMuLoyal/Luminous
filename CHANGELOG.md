@@ -48,7 +48,7 @@ considered stable.
 
 ### Added
 
-- **Five-tab shell** — Today / Record / Medicine / Report / Mine with
+- **Five-tab shell** — Today / Record / Medicine / Review / Mine with
   responsive layout (mobile bottom nav + desktop sidebar).
 - **Authentication** — credential login + registration, WeChat OAuth (mobile
   SDK via fluwx, desktop browser callback, web callback), Apple Sign-In,

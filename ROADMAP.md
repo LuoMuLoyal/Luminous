@@ -18,7 +18,7 @@ separately after user-value research.
 
 **What works today**
 
-- Five-tab shell: Today / Record / Medicine / Report / Mine
+- Five-tab shell: Today / Record / Medicine / Review / Mine
 - Authentication: credential login + WeChat OAuth (mobile SDK + desktop
   browser), Apple Sign-In, QQ OAuth, Security PIN, OAuth-only account deletion
   via email verification code
@@ -187,13 +187,13 @@ Broaden platform reach and prepare for larger scale.
 | `2.0.0`     | Scale & platform     | Planned     |
 
 Releases follow [Semantic Versioning](https://semver.org/). Each release passes
-the full `flutter analyze` + `flutter test` + `dart run scripts/run_daily_checks.dart`
+the full `flutter analyze` + `flutter test` + `dart run scripts/workflows/daily.dart`
 gate before publish.
 
 Current product direction and rationale: see
-[Product Vision](docs/product/Product_Vision.md),
-[MVP Scope](docs/product/Product_MVP_Scope.md), and
-[Product Context](CONTEXT.md).
+[Product Vision](docs/product/product-vision.md),
+[MVP Scope](docs/product/product-mvp-scope.md), and
+[Safety & Privacy](docs/product/product-safety-privacy.md).
 
 ## Contributing
 
