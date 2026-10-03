@@ -58,6 +58,19 @@ Product Loop Program 的延后项如下。
 
 ## 2026-10-03 移动端产物缺口（开发机为 Windows，iOS 只能靠 CI 验证）
 
+- SwiftPM 迁移未完成（项目级暂时关闭）
+  - 现状：`pubspec.yaml` 的 `flutter.config.enable-swift-package-manager: false` 让 iOS 依赖
+    全部走 CocoaPods。原因是 `paddle_ocr_native`（本仓 `pkgs/` 下的 vendored fork）与
+    `flutter_image_compress_common` 都没有 `Package.swift`：它们留在 CocoaPods、其余插件
+    走 SwiftPM 时，链接期报 460 duplicate symbols（`libwebp` 同时来自 CocoaPod 与 SwiftPM
+    依赖）
+  - 约束：Flutter 会把「插件不支持 SPM」从警告升级为错误，且 CocoaPods 注册表
+    2026-12-02 起转为只读
+  - 方案：给 vendored 的 `paddle_ocr_native` 补 `Package.swift`（本仓自有包，可自主改），
+    跟踪 `flutter_image_compress_common` 上游的 SPM 支持，然后重新打开 SwiftPM 并定位
+    `libwebp` 的两个提供方——首次构建跑通后可从 `luminous-ios-podfile-lock` 产物读
+    `Podfile.lock` 依赖树
+
 - Android 产物没有 release 签名
   - 现状：`deploy-android.yml` 产出的 APK 在仓库没有 `android/key.properties` 时走 debug
     签名（`android/app/build.gradle.kts` 的 `hasReleaseSigning` 分支），可安装但不可上架
