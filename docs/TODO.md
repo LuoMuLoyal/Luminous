@@ -193,15 +193,22 @@ Product Loop Program 的延后项如下。
   与过度换行；Pixel 8 Pro 模拟器（约 448dp）与现有 widget 测试（多为 390x844 @ 1.0）
   都覆盖不到。已修的是「未知路由」这一处崩溃（`openRoute` 现在先与路由表对账，
   不再渲染 go_router 的 Page Not Found）；布局类仍待处理：
+  - 两个放大机制：① App 有意无视系统字号，只用自身 4 档（0.85/1.0/1.15/1.3，`bootstrap.dart`
+    的 `textScaler` 覆盖），且无 clamp；② Forui `FDialogStyle.insetPadding` 默认水平各
+    40dp，360dp 上任何对话框内容只剩 ~240dp（`FBadge` 又是 `IntrinsicWidth`，永不收缩）。
   - 统一收敛模式：`Row` 里 trailing 的 chip / 按钮 / 图标不得独占固有宽度——文案侧给
-    `Expanded`/`Flexible` + ellipsis，窄屏大字号时让 chip 换行（`Wrap`）或下移一行。
+    `Expanded`/`Flexible` + maxLines/ellipsis，窄屏大字号时让 chip 换行（`Wrap`）或下移一行。
     首批命中：Today 主建议卡标题行（`suggestion_primary_card.dart` 的 title + 主操作按钮）、
     `_ObservationTile`（`observation.dart`，For reference 徽章把标题挤成多行）、
     `SignInHintBanner`（`core/widgets/common/feedback/page_state.dart`）。
-  - 对话框 / 日历：body 必须可滚动、按钮标签 `Flexible` + ellipsis。首批命中：记录页
-    「Quick record help」（底溢出）、无药品弹窗（按钮右溢出）、日期选择器头部（右溢出）。
+  - 对话框 / 日历：`DialogShell` 已有 `scrollable` 默认 true，但 34 处传了 `scrollable: false`
+    且不给 `maxHeight`（记录页 Quick record help 底溢出即此）；右下角双按钮 Row 在 ~10 处重复，
+    需要共享的 action row（Flexible 按钮 + 标签 ellipsis 或窄屏改 Wrap 堆叠）；
+    日期选择器两处手搓 `FCalendar.splitGrid`（需 7×44=308dp 宽）应改走已有的
+    `core/widgets/common/control/date_picker.dart`（`FCalendar.grid`）。
   - 补 sweep 测试：五标签页与主要子页在 360x800 / 320x720 × 字缩放 1.3 下断言无溢出
-    （现无任何测试覆盖 ≤360dp 或 >1.0 缩放）。
+    （现无任何测试覆盖 ≤360dp 或 >1.0 缩放；`Breakpoints.compact` 目前是死代码）。
+    断言用整测收集 `FlutterError.onError` 里的 `overflowed`，而不是单帧 `takeException`。
 
 ## 2026-10-04 助手能力口径（面板「全局可用」与本轮工具子集不一致）
 
