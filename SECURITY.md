@@ -59,3 +59,21 @@ Luminous implements the following security measures:
 - Compile-time environment variables for sensitive configuration (`--dart-define`)
 - AI assistant proposals require explicit user confirmation before writing data
 - User-controlled assistant memory and context source toggles
+- Coverage-aware display: missing data is rendered as unknown rather than zero, and thin
+  evidence produces an abstention state instead of a weaker claim
+- Safety conclusions are never authored by the model — drug risk and red-flag content come
+  from rules, leaflets or curated data, and the client renders the model's explanation only
+- Field-level authorisation on visit summaries, with free-text notes off by default; the
+  preview, exported PDF and public share page all read the same filtered view
+- Share links are revocable, expire, store only a token hash, and expose an access count
+- Provenance is shown per assertion, so a displayed conclusion can be traced back to its
+  source rather than trusted as narration
+- Client-side analytics events are a closed union of typed variants with no free-text or
+  metadata slot, so they structurally cannot carry health content
+- Error reporting sets `sendDefaultPii = false` and disables automatic failed-request
+  capture, so Sentry receives no request bodies; the only custom tag added is the backend
+  trace id
+
+See [docs/product/product-safety-privacy.md](docs/product/product-safety-privacy.md) for the
+product safety boundary in full. Third-party packages and their licences are listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
