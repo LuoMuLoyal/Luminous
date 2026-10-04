@@ -25,6 +25,7 @@ is the machine projection; the interpretive contract lives in
 
 | Name | Type | Value | Docs |
 | --- | --- | --- | --- |
+| `designBaselineTextWidth` | `double` | `320` | 忽略缩放也要保住的设计基线文字宽度（逻辑像素）。 |
 | `dialogMaxWidth` | `double` | `360` | Standard dialog max width (calendar pickers, form dialogs). |
 | `wideDialogMaxWidth` | `double` | `420` | Wider dialog max width (confirmations, account settings). |
 | `dialogStandardMaxWidth` | `double` | `440.0` | Standard compact dialog max width (quick-entry selection dialogs). |
