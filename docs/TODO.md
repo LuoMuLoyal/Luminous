@@ -187,6 +187,20 @@ Product Loop Program 的延后项如下。
   - 方案：为 SSE 单独提供 fetch + ReadableStream 的 `HttpClientAdapter`（或 Web 分支改用
     EventSource / `package:http` BrowserClient），需评估与鉴权拦截器、401 刷新路径的兼容性。
 
+## 2026-10-04 硬编码文案迁移后仍留在代码里的三类串
+
+- **记录指标中文标题会落库并上报**：`health_data/data/mappers/health_record_mapping.dart` 的
+  12 处（`心率/血压/血氧/…`）作为 `DailyRecordCreateInput.title` 写入本地库并 POST 给 Lucent，
+  不是纯展示文案——本地化需要「稳定指标键 + 渲染期查文案」，同时要能给已存的旧中文行兜底；
+  另一条路是服务端拥有标题文案。属产品/后端决策（Lucent 侧见 `Lucent/docs/TODO.md`）。
+- **超时哨兵不统一**：`review/presentation/providers/{dashboard,review}.dart` 的 4 处
+  `review_*_timeout` 与已统一到 `NetworkErrorCode.receiveTimeout` 的 4 处客户端超时诊断语义相同；
+  它们本身是稳定 code（非文案），本次未动，可后续合并。
+- **prompt/关键词类中文不属文案**：OCR 纠错表与单位词表（`scan/domain/services/
+  medicine_ocr_extractor.dart`）、命令面板模糊搜索别名（`core/widgets/common/dialog/
+  command_palette.dart`）、日志文案、`DateFormat` 格式串——已确认不上屏，保持原状；
+  若后续要支持多语言输入匹配，需要按语言维护词表而不是搬进 ARB。
+
 ## 2026-10-04 窄屏 sweep 的缩放放置（弹窗文本未被覆盖）
 
 - `test/a11y/compact_text_scale_sweep_test.dart` 每个用例把 `scaledForTextScale` 包在
