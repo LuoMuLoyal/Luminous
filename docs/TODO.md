@@ -187,6 +187,18 @@ Product Loop Program 的延后项如下。
   - 方案：为 SSE 单独提供 fetch + ReadableStream 的 `HttpClientAdapter`（或 Web 分支改用
     EventSource / `package:http` BrowserClient），需评估与鉴权拦截器、401 刷新路径的兼容性。
 
+## 2026-10-04 窄屏 sweep 的缩放放置（弹窗文本未被覆盖）
+
+- `test/a11y/compact_text_scale_sweep_test.dart` 每个用例把 `scaledForTextScale` 包在
+  `TestForuiApp.home` **之内**，而弹窗挂在根 Navigator 上（`home` 之外）——所以 sweep
+  只覆盖页面文本，弹窗文本在任何缩放下几何完全相同（实测 1.3/1.5/2.0 一致）。
+  头像裁剪弹窗的 57px 底溢正是因此漏网。
+- 当前弹窗覆盖靠两个专门用例：`test/core/widgets/date_picker_test.dart` 与
+  `test/core/widgets/avatar_crop_dialog_test.dart`，它们把缩放包在 MaterialApp **之上**。
+- 若要 sweep 一并覆盖弹窗，需要把缩放上移到 `TestForuiApp` 之外（32 处用例机械改写）；
+  页面断言不受影响（页面对两种放置都缩放），但改写前应先确认无页面依赖 `home` 内的
+  MediaQuery 层级。
+
 ## 2026-10-04 助手能力口径（面板「全局可用」与本轮工具子集不一致）
 
 - 真机反馈：能力面板显示工具全部可用，但问「你在吗」时助手回答「这次运行里我也没有可用的记录类
