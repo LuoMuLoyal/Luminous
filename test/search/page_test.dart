@@ -99,8 +99,6 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
-      // Source filter: a wrapped label used to turn the lifted indicator into
-      // a three-line card, ~90dp tall at this scale.
       // Source filter: the labels used to wrap to two/three lines and blow the
       // lifted indicator up to 113dp at this viewport and scale.
       final filterHeight = tester
