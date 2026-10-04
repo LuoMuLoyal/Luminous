@@ -35,7 +35,24 @@ class DialogShell extends StatelessWidget {
       bottom: padding.bottom + MediaQuery.viewInsetsOf(context).bottom,
     );
 
+    // Forui 的 `FDialogStyle.insetPadding` 默认左右各 40dp:360dp 真机上任何对话框
+    // 内容只剩约 240dp,而 FCalendar 的日期网格需要 7×44=308dp——分隔头部因此右溢
+    // 44px、日期列被裁。窄屏收窄 inset(一处收口,所有对话框一起受益),宽屏保持默认。
+    final compact = LayoutScaleResolver.isCompact(
+      MediaQuery.sizeOf(context).width,
+    );
+
     return FDialog(
+      style: compact
+          ? const .delta(
+              insetPadding: .value(
+                EdgeInsets.symmetric(
+                  horizontal: Spacing.sm,
+                  vertical: Spacing.xl,
+                ),
+              ),
+            )
+          : const .context(),
       constraints: BoxConstraints(
         minWidth: 0,
         maxWidth: maxWidth,
