@@ -577,6 +577,7 @@
   "scanModelDownloadFailedTitle": "Model Download Failed",
   "scanModelDownloadFailedMessage": "Failed to download model files. Please check your network and try again.",
   "scanModelDownloadRetry": "Retry",
+  "scanRetryAction": "Scan again",
   "medicineDetailPageTitle": "Medicine details",
   "medicineDetailErrorTitle": "Failed to load medicine details",
   "medicineDetailErrorDescription": "Check your network and try again",

@@ -584,6 +584,7 @@
   "scanModelDownloadFailedTitle": "模型下载失败",
   "scanModelDownloadFailedMessage": "模型文件下载失败，请检查网络后重试。",
   "scanModelDownloadRetry": "重试",
+  "scanRetryAction": "重新扫描",
   "medicineDetailPageTitle": "药品详情",
   "medicineDetailErrorTitle": "药品详情加载失败",
   "medicineDetailErrorDescription": "请检查网络后重试",

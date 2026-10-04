@@ -26,6 +26,32 @@ import 'package:permission_handler/permission_handler.dart';
 const _scanFrameWidth = 280.0;
 const _scanFrameHeight = 120.0;
 
+/// Barcode recognition lifecycle for one page visit — the single place that
+/// decides whether a camera frame may start a recognition.
+///
+/// Failure contract (see `lib/features/scan/README.md`「陷阱与决策」): a failed
+/// attempt lands in [_ScanPhase.failed], where the camera is left stopped and
+/// nothing re-arms it. Only an explicit「重试」tap ([_retryScan]) starts a new
+/// attempt, so a barcode that is still inside the frame cannot produce a
+/// recognition loop. There is deliberately no timer / cooldown / automatic
+/// retry: with no automatic re-arm, a debounce would guard nothing.
+enum _ScanPhase {
+  /// Camera running; the next detection may start a recognition.
+  scanning,
+
+  /// Barcode captured, camera stopped, search in flight.
+  searching,
+
+  /// Recognition found nothing (or the search failed). One failure toast was
+  /// shown and the camera is stopped, awaiting an explicit retry.
+  failed,
+
+  /// A result sheet / candidate picker is showing (camera stays stopped, as
+  /// before). Kept apart from [failed] so a shown result can never be
+  /// mistaken for a failed attempt.
+  result,
+}
+
 class BarcodeScannerPage extends ConsumerStatefulWidget {
   const BarcodeScannerPage({super.key});
 
@@ -36,8 +62,7 @@ class BarcodeScannerPage extends ConsumerStatefulWidget {
 class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
     with WidgetsBindingObserver {
   MobileScannerController? _controller;
-  bool _hasScanned = false;
-  bool _isSearching = false;
+  _ScanPhase _phase = _ScanPhase.scanning;
   bool _permissionDenied = false;
   bool _torchOn = false;
 
@@ -94,13 +119,14 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   }
 
   Future<void> _handleDetect(BarcodeCapture capture) async {
-    if (_hasScanned || _isSearching) return;
+    // Single recognition gate: only a scanning page may start an attempt, so
+    // the frames that keep arriving while a search runs, while a result sheet
+    // is open, or after a failure cannot trigger another recognition.
+    if (_phase != _ScanPhase.scanning) return;
     final barcode = capture.barcodes.firstOrNull;
     if (barcode == null || barcode.rawValue == null) return;
 
-    _hasScanned = true;
-    _isSearching = true;
-    if (mounted) setState(() {});
+    _setPhase(_ScanPhase.searching);
     await _controller?.stop();
 
     final repo = ref.read(scanRepositoryProvider);
@@ -114,16 +140,13 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
       );
 
       if (items.isEmpty) {
-        unawaited(
-          Toast.show(
-            context,
-            AppLocalizations.of(context)!.scanBarcodeNotFoundToast,
-          ),
+        _handleRecognitionFailure(
+          AppLocalizations.of(context)!.scanBarcodeNotFoundToast,
         );
-        _resetScanning();
         return;
       }
 
+      _setPhase(_ScanPhase.result);
       if (items.length == 1) {
         _showScanResultSheet(items.first);
       } else {
@@ -134,18 +157,41 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
           .read(talkerProvider)
           .error('BarcodeScannerPage._handleDetect: failed: $e');
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
-        unawaited(Toast.show(context, l10n.scanRecognitionFailedToast));
-        _resetScanning();
+        _handleRecognitionFailure(
+          AppLocalizations.of(context)!.scanRecognitionFailedToast,
+        );
       }
-    } finally {
-      _isSearching = false;
     }
   }
 
-  void _resetScanning() {
-    _hasScanned = false;
+  /// Single writer for [_phase]: only calls [setState] while mounted, and
+  /// never notifies for a no-op transition.
+  void _setPhase(_ScanPhase phase) {
+    if (_phase == phase) return;
+    _phase = phase;
     if (mounted) setState(() {});
+  }
+
+  /// Failure path: exactly one failure signal (the toast) and the page parks
+  /// in [_ScanPhase.failed], leaving the camera stopped.
+  ///
+  /// Nothing here restarts the controller — no `start()`, no timer, no
+  /// `Future.delayed`. The previous `_resetScanning()` did exactly that right
+  /// after the toast, and since the unrecognised barcode is still inside the
+  /// scan frame the restarted scanner re-detected it on the next frame, so the
+  /// toast/search repeated as fast as the search round trip. Recovery is the
+  /// explicit「重试」button wired to [_retryScan].
+  void _handleRecognitionFailure(String message) {
+    unawaited(Toast.show(context, message));
+    _setPhase(_ScanPhase.failed);
+  }
+
+  /// Explicit recovery: the only path that re-arms the detector after a failed
+  /// attempt. Guarded to [_ScanPhase.failed] so a double tap cannot start the
+  /// camera twice.
+  void _retryScan() {
+    if (_phase != _ScanPhase.failed) return;
+    _setPhase(_ScanPhase.scanning);
     unawaited(_controller?.start());
   }
 
@@ -403,7 +449,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                         children: [
                           // 相机预览恒为深色：底部引导文字/图标固定白色，不随主题变化
                           Text(
-                            _isSearching
+                            _phase == _ScanPhase.searching
                                 ? l10n.scanRecognizingHint
                                 : l10n.scanGuideHint,
                             textAlign: TextAlign.center,
@@ -411,7 +457,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                               color: const Color(0xFFFFFFFF),
                             ),
                           ),
-                          if (_isSearching) ...[
+                          if (_phase == _ScanPhase.searching) ...[
                             const SizedBox(height: Spacing.md),
                             const SizedBox(
                               width: 24,
@@ -420,6 +466,15 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                             ),
                           ],
                           const SizedBox(height: Spacing.lg),
+                          // 显式重试：失败后唯一重新武装相机的入口（相机在失败时保持
+                          // 停止，不自动重启——见 _handleRecognitionFailure）。
+                          if (_phase == _ScanPhase.failed) ...[
+                            FButton(
+                              onPress: _retryScan,
+                              child: Text(l10n.scanRetryAction),
+                            ),
+                            const SizedBox(height: Spacing.md),
+                          ],
                           FButton(
                             variant: FButtonVariant.ghost,
                             onPress: _goToManualSearch,

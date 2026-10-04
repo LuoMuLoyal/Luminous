@@ -50,3 +50,12 @@
 - `PaddleOcr` 是进程级单例,`PaddleOcrEngine` 只是懒初始化包装;测试的 fake 必须在
   创建 engine 之前安装(paddle_ocr_provider_test.dart 的顺序依赖)。
 - 批准文号 OCR 纠错映射(`medicine_ocr_extractor.dart`)是单向幂等,勿反向使用。
+- 条码页失败契约(`presentation/pages/barcode_scanner.dart` 的 `_ScanPhase`):识别无
+  结果或搜库 Left 时只发一次失败 toast(`scanBarcodeNotFoundToast` /
+  `scanRecognitionFailedToast`),相机保持停止,页面进入 `failed` 相位;没有任何
+  timer / 自动 `start()` 重新武装识别——只有页面底部显式「重试」按钮
+  (`_retryScan`,仅允许从 `failed` 出发,防连点)会重启相机并允许下一次识别。
+  每次识别尝试都从 `scanning` 相位的单点闸门进入,故不存在按帧识别或失败后快速重试
+  (旧实现失败后立即 `controller.start()`,条码仍在取景框内 → 下一帧再次识别,重试
+  频率 = 搜库往返时间)。「重试」按钮复用已有的 `scanModelDownloadRetry` 文案
+  (本页暂无专属 rescan 键)。

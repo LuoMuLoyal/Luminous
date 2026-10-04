@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
@@ -25,6 +27,8 @@ import '../auth/test_helpers.dart';
 import '../helpers/mocks/health_context.dart';
 import '../helpers/mocks/scan.dart';
 import '../helpers/test_forui_app.dart';
+// Prefixed: the auth test helpers below also export session notifiers.
+import '../helpers/test_helpers.dart' as screen;
 
 void main() {
   late FakePermissionHandlerPlatform fakePermission;
@@ -56,7 +60,7 @@ void main() {
     await fakeScanner.close();
   });
 
-  GoRouter buildRouter() {
+  GoRouter buildRouter({double textScale = 1.0}) {
     return GoRouter(
       initialLocation: '/scan/barcode',
       routes: [
@@ -64,7 +68,10 @@ void main() {
           path: '/scan/barcode',
           // Toasts (added-to-box / precheck unavailable) need an FToaster
           // above the page, mirroring the production bootstrap.
-          builder: (_, _) => const FToaster(child: BarcodeScannerPage()),
+          builder: (_, _) => screen.scaledForTextScale(
+            const FToaster(child: BarcodeScannerPage()),
+            textScale,
+          ),
         ),
         GoRoute(
           path: '/medicine/search',
@@ -105,8 +112,9 @@ void main() {
   Future<void> pumpPage(
     WidgetTester tester, {
     List<Override> overrides = const [],
+    double textScale = 1.0,
   }) async {
-    final router = buildRouter();
+    final router = buildRouter(textScale: textScale);
     addTearDown(router.dispose);
     await tester.pumpWidget(
       ProviderScope(
@@ -520,9 +528,16 @@ void main() {
       expect(find.text('medicine-detail:cn:med-2'), findsOneWidget);
     });
 
-    testWidgets('empty result shows toast and resumes scanning', (
-      tester,
-    ) async {
+    // ── Failure / retry contract ─────────────────────────────────
+    //
+    // A failed attempt emits exactly one failure signal (the toast), leaves the
+    // camera stopped, and never re-arms itself; only the explicit「重试」button
+    // starts a new attempt. These three cases replace the previous
+    //「…resumes scanning」assertions, which pinned the removed rapid-retry
+    // behaviour (`startCalls == 2` right after the failure toast).
+
+    testWidgets('empty result: one failure toast, camera stays stopped, and no '
+        'automatic re-recognition within the window', (tester) async {
       when(
         () => mockRepo.search('6901234567890'),
       ).thenAnswer((_) => TaskEither.right(const <ScanSearchResult>[]));
@@ -531,16 +546,36 @@ void main() {
       await emitBarcode(tester, '6901234567890');
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Scanning resumed -> guide hint visible again and camera restarted.
+      // Exactly one failure signal.
+      expect(find.text(l10n.scanBarcodeNotFoundToast), findsOneWidget);
+      // The camera was stopped for the search and is NOT restarted.
+      expect(fakeScanner.stopCalls, 1);
+      expect(fakeScanner.startCalls, 1);
       expect(find.text(l10n.scanGuideHint), findsOneWidget);
-      expect(fakeScanner.startCalls, 2);
+      // Recovery is an explicit user action.
+      expect(find.text(l10n.scanRetryAction), findsOneWidget);
 
-      // Drain the not-found toast auto-dismiss timer.
+      // Frames that keep arriving with the unrecognised barcode still inside
+      // the scan frame must not start another recognition: over a 10s window
+      // neither the repository nor the camera is touched again. This is the
+      // regression the rapid-retry loop produced (a search per frame, as fast
+      // as the round trip).
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(seconds: 5));
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(seconds: 5));
+
+      verify(() => mockRepo.search('6901234567890')).called(1);
+      expect(fakeScanner.stopCalls, 1);
+      expect(fakeScanner.startCalls, 1);
+
+      // Drain the toast auto-dismiss timer.
       await tester.pump(const Duration(seconds: 2));
       await tester.pump(const Duration(milliseconds: 300));
     });
 
-    testWidgets('search Left shows toast and resumes scanning', (tester) async {
+    testWidgets('search Left: one failure toast, camera stays stopped, and no '
+        'automatic re-recognition within the window', (tester) async {
       when(() => mockRepo.search('6901234567890')).thenAnswer(
         (_) => TaskEither.left(
           LucentFailure.network(
@@ -554,10 +589,90 @@ void main() {
       await emitBarcode(tester, '6901234567890');
       await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text(l10n.scanGuideHint), findsOneWidget);
-      expect(fakeScanner.startCalls, 2);
+      expect(find.text(l10n.scanRecognitionFailedToast), findsOneWidget);
+      expect(fakeScanner.stopCalls, 1);
+      expect(fakeScanner.startCalls, 1);
+      expect(find.text(l10n.scanRetryAction), findsOneWidget);
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(seconds: 5));
+
+      verify(() => mockRepo.search('6901234567890')).called(1);
+      expect(fakeScanner.startCalls, 1);
 
       // Drain the failed-toast auto-dismiss timer.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
+    });
+
+    testWidgets('frames arriving while a recognition is in flight do not start '
+        'another recognition', (tester) async {
+      final gate = Completer<List<ScanSearchResult>>();
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) => TaskEither<LucentFailure, List<ScanSearchResult>>(
+          () async => Right(await gate.future),
+        ),
+      );
+      await pumpPage(tester);
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 50));
+
+      // In flight:「识别中…」and the camera is stopped.
+      expect(find.text(l10n.scanRecognizingHint), findsOneWidget);
+      expect(fakeScanner.stopCalls, 1);
+
+      // More frames of the same barcode while the repository call is open.
+      await emitBarcode(tester, '6901234567890');
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 50));
+
+      verify(() => mockRepo.search('6901234567890')).called(1);
+      expect(fakeScanner.stopCalls, 1);
+
+      // The single in-flight attempt is the one that resolves into the one
+      // failure toast (mocktail reports a call as verified only once, hence
+      // the single `verify` above).
+      gate.complete(const <ScanSearchResult>[]);
+      await flushAsync(tester);
+
+      expect(find.text(l10n.scanBarcodeNotFoundToast), findsOneWidget);
+
+      // Drain the toast auto-dismiss timer.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
+    });
+
+    testWidgets('failed attempt re-arms only through the explicit retry '
+        'button, which allows a new recognition', (tester) async {
+      when(
+        () => mockRepo.search('6901234567890'),
+      ).thenAnswer((_) => TaskEither.right(const <ScanSearchResult>[]));
+      await pumpPage(tester);
+
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(fakeScanner.startCalls, 1);
+      expect(find.text(l10n.scanRetryAction), findsOneWidget);
+
+      await tester.tap(find.text(l10n.scanRetryAction));
+      await tester.pump();
+
+      // The explicit tap re-arms the camera exactly once and the retry
+      // affordance disappears while scanning again.
+      expect(fakeScanner.startCalls, 2);
+      expect(find.text(l10n.scanRetryAction), findsNothing);
+
+      // A new barcode now starts a second attempt.
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 100));
+
+      verify(() => mockRepo.search('6901234567890')).called(2);
+      expect(fakeScanner.stopCalls, 2);
+      expect(find.text(l10n.scanBarcodeNotFoundToast), findsOneWidget);
+
+      // Drain the toast auto-dismiss timer.
       await tester.pump(const Duration(seconds: 2));
       await tester.pump(const Duration(milliseconds: 300));
     });
@@ -570,7 +685,124 @@ void main() {
       verifyNever(() => mockRepo.search('6901234567890'));
     });
   });
+
+  // ── Compact width + largest app text scale ──────────────────────
+  //
+  // The narrow-width layout pass (360 dp / 320 dp @ the app's largest
+  // accessibility scale, 1.3) did not cover the scan page or its result sheet.
+  // Same collector idiom as test/a11y/compact_text_scale_sweep_test.dart; the
+  // failure-state bottom bar is the newest layout here, so it is swept too.
+  group('BarcodeScannerPage - compact width @ textScale 1.3', () {
+    /// Applies [viewport], runs [body], and asserts no `RenderFlex overflowed`
+    /// error was reported while it ran.
+    Future<void> expectNoOverflow(
+      WidgetTester tester,
+      void Function(WidgetTester) viewport,
+      Future<void> Function() body,
+    ) async {
+      viewport(tester);
+      final overflows = <FlutterErrorDetails>[];
+      final previous = FlutterError.onError;
+      FlutterError.onError = (details) {
+        if (details.exceptionAsString().contains('overflowed')) {
+          overflows.add(details);
+        } else {
+          previous?.call(details);
+        }
+      };
+      try {
+        await body();
+      } finally {
+        // Restore before asserting: a failure raised while the custom handler
+        // is installed would surface as a binding error instead of the reason.
+        FlutterError.onError = previous;
+      }
+      expect(
+        overflows,
+        isEmpty,
+        reason: overflows.map((d) => d.exceptionAsString()).join('\n---\n'),
+      );
+    }
+
+    Future<void> pumpFailureState(WidgetTester tester) async {
+      when(
+        () => mockRepo.search('6901234567890'),
+      ).thenAnswer((_) => TaskEither.right(const <ScanSearchResult>[]));
+      await pumpPage(tester, textScale: _sweepTextScale);
+      await emitBarcode(tester, '6901234567890');
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text(l10n.scanRetryAction), findsOneWidget);
+
+      // Drain the toast auto-dismiss timer before leaving the zone.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
+    testWidgets('scan page failure state fits at 360x800', (tester) async {
+      await expectNoOverflow(
+        tester,
+        screen.setCompactPhoneScreenSize,
+        () async {
+          await pumpFailureState(tester);
+        },
+      );
+    });
+
+    testWidgets('scan page failure state fits at 320x720', (tester) async {
+      await expectNoOverflow(tester, screen.setNarrowPhoneScreenSize, () async {
+        await pumpFailureState(tester);
+      });
+    });
+
+    Future<void> pumpResultSheet(WidgetTester tester, {required bool added}) {
+      when(() => mockRepo.search('6901234567890')).thenAnswer(
+        (_) => TaskEither.right(const [
+          // A real cn product name/subtitle pair: long enough to wrap.
+          ScanSearchResult(
+            id: 'med-1',
+            name: '复方氨酚烷胺片(对乙酰氨基酚/金刚烷胺/人工牛黄)',
+            subtitle: '12片/盒 · 国药准字H20003781',
+          ),
+        ]),
+      );
+      return pumpPage(
+        tester,
+        textScale: _sweepTextScale,
+        overrides: [
+          if (added)
+            healthContextSnapshotProvider.overrideWith(
+              (ref) async => boxSnapshotWith(boxItem()),
+            ),
+        ],
+      ).then((_) async {
+        await emitBarcode(tester, '6901234567890');
+        await tester.pump(const Duration(milliseconds: 400));
+        expect(find.text(l10n.scanBarcodeResultTitle), findsOneWidget);
+      });
+    }
+
+    testWidgets('result sheet fits at 360x800', (tester) async {
+      await expectNoOverflow(
+        tester,
+        screen.setCompactPhoneScreenSize,
+        () async {
+          await pumpResultSheet(tester, added: false);
+        },
+      );
+    });
+
+    testWidgets('result sheet (already-added state) fits at 320x720', (
+      tester,
+    ) async {
+      await expectNoOverflow(tester, screen.setNarrowPhoneScreenSize, () async {
+        await pumpResultSheet(tester, added: true);
+      });
+    });
+  });
 }
+
+/// The app's largest accessibility font scale (`FontSizePreference.extraLarge`).
+const double _sweepTextScale = 1.3;
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   @override
