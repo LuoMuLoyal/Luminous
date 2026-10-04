@@ -1008,7 +1008,10 @@ void main() {
 
     // Medicine card: first two isCurrent display names, count badge.
     expect(
-      find.descendant(of: section, matching: find.text('布洛芬、阿莫西林')),
+      find.descendant(
+        of: section,
+        matching: find.text('布洛芬${l10n.commonListSeparator}阿莫西林'),
+      ),
       findsOneWidget,
     );
     expect(

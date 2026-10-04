@@ -30,6 +30,7 @@ import 'package:luminous/features/settings/presentation/routes.dart'
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/shell/presentation/tab_branch_container.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -339,8 +340,12 @@ GoRouter appRouter(Ref ref) => GoRouter(
         if (token == null) {
           return slidePage(
             key: state.pageKey,
-            child: const Scaffold(
-              body: Center(child: Text('Invalid link: missing token.')),
+            child: Scaffold(
+              body: Center(
+                child: Text(
+                  AppLocalizations.of(context)!.commonInvalidLinkMissingToken,
+                ),
+              ),
             ),
           );
         }
@@ -366,8 +371,12 @@ GoRouter appRouter(Ref ref) => GoRouter(
         if (eventId == null) {
           return slidePage(
             key: state.pageKey,
-            child: const Scaffold(
-              body: Center(child: Text('Invalid link: missing event ID.')),
+            child: Scaffold(
+              body: Center(
+                child: Text(
+                  AppLocalizations.of(context)!.commonInvalidLinkMissingEventId,
+                ),
+              ),
             ),
           );
         }

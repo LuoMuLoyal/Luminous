@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/sync/worker.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
@@ -88,7 +90,10 @@ Future<HealthContextSnapshot> healthContextSnapshot(Ref ref) {
           .run()
           .timeout(
             const Duration(seconds: 5),
-            onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试'),
+            onTimeout: () => throw LucentFailure.network(
+              message: NetworkErrorCode.receiveTimeout.name,
+              networkErrorCode: NetworkErrorCode.receiveTimeout,
+            ),
           );
       // Left 投影到 AsyncValue.error：widget 只消费 provider state。
       return result.fold((failure) => throw failure, (snapshot) => snapshot);

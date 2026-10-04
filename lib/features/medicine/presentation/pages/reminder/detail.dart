@@ -78,7 +78,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
                 error: (error, _) {
                   final isNotFound =
                       error is StateError &&
-                      error.message == 'Medicine not found.';
+                      error.message == kMedicineReminderNotFoundCode;
                   return StateErrorView(
                     title: isNotFound
                         ? l10n.medicineReminderNotFoundTitle

@@ -128,7 +128,7 @@ String? _resolveSubtitle(AppLocalizations l10n, MineStatusCard card) {
   return key == null ? null : mineCopy(l10n, key);
 }
 
-/// Joins the first two [items] with the locale separator (「、」for zh,
+/// Joins the first two [items] with the localized list separator (「、」for zh,
 /// ", " for en, matching the existing Mine copy style) and appends the
 /// localized「等 N 项/种」suffix when more than two exist.
 String _joinItems(
@@ -137,7 +137,7 @@ String _joinItems(
   List<String> items,
   int? count,
 ) {
-  final separator = l10n.localeName == 'zh' ? '、' : ', ';
+  final separator = l10n.commonListSeparator;
   final joined = items.take(2).join(separator);
   if (items.length <= 2) return joined;
   final total = count ?? items.length;

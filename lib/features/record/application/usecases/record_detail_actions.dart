@@ -165,17 +165,18 @@ Future<void> copyRecordSummary(
   AppLocalizations l10n,
   DailyRecordItem record,
 ) async {
+  final sep = l10n.commonLabelValueSeparator;
   final lines = <String>[
-    '${l10n.recordCreateFieldKind}：${kindLabel(l10n, record.kind)}',
+    '${l10n.recordCreateFieldKind}$sep${kindLabel(l10n, record.kind)}',
     if (nonEmpty(record.value) != null)
-      '${l10n.recordDetailValueLabel}：${valueWithUnit(record.value!, record.unit)}',
+      '${l10n.recordDetailValueLabel}$sep${valueWithUnit(record.value!, record.unit)}',
     if (moodLabel(l10n, record) != null)
-      '${l10n.recordDetailMoodLabel}：${moodLabel(l10n, record)}',
+      '${l10n.recordDetailMoodLabel}$sep${moodLabel(l10n, record)}',
     if (nonEmpty(record.note) != null)
-      '${l10n.recordCreateFieldNote}：${record.note}',
+      '${l10n.recordCreateFieldNote}$sep${record.note}',
     if (nonEmpty(record.source) != null)
-      '${l10n.recordDetailSourceLabel}：${sourceLabel(l10n, record.source!)}',
-    '${l10n.recordDetailUpdatedAtLabel}：${formatRecordDateTimeLabel(record.updatedAt)}',
+      '${l10n.recordDetailSourceLabel}$sep${sourceLabel(l10n, record.source!)}',
+    '${l10n.recordDetailUpdatedAtLabel}$sep${formatRecordDateTimeLabel(record.updatedAt)}',
   ];
   await Clipboard.setData(ClipboardData(text: lines.join('\n')));
   if (context.mounted) {

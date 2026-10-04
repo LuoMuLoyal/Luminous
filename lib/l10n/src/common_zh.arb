@@ -53,5 +53,10 @@
   "iconPickerEmpty": "未找到图标",
   "commonRouteNotFoundTitle": "页面不存在",
   "commonRouteNotFoundDescription": "这个入口暂时打不开，返回首页继续使用",
-  "commonGoHomeAction": "返回首页"
+  "commonGoHomeAction": "返回首页",
+  "commonInvalidLinkMissingToken": "链接无效，缺少访问令牌",
+  "commonInvalidLinkMissingEventId": "链接无效，缺少事件编号",
+  "commonListSeparator": "、",
+  "commonLabelValueSeparator": "：",
+  "commonClauseSeparator": "；"
 }

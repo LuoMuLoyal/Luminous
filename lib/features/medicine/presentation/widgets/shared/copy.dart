@@ -93,7 +93,7 @@ String medicineRiskCheckCoverageSummary(
       l10n.medicineRiskCheckCoverageSummaryUnavailable(unavailableCount),
     );
   }
-  return parts.join('；');
+  return parts.join(l10n.commonClauseSeparator);
 }
 
 String medicineAlertTitle(AppLocalizations l10n, MedicineAlert alert) {
@@ -154,8 +154,12 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
     final detail = names.isEmpty
         ? l10n.medicineRiskCheckCoverageReasonDetailUnavailable
         : result.coverageIssues.length > names.length
-        ? l10n.medicineRiskCheckCoverageAlertDetailWithMore(names.join('、'))
-        : l10n.medicineRiskCheckCoverageAlertDetail(names.join('、'));
+        ? l10n.medicineRiskCheckCoverageAlertDetailWithMore(
+            names.join(l10n.commonListSeparator),
+          )
+        : l10n.medicineRiskCheckCoverageAlertDetail(
+            names.join(l10n.commonListSeparator),
+          );
     final summaryText = medicineRiskCheckCoverageSummary(
       l10n,
       result.coverageIssues,

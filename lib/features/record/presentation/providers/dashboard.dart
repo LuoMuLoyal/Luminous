@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
@@ -58,8 +60,10 @@ Future<RecordDashboard> recordDashboard(Ref ref) async {
           .run()
           .timeout(
             const Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException('Record dashboard fetch timed out'),
+            onTimeout: () => throw LucentFailure.network(
+              message: NetworkErrorCode.receiveTimeout.name,
+              networkErrorCode: NetworkErrorCode.receiveTimeout,
+            ),
           );
       return result.fold((failure) => throw failure, (dashboard) => dashboard);
     },

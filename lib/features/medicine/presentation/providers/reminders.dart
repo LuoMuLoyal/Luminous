@@ -19,6 +19,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reminders.g.dart';
 
+/// Stable marker for「当前药品不在 health-context 快照里」。
+///
+/// 展示层据此选择 `medicineReminderNotFoundTitle` 文案；失败里不携带人类可读句子
+/// （copy 归 ARB，见 `lib/core/errors/README.md`）。
+const String kMedicineReminderNotFoundCode = 'medicine_reminder_not_found';
+
 class MedicineReminderDetailData {
   const MedicineReminderDetailData({
     required this.medicine,
@@ -159,7 +165,7 @@ Future<MedicineReminderDetailData> medicineReminderDetail(
       .where((item) => item.id == currentMedicineId)
       .firstOrNull;
   if (medicine == null) {
-    throw StateError('Medicine not found.');
+    throw StateError(kMedicineReminderNotFoundCode);
   }
 
   final reminders = await ref.watch(medicineReminderListProvider.future);

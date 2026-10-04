@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/sync/worker.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
@@ -98,7 +100,10 @@ Future<DailyRecordItem> dailyRecordDetail(Ref ref, String id) async {
       .run()
       .timeout(
         const Duration(seconds: 5),
-        onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试'),
+        onTimeout: () => throw LucentFailure.network(
+          message: NetworkErrorCode.receiveTimeout.name,
+          networkErrorCode: NetworkErrorCode.receiveTimeout,
+        ),
       );
   // Left 投影到 AsyncValue.error。
   return result.fold((failure) => throw failure, (value) => value);

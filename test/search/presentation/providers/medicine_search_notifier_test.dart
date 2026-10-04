@@ -565,7 +565,9 @@ void main() {
       // The notifier has a 5s timeout. We'll use a shorter delay but
       // simulate timeout by having the repo throw TimeoutException.
       repo.searchDelay = Duration.zero;
-      repo.searchThrows = TimeoutException('请求超时，请检查网络后重试');
+      repo.searchThrows = TimeoutException(
+        NetworkErrorCode.receiveTimeout.name,
+      );
 
       await notifier.updateQuery('test');
       await notifier.submitQuery();

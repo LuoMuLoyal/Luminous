@@ -53,5 +53,10 @@
   "iconPickerEmpty": "No icons found",
   "commonRouteNotFoundTitle": "Page not found",
   "commonRouteNotFoundDescription": "This screen can't be opened right now. Go home to continue.",
-  "commonGoHomeAction": "Go home"
+  "commonGoHomeAction": "Go home",
+  "commonInvalidLinkMissingToken": "Invalid link: missing token.",
+  "commonInvalidLinkMissingEventId": "Invalid link: missing event ID.",
+  "commonListSeparator": ", ",
+  "commonLabelValueSeparator": ": ",
+  "commonClauseSeparator": "; "
 }

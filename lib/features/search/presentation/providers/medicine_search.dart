@@ -7,6 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/recent_searches.dart';
@@ -107,8 +108,10 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
           .run()
           .timeout(
             const Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException('Search timed out. Please try again.'),
+            onTimeout: () => throw LucentFailure.network(
+              message: NetworkErrorCode.receiveTimeout.name,
+              networkErrorCode: NetworkErrorCode.receiveTimeout,
+            ),
           );
 
       // A newer search started while this one was in flight: its state is the
