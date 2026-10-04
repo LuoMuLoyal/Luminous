@@ -31,15 +31,28 @@ class DialogShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectivePadding = padding.copyWith(
-      bottom: padding.bottom + MediaQuery.viewInsetsOf(context).bottom,
-    );
-
-    // Forui 的 `FDialogStyle.insetPadding` 默认左右各 40dp:360dp 真机上任何对话框
-    // 内容只剩约 240dp,而 FCalendar 的日期网格需要 7×44=308dp——分隔头部因此右溢
-    // 44px、日期列被裁。窄屏收窄 inset(一处收口,所有对话框一起受益),宽屏保持默认。
+    // Forui 的 `FDialogStyle.insetPadding` 默认左右各 40dp:360dp 真机上对话框内容
+    // 只剩约 240dp,而日历头部（"October 2026" + 翻页箭头）在 1.3 字缩放下需要约
+    // 262dp——真机实测右溢 44px、日期列被裁。
+    //
+    // 窄屏上做两处收口（宽屏保持 Forui 默认外观）：
+    // 1. 对话框 inset 收到 `Spacing.sm`；
+    // 2. 本壳内边距封顶（水平 ≤ `Spacing.md`、垂直 ≤ `Spacing.lg`），
+    //    否则调用点自带的大 padding 会把内容再挤一次。
     final compact = LayoutScaleResolver.isCompact(
       MediaQuery.sizeOf(context).width,
+    );
+
+    var effectivePadding = compact
+        ? EdgeInsets.fromLTRB(
+            padding.left.clamp(0, Spacing.md),
+            padding.top.clamp(0, Spacing.lg),
+            padding.right.clamp(0, Spacing.md),
+            padding.bottom.clamp(0, Spacing.lg),
+          )
+        : padding;
+    effectivePadding = effectivePadding.copyWith(
+      bottom: effectivePadding.bottom + MediaQuery.viewInsetsOf(context).bottom,
     );
 
     return FDialog(
