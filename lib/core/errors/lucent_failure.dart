@@ -1,3 +1,4 @@
+import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/problem_details.dart';
 
@@ -21,6 +22,7 @@ final class LucentFailure {
     this.retryAfter,
     this.traceId,
     this.networkErrorCode,
+    this.clientErrorCode,
     this.cause,
   });
 
@@ -96,6 +98,26 @@ final class LucentFailure {
     );
   }
 
+  /// A failure the client itself detected — no server code exists for it.
+  ///
+  /// [message] stays a developer-facing diagnostic (logs, tests); the user
+  /// copy comes from [clientErrorCode] via `ClientErrorL10n.map`.
+  factory LucentFailure.client({
+    required ClientErrorCode clientErrorCode,
+    required String message,
+    LucentFailureKind kind = LucentFailureKind.business,
+    NetworkErrorCode? networkErrorCode,
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: kind,
+      message: message,
+      clientErrorCode: clientErrorCode,
+      networkErrorCode: networkErrorCode,
+      cause: cause,
+    );
+  }
+
   factory LucentFailure.unknown({
     required String message,
     NetworkErrorCode networkErrorCode = NetworkErrorCode.unknown,
@@ -123,6 +145,10 @@ final class LucentFailure {
   final Duration? retryAfter;
   final String? traceId;
   final NetworkErrorCode? networkErrorCode;
+
+  /// Set when the failure originates in this client rather than the wire.
+  /// Takes precedence over [networkErrorCode] when resolving user copy.
+  final ClientErrorCode? clientErrorCode;
   final Object? cause;
 
   bool get isTokenExpired => code == 'AUTH_TOKEN_EXPIRED';
@@ -159,6 +185,7 @@ final class LucentFailure {
       if (code != null) ', code: $code',
       if (statusCode != null) ', statusCode: $statusCode',
       if (traceId != null && traceId!.isNotEmpty) ', traceId: $traceId',
+      if (clientErrorCode != null) ', clientErrorCode: $clientErrorCode',
       if (networkErrorCode != null) ', networkErrorCode: $networkErrorCode',
       ')',
     ];

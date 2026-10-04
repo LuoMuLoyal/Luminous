@@ -27,7 +27,10 @@ abstract class PasswordResetState with _$PasswordResetState {
     String? codeError,
     String? passwordError,
     String? confirmPasswordError,
-    String? errorMessage,
+
+    /// The failure behind the last action, kept as the object so the render
+    /// site resolves copy through `userMessageFromError(error, l10n: l10n)`.
+    LucentFailure? error,
     String? successMessage,
   }) = _PasswordResetState;
 }
@@ -50,34 +53,22 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
   /// user whose password legitimately contains edge whitespace must not
   /// have it silently altered.
   void updateEmail(String value) {
-    state = state.copyWith(
-      email: value.trim(),
-      emailError: null,
-      errorMessage: null,
-    );
+    state = state.copyWith(email: value.trim(), emailError: null, error: null);
   }
 
   void updateCode(String value) {
-    state = state.copyWith(
-      code: value.trim(),
-      codeError: null,
-      errorMessage: null,
-    );
+    state = state.copyWith(code: value.trim(), codeError: null, error: null);
   }
 
   void updatePassword(String value) {
-    state = state.copyWith(
-      password: value,
-      passwordError: null,
-      errorMessage: null,
-    );
+    state = state.copyWith(password: value, passwordError: null, error: null);
   }
 
   void updateConfirmPassword(String value) {
     state = state.copyWith(
       confirmPassword: value,
       confirmPasswordError: null,
-      errorMessage: null,
+      error: null,
     );
   }
 
@@ -115,7 +106,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       codeError: codeError,
       passwordError: passwordError,
       confirmPasswordError: confirmPasswordError,
-      errorMessage: null,
+      error: null,
     );
 
     return emailError == null &&
@@ -126,14 +117,14 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
 
   bool validateEmailOnly({required String emailRequired}) {
     final emailError = state.email.trim().isEmpty ? emailRequired : null;
-    state = state.copyWith(emailError: emailError, errorMessage: null);
+    state = state.copyWith(emailError: emailError, error: null);
     return emailError == null;
   }
 
   Future<bool> sendCode() async {
     state = state.copyWith(
       isSendingCode: true,
-      errorMessage: null,
+      error: null,
       successMessage: null,
     );
     final result = await ref
@@ -156,7 +147,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     state = state.copyWith(
       isSubmitting: false,
       isSendingCode: false,
-      errorMessage: failure.message,
+      error: failure,
       successMessage: null,
     );
     return false;
@@ -176,7 +167,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
   Future<bool> resetPassword() async {
     state = state.copyWith(
       isSubmitting: true,
-      errorMessage: null,
+      error: null,
       successMessage: null,
     );
     final result = await ref
@@ -200,7 +191,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     state = state.copyWith(
       isSubmitting: false,
       isSendingCode: false,
-      errorMessage: failure.message,
+      error: failure,
       successMessage: null,
     );
     return false;

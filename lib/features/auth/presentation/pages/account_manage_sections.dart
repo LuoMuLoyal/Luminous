@@ -6,6 +6,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
@@ -301,9 +302,7 @@ class AccountManageSection extends ConsumerWidget {
               password: deletePasswordController.text,
             );
             if (!ok && context.mounted) {
-              final msg = accountState.errorMessage?.isNotEmpty == true
-                  ? accountState.errorMessage!
-                  : null;
+              final msg = userMessageOrNull(accountState.error, l10n: l10n);
               if (msg != null) {
                 await Toast.show(context, msg);
               }
@@ -317,9 +316,7 @@ class AccountManageSection extends ConsumerWidget {
               code: deleteCodeController.text,
             );
             if (!ok && context.mounted) {
-              final msg = accountState.errorMessage?.isNotEmpty == true
-                  ? accountState.errorMessage!
-                  : null;
+              final msg = userMessageOrNull(accountState.error, l10n: l10n);
               if (msg != null) {
                 await Toast.show(context, msg);
               }

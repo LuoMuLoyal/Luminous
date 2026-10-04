@@ -29,7 +29,10 @@ abstract class LoginFormState with _$LoginFormState {
     String? emailError,
     String? passwordError,
     String? codeError,
-    String? errorMessage,
+
+    /// The failure behind the last action, kept as the object so the render
+    /// site resolves copy through `userMessageFromError(error, l10n: l10n)`.
+    LucentFailure? error,
   }) = _LoginFormState;
 }
 
@@ -42,23 +45,19 @@ class LoginFormNotifier extends Notifier<LoginFormState>
   }
 
   void updateEmail(String value) {
-    state = state.copyWith(email: value, emailError: null, errorMessage: null);
+    state = state.copyWith(email: value, emailError: null, error: null);
   }
 
   void updatePassword(String value) {
-    state = state.copyWith(
-      password: value,
-      passwordError: null,
-      errorMessage: null,
-    );
+    state = state.copyWith(password: value, passwordError: null, error: null);
   }
 
   void updateCode(String value) {
-    state = state.copyWith(code: value, codeError: null, errorMessage: null);
+    state = state.copyWith(code: value, codeError: null, error: null);
   }
 
   void updateMode(AuthLoginMode mode) {
-    state = state.copyWith(mode: mode, errorMessage: null);
+    state = state.copyWith(mode: mode, error: null);
   }
 
   void setEmailError(String message) {
@@ -91,7 +90,7 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       emailError: emailError,
       passwordError: passwordError,
       codeError: codeError,
-      errorMessage: null,
+      error: null,
     );
 
     return emailError == null && passwordError == null && codeError == null;
@@ -100,12 +99,12 @@ class LoginFormNotifier extends Notifier<LoginFormState>
   bool validateEmailOnly({required String emailRequired}) {
     final email = state.email.trim();
     final emailError = email.isEmpty ? emailRequired : null;
-    state = state.copyWith(emailError: emailError, errorMessage: null);
+    state = state.copyWith(emailError: emailError, error: null);
     return emailError == null;
   }
 
   Future<AuthSession?> submit() async {
-    state = state.copyWith(isSubmitting: true, errorMessage: null);
+    state = state.copyWith(isSubmitting: true, error: null);
     final result = await ref
         .read(authRepositoryProvider)
         .login(
@@ -126,7 +125,7 @@ class LoginFormNotifier extends Notifier<LoginFormState>
     ref
         .read(talkerProvider)
         .error('LoginFormNotifier.submit: failed: $failure');
-    state = state.copyWith(isSubmitting: false, errorMessage: failure.message);
+    state = state.copyWith(isSubmitting: false, error: failure);
     return null;
   }
 
@@ -137,7 +136,7 @@ class LoginFormNotifier extends Notifier<LoginFormState>
   }
 
   Future<bool> sendCode() async {
-    state = state.copyWith(isSendingCode: true, errorMessage: null);
+    state = state.copyWith(isSendingCode: true, error: null);
     final result = await ref
         .read(authRepositoryProvider)
         .sendVerificationCode(
@@ -155,7 +154,7 @@ class LoginFormNotifier extends Notifier<LoginFormState>
     ref
         .read(talkerProvider)
         .error('LoginFormNotifier.sendCode: failed: $failure');
-    state = state.copyWith(isSendingCode: false, errorMessage: failure.message);
+    state = state.copyWith(isSendingCode: false, error: failure);
     return false;
   }
 

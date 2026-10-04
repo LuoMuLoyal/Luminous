@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
@@ -44,12 +45,22 @@ class RecordNlpSheet extends HookConsumerWidget {
     final typography = context.theme.typography;
 
     ref.listen<RecordNlpState>(recordNlpControllerProvider, (previous, next) {
-      final msg = next.errorMessage;
-      if (msg == null || msg == previous?.errorMessage) {
+      // 同一个失败对象不重复提示；重试/编辑会把 error 清空，下一次失败自然再提示。
+      final error = next.error;
+      if (error == null || identical(error, previous?.error)) {
         return;
       }
       if (!context.mounted) return;
-      unawaited(Toast.show(context, msg));
+      unawaited(
+        Toast.show(
+          context,
+          userMessageFromError(
+            error,
+            l10n: l10n,
+            fallback: l10n.recordNlpGenerateFailedToast,
+          ),
+        ),
+      );
     });
 
     Future<void> handleGenerate() async {
@@ -347,8 +358,11 @@ class RecordNlpSheet extends HookConsumerWidget {
                             const SizedBox(width: Spacing.sm),
                             Expanded(
                               child: Text(
-                                state.errorMessage ??
-                                    l10n.recordNlpGenerateFailedToast,
+                                userMessageFromError(
+                                  state.error,
+                                  l10n: l10n,
+                                  fallback: l10n.recordNlpGenerateFailedToast,
+                                ),
                                 style: typography.body.sm.copyWith(
                                   color: SemanticColor.destructive.solid(
                                     context,

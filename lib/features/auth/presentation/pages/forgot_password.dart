@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
@@ -93,10 +94,11 @@ class ForgotPasswordPage extends HookConsumerWidget {
                           notifier.updateEmail(emailController.text);
                           final ok = await notifier.sendCode();
                           if (!ok && context.mounted) {
-                            final msg = ref
-                                .read(passwordResetProvider)
-                                .errorMessage;
-                            if (msg != null && msg.isNotEmpty) {
+                            final msg = userMessageOrNull(
+                              ref.read(passwordResetProvider).error,
+                              l10n: l10n,
+                            );
+                            if (msg != null) {
                               await Toast.show(context, msg);
                             }
                           }
@@ -169,10 +171,11 @@ class ForgotPasswordPage extends HookConsumerWidget {
                             }
                             final ok = await notifier.resetPassword();
                             if (!ok && context.mounted) {
-                              final msg = ref
-                                  .read(passwordResetProvider)
-                                  .errorMessage;
-                              if (msg != null && msg.isNotEmpty) {
+                              final msg = userMessageOrNull(
+                                ref.read(passwordResetProvider).error,
+                                l10n: l10n,
+                              );
+                              if (msg != null) {
                                 await Toast.show(context, msg);
                               }
                               return;

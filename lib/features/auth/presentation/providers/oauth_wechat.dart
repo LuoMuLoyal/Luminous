@@ -19,7 +19,7 @@ class WechatLoginWebFallback extends WechatLoginAttempt {
 }
 
 /// Attempt failed or no platform supported. Check
-/// [OAuthLoginState.errorMessage] for details.
+/// [OAuthLoginState.error] for details.
 class WechatLoginFailed extends WechatLoginAttempt {
   const WechatLoginFailed();
 }
@@ -34,7 +34,7 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
   Future<WechatLoginAttempt> startWechatLogin({String? webCallbackUri}) async {
     state = state.copyWith(
       isStartingWechat: true,
-      errorMessage: null,
+      error: null,
       wechatAuthorizeUrl: null,
       wechatState: null,
     );
@@ -45,7 +45,7 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       return WechatLoginCompleted(mobileSession);
     }
     // Bail if mobile auth threw an error (not just "unsupported")
-    if (state.errorMessage?.isNotEmpty == true) {
+    if (state.error != null) {
       return const WechatLoginFailed();
     }
 
@@ -54,7 +54,7 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
     if (desktopSession != null) {
       return WechatLoginCompleted(desktopSession);
     }
-    if (state.errorMessage?.isNotEmpty == true) {
+    if (state.error != null) {
       return const WechatLoginFailed();
     }
 
@@ -70,14 +70,11 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       );
       return WechatLoginWebFallback(authorize.authorizeUrl);
     } catch (e) {
-      final errorMessage = _mapError(
+      final error = _mapError(
         e,
         'OAuthLoginController.startWechatLogin.webFallback',
       );
-      state = state.copyWith(
-        isStartingWechat: false,
-        errorMessage: errorMessage,
-      );
+      state = state.copyWith(isStartingWechat: false, error: error);
       return const WechatLoginFailed();
     }
   }
@@ -91,7 +88,7 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
 
       // isStartingWechat 由入口 startWechatLogin 置位（与 desktop 分支一致），
       // 这里只负责把"正在完成登录"标记打开。
-      state = state.copyWith(isCompletingWechat: true, errorMessage: null);
+      state = state.copyWith(isCompletingWechat: true, error: null);
       final s = await _resolve(_remote.loginWithWechatMobile(code: code));
       await ref.read(authSessionProvider.notifier).applySession(s);
       state = state.copyWith(
@@ -100,14 +97,11 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       );
       return s;
     } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.startWechatMobileLogin',
-      );
+      final error = _mapError(e, 'OAuthLoginController.startWechatMobileLogin');
       state = state.copyWith(
         isStartingWechat: false,
         isCompletingWechat: false,
-        errorMessage: errorMessage,
+        error: error,
       );
       return null;
     }
@@ -123,7 +117,7 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       state = state.copyWith(
         isStartingWechat: false,
         isCompletingWechat: true,
-        errorMessage: null,
+        error: null,
       );
       final s = await _resolve(
         _remote.loginWithWechatWeb(code: result.code, state: result.state),
@@ -132,14 +126,14 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       state = state.copyWith(isCompletingWechat: false);
       return s;
     } catch (e) {
-      final errorMessage = _mapError(
+      final error = _mapError(
         e,
         'OAuthLoginController.startWechatDesktopLogin',
       );
       state = state.copyWith(
         isStartingWechat: false,
         isCompletingWechat: false,
-        errorMessage: errorMessage,
+        error: error,
       );
       return null;
     }
@@ -150,10 +144,7 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
     required String code,
     required String state,
   }) async {
-    this.state = this.state.copyWith(
-      isCompletingWechat: true,
-      errorMessage: null,
-    );
+    this.state = this.state.copyWith(isCompletingWechat: true, error: null);
     try {
       final s = await _resolve(
         _remote.loginWithWechatWeb(code: code, state: state),
@@ -162,14 +153,8 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       this.state = this.state.copyWith(isCompletingWechat: false);
       return s;
     } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.completeWechatLogin',
-      );
-      this.state = this.state.copyWith(
-        isCompletingWechat: false,
-        errorMessage: errorMessage,
-      );
+      final error = _mapError(e, 'OAuthLoginController.completeWechatLogin');
+      this.state = this.state.copyWith(isCompletingWechat: false, error: error);
       return null;
     }
   }

@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/session_store.dart';
@@ -132,7 +133,17 @@ class AuthInterceptor extends Interceptor {
       ),
       type: DioExceptionType.badResponse,
       message: 'Refresh token unavailable',
-      error: outcome,
+      // 只有"确实没有 refresh token"这一支才携带可映射的 client failure：
+      // 其余 outcome（空/畸形响应体的临时故障）不能被打上"登录已失效"的文案。
+      // 携带后 `LucentErrorMapper.fromObject` 走 embedded 分支，不会因响应体
+      // 不是 Problem Details 而抛 FormatException。
+      error: outcome is _RefreshUnavailable
+          ? LucentFailure.client(
+              clientErrorCode: ClientErrorCode.refreshTokenUnavailable,
+              kind: LucentFailureKind.authentication,
+              message: 'Refresh token unavailable',
+            )
+          : outcome,
     );
   }
 

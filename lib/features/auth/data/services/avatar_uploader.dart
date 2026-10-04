@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/object_upload.dart';
@@ -32,12 +33,20 @@ class AvatarUploader {
   }) async {
     // 客户端校验必须在 presign 之前:先要签名再因超限拒绝,既白跑一次服务端,
     // 也把「用户选了过大的图」记成服务端错误。
-    if (bytes.isEmpty) throw _failure('Avatar file is empty.');
+    if (bytes.isEmpty) {
+      throw _failure(ClientErrorCode.avatarFileEmpty, 'Avatar file is empty.');
+    }
     if (!_allowedContentTypes.contains(contentType)) {
-      throw _failure('Avatar file type is not supported.');
+      throw _failure(
+        ClientErrorCode.avatarFileTypeUnsupported,
+        'Avatar file type is not supported.',
+      );
     }
     if (bytes.length > _maxAvatarBytes) {
-      throw _failure('Avatar file is too large.');
+      throw _failure(
+        ClientErrorCode.avatarFileTooLarge,
+        'Avatar file is too large.',
+      );
     }
 
     final extension = _extensionFor(contentType);
@@ -50,7 +59,10 @@ class AvatarUploader {
     );
     // 服务端上限低于客户端预检时仍要拦住,失败语义与本地校验保持一类。
     if (bytes.length > upload.maxSizeBytes) {
-      throw _failure('Avatar file is too large.');
+      throw _failure(
+        ClientErrorCode.avatarFileTooLarge,
+        'Avatar file is too large.',
+      );
     }
     await putPresignedObject(
       dio,
@@ -86,6 +98,9 @@ class AvatarUploader {
 
   /// 本地校验失败归为 business：这是「用户选的图不符合要求」，不是网络故障。
   /// 归成 network 会把 HEIC/超大图计成服务端或网络异常，污染错误率与告警。
-  static LucentFailure _failure(String message) =>
-      LucentFailure.business(message: message);
+  ///
+  /// [message] 只进日志；用户可见文案由 [code] 在展示层映射
+  /// （`ClientErrorL10n`，键与 profile 页预检复用同一批）。
+  static LucentFailure _failure(ClientErrorCode code, String message) =>
+      LucentFailure.client(clientErrorCode: code, message: message);
 }

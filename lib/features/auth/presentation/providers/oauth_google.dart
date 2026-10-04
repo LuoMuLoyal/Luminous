@@ -7,7 +7,7 @@ mixin OAuthGoogleMixin on OAuthLoginControllerBase {
   Future<String?> startGoogleLogin({String? webCallbackUri}) async {
     state = state.copyWith(
       isStartingGoogle: true,
-      errorMessage: null,
+      error: null,
       googleAuthorizeUrl: null,
       googleState: null,
     );
@@ -22,14 +22,8 @@ mixin OAuthGoogleMixin on OAuthLoginControllerBase {
       );
       return authorize.authorizeUrl;
     } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.startGoogleLogin',
-      );
-      state = state.copyWith(
-        isStartingGoogle: false,
-        errorMessage: errorMessage,
-      );
+      final error = _mapError(e, 'OAuthLoginController.startGoogleLogin');
+      state = state.copyWith(isStartingGoogle: false, error: error);
       return null;
     }
   }
@@ -39,10 +33,7 @@ mixin OAuthGoogleMixin on OAuthLoginControllerBase {
     required String code,
     required String state,
   }) async {
-    this.state = this.state.copyWith(
-      isCompletingGoogle: true,
-      errorMessage: null,
-    );
+    this.state = this.state.copyWith(isCompletingGoogle: true, error: null);
     try {
       final s = await _resolve(
         _remote.loginWithGoogle(code: code, state: state),
@@ -51,14 +42,8 @@ mixin OAuthGoogleMixin on OAuthLoginControllerBase {
       this.state = this.state.copyWith(isCompletingGoogle: false);
       return s;
     } catch (e) {
-      final errorMessage = _mapError(
-        e,
-        'OAuthLoginController.completeGoogleLogin',
-      );
-      this.state = this.state.copyWith(
-        isCompletingGoogle: false,
-        errorMessage: errorMessage,
-      );
+      final error = _mapError(e, 'OAuthLoginController.completeGoogleLogin');
+      this.state = this.state.copyWith(isCompletingGoogle: false, error: error);
       return null;
     }
   }

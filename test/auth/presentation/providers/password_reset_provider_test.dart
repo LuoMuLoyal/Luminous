@@ -34,7 +34,7 @@ void main() {
       final state = container.read(passwordResetProvider);
       expect(state.email, 'reset@example.com');
       expect(state.emailError, isNull);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
     });
 
     test('updatePassword sets password and clears errors', () {
@@ -169,7 +169,7 @@ void main() {
       },
     );
 
-    test('returns false and sets errorMessage on failure', () async {
+    test('returns false and sets error on failure', () async {
       container.dispose();
       remote = _FailingLucentAuthRepository();
       container = ProviderContainer(
@@ -187,7 +187,7 @@ void main() {
 
       expect(result, isFalse);
       expect(container.read(passwordResetProvider).isSendingCode, isFalse);
-      expect(container.read(passwordResetProvider).errorMessage, isNotNull);
+      expect(container.read(passwordResetProvider).error, isNotNull);
     });
   });
 
@@ -210,7 +210,7 @@ void main() {
       expect(state.successMessage, isNotNull);
     });
 
-    test('returns false and sets errorMessage on failure', () async {
+    test('returns false and sets error on failure', () async {
       container.dispose();
       remote = _FailingLucentAuthRepository();
       container = ProviderContainer(
@@ -231,7 +231,7 @@ void main() {
 
       expect(result, isFalse);
       expect(container.read(passwordResetProvider).isSubmitting, isFalse);
-      expect(container.read(passwordResetProvider).errorMessage, isNotNull);
+      expect(container.read(passwordResetProvider).error, isNotNull);
     });
   });
 }

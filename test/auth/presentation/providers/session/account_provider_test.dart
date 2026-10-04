@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
@@ -289,7 +290,7 @@ void main() {
       expect(remote.sentCodeScene, AuthVerificationScene.changeEmail);
     });
 
-    test('sets errorMessage on failure', () async {
+    test('sets error on failure', () async {
       final remote = _FailingAccountRemote();
       final container = ProviderContainer(
         overrides: [
@@ -309,7 +310,7 @@ void main() {
       expect(result, isFalse);
       final state = container.read(authAccountProvider);
       expect(state.isSendingCode, isFalse);
-      expect(state.errorMessage, isNotNull);
+      expect(state.error, isNotNull);
     });
   });
 
@@ -358,7 +359,7 @@ void main() {
       expect(result, isFalse);
       final state = container.read(authAccountProvider);
       expect(state.isSubmitting, isFalse);
-      expect(state.errorMessage, isNotNull);
+      expect(state.error, isNotNull);
     });
   });
 
@@ -402,7 +403,7 @@ void main() {
       final result = await notifier.updateProfile(nickname: 'Taken');
 
       expect(result, isFalse);
-      expect(container.read(authAccountProvider).errorMessage, isNotNull);
+      expect(container.read(authAccountProvider).error, isNotNull);
     });
 
     test(
@@ -476,8 +477,8 @@ void main() {
 
       expect(result, isFalse);
       expect(
-        container.read(authAccountProvider).errorMessage,
-        'Not signed in.',
+        container.read(authAccountProvider).error?.clientErrorCode,
+        ClientErrorCode.notSignedIn,
       );
     });
 
@@ -502,7 +503,7 @@ void main() {
       );
 
       expect(result, isFalse);
-      expect(container.read(authAccountProvider).errorMessage, isNotNull);
+      expect(container.read(authAccountProvider).error, isNotNull);
     });
 
     test(
@@ -529,7 +530,7 @@ void main() {
 
         expect(result, isFalse);
         expect(
-          container.read(authAccountProvider).errorCode,
+          container.read(authAccountProvider).error?.code,
           'AUTH_PASSWORD_NOT_SET',
         );
       },
@@ -583,7 +584,7 @@ void main() {
       );
 
       expect(result, isFalse);
-      expect(container.read(authAccountProvider).errorMessage, isNotNull);
+      expect(container.read(authAccountProvider).error, isNotNull);
     });
   });
 
@@ -627,7 +628,7 @@ void main() {
       final result = await notifier.deleteAccount(password: 'wrong');
 
       expect(result, isFalse);
-      expect(container.read(authAccountProvider).errorMessage, isNotNull);
+      expect(container.read(authAccountProvider).error, isNotNull);
     });
   });
 
@@ -675,7 +676,7 @@ void main() {
       );
 
       expect(result, isFalse);
-      expect(container.read(authAccountProvider).errorMessage, isNotNull);
+      expect(container.read(authAccountProvider).error, isNotNull);
     });
   });
 
@@ -694,7 +695,7 @@ void main() {
 
       expect(state.isSubmitting, isFalse);
       expect(state.isSendingCode, isFalse);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
       expect(state.successMessage, isNull);
       expect(state.lastCooldownSeconds, isNull);
     });

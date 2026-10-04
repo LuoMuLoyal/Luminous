@@ -7,7 +7,7 @@ mixin OAuthQqMixin on OAuthLoginControllerBase {
   Future<String?> startQqLogin({String? webCallbackUri}) async {
     state = state.copyWith(
       isStartingQq: true,
-      errorMessage: null,
+      error: null,
       qqAuthorizeUrl: null,
       qqState: null,
     );
@@ -22,8 +22,8 @@ mixin OAuthQqMixin on OAuthLoginControllerBase {
       );
       return authorize.authorizeUrl;
     } catch (e) {
-      final errorMessage = _mapError(e, 'OAuthLoginController.startQqLogin');
-      state = state.copyWith(isStartingQq: false, errorMessage: errorMessage);
+      final error = _mapError(e, 'OAuthLoginController.startQqLogin');
+      state = state.copyWith(isStartingQq: false, error: error);
       return null;
     }
   }
@@ -33,18 +33,15 @@ mixin OAuthQqMixin on OAuthLoginControllerBase {
     required String code,
     required String state,
   }) async {
-    this.state = this.state.copyWith(isCompletingQq: true, errorMessage: null);
+    this.state = this.state.copyWith(isCompletingQq: true, error: null);
     try {
       final s = await _resolve(_remote.loginWithQq(code: code, state: state));
       await ref.read(authSessionProvider.notifier).applySession(s);
       this.state = this.state.copyWith(isCompletingQq: false);
       return s;
     } catch (e) {
-      final errorMessage = _mapError(e, 'OAuthLoginController.completeQqLogin');
-      this.state = this.state.copyWith(
-        isCompletingQq: false,
-        errorMessage: errorMessage,
-      );
+      final error = _mapError(e, 'OAuthLoginController.completeQqLogin');
+      this.state = this.state.copyWith(isCompletingQq: false, error: error);
       return null;
     }
   }

@@ -35,7 +35,7 @@ void main() {
       final state = container.read(registerFormProvider);
       expect(state.email, 'reg@example.com');
       expect(state.emailError, isNull);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
     });
 
     test('updatePassword sets password and clears errors', () {
@@ -58,7 +58,7 @@ void main() {
       expect(container.read(registerFormProvider).code, '654321');
     });
 
-    test('updateNickname sets nickname and clears errorMessage', () {
+    test('updateNickname sets nickname and clears error', () {
       final notifier = container.read(registerFormProvider.notifier);
       notifier.updateNickname('Tester');
       expect(container.read(registerFormProvider).nickname, 'Tester');
@@ -182,7 +182,7 @@ void main() {
       },
     );
 
-    test('returns false and sets errorMessage on failure', () async {
+    test('returns false and sets error on failure', () async {
       container.dispose();
       remote = _FailingLucentAuthRepository();
       container = ProviderContainer(
@@ -200,7 +200,7 @@ void main() {
 
       expect(result, isFalse);
       expect(container.read(registerFormProvider).isSendingCode, isFalse);
-      expect(container.read(registerFormProvider).errorMessage, isNotNull);
+      expect(container.read(registerFormProvider).error, isNotNull);
     });
   });
 
@@ -224,7 +224,7 @@ void main() {
       expect(state.successMessage, isNotNull);
     });
 
-    test('returns false and sets errorMessage on failure', () async {
+    test('returns false and sets error on failure', () async {
       container.dispose();
       remote = _FailingLucentAuthRepository();
       container = ProviderContainer(
@@ -244,7 +244,7 @@ void main() {
 
       expect(result, isFalse);
       expect(container.read(registerFormProvider).isSubmitting, isFalse);
-      expect(container.read(registerFormProvider).errorMessage, isNotNull);
+      expect(container.read(registerFormProvider).error, isNotNull);
     });
   });
 }

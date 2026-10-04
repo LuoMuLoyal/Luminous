@@ -18,7 +18,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
   RecordNlpState build() => RecordNlpState.idle();
 
   void updateDraft(String value) {
-    state = state.copyWith(draft: value, errorMessage: null);
+    state = state.copyWith(draft: value, error: null);
   }
 
   void removeCandidateAt(int index) {
@@ -29,7 +29,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     state = state.copyWith(
       status: RecordNlpStatus.reviewing,
       candidates: nextDrafts,
-      errorMessage: null,
+      error: null,
     );
   }
 
@@ -42,7 +42,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     state = state.copyWith(
       status: RecordNlpStatus.reviewing,
       candidates: nextDrafts,
-      errorMessage: null,
+      error: null,
     );
   }
 
@@ -55,7 +55,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     state = state.copyWith(
       status: RecordNlpStatus.reviewing,
       candidates: nextDrafts,
-      errorMessage: null,
+      error: null,
     );
   }
 
@@ -67,16 +67,13 @@ class RecordNlpController extends Notifier<RecordNlpState> {
 
     final text = state.draft.trim();
     if (text.isEmpty) {
-      state = state.copyWith(status: RecordNlpStatus.error, errorMessage: null);
+      state = state.copyWith(status: RecordNlpStatus.error, error: null);
       return state;
     }
 
     final previousCandidates = state.candidates;
     final previousMetadata = state.resultMeta;
-    state = state.copyWith(
-      status: RecordNlpStatus.generating,
-      errorMessage: null,
-    );
+    state = state.copyWith(status: RecordNlpStatus.generating, error: null);
 
     try {
       final result = await ref
@@ -93,7 +90,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
             candidates: result.items
                 .map(RecordNlpCandidateDraft.fromCandidate)
                 .toList(growable: false),
-            errorMessage: null,
+            error: null,
           );
           return state;
         },
@@ -127,8 +124,8 @@ class RecordNlpController extends Notifier<RecordNlpState> {
           : RecordNlpStatus.error,
       resultMeta: previousMetadata,
       candidates: previousCandidates,
-      // errorMessage 仅伴随 error 状态展示，避免"审查中 + 错误横幅"并存。
-      errorMessage: hasPreviousCandidates ? null : failure.message,
+      // error 仅伴随 error 状态展示，避免"审查中 + 错误横幅"并存。
+      error: hasPreviousCandidates ? null : failure,
     );
     return state;
   }
@@ -160,7 +157,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
 
     final repo = ref.read(dailyRecordRepositoryProvider);
     final targetIndexSet = targetIndexes.toSet();
-    state = state.copyWith(status: RecordNlpStatus.saving, errorMessage: null);
+    state = state.copyWith(status: RecordNlpStatus.saving, error: null);
 
     // Save all selected candidates in parallel to reduce user wait time.
     final results = await Future.wait(
@@ -227,7 +224,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
       state = state.copyWith(
         status: RecordNlpStatus.saved,
         candidates: remainingItems,
-        errorMessage: null,
+        error: null,
       );
       return RecordNlpSaveOutcome.saved(savedCount: savedCount, failedCount: 0);
     }
@@ -235,7 +232,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     state = state.copyWith(
       status: RecordNlpStatus.reviewing,
       candidates: remainingItems,
-      errorMessage: null,
+      error: null,
     );
     return RecordNlpSaveOutcome.partial(
       savedCount: savedCount,
@@ -268,7 +265,10 @@ abstract class RecordNlpState with _$RecordNlpState {
     @Default('') String draft,
     @Default([]) List<RecordNlpCandidateDraft> candidates,
     RecordNlpResultMeta? resultMeta,
-    String? errorMessage,
+
+    /// The failure behind the last generate attempt, kept as the object so the
+    /// sheet resolves copy through `userMessageFromError(error, l10n: l10n)`.
+    LucentFailure? error,
   }) = _RecordNlpState;
 
   factory RecordNlpState.idle() => const RecordNlpState();

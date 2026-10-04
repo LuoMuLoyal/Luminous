@@ -35,7 +35,7 @@ void main() {
       final state = container.read(loginFormProvider);
       expect(state.email, 'test@example.com');
       expect(state.emailError, isNull);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
     });
 
     test('updatePassword sets password and clears errors', () {
@@ -54,7 +54,7 @@ void main() {
       expect(state.codeError, isNull);
     });
 
-    test('updateMode switches mode and clears errorMessage', () {
+    test('updateMode switches mode and clears error', () {
       final notifier = container.read(loginFormProvider.notifier);
       notifier.updateMode(AuthLoginMode.code);
       expect(container.read(loginFormProvider).mode, AuthLoginMode.code);
@@ -178,10 +178,10 @@ void main() {
       expect(remote.loginPassword, 'pass123');
       expect(remote.loginCode, isNull);
       expect(container.read(loginFormProvider).isSubmitting, isFalse);
-      expect(container.read(loginFormProvider).errorMessage, isNull);
+      expect(container.read(loginFormProvider).error, isNull);
     });
 
-    test('returns null and sets errorMessage on failure', () async {
+    test('returns null and sets error on failure', () async {
       container.dispose();
       remote = _FailingLucentAuthRepository();
       container = ProviderContainer(
@@ -200,7 +200,7 @@ void main() {
 
       expect(session, isNull);
       expect(container.read(loginFormProvider).isSubmitting, isFalse);
-      expect(container.read(loginFormProvider).errorMessage, isNotNull);
+      expect(container.read(loginFormProvider).error, isNotNull);
     });
 
     test('sends code (not password) in code mode', () async {
@@ -231,7 +231,7 @@ void main() {
       expect(state.cooldownSeconds, 60);
     });
 
-    test('returns false and sets errorMessage on failure', () async {
+    test('returns false and sets error on failure', () async {
       remote = _FailingLucentAuthRepository();
       container = ProviderContainer(
         overrides: [
@@ -248,7 +248,7 @@ void main() {
 
       expect(result, isFalse);
       expect(container.read(loginFormProvider).isSendingCode, isFalse);
-      expect(container.read(loginFormProvider).errorMessage, isNotNull);
+      expect(container.read(loginFormProvider).error, isNotNull);
     });
   });
 }

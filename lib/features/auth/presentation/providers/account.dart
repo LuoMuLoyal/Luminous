@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
@@ -20,13 +21,24 @@ part 'account.freezed.dart';
 
 enum WechatIdentityLinkResult { completed, opened, unsupported }
 
+/// 无用户会话时敏感动作返回的失败。
+///
+/// `message` 只进日志；上屏文案由 [ClientErrorCode.notSignedIn] 在展示层映射。
+const _notSignedInFailure = LucentFailure(
+  kind: LucentFailureKind.authentication,
+  message: 'Not signed in.',
+  clientErrorCode: ClientErrorCode.notSignedIn,
+);
+
 @freezed
 abstract class AuthAccountState with _$AuthAccountState {
   const factory AuthAccountState({
     @Default(false) bool isSubmitting,
     @Default(false) bool isSendingCode,
-    String? errorMessage,
-    String? errorCode,
+
+    /// The failure behind the last action, kept as the object so the render
+    /// site resolves copy through `userMessageFromError(error, l10n: l10n)`.
+    LucentFailure? error,
     String? successMessage,
     int? lastCooldownSeconds,
   }) = _AuthAccountState;
@@ -46,8 +58,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }) async {
     state = state.copyWith(
       isSendingCode: true,
-      errorMessage: null,
-      errorCode: null,
+      error: null,
       successMessage: null,
       lastCooldownSeconds: null,
     );
@@ -67,8 +78,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
         .error('AuthAccountNotifier.sendVerificationCode: failed: $failure');
     state = state.copyWith(
       isSendingCode: false,
-      errorMessage: failure.message,
-      errorCode: failure.code,
+      error: failure,
       successMessage: null,
     );
     return false;
@@ -106,12 +116,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }) async {
     final user = ref.read(authSessionProvider).user;
     if (user == null) {
-      return _fail(
-        const LucentFailure(
-          kind: LucentFailureKind.authentication,
-          message: 'Not signed in.',
-        ),
-      );
+      return _fail(_notSignedInFailure);
     }
     try {
       final url = await ref
@@ -146,8 +151,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     if (currentUser == null) {
       state = state.copyWith(
         isSubmitting: false,
-        errorMessage: 'Not signed in.',
-        errorCode: null,
+        error: _notSignedInFailure,
         successMessage: null,
       );
       return false;
@@ -208,7 +212,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }) async {
     state = state.copyWith(
       isSubmitting: true,
-      errorMessage: null,
+      error: null,
       successMessage: null,
     );
 
@@ -320,8 +324,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   ) async {
     state = state.copyWith(
       isSubmitting: true,
-      errorMessage: null,
-      errorCode: null,
+      error: null,
       successMessage: null,
     );
     final result = await task.run();
@@ -342,8 +345,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     state = state.copyWith(
       isSubmitting: false,
       isSendingCode: false,
-      errorMessage: apiError.message,
-      errorCode: apiError.code,
+      error: apiError,
       successMessage: null,
     );
     return false;

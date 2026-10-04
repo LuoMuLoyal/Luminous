@@ -331,7 +331,7 @@ void main() {
       // 失败不能伪装成成功:notifier 返回 false(调用点据此提示失败),账户资料
       // 一次都没写,头像 provider/行保持原值(null),直传也没发生。
       expect(uploaded, isFalse);
-      expect(container.read(authAccountProvider).errorMessage, isNotNull);
+      expect(container.read(authAccountProvider).error, isNotNull);
       expect(remote.updateProfileAvatar, isNull);
       expect(container.read(authSessionProvider).user?.avatar, isNull);
       expect(_rowAvatarUrl(tester), isNull);

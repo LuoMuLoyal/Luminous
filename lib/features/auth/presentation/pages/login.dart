@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
@@ -173,10 +174,11 @@ class LoginPage extends HookConsumerWidget {
                             notifier.updateEmail(emailController.text);
                             final ok = await notifier.sendCode();
                             if (!ok && context.mounted) {
-                              final msg = ref
-                                  .read(loginFormProvider)
-                                  .errorMessage;
-                              if (msg != null && msg.isNotEmpty) {
+                              final msg = userMessageOrNull(
+                                ref.read(loginFormProvider).error,
+                                l10n: l10n,
+                              );
+                              if (msg != null) {
                                 await Toast.show(context, msg);
                               }
                             }
@@ -198,14 +200,13 @@ class LoginPage extends HookConsumerWidget {
                             notifier.updateCode(codeController.text);
                             final session = await notifier.submit();
                             if (session == null && context.mounted) {
-                              final formState = ref.read(loginFormProvider);
-                              final oauth = ref.read(oauthLoginProvider);
-                              final msg =
-                                  formState.errorMessage?.isNotEmpty == true
-                                  ? formState.errorMessage!
-                                  : oauth.errorMessage?.isNotEmpty == true
-                                  ? oauth.errorMessage!
-                                  : null;
+                              // 表单失败优先于 OAuth 失败：两者都来自刚结束的
+                              // 一次提交，表单错误更贴近用户输入的内容。
+                              final msg = userMessageOrNull(
+                                ref.read(loginFormProvider).error ??
+                                    ref.read(oauthLoginProvider).error,
+                                l10n: l10n,
+                              );
                               if (msg != null) {
                                 await Toast.show(context, msg);
                               }

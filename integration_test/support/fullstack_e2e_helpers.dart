@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
@@ -227,7 +228,7 @@ Future<void> waitForAuthenticatedSession(
     'Timed out waiting for authenticated session. '
     'route=${container.read(appRouterProvider).routeInformationProvider.value.uri}, '
     'isLoading=${state.isLoading}, isAuthenticated=${state.isAuthenticated}, authError=${state.errorMessage}, '
-    'loginSubmitting=${loginForm.isSubmitting}, loginError=${loginForm.errorMessage}',
+    'loginSubmitting=${loginForm.isSubmitting}, loginError=${userMessageFromError(loginForm.error)}',
   );
 }
 

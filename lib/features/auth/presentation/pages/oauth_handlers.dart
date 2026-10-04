@@ -40,7 +40,7 @@ Future<void> startWechatLogin(
       }
       await Toast.show(context, l10n.authWechatAuthorizeOpened);
     case WechatLoginFailed():
-      // Error is in oauthState.errorMessage — toast is shown via state
+      // Error is in oauthState.error — toast is shown via state
       break;
   }
 }

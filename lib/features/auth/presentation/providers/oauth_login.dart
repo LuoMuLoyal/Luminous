@@ -34,7 +34,7 @@ class OAuthLoginState {
     this.googleAuthorizeUrl,
     this.googleState,
     this.isStartingApple = false,
-    this.errorMessage,
+    this.error,
   });
 
   final bool isStartingWechat;
@@ -53,7 +53,11 @@ class OAuthLoginState {
   final String? googleState;
 
   final bool isStartingApple;
-  final String? errorMessage;
+
+  /// The failure behind the last attempt, kept as the object rather than a
+  /// ready-made sentence: the render site resolves copy through
+  /// `userMessageFromError(error, l10n: l10n)` so it follows the active locale.
+  final LucentFailure? error;
 
   /// Sentinel-based copyWith so nullable fields can be explicitly set to null.
   static const _sentinel = Object();
@@ -72,7 +76,7 @@ class OAuthLoginState {
     Object? googleAuthorizeUrl = _sentinel,
     Object? googleState = _sentinel,
     bool? isStartingApple,
-    Object? errorMessage = _sentinel,
+    Object? error = _sentinel,
   }) {
     return OAuthLoginState(
       isStartingWechat: isStartingWechat ?? this.isStartingWechat,
@@ -98,9 +102,7 @@ class OAuthLoginState {
           ? this.googleState
           : googleState as String?,
       isStartingApple: isStartingApple ?? this.isStartingApple,
-      errorMessage: errorMessage == _sentinel
-          ? this.errorMessage
-          : errorMessage as String?,
+      error: error == _sentinel ? this.error : error as LucentFailure?,
     );
   }
 }
@@ -119,10 +121,13 @@ abstract class OAuthLoginControllerBase extends Notifier<OAuthLoginState> {
     return either.fold((failure) => throw failure, (value) => value);
   }
 
-  /// Maps an error to a user-facing message and logs it.
-  String _mapError(Object error, String tag) {
+  /// Maps an error to the failure the state carries and logs it.
+  ///
+  /// Copy is not resolved here: the render site calls
+  /// `userMessageFromError(state.error, l10n: l10n)`.
+  LucentFailure _mapError(Object error, String tag) {
     ref.read(talkerProvider).error('$tag: failed: $error');
-    return LucentErrorMapper.fromObject(error).message;
+    return LucentErrorMapper.fromObject(error);
   }
 }
 
@@ -136,9 +141,9 @@ class OAuthLoginController extends OAuthLoginControllerBase
   @override
   OAuthLoginState build() => const OAuthLoginState();
 
-  /// Clears the error message.
+  /// Clears the error.
   void clearError() {
-    state = state.copyWith(errorMessage: null);
+    state = state.copyWith(error: null);
   }
 }
 

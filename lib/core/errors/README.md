@@ -13,9 +13,11 @@
 
 ## 对外契约
 
-- 导出:`lucent_failure.dart` 的 `LucentFailure` / `LucentFailureKind` / `kPasswordNotSetCode`;
-  `network_error_l10n.dart` 的 `NetworkErrorL10n.map`;`user_message.dart` 的
-  `userMessageFromError`。
+- 导出:`lucent_failure.dart` 的 `LucentFailure` / `LucentFailureKind` / `kPasswordNotSetCode`
+  与 `LucentFailure.client` 工厂;`client_error_code.dart` 的 `ClientErrorCode`;
+  `client_error_l10n.dart` 的 `ClientErrorL10n.map`;`network_error_l10n.dart` 的
+  `NetworkErrorL10n.map`;`user_message.dart` 的 `userMessageFromError` /
+  `userMessageOrNull`。
 - 被依赖:`core/network`(error_mapper/sse/retry_policy/auth_interceptor 等)、`core/auth`、
   `core/database`、`core/logger`,以及 auth/assistant/health_*/legal 等 feature 的
   repository 与 provider — 全仓失败语义的枢纽。
@@ -25,12 +27,19 @@
 - kind 只能经工厂归类:`fromProblemDetails` / `fromSseProblemDetails` 按 status 与 SSE code
   判定(401/403→authentication、5xx→server、4xx→business),不散落手写判断
   (`test/core/errors/lucent_failure_test.dart`)。
-- 客户端本地校验(不满足格式/大小/类型等)用 `LucentFailure.business` 归类,不用 `network`
-  ——把「用户输入不合要求」记成网络或服务端故障会污染错误率与告警
+- 客户端本地校验(不满足格式/大小/类型等)用 `LucentFailure.client`(kind 默认 business)归类,
+  不用 `network` ——把「用户输入不合要求」记成网络或服务端故障会污染错误率与告警
   (例:`features/auth/data/services/avatar_uploader.dart`)。
 - `ProblemDetails` 仍是 wire 表示,`LucentFailure` 只归一化不替代(类注释明示)。
 - 面向用户:任何 error 上屏前必须过 `userMessageFromError` / `LucentErrorMapper.fromObject`,
-  禁止 `error.toString()`;有 `networkErrorCode` 且能取 l10n 时映射优先。
+  禁止 `error.toString()`;能取 l10n 时映射优先,顺序是
+  `clientErrorCode`(客户端自己判定,最具体)→ `networkErrorCode`(传输层)→ 服务端下发的
+  `message`。`clientErrorCode` 是**客户端自判**的失败码(微信 SDK、未登录、头像预检、缺
+  refresh token),与线格式 `code`(服务端 Problem Details)分开:两者来源不同,混用会让
+  「服务端返回了什么」无从判断。
+- 传输态失败(无 l10n 可用的 provider 里)不进 state 的字符串字段:state 存 error 对象,
+  文案在页面用 `userMessageFromError` / `userMessageOrNull` 现算——否则 state 里那句英文
+  会跟着 App 语言一起错。
 - `NetworkErrorL10n.map` 对 `NetworkErrorCode` 穷举 switch,新增错误码编译期强制补映射。
 
 ## 依赖禁区

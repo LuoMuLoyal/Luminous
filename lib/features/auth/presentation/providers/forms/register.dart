@@ -28,7 +28,10 @@ abstract class RegisterFormState with _$RegisterFormState {
     String? codeError,
     String? passwordError,
     String? confirmPasswordError,
-    String? errorMessage,
+
+    /// The failure behind the last action, kept as the object so the render
+    /// site resolves copy through `userMessageFromError(error, l10n: l10n)`.
+    LucentFailure? error,
     String? successMessage,
   }) = _RegisterFormState;
 }
@@ -42,31 +45,27 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
   }
 
   void updateEmail(String value) {
-    state = state.copyWith(email: value, emailError: null, errorMessage: null);
+    state = state.copyWith(email: value, emailError: null, error: null);
   }
 
   void updatePassword(String value) {
-    state = state.copyWith(
-      password: value,
-      passwordError: null,
-      errorMessage: null,
-    );
+    state = state.copyWith(password: value, passwordError: null, error: null);
   }
 
   void updateConfirmPassword(String value) {
     state = state.copyWith(
       confirmPassword: value,
       confirmPasswordError: null,
-      errorMessage: null,
+      error: null,
     );
   }
 
   void updateCode(String value) {
-    state = state.copyWith(code: value, codeError: null, errorMessage: null);
+    state = state.copyWith(code: value, codeError: null, error: null);
   }
 
   void updateNickname(String value) {
-    state = state.copyWith(nickname: value, errorMessage: null);
+    state = state.copyWith(nickname: value, error: null);
   }
 
   void setEmailError(String message) {
@@ -103,7 +102,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       codeError: codeError,
       passwordError: passwordError,
       confirmPasswordError: confirmPasswordError,
-      errorMessage: null,
+      error: null,
     );
 
     return emailError == null &&
@@ -114,14 +113,14 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
 
   bool validateEmailOnly({required String emailRequired}) {
     final emailError = state.email.trim().isEmpty ? emailRequired : null;
-    state = state.copyWith(emailError: emailError, errorMessage: null);
+    state = state.copyWith(emailError: emailError, error: null);
     return emailError == null;
   }
 
   Future<bool> sendCode() async {
     state = state.copyWith(
       isSendingCode: true,
-      errorMessage: null,
+      error: null,
       successMessage: null,
     );
     final result = await ref
@@ -143,7 +142,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
         .error('RegisterFormNotifier.sendCode: failed: $failure');
     state = state.copyWith(
       isSendingCode: false,
-      errorMessage: failure.message,
+      error: failure,
       successMessage: null,
     );
     return false;
@@ -163,7 +162,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
   Future<bool> submit() async {
     state = state.copyWith(
       isSubmitting: true,
-      errorMessage: null,
+      error: null,
       successMessage: null,
     );
     final result = await ref
@@ -185,7 +184,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
     ref
         .read(talkerProvider)
         .error('RegisterFormNotifier.submit: failed: $failure');
-    state = state.copyWith(isSubmitting: false, errorMessage: failure.message);
+    state = state.copyWith(isSubmitting: false, error: failure);
     return false;
   }
 

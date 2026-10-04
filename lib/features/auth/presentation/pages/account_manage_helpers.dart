@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -40,14 +41,12 @@ Future<void> showAuthAccountFailureToast(
   AppLocalizations l10n,
 ) async {
   final state = ref.read(authAccountProvider);
-  final String? message;
-  if (state.errorCode == LucentFailure.kPasswordNotSetCode) {
-    message = l10n.authPasswordNotSetToast;
-  } else {
-    message = state.errorMessage?.isNotEmpty == true
-        ? state.errorMessage
-        : null;
-  }
+  final error = state.error;
+  if (error == null) return;
+  // 「还没设密码」需要专属引导，比后端 detail 更能告诉用户下一步做什么。
+  final message = error.code == LucentFailure.kPasswordNotSetCode
+      ? l10n.authPasswordNotSetToast
+      : userMessageOrNull(error, l10n: l10n);
   if (message == null || !context.mounted) return;
   await Toast.show(context, message);
 }

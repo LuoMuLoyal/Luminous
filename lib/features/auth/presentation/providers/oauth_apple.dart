@@ -8,7 +8,7 @@ mixin OAuthAppleMixin on OAuthLoginControllerBase {
     String? givenName,
     String? familyName,
   }) async {
-    state = state.copyWith(isStartingApple: true, errorMessage: null);
+    state = state.copyWith(isStartingApple: true, error: null);
     try {
       final s = await _resolve(
         _remote.loginWithApple(
@@ -22,11 +22,8 @@ mixin OAuthAppleMixin on OAuthLoginControllerBase {
       state = state.copyWith(isStartingApple: false);
       return s;
     } catch (e) {
-      final errorMessage = _mapError(e, 'OAuthLoginController.loginWithApple');
-      state = state.copyWith(
-        isStartingApple: false,
-        errorMessage: errorMessage,
-      );
+      final error = _mapError(e, 'OAuthLoginController.loginWithApple');
+      state = state.copyWith(isStartingApple: false, error: error);
       return null;
     }
   }
