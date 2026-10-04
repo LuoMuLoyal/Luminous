@@ -18,7 +18,7 @@ l10n 工作流与约定。键清单是 `flutter gen-l10n` 的投影，不在此�
 
 ## 分片划分（粗粒度）
 
-- `common`：shell 与全局（tab / desktop / state / placeholder / legal 前缀）；`network`：网络层错误文案，经 `NetworkErrorL10n` 映射。
+- `common`：shell 与全局（tab / desktop / state / placeholder / legal 前缀）；`network`：网络层错误文案，经 `NetworkErrorL10n` 映射；`auth` 另有客户端自检失败文案（微信 SDK、刷新令牌可用性等），经 `ClientErrorL10n` 映射。
 - feature 分片与 feature 对应：`record`、`medicine`（含 `scan*`）、`today`、`review`（原 report，`review*` 前缀）、`settings`（含 `sidebar*`）、`auth`、`mine`、`assistant`、`notification`；`health_sync` 独立承载健康数据导入与自动同步文案。
 - 键前缀与分片的归属规则在 `scripts/l10n/arb_tools.dart` 的 `fragmentRules`；新增 feature 在此加行。
 
@@ -49,6 +49,10 @@ flutter gen-l10n
 - **中文句号**：zh 文案值不使用 `。`。句末不加句号（直接删掉，连带其前多余空格）；值内部
   仍有后续文字时改成 `，`，保留分句而不断句。`，`/`、`/`：`/`；`/`！`/`？` 照常保留，
   改句号时不改写措辞。
+- **错误文案不在状态里预格式化**：provider/state 只存失败对象（`LucentFailure`，携带
+  `clientErrorCode` / `networkErrorCode` / 服务端 `message`），zh/en 文案在**渲染点**用
+  `userMessageFromError(...)` / `userMessageOrNull(...)`（`lib/core/errors`）现算。禁止把
+  `e.toString()` 或已格式化句子放进 state 再原样上屏——文案会绕过 ARB，也拿不到可映射的稳定 code。
 - 动作迁到其他 tab 时删除旧 tab 的动作文案，不保留失活标签。
 - **不要把句子当模板裁剪**：需要「前缀 + 富文本链接 + 连接词」这类拼接时，把各部分拆成独立键
   （如 `authTermsAgreementPrefix` / `authTermsConjunction`），不要传空占位符再正则裁尾、
