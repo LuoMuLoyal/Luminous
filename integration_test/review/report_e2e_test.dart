@@ -21,7 +21,7 @@ void main() {
     expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
     // 事件动作已收口 Today：review 侧不渲染开始观察动作。
     expect(find.byKey(const Key('health-event-start-action')), findsNothing);
-    expect(find.text('还没有已结束的观察。'), findsOneWidget);
+    expect(find.text('还没有已结束的观察'), findsOneWidget);
 
     // 旧 dashboard 痕迹不出现：无 readiness 锁、无综合分数、无默认导出矩阵。
     expect(find.byKey(const Key('report-readiness-card')), findsNothing);

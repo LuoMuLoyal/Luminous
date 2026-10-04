@@ -10,7 +10,7 @@
   "mineAccountEmailUnverified": "邮箱未验证",
   "mineAccountStudentRole": "用户",
   "mineSignedOutNoticeTitle": "当前未登录",
-  "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。",
+  "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端，登录后再加载你的档案与健康上下文",
   "mineCompletionTitle": "档案完整度",
   "mineAlertAllergyTitle": "过敏史",
   "mineAlertAllergyCount": "{count} 项",
@@ -157,7 +157,7 @@
     }
   },
   "mineReadinessPreviewTitle": "个人档案尚未解锁",
-  "mineReadinessPreviewDescription": "登录后查看你的真实基础信息、过敏史和当前用药。",
+  "mineReadinessPreviewDescription": "登录后查看你的真实基础信息、过敏史和当前用药",
   "mineReadinessPreviewBadge": "预览",
   "mineReadinessIncompleteTitle": "还差 {count} 项关键信息",
   "@mineReadinessIncompleteTitle": {
@@ -168,7 +168,7 @@
     }
   },
   "mineReadinessReadyTitle": "档案已基本就绪",
-  "mineReadinessReadyDescription": "继续维护你的健康档案，并管理分享与账户授权。",
+  "mineReadinessReadyDescription": "继续维护你的健康档案，并管理分享与账户授权",
   "mineReadinessManageAction": "管理档案",
   "mineProfileTitle": "健康档案",
   "mineSettingsThemeTitle": "主题",
@@ -176,8 +176,8 @@
   "mineSettingsLanguageTitle": "语言",
   "mineSettingsNotificationsTitle": "通知设置",
   "mineErrorTitle": "我的页面暂时没有加载出来",
-  "mineErrorDescription": "结构已经接好，可以重新拉取一次数据。",
-  "mineActionToast": "{action}：后续会接入对应详情或设置流程。",
+  "mineErrorDescription": "结构已经接好，可以重新拉取一次数据",
+  "mineActionToast": "{action}：后续会接入对应详情或设置流程",
   "@mineActionToast": {
     "placeholders": {
       "action": {
@@ -245,8 +245,8 @@
   },
   "mineSyncFailedAction": "查看详情",
   "mineSyncFailedDetailsTitle": "同步失败详情",
-  "mineSyncFailedDetailsDescription": "以下本地变更未能同步，网络恢复后可以重试。",
-  "mineSyncFailedDetailsEmpty": "当前没有待处理的同步失败项。",
+  "mineSyncFailedDetailsDescription": "以下本地变更未能同步，网络恢复后可以重试",
+  "mineSyncFailedDetailsEmpty": "当前没有待处理的同步失败项",
   "mineSyncFailedDetailsListTitle": "待处理项（{count}）",
   "@mineSyncFailedDetailsListTitle": {
     "placeholders": {
@@ -263,11 +263,11 @@
   "mineSyncFailedDetailsLastError": "最近错误",
   "mineSyncFailedDetailsRetryAll": "全部重试",
   "mineSyncFailedDetailsRetrying": "重试中…",
-  "mineSyncFailedDetailsRetryFailed": "无法开始重试，请稍后再试。",
+  "mineSyncFailedDetailsRetryFailed": "无法开始重试，请稍后再试",
   "mineSyncFailedDetailsDiscard": "丢弃",
-  "mineSyncFailedDetailsDiscardFailed": "无法丢弃该项，请稍后再试。",
+  "mineSyncFailedDetailsDiscardFailed": "无法丢弃该项，请稍后再试",
   "mineSyncFailedDetailsDiscardTitle": "丢弃这一项？",
-  "mineSyncFailedDetailsDiscardDescription": "这条本地变更将被删除，且不会再发送到服务器。该操作无法撤销。",
+  "mineSyncFailedDetailsDiscardDescription": "这条本地变更将被删除，且不会再发送到服务器，该操作无法撤销",
   "mineSyncFailedDetailsDiscardConfirm": "丢弃",
   "mineSyncFailedErrorDataInvalid": "数据校验失败，请检查填写内容后重试",
   "mineSyncFailedErrorNetwork": "网络连接不稳定，请在网络恢复后重试",
@@ -295,7 +295,7 @@
   "mineConditionStatusSuspected": "疑似",
   "mineArchiveAddNewAction": "添加新记录",
   "mineArchiveEmptyTitle": "健康数据需登录后查看",
-  "mineArchiveEmptyDescription": "登录后同步基础信息、过敏史、疾病和用药记录。",
+  "mineArchiveEmptyDescription": "登录后同步基础信息、过敏史、疾病和用药记录",
   "mineEditFieldStrengthTextHint": "如 500mg、10ml",
   "mineEditFieldDoseTextHint": "如 1片、5ml",
   "mineEditFieldRouteHint": "如 口服、外用、吸入",
@@ -309,7 +309,7 @@
   },
   "mineNotificationInboxLoadingSummary": "加载中…",
   "mineEditRecordNotFoundTitle": "记录不存在",
-  "mineEditRecordNotFoundDescription": "这条记录可能已被删除。",
+  "mineEditRecordNotFoundDescription": "这条记录可能已被删除",
   "mineEditBackAction": "返回",
   "mineEditMedicineSectionInfo": "药品信息",
   "mineEditMedicineSectionDosage": "用法用量",

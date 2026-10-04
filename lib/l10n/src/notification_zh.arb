@@ -2,7 +2,7 @@
   "notificationListTitle": "通知",
   "notificationDetailTitle": "通知详情",
   "notificationEmptyTitle": "暂无通知",
-  "notificationEmptyDescription": "有新消息时会在这里显示。",
+  "notificationEmptyDescription": "有新消息时会在这里显示",
   "notificationErrorTitle": "通知加载失败",
   "notificationRetryAction": "重试",
   "notificationMarkAllRead": "全部已读",
@@ -20,7 +20,7 @@
   "notificationDeleteConfirmConfirm": "删除",
   "notificationLoadMore": "加载更多",
   "notificationNotFoundTitle": "通知已失效",
-  "notificationNotFoundDescription": "这条通知可能已被删除或已过期。",
+  "notificationNotFoundDescription": "这条通知可能已被删除或已过期",
   "notificationGroupToday": "今天",
   "notificationGroupYesterday": "昨天",
   "notificationGroupEarlier": "更早",
@@ -36,7 +36,7 @@
   "notificationTypeIdentityLinked": "绑定提醒",
   "notificationTypeUnknown": "通知",
   "notificationUnreadSemantics": "未读",
-  "sleepReminderNotificationBody": "该准备休息了。",
+  "sleepReminderNotificationBody": "该准备休息了",
   "sleepReminderNotificationChannelName": "睡眠提醒",
-  "sleepReminderNotificationChannelDescription": "设备上的就寝提醒。"
+  "sleepReminderNotificationChannelDescription": "设备上的就寝提醒"
 }

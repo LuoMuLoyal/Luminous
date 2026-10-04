@@ -223,6 +223,6 @@ void main() {
 
     expect(remote.unlinkIdentityId, 'e2e-identity-1');
     expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
-    expect(find.text('尚未绑定第三方身份。'), findsWidgets);
+    expect(find.text('尚未绑定第三方身份'), findsWidgets);
   });
 }

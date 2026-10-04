@@ -64,7 +64,7 @@ void main() {
     await pumpNoteworthy(tester, findings: const []);
 
     expect(find.text('值得注意'), findsNothing);
-    expect(find.text('这段时间没有新增值得注意的变化。'), findsOneWidget);
+    expect(find.text('这段时间没有新增值得注意的变化'), findsOneWidget);
   });
 
   testWidgets('renders finding cards with title, body and window', (
@@ -77,7 +77,7 @@ void main() {
     expect(find.text('下午摄入咖啡后睡眠时长下降'), findsOneWidget);
     // The window is localized rather than echoing the server's ISO strings.
     expect(find.text('8月1日 → 8月7日'), findsOneWidget);
-    expect(find.text('这段时间没有新增值得注意的变化。'), findsNothing);
+    expect(find.text('这段时间没有新增值得注意的变化'), findsNothing);
   });
 
   testWidgets('prefixes the window with the selected range label', (

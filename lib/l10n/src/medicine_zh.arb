@@ -51,7 +51,7 @@
   "medicineRiskCheckViewAction": "查看",
   "medicineRiskCheckAllClearAlertTitle": "风险检查已完成",
   "medicineRiskCheckAllClearAlertBody": "当前已检查药物里没有发现明确风险提示",
-  "medicineRiskCheckAllClearAlertDetail": "这不等于适合自行用药，仍需结合医生建议与说明书确认。",
+  "medicineRiskCheckAllClearAlertDetail": "这不等于适合自行用药，仍需结合医生建议与说明书确认",
   "medicineRiskCheckCoverageAlertTitle": "风险检查覆盖不足",
   "medicineRiskCheckCoverageAlertBody": "还有 {count} 种药品缺少可检查资料",
   "@medicineRiskCheckCoverageAlertBody": {
@@ -61,7 +61,7 @@
       }
     }
   },
-  "medicineRiskCheckCoverageAlertDetail": "{names} 暂时缺少可检查资料。",
+  "medicineRiskCheckCoverageAlertDetail": "{names} 暂时缺少可检查资料",
   "@medicineRiskCheckCoverageAlertDetail": {
     "placeholders": {
       "names": {
@@ -69,7 +69,7 @@
       }
     }
   },
-  "medicineRiskCheckCoverageAlertDetailWithMore": "{names} 等药品暂时缺少可检查资料。",
+  "medicineRiskCheckCoverageAlertDetailWithMore": "{names} 等药品暂时缺少可检查资料",
   "@medicineRiskCheckCoverageAlertDetailWithMore": {
     "placeholders": {
       "names": {
@@ -155,7 +155,7 @@
       }
     }
   },
-  "medicineRiskCheckFindingEvidenceFallback": "详情来自药品资料，请在风险检查页进一步确认。",
+  "medicineRiskCheckFindingEvidenceFallback": "详情来自药品资料，请在风险检查页进一步确认",
   "medicineRiskCheckCoverageReasonManualEntry": "手动录入，暂无标准药品资料",
   "medicineRiskCheckCoverageReasonMissingSourceRef": "缺少来源编号，无法拉取药品详情",
   "medicineRiskCheckCoverageReasonDetailUnavailable": "药品详情暂时不可用",
@@ -181,9 +181,9 @@
   "medicineRiskCheckTierConfirmedRisk": "已确认风险",
   "medicineRiskCheckTierConfirmedSafe": "已确认安全",
   "medicineRiskCheckTierUncovered": "未覆盖 / 不确定",
-  "medicineRiskCheckTierSafeDisclaimer": "当前已检查的药物里没有发现明确风险提示，但这不等于绝对安全，仍需结合医生建议与说明书确认。",
-  "medicineRiskCheckTierUncoveredDisclaimer": "以下药品缺少可检查资料，无法自动确认安全性。建议线下核对说明书或咨询药师。",
-  "medicineRiskCheckTierSafeBody": "已检查 {checked} 种药品，未发现明确风险提示。",
+  "medicineRiskCheckTierSafeDisclaimer": "当前已检查的药物里没有发现明确风险提示，但这不等于绝对安全，仍需结合医生建议与说明书确认",
+  "medicineRiskCheckTierUncoveredDisclaimer": "以下药品缺少可检查资料，无法自动确认安全性，建议线下核对说明书或咨询药师",
+  "medicineRiskCheckTierSafeBody": "已检查 {checked} 种药品，未发现明确风险提示",
   "@medicineRiskCheckTierSafeBody": {
     "placeholders": {
       "checked": {
@@ -196,7 +196,7 @@
   "medicineRecordScheduledStatus": "计划中",
   "medicineReferenceNoticeTitle": "仅供参考，必要时咨询医生或药师",
   "medicineErrorTitle": "用药页暂时没有加载出来",
-  "medicineErrorDescription": "请检查网络连接后重试。",
+  "medicineErrorDescription": "请检查网络连接后重试",
   "medicineHeroMetricAdherenceLabel": "按时服用率",
   "medicineQuickActionCameraTitle": "拍照识别药品",
   "medicineQuickActionCameraSubtitle": "识别包装、药盒与处方标签",
@@ -276,9 +276,9 @@
   "medicineReminderSoundGentle": "轻柔铃声",
   "medicineReminderSoundSilent": "静音",
   "medicineReminderNotificationDefaultTitle": "用药提醒",
-  "medicineReminderNotificationDefaultBody": "请按时服药。",
+  "medicineReminderNotificationDefaultBody": "请按时服药",
   "medicineReminderNotificationChannelName": "用药提醒",
-  "medicineReminderNotificationChannelDescription": "按用药计划在本机发送的提醒。",
+  "medicineReminderNotificationChannelDescription": "按用药计划在本机发送的提醒",
   "medicineReminderNoteLabel": "备注",
   "medicineReminderNoteOptionalLabel": "备注（可选）",
   "medicineReminderNoteHint": "添加备注，例如：饭后服用",
@@ -321,7 +321,7 @@
   "medicineReminderDateRangeInvalidToast": "结束日期不能早于开始日期",
   "medicineReminderDeleteAction": "删除此提醒",
   "medicineReminderDeleteConfirmTitle": "删除这条提醒？",
-  "medicineReminderDeleteConfirmBody": "删除后将无法恢复，历史用药打卡仍会保留。",
+  "medicineReminderDeleteConfirmBody": "删除后将无法恢复，历史用药打卡仍会保留",
   "medicineReminderConfirmDeleteAction": "确认删除",
   "medicineReminderCancelAction": "取消",
   "medicineNoPendingDose": "今日用药已完成",
@@ -330,9 +330,9 @@
   "medicineStatusNeedsCheckin": "待打卡",
   "medicineSafetyPanelTitle": "用药安全",
   "medicineSafetyPanelEmptyTitle": "暂无安全数据",
-  "medicineSafetyPanelEmptyBody": "添加药品后即可进行相互作用与禁忌检查。",
+  "medicineSafetyPanelEmptyBody": "添加药品后即可进行相互作用与禁忌检查",
   "medicineAlertInteractionTitle": "相互作用提醒",
-  "medicineAlertInteractionBody": "阿司匹林与布洛芬可能增加出血风险。",
+  "medicineAlertInteractionBody": "阿司匹林与布洛芬可能增加出血风险",
   "medicineAlertInteractionDetail": "同时使用时请遵医嘱",
   "medicineAlertInteractionAction": "查看详情",
   "medicineAlertOtherTitle": "其他安全提醒",
@@ -355,11 +355,11 @@
   "medicineAlertSpecialGroupSafetyBody": "记录特殊用药条件以获得更谨慎的安全提示",
   "medicineAlertSpecialGroupSafetyDetail": "孕期、哺乳期、儿童或其他特殊人群用药请优先遵医嘱",
   "medicineAlertSpecialGroupSafetyStatus": "未记录",
-  "medicinePromisePointBoundary": "结果仅供参考，不替代医生诊断与治疗。",
-  "medicinePromisePointSpecialGroup": "孕期、哺乳期、儿童、精神类药物更高优先级警示。",
-  "medicinePromisePointPrivacy": "处方、拍照和敏感药物信息遵循最小暴露原则。",
-  "medicinePromisePointDiagnosis": "我们不诊断、不替代医生、不编造药品事实。",
-  "medicineOpenPlanItemToast": "会打开药品详情、提醒设置和历史服用记录。",
+  "medicinePromisePointBoundary": "结果仅供参考，不替代医生诊断与治疗",
+  "medicinePromisePointSpecialGroup": "孕期、哺乳期、儿童、精神类药物更高优先级警示",
+  "medicinePromisePointPrivacy": "处方、拍照和敏感药物信息遵循最小暴露原则",
+  "medicinePromisePointDiagnosis": "我们不诊断、不替代医生、不编造药品事实",
+  "medicineOpenPlanItemToast": "会打开药品详情、提醒设置和历史服用记录",
   "medicineSearchPageTitle": "搜索药品",
   "medicineSearchAssistantTitle": "用药助手",
   "medicineSearchFieldHint": "搜索药品、成分、疾病、症状...",
@@ -369,8 +369,8 @@
   "medicineSearchClearAction": "清空",
   "medicineSearchPhotoAction": "拍照识别",
   "medicineSearchBarcodeAction": "扫描条形码",
-  "medicineSearchPhotoToast": "会打开相机识别药盒、药板或说明书。",
-  "medicineSearchBarcodeToast": "会打开扫码流程，识别条形码并补齐药品信息。",
+  "medicineSearchPhotoToast": "会打开相机识别药盒、药板或说明书",
+  "medicineSearchBarcodeToast": "会打开扫码流程，识别条形码并补齐药品信息",
   "medicineSearchCategoryTitle": "热门常备药分类",
   "medicineSearchCategoryPainFever": "退烧止痛",
   "medicineSearchCategoryColdCough": "感冒咳嗽",
@@ -400,7 +400,7 @@
   "medicineSearchAddedToBoxToast": "已加入药箱",
   "medicineSearchGoToReminderAction": "去设提醒",
   "medicineSearchPrecheckTitle": "添加前风险检查",
-  "medicineSearchPrecheckDescription": "发现风险提示或资料不足，确认后仍可继续加入药箱。",
+  "medicineSearchPrecheckDescription": "发现风险提示或资料不足，确认后仍可继续加入药箱",
   "medicineSearchPrecheckConfirmAction": "仍然加入",
   "medicineSearchPrecheckFailedToast": "风险检查失败",
   "medicineSearchPrecheckUnavailableToast": "暂无法即时检查该药品，加入后可在风险检查中查看",
@@ -413,7 +413,7 @@
   "medicineSearchNoResultKeyword": "检查关键词",
   "medicineSearchNoResultSwitch": "切换数据源",
   "medicineSearchErrorTitle": "搜索页暂时没有加载出来",
-  "medicineSearchErrorDescription": "请检查网络连接后重试。",
+  "medicineSearchErrorDescription": "请检查网络连接后重试",
   "medicineSearchPreviewEmpty": "选择一个药品查看详情",
   "medicineSearchSourceRefCn": "批准文号：{id}",
   "@medicineSearchSourceRefCn": {
@@ -432,20 +432,20 @@
     }
   },
   "medicineRiskCheckRedFlagBannerTitle": "红旗警告",
-  "medicineRiskCheckRedFlagSevereAllergy": "严重过敏风险：{drug} 含有 {allergen}，请勿使用并立即咨询医生。",
+  "medicineRiskCheckRedFlagSevereAllergy": "严重过敏风险：{drug} 含有 {allergen}，请勿使用并立即咨询医生",
   "@medicineRiskCheckRedFlagSevereAllergy": {
     "placeholders": {
       "drug": {},
       "allergen": {}
     }
   },
-  "medicineRiskCheckRedFlagSevereAllergyGeneric": "严重过敏风险：{drug} 与已知过敏原匹配，请勿使用并立即咨询医生。",
+  "medicineRiskCheckRedFlagSevereAllergyGeneric": "严重过敏风险：{drug} 与已知过敏原匹配，请勿使用并立即咨询医生",
   "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
     "placeholders": {
       "drug": {}
     }
   },
-  "medicineRiskCheckRedFlagInformationGap": "无法确认 {drug} 的安全性，建议线下核对药品说明书或咨询药师。",
+  "medicineRiskCheckRedFlagInformationGap": "无法确认 {drug} 的安全性，建议线下核对药品说明书或咨询药师",
   "@medicineRiskCheckRedFlagInformationGap": {
     "placeholders": {
       "drug": {}
@@ -479,8 +479,8 @@
   },
   "scanResultMedicineLabel": "药品",
   "scanResultApprovalNumberLabel": "批准文号",
-  "scanResultVerifyHintAi": "AI 识别结果，需核对药品名、批准文号和规格。",
-  "scanResultVerifyHintOcr": "本地 OCR 识别结果，请核对药品名与批准文号。",
+  "scanResultVerifyHintAi": "AI 识别结果，需核对药品名、批准文号和规格",
+  "scanResultVerifyHintOcr": "本地 OCR 识别结果，请核对药品名与批准文号",
   "scanResultOtherMatches": "从列表选择其他匹配 ({count})",
   "@scanResultOtherMatches": {
     "placeholders": {
@@ -502,7 +502,7 @@
   "scanViewReminderAction": "查看提醒详情",
   "scanManualSearchAction": "手动搜索",
   "medicineEmptyAddFirstTitle": "添加你的第一个药品",
-  "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查。",
+  "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查",
   "medicineRiskCheckTabStatic": "系统检查",
   "medicineRiskCheckTabLlm": "AI 分析",
   "medicineRiskScoreTitle": "风险评分",
@@ -575,14 +575,14 @@
     }
   },
   "scanOcrUnavailableTitle": "OCR 识别不可用",
-  "scanOcrUnavailableMessage": "此设备架构不支持 OCR 离线识别引擎，请使用 AI 识别。",
+  "scanOcrUnavailableMessage": "此设备架构不支持 OCR 离线识别引擎，请使用 AI 识别",
   "scanOcrUnavailableUseAi": "使用 AI 识别",
   "scanModelDownloadTitle": "下载 OCR 识别模型",
-  "scanModelDownloadMessage": "OCR 文字识别需要下载离线模型文件（约 30MB），下载后可离线使用。是否立即下载？",
+  "scanModelDownloadMessage": "OCR 文字识别需要下载离线模型文件（约 30MB），下载后可离线使用，是否立即下载？",
   "scanModelDownloadConfirm": "下载",
   "scanModelDownloadCancel": "取消",
   "scanModelDownloadFailedTitle": "模型下载失败",
-  "scanModelDownloadFailedMessage": "模型文件下载失败，请检查网络后重试。",
+  "scanModelDownloadFailedMessage": "模型文件下载失败，请检查网络后重试",
   "scanModelDownloadRetry": "重试",
   "scanRetryAction": "重新扫描",
   "medicineDetailPageTitle": "药品详情",
@@ -668,8 +668,8 @@
       }
     }
   },
-  "medicineDetailSequencesEmpty": "该药品暂无序列数据。",
-  "medicineDetailSequencesError": "序列加载失败。",
+  "medicineDetailSequencesEmpty": "该药品暂无序列数据",
+  "medicineDetailSequencesError": "序列加载失败",
   "medicineDetailSectionStructure": "分子性质",
   "medicineDetailStructureFormula": "分子式",
   "medicineDetailStructureWeight": "分子量",

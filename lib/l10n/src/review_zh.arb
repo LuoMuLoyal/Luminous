@@ -9,9 +9,9 @@
   "reviewReadinessInsufficientBadge": "数据不足",
   "reviewReadinessReadyBadge": "已就绪",
   "reviewReadinessSignedOutTitle": "暂未解锁完整报告",
-  "reviewReadinessSignedOutDescription": "登录后可查看真实近 7 天聚合。",
+  "reviewReadinessSignedOutDescription": "登录后可查看真实近 7 天聚合",
   "reviewReadinessInsufficientTitle": "数据还不足，暂无法生成完整报告",
-  "reviewReadinessInsufficientDescription": "继续记录后，系统会补齐趋势分析、总结和导出内容。",
+  "reviewReadinessInsufficientDescription": "继续记录后，系统会补齐趋势分析、总结和导出内容",
   "reviewReadinessReadyTitle": "近 7 天报告已就绪",
   "reviewReadinessReadyTitleRange": "{range}报告已就绪",
   "@reportReadinessReadyTitleRange": {
@@ -21,7 +21,7 @@
       }
     }
   },
-  "reviewReadinessReadyDescription": "你现在可以查看完整报告、生成总结并导出摘要。",
+  "reviewReadinessReadyDescription": "你现在可以查看完整报告、生成总结并导出摘要",
   "reviewReadinessUpdatedAt": "当前显示的数据更新于 {time}",
   "@reportReadinessUpdatedAt": {
     "placeholders": {
@@ -30,7 +30,7 @@
       }
     }
   },
-  "reviewReadinessMissingMetricsHint": "当前还缺 {count} 项指标数据。",
+  "reviewReadinessMissingMetricsHint": "当前还缺 {count} 项指标数据",
   "@reportReadinessMissingMetricsHint": {
     "placeholders": {
       "count": {
@@ -38,7 +38,7 @@
       }
     }
   },
-  "reviewReadinessNeedsAttentionMetricsHint": "{count} 项指标需要改善。",
+  "reviewReadinessNeedsAttentionMetricsHint": "{count} 项指标需要改善",
   "@reportReadinessNeedsAttentionMetricsHint": {
     "placeholders": {
       "count": {
@@ -76,7 +76,7 @@
   "reviewFindingsSectionTitle": "重点发现",
   "reviewSuggestionHistorySectionTitle": "历史建议回顾",
   "reviewSuggestionHistoryEmptyTitle": "最近还没有主动建议",
-  "reviewSuggestionHistoryEmptyBody": "当系统产生新的 AI 主动建议后，这里会显示最近的回顾记录。",
+  "reviewSuggestionHistoryEmptyBody": "当系统产生新的 AI 主动建议后，这里会显示最近的回顾记录",
   "reviewSuggestionHistoryActiveBadge": "进行中",
   "reviewSuggestionHistoryExpiredBadge": "已过期",
   "reviewSuggestionHistoryDismissedBadge": "已忽略",
@@ -86,12 +86,12 @@
   "reviewAiSummarySubtitle": "基于本周记录的智能分析",
   "reviewAiSummarySubtitleLast30Days": "基于近 30 天记录的智能分析",
   "reviewAiSummarySubtitleCustom": "基于所选时段的智能分析",
-  "reviewAiSummaryDefaultHint": "还没有生成本周 AI 总结，当前先显示最近一次报告快照。",
+  "reviewAiSummaryDefaultHint": "还没有生成本周 AI 总结，当前先显示最近一次报告快照",
   "reviewAiSummaryGeneratingHint": "正在生成本周 AI 总结",
   "reviewAiSummaryGeneratingHintLast30Days": "正在生成近 30 天 AI 总结",
   "reviewAiSummaryGeneratingHintCustom": "正在生成所选时段 AI 总结",
-  "reviewAiSummaryErrorHint": "本周 AI 总结生成失败，当前先保留报告快照。",
-  "reviewAiSummaryDisabledHint": "你已在设置中关闭 AI 总结，当前只显示报告快照。",
+  "reviewAiSummaryErrorHint": "本周 AI 总结生成失败，当前先保留报告快照",
+  "reviewAiSummaryDisabledHint": "你已在设置中关闭 AI 总结，当前只显示报告快照",
   "reviewExportSectionTitle": "导出摘要",
   "reviewExportHospitalTitle": "给校医院",
   "reviewExportHospitalSubtitle": "导出健康摘要",
@@ -101,15 +101,15 @@
   "reviewExportPrintSubtitle": "纸质版预览",
   "reviewExportClinicShareTitle": "分享摘要",
   "reviewExportClinicShareSubtitle": "脱敏健康摘要",
-  "reviewExportRequestedToast": "导出请求已提交。",
-  "reviewExportProcessingToast": "导出正在处理中。",
-  "reviewExportUnavailableToast": "当前环境暂时无法生成这个导出文件。",
-  "reviewExportReadyToast": "导出文件已准备好，正在打开。",
-  "reviewExportFailedToast": "导出失败。",
-  "reviewExportLinkMissingToast": "导出已完成，但下载链接暂时不可用。",
-  "reviewExportOpenFailedToast": "导出已完成，但无法打开下载链接。",
+  "reviewExportRequestedToast": "导出请求已提交",
+  "reviewExportProcessingToast": "导出正在处理中",
+  "reviewExportUnavailableToast": "当前环境暂时无法生成这个导出文件",
+  "reviewExportReadyToast": "导出文件已准备好，正在打开",
+  "reviewExportFailedToast": "导出失败",
+  "reviewExportLinkMissingToast": "导出已完成，但下载链接暂时不可用",
+  "reviewExportOpenFailedToast": "导出已完成，但无法打开下载链接",
   "reviewPatternSectionTitle": "健康模式分析",
-  "reviewReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议。",
+  "reviewReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议",
   "@reportDataInsufficientMetricsHint": {
     "placeholders": {
       "count": {
@@ -118,18 +118,18 @@
     }
   },
   "reviewFindingsEmptyTitle": "暂无重点发现",
-  "reviewFindingsEmptyBody": "持续记录健康数据后，系统会自动发现值得关注的变化和趋势。",
-  "reviewExportInsufficientReason": "数据不足时暂不支持导出，请先补充记录。",
+  "reviewFindingsEmptyBody": "持续记录健康数据后，系统会自动发现值得关注的变化和趋势",
+  "reviewExportInsufficientReason": "数据不足时暂不支持导出，请先补充记录",
   "reviewLockedFeaturesTitle": "完整报告暂未展开",
-  "reviewLockedFeaturesSignedOutHint": "登录并补齐记录后可查看总结、导出 PDF、打印预览和更深入的模式分析。",
-  "reviewLockedFeaturesInsufficientHint": "补齐记录后可生成总结、导出 PDF、打印预览和查看更深入的模式分析。",
+  "reviewLockedFeaturesSignedOutHint": "登录并补齐记录后可查看总结、导出 PDF、打印预览和更深入的模式分析",
+  "reviewLockedFeaturesInsufficientHint": "补齐记录后可生成总结、导出 PDF、打印预览和查看更深入的模式分析",
   "reviewErrorTitle": "报告页暂时没有加载出来",
-  "reviewErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次。",
-  "reviewPreviewBannerMessage": "登录后查看你的真实周报、AI 总结和导出结果。",
+  "reviewErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次",
+  "reviewPreviewBannerMessage": "登录后查看你的真实周报、AI 总结和导出结果",
   "reviewFindingsPreviewTitle": "重点发现",
-  "reviewFindingsPreviewBody": "登录后查看基于你记录的重点发现。",
+  "reviewFindingsPreviewBody": "登录后查看基于你记录的重点发现",
   "reviewSuggestionHistoryPreviewTitle": "历史建议回顾",
-  "reviewSuggestionHistoryPreviewBody": "登录后查看历史主动建议。",
+  "reviewSuggestionHistoryPreviewBody": "登录后查看历史主动建议",
   "reviewStatusInsufficientData": "数据不足",
   "reviewStatusUnknown": "未知",
   "reviewSuggestionHistoryDetailRuleId": "规则 ID",
@@ -158,7 +158,7 @@
   "reviewClinicSummarySleepSection": "睡眠记录",
   "reviewClinicSummarySleepUnit": "分钟",
   "reviewClinicSummaryNotesSection": "备注",
-  "reviewClinicSummaryNotesPrivacyWarning": "创建公开分享链接后，持有链接者可查看备注原文。",
+  "reviewClinicSummaryNotesPrivacyWarning": "创建公开分享链接后，持有链接者可查看备注原文",
   "reviewClinicSummaryDisclaimerSection": "免责声明",
   "reviewClinicSummaryDownloadPdf": "下载 PDF",
   "reviewClinicSummaryShare": "分享摘要",
@@ -180,7 +180,7 @@
   "reviewClinicSummaryFieldWater": "饮水",
   "reviewClinicSummaryFieldSleep": "睡眠",
   "reviewClinicSummaryFieldNotes": "备注",
-  "reviewClinicSummaryFieldPrivacyHint": "仅所选内容会出现在预览、PDF 与分享链接中。",
+  "reviewClinicSummaryFieldPrivacyHint": "仅所选内容会出现在预览、PDF 与分享链接中",
   "reviewShareConfirmTitle": "创建分享链接",
   "reviewShareConfirmExpiryHint": "链接自创建起 {days} 天内有效",
   "@reportShareConfirmExpiryHint": {
@@ -190,7 +190,7 @@
       }
     }
   },
-  "reviewShareConfirmNotice": "链接持有者可查看：任何获得此链接的人都能打开并看到所选内容。",
+  "reviewShareConfirmNotice": "链接持有者可查看：任何获得此链接的人都能打开并看到所选内容",
   "reviewShareConfirmAction": "创建分享",
   "reviewShareCreatedTitle": "分享链接已创建",
   "reviewShareCreatedExpiresAt": "到期时间",
@@ -198,12 +198,12 @@
   "reviewShareCopiedToast": "链接已复制",
   "reviewShareRevokeAction": "撤销分享",
   "reviewShareRevokedTitle": "分享已撤销",
-  "reviewShareRevokedBody": "链接已失效，持有者无法再访问。",
+  "reviewShareRevokedBody": "链接已失效，持有者无法再访问",
   "reviewShareCreateFailed": "分享创建失败，请稍后重试",
   "reviewShareRevokeFailed": "撤销失败，请稍后重试",
   "reviewShareManagementTitle": "分享管理",
   "reviewShareManagementEmpty": "还没有分享记录",
-  "reviewShareManagementEmptyHint": "在就诊摘要里创建的分享链接会显示在这里。",
+  "reviewShareManagementEmptyHint": "在就诊摘要里创建的分享链接会显示在这里",
   "reviewShareManagementLoadFailed": "分享记录加载失败，请稍后重试",
   "reviewShareCreatedAt": "创建时间",
   "reviewShareExpiresAt": "到期时间",
@@ -222,7 +222,7 @@
   "reviewMoreShareManagementTitle": "分享管理",
   "reviewMoreShareManagementSubtitle": "查看和撤销分享链接",
   "reviewTrendEmptyTitle": "暂无趋势数据",
-  "reviewTrendEmptyBody": "连续 2 天记录饮水、用药或睡眠后，这里会显示健康趋势变化。",
+  "reviewTrendEmptyBody": "连续 2 天记录饮水、用药或睡眠后，这里会显示健康趋势变化",
   "reviewTrendCoverage": "有记录 {observed} 天 / 范围 {expected} 天",
   "@reviewTrendCoverage": {
     "placeholders": {
@@ -255,7 +255,7 @@
     }
   },
   "reviewNoteworthyTitle": "值得注意",
-  "reviewNoteworthyAbstainLabel": "这段时间没有新增值得注意的变化。",
+  "reviewNoteworthyAbstainLabel": "这段时间没有新增值得注意的变化",
   "reviewNoteworthyWindow": "{start} → {end}",
   "@reviewNoteworthyWindow": {
     "placeholders": {
@@ -281,7 +281,7 @@
       }
     }
   },
-  "reviewTrendGapNote": "未记录的天不计入走势。",
+  "reviewTrendGapNote": "未记录的天不计入走势",
   "@reportExportFailedWithReason": {
     "placeholders": {
       "reason": {
@@ -345,10 +345,10 @@
     }
   },
   "reviewActiveEventGoTodayCheckIn": "去今日 check-in",
-  "reviewReviewReasonNoObservations": "这段时间内还没有观察记录。",
-  "reviewReviewReasonInsufficientCoverage": "有记录但还不足以看出变化趋势。",
-  "reviewReviewReasonNoCompletedActions": "还没有已确认的服药或结果记录。",
-  "reviewReviewReasonUnknown": "暂时无法展示这部分内容。",
+  "reviewReviewReasonNoObservations": "这段时间内还没有观察记录",
+  "reviewReviewReasonInsufficientCoverage": "有记录但还不足以看出变化趋势",
+  "reviewReviewReasonNoCompletedActions": "还没有已确认的服药或结果记录",
+  "reviewReviewReasonUnknown": "暂时无法展示这部分内容",
   "reviewReviewWhatHappenedSymptomCount": "记录了 {count} 条症状",
   "@reviewReviewWhatHappenedSymptomCount": {
     "placeholders": {
@@ -471,8 +471,8 @@
       }
     }
   },
-  "reviewReviewNextStepCheckInPrompt": "今天还没有确认结果，记得打卡。",
-  "reviewReviewNextStepCheckInDonePrompt": "今天的结果已确认。",
+  "reviewReviewNextStepCheckInPrompt": "今天还没有确认结果，记得打卡",
+  "reviewReviewNextStepCheckInDonePrompt": "今天的结果已确认",
   "reviewReviewNextStepEndedPrompt": "这段观察已结束，结果：{outcome}",
   "@reviewReviewNextStepEndedPrompt": {
     "placeholders": {
@@ -510,14 +510,14 @@
     }
   },
   "reviewReviewHistoryTitle": "过去的观察",
-  "reviewReviewHistoryEmpty": "还没有已结束的观察。",
+  "reviewReviewHistoryEmpty": "还没有已结束的观察",
   "reviewReviewHistoryFilterAll": "全部",
-  "reviewReviewHistoryLoadFailed": "历史记录加载失败。",
-  "reviewReviewHistoryLoadMoreFailed": "加载更多失败。",
+  "reviewReviewHistoryLoadFailed": "历史记录加载失败",
+  "reviewReviewHistoryLoadMoreFailed": "加载更多失败",
   "reviewReviewNoEventTitle": "现在没有进行中的观察",
-  "reviewReviewNoEventDescription": "开始一段健康观察后，这里会按「发生了什么、有什么变化、完成了什么、接下来怎么办」帮你回顾整个过程。",
+  "reviewReviewNoEventDescription": "开始一段健康观察后，这里会按「发生了什么、有什么变化、完成了什么、接下来怎么办」帮你回顾整个过程",
   "reviewRecordGuideTitle": "继续记录，几周后能看到趋势",
-  "reviewRecordGuideDescription": "本周已记录 {observed}/{expected} 天。连续记录饮水、睡眠或用药后，这里会呈现健康趋势与值得注意的变化。",
+  "reviewRecordGuideDescription": "本周已记录 {observed}/{expected} 天，连续记录饮水、睡眠或用药后，这里会呈现健康趋势与值得注意的变化",
   "@reviewRecordGuideDescription": {
     "placeholders": {
       "observed": {
@@ -529,17 +529,17 @@
     }
   },
   "reviewRecordGuideGoRecordAction": "去记录",
-  "reviewRecordGuideEmptyRangeDescription": "当前周期暂无记录天数，请去记录后再来看趋势。",
+  "reviewRecordGuideEmptyRangeDescription": "当前周期暂无记录天数，请去记录后再来看趋势",
   "reviewPreviewCoverageTitle": "覆盖率概览",
-  "reviewPreviewCoverageBody": "每周/每月各健康维度的记录天数，一眼看出记录够不够。",
+  "reviewPreviewCoverageBody": "每周/每月各健康维度的记录天数，一眼看出记录够不够",
   "reviewPreviewNoteworthyTitle": "值得注意的变化",
-  "reviewPreviewNoteworthyBody": "饮水、睡眠等维度有值得留意的变化时，这里会突出显示。",
+  "reviewPreviewNoteworthyBody": "饮水、睡眠等维度有值得留意的变化时，这里会突出显示",
   "reviewPreviewTrendTitle": "单维趋势",
-  "reviewPreviewTrendBody": "切换饮水、睡眠、用药等单维度，查看这段时间的趋势曲线。",
+  "reviewPreviewTrendBody": "切换饮水、睡眠、用药等单维度，查看这段时间的趋势曲线",
   "reviewPreviewHistoryTitle": "事件回顾",
-  "reviewPreviewHistoryBody": "按事件回顾你的观察记录，进入详情查看完整经过。",
+  "reviewPreviewHistoryBody": "按事件回顾你的观察记录，进入详情查看完整经过",
   "reviewReviewErrorTitle": "回顾暂时加载失败",
-  "reviewReviewErrorDescription": "请检查网络后重试。",
+  "reviewReviewErrorDescription": "请检查网络后重试",
   "reviewReviewStaleBanner": "更新失败，正在显示上次的回顾内容",
   "reviewMoreTitle": "更多",
   "reviewMoreVisitSummaryTitle": "就诊摘要",

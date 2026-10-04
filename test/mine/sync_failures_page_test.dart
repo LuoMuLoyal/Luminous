@@ -71,7 +71,7 @@ void main() {
     expect(find.text('daily_record'), findsOneWidget);
     expect(find.text('record-1'), findsOneWidget);
     // User-facing message is shown; raw exception is hidden by default.
-    expect(find.text('网络请求失败，请检查当前连接。'), findsOneWidget);
+    expect(find.text('网络请求失败，请检查当前连接'), findsOneWidget);
     expect(
       find.text('DioException [connectionError]: network unavailable'),
       findsNothing,
@@ -105,7 +105,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('当前没有待处理的同步失败项。'), findsOneWidget);
+    expect(find.text('当前没有待处理的同步失败项'), findsOneWidget);
     expect(find.byKey(const Key('sync-failures-retry-all')), findsNothing);
   });
 
@@ -172,7 +172,7 @@ void main() {
     await tester.tap(find.byKey(const Key('sync-failures-retry-all')));
     await tester.pumpAndSettle();
 
-    expect(find.text('无法开始重试，请稍后再试。'), findsOneWidget);
+    expect(find.text('无法开始重试，请稍后再试'), findsOneWidget);
     verifyNever(() => worker.flush());
     // The entry stays on screen so the user can retry again.
     expect(find.text('daily_record'), findsOneWidget);
@@ -242,6 +242,6 @@ void main() {
     await tester.tap(find.text('丢弃').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('无法丢弃该项，请稍后再试。'), findsOneWidget);
+    expect(find.text('无法丢弃该项，请稍后再试'), findsOneWidget);
   });
 }

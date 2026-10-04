@@ -20,7 +20,7 @@ Widget _shell(Widget child) {
   return TestForuiApp(home: Scaffold(body: child));
 }
 
-const _disclaimerText = 'AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。';
+const _disclaimerText = 'AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师';
 
 void main() {
   group('AssistantToolChip', () {

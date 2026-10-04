@@ -98,7 +98,7 @@ Future<DailyRecordItem> dailyRecordDetail(Ref ref, String id) async {
       .run()
       .timeout(
         const Duration(seconds: 5),
-        onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
+        onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试'),
       );
   // Left 投影到 AsyncValue.error。
   return result.fold((failure) => throw failure, (value) => value);

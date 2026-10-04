@@ -78,7 +78,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('尚未登录'), findsOneWidget);
-    expect(find.text('登录后才可以使用 AI 对话，并由你决定是否开放健康上下文。'), findsOneWidget);
+    expect(find.text('登录后才可以使用 AI 对话，并由你决定是否开放健康上下文'), findsOneWidget);
     expect(find.byKey(const Key('assistant-input')), findsNothing);
   });
 
@@ -250,7 +250,7 @@ void main() {
     await tester.tap(_assistantSendButton());
     await tester.pumpAndSettle();
 
-    expect(find.text('这条建议已经过期，请重新生成后再确认。'), findsOneWidget);
+    expect(find.text('这条建议已经过期，请重新生成后再确认'), findsOneWidget);
     expect(
       tester
           .widget<FButton>(
@@ -288,7 +288,7 @@ void main() {
     );
 
     // Should show hint about toggling in settings
-    expect(find.text('你已关闭 AI 对话，在右上角设置中打开“启用 AI 对话”开关即可恢复。'), findsOneWidget);
+    expect(find.text('你已关闭 AI 对话，在右上角设置中打开“启用 AI 对话”开关即可恢复'), findsOneWidget);
     final composer = tester.widget<FlowComposer>(find.byType(FlowComposer));
     expect(composer.enabled, isFalse);
     expect(
@@ -309,7 +309,7 @@ void main() {
 
     expect(find.text('之前那次睡眠为什么这么差？'), findsOneWidget);
     expect(find.text('我先结合你最近几天的睡眠记录来解释。'), findsOneWidget);
-    expect(find.text('你已关闭 AI 对话，在右上角设置中打开“启用 AI 对话”开关即可恢复。'), findsNothing);
+    expect(find.text('你已关闭 AI 对话，在右上角设置中打开“启用 AI 对话”开关即可恢复'), findsNothing);
   });
 
   testWidgets('latest persisted conversation is restored on assistant page', (
@@ -532,7 +532,7 @@ void main() {
 
     // The danger confirmation dialog asks again before deleting.
     expect(find.text('删除会话？'), findsOneWidget);
-    expect(find.text('删除后不可恢复。'), findsOneWidget);
+    expect(find.text('删除后不可恢复'), findsOneWidget);
 
     await tester.tap(find.text('删除').last);
     await tester.pumpAndSettle();
@@ -733,7 +733,7 @@ void main() {
     expect(screen.thread, isA<AssistantEmptyConversation>());
     expect(find.byType(AssistantSvgGreeting), findsOneWidget);
     expect(find.text('开始和 Luminous 聊天'), findsOneWidget);
-    expect(find.text('可以问我最近的睡眠、记录和用药情况。'), findsOneWidget);
+    expect(find.text('可以问我最近的睡眠、记录和用药情况'), findsOneWidget);
     final suggestions = tester.widget<FlowSuggestionGroup>(
       find.byType(FlowSuggestionGroup),
     );
@@ -750,7 +750,7 @@ void main() {
     );
     expect(composerTextField.controller?.text, starterPrompt);
     await tester.pump(const Duration(milliseconds: 200));
-    expect(find.text('AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。'), findsOneWidget);
+    expect(find.text('AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师'), findsOneWidget);
     expect(
       find.byKey(const Key('assistant-welcome-disclaimer')),
       findsOneWidget,
@@ -762,7 +762,7 @@ void main() {
     await tester.pump();
     expect(
       tester
-          .widget<Text>(find.text('AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师。'))
+          .widget<Text>(find.text('AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师'))
           .maxLines,
       1,
     );
@@ -780,7 +780,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('已开启跨会话记忆'), findsOneWidget);
-    expect(find.text('你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭。'), findsOneWidget);
+    expect(find.text('你的对话会被提炼为要点，用于延续后续对话；可在设置中关闭'), findsOneWidget);
   });
 
   testWidgets('AssistantPage scopes one FlowTheme below MaterialApp', (

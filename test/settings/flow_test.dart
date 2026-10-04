@@ -145,7 +145,7 @@ void main() {
     await _tapSettingsRow(tester, 'settings-row-notifications');
 
     expect(find.text('系统通知已开启'), findsOneWidget);
-    expect(find.text('通知已授权。下方开关可控制各类通知的显示。'), findsOneWidget);
+    expect(find.text('通知已授权，下方开关可控制各类通知的显示'), findsOneWidget);
   });
 
   testWidgets('Notification settings shows denied permission state', (
@@ -165,7 +165,7 @@ void main() {
     await _tapSettingsRow(tester, 'settings-row-notifications');
 
     expect(find.text('系统通知未开启'), findsOneWidget);
-    expect(find.text('点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'), findsOneWidget);
+    expect(find.text('点击可打开系统权限对话框，系统通知权限未开启时，本地提醒无法显示'), findsOneWidget);
   });
 
   testWidgets('Advanced settings page is reachable and shows actions', (
