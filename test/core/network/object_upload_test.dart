@@ -111,6 +111,68 @@ void main() {
         ),
       );
     });
+
+    /// `POST /files/upload` documents `fileName` as the *original filename* and
+    /// rejects path separators (`^[^\\/]+$` in
+    /// `Lucent/src/modules/files/dto/create-file-upload.dto.ts`). The avatar
+    /// uploader passes a key-shaped name, so forwarding it verbatim made every
+    /// avatar presign answer `400 VALIDATION_FAILED` — no PUT, no profile write,
+    /// no avatar.
+    group('fileName is sent as a bare filename', () {
+      Future<CreateUploadRequest> requestFor(String? fileName) async {
+        when(
+          () => filesApi.createUpload(
+            createUploadRequest: any(named: 'createUploadRequest'),
+          ),
+        ).thenAnswer(
+          (_) async => Response<CreateFileUploadResponse>(
+            data: _presign(),
+            statusCode: 200,
+            requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
+          ),
+        );
+
+        await presignFileUpload(
+          filesApi,
+          contentType: 'image/jpeg',
+          sizeBytes: 2048,
+          fileName: fileName,
+        );
+
+        return verify(
+              () => filesApi.createUpload(
+                createUploadRequest: captureAny(named: 'createUploadRequest'),
+              ),
+            ).captured.single
+            as CreateUploadRequest;
+      }
+
+      test('strips the avatars/{userId}/ object prefix', () async {
+        final request = await requestFor('avatars/user-1/avatar-9ab.jpg');
+
+        expect(request.fileName, 'avatar-9ab.jpg');
+        // The server-side schema rule this guards: no `/` and no `\`.
+        expect(request.fileName, isNot(matches(RegExp(r'[\\/]'))));
+      });
+
+      test('strips a Windows-style path too', () async {
+        final request = await requestFor(r'avatars\user-1\avatar-9ab.jpg');
+
+        expect(request.fileName, 'avatar-9ab.jpg');
+      });
+
+      test('leaves a plain filename untouched', () async {
+        final request = await requestFor('photo.jpg');
+
+        expect(request.fileName, 'photo.jpg');
+      });
+
+      test('drops a value that is only a path', () async {
+        final request = await requestFor('avatars/user-1/');
+
+        expect(request.fileName, isNull);
+      });
+    });
   });
 
   group('putPresignedObject', () {

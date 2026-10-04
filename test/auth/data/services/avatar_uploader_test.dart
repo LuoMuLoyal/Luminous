@@ -28,7 +28,7 @@ void main() {
   });
 
   test(
-    'uploads with a private avatar object prefix and returns public URL',
+    'uploads with a generated avatar object name and returns public URL',
     () async {
       when(
         () => filesApi.createUpload(
@@ -75,8 +75,12 @@ void main() {
                 ),
               ).captured.single
               as CreateUploadRequest;
-      expect(captured.fileName, startsWith('avatars/user-1/avatar-'));
+      // 服务端只把 fileName 当「原始文件名」(schema 拒绝路径分隔符)并自己生成对象键,
+      // 所以这里到服务端的必须是裸文件名;上传器给的对象名前缀由共享预签名入口剥掉
+      // (见 `test/core/network/object_upload_test.dart`)。
+      expect(captured.fileName, startsWith('avatar-'));
       expect(captured.fileName, endsWith('.jpg'));
+      expect(captured.fileName, isNot(matches(RegExp(r'[\\/]'))));
     },
   );
 

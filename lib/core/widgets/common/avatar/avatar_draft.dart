@@ -89,13 +89,19 @@ Future<Uint8List?> showAvatarCropper(
   return showAppDialog<Uint8List?>(
     context: context,
     maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
-    // 裁剪面板是固定 320dp 的交互面:保留 scrollable: false(外层滚动会抢走
-    // 裁剪框的拖拽),因此按「标题 + 320dp 画布 + 按钮行 + 弹窗内边距」给出上限。
-    maxHeight: 320 + Spacing.xl * 2 + 100,
+    // 裁剪画布是拖动交互面:保留 scrollable: false(外层滚动会抢走裁剪框的
+    // 拖拽),因此必须给弹窗一个有界高度。这里只圈定「不超过一屏」(FDialog 自己
+    // 的 insetPadding 会再收紧);真正的收口在 [AvatarCropper]:画布按剩余高度
+    // 自适应,上限 [_maxCropCanvasSize]——标题/按钮行随字号变高时画布让位,不会
+    // 再把按钮行挤出弹窗下沿。
+    maxHeight: MediaQuery.sizeOf(context).height,
     scrollable: false,
     builder: (_) => AvatarCropper(bytes: bytes),
   );
 }
+
+/// 裁剪画布的最大边长。窄屏 + 大字号下实际边长由可用高度决定,见 [AvatarCropper]。
+const double _maxCropCanvasSize = 320;
 
 class AvatarCropper extends StatefulWidget {
   const AvatarCropper({super.key, required this.bytes});
@@ -113,61 +119,80 @@ class _AvatarCropperState extends State<AvatarCropper> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          l10n.profileAvatarCropTitle,
-          style: context.theme.typography.body.lg.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: Spacing.lg),
-        SizedBox(
-          height: 320,
-          child: Crop(
-            image: widget.bytes,
-            controller: _controller,
-            aspectRatio: 1,
-            withCircleUi: true,
-            interactive: true,
-            fixCropRect: true,
-            maskColor: Colors.black54,
-            onCropped: (result) {
-              if (!mounted) return;
-              setState(() => _cropping = false);
-              if (result is CropSuccess) {
-                Navigator.of(context).pop(result.croppedImage);
-              } else {
-                _showCropFailure();
-              }
-            },
-          ),
-        ),
-        const SizedBox(height: Spacing.lg),
-        // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
-        DialogActionRow(
-          actions: [
-            DialogActionButton(
-              label: l10n.commonCancel,
-              variant: FButtonVariant.ghost,
-              onPress: _cropping ? null : () => Navigator.of(context).pop(),
-            ),
-            DialogActionButton(
-              label: _cropping
-                  ? l10n.profileAvatarCropProcessing
-                  : l10n.profileAvatarCropDone,
-              onPress: _cropping
-                  ? null
-                  : () {
-                      setState(() => _cropping = true);
-                      _controller.crop();
-                    },
-            ),
-          ],
-        ),
-      ],
+
+    // 画布高度自适应:固定高度 + 弹窗固定上限的组合在大字号真机上会把按钮行顶出
+    // 弹窗(标题、按钮标签都随字号长高,留给画布的空间相应变小)。弹窗高度有界时
+    // 让画布吃掉标题与按钮行之外的剩余高度(Flexible),边长仍以
+    // [_maxCropCanvasSize] 为上限、并保持 1:1;没有上界时(例如被直接放进可滚动
+    // 容器)退回固定正方形——Flexible 在无界主轴上会断言失败。
+    final canvas = Crop(
+      image: widget.bytes,
+      controller: _controller,
+      aspectRatio: 1,
+      withCircleUi: true,
+      interactive: true,
+      fixCropRect: true,
+      maskColor: Colors.black54,
+      onCropped: _handleCropped,
     );
+
+    return LayoutBuilder(
+      builder: (context, constraints) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            l10n.profileAvatarCropTitle,
+            style: context.theme.typography.body.lg.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: Spacing.lg),
+          if (constraints.hasBoundedHeight)
+            Flexible(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxHeight: _maxCropCanvasSize,
+                ),
+                child: AspectRatio(aspectRatio: 1, child: canvas),
+              ),
+            )
+          else
+            SizedBox(height: _maxCropCanvasSize, child: canvas),
+          const SizedBox(height: Spacing.lg),
+          // 按钮是固有宽度:Row 会先给它们无界主轴约束、把右缘顶出弹窗。
+          DialogActionRow(
+            actions: [
+              DialogActionButton(
+                label: l10n.commonCancel,
+                variant: FButtonVariant.ghost,
+                onPress: _cropping ? null : () => Navigator.of(context).pop(),
+              ),
+              DialogActionButton(
+                label: _cropping
+                    ? l10n.profileAvatarCropProcessing
+                    : l10n.profileAvatarCropDone,
+                onPress: _cropping
+                    ? null
+                    : () {
+                        setState(() => _cropping = true);
+                        _controller.crop();
+                      },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleCropped(CropResult result) {
+    if (!mounted) return;
+    setState(() => _cropping = false);
+    if (result is CropSuccess) {
+      Navigator.of(context).pop(result.croppedImage);
+    } else {
+      _showCropFailure();
+    }
   }
 
   void _showCropFailure() {

@@ -106,6 +106,14 @@ class PresignedUpload {
 /// Takes the narrow [FilesApi] dependency (callers pass `client.files`) so the
 /// helper stays unit-testable without a whole [LucentClient].
 ///
+/// [fileName] is the *original filename* the endpoint documents
+/// (`CreateUploadRequest.fileName`), not an object key: the server builds the
+/// key itself (`files/{userId}/{uuid}.{ext}`) and only reads the extension off
+/// this field. Path-like values are reduced to their basename by
+/// [_sanitizeFileName] — the request schema rejects any separator, so passing
+/// `avatars/{userId}/avatar-x.jpg` (as the avatar uploader used to) produced a
+/// 400 and killed the upload before anything was signed.
+///
 /// Throws (a `DioException` or [LucentFailure]) so callers can wrap it in
 /// `TaskEither.tryCatch` + `LucentErrorMapper.fromObject` like every other
 /// request; an empty success body is a [LucentFailure] rather than a
@@ -120,7 +128,7 @@ Future<PresignedUpload> presignFileUpload(
     createUploadRequest: CreateUploadRequest(
       contentType: contentType,
       sizeBytes: sizeBytes,
-      fileName: fileName,
+      fileName: _sanitizeFileName(fileName),
     ),
   );
   final body = response.data;
@@ -131,6 +139,23 @@ Future<PresignedUpload> presignFileUpload(
     );
   }
   return PresignedUpload.fromFileUpload(body);
+}
+
+/// Reduces a caller-supplied filename to a bare filename.
+///
+/// `POST /files/upload` documents `fileName` as the *original filename* and
+/// validates it with `^[^\\/]+$`
+/// (`Lucent/src/modules/files/dto/create-file-upload.dto.ts`), so a value
+/// carrying path separators is rejected with `400 VALIDATION_FAILED` before a
+/// URL is ever signed. Callers legitimately hold key-shaped names (the avatar
+/// uploader passes `avatars/{userId}/avatar-{id}.jpg`, whose prefix the server
+/// ignores anyway), so the transport strips the path and keeps the basename —
+/// which is what carries the extension the server reads.
+String? _sanitizeFileName(String? fileName) {
+  final trimmed = fileName?.trim();
+  if (trimmed == null || trimmed.isEmpty) return null;
+  final base = trimmed.split(RegExp(r'[\\/]')).last.trim();
+  return base.isEmpty ? null : base;
 }
 
 /// PUTs [bytes] to the presigned object-storage URL.
