@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -98,7 +99,7 @@ void main() {
     expect(find.text('最近搜索'), findsNothing);
 
     await tester.enterText(find.byType(FTextField), '布洛芬');
-    await tester.pump(const Duration(milliseconds: 500));
+    await _submitSearch(tester);
     expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
 
     // Clearing the query reveals the just-recorded keyword.
@@ -145,6 +146,15 @@ Future<void> _pumpSearchApp(WidgetTester tester) async {
       child: TestAuthApp(router: _searchRouter()),
     ),
   );
+}
+
+/// Submits the current query through the keyboard's search action.
+///
+/// The page is submit-driven: typing alone never fires a request.
+Future<void> _submitSearch(WidgetTester tester) async {
+  await tester.testTextInput.receiveAction(TextInputAction.search);
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
 }
 
 GoRouter _searchRouter() {

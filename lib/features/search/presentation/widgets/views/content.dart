@@ -228,7 +228,14 @@ class _MobileSearchLayout extends StatelessWidget {
           RecentSearches(
             keywords: recentKeywords,
             l10n: l10n,
-            onKeywordSelected: onQueryChanged,
+            // Tapping a stored keyword is an explicit search request (not
+            // typing), so it records the query and submits it in one go —
+            // `updateQuery` sets the state synchronously, so the submit that
+            // follows reads the tapped keyword.
+            onKeywordSelected: (keyword) {
+              onQueryChanged(keyword);
+              onQuerySubmitted(keyword);
+            },
             onClear: onClearRecentSearches,
           ),
           QuickActions(actions: _scanQuickActions, l10n: l10n),
@@ -403,7 +410,12 @@ class _DesktopSearchPanel extends StatelessWidget {
               RecentSearches(
                 keywords: recentKeywords,
                 l10n: l10n,
-                onKeywordSelected: onQueryChanged,
+                // Same as the mobile layout: selecting a stored keyword is an
+                // explicit search request.
+                onKeywordSelected: (keyword) {
+                  onQueryChanged(keyword);
+                  onQuerySubmitted(keyword);
+                },
                 onClear: onClearRecentSearches,
               ),
               QuickActions(

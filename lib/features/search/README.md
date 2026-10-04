@@ -3,7 +3,7 @@
 一句话:药品库搜索(cn/drugbank 双源)+ "加入药箱"预检闭环;页面路由注册在 medicine 下,加箱闭环被 scan 复用。
 
 ## 职责与边界
-- 管:关键词搜索(400ms debounce 自动搜 + 键盘提交立即搜、5s 超时)、来源切换、最近搜索持久化(SharedPreferences,cap 10)、桌面结果预览面板、`addMedicineToBoxWithPrecheck` 闭环。
+- 管:关键词搜索(提交式:键盘 search 键或输入框搜索按钮触发,5s 超时)、来源切换、最近搜索持久化(SharedPreferences,cap 10)、桌面结果预览面板、`addMedicineToBoxWithPrecheck` 闭环。
 - 不管:药品详情页与提醒创建(medicine)、扫码/拍照 UI(scan)、药箱数据本身(health_context)。
 
 ## 对外契约
@@ -21,7 +21,8 @@
 - repository 装配 provider 在 data/repositories/lucent.dart,状态 provider 在 presentation/providers/(无 data/providers 层);跨 feature 引用仅限 add_to_box 现有面(health_context repository + write_inputs、medicine risk_check + typed route),不得扩大。
 
 ## 陷阱与决策
-- 输入 400ms debounce 自动搜(`_searchDebounceDuration`),不是提交式;键盘 search 键走独立的 `submitQuery`,会先取消挂起的 debounce 再立即发起,不和 `updateQuery` 共用回调。
+- 搜索是**提交式**,不是输入即搜:`updateQuery` 只记录输入(清空输入就地清结果并递增 generation),请求只由 `submitQuery` 发出(键盘 search 键或输入框右侧搜索按钮);点击最近搜索关键词属于显式搜索,会先记 query 再立即提交。`switchSource`/`retry` 保持立即重搜。
+- 结果标题(DrugBank 的 `name` 可能是完整系统命名)最多两行 + 省略号;来源开关 `FTabs` 标签单行 + 省略号,控制条高度不随字号增长。
 - 搜索词在 await 前捕获(searchedQuery),飞行中继续打字不会错记最近搜索(F-12 P2-1)。
 - RecentSearchesNotifier 写路径先 settle 初始 load,否则 load 完成会用旧值覆盖刚写入的值(F-12 P2-2)。
 - TaskEither 边界见 ../../../docs/reference/adr/0005-result-type-and-error-handling.md。

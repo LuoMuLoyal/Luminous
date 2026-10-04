@@ -153,29 +153,43 @@ void main() {
       expect(state.results, isEmpty);
     });
 
-    test(
-      'triggers search and updates results when query is non-empty',
-      () async {
-        repo.searchResults = [_result('m1'), _result('m2')];
-        repo.detailPreview = _preview('Detail m1');
+    test('submitting a non-empty query searches and updates results', () async {
+      repo.searchResults = [_result('m1'), _result('m2')];
+      repo.detailPreview = _preview('Detail m1');
 
-        final notifier = container.read(
-          medicineSearchNotifierProvider.notifier,
-        );
-        await notifier.updateQuery('aspirin');
-        // Wait for the 400ms debounce timer to fire.
-        await Future.delayed(const Duration(milliseconds: 450));
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
+      await notifier.submitQuery();
 
-        final state = container.read(medicineSearchNotifierProvider);
-        expect(state.query, 'aspirin');
-        expect(state.isSearching, isFalse);
-        expect(state.results, hasLength(2));
-        expect(state.results.first.id, 'm1');
-        expect(state.selectedResultId, 'm1');
-        expect(state.detailPreview, isNotNull);
-        expect(state.detailPreview!.title, 'Detail m1');
-      },
-    );
+      final state = container.read(medicineSearchNotifierProvider);
+      expect(state.query, 'aspirin');
+      expect(state.isSearching, isFalse);
+      expect(state.results, hasLength(2));
+      expect(state.results.first.id, 'm1');
+      expect(state.selectedResultId, 'm1');
+      expect(state.detailPreview, isNotNull);
+      expect(state.detailPreview!.title, 'Detail m1');
+    });
+
+    test('typing alone never fires a search', () async {
+      // Submit-only contract: `updateQuery` records the text (including the
+      // clear-on-empty branch) but must not hit the network. The window is
+      // deliberately longer than the 400ms debounce this page used to arm, so
+      // a re-introduced auto-search fails here.
+      repo.searchResults = [_result('m1')];
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('a');
+      await notifier.updateQuery('as');
+      await notifier.updateQuery('aspirin');
+      await Future<void>.delayed(const Duration(milliseconds: 600));
+
+      final state = container.read(medicineSearchNotifierProvider);
+      expect(state.query, 'aspirin');
+      expect(repo.lastSearchQuery, isNull);
+      expect(state.results, isEmpty);
+      expect(state.isSearching, isFalse);
+    });
 
     test('sets error message when search returns a failure Left', () async {
       repo.searchFailure = LucentFailure.network(
@@ -185,7 +199,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('test');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       final state = container.read(medicineSearchNotifierProvider);
       expect(state.isSearching, isFalse);
@@ -202,7 +216,7 @@ void main() {
           medicineSearchNotifierProvider.notifier,
         );
         await notifier.updateQuery('test');
-        await Future.delayed(const Duration(milliseconds: 450));
+        await notifier.submitQuery();
 
         final state = container.read(medicineSearchNotifierProvider);
         // userMessageFromError delegates to LucentErrorMapper which returns a
@@ -219,28 +233,27 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('  aspirin  ');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       expect(repo.lastSearchQuery, 'aspirin');
     });
 
     test('sets isSearching to true during search', () async {
       repo.searchResults = [_result('m1')];
-      // Gate the in-flight search deterministically — no reliance on the
-      // 400ms debounce + 50ms search-delay race that made this test flaky
-      // under full-suite load.
+      // Gate the in-flight search deterministically — no reliance on timer
+      // races that made this test flaky under full-suite load.
       final gate = Completer<void>();
       repo.searchGate = gate;
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
-      // Set the query (also arms the 400ms debounce, drained at the end).
+      // Set the query: typing alone searches nothing.
       await notifier.updateQuery('aspirin');
       expect(
         container.read(medicineSearchNotifierProvider).isSearching,
         isFalse,
       );
 
-      // switchSource triggers _doSearch immediately (no debounce wait).
+      // switchSource triggers _doSearch immediately.
       final searchFuture = notifier.switchSource(MedicineSearchSource.cn);
 
       // Let _doSearch run up to the gate: isSearching must be true while the
@@ -258,11 +271,6 @@ void main() {
         container.read(medicineSearchNotifierProvider).isSearching,
         isFalse,
       );
-
-      // Drain the debounce timer's second search so no asynchronous work
-      // escapes the test (the gate is already completed, so it passes through
-      // and settles the same results).
-      await Future<void>.delayed(const Duration(milliseconds: 450));
     });
   });
 
@@ -283,12 +291,14 @@ void main() {
     test(
       'clears results before re-searching when query is non-empty',
       () async {
-        // Set up a query with results
+        // Set up a query with results (submit-driven, so the search is an
+        // explicit submit).
         repo.searchResults = [_result('m1', source: MedicineSearchSource.cn)];
         final notifier = container.read(
           medicineSearchNotifierProvider.notifier,
         );
         await notifier.updateQuery('aspirin');
+        await notifier.submitQuery();
 
         // Switch source with different results
         repo.searchResults = [
@@ -310,6 +320,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('aspirin');
+      await notifier.submitQuery();
 
       // Now switch source
       repo.searchResults = [
@@ -327,25 +338,20 @@ void main() {
 
   // ── submitQuery ──────────────────────────────────────────────
   group('submitQuery', () {
-    test(
-      'commits the query immediately without waiting for the debounce',
-      () async {
-        repo.searchResults = [_result('m1')];
+    test('fires the request for the recorded query', () async {
+      repo.searchResults = [_result('m1')];
 
-        final notifier = container.read(
-          medicineSearchNotifierProvider.notifier,
-        );
-        await notifier.updateQuery('aspirin');
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
 
-        // No timer wait: submit must fire the request itself.
-        await notifier.submitQuery();
+      // No timer wait: submit itself fires the request.
+      await notifier.submitQuery();
 
-        expect(repo.lastSearchQuery, 'aspirin');
-        final state = container.read(medicineSearchNotifierProvider);
-        expect(state.results, hasLength(1));
-        expect(state.isSearching, isFalse);
-      },
-    );
+      expect(repo.lastSearchQuery, 'aspirin');
+      final state = container.read(medicineSearchNotifierProvider);
+      expect(state.results, hasLength(1));
+      expect(state.isSearching, isFalse);
+    });
 
     test('does not search when the query is empty', () async {
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
@@ -363,17 +369,23 @@ void main() {
       expect(repo.lastSearchQuery, isNull);
     });
 
-    test('cancels the pending debounce so the query is searched once', () async {
+    test('typing after a submit does not fire another search', () async {
       repo.searchResults = [_result('m1')];
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('aspirin');
       await notifier.submitQuery();
 
-      // The debounce timer armed by updateQuery must not fire a second search.
+      // Editing the text afterwards must not search on its own, however long
+      // the page waits.
       repo.lastSearchQuery = null;
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.updateQuery('aspirin bayer');
+      await Future<void>.delayed(const Duration(milliseconds: 600));
       expect(repo.lastSearchQuery, isNull);
+
+      // Only an explicit submit sends the request.
+      await notifier.submitQuery();
+      expect(repo.lastSearchQuery, 'aspirin bayer');
     });
   });
 
@@ -393,11 +405,12 @@ void main() {
         await notifier.updateQuery('a');
         final staleFuture = notifier.submitQuery();
 
-        // User keeps typing; the newer query supersedes the in-flight one.
+        // User keeps typing and submits the newer query; it supersedes the
+        // in-flight one.
         repo.searchGate = null;
         repo.searchResults = [_result('fresh')];
-        final freshFuture = notifier.updateQuery('aspirin');
-        await Future.delayed(const Duration(milliseconds: 450));
+        await notifier.updateQuery('aspirin');
+        final freshFuture = notifier.submitQuery();
         await freshFuture;
 
         // Now release the stale request — it must be discarded.
@@ -428,7 +441,7 @@ void main() {
       repo.searchFailure = null;
       repo.searchResults = [_result('fresh')];
       await notifier.updateQuery('aspirin');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       gate.complete();
       await staleFuture;
@@ -451,7 +464,7 @@ void main() {
       repo.searchGate = null;
       repo.searchResults = [_result('fresh')];
       await notifier.updateQuery('aspirin');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       gate.complete();
       await staleFuture;
@@ -489,7 +502,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('test');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       await notifier.selectResult('m2');
 
@@ -555,7 +568,7 @@ void main() {
       repo.searchThrows = TimeoutException('请求超时，请检查网络后重试。');
 
       await notifier.updateQuery('test');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       final state = container.read(medicineSearchNotifierProvider);
       expect(state.isSearching, isFalse);
@@ -571,6 +584,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('nonexistent');
+      await notifier.submitQuery();
 
       final state = container.read(medicineSearchNotifierProvider);
       expect(state.results, isEmpty);
@@ -592,7 +606,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('test');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       final state = container.read(medicineSearchNotifierProvider);
       expect(state.isSearching, isFalse);
@@ -613,7 +627,7 @@ void main() {
           medicineSearchNotifierProvider.notifier,
         );
         await notifier.updateQuery('test');
-        await Future.delayed(const Duration(milliseconds: 450));
+        await notifier.submitQuery();
 
         final state = container.read(medicineSearchNotifierProvider);
         expect(state.isSearching, isFalse);
@@ -634,7 +648,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('  aspirin  ');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       final keywords = container.read(recentSearchesProvider).asData?.value;
       expect(keywords, ['aspirin']);
@@ -645,7 +659,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('nonexistent');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       final keywords = container.read(recentSearchesProvider).asData?.value;
       expect(keywords, ['nonexistent']);
@@ -659,7 +673,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('aspirin');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       final keywords = container.read(recentSearchesProvider).asData?.value;
       expect(keywords ?? const <String>[], isEmpty);
@@ -668,7 +682,7 @@ void main() {
     test('does not record whitespace-only queries', () async {
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('   ');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       final keywords = container.read(recentSearchesProvider).asData?.value;
       expect(keywords ?? const <String>[], isEmpty);
@@ -679,11 +693,11 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('aspirin');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
       await notifier.updateQuery('bayer');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
       await notifier.updateQuery('aspirin');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       final keywords = container.read(recentSearchesProvider).asData?.value;
       expect(keywords, ['aspirin', 'bayer']);
@@ -694,7 +708,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('aspirin');
-      await Future.delayed(const Duration(milliseconds: 450));
+      await notifier.submitQuery();
 
       await container.read(recentSearchesProvider.notifier).clearAll();
 

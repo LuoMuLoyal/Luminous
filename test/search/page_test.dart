@@ -28,6 +28,10 @@ import 'package:luminous/features/search/presentation/widgets/views/content.dart
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
+// `show` keeps this import from clashing with the `SignedInAuthSessionNotifier`
+// that test/auth/test_helpers.dart also exports.
+import '../helpers/test_helpers.dart'
+    show scaledForTextScale, setNarrowPhoneScreenSize;
 
 void main() {
   testWidgets('Medicine search page shows back button on mobile', (
@@ -51,10 +55,74 @@ void main() {
     expect(find.text('搜索药品、成分、疾病、症状...'), findsOneWidget);
 
     await tester.enterText(find.byType(FTextField), '布洛芬');
-    await tester.pump(const Duration(milliseconds: 500));
+    await _submitSearch(tester);
 
     expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
   });
+
+  testWidgets('typing does not search: only an explicit submit does', (
+    tester,
+  ) async {
+    final countingRepo = _CountingSearchRepository();
+
+    await _pumpSearchApp(tester, medicineSearchRepository: countingRepo);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    await tester.enterText(find.byType(FTextField), '布洛芬');
+    // Comfortably past the 400ms auto-search this page used to arm.
+    await tester.pump(const Duration(milliseconds: 600));
+
+    expect(countingRepo.searchCount, 0, reason: 'typing must not search');
+    expect(find.text('[DEMO] 布洛芬片'), findsNothing);
+
+    // The field's submit button is the explicit trigger.
+    await tester.tap(find.byKey(const ValueKey('medicine-search-submit')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(countingRepo.searchCount, 1);
+    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
+  });
+
+  testWidgets(
+    'source filter and long result titles stay bounded at the largest text '
+    'scale on a 320dp device',
+    (tester) async {
+      setNarrowPhoneScreenSize(tester);
+
+      await _pumpSearchApp(
+        tester,
+        router: _searchRouter(textScale: 1.3),
+        medicineSearchRepository: const _LongNameSearchRepository(),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Source filter: a wrapped label used to turn the lifted indicator into
+      // a three-line card, ~90dp tall at this scale.
+      // Source filter: the labels used to wrap to two/three lines and blow the
+      // lifted indicator up to 113dp at this viewport and scale.
+      final filterHeight = tester
+          .getSize(find.byKey(const ValueKey('medicine-search-source-tabs')))
+          .height;
+      expect(filterHeight, lessThan(70));
+
+      await tester.enterText(find.byType(FTextField), 'trifluoro');
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('medicine-search-submit')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      // DrugBank result title: the full systematic name is clamped to two
+      // lines instead of running to fourteen (644dp) as it did unclamped.
+      final titleFinder = find.text(_longDrugbankName);
+      final title = tester.widget<Text>(titleFinder);
+      expect(title.maxLines, 2);
+      expect(title.overflow, TextOverflow.ellipsis);
+      expect(tester.getSize(titleFinder).height, lessThan(130));
+    },
+  );
 
   testWidgets('add to current medicines shows login dialog when signed out', (
     tester,
@@ -144,7 +212,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     await tester.enterText(find.byType(FTextField), 'empty');
-    await tester.pump(const Duration(seconds: 1));
+    await _submitSearch(tester);
 
     // No results — show the "no result" suggestions
     expect(find.text('无结果？'), findsOneWidget);
@@ -158,7 +226,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     await tester.enterText(find.byType(FTextField), '布洛芬');
-    await tester.pump(const Duration(seconds: 1));
+    await _submitSearch(tester);
 
     // CN result should show approval number
     expect(find.textContaining('批准文号'), findsWidgets);
@@ -179,7 +247,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     await tester.enterText(find.byType(FTextField), 'error test');
-    await tester.pump(const Duration(seconds: 2));
+    await _submitSearch(tester);
 
     // Error view should appear
     expect(find.text('搜索页暂时没有加载出来'), findsOneWidget);
@@ -361,7 +429,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     await tester.enterText(find.byType(FTextField), '布洛芬');
-    await tester.pump(const Duration(milliseconds: 500));
+    await _submitSearch(tester);
 
     // Loading skeleton should appear while search is pending
     expect(find.byType(MedicineSearchLoadingView), findsOneWidget);
@@ -411,7 +479,7 @@ Future<void> _pumpSearchApp(
   );
 }
 
-GoRouter _searchRouter({bool watchWorkspace = false}) {
+GoRouter _searchRouter({bool watchWorkspace = false, double textScale = 1.0}) {
   return GoRouter(
     initialLocation: '/medicine/search',
     routes: [
@@ -420,19 +488,22 @@ GoRouter _searchRouter({bool watchWorkspace = false}) {
         builder: (context, state) => FToaster(
           // Toasts (precheck unavailable / added-to-box) need an FToaster
           // above the page, mirroring the production bootstrap.
-          child: watchWorkspace
-              ? Stack(
-                  children: [
-                    const SearchPage(),
-                    Consumer(
-                      builder: (context, ref, child) {
-                        ref.watch(medicineWorkspaceProvider);
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ],
-                )
-              : const SearchPage(),
+          child: scaledForTextScale(
+            watchWorkspace
+                ? Stack(
+                    children: [
+                      const SearchPage(),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          ref.watch(medicineWorkspaceProvider);
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ],
+                  )
+                : const SearchPage(),
+            textScale,
+          ),
         ),
       ),
       GoRoute(
@@ -449,8 +520,19 @@ Future<void> _searchForIbuprofen(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 400));
   await tester.enterText(find.byType(FTextField), '布洛芬');
-  await tester.pump(const Duration(milliseconds: 500));
+  await _submitSearch(tester);
   expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
+}
+
+/// Submits the current query through the keyboard's search action and drains
+/// the resulting search.
+///
+/// The page is submit-driven: typing alone never fires a request, so every
+/// search in this file needs an explicit submit.
+Future<void> _submitSearch(WidgetTester tester) async {
+  await tester.testTextInput.receiveAction(TextInputAction.search);
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
@@ -654,6 +736,68 @@ class _EmptySearchRepository implements MedicineSearchRepository {
     MedicineSearchSource source,
   ) => TaskEither.right(null);
 }
+
+/// A DrugBank result whose `name` is the full systematic name — the shape the
+/// real payload produces for some drugs (see the result-title clamp test).
+class _LongNameSearchRepository implements MedicineSearchRepository {
+  const _LongNameSearchRepository();
+
+  @override
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
+    required String query,
+    required MedicineSearchSource source,
+    int page = 1,
+    int pageSize = 20,
+  }) => TaskEither.right(const [
+    MedicineSearchResult(
+      id: 'DB09073',
+      source: MedicineSearchSource.drugbank,
+      name: _longDrugbankName,
+      subtitle: 'CAS 735-52-4 · experimental',
+      summary: 'A trifluoromethyl ketone derivative.',
+      tags: <String>['experimental'],
+      matchType: MedicineSearchMatchType.name,
+    ),
+  ]);
+
+  @override
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
+    String id,
+    MedicineSearchSource source,
+  ) => TaskEither.right(null);
+}
+
+/// Counts requests so a test can prove that typing alone never searches.
+class _CountingSearchRepository implements MedicineSearchRepository {
+  int searchCount = 0;
+
+  @override
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
+    required String query,
+    required MedicineSearchSource source,
+    int page = 1,
+    int pageSize = 20,
+  }) {
+    searchCount += 1;
+    return const _MockMedicineSearchRepository().search(
+      query: query,
+      source: source,
+      page: page,
+      pageSize: pageSize,
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
+    String id,
+    MedicineSearchSource source,
+  ) => TaskEither.right(null);
+}
+
+/// The systematic name a DrugBank hit can carry verbatim.
+const String _longDrugbankName =
+    '1,1,1-TRIFLUORO-3-ACETAMIDO-4-PHENYL-BUTAN-2-ONE '
+    '(1,1,1-TRIFLUORO-3-ACETAMIDO-4-PHENYL-BUTAN-2-ONE)';
 
 class _ErrorSearchRepository implements MedicineSearchRepository {
   @override

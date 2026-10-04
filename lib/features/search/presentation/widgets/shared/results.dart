@@ -37,6 +37,9 @@ class SearchResultTile extends StatelessWidget {
           children: [
             // 徽章是 FBadge(内部 IntrinsicWidth):放进 Row 会先占满固有宽度,
             // 把药品名挤成多行。Wrap 放不下时让徽章换到下一行。
+            // DrugBank 的 name 可能是完整的系统命名(如
+            // "1,1,1-TRIFLUORO-3-ACETAMIDO-4-PHENYL-BUTAN-2-ONE"),不设上限会
+            // 换行到七八行;标题固定最多两行 + 省略号,卡片高度不再由名称长度决定。
             Wrap(
               spacing: Spacing.md,
               runSpacing: Spacing.sm,
@@ -47,6 +50,8 @@ class SearchResultTile extends StatelessWidget {
                   style: typography.body.lg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 _SourceBadge(source: result.source, l10n: l10n),
               ],

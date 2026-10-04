@@ -17,8 +17,9 @@ class SearchInput extends HookWidget {
   final String query;
   final ValueChanged<String> onChanged;
 
-  /// Fired by the keyboard's search action. Distinct from [onChanged] so an
-  /// explicit submit can bypass the debounce instead of re-arming it.
+  /// Fired by an explicit submit — the keyboard's search action or the field's
+  /// submit button. Search is submit-driven: [onChanged] only records the typed
+  /// query and never searches.
   final ValueChanged<String>? onSubmitted;
 
   @override
@@ -39,6 +40,7 @@ class SearchInput extends HookWidget {
     }, [query]);
 
     return FTextField(
+      key: const ValueKey('medicine-search-input'),
       control: FTextFieldControl.managed(
         controller: controller,
         onChange: (value) {
@@ -59,24 +61,54 @@ class SearchInput extends HookWidget {
           color: SemanticColor.neutral.solid(context),
         ),
       ),
+      // Both suffixes only exist once there is something to act on, so the
+      // submit button is never a dead control.
       suffixBuilder: controller.text.isEmpty
           ? null
-          : (context, style, variants) => FTappable(
-              onPress: () {
-                controller.clear();
-                onChanged('');
-              },
-              child: Semantics(
-                button: true,
-                label: l10n.medicineSearchClearAction,
-                child: Padding(
-                  padding: const EdgeInsets.all(Spacing.xs),
-                  child: Icon(
-                    SemanticIcons.notificationFailed,
-                    color: SemanticColor.neutral.solid(context),
+          : (context, style, variants) => Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FTappable(
+                  onPress: () {
+                    controller.clear();
+                    onChanged('');
+                  },
+                  child: Semantics(
+                    button: true,
+                    label: l10n.medicineSearchClearAction,
+                    child: Padding(
+                      padding: const EdgeInsets.all(Spacing.xs),
+                      child: Icon(
+                        SemanticIcons.notificationFailed,
+                        color: SemanticColor.neutral.solid(context),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                // Explicit submit for the submit-only contract. The keyboard's
+                // search action stays wired (`textInputAction` + `onSubmit`);
+                // this is the same trigger for users who never press it.
+                FTappable(
+                  key: const ValueKey('medicine-search-submit'),
+                  onPress: () {
+                    final submitted = controller.text;
+                    // Mirror the keyboard action, which unfocuses the field.
+                    FocusScope.of(context).unfocus();
+                    (onSubmitted ?? onChanged)(submitted);
+                  },
+                  child: Semantics(
+                    button: true,
+                    label: l10n.medicineSearchPageTitle,
+                    child: Padding(
+                      padding: const EdgeInsets.all(Spacing.xs),
+                      child: Icon(
+                        SemanticIcons.actionSearch,
+                        color: SemanticColor.primary.solid(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
     );
   }

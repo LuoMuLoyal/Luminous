@@ -27,33 +27,29 @@ abstract class MedicineSearchState with _$MedicineSearchState {
   }) = _MedicineSearchState;
 }
 
-/// Debounce delay for search input before firing the network request.
-const _searchDebounceDuration = Duration(milliseconds: 400);
-
 /// Notifier that manages medicine search state interactively.
+///
+/// Search is **submit-driven**: [updateQuery] only records what the user typed,
+/// and the request goes out from [submitQuery] (the keyboard's search action or
+/// the field's submit button). Typing must never fire a request on its own.
 class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
-  Timer? _debounceTimer;
-
-  /// Monotonic id of the most recently *started* search. Cancelling the debounce
-  /// timer only prevents a request from being sent — it cannot recall one that
-  /// is already in flight. Without this guard a slow response for an abandoned
-  /// prefix (e.g. `a`) would land after the response for the current query
-  /// (e.g. `aspirin`) and overwrite results, `selectedResultId` and
-  /// `detailPreview` with stale data.
+  /// Monotonic id of the most recently *started* search. Without this guard a
+  /// slow response for an abandoned query (e.g. `a`) would land after the
+  /// response for the current query (e.g. `aspirin`) and overwrite results,
+  /// `selectedResultId` and `detailPreview` with stale data.
   int _searchGeneration = 0;
 
   @override
-  MedicineSearchState build() {
-    ref.onDispose(() => _debounceTimer?.cancel());
-    return const MedicineSearchState();
-  }
+  MedicineSearchState build() => const MedicineSearchState();
 
+  /// Records the typed query without searching it.
+  ///
+  /// Deliberately does not touch the network: the page searches only when the
+  /// user submits. Emptying the field still clears the results (and discards
+  /// any in-flight search) so the empty state comes back immediately.
   Future<void> updateQuery(String query) async {
     state = state.copyWith(query: query, errorMessage: null);
-    _debounceTimer?.cancel();
-    if (query.trim().isNotEmpty) {
-      _debounceTimer = Timer(_searchDebounceDuration, _doSearch);
-    } else {
+    if (query.trim().isEmpty) {
       // Bump the generation so any in-flight search for the cleared query is
       // discarded instead of repopulating the now-empty result list, and clear
       // isSearching here — the discarded search returns early without doing it.
@@ -66,12 +62,11 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
     }
   }
 
-  /// Commits the current query immediately, skipping the debounce wait.
+  /// Searches the current query.
   ///
-  /// Bound to the keyboard's search action: pressing enter is an explicit
-  /// "search now" and must not be held back by the pending debounce timer.
+  /// Bound to the keyboard's search action and the field's submit button;
+  /// a no-op for an empty or whitespace-only query.
   Future<void> submitQuery() async {
-    _debounceTimer?.cancel();
     if (state.query.trim().isEmpty) return;
     await _doSearch();
   }
@@ -79,7 +74,6 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
   Future<void> switchSource(MedicineSearchSource source) async {
     state = state.copyWith(source: source, results: const []);
     if (state.query.trim().isNotEmpty) {
-      _debounceTimer?.cancel();
       await _doSearch();
     }
   }

@@ -19,6 +19,13 @@ class SourceSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     const sources = MedicineSearchSource.values;
 
+    // FTabs gives each tab an equal share of the width (`tabAlignment.fill`)
+    // and grows the tab to fit its label, so at the large text tier both
+    // source labels used to wrap — the selected one onto three lines — and the
+    // lifted indicator turned into a tall card that ate a quarter of the
+    // screen. A single ellipsized line keeps the control's height driven by
+    // `FTabsStyle.minHeight` only, and the filled (non-scrollable) alignment
+    // keeps the label inside a bounded width so it cannot overflow at 320dp.
     return FTabs(
       key: const ValueKey('medicine-search-source-tabs'),
       control: FTabControl.lifted(
@@ -28,7 +35,11 @@ class SourceSwitch extends StatelessWidget {
       children: [
         for (final source in sources)
           FTabEntry(
-            label: Text(sourceLabel(l10n, source)),
+            label: Text(
+              sourceLabel(l10n, source),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             child: const SizedBox.shrink(),
           ),
       ],
