@@ -42,9 +42,14 @@ Future<List<RedFlagAlert>> redFlagAlerts(Ref ref) async {
   return result.redFlags;
 }
 
+/// 命令型 provider 的失败必须立即进入 AsyncError,不走 riverpod 默认的指数退避
+/// 自动重试:否则一次点击失败会被 ~40s 的静默重试掩盖(每次重试都会重新 POST 一次
+/// 风险检查),调用方也要等重试耗尽才拿得到失败对象。手动重试 = 再次点击运行按钮。
+Duration? _noRunRetry(int retryCount, Object error) => null;
+
 /// Runs a risk check of the given [type].
 /// Invalidates the records provider so the next read fetches fresh data.
-@riverpod
+@Riverpod(retry: _noRunRetry)
 Future<MedicineRiskCheckRecord> runMedicineRiskCheck(
   Ref ref,
   MedicineRiskCheckType type,

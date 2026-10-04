@@ -4,6 +4,10 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/errors/user_message.dart';
+import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -23,6 +27,10 @@ class MedicineRiskCheckPage extends ConsumerStatefulWidget {
 }
 
 class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
+  /// 服务端「依赖不可用」的稳定 problem code(Lucent problem-catalog 注册表:
+  /// `DEPENDENCY_UNAVAILABLE` → HTTP 503)。
+  static const _dependencyUnavailableCode = 'DEPENDENCY_UNAVAILABLE';
+
   bool _isRunningStatic = false;
   bool _isRunningLlm = false;
   bool _llmUnavailable = false;
@@ -39,12 +47,9 @@ class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
       }
     });
 
+    LucentFailure? failure;
     try {
-      await ref.read(runMedicineRiskCheckProvider(type).future);
-    } catch (e) {
-      if (isLlm && mounted) {
-        setState(() => _llmUnavailable = true);
-      }
+      failure = await _runAndNormalize(type);
     } finally {
       if (mounted) {
         setState(() {
@@ -56,6 +61,55 @@ class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
         });
       }
     }
+
+    if (failure == null || !mounted) return;
+
+    // 只有服务端明确宣告依赖不可用时,AI 标签页才切到「AI 分析未配置」。
+    // 此前任何失败(离线/超时/401/模型运行失败)都会整页显示这句文案,把可重试的
+    // 失败误报成部署缺配置,同时吞掉真正的失败提示。
+    if (isLlm && _isDependencyUnavailable(failure)) {
+      setState(() => _llmUnavailable = true);
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    await Toast.show(
+      context,
+      userMessageFromError(
+        failure,
+        l10n: l10n,
+        fallback: l10n.medicineErrorDescription,
+      ),
+    );
+  }
+
+  /// Runs [type] and returns the normalized failure, or `null` on success.
+  ///
+  /// The run provider is a command provider with riverpod's automatic retry
+  /// switched off (`providers/risk_check.dart`), so the first failure reaches
+  /// `.future` as the real failure instead of being hidden behind ~40s of
+  /// exponential-backoff retries (which re-POST the check each round) or
+  /// surfacing as riverpod's own disposal `StateError`.
+  Future<LucentFailure?> _runAndNormalize(MedicineRiskCheckType type) async {
+    try {
+      await ref.read(runMedicineRiskCheckProvider(type).future);
+      return null;
+    } catch (caught) {
+      try {
+        return LucentErrorMapper.fromObject(caught);
+      } on FormatException catch (formatError) {
+        // 归一 seam 对畸形 problem+json 抛 FormatException:命令流程不能让归一
+        // 异常上抛(它会变成按钮回调里的未捕获异步错误),回落为 unknown 失败。
+        return LucentErrorMapper.fromObject(formatError);
+      }
+    }
+  }
+
+  /// AI 分析模型未配置时风险检查服务就是用该 code 宣告的
+  /// (`Lucent/src/modules/medicines/services/risk/risk-check.service.ts`)。
+  bool _isDependencyUnavailable(LucentFailure failure) {
+    return failure.code == _dependencyUnavailableCode ||
+        failure.statusCode == 503;
   }
 
   @override
