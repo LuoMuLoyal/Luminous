@@ -368,15 +368,17 @@ void main() {
 
       testWidgets('$label — page error state', (tester) async {
         apply(tester);
-        // 记录读取走 riverpod 默认的指数退避自动重试(10 次 / 上限 6.4s,合计约
-        // 40s);先把假时钟推过重试链,页面才落到 StateErrorView。
+        // 记录读取已关掉 riverpod 默认自动重试:失败立即转错误态,不再需要把假时钟
+        // 推过约 40s 的重试链(否则用户要先干等骨架屏)。
         await expectNoOverflow(
           tester,
           _FailingRecordsRepository(),
           state: 'page error ($label)',
           selectLlmTab: false,
         );
-        await tester.pump(const Duration(seconds: 60));
+        // 关掉重试后失败立即落地,只补一帧让 AsyncError 的 build 完成即可,
+        // 不再需要把假时钟推过约 40s 的重试链。
+        await tester.pump();
         await tester.pump(const Duration(milliseconds: 400));
         expect(find.text(l10n.medicineErrorTitle), findsOneWidget);
       });

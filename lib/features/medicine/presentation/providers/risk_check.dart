@@ -7,7 +7,11 @@ part 'risk_check.g.dart';
 
 /// Fetches the latest risk check records (static + llm) from the API.
 /// Keep-alive so the result is cached across tab switches.
-@Riverpod(keepAlive: true)
+///
+/// 关掉 riverpod 默认自动重试：默认策略是 10 次退避（约 40s），失败时要先干等
+/// 骨架屏才会转错误态，而用户看到的只是"一直在转"。失败即转 `StateErrorView`，
+/// 重试交给页面上的显式动作（与 `runMedicineRiskCheck` 同口径）。
+@Riverpod(keepAlive: true, retry: _noRunRetry)
 Future<MedicineRiskCheckRecords> medicineRiskCheckRecords(Ref ref) {
   return authGuarded(
     ref: ref,
