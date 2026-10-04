@@ -67,6 +67,11 @@ import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart'
     as review;
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import 'package:luminous/features/search/data/repositories/lucent.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/domain/repositories/search.dart';
+import 'package:luminous/features/search/presentation/pages/page.dart'
+    as search;
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
@@ -244,6 +249,7 @@ const List<_SweepCase> _sweepCases = <_SweepCase>[
     _pumpMedicineRiskCheck,
     knownSites: _riskCheckKnown,
   ),
+  _SweepCase('MedicineSearchPage', _pumpMedicineSearch),
   _SweepCase('SyncFailuresPage', _pumpSyncFailures),
   _SweepCase('ProfilePage', _pumpProfile),
   _SweepCase('AllergyEditPage', _pumpAllergyEdit),
@@ -585,6 +591,49 @@ Future<void> _pumpMedicineRiskCheck(WidgetTester tester, double scale) {
   );
 }
 
+// A long-titled DrugBank hit: the real payload carries the full systematic
+// name for some drugs, which is the shape the result-title clamp guards.
+Future<void> _pumpMedicineSearch(WidgetTester tester, double scale) async {
+  await _pumpApp(
+    tester,
+    ProviderScope(
+      overrides: [
+        authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) async => testHealthSnapshot(),
+        ),
+        medicineSearchRepositoryProvider.overrideWithValue(
+          const _LongNameSearchRepository(),
+        ),
+      ],
+      child: TestForuiRouterApp(
+        routerConfig: GoRouter(
+          initialLocation: '/medicine/search',
+          routes: [
+            GoRoute(
+              path: '/medicine/search',
+              builder: (context, state) =>
+                  scaledForTextScale(const search.SearchPage(), scale),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  // Exercise the two sites this case exists for: the source filter (labels
+  // used to wrap into a three-line lifted card) and a result tile whose title
+  // is a full systematic name.
+  await tester.enterText(
+    find.byKey(const ValueKey('medicine-search-input')),
+    'trifluoro',
+  );
+  await tester.pump();
+  await tester.tap(find.byKey(const ValueKey('medicine-search-submit')));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
+}
+
 // ── Mine / profile sub-pages ────────────────────────────────────
 
 Future<void> _pumpSyncFailures(WidgetTester tester, double scale) {
@@ -833,6 +882,38 @@ Future<void> _pumpDataExport(WidgetTester tester, double scale) {
 class _NoActiveHealthEvent extends ActiveHealthEvent {
   @override
   Future<HealthEvent?> build() async => null;
+}
+
+/// Search stub returning one DrugBank hit whose `name` is a full systematic
+/// name — the payload shape the result-title clamp guards.
+class _LongNameSearchRepository implements MedicineSearchRepository {
+  const _LongNameSearchRepository();
+
+  @override
+  TaskEither<LucentFailure, List<MedicineSearchResult>> search({
+    required String query,
+    required MedicineSearchSource source,
+    int page = 1,
+    int pageSize = 20,
+  }) => TaskEither.right(const [
+    MedicineSearchResult(
+      id: 'DB09073',
+      source: MedicineSearchSource.drugbank,
+      name:
+          '1,1,1-TRIFLUORO-3-ACETAMIDO-4-PHENYL-BUTAN-2-ONE '
+          '(1,1,1-TRIFLUORO-3-ACETAMIDO-4-PHENYL-BUTAN-2-ONE)',
+      subtitle: 'CAS 735-52-4 · experimental',
+      summary: 'A trifluoromethyl ketone derivative.',
+      tags: <String>['experimental'],
+      matchType: MedicineSearchMatchType.name,
+    ),
+  ]);
+
+  @override
+  TaskEither<LucentFailure, MedicineSearchSafetyPreview?> fetchDetail(
+    String id,
+    MedicineSearchSource source,
+  ) => TaskEither.right(null);
 }
 
 class _FakeDailyRecordRepository implements DailyRecordRepository {
