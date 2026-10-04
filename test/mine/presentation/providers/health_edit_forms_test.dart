@@ -185,7 +185,7 @@ void main() {
       final c = buildContainer();
       final state = c.read(healthProfileFormProvider);
       expect(state.isSaving, isFalse);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
       expect(state.saved, isFalse);
     });
 
@@ -199,11 +199,11 @@ void main() {
       final state = c.read(healthProfileFormProvider);
       expect(state.isSaving, isFalse);
       expect(state.saved, isTrue);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
       expect(fakeRepo.lastMethodCalled, 'updateProfile');
     });
 
-    test('save failure sets error message', () async {
+    test('save failure stores the mapped failure object', () async {
       fakeRepo.throwOnNext = Exception('Update failed');
 
       final c = buildContainer();
@@ -216,7 +216,7 @@ void main() {
       final state = c.read(healthProfileFormProvider);
       expect(state.isSaving, isFalse);
       expect(state.saved, isFalse);
-      expect(state.errorMessage, isNotNull);
+      expect(state.error, isA<LucentFailure>());
     });
   });
 
@@ -232,7 +232,7 @@ void main() {
 
       final state = c.read(allergyFormProvider);
       expect(state.saved, isTrue);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
       expect(fakeRepo.lastMethodCalled, 'createAllergy');
     });
 
@@ -262,11 +262,11 @@ void main() {
 
       final state = c.read(allergyFormProvider);
       expect(state.saved, isTrue);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
       expect(fakeRepo.deleteCallIds, ['a1']);
     });
 
-    test('delete allergy failure sets error message', () async {
+    test('delete allergy failure stores the mapped failure object', () async {
       fakeRepo.throwOnNext = Exception('Delete failed');
 
       final c = buildContainer();
@@ -274,7 +274,7 @@ void main() {
 
       final state = c.read(allergyFormProvider);
       expect(state.saved, isFalse);
-      expect(state.errorMessage, isNotNull);
+      expect(state.error, isA<LucentFailure>());
     });
   });
 
@@ -313,7 +313,7 @@ void main() {
       expect(fakeRepo.deleteCallIds, ['c1']);
     });
 
-    test('delete condition failure sets error', () async {
+    test('delete condition failure stores the mapped failure object', () async {
       fakeRepo.throwOnNext = Exception('Delete failed');
 
       final c = buildContainer();
@@ -321,7 +321,7 @@ void main() {
 
       final state = c.read(conditionFormProvider);
       expect(state.saved, isFalse);
-      expect(state.errorMessage, isNotNull);
+      expect(state.error, isA<LucentFailure>());
     });
   });
 
@@ -369,34 +369,40 @@ void main() {
       expect(fakeRepo.deleteCallIds, ['m1']);
     });
 
-    test('create current medicine failure sets error', () async {
-      fakeRepo.throwOnNext = Exception('Create failed');
+    test(
+      'create current medicine failure stores the mapped failure object',
+      () async {
+        fakeRepo.throwOnNext = Exception('Create failed');
 
-      final c = buildContainer();
-      await c
-          .read(currentMedicineFormProvider.notifier)
-          .save(
-            create: const CurrentMedicineWriteInput(
-              source: HealthMedicineSource.manual,
-              displayName: 'Aspirin',
-            ),
-          );
+        final c = buildContainer();
+        await c
+            .read(currentMedicineFormProvider.notifier)
+            .save(
+              create: const CurrentMedicineWriteInput(
+                source: HealthMedicineSource.manual,
+                displayName: 'Aspirin',
+              ),
+            );
 
-      final state = c.read(currentMedicineFormProvider);
-      expect(state.saved, isFalse);
-      expect(state.errorMessage, isNotNull);
-    });
+        final state = c.read(currentMedicineFormProvider);
+        expect(state.saved, isFalse);
+        expect(state.error, isA<LucentFailure>());
+      },
+    );
 
-    test('delete current medicine failure sets error', () async {
-      fakeRepo.throwOnNext = Exception('Delete failed');
+    test(
+      'delete current medicine failure stores the mapped failure object',
+      () async {
+        fakeRepo.throwOnNext = Exception('Delete failed');
 
-      final c = buildContainer();
-      await c.read(currentMedicineFormProvider.notifier).delete('m1');
+        final c = buildContainer();
+        await c.read(currentMedicineFormProvider.notifier).delete('m1');
 
-      final state = c.read(currentMedicineFormProvider);
-      expect(state.saved, isFalse);
-      expect(state.errorMessage, isNotNull);
-    });
+        final state = c.read(currentMedicineFormProvider);
+        expect(state.saved, isFalse);
+        expect(state.error, isA<LucentFailure>());
+      },
+    );
   });
 
   group('Form state transitions', () {

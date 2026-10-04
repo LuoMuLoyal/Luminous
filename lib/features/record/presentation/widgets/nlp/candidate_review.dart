@@ -161,10 +161,10 @@ class _CandidateTile extends StatelessWidget {
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            if (item.lastErrorMessage case final errMsg?) ...[
+            if (item.saveFailure != null) ...[
               const SizedBox(height: Spacing.sm),
               Text(
-                l10n.recordNlpCandidateSaveFailedHint(errMsg),
+                l10n.recordNlpCandidateSaveFailedHint,
                 style: typography.body.xs.copyWith(
                   color: SemanticColor.destructive.solid(context),
                 ),

@@ -317,14 +317,7 @@
     }
   },
   "recordNlpNoFailedCandidatesToast": "There are no failed items to retry right now.",
-  "recordNlpCandidateSaveFailedHint": "Last save failed for this item: {message}",
-  "@recordNlpCandidateSaveFailedHint": {
-    "placeholders": {
-      "message": {
-        "type": "String"
-      }
-    }
-  },
+  "recordNlpCandidateSaveFailedHint": "This item was not saved last time. Please retry.",
   "recordTimelineSectionTitle": "Timeline",
   "recordTimelineViewAllAction": "View all records",
   "recordTimelineCollapseAction": "Collapse",

@@ -82,7 +82,7 @@ class ReviewAiSummaryCardState {
     required this.status,
     this.summary,
     this.streamingSummary,
-    this.errorMessage,
+    this.error,
   });
 
   const ReviewAiSummaryCardState.idle()
@@ -101,12 +101,12 @@ class ReviewAiSummaryCardState {
     : this(status: ReviewAiSummaryCardStatus.success, summary: summary);
 
   const ReviewAiSummaryCardState.error({
-    required String message,
+    required Object error,
     ReviewAiSummary? previousSummary,
   }) : this(
          status: ReviewAiSummaryCardStatus.error,
          summary: previousSummary,
-         errorMessage: message,
+         error: error,
        );
 
   const ReviewAiSummaryCardState.disabled()
@@ -115,7 +115,10 @@ class ReviewAiSummaryCardState {
   final ReviewAiSummaryCardStatus status;
   final ReviewAiSummary? summary;
   final String? streamingSummary;
-  final String? errorMessage;
+
+  /// The failure behind the last failed generation, kept as the object so the
+  /// card resolves copy through the error seam at the render site.
+  final Object? error;
 
   bool get isLoading => status == ReviewAiSummaryCardStatus.loading;
   bool get isDisabled => status == ReviewAiSummaryCardStatus.disabled;

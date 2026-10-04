@@ -317,14 +317,7 @@
     }
   },
   "recordNlpNoFailedCandidatesToast": "当前没有失败项可重试",
-  "recordNlpCandidateSaveFailedHint": "这条上次保存失败：{message}",
-  "@recordNlpCandidateSaveFailedHint": {
-    "placeholders": {
-      "message": {
-        "type": "String"
-      }
-    }
-  },
+  "recordNlpCandidateSaveFailedHint": "这条上次没保存成功，请重试",
   "recordTimelineSectionTitle": "时间线",
   "recordTimelineViewAllAction": "查看全部记录",
   "recordTimelineCollapseAction": "收起",

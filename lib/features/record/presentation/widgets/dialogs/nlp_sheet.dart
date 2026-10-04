@@ -104,10 +104,7 @@ class RecordNlpSheet extends HookConsumerWidget {
         case RecordNlpSaveOutcomeKind.authRequired:
           await Toast.show(context, l10n.authLoginRequiredPrompt);
         case RecordNlpSaveOutcomeKind.error:
-          await Toast.show(
-            context,
-            outcome.message ?? l10n.recordCreateFailedToast,
-          );
+          await Toast.show(context, l10n.recordCreateFailedToast);
       }
     }
 
@@ -140,10 +137,7 @@ class RecordNlpSheet extends HookConsumerWidget {
         case RecordNlpSaveOutcomeKind.authRequired:
           await Toast.show(context, l10n.authLoginRequiredPrompt);
         case RecordNlpSaveOutcomeKind.error:
-          await Toast.show(
-            context,
-            outcome.message ?? l10n.recordCreateFailedToast,
-          );
+          await Toast.show(context, l10n.recordCreateFailedToast);
       }
     }
 

@@ -1,6 +1,7 @@
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
@@ -183,7 +184,13 @@ ReviewAiSummaryContent buildReviewAiSummaryContent({
   if (aiState.status == ReviewAiSummaryCardStatus.error) {
     return ReviewAiSummaryContent(
       subtitle: reviewAiSummarySubtitle(l10n, selectedRange),
-      disclaimer: aiState.errorMessage ?? l10n.reviewAiSummaryErrorHint,
+      // 失败对象在渲染点过一遍错误归一 seam：能取到错误码就用本地化文案，
+      // 否则退回服务端下发的 message。
+      disclaimer: userMessageFromError(
+        aiState.error,
+        l10n: l10n,
+        fallback: l10n.reviewAiSummaryErrorHint,
+      ),
       showGenerateButton: aiSummaryEnabled,
     );
   }

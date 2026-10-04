@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
@@ -168,6 +169,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                                 ref,
                                 aiSummariesEnabled,
                                 aiState,
+                                l10n,
                               ),
                         variant: FButtonVariant.ghost,
                         size: FButtonSizeVariant.xs,
@@ -195,6 +197,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                             ref,
                             aiSummariesEnabled,
                             aiState,
+                            l10n,
                           ),
                     variant: FButtonVariant.ghost,
                     size: FButtonSizeVariant.xs,
@@ -249,6 +252,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                           ref,
                           aiSummariesEnabled,
                           aiState,
+                          l10n,
                         )
                       : null,
                 ),
@@ -289,6 +293,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
     WidgetRef ref,
     bool? aiSummariesEnabled,
     TodayAiAnalysisCardState? aiState,
+    AppLocalizations l10n,
   ) async {
     if (aiSummariesEnabled == false) {
       unawaited(context.push(Routes.settings));
@@ -301,8 +306,16 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
 
     final error = ref.read(todayAiAnalysisControllerProvider).error;
     if (error != null) {
-      final apiError = error.toString();
-      await Toast.show(context, apiError);
+      // 失败对象过一遍错误归一 seam：error.toString() 会把
+      // 「LucentFailure(kind: ..., code: ...)」这类诊断串直接怼到屏幕上。
+      await Toast.show(
+        context,
+        userMessageFromError(
+          error,
+          l10n: l10n,
+          fallback: l10n.todayAiSummaryErrorHint,
+        ),
+      );
     }
   }
 }

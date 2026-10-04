@@ -320,7 +320,8 @@ void main() {
             .generate();
 
         expect(result.status, ReviewAiSummaryCardStatus.error);
-        expect(result.errorMessage, isNotEmpty);
+        // 失败对象（不是预格式化文案）留在 state 里，卡片渲染时才映射。
+        expect(result.error, isNotNull);
         // No previous summary to retain on first failure.
         expect(result.summary, isNull);
       },

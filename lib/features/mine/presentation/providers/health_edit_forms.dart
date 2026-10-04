@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -13,7 +14,10 @@ part 'health_edit_forms.freezed.dart';
 abstract class HealthProfileFormState with _$HealthProfileFormState {
   const factory HealthProfileFormState({
     @Default(false) bool isSaving,
-    String? errorMessage,
+
+    /// The failure behind the last failed write, kept as the object: only the
+    /// page has an `AppLocalizations` handle, so copy is resolved there.
+    Object? error,
     @Default(false) bool saved,
   }) = _HealthProfileFormState;
 }
@@ -25,7 +29,7 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
   /// Persists [input]; returns whether the write succeeded.
   ///
   /// Callers must branch on the result instead of assuming success — the
-  /// failure path stores [HealthProfileFormState.errorMessage] and returns
+  /// failure path stores [HealthProfileFormState.error] and returns
   /// `false`, so a caller that toasts unconditionally would report a save
   /// that never happened.
   Future<bool> save(HealthProfileUpdateInput input) async {
@@ -46,7 +50,7 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
           .error('HealthProfileFormNotifier.save: failed: $e');
       state = HealthProfileFormState(
         isSaving: false,
-        errorMessage: e.toString(),
+        error: LucentErrorMapper.fromObject(e),
       );
       return false;
     }
@@ -64,7 +68,7 @@ final healthProfileFormProvider =
 abstract class AllergyFormState with _$AllergyFormState {
   const factory AllergyFormState({
     @Default(false) bool isSaving,
-    String? errorMessage,
+    Object? error,
     @Default(false) bool saved,
     @Default(false) bool deleted,
   }) = _AllergyFormState;
@@ -96,7 +100,10 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
       state = const AllergyFormState(saved: true);
     } catch (e) {
       ref.read(talkerProvider).error('AllergyFormNotifier.save: failed: $e');
-      state = AllergyFormState(isSaving: false, errorMessage: e.toString());
+      state = AllergyFormState(
+        isSaving: false,
+        error: LucentErrorMapper.fromObject(e),
+      );
     }
   }
 
@@ -113,7 +120,10 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
       state = const AllergyFormState(saved: true, deleted: true);
     } catch (e) {
       ref.read(talkerProvider).error('AllergyFormNotifier.delete: failed: $e');
-      state = AllergyFormState(isSaving: false, errorMessage: e.toString());
+      state = AllergyFormState(
+        isSaving: false,
+        error: LucentErrorMapper.fromObject(e),
+      );
     }
   }
 }
@@ -129,7 +139,7 @@ final allergyFormProvider =
 abstract class ConditionFormState with _$ConditionFormState {
   const factory ConditionFormState({
     @Default(false) bool isSaving,
-    String? errorMessage,
+    Object? error,
     @Default(false) bool saved,
     @Default(false) bool deleted,
   }) = _ConditionFormState;
@@ -161,7 +171,10 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
       state = const ConditionFormState(saved: true);
     } catch (e) {
       ref.read(talkerProvider).error('ConditionFormNotifier.save: failed: $e');
-      state = ConditionFormState(isSaving: false, errorMessage: e.toString());
+      state = ConditionFormState(
+        isSaving: false,
+        error: LucentErrorMapper.fromObject(e),
+      );
     }
   }
 
@@ -180,7 +193,10 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
       ref
           .read(talkerProvider)
           .error('ConditionFormNotifier.delete: failed: $e');
-      state = ConditionFormState(isSaving: false, errorMessage: e.toString());
+      state = ConditionFormState(
+        isSaving: false,
+        error: LucentErrorMapper.fromObject(e),
+      );
     }
   }
 }
@@ -196,7 +212,7 @@ final conditionFormProvider =
 abstract class CurrentMedicineFormState with _$CurrentMedicineFormState {
   const factory CurrentMedicineFormState({
     @Default(false) bool isSaving,
-    String? errorMessage,
+    Object? error,
     @Default(false) bool saved,
     @Default(false) bool deleted,
   }) = _CurrentMedicineFormState;
@@ -235,7 +251,7 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
           .error('CurrentMedicineFormNotifier.save: failed: $e');
       state = CurrentMedicineFormState(
         isSaving: false,
-        errorMessage: e.toString(),
+        error: LucentErrorMapper.fromObject(e),
       );
     }
   }
@@ -260,7 +276,7 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
           .error('CurrentMedicineFormNotifier.delete: failed: $e');
       state = CurrentMedicineFormState(
         isSaving: false,
-        errorMessage: e.toString(),
+        error: LucentErrorMapper.fromObject(e),
       );
     }
   }

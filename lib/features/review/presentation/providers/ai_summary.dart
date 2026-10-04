@@ -99,7 +99,9 @@ class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
       }
 
       state = ReviewAiSummaryCardState.error(
-        message: apiError.message,
+        // 保留失败对象：卡片渲染时才拿得到 l10n，在这里取 message 会把
+        // 英文诊断串固化进 entity。
+        error: apiError,
         previousSummary: previousSummary,
       );
       return state;

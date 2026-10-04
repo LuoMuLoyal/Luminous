@@ -165,6 +165,8 @@ class RecordNlpController extends Notifier<RecordNlpState> {
         final item = currentCandidates[index];
         try {
           final result = await repo.create(item.toCreateInput()).run();
+          // 失败原因保留成对象：presentation 才拿得到 l10n，在这里决定文案会把
+          // 服务端/传输层的英文句子固化进 state。
           return result.fold((failure) {
             ref
                 .read(talkerProvider)
@@ -172,20 +174,22 @@ class RecordNlpController extends Notifier<RecordNlpState> {
                   'RecordNlpController._saveCandidates: failed: '
                   '$failure',
                 );
-            return (index: index, success: false, error: failure.message);
-          }, (_) => (index: index, success: true, error: null as String?));
+            return (index: index, success: false, failure: failure);
+          }, (_) => (index: index, success: true, failure: null as Object?));
         } catch (error) {
           ref
               .read(talkerProvider)
               .error('RecordNlpController._saveCandidates: failed: $error');
-          final apiError = LucentErrorMapper.fromObject(error);
-          return (index: index, success: false, error: apiError.message);
+          return (
+            index: index,
+            success: false,
+            failure: LucentErrorMapper.fromObject(error),
+          );
         }
       }),
     );
 
     var savedCount = 0;
-    final errorMessages = <String>{};
     final failedItemsByIndex = <int, RecordNlpCandidateDraft>{};
 
     for (final result in results) {
@@ -193,12 +197,9 @@ class RecordNlpController extends Notifier<RecordNlpState> {
         savedCount += 1;
       } else {
         final item = currentCandidates[result.index];
-        if (result.error != null && result.error!.isNotEmpty) {
-          errorMessages.add(result.error!);
-        }
         failedItemsByIndex[result.index] = item.copyWith(
           selected: true,
-          lastErrorMessage: result.error,
+          saveFailure: result.failure,
         );
       }
     }
@@ -216,7 +217,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     final unselectedItems = <RecordNlpCandidateDraft>[
       for (var index = 0; index < currentCandidates.length; index += 1)
         if (!targetIndexSet.contains(index))
-          currentCandidates[index].copyWith(lastErrorMessage: null),
+          currentCandidates[index].copyWith(saveFailure: null),
     ];
     final remainingItems = [...failedItems, ...unselectedItems];
 
@@ -237,10 +238,6 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     return RecordNlpSaveOutcome.partial(
       savedCount: savedCount,
       failedCount: failedItems.length,
-      // 汇总所有失败原因（去重），而不是只暴露最后一个。
-      message: errorMessages.isEmpty
-          ? 'Unexpected error.'
-          : errorMessages.join('\n'),
     );
   }
 
@@ -321,7 +318,10 @@ abstract class RecordNlpCandidateDraft with _$RecordNlpCandidateDraft {
     Map<String, dynamic>? payload,
     required String rationale,
     @Default(true) bool selected,
-    String? lastErrorMessage,
+
+    /// The failure behind this candidate's last failed save, kept as the object
+    /// so the review list resolves copy at the render site.
+    Object? saveFailure,
   }) = _RecordNlpCandidateDraft;
 
   factory RecordNlpCandidateDraft.fromCandidate(DailyRecordCandidateItem item) {
@@ -340,7 +340,7 @@ abstract class RecordNlpCandidateDraft with _$RecordNlpCandidateDraft {
     );
   }
 
-  bool get hasFailedSave => lastErrorMessage?.trim().isNotEmpty ?? false;
+  bool get hasFailedSave => saveFailure != null;
 
   DailyRecordCreateInput toCreateInput() {
     return DailyRecordCreateInput(
@@ -386,7 +386,6 @@ class RecordNlpSaveOutcome {
     required this.kind,
     this.savedCount,
     this.failedCount,
-    this.message,
   });
 
   const RecordNlpSaveOutcome.saved({
@@ -401,12 +400,10 @@ class RecordNlpSaveOutcome {
   const RecordNlpSaveOutcome.partial({
     required int savedCount,
     required int failedCount,
-    required String message,
   }) : this._(
          kind: RecordNlpSaveOutcomeKind.partial,
          savedCount: savedCount,
          failedCount: failedCount,
-         message: message,
        );
 
   const RecordNlpSaveOutcome.empty()
@@ -415,13 +412,12 @@ class RecordNlpSaveOutcome {
   const RecordNlpSaveOutcome.authRequired()
     : this._(kind: RecordNlpSaveOutcomeKind.authRequired);
 
-  const RecordNlpSaveOutcome.error({required String message})
-    : this._(kind: RecordNlpSaveOutcomeKind.error, message: message);
+  const RecordNlpSaveOutcome.error()
+    : this._(kind: RecordNlpSaveOutcomeKind.error);
 
   final RecordNlpSaveOutcomeKind kind;
   final int? savedCount;
   final int? failedCount;
-  final String? message;
 }
 
 enum RecordNlpSaveOutcomeKind { saved, partial, empty, authRequired, error }

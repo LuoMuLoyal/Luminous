@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 
 void main() {
@@ -22,7 +23,7 @@ void main() {
       expect(state.status, ReviewAiSummaryCardStatus.idle);
       expect(state.summary, isNull);
       expect(state.streamingSummary, isNull);
-      expect(state.errorMessage, isNull);
+      expect(state.error, isNull);
     });
 
     test('loading constructor sets loading status', () {
@@ -53,17 +54,21 @@ void main() {
       expect(state.summary, same(summary));
     });
 
-    test('error constructor sets error status and message', () {
-      const state = ReviewAiSummaryCardState.error(message: 'Network failed');
-      expect(state.status, ReviewAiSummaryCardStatus.error);
-      expect(state.errorMessage, 'Network failed');
-      expect(state.summary, isNull);
-    });
+    test(
+      'error constructor sets error status and keeps the failure object',
+      () {
+        final failure = LucentFailure.unknown(message: 'Network failed');
+        final state = ReviewAiSummaryCardState.error(error: failure);
+        expect(state.status, ReviewAiSummaryCardStatus.error);
+        expect(state.error, same(failure));
+        expect(state.summary, isNull);
+      },
+    );
 
     test('error constructor preserves previousSummary', () {
       final summary = _buildSummary();
       final state = ReviewAiSummaryCardState.error(
-        message: 'Failed',
+        error: LucentFailure.unknown(message: 'Failed'),
         previousSummary: summary,
       );
       expect(state.summary, same(summary));

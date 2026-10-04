@@ -285,7 +285,7 @@ class _HealthProfileCard extends ConsumerWidget {
         .read(healthProfileFormProvider.notifier)
         .save(input);
     if (!context.mounted) return;
-    // 失败时不能走「已保存」提示——写入错误已进 state.errorMessage,
+    // 失败时不能走「已保存」提示——写入错误已进 state.error,
     // 如实反馈失败,避免用户以为改动已落库。
     await Toast.show(
       context,

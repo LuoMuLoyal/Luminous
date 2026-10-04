@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
@@ -138,9 +139,19 @@ class AllergyEditPage extends HookConsumerWidget {
         );
         if (context.mounted) context.pop();
       }
-      final error = next.errorMessage;
-      if (error != null && error != prev?.errorMessage) {
-        unawaited(Toast.show(context, error));
+      // 失败原因在 state 里是对象；文案在页面现算，避免 state 固化的英文句子。
+      final error = next.error;
+      if (error != null && !identical(error, prev?.error)) {
+        unawaited(
+          Toast.show(
+            context,
+            userMessageFromError(
+              error,
+              l10n: l10n,
+              fallback: l10n.mineEditSaveFailedToast,
+            ),
+          ),
+        );
       }
     });
 

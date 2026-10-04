@@ -62,7 +62,9 @@ void main() {
       expect(state.candidates, hasLength(1));
       expect(state.candidates.single.kind, DailyRecordKind.note);
       expect(state.candidates.single.selected, isTrue);
-      expect(state.candidates.single.lastErrorMessage, 'Create failed.');
+      // 失败原因留在 state 里是对象（渲染点才映射文案），不是预格式化的句子。
+      expect(state.candidates.single.saveFailure, isA<LucentFailure>());
+      expect(state.candidates.single.hasFailedSave, isTrue);
     },
   );
 
