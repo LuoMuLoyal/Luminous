@@ -27,9 +27,13 @@ class MedicineRiskCheckPage extends ConsumerStatefulWidget {
 }
 
 class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
-  /// 服务端「依赖不可用」的稳定 problem code(Lucent problem-catalog 注册表:
-  /// `DEPENDENCY_UNAVAILABLE` → HTTP 503)。
-  static const _dependencyUnavailableCode = 'DEPENDENCY_UNAVAILABLE';
+  /// 服务端「模型未配置」的稳定 problem code(Lucent problem-catalog 注册表:
+  /// `LLM_NOT_CONFIGURED` → HTTP 503)。
+  ///
+  /// 只认这个 code,**不再用 `statusCode == 503` 兜底**:同一端点上运行时的
+  /// LLM 失败也会以 503 返回,用状态码兜底会把可重试故障说成永久缺配置——
+  /// 那正是这条分流要消除的误报。
+  static const _llmNotConfiguredCode = 'LLM_NOT_CONFIGURED';
 
   bool _isRunningStatic = false;
   bool _isRunningLlm = false;
@@ -64,10 +68,10 @@ class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
 
     if (failure == null || !mounted) return;
 
-    // 只有服务端明确宣告依赖不可用时,AI 标签页才切到「AI 分析未配置」。
+    // 只有服务端明确宣告模型未配置时,AI 标签页才切到「AI 分析未配置」。
     // 此前任何失败(离线/超时/401/模型运行失败)都会整页显示这句文案,把可重试的
     // 失败误报成部署缺配置,同时吞掉真正的失败提示。
-    if (isLlm && _isDependencyUnavailable(failure)) {
+    if (isLlm && _isLlmNotConfigured(failure)) {
       setState(() => _llmUnavailable = true);
       return;
     }
@@ -105,11 +109,12 @@ class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
     }
   }
 
-  /// AI 分析模型未配置时风险检查服务就是用该 code 宣告的
-  /// (`Lucent/src/modules/medicines/services/risk/risk-check.service.ts`)。
-  bool _isDependencyUnavailable(LucentFailure failure) {
-    return failure.code == _dependencyUnavailableCode ||
-        failure.statusCode == 503;
+  /// 判断服务端是否在宣告「这个部署没配 AI 模型」。
+  ///
+  /// 依据只有稳定 code:503 本身不足以下这个结论(Lucent 的运行时 LLM 失败
+  /// 也是 503),所以这里刻意不看 `statusCode`。
+  bool _isLlmNotConfigured(LucentFailure failure) {
+    return failure.code == _llmNotConfiguredCode;
   }
 
   @override

@@ -5,8 +5,9 @@
 //
 // The unavailable state used to be entered for *any* failure of
 // `POST /medicine/risk-check`, so an offline device or a runtime LLM failure
-// was reported as missing configuration. Only the server's
-// `DEPENDENCY_UNAVAILABLE` (503) answer may claim that now.
+// was reported as missing configuration. Only the server's explicit
+// `LLM_NOT_CONFIGURED` answer may claim that now — a bare 503 must not, because
+// Lucent answers 503 for runtime model outages too.
 //
 // Layout cases mirror `test/a11y/compact_text_scale_sweep_test.dart` (360x800
 // and 320x720 at the app's largest text scale 1.3) with the overflow-collector
@@ -181,7 +182,7 @@ void main() {
 
   group('AI Analysis tab — failure branches', () {
     testWidgets(
-      'shows the unavailable state for a dependency-unavailable 503',
+      'shows the unavailable state for an explicit LLM_NOT_CONFIGURED answer',
       (tester) async {
         setCompactPhoneScreenSize(tester);
         await _pumpPage(
@@ -189,8 +190,8 @@ void main() {
           repository: _FailingRunRepository(
             const LucentFailure(
               kind: LucentFailureKind.server,
-              message: 'LLM analysis model is not configured',
-              code: 'DEPENDENCY_UNAVAILABLE',
+              message: 'Model is not configured',
+              code: 'LLM_NOT_CONFIGURED',
               statusCode: 503,
             ),
           ),
@@ -199,6 +200,35 @@ void main() {
         await _openLlmTabAndRun(tester, l10n);
 
         expect(find.text(l10n.medicineRiskCheckLlmUnavailable), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'keeps the retryable empty state for a bare 503 runtime outage',
+      (tester) async {
+        // Lucent answers 503 for a runtime model outage too, so the status
+        // alone must not be read as "not configured".
+        setCompactPhoneScreenSize(tester);
+        await _pumpPage(
+          tester,
+          repository: _FailingRunRepository(
+            const LucentFailure(
+              kind: LucentFailureKind.server,
+              message: 'upstream model unavailable',
+              code: 'DEPENDENCY_UNAVAILABLE',
+              statusCode: 503,
+            ),
+          ),
+          showToaster: true,
+        );
+
+        await _openLlmTabAndRun(tester, l10n);
+
+        expect(find.text(l10n.medicineRiskCheckLlmUnavailable), findsNothing);
+        expect(find.text(l10n.medicineRiskCheckLlmEmptyTitle), findsOneWidget);
+
+        await tester.pump(const Duration(milliseconds: 1800));
+        await tester.pumpAndSettle();
       },
     );
 
@@ -345,8 +375,8 @@ void main() {
           _FailingRunRepository(
             const LucentFailure(
               kind: LucentFailureKind.server,
-              message: 'LLM analysis model is not configured',
-              code: 'DEPENDENCY_UNAVAILABLE',
+              message: 'Model is not configured',
+              code: 'LLM_NOT_CONFIGURED',
               statusCode: 503,
             ),
           ),
