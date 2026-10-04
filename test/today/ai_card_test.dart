@@ -234,6 +234,58 @@ void main() {
     expect(find.text(l10n.todayAnalysisPendingHint), findsOneWidget);
   });
 
+  testWidgets(
+    'Today summary does not claim a rule-based summary while materializing',
+    (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+            todayRepositoryProvider.overrideWithValue(
+              const MockTodayRepository(),
+            ),
+            userSettingsControllerProvider.overrideWith(
+              EnabledUserSettingsController.new,
+            ),
+            // 服务端在 materialization 未就绪时不下发 analysis,仓库层据此合成
+            // 「空 summary + aiGenerated=false」的占位对象
+            // (lucent_ai.dart `_mapReadDataDto`)。它不是规则摘要,卡片不得挂
+            // 「基于规则的摘要」徽章,也不得给出无内容可展开的「查看依据」。
+            todayAiRepositoryProvider.overrideWithValue(
+              _StaticTodayAiRepository(
+                TodayAiAnalysis(
+                  date: '2026-06-12',
+                  generatedAt: generatedAt,
+                  summary: '',
+                  bullets: [],
+                  actionLabel: '',
+                  confidenceNote: '',
+                  materializationStatus:
+                      TodayAiAnalysisMaterializationStatus.pending,
+                  aiGenerated: false,
+                ),
+              ),
+            ),
+            todaySuggestionProvider.overrideWith(
+              EmptyTodaySuggestionNotifier.new,
+            ),
+            notificationUnreadCountProvider.overrideWith((ref) async => 0),
+          ],
+          child: const TestForuiApp(home: TodayPage()),
+        ),
+      );
+
+      await tester.pump(const Duration(milliseconds: 500));
+      await _scrollToSummaryCard(tester);
+
+      expect(find.text(l10n.todayAnalysisPendingHint), findsOneWidget);
+      expect(find.text(l10n.todayAnalysisRuleBasedLabel), findsNothing);
+      expect(find.text(l10n.todaySuggestionShowEvidence), findsNothing);
+    },
+  );
+
   testWidgets('Today summary shows materialization notice for failed state', (
     tester,
   ) async {

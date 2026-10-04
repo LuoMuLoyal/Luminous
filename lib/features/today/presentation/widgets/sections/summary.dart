@@ -87,9 +87,18 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
     final metrics = buildOverviewItems(l10n, widget.dashboard);
     final isPreview = !canAccessProtectedData;
     final actionLabel = _actionLabel(l10n, aiSummariesEnabled, aiState);
-    final hasAiContent = content.summary != null || content.bullets.isNotEmpty;
+    // 只有正文非空才算「有内容」:materialization 未就绪(pending/stale/failed)时
+    // 服务端不下发 analysis,仓库层会合成一个空 analysis 占位(空 summary +
+    // aiGenerated=false),它既不是规则摘要,也没有可展开的依据。
+    final hasSummaryText = (content.summary?.trim() ?? '').isNotEmpty;
+    final hasAiContent = hasSummaryText || content.bullets.isNotEmpty;
     final showNotice = _showMaterializationNotice(aiState);
-    final showRuleBasedLabel = aiState?.analysis?.aiGenerated == false;
+    // 徽章描述的是它下方那段摘要的来源:aiGenerated=false 表示服务端返回的是
+    // 规则兜底文案(base-llm-summary 在模型未配置/输出被安全策略拒绝/生成失败时
+    // 回落,见 Lucent common/llm/generators/base-llm-summary.service.ts)。没有正文
+    // 时挂徽章会被读成「降级通知」,与同时出现的「分析生成中」互相矛盾(真机反馈)。
+    final showRuleBasedLabel =
+        hasSummaryText && aiState?.analysis?.aiGenerated == false;
 
     return TodaySection(
       title: l10n.todayHealthSummaryCardTitle,

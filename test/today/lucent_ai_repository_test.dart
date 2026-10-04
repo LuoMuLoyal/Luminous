@@ -177,6 +177,10 @@ void main() {
           analysis.generatedAt,
           DateTime.parse('2026-07-10T08:00:00.000Z'),
         );
+        // 服务端未下发 analysis 时合成的是**空**占位对象,却把 aiGenerated 置为
+        // false;展示层不得据此宣称「规则摘要」(摘要正文为空即为无内容)。
+        expect(analysis.summary, '');
+        expect(analysis.aiGenerated, isFalse);
       });
 
       test('maps stale read DTO', () async {
