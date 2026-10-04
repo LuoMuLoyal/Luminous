@@ -83,7 +83,8 @@ void main() {
 
     expect(find.text('健康趋势'), findsOneWidget);
     expect(find.text('有记录 4 天 / 范围 7 天'), findsOneWidget);
-    expect(find.text('2026-08-01 → 2026-08-07'), findsOneWidget);
+    // 窗口边界按 locale 格式化后再进入文案（契约原文是 ISO 串）。
+    expect(find.text('8月1日 → 8月7日'), findsOneWidget);
     expect(find.text('未记录的天不计入走势'), findsOneWidget);
     // 折线图值。
     expect(find.text('1.2L'), findsOneWidget);

@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -393,24 +394,37 @@ class _TrendFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     final muted = SemanticColor.neutral.solid(context);
+    // 契约原文是 ISO 时间戳（`2026-09-28T00:00:00.000Z`），必须本地化后再上屏
+    // （此前直接把 windowStart/windowEnd 拼进文案，真机显示原始 ISO 串）。
     final window = windowStart.isEmpty || windowEnd.isEmpty
         ? null
-        : l10n.reviewNoteworthyWindow(windowStart, windowEnd);
+        : l10n.reviewNoteworthyWindow(
+            reviewWindowDateLabel(context, windowStart),
+            reviewWindowDateLabel(context, windowEnd),
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
+        // 覆盖率与数据窗口都是变宽文本：用 Wrap 让放不下的那一项换行，而不是
+        // 让尾部非 flex 的 Text 在 Row 里吃掉无界主轴约束后右溢出。覆盖率说明
+        // 放开换行（内容不得截断）；窗口标注限单行 + 省略号，因为解析失败时会
+        // 回显契约原文，长串不能在卡片里撑破或逐字折行。
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: Spacing.md,
+          runSpacing: Spacing.xs,
           children: [
-            Expanded(
-              child: Text(
-                coverageLabel,
-                style: typography.body.xs.copyWith(color: muted),
-              ),
+            Text(
+              coverageLabel,
+              style: typography.body.xs.copyWith(color: muted),
             ),
             if (window != null)
-              Text(window, style: typography.body.xs.copyWith(color: muted)),
+              Text(
+                window,
+                style: typography.body.xs.copyWith(color: muted),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
           ],
         ),
         const SizedBox(height: Spacing.xs),

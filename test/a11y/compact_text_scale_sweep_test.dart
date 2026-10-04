@@ -26,6 +26,7 @@ import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/database/sync/worker.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
@@ -67,6 +68,7 @@ import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart'
     as review;
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
@@ -99,6 +101,7 @@ import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart' as today;
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -232,6 +235,7 @@ const List<_SweepCase> _sweepCases = <_SweepCase>[
   _SweepCase('RecordPage', _pumpRecord, knownSites: _recordPageKnown),
   _SweepCase('MedicinePage', _pumpMedicine),
   _SweepCase('ReviewPage', _pumpReview),
+  _SweepCase('ReviewTrendSection', _pumpReviewTrendSection),
   _SweepCase('MinePage', _pumpMine),
   _SweepCase('AssistantPage', _pumpAssistant),
   _SweepCase('SettingsPage', _pumpSettings),
@@ -386,6 +390,56 @@ Future<void> _pumpReview(WidgetTester tester, double scale) {
     ),
   );
 }
+
+// 趋势卡（单维折线 + 覆盖率脚注）：契约的窗口边界是 ISO 时间戳
+// （`2026-09-28T00:00:00.000Z`），页脚此前把原文直接拼进文案并右溢出。
+Future<void> _pumpReviewTrendSection(WidgetTester tester, double scale) {
+  return _pumpApp(
+    tester,
+    TestForuiApp(
+      home: scaledForTextScale(
+        Builder(
+          builder: (context) => Scaffold(
+            body: SingleChildScrollView(
+              child: ReviewTrendSection(
+                trends: _isoWindowTrends,
+                selectedQuery: const ReviewDashboardQuery(
+                  range: ReviewDashboardRange.last7Days,
+                ),
+                onQueryChanged: (_) {},
+                l10n: AppLocalizations.of(context)!,
+                startDate: '2026-09-28',
+                showRangePill: false,
+              ),
+            ),
+          ),
+        ),
+        scale,
+      ),
+    ),
+  );
+}
+
+/// 一个维度、7 天值，附契约 ISO 形式的观察窗口。
+const List<ReviewTrendSeries> _isoWindowTrends = <ReviewTrendSeries>[
+  ReviewTrendSeries(
+    kind: ReviewDataKind.water,
+    color: SemanticColor.primary,
+    unit: 'L',
+    values: <double>[1.0, 1.1, 1.2, 1.0, 1.3, 1.1, 1.2],
+    currentValue: '1.2',
+    observedMetric: ReviewObservedMetric(
+      value: 1.2,
+      state: ReviewObservedMetricState.observed,
+      coverage: ReviewObservedMetricCoverage.sufficient,
+      sources: <ReviewObservedMetricSource>[ReviewObservedMetricSource.manual],
+      observedCount: 4,
+      expectedCount: 7,
+      windowStart: '2026-09-28T00:00:00.000Z',
+      windowEnd: '2026-10-04T00:00:00.000Z',
+    ),
+  ),
+];
 
 Future<void> _pumpMine(WidgetTester tester, double scale) {
   return _pumpApp(

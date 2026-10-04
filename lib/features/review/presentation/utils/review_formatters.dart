@@ -19,6 +19,49 @@ String reviewShortDateLabel(BuildContext context, String value) {
   return DateFormat.MMMd(locale).format(parsed.toLocal());
 }
 
+/// 契约数据窗口边界（`YYYY-MM-DD` 或 ISO 形式 `2026-08-17T00:00:00.000Z`）
+/// → 本地化短日期（`8月1日` / `Aug 1`），无法解析时原文返回。
+///
+/// 契约把窗口边界定义成**本地日期字面量**而不是时间点：后端用
+/// `parseDateOnly` / `formatDateOnly`（UTC 归一的按日推算）生成它，值命名的
+/// 就是用户经历的那一天。`DateTime.parse` + `toLocal()` 会把它读成时间点，
+/// ISO 形式在 UTC 以西的设备上因此会显示成前一天；这里只读前导的
+/// `YYYY-MM-DD` 分量，原样回显后端声明的日期。
+///
+/// 占位符（`----.--.--`）、空串或没有可解析日期前缀时回显原文，缺失的窗口
+/// 不会渲染成空标签。
+String reviewWindowDateLabel(BuildContext context, String raw) {
+  final locale = Localizations.localeOf(context).toLanguageTag();
+  final dateOnly = _dateOnlyPrefix(raw);
+  if (dateOnly == null) {
+    return raw;
+  }
+  final parsed = DateTime(dateOnly.$1, dateOnly.$2, dateOnly.$3);
+  return DateFormat.MMMd(locale).format(parsed);
+}
+
+/// 提取 [raw] 的前导 `YYYY-MM-DD` 日历日期；没有可解析前缀时返回 null。
+(int, int, int)? _dateOnlyPrefix(String raw) {
+  final match = _dateOnlyPrefixPattern.firstMatch(raw.trim());
+  if (match == null) return null;
+  final year = int.tryParse(match.group(1)!);
+  final month = int.tryParse(match.group(2)!);
+  final day = int.tryParse(match.group(3)!);
+  if (year == null || month == null || day == null) return null;
+  // DateTime 会归一化越界值（13 月变成次年 1 月）而不是抛错，那会静默渲染出
+  // 错误的日期；越界一律拒绝并回退原文。
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  final candidate = DateTime(year, month, day);
+  if (candidate.year != year ||
+      candidate.month != month ||
+      candidate.day != day) {
+    return null;
+  }
+  return (year, month, day);
+}
+
+final RegExp _dateOnlyPrefixPattern = RegExp(r'^(\d{4})-(\d{2})-(\d{2})');
+
 String reviewOutcomeLabel(AppLocalizations l10n, ReviewEventOutcome outcome) {
   return switch (outcome) {
     ReviewEventOutcome.improved => l10n.reviewReviewOutcomeImproved,
