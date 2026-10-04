@@ -4,7 +4,8 @@
 
 ## 职责与边界
 
-- 管:瞬态轻量反馈 — `Toast.show`(纯文本)与 `Toast.showWithAction`(动作按钮替代默认关闭按钮)。
+- 管:瞬态轻量反馈 — `Toast.show`(纯文本,无任何后缀按钮)与 `Toast.showWithAction`
+  (尾部一个动作按钮,如「撤销」/「Undo」)。
 - 不管:页面级加载/错误/空态(走 `../widgets/common/feedback/page_state.dart` 的 `PageStateSwitch`)、
   对话框、本地与推送通知(`../notifications/`、`../push/`)。
 
@@ -32,6 +33,8 @@
 ## 陷阱与决策
 
 - "单槽替换而非排队"是刻意决策:连续触发同消息(如快捷入口撤销)以最后一次为准,避免 toast 洪泛。
+- 纯文本 toast **不带通用「✕」关闭按钮**:该按钮与自动消失重复且让顶部 toast 显拥挤(真机反馈);
+  需要用户操作时用 `showWithAction` 显式给一个动作按钮。关闭手势/自动消失不受影响。
 - action 的 label 在展示时捕获、回调在按下时读取最新值 —— 同消息重放后按钮文案不变但指向最新
   闭包;需要文案热更新须重建 toast(源码内 TODO 标记)。
 - 传入的 message 需已本地化;本目录不做 l10n。

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
 
 class Toast {
@@ -68,8 +67,12 @@ class Toast {
         alignment: FToastAlignment.topCenter,
         duration: null,
         title: Text(message),
-        suffixBuilder: _currentAction != null
-            ? (context, entry) => FButton(
+        // 纯文本 toast 不带任何后缀：原先的通用「✕」关闭按钮既与 1.8s 自动消失
+        // 重复，也让顶部 toast 显得拥挤（真机反馈）。要操作就显式给一个动作按钮
+        // （`showWithAction`，如「撤销」/「Undo」），而不是一个通用关闭图标。
+        suffixBuilder: _currentAction == null
+            ? null
+            : (context, entry) => FButton(
                 variant: FButtonVariant.ghost,
                 size: .sm,
                 onPress: () {
@@ -79,12 +82,6 @@ class Toast {
                 // label 在展示时捕获（每 entry 稳定），避免旧 toast 重建时读取
                 // 已置空的 `_currentAction` 触发空解引用；仅回调按按下时读取最新值。
                 child: Text(action!.label),
-              )
-            : (context, entry) => FButton.icon(
-                variant: FButtonVariant.ghost,
-                size: .sm,
-                onPress: entry.dismiss,
-                child: const Icon(SemanticIcons.actionClose, size: 16),
               ),
         onDismiss: () {
           if (_currentMessage == message) {
