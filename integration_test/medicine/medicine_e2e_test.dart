@@ -16,6 +16,8 @@ void main() {
 
     expect(find.text('搜索药品'), findsWidgets);
     await tester.enterText(find.byType(TextField), '布洛芬');
+    // 搜索改为提交驱动:输入不再自动触发,需显式提交。
+    await tester.testTextInput.receiveAction(TextInputAction.search);
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('布洛芬片'), findsWidgets);
@@ -41,6 +43,8 @@ void main() {
     await settleE2e(tester);
 
     await tester.enterText(find.byType(TextField), '布洛芬');
+    // 搜索改为提交驱动:输入不再自动触发,需显式提交。
+    await tester.testTextInput.receiveAction(TextInputAction.search);
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('布洛芬片'), findsWidgets);
@@ -77,6 +81,8 @@ void main() {
     await settleE2e(tester);
 
     await tester.enterText(find.byType(TextField), '布洛芬');
+    // 搜索改为提交驱动:输入不再自动触发,需显式提交。
+    await tester.testTextInput.receiveAction(TextInputAction.search);
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('布洛芬片'), findsWidgets);

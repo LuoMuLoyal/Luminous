@@ -19,6 +19,8 @@ void main() {
 
     expect(find.text('搜索药品'), findsWidgets);
     await tester.enterText(find.byType(TextField), '去氧孕烯');
+    // 搜索改为提交驱动:输入不再自动触发,需显式提交。
+    await tester.testTextInput.receiveAction(TextInputAction.search);
     await tester.pump(const Duration(seconds: 2));
 
     // The imported 100 CN rows include this oral contraceptive product.
