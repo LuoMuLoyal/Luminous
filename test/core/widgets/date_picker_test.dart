@@ -33,9 +33,11 @@ void main() {
       addTearDown(() => FlutterError.onError = previous);
 
       await tester.pumpWidget(
-        TestForuiApp(
-          home: scaledForTextScale(
-            Builder(
+        // 字缩放必须包在 MaterialApp 之外:弹窗挂在根 Navigator 上,包进
+        // `TestForuiApp.home`(页面级写法)够不到它。
+        scaledForTextScale(
+          TestForuiApp(
+            home: Builder(
               builder: (context) => Scaffold(
                 body: Center(
                   child: ElevatedButton(
@@ -50,8 +52,8 @@ void main() {
                 ),
               ),
             ),
-            1.3,
           ),
+          1.3,
         ),
       );
 

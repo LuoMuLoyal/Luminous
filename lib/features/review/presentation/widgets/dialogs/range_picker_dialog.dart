@@ -205,18 +205,23 @@ Future<ReviewDashboardQuery?> _showCalendarBottomSheet(
               children: [
                 SizedBox(
                   height: 360,
-                  child: FCalendar.grid(
-                    control: FGridCalendarControl(
-                      start: DateTime(2020),
-                      end: monthEnd,
-                      today: today,
-                      initial: DateTime(
-                        initialRange.$1.year,
-                        initialRange.$1.month,
+                  // 同 showForuiDatePicker:日历固有宽度为 `7 × daySize`(触摸端 308dp),
+                  // 窄屏弹窗压窄它会让头部/日期列右溢出;改为横向可滚动,宽度不再被压缩。
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: FCalendar.grid(
+                      control: FGridCalendarControl(
+                        start: DateTime(2020),
+                        end: monthEnd,
+                        today: today,
+                        initial: DateTime(
+                          initialRange.$1.year,
+                          initialRange.$1.month,
+                        ),
                       ),
-                    ),
-                    selectionControl: FDateSelectionControl.managedRange(
-                      controller: rangeController,
+                      selectionControl: FDateSelectionControl.managedRange(
+                        controller: rangeController,
+                      ),
                     ),
                   ),
                 ),

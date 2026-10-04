@@ -341,13 +341,18 @@ class _HealthProfileCard extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: Spacing.lg),
-              FCalendar.grid(
-                key: const Key('profile-birthdate-calendar'),
-                selectionControl: FDateSelectionControl.managedSingle(
-                  initial: _tryParseDate(profile.birthDate),
-                  onChange: (value) {
-                    if (value != null) Navigator.pop(sheetContext, value);
-                  },
+              // 同 showForuiDatePicker:日历固有宽度为 `7 × daySize`(触摸端 308dp),
+              // 窄屏 sheet 压窄它会让头部(月份/年份 + 箭头)右溢;改为横向可滚动。
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: FCalendar.grid(
+                  key: const Key('profile-birthdate-calendar'),
+                  selectionControl: FDateSelectionControl.managedSingle(
+                    initial: _tryParseDate(profile.birthDate),
+                    onChange: (value) {
+                      if (value != null) Navigator.pop(sheetContext, value);
+                    },
+                  ),
                 ),
               ),
             ],

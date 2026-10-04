@@ -148,25 +148,11 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       required DateTime initial,
       required DateTime first,
       required DateTime last,
-    }) => showFDialog<DateTime?>(
-      context: context,
-      builder: (dialogContext, style, animation) => DialogShell(
-        maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
-          MediaQuery.sizeOf(context).width,
-        ),
-        padding: const EdgeInsets.all(Spacing.lg),
-        builder: (_) => SizedBox(
-          height: 360,
-          child: FCalendar.grid(
-            control: FGridCalendarControl(start: first, end: last),
-            selectionControl: FDateSelectionControl.liftedSingle(
-              value: dateOnly(initial),
-              onChange: (date) => Navigator.of(dialogContext).pop(date),
-              toggleable: false,
-            ),
-          ),
-        ),
-      ),
+    }) => showForuiDatePicker(
+      context,
+      initial: initial,
+      first: first,
+      last: last,
     );
 
     Future<void> pickStartDate() async {

@@ -33,12 +33,20 @@ Future<DateTime?> showForuiDatePicker(
       padding: const EdgeInsets.all(Spacing.sm),
       builder: (_) => SizedBox(
         height: 360,
-        child: FCalendar.grid(
-          control: FGridCalendarControl(start: first, end: last),
-          selectionControl: FDateSelectionControl.liftedSingle(
-            value: _dateOnly(initial),
-            onChange: (date) => Navigator.of(dialogContext).pop(date),
-            toggleable: false,
+        // 日历的固有宽度是 `7 × daySize`（触摸端 44 → 308dp），而头部
+        // （"October 2026" + 翻页箭头）在 1.3 字缩放下需要约 307dp——一旦弹窗把
+        // 日历压窄（320dp 机型只剩约 272dp），头部与日期列就会右溢出/被裁。
+        // 这里给日历一个横向可滚动容器：宽度不再被压缩（头部完整、日期列完整），
+        // 弹窗比日历窄时改为横向滚动，而不是溢出。
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: FCalendar.grid(
+            control: FGridCalendarControl(start: first, end: last),
+            selectionControl: FDateSelectionControl.liftedSingle(
+              value: _dateOnly(initial),
+              onChange: (date) => Navigator.of(dialogContext).pop(date),
+              toggleable: false,
+            ),
           ),
         ),
       ),
