@@ -6,7 +6,7 @@ import 'package:luminous/features/search/presentation/providers/medicine_search.
 import 'package:luminous/features/search/presentation/widgets/sections/source_switch.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class SearchResultTile extends StatelessWidget {
+class SearchResultTile extends StatefulWidget {
   const SearchResultTile({
     super.key,
     required this.result,
@@ -25,9 +25,24 @@ class SearchResultTile extends StatelessWidget {
   final bool alreadyAdded;
 
   @override
+  State<SearchResultTile> createState() => _SearchResultTileState();
+}
+
+class _SearchResultTileState extends State<SearchResultTile> {
+  /// DrugBank names can be a full systematic chemical name — up to ~226 chars.
+  /// The title is clamped to two lines so card height never depends on name
+  /// length, but a clamped name is unreadable with no way out, so tapping it
+  /// expands in place. The toggle is only offered when the name actually
+  /// overflows, so ordinary short names stay a plain label.
+  bool _nameExpanded = false;
+  bool _nameOverflows = false;
+
+  @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
+    final l10n = widget.l10n;
+    final result = widget.result;
 
     final card = FCard(
       child: Padding(
@@ -40,21 +55,60 @@ class SearchResultTile extends StatelessWidget {
             // DrugBank 的 name 可能是完整的系统命名(如
             // "1,1,1-TRIFLUORO-3-ACETAMIDO-4-PHENYL-BUTAN-2-ONE"),不设上限会
             // 换行到七八行;标题固定最多两行 + 省略号,卡片高度不再由名称长度决定。
-            Wrap(
-              spacing: Spacing.md,
-              runSpacing: Spacing.sm,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  result.name,
-                  style: typography.body.lg.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                _SourceBadge(source: result.source, l10n: l10n),
-              ],
+            //
+            // 溢出检测必须发生在**受约束**的宽度上:Wrap 给子节点的是无界约束,
+            // 在其内部测量拿不到真实可用宽度,故由这一层 LayoutBuilder 承担
+            // (Column 的 maxWidth 即卡片内容宽度)。
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final nameStyle = typography.body.lg.copyWith(
+                  fontWeight: FontWeight.w700,
+                );
+                final overflows = _measureOverflow(
+                  context,
+                  name: result.name,
+                  style: nameStyle,
+                  maxWidth: constraints.maxWidth,
+                );
+
+                if (overflows != _nameOverflows) {
+                  // Layout callback: defer so we never setState during build.
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) setState(() => _nameOverflows = overflows);
+                  });
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: Spacing.md,
+                      runSpacing: Spacing.sm,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          result.name,
+                          style: nameStyle,
+                          maxLines: _nameExpanded ? null : _collapsedNameLines,
+                          overflow: _nameExpanded
+                              ? TextOverflow.visible
+                              : TextOverflow.ellipsis,
+                        ),
+                        _SourceBadge(source: result.source, l10n: l10n),
+                      ],
+                    ),
+                    if (overflows) ...[
+                      const SizedBox(height: Spacing.xs),
+                      _NameToggle(
+                        expanded: _nameExpanded,
+                        l10n: l10n,
+                        onPress: () =>
+                            setState(() => _nameExpanded = !_nameExpanded),
+                      ),
+                    ],
+                  ],
+                );
+              },
             ),
             const SizedBox(height: Spacing.sm),
             Text(
@@ -92,12 +146,12 @@ class SearchResultTile extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.lg),
             Align(
-              alignment: expandedAction
+              alignment: widget.expandedAction
                   ? Alignment.center
                   : Alignment.centerRight,
               child: SizedBox(
-                width: expandedAction ? double.infinity : null,
-                child: alreadyAdded
+                width: widget.expandedAction ? double.infinity : null,
+                child: widget.alreadyAdded
                     ? FButton(
                         onPress: null,
                         variant: FButtonVariant.outline,
@@ -126,7 +180,7 @@ class SearchResultTile extends StatelessWidget {
                         ),
                       )
                     : FButton(
-                        onPress: onAddToCurrentMedicines,
+                        onPress: widget.onAddToCurrentMedicines,
                         child: Flexible(
                           child: Text(
                             l10n.medicineSearchAddToBoxAction,
@@ -146,7 +200,65 @@ class SearchResultTile extends StatelessWidget {
     // Only wrap in FTappable when an onTap callback is provided (desktop preview).
     // On mobile, the card is not tappable — the "Add to box" button is the
     // primary action, and tapping the card body has no visible result.
-    return onTap != null ? FTappable(onPress: onTap, child: card) : card;
+    return widget.onTap != null
+        ? FTappable(onPress: widget.onTap, child: card)
+        : card;
+  }
+}
+
+/// Lines the result title is clamped to while collapsed.
+const int _collapsedNameLines = 2;
+
+/// Whether [name] would be clamped at [_collapsedNameLines] within [maxWidth].
+///
+/// The badge shares the row, so the title may also be pushed onto its own line;
+/// measuring the full [maxWidth] is therefore the conservative (worst-case)
+/// test: if the name fits there it fits anywhere, and if it does not we offer
+/// the expand control rather than hiding text silently.
+bool _measureOverflow(
+  BuildContext context, {
+  required String name,
+  required TextStyle style,
+  required double maxWidth,
+}) {
+  final painter = TextPainter(
+    text: TextSpan(text: name, style: style),
+    maxLines: _collapsedNameLines,
+    textDirection: Directionality.of(context),
+  )..layout(maxWidth: maxWidth);
+  return painter.didExceedMaxLines;
+}
+
+/// Expand/collapse affordance, shown only when the title actually overflows.
+///
+/// A name that fits stays a plain label: no control, no hit target with no
+/// visible cue.
+class _NameToggle extends StatelessWidget {
+  const _NameToggle({
+    required this.expanded,
+    required this.l10n,
+    required this.onPress,
+  });
+
+  final bool expanded;
+  final AppLocalizations l10n;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return FTappable(
+      onPress: onPress,
+      child: Text(
+        expanded
+            ? l10n.medicineSearchCollapseNameAction
+            : l10n.medicineSearchExpandNameAction,
+        style: context.theme.typography.body.xs.copyWith(
+          color: SemanticColor.primary.solid(context),
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
   }
 }
 

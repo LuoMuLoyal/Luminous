@@ -396,6 +396,8 @@
   "medicineSearchMatchIngredient": "成分",
   "medicineSearchMatchName": "名称",
   "medicineSearchAddToBoxAction": "加入药箱",
+  "medicineSearchExpandNameAction": "展开全名",
+  "medicineSearchCollapseNameAction": "收起",
   "medicineSearchAlreadyAddedLabel": "已添加",
   "medicineSearchAddedToBoxToast": "已加入药箱",
   "medicineSearchGoToReminderAction": "去设提醒",

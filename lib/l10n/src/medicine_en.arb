@@ -389,6 +389,8 @@
   "medicineSearchMatchIngredient": "ingredient",
   "medicineSearchMatchName": "name",
   "medicineSearchAddToBoxAction": "Add to drugbox",
+  "medicineSearchExpandNameAction": "Show full name",
+  "medicineSearchCollapseNameAction": "Show less",
   "medicineSearchAlreadyAddedLabel": "Already added",
   "medicineSearchAddedToBoxToast": "Added to drugbox",
   "medicineSearchGoToReminderAction": "Set reminder",

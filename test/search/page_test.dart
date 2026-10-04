@@ -122,6 +122,53 @@ void main() {
     },
   );
 
+  testWidgets('long DrugBank title can be expanded and collapsed', (
+    tester,
+  ) async {
+    setNarrowPhoneScreenSize(tester);
+    await _pumpSearchApp(
+      tester,
+      medicineSearchRepository: const _LongNameSearchRepository(),
+    );
+
+    await tester.enterText(find.byType(FTextField), 'trifluoro');
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('medicine-search-submit')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // A clamped systematic name is unreadable with no way out, so the tile
+    // offers an explicit expand control (only when the title really overflows).
+    final expand = find.text('展开全名');
+    expect(expand, findsOneWidget);
+
+    final titleFinder = find.text(_longDrugbankName);
+    final collapsedHeight = tester.getSize(titleFinder).height;
+
+    await tester.tap(expand);
+    await tester.pumpAndSettle();
+
+    final expanded = tester.widget<Text>(titleFinder);
+    expect(expanded.maxLines, isNull);
+    expect(tester.getSize(titleFinder).height, greaterThan(collapsedHeight));
+    expect(find.text('收起'), findsOneWidget);
+
+    await tester.tap(find.text('收起'));
+    await tester.pumpAndSettle();
+
+    expect(tester.widget<Text>(titleFinder).maxLines, 2);
+  });
+
+  testWidgets('short medicine title offers no expand control', (tester) async {
+    setNarrowPhoneScreenSize(tester);
+    await _pumpSearchApp(tester);
+
+    await _searchForIbuprofen(tester);
+
+    // A name that fits stays a plain label: no control, no dead tap target.
+    expect(find.text('展开全名'), findsNothing);
+  });
+
   testWidgets('add to current medicines shows login dialog when signed out', (
     tester,
   ) async {

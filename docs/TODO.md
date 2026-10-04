@@ -216,8 +216,8 @@ Product Loop Program 的延后项如下。
 ## 2026-10-04 助手能力口径（面板「全局可用」与本轮工具子集不一致）
 
 - 真机反馈：能力面板显示工具全部可用，但问「你在吗」时助手回答「这次运行里我也没有可用的记录类
-  工具」。根因在后端（关键词路由命中 `simple_chat` + 该分支提示词字面声明本轮没有数据工具），
-  已登记在 `Lucent/docs/TODO.md`。
+  工具」。后端侧已修（simple_chat 提示词改为如实描述本轮未选工具、并禁止反推产品级不可用；
+  `get_user_settings` 补记忆类读规则），见 `Lucent` 2026-10-04 迁移日志。
 - 客户端口径待补：`AssistantCapabilitiesPanel`（`features/assistant/presentation/widgets/dialogs/
   capabilities_panel.dart`）只表达「全局可用」，缺少「本轮实际提供给模型的子集」这一维度，
   因此面板与助手自述会互相矛盾。可选做法：面板注明「工具按每轮选取」；或等后端在 capabilities

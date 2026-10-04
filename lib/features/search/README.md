@@ -22,7 +22,7 @@
 
 ## 陷阱与决策
 - 搜索是**提交式**,不是输入即搜:`updateQuery` 只记录输入(清空输入就地清结果并递增 generation),请求只由 `submitQuery` 发出(键盘 search 键或输入框右侧搜索按钮);点击最近搜索关键词属于显式搜索,会先记 query 再立即提交。`switchSource`/`retry` 保持立即重搜。
-- 结果标题(DrugBank 的 `name` 可能是完整系统命名)最多两行 + 省略号;来源开关 `FTabs` 标签单行 + 省略号,控制条高度不随字号增长。
+- 结果标题(DrugBank 的 `name` 可能是完整系统命名,最长约 226 字符)默认最多两行 + 省略号,卡片高度不随名称长度增长;标题确实溢出时下方出现「展开全名/收起」,可原地展开——被截断且无从展开等于信息不可读。名称放得下则不给控件(避免无提示的点击区)。来源开关 `FTabs` 标签单行 + 省略号,控制条高度不随字号增长。
 - 搜索词在 await 前捕获(searchedQuery),飞行中继续打字不会错记最近搜索(F-12 P2-1)。
 - RecentSearchesNotifier 写路径先 settle 初始 load,否则 load 完成会用旧值覆盖刚写入的值(F-12 P2-2)。
 - TaskEither 边界见 ../../../docs/reference/adr/0005-result-type-and-error-handling.md。
