@@ -450,9 +450,10 @@ List<TodayQuickActionItem> buildQuickActionItems(
 /// destination — [context.go] would replace the current route and leave
 /// no back path, which is inconsistent with the rest of the app.
 ///
-/// 服务端下发的 route 不一定存在于客户端路由表(例如 `complete_profile` 动作指向
-/// `/mine/profile/edit`,该 location 在客户端没有定义)。不校验时 go_router 会把
-/// 它渲染成 "Page Not Found" 崩溃页;这里先与路由表对账,对不上就只提示、不导航。
+/// 服务端下发的 route 可能与客户端路由表对不上(历史上 `complete_profile` 动作曾指向
+/// `/mine/profile/edit`,该 location 客户端从未定义,服务端已改为 `/profile`)。不校验时
+/// go_router 会把它渲染成 "Page Not Found" 崩溃页;这里仍先与路由表对账、对不上就只提示
+/// 不导航——服务端修好一处不等于下一处不会漂移,而崩溃页对用户毫无信息量。
 void openRoute(BuildContext context, String route) {
   final uri = Uri.tryParse(route);
   final configuration = GoRouter.of(context).configuration;
