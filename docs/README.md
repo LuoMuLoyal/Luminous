@@ -27,6 +27,7 @@ docs/ 的唯一索引:只回答「去哪找什么」。阅读规则与文档规�
 - [Add New Feature](howto/add-new-feature.md) — 新建 feature(howto/)
 - [Add Localization](howto/add-localization.md) — 新增文案(howto/)
 - [Regenerate Api Client](howto/regenerate-api-client.md) — 再生成 API 客户端(howto/)
+- [Build Release Artifacts](howto/build-release-artifacts.md) — 出发布包(Android/iOS/Web)与构建排错(howto/)
 
 - [TODO](TODO.md) — 延后项与缺口跟踪;硬生命周期:完成即删行(docs/ 根)
 - [MigrationLog](logs/MigrationLog.md) — 变更日志入口,逐日条目在 `logs/migration-log/`(logs/)

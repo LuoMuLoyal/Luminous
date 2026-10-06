@@ -82,8 +82,11 @@ jobs:
           SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL || 'support@luminous.app' }}
           WECHAT_MOBILE_APP_ID: ${{ secrets.WECHAT_MOBILE_APP_ID }}
         run: |
+          # --split-per-abi: one self-contained APK per ABI, each carrying its own
+          # libflutter.so/libapp.so. Do NOT add --target-platform here: it would
+          # narrow the split set, and it is the fat-APK path that needs it.
           flutter build apk --release \
-            --target-platform android-arm64 \
+            --split-per-abi \
             --obfuscate \
             --split-debug-info=build/symbols \
             --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
@@ -91,11 +94,34 @@ jobs:
             --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}" \
             --dart-define=WECHAT_MOBILE_APP_ID="${WECHAT_MOBILE_APP_ID}"
 
-      - name: Upload APK
+      # A release APK without a Flutter engine installs fine and dies immediately
+      # in MainActivity.onCreate ("Could not find 'libflutter.so'"), so assert the
+      # engine is actually packaged in every split before publishing.
+      - name: Verify every split APK ships its Flutter engine
+        run: |
+          python3 - <<'PY'
+          import glob, os, sys, zipfile
+          apks = sorted(glob.glob("build/app/outputs/flutter-apk/app-*-release.apk"))
+          if not apks:
+              sys.exit("::error::No split APKs produced; expected app-<abi>-release.apk.")
+          for apk in apks:
+              abi = os.path.basename(apk)[len("app-"):-len("-release.apk")]
+              with zipfile.ZipFile(apk) as z:
+                  names = set(z.namelist())
+              for lib in ("libflutter.so", "libapp.so"):
+                  if f"lib/{abi}/{lib}" not in names:
+                      sys.exit(
+                          f"::error::{apk} is missing lib/{abi}/{lib} "
+                          "— it would crash at startup."
+                      )
+              print(f"OK: {apk} carries lib/{abi}/libflutter.so + libapp.so")
+          PY
+
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
           name: luminous-android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-*-release.apk
           if-no-files-found: error
 
       - name: Upload Dart symbols

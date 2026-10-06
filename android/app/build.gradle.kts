@@ -49,13 +49,15 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        ndk {
-            // Explicit intent only: the Flutter Gradle plugin overrides these with
-            // its own PLATFORM_ABI_LIST (arm64-v8a + armeabi-v7a + x86_64) unless
-            // -Pdisable-abi-filtering=true is passed. Keeping arm64/x86_64 here
-            // documents which ABIs this app actually targets.
-            abiFilters += listOf("arm64-v8a", "x86_64")
-        }
+        // ABI selection belongs to the Flutter tool, never to `abiFilters` here:
+        //  - fat APK: the Flutter Gradle plugin clears `abiFilters` and installs its
+        //    own PLATFORM_ABI_LIST, so a value declared here is overwritten anyway;
+        //  - `--split-per-abi`: a non-empty `abiFilters` conflicts with the ABI
+        //    splits configuration (see `configureAbis` in FlutterPlugin.kt, whose
+        //    comment warns that abiFilters "would break builds when
+        //    --splits-per-abi is used due to conflicting configuration").
+        // Build per-ABI APKs with `flutter build apk --release --split-per-abi`,
+        // optionally narrowing the set with `--target-platform android-arm64`.
     }
 
     signingConfigs {
@@ -82,31 +84,16 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            // NOTE: Do NOT put packagingOptions here. In AGP 9 the legacy
-            // packagingOptions DSL is backed by a project-global instance, so a block
-            // inside buildTypes.release still strips x86_64 from DEBUG APKs too —
-            // which breaks `flutter run` on x86_64 emulators ("Could not find
-            // 'libflutter.so'"). Release-only stripping lives in the
-            // androidComponents.onVariants(selector().withBuildType("release"))
-            // block further down.
+            // NOTE: no ABI pruning here, and no packagingOptions block either.
+            // `variant.packaging.jniLibs.excludes` is variant-scoped, not
+            // output-scoped: with `--split-per-abi` it applies to every split APK of
+            // the variant, so excluding `lib/x86_64/**` deleted the x86_64 split's own
+            // libflutter.so/libapp.so and shipped an APK containing no Flutter engine
+            // at all ("Could not find 'libflutter.so'. Looked for: [x86_64,
+            // arm64-v8a], but only found: []", crash in MainActivity.onCreate).
+            // ABI selection is owned by the Flutter tool: fat APK by default,
+            // per-ABI APKs via `--split-per-abi`.
         }
-    }
-}
-
-androidComponents {
-    // Strip x86_64/armeabi-v7a native libs ONLY from release APKs via the
-    // variant-scoped packaging API (AGP 8+), which genuinely applies per variant.
-    // Debug must keep x86_64: `flutter run` on android-x64 emulators builds the
-    // x86_64 engine (lib/x86_64/libflutter.so); stripping it crashes the app at
-    // startup with "Could not find 'libflutter.so'" (see error.md).
-    // The released APK stays arm64-only so Google Play only shows arm64 devices.
-    onVariants(selector().withBuildType("release")) { variant ->
-        variant.packaging.jniLibs.excludes.addAll(
-            listOf("lib/x86_64/**", "lib/armeabi-v7a/**"),
-        )
-        variant.packaging.resources.excludes.addAll(
-            listOf("lib/x86_64/**", "lib/armeabi-v7a/**"),
-        )
     }
 }
 

@@ -32,7 +32,7 @@
 
 | 工作流 | 产物 | 备注 |
 | --- | --- | --- |
-| `deploy-android.yml` | `luminous-android-apk`、`luminous-android-symbols` | 无 `key.properties` 时 APK 走 debug 签名：可安装，不可上架 |
+| `deploy-android.yml` | `luminous-android-apk`（每 ABI 一个 `app-<abi>-release.apk`）、`luminous-android-symbols` | `--split-per-abi`：每个 APK 自带该 ABI 的 `libflutter.so`/`libapp.so`。无 `key.properties` 时 APK 走 debug 签名：可安装，不可上架 |
 | `deploy-ios.yml` | `luminous-ios-unsigned-ipa`、`luminous-ios-symbols`、`luminous-ios-podfile-lock` | 未签名，本机用 Sideloadly / AltStore 重签后装真机；签名分发与 TestFlight 见 `docs/TODO.md`。`ios/Podfile.lock` 已入库，pod 版本由它固定，产物里的那份用于对比漂移 |
 | `deploy-web.yml` | GitHub Pages | |
 
