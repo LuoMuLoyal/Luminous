@@ -1,6 +1,13 @@
 import 'package:lucent_api/src/model/account_email_response.dart';
 import 'package:lucent_api/src/model/account_response.dart';
 import 'package:lucent_api/src/model/account_response_linked_identities.dart';
+import 'package:lucent_api/src/model/admin_audit_log_list_response.dart';
+import 'package:lucent_api/src/model/admin_audit_log_list_response_items.dart';
+import 'package:lucent_api/src/model/admin_metrics_overview.dart';
+import 'package:lucent_api/src/model/admin_metrics_overview_users.dart';
+import 'package:lucent_api/src/model/admin_user_list_response.dart';
+import 'package:lucent_api/src/model/admin_user_list_response_items.dart';
+import 'package:lucent_api/src/model/admin_user_summary.dart';
 import 'package:lucent_api/src/model/app_info_response.dart';
 import 'package:lucent_api/src/model/assistant_capabilities_response.dart';
 import 'package:lucent_api/src/model/assistant_capabilities_response_assistant_context.dart';
@@ -385,6 +392,29 @@ ReturnType deserialize<ReturnType, BaseType>(
       return AccountResponseLinkedIdentities.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'AdminAuditLogListResponse':
+      return AdminAuditLogListResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminAuditLogListResponseItems':
+      return AdminAuditLogListResponseItems.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'AdminMetricsOverview':
+      return AdminMetricsOverview.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminMetricsOverviewUsers':
+      return AdminMetricsOverviewUsers.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminUserListResponse':
+      return AdminUserListResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminUserListResponseItems':
+      return AdminUserListResponseItems.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminUserSummary':
+      return AdminUserSummary.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AppInfoResponse':
       return AppInfoResponse.fromJson(value as Map<String, dynamic>)

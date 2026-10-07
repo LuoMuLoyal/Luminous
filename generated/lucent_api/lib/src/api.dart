@@ -8,6 +8,7 @@ import 'package:lucent_api/src/auth/basic_auth.dart';
 import 'package:lucent_api/src/auth/bearer_auth.dart';
 import 'package:lucent_api/src/auth/oauth.dart';
 import 'package:lucent_api/src/api/account_api.dart';
+import 'package:lucent_api/src/api/admin_api.dart';
 import 'package:lucent_api/src/api/app_info_api.dart';
 import 'package:lucent_api/src/api/assistant_api.dart';
 import 'package:lucent_api/src/api/auth_api.dart';
@@ -158,6 +159,12 @@ class LucentApi {
   /// by doing that all interceptors will not be executed
   AccountApi getAccountApi() {
     return AccountApi(dio);
+  }
+
+  /// Get AdminApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AdminApi getAdminApi() {
+    return AdminApi(dio);
   }
 
   /// Get AppInfoApi instance, base route and serializer can be overridden by a given but be careful,
