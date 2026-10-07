@@ -3,8 +3,12 @@ import 'package:lucent_api/src/model/account_response.dart';
 import 'package:lucent_api/src/model/account_response_linked_identities.dart';
 import 'package:lucent_api/src/model/admin_audit_log_list_response.dart';
 import 'package:lucent_api/src/model/admin_audit_log_list_response_items.dart';
+import 'package:lucent_api/src/model/admin_legal_document.dart';
+import 'package:lucent_api/src/model/admin_legal_document_item.dart';
 import 'package:lucent_api/src/model/admin_metrics_overview.dart';
 import 'package:lucent_api/src/model/admin_metrics_overview_users.dart';
+import 'package:lucent_api/src/model/admin_safety_tip.dart';
+import 'package:lucent_api/src/model/admin_safety_tip_item.dart';
 import 'package:lucent_api/src/model/admin_user_list_response.dart';
 import 'package:lucent_api/src/model/admin_user_list_response_items.dart';
 import 'package:lucent_api/src/model/admin_user_summary.dart';
@@ -42,6 +46,7 @@ import 'package:lucent_api/src/model/clinic_summary_share_list_response_items_sc
 import 'package:lucent_api/src/model/clinic_summary_share_response.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_scope.dart';
 import 'package:lucent_api/src/model/confirm_proposal_request.dart';
+import 'package:lucent_api/src/model/create_admin_safety_tip_request.dart';
 import 'package:lucent_api/src/model/create_allergy_request.dart';
 import 'package:lucent_api/src/model/create_condition_request.dart';
 import 'package:lucent_api/src/model/create_current_medicine_request.dart';
@@ -342,6 +347,8 @@ import 'package:lucent_api/src/model/today_suggestions_response_secondary_second
 import 'package:lucent_api/src/model/unlink_identity_request.dart';
 import 'package:lucent_api/src/model/unread_count_response.dart';
 import 'package:lucent_api/src/model/update_account_request.dart';
+import 'package:lucent_api/src/model/update_admin_legal_document_request.dart';
+import 'package:lucent_api/src/model/update_admin_safety_tip_request.dart';
 import 'package:lucent_api/src/model/update_allergy_request.dart';
 import 'package:lucent_api/src/model/update_condition_request.dart';
 import 'package:lucent_api/src/model/update_current_medicine_request.dart';
@@ -401,11 +408,23 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'AdminLegalDocument':
+      return AdminLegalDocument.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminLegalDocumentItem':
+      return AdminLegalDocumentItem.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'AdminMetricsOverview':
       return AdminMetricsOverview.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AdminMetricsOverviewUsers':
       return AdminMetricsOverviewUsers.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminSafetyTip':
+      return AdminSafetyTip.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminSafetyTipItem':
+      return AdminSafetyTipItem.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AdminUserListResponse':
       return AdminUserListResponse.fromJson(value as Map<String, dynamic>)
@@ -571,6 +590,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ConfirmProposalRequest':
       return ConfirmProposalRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'CreateAdminSafetyTipRequest':
+      return CreateAdminSafetyTipRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'CreateAllergyRequest':
       return CreateAllergyRequest.fromJson(value as Map<String, dynamic>)
@@ -1830,6 +1852,14 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'UpdateAccountRequest':
       return UpdateAccountRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'UpdateAdminLegalDocumentRequest':
+      return UpdateAdminLegalDocumentRequest.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'UpdateAdminSafetyTipRequest':
+      return UpdateAdminSafetyTipRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'UpdateAllergyRequest':
       return UpdateAllergyRequest.fromJson(value as Map<String, dynamic>)
