@@ -34,7 +34,12 @@ class RecordDateBar extends StatelessWidget {
   static final DateTime _maxDate = clock.now().add(const Duration(days: 365));
 
   /// 日历行高固定值，避免 MediaQuery 在键盘弹出/屏幕旋转时引发重建。
-  static const double _calendarItemHeight = 48.0;
+  ///
+  /// 56dp 而非 48dp：`FLineCalendar` 用 `textScale × 字号 + spacing` 估算条目
+  /// extent 并据此分配行高（`calendar_layout.dart:_estimateExtent`），1.3 字缩放
+  /// 下估算值已到 43.8dp；本 widget 的 `_CompactCalendarItem` 在
+  /// `SizedBox.expand` 里还要额外放上下 4dp padding，48dp 时 Column 底溢。
+  static const double _calendarItemHeight = 56.0;
 
   @override
   Widget build(BuildContext context) {

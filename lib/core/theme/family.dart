@@ -40,16 +40,29 @@ enum AppThemeFamily {
 /// Forui 0.24.0 removed all predefined color schemes except neutral. Non-neutral
 /// families are emulated by overriding [FColors.primary] / [FColors.primaryForeground]
 /// on the neutral base, preserving the color variety the app has always offered.
+///
+/// ## Compact baseline
+///
+/// The theme deliberately uses Forui's **desktop** (compact) size baseline
+/// rather than its touch variant. The touch baseline inflates every dimension
+/// — field heights 36→44, list items 30→44, and the default body typeface
+/// 14→16 — which made Luminous visibly larger than peer apps on real phones.
+///
+/// Typography is *not* compacted with it: `appThemeData` passes an explicit
+/// touch [FTypography] so text keeps its readable sizes while component
+/// geometry, padding, and hit regions stay compact.
 FThemeData _baseThemeData(AppThemeFamily family, Brightness brightness) {
   final isDark = brightness == Brightness.dark;
-  final base = isDark ? FTheme.neutral.dark.touch : FTheme.neutral.light.touch;
+  final base = isDark
+      ? FTheme.neutral.dark.desktop
+      : FTheme.neutral.light.desktop;
   final override = _familyColorOverride(family, isDark);
 
   if (override == null) return base;
 
   return FThemeData(
-    touch: true,
-    debugLabel: '${family.storageValue} ${isDark ? 'Dark' : 'Light'} Touch',
+    touch: false,
+    debugLabel: '${family.storageValue} ${isDark ? 'Dark' : 'Light'} Compact',
     colors: base.colors.copyWith(
       primary: override.primary,
       primaryForeground: override.primaryForeground,
@@ -115,6 +128,22 @@ _ColorOverride? _familyColorOverride(AppThemeFamily family, bool isDark) {
 /// Preset Forui themes derive all widget styles from [FColors] via `.inherit()`,
 /// so constructing a new [FThemeData] with modified colors is equivalent to the
 /// preset — no custom styles are lost.
+///
+/// ## Compact baseline
+///
+/// `touch: false` selects Forui's desktop (compact) geometry — field heights,
+/// list-item heights, paddings — instead of the inflated touch variant. The
+/// touch baseline made every component noticeably larger than peer apps.
+///
+/// Typography is passed **explicitly** as the touch typeface, because
+/// [FThemeData] would otherwise derive it from `touch: false` and shrink all
+/// text by one step (body.sm 16→14). Components stay compact, text stays
+/// readable.
+///
+/// The one place where the two baselines differ in *behaviour* rather than
+/// size is the toast position (top-center on touch, bottom-end otherwise).
+/// Since this app only ever runs on phones, the toaster is pinned back to
+/// top-center so `AppToast` stays in the thumb zone.
 FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
   final base = _baseThemeData(family, brightness);
   final colors = base.colors.copyWith(
@@ -127,7 +156,7 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
   final subtleBorder = SurfaceTokens.containerBorder(colors);
 
   return FThemeData(
-    touch: true,
+    touch: false,
     debugLabel: base.debugLabel,
     colors: colors,
     typography: typography,
@@ -136,13 +165,18 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
           backgroundColor: scaffoldBackgroundColor,
           sidebarBackgroundColor: scaffoldBackgroundColor,
         ),
+    // Keep toasts at the top of the screen, matching the touch baseline this
+    // theme no longer selects. See the doc comment above.
+    toasterStyle: base.toasterStyle.copyWith(
+      toastAlignment: FToastAlignment.topCenter,
+    ),
     // FCard: white background + subtle 1px border, matching FTileGroup.
     cardStyle:
         FCardStyle.inherit(
           colors: colors,
           typography: typography,
           style: base.style,
-          touch: true,
+          touch: false,
         ).copyWith(
           decoration: DecorationDelta.value(
             ShapeDecoration(

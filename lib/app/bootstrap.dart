@@ -270,12 +270,23 @@ Widget _withDesktopChrome(Widget child) {
 
 /// Creates a high-contrast variant of [theme] by maximizing foreground/
 /// background contrast and strengthening borders.
+///
+/// `touch` must stay `false` to match the app's compact baseline — flipping it
+/// here would inflate every component dimension only while high contrast is on.
+///
+/// Because this rebuilds the theme from scratch, [theme]'s custom typography
+/// (the touch typeface the app keeps on a compact geometry) and toaster style
+/// (top-center) are carried over explicitly. Dropping them would silently fall
+/// back to `touch: false` defaults — body.sm 16→14 and toasts back to the
+/// bottom-right corner.
 FThemeData _applyHighContrast(FThemeData theme) {
   final colors = theme.colors;
   final isDark = colors.brightness == Brightness.dark;
   return FThemeData(
-    touch: true,
+    touch: false,
     debugLabel: theme.debugLabel,
+    typography: theme.typography,
+    toasterStyle: theme.toasterStyle,
     colors: colors.copyWith(
       foreground: isDark
           ? HighContrastColors.darkForeground

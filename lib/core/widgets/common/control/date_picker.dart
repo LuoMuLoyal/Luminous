@@ -38,9 +38,20 @@ Future<DateTime?> showForuiDatePicker(
         // 日历压窄（320dp 机型只剩约 272dp），头部与日期列就会右溢出/被裁。
         // 这里给日历一个横向可滚动容器：宽度不再被压缩（头部完整、日期列完整），
         // 弹窗比日历窄时改为横向滚动，而不是溢出。
+        //
+        // App 主题跑紧凑（desktop）基线后 `daySize` 从 44 缩到 32，日历自身宽度
+        // 随之降到 224dp——比它自己的 header 还窄，于是 header 的 Row 反而右溢
+        // （紧凑基线 + 1.3 字号实测 43px）。这里把 daySize 钉回 44dp：日历重新
+        // 获得 308dp 固有宽度，比 header 需要的更宽，横向滚动容器也有内容可滚。
+        // 这是本弹窗唯一需要保住 touch 尺寸的地方，其他组件仍走紧凑基线。
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: FCalendar.grid(
+            style: const FCalendarStyleDelta.delta(
+              dayPickerStyle: FCalendarDayPickerStyleDelta.delta(
+                daySize: Size.square(44),
+              ),
+            ),
             control: FGridCalendarControl(start: first, end: last),
             selectionControl: FDateSelectionControl.liftedSingle(
               value: _dateOnly(initial),
