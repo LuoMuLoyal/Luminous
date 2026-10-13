@@ -263,26 +263,34 @@ class SignInHintBanner extends StatelessWidget {
         horizontal: Spacing.lg,
         vertical: Spacing.sm,
       ),
-      child: Row(
-        children: [
-          Icon(
-            SemanticIcons.statusBlocked,
-            color: SemanticColor.primary.solid(context),
-            size: 20,
-          ),
-          const SizedBox(width: Spacing.md),
-          Expanded(
-            child: Text(
-              message ?? l10n.statePreviewSignInHint,
-              style: context.theme.typography.body.xs.copyWith(
-                color: SemanticColor.neutral.solid(context),
+      // 图标 + 文案 + 按钮三件挤在一个 Row 里时，文案是可压缩的 flex 子节点，
+      // 缩到极限就竖向堆成 4 行（真机窄屏 + 大字号必现），并顺带把整条 banner
+      // 顶高。这里让**图标与文案先成组**，按钮整体放到第二行右侧：文案至少能拿到
+      // 整行宽度，按钮也不再参与和文案抢宽度。宽屏空间充足时二者并排，观感不变。
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final messageBlock = Row(
+            children: [
+              Icon(
+                SemanticIcons.statusBlocked,
+                color: SemanticColor.primary.solid(context),
+                size: 20,
               ),
-            ),
-          ),
-          const SizedBox(width: Spacing.md),
-          // 按钮给宽度上限 + 标签省略:窄屏大字号下不允许它按固有宽度把提示文字挤没
-          // 或自身溢出(FButton 内部 Row 对非 flex 子节点是无界主轴约束)。
-          ConstrainedBox(
+              const SizedBox(width: Spacing.md),
+              Expanded(
+                child: Text(
+                  message ?? l10n.statePreviewSignInHint,
+                  style: context.theme.typography.body.xs.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+              ),
+            ],
+          );
+
+          // 按钮给宽度上限 + 标签省略：FButton 内部 Row 对非 flex 子节点是无界
+          // 主轴约束，窄屏大字号下会按固有宽度把同行内容挤没。
+          final actionButton = ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 160),
             child: FButton(
               variant: FButtonVariant.ghost,
@@ -297,8 +305,45 @@ class SignInHintBanner extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ],
+          );
+
+          // 文案单行放得下才并排；否则让按钮落到第二行，避免文案被压成多行。
+          final textPainter = TextPainter(
+            text: TextSpan(
+              text: message ?? l10n.statePreviewSignInHint,
+              style: context.theme.typography.body.xs,
+            ),
+            textDirection: Directionality.of(context),
+            textScaler: MediaQuery.textScalerOf(context),
+            maxLines: 1,
+          )..layout();
+
+          const iconAndGap = 20 + Spacing.md;
+          final buttonWidth = actionButton.constraints.maxWidth;
+          final fitsOnOneLine =
+              textPainter.width + iconAndGap + buttonWidth + Spacing.md <=
+              constraints.maxWidth;
+
+          if (fitsOnOneLine) {
+            return Row(
+              children: [
+                Expanded(child: messageBlock),
+                const SizedBox(width: Spacing.md),
+                actionButton,
+              ],
+            );
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              messageBlock,
+              const SizedBox(height: Spacing.xs),
+              Align(alignment: Alignment.centerRight, child: actionButton),
+            ],
+          );
+        },
       ),
     );
   }
