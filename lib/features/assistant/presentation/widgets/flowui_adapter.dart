@@ -157,6 +157,11 @@ class AssistantFlowUiAdapter {
   }
 
   /// Maps the current draft to a streaming assistant turn.
+  ///
+  /// The draft renders through [FlowStreamingText] rather than markdown — see
+  /// [buildMessage], which turns `markdown` off for streaming turns so the
+  /// in-flight text keeps its animated reveal instead of being typeset as
+  /// finished markdown (flow_ui 0.3.0's default).
   FlowMessageData mapStreamingDraft(String draft) {
     final isEmpty = draft.isEmpty;
     return FlowMessageData(
@@ -170,11 +175,19 @@ class AssistantFlowUiAdapter {
   }
 
   /// Builder passed to [FlowThread.messageBuilder].
+  ///
+  /// `markdown` is disabled for streaming turns: flow_ui 0.3.0 typesets
+  /// assistant text as `FlowMarkdown` by default, which would present the
+  /// in-flight draft as finished markdown. Streaming keeps the animated
+  /// [FlowStreamingText] reveal; completed turns keep the default, and their
+  /// rich content still arrives through [buildCustomPart].
   Widget buildMessage(BuildContext context, FlowMessageData message) {
     final isComplete = message.status == FlowMessageStatus.complete;
+    final isStreaming = message.status == FlowMessageStatus.streaming;
     final rendered = FlowMessage(
       message,
       customPartBuilder: buildCustomPart,
+      markdown: !isStreaming,
       footer: isComplete ? _buildFooter(context, message) : null,
       thinkingLabel: thinkingLabel,
     );
@@ -362,7 +375,12 @@ class AssistantFlowUiAdapter {
         onOpenLink == null) {
       return;
     }
-    unawaited(_confirmAndOpen(context, uri));
+    // The link dialog must open above the assistant subtree: flow_ui 0.3.0
+    // installs a `material_ui` Theme for the thread, and a forui dialog opened
+    // from inside it can end up in a scope whose button layer does not receive
+    // taps. The navigator's own context sits above every local theme.
+    final dialogContext = Navigator.of(context).context;
+    unawaited(_confirmAndOpen(dialogContext, uri));
   }
 
   Future<void> _confirmAndOpen(BuildContext context, Uri uri) async {

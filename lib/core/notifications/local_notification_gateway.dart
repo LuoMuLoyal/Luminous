@@ -67,7 +67,7 @@ class LocalNotificationGateway {
 
       try {
         await _plugin.initialize(
-          settings,
+          settings: settings,
           onDidReceiveNotificationResponse: _handleTapResponse,
         );
         _ensureTimeZonesInitialized();
@@ -99,7 +99,7 @@ class LocalNotificationGateway {
     }
 
     try {
-      await _plugin.cancel(id);
+      await _plugin.cancel(id: id);
     } on MissingPluginException {
       return;
     } on PlatformException {
@@ -143,11 +143,11 @@ class LocalNotificationGateway {
 
     try {
       await _plugin.zonedSchedule(
-        id,
-        title,
-        body,
-        scheduledDate,
-        details,
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: scheduledDate,
+        notificationDetails: details,
         androidScheduleMode: preferredMode,
         payload: payload,
       );
@@ -159,11 +159,11 @@ class LocalNotificationGateway {
           defaultTargetPlatform == TargetPlatform.android) {
         try {
           await _plugin.zonedSchedule(
-            id,
-            title,
-            body,
-            scheduledDate,
-            details,
+            id: id,
+            title: title,
+            body: body,
+            scheduledDate: scheduledDate,
+            notificationDetails: details,
             androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
             payload: payload,
           );

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
-  testWidgets('FlowChatScreen jumps a reverse FlowThread to latest', (
+  testWidgets('FlowChatView jumps a reverse FlowThread to latest', (
     tester,
   ) async {
     final controller = ScrollController();
@@ -23,7 +23,10 @@ void main() {
       TestForuiApp(
         home: SizedBox(
           height: 320,
-          child: FlowChatScreen(
+          child: FlowChatView(
+            // 只读断言:0.3.0 起 composer 是 required(可为 null),这里显式
+            // 声明「没有输入框」。
+            composer: null,
             thread: FlowThread(
               messages: messages,
               controller: controller,
@@ -41,9 +44,14 @@ void main() {
     controller.jumpTo(controller.position.maxScrollExtent);
     expect(controller.offset, greaterThan(0));
 
+    // flow_ui 0.3.0 gates the button behind a 250 ms debounce (offset must
+    // stay past the threshold before `_showJump` flips); until then the button
+    // sits inside an IgnorePointer. Pump past the debounce before tapping.
     await tester.pump();
     final jumpButton = find.byTooltip('跳转到最新');
     expect(jumpButton, findsOneWidget);
+
+    await tester.pumpAndSettle(const Duration(milliseconds: 300));
 
     await tester.tap(jumpButton);
     await tester.pumpAndSettle();

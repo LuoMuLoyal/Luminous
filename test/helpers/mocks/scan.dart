@@ -104,9 +104,9 @@ class FakeMobileScannerPlatform extends MobileScannerPlatform {
   }
 
   @override
-  Future<Set<CameraLensType>> getSupportedLenses() async => {
-    CameraLensType.any,
-  };
+  Future<Set<CameraLensType>> getSupportedLenses({
+    CameraFacing? facing,
+  }) async => {CameraLensType.any};
 
   @override
   Widget buildCameraView() =>

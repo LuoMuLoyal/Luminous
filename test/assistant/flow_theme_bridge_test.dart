@@ -1,25 +1,29 @@
 import 'package:flow_ui/flow_ui.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as flutter;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/features/assistant/presentation/widgets/flow_theme_bridge.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A lightweight test app that wraps [child] with a Flutter MaterialApp
 /// and the Forui theme. This avoids material_ui's MaterialApp so that
 /// Flutter's Theme.of(context) works correctly with flow_theme_bridge.
 class _TestFlowApp extends StatelessWidget {
-  const _TestFlowApp({this.themeMode = ThemeMode.light, this.home});
+  const _TestFlowApp({this.themeMode = flutter.ThemeMode.light, this.home});
 
-  final ThemeMode themeMode;
+  final flutter.ThemeMode themeMode;
   final Widget? home;
 
   @override
   Widget build(BuildContext context) {
-    final isDark = themeMode == ThemeMode.dark;
-    return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+    final isDark = themeMode == flutter.ThemeMode.dark;
+    // The framework's MaterialApp installs a Flutter-framework Theme; the
+    // Material-based `Theme`/`ThemeData` this test drives are material_ui's
+    // (see the bridge's doc comment), so the two are aliased apart here.
+    return flutter.MaterialApp(
+      theme: flutter.ThemeData.light(),
+      darkTheme: flutter.ThemeData.dark(),
       themeMode: themeMode,
       debugShowCheckedModeBanner: false,
       builder: (context, child) => FTheme(
@@ -71,7 +75,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       _TestFlowApp(
-        themeMode: ThemeMode.dark,
+        themeMode: flutter.ThemeMode.dark,
         home: Theme(
           data: ThemeData(brightness: Brightness.dark),
           child: Builder(
@@ -193,6 +197,9 @@ class _ThemeProbe extends StatelessWidget {
   }
 }
 
+/// Stands in for any non-FlowUI extension a host may have installed; it lives
+/// on `material_ui`'s [ThemeExtension] because that is the channel
+/// [withLuminousFlowTheme] writes to.
 class _ParentThemeExtension extends ThemeExtension<_ParentThemeExtension> {
   const _ParentThemeExtension();
 

@@ -30,7 +30,7 @@ class NotificationPermissionService {
       macOS: darwin,
     );
     try {
-      await _plugin.initialize(settings);
+      await _plugin.initialize(settings: settings);
       _initialized = true;
     } on MissingPluginException {
       _initialized = false;

@@ -295,8 +295,8 @@ class _FakeAndroidPlugin extends AndroidFlutterLocalNotificationsPlugin {
   Object? activeError;
 
   @override
-  Future<bool> initialize(
-    AndroidInitializationSettings initializationSettings, {
+  Future<bool> initialize({
+    required AndroidInitializationSettings settings,
     DidReceiveNotificationResponseCallback? onDidReceiveNotificationResponse,
     DidReceiveBackgroundNotificationResponseCallback?
     onDidReceiveBackgroundNotificationResponse,
@@ -309,13 +309,13 @@ class _FakeAndroidPlugin extends AndroidFlutterLocalNotificationsPlugin {
   Future<bool?> canScheduleExactNotifications() async => true;
 
   @override
-  Future<void> zonedSchedule(
-    int id,
+  Future<void> zonedSchedule({
+    required int id,
     String? title,
     String? body,
-    tz.TZDateTime scheduledDate,
-    AndroidNotificationDetails? notificationDetails, {
-    required AndroidScheduleMode scheduleMode,
+    required tz.TZDateTime scheduledDate,
+    AndroidNotificationDetails? notificationDetails,
+    AndroidScheduleMode scheduleMode = AndroidScheduleMode.exact,
     String? payload,
     DateTimeComponents? matchDateTimeComponents,
   }) async {
@@ -345,8 +345,8 @@ class _GatedAndroidPlugin extends AndroidFlutterLocalNotificationsPlugin {
   int initializeCalls = 0;
 
   @override
-  Future<bool> initialize(
-    AndroidInitializationSettings initializationSettings, {
+  Future<bool> initialize({
+    required AndroidInitializationSettings settings,
     DidReceiveNotificationResponseCallback? onDidReceiveNotificationResponse,
     DidReceiveBackgroundNotificationResponseCallback?
     onDidReceiveBackgroundNotificationResponse,

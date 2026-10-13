@@ -242,13 +242,13 @@ class AssistantPageBody extends ConsumerWidget {
                   const SizedBox(height: Spacing.md),
                 ],
                 Expanded(
-                  // flow_ui 的 FlowChatScreen 自带 SafeArea:页面主体已经在
+                  // flow_ui 的 FlowChatView 自带 SafeArea:页面主体已经在
                   // FHeader 之下,再消费一次顶部 inset 会在顶栏与首条消息之间
                   // 留出一条空白带。这里去掉顶部 inset,让会话区紧贴顶栏。
                   child: MediaQuery.removePadding(
                     context: context,
                     removeTop: true,
-                    child: FlowChatScreen(
+                    child: FlowChatView(
                       key: const Key('assistant-flow-chat-screen'),
                       // 空态改由 AssistantEmptyConversation 渲染(有界、可滚动),
                       // 不再使用 flow_ui 的 empty 分支。

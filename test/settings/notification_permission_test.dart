@@ -41,27 +41,35 @@ void main() {
   group('NotificationPermissionService', () {
     group('ensureInitialized', () {
       test('calls plugin.initialize on first call', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
 
         final service = NotificationPermissionService(plugin: mockPlugin);
         await service.ensureInitialized();
 
-        verify(() => mockPlugin.initialize(any())).called(1);
+        verify(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).called(1);
       });
 
       test('skips initialize on subsequent calls', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
 
         final service = NotificationPermissionService(plugin: mockPlugin);
         await service.ensureInitialized();
         await service.ensureInitialized();
 
-        verify(() => mockPlugin.initialize(any())).called(1);
+        verify(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).called(1);
       });
 
       test('handles MissingPluginException gracefully', () async {
         when(
-          () => mockPlugin.initialize(any()),
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
         ).thenThrow(MissingPluginException());
 
         final service = NotificationPermissionService(plugin: mockPlugin);
@@ -70,7 +78,7 @@ void main() {
 
       test('handles PlatformException gracefully', () async {
         when(
-          () => mockPlugin.initialize(any()),
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
         ).thenThrow(PlatformException(code: 'test_error'));
 
         final service = NotificationPermissionService(plugin: mockPlugin);
@@ -80,7 +88,9 @@ void main() {
 
     group('getPermissionState', () {
       test('returns granted when android plugin reports enabled', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -98,7 +108,9 @@ void main() {
       });
 
       test('returns denied when android plugin reports disabled', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -116,7 +128,9 @@ void main() {
       });
 
       test('returns granted when iOS plugin reports enabled', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -148,7 +162,9 @@ void main() {
       });
 
       test('returns denied when iOS plugin reports disabled', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -183,7 +199,7 @@ void main() {
         'handles MissingPluginException from android areNotificationsEnabled',
         () async {
           when(
-            () => mockPlugin.initialize(any()),
+            () => mockPlugin.initialize(settings: any(named: 'settings')),
           ).thenAnswer((_) async => true);
           when(
             () => mockPlugin
@@ -216,7 +232,9 @@ void main() {
       );
 
       test('handles PlatformException from iOS checkPermissions', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -246,7 +264,9 @@ void main() {
 
     group('requestPermission', () {
       test('returns granted when android plugin grants permission', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -264,7 +284,9 @@ void main() {
       });
 
       test('returns denied when android plugin denies permission', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -282,7 +304,9 @@ void main() {
       });
 
       test('returns granted when iOS plugin grants permission', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -310,7 +334,9 @@ void main() {
       });
 
       test('returns denied when iOS plugin denies permission', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -341,7 +367,7 @@ void main() {
         'handles MissingPluginException from android requestPermission',
         () async {
           when(
-            () => mockPlugin.initialize(any()),
+            () => mockPlugin.initialize(settings: any(named: 'settings')),
           ).thenAnswer((_) async => true);
           when(
             () => mockPlugin
@@ -371,7 +397,9 @@ void main() {
       );
 
       test('handles PlatformException from iOS requestPermissions', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
@@ -403,7 +431,9 @@ void main() {
       });
 
       test('passes through to macOS plugin when available', () async {
-        when(() => mockPlugin.initialize(any())).thenAnswer((_) async => true);
+        when(
+          () => mockPlugin.initialize(settings: any(named: 'settings')),
+        ).thenAnswer((_) async => true);
         when(
           () => mockPlugin
               .resolvePlatformSpecificImplementation<
