@@ -45,12 +45,17 @@ enum AppThemeFamily {
 ///
 /// The theme deliberately uses Forui's **desktop** (compact) size baseline
 /// rather than its touch variant. The touch baseline inflates every dimension
-/// — field heights 36→44, list items 30→44, and the default body typeface
-/// 14→16 — which made Luminous visibly larger than peer apps on real phones.
+/// — field heights 36→44, list items 30→44, and the body typeface by one step
+/// (12→14, 14→16, 16→18) — which made Luminous visibly larger than peer apps on
+/// real phones.
 ///
-/// Typography is *not* compacted with it: `appThemeData` passes an explicit
-/// touch [FTypography] so text keeps its readable sizes while component
-/// geometry, padding, and hit regions stay compact.
+/// **Typography is compacted together with the geometry.** An earlier revision
+/// kept a touch [FTypography] while switching components to `touch: false`, on
+/// the theory that text should stay at its "readable" size. That reinstated one
+/// of the two inflation axes: body text stayed one step larger than desktop
+/// *and* kept the looser touch line-height (`xs` 1.25 vs 1.0, `sm` 1.5 vs 1.25),
+/// which reads as noticeably bigger, airier copy. The mixed baseline was the
+/// oversight; both axes now come from the desktop typeface.
 FThemeData _baseThemeData(AppThemeFamily family, Brightness brightness) {
   final isDark = brightness == Brightness.dark;
   final base = isDark
@@ -150,7 +155,10 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
     extensions: [_semanticColorsFor(brightness, base.colors)],
   );
 
-  final typography = FTypography.inherit(colors: colors, touch: true);
+  // Typography follows the same compact (desktop) baseline as the component
+  // geometry. Deriving it from `touch: false` is what `FThemeData` does by
+  // default; passing it explicitly keeps intent visible.
+  final typography = FTypography.inherit(colors: colors, touch: false);
 
   final scaffoldBackgroundColor = SurfaceTokens.scaffoldBackground(colors);
   final subtleBorder = SurfaceTokens.containerBorder(colors);

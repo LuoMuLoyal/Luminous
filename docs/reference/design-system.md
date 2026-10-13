@@ -60,7 +60,7 @@ updated: 2026-09-13
 
 - 所有 token 类名无 `App` 前缀，通过 barrel `design.dart` 统一导出。
 - `Spacing` / `IconSizeTokens` 以语义名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）为主命名；`DurationTokens` / `Breakpoints` / `ResponsiveSizing` 仍暴露 `level*` 主命名。
-- 字体（2026-08-30 起）：`TypographyToken` 已退役，统一使用 Forui `context.theme.typography.body/display.*`（`FTypeface` scale：`xs3`/`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`，touch 主题下对应 10/12/14/16/18/20/22/30/36/48px）。
+- 字体（2026-08-30 起）：`TypographyToken` 已退役，统一使用 Forui `context.theme.typography.body/display.*`（`FTypeface` scale：`xs3`/`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`）。app 主题走 **desktop（紧凑）基线**（2026-10-13 起字阶与组件几何一致），对应 `xs2`/`xs`/`sm`/`md`/`lg`/`xl` = 10/12/14/16/18/20px；行高随之取紧凑值（`xs` 1.0、`sm` 1.25）。**不要**按 touch 基线（12/14/16/18/20/22）推算字号。
 - 圆角（2026-08-30 起）：`RadiusTokens` 已退役，统一使用 Forui `context.theme.style.borderRadius.*`（`FBorderRadius` scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。需要裸 `double` 时用 `.xxx.topLeft.x`，需要 `Radius` 时用 `.xxx.topLeft`。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。

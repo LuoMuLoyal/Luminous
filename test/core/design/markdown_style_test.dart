@@ -21,11 +21,17 @@ Future<BuildContext> _themedContext(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('legal 样式：正文 lg、行高 1.7', (tester) async {
+  testWidgets('legal 样式：正文 md、行高 1.7', (tester) async {
     final context = await _themedContext(tester);
     final sheet = MarkdownStyle.legal(context);
+    // 长文正文固定 16px：紧凑字阶下对应 body.md（此前用 sm，在紧凑字阶下只有
+    // 14px，长文偏小）。
     expect(sheet.p?.fontSize, 16);
+    expect(sheet.p?.fontSize, context.theme.typography.body.md.fontSize);
     expect(sheet.p?.height, 1.7);
+    // 标题仍高于正文。
+    expect(sheet.h1!.fontSize, greaterThan(sheet.p!.fontSize!));
+    expect(sheet.h2!.fontSize, greaterThan(sheet.p!.fontSize!));
   });
 
   testWidgets('ai 样式：blockquote 使用 primary 色左条 4px 与 subtle 底色', (

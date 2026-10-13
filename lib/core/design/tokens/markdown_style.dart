@@ -20,21 +20,25 @@ import 'package:luminous/core/design/tokens/spacing.dart';
 abstract final class MarkdownStyle {
   /// 正式文档（法律文书 / FAQ）：宽松行距、强标题层级、中性引用。
   ///
-  /// 正文字号 sm (16px)、行高 1.7；h1/h2/h3 依次递减并带段落间距；
+  /// 正文字号 md (16px)、行高 1.7；h1/h2/h3 依次递减并带段落间距；
   /// 引用为中性 `SemanticColor.neutral.border` 左条 + `SemanticColor.neutral.solid` 文字。
   static MarkdownStyleSheet legal(BuildContext context) {
     final base = MarkdownStyleSheet.fromTheme(Theme.of(context));
     final colors = context.theme.colors;
     final typography = context.theme.typography;
     return base.copyWith(
-      p: typography.body.sm.copyWith(height: 1.7),
+      // 法律文书是长文阅读场景，正文固定用 md（紧凑基线下 16px）；此前用 sm
+      // 恰好在 touch 字阶下也是 16px，切到紧凑字阶后会掉到 14px、长文偏小。
+      p: typography.body.md.copyWith(height: 1.7),
+      // 标题阶梯：h1=20 / h2=18；h3 与正文同为 16，靠字重 w600 与上方间距
+      // 区分（紧凑字阶在 md 与 lg 之间没有可用档位）。
       h1: typography.body.xl.copyWith(fontWeight: FontWeight.w700),
       h2: typography.body.lg.copyWith(fontWeight: FontWeight.w600),
       h3: typography.body.md.copyWith(fontWeight: FontWeight.w600),
       h1Padding: const EdgeInsets.only(top: Spacing.xl2),
       h2Padding: const EdgeInsets.only(top: Spacing.xl),
       h3Padding: const EdgeInsets.only(top: Spacing.lg),
-      blockquote: typography.body.sm.copyWith(
+      blockquote: typography.body.md.copyWith(
         color: SemanticColor.neutral.solid(context),
       ),
       blockquoteDecoration: BoxDecoration(
