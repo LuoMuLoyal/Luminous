@@ -131,7 +131,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                           Text(
                             appName,
                             style: typography.body.lg.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           if (version.isNotEmpty) ...[

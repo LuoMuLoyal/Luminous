@@ -81,7 +81,7 @@ class RecordTimelinePanel extends StatelessWidget {
                                 l10n.recordAllTypesAction,
                                 style: TextStyle(
                                   color: colors.foreground,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: 0,
                                 ),
                                 maxLines: 1,

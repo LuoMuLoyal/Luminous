@@ -163,7 +163,7 @@ class _TrendRow extends StatelessWidget {
                 child: Text(
                   title,
                   style: typography.body.sm.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -181,7 +181,7 @@ class _TrendRow extends StatelessWidget {
                     chipLabel,
                     style: typography.body.xs2.copyWith(
                       color: chipTone.solid(context),
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),

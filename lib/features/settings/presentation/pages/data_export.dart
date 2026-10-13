@@ -271,7 +271,7 @@ class _StatusRow extends StatelessWidget {
           value,
           style: typography.body.sm.copyWith(
             color: colors.foreground,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ],

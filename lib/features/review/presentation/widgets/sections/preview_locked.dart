@@ -47,7 +47,7 @@ class ReviewPreviewOverviewSection extends StatelessWidget {
                         Text(
                           item.$2,
                           style: typography.body.sm.copyWith(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         const SizedBox(height: Spacing.xs),

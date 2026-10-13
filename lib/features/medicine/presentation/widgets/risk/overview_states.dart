@@ -74,7 +74,7 @@ class LlmEmptyState extends StatelessWidget {
             const SizedBox(height: Spacing.lg),
             Text(
               l10n.medicineRiskCheckLlmEmptyTitle,
-              style: typography.body.md.copyWith(fontWeight: FontWeight.w800),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.sm),
@@ -139,7 +139,7 @@ class NeverCheckedState extends StatelessWidget {
             Text(
               l10n.medicineRiskCheckNeverChecked,
               style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
               textAlign: TextAlign.center,
             ),
@@ -190,7 +190,7 @@ class LlmUnavailableState extends StatelessWidget {
             Text(
               l10n.medicineRiskCheckLlmUnavailable,
               style: context.theme.typography.body.md.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
               textAlign: TextAlign.center,
             ),

@@ -397,7 +397,7 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
           title: Text(
             AppLocalizations.of(context)!.reviewLockedFeaturesTitle,
             style: context.theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
           subtitle: Text(message),

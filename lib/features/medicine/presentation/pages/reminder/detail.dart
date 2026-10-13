@@ -162,7 +162,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                     Text(
                       data.medicine.displayName,
                       style: typography.body.md.copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

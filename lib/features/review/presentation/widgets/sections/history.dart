@@ -416,7 +416,7 @@ class _HistoryEventRow extends StatelessWidget {
                     Text(
                       event.title,
                       style: typography.body.sm.copyWith(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -493,7 +493,7 @@ class _HistoryStatusChip extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs2.copyWith(
             color: tone.solid(context),
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
@@ -556,7 +556,7 @@ class _StatusFilterRow extends StatelessWidget {
                       color: status == selectedStatus
                           ? SemanticColor.primary.solid(context)
                           : SemanticColor.neutral.solid(context),
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),

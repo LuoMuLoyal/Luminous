@@ -173,7 +173,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                     card.reason,
                     style: typography.body.sm.copyWith(
                       color: SemanticColor.neutral.solid(context),
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   if (card.subtype == 'water' && widget.dashboard != null) ...[
@@ -397,7 +397,7 @@ class EvidenceToggleButton extends StatelessWidget {
                   : l10n.todaySuggestionShowEvidence,
               style: context.theme.typography.body.xs.copyWith(
                 color: SemanticColor.primary.solid(context),
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(width: Spacing.xs),
@@ -504,7 +504,7 @@ class EvidenceItemRow extends StatelessWidget {
           flex: 7,
           child: Text(
             value,
-            style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
             textAlign: TextAlign.end,
           ),
         ),
@@ -534,7 +534,7 @@ class WaterProgressBar extends StatelessWidget {
           '${(progress * 100).round()}%',
           style: context.theme.typography.body.xs2.copyWith(
             color: SemanticColor.neutral.solid(context),
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ],

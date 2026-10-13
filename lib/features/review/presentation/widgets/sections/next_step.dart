@@ -113,7 +113,7 @@ class _RedFlagList extends StatelessWidget {
                   l10n.reviewReviewRedFlagSectionTitle,
                   style: typography.body.sm.copyWith(
                     color: warning.solid(context),
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),

@@ -62,10 +62,10 @@ void main() {
     expect(sheet.h2?.fontSize, greaterThan(sheet.h3!.fontSize!));
     expect(sheet.h3?.fontSize, greaterThan(sheet.h4!.fontSize!));
     expect(sheet.h4?.fontSize, greaterThan(sheet.h5!.fontSize!));
-    // h5/h6 同字号，h6 降一档字重收尾。
+    // h5/h6 同字号；h6 回到正文字重收尾（两档制：正文 w400 / 强调 w700）。
     expect(sheet.h5?.fontSize, sheet.h6?.fontSize);
-    expect(sheet.h5?.fontWeight, FontWeight.w600);
-    expect(sheet.h6?.fontWeight, FontWeight.w500);
+    expect(sheet.h5?.fontWeight, FontWeight.w700);
+    expect(sheet.h6?.fontWeight, FontWeight.w400);
     // 与 Forui 阶梯一致：h4→xs (14)、h5/h6→xs2 (12)。
     expect(sheet.h4?.fontSize, context.theme.typography.body.xs.fontSize);
     expect(sheet.h5?.fontSize, context.theme.typography.body.xs2.fontSize);

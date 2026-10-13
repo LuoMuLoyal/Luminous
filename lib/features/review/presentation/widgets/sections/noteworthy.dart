@@ -132,7 +132,7 @@ class _NoteworthyCard extends StatelessWidget {
                   child: Text(
                     finding.title,
                     style: typography.body.md.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),

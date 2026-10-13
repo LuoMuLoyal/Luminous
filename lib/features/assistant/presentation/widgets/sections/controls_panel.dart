@@ -39,7 +39,7 @@ class AssistantControlsPanel extends StatelessWidget {
       children: [
         Text(
           l10n.assistantStatusSectionTitle,
-          style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
+          style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.sm),
         Text(

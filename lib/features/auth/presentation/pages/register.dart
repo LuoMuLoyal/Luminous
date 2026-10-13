@@ -319,7 +319,7 @@ class _TermsAgreementTextState extends State<_TermsAgreementText> {
     final baseStyle = context.theme.typography.body.xs;
     final linkStyle = baseStyle.copyWith(
       color: SemanticColor.primary.solid(context),
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700,
     );
     final l10n = AppLocalizations.of(context)!;
 

@@ -258,7 +258,7 @@ class DangerZoneSection extends StatelessWidget {
                   dangerLabel,
                   style: typography.body.xs.copyWith(
                     color: SemanticColor.destructive.solid(context),
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -266,7 +266,7 @@ class DangerZoneSection extends StatelessWidget {
             const SizedBox(height: Spacing.sm),
             Text(
               title,
-              style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: Spacing.xl),
             for (final child in children) ...[
@@ -300,7 +300,7 @@ class _SectionColumn extends StatelessWidget {
         Text(
           title,
           style: context.theme.typography.body.md.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: Spacing.xl),

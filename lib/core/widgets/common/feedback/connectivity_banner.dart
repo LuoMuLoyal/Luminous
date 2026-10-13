@@ -49,7 +49,7 @@ class ConnectivityBanner extends ConsumerWidget {
                   l10n.authSessionRestoreTimeout,
                   style: typography.body.sm.copyWith(
                     color: warningPalette.foreground,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -70,7 +70,7 @@ class ConnectivityBanner extends ConsumerWidget {
                       textAlign: TextAlign.center,
                       style: typography.body.sm.copyWith(
                         color: warningPalette.foreground,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),

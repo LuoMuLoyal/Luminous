@@ -314,7 +314,7 @@ class _SectionTitle extends StatelessWidget {
       child: Text(
         label,
         style: context.theme.typography.body.md.copyWith(
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

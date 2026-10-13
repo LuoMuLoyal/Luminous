@@ -19,7 +19,7 @@ class QuickEntryHeader extends StatelessWidget {
           child: Text(
             l10n.recordQuickSectionTitle,
             style: context.theme.typography.display.xl.copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),

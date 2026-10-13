@@ -77,7 +77,7 @@ class SafetyHeader extends StatelessWidget {
           child: Text(
             l10n.medicineSafetyPanelTitle,
             style: typography.display.xl.copyWith(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               letterSpacing: 0,
             ),
             maxLines: 1,

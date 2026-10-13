@@ -41,7 +41,7 @@ class OverallRecommendationCard extends StatelessWidget {
                 Text(
                   l10n.medicineRiskOverallRecommendation,
                   style: typography.body.md.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],

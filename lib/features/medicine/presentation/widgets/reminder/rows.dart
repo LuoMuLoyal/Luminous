@@ -355,7 +355,7 @@ class SelectedMedicineRow extends StatelessWidget {
                 Text(
                   medicine.displayName,
                   style: typography.body.sm.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

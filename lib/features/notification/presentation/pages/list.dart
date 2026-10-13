@@ -190,7 +190,7 @@ class _GroupedNotificationList extends StatelessWidget {
               title,
               style: context.theme.typography.body.sm.copyWith(
                 color: SemanticColor.neutral.solid(context),
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),

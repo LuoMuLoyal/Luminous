@@ -67,7 +67,7 @@ class ReviewReadinessSection extends StatelessWidget {
             Text(
               _title,
               style: typography.display.lg.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: Spacing.sm),
@@ -256,7 +256,7 @@ class _StatusBadge extends StatelessWidget {
           label,
           style: context.theme.typography.body.xs.copyWith(
             color: color.solid(context),
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),

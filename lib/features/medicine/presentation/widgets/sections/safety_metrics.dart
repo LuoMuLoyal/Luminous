@@ -63,7 +63,7 @@ class MetricItem extends StatelessWidget {
           Text(
             value,
             style: typography.display.xl.copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               letterSpacing: 0,
             ),
           ),
@@ -114,7 +114,7 @@ class AlertChip extends StatelessWidget {
         Expanded(
           child: Text(
             medicineAlertTitle(l10n, alert),
-            style: typography.body.xs.copyWith(fontWeight: FontWeight.w600),
+            style: typography.body.xs.copyWith(fontWeight: FontWeight.w700),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

@@ -283,8 +283,8 @@ class _CommandTileState extends State<_CommandTile> {
                       style: typography.body.sm.copyWith(
                         color: theme.colors.foreground,
                         fontWeight: widget.selected
-                            ? FontWeight.w600
-                            : FontWeight.w500,
+                            ? FontWeight.w700
+                            : FontWeight.w700,
                       ),
                     ),
                     Text(

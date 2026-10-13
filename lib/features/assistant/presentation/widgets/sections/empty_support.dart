@@ -124,7 +124,7 @@ class AssistantMemoryHint extends StatelessWidget {
                   l10n.assistantMemoryHintTitle,
                   style: typography.body.xs2.copyWith(
                     color: SemanticColor.neutral.solid(context),
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: Spacing.xs),

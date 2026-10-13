@@ -89,7 +89,7 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
             l10n.todaySuggestionFeedbackSubmitted,
             style: context.theme.typography.body.xs.copyWith(
               color: SemanticColor.primary.solid(context),
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],

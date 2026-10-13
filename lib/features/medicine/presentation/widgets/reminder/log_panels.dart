@@ -28,7 +28,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
           padding: const EdgeInsets.only(left: Spacing.sm),
           child: Text(
             l10n.medicineReminderTodayLogsTitle,
-            style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         const SizedBox(height: Spacing.md),
@@ -109,7 +109,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
           padding: const EdgeInsets.only(left: Spacing.sm),
           child: Text(
             l10n.medicineReminderDeliveryLogsTitle,
-            style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         const SizedBox(height: Spacing.md),

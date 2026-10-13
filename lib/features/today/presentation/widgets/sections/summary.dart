@@ -134,7 +134,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                   selectable: true,
                   styleSheet: MarkdownStyle.ai(
                     context,
-                    paragraphWeight: FontWeight.w600,
+                    paragraphWeight: FontWeight.w700,
                   ),
                 ),
               ] else if (!isPreview) ...[
@@ -142,7 +142,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                   l10n.todaySummaryFallbackNarrative,
                   style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -421,7 +421,7 @@ class _AiExpandButton extends StatelessWidget {
                   : l10n.todaySuggestionShowEvidence,
               style: context.theme.typography.body.xs.copyWith(
                 color: SemanticColor.primary.solid(context),
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(width: Spacing.xs),
@@ -477,7 +477,7 @@ class _CompactSummaryMetric extends StatelessWidget {
                 item.value,
                 style: typography.body.sm.copyWith(
                   fontWeight: item.isDegraded || item.isFallback
-                      ? FontWeight.w500
+                      ? FontWeight.w700
                       : FontWeight.w700,
                   color: item.isDegraded
                       ? SemanticColor.destructive.solid(context)

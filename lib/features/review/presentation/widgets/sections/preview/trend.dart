@@ -305,7 +305,7 @@ class _SingleTrendChart extends StatelessWidget {
                             '$valueText\n$dateLabel',
                             typography.body.xs.copyWith(
                               color: resolvedColor,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
                             ),
                           );
                         }).toList();

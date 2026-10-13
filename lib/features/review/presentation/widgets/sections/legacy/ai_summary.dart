@@ -70,7 +70,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                       Text(
                         l10n.reviewAiSummaryTitle,
                         style: typography.body.md.copyWith(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: Spacing.xs),

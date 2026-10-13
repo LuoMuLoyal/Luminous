@@ -389,7 +389,7 @@ class _DesktopSearchPanel extends StatelessWidget {
             Text(
               l10n.medicineSearchPageTitle,
               style: typography.display.xl2.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: Spacing.lg),

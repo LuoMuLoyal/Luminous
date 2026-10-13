@@ -14,7 +14,7 @@ class MineSectionTitle extends StatelessWidget {
       title,
       style: context.theme.typography.body.lg.copyWith(
         color: colors.foreground,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
       ),
     );
   }

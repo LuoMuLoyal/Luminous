@@ -67,7 +67,7 @@ class _QuickOperationSection extends StatelessWidget {
               child: Text(
                 l10n.medicineQuickOperationTitle,
                 style: context.theme.typography.display.xl.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: 0,
                 ),
                 maxLines: 1,
@@ -125,7 +125,7 @@ class _QuickOperationRow extends StatelessWidget {
                   Text(
                     operation.title,
                     style: typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

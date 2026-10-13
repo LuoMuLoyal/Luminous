@@ -71,7 +71,7 @@ class MineAccountHero extends StatelessWidget {
                       Text(
                         name,
                         style: typography.display.xl.copyWith(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -134,7 +134,7 @@ class MineAccountHero extends StatelessWidget {
                     dashboard.completion.percentLabel,
                     style: typography.body.md.copyWith(
                       color: SemanticColor.primary.solid(context),
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),

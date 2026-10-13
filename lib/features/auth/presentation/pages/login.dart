@@ -301,7 +301,7 @@ class LoginPage extends HookConsumerWidget {
                           l10n.authTermsOfService,
                           style: typography.body.xs2.copyWith(
                             color: SemanticColor.primary.solid(context),
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -320,7 +320,7 @@ class LoginPage extends HookConsumerWidget {
                           l10n.authPrivacyPolicy,
                           style: typography.body.xs2.copyWith(
                             color: SemanticColor.primary.solid(context),
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),

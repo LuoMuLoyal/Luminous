@@ -83,7 +83,7 @@ Future<bool> confirmUnlinkIdentity(
         Text(
           l10n.authIdentityUnlinkConfirmTitle,
           style: context.theme.typography.body.lg.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: Spacing.lg),

@@ -146,7 +146,7 @@ class _RecordDetailBodyState extends ConsumerState<RecordDetailBody> {
                               child: Text(
                                 record.title ?? kindLabel(l10n, record.kind),
                                 style: typography.display.xl.copyWith(
-                                  fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),

@@ -127,7 +127,7 @@ class RiskSummary extends StatelessWidget {
             children: [
               Text(
                 summary.title,
-                style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
+                style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: Spacing.xs),
               Text(

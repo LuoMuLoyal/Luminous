@@ -27,7 +27,7 @@ class TodaySection extends StatelessWidget {
       actionLabel ?? '',
       style: TextStyle(
         color: foreground,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         letterSpacing: 0,
       ),
       maxLines: 1,
@@ -54,7 +54,7 @@ class TodaySection extends StatelessWidget {
                 Text(
                   title,
                   style: typography.display.xl.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     letterSpacing: 0,
                   ),
                   maxLines: 1,

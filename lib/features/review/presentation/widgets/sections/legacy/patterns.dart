@@ -95,7 +95,7 @@ class _PatternCard extends StatelessWidget {
                   child: Text(
                     pattern.title,
                     style: typography.body.md.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -106,7 +106,7 @@ class _PatternCard extends StatelessWidget {
             const SizedBox(height: Spacing.lg),
             SkeletonText(
               text: reviewStatusLabel(l10n, pattern.status),
-              style: typography.body.sm.copyWith(fontWeight: FontWeight.w800),
+              style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.74,

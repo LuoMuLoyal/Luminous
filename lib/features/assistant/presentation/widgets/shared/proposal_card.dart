@@ -60,7 +60,7 @@ class AssistantProposalCard extends StatelessWidget {
                   child: Text(
                     proposal.title,
                     style: typography.body.lg.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
@@ -68,7 +68,7 @@ class AssistantProposalCard extends StatelessWidget {
                   proposalStateText(l10n, proposal),
                   style: typography.body.sm.copyWith(
                     color: proposalStateColor(colors, proposal),
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],

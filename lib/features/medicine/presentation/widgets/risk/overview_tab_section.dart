@@ -131,7 +131,7 @@ class RiskScoreHero extends StatelessWidget {
                   Text(
                     medicineRiskLevelLabel(l10n, riskLevel),
                     style: typography.display.xl.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       letterSpacing: 0,
                       color: palette.solid,
                     ),
@@ -258,7 +258,7 @@ class SafeStateCard extends StatelessWidget {
                   Text(
                     l10n.medicineRiskCheckTierConfirmedSafe,
                     style: typography.body.md.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: Spacing.xs),

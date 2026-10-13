@@ -123,7 +123,7 @@ class _StartEventSheetState extends State<StartEventSheet> {
           children: [
             Text(
               widget.heading,
-              style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: Spacing.lg),
             FTextField(

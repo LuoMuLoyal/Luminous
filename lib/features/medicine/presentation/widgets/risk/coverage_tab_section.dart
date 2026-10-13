@@ -38,7 +38,7 @@ class CoverageTabSection extends StatelessWidget {
         Text(
           l10n.medicineRiskCheckCoverageTitle,
           style: context.theme.typography.body.lg.copyWith(
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: Spacing.md),

@@ -82,7 +82,7 @@ class _RiskScoreRingState extends State<RiskScoreRing>
                   Text(
                     '${widget.score}',
                     style: context.theme.typography.display.xl2.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       letterSpacing: 0,
                       color: palette.solid,
                     ),

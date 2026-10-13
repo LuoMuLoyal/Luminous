@@ -73,7 +73,7 @@ class RiskFindingItem extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: typography.body.md.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: Spacing.xs),
@@ -232,7 +232,7 @@ class _RecommendationLine extends StatelessWidget {
             text,
             style: context.theme.typography.body.xs.copyWith(
               color: color.solid(context),
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),

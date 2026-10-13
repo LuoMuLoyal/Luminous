@@ -247,7 +247,7 @@ class _CategorySection extends StatelessWidget {
             label,
             style: context.theme.typography.body.xs2.copyWith(
               color: SemanticColor.neutral.solid(context),
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),

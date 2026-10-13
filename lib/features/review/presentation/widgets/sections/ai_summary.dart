@@ -251,7 +251,7 @@ class _RangeChip extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: context.theme.typography.body.xs.copyWith(
                 color: tone.solid(context),
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),

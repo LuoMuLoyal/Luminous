@@ -47,7 +47,7 @@ class EventHeaderSection extends StatelessWidget {
             Text(
               event.title,
               style: typography.display.lg.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: Spacing.md),
@@ -213,7 +213,7 @@ class _ReviewStatusChip extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs2.copyWith(
             color: color,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),

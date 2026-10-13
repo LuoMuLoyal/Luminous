@@ -34,7 +34,7 @@ class AuthTermsNotice extends StatelessWidget {
 
     final linkStyle = typography.body.xs.copyWith(
       color: SemanticColor.primary.solid(context),
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700,
     );
     final String leadText = l10n.authTermsAgreementPrefix;
     final String connector = l10n.authTermsConjunction;

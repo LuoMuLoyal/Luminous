@@ -28,7 +28,7 @@ class RecordMobileFilter extends StatelessWidget {
     final header = allSelected
         ? Text(
             l10n.recordFilterMobileTitle,
-            style: typography.display.xl.copyWith(fontWeight: FontWeight.w800),
+            style: typography.display.xl.copyWith(fontWeight: FontWeight.w700),
           )
         : Row(
             children: [
@@ -75,7 +75,7 @@ class RecordMobileFilter extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: SemanticColor.neutral.solid(context),
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),

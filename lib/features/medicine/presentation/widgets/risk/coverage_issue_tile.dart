@@ -40,7 +40,7 @@ class RiskCoverageItem extends StatelessWidget {
                 Text(
                   issue.medicineName,
                   style: typography.body.md.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: Spacing.xs),

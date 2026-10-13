@@ -68,7 +68,7 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
               child: Text(
                 titleText,
                 style: context.theme.typography.display.xl.copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),

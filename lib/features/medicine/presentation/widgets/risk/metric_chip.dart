@@ -44,7 +44,7 @@ class RiskMetricCell extends StatelessWidget {
             Text(
               value,
               style: typography.display.xl.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
                 letterSpacing: 0,
                 color: color?.solid(context),
               ),

@@ -59,7 +59,7 @@ class CompletedActionsSection extends StatelessWidget {
       children: [
         Text(
           l10n.reviewReviewDoseSectionTitle,
-          style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+          style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.sm),
         ReviewFactRow(
@@ -79,7 +79,7 @@ class CompletedActionsSection extends StatelessWidget {
           const SizedBox(height: Spacing.sm),
           Text(
             l10n.reviewReviewCheckInSectionTitle,
-            style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: Spacing.sm),
           for (final checkIn in checkIns.take(_maxCheckInRows))

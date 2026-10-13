@@ -74,7 +74,7 @@ class _EmptyFindingsView extends StatelessWidget {
                 Text(
                   l10n.reviewFindingsEmptyTitle,
                   style: typography.body.md.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: Spacing.xs),
@@ -146,7 +146,7 @@ class _FindingCard extends StatelessWidget {
             const SizedBox(height: Spacing.lg),
             SkeletonText(
               text: finding.title,
-              style: typography.body.md.copyWith(fontWeight: FontWeight.w800),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
               widthFactor: 0.7,
             ),
             const SizedBox(height: Spacing.md),

@@ -42,7 +42,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
             l10n.medicineSearchPrecheckTitle,
             textAlign: TextAlign.center,
             style: context.theme.typography.display.xl.copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
           Text(
@@ -63,7 +63,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                   Text(
                     l10n.medicineSearchPrecheckScopeTitle,
                     style: context.theme.typography.body.md.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: Spacing.md),
@@ -119,7 +119,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     Text(
                       l10n.medicineRiskCheckFindingsTitle,
                       style: context.theme.typography.body.md.copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: Spacing.md),
@@ -137,7 +137,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     Text(
                       l10n.medicineRiskCheckCoverageTitle,
                       style: context.theme.typography.body.md.copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: Spacing.md),
@@ -224,7 +224,7 @@ class _PrecheckFindingRow extends StatelessWidget {
                   Text(
                     medicineRiskFindingTitle(l10n, finding),
                     style: typography.body.md.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: Spacing.xs),
@@ -317,7 +317,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
                   Text(
                     issue.medicineName,
                     style: typography.body.md.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: Spacing.xs),

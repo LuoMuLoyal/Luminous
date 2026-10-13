@@ -324,7 +324,7 @@ class _TypeChip extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.sm.copyWith(
             color: color.solid(context),
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),

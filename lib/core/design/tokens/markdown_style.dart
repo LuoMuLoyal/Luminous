@@ -30,11 +30,10 @@ abstract final class MarkdownStyle {
       // 法律文书是长文阅读场景，正文固定用 md（紧凑基线下 16px）；此前用 sm
       // 恰好在 touch 字阶下也是 16px，切到紧凑字阶后会掉到 14px、长文偏小。
       p: typography.body.md.copyWith(height: 1.7),
-      // 标题阶梯：h1=20 / h2=18；h3 与正文同为 16，靠字重 w600 与上方间距
-      // 区分（紧凑字阶在 md 与 lg 之间没有可用档位）。
+      // 标题阶梯：h1=20 / h2=18 / h3=16，靠字号与上方间距区分（字重统一 w700）。
       h1: typography.body.xl.copyWith(fontWeight: FontWeight.w700),
-      h2: typography.body.lg.copyWith(fontWeight: FontWeight.w600),
-      h3: typography.body.md.copyWith(fontWeight: FontWeight.w600),
+      h2: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
+      h3: typography.body.md.copyWith(fontWeight: FontWeight.w700),
       h1Padding: const EdgeInsets.only(top: Spacing.xl2),
       h2Padding: const EdgeInsets.only(top: Spacing.xl),
       h3Padding: const EdgeInsets.only(top: Spacing.lg),
@@ -73,7 +72,7 @@ abstract final class MarkdownStyle {
       tableBorder: TableBorder.all(
         color: SemanticColor.neutral.border(context),
       ),
-      tableHead: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+      tableHead: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
       tableHeadCellsDecoration: BoxDecoration(color: colors.secondary),
       tableBody: typography.body.sm,
       tableCellsPadding: const EdgeInsets.all(Spacing.sm),
@@ -110,11 +109,13 @@ abstract final class MarkdownStyle {
     return base.copyWith(
       p: typography.body.sm.copyWith(height: 1.6, fontWeight: paragraphWeight),
       h1: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
-      h2: typography.body.md.copyWith(fontWeight: FontWeight.w600),
-      h3: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
-      h4: typography.body.xs.copyWith(fontWeight: FontWeight.w600),
-      h5: typography.body.xs2.copyWith(fontWeight: FontWeight.w600),
-      h6: typography.body.xs2.copyWith(fontWeight: FontWeight.w500),
+      h2: typography.body.md.copyWith(fontWeight: FontWeight.w700),
+      h3: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
+      h4: typography.body.xs.copyWith(fontWeight: FontWeight.w700),
+      h5: typography.body.xs2.copyWith(fontWeight: FontWeight.w700),
+      // h6 keeps the body weight; it is already the smallest step, so the
+      // two-tier scheme distinguishes it by weight rather than by size.
+      h6: typography.body.xs2.copyWith(fontWeight: FontWeight.w400),
       h1Padding: const EdgeInsets.only(top: Spacing.xl),
       h2Padding: const EdgeInsets.only(top: Spacing.lg),
       h3Padding: const EdgeInsets.only(top: Spacing.md),
@@ -161,7 +162,7 @@ abstract final class MarkdownStyle {
       a: typography.body.sm.copyWith(
         color: SemanticColor.primary.solid(context),
         decoration: TextDecoration.underline,
-        fontWeight: emphasizeLinks ? FontWeight.w600 : null,
+        fontWeight: emphasizeLinks ? FontWeight.w700 : null,
       ),
       horizontalRuleDecoration: BoxDecoration(
         border: Border(
@@ -173,7 +174,7 @@ abstract final class MarkdownStyle {
       ),
       // IntrinsicColumnWidth 触发库内置的横向滚动容器（见上方 doc 注释）。
       tableColumnWidth: const IntrinsicColumnWidth(),
-      tableHead: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+      tableHead: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
       tableHeadCellsDecoration: BoxDecoration(color: colors.secondary),
       tableBody: typography.body.sm,
       tableCellsPadding: const EdgeInsets.all(Spacing.sm),

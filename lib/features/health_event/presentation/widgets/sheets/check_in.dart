@@ -54,7 +54,7 @@ class _CheckInSheetState extends State<CheckInSheet> {
           children: [
             Text(
               widget.heading,
-              style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
             if (widget.subtitle != null) ...[
               const SizedBox(height: Spacing.sm),

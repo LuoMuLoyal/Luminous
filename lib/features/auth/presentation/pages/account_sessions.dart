@@ -49,7 +49,7 @@ class _SectionColumn extends StatelessWidget {
         Text(
           title,
           style: context.theme.typography.body.md.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: Spacing.xl),

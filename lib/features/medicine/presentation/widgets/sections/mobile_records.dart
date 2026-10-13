@@ -39,7 +39,7 @@ class _MedicineRecordsSectionState extends State<_MedicineRecordsSection> {
         Text(
           l10n.medicineTodayPlanTitle,
           style: context.theme.typography.display.xl.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             letterSpacing: 0,
           ),
         ),
@@ -144,7 +144,7 @@ class _TodayPlanRow extends StatelessWidget {
                     Text(
                       _itemName(l10n, item),
                       style: typography.body.sm.copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -189,7 +189,7 @@ class _TodayPlanRow extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: typography.body.xs.copyWith(
                                 color: colors.foreground,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),

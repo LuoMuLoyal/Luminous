@@ -45,7 +45,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
                 style: large
                     ? context.theme.typography.body.sm.copyWith(
                         color: foreground,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       )
                     : context.theme.typography.body.xs.copyWith(
                         color: foreground,

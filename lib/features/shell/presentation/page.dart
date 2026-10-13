@@ -222,7 +222,7 @@ class _SidebarHeaderContent extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.foreground,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -244,7 +244,7 @@ class _SidebarHeaderContent extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.foreground,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),

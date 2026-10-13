@@ -56,7 +56,7 @@ class RecordFilterPanel extends StatelessWidget {
                                 l10n.recordFilterSelectAll,
                                 style: TextStyle(
                                   color: colors.foreground,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: 0,
                                 ),
                                 maxLines: 1,
@@ -146,7 +146,7 @@ class FilterRow extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: typography.body.md.copyWith(fontWeight: FontWeight.w600),
+                style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
                 overflow: TextOverflow.ellipsis,
               ),
             ),

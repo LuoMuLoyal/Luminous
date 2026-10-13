@@ -338,7 +338,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
               child: Text(
                 widget.l10n.settingsDevApiEndpoint,
                 style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -438,7 +438,7 @@ class _LogLevelSheet extends StatelessWidget {
               child: Text(
                 l10n.settingsDevLogLevel,
                 style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),

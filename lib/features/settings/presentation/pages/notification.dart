@@ -350,7 +350,7 @@ class _PermissionCard extends StatelessWidget {
                       title,
                       style: typography.body.sm.copyWith(
                         color: color,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     if (subtitle.isNotEmpty) ...[
@@ -375,7 +375,7 @@ class _PermissionCard extends StatelessWidget {
                         ctaLabel,
                         style: typography.body.xs.copyWith(
                           color: color,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(width: Spacing.sm),
@@ -420,7 +420,7 @@ class _AdvancePickerSheet extends StatelessWidget {
               child: Text(
                 l10n.settingsNotificationsAdvance,
                 style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),

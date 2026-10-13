@@ -120,7 +120,7 @@ class _CoverageCard extends StatelessWidget {
                     child: Text(
                       reviewMetricTitle(l10n, metric.kind),
                       style: typography.body.xs.copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -144,7 +144,7 @@ class _CoverageCard extends StatelessWidget {
                     child: Text(
                       sparse ? '--' : '${metric.value}${metric.unit}',
                       style: typography.body.md.copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

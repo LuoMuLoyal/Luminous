@@ -45,7 +45,7 @@ class PillChip extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: context.theme.typography.body.sm.copyWith(
                 color: tone.solid(context),
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),

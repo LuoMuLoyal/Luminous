@@ -309,7 +309,7 @@ class ArchiveRecordListTile extends StatelessWidget {
                   Text(
                     title,
                     style: typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   if (subtitle != null && subtitle!.isNotEmpty) ...[

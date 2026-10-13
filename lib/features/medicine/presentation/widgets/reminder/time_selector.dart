@@ -60,7 +60,7 @@ class ReminderTimePickerDialog extends HookWidget {
                 locale,
               ),
               style: typography.body.xl3.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
                 color: SemanticColor.primary.solid(context),
               ),
             );

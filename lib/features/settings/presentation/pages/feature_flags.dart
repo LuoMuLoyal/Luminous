@@ -218,7 +218,7 @@ class _ProviderSheet extends ConsumerWidget {
               child: Text(
                 l10n.settingsFeatureFlagsAiProvider,
                 style: context.theme.typography.body.md.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),

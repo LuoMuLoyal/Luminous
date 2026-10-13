@@ -118,7 +118,7 @@ Future<ReviewDashboardQuery?> _showMobileRangePicker(
                     child: Text(
                       l10n.reviewRangePickerTitle,
                       style: context.theme.typography.body.md.copyWith(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),

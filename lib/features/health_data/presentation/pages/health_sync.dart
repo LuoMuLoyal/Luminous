@@ -175,7 +175,7 @@ class _MetricTypeSection extends StatelessWidget {
         Text(
           l10n.healthSyncMetricTypes,
           style: context.theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: Spacing.md),
@@ -235,7 +235,7 @@ class _TimeRangeSection extends StatelessWidget {
         Text(
           l10n.healthSyncTimeRange,
           style: context.theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: Spacing.md),
@@ -293,7 +293,7 @@ class _SyncResultSection extends StatelessWidget {
           Text(
             l10n.healthSyncResultTitle,
             style: context.theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: Spacing.md),
@@ -352,7 +352,7 @@ class _MetricsPreviewSection extends StatelessWidget {
       children: [
         Text(
           l10n.healthSyncPreviewTitle,
-          style: typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+          style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.md),
         FTileGroup(

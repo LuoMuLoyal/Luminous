@@ -36,7 +36,7 @@ class RecordNlpCandidateReview extends StatelessWidget {
       children: [
         Text(
           l10n.recordNlpCandidatesTitle(state.candidates.length),
-          style: typography.display.xl.copyWith(fontWeight: FontWeight.w800),
+          style: typography.display.xl.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: Spacing.sm),
         Text(
@@ -114,7 +114,7 @@ class _CandidateTile extends StatelessWidget {
                         _kindLabel(l10n, item.kind),
                         style: typography.body.md.copyWith(
                           color: SemanticColor.primary.solid(context),
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: Spacing.xs),

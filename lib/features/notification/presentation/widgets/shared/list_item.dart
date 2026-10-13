@@ -98,7 +98,7 @@ class _NotificationListItemWidgetState
                                 widget.item.title,
                                 style: typography.body.md.copyWith(
                                   fontWeight: widget.item.isRead
-                                      ? FontWeight.w500
+                                      ? FontWeight.w700
                                       : FontWeight.w700,
                                 ),
                                 maxLines: 1,
@@ -225,7 +225,7 @@ class _NotificationListItemWidgetState
                               widget.item.title,
                               style: typography.body.md.copyWith(
                                 fontWeight: widget.item.isRead
-                                    ? FontWeight.w500
+                                    ? FontWeight.w700
                                     : FontWeight.w700,
                               ),
                               maxLines: 1,

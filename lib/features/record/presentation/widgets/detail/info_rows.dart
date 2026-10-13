@@ -53,7 +53,7 @@ class DetailRow extends StatelessWidget {
               data.value,
               style: data.highlight
                   ? typography.display.lg.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       color: SemanticColor.primary.solid(context),
                     )
                   : typography.body.md.copyWith(fontWeight: FontWeight.w700),

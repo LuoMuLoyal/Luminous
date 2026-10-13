@@ -29,7 +29,7 @@ class _DrugBoxSection extends StatelessWidget {
         Text(
           l10n.medicineDrugboxTitle,
           style: typography.display.xl.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             letterSpacing: 0,
           ),
         ),
@@ -126,7 +126,7 @@ class _DrugBoxHeader extends StatelessWidget {
               Text(
                 l10n.medicineDrugboxTotal(count),
                 style: typography.body.md.copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: 0,
                 ),
                 maxLines: 1,
@@ -168,7 +168,7 @@ class _DrugBoxHeader extends StatelessWidget {
                         : l10n.medicineQuickAddTitle,
                     style: TextStyle(
                       color: colors.foreground,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                       letterSpacing: 0,
                     ),
                     maxLines: 1,
@@ -324,7 +324,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
             text: value,
             style: typography.body.md.copyWith(
               color: color.fillStrong(context),
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -469,7 +469,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                   SkeletonText(
                     text: name,
                     style: typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -537,7 +537,7 @@ class _TruncatedFooter extends StatelessWidget {
             label,
             style: context.theme.typography.body.xs.copyWith(
               color: SemanticColor.neutral.solid(context),
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),

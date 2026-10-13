@@ -16,7 +16,7 @@ class SettingsSectionLabel extends StatelessWidget {
         label,
         style: context.theme.typography.body.xs.copyWith(
           color: SemanticColor.neutral.solid(context),
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

@@ -195,7 +195,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
                       Text(
                         widget.item.title,
                         style: typography.body.sm.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       _ConfidenceBadge(
@@ -252,7 +252,7 @@ class _ObservationTileState extends ConsumerState<_ObservationTile> {
             l10n.todaySuggestionFeedbackSubmitted,
             style: context.theme.typography.body.xs.copyWith(
               color: SemanticColor.primary.solid(context),
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
@@ -442,7 +442,7 @@ class _ConfidenceBadge extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: context.theme.typography.body.xs.copyWith(
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

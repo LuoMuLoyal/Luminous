@@ -358,7 +358,7 @@ class HeaderCard extends StatelessWidget {
                 Text(
                   detail.name,
                   style: typography.body.lg.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SourceBadge(source: source, l10n: l10n),
