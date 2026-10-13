@@ -145,6 +145,36 @@ _ColorOverride? _familyColorOverride(AppThemeFamily family, bool isDark) {
 /// text by one step (body.sm 16→14). Components stay compact, text stays
 /// readable.
 ///
+/// Flattens every step of [typography]'s line height to 1.0.
+///
+/// Forui ships generous leading per step (`sm` 1.25, `md` 1.5, `lg` 1.75), so a
+/// 16px line occupies a 24px box. That leading is the single largest source of
+/// vertical bulk in the app: it inflates every card, list row and banner
+/// without improving legibility at these sizes. Collapsing it to 1.0 makes each
+/// line exactly its font size, leaving vertical rhythm to explicit spacing.
+FTypography _flattenLineHeight(FTypography typography) {
+  FTypeface flat(FTypeface t) {
+    TextStyle f(TextStyle style) => style.copyWith(height: 1.0);
+    return t.copyWith(
+      xs3: f(t.xs3),
+      xs2: f(t.xs2),
+      xs: f(t.xs),
+      sm: f(t.sm),
+      md: f(t.md),
+      lg: f(t.lg),
+      xl: f(t.xl),
+      xl2: f(t.xl2),
+      xl3: f(t.xl3),
+      xl4: f(t.xl4),
+    );
+  }
+
+  return typography.copyWith(
+    display: flat(typography.display),
+    body: flat(typography.body),
+  );
+}
+
 /// The one place where the two baselines differ in *behaviour* rather than
 /// size is the toast position (top-center on touch, bottom-end otherwise).
 /// Since this app only ever runs on phones, the toaster is pinned back to
@@ -158,7 +188,16 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
   // Typography follows the same compact (desktop) baseline as the component
   // geometry. Deriving it from `touch: false` is what `FThemeData` does by
   // default; passing it explicitly keeps intent visible.
-  final typography = FTypography.inherit(colors: colors, touch: false);
+  //
+  // Line height is flattened to 1.0 on every step. Forui's own steps carry
+  // generous leading (`sm` 1.25, `md` 1.5, `lg` 1.75), which adds vertical bulk
+  // to every text line without adding legibility at these sizes — a 16px line
+  // became a 24px box. Mature Chinese phone apps (WeChat, Meituan) get their
+  // density from the text box, not from leading, so lines occupy exactly their
+  // font size and spacing between elements is controlled explicitly by layout.
+  final typography = _flattenLineHeight(
+    FTypography.inherit(colors: colors, touch: false),
+  );
 
   final scaffoldBackgroundColor = SurfaceTokens.scaffoldBackground(colors);
   final subtleBorder = SurfaceTokens.containerBorder(colors);

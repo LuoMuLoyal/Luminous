@@ -60,7 +60,9 @@ updated: 2026-09-13
 
 - 所有 token 类名无 `App` 前缀，通过 barrel `design.dart` 统一导出。
 - `Spacing` / `IconSizeTokens` 以语义名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）为主命名；`DurationTokens` / `Breakpoints` / `ResponsiveSizing` 仍暴露 `level*` 主命名。
-- 字体（2026-08-30 起）：`TypographyToken` 已退役，统一使用 Forui `context.theme.typography.body/display.*`（`FTypeface` scale：`xs3`/`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`）。app 主题走 **desktop（紧凑）基线**（2026-10-13 起字阶与组件几何一致），对应 `xs2`/`xs`/`sm`/`md`/`lg`/`xl` = 10/12/14/16/18/20px；行高随之取紧凑值（`xs` 1.0、`sm` 1.25）。**不要**按 touch 基线（12/14/16/18/20/22）推算字号。
+- 字体（2026-08-30 起）：`TypographyToken` 已退役，统一使用 Forui `context.theme.typography.body/display.*`（`FTypeface` scale：`xs3`/`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`xl4`）。app 主题走 **desktop（紧凑）基线**（2026-10-13 起字阶与组件几何一致），对应 `xs2`/`xs`/`sm`/`md`/`lg`/`xl` = 10/12/14/16/18/20px。**不要**按 touch 基线（12/14/16/18/20/22）推算字号。
+- **行高统一 1.0**（2026-10-13 起）：Forui 各档自带行高（`sm` 1.25、`md` 1.5、`lg` 1.75）会让 16px 的字占 24px 高的行框，是界面纵向空散的最大来源。`appThemeData` 经 `_flattenLineHeight()` 把每一档压到 1.0，行框高度=字号；纵向节奏交由显式间距控制。**不要再给文本加 `height:` 覆盖**（长文 Markdown 的 `legal`/`ai` 正文除外，它们保留 1.6/1.7 的阅读行高）。
+- **字重两档制**（2026-10-13 起）：正文 `w400`、强调 `w700`，**没有第三档**。此前 `w500`/`w600`/`w700`/`w800` 四档混用（同一类"小块标题"在不同文件里不同写法），而 app 不内置 CJK 字体——Inter 只有拉丁字形，中文一律回落系统字体，系统字体只暴露约两个真实字重面（Regular + Bold/Medium），四档在真机上本就区分不出来。规则按 Meta 公开体系（400/700）收敛。
 - 圆角（2026-08-30 起）：`RadiusTokens` 已退役，统一使用 Forui `context.theme.style.borderRadius.*`（`FBorderRadius` scale：`xs2`/`xs`/`sm`/`md`/`lg`/`xl`/`xl2`/`xl3`/`pill`）。需要裸 `double` 时用 `.xxx.topLeft.x`，需要 `Radius` 时用 `.xxx.topLeft`。
 - `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
@@ -88,6 +90,7 @@ updated: 2026-09-13
 ## 间距与布局
 
 - 间距使用 `Spacing` token（语义名 `xs`~`xl8`；全量值见生成的 [token 清单](generated/design-tokens.md)）。
+- **上半档位已收紧**（2026-10-13 起）：`xl` 20→**16**（卡片内边距）、`xl2` 28→**20**（卡片间距）、`xl3` 36→**24**（区块分隔）、`xl4` 44→**32**。依据是对齐成熟 App 的实测密度——Material 卡片内边距 16dp，微信/美团卡片内部约 16px、卡片间 8–12px。下半档（`xs`~`lg`，即行内节奏与控件内边距）未动，`xl5`+ 是页面级/hero 留白，不属密度范畴。**新增布局优先复用现有档位，不要内联新的像素值。**
 - 标题与其内容的间距全应用统一走 `context.titleContentGap`（`TitleContentGapTokens`）：值取自 Forui 主题
   `context.theme.style.borderRadius.lg`（14px，与 `Spacing.lg` 同值），覆盖区块标题/分组标签 →
   其直接统领的内容（`TodaySection`、`ReviewSectionCard`、各设置页 `SettingsSectionLabel` 调用点等）；
@@ -136,7 +139,7 @@ updated: 2026-09-13
 - `resolvePageViewState`（同文件）直接按数据状态解析 loading/error/ready——**不再** 在 session restore 期间无条件返回 `PageViewStateLoading`。结合 `authGuarded` 的离线优先（restore 期间有 stored session 则走 cache-first fetch），有本地缓存数据的 provider 在冷启动时直接展示数据而非骨架屏（2026-09-10 修订）。
 - `IconActionButton`（`lib/core/widgets/common/control/icon_action_button.dart`）是全 App 唯一的顶栏图标按钮实现，`showBadge` 在右上角叠加红点（未读消息提醒等）；各模块顶栏统一引用 core 版本。
 - `showForuiDatePicker`（`lib/core/widgets/common/control/date_picker.dart`）是全 App 共享的日历日期选择器，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
-- 设置页统一引用 `settingsPageVerticalPadding(BuildContext)`（响应式垂直 padding）与 `SettingsSectionLabel`（分组标题：`typography.body.xs` + `w600` + `SemanticColor.neutral.solid(context)` + `Spacing.sm` 水平 padding），不再各自手写响应式三元表达式或分组标题实现。
+- 设置页统一引用 `settingsPageVerticalPadding(BuildContext)`（响应式垂直 padding）与 `SettingsSectionLabel`（分组标题：`typography.body.xs` + `w700` + `SemanticColor.neutral.solid(context)` + `Spacing.sm` 水平 padding），不再各自手写响应式三元表达式或分组标题实现。
 - 账号/资料列表（个人信息、账号管理、账号安全中心概要）直接组合 Forui `FTileGroup` + `FTile`，不设行封装：`title` 放标签、`suffix` 放箭头（有状态图标时用 `Row(mainAxisSize: min)` 排在箭头左侧）、`prefix` 放头像、`onPress` 放跳转/编辑、注销行走 `variant: FItemVariant.destructive`。分组卡片、组内分隔线、按压/焦点反馈全部由 Forui 提供。列表行是读侧、点击后进入编辑面是写侧——**不再**把字段渲染成常驻可编辑输入框（2026-09-12 个人信息/账号管理改版，2026-09-13 收口到 Forui tile 并删除自绘行/自绘卡片）。**值列必须贴右且不被压没**：`details` 传 `AppTileValue`（`lib/core/widgets/common/control/tile_value.dart`），它把文本包成非 `Text` 的受限宽度组件——Forui 的 tile 内容布局在 `details` 是 `Text` 时优先给 `title`，长标签（或大字号缩放）会把值列压到 0 宽；包一层后值列先测量、标签退让，值列上限 55% 内容宽，两列都保住。值列文案只放**当前值**，不放说明性长句（跳转行不传 `details`，说明留在目标页或弹窗）。
 - 分组卡片统一用 `FTileGroup`（`physics: NeverScrollableScrollPhysics()` + `divider: FItemDivider.full`，嵌在页面滚动视图里），外观取主题 `tileGroupStyle`（`colors.card` 白底 + 1px subtle 描边 + 组内分隔线）；组与组之间靠留白。设置页与账号/资料页因此同一套观感，不再各自手写无边框白卡片。**单行卡片也是 `FTileGroup`，别写 `FCard(child: FTile(...))`**：没有 `FTileGroup` 祖先时 tile 取主题 `tileStyles`，其默认 `contentDecoration` 本身就是「白底 + 1px 描边 + r10」的卡片，套进 `FCard`（同色描边 + r14）就是双层卡片。
 - Auth 页与其它子页同一套骨架（2026-09-13 删除 `AuthShell`/`MobileAuthShell`/`DesktopAuthShell`/`AuthFormPanel` 整条壳层）：`PageScaffold` → `SingleChildScrollView` → `ResponsiveContentFrame` → `Padding(vertical: width < Breakpoints.mobile ? Spacing.xl2 : Spacing.xl3)` → 内容。不再有白色卡片面板、不再有 `Center + ConstrainedBox(maxWidth: 560)` 的窄列约束，内容直接铺在页面级背景上（登录/注册/忘记密码的品牌 logo 与副标题作为内容首项保留）。

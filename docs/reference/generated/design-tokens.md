@@ -226,10 +226,10 @@ is the machine projection; the interpretive contract lives in
 | `sm` | `double` | `6` | 6px — small spacing. |
 | `md` | `double` | `10` | 10px — medium spacing. |
 | `lg` | `double` | `14` | 14px — large spacing. |
-| `xl` | `double` | `20` | 20px — extra large spacing. |
-| `xl2` | `double` | `28` | 28px — 2× extra large spacing. |
-| `xl3` | `double` | `36` | 36px — 3× extra large spacing. |
-| `xl4` | `double` | `44` | 44px — 4× extra large spacing. |
+| `xl` | `double` | `16` | 16px — extra large spacing (card interior padding). |
+| `xl2` | `double` | `20` | 20px — 2× extra large spacing (gap between cards). |
+| `xl3` | `double` | `24` | 24px — 3× extra large spacing (section separation). |
+| `xl4` | `double` | `32` | 32px — 4× extra large spacing. |
 | `xl5` | `double` | `56` | 56px — 5× extra large spacing. |
 | `xl6` | `double` | `72` | 72px — 6× extra large spacing. |
 | `xl7` | `double` | `96` | 96px — 7× extra large spacing. |

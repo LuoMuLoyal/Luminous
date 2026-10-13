@@ -3,9 +3,26 @@ import 'package:forui/forui.dart';
 
 /// Spacing token scale.
 ///
-/// 12 levels mapped to the Forui design system's spacing values.
 /// Semantic names ([xs] through [xl8]) are the primary naming — use them
 /// for all padding, margins, gaps, and structural dimensions.
+///
+/// ## Density (2026-10-13)
+///
+/// The upper half of the scale was tightened: card padding and section gaps
+/// at `xl`/`xl2`/`xl3` were materially looser than the apps this one is
+/// compared against (Material card padding is 16dp; WeChat and Meituan card
+/// interiors sit around 16px, with 8–12px between cards). The lower half
+/// (`xs`–`lg`) is untouched, so inline rhythm and control padding are
+/// unaffected.
+///
+/// | token | was | now |
+/// | --- | --- | --- |
+/// | `xl`  | 20  | 16  |
+/// | `xl2` | 28  | 20  |
+/// | `xl3` | 36  | 24  |
+/// | `xl4` | 44  | 32  |
+///
+/// `xl5`+ stays as-is: those are page-level / hero spacer values, not density.
 abstract final class Spacing {
   /// 4px — extra small spacing.
   static const double xs = 4;
@@ -19,17 +36,17 @@ abstract final class Spacing {
   /// 14px — large spacing.
   static const double lg = 14;
 
-  /// 20px — extra large spacing.
-  static const double xl = 20;
+  /// 16px — extra large spacing (card interior padding).
+  static const double xl = 16;
 
-  /// 28px — 2× extra large spacing.
-  static const double xl2 = 28;
+  /// 20px — 2× extra large spacing (gap between cards).
+  static const double xl2 = 20;
 
-  /// 36px — 3× extra large spacing.
-  static const double xl3 = 36;
+  /// 24px — 3× extra large spacing (section separation).
+  static const double xl3 = 24;
 
-  /// 44px — 4× extra large spacing.
-  static const double xl4 = 44;
+  /// 32px — 4× extra large spacing.
+  static const double xl4 = 32;
 
   /// 56px — 5× extra large spacing.
   static const double xl5 = 56;

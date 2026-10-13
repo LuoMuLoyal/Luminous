@@ -19,20 +19,20 @@ void main() {
       expect(Spacing.lg, equals(14));
     });
 
-    test('xl is 20', () {
-      expect(Spacing.xl, equals(20));
+    test('xl is 16', () {
+      expect(Spacing.xl, equals(16));
     });
 
-    test('xl2 is 28', () {
-      expect(Spacing.xl2, equals(28));
+    test('xl2 is 20', () {
+      expect(Spacing.xl2, equals(20));
     });
 
-    test('xl3 is 36', () {
-      expect(Spacing.xl3, equals(36));
+    test('xl3 is 24', () {
+      expect(Spacing.xl3, equals(24));
     });
 
-    test('xl4 is 44', () {
-      expect(Spacing.xl4, equals(44));
+    test('xl4 is 32', () {
+      expect(Spacing.xl4, equals(32));
     });
 
     test('xl5 is 56', () {
