@@ -11,6 +11,13 @@ abstract final class CoreRoutes {
 
   /// Home shell path — mirrors `Routes.home` (lib/app/router.dart).
   static const String home = '/';
+
+  /// OAuth callback paths — mirror `Routes.loginOauthWechat` / `loginOauthQq` /
+  /// `loginOauthGoogle` (lib/app/router.dart). Deep links must land on these
+  /// so the callback hook can consume them.
+  static const String loginOauthWechat = '/login/oauth/wechat';
+  static const String loginOauthQq = '/login/oauth/qq';
+  static const String loginOauthGoogle = '/login/oauth/google';
 }
 
 /// Builds the login route location with a `return-to` hint, matching

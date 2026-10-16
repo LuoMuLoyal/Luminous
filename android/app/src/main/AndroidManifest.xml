@@ -48,7 +48,7 @@
             </intent-filter>
             <!-- App Links：OAuth 回调 / 分享链接深链入口。
                  autoVerify 需服务端 /.well-known/assetlinks.json 就绪才生效；
-                 未就绪时 Android 退回下方 luminous:// 自定义 scheme。 -->
+                 未就绪时 Android 退回下方自定义 scheme。 -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -57,12 +57,14 @@
                     android:scheme="https"
                     android:host="${deepLinkHost}" />
             </intent-filter>
-            <!-- 自定义 scheme 兜底：assetlinks.json 未就绪或用户未验证时仍可回跳。 -->
+            <!-- 自定义 scheme 兜底：assetlinks.json 未就绪或用户未验证时仍可回跳。
+                 scheme 名经 deepLinkScheme placeholder 注入，与 Dart 侧
+                 LUMINOUS_DEEP_LINK_SCHEME 保持一致。 -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="luminous" />
+                <data android:scheme="${deepLinkScheme}" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

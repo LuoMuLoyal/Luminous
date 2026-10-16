@@ -73,6 +73,8 @@ abstract final class EnvReader {
         return const String.fromEnvironment('SUPPORT_EMAIL');
       case EnvKey.luminousDeepLinkHost:
         return const String.fromEnvironment('LUMINOUS_DEEP_LINK_HOST');
+      case EnvKey.luminousDeepLinkScheme:
+        return const String.fromEnvironment('LUMINOUS_DEEP_LINK_SCHEME');
     }
   }
 }

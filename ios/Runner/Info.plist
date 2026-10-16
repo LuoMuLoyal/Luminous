@@ -41,7 +41,7 @@
 				<string>com.dev.luminous.deeplink</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>luminous</string>
+					<string>$(DEEP_LINK_SCHEME)</string>
 				</array>
 			</dict>
 		</array>

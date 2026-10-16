@@ -13,7 +13,8 @@ enum EnvKey {
   luminousEnableGenUi('LUMINOUS_ENABLE_GEN_UI'),
   sentryDsn('SENTRY_DSN'),
   supportEmail('SUPPORT_EMAIL'),
-  luminousDeepLinkHost('LUMINOUS_DEEP_LINK_HOST');
+  luminousDeepLinkHost('LUMINOUS_DEEP_LINK_HOST'),
+  luminousDeepLinkScheme('LUMINOUS_DEEP_LINK_SCHEME');
 
   const EnvKey(this.wireName);
 

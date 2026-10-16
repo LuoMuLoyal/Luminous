@@ -41,6 +41,41 @@ void main() {
         isFalse,
       );
     });
+
+    test('accepts the configured custom scheme regardless of host', () {
+      // `scheme://login/oauth/qq` parses with host == 'login', so the host rule
+      // alone would reject the custom-scheme fallback.
+      expect(
+        isAcceptedDeepLink(
+          Uri.parse('com.dev.luminous://login/oauth/qq'),
+          host: 'api.luminous.app',
+          scheme: 'com.dev.luminous',
+        ),
+        isTrue,
+      );
+    });
+
+    test('rejects an unconfigured scheme when a host is set', () {
+      expect(
+        isAcceptedDeepLink(
+          Uri.parse('evil://login/oauth/qq'),
+          host: 'api.luminous.app',
+          scheme: 'com.dev.luminous',
+        ),
+        isFalse,
+      );
+    });
+
+    test('ignores the scheme rule when no scheme is configured', () {
+      expect(
+        isAcceptedDeepLink(
+          Uri.parse('com.dev.luminous://login/oauth/qq'),
+          host: 'api.luminous.app',
+          scheme: '',
+        ),
+        isFalse,
+      );
+    });
   });
 
   group('deepLinkStream', () {

@@ -1,7 +1,11 @@
-// Copy this file to DeepLink.xcconfig and fill the real value locally or in CI.
-// DEEP_LINK_HOST must match the host used by the server-side
+// Copy this file to DeepLink.xcconfig and fill the real values locally or in CI.
+//
+// DEEP_LINK_HOST must match the host served by the server-side
 // /.well-known/apple-app-site-association file, and must equal the Dart-side
 // LUMINOUS_DEEP_LINK_HOST so `isAcceptedDeepLink` accepts the callback.
-// When unset, iOS falls back to the `luminous://` custom scheme registered in
-// Info.plist (associated domains simply will not verify).
+// When unset, Universal Links simply do not verify.
+//
+// DEEP_LINK_SCHEME is the custom-scheme fallback registered in Info.plist, and
+// must equal the Dart-side LUMINOUS_DEEP_LINK_SCHEME.
 DEEP_LINK_HOST = luminous.invalid
+DEEP_LINK_SCHEME = com.dev.luminous
