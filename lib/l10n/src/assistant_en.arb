@@ -134,6 +134,7 @@
   "assistantCapabilitiesAction": "Capabilities",
   "assistantCapabilitiesSummaryTitle": "Capability summary",
   "assistantCapabilitiesToolsTitle": "Tools",
+  "assistantCapabilitiesPerTurnNote": "The assistant picks the tools it needs for each question, so a single answer may use only some of them.",
   "assistantCapabilitiesRagLabel": "RAG retrieval",
   "assistantCapabilitiesEnabledValue": "Enabled",
   "assistantCapabilitiesDisabledValue": "Disabled",

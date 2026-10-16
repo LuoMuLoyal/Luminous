@@ -133,6 +133,16 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
               ],
             ),
             const SizedBox(height: Spacing.sm),
+            // 说明「列表是全局可用，不等于每轮都提供」——否则面板显示全部可用，
+            // 而助手自述「本轮没有可用的记录类工具」时两者互相矛盾（真机反馈，
+            // 见 docs/TODO.md「2026-10-04 助手能力口径」）。
+            Text(
+              l10n.assistantCapabilitiesPerTurnNote,
+              style: typography.body.xs.copyWith(
+                color: SemanticColor.neutral.solid(context),
+              ),
+            ),
+            const SizedBox(height: Spacing.sm),
             Flexible(
               child: SingleChildScrollView(
                 child: Column(

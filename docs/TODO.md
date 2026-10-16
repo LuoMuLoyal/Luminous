@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-10-04
+updated: 2026-10-16
 ---
 
 # Luminous TODO
 
-Last updated: 2026-10-04
+Last updated: 2026-10-16
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -212,16 +212,6 @@ Product Loop Program 的延后项如下。
 - 若要 sweep 一并覆盖弹窗，需要把缩放上移到 `TestForuiApp` 之外（32 处用例机械改写）；
   页面断言不受影响（页面对两种放置都缩放），但改写前应先确认无页面依赖 `home` 内的
   MediaQuery 层级。
-
-## 2026-10-04 助手能力口径（面板「全局可用」与本轮工具子集不一致）
-
-- 真机反馈：能力面板显示工具全部可用，但问「你在吗」时助手回答「这次运行里我也没有可用的记录类
-  工具」。后端侧已修（simple_chat 提示词改为如实描述本轮未选工具、并禁止反推产品级不可用；
-  `get_user_settings` 补记忆类读规则），见 `Lucent` 2026-10-04 迁移日志。
-- 客户端口径待补：`AssistantCapabilitiesPanel`（`features/assistant/presentation/widgets/dialogs/
-  capabilities_panel.dart`）只表达「全局可用」，缺少「本轮实际提供给模型的子集」这一维度，
-  因此面板与助手自述会互相矛盾。可选做法：面板注明「工具按每轮选取」；或等后端在 capabilities
-  响应里加字段区分全局/本轮后再改文案（需契约变更）。
 
 ## 2026-09-02 代码审查遗留（08-30 / 09-01 review）
 

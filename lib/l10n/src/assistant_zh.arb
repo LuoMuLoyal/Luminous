@@ -134,6 +134,7 @@
   "assistantCapabilitiesAction": "能力详情",
   "assistantCapabilitiesSummaryTitle": "能力摘要",
   "assistantCapabilitiesToolsTitle": "工具",
+  "assistantCapabilitiesPerTurnNote": "助手每轮按问题自行选用工具，因此单次回答里用到的可能只是其中一部分。",
   "assistantCapabilitiesRagLabel": "RAG 检索",
   "assistantCapabilitiesEnabledValue": "已启用",
   "assistantCapabilitiesDisabledValue": "已关闭",
