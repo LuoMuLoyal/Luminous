@@ -49,6 +49,43 @@ Product Loop Program 的延后项如下。
     （Lucent）→ `dart run scripts/contract/bootstrap.dart`（Luminous）→ 按新实体改
     mapper 与 UI（替换 legacy scalar 趋势渲染、趋势空档可视化、证据展开、反馈）
 
+## 2026-10-16 客户端能力补齐的遗留项（深链 / 日历 / 许可）
+
+- 深链与 App Link 的服务端校验文件未部署
+  - 现状：`AndroidManifest.xml` 已按 `autoVerify="true"` 声明 `https://$(deepLinkHost)`
+    App Link，iOS entitlements 已声明 `applinks:$(DEEP_LINK_HOST)`；但服务端
+    `/.well-known/assetlinks.json` 与 `/.well-known/apple-app-site-association` 未部署，
+    系统校验不通过时会退回自定义 scheme（链路仍可用，体验降级）
+  - 阻塞：域名与部署属 Lucent 侧，已在 `Lucent/docs/TODO.md` 登记
+  - 方案：服务端文件就位后，真机复验 `https://<域名>/login/oauth/qq?code=&state=`
+    能直接进 app 并完成登录
+
+- OAuth 回调的移动端自定义 scheme 未被后端放行
+  - 现状：Lucent `normalizeCallbackUri` 对非 loopback 只接受 `https:` +
+    固定 `/login/oauth/<provider>` 路径 + `CORS_ORIGIN` 白名单内的 origin。
+    客户端 P0-3 因此改用 `https://<LUMINOUS_DEEP_LINK_HOST>/login/oauth/<provider>`
+    作为回调，需该 origin 进 `CORS_ORIGIN` 才能用
+  - 阻塞：契约属 Lucent 侧，已在 `Lucent/docs/TODO.md` 登记
+  - 方案：若要走 `com.dev.luminous://` 这类自定义 scheme 直达，需 Lucent 放宽
+    `normalizeCallbackUri`；否则维持 https 中转形态
+
+- 深链回调真机验证（A6）
+  - 现状：客户端链路与单测已就位，但 Android/iOS 真机各跑一次「深链进 app 并完成登录」
+    尚未执行（开发机为 Windows，iOS 只能靠 CI）
+  - 方案：真机验证后把结论写进当日迁移日志
+
+- `add_2_calendar` 写入结果真机验证
+  - 现状：事件字段映射与失败分支有单测覆盖，但 `Intent.ACTION_INSERT`（Android）与
+    `EKEventEditViewController`（iOS）的实际弹层行为、以及 iOS 授权弹窗文案未经真机确认
+  - 方案：真机验证一次；iOS 侧注意 `NSCalendarsUsageDescription` 缺失会直接终止进程
+
+- iOS 系统权限文案未本地化
+  - 现状：`Info.plist` 的 `NSHealthShareUsageDescription` / `NSCameraUsageDescription` /
+    `NSPhotoLibrary*UsageDescription` / `NSCalendarsUsageDescription` 是中文硬编码，
+    英文用户在系统权限弹窗里看到中文
+  - 方案：补 `en.lproj/InfoPlist.strings` 与 `zh-Hans.lproj/InfoPlist.strings`，
+    并把两个 variant 加进 pbxproj 的 Resources 与 knownRegions
+
 ## 2026-09-06 OAuth 登入门槛调整（UI 隐藏）
 
 - 微信登录与微信身份绑定入口在 UI 层面隐藏（登录页 `OAuthButtonRow` 与账号设置页

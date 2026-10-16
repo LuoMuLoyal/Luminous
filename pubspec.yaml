@@ -74,7 +74,7 @@ dependencies:
   paddle_ocr_native: ^0.1.1
   health: ^13.3.2
 
-  # 深链：OAuth 回调 / 推送跳转 / 分享链接（plans/2026-10-16-client-capability-gaps.md）
+  # 深链：OAuth 回调 / 推送跳转 / 分享链接
   app_links: ^7.2.2
   # 内嵌 WebView：QQ/Google OAuth 授权免手工粘 URL
   webview_flutter: ^4.14.1
@@ -82,8 +82,8 @@ dependencies:
   photo_view: ^0.15.0
   # 用药提醒写入系统日历
   add_2_calendar: ^3.1.1
-  # About 页 pub 依赖许可清单（与 Flutter 内置 showLicensePage 并存）。
-  # 生成器是构建期工具，运行时只读生成出来的 lib/oss_licenses.dart，故不在此声明。
+  # About 页 pub 依赖许可清单由 dart_pubspec_licenses 生成
+  # （dev_dependencies），运行时只读 lib/oss_licenses.dart，故不在此声明。
 
   sign_in_with_apple: ^8.2.0
   flutter_svg: ^2.1.0
