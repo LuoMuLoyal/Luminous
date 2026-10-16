@@ -5,7 +5,7 @@
 公共规则(l10n、TaskEither 仓库边界、跨 feature import 禁令)见仓库根 AGENTS.md,本文件只写本目录特有约定。
 
 ## 职责与边界
-- 管:邮箱密码/验证码登录注册、OAuth(微信/Apple/QQ/Google;微信分移动 SDK 与桌面 loopback 双通道)、会话恢复/刷新、设备会话查看与吊销、改邮箱/改密码/注销账号。
+- 管:邮箱密码/验证码登录注册、OAuth(微信/Apple/QQ/Google;微信分移动 SDK 与桌面 loopback 双通道,QQ/Google 原生端走应用内 WebView)、会话恢复/刷新、设备会话查看与吊销、改邮箱/改密码/注销账号。
 - 不管:路由 redirect 守卫(lib/app/router.dart)、token 持久化(`lucentSessionStoreProvider` 属 lib/core/network)、`authGuarded` 工厂(lib/core/providers/)。
 
 ## 对外契约
@@ -25,7 +25,20 @@
 - 不 import 其他 feature;微信平台通道经条件导出(io/stub),非支持平台不得直接依赖 fluwx。
 
 ## 陷阱与决策
-- OAuth 回调以深链携带 code/state 进入 LoginPage/AccountManagePage;`LoginRoute.returnTo` 控制登录后回跳。
+- OAuth 回调现有**三种来源**,全部汇到同一组 `completeXLogin` 调用,不要为某一种单写分支:
+  1. **GoRouter query 参数**(`?code=&state=`)——Web 端同页跳回,`useOAuthCallbackHandler` 直接读;
+  2. **深链**(`app_links`)——原生端由外部浏览器/系统回跳,经 `core/router/deep_link.dart` 的
+     `deepLinkStreamProvider` 广播,按 `path == /login/oauth/{wechat,qq,google}` 过滤;
+  3. **应用内 WebView 拦截**(`presentation/services/oauth_webview.dart`)——QQ/Google 在原生端
+     用内嵌 WebView 完成授权,命中 callback URI 即 `pop`,不真正请求该地址。
+  深链与 WebView 都必须**等 `authSessionProvider.isLoading == false`** 再消费,否则
+  `app/router.dart` 的 redirect 守卫会先把用户带走,回调被吞。解析统一走
+  `parseOAuthDeepLink` / `OAuthCallbackParser.parse`,不写第二个解析器。
+- OAuth callback URI 的合法形状由**后端**决定(`AuthOAuthStateService.normalizeCallbackUri`):
+  loopback `http` 带端口,或 `https` + `CORS_ORIGIN` 白名单 origin + 固定 provider 路径。
+  客户端 `nativeOAuthCallbackUri` 用 `LUMINOUS_DEEP_LINK_HOST` 拼 https 站点回调;
+  未配置域名时自动退回外部浏览器 + 手工粘贴流程。改这条约束要同步后端,别在客户端放宽。
+- `LoginRoute.returnTo` 控制登录后回跳。
 - 旧 `account_settings.dart`/`account_settings_helpers.dart`/`account_settings_sections.dart`(被 `AccountManagePage` 取代后不可达)已删除,勿再引入;账号页共用 helper 只保留 `account_manage_helpers.dart`。
 - 账号页(`account_manage_sections.dart`)与账号安全中心只列可管理项,行直接用 Forui `FTile`(标签走 `title`/当前值走 `AppTileValue`/箭头走 `suffix`)并分组在 `FTileGroup` 里(版面、分隔线、按压反馈都由 Forui 提供,不再自绘行或卡片);值列只放**当前值**,纯跳转行不传 `details`,说明性长句留在目标页或弹窗。头像与昵称归个人信息页(`Routes.profile`),这里只跳转,不再持有 `AccountSummaryCard` 之类的第二份资料展示与编辑。
 - 登录后的跳转一律走 `goAfterLogin(..., fallbackHome: true)`。`return-to` 不是必需的:退出登录与「去登录」链接都落在**裸 `/login`** 上,此时必须回退 `Routes.home`;漏传 `fallbackHome` 会让该调用成为静默空操作,表现为「登录成功却停在登录页」。`app/router.dart` 守卫的 `refresh()` 重定向只是兜底,受会话通知时序影响,不能当作登录后跳转的唯一依据。

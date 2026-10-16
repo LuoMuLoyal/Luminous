@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-10-04
+updated: 2026-10-16
 ---
 
 # Localization
@@ -18,7 +18,7 @@ l10n 工作流与约定。键清单是 `flutter gen-l10n` 的投影，不在此�
 
 ## 分片划分（粗粒度）
 
-- `common`：shell 与全局（tab / desktop / state / placeholder / legal 前缀）；`network`：网络层错误文案，经 `NetworkErrorL10n` 映射；`auth` 另有客户端自检失败文案（微信 SDK、刷新令牌可用性等），经 `ClientErrorL10n` 映射。
+- `common`：shell 与全局（tab / desktop / state / placeholder / legal 前缀）；`network`：网络层错误文案，经 `NetworkErrorL10n` 映射；`auth` 另有客户端自检失败文案（微信 SDK、刷新令牌可用性等），经 `ClientErrorL10n` 映射，以及 OAuth 授权链路的浏览器/WebView 状态文案（`authQq*` / `authGoogle*` / `authOAuthWebView*`）。
 - feature 分片与 feature 对应：`record`、`medicine`（含 `scan*`）、`today`、`review`（原 report，`review*` 前缀）、`settings`（含 `sidebar*`）、`auth`、`mine`、`assistant`、`notification`；`health_sync` 独立承载健康数据导入与自动同步文案。
 - 键前缀与分片的归属规则在 `scripts/l10n/arb_tools.dart` 的 `fragmentRules`；新增 feature 在此加行。
 

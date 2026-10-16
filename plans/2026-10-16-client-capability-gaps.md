@@ -95,51 +95,10 @@ Revised: 2026-10-16（首版）
 
 ---
 
-## 二、P0 — 深链 + OAuth 内嵌（本批核心）
+## 二、P0 — 深链 + OAuth 内嵌（已完成，2026-10-16）
 
-### P0-1 依赖与平台骨架
-
-- `pubspec.yaml` dependencies 增加 `app_links`、`webview_flutter`；
-  `android/`、`ios/` 按上表补声明；`flutter pub get`。
-- `lib/core/router/deep_link.dart` 新增 `deepLinkProvider`（`@riverpod`，
-  暴露 `Stream<Uri>`）；`lib/app/bootstrap.dart`（或既有启动入口）在
-  `runApp` 前订阅并 `ref.read` 记录初始 URI（冷启动深链）。
-- **测试**：`test/core/router/deep_link_test.dart` 用注入的 stream fake 断言
-  (a) 冷启动 URI 被记录；(b) 热启动 URI 被广播；(c) 无 URI 时静默。
-  **不发真实设备**（沿用「测试不启动真实设备能力」约定）。
-
-### P0-2 auth feature 消费深链
-
-- `presentation/pages/oauth_callback_hook.dart` 的 `useOAuthCallbackHandler`
-  扩展：除 GoRouter query 参数外，监听 `deepLinkProvider` 中
-  `path == /login/oauth/{wechat,qq,google}` 的 URI，解析出 code/state 后走
-  **与 query 参数完全相同**的 `completeXLogin` 调用路径。
-- 保持既有 provider 的签名不变，只加数据来源；**不新增 provider**。
-- `oauth_callback_parser.dart` 已有 `OAuthCallbackParser.parse`（吃整串 URL），
-  深链 URI 直接复用，不写第二个解析器。
-- **测试**：`test/auth/oauth_deep_link_test.dart` 覆盖三条链各「深链进来 →
-  code/state 提取 → 调用 repository → 成功后 `goAfterLogin`」；
-  以及「深链 path 不匹配 / code 缺失」时的静默分支。
-
-### P0-3 WebView 内嵌授权
-
-- 新增 `presentation/services/oauth_webview.dart`：`openOAuthWebView(context, url, callbackUri)`
-  → `showDialog`/`showFDialog`（用 Forui 既有弹层，不新写容器）内嵌 `WebViewWidget`，
-  `NavigationDelegate.onNavigationRequest` 命中 callback 前缀即 `pop(result)`。
-- `oauth_handlers.dart` 的 `startXLogin` 在**原生端**改走 WebView；
-  `externalUrlLauncherProvider.open()` 保留为 Web 端与 WebView 打开失败时的回退。
-- **文案**：WebView 关闭失败/加载失败两种状态各一条 toast —— 走
-  `lib/l10n/src/auth_{zh,en}.arb` 分片 → `dart scripts/l10n/arb_tools.dart merge`
-  → `flutter gen-l10n`。**禁止直接改 `app_*.arb`**。
-- **测试**：`test/auth/oauth_webview_test.dart` 用 fake `NavigationDelegate`
-  断言命中回调即关闭、非回调不拦、加载失败 toast。
-
-### P0-4 收尾与 l10n
-
-- `lib/features/auth/README.md`「陷阱与决策」补一条：OAuth 回调现有**三种**来源
-  （GoRouter query / 深链 / WebView 拦截），三者汇到同一 `completeXLogin`。
-- `docs/reference/localization.md` 同步新增 key。
-- 迁移日志追加当日条目。
+P0-1 依赖与平台骨架、P0-2 auth 消费深链、P0-3 WebView 内嵌授权、P0-4 收尾与 l10n
+均已落地，见 `docs/logs/migration-log/2026-10-16.md`。剩余为 P1 三项与验收 A6（真机）。
 
 ---
 

@@ -89,7 +89,11 @@ Product Loop Program 的延后项如下。
 - 微信 Universal Link 的 Associated Domains 未配置
   - 现状：`Info.plist` 的 URL Scheme 走 `$(WECHAT_MOBILE_APP_ID)`，但 entitlements 里没有
     `com.apple.developer.associated-domains`；微信登录入口当前在 UI 层隐藏（见 2026-09-06 条目）
-  - 方案：拿到企业资质后补 `applinks:<domain>` 到 entitlements，并在 Apple 账号与
+  - 2026-10-16 更新：entitlements 已按深链计划补上 `applinks:$(DEEP_LINK_HOST)`
+    （值来自 `ios/Flutter/DeepLink.xcconfig`，模板见 `DeepLink.example.xcconfig`），
+    通用 App Link 的声明位置已就位；**但微信 Universal Link 仍缺**——它需要企业资质，
+    且域名与 `WECHAT_IOS_UNIVERSAL_LINK` 是另一套取值
+  - 方案：拿到企业资质后，把微信域名补进 `applinks:` 列表，并在 Apple 账号与
     `WECHAT_IOS_UNIVERSAL_LINK` 变量两侧配好
 
 - iOS 系统权限文案未本地化
