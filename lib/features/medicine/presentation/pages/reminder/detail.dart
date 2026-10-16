@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
@@ -13,14 +14,17 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
+import 'package:luminous/features/medicine/presentation/services/reminder_calendar.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/detail_info_tiles.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/log_panels.dart';
+import 'package:luminous/features/today/presentation/providers/user_timezone.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderDetailPage extends ConsumerWidget {
@@ -305,7 +309,20 @@ class _ReminderDetailBody extends ConsumerWidget {
           const SizedBox(height: Spacing.lg),
           ReminderDeliveryLogPanel(logs: data.deliveryLogs),
           if (reminders.isNotEmpty) ...[
-            const SizedBox(height: Spacing.xl),
+            const SizedBox(height: Spacing.lg),
+            FButton(
+              key: const Key('medicine-reminder-add-to-calendar-button'),
+              variant: FButtonVariant.outline,
+              onPress: () => _addToSystemCalendar(
+                context,
+                ref,
+                l10n,
+                reminders: reminders,
+              ),
+              prefix: const Icon(SemanticIcons.actionCalendar),
+              child: Text(l10n.medicineReminderAddToCalendarAction),
+            ),
+            const SizedBox(height: Spacing.lg),
             FButton(
               key: const Key('medicine-reminder-delete-button'),
               variant: FButtonVariant.destructive,
@@ -335,6 +352,61 @@ class _ReminderDetailBody extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _addToSystemCalendar(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n, {
+    required List<MedicineReminderItem> reminders,
+  }) async {
+    final timeZoneName = await readUserTimezone(ref);
+    if (!context.mounted) return;
+
+    final event = buildReminderCalendarEvent(
+      reminders: reminders,
+      title: _calendarEventTitle(reminders, l10n),
+      description: reminders.first.note,
+      timeZoneName: timeZoneName,
+    );
+
+    final failure = event.fold((failure) => failure, (event) => null);
+    if (failure != null) {
+      await Toast.show(context, userMessageFromError(failure, l10n: l10n));
+      return;
+    }
+
+    final built = event.getRight().toNullable()!;
+    bool saved;
+    try {
+      saved = await ref.read(reminderCalendarWriterProvider).addEvent(built);
+    } catch (_) {
+      if (!context.mounted) return;
+      await Toast.show(context, l10n.medicineReminderCalendarFailed);
+      return;
+    }
+    if (!context.mounted) return;
+
+    // `false` covers user dismissal, denied permission, and no calendar app —
+    // all refusals. Never report success for them.
+    final writeFailure = calendarWriteFailure(saved);
+    await Toast.show(
+      context,
+      writeFailure == null
+          ? l10n.medicineReminderCalendarAddedToast
+          : userMessageFromError(writeFailure, l10n: l10n),
+    );
+  }
+
+  /// Titles the calendar entry with the medicine name so the user can tell
+  /// entries apart in their calendar app.
+  String _calendarEventTitle(
+    List<MedicineReminderItem> reminders,
+    AppLocalizations l10n,
+  ) {
+    final label = reminders.first.label?.trim();
+    if (label != null && label.isNotEmpty) return label;
+    return l10n.medicineReminderCalendarEventTitle;
   }
 
   Future<void> _toggleReminderActive(

@@ -47,4 +47,10 @@ enum ClientErrorCode {
 
   /// Avatar upload refused: the file exceeds the client size limit.
   avatarFileTooLarge,
+
+  /// The reminder group has no usable occurrence to export to the calendar.
+  reminderCalendarUnavailable,
+
+  /// The system calendar refused or could not accept the event.
+  reminderCalendarWriteFailed,
 }

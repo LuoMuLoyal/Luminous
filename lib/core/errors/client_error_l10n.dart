@@ -30,6 +30,10 @@ abstract final class ClientErrorL10n {
       ClientErrorCode.avatarFileTypeUnsupported =>
         l10n.profileAvatarUnsupportedType,
       ClientErrorCode.avatarFileTooLarge => l10n.profileAvatarTooLarge,
+      ClientErrorCode.reminderCalendarUnavailable =>
+        l10n.medicineReminderCalendarUnavailable,
+      ClientErrorCode.reminderCalendarWriteFailed =>
+        l10n.medicineReminderCalendarFailed,
     };
   }
 }
