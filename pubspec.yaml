@@ -74,6 +74,17 @@ dependencies:
   paddle_ocr_native: ^0.1.1
   health: ^13.3.2
 
+  # 深链：OAuth 回调 / 推送跳转 / 分享链接（plans/2026-10-16-client-capability-gaps.md）
+  app_links: ^7.2.2
+  # 内嵌 WebView：QQ/Google OAuth 授权免手工粘 URL
+  webview_flutter: ^4.14.1
+  # 交互式图片查看（缩放）：报告 / 扫描单 / 头像
+  photo_view: ^0.15.0
+  # 用药提醒写入系统日历
+  add_2_calendar: ^3.1.1
+  # About 页 pub 依赖许可清单（与 Flutter 内置 showLicensePage 并存）
+  flutter_oss_licenses: ^3.2.0
+
   sign_in_with_apple: ^8.2.0
   flutter_svg: ^2.1.0
   share_plus: ^13.3.1

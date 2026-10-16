@@ -26,6 +26,11 @@ val luminousApplicationId = "com.dev.luminous"
 val jpushAppKey = providers.gradleProperty("JPUSH_APP_KEY")
     .orElse(providers.environmentVariable("JPUSH_APP_KEY"))
     .orElse("")
+// App Links 深链域名，与 Dart 侧 LUMINOUS_DEEP_LINK_HOST 保持一致。
+// 未提供时用占位域名：assetlinks.json 未就绪，Android 会退回 luminous:// scheme。
+val deepLinkHost = providers.gradleProperty("DEEP_LINK_HOST")
+    .orElse(providers.environmentVariable("DEEP_LINK_HOST"))
+    .orElse("luminous.invalid")
 
 android {
     namespace = "com.dev.luminous"
@@ -43,6 +48,7 @@ android {
         manifestPlaceholders["JPUSH_PKGNAME"] = luminousApplicationId
         manifestPlaceholders["JPUSH_APPKEY"] = jpushAppKey.get()
         manifestPlaceholders["JPUSH_CHANNEL"] = "developer-default"
+        manifestPlaceholders["deepLinkHost"] = deepLinkHost.get()
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26

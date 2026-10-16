@@ -12,7 +12,8 @@ enum EnvKey {
   luminousAiRuntimeProvider('LUMINOUS_AI_RUNTIME_PROVIDER'),
   luminousEnableGenUi('LUMINOUS_ENABLE_GEN_UI'),
   sentryDsn('SENTRY_DSN'),
-  supportEmail('SUPPORT_EMAIL');
+  supportEmail('SUPPORT_EMAIL'),
+  luminousDeepLinkHost('LUMINOUS_DEEP_LINK_HOST');
 
   const EnvKey(this.wireName);
 

@@ -1,2 +1,3 @@
 #include? "Wechat.xcconfig"
+#include? "DeepLink.xcconfig"
 #include "Generated.xcconfig"
