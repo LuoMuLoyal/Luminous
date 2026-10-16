@@ -7,6 +7,10 @@ Created: 2026-08-16
 > 来源: `Luminous/research/02-功能盘点/platform-通知与横切能力.md`(已审阅;内容以逐功能分析为准改写,速览表仅作参考;该调研文档无结尾汇总章节)。
 > 执行顺序: 本批共 10 份改造计划,全局顺序见 [`README.md`](README.md);本计划为第 1 位。
 
+> **2026-10-16 状态：两项改造均未开工（0.1.0 后）。** F-7 环境快照仍返回六个硬编码纬度带 profile
+> （`Lucent/src/modules/environment/config/reference.ts`），客户端零调用；F-6 health_sync 开关仍无执行器消费。
+> F-4 三通道落库与 F-3 JPush 密钥均已完成（2026-08-16）。
+
 ## 一、目标与范围
 
 范围:Luminous 侧 `lib/features/notification/`、`lib/features/health_data/`、`lib/features/shell/`、`lib/core/notifications/`、`lib/core/push/`、`lib/core/shortcuts/`、`lib/core/analytics/`,另涉及 `lib/features/medicine/` 提醒协调器与投递历史 UI、`lib/features/settings/` 隐私/权限接线;Lucent 侧 `src/modules/notifications/`、`src/modules/environment/`、`src/modules/product-events/`,另涉及 `src/modules/medicine-reminders/` 调度器与 `src/common/queue/cron-jobs.service.ts`。
@@ -62,7 +66,7 @@ F-9 不扩展 Flutter Desktop/PC Flutter Web 产品面；独立 Next.js + Tauri 
 - 本计划为全局第 1 位,以下横切内容在本文档写全,其他计划只引用:F-7 天气真实化方案、F-6 自动同步执行器。
 - F-7 消费面外溢:助手工具注册涉及 assistant 计划(第 5 位);记录上下文快照涉及 record 计划(第 6 位)——两处只接线,方案以本文档为准。
 - F-6 source 来源标签与覆盖率统计口径影响 record(第 6 位)/ report(第 8 位)域,口径以本文档为准。
-- F-4 提醒投递记录三通道落库已完成(2026-08-16),方案与实现见 `Lucent/docs/01-reference/adr/0013-reminder-delivery-three-channel.md`(ADR-0013);F-3 JPush 密钥补齐已完成(2026-08-16),部署配置见 `Lucent/deploy/compose.yml` 与 `Lucent/deploy/deploy.ts`,密钥管理口径见 `Lucent/docs/01-reference/` 下 `environment.md`、`environment-variables.md`、`deployment.md`;本计划不再展开。
+- F-4 提醒投递记录三通道落库已完成(2026-08-16),方案与实现见 `Lucent/docs/reference/adr/0013-reminder-delivery-three-channel.md`(ADR-0013);F-3 JPush 密钥补齐已完成(2026-08-16),部署配置见 `Lucent/compose.yaml` 与 `Lucent/deploy/deploy.ts`,密钥管理口径见 `Lucent/docs/reference/` 下 `environment.md`、`environment-variables.md`、`deployment.md`;本计划不再展开。
 - F-9 桌面/Web 形态:Flutter Desktop 与 PC Flutter Web 不再扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动，本文不重复展开。
 - 上线密钥 checklist:F-7(高德)属"密钥缺失即静默 no-op"运维缺口,上线前补齐;F-3(JPUSH)密钥已完成(2026-08-16),不再列入。
 

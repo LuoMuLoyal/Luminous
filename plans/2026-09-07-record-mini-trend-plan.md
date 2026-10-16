@@ -1,16 +1,21 @@
 # Record 内嵌迷你趋势:记录当下的 7 天即时反馈(周/月切换)
 
 Created: 2026-09-07
+Revised: 2026-10-16（按代码现状核实：P0–P2 均未开工；配套的 review 页重组计划已执行完毕删除）
 
-> 定位:Review 页重组计划(`2026-09-07-review-page-restructure.md`)的**另一半**——
-> 把「记录当下的即时反馈」内嵌进 record 页:日期条与快捷面板之下,一行类别 + 该类别
+> 定位:把「记录当下的即时反馈」内嵌进 record 页:日期条与快捷面板之下,一行类别 + 该类别
 > 7 天迷你折线(周|月切换)+ 覆盖率行 + 该类别记录摘要。深度洞察仍归 review,本计划
 > 只做轻量、一瞥式、记录后立刻可感知的趋势反馈。
 >
 > 依据:`../research/01-用户价值调研/record-review-assistant-纵向洞察归属与Tab验证.md`
 > 阶段 1 推荐:Record 增强为「记录中枢」,内嵌迷你趋势(Habito 类即时反馈是参与最大
-> 杠杆;「反思发生在记录当下」)。与 review 计划的分工:**record = 当下的值/趋势感知,
+> 杠杆;「反思发生在记录当下」)。与 review 的分工:**record = 当下的值/趋势感知,
 > review = 周/月深度洞察与事件专题**;两端在后端聚合契约成熟后共享同一语义(Wave 2)。
+>
+> **2026-10-16 状态:P0–P2 全部未开工**——`lib/features/record/presentation/widgets/sections/`
+> 下无 `mini_trend/` 目录,无对应 provider 与测试。原配套的
+> `2026-09-07-review-page-restructure.md` 已执行完毕并删除(实施完毕文件已删),
+> 其 Wave 2 依赖登记在 `docs/TODO.md`「2026-09-08 Review 页重组后置依赖登记」。
 
 ## 已决决策(2026-09-07)
 

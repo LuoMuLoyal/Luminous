@@ -1,10 +1,13 @@
 # 日常记录(Record,含餐食分析)改造计划
 
 Created: 2026-08-16
+Revised: 2026-10-16（按代码现状核实 P2-3 的硬编码 trends 仍在；契约脚本名改为现行入口）
 
 > 已决事项见 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md)，其优先于本文件旧「不确定点」表述。
 > 来源: `Luminous/research/02-功能盘点/record-日常记录与餐食分析.md`(已审阅;内容以逐功能分析为准改写,速览表/结尾汇总仅作参考——速览表统计口径自相矛盾(22 项 vs 21 项),本文一律不引用其统计数字)。
 > 执行顺序: 本批共 10 份改造计划,全局顺序见 [`README.md`](README.md);本计划为第 6 位。
+
+> **2026-10-16 状态：P1-3/P1-4 未开工（0.1.0 后）；P2-3 的硬编码 `staticTrends` 死数据仍在（桌面能力冻结）。**
 
 ## 一、剩余改造项(按优先级分组)
 
@@ -32,10 +35,10 @@ Created: 2026-08-16
 
 ### P2-3 桌面趋势图真实数据化(调研 §4.2，桌面高级能力冻结)
 
-- 现状:`lucent.dart` 的 `_staticTrends` 含一条硬编码血糖序列(`[5.1, 5.8, 5.4, 6.2, 5.6, 6.5, 5.9]`),全库无任何 widget 引用 `RecordTrend`,属死代码与误导性数据资产。
+- 现状(2026-10-16 核实):`record/data/repositories/lucent.dart:103` 仍把 `staticTrends` 直接填进 `trends`;`staticTrends` 定义在 `record/data/utils/record_static_data.dart:207`,含一条硬编码血糖序列;`RecordTrend` 实体(`record/domain/entities/dashboard.dart`)在 `lib/` 内**零 widget 消费**——属死代码与误导性数据资产。注意 `record/presentation/providers` 下也没有任何 provider 读它,拆改时不会有隐藏调用方。
 - 方案:不删除,改造——将硬编码序列替换为真实 vital 时间序列查询(P1-4 同源),unknown 天不绘点;`_staticTrends` 与 `RecordTrend` 相关定义替换为真实查询函数,严禁硬编码样本点。作为桌面「大屏纵向阅读」资产保留。
-- 挂起:桌面/Web 形态待 ADR-0012,见 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md),本文不展开形态决策。
-- 依赖:P1-4(vital 时间序列基建);ADR-0012。
+- 挂起:桌面/Web 形态待 ADR-0008 已接受的路线,见 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md),本文不展开形态决策。
+- 依赖:P1-4(vital 时间序列基建)。
 
 ### P2-4 桌面月历服务端标记(调研 §4.3，桌面高级能力冻结)
 
@@ -49,7 +52,7 @@ Created: 2026-08-16
 - **ObservedMetric 口径统一**:`summarizeWaterMetrics`/`toObservedWaterMetric`(Lucent `common`)四处共用 mapper 的口径统一方案见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节,本文不重复展开;P1-4 的 vital 趋势输出沿用该口径。
 - **桌面/Web 形态挂起**:P2-3、P2-4 不再扩展 Flutter 产品面；桌面高级能力继续冻结，本文不展开。
 - **被引用**:本文档「P1-4 vital 时间序列基建」一节为共享基建定义,health-event 计划(C-1 `weightKg`)与 report 计划(纵向洞察趋势)引用本节。
-- **契约**:本计划不改 OpenAPI 契约;若 P1-4 新增 vital 趋势端点,需走 `pnpm export:openapi` + `dart run scripts/bootstrap_generated_sources.dart` 标准流程。
+- **契约**:本计划不改 OpenAPI 契约;若 P1-4 新增 vital 趋势端点,需走 `pnpm export:openapi`(Lucent)+ `dart run scripts/contract/bootstrap.dart`(Luminous)标准流程。
 
 ## 三、本计划内执行顺序
 

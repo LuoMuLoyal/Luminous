@@ -2,6 +2,10 @@
 
 > 2026-09-02 起。定位:配合 Lucent 侧演进计划(`Lucent/plans/2026-09-02-agentic-proactive-evolution.md`),把 assistant 的 SSE 对话 + proposal 确认流从单页能力组件化,贯穿 today / review / medicine 主流程(Agentic 化),再承接 Proactive 推送与跨端会话一致。用户始终主驾,每个写动作过确认门。
 
+> **2026-10-16 状态：Phase 0 起未开工。** P0-1 语义搜索接入、P0-2 扫药视觉增强、P0-3 AI 上下文统一均无对应实现：
+> 搜索仍是端侧关键词检索，视觉字段提取仍是纯规则解析（`scan/domain/services/medicine_ocr_extractor.dart`）。
+> 后端配套清单见 `Lucent/plans/2026-09-02-agentic-proactive-evolution.md`（同样未开工）。
+
 ## 现状锚点(代码事实)
 
 - `lib/features/assistant/`:SSE 流式多轮对话 + `proposal_card` 门控写确认(shared/proposal_card 经 `flowui_adapter` 呈现),但 assistant 只能在一个页面里用。

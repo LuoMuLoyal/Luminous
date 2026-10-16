@@ -7,6 +7,11 @@
 
 ---
 
+> **2026-10-16 状态：Phase 1（后台同步）与 Phase 2（推送通知）的方案已由
+> [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md) 接管并落地
+> （本地通知 + JPush 回退）；本文件剩余 Phase 3–7（健康数据手动导入已落地、生物识别、快捷方式、
+> Live Activity、桌面热键）中，未落地项均依赖平台资质或 0.1.0 后排期。
+
 ## 1. 背景与目标
 
 Luminous 当前大部分功能通过纯 Dart + Flutter 插件实现，已有的原生桥接仅限于：

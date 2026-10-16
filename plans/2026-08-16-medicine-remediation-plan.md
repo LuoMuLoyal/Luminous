@@ -6,6 +6,8 @@ Created: 2026-08-16
 > 来源: `research/02-功能盘点/medicine-用药管理.md`(已审阅;内容以逐功能分析为准改写,速览表/结尾汇总仅作参考)。
 > 执行顺序: 本批共 10 份改造计划,全局顺序见 [`README.md`](README.md);本计划为第 2 位。
 
+> **2026-10-16 状态：F-5 P1 前端已完成；P2 后端统计对象未做（0.1.0 前）。F-2 未开工（0.1.0 后）。**
+
 ## 一、剩余改造项
 
 ### F-5 依从性口径统一 P2 后端统计对象(ObservedMetric 稀疏语义合同;本节为 today/record/report 计划的口径权威来源)
@@ -15,8 +17,11 @@ Created: 2026-08-16
 - P1 已完成(前端 mapper,2026-08-16):`lucent_workspace.dart` 按到期三态统计(`isOverdue` 布尔建模、`_isSlotDue` 判定、分子=taken、
   无槽位药不计入分母、删除「无槽位记 1」),`mobile_shared.dart` 下一剂跳过 overdue 槽;时区沿用设备墙钟、不做 30 分钟宽限
   (宽限只影响后端漏服分类,不影响「到期」分母)。
-- 剩余(P2,后端):在 dose-logs 或 workspace 接口暴露当日 slot 统计对象，采用 `ObservedMetric` 合同，消除两端口径漂移——
-  注意后端 today collector 现按 `taken / expectedCount(全部计划槽位)` 计算(与已到期分母不一致,需一并对齐),时区对齐 profile timezone。
+- 剩余(P2,后端):在 dose-logs 或 workspace 接口暴露当日 slot 统计对象，采用 `ObservedMetric` 合同，消除两端口径漂移。
+  **2026-10-16 核实的漂移点**：`Lucent/src/modules/today-suggestion/services/collectors/medication.service.ts:221` 的
+  `expectedCount = reminderStatuses.length` 取的是**全部计划槽位**（含未到期），而前端按「已到期三态」统计；
+  同一份数据在 `Lucent/src/modules/reports/dashboard/context.service.ts:143` 又用 `statuses.length`
+  （只有已产生 dose log 的槽位）。三处分母定义不同，需一并对齐到「已到期」，时区对齐 profile timezone。
 - 涉及:后端 `medicine-dose-logs/`(或 workspace 接口);前端届时切换数据源。
 - 前后端分工:P1 前端先行(已完成);P2 后端补统计接口后前端切换数据源。
 - 依赖:后端 Active_Product_Loop 已收口该合同；P2 在 0.1.0 前完成。

@@ -1,10 +1,9 @@
 # Today 今日建议改造计划
 
 Created: 2026-08-16
+Revised: 2026-10-16（按代码现状更新 F-8 剩余项的具体位置与 F-14 依赖；见下）
 
-> 已决事项见 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md)，其优先于本文件旧「不确定点」表述。
-> 来源: `Luminous/research/02-功能盘点/today-今日建议.md`(已审阅;内容以逐功能分析为准改写,速览表/结尾汇总仅作参考)。
-> 执行顺序: 本批共 10 份改造计划,全局顺序见 [`README.md`](README.md);本计划为第 4 位。
+> **2026-10-16 状态：F-8 剩余项未做（0.1.0 前）；F-14 未开工（0.1.0 后）。**
 
 ## 一、剩余改造项(按优先级分组)
 
@@ -13,7 +12,11 @@ Created: 2026-08-16
 **1. F-8 概览指标 Today 侧剩余修复:completedCount 退役**
 
 - 进展:降级标记已落地——repository 各数据源 try/catch 产出 `_degradedObservedMetric`/`_degradedDashboard`,失败指标显示「暂不可用」而非 0/`--`(`today/data/repositories/lucent.dart`、`domain/entities/dashboard.dart` 的 `TodayObservedMetricState.degraded`、`view_models.dart` 的 `isDegraded` 渲染)。
-- 剩余:`TodayWaterSummary.remainingCount`(目标次数−记录条数,`domain/entities/dashboard.dart`)逐步下线,`buildAiSummaryBullets` 与 `_waterOverviewValue` 兜底仍消费 `remainingCount`/`completedCount`——问候语已迁 observedMetric(F-9),bullets 消费方未迁。
+- **2026-10-16 核实的剩余点**(三处仍消费 legacy 计数,均未迁 observedMetric):
+  1. `today/presentation/widgets/shared/view_models.dart:241` —— `_waterOverviewValue` 的第三个分支 `todayWaterOverviewCount(water.completedCount, water.targetCount)`;前两个分支已用 `observedMl`/`observedMetric`,只有 observedMetric 为空时才落到这里。
+  2. `today/presentation/widgets/shared/view_models.dart:248` —— `dashboard.water.remainingCount` 供 `buildAiSummaryBullets` 的饮水 bullets(`todayAiSummaryWaterRemaining`)。
+  3. `today/domain/entities/dashboard.dart:136` —— `TodayWaterSummary.remainingCount` getter 本身(`targetCount - completedCount`),以及 `completedCount` 字段(`lucent.dart:227` 由 `recordCounts['water']` 填充,`:327` 签出态填 0)。
+- 退役口径:问候语已迁 observedMetric(F-9),bullets 与概览兜底按同一口径迁——**不得把 `remainingCount` 当「目标−已喝」再算一遍**,它必须是 observedMetric 的派生展示值。
 - observedMetric 口径的权威定义见 [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) 的 F-5 一节,本文不重复展开。
 - 分工:纯前端 `today` data/domain。
 
@@ -31,7 +34,7 @@ Created: 2026-08-16
 - 高德天气/空气 API 真实化(后端客户端、缓存、城市选择):[`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md) 天气真实化一节;本文只写 Today 侧消费方式(F-14)。通知基础设施/JPush 通道同此计划。
 - observedMetric 口径权威定义:[`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) F-5 一节;本文只写 Today 侧修复(F-8)。
 - 本计划写全、供他计划引用:**「建议反馈与升级通知机制」**(F-2 反馈闭环、F-7 触发扩展、建议升级通知执行器「前台应用内、后台本地优先、JPush 仅失败/不可达回退、每天最多 1 条」)——health-event 与 mine 计划的通知/反馈需求引用此节,不重复定义;该机制已落地,实现与验证见迁移日志 2026-08-17。
-- 后端 API 变更(F-6 DTO、F-1 端点、F-7 触发)后须 `pnpm export:openapi`(Lucent)+ `dart run scripts/bootstrap_generated_sources.dart`(Luminous)。
+- 后端 API 变更(F-6 DTO、F-1 端点、F-7 触发)后须 `pnpm export:openapi`(Lucent)+ `dart run scripts/contract/bootstrap.dart`(Luminous)。
 - 本计划全部面向移动端；桌面高级能力冻结，独立 Next.js + Tauri MVP 于 0.1.0 后启动。
 
 ## 三、本计划内执行顺序

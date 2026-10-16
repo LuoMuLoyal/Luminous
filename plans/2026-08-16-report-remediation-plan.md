@@ -7,6 +7,11 @@ Updated: 2026-08-30（R-3/R-4 已完成，仅保留 R-5/R-6）
 > 来源: `Luminous/research/02-功能盘点/report-报告模块.md`(已审阅;内容以逐功能分析为准改写,速览表/结尾汇总仅作参考)。
 > 执行顺序: 本批共 10 份改造计划,全局顺序见 [`README.md`](README.md);本计划为第 8 位。
 
+> **2026-10-16 状态：R-3/R-4 已完成；R-5 与 R-6 均未做（标为 0.1.0 前）。**
+> R-5：`summary/generate*` 三个端点仍无服务端「数据不足拒绝」守卫，直接调 API 仍可对空数据生成。
+> R-6：两处文档漂移仍在（`docs/archive/2026-08-31-doc-governance/Mock_Or_Deferred.md` 的 clinic share link 描述、
+> `Active_UI_Report.md` 对 legacy scalar 的描述）。
+
 ## 一、剩余改造项
 
 **R-5 服务端 409 双保险(#15 附注，0.1.0 前）**

@@ -33,68 +33,49 @@ YYYY-MM-DD-short-task-name.md
 
 ## Current Plans
 
-- [`2026-09-15-review-remediation-plan.md`](2026-09-15-review-remediation-plan.md)
-  — 09-08~09-14 七份每日审查报告（源文件已删）逐条对照 2026-09-15 工作树核实的修复计划：P0 测试 fixture 清理已下线 bloodType/emergencyContact 字段；P1 覆盖 _submit 假成功、onLinkWechat 死分支、terms l10n hack、头像/OCR 上传链路、redirect 测试盲区、legacy profile_edit 退役等；并显式列出误报与已修复项（死代码三件套、OAuth 五页重复、pre-push 摘 test 等）防止返工
-- 餐食分析链路重构计划（2026-09-15，实施完毕文件已删）
-  — 实测证伪「拆菜→对照成分表算热量」，改为一次多模态分析直出「热量区间（独立字段，不进 items）+ 按重要性排序的结论 items（headline/detail 两段式）」；消费方按需切片（列表取 headline、详情取全部、assistant 取 digest 不再识图）、facets 封闭词表供规则与周报、分析必须会失败（超时/坏 JSON/revision 复检）；结论沉淀在 Lucent ADR-0020 与两仓迁移日志
-- [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md)
-  — Record 内嵌迷你趋势:快捷面板下新增近 7/30 天类别覆盖率行 + 单类别折线(周|月切换、空档≠0、数据不足引导);Wave 1 客户端逐日聚合(不跨 feature 消费 review),Wave 2 接 Lucent 聚合契约;与 review 页重组计划构成阶段 1 的另一半
-- [`2026-09-07-review-page-restructure.md`](2026-09-07-review-page-restructure.md)
-  — Review 页重组为洞察优先 + 覆盖感知(周/月周期、覆盖率概览行、值得注意区、单维趋势、事件被动区):事件动作收口 Today、建议历史下线、AI 摘要主路径退役为 [问助手] 入口;数据全部复用现有 dashboard 契约(Wave 2 聚合契约后置,依赖 Lucent observed-metric 域迁移);依据 `research/01-用户价值调研/record-review-assistant-纵向洞察归属与Tab验证.md`
-- [`2026-09-07-large-file-domain-splitting-plan.md`](2026-09-07-large-file-domain-splitting-plan.md)
-  — 超大文件按领域拆分：55 个 ≥400 行手写文件盘点；P0 五个核心大文件（detail 975 / conversation 922 / clinic 819 / page_body 635 / login 651）已子 agent 完成逐行分析并给出新文件清单；P1/P2 批量拆分与执行批次
-- [`2026-09-06-account-profile-restructure.md`](2026-09-06-account-profile-restructure.md)
-  — 账号体系重构：个人信息页（头像/昵称/过敏史/身高体重血型）、账号管理页（重命名自账号与安全，列表化 + 底部客服/反馈/帮助入口）、账号安全中心（授权/敏感/登录记录、账号保护）；Phase 1 盒子套盒子已修
-- [`2026-09-02-agentic-proactive-evolution.md`](2026-09-02-agentic-proactive-evolution.md)
-  — Agentic → Proactive → 伴身演进客户端任务清单:语义搜索/扫药视觉增强接入、assistant 能力组件化并贯穿 today/review/medicine 主流程、Proactive 推送承接与偏好开关、跨端会话一致(远期);与 `Lucent/plans/2026-09-02-agentic-proactive-evolution.md` 配套
+> 更新于 2026-10-16。每份计划的状态以文件自身头部的状态段为准；此处只列当前仍在驱动工作、
+> 或已裁决暂缓但保留触发条件的计划。已执行完毕的计划按约定直接删除（文件已删），
+> 历史记录见当日迁移日志。
 
-- 文档治理改进计划（2026-08-31，实施完毕文件已删）
-  — 四问审计与归档、docs 去编号重建、feature/core README 全量、可执行约束（七规则 CLI 包 + analysis_options 收紧 + 正文路径校验）与 doc-map 退役全部落地；doc-map 两周观察期已于 2026-09-15 届满并整体退役，七规则收敛与 IDE 插件集成等遗留项见 `docs/TODO.md`「2026-08-31 文档治理遗留」
+| 计划 | 状态 | 备注 |
+| --- | --- | --- |
+| [`2026-09-15-review-remediation-plan.md`](2026-09-15-review-remediation-plan.md) | 进行中 | 09-08~09-14 审查报告逐条修复；剩余顺序 §3-5 → §3-9（合同级）→ §4 共 20 项 → §5-2/3/4 → §6 |
+| [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md) | 未开工 | Wave 1 客户端聚合，不跨 feature 消费 review；与已删除的 review 页重组计划构成阶段 1 的另一半 |
+| [`2026-09-02-agentic-proactive-evolution.md`](2026-09-02-agentic-proactive-evolution.md) | Phase 0 起未开工 | 配套 `Lucent/plans/2026-09-02-agentic-proactive-evolution.md` |
+| [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md) | 八项 Task 均未开工 | Task 3（架构门禁）已由 `tool/luminous_lints` 的 `layered_import` 规则部分承接（warn 观察模式） |
+| [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md) | 已决事项权威源 | 优先于各 08-16 计划中尚未清理的旧「不确定点」表述 |
 
-- [`2026-08-22-medium-to-large-migration-inventory.md`](2026-08-22-medium-to-large-migration-inventory.md)
-  — 中大型过渡迁移盘点：错误/合同、离线同步、架构门禁、构建配置、Forui、Riverpod、文件拆分与测试质量门
-- [`2026-07-10-legal-compliance-pages.md`](2026-07-10-legal-compliance-pages.md)
-  — 合规/法律页面补全：剩余 P2-1 ICP 备案信息 + About 页增强
-- [`2026-07-29-native-bridging-roadmap.md`](2026-07-29-native-bridging-roadmap.md)
-  — 原生桥接路线图：后台同步、推送通知、健康数据集成、生物识别、应用快捷方式、Live Activity、桌面热键
-- [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)
-  — Flutter 3.47 升级：已落地 refactor，测试被上游语义回归阻塞
-- [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)
-  — 产品表面路线：手机核心 + 桌面 SaaS 差异化 + Web 第三客户端（0.1.0 后启动）
-- [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md)
-  — 功能盘点改造决策记录（十份计划共享，优先于各计划旧表述）
-
-### 功能盘点改造计划(2026-08-16,共 8 份保留)
+### 功能盘点改造计划（2026-08-16，共 8 份保留）
 
 来源:`research/02-功能盘点/` 十份调研文档(已审阅;内容以各文档「逐功能分析」为准改写,
 速览表/结尾汇总仅作参考)。跨功能域共用的内容只在顺序靠前的计划里写全,靠后的计划只做引用;
-桌面/Web 产品方向以已接受的 ADR-0008 为准：Flutter Desktop 与 PC Flutter Web 停止产品扩展；独立 Next.js + Tauri MVP 在 0.1.0 后启动。各计划末尾的「已决边界与延期项」记录对应范围。
+桌面/Web 产品方向以已接受的 ADR-0008 为准：Flutter Desktop 与 PC Flutter Web 停止产品扩展；
+独立 Next.js + Tauri MVP 在 0.1.0 后启动。
 
-已确定事项以 [`2026-08-16-remediation-decision-register.md`](2026-08-16-remediation-decision-register.md) 为准；它优先于各计划中尚未清理的旧「不确定点」表述。2026-08-22 起，十份计划的 0.1.0 前工作视为完成并进入响应契约硬切窗口；保留的 0.1.0 后工作继续执行，但不与本次契约迁移混合。
+2026-08-22 起，十份计划的 0.1.0 前工作视为完成并进入响应契约硬切窗口；保留的 0.1.0 后工作
+继续执行，但不与本次契约迁移混合。全局执行顺序(靠前先执行)：
 
-全局执行顺序(靠前先执行;跨计划引用均指向顺序在前的文档):
+| 顺序 | 计划 | 剩余项 |
+| --- | --- | --- |
+| 1 | [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md) | F-7 环境真实化、F-6 health_sync 自动同步（均 0.1.0 后）；投递三通道与 JPush 密钥已完成 |
+| 2 | [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md) | F-5 P2 后端统计对象（0.1.0 前）、F-2 停用/归档（0.1.0 后） |
+| 3 | [`2026-08-16-scan-search-remediation-plan.md`](2026-08-16-scan-search-remediation-plan.md) | 本批任务全部完成；剩余 F-2 条码等值匹配（0.1.0 后） |
+| 4 | [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md) | F-8 `remainingCount` 退役（0.1.0 前）、F-14 环境装配（0.1.0 后） |
+| 5 | [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md) | P1-3 餐食分层、P1-4 vital 时间序列（0.1.0 后）；P2-3/P2-4 桌面高级能力冻结 |
+| 6 | [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md) | H-4 kind 筛选、weightKg 时间序列、conditions 上下文（均 0.1.0 后） |
+| 7 | [`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md) | R-3/R-4 已完成；剩余 R-5 服务端 409 双保险（0.1.0 前）与 R-6 文档漂移 |
+| 8 | [`2026-08-16-mine-settings-remediation-plan.md`](2026-08-16-mine-settings-remediation-plan.md) | P1-3 图片质量 / 仅 Wi-Fi 同步（0.1.0 后） |
+| 9 | [`2026-08-16-engineering-backend-plan.md`](2026-08-16-engineering-backend-plan.md) | 基座保留；计划态投入（Worker 分离 / rnacos / SaaS / monorepo）暂缓，触发条件见 P2-A~D |
+| 10 | [`2026-07-29-native-bridging-roadmap.md`](2026-07-29-native-bridging-roadmap.md) | 后台同步与推送两节已由通知横切计划接管；剩余 Live Activity / 快捷方式 / 桌面热键 |
 
-1. [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)
-   — 横切基建:F-7 高德天气 API 真实化与 F-6 health_sync 自动同步执行器(均 0.1.0 后);投递三通道落库、JPush 密钥已完成
-2. [`2026-08-16-medicine-remediation-plan.md`](2026-08-16-medicine-remediation-plan.md)
-   — 用药:剩余 F-5 P2 后端统计对象(0.1.0 前)与 F-2 停用/归档(0.1.0 后)
-3. [`2026-08-16-scan-search-remediation-plan.md`](2026-08-16-scan-search-remediation-plan.md)
-   — 扫码/搜索:本批任务全部完成;剩余 F-2 条码等值匹配(0.1.0 后)
-4. [`2026-08-16-today-remediation-plan.md`](2026-08-16-today-remediation-plan.md)
-   — 今日建议:剩余 F-8 `remainingCount` 退役(0.1.0 前)与 F-14 环境装配(0.1.0 后)
-5. AI 助手改造计划（2026-08-16，实施完毕文件已删）
-   — 剩余 F-14/F-15 来源条元数据后端投影与记忆擦除设置页入口(0.1.0 后)
-6. [`2026-08-16-record-remediation-plan.md`](2026-08-16-record-remediation-plan.md)
-   — 记录:剩余 P1-3 餐食分层与 P1-4 vital 时间序列(0.1.0 后)、P2-3/P2-4 桌面高级能力冻结
-7. [`2026-08-16-health-event-remediation-plan.md`](2026-08-16-health-event-remediation-plan.md)
-   — 健康事件与档案:剩余 H-4 kind 筛选、weightKg 时间序列、conditions 上下文(均 0.1.0 后)
-8. [`2026-08-16-report-remediation-plan.md`](2026-08-16-report-remediation-plan.md)
-   — 报告:R-3/R-4 已完成;剩余 409 双保险(R-5)与文档漂移(R-6)
-9. [`2026-08-16-mine-settings-remediation-plan.md`](2026-08-16-mine-settings-remediation-plan.md)
-   — 个人中心与设置:剩余 P1-3 图片质量/仅 Wi-Fi 同步(0.1.0 后)
-10. [`2026-08-16-engineering-backend-plan.md`](2026-08-16-engineering-backend-plan.md)
-    — 工程与后端平台:基座保留、计划态投入暂缓及触发条件
+### 方向性计划（非执行清单）
 
-The event-led product-loop program (`2026-08-07-product-loop-program.md`) and its
-execution plan (`2026-08-07-visit-summary-and-product-measurement.md`) were
-completed on 2026-08-14 and deleted (实施完毕文件已删).
+| 计划 | 状态 |
+| --- | --- |
+| [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md) | 方向已决策（ADR-0008 accepted），0.1.0 后启动 |
+| [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md) | 配置类改动已落地（`refactor` 分支）；全量测试被上游 `flutter/flutter#191095` 阻塞 |
+| [`2026-07-10-legal-compliance-pages.md`](2026-07-10-legal-compliance-pages.md) | 仅剩 P2-1（ICP 备案号 + About 公司信息），等备案号 |
+
+## 已执行完毕、文件已删的计划
+
+- `2026-09-07-review-page-restructure.md`（Review 页重组）、`2026-09-07-large-file-domain-splitting-plan.md`（大文件拆分）、`2026-09-06-account-profile-restructure.md`（账号体系重构）、`2026-08-31-doc-governance-overhaul-plan.md`（文档治理）、`2026-09-15-meal-analysis-rearchitecture.md`（餐食分析重构）、`2026-08-07-product-loop-program.md` 与 `2026-08-07-visit-summary-and-product-measurement.md`（事件主导产品闭环）、以及 08-16 那批里的「AI 助手改造计划」——结论已沉淀进 feature README、`docs/reference/` 与当日迁移日志。

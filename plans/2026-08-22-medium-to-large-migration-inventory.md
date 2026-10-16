@@ -8,6 +8,12 @@
 
 **Tech Stack:** Flutter 3.47.1、Dart 3.12、Riverpod 3、GoRouter 17、Dio、fpdart、Freezed、Drift、OpenAPI generated dart-dio client、Forui、Talker/Sentry、GitHub Actions。
 
+> **2026-10-16 状态：八项 Task 均未开工。** 其中 Task 3（feature/layer 架构门禁）已由 `tool/luminous_lints`
+> 的 `layered_import` 规则部分承接（warn 观察模式，覆盖 data→data 与 presentation→presentation 两条禁令）；
+> Task 1/4 的部分脚本入口已改名（`bootstrap_generated_sources.dart` → `scripts/contract/bootstrap.dart`、
+> `check_doc_coverage/links.dart` → `scripts/docs/verify.dart` / `links.dart`）。
+> Task 4 提到的「`.env` 扁平承载本地地址 / E2E 凭证 / SDK 值」问题仍然存在。
+
 ---
 
 ## 一、审查结论
@@ -46,7 +52,7 @@
 **Files:**
 
 - Modify: `../Lucent/scripts/contract/export-openapi.ts`、`../Lucent/.github/workflows/lucent-ci.yml`
-- Modify: `scripts/bootstrap_generated_sources.dart`、`scripts/verify_lucent_openapi_sync.dart`
+- Modify: `scripts/contract/bootstrap.dart`、`scripts/contract/verify_openapi.dart`
 - Modify: `.github/workflows/luminous-ci.yml`、`scripts/tooling_workflows.dart`
 - Inspect/Update: `generated/lucent_api/`、`docs/archive/2026-08-31-doc-governance/Lucent_Contract_Snapshot.md`(已归档,合同事实由 verify 脚本与 generated 承接)、`docs/howto/regenerate-api-client.md`
 - Test: new contract version, breaking-change and generated-drift tests
@@ -71,7 +77,7 @@
 - Modify: `lib/features/*/data/repositories/` that enqueue offline writes, starting with `record`, `medicine`, `health_data` and product events
 - Modify: corresponding `lib/features/*/data/datasources/`
 - Test: `test/core/database/dao_test.dart`、`test/core/database/dao_extended_test.dart`、`test/core/database/sync/worker_test.dart`、repository tests and full-stack lanes
-- Contract: `../Lucent/docs/01-reference/contracts/` and idempotent write endpoints
+- Contract: `../Lucent/docs/archive/01-reference/contracts/` and idempotent write endpoints
 
 - [ ] 把 `entityType/operation/payload` 转为稳定命令注册表：命令名、payload version、schema validator、target id、client operation id、createdAt、attempt 和安全重试策略都必须可追踪。
 - [ ] 每个离线写命令定义成功、可重试失败、永久失败、冲突和不可重试失败；不要用 `Map<String, SyncHandler>` 缺失 handler 时静默跳过。
@@ -97,7 +103,9 @@
 - [ ] 失败规则至少包括：feature data 不得导入另一个 feature data；feature presentation 不得导入另一个 feature presentation provider/widget；domain 不得依赖 Flutter/Dio/generated client。
 - [ ] 允许 application → domain；跨 feature presentation 的 UI action 通过 route/use case/domain snapshot/DataChangeBus；允许项写在带理由的 allowlist，而不是在脚本中硬编码静默跳过。
 - [ ] 为每个现有 allowlist 项写回归测试；新增违规必须在 CI 阻断，脚本输出完整文件和 import 行。
-- [ ] 将该检查接入 `run_daily_checks.dart` 和 GitHub Actions，运行 `dart run scripts/check_architecture_boundaries.dart` 与现有 docs/analyze/test 门禁。
+- [ ] 将该检查接入 `scripts/workflows/daily.dart` 和 GitHub Actions，运行 `dart run scripts/check_architecture_boundaries.dart` 与现有 docs/analyze/test 门禁。
+  **2026-10-16 注**：这条已由 `tool/luminous_lints` 的 `layered_import` 规则部分承接（warn 观察模式，`Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Location`），
+  覆盖 data→data 与 presentation→presentation 两条禁令；剩余未覆盖的是「domain 不得依赖 Flutter/Dio/generated client」。
 
 **完成判据：** 依赖方向从文档约定变成 CI 可执行规则；重构模块时能定位一个清晰 seam，而不是靠全局搜索避免循环依赖。
 
@@ -106,7 +114,7 @@
 **Files:**
 
 - Modify: `lib/core/config/env_keys.dart`、`lib/core/config/env_reader.dart`
-- Modify: `.env.example`、`README.md`、`scripts/run_fullstack_checks.dart`、`scripts/run_daily_checks.dart`、`scripts/tooling_workflows.dart`
+- Modify: `.env.example`、`README.md`、`scripts/workflows/fullstack.dart`、`scripts/workflows/daily.dart`、`scripts/tooling_workflows.dart`
 - Modify: `.github/workflows/luminous-ci.yml`、`.github/workflows/luminous-cd.yml`
 - Update: `AGENTS.md`(run-tests 已并入其 Commands 段;原 how-to/run-tests.md 归档于 `docs/archive/2026-08-31-doc-governance/run-tests.md`)
 - Test: `test/core/config/`、script tests and CI dry-run validation
@@ -216,16 +224,16 @@
 flutter analyze
 flutter test
 dart format --set-exit-if-changed lib/ test/ scripts/
-dart run scripts/check_doc_coverage.dart --verify
-dart run scripts/check_doc_links.dart
-dart run scripts/verify_lucent_openapi_sync.dart
+dart run scripts/docs/verify.dart --verify
+dart run scripts/docs/links.dart
+dart run scripts/contract/verify_openapi.dart
 ```
 
 涉及 generated client、Drift schema、l10n、跨 feature 边界或 full-stack lane 时，再运行：
 
 ```powershell
-dart run scripts/bootstrap_generated_sources.dart
-dart run scripts/run_fullstack_checks.dart
+dart run scripts/contract/bootstrap.dart
+dart run scripts/workflows/fullstack.dart
 flutter test integration_test
 ```
 
