@@ -39,6 +39,7 @@ YYYY-MM-DD-short-task-name.md
 
 | 计划 | 状态 | 备注 |
 | --- | --- | --- |
+| [`2026-10-16-client-capability-gaps.md`](2026-10-16-client-capability-gaps.md) | **未开工** | app_links + webview_flutter（P0）、photo_view / add_2_calendar / oss_licenses（P1）；3/4/5 三项范围取向待维护者确认；`local_auth` 不在本批 |
 | [`2026-09-15-review-remediation-plan.md`](2026-09-15-review-remediation-plan.md) | 进行中 | 09-08~09-14 审查报告逐条修复；剩余顺序 §3-5 → §3-9（合同级）→ §4 共 20 项 → §5-2/3/4 → §6 |
 | [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md) | 未开工 | Wave 1 客户端聚合，不跨 feature 消费 review；与已删除的 review 页重组计划构成阶段 1 的另一半 |
 | [`2026-09-02-agentic-proactive-evolution.md`](2026-09-02-agentic-proactive-evolution.md) | Phase 0 起未开工 | 配套 `Lucent/plans/2026-09-02-agentic-proactive-evolution.md` |
