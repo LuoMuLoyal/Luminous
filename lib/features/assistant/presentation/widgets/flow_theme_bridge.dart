@@ -5,15 +5,25 @@ import 'package:material_ui/material_ui.dart';
 
 /// Derives the FlowUI theme from the ambient Luminous Forui theme.
 ///
-/// Reads the ambient brightness through `material_ui`'s [Theme] — the same
-/// channel flow_ui 0.3.0 reads its own tokens from. Since 0.3.0 flow_ui
-/// depends on `material_ui` rather than `flutter/material.dart`, and each
-/// package declares its own [ThemeExtension] / [ThemeData] pair, so a
-/// [FlowTheme] only resolves through `context.flowTheme` when it is installed
-/// on a `material_ui` [Theme].
+/// Reads the ambient brightness through the **Forui** theme
+/// (`context.theme.colors.brightness`), not through `Theme.of(context)`:
+/// the app root is a `material_ui` `MaterialApp`, whose [Theme] is not the
+/// one Flutter's framework `Theme.of` resolves — so
+/// `Theme.of(context).brightness` is permanently `Brightness.light` in
+/// production and the dark FlowUI preset was unreachable (a one-off probe
+/// confirmed `material_ui`'s `Theme.of` and Forui's
+/// `context.theme.colors.brightness` both report dark correctly). Every
+/// other token here already goes through Forui, so this makes the brightness
+/// source consistent with the rest of the function.
+///
+/// Since 0.3.0 flow_ui depends on `material_ui` rather than
+/// `flutter/material.dart`, and each package declares its own
+/// [ThemeExtension] / [ThemeData] pair, so a [FlowTheme] only resolves
+/// through `context.flowTheme` when it is installed on a `material_ui`
+/// [Theme].
 FlowTheme luminousFlowTheme(BuildContext context) {
   final colors = context.theme.colors;
-  final baseColors = Theme.of(context).brightness == Brightness.dark
+  final baseColors = colors.brightness == Brightness.dark
       ? FlowColors.dark
       : FlowColors.light;
 

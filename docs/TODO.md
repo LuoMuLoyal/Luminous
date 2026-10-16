@@ -157,18 +157,6 @@ Product Loop Program 的延后项如下。
   - 方案：Lucent 增加对象删除能力（或将前缀 + 时间的生命周期回收交给存储后端），客户端在
     「替换/移除」路径调用（已登记在 Lucent `docs/TODO.md`）
 
-- `Theme.of(context).brightness` 在本应用深色下恒为 light
-  - 现象：应用根是 `material_ui` 的 `MaterialApp`，它的 `Theme` 不是 `flutter/material` 的
-    `Theme.of` 能取到的那一个；`material_ui` 自己的 `Theme.of` 与 Forui 的
-    `context.theme.colors.brightness` 都正常报 dark（一次性探针实测）
-  - 影响：`lib/features/assistant/presentation/widgets/flow_theme_bridge.dart` 的
-    `luminousFlowTheme` 用前者选 `FlowColors.light/dark`，其 dark 分支在生产中不可达
-    （`test/assistant/flow_theme_bridge_test.dart` 必须额外套一层
-    `Theme(data: ThemeData(brightness: dark))` 才测得到），深色下 FlowUI 里未被 bridge 覆盖的
-    字段（`primaryContainer` 等）取的是 light 预设
-  - 方案：改用 Forui 的 `context.theme.colors.brightness`（当日 assistant 面板改动即用该信号），
-    并补一条深色用例
-
 - 登录后守卫重定向未兜住的取证（观察项，未复现）
   - 背景：当日修的「密码登录成功后停在登录页」根因是 `goAfterLogin` 漏传 `fallbackHome`；
     按设计守卫的 `refresh()` 重定向本应兜住，且实测该链路本身是通的，故未能从代码复现该场景

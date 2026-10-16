@@ -73,21 +73,24 @@ void main() {
   testWidgets('uses the dark FlowUI preset for a dark ambient theme', (
     tester,
   ) async {
+    // 刻意**不**再包一层 Flutter 框架 `ThemeData(brightness: dark)`：
+    // 旧用例靠那层才能让 `Theme.of(context).brightness` 报 dark，而这层在
+    // 生产路径里不存在（根是 material_ui 的 MaterialApp，框架 Theme.of
+    // 取到的是另一个 Theme），于是 dark 分支在生产不可达——测试反而把
+    // 缺陷掩盖了。现在 bridge 改读 Forui 的 brightness，这里只给 Forui
+    // 主题，与生产一致。
     await tester.pumpWidget(
       _TestFlowApp(
         themeMode: flutter.ThemeMode.dark,
-        home: Theme(
-          data: ThemeData(brightness: Brightness.dark),
-          child: Builder(
-            builder: (context) {
-              final flowTheme = luminousFlowTheme(context);
-              return Text(
-                '${Theme.of(context).brightness.name}|'
-                '${flowTheme.colors.primaryContainer == FlowColors.dark.primaryContainer ? 'dark' : 'light'}',
-                key: const Key('flow-dark-probe'),
-              );
-            },
-          ),
+        home: Builder(
+          builder: (context) {
+            final flowTheme = luminousFlowTheme(context);
+            return Text(
+              '${context.theme.colors.brightness.name}|'
+              '${flowTheme.colors.tertiary == FlowColors.dark.tertiary ? 'dark' : 'light'}',
+              key: const Key('flow-dark-probe'),
+            );
+          },
         ),
       ),
     );
@@ -96,6 +99,76 @@ void main() {
     expect(
       tester.widget<Text>(find.byKey(const Key('flow-dark-probe'))).data,
       'dark|dark',
+    );
+  });
+
+  testWidgets('uses the light FlowUI preset for a light ambient theme', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _TestFlowApp(
+        home: Builder(
+          builder: (context) {
+            final flowTheme = luminousFlowTheme(context);
+            return Text(
+              '${context.theme.colors.brightness.name}|'
+              '${flowTheme.colors.primaryContainer == FlowColors.light.primaryContainer ? 'light' : 'dark'}',
+              key: const Key('flow-light-probe'),
+            );
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<Text>(find.byKey(const Key('flow-light-probe'))).data,
+      'light|light',
+    );
+  });
+
+  testWidgets('FlowUI preset follows the Forui theme, not the framework Theme', (
+    tester,
+  ) async {
+    // 回归守卫：制造「框架 Theme 报 light、Forui 主题是 dark」的矛盾组合。
+    // 若 bridge 改回读 `Theme.of(context).brightness`，这里会拿到 light 预设而失败。
+    // 这正是生产的真实形状——根是 material_ui 的 MaterialApp，框架 Theme.of
+    // 取到的是另一个 Theme，brightness 恒为 light（一次性探针实测）。
+    await tester.pumpWidget(
+      _TestFlowApp(
+        themeMode: flutter.ThemeMode.dark,
+        home: Builder(
+          builder: (context) {
+            // 在 Forui dark 之上再套一层**框架** light Theme：框架 `Theme.of`
+            // 因此报 light，而 Forui 的 brightness 仍为 dark。
+            return flutter.Theme(
+              data: flutter.ThemeData.light(),
+              child: Builder(
+                builder: (context) {
+                  final frameworkBrightness = flutter.Theme.of(
+                    context,
+                  ).brightness;
+                  final foruiBrightness = context.theme.colors.brightness;
+                  final flowTheme = luminousFlowTheme(context);
+                  return Text(
+                    '${frameworkBrightness.name}|${foruiBrightness.name}|'
+                    '${flowTheme.colors.tertiary == FlowColors.dark.tertiary ? 'dark' : 'light'}',
+                    key: const Key('flow-brightness-source-probe'),
+                  );
+                },
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<Text>(find.byKey(const Key('flow-brightness-source-probe')))
+          .data,
+      'light|dark|dark',
     );
   });
 
