@@ -82,8 +82,8 @@ dependencies:
   photo_view: ^0.15.0
   # 用药提醒写入系统日历
   add_2_calendar: ^3.1.1
-  # About 页 pub 依赖许可清单（与 Flutter 内置 showLicensePage 并存）
-  flutter_oss_licenses: ^3.2.0
+  # About 页 pub 依赖许可清单（与 Flutter 内置 showLicensePage 并存）。
+  # 生成器是构建期工具，运行时只读生成出来的 lib/oss_licenses.dart，故不在此声明。
 
   sign_in_with_apple: ^8.2.0
   flutter_svg: ^2.1.0
@@ -131,6 +131,12 @@ dev_dependencies:
   riverpod_generator: ^4.0.9
   drift_dev: ^2.35.1
   go_router_builder: ^4.5.0
+  # About 页 pub 依赖许可清单生成器（与 Flutter 内置 showLicensePage 并存）。
+  # 不用 flutter_oss_licenses：它已废弃，pubspec 只剩一行 re-export。
+  # 构建期工具，运行时只读生成出来的 lib/oss_licenses.dart。
+  # 固定 3.0.12 而非最新 3.2.0：3.0.13 起把 `pana` 写进运行时依赖，
+  # pana 连带 `lints ^6.0.0`，与本项目 `flutter_lints ^5.0.0` 无法共存。
+  dart_pubspec_licenses: 3.0.12
 
 dependency_overrides:
   # health ^13.x pulls device_info_plus ^12.x which depends on win32 ^5.x,

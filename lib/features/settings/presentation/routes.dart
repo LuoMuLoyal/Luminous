@@ -12,6 +12,7 @@ import 'package:luminous/features/settings/presentation/pages/feature_flags.dart
 import 'package:luminous/features/settings/presentation/pages/help.dart';
 import 'package:luminous/features/settings/presentation/pages/language.dart';
 import 'package:luminous/features/settings/presentation/pages/notification.dart';
+import 'package:luminous/features/settings/presentation/pages/oss_licenses.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/pages/profile.dart';
 import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
@@ -39,7 +40,15 @@ part 'routes.g.dart';
     TypedGoRoute<SettingsAiRoute>(path: 'ai'),
     TypedGoRoute<SettingsExportRoute>(path: 'export'),
     TypedGoRoute<SettingsHelpRoute>(path: 'help'),
-    TypedGoRoute<SettingsAboutRoute>(path: 'about'),
+    TypedGoRoute<SettingsAboutRoute>(
+      path: 'about',
+      routes: [
+        TypedGoRoute<SettingsOssLicensesRoute>(
+          path: 'oss-licenses',
+          routes: [TypedGoRoute<SettingsOssLicenseDetailRoute>(path: ':name')],
+        ),
+      ],
+    ),
     TypedGoRoute<SettingsDataStorageRoute>(path: 'data-storage'),
   ],
 )
@@ -174,6 +183,31 @@ class SettingsAboutRoute extends GoRouteData with $SettingsAboutRoute {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return slidePage(key: state.pageKey, child: const AboutSettingsPage());
+  }
+}
+
+class SettingsOssLicensesRoute extends GoRouteData
+    with $SettingsOssLicensesRoute {
+  const SettingsOssLicensesRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return slidePage(key: state.pageKey, child: const OssLicensesPage());
+  }
+}
+
+class SettingsOssLicenseDetailRoute extends GoRouteData
+    with $SettingsOssLicenseDetailRoute {
+  const SettingsOssLicenseDetailRoute({required this.name});
+
+  final String name;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return slidePage(
+      key: state.pageKey,
+      child: OssLicenseDetailPage(name: name),
+    );
   }
 }
 

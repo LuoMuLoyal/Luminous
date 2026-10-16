@@ -41,6 +41,7 @@
   "commonClose": "Close",
   "commonRetry": "Retry",
   "commonImagePreviewLabel": "Image preview",
+  "commonCopy": "Copy",
   "desktopWindowMinimize": "Minimize",
   "desktopWindowMaximize": "Maximize",
   "desktopWindowRestore": "Restore",

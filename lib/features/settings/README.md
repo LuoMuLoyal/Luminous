@@ -9,7 +9,7 @@
 
 ## 对外契约
 
-- 路由(presentation/routes.dart):`Routes.settings` 与 language / theme / more(含 /more/feature-flags) / notifications(含 /sleep、/dnd) / accessibility / ai / export / help / about / data-storage 子路由。
+- 路由(presentation/routes.dart):`Routes.settings` 与 language / theme / more(含 /more/feature-flags) / notifications(含 /sleep、/dnd) / accessibility / ai / export / help / about(含 /about/oss-licenses 与 /about/oss-licenses/:name) / data-storage 子路由。
 - 导出(被跨 feature import):presentation/providers/user_settings.dart、data_export.dart、data_storage.dart、notification.dart,data/providers/notification_permission.dart。
 - 被依赖:today/review 读 user_settings(review 另读 data_export);mine 读 notification;core 读 user_settings(sensitive_action_password_resolver)、notification_permission(push/lifecycle)、data_storage(database/cache_cleanup);app/bootstrap.dart 启动睡眠提醒协调器。
 
@@ -30,4 +30,5 @@
 - 头像与昵称只在个人信息页可改;账号管理页(`/account`)与账号安全中心只跳转过来,不复制概要卡片或第二份编辑入口。
 - 本目录刻意无厚 domain:业务规则限于表单校验与偏好持久化,datasource 直接映射生成 DTO(profile_remote.dart 头注);本地偏好键统一走 PrefKeys。
 - 桌面端 master-detail 双栏(presentation/widgets/master_detail.dart);About 页用 domain/services/version_check.dart 做更新比较。
+- About 页有两个许可入口,数据源不同、互补而非重复:`showLicensePage` 渲染 Flutter 的 `NOTICES` 注册表(按组件许可聚合、无 pubspec 元数据),`/about/oss-licenses` 渲染由 `pubspec.lock` 生成的 `lib/oss_licenses.dart`(每条带解析后的版本号与可复制全文)。后者是 gitignored 生成物,由 `dart run scripts/contract/bootstrap.dart` 重建;生成器需 `-i flutter`(原因见该脚本注释与 migration log)。
 - 决策:authGuarded 工厂见 ../../../docs/reference/adr/0003-riverpod-generator-and-auth-guard.md。

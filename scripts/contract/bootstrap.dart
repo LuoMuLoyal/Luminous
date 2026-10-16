@@ -482,6 +482,29 @@ Future<void> _buildAppCodegen(ToolContext context) async {
   );
   stdout.writeln('');
 
+  // 生成 pub 依赖许可清单（About 页「第三方依赖许可」）。必须在 pub get 之后：
+  // 生成器读的是 pubspec.lock。
+  //
+  // `-i flutter` 是必需的绕行：dart_pubspec_licenses 3.0.12 硬编码读
+  // `$FLUTTER_ROOT/version`（lib/src/package.dart），而 Flutter 3.47.1 起该文件
+  // 已不存在（版本信息移到 `bin/cache/flutter.version.json`），不忽略 SDK 的
+  // `flutter` 条目会直接抛 PathNotFoundException。忽略它不影响本页语义——
+  // Flutter 框架自身的许可由内置 `showLicensePage` 负责，两页互补。
+  await runLoggedCommand(
+    'dart',
+    [
+      'run',
+      'dart_pubspec_licenses:generate',
+      '-o',
+      'lib/oss_licenses.dart',
+      '-i',
+      'flutter',
+    ],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run dart_pubspec_licenses:generate',
+  );
+  stdout.writeln('');
+
   await runLoggedCommand(
     'dart',
     ['run', 'build_runner', 'build', '--delete-conflicting-outputs'],

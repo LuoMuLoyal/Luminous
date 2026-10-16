@@ -58,6 +58,10 @@ analyzer:
     use_build_context_synchronously: error
   exclude:
     - generated/lucent_api/**
+    # pub 依赖许可清单：由 dart_pubspec_licenses 生成的 gitignored 产物，
+    # 生成器固定输出 ");\n\n" 结尾（eol_at_end_of_file），改不了源头，
+    # 与 generated/lucent_api/** 同口径排除。
+    - lib/oss_licenses.dart
     - scripts/**
     # Independent analyzer plugin package; analyzed via `dart test` in
     # tool/luminous_lints, not with the app's analyzer context.

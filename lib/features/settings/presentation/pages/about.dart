@@ -11,6 +11,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/domain/services/version_check.dart';
 import 'package:luminous/features/settings/presentation/providers/package_info.dart';
+import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
@@ -207,6 +208,14 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                     context: context,
                     applicationName: appName,
                   ),
+                ),
+                // 与上面内置许可页并存：内置页渲染 Flutter NOTICES 注册表（按组件
+                // 许可聚合、无 pubspec 元数据），本页由 pubspec.lock 生成，每条带
+                // 解析后的版本号与可复制全文，两者数据源不同、互补而非重复。
+                FTile(
+                  title: Text(l10n.settingsAboutOssLicenses),
+                  suffix: const Icon(SemanticIcons.actionNext),
+                  onPress: () => const SettingsOssLicensesRoute().push(context),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutCheckUpdate),
