@@ -40,6 +40,7 @@
   "commonConfirm": "Confirm",
   "commonClose": "Close",
   "commonRetry": "Retry",
+  "commonImagePreviewLabel": "Image preview",
   "desktopWindowMinimize": "Minimize",
   "desktopWindowMaximize": "Maximize",
   "desktopWindowRestore": "Restore",

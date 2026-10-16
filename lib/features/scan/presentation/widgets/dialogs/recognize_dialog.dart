@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/photo_viewer.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
@@ -159,21 +160,36 @@ class _MedicineRecognizeDialogState
               // Header
               Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: borderRadius.xs,
-                    child: Image.file(
-                      File(widget.imagePath),
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        width: 60,
-                        height: 60,
-                        color: colors.muted,
-                        child: Icon(
-                          SemanticIcons.statusUnavailable,
-                          size: IconSizeTokens.md,
-                          color: SemanticColor.neutral.solid(context),
+                  Semantics(
+                    button: true,
+                    label: AppLocalizations.of(
+                      context,
+                    )!.commonImagePreviewLabel,
+                    child: GestureDetector(
+                      onTap: () => showFilePhotoViewer(
+                        context,
+                        filePath: widget.imagePath,
+                        semanticLabel: AppLocalizations.of(
+                          context,
+                        )!.commonImagePreviewLabel,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: borderRadius.xs,
+                        child: Image.file(
+                          File(widget.imagePath),
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 60,
+                            height: 60,
+                            color: colors.muted,
+                            child: Icon(
+                              SemanticIcons.statusUnavailable,
+                              size: IconSizeTokens.md,
+                              color: SemanticColor.neutral.solid(context),
+                            ),
+                          ),
                         ),
                       ),
                     ),
