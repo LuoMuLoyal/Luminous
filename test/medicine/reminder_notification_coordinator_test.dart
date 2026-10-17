@@ -28,7 +28,7 @@ void main() {
     defaultTitle: 'Medication reminder',
     defaultBody: 'It is time to take your medicine.',
     channelName: 'Medication reminders',
-    channelDescription: 'On-device reminders for your medication schedule.',
+    channelDescription: 'On-device reminders for your schedule.',
   );
 
   test(

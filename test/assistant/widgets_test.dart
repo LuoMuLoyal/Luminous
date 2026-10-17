@@ -20,7 +20,7 @@ Widget _shell(Widget child) {
   return TestForuiApp(home: Scaffold(body: child));
 }
 
-const _disclaimerText = 'AI 回答仅供健康参考，不构成医疗诊断或用药建议；用药调整请咨询医生或药师';
+const _disclaimerText = 'AI 回答仅供参考，不构成医疗建议；用药调整请咨询医生';
 
 void main() {
   group('AssistantToolChip', () {
@@ -629,10 +629,10 @@ void main() {
         ),
       );
 
-      expect(find.text('点击补名'), findsOneWidget);
+      expect(find.text('点击命名'), findsOneWidget);
       expect(find.text('未命名会话'), findsNothing);
 
-      await tester.tap(find.text('点击补名'));
+      await tester.tap(find.text('点击命名'));
       expect(renamedId, 'conv-untitled');
 
       // Flush the Forui tappable hold timer so no timer is left pending.
@@ -999,7 +999,7 @@ void main() {
       );
       expect(find.text('可用'), findsOneWidget);
       expect(find.text('未开放所需健康上下文'), findsOneWidget);
-      expect(find.text('尚未实现'), findsOneWidget);
+      expect(find.text('暂未开放'), findsOneWidget);
       // 未知 disabledReason 显示原文,不硬造。
       expect(find.text('some_future_reason'), findsOneWidget);
       // 计数经 ARB 渲染,不再硬编码。
@@ -1007,7 +1007,7 @@ void main() {
       // 「按每轮选取」说明必须出现在工具列表之前——否则面板显示全部可用,
       // 与助手自述「本轮没有可用的记录类工具」互相矛盾(真机反馈,
       // 见 docs/TODO.md「2026-10-04 助手能力口径」)。
-      expect(find.text('助手每轮按问题自行选用工具，因此单次回答里用到的可能只是其中一部分。'), findsOneWidget);
+      expect(find.text('助手每轮按问题选用工具，单次回答可能只用到其中一部分'), findsOneWidget);
     });
 
     testWidgets('renders empty tools list gracefully', (tester) async {

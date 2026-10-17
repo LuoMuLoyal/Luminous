@@ -449,7 +449,7 @@ void main() {
     // Pre-check failure must not block adding: no precheck dialog, but an
     // honest "review it later" toast while the add is still pending.
     expect(find.text('添加前风险检查'), findsNothing);
-    expect(find.text('暂无法即时检查该药品，加入后可在风险检查中查看'), findsOneWidget);
+    expect(find.text('暂无法即时检查，稍后可在风险检查中查看'), findsOneWidget);
     expect(fakeRepo.createdCurrentMedicine, isNull);
 
     // Let the add finish: success toast replaces the unavailable hint.

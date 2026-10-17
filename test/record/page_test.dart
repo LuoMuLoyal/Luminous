@@ -277,7 +277,7 @@ void main() {
     await tester.tap(find.byKey(const Key('record-quick-meal')));
     await tester.pumpAndSettle();
 
-    expect(find.text('确认餐食记录'), findsOneWidget);
+    expect(find.text('确认餐食'), findsOneWidget);
     await tester.enterText(
       find.byKey(const Key('record-quick-meal-value-field')),
       '番茄炒蛋',
@@ -320,7 +320,7 @@ void main() {
 
     expect(dailyRepo.createdInputs, isEmpty);
     expect(dailyRepo.uploadedImages, isEmpty);
-    expect(find.text('确认餐食记录'), findsNothing);
+    expect(find.text('确认餐食'), findsNothing);
   });
 
   testWidgets('Record page opens natural-language sheet on mobile', (
@@ -368,10 +368,10 @@ void main() {
     final timeline = find.byKey(const Key('record-timeline'));
     await _scrollDashboardTo(tester, timeline);
 
-    expect(find.text('查看全部记录'), findsOneWidget);
+    expect(find.text('查看全部'), findsOneWidget);
     expect(find.text('记录 9'), findsNothing);
 
-    await tester.tap(find.text('查看全部记录'));
+    await tester.tap(find.text('查看全部'));
     await tester.pumpAndSettle();
 
     expect(find.text('记录 9'), findsOneWidget);

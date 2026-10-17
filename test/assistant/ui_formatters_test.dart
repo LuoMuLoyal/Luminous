@@ -194,7 +194,7 @@ void main() {
     test('maps each backend disabled reason to user copy', () {
       expect(
         assistantToolDisabledReasonText(zh, 'chat_disabled', implemented: true),
-        '对话功能未启用',
+        '对话已关闭',
       );
       expect(
         assistantToolDisabledReasonText(
@@ -218,7 +218,7 @@ void main() {
           'not_implemented',
           implemented: true,
         ),
-        '尚未实现',
+        '暂未开放',
       );
       expect(
         assistantToolDisabledReasonText(
@@ -226,7 +226,7 @@ void main() {
           'retrieval_unavailable',
           implemented: true,
         ),
-        '检索服务暂不可用',
+        '搜索暂不可用',
       );
     });
 
@@ -248,7 +248,7 @@ void main() {
       );
       expect(
         assistantToolDisabledReasonText(zh, null, implemented: false),
-        '尚未实现',
+        '暂未开放',
       );
     });
   });

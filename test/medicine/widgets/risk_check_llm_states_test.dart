@@ -1,5 +1,5 @@
 // AI Analysis tab (`FTabEntry` llm) states: which failure lands on
-// `LlmUnavailableState` ("AI analysis is not configured") and whether the
+// `LlmUnavailableState` ("AI analysis is unavailable") and whether the
 // not-configured / empty / loading / error states stay layout-safe at the
 // narrow widths the app still supports.
 //

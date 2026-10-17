@@ -108,7 +108,7 @@ void main() {
         ),
         findsOneWidget,
       );
-      // 今日未确认：渲染去今日 check-in 浅链接（旧的 check-in/end 按钮已移除）。
+      // 今日未确认：渲染去今日打卡 浅链接（旧的 check-in/end 按钮已移除）。
       expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
 
       final orderKeys = <String>[

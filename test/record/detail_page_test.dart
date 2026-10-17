@@ -351,7 +351,7 @@ void main() {
 
     // Edit is the primary action in the page body (header icon removed).
     expect(find.byKey(const Key('record-detail-edit-action')), findsOneWidget);
-    expect(find.text('编辑这条记录'), findsOneWidget);
+    expect(find.text('编辑'), findsOneWidget);
 
     // Navigating next loads the adjacent record.
     await tester.tap(find.byKey(const Key('record-detail-next-action')));
@@ -670,7 +670,7 @@ void main() {
     // State unchanged: the retry action is still present and the error
     // toast is shown.
     expect(retryAction, findsOneWidget);
-    expect(find.text('重新分析失败，请稍后再试'), findsOneWidget);
+    expect(find.text('重新分析失败'), findsOneWidget);
 
     // Drain the error toast auto-dismiss timer.
     await tester.pump(const Duration(milliseconds: 2000));

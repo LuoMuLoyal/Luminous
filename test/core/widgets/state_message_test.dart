@@ -18,7 +18,7 @@ void main() {
       await tester.pumpWidget(
         _appShell(
           const StateMessageView(
-            title: 'No data',
+            title: 'No data yet',
             description: 'Nothing to show yet.',
             icon: FLucideIcons.inbox,
           ),
@@ -26,7 +26,7 @@ void main() {
       );
 
       expect(find.byType(FCard), findsOneWidget);
-      expect(find.text('No data'), findsOneWidget);
+      expect(find.text('No data yet'), findsOneWidget);
       expect(find.text('Nothing to show yet.'), findsOneWidget);
       expect(find.byIcon(FLucideIcons.inbox), findsOneWidget);
     });

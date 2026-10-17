@@ -104,7 +104,7 @@ void main() {
     );
 
     expect(find.byKey(const Key('review-event-header')), findsOneWidget);
-    // active 事件今日未确认：渲染去今日 check-in 浅链接。
+    // active 事件今日未确认：渲染去今日打卡 浅链接。
     expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
     expectNoLegacyDashboardTraces(tester);
   });

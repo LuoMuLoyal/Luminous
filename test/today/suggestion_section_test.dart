@@ -99,7 +99,7 @@ void main() {
       final acceptedFinder = find.text('标记为已完成');
       final laterFinder = find.text('稍后提醒');
       final notApplicableFinder = find.text('不适用');
-      final suppressFinder = find.text('不再看到');
+      final suppressFinder = find.text('不再显示');
 
       expect(acceptedFinder, findsOneWidget);
       expect(laterFinder, findsOneWidget);
@@ -147,7 +147,7 @@ void main() {
       expect(find.text('标记为已完成'), findsNothing);
       expect(find.text('稍后提醒'), findsNothing);
       expect(find.text('不适用'), findsNothing);
-      expect(find.text('不再看到'), findsNothing);
+      expect(find.text('不再显示'), findsNothing);
     });
 
     testWidgets('do not render when feedbackOptions is empty', (tester) async {

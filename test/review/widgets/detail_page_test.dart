@@ -131,7 +131,7 @@ void main() {
         );
         // 详情页只读：今日已确认的 check-in 动作不在详情页装配（旧的
         // check-in/end 按钮已移除）。active 事件今日未确认时，事件头部仅
-        // 渲染「去今日 check-in」浅链接（回调为 no-op）。
+        // 渲染「去今日打卡」浅链接（回调为 no-op）。
         expect(
           find.byKey(const Key('review-go-today-check-in')),
           findsOneWidget,

@@ -193,7 +193,7 @@ void main() {
         ),
       );
 
-      expect(find.text('加载失败，可重试'), findsOneWidget);
+      expect(find.text('选项加载失败'), findsOneWidget);
       expect(
         find.byKey(const Key('health-event-options-retry-current-medicine')),
         findsOneWidget,
@@ -225,7 +225,7 @@ void main() {
         ),
       );
 
-      expect(find.text('加载失败，可重试'), findsOneWidget);
+      expect(find.text('选项加载失败'), findsOneWidget);
       expect(find.text('重试'), findsOneWidget);
       expect(
         find.byKey(const Key('health-event-options-retry-reason-record')),

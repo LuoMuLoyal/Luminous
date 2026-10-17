@@ -638,21 +638,21 @@ void main() {
     test('maps connectionTimeout to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.connectionTimeout,
-        'Connection timed out. Please try again later.',
+        'Connection timed out. Try again later.',
       );
     });
 
     test('maps sendTimeout to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.sendTimeout,
-        'Request timed out. Please try again later.',
+        'Request timed out. Try again later.',
       );
     });
 
     test('maps receiveTimeout to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.receiveTimeout,
-        'Response timed out. Please try again later.',
+        'Response timed out. Try again later.',
       );
     });
 
@@ -673,7 +673,7 @@ void main() {
     test('maps connectionError to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.connectionError,
-        'Network request failed. Please check your connection.',
+        'Network request failed. Check your connection.',
       );
     });
 
@@ -687,7 +687,7 @@ void main() {
     test('maps badResponse to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.badResponse,
-        'Request failed. Please try again later.',
+        'Request failed. Try again later.',
       );
     });
 
@@ -722,7 +722,7 @@ void main() {
         expect(mapped, isA<LucentFailure>());
         expect(
           (mapped as LucentFailure).message,
-          'Network request failed. Please check your connection.',
+          'Network request failed. Check your connection.',
         );
       }
     });

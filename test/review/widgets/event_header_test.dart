@@ -47,7 +47,7 @@ void main() {
 
     expect(find.text('感冒观察'), findsOneWidget);
     expect(find.text(l10n.reviewReviewStatusActive), findsOneWidget);
-    // 今日尚未确认：渲染「去今日 check-in」浅链接，而非旧的 check-in/end 按钮。
+    // 今日尚未确认：渲染「去今日打卡」浅链接，而非旧的 check-in/end 按钮。
     expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
     // 关联用药与开始日期。
     expect(find.text('关联 2 种用药'), findsOneWidget);
@@ -92,7 +92,7 @@ void main() {
         ),
       );
 
-      // 今日未确认：渲染「去今日 check-in」浅链接。旧的 check-in/end 动作已移除。
+      // 今日未确认：渲染「去今日打卡」浅链接。旧的 check-in/end 动作已移除。
       expect(find.byKey(const Key('review-go-today-check-in')), findsOneWidget);
     },
   );
