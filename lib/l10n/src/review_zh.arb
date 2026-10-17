@@ -344,7 +344,7 @@
       }
     }
   },
-  "reviewActiveEventGoTodayCheckIn": "去今日 check-in",
+  "reviewActiveEventGoTodayCheckIn": "去今日打卡",
   "reviewReviewReasonNoObservations": "这段时间内还没有观察记录",
   "reviewReviewReasonInsufficientCoverage": "有记录但还不足以看出变化趋势",
   "reviewReviewReasonNoCompletedActions": "还没有已确认的服药或结果记录",
