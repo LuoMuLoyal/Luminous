@@ -406,7 +406,7 @@
   "recordDeleteFailedToast": "删除失败",
   "recordNotEnabledLabel": "未开启",
   "recordErrorTitle": "记录页暂时没有加载出来",
-  "recordErrorDescription": "数据边界已经接好，可以重新拉取一次",
+  "recordErrorDescription": "请检查网络后重试",
   "recordRefreshErrorToast": "刷新失败，请重试",
   "recordWeekdaySun": "日",
   "recordWeekdayMon": "一",

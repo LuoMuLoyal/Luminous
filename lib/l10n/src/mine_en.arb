@@ -175,9 +175,9 @@
   "mineSettingsAccountTitle": "Account and security",
   "mineSettingsLanguageTitle": "Language",
   "mineSettingsNotificationsTitle": "Notification settings",
-  "mineErrorTitle": "Mine did not load this time",
-  "mineErrorDescription": "The structure is wired. Try fetching the data again.",
-  "mineActionToast": "{action}: this will open the related details or settings flow later.",
+  "mineErrorTitle": "Mine did not load",
+  "mineErrorDescription": "Check your network and try again.",
+  "mineActionToast": "{action} is not available yet",
   "@mineActionToast": {
     "placeholders": {
       "action": {

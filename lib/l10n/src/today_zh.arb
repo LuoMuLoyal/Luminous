@@ -71,7 +71,7 @@
   "todayEnvironmentLevelHigh": "较高",
   "todayViewDetailsAction": "查看详情",
   "todayErrorTitle": "今日页暂时没有加载出来",
-  "todayErrorDescription": "页面结构已经接好，可以重新拉取一次看看",
+  "todayErrorDescription": "请检查网络后重试",
   "todayRetryAction": "重试",
   "todayLoadingSlowHint": "加载较慢，请稍候…",
   "todayRefreshErrorToast": "刷新失败，请重试",

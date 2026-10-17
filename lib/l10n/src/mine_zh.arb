@@ -176,8 +176,8 @@
   "mineSettingsLanguageTitle": "语言",
   "mineSettingsNotificationsTitle": "通知设置",
   "mineErrorTitle": "我的页面暂时没有加载出来",
-  "mineErrorDescription": "结构已经接好，可以重新拉取一次数据",
-  "mineActionToast": "{action}：后续会接入对应详情或设置流程",
+  "mineErrorDescription": "请检查网络后重试",
+  "mineActionToast": "{action}暂未开放",
   "@mineActionToast": {
     "placeholders": {
       "action": {
