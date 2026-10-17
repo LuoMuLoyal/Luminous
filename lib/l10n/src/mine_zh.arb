@@ -10,7 +10,7 @@
   "mineAccountEmailUnverified": "邮箱未验证",
   "mineAccountStudentRole": "用户",
   "mineSignedOutNoticeTitle": "当前未登录",
-  "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端，登录后再加载你的档案与健康上下文",
+  "mineSignedOutNoticeDescription": "登录后加载你的档案与健康上下文",
   "mineCompletionTitle": "档案完整度",
   "mineAlertAllergyTitle": "过敏史",
   "mineAlertAllergyCount": "{count} 项",
@@ -111,7 +111,7 @@
   "mineSettingExportValue": "导出我的健康数据",
   "mineSettingHelpTitle": "帮助与反馈",
   "mineSettingAboutTitle": "关于 Luminous",
-  "minePrivacyNoticeTitle": "敏感数据默认保护，可随时撤回授权",
+  "minePrivacyNoticeTitle": "敏感数据默认保护",
   "minePrivacyNoticeAction": "查看隐私政策",
   "mineProfileAgeYears": "{age}岁",
   "@mineProfileAgeYears": {

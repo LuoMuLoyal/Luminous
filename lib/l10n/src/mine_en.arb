@@ -10,7 +10,7 @@
   "mineAccountEmailUnverified": "Email unverified",
   "mineAccountStudentRole": "User",
   "mineSignedOutNoticeTitle": "You are not signed in",
-  "mineSignedOutNoticeDescription": "Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.",
+  "mineSignedOutNoticeDescription": "Sign in to load your profile and health context.",
   "mineCompletionTitle": "Profile completion",
   "mineAlertAllergyTitle": "Allergies",
   "mineAlertAllergyCount": "{count} items",
@@ -48,7 +48,7 @@
   },
   "mineAlertPrivacyTitle": "Sharing controls",
   "mineAlertPrivacySubtitle": "Preview before sharing",
-  "mineAlertPrivacyBadge": "Confirm first",
+  "mineAlertPrivacyBadge": "Confirm",
   "mineArchiveBasicTitle": "Basic info",
   "mineArchiveBasicSubtitle": "Personal and health information",
   "mineArchiveAllergyTitle": "Allergies",
@@ -111,7 +111,7 @@
   "mineSettingExportValue": "Export my health data",
   "mineSettingHelpTitle": "Help and feedback",
   "mineSettingAboutTitle": "About Luminous",
-  "minePrivacyNoticeTitle": "Sensitive data is protected by default, and grants can be revoked anytime",
+  "minePrivacyNoticeTitle": "Sensitive data is protected",
   "minePrivacyNoticeAction": "View privacy policy",
   "mineProfileAgeYears": "{age}y",
   "@mineProfileAgeYears": {
@@ -156,7 +156,7 @@
       }
     }
   },
-  "mineReadinessPreviewTitle": "Your personal profile is still locked",
+  "mineReadinessPreviewTitle": "Your profile is still locked",
   "mineReadinessPreviewDescription": "Sign in to view your real basic info, allergies, and current medications.",
   "mineReadinessPreviewBadge": "Preview",
   "mineReadinessIncompleteTitle": "{count} key items still missing",

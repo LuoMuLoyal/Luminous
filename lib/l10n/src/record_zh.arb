@@ -242,7 +242,7 @@
   "recordNlpHeaderAction": "智能记录",
   "recordNlpSheetTitle": "自然语言录入",
   "recordNlpSheetSubtitle": "先解析成候选记录，确认后再保存",
-  "recordNlpInputHint": "比如：今天早上喝了两杯水，中午胃有点胀，昨晚睡了 6 小时",
+  "recordNlpInputHint": "比如：早上喝了两杯水，中午胃胀，昨晚睡 6 小时",
   "recordNlpGenerateAction": "解析候选",
   "recordNlpGeneratingAction": "解析中",
   "recordNlpResetAction": "清空",
@@ -300,7 +300,7 @@
     }
   },
   "recordNlpRetryFailedAction": "重试失败项",
-  "recordNlpFailedCandidatesHint": "还有 {count} 条候选记录上次保存失败，可修正后仅重试失败项",
+  "recordNlpFailedCandidatesHint": "还有 {count} 条候选记录上次保存失败，可仅重试失败项",
   "@recordNlpFailedCandidatesHint": {
     "placeholders": {
       "count": {

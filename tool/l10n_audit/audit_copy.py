@@ -137,6 +137,22 @@ ABBREV = re.compile(r"\b(e\.g|i\.e|etc|vs|approx|no|fig|ver)\.", re.I)
 
 EXEMPT = {"appTitle"}
 
+# 末位单词是业务复合词、不是 UI 槽位的 key。仅靠后缀正则会把 SpecialGroup /
+# WithMore / ByRange / ImageCount 这类词尾误判成 Group / More / Range / Count 槽位，
+# 从而报出假超限。这里按**真实渲染位**逐条钉住槽位（已核对调用点）。
+OVERRIDES = {
+    "medicinePromisePointSpecialGroup": "Label",
+    "medicineRiskCheckCoverageAlertDetailWithMore": "Description",
+    "medicineRiskCheckFindingBodySpecialGroup": "Body",
+    "medicineReferenceNoticeTitle": "Body",
+    "assistantToolReportSummaryByRange": "Label",
+    "reviewReadinessReadyTitleRange": "Title",
+    "todaySuggestionAiExplainMaxRetry": "Hint",
+    "reviewReviewWhatHappenedSymptomCount": "Label",
+    "recordMealAnalysisFailureImageCount": "Description",
+    "securityCenterLoginHistoryViewAll": "Title",
+}
+
 
 def vw(s: str) -> int:
     return sum(2 if ("\u2e80" <= c <= "\u9fff" or "\uff00" <= c <= "\uffef") else 1
@@ -182,7 +198,7 @@ def main() -> int:
         if k in EXEMPT:
             continue
         m = re.search(r"([A-Z][a-z]+)$", k)
-        suf = m.group(1) if m else None
+        suf = OVERRIDES.get(k) or (m.group(1) if m else None)
         if suf not in SLOTS:
             unreviewed.append(k)
             continue

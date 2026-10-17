@@ -10,7 +10,7 @@
   "reviewReadinessReadyBadge": "已就绪",
   "reviewReadinessSignedOutTitle": "暂未解锁完整报告",
   "reviewReadinessSignedOutDescription": "登录后可查看真实近 7 天聚合",
-  "reviewReadinessInsufficientTitle": "数据还不足，暂无法生成完整报告",
+  "reviewReadinessInsufficientTitle": "数据不足，暂无法生成完整报告",
   "reviewReadinessInsufficientDescription": "继续记录后，系统会补齐趋势分析、总结和导出内容",
   "reviewReadinessReadyTitle": "近 7 天报告已就绪",
   "reviewReadinessReadyTitleRange": "{range}报告已就绪",
@@ -86,12 +86,12 @@
   "reviewAiSummarySubtitle": "基于本周记录的智能分析",
   "reviewAiSummarySubtitleLast30Days": "基于近 30 天记录的智能分析",
   "reviewAiSummarySubtitleCustom": "基于所选时段的智能分析",
-  "reviewAiSummaryDefaultHint": "还没有生成本周 AI 总结，当前先显示最近一次报告快照",
+  "reviewAiSummaryDefaultHint": "尚未生成 AI 总结，当前显示最近报告快照",
   "reviewAiSummaryGeneratingHint": "正在生成本周 AI 总结",
   "reviewAiSummaryGeneratingHintLast30Days": "正在生成近 30 天 AI 总结",
   "reviewAiSummaryGeneratingHintCustom": "正在生成所选时段 AI 总结",
-  "reviewAiSummaryErrorHint": "本周 AI 总结生成失败，当前先保留报告快照",
-  "reviewAiSummaryDisabledHint": "你已在设置中关闭 AI 总结，当前只显示报告快照",
+  "reviewAiSummaryErrorHint": "AI 总结生成失败，暂显示报告快照",
+  "reviewAiSummaryDisabledHint": "AI 总结已关闭，仅显示报告快照",
   "reviewExportSectionTitle": "导出摘要",
   "reviewExportHospitalTitle": "给校医院",
   "reviewExportHospitalSubtitle": "导出健康摘要",
@@ -121,8 +121,8 @@
   "reviewFindingsEmptyBody": "持续记录健康数据后，系统会自动发现值得关注的变化和趋势",
   "reviewExportInsufficientReason": "数据不足时暂不支持导出，请先补充记录",
   "reviewLockedFeaturesTitle": "完整报告暂未展开",
-  "reviewLockedFeaturesSignedOutHint": "登录并补齐记录后可查看总结、导出 PDF、打印预览和更深入的模式分析",
-  "reviewLockedFeaturesInsufficientHint": "补齐记录后可生成总结、导出 PDF、打印预览和查看更深入的模式分析",
+  "reviewLockedFeaturesSignedOutHint": "登录并补齐记录后解锁总结与导出",
+  "reviewLockedFeaturesInsufficientHint": "补齐记录后解锁总结与导出",
   "reviewErrorTitle": "报告页暂时没有加载出来",
   "reviewErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次",
   "reviewPreviewBannerMessage": "登录后查看你的真实周报、AI 总结和导出结果",
@@ -255,7 +255,7 @@
     }
   },
   "reviewNoteworthyTitle": "值得注意",
-  "reviewNoteworthyAbstainLabel": "这段时间没有新增值得注意的变化",
+  "reviewNoteworthyAbstainLabel": "无值得注意的变化",
   "reviewNoteworthyWindow": "{start} → {end}",
   "@reviewNoteworthyWindow": {
     "placeholders": {
@@ -515,9 +515,9 @@
   "reviewReviewHistoryLoadFailed": "历史记录加载失败",
   "reviewReviewHistoryLoadMoreFailed": "加载更多失败",
   "reviewReviewNoEventTitle": "现在没有进行中的观察",
-  "reviewReviewNoEventDescription": "开始一段健康观察后，这里会按「发生了什么、有什么变化、完成了什么、接下来怎么办」帮你回顾整个过程",
+  "reviewReviewNoEventDescription": "开始健康观察后，这里会回顾变化与后续",
   "reviewRecordGuideTitle": "继续记录，几周后能看到趋势",
-  "reviewRecordGuideDescription": "本周已记录 {observed}/{expected} 天，连续记录饮水、睡眠或用药后，这里会呈现健康趋势与值得注意的变化",
+  "reviewRecordGuideDescription": "本周已记录 {observed}/{expected} 天，继续记录可见趋势与变化",
   "@reviewRecordGuideDescription": {
     "placeholders": {
       "observed": {

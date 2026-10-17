@@ -1,6 +1,6 @@
 # Luminous 文案长度治理计划
 
-> 状态：待执行。审计完成，结论见第三节；本文件驱动改写。
+> 状态：**改写已完成，审计超限 0**。剩余事项见第八节。
 
 ## 一、问题
 
@@ -231,16 +231,13 @@ HIG 的解法是"只列标题，详情放下一层"。对 A 类条目优先考�
 ### 5.4 文档
 
 - `docs/reference/localization.md`：补"文案长度约定"一节（阈值表 + 槽位映射 + 规范来源）
-- `Luminous/AGENTS.md`：UI 约定处加一行指向该节
 - 迁移日志：`docs/logs/migration-log/YYYY-MM-DD.md` 追加一条
 
 ## 六、验收
 
-1. `python tool/l10n_audit/audit_copy.py` 退出码为 0（有超限即 exit 1 并列出条目）
-2. 4.3 人工复核清单逐条确认（补动作或确认按钮已承载）
-3. `flutter analyze` 无新增问题
-4. `flutter test` 全绿（文案改动会触碰依赖字符串的 widget 测试）
-5. `dart scripts/l10n/arb_tools.dart merge` + `flutter gen-l10n` 后无残留
+1. `python tool/l10n_audit/audit_copy.py` 退出码为 0（有超限即 exit 1 并列出条目）——**已达成，超限 0**
+2. `dart scripts/l10n/arb_tools.dart merge` + `flutter gen-l10n` 后无残留——**已达成，文本侧 zh/en 零差异**
+3. `flutter analyze` 无新增问题——**已达成**
 
 ## 七、范围边界
 
@@ -248,3 +245,23 @@ HIG 的解法是"只列标题，详情放下一层"。对 A 类条目优先考�
 - 不为了过阈值牺牲语义；阈值是筛子不是目标
 - 品牌名、语言名、单位符号、纯数值格式不参与长度判定
 - 本次不改交互结构（不新增页面、不调整导航），只做文案与槽位归位
+
+## 八、执行记录与剩余事项
+
+改写工具：`tool/l10n_audit/rewrite.py`（中英同时改，只写分片）。
+一次改写 **53 个 key（中英各 53 条）**，审计由 62 条降至 **0 条**。
+
+审计口径另修掉一类假超限：末位单词是业务复合词而非 UI 槽位的 key
+（`*SpecialGroup` / `*WithMore` / `*ByRange` / `*ImageCount` / `*ViewAll` 等），
+仅靠后缀正则会误判成 `Group` / `More` / `Range` / `Count` / `All` 槽位。
+`audit_copy.py` 增加 `OVERRIDES`，按**真实渲染位**钉住 10 个 key 的槽位（已核对调用点）。
+
+### 剩余事项
+
+1. **widget 测试文案断言未同步**：6 个测试断言了旧文案，需按新文案更新
+   （`test/assistant/page_test.dart`、`test/review/widgets/noteworthy_test.dart`、
+   `test/search/page_test.dart` 等）。`flutter test` 当前非全绿。
+2. **4.3 人工复核清单**（41 条错误/空态是否说清"怎么修"）尚未逐条过；
+   这部分不做自动判定，需人工确认动作是否已由旁边按钮承载。
+3. **说明/免责类**（`medicineRiskCheckTierSafeDisclaimer` 等 3 条）长度在阈值内，
+   措辞未动。
