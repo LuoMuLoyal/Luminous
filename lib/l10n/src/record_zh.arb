@@ -49,7 +49,7 @@
   "recordCreateValueVital": "数值（如 120/80）",
   "recordCreateValueSymptom": "严重程度 / 感受",
   "recordCreateValueSleep": "时长（如 8h）",
-  "recordSleepEntryMissingTimes": "请选择就寝和起床时间",
+  "recordSleepEntryMissingTimes": "请选择就寝与起床时间",
   "recordSleepBedtimeLabel": "就寝时间",
   "recordSleepWakeTimeLabel": "起床时间",
   "recordSleepQualityLabel": "睡眠质量",
@@ -66,30 +66,30 @@
   "recordCreateFailedToast": "记录未保存",
   "recordCreateSavedToast": "记录已保存",
   "recordNlpResetConfirmTitle": "清空草稿",
-  "recordNlpResetConfirmBody": "确定清空所有已填内容吗？此操作不可撤销",
+  "recordNlpResetConfirmBody": "确定清空已填内容？不可撤销",
   "recordNlpResetConfirmAction": "清空",
-  "recordCreateValueRequiredToast": "请填写数值后再保存",
+  "recordCreateValueRequiredToast": "请先填写数值",
   "recordCreateValueInvalidToast": "请输入有效的数值",
-  "recordCreateTitleRequiredToast": "请填写标题后再保存",
-  "recordImageSectionTitle": "图片附件",
+  "recordCreateTitleRequiredToast": "请先填写标题",
+  "recordImageSectionTitle": "照片",
   "recordImageEmptyLabel": "未添加图片",
   "recordImageAttachedLabel": "已添加图片",
   "recordImagePickAction": "选择图片",
   "recordImageReplaceAction": "更换图片",
   "recordImageRemoveAction": "移除",
-  "recordImageUnsupportedToast": "仅支持 JPG、PNG、WEBP 或 GIF 图片",
-  "recordImagePickFailedToast": "图片未选择",
+  "recordImageUnsupportedToast": "仅支持 JPG、PNG、WEBP、GIF",
+  "recordImagePickFailedToast": "未选择图片",
   "recordQuickSectionTitle": "快速记录",
   "recordQuickSortDisableDynamicFirst": "请先关闭动态排序再编辑顺序",
-  "recordQuickReorderHint": "长按拖拽调整顺序",
+  "recordQuickReorderHint": "长按拖拽排序",
   "recordQuickHelpTooltip": "快速记录说明",
   "recordQuickSettingsTitle": "快速记录设置",
   "recordQuickSettingsSorting": "排序",
   "recordQuickSettingsManualOrder": "手动排序",
-  "recordQuickSettingsManualOrderHint": "关闭动态排序后可调整快捷入口顺序",
-  "recordQuickSettingsResetOrder": "重置为默认顺序",
-  "recordQuickSettingsResetOrderHint": "仅清除手动顺序，不影响其他快捷设置",
-  "recordQuickSettingsWaterDefault": "饮水默认量",
+  "recordQuickSettingsManualOrderHint": "关闭动态排序后可调整顺序",
+  "recordQuickSettingsResetOrder": "重置顺序",
+  "recordQuickSettingsResetOrderHint": "仅清除手动顺序，其他设置不变",
+  "recordQuickSettingsWaterDefault": "默认饮水量",
   "recordQuickSettingsWaterCustom": "自定义",
   "recordQuickSettingsWaterCustomValue": "自定义 ({ml} ml)",
   "@recordQuickSettingsWaterCustomValue": {
@@ -99,9 +99,9 @@
       }
     }
   },
-  "recordQuickSettingsWaterCustomDialogTitle": "自定义饮水默认量",
+  "recordQuickSettingsWaterCustomDialogTitle": "自定义饮水量",
   "recordQuickSettingsWaterCustomDialogLabel": "毫升数",
-  "recordQuickSettingsWaterCustomDialogHint": "输入每次快捷记录写入的毫升数",
+  "recordQuickSettingsWaterCustomDialogHint": "每次快捷记录写入的毫升数",
   "recordQuickSettingsWaterCustomDialogInvalid": "请输入大于 0 的数字",
   "recordQuickSettingsDisplay": "显示",
   "recordQuickSettingsWaterBadge": "饮水角标",
@@ -109,37 +109,37 @@
   "recordQuickSettingsWaterBadgeDailyCount": "今日次数",
   "recordQuickSettingsWaterBadgeHidden": "不显示",
   "recordQuickSettingsIcons": "自定义图标",
-  "recordQuickSettingsCustomIconHint": "点击各类型图标即可更换快捷记录的显示图标",
+  "recordQuickSettingsCustomIconHint": "点击各类型图标即可更换快捷图标",
   "recordQuickIconChangeAction": "更换图标",
   "recordQuickIconResetAction": "恢复默认图标",
   "recordQuickIconFieldLabel": "快捷图标",
-  "recordQuickHelpLongPressRule": "长按某个快捷入口可调整该类型的设置或手动录入",
+  "recordQuickHelpLongPressRule": "长按快捷入口可调整设置或手动录入",
   "recordQuickSettingsSymptomDefaultSeverity": "默认严重程度",
   "recordQuickSettingsSymptomChoices": "症状选项",
   "recordQuickSettingsMoodBadge": "情绪角标",
   "recordQuickSettingsMoodBadgeLatest": "今日最新",
   "recordQuickSettingsMoodBadgeHidden": "不显示",
   "recordQuickSettingsMedicationAutoRecord": "仅一种药时自动记录",
-  "recordQuickSettingsMedicationAutoRecordHint": "关闭后，即使只有一种药也会弹出选择确认",
+  "recordQuickSettingsMedicationAutoRecordHint": "关闭后仅一种药也会弹出选择确认",
   "recordQuickSettingsMedicationAlreadyRecordedHint": "已记录时显示提示",
-  "recordQuickSettingsMedicationAlreadyRecordedHintDesc": "关闭后，附近用药已记录时不再弹出提示",
+  "recordQuickSettingsMedicationAlreadyRecordedHintDesc": "关闭后附近用药已记录时不再提示",
   "recordQuickSettingsRules": "规则",
-  "recordQuickSettingsMedicationRule": "用药：按药箱和当前时间附近提醒智能选择",
+  "recordQuickSettingsMedicationRule": "用药：按药箱与临近时间智能选择",
   "recordQuickSettingsMealRule": "餐食：单击打开相机，确认后保存",
-  "recordQuickSettingsSymptomRule": "症状：单选立即保存，多选确认保存",
-  "recordQuickSettingsMoodRule": "情绪：点选一个情绪立即保存",
-  "recordQuickSettingsSleepRule": "睡眠：一次填写入睡与起床时间后保存",
+  "recordQuickSettingsSymptomRule": "症状：单选即存，多选需确认",
+  "recordQuickSettingsMoodRule": "情绪：点选即存",
+  "recordQuickSettingsSleepRule": "睡眠：填写入睡与起床时间后保存",
   "recordQuickSettingsGeneralRule": "单击打开录入弹窗，填写后保存",
   "recordQuickSavedToast": "已快速记录",
   "recordQuickUndoAction": "撤销",
-  "recordQuickUndoFailedToast": "撤销失败，请刷新后确认",
+  "recordQuickUndoFailedToast": "撤销失败，请刷新确认",
   "recordQuickMedicationNoMedicinesTitle": "还没有药品",
-  "recordQuickMedicationNoMedicinesBody": "先把药品添加到药箱，之后就能从记录页快速记录服药",
+  "recordQuickMedicationNoMedicinesBody": "先添加药品到药箱，即可在此快速记录服药",
   "recordQuickMedicationAddAction": "添加药品",
   "recordQuickMedicationSelectTitle": "选择本次服用的药",
   "recordQuickMedicationAlreadyRecordedToast": "附近用药已记录",
   "recordQuickMedicationTemporaryToast": "已记录临时服药，未关联提醒",
-  "recordQuickMedicationLoadFailedToast": "用药信息加载失败，请重试",
+  "recordQuickMedicationLoadFailedToast": "用药信息加载失败",
   "recordQuickMedicationPartialFailedToast": "已记录 {savedCount} 种，{failedCount} 种失败",
   "@recordQuickMedicationPartialFailedToast": {
     "placeholders": {
@@ -165,16 +165,16 @@
       }
     }
   },
-  "recordSleepEntryWakeNotAfterBedtime": "醒来时间必须晚于入睡时间",
-  "recordSleepEntryNapCrossesMidnight": "小睡不能跨天，请调整时间",
+  "recordSleepEntryWakeNotAfterBedtime": "起床时间须晚于就寝时间",
+  "recordSleepEntryNapCrossesMidnight": "小睡不能跨天",
   "recordSleepEntryNapTooLong": "小睡不能超过 3 小时",
   "recordSleepEntryNightTooLong": "夜间睡眠不能超过 16 小时",
-  "recordQuickMealConfirmTitle": "确认餐食记录",
-  "recordQuickMealEmptyToast": "请填写名称、备注或添加照片后再保存",
+  "recordQuickMealConfirmTitle": "确认餐食",
+  "recordQuickMealEmptyToast": "请先填写名称、备注或添加照片",
   "recordSymptomSheetTitle": "记录症状",
   "recordSymptomSeverityLabel": "严重程度",
   "recordSymptomSingleSelectHint": "点一个症状即保存",
-  "recordSymptomMultiSelectHint": "选择要记录的症状（可多选）",
+  "recordSymptomMultiSelectHint": "选择要记录的症状",
   "recordSymptomRecordCount": "记录 {count} 条",
   "@recordSymptomRecordCount": {
     "placeholders": {
@@ -241,9 +241,9 @@
   "recordFastChoiceMoodTerrible": "很糟",
   "recordNlpHeaderAction": "智能记录",
   "recordNlpSheetTitle": "自然语言录入",
-  "recordNlpSheetSubtitle": "先解析成候选记录，确认后再保存",
-  "recordNlpInputHint": "比如：早上喝了两杯水，中午胃胀，昨晚睡 6 小时",
-  "recordNlpGenerateAction": "解析候选",
+  "recordNlpSheetSubtitle": "解析为候选记录，确认后保存",
+  "recordNlpInputHint": "比如：早上喝了两杯水，中午胃胀",
+  "recordNlpGenerateAction": "解析",
   "recordNlpGeneratingAction": "解析中",
   "recordNlpResetAction": "清空",
   "recordNlpMealTitleOptional": "餐次 / 标题（可选）",
@@ -276,10 +276,10 @@
       }
     }
   },
-  "recordNlpInputRequiredToast": "先输入一段记录描述",
+  "recordNlpInputRequiredToast": "请先输入记录描述",
   "recordNlpGenerateFailedToast": "解析失败，请检查内容后重试",
-  "recordNlpEmptyCandidatesToast": "这次没有解析出可保存的候选记录",
-  "recordNlpNoCandidatesSelectedToast": "先选中至少一条候选记录",
+  "recordNlpEmptyCandidatesToast": "这次没有解析出候选记录",
+  "recordNlpNoCandidatesSelectedToast": "请先选中至少一条候选",
   "recordNlpSavedToast": "已保存 {count} 条记录",
   "@recordNlpSavedToast": {
     "placeholders": {
@@ -288,7 +288,7 @@
       }
     }
   },
-  "recordNlpPartialSavedToast": "已保存 {savedCount} 条，另有 {failedCount} 条保存失败",
+  "recordNlpPartialSavedToast": "已保存 {savedCount} 条，{failedCount} 条失败",
   "@recordNlpPartialSavedToast": {
     "placeholders": {
       "savedCount": {
@@ -300,7 +300,7 @@
     }
   },
   "recordNlpRetryFailedAction": "重试失败项",
-  "recordNlpFailedCandidatesHint": "还有 {count} 条候选记录上次保存失败，可仅重试失败项",
+  "recordNlpFailedCandidatesHint": "还有 {count} 条上次保存失败，可仅重试失败项",
   "@recordNlpFailedCandidatesHint": {
     "placeholders": {
       "count": {
@@ -308,7 +308,7 @@
       }
     }
   },
-  "recordNlpRetrySavedToast": "已重试并保存 {count} 条失败记录",
+  "recordNlpRetrySavedToast": "已重试并保存 {count} 条",
   "@recordNlpRetrySavedToast": {
     "placeholders": {
       "count": {
@@ -317,12 +317,12 @@
     }
   },
   "recordNlpNoFailedCandidatesToast": "当前没有失败项可重试",
-  "recordNlpCandidateSaveFailedHint": "这条上次没保存成功，请重试",
+  "recordNlpCandidateSaveFailedHint": "这条上次未保存成功，请重试",
   "recordTimelineSectionTitle": "时间线",
-  "recordTimelineViewAllAction": "查看全部记录",
+  "recordTimelineViewAllAction": "查看全部",
   "recordTimelineCollapseAction": "收起",
   "recordTimelineEmptyTitle": "这一天还没有记录",
-  "recordTimelineEmptyDescription": "快记一条饮水、用药或睡眠吧",
+  "recordTimelineEmptyDescription": "记录饮水、用药或睡眠",
   "recordTimelineEmptyAction": "新建记录",
   "recordTimelineClearFilter": "清除筛选",
   "recordNewEntrySectionTitle": "新建记录",
@@ -341,7 +341,7 @@
   "recordFilterClearAction": "清除",
   "recordAllTypesAction": "全部类型",
   "recordDetailTitle": "记录详情",
-  "recordDetailErrorTitle": "记录详情暂时没有加载出来",
+  "recordDetailErrorTitle": "记录详情加载失败",
   "recordDetailValueLabel": "数值",
   "recordDetailSourceLabel": "来源",
   "recordSourceManual": "手动记录",
@@ -374,7 +374,7 @@
     }
   },
   "recordDetailCopyAction": "复制摘要",
-  "recordDetailCopiedToast": "已复制到剪贴板",
+  "recordDetailCopiedToast": "已复制",
   "recordDetailPreviousAction": "上一条",
   "recordDetailNextAction": "下一条",
   "recordMealAnalysisSectionTitle": "餐食分析",
@@ -393,14 +393,14 @@
   },
   "recordEditAction": "编辑",
   "recordEditDiscardTitle": "放弃修改？",
-  "recordEditDiscardMessage": "你有未保存的修改，确定要离开吗？",
+  "recordEditDiscardMessage": "有未保存的修改，确定离开吗？",
   "recordEditDiscardAction": "放弃修改",
   "recordEditKeepEditingAction": "继续编辑",
-  "recordDetailEditAction": "编辑这条记录",
-  "recordEditUnsavedHint": "修改后点击保存生效",
+  "recordDetailEditAction": "编辑",
+  "recordEditUnsavedHint": "保存后生效",
   "recordEditUnsavedWarning": "有未保存的更改",
   "recordDeleteAction": "删除",
-  "recordDeleteConfirmMessage": "确定删除此记录？此操作不可撤销",
+  "recordDeleteConfirmMessage": "确定删除此记录？不可撤销",
   "recordDeleteConfirmTitle": "删除记录",
   "recordDeletedToast": "已删除",
   "recordDeleteFailedToast": "删除失败",
@@ -458,25 +458,25 @@
   "recordTimelineSleepDetail": "上床 23:30 · 睡眠时长 7.0 小时",
   "recordTimelineHeartRateDetail": "72 次/分 · 来源：手表 · 正常",
   "recordTimelineWeightDetail": "来源：体脂秤 · BMI 22.5",
-  "recordTrendBloodSugarTitle": "饮食-血糖",
+  "recordTrendBloodSugarTitle": "饮食与血糖",
   "recordTrendBloodSugarLegend": "餐后血糖 (mmol/L)",
   "recordTrendHydrationTitle": "饮水完成率",
   "recordRange7Days": "近 7 天",
   "recordRange30Days": "近 30 天",
-  "recordFoodImagePlaceholder": "餐图占位",
+  "recordFoodImagePlaceholder": "暂无餐食图片",
   "recordFastChoiceWater250ml": "250 ml",
   "recordFastChoiceWater500ml": "500 ml",
   "recordFastChoiceWater1Cup": "1 杯",
   "recordFastChoiceWater1Time": "1 次",
   "recordBackToTodayAction": "回到今天",
   "recordDiscardChangesTitle": "放弃修改",
-  "recordDiscardChangesMessage": "当前内容尚未保存，确定离开吗？",
+  "recordDiscardChangesMessage": "内容尚未保存，确定离开吗？",
   "recordDiscardChangesAction": "放弃",
   "recordImageCameraAction": "拍照",
   "recordCreateSectionBasicTitle": "基本信息",
   "recordCreateSectionDetailsTitle": "记录内容",
   "recordDragDateChanged": "记录日期已更新",
-  "recordDragDateError": "日期更新失败，请重试",
+  "recordDragDateError": "日期更新失败",
   "recordMealAnalysisStatusAnalyzed": "已分析",
   "@recordMealAnalysisStatusAnalyzed": {
     "description": "Meal analysis v2 UI copy."
@@ -494,19 +494,19 @@
       }
     }
   },
-  "recordMealAnalysisInsightsTitle": "饮食分析",
+  "recordMealAnalysisInsightsTitle": "分析结果",
   "@recordMealAnalysisInsightsTitle": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisAnalyzingHint": "正在分析这张照片…",
+  "recordMealAnalysisAnalyzingHint": "正在分析照片…",
   "@recordMealAnalysisAnalyzingHint": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisDishesTitle": "菜名（可编辑）",
+  "recordMealAnalysisDishesTitle": "菜名",
   "@recordMealAnalysisDishesTitle": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisDishesHint": "改菜名不会重算分析与热量",
+  "recordMealAnalysisDishesHint": "改菜名不会重算分析",
   "@recordMealAnalysisDishesHint": {
     "description": "Meal analysis v2 UI copy."
   },
@@ -514,11 +514,11 @@
   "@recordMealAnalysisRetryAction": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisRetryFailedToast": "重新分析失败，请稍后再试",
+  "recordMealAnalysisRetryFailedToast": "重新分析失败",
   "@recordMealAnalysisRetryFailedToast": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureImageCount": "图片数量不对，无法分析",
+  "recordMealAnalysisFailureImageCount": "请仅添加一张图片",
   "@recordMealAnalysisFailureImageCount": {
     "description": "Meal analysis v2 UI copy."
   },
@@ -534,7 +534,7 @@
   "@recordMealAnalysisFailureModelTimeout": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureJobLost": "分析中断了，请重试",
+  "recordMealAnalysisFailureJobLost": "分析中断，请重试",
   "@recordMealAnalysisFailureJobLost": {
     "description": "Meal analysis v2 UI copy."
   },

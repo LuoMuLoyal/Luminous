@@ -49,7 +49,7 @@
   "recordCreateValueVital": "Value (e.g. 120/80)",
   "recordCreateValueSymptom": "Severity / feeling",
   "recordCreateValueSleep": "Duration (e.g. 8h)",
-  "recordSleepEntryMissingTimes": "Please select bedtime and wake time",
+  "recordSleepEntryMissingTimes": "Select bedtime and wake time",
   "recordSleepBedtimeLabel": "Bedtime",
   "recordSleepWakeTimeLabel": "Wake time",
   "recordSleepQualityLabel": "Sleep quality",
@@ -63,33 +63,33 @@
   "recordSleepDurationLabel": "Duration",
   "recordSleepTimeRangeLabel": "Time range",
   "recordSleepMinutesUnit": "min",
-  "recordCreateFailedToast": "Record was not saved.",
+  "recordCreateFailedToast": "Record not saved",
   "recordCreateSavedToast": "Record saved.",
   "recordNlpResetConfirmTitle": "Clear draft",
-  "recordNlpResetConfirmBody": "Clear all drafted content? This cannot be undone.",
+  "recordNlpResetConfirmBody": "Clear all drafted content? This can't be undone.",
   "recordNlpResetConfirmAction": "Clear",
-  "recordCreateValueRequiredToast": "Please enter a value before saving",
+  "recordCreateValueRequiredToast": "Enter a value first",
   "recordCreateValueInvalidToast": "Please enter a valid number",
-  "recordCreateTitleRequiredToast": "Please enter a title before saving",
-  "recordImageSectionTitle": "Image attachment",
+  "recordCreateTitleRequiredToast": "Enter a title first",
+  "recordImageSectionTitle": "Photo",
   "recordImageEmptyLabel": "No image attached",
   "recordImageAttachedLabel": "Image attached",
   "recordImagePickAction": "Choose image",
   "recordImageReplaceAction": "Replace image",
   "recordImageRemoveAction": "Remove",
-  "recordImageUnsupportedToast": "Only JPG, PNG, WEBP, or GIF images are supported.",
-  "recordImagePickFailedToast": "Image was not selected.",
+  "recordImageUnsupportedToast": "Only JPG, PNG, WEBP, or GIF.",
+  "recordImagePickFailedToast": "No image selected",
   "recordQuickSectionTitle": "Quick record",
-  "recordQuickSortDisableDynamicFirst": "Please disable dynamic sorting before editing order",
-  "recordQuickReorderHint": "Long press and drag to reorder",
-  "recordQuickHelpTooltip": "Quick record help",
+  "recordQuickSortDisableDynamicFirst": "Turn off dynamic sorting before editing order",
+  "recordQuickReorderHint": "Long-press to reorder",
+  "recordQuickHelpTooltip": "Quick record guide",
   "recordQuickSettingsTitle": "Quick record settings",
   "recordQuickSettingsSorting": "Sorting",
   "recordQuickSettingsManualOrder": "Manual order",
-  "recordQuickSettingsManualOrderHint": "Turn off dynamic sorting to edit quick-entry order.",
-  "recordQuickSettingsResetOrder": "Reset to default order",
-  "recordQuickSettingsResetOrderHint": "Only clears manual order; other quick settings stay unchanged.",
-  "recordQuickSettingsWaterDefault": "Water default amount",
+  "recordQuickSettingsManualOrderHint": "Turn off dynamic sorting to edit order.",
+  "recordQuickSettingsResetOrder": "Reset order",
+  "recordQuickSettingsResetOrderHint": "Only clears manual order; other settings stay.",
+  "recordQuickSettingsWaterDefault": "Default amount",
   "recordQuickSettingsWaterCustom": "Custom",
   "recordQuickSettingsWaterCustomValue": "Custom ({ml} ml)",
   "@recordQuickSettingsWaterCustomValue": {
@@ -99,47 +99,47 @@
       }
     }
   },
-  "recordQuickSettingsWaterCustomDialogTitle": "Custom water amount",
+  "recordQuickSettingsWaterCustomDialogTitle": "Custom amount",
   "recordQuickSettingsWaterCustomDialogLabel": "Amount (ml)",
-  "recordQuickSettingsWaterCustomDialogHint": "Enter the ml to log per quick entry",
+  "recordQuickSettingsWaterCustomDialogHint": "ml written per quick entry",
   "recordQuickSettingsWaterCustomDialogInvalid": "Enter a number greater than 0",
   "recordQuickSettingsDisplay": "Display",
   "recordQuickSettingsWaterBadge": "Water badge",
   "recordQuickSettingsWaterBadgeDailyTotal": "Daily total",
   "recordQuickSettingsWaterBadgeDailyCount": "Daily count",
   "recordQuickSettingsWaterBadgeHidden": "Hidden",
-  "recordQuickSettingsIcons": "Custom Icons",
-  "recordQuickSettingsCustomIconHint": "Tap a type's icon to change how it appears in quick record",
+  "recordQuickSettingsIcons": "Custom icons",
+  "recordQuickSettingsCustomIconHint": "Tap a type's icon to change its quick-record icon",
   "recordQuickIconChangeAction": "Change icon",
   "recordQuickIconResetAction": "Reset icon",
   "recordQuickIconFieldLabel": "Quick icon",
-  "recordQuickHelpLongPressRule": "Long-press a quick entry to adjust its settings or enter it manually",
+  "recordQuickHelpLongPressRule": "Long-press a quick entry to change settings or enter manually",
   "recordQuickSettingsSymptomDefaultSeverity": "Default severity",
   "recordQuickSettingsSymptomChoices": "Symptom options",
   "recordQuickSettingsMoodBadge": "Mood badge",
   "recordQuickSettingsMoodBadgeLatest": "Latest today",
   "recordQuickSettingsMoodBadgeHidden": "Hidden",
-  "recordQuickSettingsMedicationAutoRecord": "Auto-record when only one medicine",
-  "recordQuickSettingsMedicationAutoRecordHint": "When off, a selection dialog appears even for a single medicine.",
-  "recordQuickSettingsMedicationAlreadyRecordedHint": "Show hint when already recorded",
-  "recordQuickSettingsMedicationAlreadyRecordedHintDesc": "When off, no toast is shown if a nearby dose is already recorded.",
+  "recordQuickSettingsMedicationAutoRecord": "Auto-record single medicine",
+  "recordQuickSettingsMedicationAutoRecordHint": "When off, a dialog appears even for one medicine.",
+  "recordQuickSettingsMedicationAlreadyRecordedHint": "Hint when already logged",
+  "recordQuickSettingsMedicationAlreadyRecordedHintDesc": "When off, no toast if a nearby dose is recorded.",
   "recordQuickSettingsRules": "Rules",
-  "recordQuickSettingsMedicationRule": "Medication: smart selection from medicine box and nearby reminder slots.",
-  "recordQuickSettingsMealRule": "Meal: single tap opens the camera; confirmation saves.",
-  "recordQuickSettingsSymptomRule": "Symptom: single select saves; multi-select confirms.",
-  "recordQuickSettingsMoodRule": "Mood: selecting one mood saves immediately.",
-  "recordQuickSettingsSleepRule": "Sleep: fill in bedtime and wake time once, then save.",
-  "recordQuickSettingsGeneralRule": "Single tap opens the entry dialog; fill it in to save.",
-  "recordQuickSavedToast": "Quick record saved",
+  "recordQuickSettingsMedicationRule": "Medication: smart pick from medicine box and nearby slots.",
+  "recordQuickSettingsMealRule": "Meal: tap opens camera, confirm to save.",
+  "recordQuickSettingsSymptomRule": "Symptom: one pick saves; multi-select confirms.",
+  "recordQuickSettingsMoodRule": "Mood: one pick saves immediately.",
+  "recordQuickSettingsSleepRule": "Sleep: fill bedtime and wake time, then save.",
+  "recordQuickSettingsGeneralRule": "Tap opens the entry dialog; fill it in to save.",
+  "recordQuickSavedToast": "Saved",
   "recordQuickUndoAction": "Undo",
-  "recordQuickUndoFailedToast": "Undo failed. Refresh and check the record.",
+  "recordQuickUndoFailedToast": "Undo failed. Refresh to check.",
   "recordQuickMedicationNoMedicinesTitle": "No medicines yet",
-  "recordQuickMedicationNoMedicinesBody": "Add medicines to your medicine box first, then you can log doses quickly from Record.",
+  "recordQuickMedicationNoMedicinesBody": "Add medicines to your box first, then log doses here.",
   "recordQuickMedicationAddAction": "Add medicine",
-  "recordQuickMedicationSelectTitle": "Select medicines taken now",
-  "recordQuickMedicationAlreadyRecordedToast": "Nearby dose already recorded",
-  "recordQuickMedicationTemporaryToast": "Temporary dose recorded without a reminder",
-  "recordQuickMedicationLoadFailedToast": "Could not load medicines. Try again.",
+  "recordQuickMedicationSelectTitle": "Select medicines taken",
+  "recordQuickMedicationAlreadyRecordedToast": "Nearby dose already logged",
+  "recordQuickMedicationTemporaryToast": "Temporary dose logged, no reminder",
+  "recordQuickMedicationLoadFailedToast": "Couldn't load medicines",
   "recordQuickMedicationPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
   "@recordQuickMedicationPartialFailedToast": {
     "placeholders": {
@@ -154,7 +154,7 @@
   "recordSleepKindNight": "Night sleep",
   "recordSleepKindNap": "Nap",
   "recordQuickSleepSheetTitle": "Log sleep",
-  "recordQuickSleepRecordedOn": "Filed as sleep on {month}/{day}",
+  "recordQuickSleepRecordedOn": "Logged as sleep on {month}/{day}",
   "@recordQuickSleepRecordedOn": {
     "placeholders": {
       "month": {
@@ -165,16 +165,16 @@
       }
     }
   },
-  "recordSleepEntryWakeNotAfterBedtime": "Wake time must be after sleep start.",
-  "recordSleepEntryNapCrossesMidnight": "A nap cannot cross midnight.",
-  "recordSleepEntryNapTooLong": "A nap cannot exceed 3 hours.",
-  "recordSleepEntryNightTooLong": "Night sleep cannot exceed 16 hours.",
-  "recordQuickMealConfirmTitle": "Confirm meal record",
-  "recordQuickMealEmptyToast": "Add a name, a note, or a photo before saving.",
+  "recordSleepEntryWakeNotAfterBedtime": "Wake time must be after bedtime",
+  "recordSleepEntryNapCrossesMidnight": "A nap cannot cross midnight",
+  "recordSleepEntryNapTooLong": "A nap cannot exceed 3 hours",
+  "recordSleepEntryNightTooLong": "Night sleep cannot exceed 16 hours",
+  "recordQuickMealConfirmTitle": "Confirm meal",
+  "recordQuickMealEmptyToast": "Add a name, note, or photo first.",
   "recordSymptomSheetTitle": "Log symptom",
   "recordSymptomSeverityLabel": "Severity",
-  "recordSymptomSingleSelectHint": "Tap a symptom to save it",
-  "recordSymptomMultiSelectHint": "Pick the symptoms to record",
+  "recordSymptomSingleSelectHint": "Tap a symptom to save",
+  "recordSymptomMultiSelectHint": "Pick symptoms to record",
   "recordSymptomRecordCount": "Log {count}",
   "@recordSymptomRecordCount": {
     "placeholders": {
@@ -239,11 +239,11 @@
   "recordFastChoiceMoodOkay": "Okay",
   "recordFastChoiceMoodBad": "Not great",
   "recordFastChoiceMoodTerrible": "Terrible",
-  "recordNlpHeaderAction": "AI Record",
+  "recordNlpHeaderAction": "AI log",
   "recordNlpSheetTitle": "Natural-language input",
-  "recordNlpSheetSubtitle": "Parse into candidate records first, then save after confirmation.",
-  "recordNlpInputHint": "e.g. Two cups of water this morning, bloated at noon, slept 6 hours.",
-  "recordNlpGenerateAction": "Parse candidates",
+  "recordNlpSheetSubtitle": "Parses into candidates; save after confirming.",
+  "recordNlpInputHint": "e.g. Two cups of water this morning, bloated at noon.",
+  "recordNlpGenerateAction": "Parse",
   "recordNlpGeneratingAction": "Parsing",
   "recordNlpResetAction": "Clear",
   "recordNlpMealTitleOptional": "Meal label / title (optional)",
@@ -268,7 +268,7 @@
     }
   },
   "recordNlpSavingAction": "Saving",
-  "recordNlpSelectedCountHint": "{count, plural, =0{No items selected yet} =1{1 item selected and ready to edit} other{{count} items selected and ready to edit}}",
+  "recordNlpSelectedCountHint": "{count, plural, =0{Nothing selected yet} =1{1 item selected} other{{count} items selected}}",
   "@recordNlpSelectedCountHint": {
     "placeholders": {
       "count": {
@@ -276,10 +276,10 @@
       }
     }
   },
-  "recordNlpInputRequiredToast": "Enter a short record note first.",
-  "recordNlpGenerateFailedToast": "Parsing failed. Please check your input and try again.",
-  "recordNlpEmptyCandidatesToast": "No candidate records were parsed this time.",
-  "recordNlpNoCandidatesSelectedToast": "Select at least one candidate record first.",
+  "recordNlpInputRequiredToast": "Enter a short note first.",
+  "recordNlpGenerateFailedToast": "Parsing failed. Check the text and retry.",
+  "recordNlpEmptyCandidatesToast": "No candidates parsed this time.",
+  "recordNlpNoCandidatesSelectedToast": "Select at least one candidate.",
   "recordNlpSavedToast": "{count, plural, =0{Saved 0 records} =1{Saved 1 record} other{Saved {count} records}}",
   "@recordNlpSavedToast": {
     "placeholders": {
@@ -288,7 +288,7 @@
       }
     }
   },
-  "recordNlpPartialSavedToast": "Saved {savedCount} record(s), and {failedCount} failed.",
+  "recordNlpPartialSavedToast": "Saved {savedCount}, {failedCount} failed.",
   "@recordNlpPartialSavedToast": {
     "placeholders": {
       "savedCount": {
@@ -300,7 +300,7 @@
     }
   },
   "recordNlpRetryFailedAction": "Retry failed",
-  "recordNlpFailedCandidatesHint": "{count, plural, =0{No failed candidates remain} =1{1 candidate failed to save. Retry only the failed item.} other{{count} candidates failed to save. Retry only the failed ones.}}",
+  "recordNlpFailedCandidatesHint": "{count, plural, =0{No failed candidates} =1{1 candidate failed. Retry it.} other{{count} candidates failed. Retry them.}}",
   "@recordNlpFailedCandidatesHint": {
     "placeholders": {
       "count": {
@@ -308,7 +308,7 @@
       }
     }
   },
-  "recordNlpRetrySavedToast": "{count, plural, =0{No failed records were retried} =1{Retried and saved 1 failed record} other{Retried and saved {count} failed records}}",
+  "recordNlpRetrySavedToast": "{count, plural, =0{Nothing retried} =1{Retried and saved 1 record} other{Retried and saved {count} records}}",
   "@recordNlpRetrySavedToast": {
     "placeholders": {
       "count": {
@@ -316,13 +316,13 @@
       }
     }
   },
-  "recordNlpNoFailedCandidatesToast": "There are no failed items to retry right now.",
-  "recordNlpCandidateSaveFailedHint": "This item was not saved last time. Please retry.",
+  "recordNlpNoFailedCandidatesToast": "No failed items to retry.",
+  "recordNlpCandidateSaveFailedHint": "Not saved last time. Retry it.",
   "recordTimelineSectionTitle": "Timeline",
-  "recordTimelineViewAllAction": "View all records",
+  "recordTimelineViewAllAction": "View all",
   "recordTimelineCollapseAction": "Collapse",
-  "recordTimelineEmptyTitle": "No records for this day",
-  "recordTimelineEmptyDescription": "Log your water, medication, or sleep to get started",
+  "recordTimelineEmptyTitle": "No records today",
+  "recordTimelineEmptyDescription": "Log water, medication, or sleep",
   "recordTimelineEmptyAction": "New record",
   "recordTimelineClearFilter": "Clear filter",
   "recordNewEntrySectionTitle": "New record",
@@ -341,7 +341,7 @@
   "recordFilterClearAction": "Clear",
   "recordAllTypesAction": "All types",
   "recordDetailTitle": "Record details",
-  "recordDetailErrorTitle": "Record details did not load",
+  "recordDetailErrorTitle": "Couldn't load record details",
   "recordDetailValueLabel": "Value",
   "recordDetailSourceLabel": "Source",
   "recordSourceManual": "Manual",
@@ -374,7 +374,7 @@
     }
   },
   "recordDetailCopyAction": "Copy summary",
-  "recordDetailCopiedToast": "Copied to clipboard",
+  "recordDetailCopiedToast": "Copied",
   "recordDetailPreviousAction": "Previous",
   "recordDetailNextAction": "Next",
   "recordMealAnalysisSectionTitle": "Meal analysis",
@@ -393,21 +393,21 @@
   },
   "recordEditAction": "Edit",
   "recordEditDiscardTitle": "Discard changes?",
-  "recordEditDiscardMessage": "You have unsaved changes. Leave anyway?",
+  "recordEditDiscardMessage": "Unsaved changes. Leave anyway?",
   "recordEditDiscardAction": "Discard changes",
   "recordEditKeepEditingAction": "Keep editing",
-  "recordDetailEditAction": "Edit this record",
-  "recordEditUnsavedHint": "Changes take effect after saving",
+  "recordDetailEditAction": "Edit",
+  "recordEditUnsavedHint": "Save to apply changes",
   "recordEditUnsavedWarning": "Unsaved changes",
   "recordDeleteAction": "Delete",
-  "recordDeleteConfirmMessage": "Delete this record? This action cannot be undone.",
-  "recordDeleteConfirmTitle": "Delete Record",
+  "recordDeleteConfirmMessage": "Delete this record? This can't be undone.",
+  "recordDeleteConfirmTitle": "Delete record",
   "recordDeletedToast": "Deleted",
   "recordDeleteFailedToast": "Delete failed",
   "recordNotEnabledLabel": "Off",
   "recordErrorTitle": "Record page did not load",
   "recordErrorDescription": "Check your network and try again.",
-  "recordRefreshErrorToast": "Refresh failed, please try again",
+  "recordRefreshErrorToast": "Refresh failed, try again",
   "recordWeekdaySun": "Sun",
   "recordWeekdayMon": "Mon",
   "recordWeekdayTue": "Tue",
@@ -458,25 +458,25 @@
   "recordTimelineSleepDetail": "Bedtime 23:30 · sleep duration 7.0 h",
   "recordTimelineHeartRateDetail": "72 bpm · source: watch · normal",
   "recordTimelineWeightDetail": "Source: smart scale · BMI 22.5",
-  "recordTrendBloodSugarTitle": "Meal-blood sugar",
+  "recordTrendBloodSugarTitle": "Meal & blood sugar",
   "recordTrendBloodSugarLegend": "Post-meal glucose (mmol/L)",
   "recordTrendHydrationTitle": "Water completion",
   "recordRange7Days": "Last 7 days",
   "recordRange30Days": "Last 30 days",
-  "recordFoodImagePlaceholder": "Meal image placeholder",
+  "recordFoodImagePlaceholder": "No meal photo",
   "recordFastChoiceWater250ml": "250 ml",
   "recordFastChoiceWater500ml": "500 ml",
   "recordFastChoiceWater1Cup": "1 cup",
   "recordFastChoiceWater1Time": "1 time",
   "recordBackToTodayAction": "Back to today",
   "recordDiscardChangesTitle": "Discard changes",
-  "recordDiscardChangesMessage": "You have unsaved changes. Leave anyway?",
+  "recordDiscardChangesMessage": "Unsaved changes. Leave anyway?",
   "recordDiscardChangesAction": "Discard",
   "recordImageCameraAction": "Take photo",
   "recordCreateSectionBasicTitle": "Basic info",
   "recordCreateSectionDetailsTitle": "Record details",
   "recordDragDateChanged": "Record date updated",
-  "recordDragDateError": "Failed to update date. Please try again.",
+  "recordDragDateError": "Couldn't update the date",
   "recordMealAnalysisStatusAnalyzed": "Analyzed",
   "@recordMealAnalysisStatusAnalyzed": {
     "description": "Meal analysis v2 UI copy."
@@ -494,19 +494,19 @@
       }
     }
   },
-  "recordMealAnalysisInsightsTitle": "Meal findings",
+  "recordMealAnalysisInsightsTitle": "Findings",
   "@recordMealAnalysisInsightsTitle": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisAnalyzingHint": "Analyzing this photo…",
+  "recordMealAnalysisAnalyzingHint": "Analyzing photo…",
   "@recordMealAnalysisAnalyzingHint": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisDishesTitle": "Dishes (editable)",
+  "recordMealAnalysisDishesTitle": "Dishes",
   "@recordMealAnalysisDishesTitle": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisDishesHint": "Renaming does not re-run the analysis or the energy estimate.",
+  "recordMealAnalysisDishesHint": "Renaming won't re-run the analysis",
   "@recordMealAnalysisDishesHint": {
     "description": "Meal analysis v2 UI copy."
   },
@@ -514,31 +514,31 @@
   "@recordMealAnalysisRetryAction": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisRetryFailedToast": "Could not restart the analysis. Try again later.",
+  "recordMealAnalysisRetryFailedToast": "Couldn't restart the analysis",
   "@recordMealAnalysisRetryFailedToast": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureImageCount": "Needs exactly one photo",
+  "recordMealAnalysisFailureImageCount": "Add exactly one photo",
   "@recordMealAnalysisFailureImageCount": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureVisionUnavailable": "Photo analysis is unavailable. Try again later.",
+  "recordMealAnalysisFailureVisionUnavailable": "Photo analysis unavailable, try later",
   "@recordMealAnalysisFailureVisionUnavailable": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureModelFailed": "Analysis failed. Try again later",
+  "recordMealAnalysisFailureModelFailed": "Analysis failed, try later",
   "@recordMealAnalysisFailureModelFailed": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureModelTimeout": "Analysis timed out. Try again",
+  "recordMealAnalysisFailureModelTimeout": "Analysis timed out, try again",
   "@recordMealAnalysisFailureModelTimeout": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureJobLost": "Analysis was interrupted. Try again",
+  "recordMealAnalysisFailureJobLost": "Analysis interrupted, try again",
   "@recordMealAnalysisFailureJobLost": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureInvalidOutput": "The photo could not be read",
+  "recordMealAnalysisFailureInvalidOutput": "Photo unreadable",
   "@recordMealAnalysisFailureInvalidOutput": {
     "description": "Meal analysis v2 UI copy."
   },
