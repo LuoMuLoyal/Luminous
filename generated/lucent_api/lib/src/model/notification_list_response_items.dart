@@ -56,9 +56,11 @@ class NotificationListResponseItems {
   @JsonKey(name: r'content', required: true, includeIfNull: false)
   final String content;
 
+  /// Action route target for the frontend.
   @JsonKey(name: r'action', required: true, includeIfNull: true)
   final String? action;
 
+  /// Extra payload for the action.
   @JsonKey(name: r'actionPayload', required: true, includeIfNull: true)
   final Object? actionPayload;
 

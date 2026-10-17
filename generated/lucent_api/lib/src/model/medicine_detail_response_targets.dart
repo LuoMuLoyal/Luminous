@@ -41,27 +41,35 @@ class MedicineDetailResponseTargets {
   @JsonKey(name: r'name', required: true, includeIfNull: false)
   final String name;
 
+  /// Target gene symbol.
   @JsonKey(name: r'geneName', required: true, includeIfNull: true)
   final String? geneName;
 
+  /// UniProt identifier.
   @JsonKey(name: r'uniprotId', required: true, includeIfNull: true)
   final String? uniprotId;
 
+  /// UniProt title.
   @JsonKey(name: r'uniprotTitle', required: true, includeIfNull: true)
   final String? uniprotTitle;
 
+  /// Target species.
   @JsonKey(name: r'species', required: true, includeIfNull: true)
   final String? species;
 
+  /// Known PDB structure identifiers.
   @JsonKey(name: r'pdbIds', required: true, includeIfNull: true)
   final List<String>? pdbIds;
 
+  /// Action labels (e.g. inhibitor, agonist).
   @JsonKey(name: r'actions', required: true, includeIfNull: true)
   final List<String>? actions;
 
+  /// Whether the action is characterised (yes/no).
   @JsonKey(name: r'knownAction', required: true, includeIfNull: true)
   final String? knownAction;
 
+  /// Relationship kind (target, enzyme, carrier, transporter).
   @JsonKey(name: r'relationKind', required: true, includeIfNull: true)
   final String? relationKind;
 

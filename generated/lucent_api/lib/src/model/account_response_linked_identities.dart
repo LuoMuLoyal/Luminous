@@ -37,9 +37,11 @@ class AccountResponseLinkedIdentities {
   @JsonKey(name: r'provider', required: true, includeIfNull: false)
   final String provider;
 
+  /// Provider email when the provider exposes one.
   @JsonKey(name: r'email', required: true, includeIfNull: true)
   final String? email;
 
+  /// Provider email verification time in ISO 8601.
   @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: true)
   final String? emailVerifiedAt;
 

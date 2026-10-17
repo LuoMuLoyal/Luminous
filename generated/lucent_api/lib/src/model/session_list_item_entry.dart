@@ -39,15 +39,19 @@ class SessionListItemEntry {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
+  /// Device type
   @JsonKey(name: r'deviceType', required: true, includeIfNull: true)
   final String? deviceType;
 
+  /// Device name
   @JsonKey(name: r'deviceName', required: true, includeIfNull: true)
   final String? deviceName;
 
+  /// Platform
   @JsonKey(name: r'platform', required: true, includeIfNull: true)
   final String? platform;
 
+  /// Last used at (ISO-8601)
   @JsonKey(name: r'lastUsedAt', required: true, includeIfNull: true)
   final String? lastUsedAt;
 

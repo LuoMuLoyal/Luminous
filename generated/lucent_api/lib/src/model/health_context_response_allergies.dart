@@ -59,9 +59,11 @@ class HealthContextResponseAllergies {
   @JsonKey(name: r'label', required: true, includeIfNull: false)
   final String label;
 
+  /// Recorded reaction.
   @JsonKey(name: r'reaction', required: true, includeIfNull: true)
   final String? reaction;
 
+  /// Severity level.
   @JsonKey(
     name: r'severity',
     required: true,
@@ -75,6 +77,7 @@ class HealthContextResponseAllergies {
   @JsonKey(name: r'isActive', required: true, includeIfNull: false)
   final bool isActive;
 
+  /// User note for the allergy.
   @JsonKey(name: r'note', required: true, includeIfNull: true)
   final String? note;
 
@@ -82,6 +85,7 @@ class HealthContextResponseAllergies {
   @JsonKey(name: r'extras', required: true, includeIfNull: true)
   final Object? extras;
 
+  /// When this allergy was recorded.
   @JsonKey(name: r'recordedAt', required: true, includeIfNull: true)
   final String? recordedAt;
 
@@ -155,6 +159,7 @@ enum HealthContextResponseAllergiesKindEnum {
   String toString() => value;
 }
 
+/// Severity level.
 enum HealthContextResponseAllergiesSeverityEnum {
   @JsonValue(r'mild')
   mild(r'mild'),

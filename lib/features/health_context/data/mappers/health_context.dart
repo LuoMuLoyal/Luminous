@@ -1,4 +1,4 @@
-import 'package:lucent_api/lucent_api.dart' hide HealthSummary;
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 
 /// Maps Lucent OpenAPI DTOs to domain entities.

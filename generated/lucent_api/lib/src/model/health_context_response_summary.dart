@@ -31,6 +31,7 @@ class HealthContextResponseSummary {
     required this.missingCoreProfileFields,
   });
 
+  /// Age derived from birth date. Null when birth date is missing.
   @JsonKey(name: r'age', required: true, includeIfNull: true)
   final num? age;
 

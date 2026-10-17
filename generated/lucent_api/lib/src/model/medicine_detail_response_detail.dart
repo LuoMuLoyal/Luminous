@@ -119,75 +119,104 @@ class MedicineDetailResponseDetail {
     required this.imageUrl,
   });
 
-  @JsonKey(name: r'kind', required: true, includeIfNull: false)
-  final String kind;
+  @JsonKey(
+    name: r'kind',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        MedicineDetailResponseDetailKindEnum.unknownDefaultOpenApi,
+  )
+  final MedicineDetailResponseDetailKindEnum kind;
 
+  /// Drug type (e.g. small molecule).
   @JsonKey(name: r'drugType', required: true, includeIfNull: true)
   final String? drugType;
 
+  /// Physical state (e.g. solid).
   @JsonKey(name: r'state', required: true, includeIfNull: true)
   final String? state;
 
+  /// Drug description.
   @JsonKey(name: r'description', required: true, includeIfNull: true)
   final String? description;
 
+  /// Approved indications.
   @JsonKey(name: r'indication', required: true, includeIfNull: true)
   final String? indication;
 
+  /// Mechanism of action.
   @JsonKey(name: r'mechanismOfAction', required: true, includeIfNull: true)
   final String? mechanismOfAction;
 
+  /// Pharmacodynamics.
   @JsonKey(name: r'pharmacodynamics', required: true, includeIfNull: true)
   final String? pharmacodynamics;
 
+  /// Toxicity summary.
   @JsonKey(name: r'toxicity', required: true, includeIfNull: true)
   final String? toxicity;
 
+  /// Metabolism summary.
   @JsonKey(name: r'metabolism', required: true, includeIfNull: true)
   final String? metabolism;
 
+  /// Absorption summary.
   @JsonKey(name: r'absorption', required: true, includeIfNull: true)
   final String? absorption;
 
+  /// Half life.
   @JsonKey(name: r'halfLife', required: true, includeIfNull: true)
   final String? halfLife;
 
+  /// Protein binding.
   @JsonKey(name: r'proteinBinding', required: true, includeIfNull: true)
   final String? proteinBinding;
 
+  /// Route of elimination.
   @JsonKey(name: r'routeOfElimination', required: true, includeIfNull: true)
   final String? routeOfElimination;
 
+  /// Volume of distribution.
   @JsonKey(name: r'volumeOfDistribution', required: true, includeIfNull: true)
   final String? volumeOfDistribution;
 
+  /// Clearance.
   @JsonKey(name: r'clearance', required: true, includeIfNull: true)
   final String? clearance;
 
+  /// Approval groups (e.g. approved, small molecule).
   @JsonKey(name: r'groups', required: true, includeIfNull: true)
   final List<String>? groups;
 
+  /// ATC-like categories.
   @JsonKey(name: r'categories', required: true, includeIfNull: true)
   final List<String>? categories;
 
+  /// ATC codes.
   @JsonKey(name: r'atcCodes', required: true, includeIfNull: true)
   final List<String>? atcCodes;
 
+  /// Synonyms.
   @JsonKey(name: r'synonyms', required: true, includeIfNull: true)
   final List<String>? synonyms;
 
+  /// Food interactions.
   @JsonKey(name: r'foodInteractions', required: true, includeIfNull: true)
   final List<String>? foodInteractions;
 
+  /// DrugBank interaction entries used for interaction checking.
   @JsonKey(name: r'drugInteractions', required: true, includeIfNull: true)
   final List<MedicineDetailResponseDrugInteractions>? drugInteractions;
 
+  /// Proteins/genes this drug acts on, with action labels.
   @JsonKey(name: r'targets', required: true, includeIfNull: true)
   final List<MedicineDetailResponseTargets>? targets;
 
+  /// External cross-reference identifiers from the source.
   @JsonKey(name: r'externalIdentifiers', required: true, includeIfNull: true)
   final List<MedicineDetailResponseExternalIdentifiers>? externalIdentifiers;
 
+  /// Outbound reference links from the source.
   @JsonKey(name: r'externalLinks', required: true, includeIfNull: true)
   final List<MedicineDetailResponseExternalLinks>? externalLinks;
 
@@ -197,63 +226,83 @@ class MedicineDetailResponseDetail {
   @JsonKey(name: r'structure', required: true, includeIfNull: true)
   final MedicineDetailResponseStructure? structure;
 
+  /// Approval number (国药准字).
   @JsonKey(name: r'approvalNumber', required: true, includeIfNull: true)
   final String? approvalNumber;
 
+  /// Manufacturer.
   @JsonKey(name: r'manufacturer', required: true, includeIfNull: true)
   final String? manufacturer;
 
+  /// Package specification.
   @JsonKey(name: r'packageSpec', required: true, includeIfNull: true)
   final String? packageSpec;
 
+  /// Brand name.
   @JsonKey(name: r'brandName', required: true, includeIfNull: true)
   final String? brandName;
 
+  /// Ingredients.
   @JsonKey(name: r'ingredients', required: true, includeIfNull: true)
   final String? ingredients;
 
+  /// Properties.
   @JsonKey(name: r'properties', required: true, includeIfNull: true)
   final String? properties;
 
+  /// Indications.
   @JsonKey(name: r'indications', required: true, includeIfNull: true)
   final String? indications;
 
+  /// Dosage.
   @JsonKey(name: r'dosage', required: true, includeIfNull: true)
   final String? dosage;
 
+  /// Adverse reactions.
   @JsonKey(name: r'adverseReactions', required: true, includeIfNull: true)
   final String? adverseReactions;
 
+  /// Contraindications.
   @JsonKey(name: r'contraindications', required: true, includeIfNull: true)
   final String? contraindications;
 
+  /// Precautions.
   @JsonKey(name: r'precautions', required: true, includeIfNull: true)
   final String? precautions;
 
+  /// Pharmacology / toxicology.
   @JsonKey(name: r'pharmacologyToxicology', required: true, includeIfNull: true)
   final String? pharmacologyToxicology;
 
+  /// Pharmacokinetics.
   @JsonKey(name: r'pharmacokinetics', required: true, includeIfNull: true)
   final String? pharmacokinetics;
 
+  /// Overdose handling.
   @JsonKey(name: r'overdose', required: true, includeIfNull: true)
   final String? overdose;
 
+  /// Storage conditions.
   @JsonKey(name: r'storage', required: true, includeIfNull: true)
   final String? storage;
 
+  /// Validity period.
   @JsonKey(name: r'validityPeriod', required: true, includeIfNull: true)
   final String? validityPeriod;
 
+  /// Barcode.
   @JsonKey(name: r'barcode', required: true, includeIfNull: true)
   final String? barcode;
 
+  /// National drug code.
   @JsonKey(name: r'nationalDrugCode', required: true, includeIfNull: true)
   final String? nationalDrugCode;
 
+  /// Source URL.
   @JsonKey(name: r'sourceUrl', required: true, includeIfNull: true)
   final String? sourceUrl;
 
+  /// Image URL.
   @JsonKey(name: r'imageUrl', required: true, includeIfNull: true)
   final String? imageUrl;
 
@@ -366,4 +415,20 @@ class MedicineDetailResponseDetail {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum MedicineDetailResponseDetailKindEnum {
+  @JsonValue(r'drugbank')
+  drugbank(r'drugbank'),
+  @JsonValue(r'cnProduct')
+  cnProduct(r'cnProduct'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const MedicineDetailResponseDetailKindEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

@@ -27,6 +27,7 @@ class ClinicSummaryResponseCurrentMedicines {
   @JsonKey(name: r'displayName', required: true, includeIfNull: false)
   final String displayName;
 
+  /// Dose instruction
   @JsonKey(name: r'doseText', required: false, includeIfNull: false)
   final String? doseText;
 

@@ -72,7 +72,7 @@ MedicineSearchResponse _okSearchResponse([
 // constructor; search's `fetchDetail` never inspects `detail`, so only
 // `kind`/list fields carry meaningful values and the rest stay null.
 MedicineDetailResponseDetail _minimalDetail() => MedicineDetailResponseDetail(
-  kind: '',
+  kind: MedicineDetailResponseDetailKindEnum.cnProduct,
   drugType: null,
   state: null,
   description: null,

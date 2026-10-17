@@ -41,9 +41,11 @@ class HealthContextResponseProfile {
     required this.extras,
   });
 
+  /// Birth date in YYYY-MM-DD format.
   @JsonKey(name: r'birthDate', required: true, includeIfNull: true)
   final String? birthDate;
 
+  /// Sex assigned at birth.
   @JsonKey(
     name: r'sexAtBirth',
     required: true,
@@ -53,12 +55,15 @@ class HealthContextResponseProfile {
   )
   final HealthContextResponseProfileSexAtBirthEnum? sexAtBirth;
 
+  /// Height in centimeters.
   @JsonKey(name: r'heightCm', required: true, includeIfNull: true)
   final num? heightCm;
 
+  /// Weight in kilograms. Extracted from extras JSONB.
   @JsonKey(name: r'weightKg', required: true, includeIfNull: true)
   final num? weightKg;
 
+  /// Self-reported activity level. Absent/null on older payloads and caches.
   @JsonKey(
     name: r'activityLevel',
     required: false,
@@ -68,15 +73,19 @@ class HealthContextResponseProfile {
   )
   final HealthContextResponseProfileActivityLevelEnum? activityLevel;
 
+  /// Dietary preferences extracted from extras JSONB. Absent/null on older payloads and caches.
   @JsonKey(name: r'dietaryPreferences', required: false, includeIfNull: false)
   final List<String>? dietaryPreferences;
 
+  /// Preferred locale.
   @JsonKey(name: r'locale', required: true, includeIfNull: true)
   final String? locale;
 
+  /// Preferred timezone.
   @JsonKey(name: r'timezone', required: true, includeIfNull: true)
   final String? timezone;
 
+  /// Preferred unit system.
   @JsonKey(
     name: r'unitSystem',
     required: true,
@@ -86,6 +95,7 @@ class HealthContextResponseProfile {
   )
   final HealthContextResponseProfileUnitSystemEnum? unitSystem;
 
+  /// When the onboarding flow was completed.
   @JsonKey(name: r'onboardingCompletedAt', required: true, includeIfNull: true)
   final String? onboardingCompletedAt;
 
@@ -134,6 +144,7 @@ class HealthContextResponseProfile {
   }
 }
 
+/// Sex assigned at birth.
 enum HealthContextResponseProfileSexAtBirthEnum {
   @JsonValue(r'female')
   female(r'female'),
@@ -154,6 +165,7 @@ enum HealthContextResponseProfileSexAtBirthEnum {
   String toString() => value;
 }
 
+/// Self-reported activity level. Absent/null on older payloads and caches.
 enum HealthContextResponseProfileActivityLevelEnum {
   @JsonValue(r'sedentary')
   sedentary(r'sedentary'),
@@ -176,6 +188,7 @@ enum HealthContextResponseProfileActivityLevelEnum {
   String toString() => value;
 }
 
+/// Preferred unit system.
 enum HealthContextResponseProfileUnitSystemEnum {
   @JsonValue(r'metric')
   metric(r'metric'),

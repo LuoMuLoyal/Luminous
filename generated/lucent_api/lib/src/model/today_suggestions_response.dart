@@ -73,9 +73,11 @@ class TodaySuggestionsResponse {
   @JsonKey(name: r'sourceVersion', required: true, includeIfNull: false)
   final num sourceVersion;
 
+  /// When the last successful materialization completed
   @JsonKey(name: r'computedAt', required: true, includeIfNull: true)
   final String? computedAt;
 
+  /// Suggested client polling delay in seconds
   @JsonKey(name: r'retryAfterSeconds', required: true, includeIfNull: true)
   final num? retryAfterSeconds;
 

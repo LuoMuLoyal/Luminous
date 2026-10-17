@@ -50,7 +50,7 @@ void main() {
 
     test('getCapabilities returns data', () async {
       adapter.responseBody = {
-        'phase': 'beta',
+        'phase': 'foundation',
         'assistantEnabled': true,
         'assistantMemoryEnabled': true,
         'assistantContext': {
@@ -73,7 +73,10 @@ void main() {
       final ds = AssistantRemoteDataSource(api: api, dio: dio);
       final result = await ds.getCapabilities();
 
-      expect(result.phase, 'beta');
+      expect(
+        result.phase,
+        lucent.AssistantCapabilitiesResponsePhaseEnum.foundation,
+      );
       expect(result.assistantEnabled, isTrue);
       expect(result.assistantMemoryEnabled, isTrue);
     });

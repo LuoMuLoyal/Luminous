@@ -53,9 +53,11 @@ class MedicineSearchResponseItems {
   @JsonKey(name: r'name', required: true, includeIfNull: false)
   final String name;
 
+  /// Short supporting subtitle.
   @JsonKey(name: r'subtitle', required: true, includeIfNull: true)
   final String? subtitle;
 
+  /// Short preview summary.
   @JsonKey(name: r'summary', required: true, includeIfNull: true)
   final String? summary;
 
@@ -63,6 +65,7 @@ class MedicineSearchResponseItems {
   @JsonKey(name: r'tags', required: true, includeIfNull: false)
   final List<String> tags;
 
+  /// Optional image URL.
   @JsonKey(name: r'imageUrl', required: true, includeIfNull: true)
   final String? imageUrl;
 

@@ -83,72 +83,93 @@ class MedicineDetailResponseStructure {
     required this.salts,
   });
 
+  /// Canonical SMILES.
   @JsonKey(name: r'smiles', required: true, includeIfNull: true)
   final String? smiles;
 
+  /// InChIKey hash.
   @JsonKey(name: r'inchiKey', required: true, includeIfNull: true)
   final String? inchiKey;
 
+  /// Full InChI string.
   @JsonKey(name: r'inchiIdentifier', required: true, includeIfNull: true)
   final String? inchiIdentifier;
 
+  /// Molecular formula.
   @JsonKey(name: r'formula', required: true, includeIfNull: true)
   final String? formula;
 
+  /// IUPAC name.
   @JsonKey(name: r'iupacName', required: true, includeIfNull: true)
   final String? iupacName;
 
+  /// Average molecular weight.
   @JsonKey(name: r'molecularWeight', required: true, includeIfNull: true)
   final num? molecularWeight;
 
+  /// Monoisotopic exact mass.
   @JsonKey(name: r'exactMass', required: true, includeIfNull: true)
   final num? exactMass;
 
+  /// Wildman-Crippen LogP.
   @JsonKey(name: r'logP', required: true, includeIfNull: true)
   final num? logP;
 
+  /// Topological polar surface area (A^2).
   @JsonKey(name: r'polarSurfaceArea', required: true, includeIfNull: true)
   final num? polarSurfaceArea;
 
+  /// Average polarizability.
   @JsonKey(name: r'polarizability', required: true, includeIfNull: true)
   final num? polarizability;
 
+  /// Molar refractivity.
   @JsonKey(name: r'refractivity', required: true, includeIfNull: true)
   final num? refractivity;
 
+  /// ALOGPS LogP.
   @JsonKey(name: r'alogpsLogP', required: true, includeIfNull: true)
   final num? alogpsLogP;
 
+  /// ALOGPS water solubility (log).
   @JsonKey(name: r'alogpsLogS', required: true, includeIfNull: true)
   final num? alogpsLogS;
 
+  /// ALOGPS water solubility with units, e.g. \"4.64e-02 g/l\".
   @JsonKey(name: r'alogpsSolubility', required: true, includeIfNull: true)
   final String? alogpsSolubility;
 
+  /// Strongest pKa.
   @JsonKey(name: r'pka', required: true, includeIfNull: true)
   final num? pka;
 
+  /// Strongest acidic pKa.
   @JsonKey(name: r'pkaStrongestAcidic', required: true, includeIfNull: true)
   final num? pkaStrongestAcidic;
 
+  /// Strongest basic pKa.
   @JsonKey(name: r'pkaStrongestBasic', required: true, includeIfNull: true)
   final num? pkaStrongestBasic;
 
+  /// Formal charge.
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'formalCharge', required: true, includeIfNull: true)
   final int? formalCharge;
 
+  /// Charge at physiological pH.
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'physiologicalCharge', required: true, includeIfNull: true)
   final int? physiologicalCharge;
 
+  /// Charge of the neutral form.
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'neutralCharge', required: true, includeIfNull: true)
   final int? neutralCharge;
 
+  /// Average charge across neutral microspecies.
   @JsonKey(
     name: r'averageNeutralMicrospeciesCharge',
     required: true,
@@ -156,56 +177,67 @@ class MedicineDetailResponseStructure {
   )
   final num? averageNeutralMicrospeciesCharge;
 
+  /// Heavy atom count.
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'atomCount', required: true, includeIfNull: true)
   final int? atomCount;
 
+  /// Number of rings.
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'ringCount', required: true, includeIfNull: true)
   final int? ringCount;
 
+  /// Number of rotatable bonds.
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'rotatableBondCount', required: true, includeIfNull: true)
   final int? rotatableBondCount;
 
+  /// Hydrogen-bond acceptors.
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'acceptorCount', required: true, includeIfNull: true)
   final int? acceptorCount;
 
+  /// Hydrogen-bond donors.
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'donorCount', required: true, includeIfNull: true)
   final int? donorCount;
 
+  /// Lipinski rule-of-five pass (1/0).
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'ruleOfFive', required: true, includeIfNull: true)
   final int? ruleOfFive;
 
+  /// Veber oral bioavailability rule (1/0).
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'veberRule', required: true, includeIfNull: true)
   final int? veberRule;
 
+  /// Ghose filter pass (1/0).
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'ghoseFilter', required: true, includeIfNull: true)
   final int? ghoseFilter;
 
+  /// MDDR-like rule pass (1/0).
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'mddrLikeRule', required: true, includeIfNull: true)
   final int? mddrLikeRule;
 
+  /// Bioavailability score class (0/1).
   // minimum: -9007199254740991
   // maximum: 9007199254740991
   @JsonKey(name: r'bioavailability', required: true, includeIfNull: true)
   final int? bioavailability;
 
+  /// Salt forms.
   @JsonKey(name: r'salts', required: true, includeIfNull: true)
   final List<String>? salts;
 

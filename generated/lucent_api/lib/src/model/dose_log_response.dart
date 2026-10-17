@@ -47,12 +47,15 @@ class DoseLogResponse {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
+  /// Linked health event id.
   @JsonKey(name: r'healthEventId', required: true, includeIfNull: true)
   final String? healthEventId;
 
+  /// Linked current medicine id.
   @JsonKey(name: r'currentMedicineId', required: true, includeIfNull: true)
   final String? currentMedicineId;
 
+  /// Linked reminder id for slot-aware logs.
   @JsonKey(name: r'reminderId', required: true, includeIfNull: true)
   final String? reminderId;
 
@@ -69,15 +72,19 @@ class DoseLogResponse {
   @JsonKey(name: r'scheduledFor', required: true, includeIfNull: false)
   final String scheduledFor;
 
+  /// Scheduled slot time in HH:mm format.
   @JsonKey(name: r'scheduledTime', required: true, includeIfNull: true)
   final String? scheduledTime;
 
+  /// Dose text.
   @JsonKey(name: r'doseText', required: true, includeIfNull: true)
   final String? doseText;
 
+  /// Free-text note.
   @JsonKey(name: r'note', required: true, includeIfNull: true)
   final String? note;
 
+  /// Source.
   @JsonKey(name: r'source', required: true, includeIfNull: true)
   final String? source_;
 

@@ -17,7 +17,7 @@ class MedicineDetailMapper {
       source: _sourceValue(dto.source_),
       name: dto.name,
       subtitle: _trimToNull(dto.subtitle),
-      kind: detail.kind,
+      kind: detail.kind.value,
       // CN fields.
       approvalNumber: _trimToNull(detail.approvalNumber),
       manufacturer: _trimToNull(detail.manufacturer),

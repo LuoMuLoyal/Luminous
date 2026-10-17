@@ -27,15 +27,19 @@ class MedicineRecognitionResponse {
     required this.manufacturer,
   });
 
+  /// Recognized medicine name.
   @JsonKey(name: r'name', required: true, includeIfNull: true)
   final String? name;
 
+  /// Approval number.
   @JsonKey(name: r'approvalNumber', required: true, includeIfNull: true)
   final String? approvalNumber;
 
+  /// Package specification.
   @JsonKey(name: r'specification', required: true, includeIfNull: true)
   final String? specification;
 
+  /// Manufacturer.
   @JsonKey(name: r'manufacturer', required: true, includeIfNull: true)
   final String? manufacturer;
 

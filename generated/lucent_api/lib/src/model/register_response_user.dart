@@ -35,9 +35,11 @@ class RegisterResponseUser {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
+  /// 邮箱地址，第三方账号可能为空
   @JsonKey(name: r'email', required: true, includeIfNull: true)
   final String? email;
 
+  /// 昵称
   @JsonKey(name: r'nickname', required: true, includeIfNull: true)
   final String? nickname;
 
@@ -45,6 +47,7 @@ class RegisterResponseUser {
   @JsonKey(name: r'emailVerified', required: true, includeIfNull: false)
   final bool emailVerified;
 
+  /// 邮箱验证时间 (ISO 8601)
   @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: true)
   final String? emailVerifiedAt;
 

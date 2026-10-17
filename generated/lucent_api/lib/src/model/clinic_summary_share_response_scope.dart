@@ -25,12 +25,15 @@ class ClinicSummaryShareResponseScope {
     required this.dateTo,
   });
 
+  /// Event scope id
   @JsonKey(name: r'eventId', required: true, includeIfNull: true)
   final String? eventId;
 
+  /// Date-range scope start (ISO 8601), or null for an event scope
   @JsonKey(name: r'dateFrom', required: true, includeIfNull: true)
   final String? dateFrom;
 
+  /// Date-range scope end (ISO 8601), or null for an event scope
   @JsonKey(name: r'dateTo', required: true, includeIfNull: true)
   final String? dateTo;
 

@@ -143,8 +143,6 @@ import 'package:lucent_api/src/model/generate_request.dart';
 import 'package:lucent_api/src/model/generate_stream_request.dart';
 import 'package:lucent_api/src/model/generate_summary_request.dart';
 import 'package:lucent_api/src/model/generate_summary_stream_request.dart';
-import 'package:lucent_api/src/model/health_app_info.dart';
-import 'package:lucent_api/src/model/health_component.dart';
 import 'package:lucent_api/src/model/health_context_response.dart';
 import 'package:lucent_api/src/model/health_context_response_allergies.dart';
 import 'package:lucent_api/src/model/health_context_response_conditions.dart';
@@ -162,7 +160,7 @@ import 'package:lucent_api/src/model/health_event_response.dart';
 import 'package:lucent_api/src/model/health_event_response_check_in.dart';
 import 'package:lucent_api/src/model/health_event_response_coverage.dart';
 import 'package:lucent_api/src/model/health_response.dart';
-import 'package:lucent_api/src/model/health_summary.dart';
+import 'package:lucent_api/src/model/health_response_info_value.dart';
 import 'package:lucent_api/src/model/legal_document_detail_response.dart';
 import 'package:lucent_api/src/model/legal_document_list_response.dart';
 import 'package:lucent_api/src/model/legal_document_list_response_items.dart';
@@ -987,13 +985,6 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
-    case 'HealthAppInfo':
-      return HealthAppInfo.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'HealthComponent':
-      return HealthComponent.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'HealthComponentStatus':
     case 'HealthContextResponse':
       return HealthContextResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1062,13 +1053,11 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'HealthEventResponseCoverage':
       return HealthEventResponseCoverage.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'HealthOverallStatus':
-    case 'HealthProbeType':
     case 'HealthResponse':
       return HealthResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'HealthSummary':
-      return HealthSummary.fromJson(value as Map<String, dynamic>)
+    case 'HealthResponseInfoValue':
+      return HealthResponseInfoValue.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'LegalDocumentDetailResponse':
       return LegalDocumentDetailResponse.fromJson(value as Map<String, dynamic>)

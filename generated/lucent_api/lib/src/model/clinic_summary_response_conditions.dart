@@ -29,9 +29,11 @@ class ClinicSummaryResponseConditions {
   @JsonKey(name: r'label', required: true, includeIfNull: false)
   final String label;
 
+  /// Current status
   @JsonKey(name: r'status', required: true, includeIfNull: true)
   final String? status;
 
+  /// Year of diagnosis (YYYY)
   @JsonKey(name: r'diagnosedYear', required: false, includeIfNull: false)
   final num? diagnosedYear;
 

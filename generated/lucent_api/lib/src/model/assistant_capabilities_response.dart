@@ -48,8 +48,14 @@ class AssistantCapabilitiesResponse {
   });
 
   /// Current backend rollout phase for the assistant.
-  @JsonKey(name: r'phase', required: true, includeIfNull: false)
-  final String phase;
+  @JsonKey(
+    name: r'phase',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        AssistantCapabilitiesResponsePhaseEnum.unknownDefaultOpenApi,
+  )
+  final AssistantCapabilitiesResponsePhaseEnum phase;
 
   /// Whether the user has left the assistant enabled in settings.
   @JsonKey(name: r'assistantEnabled', required: true, includeIfNull: false)
@@ -83,8 +89,14 @@ class AssistantCapabilitiesResponse {
   final bool streamingSupported;
 
   /// Recommended streaming transport for the current chat contract.
-  @JsonKey(name: r'streamingTransport', required: true, includeIfNull: false)
-  final String streamingTransport;
+  @JsonKey(
+    name: r'streamingTransport',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue: AssistantCapabilitiesResponseStreamingTransportEnum
+        .unknownDefaultOpenApi,
+  )
+  final AssistantCapabilitiesResponseStreamingTransportEnum streamingTransport;
 
   /// Whether the frontend should expect Markdown output and render it faithfully.
   @JsonKey(
@@ -102,6 +114,7 @@ class AssistantCapabilitiesResponse {
   @JsonKey(name: r'tools', required: true, includeIfNull: false)
   final List<AssistantCapabilitiesResponseTools> tools;
 
+  /// ISO-8601 timestamp of the latest related settings update.
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: true)
   final String? updatedAt;
 
@@ -148,4 +161,34 @@ class AssistantCapabilitiesResponse {
   String toString() {
     return toJson().toString();
   }
+}
+
+/// Current backend rollout phase for the assistant.
+enum AssistantCapabilitiesResponsePhaseEnum {
+  @JsonValue(r'foundation')
+  foundation(r'foundation'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const AssistantCapabilitiesResponsePhaseEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+/// Recommended streaming transport for the current chat contract.
+enum AssistantCapabilitiesResponseStreamingTransportEnum {
+  @JsonValue(r'sse')
+  sse(r'sse'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const AssistantCapabilitiesResponseStreamingTransportEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

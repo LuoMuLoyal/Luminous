@@ -66,12 +66,15 @@ class EventReviewDataCoverageCheckIns {
   @JsonKey(name: r'observedCount', required: true, includeIfNull: false)
   final num observedCount;
 
+  /// No fixed expectation exists for check-ins.
   @JsonKey(name: r'expectedCount', required: true, includeIfNull: true)
   final num? expectedCount;
 
+  /// First check-in calendar date, or null when none exists.
   @JsonKey(name: r'firstCheckInDate', required: true, includeIfNull: true)
   final String? firstCheckInDate;
 
+  /// Last check-in calendar date, or null when none exists.
   @JsonKey(name: r'lastCheckInDate', required: true, includeIfNull: true)
   final String? lastCheckInDate;
 

@@ -198,7 +198,7 @@ class LucentAssistantRepository implements AssistantRepository {
     lucent.AssistantCapabilitiesResponse dto,
   ) {
     return AssistantCapabilities(
-      phase: dto.phase,
+      phase: dto.phase.value,
       assistantEnabled: dto.assistantEnabled,
       assistantMemoryEnabled: dto.assistantMemoryEnabled,
       assistantContext: AssistantContextAccess(
@@ -211,7 +211,7 @@ class LucentAssistantRepository implements AssistantRepository {
       interactiveChatReady: dto.interactiveChatReady,
       langGraphReady: dto.langGraphReady,
       streamingSupported: dto.streamingSupported,
-      streamingTransport: dto.streamingTransport,
+      streamingTransport: dto.streamingTransport.value,
       markdownRenderingRecommended: dto.markdownRenderingRecommended,
       ragEnabled: dto.ragEnabled,
       tools: dto.tools

@@ -38,6 +38,7 @@ class AssistantConversationResponse {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
+  /// Optional server-derived conversation title.
   @JsonKey(name: r'title', required: true, includeIfNull: true)
   final String? title;
 
@@ -55,6 +56,7 @@ class AssistantConversationResponse {
   @JsonKey(name: r'messages', required: true, includeIfNull: false)
   final List<AssistantConversationResponseMessages> messages;
 
+  /// ISO-8601 timestamp of the latest conversation activity.
   @JsonKey(name: r'lastMessageAt', required: true, includeIfNull: true)
   final String? lastMessageAt;
 

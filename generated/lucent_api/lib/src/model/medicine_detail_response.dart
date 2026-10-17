@@ -47,6 +47,7 @@ class MedicineDetailResponse {
   @JsonKey(name: r'name', required: true, includeIfNull: false)
   final String name;
 
+  /// Short supporting subtitle.
   @JsonKey(name: r'subtitle', required: true, includeIfNull: true)
   final String? subtitle;
 

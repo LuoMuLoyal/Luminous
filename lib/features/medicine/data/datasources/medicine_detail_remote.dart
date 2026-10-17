@@ -103,7 +103,7 @@ class MedicineDetailRemoteDataSource {
       case 'cnProduct':
         final variant = MedicineDetailResponseDetailOneOf1.fromJson(rawDetail);
         detail = MedicineDetailResponseDetail(
-          kind: variant.kind,
+          kind: MedicineDetailResponseDetailKindEnum.cnProduct,
           // DrugBank family is not part of this variant.
           drugType: null,
           state: null,
@@ -154,7 +154,7 @@ class MedicineDetailRemoteDataSource {
       case 'drugbank':
         final variant = MedicineDetailResponseDetailOneOf.fromJson(rawDetail);
         detail = MedicineDetailResponseDetail(
-          kind: variant.kind,
+          kind: MedicineDetailResponseDetailKindEnum.drugbank,
           drugType: variant.drugType,
           state: variant.state,
           description: variant.description,

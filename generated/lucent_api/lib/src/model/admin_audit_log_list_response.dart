@@ -36,10 +36,12 @@ class AdminAuditLogListResponse {
   @JsonKey(name: r'total', required: true, includeIfNull: false)
   final int total;
 
+  // minimum: 0
   // maximum: 9007199254740991
   @JsonKey(name: r'page', required: true, includeIfNull: false)
   final int page;
 
+  // minimum: 0
   // maximum: 100
   @JsonKey(name: r'limit', required: true, includeIfNull: false)
   final int limit;

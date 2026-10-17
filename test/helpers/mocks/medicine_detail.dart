@@ -15,7 +15,7 @@ import 'package:lucent_api/lucent_api.dart';
 class TestMedicineDetailDataDtoDetail extends MedicineDetailResponseDetail {
   TestMedicineDetailDataDtoDetail(this._rawJson)
     : super(
-        kind: 'generic',
+        kind: MedicineDetailResponseDetailKindEnum.cnProduct,
         groups: const [],
         categories: const [],
         atcCodes: const [],

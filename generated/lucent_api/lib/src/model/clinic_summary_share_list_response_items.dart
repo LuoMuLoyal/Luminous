@@ -50,6 +50,7 @@ class ClinicSummaryShareListResponseItems {
   @JsonKey(name: r'expiresAt', required: true, includeIfNull: false)
   final String expiresAt;
 
+  /// Revocation time in ISO 8601 format, or null while the share is active.
   @JsonKey(name: r'revokedAt', required: true, includeIfNull: true)
   final String? revokedAt;
 
@@ -57,9 +58,11 @@ class ClinicSummaryShareListResponseItems {
   @JsonKey(name: r'accessCount', required: true, includeIfNull: false)
   final num accessCount;
 
+  /// First access time in ISO 8601 format, or null when never opened.
   @JsonKey(name: r'firstAccessedAt', required: true, includeIfNull: true)
   final String? firstAccessedAt;
 
+  /// Last access time in ISO 8601 format, or null when never opened.
   @JsonKey(name: r'lastAccessedAt', required: true, includeIfNull: true)
   final String? lastAccessedAt;
 

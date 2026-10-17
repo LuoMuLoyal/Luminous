@@ -196,14 +196,16 @@ lucent.AssistantCapabilitiesResponseTools _tool({
 }
 
 lucent.AssistantCapabilitiesResponse _capabilitiesDto({
-  String phase = 'preview',
+  lucent.AssistantCapabilitiesResponsePhaseEnum phase =
+      lucent.AssistantCapabilitiesResponsePhaseEnum.foundation,
   bool enabled = true,
   bool memory = false,
   bool chatModel = true,
   bool chatReady = true,
   bool langGraph = true,
   bool streaming = true,
-  String transport = 'sse',
+  lucent.AssistantCapabilitiesResponseStreamingTransportEnum transport =
+      lucent.AssistantCapabilitiesResponseStreamingTransportEnum.sse,
   bool markdown = true,
   bool rag = false,
   List<lucent.AssistantCapabilitiesResponseTools>? tools,
@@ -286,13 +288,14 @@ void main() {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(
           capabilities: _capabilitiesDto(
-            phase: 'ga',
+            phase: lucent.AssistantCapabilitiesResponsePhaseEnum.foundation,
             enabled: true,
             memory: true,
             chatModel: true,
             chatReady: true,
             streaming: true,
-            transport: 'sse',
+            transport:
+                lucent.AssistantCapabilitiesResponseStreamingTransportEnum.sse,
             markdown: true,
             rag: true,
             tools: [
@@ -330,7 +333,7 @@ void main() {
 
       final caps = await expectTaskRight(repo.getCapabilities());
 
-      expect(caps.phase, 'ga');
+      expect(caps.phase, 'foundation');
       expect(caps.assistantEnabled, isTrue);
       expect(caps.assistantMemoryEnabled, isTrue);
       expect(caps.chatModelConfigured, isTrue);

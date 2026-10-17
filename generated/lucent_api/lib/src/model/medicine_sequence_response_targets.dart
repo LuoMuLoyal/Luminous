@@ -33,6 +33,7 @@ class MedicineSequenceResponseTargets {
   @JsonKey(name: r'uniprotId', required: true, includeIfNull: false)
   final String uniprotId;
 
+  /// Target display name.
   @JsonKey(name: r'targetName', required: true, includeIfNull: true)
   final String? targetName;
 

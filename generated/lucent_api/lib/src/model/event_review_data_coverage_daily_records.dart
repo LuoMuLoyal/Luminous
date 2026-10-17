@@ -59,6 +59,7 @@ class EventReviewDataCoverageDailyRecords {
   @JsonKey(name: r'observedCount', required: true, includeIfNull: false)
   final num observedCount;
 
+  /// No fixed expectation is defined for this source yet.
   @JsonKey(name: r'expectedCount', required: true, includeIfNull: true)
   final num? expectedCount;
 

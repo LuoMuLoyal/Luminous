@@ -3,7 +3,8 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/medicine/data/mappers/medicine_detail.dart';
 
 MedicineDetailResponseDetail _detail({
-  String kind = 'cnProduct',
+  MedicineDetailResponseDetailKindEnum kind =
+      MedicineDetailResponseDetailKindEnum.cnProduct,
   List<String> groups = const [],
   List<String> categories = const [],
   List<String> atcCodes = const [],
@@ -142,7 +143,7 @@ void main() {
         name: 'Ibuprofen',
         subtitle: 'Small molecule',
         detail: _detail(
-          kind: 'drugbank',
+          kind: MedicineDetailResponseDetailKindEnum.drugbank,
           groups: const ['approved'],
           categories: const ['Anti-inflammatory'],
           atcCodes: const ['M01AE01'],
@@ -184,7 +185,7 @@ void main() {
         source_: MedicineDetailResponseSource_Enum.drugbank,
         name: 'Ibuprofen',
         subtitle: null,
-        detail: _detail(kind: 'drugbank'),
+        detail: _detail(kind: MedicineDetailResponseDetailKindEnum.drugbank),
       );
 
       expect(mapper.dataDtoToEntity(dto).drugInteractions, isEmpty);
@@ -196,7 +197,7 @@ void main() {
         source_: MedicineDetailResponseSource_Enum.unknownDefaultOpenApi,
         name: 'X',
         subtitle: null,
-        detail: _detail(kind: 'drugbank'),
+        detail: _detail(kind: MedicineDetailResponseDetailKindEnum.drugbank),
       );
 
       expect(mapper.dataDtoToEntity(dto).source, 'drugbank');

@@ -61,6 +61,7 @@ class HealthContextResponseCurrentMedicines {
   )
   final HealthContextResponseCurrentMedicinesSource_Enum source_;
 
+  /// Source-specific reference id.
   @JsonKey(name: r'sourceRefId', required: true, includeIfNull: true)
   final String? sourceRefId;
 
@@ -68,18 +69,23 @@ class HealthContextResponseCurrentMedicines {
   @JsonKey(name: r'displayName', required: true, includeIfNull: false)
   final String displayName;
 
+  /// Strength text.
   @JsonKey(name: r'strengthText', required: true, includeIfNull: true)
   final String? strengthText;
 
+  /// Dose text.
   @JsonKey(name: r'doseText', required: true, includeIfNull: true)
   final String? doseText;
 
+  /// Administration route.
   @JsonKey(name: r'route', required: true, includeIfNull: true)
   final String? route;
 
+  /// Start date in YYYY-MM-DD format.
   @JsonKey(name: r'startedAt', required: true, includeIfNull: true)
   final String? startedAt;
 
+  /// End date in YYYY-MM-DD format.
   @JsonKey(name: r'endedAt', required: true, includeIfNull: true)
   final String? endedAt;
 
@@ -87,6 +93,7 @@ class HealthContextResponseCurrentMedicines {
   @JsonKey(name: r'isCurrent', required: true, includeIfNull: false)
   final bool isCurrent;
 
+  /// User note for the medicine.
   @JsonKey(name: r'note', required: true, includeIfNull: true)
   final String? note;
 

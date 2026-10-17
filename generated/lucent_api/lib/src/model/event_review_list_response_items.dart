@@ -63,6 +63,7 @@ class EventReviewListResponseItems {
   @JsonKey(name: r'startedAt', required: true, includeIfNull: false)
   final String startedAt;
 
+  /// End time in ISO 8601 format, or null while active.
   @JsonKey(name: r'endedAt', required: true, includeIfNull: true)
   final String? endedAt;
 

@@ -3,11 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/health_probe_type.dart';
-import 'package:lucent_api/src/model/health_summary.dart';
-import 'package:lucent_api/src/model/health_overall_status.dart';
-import 'package:lucent_api/src/model/health_app_info.dart';
-import 'package:lucent_api/src/model/health_component.dart';
+import 'package:lucent_api/src/model/health_response_info_value.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -23,66 +19,44 @@ part 'health_response.g.dart';
 class HealthResponse {
   /// Returns a new [HealthResponse] instance.
   HealthResponse({
-    required this.probe,
-
     required this.status,
 
-    required this.checkedAt,
+    required this.info,
 
-    required this.app,
+    required this.error,
 
-    required this.summary,
-
-    required this.components,
+    required this.details,
   });
-
-  @JsonKey(
-    name: r'probe',
-    required: true,
-    includeIfNull: false,
-    unknownEnumValue: HealthProbeType.unknownDefaultOpenApi,
-  )
-  final HealthProbeType probe;
 
   @JsonKey(
     name: r'status',
     required: true,
     includeIfNull: false,
-    unknownEnumValue: HealthOverallStatus.unknownDefaultOpenApi,
+    unknownEnumValue: HealthResponseStatusEnum.unknownDefaultOpenApi,
   )
-  final HealthOverallStatus status;
+  final HealthResponseStatusEnum status;
 
-  @JsonKey(name: r'checkedAt', required: true, includeIfNull: false)
-  final String checkedAt;
+  @JsonKey(name: r'info', required: true, includeIfNull: false)
+  final Map<String, HealthResponseInfoValue> info;
 
-  @JsonKey(name: r'app', required: true, includeIfNull: false)
-  final HealthAppInfo app;
+  @JsonKey(name: r'error', required: true, includeIfNull: false)
+  final Map<String, HealthResponseInfoValue> error;
 
-  @JsonKey(name: r'summary', required: true, includeIfNull: false)
-  final HealthSummary summary;
-
-  @JsonKey(name: r'components', required: true, includeIfNull: false)
-  final List<HealthComponent> components;
+  @JsonKey(name: r'details', required: true, includeIfNull: false)
+  final Map<String, HealthResponseInfoValue> details;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is HealthResponse &&
-          other.probe == probe &&
           other.status == status &&
-          other.checkedAt == checkedAt &&
-          other.app == app &&
-          other.summary == summary &&
-          other.components == components;
+          other.info == info &&
+          other.error == error &&
+          other.details == details;
 
   @override
   int get hashCode =>
-      probe.hashCode +
-      status.hashCode +
-      checkedAt.hashCode +
-      app.hashCode +
-      summary.hashCode +
-      components.hashCode;
+      status.hashCode + info.hashCode + error.hashCode + details.hashCode;
 
   factory HealthResponse.fromJson(Map<String, dynamic> json) =>
       _$HealthResponseFromJson(json);
@@ -93,4 +67,24 @@ class HealthResponse {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum HealthResponseStatusEnum {
+  @JsonValue(r'ok')
+  ok(r'ok'),
+  @JsonValue(r'error')
+  error(r'error'),
+  @JsonValue(r'degraded')
+  degraded(r'degraded'),
+  @JsonValue(r'shutting_down')
+  shuttingDown(r'shutting_down'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const HealthResponseStatusEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

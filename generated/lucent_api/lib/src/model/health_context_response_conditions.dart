@@ -55,12 +55,15 @@ class HealthContextResponseConditions {
   )
   final HealthContextResponseConditionsStatusEnum status;
 
+  /// Diagnosis date in YYYY-MM-DD format.
   @JsonKey(name: r'diagnosedAt', required: true, includeIfNull: true)
   final String? diagnosedAt;
 
+  /// Resolved date in YYYY-MM-DD format.
   @JsonKey(name: r'resolvedAt', required: true, includeIfNull: true)
   final String? resolvedAt;
 
+  /// User note for the condition.
   @JsonKey(name: r'note', required: true, includeIfNull: true)
   final String? note;
 

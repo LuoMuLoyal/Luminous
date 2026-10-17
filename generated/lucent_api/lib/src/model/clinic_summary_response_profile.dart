@@ -29,9 +29,11 @@ class ClinicSummaryResponseProfile {
   @JsonKey(name: r'nickname', required: true, includeIfNull: false)
   final String nickname;
 
+  /// Age in years (derived from birthDate, never raw date)
   @JsonKey(name: r'age', required: false, includeIfNull: false)
   final num? age;
 
+  /// Sex at birth
   @JsonKey(name: r'sexAtBirth', required: true, includeIfNull: true)
   final String? sexAtBirth;
 

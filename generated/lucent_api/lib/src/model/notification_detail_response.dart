@@ -57,9 +57,11 @@ class NotificationDetailResponse {
   @JsonKey(name: r'content', required: true, includeIfNull: false)
   final String content;
 
+  /// Action route target for the frontend.
   @JsonKey(name: r'action', required: true, includeIfNull: true)
   final String? action;
 
+  /// Extra payload for the action.
   @JsonKey(name: r'actionPayload', required: true, includeIfNull: true)
   final Object? actionPayload;
 
@@ -71,6 +73,7 @@ class NotificationDetailResponse {
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
   final String createdAt;
 
+  /// ISO-8601 timestamp when the notification was read.
   @JsonKey(name: r'readAt', required: true, includeIfNull: true)
   final String? readAt;
 

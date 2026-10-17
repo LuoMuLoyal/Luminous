@@ -59,12 +59,15 @@ class ClinicSummaryResponseCoverageWater {
   @JsonKey(name: r'observedCount', required: true, includeIfNull: false)
   final num observedCount;
 
+  /// No fixed expectation is defined yet.
   @JsonKey(name: r'expectedCount', required: true, includeIfNull: true)
   final num? expectedCount;
 
+  /// Window start (ISO 8601), or null when nothing was observed.
   @JsonKey(name: r'windowStart', required: true, includeIfNull: true)
   final String? windowStart;
 
+  /// Window end (ISO 8601), or null when nothing was observed.
   @JsonKey(name: r'windowEnd', required: true, includeIfNull: true)
   final String? windowEnd;
 

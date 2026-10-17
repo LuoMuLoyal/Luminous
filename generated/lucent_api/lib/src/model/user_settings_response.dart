@@ -63,6 +63,7 @@ class UserSettingsResponse {
   @JsonKey(name: r'assistantContext', required: true, includeIfNull: false)
   final UserSettingsResponseAssistantContext assistantContext;
 
+  /// ISO-8601 timestamp of last update.
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: true)
   final String? updatedAt;
 

@@ -47,9 +47,11 @@ class MedicineReminderResponse {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
+  /// Linked current medicine id.
   @JsonKey(name: r'currentMedicineId', required: true, includeIfNull: true)
   final String? currentMedicineId;
 
+  /// Reminder label.
   @JsonKey(name: r'label', required: true, includeIfNull: true)
   final String? label;
 
@@ -61,12 +63,15 @@ class MedicineReminderResponse {
   @JsonKey(name: r'scheduledMinute', required: true, includeIfNull: false)
   final num scheduledMinute;
 
+  /// Weekday numbers 0-6. Null means every day.
   @JsonKey(name: r'daysOfWeek', required: true, includeIfNull: true)
   final List<num>? daysOfWeek;
 
+  /// Date in YYYY-MM-DD format when the reminder starts.
   @JsonKey(name: r'startDate', required: true, includeIfNull: true)
   final String? startDate;
 
+  /// Date in YYYY-MM-DD format when the reminder ends.
   @JsonKey(name: r'endDate', required: true, includeIfNull: true)
   final String? endDate;
 
@@ -74,6 +79,7 @@ class MedicineReminderResponse {
   @JsonKey(name: r'isActive', required: true, includeIfNull: false)
   final bool isActive;
 
+  /// User note.
   @JsonKey(name: r'note', required: true, includeIfNull: true)
   final String? note;
 

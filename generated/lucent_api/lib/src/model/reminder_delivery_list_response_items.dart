@@ -41,9 +41,11 @@ class ReminderDeliveryListResponseItems {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
+  /// Linked medicine reminder id.
   @JsonKey(name: r'reminderId', required: true, includeIfNull: true)
   final String? reminderId;
 
+  /// Target device id.
   @JsonKey(name: r'deviceId', required: true, includeIfNull: true)
   final String? deviceId;
 
@@ -59,9 +61,11 @@ class ReminderDeliveryListResponseItems {
   @JsonKey(name: r'scheduledFor', required: true, includeIfNull: false)
   final String scheduledFor;
 
+  /// Actual delivery time (ISO 8601).
   @JsonKey(name: r'deliveredAt', required: true, includeIfNull: true)
   final String? deliveredAt;
 
+  /// Failure reason, if any.
   @JsonKey(name: r'errorMessage', required: true, includeIfNull: true)
   final String? errorMessage;
 

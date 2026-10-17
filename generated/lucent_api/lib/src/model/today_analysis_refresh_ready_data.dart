@@ -20,8 +20,14 @@ class TodayAnalysisRefreshReadyData {
   /// Returns a new [TodayAnalysisRefreshReadyData] instance.
   TodayAnalysisRefreshReadyData({required this.status, required this.analysis});
 
-  @JsonKey(name: r'status', required: true, includeIfNull: false)
-  final String status;
+  @JsonKey(
+    name: r'status',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        TodayAnalysisRefreshReadyDataStatusEnum.unknownDefaultOpenApi,
+  )
+  final TodayAnalysisRefreshReadyDataStatusEnum status;
 
   @JsonKey(name: r'analysis', required: true, includeIfNull: false)
   final TodayAnalysisRefreshReadyDataAnalysis analysis;
@@ -45,4 +51,18 @@ class TodayAnalysisRefreshReadyData {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum TodayAnalysisRefreshReadyDataStatusEnum {
+  @JsonValue(r'ready')
+  ready(r'ready'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const TodayAnalysisRefreshReadyDataStatusEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

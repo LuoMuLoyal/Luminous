@@ -25,12 +25,15 @@ class EventReviewResponseSourceTimestamps {
     required this.doseLogs,
   });
 
+  /// Last check-in calendar date (YYYY-MM-DD), or null.
   @JsonKey(name: r'checkIns', required: true, includeIfNull: true)
   final String? checkIns;
 
+  /// Latest daily-record creation time in the event window (ISO 8601), or null.
   @JsonKey(name: r'dailyRecords', required: true, includeIfNull: true)
   final String? dailyRecords;
 
+  /// Latest dose-log scheduled time in the event window (ISO 8601), or null.
   @JsonKey(name: r'doseLogs', required: true, includeIfNull: true)
   final String? doseLogs;
 

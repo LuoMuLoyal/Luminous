@@ -29,9 +29,11 @@ class ClinicSummaryResponseAllergies {
   @JsonKey(name: r'label', required: true, includeIfNull: false)
   final String label;
 
+  /// Reaction description
   @JsonKey(name: r'reaction', required: true, includeIfNull: true)
   final String? reaction;
 
+  /// Severity level
   @JsonKey(name: r'severity', required: true, includeIfNull: true)
   final String? severity;
 

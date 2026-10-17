@@ -44,15 +44,19 @@ class AccountResponse {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
+  /// Account email. OAuth-only accounts may not have one.
   @JsonKey(name: r'email', required: true, includeIfNull: true)
   final String? email;
 
+  /// Display nickname.
   @JsonKey(name: r'nickname', required: true, includeIfNull: true)
   final String? nickname;
 
+  /// Avatar URL.
   @JsonKey(name: r'avatar', required: true, includeIfNull: true)
   final String? avatar;
 
+  /// Account email verification time in ISO 8601.
   @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: true)
   final String? emailVerifiedAt;
 
@@ -60,6 +64,7 @@ class AccountResponse {
   @JsonKey(name: r'hasPassword', required: true, includeIfNull: false)
   final bool hasPassword;
 
+  /// Last login time in ISO 8601.
   @JsonKey(name: r'lastLoginAt', required: true, includeIfNull: true)
   final String? lastLoginAt;
 

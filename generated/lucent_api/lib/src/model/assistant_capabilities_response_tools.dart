@@ -62,6 +62,7 @@ class AssistantCapabilitiesResponseTools {
   @JsonKey(name: r'implemented', required: true, includeIfNull: false)
   final bool implemented;
 
+  /// Why the tool is currently disabled, or null when enabled.
   @JsonKey(
     name: r'disabledReason',
     required: true,
@@ -187,6 +188,7 @@ enum AssistantCapabilitiesResponseToolsRequiredContextSourcesEnum {
   String toString() => value;
 }
 
+/// Why the tool is currently disabled, or null when enabled.
 enum AssistantCapabilitiesResponseToolsDisabledReasonEnum {
   @JsonValue(r'chat_disabled')
   chatDisabled(r'chat_disabled'),

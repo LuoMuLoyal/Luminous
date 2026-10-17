@@ -23,6 +23,7 @@ class AccountEmailResponse {
   @JsonKey(name: r'email', required: true, includeIfNull: false)
   final String email;
 
+  /// Email verification time in ISO 8601.
   @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: true)
   final String? emailVerifiedAt;
 

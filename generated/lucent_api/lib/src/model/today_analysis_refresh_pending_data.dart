@@ -19,8 +19,14 @@ class TodayAnalysisRefreshPendingData {
   /// Returns a new [TodayAnalysisRefreshPendingData] instance.
   TodayAnalysisRefreshPendingData({required this.status, required this.jobId});
 
-  @JsonKey(name: r'status', required: true, includeIfNull: false)
-  final String status;
+  @JsonKey(
+    name: r'status',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        TodayAnalysisRefreshPendingDataStatusEnum.unknownDefaultOpenApi,
+  )
+  final TodayAnalysisRefreshPendingDataStatusEnum status;
 
   @JsonKey(name: r'jobId', required: true, includeIfNull: false)
   final String jobId;
@@ -45,4 +51,18 @@ class TodayAnalysisRefreshPendingData {
   String toString() {
     return toJson().toString();
   }
+}
+
+enum TodayAnalysisRefreshPendingDataStatusEnum {
+  @JsonValue(r'pending')
+  pending(r'pending'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const TodayAnalysisRefreshPendingDataStatusEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

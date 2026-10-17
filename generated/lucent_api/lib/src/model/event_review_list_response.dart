@@ -33,6 +33,7 @@ class EventReviewListResponse {
   @JsonKey(name: r'total', required: true, includeIfNull: false)
   final num total;
 
+  /// Cursor for the next page (last item startedAt in ISO 8601), or null on the last page.
   @JsonKey(name: r'nextCursor', required: true, includeIfNull: true)
   final String? nextCursor;
 
