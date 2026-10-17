@@ -7,11 +7,13 @@
 ## 职责与边界
 
 - 管:`client/`(Dio 实例、auth/retry/error/trace 拦截器、会话 token 存储、SSE、
-  **对象存储直传** `object_upload.dart`)、`contract/`(路径常量、错误码、Problem Details →
-  `LucentFailure` 映射)、根 barrel `api.dart`。
+  **对象存储直传** `object_upload.dart`、端点解析 `base_url.dart`)、`contract/`(路径常量、
+  错误码、Problem Details → `LucentFailure` 映射)、根 barrel `api.dart`。
 - 不管:业务 repository(各 feature data 层);`LucentFailure` 类型定义在
-  core/errors/lucent_failure.dart;生成客户端由 Lucent OpenAPI 导出后经
-  `dart run scripts/bootstrap_generated_sources.dart` 再生成。
+  core/errors/lucent_failure.dart;构建期环境变量读取(`LUCENT_BASE_URL` /
+  `LUCENT_PROD_BASE_URL` 的声明与解析)在 `../config/`,本层只消费解析结果;
+  生成客户端由 Lucent OpenAPI 导出后经 `dart run scripts/contract/bootstrap.dart`
+  再生成。
 
 ## 对外契约
 
@@ -25,10 +27,14 @@
 
 - 全部请求走本层装配的同一 Dio;拦截器顺序 trace → 自定义 → auth → retry → error
   (test/core/network/dio_client_test.dart 与 interceptors/ 各测试锁定)。
-- `generated/lucent_api/**` 禁手编,只能由 OpenAPI 导出后再生成(仓库 AGENTS.md 契约)。
 - 错误映射只解析 RFC 9457 Problem Details(`application/problem+json`),旧 success
   envelope 不再解析(test/core/network/problem_details_test.dart、
   target_error_contract_test.dart)。
+- 本层**不持有用户文案**:任何失败只携带 `NetworkErrorCode` / Problem Details 字段,
+  文案在展示点经 `NetworkErrorL10n.map` 由 `NetworkErrorCode` 现算,
+  传输诊断为英文开发者串(`LucentErrorMapper._networkDiagnostic` 仅有
+  `DioExceptionType.<type>`)。写期望用户读到的句子会与 ARB 漂移,
+  并在未透传 l10n 的调用点漏出英文。
 - SSE 请求 `receiveTimeout = 0`(AI 首 chunk 可超 10s),仅连接类错误按指数退避重连
   (test/core/network/sse_test.dart)。
 
@@ -40,7 +46,8 @@
 ## 陷阱与决策
 
 - token 刷新走独立 `refreshDio`,避免刷新请求再次触发拦截器递归;它的 trace 拦截器
-  不写 `lastTraceId`,防止污染用户可见 trace(见 dio_client.dart 注释)。
+  不挂 `onTraceId`、不回写 `TraceContext` / `lastTraceIdProvider`,防止刷新请求的
+  trace 冒充用户可见 trace(见 dio_client.dart 注释)。
 - 刷新入口唯一:`LucentDioClient.refreshSession()`(内部 `AuthInterceptor.refreshSession()`)
   是唯一允许触发刷新的公开入口,它与 401 自动刷新共用同一个在途合并槽。业务侧**不得**自行
   调用生成客户端的 `auth.refreshSession()`:Lucent 的 refresh token 一次性
@@ -59,6 +66,11 @@
   再次提交,触发上一条同样的 401 清会话(test/core/network/session_store_test.dart 锁定)。
 - 写请求默认不重试:需 `extra['retryEnabled'] = true` 且带 `Idempotency-Key` 头
   (client/retry_policy.dart,test/core/network/retry_policy_test.dart)。
+- 服务端给的等待时间要封顶:Problem Details 的 `retryAfter` 与 `Retry-After` 头都先过
+  `RetryPolicy.maxRetryAfter`(60s)再等待。Lucent 的 Redis 限流器把以**毫秒**计的封禁
+  TTL 交给 `@nestjs/throttler` 序列化成**秒**,观测到约 60s 的封禁会下发
+  `Retry-After: 58233`;照单全收就是把请求和等它的页面挂起约 16 小时
+  (client/retry_policy.dart 类注释)。
 - `api.dart` re-export `lucent_api` 是有意的 barrel 例外,移除会强迫每个 data 文件追加
   第二个 import(文件头注释已说明)。
 - 对象存储直传只有一条链路:`presignFileUpload`(经类型化 `files/upload` 取签名)+

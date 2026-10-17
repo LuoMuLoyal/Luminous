@@ -16,8 +16,9 @@
 
 ## 对外契约
 
-- 导出:`product_event.dart` 的 sealed `ProductEvent` union 与白名单常量;
-  `product_event_service.dart` 的 `ProductEventService`(`trackSuggestionImpression` /
+- 导出:`product_event.dart` 的 sealed `ProductEvent` union 与白名单常量
+  (`kAllowlistedSuggestionRuleCodes`);`product_event_service.dart` 的
+  `resolveUserDevicePlatform`、`ProductEventService`(`trackSuggestionImpression` /
   `trackReviewOpened` / `trackVisitSummaryPreviewed` / `trackVisitSummaryExported`)、
   `productEventServiceProvider`(keepAlive)、`kProductEventSyncEntityType`。
 - 被依赖:features/today(建议卡 impression)、features/review(review 打开、访问小结
@@ -42,7 +43,10 @@
 
 ## 陷阱与决策
 
-- 平台解析用 `defaultTargetPlatform` 而非 `dart:io`,web 与测试环境可编译可跑。
-- 新增客户端事件需双侧同步:Lucent 的 `ProductEventName` 契约 + 本 union 加 variant;新增
+- 平台解析用 `defaultTargetPlatform`(+`kIsWeb`)而非 `dart:io`,web 与测试环境可编译可跑。
+- 事件名/surface/result 枚举已并进生成契约的 `RecordBatchRequestEvents*` 类型,本层不再有单独的
+  `ProductEventName` / `ProductEventSurface` / `ProductEventResult` 枚举:新增事件以
+  *加一个 variant + 填好这三个 getter* 为准,wire 值由 `lucent_api` 提供。
+- 新增客户端事件需双侧同步:Lucent 侧放开对应事件名 + 本 union 加 variant;新增
   suggestion rule 需同步服务端 rule registry 与 `kAllowlistedSuggestionRuleCodes`。
 - 封闭 union 是隐私决策的执行手段:字段审批在类型层面完成,而非依赖 review 约定。

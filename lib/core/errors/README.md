@@ -29,18 +29,28 @@
   (`test/core/errors/lucent_failure_test.dart`)。
 - 客户端本地校验(不满足格式/大小/类型等)用 `LucentFailure.client`(kind 默认 business)归类,
   不用 `network` ——把「用户输入不合要求」记成网络或服务端故障会污染错误率与告警
-  (例:`features/auth/data/services/avatar_uploader.dart`)。
+  (例:`features/auth/data/services/avatar_uploader.dart`、
+  `features/medicine/presentation/services/reminder_calendar.dart` 的日历导出)。
+  该工厂的 `message` 只是开发者诊断(日志/测试),用户文案一律由 `clientErrorCode` 决定。
 - `ProblemDetails` 仍是 wire 表示,`LucentFailure` 只归一化不替代(类注释明示)。
 - 面向用户:任何 error 上屏前必须过 `userMessageFromError` / `LucentErrorMapper.fromObject`,
   禁止 `error.toString()`;能取 l10n 时映射优先,顺序是
   `clientErrorCode`(客户端自己判定,最具体)→ `networkErrorCode`(传输层)→ 服务端下发的
-  `message`。`clientErrorCode` 是**客户端自判**的失败码(微信 SDK、未登录、头像预检、缺
-  refresh token),与线格式 `code`(服务端 Problem Details)分开:两者来源不同,混用会让
-  「服务端返回了什么」无从判断。
+  `message`(此时 `l10n` 为 null 或两个码都缺省;函数只透这个兜底,不另造文案)。
+  `clientErrorCode` 是**客户端自判**的失败码(微信 SDK、未登录、头像预检、缺
+  refresh token、日历导出),与线格式 `code`(服务端 Problem Details)分开:两者来源不同,
+  混用会让「服务端返回了什么」无从判断。`ClientErrorCode` 是封闭 enum,
+  `ClientErrorL10n.map` 对它穷举 switch,新增变体编译期强制补映射。
 - 传输态失败(无 l10n 可用的 provider 里)不进 state 的字符串字段:state 存 error 对象,
   文案在页面用 `userMessageFromError` / `userMessageOrNull` 现算——否则 state 里那句英文
   会跟着 App 语言一起错。
-- `NetworkErrorL10n.map` 对 `NetworkErrorCode` 穷举 switch,新增错误码编译期强制补映射。
+- 兜底文本不是文案:`LucentFailure.unknown` 回落的英文串是开发者诊断,没有 l10n 句柄时
+  才会上屏。`LucentErrorMapper` 已经把传输失败统一标成 `NetworkErrorCode.unknown`
+  (含 `networkErrorUnknown` 文案),展示点应在无 l10n 时也传 `l10n`,而不是接受诊断串。
+- `NetworkErrorL10n.map` 同样对 `NetworkErrorCode` 穷举 switch,新增错误码编译期强制补映射。
+- 同一个 `ClientErrorCode` 可以映射到同一句文案:三种「当前环境不支持微信登录」
+  (`wechatSdkNotConfigured` / `wechatMobileUnsupported` / `wechatDesktopUnsupported`)与
+  注册失败/启动失败共享条目。码分开是为了运维侧区分原因,不是因为用户需要看到区别。
 
 ## 依赖禁区
 

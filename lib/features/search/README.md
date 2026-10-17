@@ -9,7 +9,7 @@
 ## 对外契约
 - 路由:本 feature 无 routes.dart;`/medicine/search` 由 medicine/presentation/routes.dart 声明 `MedicineSearchRoute` → SearchPage,常量 `Routes.medicineSearch`。
 - 导出:presentation/widgets/shared/add_to_box.dart(`addMedicineToBoxWithPrecheck`)。
-- 被依赖:medicine/presentation/routes.dart(页面注册)、scan 的 recognize_dialog.dart 与 barcode_scanner.dart(复用加箱闭环)。
+- 被依赖:medicine/presentation/routes.dart(页面注册)、scan 的 recognize_dialog.dart 与 barcode_scanner.dart(复用加箱闭环)。反方向 search 只 import scan 的 `box_scan.dart`(快捷操作「拍照识别」),不 import scan 其他面。
 
 ## 不变量
 - 加箱闭环顺序固定:auth 门 → `runPrecheck`(失败降级提示、不阻断)→ 有 findings/coverageIssues 时确认弹窗 → `createCurrentMedicine` → emit `DataChangeTopic.currentMedicines` → 以 box id 跳 `MedicineRemindersNewRoute`。
@@ -18,7 +18,7 @@
 - `MedicineSearchCategory` / `MedicineSearchSafetyPreview` 保留但未接主路径(F-12/F-11);移动端不得用 SafetyPreview 展示临床信息,真实内容走药品详情页。
 
 ## 依赖禁区
-- repository 装配 provider 在 data/repositories/lucent.dart,状态 provider 在 presentation/providers/(无 data/providers 层);跨 feature 引用仅限 add_to_box 现有面(health_context repository + write_inputs、medicine risk_check + typed route),不得扩大。
+- repository 装配 provider 在 data/repositories/lucent.dart,状态 provider 在 presentation/providers/(无 data/providers 层);跨 feature 引用仅限 add_to_box 现有面(health_context repository + write_inputs、medicine risk_check + typed route、medicine 的 `widgets/shared/copy.dart`)、`page.dart` 的 health_context provider,以及 scan 的 `box_scan.dart`(`widgets/sections/quick_actions.dart`),不得扩大。
 
 ## 陷阱与决策
 - 搜索是**提交式**,不是输入即搜:`updateQuery` 只记录输入(清空输入就地清结果并递增 generation),请求只由 `submitQuery` 发出(键盘 search 键或输入框右侧搜索按钮);点击最近搜索关键词属于显式搜索,会先记 query 再立即提交。`switchSource`/`retry` 保持立即重搜。

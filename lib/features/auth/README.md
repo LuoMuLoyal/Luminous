@@ -9,9 +9,9 @@
 - 不管:路由 redirect 守卫(lib/app/router.dart)、token 持久化(`lucentSessionStoreProvider` 属 lib/core/network)、`authGuarded` 工厂(lib/core/providers/)。
 
 ## 对外契约
-- 路由(presentation/routes.dart):`Routes.login` / `loginOauthWechat|Qq|Google` / `register` / `forgotPassword` / `resetPassword` / `account` / `accountOauthWechat` / `accountChangeEmail` / `accountSessions`。
+- 路由(presentation/routes.dart):`Routes.login` / `loginOauthWechat|Qq|Google` / `register` / `forgotPassword` / `account` / `accountOauthWechat` / `accountChangeEmail` / `accountSessions` / `accountSecurityCenter`(均为 `@TypedGoRoute`,经 `auth_routes.$appRoutes` 注册)。重置密码页**没有**独立路由:验证码/新密码在同一条 `/forgot-password` 流程里。
 - 导出:domain/entities/session.dart(`AuthUser`/`AuthSession`/`AuthLinkedIdentity`,core/auth 消费)、data/providers/auth.dart(`authRepositoryProvider`)、presentation/services/wechat_oauth.dart(平台感知微信 OAuth,登录与身份绑定共用)。
-- 被依赖:core/auth/session_provider.dart 与 session_state.dart(`authSessionProvider` 建在其上)、app/router.dart redirect、mine/settings 的账号入口(pushAuthRequiredRoute 进 `/account`)。
+- 被依赖:core/auth/session_provider.dart 与 session_state.dart(`authSessionProvider` 建在其上)、app/router.dart redirect、mine/settings 的账号入口(账号管理 `/account`、个人信息 `/profile` 均经 `pushAuthRequiredRoute` 先做登录引导)。
 
 ## 不变量
 - 会话状态只在 core/auth/session_provider.dart 的 `authSessionProvider` 上变更;presentation/providers/session.dart 仅为兼容 re-export,不得再 import。
@@ -32,8 +32,12 @@
   3. **应用内 WebView 拦截**(`presentation/services/oauth_webview.dart`)——QQ/Google 在原生端
      用内嵌 WebView 完成授权,命中 callback URI 即 `pop`,不真正请求该地址。
   深链与 WebView 都必须**等 `authSessionProvider.isLoading == false`** 再消费,否则
-  `app/router.dart` 的 redirect 守卫会先把用户带走,回调被吞。解析统一走
-  `parseOAuthDeepLink` / `OAuthCallbackParser.parse`,不写第二个解析器。
+  `app/router.dart` 的 redirect 守卫会先把用户带走,回调被吞(`useOAuthDeepLinkHandler`
+  里的 `pending` 缓冲就是为此存在)。解析统一走 `parseOAuthDeepLink`
+  (`presentation/widgets/shared/oauth_deep_link.dart`,内部复用 `OAuthCallbackParser`),
+  不写第二个解析器。自定义 scheme 的坑:`luminous://login/oauth/qq` 会被 Dart 解析成
+  `host == 'login'` + `path == '/oauth/qq'`,该函数对非 http(s) 把 authority 拼回 path,
+  单斜杠与三斜杠两种写法都要能识别。
 - OAuth callback URI 的合法形状由**后端**决定(`AuthOAuthStateService.normalizeCallbackUri`):
   loopback `http` 带端口,或 `https` + `CORS_ORIGIN` 白名单 origin + 固定 provider 路径。
   客户端 `nativeOAuthCallbackUri` 用 `LUMINOUS_DEEP_LINK_HOST` 拼 https 站点回调;

@@ -8,7 +8,7 @@
   持久化(`LocaleController` + `localeControllerProvider`,存 SharedPreferences)、系统与
   后端 locale 的解析入口(`fromStorage` / `fromFlutterLocale` / `fromBackendPreference`)。
 - 不管:ARB 文案与 `flutter gen-l10n` 产物(在 `lib/l10n`,分片合并工作流见根 AGENTS.md 与
-  `../../../docs/reference/Localization.md`)、语言之外的用户设置(features/settings)。
+  `../../../docs/reference/localization.md`)、语言之外的用户设置(features/settings)。
 
 ## 对外契约
 

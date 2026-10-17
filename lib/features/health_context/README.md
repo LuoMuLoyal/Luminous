@@ -9,8 +9,8 @@ health_context 是**跨 feature 共享的健康档案数据 feature**：聚合�
 ## 目录结构
 
 - `domain/entities/snapshot.dart` — 读模型：`HealthContextSnapshot` 聚合 + 5 个子模型（`HealthSummary` / `HealthProfile` / `AllergyItem` / `ConditionItem` / `CurrentMedicineItem`），全部 `@freezed`，对应 `GET /api/v1/user/health-context` 的响应。
-- `domain/entities/write_inputs.dart` — 写模型：`HealthContextWireEnum` 接口 + 6 个 wire enum（`HealthSexAtBirth` / `HealthUnitSystem` / `HealthAllergyKind` / `HealthAllergySeverity` / `HealthConditionStatus` / `HealthMedicineSource`）+ 7 个 Write/Update Input 类。Update 类用 `healthContextNoChange` 哨兵表示"未变更字段"，序列化时跳过。
-- `domain/repositories/snapshot.dart` — `HealthContextRepository` 接口：1 个读 + 9 个写方法，全部返回 `TaskEither<LucentFailure, HealthContextSnapshot>`（写成功后返回**刷新后的快照**）。
+- `domain/entities/write_inputs.dart` — 写模型：`HealthContextWireEnum` 接口 + 8 个 wire enum（`HealthSexAtBirth` / `HealthUnitSystem` / `HealthActivityLevel` / `HealthDietaryPreference` / `HealthAllergyKind` / `HealthAllergySeverity` / `HealthConditionStatus` / `HealthMedicineSource`）+ 7 个 Write/Update Input 类。Update 类用 `healthContextNoChange` 哨兵表示"未变更字段"，序列化时跳过。
+- `domain/repositories/snapshot.dart` — `HealthContextRepository` 接口：1 个读（`fetchHealthContext`）+ 10 个写方法（profile 1、allergy 3、condition 3、currentMedicine 3），全部返回 `TaskEither<LucentFailure, HealthContextSnapshot>`（写成功后返回**刷新后的快照**）。
 - `domain/services/unit_conversion.dart` — 纯展示换算：kg→lb、ml→fl oz（仅展示，存储口径不变）。
 - `data/datasources/snapshot.dart` — `HealthContextRemoteDataSource`：包装生成的 `UserHealthContextApi` + Dio 直调（写路径走 Dio 以便离线入队），并含各 payload 构建函数。
 - `data/repositories/lucent.dart` — `LucentHealthContextRepository`：cache-first 读（Drift 缓存 + 30s 节流后台刷新）；写失败（`DioException`）入 pending-sync 队列供 `SyncWorker` 断网重放。
@@ -41,17 +41,20 @@ healthContextSnapshotProvider  (keepAlive, Future<HealthContextSnapshot>) — �
        └─ 注册 'health_context' replay handler（重放原 HTTP 请求后刷新缓存）
 ```
 
-## 为什么被 7 个 feature 依赖
+## 为什么被多个 feature 依赖
 
 健康档案是跨 feature 的**共享领域模型**：当前用药是 reminder/dose/安全建议的锚点，过敏/疾病是风险判断的输入，
 profile 是快速录入与归档的展示数据。依赖面既有**读**（`snapshot.dart` / `healthContextSnapshotProvider`）也有
 **写**（`write_inputs.dart` + repository），跨 feature 写入遵循 AGENTS.md 规则、通过 `HealthContextRepository` 接口进行。
 `rg` 核实的依赖方：
 
-- **today** — `dashboard_view.dart`（health event 的当前用药选项）、`data/repositories/lucent.dart`（看板聚合 currentMedicines）、`data/providers/today_suggestion.dart`
-- **medicine** — `data/providers/workspace.dart`、`data/repositories/lucent_workspace.dart`（依赖 repository 接口）、reminder 表单/列表（form_body / rows / edit / reminders / reminder_formatters）、`pages/detail.dart`
-- **mine** — 档案编辑页（profile_edit / allergy_edit / condition_edit / current_medicine_edit）、`health_edit_forms.dart`、`health_enum_l10n.dart`、`sections/archive.dart`（含 unit_conversion）、`data/repositories/lucent.dart`
-- **record** — `pages/detail.dart`（含 unit_conversion）、`quick_entry/medication_flow.dart`、`application/usecases/quick_entry_medication.dart`
-- **search** — `pages/page.dart`、`shared/add_to_box.dart`（写当前用药）
-- **review** — `pages/page.dart`（provider）
-- **scan** — `barcode_scanner.dart`、`dialogs/recognize_dialog.dart`（扫码药品与档案比对）
+- **today** — `data/repositories/lucent.dart`（看板聚合 currentMedicines）、`data/providers/today_suggestion.dart`、`presentation/providers/user_timezone.dart`（档案时区，medicine 日历导出经它读取）、`presentation/widgets/views/health_event_section.dart`（health event 的当前用药选项）
+- **medicine** — `data/providers/workspace.dart`、`data/repositories/lucent_workspace.dart`（依赖 repository 接口）、reminder 表单/列表（form_body / rows / edit / reminders / reminder_formatters）、`pages/medicine_detail_content.dart`
+- **mine** — 档案编辑页（allergy_edit / condition_edit / current_medicine_edit）、`presentation/providers/health_edit_forms.dart`、`presentation/utils/health_enum_l10n.dart` / `current_medicine_handlers.dart`、`presentation/widgets/sections/archive_row.dart` / `archive_sections.dart`
+- **record** — `presentation/widgets/detail/body.dart` / `presentation/utils/detail_labels.dart`（含 unit_conversion）、`presentation/quick_entry/medication_flow.dart`、`application/usecases/quick_entry_medication.dart`
+- **search** — `presentation/pages/page.dart`、`presentation/widgets/shared/add_to_box.dart`（写当前用药）
+- **scan** — `presentation/pages/barcode_scanner.dart`、`widgets/dialogs/recognize_dialog.dart`、`widgets/scan_result_sheet.dart`（扫码药品与档案比对）
+- **settings** — `presentation/pages/profile.dart`、`presentation/widgets/shared/quantity_sheet.dart`（profile 偏好回写）
+- 另有 `lib/app/bootstrap.dart` 预热。
+
+review 与 health_event **不**直接读本 feature:review 的数据来自自己的 dashboard/review 仓库;health_event 只存当前用药的 id,选项由宿主页(today)聚合。

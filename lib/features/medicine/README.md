@@ -24,7 +24,8 @@
 - 导出:`domain/repositories/{dose_log,reminder,risk_check}.dart` 及同名 entities、
   `data/providers/workspace.dart`(`reminderRepositoryProvider` 等)、
   `data/repositories/risk_check.dart`(`medicineRiskCheckRepositoryProvider`)、
-  `presentation/routes.dart`、`presentation/widgets/shared/copy.dart`(MedicineCopyKey)。
+  `presentation/routes.dart`、`presentation/widgets/shared/copy.dart`(MedicineCopyKey)、
+  `presentation/services/reminder_calendar.dart`(口径见下)。
 - 被依赖:today(skip_dose/看板聚合/suggestion)、record(quick entry)、
   search(加药预检)、app/bootstrap(通知同步/回执 keepAlive)、app/router。
 
@@ -43,9 +44,38 @@
   服务端幂等 + 会话内去重(`presentation/providers/reminder_delivery_reporter.dart`)。
 - 风险预检在途防重:运行中按钮禁用(`pages/risk_check.dart` 的
   `_isRunningStatic/_isRunningLlm`);`runPrecheck` 无副作用不落记录。
+- 风险检查的失败**立即**进 `AsyncValue.error`,不吃 riverpod 默认的退避重试:
+  `presentation/providers/risk_check.dart` 的 `medicineRiskCheckRecords`(读记录)与
+  `runMedicineRiskCheck`(命令)都挂着 `_noRunRetry`。默认策略是约 40s 重试,读记录失败
+  时用户只看到「一直在转」,命令失败则每次重试都重新 POST 一次检查。手动重试 = 页面
+  错误态上的「重试」(invalidate records provider)或再点一次运行按钮。
+- 「AI 分析未配置」只认服务端稳定码 `LLM_NOT_CONFIGURED`,**不看 `statusCode == 503`**:
+  同一端点上运行时的 LLM 失败也返回 503,用状态码兜底会把可重试故障说成永久缺配置。
+  其余失败一律走 toast(`pages/risk_check.dart` 的 `_isLlmNotConfigured`)。
+- 加入系统日历是**单向**导出:`presentation/services/reminder_calendar.dart` 把一组的
+  多个时间点映射成一个 `Event`(纯函数,`buildReminderCalendarEvent` 返回
+  `Either<LucentFailure, Event>`),drift 仍是唯一事实源,日历里的改动不回读。
+  三处口径易踩:
+  - 锚点日期 = 今天起第一个匹配 `daysOfWeek` 的星期几(`daysOfWeek` 用 Dart 周日=0,
+    与 `MedicineReminderItem.matchesDate` 一致),不是无脑取今天;`endDate` 为空时不给
+    `Recurrence.endDate`,留空即开放系列。
+  - 时区取 `today` 的 `readUserTimezone`(即 health_context 快照 profile.timezone,
+    失败回落 `Asia/Shanghai`),与 `core/utils/local_date.dart` 同口径。
+  - 写入经 `reminderCalendarWriterProvider`(`ReminderCalendarWriter` 接口)注入,测试
+    替 fake 即可;插件返回 `false`(用户取消/拒绝授权/无日历应用)必须映射成
+    `ClientErrorCode.reminderCalendarWriteFailed` 并提示失败,**不得报成功**。
+  Android 走 `Intent.ACTION_INSERT` 由日历应用自己写库,不需要 `WRITE_CALENDAR`;
+  iOS 需要 `Info.plist` 的 `NSCalendarsUsageDescription`。
+- 药品详情不走生成客户端的 `MedicinesApi.getDetail`:OpenAPI 的 `detail` 是 `cnProduct` /
+  `drugbank` 的 `oneOf`,生成器额外产出的 `MedicineDetailResponseDetail` 包装类把两个
+  分支的全部字段都标成 required,任何真实响应都会抛 `CheckedFromJsonException`(在生成的
+  调用内部 → `DioExceptionType.unknown` → 页面只能给通用错误)。`data/datasources/
+  medicine_detail_remote.dart` 因此直用同一 Dio 取原始 JSON,按 `kind` 分派到对应分支类
+  再重建包装类给 mapper。改动这段前先确认生成器对 `oneOf` 的产出形态。
 - 测试锚点:`test/medicine/reminder_notification_planner_test.dart`、
   `reminder_delivery_reporter_test.dart`、`cached_dose_log_data_source_test.dart`、
-  `workspace_repository_test.dart`、`detail_page_test.dart`(详情页分区默认展开口径)。
+  `workspace_repository_test.dart`、`detail_page_test.dart`(详情页分区默认展开口径)、
+  `reminder_calendar_test.dart`(日历导出的锚点日期/时区/拒绝语义)。
 - 详情页分区顺序即阅读频次:`pages/detail_sections.dart` 的 `Tier` 是唯一排序真源
   (primary→safety→clinical→pharmacokinetics→reference),**只有 `Tier.primary` 默认展开**。
   分区顺序/默认展开的断言进 `detail_page_test.dart`,勿在文档里另立一份顺序表。

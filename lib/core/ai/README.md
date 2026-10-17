@@ -13,8 +13,10 @@
 ## 对外契约
 - 导出:`AiRuntimeConfig`(含 `exposesLocalRuntime`)、`AiRuntimeEnvironment`、
   `AiRuntimeProviderKind` 与上述两个 provider。
-- 被依赖:core/config/feature_flags.dart(实验开关透出)、settings 的实验开关页
-  (features/settings/presentation/pages/feature_flags.dart);无其他 feature 消费。
+- 被依赖:core/config/feature_flags.dart(用 `AiRuntimeEnvironment.fromPlatform` /
+  `AiRuntimeConfig.fromEnvironment` 给实验开关做首启种子)、settings 的实验开关页
+  (features/settings/presentation/pages/feature_flags.dart);无其他 feature 消费,
+  两个 provider 本身在 feature 侧也未被读取。
 
 ## 不变量
 - 两个源文件首行注释均为 "Experimental dev seam — not part of the shipping
@@ -22,7 +24,8 @@
   (test/core/ai/runtime_config_test.dart、runtime_providers_test.dart)。
 - 仅 `enabled && provider != none` 时 `exposesLocalRuntime` 为真;shipping 路径不得
   读取本层改变行为。
-- 配置只读自 EnvKey(luminousExperimentalAiRuntime 等),无任何写入路径。
+- 配置只读自 EnvKey(luminousExperimentalAiRuntime 等),无任何写入路径;运行期的开关值
+  由 settings 的 `FeatureFlagsController` 写 SharedPreferences,不在本层。
 
 ## 依赖禁区
 - 不 import `features/**`,不依赖 network / database;只依赖 core/config 的 EnvReader。

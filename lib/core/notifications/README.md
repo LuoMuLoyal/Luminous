@@ -19,7 +19,8 @@
   (`Stream<NotificationResponse>`)、`ensureInitialized` / `schedule` / `cancel` /
   `getActiveNotifications`。
 - 被依赖:features/medicine(用药提醒 coordinator + 送达回执 reporter)、features/settings
-  (睡眠提醒 coordinator)、`../push/message_handler.dart`。
+  (睡眠提醒 coordinator,在 `features/settings/application/sleep_reminder_notification_coordinator.dart`)、
+  `../push/message_handler.dart`。
 
 ## 不变量
 
@@ -36,6 +37,9 @@
 
 - 仅依赖 flutter_local_notifications、riverpod_annotation、clock/timezone;不依赖 features
   与 `../push/`(单向:push 与 features 消费本目录)。
+- 平台网关本身**不申请权限**:初始化只登记 Android/iOS/macOS 的默认初始化设置并返回
+  可用性,权限由 core/push 的生命周期与 features/settings 的
+  `notification_permission` 承担。本目录只回答「能不能排程」。
 
 ## 陷阱与决策
 

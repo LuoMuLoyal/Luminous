@@ -22,13 +22,15 @@
   (类内 static 单槽状态;`test/core/feedback/app_toast_test.dart` 覆盖无 FToaster 的降级路径)。
 - widget 树必须有 `FToaster` 祖先(bootstrap 注入);缺失时 `show` 捕获异常、记日志并返回
   `false`,不崩溃。
-- 自动消失由内部计时器驱动(`showFToast(duration: null)`),展示期间重复触发只是重新计时。
+- 自动消失由内部计时器驱动(`showFToast(duration: null)` + 1.8s 计时器),展示期间重复触发
+  只是重新计时;计时器与 `onDismiss` 都按「当前 message 还是不是同一条」判断,避免已消失的
+  toast 误清新 toast 的单槽状态。
 
 ## 依赖禁区
 
 - API 依赖 `BuildContext`,禁止被 `data/`、`domain/` 层或 provider 的同步业务逻辑 import;
   错误文案先用 `userMessageFromError`(`../errors/user_message.dart`)归一再传入。
-- 不反向依赖 features;仅依赖 core(design 的 `SemanticIcons`、logger)。
+  本目录只 import core 自身(目前仅 `../logger`)——取色/图标等设计 token 都不经过这里。
 
 ## 陷阱与决策
 
