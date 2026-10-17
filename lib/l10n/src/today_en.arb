@@ -1,24 +1,24 @@
 {
   "todayHeroTitle": "Today",
-  "todayChipEnvironment": "Environment Alerts",
+  "todayChipEnvironment": "Environment alerts",
   "todayNotificationsTooltip": "Notifications",
   "todayNotificationsUnreadLabel": "Unread notifications",
   "todayHealthEventSectionTitle": "Health observation",
   "todayHealthEventStartTitle": "Start a health observation",
-  "todayHealthEventStartSubtitle": "Give this observation a short title, then check in once a day.",
+  "todayHealthEventStartSubtitle": "Give it a short title, then check in daily.",
   "todayHealthEventStartAction": "Start observation",
   "todayHealthEventTitleLabel": "Observation title",
   "todayHealthEventTitleRequired": "Enter an observation title",
   "todayHealthEventTitleHint": "For example: Cold observation",
   "todayHealthEventCurrentMedicineLabel": "Link current medicines",
   "todayHealthEventReasonRecordLabel": "Link a trigger symptom",
-  "todayHealthEventOptionsLoadFailed": "Failed to load options, please try again",
+  "todayHealthEventOptionsLoadFailed": "Couldn't load options",
   "todayHealthEventOptionsRetryAction": "Retry",
   "todayHealthEventCheckInTitle": "Today's result",
-  "todayHealthEventCheckInSubtitle": "Record one result for how things changed today.",
+  "todayHealthEventCheckInSubtitle": "Record how things changed today.",
   "todayHealthEventCheckInAction": "Confirm result",
   "todayHealthEventEndTitle": "End health observation",
-  "todayHealthEventEndSubtitle": "Choose the final result before ending this observation.",
+  "todayHealthEventEndSubtitle": "Choose the final result before ending.",
   "todayHealthEventEndAction": "End observation",
   "todayHealthEventImproved": "Improved",
   "todayHealthEventUnchanged": "About the same",
@@ -26,7 +26,7 @@
   "todayHealthEventOutcomeRequired": "Choose one result",
   "todayHealthEventSaveAction": "Save",
   "todayHealthEventCancelAction": "Cancel",
-  "todayHealthEventSaveFailed": "Save failed. Check your connection and try again.",
+  "todayHealthEventSaveFailed": "Save failed. Check your connection and retry.",
   "todayHealthEventReadFailed": "Health observation is unavailable. Try again.",
   "todayHealthEventCheckInDone": "Today's result is confirmed",
   "todayWaterOverviewCount": "{done}/{target} times",
@@ -73,9 +73,9 @@
   "todayErrorTitle": "Today did not load",
   "todayErrorDescription": "Check your network and try again.",
   "todayRetryAction": "Retry",
-  "todayLoadingSlowHint": "Taking a moment to load…",
+  "todayLoadingSlowHint": "Loading…",
   "todayRefreshErrorToast": "Refresh failed, please try again",
-  "todayUpdatedAt": "Updated at {time}",
+  "todayUpdatedAt": "Updated {time}",
   "@todayUpdatedAt": {
     "placeholders": {
       "time": {
@@ -105,19 +105,19 @@
   "todaySuggestionBoundaryLabel": "Note",
   "todayAiSummaryGenerateAction": "Generate",
   "todayAiSummaryOpenSettingsAction": "Settings",
-  "todayAiSummaryDefaultHint": "Generate a short recap and a couple of reminders from today's records.",
+  "todayAiSummaryDefaultHint": "Generate a short recap and reminders from today's records.",
   "todayAiSummaryPreviewHint": "Sign in to see today's recap and reminders.",
-  "todayAiSummaryGeneratingHint": "We are organizing today's records now. Please wait a moment.",
-  "todayAiSummaryErrorHint": "This generation did not complete. Try again.",
-  "todayAiSummaryDisabledHint": "AI summaries are turned off in settings. Enable them before generating.",
+  "todayAiSummaryGeneratingHint": "Organizing today's records…",
+  "todayAiSummaryErrorHint": "Generation didn't finish. Try again.",
+  "todayAiSummaryDisabledHint": "AI summaries are off in settings. Enable them first.",
   "todayAnalysisRuleBasedLabel": "Rule-based summary",
   "todayAnalysisRefreshAction": "Refresh",
   "todayAnalysisEmptyTitle": "No analysis yet",
-  "todayAnalysisEmptyBody": "After logging medication, water, or sleep, your daily analysis will appear here.",
+  "todayAnalysisEmptyBody": "Log medication, water, or sleep to see today's analysis.",
   "todayAnalysisPendingHint": "Analysis is being generated…",
-  "todayAnalysisStaleHint": "Analysis result is stale, pull to refresh",
-  "todayAnalysisFailedHint": "Analysis generation failed, tap to retry",
-  "todayAiSummaryMedicationPending": "{count} medication items still need confirmation. Do not adjust doses casually",
+  "todayAnalysisStaleHint": "Analysis is stale, pull to refresh",
+  "todayAnalysisFailedHint": "Analysis failed, tap to retry",
+  "todayAiSummaryMedicationPending": "{count} medication items need confirmation. Don't adjust doses casually",
   "@todayAiSummaryMedicationPending": {
     "placeholders": {
       "count": {
@@ -125,7 +125,7 @@
       }
     }
   },
-  "todayAiSummaryMedicationDone": "Medication todos are handled today. Check risks when adding a new medicine",
+  "todayAiSummaryMedicationDone": "Medication todos handled. Check risks when adding new medicine",
   "todayAiSummaryWaterRemaining": "{count} water check-ins left. Spread them across the day",
   "@todayAiSummaryWaterRemaining": {
     "placeholders": {
@@ -134,15 +134,15 @@
       }
     }
   },
-  "todayAiSummaryWaterDone": "Today's water check-ins are complete. Keep taking small amounts often",
+  "todayAiSummaryWaterDone": "Water check-ins complete. Keep taking small amounts often",
   "todayAiSummarySleepPlaceholder": "Record sleep to include it in today's summary",
   "todaySummaryFallbackNarrative": "Tap generate to summarize today's records.",
   "todayObservationSectionTitle": "Worth noting",
   "todayObservationSubtitle": "For reference only, not action items",
-  "todayObservationEmptyState": "No extra observations right now.",
-  "todayObservationErrorTitle": "Observations are unavailable",
-  "todayObservationSleepMissingTitle": "Recent sleep data is still missing",
-  "todayObservationSleepMissingSubtitle": "Sleep trends are still unclear. Add a record to sharpen them.",
+  "todayObservationEmptyState": "No extra observations",
+  "todayObservationErrorTitle": "Observations unavailable",
+  "todayObservationSleepMissingTitle": "Sleep data still missing",
+  "todayObservationSleepMissingSubtitle": "Sleep trends are unclear. Add a record to sharpen them.",
   "todayObservationLowConfidenceTag": "For reference",
   "todayObservationMediumConfidenceTag": "Worth noting",
   "todayObservationReviewTag": "Take a look",
@@ -163,7 +163,7 @@
   "todayQuickActionReminderTitle": "Reminders",
   "todayQuickActionReminderSubtitle": "Medication reminder schedule",
   "todayQuickActionProfileTitle": "Health profile",
-  "todayQuickActionProfileSubtitle": "Allergies, medicine background",
+  "todayQuickActionProfileSubtitle": "Allergies, medication background",
   "todayPreviewBannerMessage": "Sign in to see today's data",
   "todaySuggestionShowEvidence": "Show basis",
   "todaySuggestionHideEvidence": "Hide",
@@ -172,23 +172,23 @@
   "todaySuggestionAcceptedAction": "Mark as done",
   "todaySuggestionSuppressAction": "Don't show again",
   "todaySuggestionFeedbackSuccess": "Feedback submitted",
-  "todaySuggestionFeedbackError": "Feedback failed, please try again later",
-  "todaySuggestionSkipDoseError": "Failed to skip this dose, please try again later",
+  "todaySuggestionFeedbackError": "Feedback failed, try again later",
+  "todaySuggestionSkipDoseError": "Couldn't skip this dose",
   "todaySuggestionAiExplainAction": "AI explain",
-  "todaySuggestionAiExplainLoading": "Generating AI explanation…",
+  "todaySuggestionAiExplainLoading": "Generating explanation…",
   "todaySuggestionAiExplainRetry": "Retry",
   "todaySuggestionAiLabel": "AI",
   "todaySuggestionRuleBasedLabel": "Rule-based",
   "todaySuggestionEmptyTitle": "No suggestions today",
-  "todaySuggestionEmptySubtitle": "Log more data to get personalized suggestions",
+  "todaySuggestionEmptySubtitle": "Log more data for personalized suggestions",
   "todaySuggestionLoadingHint": "Loading today's suggestions…",
-  "todaySuggestionErrorHint": "Failed to load suggestions, please retry",
+  "todaySuggestionErrorHint": "Couldn't load suggestions",
   "todaySuggestionRetryAction": "Retry",
-  "todaySuggestionOpenUnavailableToast": "This entry is unavailable right now. Please try again later.",
-  "todaySuggestionSecondaryErrorHint": "Failed to load more suggestions",
-  "todaySuggestionAiExplainMaxRetry": "AI explanation is temporarily unavailable, please try again later",
+  "todaySuggestionOpenUnavailableToast": "This entry is unavailable right now.",
+  "todaySuggestionSecondaryErrorHint": "Couldn't load more suggestions",
+  "todaySuggestionAiExplainMaxRetry": "AI explanation is unavailable, try again later",
   "todaySuggestionFeedbackSubmitted": "Submitted",
-  "todayGreetingMorningPending": "{count, plural, =1{Good morning, 1 medication item to confirm} other{Good morning, {count} medication items to confirm}}",
+  "todayGreetingMorningPending": "{count, plural, =1{Good morning, 1 medication to confirm} other{Good morning, {count} medications to confirm}}",
   "@todayGreetingMorningPending": {
     "placeholders": {
       "count": {
@@ -196,7 +196,7 @@
       }
     }
   },
-  "todayGreetingMorningClear": "Good morning, no medications scheduled today",
+  "todayGreetingMorningClear": "Good morning, no medications today",
   "todayGreetingAfternoonWaterShort": "Good afternoon, {gap} ml of water to go",
   "@todayGreetingAfternoonWaterShort": {
     "placeholders": {
@@ -207,7 +207,7 @@
   },
   "todayGreetingAfternoonWaterDone": "Good afternoon, water goal reached",
   "todayGreetingAfternoonWaterUnknown": "Good afternoon, no water logged today",
-  "todayGreetingEveningPending": "{count, plural, =1{Good evening, 1 medication item still unconfirmed} other{Good evening, {count} medication items still unconfirmed}}",
+  "todayGreetingEveningPending": "{count, plural, =1{Good evening, 1 medication still unconfirmed} other{Good evening, {count} medications still unconfirmed}}",
   "@todayGreetingEveningPending": {
     "placeholders": {
       "count": {
@@ -215,5 +215,5 @@
       }
     }
   },
-  "todayGreetingEveningAllDone": "Good evening, everything is handled today"
+  "todayGreetingEveningAllDone": "Good evening, everything handled today"
 }
