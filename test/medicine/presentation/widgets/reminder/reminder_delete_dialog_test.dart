@@ -24,7 +24,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('删除这条提醒？'), findsOneWidget);
-      expect(find.textContaining('删除后将无法恢复'), findsOneWidget);
+      expect(find.textContaining('删除后无法恢复'), findsOneWidget);
     });
 
     testWidgets('renders cancel and confirm buttons', (tester) async {

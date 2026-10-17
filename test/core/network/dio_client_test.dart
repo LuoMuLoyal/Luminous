@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/session_store.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
 
 /// A session store that stores tokens in memory.
 class _MemorySessionStore implements LucentSessionStore {
@@ -608,9 +609,13 @@ void main() {
   });
 
   group('LucentDioClient error mapping (ErrorInterceptor)', () {
-    Future<void> expectFallbackMessage(
+    // Assert the stable NetworkErrorCode, not the diagnostic `message`: user
+    // copy is resolved from the code at the render site (NetworkErrorL10n), so
+    // pinning English sentences here would only duplicate the ARB strings and
+    // let a second source of truth drift.
+    Future<void> expectNetworkErrorCode(
       DioExceptionType type,
-      String expectedMessage,
+      NetworkErrorCode expected,
     ) async {
       final store = _MemorySessionStore();
       final adapter = _FailingAdapter(exceptionType: type);
@@ -631,70 +636,72 @@ void main() {
         expect(error, isA<DioException>());
         final mapped = (error as DioException).error;
         expect(mapped, isA<LucentFailure>());
-        expect((mapped as LucentFailure).message, expectedMessage);
+        final failure = mapped as LucentFailure;
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, expected);
       }
     }
 
-    test('maps connectionTimeout to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps connectionTimeout to connectionTimeout', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.connectionTimeout,
-        'Connection timed out. Try again later.',
+        NetworkErrorCode.connectionTimeout,
       );
     });
 
-    test('maps sendTimeout to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps sendTimeout to sendTimeout', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.sendTimeout,
-        'Request timed out. Try again later.',
+        NetworkErrorCode.sendTimeout,
       );
     });
 
-    test('maps receiveTimeout to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps receiveTimeout to receiveTimeout', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.receiveTimeout,
-        'Response timed out. Try again later.',
+        NetworkErrorCode.receiveTimeout,
       );
     });
 
-    test('maps transformTimeout to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps transformTimeout to receiveTimeout', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.transformTimeout,
-        'Response processing timed out. Please try again later.',
+        NetworkErrorCode.receiveTimeout,
       );
     });
 
-    test('maps badCertificate to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps badCertificate to badCertificate', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.badCertificate,
-        'Server certificate verification failed.',
+        NetworkErrorCode.badCertificate,
       );
     });
 
-    test('maps connectionError to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps connectionError to connectionError', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.connectionError,
-        'Network request failed. Check your connection.',
+        NetworkErrorCode.connectionError,
       );
     });
 
-    test('maps cancel to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps cancel to cancelled', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.cancel,
-        'Request was cancelled.',
+        NetworkErrorCode.cancelled,
       );
     });
 
-    test('maps badResponse to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps badResponse to badResponse', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.badResponse,
-        'Request failed. Try again later.',
+        NetworkErrorCode.badResponse,
       );
     });
 
-    test('maps unknown to fallback message', () async {
-      await expectFallbackMessage(
+    test('maps unknown to unknown', () async {
+      await expectNetworkErrorCode(
         DioExceptionType.unknown,
-        'An unexpected network error occurred.',
+        NetworkErrorCode.unknown,
       );
     });
 
@@ -720,10 +727,11 @@ void main() {
         expect(error, isA<DioException>());
         final mapped = (error as DioException).error;
         expect(mapped, isA<LucentFailure>());
-        expect(
-          (mapped as LucentFailure).message,
-          'Network request failed. Check your connection.',
-        );
+        final failure = mapped as LucentFailure;
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.connectionError);
+        // The diagnostic must not masquerade as user copy.
+        expect(failure.message, isNot(contains(' ')));
       }
     });
   });

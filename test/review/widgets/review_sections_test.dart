@@ -147,7 +147,7 @@ void main() {
 
       expect(find.text(l10n.reviewReviewSectionKeyChanges), findsOneWidget);
       expect(find.text(l10n.reviewReviewChangeOutcomeTitle), findsOneWidget);
-      expect(find.text('从「加重」变为「好转」，共确认 6 次'), findsOneWidget);
+      expect(find.text('由「加重」变为「好转」，共确认 6 次'), findsOneWidget);
       expect(find.text(l10n.reviewReviewChangeWaterTitle), findsOneWidget);
       expect(find.text(l10n.reviewReviewChangeDirectionUp), findsOneWidget);
       expect(find.text('1200 毫升 → 1800 毫升，观察 8 天'), findsOneWidget);
@@ -309,7 +309,7 @@ void main() {
 
       expect(find.text(l10n.reviewReviewRedFlagSectionTitle), findsOneWidget);
       expect(find.text('「阿莫西林」可能含有严重过敏成分「青霉素」'), findsOneWidget);
-      expect(find.text('「布洛芬」缺少关键用药信息'), findsOneWidget);
+      expect(find.text('请补全「布洛芬」的关键用药信息'), findsOneWidget);
       // 契约外规则按通用文案展示，不生成任何泛化建议。
       expect(find.text('「对乙酰氨基酚」存在安全提醒'), findsOneWidget);
     });

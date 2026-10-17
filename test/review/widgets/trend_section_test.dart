@@ -82,7 +82,7 @@ void main() {
     await pumpTrend(tester, trends: [series(observed: observed)]);
 
     expect(find.text('健康趋势'), findsOneWidget);
-    expect(find.text('有记录 4 天 / 范围 7 天'), findsOneWidget);
+    expect(find.text('已记录 4/7 天'), findsOneWidget);
     // 窗口边界按 locale 格式化后再进入文案（契约原文是 ISO 串）。
     expect(find.text('8月1日 → 8月7日'), findsOneWidget);
     expect(find.text('未记录的天不计入走势'), findsOneWidget);
@@ -142,7 +142,7 @@ void main() {
 
     // 外部选中 sleep → 显示睡眠当前值 + 睡眠覆盖脚注。
     expect(find.text('6.5L'), findsOneWidget);
-    expect(find.text('有记录 4 天 / 范围 7 天'), findsOneWidget);
+    expect(find.text('已记录 4/7 天'), findsOneWidget);
 
     // 切换 tab 仍可看到 water 维度。
     await tester.tap(find.text('饮水'));
