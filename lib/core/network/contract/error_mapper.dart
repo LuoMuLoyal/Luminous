@@ -47,7 +47,7 @@ abstract final class LucentErrorMapper {
       }
 
       return LucentFailure.network(
-        message: _networkMessage(error.type),
+        message: _networkDiagnostic(error.type),
         networkErrorCode: errorCodeFromDioType(error.type),
         traceId: _traceIdFor(error),
         cause: error,
@@ -100,23 +100,14 @@ abstract final class LucentErrorMapper {
     return error.requestOptions.extra['traceId'] as String?;
   }
 
-  static String _networkMessage(DioExceptionType type) {
-    return switch (type) {
-      DioExceptionType.connectionTimeout =>
-        'Connection timed out. Please try again later.',
-      DioExceptionType.sendTimeout =>
-        'Request timed out. Please try again later.',
-      DioExceptionType.receiveTimeout =>
-        'Response timed out. Please try again later.',
-      DioExceptionType.transformTimeout =>
-        'Response processing timed out. Please try again later.',
-      DioExceptionType.badCertificate =>
-        'Server certificate verification failed.',
-      DioExceptionType.connectionError =>
-        'Network request failed. Please check your connection.',
-      DioExceptionType.cancel => 'Request was cancelled.',
-      DioExceptionType.badResponse => 'Request failed. Please try again later.',
-      DioExceptionType.unknown => 'An unexpected network error occurred.',
-    };
+  /// Developer-facing diagnostic only — never rendered to users.
+  ///
+  /// User copy always resolves from [NetworkErrorCode] at the render site via
+  /// `NetworkErrorL10n.map` (see `userMessageFromError`). Keeping a second,
+  /// English-only copy of that text here caused it to drift from the ARB
+  /// strings and leak untranslated text wherever `l10n` was not threaded
+  /// through, so this deliberately carries no user wording.
+  static String _networkDiagnostic(DioExceptionType type) {
+    return 'DioExceptionType.$type';
   }
 }
