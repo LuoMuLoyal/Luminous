@@ -1,15 +1,15 @@
 {
-  "healthSyncTitle": "Health Data Import",
-  "healthSyncDescription": "Import steps, heart rate, sleep and other data from Apple Health / Health Connect into your records.",
-  "healthSyncNotAvailable": "No supported health platform is available on this device. iOS requires HealthKit; Android requires an installed and available Health Connect.",
+  "healthSyncTitle": "Health data import",
+  "healthSyncDescription": "Import steps, heart rate, sleep, and more from Apple Health / Health Connect.",
+  "healthSyncNotAvailable": "No supported health platform on this device. iOS needs HealthKit; Android needs Health Connect.",
   "healthSyncAutoSyncNotConfigured": "Only manual import is available for now.",
-  "healthSyncAutoSyncUnsupported": "Background health sync is not supported on this device.",
-  "healthSyncMetricTypes": "Select Data Types",
-  "healthSyncTimeRange": "Time Range",
+  "healthSyncAutoSyncUnsupported": "Background health sync isn't supported on this device.",
+  "healthSyncMetricTypes": "Select data types",
+  "healthSyncTimeRange": "Time range",
   "healthSyncRangeToday": "Today",
   "healthSyncRangeThreeDays": "Last 3 days",
   "healthSyncRangeSevenDays": "Last 7 days",
-  "healthSyncFetchButton": "Fetch Health Data",
+  "healthSyncFetchButton": "Fetch health data",
   "healthSyncImportButton": "Import {count} records",
   "@healthSyncImportButton": {
     "placeholders": {
@@ -19,7 +19,7 @@
   "healthSyncSyncing": "Syncing…",
   "healthSyncResetButton": "Reset",
   "healthSyncLoading": "Loading…",
-  "healthSyncResultTitle": "Sync Result",
+  "healthSyncResultTitle": "Sync result",
   "healthSyncResultSuccess": "Imported {count} records",
   "@healthSyncResultSuccess": {
     "placeholders": {
@@ -38,7 +38,7 @@
       "count": {}
     }
   },
-  "healthSyncPreviewTitle": "Data Preview",
+  "healthSyncPreviewTitle": "Data preview",
   "healthSyncPreviewMore": "{count} more records…",
   "@healthSyncPreviewMore": {
     "placeholders": {
@@ -149,7 +149,7 @@
       "unit": {}
     }
   },
-  "mineHealthSyncTitle": "Import from Health App",
+  "mineHealthSyncTitle": "Import from Health app",
   "mineHealthSyncSubtitle": "Sync Apple Health / Health Connect data",
   "mineHealthSyncSubtitleIos": "Sync Apple Health data",
   "mineHealthSyncSubtitleAndroid": "Sync Health Connect data"
