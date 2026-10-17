@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-10-16
+updated: 2026-10-17
 ---
 
 # Localization
@@ -46,6 +46,31 @@ flutter gen-l10n
     这类与键同名的类/组件不是引用，大小写不敏感的检索也会因折叠而误判。删完以 `flutter analyze` 兜底——
     误删仍被引用的键会在这一步直接编译失败。
 - 页面文案克制：仅必要的标题/标签/值/状态/动作，不做解释性、引导性或营销式文案。
+- **文案长度按槽位限额**：长度用**视觉宽度**衡量（CJK/全角字符计 2、ASCII 计 1），
+  中英文共用一把尺。几何基准：可用文字宽度 `LayoutScaleResolver.designBaselineTextWidth = 320dp`，
+  正文档 sm = 14px，ASCII 均宽 ≈ 0.5em、CJK = 1.0em → 单行 EN ≈ 45 字符 / CJK ≈ 22 字，
+  两者视觉宽同为 ≈ 45。**规范给的是推荐值，本项目实作阈值再收 20%**：
+
+  | 槽位（键后缀） | 实作阈值 | 说明 |
+  | --- | --- | --- |
+  | Action / Button / Confirm / Retry / More / All 等操作 | 19 | 动词开头，截断即失败 |
+  | Badge | 11 | 非 flex 子节点，超宽挤压 `Row` |
+  | Status / Count | 16 | 单行状态位 |
+  | Label | 24 | 需与内容同行 |
+  | Title / Section / Group | 36 | 保证单行 |
+  | Subtitle | 72 | 超双行应下沉详情页或改分组 footer |
+  | Hint / Placeholder / Prompt / Toast | 72 | Toast 1.8s 内需读完 |
+  | Description / Body / Note / Message / Detail 等 | 108 | ≤2 句 |
+  | Error / Failed / Unavailable / Empty / Invalid 等 | 108 | 须说明如何修复 |
+  | Disclaimer / Text | 144 | 法务文本，允许更长 |
+
+  超阈值即不合格，**没有"略超可放行"的豁免**；改写后仍超说明内容不该待在行内槽位
+  （Apple HIG：列表只列标题，详情放下一层）。业务名词后缀（`*SpecialGroup`、`*Water`、
+  `*Sleep` 等）不参与长度判定。审计脚本：`python tool/l10n_audit/audit_copy.py`。
+  规范来源：Apple HIG 的 Lists and tables / Writing / Settings，NN/g《The 3 C's of
+  Informational Microcopy》，Microsoft Writing Style Guide。
+- **中文按中文校一遍**：中文常是英文的翻译产物，视觉宽只有英文约 57%，会自然"合格"而
+  掩盖问题；不得因英文合规就跳过中文的长度核对。
 - **中文句号**：zh 文案值不使用 `。`。句末不加句号（直接删掉，连带其前多余空格）；值内部
   仍有后续文字时改成 `，`，保留分句而不断句。`，`/`、`/`：`/`；`/`！`/`？` 照常保留，
   改句号时不改写措辞。
