@@ -28,11 +28,14 @@ class _HeightPickerSheetBodyState extends State<HeightPickerSheetBody> {
   static const _maxCm = 250;
   static const _maxFeet = 8;
 
+  /// 打开 sheet 时算一次的初始索引,交给 `FPickerControl.managed` 的
+  /// `initial`:managed 只在建控制器时读它,之后滚轮自己持有位置,父级重建也
+  /// 不会回写。别改成 `FPickerControl.lifted` —— 那里的 `indexes` 语义是"当前
+  /// 值",父级不同步的话每次滑动结束都会被动画回这个初始索引(表现为滑回原值)。
   late final List<int> _indexes = _initialIndexes();
 
   /// `imperial` 在 sheet 打开后视为不可变:滚轮项数、单位后缀与换算方向都按它
-  /// 生成,中途切换需要重建滚轮并重算索引。真要支持切换,走 `didUpdateWidget`
-  /// 重建 `_indexes`,不要就地改这个 late final。
+  /// 生成,中途切换需要重建滚轮并重算索引。
   List<int> _initialIndexes() {
     if (widget.imperial) {
       final converted = cmToFeetInches(widget.slot.value);
@@ -68,7 +71,7 @@ class _HeightPickerSheetBodyState extends State<HeightPickerSheetBody> {
       height: 160,
       child: FPicker(
         key: const Key('quantity-sheet-picker'),
-        control: FPickerControl.lifted(indexes: _indexes, onChange: _onChange),
+        control: FPickerControl.managed(initial: _indexes, onChange: _onChange),
         children: widget.imperial
             ? [
                 FPickerWheel(
@@ -155,7 +158,7 @@ class _WeightPickerSheetBodyState extends State<WeightPickerSheetBody> {
       height: 160,
       child: FPicker(
         key: const Key('quantity-sheet-picker'),
-        control: FPickerControl.lifted(indexes: _indexes, onChange: _onChange),
+        control: FPickerControl.managed(initial: _indexes, onChange: _onChange),
         children: [
           FPickerWheel(
             children: [

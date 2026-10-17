@@ -64,6 +64,35 @@ void main() {
 
       expect(slot.value, 50);
     });
+
+    testWidgets('keeps the wheel on the value the user scrolled to', (
+      tester,
+    ) async {
+      final slot = SheetValueSlot<double>(170);
+      await _pump(
+        tester,
+        HeightPickerSheetBody(
+          slot: slot,
+          imperial: false,
+          suffixes: const ['cm'],
+        ),
+      );
+
+      final picker = find.byKey(const Key('quantity-sheet-picker'));
+      await tester.drag(picker, const Offset(0, -150));
+      await tester.pumpAndSettle();
+
+      // 滚轮必须真的动了,否则这条断言在回弹 bug 下也会通过。
+      expect(slot.value, isNot(170));
+      // 选中项要对得上槽里的值:回弹 bug 下滚轮会动画回打开 sheet 时的索引,
+      // 槽里却已经是新值,两者不一致。
+      final selected = find.text('${slot.value.round()} cm');
+      expect(selected, findsOneWidget);
+      expect(
+        (tester.getCenter(selected).dy - tester.getCenter(picker).dy).abs(),
+        lessThan(8),
+      );
+    });
   });
 
   group('HeightPickerSheetBody (imperial)', () {
@@ -128,6 +157,32 @@ void main() {
       );
 
       expect(slot.value, 500);
+    });
+
+    testWidgets('keeps the wheel on the value the user scrolled to', (
+      tester,
+    ) async {
+      final slot = SheetValueSlot<double>(60);
+      await _pump(
+        tester,
+        WeightPickerSheetBody(
+          slot: slot,
+          imperial: false,
+          suffixes: const ['kg'],
+        ),
+      );
+
+      final picker = find.byKey(const Key('quantity-sheet-picker'));
+      await tester.drag(picker, const Offset(0, -150));
+      await tester.pumpAndSettle();
+
+      expect(slot.value, isNot(60));
+      final selected = find.text('${slot.value.round()} kg');
+      expect(selected, findsOneWidget);
+      expect(
+        (tester.getCenter(selected).dy - tester.getCenter(picker).dy).abs(),
+        lessThan(8),
+      );
     });
   });
 
