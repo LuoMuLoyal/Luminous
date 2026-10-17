@@ -1003,7 +1003,7 @@ void main() {
       // 未知 disabledReason 显示原文,不硬造。
       expect(find.text('some_future_reason'), findsOneWidget);
       // 计数经 ARB 渲染,不再硬编码。
-      expect(find.text('可用 1 / 4'), findsOneWidget);
+      expect(find.text('可用 1/4'), findsOneWidget);
       // 「按每轮选取」说明必须出现在工具列表之前——否则面板显示全部可用,
       // 与助手自述「本轮没有可用的记录类工具」互相矛盾(真机反馈,
       // 见 docs/TODO.md「2026-10-04 助手能力口径」)。
@@ -1041,7 +1041,7 @@ void main() {
         ),
       );
 
-      expect(find.text('可用 0 / 0'), findsOneWidget);
+      expect(find.text('可用 0/0'), findsOneWidget);
     });
   });
 
