@@ -117,7 +117,7 @@
   "todayAnalysisPendingHint": "分析生成中…",
   "todayAnalysisStaleHint": "分析结果较旧，下拉刷新",
   "todayAnalysisFailedHint": "分析生成失败，点击重试",
-  "todayAiSummaryMedicationPending": "还有 {count} 条用药待确认，先不要自行调整剂量",
+  "todayAiSummaryMedicationPending": "还有 {count} 条用药待确认，请勿自行调整剂量",
   "@todayAiSummaryMedicationPending": {
     "placeholders": {
       "count": {
@@ -125,8 +125,8 @@
       }
     }
   },
-  "todayAiSummaryMedicationDone": "今日用药待办已处理，新增药物后仍需检查风险",
-  "todayAiSummaryWaterRemaining": "饮水还差 {count} 次，可分几次补齐",
+  "todayAiSummaryMedicationDone": "今日用药待办已处理，新增药品仍需检查风险",
+  "todayAiSummaryWaterRemaining": "饮水还差 {count} 次，可分散到全天",
   "@todayAiSummaryWaterRemaining": {
     "placeholders": {
       "count": {
@@ -134,7 +134,7 @@
       }
     }
   },
-  "todayAiSummaryWaterDone": "今日饮水已达标，继续保持少量多次",
+  "todayAiSummaryWaterDone": "今日饮水已达标，保持少量多次",
   "todayAiSummarySleepPlaceholder": "记录睡眠后会纳入今日总结",
   "todaySummaryFallbackNarrative": "点生成，用今天的记录整理总结",
   "todayObservationSectionTitle": "留意事项",

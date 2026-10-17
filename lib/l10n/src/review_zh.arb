@@ -76,7 +76,7 @@
   "reviewFindingsSectionTitle": "重点发现",
   "reviewSuggestionHistorySectionTitle": "历史建议回顾",
   "reviewSuggestionHistoryEmptyTitle": "最近还没有主动建议",
-  "reviewSuggestionHistoryEmptyBody": "产生新的 AI 主动建议后，这里会显示最近回顾",
+  "reviewSuggestionHistoryEmptyBody": "产生新的 AI 主动建议后，这里显示最近回顾",
   "reviewSuggestionHistoryActiveBadge": "进行中",
   "reviewSuggestionHistoryExpiredBadge": "已过期",
   "reviewSuggestionHistoryDismissedBadge": "已忽略",
@@ -109,7 +109,7 @@
   "reviewExportLinkMissingToast": "导出已完成，但下载链接不可用",
   "reviewExportOpenFailedToast": "导出已完成，但无法打开下载链接",
   "reviewPatternSectionTitle": "健康模式分析",
-  "reviewReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议",
+  "reviewReferenceNotice": "仅供参考，不构成诊断或治疗建议",
   "@reportDataInsufficientMetricsHint": {
     "placeholders": {
       "count": {
@@ -180,7 +180,7 @@
   "reviewClinicSummaryFieldWater": "饮水",
   "reviewClinicSummaryFieldSleep": "睡眠",
   "reviewClinicSummaryFieldNotes": "备注",
-  "reviewClinicSummaryFieldPrivacyHint": "仅所选内容会出现在预览、PDF 与分享链接中",
+  "reviewClinicSummaryFieldPrivacyHint": "仅所选内容会出现在预览、PDF 与分享链接",
   "reviewShareConfirmTitle": "创建分享链接",
   "reviewShareConfirmExpiryHint": "链接自创建起 {days} 天内有效",
   "@reportShareConfirmExpiryHint": {
@@ -222,7 +222,7 @@
   "reviewMoreShareManagementTitle": "分享管理",
   "reviewMoreShareManagementSubtitle": "查看和撤销分享链接",
   "reviewTrendEmptyTitle": "暂无趋势数据",
-  "reviewTrendEmptyBody": "记录饮水、用药或睡眠满 2 天后显示趋势",
+  "reviewTrendEmptyBody": "记录饮水、用药或睡眠满 2 天可见趋势",
   "reviewTrendCoverage": "已记录 {observed}/{expected} 天",
   "@reviewTrendCoverage": {
     "placeholders": {

@@ -167,7 +167,7 @@
       }
     }
   },
-  "medicineRiskCheckCoverageSummaryUnavailable": "{count, plural, one{# medicine has unavailable detail} other{# medicines have unavailable detail}}",
+  "medicineRiskCheckCoverageSummaryUnavailable": "{count, plural, one{# medicine detail unavailable} other{# medicine details unavailable}}",
   "@medicineRiskCheckCoverageSummaryUnavailable": {
     "placeholders": {
       "count": {
@@ -181,8 +181,8 @@
   "medicineRiskCheckTierConfirmedRisk": "Confirmed Risk",
   "medicineRiskCheckTierConfirmedSafe": "Confirmed Safe",
   "medicineRiskCheckTierUncovered": "Uncovered / Uncertain",
-  "medicineRiskCheckTierSafeDisclaimer": "No explicit risk found in checked medicines, but this is not proof of absolute safety. Consult your doctor.",
-  "medicineRiskCheckTierUncoveredDisclaimer": "These medicines lack checkable data and cannot be auto-verified. Check the label or ask a pharmacist.",
+  "medicineRiskCheckTierSafeDisclaimer": "No explicit risk found, but this is not proof of absolute safety. Consult your doctor.",
+  "medicineRiskCheckTierUncoveredDisclaimer": "These medicines lack checkable data. Check the label or ask a pharmacist.",
   "medicineRiskCheckTierSafeBody": "Checked {checked}, no explicit risk found.",
   "medicineRiskCheckContextAlcohol": "Alcohol",
   "medicineRiskCheckContextCaffeine": "Caffeine",
@@ -432,27 +432,27 @@
     }
   },
   "medicineRiskCheckRedFlagBannerTitle": "Red Flag Warning",
-  "medicineRiskCheckRedFlagSevereAllergy": "Severe allergy risk: {drug} contains {allergen}. Do not use; see a doctor now.",
+  "medicineRiskCheckRedFlagSevereAllergy": "Severe allergy risk: {drug} contains {allergen}. Do not use; see a doctor.",
   "@medicineRiskCheckRedFlagSevereAllergy": {
     "placeholders": {
       "drug": {},
       "allergen": {}
     }
   },
-  "medicineRiskCheckRedFlagSevereAllergyGeneric": "Severe allergy risk: {drug} matches a known allergen. Do not use; see a doctor now.",
+  "medicineRiskCheckRedFlagSevereAllergyGeneric": "Severe allergy risk: {drug} matches a known allergen. Do not use; see a doctor.",
   "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
     "placeholders": {
       "drug": {}
     }
   },
-  "medicineRiskCheckRedFlagInformationGap": "Cannot confirm safety of {drug}. Check the label or ask a pharmacist.",
+  "medicineRiskCheckRedFlagInformationGap": "Can't confirm safety of {drug}. Check the label or ask a pharmacist.",
   "@medicineRiskCheckRedFlagInformationGap": {
     "placeholders": {
       "drug": {}
     }
   },
   "medicineRiskCheckRedFlagActionSevereAllergy": "Call emergency services now. Do not self-treat.",
-  "medicineRiskCheckRedFlagActionInformationGap": "High-risk state; some medicines cannot be auto-checked. Verify offline soon.",
+  "medicineRiskCheckRedFlagActionInformationGap": "High-risk state; some medicines can't be auto-checked. Verify offline soon.",
   "scanResultTitle": "Recognition result",
   "scanNoResultTitle": "Could not identify this medicine",
   "scanRetakeAction": "Retake photo",

@@ -1007,7 +1007,7 @@ void main() {
       // 「按每轮选取」说明必须出现在工具列表之前——否则面板显示全部可用,
       // 与助手自述「本轮没有可用的记录类工具」互相矛盾(真机反馈,
       // 见 docs/TODO.md「2026-10-04 助手能力口径」)。
-      expect(find.text('助手每轮按问题选用工具，单次回答可能只用到其中一部分'), findsOneWidget);
+      expect(find.text('助手按问题选用工具，单次回答可能只用其中一部分'), findsOneWidget);
     });
 
     testWidgets('renders empty tools list gracefully', (tester) async {

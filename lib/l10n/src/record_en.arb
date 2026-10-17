@@ -300,7 +300,7 @@
     }
   },
   "recordNlpRetryFailedAction": "Retry failed",
-  "recordNlpFailedCandidatesHint": "{count, plural, =0{No failed candidates} =1{1 candidate failed. Retry it.} other{{count} candidates failed. Retry them.}}",
+  "recordNlpFailedCandidatesHint": "{count, plural, =0{No failed candidates} =1{1 failed. Retry it.} other{{count} failed. Retry them.}}",
   "@recordNlpFailedCandidatesHint": {
     "placeholders": {
       "count": {

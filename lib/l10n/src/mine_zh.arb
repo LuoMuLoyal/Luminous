@@ -5,7 +5,7 @@
   "mineAccountGuestDisplayName": "访客",
   "mineAccountSignedIn": "已登录",
   "mineAccountSignedOut": "未登录",
-  "mineAccountSignedOutMeta": "登录后可同步档案、提醒与健康数据",
+  "mineAccountSignedOutMeta": "登录后同步档案、提醒与健康数据",
   "mineAccountEmailVerified": "邮箱已验证",
   "mineAccountEmailUnverified": "邮箱未验证",
   "mineAccountStudentRole": "用户",
@@ -72,7 +72,7 @@
   "mineReadinessGapDescWeight": "体重是剂量计算的关键参数",
   "mineReadinessGapDescAllergy": "过敏史缺失可能影响用药安全提醒",
   "mineReadinessGapDescMedicine": "用药记录缺失将影响相互作用检查",
-  "mineReadinessGapDescMultiple": "{items}待补充，完善后安全提醒更准确",
+  "mineReadinessGapDescMultiple": "{items}待补充，补全后安全提醒更准确",
   "@mineReadinessGapDescMultiple": {
     "placeholders": {
       "items": {
@@ -157,7 +157,7 @@
     }
   },
   "mineReadinessPreviewTitle": "个人档案尚未解锁",
-  "mineReadinessPreviewDescription": "登录后查看真实的基础信息、过敏史与当前用药",
+  "mineReadinessPreviewDescription": "登录后查看真实的基础信息、过敏史与用药",
   "mineReadinessPreviewBadge": "预览",
   "mineReadinessIncompleteTitle": "还差 {count} 项关键信息",
   "@mineReadinessIncompleteTitle": {
@@ -168,7 +168,7 @@
     }
   },
   "mineReadinessReadyTitle": "档案已基本就绪",
-  "mineReadinessReadyDescription": "继续维护健康档案，并在此管理分享与授权",
+  "mineReadinessReadyDescription": "继续维护健康档案，并在此管理分享",
   "mineReadinessManageAction": "管理档案",
   "mineProfileTitle": "健康档案",
   "mineSettingsThemeTitle": "主题",
@@ -235,7 +235,7 @@
   "mineExportDownloadButton": "下载报告",
   "mineExportRegenerateButton": "重新生成",
   "mineExportRequested": "导出请求已提交",
-  "mineSyncFailedWarning": "{count} 项同步失败，可能影响跨设备一致性",
+  "mineSyncFailedWarning": "{count} 项同步失败，跨设备一致性可能受影响",
   "@mineSyncFailedWarning": {
     "placeholders": {
       "count": {
@@ -245,7 +245,7 @@
   },
   "mineSyncFailedAction": "查看详情",
   "mineSyncFailedDetailsTitle": "同步失败详情",
-  "mineSyncFailedDetailsDescription": "以下本地变更未能同步，网络恢复后可重试",
+  "mineSyncFailedDetailsDescription": "以下本地变更未能同步，恢复联网后可重试",
   "mineSyncFailedDetailsEmpty": "当前没有同步失败项",
   "mineSyncFailedDetailsListTitle": "待处理项（{count}）",
   "@mineSyncFailedDetailsListTitle": {
@@ -267,7 +267,7 @@
   "mineSyncFailedDetailsDiscard": "丢弃",
   "mineSyncFailedDetailsDiscardFailed": "无法丢弃该项",
   "mineSyncFailedDetailsDiscardTitle": "丢弃这一项？",
-  "mineSyncFailedDetailsDiscardDescription": "这条本地变更将被删除，不再发送到服务器，且无法撤销",
+  "mineSyncFailedDetailsDiscardDescription": "将永久删除，且不会发送到服务器",
   "mineSyncFailedDetailsDiscardConfirm": "丢弃",
   "mineSyncFailedErrorDataInvalid": "数据校验失败，请检查内容后重试",
   "mineSyncFailedErrorNetwork": "网络不稳定，请在网络恢复后重试",
@@ -295,7 +295,7 @@
   "mineConditionStatusSuspected": "疑似",
   "mineArchiveAddNewAction": "添加新记录",
   "mineArchiveEmptyTitle": "健康数据需登录后查看",
-  "mineArchiveEmptyDescription": "登录后同步基础信息、过敏史、疾病与用药记录",
+  "mineArchiveEmptyDescription": "登录后同步档案、过敏史与用药",
   "mineEditFieldStrengthTextHint": "如 500mg、10ml",
   "mineEditFieldDoseTextHint": "如 1片、5ml",
   "mineEditFieldRouteHint": "如 口服、外用、吸入",

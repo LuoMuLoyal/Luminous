@@ -130,7 +130,7 @@
   "authDeleteAccountSectionTitle": "Delete account",
   "authDeleteAccountHint": "Enter your current password to confirm",
   "authDeleteAccountCodeHint": "Enter the email verification code to confirm",
-  "authDeleteAccountEmailRequiredHint": "Bind and verify an email address before deleting your account.",
+  "authDeleteAccountEmailRequiredHint": "Bind and verify an email before deleting your account.",
   "authDeleteAccountAction": "Delete account",
   "authDeleteAccountSuccess": "Account deleted.",
   "authBackHomePrompt": "Back to home?",

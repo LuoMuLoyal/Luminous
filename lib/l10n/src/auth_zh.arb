@@ -178,7 +178,7 @@
   "authQqCallbackRequiredToast": "请先粘贴 QQ 回调链接",
   "authQqCallbackInvalidToast": "QQ 回调链接缺少 code 或 state",
   "authOAuthWebViewTitle": "完成授权",
-  "authOAuthWebViewLoadFailed": "授权页加载失败，请改用浏览器授权",
+  "authOAuthWebViewLoadFailed": "授权页加载失败，请改用浏览器",
   "authOAuthWebViewCancelled": "已取消授权",
   "authGoogleCallbackLabel": "回调链接或授权码",
   "authGoogleCallbackHint": "授权后粘贴回调链接",

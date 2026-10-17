@@ -109,7 +109,7 @@
   "reviewExportLinkMissingToast": "Export finished, but the download link is unavailable.",
   "reviewExportOpenFailedToast": "Export finished, but the link couldn't be opened.",
   "reviewPatternSectionTitle": "Health pattern analysis",
-  "reviewReferenceNotice": "This report is for reference only and is not diagnosis or treatment advice.",
+  "reviewReferenceNotice": "For reference only; not diagnosis or treatment advice.",
   "reviewFindingsEmptyTitle": "No key findings yet",
   "reviewFindingsEmptyBody": "Keep recording and the system will surface notable changes.",
   "reviewExportInsufficientReason": "Not enough data to export. Add more records first.",

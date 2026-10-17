@@ -72,7 +72,7 @@
   "mineReadinessGapDescWeight": "Weight is key for dosage calculations",
   "mineReadinessGapDescAllergy": "Missing allergy data may affect safety alerts",
   "mineReadinessGapDescMedicine": "Missing medication data affects interaction checks",
-  "mineReadinessGapDescMultiple": "{items} still missing; complete them for more accurate safety alerts",
+  "mineReadinessGapDescMultiple": "{items} still missing for accurate safety alerts",
   "@mineReadinessGapDescMultiple": {
     "placeholders": {
       "items": {
@@ -157,7 +157,7 @@
     }
   },
   "mineReadinessPreviewTitle": "Your profile is locked",
-  "mineReadinessPreviewDescription": "Sign in to view your real basic info, allergies, and medications.",
+  "mineReadinessPreviewDescription": "Sign in to view real basic info, allergies, and medications.",
   "mineReadinessPreviewBadge": "Preview",
   "mineReadinessIncompleteTitle": "{count} key items still missing",
   "@mineReadinessIncompleteTitle": {
@@ -168,7 +168,7 @@
     }
   },
   "mineReadinessReadyTitle": "Your profile is mostly ready",
-  "mineReadinessReadyDescription": "Keep your health archive current and manage sharing from here.",
+  "mineReadinessReadyDescription": "Keep your health archive current and manage sharing here.",
   "mineReadinessManageAction": "Manage profile",
   "mineProfileTitle": "Health profile",
   "mineSettingsThemeTitle": "Theme",
@@ -235,7 +235,7 @@
   "mineExportDownloadButton": "Download Report",
   "mineExportRegenerateButton": "Regenerate",
   "mineExportRequested": "Export request submitted",
-  "mineSyncFailedWarning": "{count, plural, =1{1 item failed to sync, which may affect cross-device consistency} other{{count} items failed to sync, which may affect cross-device consistency}}",
+  "mineSyncFailedWarning": "{count, plural, =1{1 item failed to sync; cross-device consistency may be affected} other{{count} items failed to sync; cross-device consistency may be affected}}",
   "@mineSyncFailedWarning": {
     "placeholders": {
       "count": {
@@ -245,7 +245,7 @@
   },
   "mineSyncFailedAction": "View details",
   "mineSyncFailedDetailsTitle": "Sync failures",
-  "mineSyncFailedDetailsDescription": "These local changes couldn't be synced. Retry when your connection returns.",
+  "mineSyncFailedDetailsDescription": "Couldn't sync these local changes. Retry when back online.",
   "mineSyncFailedDetailsEmpty": "No failed sync items",
   "mineSyncFailedDetailsListTitle": "Failed items ({count})",
   "@mineSyncFailedDetailsListTitle": {
@@ -267,7 +267,7 @@
   "mineSyncFailedDetailsDiscard": "Discard",
   "mineSyncFailedDetailsDiscardFailed": "Couldn't discard this item",
   "mineSyncFailedDetailsDiscardTitle": "Discard this item?",
-  "mineSyncFailedDetailsDiscardDescription": "This local change will be deleted and never reach the server. This cannot be undone.",
+  "mineSyncFailedDetailsDiscardDescription": "Deleted permanently; this change never reaches the server.",
   "mineSyncFailedDetailsDiscardConfirm": "Discard",
   "mineSyncFailedErrorDataInvalid": "Validation failed. Check your input and retry.",
   "mineSyncFailedErrorNetwork": "Connection is unstable. Retry when it's available.",
@@ -295,7 +295,7 @@
   "mineConditionStatusSuspected": "Suspected",
   "mineArchiveAddNewAction": "Add new record",
   "mineArchiveEmptyTitle": "Health data needs sign-in",
-  "mineArchiveEmptyDescription": "Sign in to sync your basic info, allergies, conditions, and medications.",
+  "mineArchiveEmptyDescription": "Sign in to sync your profile, allergies, and medications.",
   "mineEditFieldStrengthTextHint": "e.g. 500mg, 10ml",
   "mineEditFieldDoseTextHint": "e.g. 1 tablet, 5ml",
   "mineEditFieldRouteHint": "e.g. oral, topical, inhaled",

@@ -81,7 +81,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('尚未登录'), findsOneWidget);
-    expect(find.text('登录后可使用 AI 对话，并自行决定开放哪些健康上下文'), findsOneWidget);
+    expect(find.text('登录后可使用 AI 对话，并自行决定开放的健康上下文'), findsOneWidget);
     expect(find.byKey(const Key('assistant-input')), findsNothing);
   });
 

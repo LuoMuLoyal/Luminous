@@ -207,7 +207,7 @@
   },
   "todayGreetingAfternoonWaterDone": "Good afternoon, water goal reached",
   "todayGreetingAfternoonWaterUnknown": "Good afternoon, no water logged today",
-  "todayGreetingEveningPending": "{count, plural, =1{Good evening, 1 medication still unconfirmed} other{Good evening, {count} medications still unconfirmed}}",
+  "todayGreetingEveningPending": "{count, plural, =1{Good evening, 1 medication unconfirmed} other{Good evening, {count} medications unconfirmed}}",
   "@todayGreetingEveningPending": {
     "placeholders": {
       "count": {

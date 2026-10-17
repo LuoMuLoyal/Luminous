@@ -181,8 +181,8 @@
   "medicineRiskCheckTierConfirmedRisk": "已确认风险",
   "medicineRiskCheckTierConfirmedSafe": "已确认安全",
   "medicineRiskCheckTierUncovered": "未覆盖 / 不确定",
-  "medicineRiskCheckTierSafeDisclaimer": "已检查药品未发现明确风险，但不等于绝对安全，仍需遵医嘱",
-  "medicineRiskCheckTierUncoveredDisclaimer": "以下药品缺少资料，无法自动核验，请核对说明书或咨询药师",
+  "medicineRiskCheckTierSafeDisclaimer": "未发现明确风险，但不等于绝对安全，仍需遵医嘱",
+  "medicineRiskCheckTierUncoveredDisclaimer": "以下药品缺少资料，请核对说明书或咨询药师",
   "medicineRiskCheckTierSafeBody": "已检查 {checked} 种，未发现明确风险",
   "@medicineRiskCheckTierSafeBody": {
     "placeholders": {
@@ -265,7 +265,7 @@
   "medicineReminderMethodLabel": "提醒方式",
   "medicineReminderNotificationOn": "提醒通知",
   "medicineReminderNotificationOff": "提醒关闭",
-  "medicineReminderDeviceLocalHint": "仅保存提醒计划，通知由本机设置控制",
+  "medicineReminderDeviceLocalHint": "仅保存计划，通知由本机设置控制",
   "medicineReminderSmsLabel": "短信提醒",
   "medicineReminderSmsOff": "短信未开通",
   "medicineReminderSmsUnavailableHint": "短信通道暂未开通",
@@ -358,7 +358,7 @@
   "medicineAlertDuplicateCheckStatus": "预览",
   "medicineAlertSpecialGroupSafetyTitle": "特殊人群用药提示",
   "medicineAlertSpecialGroupSafetyBody": "记录特殊用药条件以获得更谨慎提示",
-  "medicineAlertSpecialGroupSafetyDetail": "特殊人群用药请优先遵医嘱",
+  "medicineAlertSpecialGroupSafetyDetail": "特殊人群请优先遵医嘱",
   "medicineAlertSpecialGroupSafetyStatus": "未记录",
   "medicinePromisePointBoundary": "结果仅供参考，不替代诊断与治疗",
   "medicinePromisePointSpecialGroup": "特殊人群优先警示",

@@ -87,7 +87,7 @@
   "settingsAdvancedCacheCleared": "图片缓存已清理",
   "settingsAdvancedResetDefaults": "恢复默认设置",
   "settingsAdvancedRestoreConfirmTitle": "确认恢复默认设置？",
-  "settingsAdvancedRestoreConfirmMessage": "所有高级设置将恢复默认值，不可撤销",
+  "settingsAdvancedRestoreConfirmMessage": "所有高级设置将恢复默认，不可撤销",
   "settingsAdvancedRestoreConfirmAction": "恢复默认",
   "settingsAdvancedDefaultsReset": "已恢复默认设置",
   "settingsDataSharingConfirmTitle": "确认修改报告分享设置？",
@@ -121,7 +121,7 @@
   "settingsAiPrivacySectionTitle": "AI 隐私",
   "settingsAiPrivacyMemoryNote": "开启记忆后，此前对话的要点会提供给 AI",
   "settingsAiPrivacyContextNote": "勾选的数据来源会在对话时提供给 AI",
-  "settingsAiPrivacyHistoricalNote": "关闭开关不会删除历史数据，只会停止后续使用",
+  "settingsAiPrivacyHistoricalNote": "关闭开关不会删除历史数据，只停止后续使用",
   "@settingsSecurityPinLastChangedAt": {
     "placeholders": {
       "date": {}
@@ -170,7 +170,7 @@
   "settingsDataStorageRetentionForever": "永久",
   "settingsDataStorageRetentionForeverSubtitle": "不自动清理，需手动清除",
   "settingsDataStorageRetentionShortenConfirmTitle": "缩短保留期",
-  "settingsDataStorageRetentionShortenConfirmMessage": "超出新期限的本地缓存将立即清理，不可撤销",
+  "settingsDataStorageRetentionShortenConfirmMessage": "超出新期限的缓存将立即清理，不可撤销",
   "settingsDataStorageImageQualitySection": "图片质量",
   "settingsDataStorageImageQualityStandard": "标准",
   "settingsDataStorageImageQualityStandardSubtitle": "加载高清图片",
@@ -245,7 +245,7 @@
   "settingsHelpTraceIdCopy": "复制",
   "settingsHelpTraceIdTitle": "最近一次请求 ID",
   "settingsHealthAutoSyncTitle": "健康数据自动同步",
-  "settingsHealthAutoSyncSubtitle": "打开应用时同步最近 24 小时数据",
+  "settingsHealthAutoSyncSubtitle": "打开应用时同步最近 24 小时",
   "profilePageTitle": "个人信息",
   "profileUserSectionTitle": "用户信息",
   "profileHealthSectionTitle": "健康档案",
