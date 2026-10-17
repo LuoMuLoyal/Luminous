@@ -249,19 +249,65 @@ HIG 的解法是"只列标题，详情放下一层"。对 A 类条目优先考�
 ## 八、执行记录与剩余事项
 
 改写工具：`tool/l10n_audit/rewrite.py`（中英同时改，只写分片）。
-一次改写 **53 个 key（中英各 53 条）**，审计由 62 条降至 **0 条**。
+两轮共改写 **61 个 key（中英各 61 条）**，审计由 62 条降至 **0 条**。
 
 审计口径另修掉一类假超限：末位单词是业务复合词而非 UI 槽位的 key
 （`*SpecialGroup` / `*WithMore` / `*ByRange` / `*ImageCount` / `*ViewAll` 等），
 仅靠后缀正则会误判成 `Group` / `More` / `Range` / `Count` / `All` 槽位。
 `audit_copy.py` 增加 `OVERRIDES`，按**真实渲染位**钉住 10 个 key 的槽位（已核对调用点）。
 
+### 4.3 复核结论（41 条错误/空态，已逐条核对渲染位）
+
+**结论：绝大多数无需改文案，因为动作已由相邻组件承载，或本就是状态位取值。**
+
+- **动作已在组件上**：`medicineDetailSequencesError` 的 `StateMessageView` 传了
+  `actionLabel: todayRetryAction` + `onAction`（`detail_section_view.dart:793`）；
+  `reviewReviewHistoryLoadFailed` / `...LoadMoreFailed` 右侧就是重试按钮
+  （`history.dart:206`、`:350`）；`settingsHelpFaqLoadError` 下方紧跟重试按钮
+  （`help.dart:266`）。再加"请重试"是重复。
+- **状态位取值**（渲染为徽标/行标签，动作在页面别处）：
+  `recordMealAnalysisStatusFailed`、`mineExportStatusFailed` / `...Unavailable` /
+  `...LinkMissing`、`healthSyncResultFailed`、`medicineReminderDeliveryStatusFailed`、
+  `settingsDevLogLevelError`、`assistantSourceCoverageEmpty`、
+  `medicineRiskCheckCoverageSummaryUnavailable`、`authLinkedIdentityEmailMissing`、
+  `mineSyncFailedDetailsLastError`、`securityCenterSensitiveOperationsEmpty`、
+  `medicineTodayPlanEmpty`、`reviewReviewHistoryEmpty`、`reviewShareManagementEmpty`、
+  `iconPickerEmpty`、`commandPaletteEmpty`、`medicineDetailSequencesEmpty`、
+  `mineSyncFailedDetailsEmpty`、`settingsAboutLicenseMissing`、
+  `medicineRiskCheckCoverageReasonDetailUnavailable`、
+  `settingsNotificationsPermissionUnsupported`、`healthSyncAutoSyncUnsupported`。
+- **表单校验文案本身已给出要求**：`auth*RequiredError`、`authEmailInvalidError`、
+  `authPasswordsDoNotMatchError`、`recordQuickSettingsWaterCustomDialogInvalid`。
+
+实际改写的 8 条（措辞含糊或没给下一步）：
+
+| key | 改前 | 改后 |
+| --- | --- | --- |
+| `assistantConversationModelMissing` | "The backend does not have a usable model yet, so replies cannot be generated." | "AI replies are unavailable right now. Try again later." |
+| `medicineRiskCheckLlmUnavailable` | "AI analysis is not configured" | "AI analysis is unavailable right now" |
+| `recordMealAnalysisFailureVisionUnavailable` | "Photo analysis is unavailable" | "Photo analysis is unavailable. Try again later." |
+| `medicineReminderCalendarUnavailable` | "This reminder has no time to export" | "Set a reminder time before exporting" |
+| `assistantToolDisabledRetrievalUnavailable` | "Retrieval service is unavailable" | "Search is unavailable right now" |
+| `reviewReviewRedFlagInformationGap` | "Key medication information is missing for {medicine}" | "Add key details for {medicine} to complete the check" |
+| `assistantSourceCoverageEmpty` | "No data" | "No data yet" |
+| `reviewClinicSummaryPdfEmpty` | "PDF content is empty" | "Nothing to include in the PDF yet" |
+
 ### 剩余事项
 
-1. **widget 测试文案断言未同步**：6 个测试断言了旧文案，需按新文案更新
-   （`test/assistant/page_test.dart`、`test/review/widgets/noteworthy_test.dart`、
-   `test/search/page_test.dart` 等）。`flutter test` 当前非全绿。
-2. **4.3 人工复核清单**（41 条错误/空态是否说清"怎么修"）尚未逐条过；
-   这部分不做自动判定，需人工确认动作是否已由旁边按钮承载。
-3. **说明/免责类**（`medicineRiskCheckTierSafeDisclaimer` 等 3 条）长度在阈值内，
-   措辞未动。
+**widget 测试文案断言未同步**：9 个测试断言了旧文案，需按新文案更新。
+`flutter test` 当前非全绿。清单（`旧文案 → 新文案`）：
+
+| 测试文件 | key |
+| --- | --- |
+| `test/assistant/page_test.dart` | `assistantConversationDisabledByUserHint`、`assistantDisclaimerText` |
+| `test/assistant/widgets_test.dart` | `assistantDisclaimerText` |
+| `test/assistant/ui_formatters_test.dart` | `assistantToolDisabledRetrievalUnavailable` |
+| `test/core/widgets/state_message_test.dart` | `assistantSourceCoverageEmpty` |
+| `test/medicine/widgets/risk_check_llm_states_test.dart` | `medicineRiskCheckLlmUnavailable` |
+| `test/review/widgets/noteworthy_test.dart` | `reviewNoteworthyAbstainLabel` |
+| `test/search/page_test.dart` | `medicineSearchPrecheckUnavailableToast` |
+| `test/settings/flow_test.dart` | `settingsNotificationsPermissionEnabledHint`、`settingsNotificationsPermissionDisabledHint` |
+
+### 说明/免责类
+
+`medicineRiskCheckTierSafeDisclaimer` 等 3 条长度在阈值内，措辞未动。

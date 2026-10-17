@@ -241,6 +241,51 @@ R = {
         "Sleep trends are still unclear. Add a record to sharpen them.",
         "暂时无法判断睡眠趋势，补一条记录后会更准",
     ),
+
+    # ---------- 错误/空态：补下一步动作、删实现细节（计划 4.3）----------
+    # 已逐条核对真实渲染位。下面只列**真正需要改**的；其余不动的理由见计划第八节：
+    #   - 动作已由相邻组件承载：medicineDetailSequencesError 的 StateMessageView 带
+    #     actionLabel，reviewReviewHistoryLoadFailed / ...LoadMoreFailed /
+    #     settingsHelpFaqLoadError 右侧就是重试按钮 —— 再加"请重试"是重复。
+    #   - 纯状态位取值：recordMealAnalysisStatusFailed / mineExportStatusFailed /
+    #     ...Unavailable / ...LinkMissing / healthSyncResultFailed /
+    #     medicineReminderDeliveryStatusFailed / settingsDevLogLevelError /
+    #     assistantSourceCoverageEmpty / medicineRiskCheckCoverageSummaryUnavailable /
+    #     authLinkedIdentityEmailMissing。
+    #   - 表单校验文案本身已给出要求：auth*RequiredError / authEmailInvalidError /
+    #     authPasswordsDoNotMatchError / recordQuickSettingsWaterCustomDialogInvalid。
+    "assistantConversationModelMissing": (
+        "AI replies are unavailable right now. Try again later.",
+        "AI 回复暂时不可用，请稍后再试",
+    ),
+    "medicineRiskCheckLlmUnavailable": (
+        "AI analysis is unavailable right now",
+        "AI 分析暂时不可用",
+    ),
+    "recordMealAnalysisFailureVisionUnavailable": (
+        "Photo analysis is unavailable. Try again later.",
+        "图片分析暂不可用，请稍后再试",
+    ),
+    "medicineReminderCalendarUnavailable": (
+        "Set a reminder time before exporting",
+        "请先设置提醒时间再导出",
+    ),
+    "assistantToolDisabledRetrievalUnavailable": (
+        "Search is unavailable right now",
+        "搜索暂时不可用",
+    ),
+    "reviewReviewRedFlagInformationGap": (
+        "Add key details for {medicine} to complete the check",
+        "请补全「{medicine}」的关键用药信息",
+    ),
+    "assistantSourceCoverageEmpty": (
+        "No data yet",
+        "暂无数据",
+    ),
+    "reviewClinicSummaryPdfEmpty": (
+        "Nothing to include in the PDF yet",
+        "暂无可导出的 PDF 内容",
+    ),
 }
 
 

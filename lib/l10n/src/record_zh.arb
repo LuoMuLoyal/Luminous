@@ -522,7 +522,7 @@
   "@recordMealAnalysisFailureImageCount": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureVisionUnavailable": "图片分析服务暂不可用",
+  "recordMealAnalysisFailureVisionUnavailable": "图片分析暂不可用，请稍后再试",
   "@recordMealAnalysisFailureVisionUnavailable": {
     "description": "Meal analysis v2 UI copy."
   },

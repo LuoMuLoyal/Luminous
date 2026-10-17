@@ -66,9 +66,14 @@ flutter gen-l10n
 
   超阈值即不合格，**没有"略超可放行"的豁免**；改写后仍超说明内容不该待在行内槽位
   （Apple HIG：列表只列标题，详情放下一层）。业务名词后缀（`*SpecialGroup`、`*Water`、
-  `*Sleep` 等）不参与长度判定。审计脚本：`python tool/l10n_audit/audit_copy.py`。
+  `*Sleep` 等）不参与长度判定；末位是业务复合词而非 UI 槽位的 key（`*WithMore`、
+  `*ByRange`、`*ImageCount`、`*ViewAll` 等）在脚本 `OVERRIDES` 里按真实渲染位钉住槽位。
+  审计脚本：`python tool/l10n_audit/audit_copy.py`（有超限即 exit 1）。
   规范来源：Apple HIG 的 Lists and tables / Writing / Settings，NN/g《The 3 C's of
   Informational Microcopy》，Microsoft Writing Style Guide。
+- **错误/空态先说"怎么修"**：动作若已由相邻组件承载（`StateErrorView` /
+  `StateMessageView` 的 `actionLabel`、列表右侧的重试按钮），文案里不再重复"请重试"；
+  纯状态位取值（徽标、行标签）保持短词即可。只有既无动作又未说明下一步时才补。
 - **中文按中文校一遍**：中文常是英文的翻译产物，视觉宽只有英文约 57%，会自然"合格"而
   掩盖问题；不得因英文合规就跳过中文的长度核对。
 - **中文句号**：zh 文案值不使用 `。`。句末不加句号（直接删掉，连带其前多余空格）；值内部

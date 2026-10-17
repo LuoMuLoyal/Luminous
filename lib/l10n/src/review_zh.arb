@@ -162,7 +162,7 @@
   "reviewClinicSummaryDisclaimerSection": "免责声明",
   "reviewClinicSummaryDownloadPdf": "下载 PDF",
   "reviewClinicSummaryShare": "分享摘要",
-  "reviewClinicSummaryPdfEmpty": "PDF 内容为空",
+  "reviewClinicSummaryPdfEmpty": "暂无可导出的 PDF 内容",
   "reviewClinicSummaryPdfFailed": "PDF 下载失败，请稍后再试",
   "reviewClinicSummarySharedTitle": "诊所摘要",
   "reviewClinicSummarySharedExpired": "分享链接已过期或失效",
@@ -493,7 +493,7 @@
       }
     }
   },
-  "reviewReviewRedFlagInformationGap": "「{medicine}」缺少关键用药信息",
+  "reviewReviewRedFlagInformationGap": "请补全「{medicine}」的关键用药信息",
   "@reviewReviewRedFlagInformationGap": {
     "placeholders": {
       "medicine": {

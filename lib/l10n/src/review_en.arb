@@ -155,7 +155,7 @@
   "reviewClinicSummaryDisclaimerSection": "Disclaimer",
   "reviewClinicSummaryDownloadPdf": "Download PDF",
   "reviewClinicSummaryShare": "Share summary",
-  "reviewClinicSummaryPdfEmpty": "PDF content is empty",
+  "reviewClinicSummaryPdfEmpty": "Nothing to include in the PDF yet",
   "reviewClinicSummaryPdfFailed": "PDF download failed, please try again later",
   "reviewClinicSummarySharedTitle": "Clinic Summary",
   "reviewClinicSummarySharedExpired": "Share link has expired or is invalid",
@@ -486,7 +486,7 @@
       }
     }
   },
-  "reviewReviewRedFlagInformationGap": "Key medication information is missing for {medicine}",
+  "reviewReviewRedFlagInformationGap": "Add key details for {medicine} to complete the check",
   "@reviewReviewRedFlagInformationGap": {
     "placeholders": {
       "medicine": {

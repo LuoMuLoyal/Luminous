@@ -522,7 +522,7 @@
   "@recordMealAnalysisFailureImageCount": {
     "description": "Meal analysis v2 UI copy."
   },
-  "recordMealAnalysisFailureVisionUnavailable": "Photo analysis is unavailable",
+  "recordMealAnalysisFailureVisionUnavailable": "Photo analysis is unavailable. Try again later.",
   "@recordMealAnalysisFailureVisionUnavailable": {
     "description": "Meal analysis v2 UI copy."
   },
