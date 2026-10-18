@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -14,12 +13,9 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
+import 'package:luminous/features/assistant/presentation/widgets/chat_surface.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/above_composer.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/composer_host.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
-import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
-import 'package:luminous/features/assistant/presentation/widgets/views/empty_conversation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// The main body of the assistant page. It watches the assistant controller
@@ -43,7 +39,7 @@ class AssistantPageBody extends ConsumerWidget {
 
   final TextEditingController inputController;
   final ScrollController scrollController;
-  final Future<void> Function() onSend;
+  final Future<void> Function(String text) onSend;
   final VoidCallback? onRetry;
   final Future<void> Function({
     required String messageId,
@@ -94,18 +90,6 @@ class AssistantPageBody extends ConsumerWidget {
     );
     final recentConversations = ref.watch(
       assistantControllerProvider.select((s) => s.recentConversations),
-    );
-    final isSending = ref.watch(
-      assistantControllerProvider.select((s) => s.isSending),
-    );
-    final sendError = ref.watch(
-      assistantControllerProvider.select((s) => s.sendError),
-    );
-    final sendErrorType = ref.watch(
-      assistantControllerProvider.select((s) => s.sendErrorType),
-    );
-    final lastFailedInput = ref.watch(
-      assistantControllerProvider.select((s) => s.lastFailedInput),
     );
 
     final width = MediaQuery.sizeOf(context).width;
@@ -242,59 +226,25 @@ class AssistantPageBody extends ConsumerWidget {
                   const SizedBox(height: Spacing.md),
                 ],
                 Expanded(
-                  // flow_ui 的 FlowChatView 自带 SafeArea:页面主体已经在
-                  // FHeader 之下,再消费一次顶部 inset 会在顶栏与首条消息之间
-                  // 留出一条空白带。这里去掉顶部 inset,让会话区紧贴顶栏。
+                  // 会话区紧贴顶栏:页面主体已经在 FHeader 之下,若 chat surface
+                  // 再消费一次顶部 inset,会在顶栏与首条消息之间留出空白带。
                   child: MediaQuery.removePadding(
                     context: context,
                     removeTop: true,
-                    child: FlowChatView(
-                      key: const Key('assistant-flow-chat-screen'),
-                      // 空态改由 AssistantEmptyConversation 渲染(有界、可滚动),
-                      // 不再使用 flow_ui 的 empty 分支。
-                      empty: false,
-                      thread:
-                          !hasConversation &&
-                              capabilities.canSendMessages &&
-                              !isSending
-                          ? AssistantEmptyConversation(
-                              onStarterPrompt: handleStarterPrompt,
-                              showMemoryHint:
-                                  capabilities.assistantMemoryEnabled,
-                              showDisclaimerExpanded:
-                                  recentConversations.isEmpty,
-                            )
-                          : AssistantConversationMessageList(
-                              capabilities: capabilities,
-                              scrollController: scrollController,
-                              onConfirmProposal: onConfirmProposal,
-                              onDismissProposal: onDismissProposal,
-                              onRegenerateProposal: onRegenerateProposal,
-                              onRegenerate: onRegenerate,
-                              onResend: onResend,
-                            ),
-                      composer: AssistantComposerHost(
-                        controller: inputController,
-                        isSending: isSending,
-                        canSendMessages: capabilities.canSendMessages,
-                        onSend: onSend,
-                      ),
-                      aboveComposer: isOpeningConversation || sendError != null
-                          ? AssistantAboveComposer(
-                              isOpeningConversation: isOpeningConversation,
-                              sendError: sendError,
-                              sendErrorType: sendErrorType,
-                              onRetry: lastFailedInput != null
-                                  ? () => ref
-                                        .read(
-                                          assistantControllerProvider.notifier,
-                                        )
-                                        .retryLastMessage()
-                                  : onRetry,
-                            )
-                          : null,
-                      threadController: scrollController,
-                      jumpToLatestTooltip: l10n.assistantJumpToLatestTooltip,
+                    child: AssistantChatSurface(
+                      capabilities: capabilities,
+                      inputController: inputController,
+                      scrollController: scrollController,
+                      onSend: onSend,
+                      onConfirmProposal: onConfirmProposal,
+                      onDismissProposal: onDismissProposal,
+                      onRegenerateProposal: onRegenerateProposal,
+                      onRegenerate: onRegenerate,
+                      onResend: onResend,
+                      onRetry: onRetry,
+                      onStarterPrompt: handleStarterPrompt,
+                      showMemoryHint: capabilities.assistantMemoryEnabled,
+                      showDisclaimerExpanded: recentConversations.isEmpty,
                     ),
                   ),
                 ),

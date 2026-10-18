@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:flow_ui/flow_ui.dart';
+import 'package:flutter/material.dart' as f;
 import 'package:flutter/services.dart';
+import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -17,8 +18,6 @@ import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/pages/page.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/assistant_greeting.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
-import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
-import 'package:luminous/features/assistant/presentation/widgets/views/empty_conversation.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -33,18 +32,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_forui_app.dart';
 
-// flow_ui 0.3.0 builds its composer from material_ui widgets (its
-// TextField/InkWell are material_ui's, not the framework's), so the lookups
-// below match those types.
+// The gen_ai chat surface renders with framework (`package:flutter/material.dart`)
+// widgets, while the surrounding app is built from `material_ui` / Forui. The
+// lookups below are typed against the framework so they match the composer.
 Finder _assistantInputTextField() => find.descendant(
-  of: find.byKey(const Key('assistant-input')),
-  matching: find.byType(TextField),
+  of: find.byKey(const Key('assistant-chat-surface')),
+  matching: find.byType(f.TextField),
 );
 
-Finder _assistantSendButton() => find.descendant(
-  of: find.byKey(const Key('assistant-input')),
-  matching: find.byType(InkWell),
-);
+// Tapping must hit the enabled control: gen_ai's `AnimatedSwitcher` keeps the
+// outgoing (disabled) glyph in the tree for the duration of the morph.
+Finder _assistantSendButton() =>
+    find.byKey(const ValueKey('send-stop-button-enabled'));
+
+// Presence check that is agnostic to the empty/non-empty control state.
+Finder _assistantSendControl() => find.byWidgetPredicate((widget) {
+  final key = widget.key;
+  return key == const ValueKey('send-stop-button-enabled') ||
+      key == const ValueKey('send-stop-button-disabled') ||
+      key == const ValueKey('send-stop-button-stop');
+});
 
 void main() {
   testWidgets('AI chat page shows sign-in gate when signed out', (
@@ -82,7 +89,7 @@ void main() {
 
     expect(find.text('尚未登录'), findsOneWidget);
     expect(find.text('登录后可使用 AI 对话，并自行决定开放的健康上下文'), findsOneWidget);
-    expect(find.byKey(const Key('assistant-input')), findsNothing);
+    expect(_assistantInputTextField(), findsNothing);
   });
 
   testWidgets('send error shows retry button and error-specific icon', (
@@ -292,12 +299,10 @@ void main() {
 
     // Should show hint about toggling in settings
     expect(find.text('AI 对话已关闭，可在右上角设置中开启'), findsOneWidget);
-    final composer = tester.widget<FlowComposer>(find.byType(FlowComposer));
-    expect(composer.enabled, isFalse);
-    expect(
-      tester.widget<TextField>(_assistantInputTextField()).enabled,
-      isFalse,
-    );
+    // With no conversation and sending disabled, the chat (and its composer)
+    // is replaced by the explanatory state view.
+    expect(find.byType(AiChatWidget), findsNothing);
+    expect(_assistantInputTextField(), findsNothing);
     expect(find.byIcon(Icons.stop_rounded), findsNothing);
   });
 
@@ -620,8 +625,8 @@ void main() {
     await tester.pumpAndSettle();
 
     // Input field should be visible on mobile
-    expect(find.byKey(const Key('assistant-input')), findsOneWidget);
-    expect(_assistantSendButton(), findsOneWidget);
+    expect(_assistantInputTextField(), findsOneWidget);
+    expect(_assistantSendControl(), findsWidgets);
   });
 
   testWidgets('page send trims input and clears the shared controller', (
@@ -638,7 +643,7 @@ void main() {
     await tester.tap(_assistantSendButton());
     await tester.pumpAndSettle();
 
-    final textField = tester.widget<TextField>(_assistantInputTextField());
+    final textField = tester.widget<f.TextField>(_assistantInputTextField());
     expect(textField.controller?.text, isEmpty);
     expect(repository.sentMessageBatches, hasLength(1));
     expect(repository.sentMessageBatches.single.single.content, '帮我看看睡眠');
@@ -672,7 +677,7 @@ void main() {
     },
   );
 
-  testWidgets('page composer preserves the FlowUI input contract', (
+  testWidgets('page composer preserves the gen_ai input contract', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -682,18 +687,16 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final composer = tester.widget<FlowComposer>(find.byType(FlowComposer));
-    expect(composer.enabled, isTrue);
-    expect(composer.isStreaming, isFalse);
-    // Package default: Enter sends, Shift+Enter makes a newline.
-    expect(composer.submitOnEnter, isTrue);
-
-    final textField = tester.widget<TextField>(_assistantInputTextField());
+    // gen_ai's composer is a framework TextField whose Enter handling is
+    // driven by `InputOptions.sendOnEnter` (package default: Enter sends,
+    // Shift+Enter makes a newline).
+    final textField = tester.widget<f.TextField>(_assistantInputTextField());
     expect(textField.maxLines, 5);
     expect(textField.decoration?.hintText, '问问你的健康数据…');
+    expect(_assistantSendControl(), findsWidgets);
   });
 
-  testWidgets('normal assistant page uses the FlowChatView composition', (
+  testWidgets('normal assistant page uses the gen_ai chat surface', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -703,19 +706,46 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final screen = tester.widget<FlowChatView>(find.byType(FlowChatView));
-    final threadWidget = screen.thread! as AssistantConversationMessageList;
+    final chat = tester.widget<AiChatWidget>(find.byType(AiChatWidget));
+    expect(find.byKey(const Key('assistant-chat-surface')), findsOneWidget);
+    expect(chat.scrollController, isNotNull);
+    expect(chat.messages, isNotNull);
+    expect(_assistantInputTextField(), findsOneWidget);
+  });
 
-    expect(find.byType(FlowChatView), findsOneWidget);
-    expect(find.byType(FlowThread), findsOneWidget);
-    expect(screen.thread, isA<AssistantConversationMessageList>());
-    expect(find.byType(FlowComposer), findsOneWidget);
-    expect(screen.threadController, isNotNull);
-    expect(
-      identical(screen.threadController, threadWidget.scrollController),
-      isTrue,
+  testWidgets('assistant chat list scrolls a long conversation', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(600, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _LongConversationAssistantRepository()),
     );
-    expect(screen.jumpToLatestTooltip, '跳转到最新');
+    await tester.pumpAndSettle();
+
+    // The gen_ai message list is a ListView bound to the surface's scroll
+    // controller; a 30-message conversation overflows the viewport, so one of
+    // the surface's lists must hold a live, scrollable position.
+    final controllers = tester
+        .widgetList<ListView>(
+          find.descendant(
+            of: find.byKey(const Key('assistant-chat-surface')),
+            matching: find.byType(ListView),
+          ),
+        )
+        .map((listView) => listView.controller)
+        .whereType<ScrollController>();
+    final scrollable = controllers.where(
+      (controller) =>
+          controller.hasClients && controller.position.maxScrollExtent > 0,
+    );
+    expect(scrollable, isNotEmpty);
   });
 
   testWidgets('empty assistant page keeps greeting and welcome support copy', (
@@ -728,27 +758,24 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final screen = tester.widget<FlowChatView>(find.byType(FlowChatView));
-
-    // 空态改由本仓的 AssistantEmptyConversation 渲染：flow_ui 的 empty 分支把
-    // greeting 放进 Expanded(Center(...))，小视口下会溢出并压住描述文字。
-    expect(screen.empty, isFalse);
-    expect(screen.thread, isA<AssistantEmptyConversation>());
+    // 空态由 gen_ai 的 WelcomeMessageConfig.builder 渲染，内容仍是本仓的
+    // AssistantEmptyConversation(有界、可滚动)，不是语料的默认空态。
+    expect(find.byType(AiChatWidget), findsOneWidget);
     expect(find.byType(AssistantSvgGreeting), findsOneWidget);
     expect(find.text('开始和 Luminous 聊天'), findsOneWidget);
     expect(find.text('可以问最近的睡眠、记录和用药'), findsOneWidget);
-    final suggestions = tester.widget<FlowSuggestionGroup>(
-      find.byType(FlowSuggestionGroup),
-    );
-    expect(suggestions.layout, FlowSuggestionLayout.column);
-    expect(
-      suggestions.suggestions.map((suggestion) => suggestion.label),
-      <String>['总结我今天的记录', '我最近睡眠怎么样', '我当前在吃什么药', '帮我看看要注意什么'],
-    );
+    for (final prompt in const [
+      '总结我今天的记录',
+      '我最近睡眠怎么样',
+      '我当前在吃什么药',
+      '帮我看看要注意什么',
+    ]) {
+      expect(find.text(prompt), findsOneWidget);
+    }
     const starterPrompt = '总结我今天的记录';
     await tester.tap(find.text(starterPrompt));
     await tester.pump();
-    final composerTextField = tester.widget<TextField>(
+    final composerTextField = tester.widget<f.TextField>(
       _assistantInputTextField(),
     );
     expect(composerTextField.controller?.text, starterPrompt);
@@ -784,7 +811,7 @@ void main() {
     expect(find.text('对话会被提炼为要点用于后续会话，可在设置中关闭'), findsOneWidget);
   });
 
-  testWidgets('AssistantPage scopes one FlowTheme below MaterialApp', (
+  testWidgets('AssistantPage scopes one chat theme bridge below MaterialApp', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -794,23 +821,19 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final pageThemes = tester
-        .widgetList<Theme>(
+    // The gen_ai surface must receive a framework Theme carrying the
+    // CustomThemeExtension that maps Forui tokens onto the package widgets.
+    final chatThemes = tester
+        .widgetList<f.Theme>(
           find.ancestor(
-            of: find.byKey(const Key('assistant-main-content')),
-            matching: find.byType(Theme),
+            of: find.byKey(const Key('assistant-chat-surface')),
+            matching: find.byType(f.Theme),
           ),
         )
-        .toList();
-    final flowThemes = pageThemes
-        .where((theme) => theme.data.extension<FlowTheme>() != null)
+        .where((theme) => theme.data.extension<CustomThemeExtension>() != null)
         .toList();
 
-    expect(flowThemes, hasLength(1));
-    // A non-FlowTheme Theme *may* exist between the app and the page
-    // (material_ui's MaterialApp internals changed across versions and may
-    // insert one); the invariant worth pinning is only that the FlowTheme is
-    // scoped exactly once below the app, so nothing above it leaks one in.
+    expect(chatThemes, hasLength(1));
   });
 
   testWidgets('AI chat page shows loading skeleton while capabilities load', (
@@ -837,7 +860,7 @@ void main() {
     // Loading skeleton should appear while capabilities and conversation load
     expect(find.byType(AssistantLoadingView), findsOneWidget);
     // Input field should NOT be visible during loading
-    expect(find.byKey(const Key('assistant-input')), findsNothing);
+    expect(_assistantInputTextField(), findsNothing);
 
     // Complete loading
     pendingConversation.complete(null);
@@ -846,7 +869,7 @@ void main() {
 
     // After loading, skeleton disappears and input appears
     expect(find.byType(AssistantLoadingView), findsNothing);
-    expect(find.byKey(const Key('assistant-input')), findsOneWidget);
+    expect(_assistantInputTextField(), findsOneWidget);
   });
 }
 
@@ -1558,6 +1581,67 @@ class _RestoredConversationAssistantRepository
   @override
   TaskEither<LucentFailure, bool> clearLatestConversation() {
     clearCalls += 1;
+    return TaskEither.right(true);
+  }
+
+  @override
+  TaskEither<LucentFailure, AssistantCapabilities> getCapabilities() {
+    return TaskEither.right(_FakeAssistantRepository._capabilities);
+  }
+
+  @override
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
+    return const Stream<AssistantGenerationEvent>.empty();
+  }
+}
+
+class _LongConversationAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
+  @override
+  TaskEither<LucentFailure, List<AssistantConversationSummary>>
+  listRecentConversations() {
+    return TaskEither.right(const <AssistantConversationSummary>[]);
+  }
+
+  @override
+  TaskEither<LucentFailure, AssistantConversation?> getLatestConversation() {
+    return TaskEither.right(
+      AssistantConversation(
+        id: 'conversation-long',
+        title: '长对话',
+        status: 'active',
+        messages: <AssistantMessage>[
+          for (var index = 0; index < 30; index += 1)
+            AssistantMessage(
+              role: index.isEven
+                  ? AssistantMessageRole.user
+                  : AssistantMessageRole.assistant,
+              content: '第 $index 条消息，内容足够长以形成可滚动范围。',
+              createdAt: DateTime.parse(
+                '2026-06-18T01:00:00Z',
+              ).add(Duration(minutes: index)),
+            ),
+        ],
+        lastMessageAt: DateTime.parse('2026-06-18T01:29:00Z'),
+        createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-18T01:29:00Z'),
+      ),
+    );
+  }
+
+  @override
+  TaskEither<LucentFailure, AssistantConversation> openConversation(
+    String conversationId,
+  ) {
+    return getLatestConversation().map((conversation) => conversation!);
+  }
+
+  @override
+  TaskEither<LucentFailure, bool> clearLatestConversation() {
     return TaskEither.right(true);
   }
 

@@ -10,9 +10,9 @@ import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
+import 'package:luminous/features/assistant/presentation/widgets/chat_theme_bridge.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
-import 'package:luminous/features/assistant/presentation/widgets/flow_theme_bridge.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/page_body.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -30,11 +30,9 @@ class AssistantPage extends HookConsumerWidget {
       return scrollController.dispose;
     }, [scrollController]);
 
-    Future<void> handleSend() async {
-      final input = inputController.text;
-      if (input.trim().isEmpty) return;
-      inputController.clear();
-      await ref.read(assistantControllerProvider.notifier).sendMessage(input);
+    Future<void> handleSend(String text) async {
+      if (text.trim().isEmpty) return;
+      await ref.read(assistantControllerProvider.notifier).sendMessage(text);
     }
 
     Future<void> handleStartNewConversation() async {
@@ -383,7 +381,7 @@ class AssistantPage extends HookConsumerWidget {
       ),
     );
 
-    return withLuminousFlowTheme(context, assistantContent);
+    return withLuminousChatTheme(context, assistantContent);
   }
 }
 
