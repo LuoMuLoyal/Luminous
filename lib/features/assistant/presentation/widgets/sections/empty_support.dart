@@ -1,13 +1,12 @@
-import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Assistant-specific support rendered inside FlowChatScreen's empty state.
+/// Assistant-specific support rendered inside the welcome (empty) state.
 ///
-/// FlowChatScreen owns the greeting and composer layout. This host retains the
-/// existing assistant description, starter prompts, memory hint, and
+/// The chat surface owns the greeting and composer layout. This host retains
+/// the existing assistant description, starter prompts, memory hint, and
 /// collapsible health disclaimer without introducing new localization.
 class AssistantEmptySupport extends StatefulWidget {
   const AssistantEmptySupport({
@@ -68,13 +67,14 @@ class _AssistantEmptySupportState extends State<AssistantEmptySupport> {
                 ),
               ),
               const SizedBox(height: Spacing.sm),
-              FlowSuggestionGroup(
-                layout: FlowSuggestionLayout.column,
-                suggestions: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
                   for (final prompt in prompts)
-                    FlowSuggestion(
-                      label: prompt,
-                      onTap: () => widget.onStarterPrompt(prompt),
+                    FTile(
+                      prefix: const Icon(SemanticIcons.actionMessage, size: 18),
+                      title: Text(prompt),
+                      onPress: () => widget.onStarterPrompt(prompt),
                     ),
                 ],
               ),

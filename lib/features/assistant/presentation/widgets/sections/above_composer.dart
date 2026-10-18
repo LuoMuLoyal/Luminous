@@ -8,7 +8,7 @@ import 'package:luminous/features/assistant/presentation/providers/conversation.
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Loading/error messages above the FlowComposer.
+/// Loading/error messages rendered above the composer.
 class AssistantAboveComposer extends StatelessWidget {
   const AssistantAboveComposer({
     super.key,

@@ -1,14 +1,12 @@
-import 'package:flow_ui/flow_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// Assistant 欢迎区 headline:SVG 版 [FlowGreeting]。
+/// Assistant 欢迎区 headline:SVG 版欢迎图标 + 文案。
 ///
-/// flow_ui 的 [FlowGreeting] 只接受 [IconData],而 assistant 欢迎区要放
-/// iconMind 的 SVG AI 图标,因此此处自渲染一个同布局的 greeting:宽屏
-/// 图标(40px)+ 文本并排底对齐,窄屏上下堆叠 —— 与 flow_ui 的默认视觉
-/// 保持一致(40px glyph / 16 间隔 / 32px 文本,compact 下 21px 文本 / 4
-/// 间隔),只是 glyph 换成 [SemanticIconSvg.aiGenerated]。
+/// 宽屏图标(40px)+ 文本并排底对齐,窄屏上下堆叠。glyph 使用
+/// [SemanticIconSvg.aiGenerated];颜色与字号取自 Forui 主题 token
+/// (`context.theme.colors` / `context.theme.typography.display`)。
 class AssistantSvgGreeting extends StatelessWidget {
   const AssistantSvgGreeting({super.key, required this.text});
 
@@ -22,19 +20,19 @@ class AssistantSvgGreeting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flowColors = context.flowColors;
+    final colors = context.theme.colors;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final compact = constraints.maxWidth < _compactBreakpoint;
-        final style = context.flowTypography.headlineLarge.copyWith(
-          color: flowColors.onSurface,
+        final style = context.theme.typography.display.xl3.copyWith(
+          color: colors.foreground,
           fontSize: compact ? _narrowFontSize : null,
         );
         final label = Text(text, style: style, textAlign: TextAlign.center);
         final glyph = SemanticIconSvg.aiGenerated(
           size: _iconSize,
-          color: flowColors.primary,
+          color: colors.primary,
         );
         if (compact) {
           return Column(
