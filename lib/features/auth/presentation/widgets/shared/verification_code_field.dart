@@ -28,26 +28,30 @@ class VerificationCodeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: FTextFormField(
-            key: fieldKey,
-            control: FTextFieldControl.managed(controller: controller),
-            label: Text(label),
-            hint: hint,
-            keyboardType: TextInputType.number,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: validator,
+    // The label lives above the whole row instead of inside the field, so the
+    // send button shares the input's top edge (both are the row's first line).
+    // Putting the label in the field would push the input down and leave the
+    // button to be aligned with a fragile hard-coded offset.
+    return FLabel(
+      layout: FLabelLayout.vertical,
+      label: Text(label),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: FTextFormField(
+              key: fieldKey,
+              control: FTextFieldControl.managed(controller: controller),
+              hint: hint,
+              keyboardType: TextInputType.number,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: validator,
+            ),
           ),
-        ),
-        const SizedBox(width: Spacing.md),
-        Padding(
-          padding: const EdgeInsets.only(top: 26),
+          const SizedBox(width: Spacing.md),
           // 发码按钮撑满固有宽度会把左侧输入框挤窄:给宽度上限(仍在
           // IntrinsicWidth 内,标签换文时不跳动),超长文案由标签省略兜住。
-          child: ConstrainedBox(
+          ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 160),
             child: IntrinsicWidth(
               child: FButton(
@@ -70,8 +74,8 @@ class VerificationCodeField extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
