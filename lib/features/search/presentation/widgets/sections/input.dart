@@ -49,73 +49,78 @@ class SearchInput extends HookWidget {
 
     final canSubmit = query.trim().isNotEmpty;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: FTextField(
-            key: const ValueKey('medicine-search-input'),
-            control: FTextFieldControl.managed(
-              controller: controller,
-              onChange: (value) {
-                if (!syncing.value) {
-                  onChanged(value.text);
-                }
-              },
-            ),
-            hint: l10n.medicineSearchFieldHint,
-            textInputAction: TextInputAction.search,
-            onSubmit: (value) => (onSubmitted ?? onChanged)(value),
-            prefixBuilder: (context, style, variants) =>
-                FTextField.prefixIconBuilder(
-                  context,
-                  style,
-                  variants,
-                  Icon(
-                    SemanticIcons.actionSearch,
-                    color: SemanticColor.neutral.solid(context),
+    // IntrinsicHeight + stretch keeps the button exactly as tall as the field:
+    // both are Forui widgets whose natural heights differ slightly, so letting
+    // each size itself leaves the row visibly mismatched.
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: FTextField(
+              key: const ValueKey('medicine-search-input'),
+              control: FTextFieldControl.managed(
+                controller: controller,
+                onChange: (value) {
+                  if (!syncing.value) {
+                    onChanged(value.text);
+                  }
+                },
+              ),
+              hint: l10n.medicineSearchFieldHint,
+              textInputAction: TextInputAction.search,
+              onSubmit: (value) => (onSubmitted ?? onChanged)(value),
+              prefixBuilder: (context, style, variants) =>
+                  FTextField.prefixIconBuilder(
+                    context,
+                    style,
+                    variants,
+                    Icon(
+                      SemanticIcons.actionSearch,
+                      color: SemanticColor.neutral.solid(context),
+                    ),
                   ),
-                ),
-            // Clear only exists once there is something to clear.
-            suffixBuilder: controller.text.isEmpty
-                ? null
-                : (context, style, variants) => FTappable(
-                    onPress: () {
-                      controller.clear();
-                      onChanged('');
-                    },
-                    child: Semantics(
-                      button: true,
-                      label: l10n.medicineSearchClearAction,
-                      child: Padding(
-                        padding: const EdgeInsets.all(Spacing.xs),
-                        child: Icon(
-                          SemanticIcons.notificationFailed,
-                          color: SemanticColor.neutral.solid(context),
+              // Clear only exists once there is something to clear.
+              suffixBuilder: controller.text.isEmpty
+                  ? null
+                  : (context, style, variants) => FTappable(
+                      onPress: () {
+                        controller.clear();
+                        onChanged('');
+                      },
+                      child: Semantics(
+                        button: true,
+                        label: l10n.medicineSearchClearAction,
+                        child: Padding(
+                          padding: const EdgeInsets.all(Spacing.xs),
+                          child: Icon(
+                            SemanticIcons.notificationFailed,
+                            color: SemanticColor.neutral.solid(context),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-          ),
-        ),
-        const SizedBox(width: Spacing.md),
-        // The single non-keyboard trigger, as a labelled button beside the
-        // field (the keyboard's search action stays wired above). Width-bounded
-        // because a Row hands non-flex children an unbounded main axis.
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 120),
-          child: FButton(
-            key: const ValueKey('medicine-search-submit'),
-            onPress: canSubmit ? submit : null,
-            child: Text(
-              l10n.medicineSearchSubmitAction,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
             ),
           ),
-        ),
-      ],
+          const SizedBox(width: Spacing.md),
+          // The single non-keyboard trigger, as a labelled button beside the
+          // field (the keyboard's search action stays wired above). Width-bounded
+          // because a Row hands non-flex children an unbounded main axis.
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 120),
+            child: FButton(
+              key: const ValueKey('medicine-search-submit'),
+              onPress: canSubmit ? submit : null,
+              child: Text(
+                l10n.medicineSearchSubmitAction,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

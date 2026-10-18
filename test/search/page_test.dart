@@ -60,6 +60,24 @@ void main() {
     expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
   });
 
+  testWidgets('search button matches the input height', (tester) async {
+    await _pumpSearchApp(tester);
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // The field and the button are different Forui widgets with different
+    // natural heights; the row lets each size itself, which left the button
+    // visibly shorter than the input.
+    final fieldHeight = tester
+        .getSize(find.byKey(const ValueKey('medicine-search-input')))
+        .height;
+    final buttonHeight = tester
+        .getSize(find.byKey(const ValueKey('medicine-search-submit')))
+        .height;
+    expect(buttonHeight, moreOrLessEquals(fieldHeight, epsilon: 0.5));
+  });
+
   testWidgets('typing does not search: only an explicit submit does', (
     tester,
   ) async {
